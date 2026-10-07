@@ -4,6 +4,11 @@
 
 ### Features
 
+- [ ] **AI composition analysis and counter measures**
+  - **Plan**: [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]
+  - **Status**: 2026-10-07 implemented: baked weapon loadouts, damage-matrix force ratings, utility strategic rules, counter production and squadron escorts. AI/new tests 119/119; full EditMode 1151/1155 (4 unrelated). Commit `e5daa9ab`.
+  - **Remaining**: skirmish Play Mode acceptance and threshold tuning against current balance.
+
 - [ ] **Verify MC80 Independence integration acceptance**
   - **Plan**: [[TODOs/Features/MC80Independence_Import|MC80 Independence Import]]
   - **Reference**: [[GameDesign/MC80 Independence Import]]

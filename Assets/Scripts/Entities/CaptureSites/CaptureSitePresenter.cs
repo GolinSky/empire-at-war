@@ -104,9 +104,15 @@ namespace EmpireAtWar.Entities.CaptureSites
             _model.StartConstruction(facilityType, _data.GetCost(facilityType).BuildTime);
         }
 
-        public void SetSelected(bool isSelected)
+        public void Select(Vector2 screenPosition)
         {
-            _isSelected = isSelected;
+            _isSelected = true;
+            _view.SetBuildOptionsPosition(screenPosition);
+        }
+
+        public void Deselect()
+        {
+            _isSelected = false;
         }
 
         public void ReleaseFacility()
@@ -129,7 +135,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             bool isActive = _model.CapturingPlayer != PlayerId.None || _model.IsContested ||
                 _model.State == CaptureSiteState.Constructing;
             // The ring is known terrain; ownership details need current vision.
-            _view.SetVisibility(true, isVisible && (isHovered || isActive || showBuildOptions));
+            _view.SetVisibility(true, isVisible && (isHovered || isActive));
             _view.SetBuildOptionsVisible(showBuildOptions);
             if (!showBuildOptions)
             {

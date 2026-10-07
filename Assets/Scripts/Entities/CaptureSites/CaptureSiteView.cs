@@ -74,6 +74,8 @@ namespace EmpireAtWar.Entities.CaptureSites
             {
                 option.Pressed -= HandleOptionPressed;
             }
+
+            Destroy(buildOptions);
         }
 
         private void LateUpdate()
@@ -147,14 +149,36 @@ namespace EmpireAtWar.Entities.CaptureSites
             statusCanvas.gameObject.SetActive(isVisible && showStatus);
         }
 
+        public void InitializeBuildUi(Transform parent)
+        {
+            RectTransform optionsTransform = (RectTransform)buildOptions.transform;
+            optionsTransform.SetParent(parent, false);
+            optionsTransform.localRotation = Quaternion.identity;
+            optionsTransform.localScale = Vector3.one;
+            optionsTransform.anchorMin = ((RectTransform)parent).pivot;
+            optionsTransform.anchorMax = optionsTransform.anchorMin;
+            optionsTransform.pivot = new Vector2(0.5f, 0f);
+            optionsTransform.sizeDelta = new Vector2(560f, 228f);
+        }
+
+        public void SetBuildOptionsPosition(Vector2 screenPosition)
+        {
+            RectTransform optionsTransform = (RectTransform)buildOptions.transform;
+            RectTransform canvasTransform = (RectTransform)optionsTransform.parent;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, screenPosition, null,
+                out Vector2 localPosition);
+            Rect canvasRect = canvasTransform.rect;
+            Vector2 panelSize = optionsTransform.rect.size;
+            localPosition.x = Mathf.Clamp(localPosition.x, canvasRect.xMin + panelSize.x * 0.5f,
+                canvasRect.xMax - panelSize.x * 0.5f);
+            localPosition.y = Mathf.Clamp(localPosition.y + 24f, canvasRect.yMin, canvasRect.yMax - panelSize.y);
+            optionsTransform.anchoredPosition = localPosition;
+        }
+
         public void SetBuildOptionsVisible(bool isVisible)
         {
             buildOptions.transform.localScale = Vector3.one * 0.5f;
             buildOptions.SetActive(isVisible);
-            if (isVisible)
-            {
-                statusText.text = "CHOOSE FACILITY";
-            }
         }
 
         public void SetOptionInteractable(SiteFacilityType facilityType, bool isInteractable)

@@ -28,6 +28,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         void SetBuildOptionsVisible(bool isVisible);
 
+        void SetBuildOptionsPosition(Vector2 screenPosition);
+
         void SetOptionInteractable(SiteFacilityType facilityType, bool isInteractable);
     }
 }

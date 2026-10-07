@@ -1,35 +1,35 @@
 # Graph Report - empire-at-war  (2026-10-06)
 
 ## Corpus Check
-- 1022 files · ~182,786 words
+- 1023 files · ~183,103 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 10985 nodes · 25094 edges · 375 communities (363 shown, 12 thin omitted)
-- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 2820 edges (avg confidence: 0.82)
+- 10997 nodes · 25127 edges · 393 communities (385 shown, 8 thin omitted)
+- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 2828 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `395bd89f`
+- Built from commit: `ef8e51b0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - SettingsRouteController
-- EmpireAtWar.Components.Ship.Movement
+- EmpireAtWar.Components.Weapon
 - CoreGameUi
-- ResearchType
+- FactionRoster
 - PlayerOrderInputHandlerTests
 - @GameInputActions
 - IShipNavigationAgent
 - SettingsModel
-- BattleState
+- IIncomeProvider
 - FactionType
 - ShipGroupUi
 - RadarContact
 - AttackSequenceDiagnostics
-- MarqueeRectangle
-- SuperWeaponFireService
+- .InstallBindings
+- IEntityTransformFacade
 - .CreateSpawnPoints
 - Squadron
 - CameraService
@@ -39,213 +39,213 @@
 - IHardPointModel
 - EnemyUnitLimitModel
 - SettingsService
-- ShipOrderFacade
+- SquadronOrderFacade
 - ShipMoveModel
 - UnitActionsPresenter
 - UnitWreckData
 - ShipSelectionGroupUi
 - ShipVoiceSet
 - EnemyProductionStrategy
-- CaptureSitesSystem
+- CaptureSitePresenter
 - ShipSpawnClearance
 - SuperWeaponType
 - ShipBezierRoute
 - Vector2Range
 - EmpireAtWar.Entities.BaseEntity
-- .InstallBindings
+- ShipOrderRunner
 - InputBindingService
-- MiniMapData
+- MiniMapMarker
 - ShotEffect
 - CallbackContext
 - SkirmishUi
-- EmpireAtWar.Tests.Editor
+- EmpireAtWar.Services.Camera
 - PlayerOrderInputHandler
 - MapGenerationSettings
 - ShipData
 - FakeTarget
-- TeamId
-- ILocalPlayer
+- BattleVictoryModel
+- TeamColorPalette
 - TooltipContent
-- MiningFacility
+- ConcentrateFireAbility
 - .Generate
 - HealthComponent
 - SquadronPilot
 - AudioSettingsApplier
 - ReinforcementSpawnRuleTests
 - SquadronType
-- PlayerSlot
-- IonPulseAbility
-- IPlayerRelations
-- BaseUi
-- EnemyFactionController
+- PlayerId
+- IShipAbilityFacade
+- IVisionService
+- SerializedObject
+- .ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds
 - HangarComponent
-- ICaptureSitesSystem
-- .AddGroup
+- EnemySquadronCommander
+- SpawnBlockerService
 - UnitSpawnView
 - CaptureSiteModel
-- FactionUi
-- EconomyService
+- SpaceStation
+- IShipSpawnPoints
 - UiCancelRouter
 - EntityComponentData
 - PipelineView
-- ITickable
+- IncomingMissile
 - FakeOrderService
-- IUiService
+- BaseUi
 - PauseMenuRouteController
-- UnitOrderService
+- FakeCommand
 - MapSizeSettings
 - IAudioService
 - FakeHealth
-- SkirmishOrchestrator
+- SkirmishOrchestratorTests
 - SkirmishModel
 - ShipSfxData
 - HardPointMarkerData
 - FakeCamera
-- IEntityTransformFacade
+- IShipMovement
 - SelectionContext
-- EnemyProductionSnapshot
+- EnemyStrategicState
 - ISkirmishRouteNavigation
 - IonStunView
-- .InstallBindings
+- IInitializable
 - View
 - ISuperWeaponOrigin
-- StaticViewInstaller
-- MapObstacle
-- MPImageMeshTests.cs
+- EntityInstaller
+- ShipAbilitySettings
+- .PreferredShipAtLimit_SelectsAnotherAvailableShip
 - MiniMapUi
 - TooltipHoverView
-- .InstallBindings
+- CoroutineService
 - AudioShipComponent
 - BattlePerformanceCapture
 - ShipMoveComponent
 - SquadronHealthModel
 - HardPointModel
-- ShipAbilityButtonUi
-- .MoveTowardsTarget
-- FadeService
+- ShipAbilitySlot
+- CameraInputBindingsTests
+- .RunAsync
 - FogOfWarSystem
-- PointerActions
-- EnemyTaskForceExecutor
+- UiType
+- EmpireAtWar.Services.ShipAbilities
 - SpaceStationData
-- DefendPlatform
+- CaptureSitesSystem
 - BattlePerformanceCaptureMetadata
-- MapLayout
+- MapLayoutGeneratorTests
 - RadarComponent
-- ISettingsModelObserver
+- DisplaySettingsData
 - ShipAbilityId
 - FogVisibilityComponent
 - EmpireAtWar.Services.Tooltip
 - SelectionService
 - Ship
-- MiningFacilityData
+- CombatModifiers
 - HardPointAdapter
-- UiType
+- FactionUi
 - SkirmishSlotSetup
-- FakeShip
+- EnemyTaskForceExecutor
 - Shield
 - WreckCutPlan
-- TestCommand
-- BattleStartupSequence
+- IHealthModelObserver
+- MapLayout
 - UnitTypeId
-- EnemyProductionDecisionModelTests
+- EnemyProductionSnapshot
 - IModelObserver
 - BattlePerformanceCaptureReport
-- SkirmishRouteController
+- CombatStatModifier
 - AttackDueJob
 - SuperWeaponPresenter
 - WeaponProfile
-- BattleResult
-- TooltipSettings
+- IonShotSettings
+- WeaponHardPoint
 - SelectionComponent
-- MusicService
-- HeroUiController
-- UnitOrderFeedbackUi
+- AudioDialogShipComponent
+- OwnerRelation
+- UnitOrderFeedbackUiController
 - AddressableAssetService
 - FpsUiController
 - ShipUi
 - ShipSfxService
 - ISelectionContext
-- ReinforcementZoneView
+- ReinforcementZonesSystem
 - FakeHealth
 - FakeShipMovement
-- IMapModelObserver
+- EnemyStructurePlacementServiceTests
 - SettingsDraftEditor
 - LivingHealth
-- ILayerService
+- MarkType
 - UnitActionId
-- CameraData
-- AudioDialogShipComponent
+- SquadronIconComponent
+- ResearchStat
 - DamageType
-- .SceneTeardown_UnsubscribesBeforeEntityLateDispose
+- UnitOrderFeedbackUi
 - ShipType
 - ShipPathGrid
 - SquadronData
 - FakeHealth
 - CinematicShot
 - HardPointMarkerView
-- ShipAbilitySlot
+- ShipAbilityService
 - PlayerFactionModel
-- ReinforcementUi
+- SpawnShipUi
 - BattleVictoryCondition
 - .Build
 - HardPointOverlayModel
 - MapNode
-- MiniMapController
-- MainMenuOrchestrator
+- .Activate
+- MarkView
 - CinematicCameraPresenter
 - GameData
 - FakeHealth
 - CinematicCameraData
-- FogVisibilityGridModel
+- SkirmishOrchestrator
 - .Scatter
 - .Get
 - HangarModel
 - .InstallFeatures
 - FormationPoint
-- IShipEntity
+- ReinforcementUi
 - SettingsData
-- InstallerExtensions
-- .ApplyDamage
+- .RemoveObserver
+- ISquadronHealthData
 - EmpireAtWar.Services.Settings
 - IObservableProperty
-- UnitOrderFeedbackUiController
+- BattleMap
 - .WreckMaterials_MatchSourceMaterials
 - FakeHealth
-- ShipMoveDataStub
-- FakeHealth
+- EndGameUi
+- BattleResult
 - HardPoint
-- .InstallBindings
+- ILocalPlayer
 - CaptureSiteView
-- MonoBehaviour
-- CaptureStrengthBuilder
+- TooltipIconData
+- TeamId
 - NavigationGridCells
 - UnitOrderInput
-- UnitActionButton
+- MonoBehaviour
 - PointerInput
 - SquadronFlightComponent
-- Installer
+- MusicService
 - CoreGamePresenterStub
 - SuperWeaponButton
 - LayerData
-- TooltipIconData
-- IEntityLocator
+- MiniMapData
+- ViewEntity
 - HardPointOverlayData
-- UiActions
+- SfxProfile
 - MainRouteController
 - HardPointOverlayView
-- HeroIconUi
+- HeroUiController
 - WeaponType
-- IHeroUi
+- ShipHeightTier
 - ISelectableView.cs
 - FadeUi
 - FakeHealthModel
-- CombatModifiers
-- ShipHeightTier
+- TestFacade
+- IonPulseSettings
 - HealthOverlayPresenter
-- PlanetView
-- .CalculateSoftVisibility
-- ShipNavigationPlan
-- InputLockStub
+- Controller
+- EmpireAtWar.Tests.Editor
+- IGameCommand
+- WorldTooltipPresenter
 - FighterManeuver
 - SceneService
 - EnemyAiDifficultyProfile
@@ -253,57 +253,57 @@
 - ShipEngineAudioState
 - .Build
 - MiniMapMoveTargetView
-- IRadarModelObserver
+- FactionCatalog
 - IHardPointStatus
-- MapGeometry
-- Controller
+- EmpireAtWar.Entities.Map.Generation
+- ISceneService
 - EmpireAtWar.Mvc
-- IAssetService
+- CameraMarkData
 - FieldDensity
-- ReinforcementService
-- Data
+- InputLockStub
+- .InstallBindings
 - IEconomyModelObserver
 - SquadronHealthComponent
 - AttackMoveEngagement
 - IDisposable
-- UnitWreckView
+- DependencyBuilder
 - SkirmishServiceInstaller
 - HullTarget
 - SquadronFlightModel
 - HealthModelTests
 - ISkirmishModelObserver
-- IStationFacingService
+- ReplayNotifier
 - FakeHealth
 - .Write_IncludesJobPhasesWorkloadAndSourceMetadata
 - .Initialize
-- CameraInputBindingsTests
-- SpaceStation
+- SiteFacilityOptionView
+- MiningFacility
 - HardPointOverlayPresenter
 - StructureSpawnClearance
-- .RemoveObserver
-- FakeHealth
+- ISpawnShipUi
+- Transform
 - BattleActions
 - UnitExplosionView
 - SkirmishSlotRowView
-- PlayerCoreInstaller
+- MarkData
 - PointerGestures
 - .StepYaw
-- UiController
+- .RunStartupAsync
 - IFighterFlightData
-- PlayerId
-- DependencyBuilder
+- ISiteFacilityBuilder
+- InstallerExtensions
 - CinematicCandidate
 - FrameworkComponent
 - .CreateImage
-- IStationRegistry
-- WeaponHardPoint
-- EnemySquadronCommander
-- ISceneService
-- IHealthModelObserver
-- TooltipContentProvider
+- EnemyFactionController
+- .CaptureTargetSelections_ReadsTransformsAfterQueueAtEveryThreshold
+- PointerActions
+- TrackingSceneService
+- ICaptureSite
+- .Enter
 - FullSalvoAbility
 - MetallicSmoothnessPackerTests
-- MiniMapMarker
+- ShipAbilityFacade
 - SelectionEntry
 - SpawnType
 - SkirmishRouteNavigationStub
@@ -313,27 +313,28 @@
 - ShipHullFootprint
 - .ToNumerics
 - CameraFrustumProjection
-- ShipDestroyFacade
+- SettingsUiPrefabTests
 - HardPointType
-- MovementPhase
+- IUnitOrderFeedbackPresenter
 - SettingsPrompt
 - CameraActions
 - IHealthData
 - FakeMovement
-- TooltipUiController
-- ShipAbilityState
+- TooltipUi
+- UiActions
 - TestFlightData
 - IShipMoveData
-- AiPlayerInstaller
+- MuzzleFlashView
 - IEntity
-- .AddHero
+- UnitRequest
 - CinematicCameraModel
+- PlanetView
 - CinematicInterestScorer
 - FakeEntity
 - SettingsCategoryTab
 - FakeShipMoveData
 - Q: Trace an intermittent Invalid AABB canvas error during combat after spawning test ships.
-- EmpireAtWar.Entities.Map.Generation
+- GameSpeed
 - RenderAuditProfilerToolTests
 - Q: How are ShipAIBrain, enemy ship commands, ship state machines, EnemyService, and space-station targeting connected?
 - Q: How does selecting player ships open ShipUi move-to-position canvas and send the move command to selected ships?
@@ -347,52 +348,69 @@
 - Q: How does defend platform reinforcement preview position flow through camera projection and DefendPlatformFacade creation?
 - Q: Which prefab and mesh transforms define the correctly spawned Acclamator orientation versus AcclamatorReinforcementView?
 - Q: How should ReinforcementZonesSystem reference map zone views for Coruscant and Kamino?
-- .IsLocal
+- StaticViewInstaller
+- BoostEnginePowerAbility
 - DynamicEntityInstaller
 - HudFrame
+- BoostShieldPowerAbility
 - UnitActionsPresenterTests
 - SettingsUi
 - FighterKinematics
-- SpawnAreaGridModel
-- FakeCommand
-- MonoComponent
+- SpawnAreaOverlay
+- CinematicClassProfile
+- IReinforcementVisitor
+- BoostWeaponPowerAbility
+- InvulnerabilityAbility
+- ShipNavigationPlan
 - MapLayoutView
+- FakeCommand
 - FactionType
 - SafeAreaHelper
+- CloakAbility
 - .Solve
+- SquadronInstaller
 - CloakView
-- .SelectionBegan_ClearsPreviousSelectionBeforeApplyingHit
-- .Enter
+- FakeEntity
+- UiHitTest
+- TooltipAnchorKind
 - TargetSelectionRequest
-- HeroUi
+- TeamColorView
 - Q: HeroUi.RemoveHero KeyNotFoundException during Entity.LateDispose
 - ShipAbilityDefinition
 - HealthModelStub
 - .AddSlots
-- UnitMatchupData
-- ReinforcementZonesSystem
+- IFighterAttackRunObserver
+- .InstallBindings
+- .CreateSystem
 - IgnoredSpawnClearance
 - Q: enemy spawn defend platform and spawnable mining facilities inside their station - fix it - how this happened - maybe station has wrong colliders - fix the root issues - not the symptoms
-- HardPointHealth
-- TestEntity
+- IRoute
+- .ShipReinforcementUiPrefab_IsConfiguredCorrectly
 - FighterView
 - TooltipService
+- Installer
 - .TryCalculateAim
+- FakeEntity
+- AiPlayerInstaller
 - ShipClass
-- WeaponsData
+- SelectionInput
+- ShipInstaller
+- .CoreGamePrefab_HasOneFullyWiredButtonPerAction
+- Q: compare rebellion and empire faction ships to republic/separatist (cis) price stats build duration
 - .FindTurn
+- IRadarData
+- IShipData
 - .PrefabImplementsTooltipContractAndHasCanvasGroup
 - EnemyUnitCommander
 - EmpireAtWar.Models.Factions
 - .StartRecorder
 - EmpireAtWar.Models.Players
-- Mode
 - BattleOutcome
 - Q: Compare both Arquitens variants: stats, model/prefab size, hardpoints and abilities
 - CameraInput
 
 ## God Nodes (most connected - your core abstractions)
-1. `IEntity` - 343 edges
+1. `IEntity` - 344 edges
 2. `PlayerId` - 304 edges
 3. `EmpireAtWar.Models.Players` - 207 edges
 4. `EmpireAtWar.Mvc` - 171 edges
@@ -418,27 +436,27 @@
 ## Import Cycles
 - None detected.
 
-## Communities (375 total, 12 thin omitted)
+## Communities (393 total, 8 thin omitted)
 
 ### Community 0 - "SettingsRouteController"
 Cohesion: 0.08
 Nodes (5): ISettingsRouteNavigation, ISettingsUi, KeyBindingEditor, SettingsRouteController, MainMenuRouteInstaller
 
-### Community 1 - "EmpireAtWar.Components.Ship.Movement"
+### Community 1 - "EmpireAtWar.Components.Weapon"
 Cohesion: 0.05
-Nodes (21): Sequence, DotweenExtensions_v2, NativeArray, NativeArrayBuffer, SubclassSelectorAttribute, OnDestroy(), Release(), ProfilerMarker (+13 more)
+Nodes (26): Sequence, DotweenExtensions_v2, NativeArray, NativeArrayBuffer, SubclassSelectorAttribute, OnDestroy(), Release(), ProfilerMarker (+18 more)
 
 ### Community 2 - "CoreGameUi"
-Cohesion: 0.05
-Nodes (30): ITooltipHoverView, TooltipHover, Button, CanvasGroup, DictionaryWrapper, GameObject, GridLayoutGroup, Image (+22 more)
+Cohesion: 0.07
+Nodes (21): Button, CanvasGroup, DictionaryWrapper, GameObject, GridLayoutGroup, Image, MPImage, ScrollRect (+13 more)
 
-### Community 3 - "ResearchType"
-Cohesion: 0.05
-Nodes (38): ShipClass, ShipClassExtensions, DamageType, IReadOnlyDictionary, WeaponModel, OptimalAttackRange, Dictionary, IReadOnlyCollection (+30 more)
+### Community 3 - "FactionRoster"
+Cohesion: 0.04
+Nodes (50): ShipType, FactionDataWrapper, Dictionary, IReadOnlyList, ShipType, FactionDefinition, DefendPlatforms, MiningFacilities (+42 more)
 
 ### Community 4 - "PlayerOrderInputHandlerTests"
-Cohesion: 0.06
-Nodes (28): IReadOnlyList, List, UnitActionId, UnitActionTargetingModel, IsAltPlacement, Pending, Waypoints, FakeAbilities (+20 more)
+Cohesion: 0.07
+Nodes (25): UnitActionId, FakeAbilities, FakeEntity, FakeOrders, FakeSelection, GameObject, SetUp, TearDown (+17 more)
 
 ### Community 5 - "@GameInputActions"
 Cohesion: 0.07
@@ -449,52 +467,52 @@ Cohesion: 0.08
 Nodes (20): List, IMapObstacleContactProvider, Dictionary, IReadOnlyList, List, Vector3, IShipNavigationAgent, NavigationHeight (+12 more)
 
 ### Community 7 - "SettingsModel"
-Cohesion: 0.08
-Nodes (23): KeyBindingRowState, ActionLabel, BindingLabel, IReadOnlyList, SettingsModel, Bindings, EdgeScrolling, FrameRateLimit (+15 more)
+Cohesion: 0.04
+Nodes (43): IReadOnlyList, ISettingsModelObserver, Bindings, EdgeScrolling, FrameRateLimit, InvertZoom, IsDirty, MasterVolume (+35 more)
 
-### Community 8 - "BattleState"
-Cohesion: 0.06
-Nodes (24): IObserver, List, ReplayNotifier, Value, BattleState, Ended, Loading, NotInitialized (+16 more)
+### Community 8 - "IIncomeProvider"
+Cohesion: 0.21
+Nodes (5): IEconomyProvider, IIncomeProvider, Income, TrackingEconomyProvider, RemoveCount
 
 ### Community 9 - "FactionType"
 Cohesion: 0.08
-Nodes (16): Dictionary, FactionData, List, ShipType, CheatPresenter, IReadOnlyList, Rect, ShipType (+8 more)
+Nodes (14): Dictionary, FactionData, List, ShipType, CheatPresenter, IReadOnlyList, Rect, ShipType (+6 more)
 
 ### Community 10 - "ShipGroupUi"
-Cohesion: 0.12
-Nodes (8): Transform, IShipGroupUi, List, RectTransform, Transform, Vector2, ShipGroupUi, TooltipHover
+Cohesion: 0.08
+Nodes (14): ShipType, IShipUiModelObserver, HasShips, PendingAbilityId, SelectedShipType, SelectedSquadronType, Transform, IShipGroupUi (+6 more)
 
 ### Community 11 - "RadarContact"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (31): Vector3, RadarContact, Bottom, IsShip, Position, Radius, Top, IReadOnlyList (+23 more)
 
 ### Community 12 - "AttackSequenceDiagnostics"
 Cohesion: 0.04
 Nodes (37): Action, Dictionary, HashSet, ShipClass, ShotEffect, Transform, Vector3, ShotEffectPool (+29 more)
 
-### Community 13 - "MarqueeRectangle"
-Cohesion: 0.13
-Nodes (18): MarqueePoint, X, Y, MarqueeRectangle, Height, MaxX, MaxY, MinX (+10 more)
+### Community 13 - ".InstallBindings"
+Cohesion: 0.08
+Nodes (26): MarqueePoint, X, Y, MarqueeRectangle, Height, MaxX, MaxY, MinX (+18 more)
 
-### Community 14 - "SuperWeaponFireService"
-Cohesion: 0.06
-Nodes (29): Vector2, Vector3, PlanarGeometry, SuperWeaponProfile, AreaDamage, AreaRadius, FiringDelay, ImpactSize (+21 more)
+### Community 14 - "IEntityTransformFacade"
+Cohesion: 0.05
+Nodes (37): Vector2, Vector3, PlanarGeometry, IEntityTransformFacade, Transform, SuperWeaponProfile, AreaDamage, AreaRadius (+29 more)
 
 ### Community 15 - ".CreateSpawnPoints"
 Cohesion: 0.13
 Nodes (16): List, ShipType, Vector3, ShipSpawnPoints, BindingFlags, Canvas, GameObject, MeshRenderer (+8 more)
 
 ### Community 16 - "Squadron"
-Cohesion: 0.04
-Nodes (50): Vector3, FormationConversion, IReadOnlyList, List, UnitOrderModel, Current, Destination, Offset (+42 more)
+Cohesion: 0.06
+Nodes (32): Vector3, FormationConversion, IReadOnlyList, List, UnitOrderModel, Current, Destination, Offset (+24 more)
 
 ### Community 17 - "CameraService"
 Cohesion: 0.09
 Nodes (20): Camera, IReadOnlyList, Plane, Quaternion, RaycastHit, Vector2, Vector3, CameraService (+12 more)
 
 ### Community 18 - "ShipUiController"
-Cohesion: 0.11
-Nodes (10): Action, IReadOnlyList, List, ShipType, SquadronType, Transform, ShipUiController, ShipType (+2 more)
+Cohesion: 0.07
+Nodes (17): Action, IReadOnlyList, List, ShipType, SquadronType, Transform, ShipUiController, ShipType (+9 more)
 
 ### Community 19 - ".Run"
 Cohesion: 0.27
@@ -502,59 +520,59 @@ Nodes (9): quaternion, float4, Input, Quaternion, Result, Test, TestCase, Vector
 
 ### Community 20 - "CoreGameUiController"
 Cohesion: 0.07
-Nodes (23): Dictionary, INotifier, List, CoreGameUiController, IsBattleEnded, SuperWeaponsView, UnitActionsView, ICoreGameHudStatus (+15 more)
+Nodes (18): Dictionary, INotifier, List, CoreGameUiController, IsBattleEnded, SuperWeaponsView, UnitActionsView, ICoreGameHudStatus (+10 more)
 
 ### Community 21 - "IHardPointModel"
 Cohesion: 0.04
-Nodes (55): HardPointType, List, ShipClass, AttackData, CanAcquireTarget, HealthFacade, IsDestroyed, TargetClass (+47 more)
+Nodes (54): HardPointType, List, ShipClass, AttackData, CanAcquireTarget, HealthFacade, IsDestroyed, TargetClass (+46 more)
 
 ### Community 22 - "EnemyUnitLimitModel"
-Cohesion: 0.07
-Nodes (31): Dictionary, EnemyUnitLimitModel, CurrentUnitCapacity, ReleaseVersion, ShipOrdersCount, Type, UnitLimitKey, Id (+23 more)
+Cohesion: 0.15
+Nodes (14): Dictionary, EnemyUnitLimitModel, CurrentUnitCapacity, ReleaseVersion, ShipOrdersCount, Type, UnitLimitKey, Id (+6 more)
 
 ### Community 23 - "SettingsService"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (27): ISettingsService, Draft, IsAwaitingDisplayConfirmation, IsDirty, Saved, SettingsApplyResult, AwaitingDisplayConfirmation, Committed (+19 more)
 
-### Community 24 - "ShipOrderFacade"
+### Community 24 - "SquadronOrderFacade"
 Cohesion: 0.03
-Nodes (59): Vector3, Vector3, IAttackMoveFacade, NavigationRadius, WorldPosition, IEntity, IFocusFireFacade, IEntity (+51 more)
+Nodes (50): Vector3, IAttackMoveFacade, NavigationRadius, WorldPosition, IEntityDestroyFacade, IEntity, IFocusFireFacade, IEntity (+42 more)
 
 ### Community 25 - "ShipMoveModel"
-Cohesion: 0.09
-Nodes (23): NumericsQuaternion, NumericsVector3, ShipMoveModel, BodyRotationMaxAngle, Destination, Height, HullBottom, HullTop (+15 more)
+Cohesion: 0.06
+Nodes (37): MovementPhase, Arriving, Idle, Moving, NumericsQuaternion, NumericsVector3, ShipMoveModel, BodyRotationMaxAngle (+29 more)
 
 ### Community 26 - "UnitActionsPresenter"
-Cohesion: 0.08
-Nodes (16): Focus, Dictionary, INotifier, List, UnitActionId, UnitActionsPresenter, UnitActionId, IUnitActionsView (+8 more)
+Cohesion: 0.07
+Nodes (22): Focus, Dictionary, INotifier, List, UnitActionId, UnitActionsPresenter, IReadOnlyList, List (+14 more)
 
 ### Community 27 - "UnitWreckData"
-Cohesion: 0.07
-Nodes (29): ActiveWreck, Color, UnitWreckData, DissolveDuration, DissolveEdgeColor, DissolveEdgeWidth, DissolveNoiseScale, GlowDuration (+21 more)
+Cohesion: 0.06
+Nodes (38): ActiveWreck, Bounds, Dictionary, Material, MeshFilter, MeshRenderer, Quaternion, Vector3 (+30 more)
 
 ### Community 28 - "ShipSelectionGroupUi"
-Cohesion: 0.10
-Nodes (18): Action, IReadOnlyList, ShipUiEntry, AbilitySlots, Entity, Health, Action, Button (+10 more)
+Cohesion: 0.07
+Nodes (24): Action, IReadOnlyList, ShipUiEntry, AbilitySlots, Entity, Health, Action, IReadOnlyList (+16 more)
 
 ### Community 29 - "ShipVoiceSet"
 Cohesion: 0.09
 Nodes (18): AudioClip, RandomAudioClips, RandomFloat, Random, Random, RandomFromArray, RandomValue, Max (+10 more)
 
 ### Community 30 - "EnemyProductionStrategy"
-Cohesion: 0.13
-Nodes (17): IEnemyPurchaseProcessor, DefendPlatformUnitRequest, MiningFacilityUnitRequest, ResearchUnitRequest, Tier, SquadronUnitRequest, SuperWeaponUnitRequest, FactionData (+9 more)
+Cohesion: 0.14
+Nodes (17): IEnemyPurchaseProcessor, DefendPlatformUnitRequest, MiningFacilityUnitRequest, ResearchUnitRequest, Tier, ShipType, ShipUnitRequest, SquadronUnitRequest (+9 more)
 
-### Community 31 - "CaptureSitesSystem"
-Cohesion: 0.04
-Nodes (45): IUiCancelRouter, DictionaryWrapper, CaptureSiteData, CaptureSpeedPerNetShip, SquadronCaptureWeight, Vector3, CaptureSitePresenter, CanPlayerBuild (+37 more)
+### Community 31 - "CaptureSitePresenter"
+Cohesion: 0.08
+Nodes (27): DictionaryWrapper, CaptureSiteData, CaptureSpeedPerNetShip, SquadronCaptureWeight, Vector3, CaptureSitePresenter, CanPlayerBuild, CanStartConstruction (+19 more)
 
 ### Community 32 - "ShipSpawnClearance"
 Cohesion: 0.24
 Nodes (10): Hull, BoxCollider, Dictionary, ShipType, Vector3, Hull, HalfExtents, Height (+2 more)
 
 ### Community 33 - "SuperWeaponType"
-Cohesion: 0.07
-Nodes (25): DictionaryWrapper, SuperWeaponCatalog, DictionaryWrapper, SuperWeaponData, ISuperWeaponModelObserver, Dictionary, List, SuperWeaponModel (+17 more)
+Cohesion: 0.04
+Nodes (39): PureModel, EconomyModel, Money, ISuperWeaponModelObserver, Dictionary, List, SuperWeaponModel, SuperWeaponState (+31 more)
 
 ### Community 34 - "ShipBezierRoute"
 Cohesion: 0.08
@@ -566,79 +584,79 @@ Nodes (10): IReadOnlyList, Vector3, ShipAvoidancePlanner, Vector2, Vector2Range,
 
 ### Community 36 - "EmpireAtWar.Entities.BaseEntity"
 Cohesion: 0.04
-Nodes (21): EmpireAtWar.Components.Ship.Health, EmpireAtWar.Entities.Ship.EntityFacades.Combat, EmpireAtWar.Components.AttackComponent, EmpireAtWar.Models.Health, EmpireAtWar.Services.ShipAbilities, EmpireAtWar.Components.Weapon, EmpireAtWar.Entities.Ship.EntityFacades.Health, EmpireAtWar.Entities.Ship.EntityFacades (+13 more)
+Nodes (28): EmpireAtWar.Entities.BaseEntity.EntityFacades, EmpireAtWar.Components.Ship.Health, EmpireAtWar.Components.Selection.Marquee, EmpireAtWar.Components.AttackComponent, EmpireAtWar.Models.Health, EmpireAtWar.Entities.Units, EmpireAtWar.Entities.UnitActions.Model, EmpireAtWar.Services.UnitOrders (+20 more)
 
-### Community 37 - ".InstallBindings"
-Cohesion: 0.15
-Nodes (8): Vector2, MarqueeSelectionPresenter, Color, Rect, IMarqueeSelectionView, MarqueeSelectionView, CombatAttackCoordinator, ShipService
+### Community 37 - "ShipOrderRunner"
+Cohesion: 0.04
+Nodes (38): Vector3, UnitOrderType, Attack, AttackMove, Guard, Hunt, Move, None (+30 more)
 
 ### Community 38 - "InputBindingService"
 Cohesion: 0.06
 Nodes (28): IReadOnlyList, List, BindingConflicts, InputAction, BindingSlot, Action, BindingIndex, Label (+20 more)
 
-### Community 39 - "MiniMapData"
-Cohesion: 0.04
-Nodes (53): Vector3, IReadOnlyList, List, CameraMarkData, Vertices, Sprite, Vector3, IMarkData (+45 more)
+### Community 39 - "MiniMapMarker"
+Cohesion: 0.13
+Nodes (11): MiniMapMarker, MarkType, Owner, Visible, WorldDiameter, Dictionary, IEnumerable, KeyValuePair (+3 more)
 
 ### Community 40 - "ShotEffect"
-Cohesion: 0.06
-Nodes (30): BoltShot, ParticleSystem, Transform, Vector3, LineRenderer, ParticleSystem, Transform, Vector3 (+22 more)
+Cohesion: 0.07
+Nodes (24): BoltShot, ParticleSystem, Transform, Vector3, LineRenderer, ParticleSystem, Transform, Vector3 (+16 more)
 
 ### Community 41 - "CallbackContext"
 Cohesion: 0.16
 Nodes (5): CallbackContext, IBattleActions, ICameraActions, IPointerActions, IUiActions
 
 ### Community 42 - "SkirmishUi"
-Cohesion: 0.08
-Nodes (21): Button, CanvasGroup, Graphic, MapSize, PlanetType, RawImage, Slider, Texture2D (+13 more)
+Cohesion: 0.11
+Nodes (16): Button, CanvasGroup, Graphic, MapSize, PlanetType, RawImage, Slider, Texture2D (+8 more)
 
-### Community 43 - "EmpireAtWar.Tests.Editor"
-Cohesion: 0.04
-Nodes (25): EmpireAtWar.Services.Layer, EmpireAtWar.Components.Movement.Formation, EmpireAtWar.Entities.CinematicCamera.Controller, EmpireAtWar.Entities.BaseEntity.EntityFacades, EmpireAtWar.Components.Ship.Selection, EmpireAtWar.Entities.CinematicCamera.Model, EmpireAtWar.Components.Ship.Health.Overlay, EmpireAtWar.Components.Selection.Marquee (+17 more)
+### Community 43 - "EmpireAtWar.Services.Camera"
+Cohesion: 0.20
+Nodes (3): EmpireAtWar.Entities.CinematicCamera.Model, EmpireAtWar.Services.Camera, EmpireAtWar.Tests.CinematicCamera
 
 ### Community 44 - "PlayerOrderInputHandler"
 Cohesion: 0.13
-Nodes (10): IShipAbilityTargeting, IsWaitingForTarget, IReadOnlyList, Vector3, IUnitOrderService, IReadOnlyList, List, Vector2 (+2 more)
+Nodes (9): IShipAbilityTargeting, IsWaitingForTarget, IReadOnlyList, Vector3, IUnitOrderService, IReadOnlyList, List, Vector3 (+1 more)
 
 ### Community 45 - "MapGenerationSettings"
-Cohesion: 0.10
-Nodes (19): DictionaryWrapper, GameObject, MapGenerationSettings, ExtraLaneChance, HomeMiningAngle, LaneBend, PlanetBorderInset, StationEdgeDistance (+11 more)
+Cohesion: 0.09
+Nodes (20): DictionaryWrapper, GameObject, MapGenerationSettings, ExtraLaneChance, HomeMiningAngle, LaneBend, PlanetBorderInset, StationEdgeDistance (+12 more)
 
 ### Community 46 - "ShipData"
-Cohesion: 0.06
-Nodes (34): HardPointHealth, IReadOnlyList, List, ShipClass, IShipData, DestroyDelay, MinMoveCoefficient, Wreck (+26 more)
+Cohesion: 0.07
+Nodes (30): HardPointHealth, IReadOnlyList, List, ShipClass, ShipData, Abilities, BodyRotationMaxAngle, Delay (+22 more)
 
 ### Community 47 - "FakeTarget"
 Cohesion: 0.10
 Nodes (26): Action, CombatAttackCoordinator, HardPointType, StringBuilder, Test, TestCase, Transform, Vector3 (+18 more)
 
-### Community 48 - "TeamId"
-Cohesion: 0.14
-Nodes (14): HashSet, IReadOnlyList, BattleVictoryModel, PlayerBattleState, HasPendingReinforcement, IsBaseAlive, Player, ShipCount (+6 more)
+### Community 48 - "BattleVictoryModel"
+Cohesion: 0.20
+Nodes (11): HashSet, IReadOnlyList, BattleVictoryModel, PlayerBattleState, HasPendingReinforcement, IsBaseAlive, Player, ShipCount (+3 more)
 
-### Community 49 - "ILocalPlayer"
-Cohesion: 0.05
-Nodes (36): Canvas, Image, Inject, Vector3, SquadronIconComponent, Inject, Inject, MiningFacilityInstaller (+28 more)
+### Community 49 - "TeamColorPalette"
+Cohesion: 0.13
+Nodes (14): TeamColorEntry, Color, Name, Vector4, TeamColorPalette, Count, IEnemyService, IPlayerColors (+6 more)
 
 ### Community 50 - "TooltipContent"
-Cohesion: 0.04
-Nodes (44): List, Action, INotifier, EndGamePresenter, List, List, List, SpaceStationTooltipFacade (+36 more)
+Cohesion: 0.05
+Nodes (43): List, ShipType, UnitRequest, List, List, List, SquadronType, SquadronTooltipFacade (+35 more)
 
-### Community 51 - "MiningFacility"
+### Community 51 - "ConcentrateFireAbility"
 Cohesion: 0.12
-Nodes (16): IReadOnlyList, EntityComponentLifecycle, GameObjectContext, Inject, List, Renderer, Vector3, MiningFacility (+8 more)
+Nodes (14): List, ConcentrateFireAbility, IInstantiator, IShipAbility, ConcentrateFireSettings, AllyStatModifier, CommandRadius, TargetDamageMultiplier (+6 more)
 
 ### Community 52 - ".Generate"
-Cohesion: 0.11
-Nodes (20): Dictionary, IReadOnlyList, List, MapGenerationSettings, MapLayout, MapSize, Random, SiteSpot (+12 more)
+Cohesion: 0.14
+Nodes (16): Dictionary, IReadOnlyList, List, MapGenerationSettings, MapLayout, MapSize, Random, SiteSpot (+8 more)
 
 ### Community 53 - "HealthComponent"
-Cohesion: 0.05
-Nodes (34): Bounds, HardPointType, Inject, IReadOnlyList, ITimer, List, ShipClass, Transform (+26 more)
+Cohesion: 0.06
+Nodes (29): Bounds, HardPointType, Inject, IReadOnlyList, ITimer, List, ShipClass, Transform (+21 more)
 
 ### Community 54 - "SquadronPilot"
-Cohesion: 0.17
-Nodes (13): Vector3, ISquadronFlightComponent, Centroid, Count, Data, Heading, Transform, Vector3 (+5 more)
+Cohesion: 0.11
+Nodes (17): Vector3, ISquadronFlightComponent, Centroid, Count, Data, Heading, Transform, Vector3 (+9 more)
 
 ### Community 55 - "AudioSettingsApplier"
 Cohesion: 0.11
@@ -649,88 +667,88 @@ Cohesion: 0.06
 Nodes (31): Vector3, IStructureSpawnClearance, Radius, ShipType, Vector3, ReinforcementSpawnRule, GameObject, IReadOnlyList (+23 more)
 
 ### Community 57 - "SquadronType"
-Cohesion: 0.07
-Nodes (29): Dictionary, FactionData, ShipType, UnitRequest, ReinforcementModel, CapacityLeft, CurrentUnitCapacity, IsTrySpawning (+21 more)
-
-### Community 58 - "PlayerSlot"
-Cohesion: 0.06
-Nodes (27): Inject, Inject, MeshRenderer, TeamColorView, IReadOnlyList, IPlayerRoster, Players, IReadOnlyList (+19 more)
-
-### Community 59 - "IonPulseAbility"
 Cohesion: 0.05
-Nodes (35): Vector3, IIonPulseView, LineRenderer, Vector3, IonPulseView, IAbilityFacingFacade, IsAbilityFacing, HashSet (+27 more)
+Nodes (36): Dictionary, FactionData, ShipType, UnitRequest, IReinforcementModelObserver, CapacityLeft, CurrentUnitCapacity, IsTrySpawning (+28 more)
 
-### Community 60 - "IPlayerRelations"
+### Community 58 - "PlayerId"
+Cohesion: 0.04
+Nodes (41): Inject, Bounds, IPlayerRelations, IReadOnlyList, IPlayerRoster, Players, LocalPlayer, Id (+33 more)
+
+### Community 59 - "IShipAbilityFacade"
+Cohesion: 0.02
+Nodes (70): HardPointType, AttackDataFactory, Vector3, IIonPulseView, LineRenderer, Vector3, IonPulseView, IAbilityFacingFacade (+62 more)
+
+### Community 60 - "IVisionService"
+Cohesion: 0.13
+Nodes (16): Transform, FogVisionSource, IReadOnlyList, Vector3, IVisionService, Sources, IReadOnlyList, Vector3 (+8 more)
+
+### Community 61 - "SerializedObject"
+Cohesion: 0.21
+Nodes (9): Button, Canvas, CanvasGroup, CanvasScaler, GameObject, Test, UiCanvasArchitectureTests, GraphicRaycaster (+1 more)
+
+### Community 62 - ".ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds"
 Cohesion: 0.07
-Nodes (32): IPlayerRelations, Vector3, OwnedCircle, Owner, Radius, Transform, IReadOnlyList, List (+24 more)
-
-### Community 61 - "BaseUi"
-Cohesion: 0.07
-Nodes (25): CanvasGroup, BaseUi, IsVisible, Model, UiService, CanvasGroup, GameObject, MonoBehaviour (+17 more)
-
-### Community 62 - "EnemyFactionController"
-Cohesion: 0.05
-Nodes (35): Action, CustomCoroutine, Dictionary, ShipType, TimerPoolService, UnitRequest, Vector3, EnemyFactionController (+27 more)
+Nodes (22): IEnemyReinforcementObserver, HasPendingReinforcement, Vector3, IEnemyStructurePlacementService, Dictionary, PlayerRegistry, BindingFlags, CustomCoroutine (+14 more)
 
 ### Community 63 - "HangarComponent"
-Cohesion: 0.12
-Nodes (13): Action, Inject, LazyInject, List, SquadronType, Transform, HangarComponent, SquadronType (+5 more)
+Cohesion: 0.15
+Nodes (10): Action, Inject, LazyInject, List, SquadronType, Transform, HangarComponent, SquadronType (+2 more)
 
-### Community 64 - "ICaptureSitesSystem"
-Cohesion: 0.13
-Nodes (11): IReadOnlyList, Vector3, ICaptureSitesSystem, Sites, ITimer, EnemySiteConstructionController, IReadOnlyList, List (+3 more)
+### Community 64 - "EnemySquadronCommander"
+Cohesion: 0.10
+Nodes (16): Vector3, ISquadron, WorldPosition, IReadOnlyList, Vector3, ICaptureSitesSystem, Sites, ITimer (+8 more)
 
-### Community 65 - ".AddGroup"
-Cohesion: 0.13
-Nodes (14): ShipType, Sprite, IShipIconProvider, DictionaryWrapper, ShipType, Sprite, ShipUiData, Action (+6 more)
+### Community 65 - "SpawnBlockerService"
+Cohesion: 0.08
+Nodes (25): Transform, SpawnBlockerSource, Vector3, OwnedCircle, Owner, Radius, Transform, IReadOnlyList (+17 more)
 
 ### Community 66 - "UnitSpawnView"
-Cohesion: 0.06
-Nodes (28): Collider, Color, List, MaterialPropertyBlock, MeshRenderer, Quaternion, Vector3, UnitSpawnView (+20 more)
+Cohesion: 0.05
+Nodes (34): Collider, Color, List, MaterialPropertyBlock, MeshRenderer, Quaternion, Vector3, UnitSpawnView (+26 more)
 
 ### Community 67 - "CaptureSiteModel"
 Cohesion: 0.09
 Nodes (26): CaptureSiteModel, CanStartConstruction, CaptureProgress, CapturingPlayer, ConstructionProgress, FacilityType, IsCapturable, IsContested (+18 more)
 
-### Community 68 - "FactionUi"
-Cohesion: 0.04
-Nodes (34): IUnitRequestFactory, FactionData, SelectionType, IPlayerFactionModelObserver, FactionType, IsResoluteReserved, SelectionType, Dictionary (+26 more)
+### Community 68 - "SpaceStation"
+Cohesion: 0.06
+Nodes (25): Inject, IMonoComponent, MonoComponent, Id, Model, IReadOnlyList, EntityComponentLifecycle, IFactionLevelObserver (+17 more)
 
-### Community 69 - "EconomyService"
-Cohesion: 0.05
-Nodes (31): PureModel, EconomyData, IncomeDelay, StartMoneyAmount, EconomyModel, Money, ShipType, ShipUnitRequest (+23 more)
+### Community 69 - "IShipSpawnPoints"
+Cohesion: 0.29
+Nodes (6): ShipType, Vector3, IShipSpawnPoints, ShipType, Vector3, NoShipSpawnPoints
 
 ### Community 70 - "UiCancelRouter"
-Cohesion: 0.07
-Nodes (18): IUiCancelHandler, List, UiCancelRouter, ICancelInput, FakeCancelInput, SetUp, TearDown, Test (+10 more)
+Cohesion: 0.10
+Nodes (13): IUiCancelHandler, IUiCancelRouter, List, UiCancelRouter, ICancelInput, FakeCancelInput, SetUp, TearDown (+5 more)
 
 ### Community 71 - "EntityComponentData"
-Cohesion: 0.06
-Nodes (33): IRadarData, Delay, Range, IWeaponRangeData, WeaponRange, HardPointHealth, IReadOnlyList, List (+25 more)
+Cohesion: 0.05
+Nodes (37): HardPointHealth, IReadOnlyList, List, ShipClass, EntityComponentData, Delay, DestroyDelay, HardPointHealth (+29 more)
 
 ### Community 72 - "PipelineView"
-Cohesion: 0.13
-Nodes (12): Action, Button, Image, TextMeshProUGUI, TooltipTrigger, PipelineView, IsBusy, TooltipTrigger (+4 more)
+Cohesion: 0.07
+Nodes (26): UnitRequest, ProductionQueueSnapshot, Count, RemainingBuildTime, UnitRequest, Action, CanvasGroup, Dictionary (+18 more)
 
-### Community 73 - "ITickable"
-Cohesion: 0.08
-Nodes (21): Inject, ITimer, LineRenderer, Vector3, MissileInterceptorHardPoint, DamageType, Vector3, IncomingMissile (+13 more)
+### Community 73 - "IncomingMissile"
+Cohesion: 0.12
+Nodes (16): Inject, ITimer, LineRenderer, Vector3, MissileInterceptorHardPoint, DamageType, IncomingMissile, DamageType (+8 more)
 
 ### Community 74 - "FakeOrderService"
 Cohesion: 0.20
 Nodes (12): IReadOnlyList, List, Vector3, FakeOrderService, Calls, OrderCall, Action, Offsets (+4 more)
 
-### Community 75 - "IUiService"
-Cohesion: 0.12
-Nodes (14): Transform, UiFactory, Canvas, Inject, Transform, IUiService, DefaultCanvasTransform, DynamicCanvasTransform (+6 more)
+### Community 75 - "BaseUi"
+Cohesion: 0.07
+Nodes (23): CanvasGroup, BaseUi, IsVisible, Model, Transform, UiFactory, Canvas, Inject (+15 more)
 
 ### Community 76 - "PauseMenuRouteController"
 Cohesion: 0.09
 Nodes (13): List, PauseMenuRouteController, CanOpen, UserNotifierState, ExitGame, InGame, InMenu, IPauseMenuRouteNavigation (+5 more)
 
-### Community 77 - "UnitOrderService"
-Cohesion: 0.09
-Nodes (29): Func, IReadOnlyList, List, Vector3, UnitOrderService, UnitOrderSettings, GuardChaseDistance, GuardFollowRadius (+21 more)
+### Community 77 - "FakeCommand"
+Cohesion: 0.03
+Nodes (56): IEntityFacade, IShipAbilityCastFacade, UnitOrderSettings, GuardChaseDistance, GuardFollowRadius, HuntRetargetInterval, StationClearance, Bounds (+48 more)
 
 ### Community 78 - "MapSizeSettings"
 Cohesion: 0.11
@@ -741,80 +759,84 @@ Cohesion: 0.19
 Nodes (6): AudioClip, AudioSource, AudioService, AudioClip, AudioSource, IAudioService
 
 ### Community 80 - "FakeHealth"
-Cohesion: 0.09
-Nodes (21): HardPointType, ShipClass, Transform, FakeHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits (+13 more)
+Cohesion: 0.12
+Nodes (16): HardPointType, ShipClass, FakeHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits, Hull (+8 more)
 
-### Community 81 - "SkirmishOrchestrator"
-Cohesion: 0.05
-Nodes (32): IGameCommand, GameSpeed, Fast, Normal, Awaitable, CancellationToken, IBattleStartupSequence, Awaitable (+24 more)
+### Community 81 - "SkirmishOrchestratorTests"
+Cohesion: 0.17
+Nodes (8): Test, TestCase, SkirmishOrchestratorTests, StateRecorder, Value, GameCommandStub, SpeedRecorder, StateRecorder
 
 ### Community 82 - "SkirmishModel"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (18): IReadOnlyList, MapSize, PlanetType, SkirmishModel, ActivePlayerCount, ActiveTeamCount, CanStart, MapSize (+10 more)
 
 ### Community 83 - "ShipSfxData"
-Cohesion: 0.09
-Nodes (23): DictionaryWrapper, FloatRange, ShipSfxData, Acceleration, Alarm, AlarmDelay, EdgeGain, Engine (+15 more)
+Cohesion: 0.07
+Nodes (27): Inject, ShipAbilityAudioProfile, AbilityId, End, Execution, Restore, Start, DictionaryWrapper (+19 more)
 
 ### Community 84 - "HardPointMarkerData"
-Cohesion: 0.15
+Cohesion: 0.17
 Nodes (10): Sprite, Vector2, HardPointMarkerData, HealthPercentage, Icon, IsDestroyed, IsHovered, IsTargeted (+2 more)
 
 ### Community 85 - "FakeCamera"
-Cohesion: 0.09
-Nodes (19): IReadOnlyList, Quaternion, RaycastHit, Transform, Vector2, Vector3, FakeCamera, CameraForward (+11 more)
+Cohesion: 0.10
+Nodes (16): IReadOnlyList, Quaternion, RaycastHit, Transform, Vector2, Vector3, FakeCamera, CameraForward (+8 more)
 
-### Community 86 - "IEntityTransformFacade"
-Cohesion: 0.03
-Nodes (64): IAttackDataFactory, IComponent, IBaseState, IsComplete, IRadarComponent, Enemies, Vector3, IShipMovement (+56 more)
+### Community 86 - "IShipMovement"
+Cohesion: 0.05
+Nodes (40): IAttackDataFactory, IBaseState, IsComplete, Vector3, IShipMovement, CurrentPosition, IsMoving, NavigationRadius (+32 more)
 
 ### Community 87 - "SelectionContext"
-Cohesion: 0.08
-Nodes (26): SelectionType, IEntitySelectionFacade, SelectionType, IReadOnlyList, List, SelectionType, SelectionContext, Count (+18 more)
+Cohesion: 0.07
+Nodes (27): SelectionType, IEntitySelectionFacade, SelectionType, IReadOnlyList, List, SelectionType, SelectionContext, Count (+19 more)
 
-### Community 88 - "EnemyProductionSnapshot"
-Cohesion: 0.06
-Nodes (32): EnemyProductionCategory, Defense, Level, Mining, None, Ship, EnemyProductionSnapshot, CanBuildDefense (+24 more)
+### Community 88 - "EnemyStrategicState"
+Cohesion: 0.18
+Nodes (11): EnemyStrategicState, AssaultBase, CaptureZone, DefendBase, Hold, HuntFleet, RebuildFleet, RetreatValue (+3 more)
 
 ### Community 90 - "IonStunView"
 Cohesion: 0.13
 Nodes (12): IIonStunView, Bounds, Color, IEnumerable, ITimer, LineRenderer, MaterialPropertyBlock, MeshRenderer (+4 more)
 
-### Community 91 - ".InstallBindings"
-Cohesion: 0.03
-Nodes (49): Transform, FogVisionSource, Transform, SpawnBlockerSource, IReadOnlyList, BattleMap, Layout, Obstacles (+41 more)
+### Community 91 - "IInitializable"
+Cohesion: 0.02
+Nodes (84): Service, Id, UiController, IsFocused, UiService, BattleState, Ended, Loading (+76 more)
 
 ### Community 92 - "View"
 Cohesion: 0.18
 Nodes (8): View, ModelDependency, Model, View, View, Model, ModelDependencies, ModelObserver
 
 ### Community 93 - "ISuperWeaponOrigin"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (9): Inject, Transform, Vector3, PlanetSuperWeaponOrigin, Vector3, ISuperWeaponOrigin, ISuperWeaponOriginRegistry, Vector3 (+1 more)
 
-### Community 94 - "StaticViewInstaller"
+### Community 94 - "EntityInstaller"
 Cohesion: 0.27
-Nodes (5): Transform, MonoComponentInstaller, View, StaticViewInstaller, AssetService
+Nodes (6): EntityInstaller, Transform, EntityTransformFacade, IUniqueIdGenerator, UniqueIdGenerator, Component
 
-### Community 95 - "MapObstacle"
-Cohesion: 0.15
-Nodes (12): Bounds, Collider, MapObstacle, Contact, WorldBounds, StationObstacle, Contact, Bounds (+4 more)
+### Community 95 - "ShipAbilitySettings"
+Cohesion: 0.12
+Nodes (13): AssaultAbility, IInstantiator, IShipAbility, AssaultSettings, StatModifier, CloakSettings, DamageType, IInstantiator (+5 more)
+
+### Community 96 - ".PreferredShipAtLimit_SelectsAnotherAvailableShip"
+Cohesion: 0.11
+Nodes (17): UnitRequestFactory, BindingFlags, ShipType, UnitRequest, Vector3, EconomyModelStub, Money, EnemyProductionStrategyTests (+9 more)
 
 ### Community 97 - "MiniMapUi"
-Cohesion: 0.05
-Nodes (39): Vector2, VertexHelper, CameraFootprintView, Vector3, Image, RectTransform, Sprite, TooltipTrigger (+31 more)
+Cohesion: 0.12
+Nodes (15): Dictionary, Image, List, PointerEventData, RawImage, Rect, RectTransform, Transform (+7 more)
 
 ### Community 98 - "TooltipHoverView"
 Cohesion: 0.09
-Nodes (12): List, TooltipHoverView, PointerEventData, RectTransform, TooltipTrigger, GameObject, SetUp, TearDown (+4 more)
+Nodes (14): ITooltipHoverView, TooltipHover, List, TooltipHoverView, PointerEventData, RectTransform, TooltipTrigger, GameObject (+6 more)
 
-### Community 99 - ".InstallBindings"
-Cohesion: 0.19
-Nodes (11): Action, Func, IEnumerator, CoroutineService, Id, ICoroutineService, AudioMixer, TimerPoolService (+3 more)
+### Community 99 - "CoroutineService"
+Cohesion: 0.25
+Nodes (8): Action, Func, IEnumerator, CoroutineService, Id, ICoroutineService, Coroutine, EmpireAtWar.Services.CoroutineService
 
 ### Community 100 - "AudioShipComponent"
-Cohesion: 0.12
-Nodes (15): Inject, IReadOnlyList, Transform, Vector3, AudioShipComponent, Id, IShipEngineAudioObserver, Phase (+7 more)
+Cohesion: 0.10
+Nodes (15): Inject, IReadOnlyList, Transform, Vector3, AudioShipComponent, Id, Transform, IShipEngineAudioObserver (+7 more)
 
 ### Community 101 - "BattlePerformanceCapture"
 Cohesion: 0.18
@@ -822,135 +844,139 @@ Nodes (5): DateTime, BattlePerformanceCapture, IsCapturing, CombatWorkload, Prof
 
 ### Community 102 - "ShipMoveComponent"
 Cohesion: 0.05
-Nodes (29): Ease, Inject, LineRenderer, List, ShipType, Vector3, ShipMoveComponent, CurrentPosition (+21 more)
+Nodes (31): IShipMoveComponent, NavigationSpeed, Ease, Inject, LineRenderer, List, ShipType, Vector3 (+23 more)
 
 ### Community 103 - "SquadronHealthModel"
-Cohesion: 0.07
-Nodes (26): ShipClass, ISquadronHealthData, LaserShieldDamageMultiplier, MemberHull, MemberShields, ShieldRegenerateDelay, ShieldRegenerateValue, ShipClass (+18 more)
+Cohesion: 0.09
+Nodes (22): IReadOnlyList, ShipClass, SquadronHealthModel, AliveCount, HasLiveHardPoints, HasShields, HasUnits, Hull (+14 more)
 
 ### Community 104 - "HardPointModel"
 Cohesion: 0.05
-Nodes (32): HardPointType, HardPointModel, Generation, HardPointType, Health, HealthPercentage, HullDamageMultiplier, Id (+24 more)
+Nodes (33): HardPointType, HardPointModel, Generation, HardPointType, Health, HealthPercentage, HullDamageMultiplier, Id (+25 more)
 
-### Community 105 - "ShipAbilityButtonUi"
+### Community 105 - "ShipAbilitySlot"
+Cohesion: 0.06
+Nodes (30): ShipAbilitySlot, CanActivate, CanPress, Definition, Id, IsAvailable, Owner, Progress01 (+22 more)
+
+### Community 106 - "CameraInputBindingsTests"
 Cohesion: 0.13
-Nodes (11): Action, Button, GameObject, Image, IReadOnlyList, Sprite, TMP_Text, TooltipTrigger (+3 more)
+Nodes (10): Vector2, VelocitySmoothing, InputAction, InputActionAsset, SetUp, Test, CameraInputBindingsTests, Test (+2 more)
 
-### Community 106 - ".MoveTowardsTarget"
-Cohesion: 0.23
-Nodes (5): Vector2, VelocitySmoothing, Test, VelocitySmoothingTests, EmpireAtWar.Tests.Camera
-
-### Community 107 - "FadeService"
-Cohesion: 0.26
-Nodes (6): Awaitable, CancellationToken, IFadeUi, Awaitable, CancellationToken, FadeService
+### Community 107 - ".RunAsync"
+Cohesion: 0.19
+Nodes (9): Awaitable, CancellationToken, IFadeUi, Awaitable, CancellationToken, FadeService, Awaitable, CancellationToken (+1 more)
 
 ### Community 108 - "FogOfWarSystem"
-Cohesion: 0.15
-Nodes (10): Inject, Material, MeshFilter, Renderer, Texture2D, Vector2, Vector2Int, Vector3 (+2 more)
+Cohesion: 0.09
+Nodes (18): Inject, Material, MeshFilter, Renderer, Texture2D, Vector2, Vector2Int, Vector3 (+10 more)
 
-### Community 109 - "PointerActions"
-Cohesion: 0.18
-Nodes (7): InputActionMap, PointerActions, @ClickCount, enabled, @Position, @Primary, IPointerActions
+### Community 109 - "UiType"
+Cohesion: 0.06
+Nodes (36): Transform, GameObjectContext, Inject, UiInstaller, UiType, CoreGame, Economy, Faction (+28 more)
 
-### Community 110 - "EnemyTaskForceExecutor"
-Cohesion: 0.21
-Nodes (14): IReadOnlyDictionary, EnemyStrategicContext, CaptureTarget, EnemyBaseTarget, EnemyFleetTarget, OwnBase, Receivers, Ships (+6 more)
+### Community 110 - "EmpireAtWar.Services.ShipAbilities"
+Cohesion: 0.11
+Nodes (7): EmpireAtWar.Entities.Squadrons, EmpireAtWar.Services.ShipAbilities, EmpireAtWar.Presenters.ShipUi, EmpireAtWar.Models.ShipUi, EmpireAtWar.Components.Hangar, EmpireAtWar.Controllers.ShipUi, EmpireAtWar.Views
 
 ### Community 111 - "SpaceStationData"
 Cohesion: 0.07
-Nodes (26): SquadronType, HangarBay, MaxActive, Reserve, SquadronType, IReadOnlyList, IHangarData, HangarBays (+18 more)
+Nodes (27): SquadronType, HangarBay, MaxActive, Reserve, SquadronType, IReadOnlyList, IHangarData, HangarBays (+19 more)
 
-### Community 112 - "DefendPlatform"
-Cohesion: 0.11
-Nodes (17): IHealthComponent, Destroyed, HealthModelObserver, GameObjectContext, Inject, List, Renderer, Vector3 (+9 more)
+### Community 112 - "CaptureSitesSystem"
+Cohesion: 0.09
+Nodes (15): Inject, INotifier, IReadOnlyList, List, Predicate, Vector2, Vector3, CaptureSitesSystem (+7 more)
 
 ### Community 113 - "BattlePerformanceCaptureMetadata"
 Cohesion: 0.11
 Nodes (18): BattlePerformanceCaptureMetadata, BuildGuid, DueBatchSize, DueThreshold, GraphicsDevice, Processor, Quality, Resolution (+10 more)
 
-### Community 114 - "MapLayout"
-Cohesion: 0.10
-Nodes (19): IReadOnlyDictionary, IReadOnlyList, Vector3, MapLayout, Fields, Lanes, PlanetPosition, Sites (+11 more)
+### Community 114 - "MapLayoutGeneratorTests"
+Cohesion: 0.14
+Nodes (9): MapSize, Large, Medium, Small, Test, TestCase, Vector2, Vector3 (+1 more)
 
 ### Community 115 - "RadarComponent"
-Cohesion: 0.05
-Nodes (36): Collider, HashSet, Inject, ITimer, List, ObservableList, Transform, Vector3 (+28 more)
+Cohesion: 0.04
+Nodes (42): ObservableList, IRadarModelObserver, Delay, Enemies, Range, Collider, HashSet, Inject (+34 more)
 
-### Community 116 - "ISettingsModelObserver"
-Cohesion: 0.09
-Nodes (20): IReadOnlyList, ISettingsModelObserver, Bindings, EdgeScrolling, FrameRateLimit, InvertZoom, IsDirty, MasterVolume (+12 more)
+### Community 116 - "DisplaySettingsData"
+Cohesion: 0.06
+Nodes (16): CameraSettingsData, EdgeScrolling, InvertZoom, PanSpeedMultiplier, ZoomSpeedMultiplier, DisplaySettingsData, Height, UsesDesktopResolution (+8 more)
 
 ### Community 117 - "ShipAbilityId"
 Cohesion: 0.06
-Nodes (33): ShipType, ShipUiModel, HasShips, PendingAbilityId, SelectedShipType, SelectedSquadronType, ShipAbilityId, ArquitensBoostWeaponPower (+25 more)
+Nodes (31): DictionaryWrapper, ShipAbilityCatalog, ShipAbilityId, ArquitensBoostWeaponPower, Assault, BoostEnginePower, BoostShieldPower, BoostWeaponPower (+23 more)
 
 ### Community 118 - "FogVisibilityComponent"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (9): IEnumerable, Inject, List, Renderer, FogVisibilityComponent, IsHiddenByFog, IIonStunViewSource, IFogVisibilityFacade (+1 more)
 
 ### Community 119 - "EmpireAtWar.Services.Tooltip"
-Cohesion: 0.06
-Nodes (23): TooltipBindings, EmpireAtWar.Components.Ui.Tooltip, EmpireAtWar.Entities.UnitActions.Controller, EmpireAtWar.Ui.Base, EmpireAtWar.Entities.MainMenu.Main, EmpireAtWar.Entities.Fade, EmpireAtWar.Services.Tooltip, EmpireAtWar.Entities.SuperWeapons.Controller (+15 more)
+Cohesion: 0.05
+Nodes (25): EmpireAtWar.Entities.CinematicCamera.Controller, EmpireAtWar.Components.Ui.Tooltip, EmpireAtWar.Entities.UnitActions.Controller, EmpireAtWar.Ui.Base, EmpireAtWar.Entities.MainMenu.Main, EmpireAtWar.Entities.Fade, EmpireAtWar.Services.Tooltip, EmpireAtWar.Presenters.Reinforcement (+17 more)
 
 ### Community 120 - "SelectionService"
-Cohesion: 0.12
-Nodes (12): ISelectionQuery, SelectionScope, Local, Other, IObserver, IReadOnlyList, List, Vector2 (+4 more)
+Cohesion: 0.14
+Nodes (11): SelectionScope, Local, Other, IObserver, IReadOnlyList, List, Vector2, SelectionService (+3 more)
 
 ### Community 121 - "Ship"
-Cohesion: 0.09
-Nodes (24): IShipMoveComponent, NavigationSpeed, IWeaponFireEvents, GameObjectContext, Inject, IReadOnlyList, IShipService, LazyInject (+16 more)
+Cohesion: 0.05
+Nodes (39): IComponent, ObservableList, IRadarComponent, Enemies, IReadOnlyList, IAudioShipComponent, IWeaponFireEvents, GameObjectContext (+31 more)
 
-### Community 122 - "MiningFacilityData"
-Cohesion: 0.18
-Nodes (9): IMiningFacilityModelObserver, BaseIncome, MiningFacilityData, ComponentData, Income, Wreck, MiningFacilityModel, BaseIncome (+1 more)
+### Community 122 - "CombatModifiers"
+Cohesion: 0.09
+Nodes (14): List, CombatModifiers, DamageMultiplier, DamageTakenMultiplier, FireDelayMultiplier, HullMultiplier, IsCloaked, IsIonDisabled (+6 more)
 
 ### Community 123 - "HardPointAdapter"
 Cohesion: 0.07
 Nodes (25): HardPointType, Transform, Vector3, WeaponType, HardPointAdapter, Generation, HardPointType, Health (+17 more)
 
-### Community 124 - "UiType"
-Cohesion: 0.07
-Nodes (28): GameObject, Transform, GameObjectContext, Inject, UiInstaller, UiType, CoreGame, Economy (+20 more)
+### Community 124 - "FactionUi"
+Cohesion: 0.05
+Nodes (29): FactionData, SelectionType, IPlayerFactionModelObserver, FactionType, IsResoluteReserved, SelectionType, Dictionary, List (+21 more)
 
 ### Community 125 - "SkirmishSlotSetup"
 Cohesion: 0.10
 Nodes (15): SkirmishSlotOccupant, AiEasy, AiHard, AiMedium, AiUltraHard, Closed, Human, Color (+7 more)
 
-### Community 126 - "FakeShip"
-Cohesion: 0.16
-Nodes (17): EnemyStrategicDecision, CommittedShipCount, Reason, State, Test, EnemyUnitCommanderTests, FakeEntity, HealthModel (+9 more)
+### Community 126 - "EnemyTaskForceExecutor"
+Cohesion: 0.10
+Nodes (31): EnemyStrategicDecision, CommittedShipCount, Reason, State, IReadOnlyDictionary, EnemyStrategicContext, CaptureTarget, EnemyBaseTarget (+23 more)
 
 ### Community 127 - "Shield"
-Cohesion: 0.16
-Nodes (9): Vector3, IShieldView, Bounds, Color, MaterialPropertyBlock, MeshRenderer, Vector3, Vector4 (+1 more)
+Cohesion: 0.09
+Nodes (14): Vector3, Vector3, IShieldTarget, Vector3, IShieldView, Vector3, ShieldComponent, Bounds (+6 more)
 
 ### Community 128 - "WreckCutPlan"
 Cohesion: 0.19
 Nodes (9): IReadOnlyList, List, Random, WreckCutPlan, Cuts, PartCount, ArgumentOutOfRangeException, Test (+1 more)
 
-### Community 129 - "TestCommand"
-Cohesion: 0.04
-Nodes (43): Vector3, IAttackFacade, NavigationRadius, WorldPosition, IEntityFacade, Transform, CompositeBeamFacade, Muzzle (+35 more)
+### Community 129 - "IHealthModelObserver"
+Cohesion: 0.06
+Nodes (33): ShipClass, IHealthModelObserver, HardPointModels, HasLiveHardPoints, HasShields, HasUnits, Hull, HullPercentage (+25 more)
 
-### Community 130 - "BattleStartupSequence"
-Cohesion: 0.18
-Nodes (9): Awaitable, CancellationToken, BattleStartupSequence, Awaitable, CancellationToken, IBattleMapLoader, Awaitable, CancellationToken (+1 more)
+### Community 130 - "MapLayout"
+Cohesion: 0.09
+Nodes (21): IReadOnlyList, Vector3, MapLane, Points, IReadOnlyDictionary, IReadOnlyList, Vector3, MapLayout (+13 more)
 
 ### Community 131 - "UnitTypeId"
 Cohesion: 0.13
-Nodes (12): UnitTypeId, ShipType, SquadronType, Category, Ship, Squadron, UnitTypeId, IsShip (+4 more)
+Nodes (13): UnitTypeId, ShipType, SquadronType, Category, Ship, Squadron, UnitTypeId, IsShip (+5 more)
 
-### Community 132 - "EnemyProductionDecisionModelTests"
-Cohesion: 0.24
-Nodes (4): EnemyProductionDecisionModel, Test, TestCase, EnemyProductionDecisionModelTests
+### Community 132 - "EnemyProductionSnapshot"
+Cohesion: 0.08
+Nodes (28): EnemyProductionCategory, Defense, Level, Mining, None, Ship, EnemyProductionDecisionModel, EnemyProductionSnapshot (+20 more)
 
 ### Community 133 - "IModelObserver"
-Cohesion: 0.10
-Nodes (17): IModel, IModelObserver, BaseView, ViewComponents, IView, ViewComponents, ViewComponent, ModelObserver (+9 more)
+Cohesion: 0.13
+Nodes (13): IModelObserver, BaseView, ViewComponents, IView, ViewComponents, ViewComponent, ModelObserver, View (+5 more)
 
 ### Community 134 - "BattlePerformanceCaptureReport"
-Cohesion: 0.28
+Cohesion: 0.30
 Nodes (3): DateTime, StringBuilder, BattlePerformanceCaptureReport
+
+### Community 135 - "CombatStatModifier"
+Cohesion: 0.13
+Nodes (12): CombatStatModifier, DamageMultiplier, DamageTakenMultiplier, FireDelayMultiplier, ShieldRegenMultiplier, SpeedMultiplier, ShipClass, ResearchCombatModifier (+4 more)
 
 ### Community 136 - "AttackDueJob"
 Cohesion: 0.13
@@ -961,32 +987,32 @@ Cohesion: 0.06
 Nodes (22): INotifier, SuperWeaponData, SuperWeaponModel, SuperWeaponState, SuperWeaponTargetingModel, SuperWeaponType, SuperWeaponPresenter, SuperWeaponTargetingModel (+14 more)
 
 ### Community 138 - "WeaponProfile"
+Cohesion: 0.07
+Nodes (33): Vector3, WeaponProfile, Color, Damage, DamageType, DisplayName, Interceptable, ProjectileSpeed (+25 more)
+
+### Community 139 - "IonShotSettings"
+Cohesion: 0.29
+Nodes (5): IInstantiator, IShipAbility, IonShotSettings, DisableDuration, Projectile
+
+### Community 140 - "WeaponHardPoint"
 Cohesion: 0.05
-Nodes (36): Vector3, WeaponProfile, Color, Damage, DamageType, DisplayName, Interceptable, ProjectileSpeed (+28 more)
-
-### Community 139 - "BattleResult"
-Cohesion: 0.15
-Nodes (12): IReadOnlyList, PlanetType, BattleResult, EnemyFactions, EnemyShipCount, IsEnemyBaseAlive, IsPlayerBaseAlive, Outcome (+4 more)
-
-### Community 140 - "TooltipSettings"
-Cohesion: 0.18
-Nodes (9): Vector2, TooltipSettings, CursorOffset, ScreenEdgePadding, Timing, Inject, TooltipTiming, RefreshInterval (+1 more)
+Nodes (26): CombatAttackCoordinator, FloatRange, ITimer, ShipClass, WeaponType, WeaponHardPoint, DelayBetweenShots, Destroyed (+18 more)
 
 ### Community 141 - "SelectionComponent"
-Cohesion: 0.07
-Nodes (26): Canvas, Image, Vector3, ISelectionComponent, WorldPosition, ISelectionPositionProvider, WorldPosition, SelectionComponent (+18 more)
+Cohesion: 0.05
+Nodes (31): Canvas, Image, Inject, Vector3, ISelectionComponent, WorldPosition, ISelectionPositionProvider, WorldPosition (+23 more)
 
-### Community 142 - "MusicService"
-Cohesion: 0.19
-Nodes (9): IMusicService, AudioClip, List, MusicAudioData, AudioClip, AudioSource, List, Random (+1 more)
+### Community 142 - "AudioDialogShipComponent"
+Cohesion: 0.17
+Nodes (6): Vector3, AudioDialogShipComponent, Id, Vector3, IAudioDialogShipComponent, AudioClip
 
-### Community 143 - "HeroUiController"
-Cohesion: 0.24
-Nodes (3): INotifier, List, HeroUiController
-
-### Community 144 - "UnitOrderFeedbackUi"
+### Community 143 - "OwnerRelation"
 Cohesion: 0.15
-Nodes (7): IUnitOrderFeedbackPresenter, Image, RectTransform, Sequence, Vector2, UnitOrderFeedbackUi, EmpireAtWar.Entities.UnitOrderFeedback
+Nodes (10): CaptureSiteState, Constructing, Neutral, Operational, Owned, OwnerRelation, Ally, Enemy (+2 more)
+
+### Community 144 - "UnitOrderFeedbackUiController"
+Cohesion: 0.16
+Nodes (4): Vector3, UnitOrderFeedbackUiController, Vector2, IUnitOrderFeedbackUi
 
 ### Community 145 - "AddressableAssetService"
 Cohesion: 0.20
@@ -997,64 +1023,64 @@ Cohesion: 0.12
 Nodes (8): FpsModel, FramesPerSecond, TextMeshProUGUI, FpsUi, FpsUiController, IFpsPresenter, IFpsUi, EmpireAtWar.Entities.Fps
 
 ### Community 147 - "ShipUi"
-Cohesion: 0.06
-Nodes (23): Transform, ShipType, IShipUiModelObserver, HasShips, PendingAbilityId, SelectedShipType, SelectedSquadronType, IReadOnlyList (+15 more)
+Cohesion: 0.08
+Nodes (17): Transform, ShipType, Sprite, IShipIconProvider, DictionaryWrapper, ShipType, Sprite, ShipUiData (+9 more)
 
 ### Community 148 - "ShipSfxService"
-Cohesion: 0.07
-Nodes (23): IAudioShipComponent, Transform, EntityTransformFacade, Transform, Transform, Vector3, IShipSfxService, AudioClip (+15 more)
+Cohesion: 0.21
+Nodes (9): Transform, AudioClip, AudioMixer, Dictionary, Queue, Vector3, ShipSfxService, VoiceSlot (+1 more)
 
 ### Community 149 - "ISelectionContext"
 Cohesion: 0.04
-Nodes (43): IReadOnlyList, SelectionType, ISelectionContext, Count, Entities, Entity, HasSelectable, Scope (+35 more)
+Nodes (44): IReadOnlyList, SelectionType, ISelectionContext, Count, Entities, Entity, HasSelectable, Scope (+36 more)
 
-### Community 150 - "ReinforcementZoneView"
-Cohesion: 0.05
-Nodes (34): OwnerRelation, Ally, Enemy, Neutral, Own, Vector3, ReinforcementZonePresenter, Center (+26 more)
+### Community 150 - "ReinforcementZonesSystem"
+Cohesion: 0.04
+Nodes (52): Vector3, IMapModelObserver, SizeRange, Vector3, ZoneSpot, Center, IsCapturable, Owner (+44 more)
 
 ### Community 151 - "FakeHealth"
-Cohesion: 0.05
-Nodes (38): List, EnemyShipAbilityController, IReadOnlyList, ShipClass, Test, Transform, Vector3, EnemyShipAbilityControllerTests (+30 more)
+Cohesion: 0.06
+Nodes (36): IReadOnlyList, ShipClass, Test, Transform, Vector3, EnemyShipAbilityControllerTests, FakeCommand, Entity (+28 more)
 
 ### Community 152 - "FakeShipMovement"
 Cohesion: 0.13
 Nodes (13): Vector3, NavigateState, IsComplete, InvalidOperationException, Test, Vector3, FakeShipMovement, CurrentPosition (+5 more)
 
-### Community 153 - "IMapModelObserver"
-Cohesion: 0.07
-Nodes (27): IMapModelObserver, SizeRange, LazyInject, List, Queue, Vector3, EnemyStructurePlacementService, BoxCollider (+19 more)
+### Community 153 - "EnemyStructurePlacementServiceTests"
+Cohesion: 0.06
+Nodes (27): LazyInject, List, Queue, Vector3, EnemyStructurePlacementService, BoxCollider, GameObject, IReadOnlyList (+19 more)
 
 ### Community 154 - "SettingsDraftEditor"
 Cohesion: 0.04
-Nodes (24): IReadOnlyList, SettingsChoice, Index, Interactable, Options, IReadOnlyList, Vector2Int, SettingsDraftEditor (+16 more)
+Nodes (21): IReadOnlyList, SettingsChoice, Index, Interactable, Options, IReadOnlyList, Vector2Int, SettingsDraftEditor (+13 more)
 
 ### Community 155 - "LivingHealth"
-Cohesion: 0.12
-Nodes (15): HardPointType, ShipClass, LivingHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits, Hull (+7 more)
+Cohesion: 0.07
+Nodes (24): HardPointType, IObserver, ShipClass, Transform, BattleStateNotifier, ObserverCount, HeroUiControllerLifecycleTests, LivingHealth (+16 more)
 
-### Community 156 - "ILayerService"
-Cohesion: 0.12
-Nodes (12): LayerKey, Dead, Obstacle, Unit, Dictionary, GameObject, LayerMask, Transform (+4 more)
+### Community 156 - "MarkType"
+Cohesion: 0.14
+Nodes (13): MarkType, Camera, CaptureSite, DefendPlatform, EnemyBase, EnemyMining, MiningFacility, PlayerBase (+5 more)
 
 ### Community 157 - "UnitActionId"
 Cohesion: 0.07
 Nodes (23): UnitActionId, Attack, AttackMove, Guard, Hunt, Move, Retreat, Stop (+15 more)
 
-### Community 158 - "CameraData"
-Cohesion: 0.11
-Nodes (17): FloatRange, CameraData, MaxZoomPadding, MinZoomPadding, PanAcceleration, PanDeceleration, PanSpeed, TweenSpeed (+9 more)
+### Community 158 - "SquadronIconComponent"
+Cohesion: 0.09
+Nodes (18): Vector2, ISquadronIconCommand, Canvas, Image, Inject, Vector2, Vector3, SquadronIconComponent (+10 more)
 
-### Community 159 - "AudioDialogShipComponent"
-Cohesion: 0.18
-Nodes (6): Vector3, AudioDialogShipComponent, Id, Vector3, IAudioDialogShipComponent, AudioClip
+### Community 159 - "ResearchStat"
+Cohesion: 0.15
+Nodes (10): ResearchEffect, Multiplier, ShipClasses, Stat, ResearchStat, DamageTaken, Income, ShieldCapacity (+2 more)
 
 ### Community 160 - "DamageType"
-Cohesion: 0.07
-Nodes (26): Dictionary, IReadOnlyDictionary, List, DamageMatrixData, MissSpread, DamageType, Beam, CompositeBeam (+18 more)
+Cohesion: 0.06
+Nodes (32): Dictionary, IReadOnlyDictionary, List, DamageMatrixData, MissSpread, DamageType, Beam, CompositeBeam (+24 more)
 
-### Community 161 - ".SceneTeardown_UnsubscribesBeforeEntityLateDispose"
-Cohesion: 0.20
-Nodes (9): Entity, TestCase, Transform, HeroUiControllerLifecycleTests, UiServiceStub, DefaultCanvasTransform, DynamicCanvasTransform, PopupCanvasTransform (+1 more)
+### Community 161 - "UnitOrderFeedbackUi"
+Cohesion: 0.28
+Nodes (5): Image, RectTransform, Sequence, Vector2, UnitOrderFeedbackUi
 
 ### Community 162 - "ShipType"
 Cohesion: 0.06
@@ -1065,8 +1091,8 @@ Cohesion: 0.27
 Nodes (7): float2, float3, List, NativeArray, NativeList, Vector3, ShipPathGrid
 
 ### Community 164 - "SquadronData"
-Cohesion: 0.07
-Nodes (30): ShipClass, SquadronData, Abilities, Acceleration, BankResponse, BreakDistance, CombatSpeed, CruiseSpeed (+22 more)
+Cohesion: 0.06
+Nodes (32): IWeaponRangeData, WeaponRange, ShipClass, SquadronData, Abilities, Acceleration, BankResponse, BreakDistance (+24 more)
 
 ### Community 165 - "FakeHealth"
 Cohesion: 0.12
@@ -1080,17 +1106,17 @@ Nodes (12): CinematicShot, Duration, Side, Type, Random, CinematicShotSequencer,
 Cohesion: 0.29
 Nodes (6): Color, Image, MPImage, RectTransform, Vector2, HardPointMarkerView
 
-### Community 168 - "ShipAbilitySlot"
-Cohesion: 0.09
-Nodes (25): ShipAbilitySlot, CanActivate, CanPress, Definition, Id, IsAvailable, Owner, Progress01 (+17 more)
+### Community 168 - "ShipAbilityService"
+Cohesion: 0.12
+Nodes (17): IPhasedShipAbility, IsComplete, SurvivesCasterDeath, IShipAbilityFactory, IReadOnlyList, List, ShipAbilityService, IsWaitingForTarget (+9 more)
 
 ### Community 169 - "PlayerFactionModel"
-Cohesion: 0.08
-Nodes (22): LevelUnitRequest, Dictionary, IReadOnlyList, Queue, Type, UnitRequest, PlayerFactionModel, CurrentLevel (+14 more)
+Cohesion: 0.12
+Nodes (19): LevelUnitRequest, Dictionary, IReadOnlyList, Queue, Type, UnitRequest, PlayerFactionModel, CurrentLevel (+11 more)
 
-### Community 170 - "ReinforcementUi"
-Cohesion: 0.03
-Nodes (46): IVisitor, IReinforcementPresenter, DictionaryWrapper, ShipType, SpawnShipUi, ReinforcementData, MaxUnitCapacity, ReinforcementButton (+38 more)
+### Community 170 - "SpawnShipUi"
+Cohesion: 0.13
+Nodes (12): Color, Image, PointerEventData, TextMeshProUGUI, TooltipTrigger, SpawnShipUi, Request, TooltipTrigger (+4 more)
 
 ### Community 171 - "BattleVictoryCondition"
 Cohesion: 0.13
@@ -1101,20 +1127,20 @@ Cohesion: 0.07
 Nodes (28): IReadOnlyList, AsteroidField, Rocks, Volumes, Vector3, FieldVolume, Center, Radius (+20 more)
 
 ### Community 173 - "HardPointOverlayModel"
-Cohesion: 0.24
+Cohesion: 0.21
 Nodes (6): HardPointOverlayModel, HoveredHardPointId, InspectedShip, TargetedHardPointId, TargetedShip, IHardPointHoverObserver
 
 ### Community 174 - "MapNode"
 Cohesion: 0.19
 Nodes (21): Vector3, MapNode, Center, HasPocket, Kind, Mirror, Owner, Radius (+13 more)
 
-### Community 175 - "MiniMapController"
-Cohesion: 0.11
-Nodes (11): CustomCoroutine, INotifier, TimerPoolService, MiniMapController, Texture, IMiniMapFogMask, Mask, Texture (+3 more)
+### Community 175 - ".Activate"
+Cohesion: 0.13
+Nodes (7): Vector3, Texture, Transform, Vector3, IMiniMapView, Texture, Vector3
 
-### Community 176 - "MainMenuOrchestrator"
-Cohesion: 0.22
-Nodes (4): IRoute, MainMenuOrchestrator, IPauseMenuRoute, EmpireAtWar.Entities.MainMenu
+### Community 176 - "MarkView"
+Cohesion: 0.13
+Nodes (12): Image, RectTransform, Sprite, TooltipTrigger, Transform, Vector2, MarkView, IconImage (+4 more)
 
 ### Community 177 - "CinematicCameraPresenter"
 Cohesion: 0.16
@@ -1129,120 +1155,120 @@ Cohesion: 0.12
 Nodes (17): ShipClass, Transform, FakeHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits, Hull (+9 more)
 
 ### Community 180 - "CinematicCameraData"
-Cohesion: 0.09
-Nodes (22): ShipClass, CinematicCameraData, ActivitySampleInterval, ClassProfiles, DamageMemorySeconds, DamageWeight, DestroyedTargetLinger, EngagementRadius (+14 more)
+Cohesion: 0.12
+Nodes (16): CinematicCameraData, ActivitySampleInterval, ClassProfiles, DamageMemorySeconds, DamageWeight, DestroyedTargetLinger, EngagementRadius, FollowSharpness (+8 more)
 
-### Community 181 - "FogVisibilityGridModel"
-Cohesion: 0.30
-Nodes (5): Dictionary, FogVisibilityGridModel, Resolution, Test, FogVisibilityGridModelTests
+### Community 181 - "SkirmishOrchestrator"
+Cohesion: 0.21
+Nodes (10): IDisposable, LazyInject, SkirmishOrchestrator, IUserStateNotifier, SetUp, NotifierStub, UserStateNotifierStub, CancellationTokenSource (+2 more)
 
 ### Community 182 - ".Scatter"
-Cohesion: 0.11
-Nodes (17): AsteroidSize, Debris, Large, Medium, Vector3, AsteroidSpot, Position, Rotation (+9 more)
+Cohesion: 0.08
+Nodes (23): AsteroidSize, Debris, Large, Medium, Vector3, AsteroidSpot, Position, Rotation (+15 more)
 
 ### Community 183 - ".Get"
 Cohesion: 0.18
 Nodes (3): CallbackContext, UiActions, CancelInput
 
 ### Community 184 - "HangarModel"
-Cohesion: 0.21
-Nodes (10): HangarModel, BayCount, IsOperational, IReadOnlyList, Test, HangarModelTests, TestHangarData, HangarBays (+2 more)
+Cohesion: 0.32
+Nodes (5): HangarModel, BayCount, IsOperational, Test, HangarModelTests
 
 ### Community 185 - ".InstallFeatures"
-Cohesion: 0.06
-Nodes (27): Animation, AnimationClip, SFoilsModel, IsClosed, ISFoilsView, SFoilsView, HealthFacade, ISFoilsFacade (+19 more)
+Cohesion: 0.07
+Nodes (24): Animation, AnimationClip, SFoilsModel, IsClosed, ISFoilsView, SFoilsView, CombatModifiersFacade, Modifiers (+16 more)
 
 ### Community 186 - "FormationPoint"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (30): IList, IReadOnlyList, BattleFormationModel, IList, IReadOnlyList, List, FormationModel, FormationPoint (+22 more)
 
-### Community 187 - "IShipEntity"
-Cohesion: 0.13
-Nodes (16): Service, Id, Vector3, IShipEntity, CurrentOrder, EntityId, NavigationRadius, NavigationSpeed (+8 more)
+### Community 187 - "ReinforcementUi"
+Cohesion: 0.15
+Nodes (9): Button, CanvasGroup, Dictionary, Image, ScrollRect, TextMeshProUGUI, Transform, ReinforcementUi (+1 more)
 
 ### Community 188 - "SettingsData"
 Cohesion: 0.08
 Nodes (21): ISettingsRepository, JsonSettingsRepository, SettingsData, Audio, Camera, Display, Graphics, Input (+13 more)
 
-### Community 189 - "InstallerExtensions"
-Cohesion: 0.29
-Nodes (4): DiContainer, GameObjectContext, InstallerExtensions, ConcreteIdArgConditionCopyNonLazyBinder
+### Community 189 - ".RemoveObserver"
+Cohesion: 0.05
+Nodes (16): GameObject, Transform, IShipBuildPresenter, IShipBuildUi, ShipBuildUi, TooltipHover, Transform, Texture (+8 more)
 
-### Community 190 - ".ApplyDamage"
-Cohesion: 0.16
-Nodes (12): SetUp, ShipClass, TearDown, Test, SquadronHealthModelTests, TestHealthData, LaserShieldDamageMultiplier, MemberHull (+4 more)
+### Community 190 - "ISquadronHealthData"
+Cohesion: 0.12
+Nodes (16): ShipClass, ISquadronHealthData, LaserShieldDamageMultiplier, MemberHull, MemberShields, ShieldRegenerateDelay, ShieldRegenerateValue, ShipClass (+8 more)
 
 ### Community 191 - "EmpireAtWar.Services.Settings"
-Cohesion: 0.03
-Nodes (36): IReadOnlyList, Vector2Int, DisplaySettingsApplier, DesktopResolution, Resolutions, IReadOnlyList, GraphicsSettingsApplier, QualityPresets (+28 more)
+Cohesion: 0.06
+Nodes (24): IReadOnlyList, Vector2Int, DisplaySettingsApplier, DesktopResolution, Resolutions, IReadOnlyList, GraphicsSettingsApplier, QualityPresets (+16 more)
 
 ### Community 192 - "IObservableProperty"
 Cohesion: 0.29
 Nodes (7): IObservableProperty, HasValue, Value, ObservableProperty, HasValue, Value, EmpireAtWar.Models
 
-### Community 193 - "UnitOrderFeedbackUiController"
-Cohesion: 0.16
-Nodes (5): Vector2, Vector3, UnitOrderFeedbackUiController, Vector2, IUnitOrderFeedbackUi
+### Community 193 - "BattleMap"
+Cohesion: 0.07
+Nodes (28): Bounds, Collider, MapObstacle, Contact, WorldBounds, StationObstacle, Contact, IReadOnlyList (+20 more)
 
 ### Community 194 - ".WreckMaterials_MatchSourceMaterials"
-Cohesion: 0.20
-Nodes (9): GameObject, IEnumerable, List, Material, MeshFilter, MeshRenderer, Test, WreckMaterialSyncTests (+1 more)
+Cohesion: 0.14
+Nodes (10): GameObject, IEnumerable, List, Material, MeshFilter, MeshRenderer, Test, WreckMaterialSyncTests (+2 more)
 
 ### Community 195 - "FakeHealth"
 Cohesion: 0.11
 Nodes (17): HardPointType, ShipClass, Transform, FakeHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits (+9 more)
 
-### Community 196 - "ShipMoveDataStub"
-Cohesion: 0.20
-Nodes (10): ShipMoveDataStub, BodyRotationMaxAngle, Height, HullBottom, HullTop, HyperSpaceDuration, NavigationRadius, RotationSpeed (+2 more)
+### Community 196 - "EndGameUi"
+Cohesion: 0.15
+Nodes (7): Transform, Transform, Button, TMP_Text, EndGameUi, TooltipHover, IEndGameView
 
-### Community 197 - "FakeHealth"
-Cohesion: 0.11
-Nodes (18): HardPointType, ShipClass, Transform, FakeHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits (+10 more)
+### Community 197 - "BattleResult"
+Cohesion: 0.15
+Nodes (12): IReadOnlyList, PlanetType, BattleResult, EnemyFactions, EnemyShipCount, IsEnemyBaseAlive, IsPlayerBaseAlive, Outcome (+4 more)
 
 ### Community 198 - "HardPoint"
 Cohesion: 0.05
-Nodes (32): IReadOnlyList, ParticleSystem, Renderer, ExplosionVfx, Renderers, HardPointType, IObserver, List (+24 more)
+Nodes (34): IReadOnlyList, ParticleSystem, Renderer, ExplosionVfx, Renderers, HardPointType, IObserver, List (+26 more)
 
-### Community 199 - ".InstallBindings"
-Cohesion: 0.08
-Nodes (28): Vector3, AsteroidDefendPlatformFactory, Vector3, DefendPlatformFactory, Vector3, AsteroidMiningFacilityFactory, AsteroidMiningFacilityInstaller, DataPath (+20 more)
+### Community 199 - "ILocalPlayer"
+Cohesion: 0.04
+Nodes (56): BattleStartupSequence, Vector3, AsteroidDefendPlatformFactory, Vector3, DefendPlatformFactory, Inject, DefendPlatformType, BattleAsteroid (+48 more)
 
 ### Community 200 - "CaptureSiteView"
+Cohesion: 0.06
+Nodes (26): Predicate, Camera, Canvas, DictionaryWrapper, GameObject, Image, IReadOnlyList, MaterialPropertyBlock (+18 more)
+
+### Community 201 - "TooltipIconData"
+Cohesion: 0.09
+Nodes (21): IReadOnlyList, ShipAbilityTooltipContent, TooltipBindings, Image, TextMeshProUGUI, TooltipHeaderView, Dictionary, TooltipIconData (+13 more)
+
+### Community 202 - "TeamId"
 Cohesion: 0.04
-Nodes (45): Predicate, CaptureSiteState, Constructing, Neutral, Operational, Owned, Camera, Canvas (+37 more)
-
-### Community 201 - "MonoBehaviour"
-Cohesion: 0.08
-Nodes (20): TextMeshProUGUI, FpsCounter, LineRenderer, DrawCircle, Image, TextMeshProUGUI, TooltipHeaderView, Image (+12 more)
-
-### Community 202 - "CaptureStrengthBuilder"
-Cohesion: 0.07
-Nodes (30): Dictionary, CaptureStrengthBuilder, Func, Vector3, Func, Predicate, Vector3, ISquadronRegistry (+22 more)
+Nodes (47): Dictionary, CaptureStrengthBuilder, TeamId, Value, Func, Vector3, Func, Predicate (+39 more)
 
 ### Community 203 - "NavigationGridCells"
 Cohesion: 0.22
 Nodes (8): float2, NativeArray, NavigationGridCells, CellSize, Count, Height, Origin, Width
 
 ### Community 204 - "UnitOrderInput"
-Cohesion: 0.20
+Cohesion: 0.18
 Nodes (6): IUnitOrderInput, IsQueueWaypointHeld, BattleActions, CallbackContext, UnitOrderInput, IsQueueWaypointHeld
 
-### Community 205 - "UnitActionButton"
-Cohesion: 0.10
-Nodes (11): Button, CanvasGroup, GameObject, Image, UnitActionId, UnitActionButton, ActionId, List (+3 more)
+### Community 205 - "MonoBehaviour"
+Cohesion: 0.07
+Nodes (16): TextMeshProUGUI, FpsCounter, LineRenderer, DrawCircle, Button, CanvasGroup, GameObject, Image (+8 more)
 
 ### Community 206 - "PointerInput"
 Cohesion: 0.18
 Nodes (7): CallbackContext, PointerActions, Vector2, PointerInput, ClickCount, HasPosition, Position
 
 ### Community 207 - "SquadronFlightComponent"
-Cohesion: 0.13
+Cohesion: 0.11
 Nodes (13): IFogVisionData, VisionRange, Inject, List, NumericsVector3, Quaternion, Vector3, SquadronFlightComponent (+5 more)
 
-### Community 208 - "Installer"
-Cohesion: 0.31
-Nodes (5): EntityInstaller, IUniqueIdGenerator, UniqueIdGenerator, Component, Installer
+### Community 208 - "MusicService"
+Cohesion: 0.19
+Nodes (9): IMusicService, AudioClip, List, MusicAudioData, AudioClip, AudioSource, List, Random (+1 more)
 
 ### Community 209 - "CoreGamePresenterStub"
 Cohesion: 0.11
@@ -1256,80 +1282,84 @@ Nodes (9): Button, CanvasGroup, GameObject, MPImage, SuperWeaponState, SuperWeap
 Cohesion: 0.12
 Nodes (15): LayerMask, LayerData, DeadLayerMask, ObstacleLayerMask, UnitLayerMask, GameObject, LayerMask, MonoBehaviour (+7 more)
 
-### Community 212 - "TooltipIconData"
-Cohesion: 0.19
-Nodes (8): IReadOnlyList, ShipAbilityTooltipContent, Dictionary, TooltipIconData, Sprites, TooltipIconEntry, Key, Sprite
+### Community 212 - "MiniMapData"
+Cohesion: 0.09
+Nodes (23): DictionaryWrapper, IReadOnlyList, List, IMiniMapModelObserver, CameraMark, IsInputBlocked, MapRange, Markers (+15 more)
 
-### Community 213 - "IEntityLocator"
-Cohesion: 0.05
-Nodes (31): Vector2, ISquadronIconCommand, ImpactEffectPresenter, Entity, HealthModel, Id, Owner, Collider (+23 more)
+### Community 213 - "ViewEntity"
+Cohesion: 0.20
+Nodes (9): IViewEntity, Id, Owner, ViewEntity, Id, Owner, BoxCollider, Test (+1 more)
 
 ### Community 214 - "HardPointOverlayData"
 Cohesion: 0.16
 Nodes (10): Data, List, HardPointOverlayData, Sprite, HardPointOverlayEntry, Description, DisplayName, HardPointType (+2 more)
 
-### Community 215 - "UiActions"
-Cohesion: 0.35
-Nodes (4): UiActions, @Cancel, enabled, IUiActions
+### Community 215 - "SfxProfile"
+Cohesion: 0.11
+Nodes (12): Vector3, AudioClip, SfxProfile, Cooldown, Loop, MaxInstances, Priority, Volume (+4 more)
 
 ### Community 216 - "MainRouteController"
 Cohesion: 0.09
-Nodes (11): IMainMenuModel, IMainMenuUi, IMainRouteNavigation, MainMenuModel, Button, MainMenuUi, TooltipHover, MainRouteController (+3 more)
+Nodes (12): IMainMenuModel, IMainMenuUi, IMainRouteNavigation, MainMenuModel, Button, MainMenuUi, TooltipHover, MainRouteController (+4 more)
 
 ### Community 217 - "HardPointOverlayView"
 Cohesion: 0.16
 Nodes (9): Canvas, CanvasScaler, List, RectTransform, Vector2, HardPointOverlayView, ScaleFactor, IHardPointOverlayView (+1 more)
 
-### Community 218 - "HeroIconUi"
-Cohesion: 0.28
-Nodes (5): Button, CanvasGroup, Image, Sprite, HeroIconUi
+### Community 218 - "HeroUiController"
+Cohesion: 0.07
+Nodes (19): Button, CanvasGroup, Image, Sprite, HeroIconUi, Dictionary, RectTransform, Sprite (+11 more)
 
 ### Community 219 - "WeaponType"
 Cohesion: 0.04
 Nodes (49): WeaponType, BarrageRocket, BurstLaserCannon, CompositeBeam, ConcussionMissile, DualHeavyTurboLaser, DualHeavyTurboLaserDby827, DualLaser (+41 more)
 
+### Community 220 - "ShipHeightTier"
+Cohesion: 0.16
+Nodes (10): ShipHeightTier, Deep, High, Highest, HighMid, Low, Lowest, LowMid (+2 more)
+
 ### Community 222 - "FadeUi"
-Cohesion: 0.35
-Nodes (5): Awaitable, CancellationToken, Image, Tween, FadeUi
+Cohesion: 0.22
+Nodes (7): Awaitable, CancellationToken, Image, Tween, FadeUi, Awaitable, CancellationToken
 
 ### Community 223 - "FakeHealthModel"
 Cohesion: 0.12
 Nodes (16): ShipClass, Transform, FakeHealthModel, HardPointModels, HasLiveHardPoints, HasShields, HasUnits, Hull (+8 more)
 
-### Community 224 - "CombatModifiers"
-Cohesion: 0.02
-Nodes (92): List, CombatModifiers, DamageMultiplier, DamageTakenMultiplier, FireDelayMultiplier, HullMultiplier, IsCloaked, IsIonDisabled (+84 more)
+### Community 224 - "TestFacade"
+Cohesion: 0.09
+Nodes (19): ShipAbilityDefinition, PowerToMainBatteriesAbility, IInstantiator, IShipAbility, PowerToMainBatteriesSettings, FireDelayMultiplier, StatModifier, BindingFlags (+11 more)
 
-### Community 225 - "ShipHeightTier"
-Cohesion: 0.16
-Nodes (10): ShipHeightTier, Deep, High, Highest, HighMid, Low, Lowest, LowMid (+2 more)
+### Community 225 - "IonPulseSettings"
+Cohesion: 0.14
+Nodes (12): IInstantiator, IShipAbility, IonPulseSettings, AlignmentTimeout, AlignmentTolerance, ChargeDuration, DisableDuration, MalfunctionChance (+4 more)
 
 ### Community 226 - "HealthOverlayPresenter"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (11): HealthOverlayPresenter, Canvas, CanvasScaler, Color, MPImage, RectTransform, Vector2, HealthOverlayView (+3 more)
 
-### Community 227 - "PlanetView"
-Cohesion: 0.31
-Nodes (6): IPlanetModelObserver, CloudOrbitSpeed, PlanetOrbitSpeed, MaterialPropertyBlock, MeshRenderer, PlanetView
+### Community 227 - "Controller"
+Cohesion: 0.24
+Nodes (8): Controller, Id, Model, PlanetController, PlanetData, CloudOrbitSpeed, PlanetOrbitSpeed, PlanetInstaller
 
-### Community 228 - ".CalculateSoftVisibility"
-Cohesion: 0.39
-Nodes (3): FogVisibilityModel, Test, FogVisibilityModelTests
+### Community 228 - "EmpireAtWar.Tests.Editor"
+Cohesion: 0.05
+Nodes (13): GameMode, Skirmish, Test, MPImageMeshTests, EmpireAtWar.Models.Audio, EmpireAtWar.Commands.Game, EmpireAtWar.Entities.MainMenu.Skirmish, EmpireAtWar.Services.SceneService (+5 more)
 
-### Community 229 - "ShipNavigationPlan"
-Cohesion: 0.22
-Nodes (9): ShipNavigationPlan, Destination, Detour, IsDeferred, IsStationary, MovementDuration, Route, Trajectory (+1 more)
+### Community 229 - "IGameCommand"
+Cohesion: 0.15
+Nodes (4): IGameCommand, ISkirmishFlow, GameCommandStub, ExitCount
 
-### Community 230 - "InputLockStub"
-Cohesion: 0.28
-Nodes (7): IDisposable, Handle, InputLockStub, AcquireCount, ActiveHandles, IsLocked, InputLockStub
+### Community 230 - "WorldTooltipPresenter"
+Cohesion: 0.13
+Nodes (8): IHudVisibilityObserver, IsHudVisible, TooltipLifecyclePresenter, INotifier, Vector2, WorldTooltipPresenter, CanHover, ITooltipService
 
 ### Community 231 - "FighterManeuver"
 Cohesion: 0.22
 Nodes (7): Random, Vector3, FighterManeuver, Phase, FighterManeuverPhase, Approach, Extend
 
 ### Community 232 - "SceneService"
-Cohesion: 0.08
+Cohesion: 0.09
 Nodes (21): Dictionary, DictionaryWrapper, Scene, ISceneModelObserver, SceneData, SceneDictionary, Scene, TimerPoolService (+13 more)
 
 ### Community 233 - "EnemyAiDifficultyProfile"
@@ -1341,52 +1371,52 @@ Cohesion: 0.27
 Nodes (6): float2, NativeArray, NativeList, NavigationFloodJob, OpenNode, OpenNode
 
 ### Community 235 - "ShipEngineAudioState"
-Cohesion: 0.42
+Cohesion: 0.36
 Nodes (4): ShipEngineAudioState, Speed, Test, ShipEngineAudioModelTests
 
 ### Community 236 - ".Build"
-Cohesion: 0.20
-Nodes (12): IReadOnlyList, List, MapGenerationSettings, MapLane, Random, LaneNetworkBuilder, IReadOnlyList, Vector3 (+4 more)
+Cohesion: 0.33
+Nodes (8): IReadOnlyList, List, MapGenerationSettings, MapLane, Random, LaneNetworkBuilder, from, to
 
 ### Community 237 - "MiniMapMoveTargetView"
 Cohesion: 0.22
 Nodes (5): MPImage, RectTransform, Sequence, Vector2, MiniMapMoveTargetView
 
-### Community 238 - "IRadarModelObserver"
-Cohesion: 0.12
-Nodes (12): ObservableList, IRadarModelObserver, Delay, Enemies, Range, StationCombatPresenter, DiContainer, HealthFacade (+4 more)
+### Community 238 - "FactionCatalog"
+Cohesion: 0.15
+Nodes (10): IReadOnlyList, FactionCatalog, Factions, Transform, CompositeBeamFacade, Muzzle, ShipType, ShipTooltipFacade (+2 more)
 
 ### Community 239 - "IHardPointStatus"
 Cohesion: 0.13
 Nodes (16): IReadOnlyList, IHardPointsSource, HardPoints, MaxShields, IHardPointStatus, Health, IsInstalled, MaxHealth (+8 more)
 
-### Community 240 - "MapGeometry"
-Cohesion: 0.39
-Nodes (3): IReadOnlyList, Vector3, MapGeometry
-
-### Community 241 - "Controller"
+### Community 240 - "EmpireAtWar.Entities.Map.Generation"
 Cohesion: 0.09
-Nodes (18): Controller, Id, Model, LoadingController, ILoadingModelObserver, LoadingData, LoadingInstaller, LoadingView (+10 more)
+Nodes (12): MapGenerationSettings, AsteroidFieldBuilder, FieldVolumeCover, IReadOnlyList, Vector3, MapGeometry, MapNodeKind, BattleSite (+4 more)
+
+### Community 241 - "ISceneService"
+Cohesion: 0.13
+Nodes (13): LoadingController, ILoadingModelObserver, LoadingData, LoadingInstaller, LoadingView, ISceneService, IsSceneLoaded, TargetScene (+5 more)
 
 ### Community 242 - "EmpireAtWar.Mvc"
-Cohesion: 0.03
-Nodes (27): EntityBindType, ViewTransform, View, ModelDependencyInstaller, View, ViewComponentsInstaller, ShipReinforcementUiPrefabTests, TeamColorViewPrefabTests (+19 more)
+Cohesion: 0.04
+Nodes (21): IPlayerBaseFacade, PlayerBaseFacade, EntityBindType, ViewTransform, EmpireAtWar.Services.Layer, EmpireAtWar.Components.Ship.Selection, EmpireAtWar, EmpireAtWar.Views.ViewImpl (+13 more)
 
-### Community 243 - "IAssetService"
-Cohesion: 0.27
-Nodes (4): IAssetService, Action, DiContainer, ModelDependencyBuilder
+### Community 243 - "CameraMarkData"
+Cohesion: 0.09
+Nodes (16): IReadOnlyList, List, CameraMarkData, Vertices, X, Z, Vector2, VertexHelper (+8 more)
 
 ### Community 244 - "FieldDensity"
 Cohesion: 0.26
 Nodes (8): IReadOnlyList, MapGenerationSettings, MapLane, MapSizeSettings, Random, Vector2, Vector3, FieldDensity
 
-### Community 245 - "ReinforcementService"
-Cohesion: 0.09
-Nodes (16): FactionData, UnitRequest, FactionData, Id, Key, ISpawnAreaOverlay, IDisposable, IInputLock (+8 more)
+### Community 245 - "InputLockStub"
+Cohesion: 0.28
+Nodes (7): IDisposable, Handle, InputLockStub, AcquireCount, ActiveHandles, IsLocked, InputLockStub
 
-### Community 246 - "Data"
-Cohesion: 0.03
-Nodes (75): DictionaryWrapper, DefendPlatformCatalog, DefendPlatformType, BattleAsteroid, Xq6, Dictionary, ShipType, EnemyFactionModel (+67 more)
+### Community 246 - ".InstallBindings"
+Cohesion: 0.04
+Nodes (52): GameObject, IAssetService, IModel, DictionaryWrapper, DefendPlatformCatalog, Dictionary, ShipType, EnemyFactionModel (+44 more)
 
 ### Community 247 - "IEconomyModelObserver"
 Cohesion: 0.15
@@ -1404,9 +1434,9 @@ Nodes (15): Dictionary, Func, IEntity, IEnumerable, List, AttackMoveEngagement, 
 Cohesion: 0.13
 Nodes (12): GameInputActions, InputActionsProvider, Actions, GameInputActions, InputLockService, IsLocked, LockHandle, SetUp (+4 more)
 
-### Community 251 - "UnitWreckView"
-Cohesion: 0.20
-Nodes (9): Bounds, Dictionary, Material, MeshFilter, MeshRenderer, Quaternion, Vector3, UnitWreckView (+1 more)
+### Community 251 - "DependencyBuilder"
+Cohesion: 0.17
+Nodes (7): DiContainer, DependencyBuilder, Container, IDependencyBuilder, DiContainer, GameObject, ViewDependencyBuilder
 
 ### Community 252 - "SkirmishServiceInstaller"
 Cohesion: 0.25
@@ -1425,12 +1455,12 @@ Cohesion: 0.12
 Nodes (16): HardPointHealth, HardPointType, HealthModel, IReadOnlyList, SetUp, ShipClass, TearDown, Test (+8 more)
 
 ### Community 256 - "ISkirmishModelObserver"
-Cohesion: 0.13
-Nodes (15): IReadOnlyList, MapSize, PlanetType, ISkirmishModelObserver, ActivePlayerCount, ActiveTeamCount, CanStart, MapSize (+7 more)
+Cohesion: 0.10
+Nodes (16): IReadOnlyList, MapSize, PlanetType, ISkirmishModelObserver, ActivePlayerCount, ActiveTeamCount, CanStart, MapSize (+8 more)
 
-### Community 257 - "IStationFacingService"
-Cohesion: 0.21
-Nodes (10): Dictionary, Quaternion, IStationFacingService, StationFacingService, Test, Vector3, CountingMapModel, PositionRequestCount (+2 more)
+### Community 257 - "ReplayNotifier"
+Cohesion: 0.20
+Nodes (5): IObserver, List, ReplayNotifier, Value, TearDown
 
 ### Community 258 - "FakeHealth"
 Cohesion: 0.12
@@ -1440,65 +1470,65 @@ Nodes (16): HardPointType, ShipClass, FakeHealth, HardPointModels, HasLiveHardPo
 Cohesion: 0.29
 Nodes (4): CombatWorkload, Test, BattlePerformanceCaptureReportTests, EmpireAtWar.Tests.Timing
 
-### Community 261 - "CameraInputBindingsTests"
-Cohesion: 0.30
-Nodes (5): InputAction, InputActionAsset, SetUp, Test, CameraInputBindingsTests
+### Community 261 - "SiteFacilityOptionView"
+Cohesion: 0.17
+Nodes (7): Button, TMP_Text, TooltipTrigger, SiteFacilityOptionView, DisplayName, FacilityType, TooltipTrigger
 
-### Community 262 - "SpaceStation"
-Cohesion: 0.10
-Nodes (18): IController, IFrameworkObject, Id, IService, IFactionLevelObserver, CurrentLevel, GameObjectContext, Inject (+10 more)
+### Community 262 - "MiningFacility"
+Cohesion: 0.06
+Nodes (36): IController, IFrameworkObject, Id, IService, IHealthComponent, Destroyed, HealthModelObserver, GameObjectContext (+28 more)
 
 ### Community 263 - "HardPointOverlayPresenter"
-Cohesion: 0.27
+Cohesion: 0.26
 Nodes (4): IReadOnlyList, List, Vector2, HardPointOverlayPresenter
 
 ### Community 264 - "StructureSpawnClearance"
-Cohesion: 0.29
+Cohesion: 0.33
 Nodes (5): Bounds, BoxCollider, Vector3, StructureSpawnClearance, Radius
 
-### Community 266 - "FakeHealth"
-Cohesion: 0.07
-Nodes (26): HardPointType, ShipClass, Transform, FakeHealth, HardPointModels, HasLiveHardPoints, HasShields, HasUnits (+18 more)
+### Community 266 - "Transform"
+Cohesion: 0.16
+Nodes (10): Transform, Canvas, MPImage, Test, PauseMenuUiPrefabTests, GameObject, RectTransform, Test (+2 more)
 
 ### Community 267 - "BattleActions"
-Cohesion: 0.18
+Cohesion: 0.22
 Nodes (8): BattleActions, @Command, enabled, @QueueWaypoint, @Select, @SelectAll, @SelectVisible, IBattleActions
 
 ### Community 268 - "UnitExplosionView"
-Cohesion: 0.09
-Nodes (13): ParticleSystem, Vector3, UnitExplosionView, Diameter, IsAlive, Transform, ViewPool, IReadOnlyList (+5 more)
+Cohesion: 0.08
+Nodes (11): ParticleSystem, Vector3, UnitExplosionView, Diameter, IsAlive, Transform, ViewPool, IReadOnlyList (+3 more)
 
 ### Community 269 - "SkirmishSlotRowView"
 Cohesion: 0.18
 Nodes (6): CanvasGroup, Graphic, IReadOnlyList, TMP_Dropdown, TMP_Text, SkirmishSlotRowView
 
-### Community 270 - "PlayerCoreInstaller"
-Cohesion: 0.25
-Nodes (8): MainMenuInstaller, AssetService, FactionCatalog, PlayerCoreInstaller, AssetService, FactionCatalog, LocalPlayer, MonoInstaller
+### Community 270 - "MarkData"
+Cohesion: 0.17
+Nodes (10): Sprite, Vector3, IMarkData, Icon, Position, Sprite, Vector3, MarkData (+2 more)
 
 ### Community 271 - "PointerGestures"
-Cohesion: 0.11
-Nodes (17): Vector2, IUiHitTest, Vector2, MouseDragState, HasDragged, IsPressed, PressPosition, StartedOverUi (+9 more)
+Cohesion: 0.15
+Nodes (11): Vector2, IUiHitTest, Vector2, MouseDragState, HasDragged, IsPressed, PressPosition, StartedOverUi (+3 more)
 
 ### Community 272 - ".StepYaw"
-Cohesion: 0.23
+Cohesion: 0.21
 Nodes (5): Quaternion, Vector3, ShipRotationKinematics, Test, ShipRotationKinematicsTests
 
-### Community 273 - "UiController"
-Cohesion: 0.07
-Nodes (24): UiController, IsFocused, UnitRequest, ProductionQueueSnapshot, Count, RemainingBuildTime, UnitRequest, Action (+16 more)
+### Community 273 - ".RunStartupAsync"
+Cohesion: 0.17
+Nodes (8): Awaitable, CancellationToken, IBattleStartupSequence, Awaitable, CancellationToken, Awaitable, CancellationToken, CompletedStartupStub
 
 ### Community 274 - "IFighterFlightData"
 Cohesion: 0.15
 Nodes (12): IFighterFlightData, Acceleration, BankResponse, BreakDistance, CombatSpeed, CruiseSpeed, ExtendDistance, FormationSpacing (+4 more)
 
-### Community 275 - "PlayerId"
-Cohesion: 0.04
-Nodes (28): IEnemyReinforcementObserver, HasPendingReinforcement, Vector3, LocalPlayer, Id, Slot, PlayerId, Index (+20 more)
+### Community 275 - "ISiteFacilityBuilder"
+Cohesion: 0.15
+Nodes (5): Action, Vector3, ISiteFacilityBuilder, Action, Vector3
 
-### Community 276 - "DependencyBuilder"
-Cohesion: 0.17
-Nodes (7): DiContainer, DependencyBuilder, Container, IDependencyBuilder, DiContainer, GameObject, ViewDependencyBuilder
+### Community 276 - "InstallerExtensions"
+Cohesion: 0.18
+Nodes (7): DiContainer, GameObjectContext, InstallerExtensions, Action, DiContainer, ModelDependencyBuilder, ConcreteIdArgConditionCopyNonLazyBinder
 
 ### Community 277 - "CinematicCandidate"
 Cohesion: 0.15
@@ -1512,29 +1542,29 @@ Nodes (5): BaseComponent, Model, FrameworkComponent, Id, EmpireAtWar.Components
 Cohesion: 0.29
 Nodes (5): Color, MPImage, RectTransform, Vector2, HardPointOverlayGraphics
 
-### Community 280 - "IStationRegistry"
-Cohesion: 0.20
-Nodes (8): ISquadronLauncher, SquadronType, SquadronLauncher, IStationRegistry, Test, NoStationRegistry, Id, SquadronLauncherTests
+### Community 280 - "EnemyFactionController"
+Cohesion: 0.13
+Nodes (13): Action, CustomCoroutine, Dictionary, ShipType, TimerPoolService, UnitRequest, Vector3, EnemyFactionController (+5 more)
 
-### Community 281 - "WeaponHardPoint"
-Cohesion: 0.05
-Nodes (30): ITimer, ShipClass, WeaponType, WeaponHardPoint, DelayBetweenShots, Destroyed, IsBusy, MaxAttackDistance (+22 more)
+### Community 281 - ".CaptureTargetSelections_ReadsTransformsAfterQueueAtEveryThreshold"
+Cohesion: 0.38
+Nodes (6): CombatAttackCoordinator, IList, Test, TestCase, WeaponComponent, CombatAttackCoordinatorSelectionTests
 
-### Community 282 - "EnemySquadronCommander"
-Cohesion: 0.16
-Nodes (10): Vector3, ISquadron, WorldPosition, Action, Dictionary, ITimer, List, Vector3 (+2 more)
+### Community 282 - "PointerActions"
+Cohesion: 0.18
+Nodes (7): InputActionMap, PointerActions, @ClickCount, enabled, @Position, @Primary, IPointerActions
 
-### Community 283 - "ISceneService"
+### Community 283 - "TrackingSceneService"
 Cohesion: 0.12
-Nodes (17): IReadOnlyList, MapSize, PlanetType, GameController, ISceneService, IsSceneLoaded, TargetScene, ArgumentException (+9 more)
+Nodes (14): IReadOnlyList, MapSize, PlanetType, GameController, ArgumentException, TearDown, Test, GameControllerTests (+6 more)
 
-### Community 284 - "IHealthModelObserver"
-Cohesion: 0.07
-Nodes (26): ShipClass, IHealthModelObserver, HardPointModels, HasLiveHardPoints, HasShields, HasUnits, Hull, HullPercentage (+18 more)
+### Community 284 - "ICaptureSite"
+Cohesion: 0.20
+Nodes (10): Vector3, ICaptureSite, CaptureProgress, Center, ConstructionProgress, FacilityType, IsOperational, IsRevealed (+2 more)
 
-### Community 285 - "TooltipContentProvider"
-Cohesion: 0.10
-Nodes (13): IHudVisibilityObserver, IsHudVisible, TooltipLifecyclePresenter, ITooltipContentProvider, IsValid, Key, Source, ITooltipService (+5 more)
+### Community 285 - ".Enter"
+Cohesion: 0.20
+Nodes (3): ICinematicCameraController, Dictionary, CinematicActivityTracker
 
 ### Community 286 - "FullSalvoAbility"
 Cohesion: 0.20
@@ -1544,13 +1574,13 @@ Nodes (7): ShipAbilityDefinition, FullSalvoAbility, IInstantiator, IShipAbility,
 Cohesion: 0.24
 Nodes (5): ArgumentException, Test, TestCase, MetallicSmoothnessPackerTests, EmpireAtWar.Tests.Rendering
 
-### Community 288 - "MiniMapMarker"
-Cohesion: 0.08
-Nodes (21): MiniMapMarker, MarkType, Owner, Visible, WorldDiameter, INotifier, List, BaseMiniMapPresenter (+13 more)
+### Community 288 - "ShipAbilityFacade"
+Cohesion: 0.18
+Nodes (11): IReadOnlyList, List, Transform, Vector3, ShipAbilityFacade, Entity, Health, Modifiers (+3 more)
 
 ### Community 289 - "SelectionEntry"
-Cohesion: 0.18
-Nodes (10): SelectionEntry, Command, Entity, ICollection, FakeQuery, ReturnEnemy, Dictionary, ICollection (+2 more)
+Cohesion: 0.06
+Nodes (31): Vector2, SelectionEntry, Command, Entity, ICollection, List, Vector2, ISelectionQuery (+23 more)
 
 ### Community 290 - "SpawnType"
 Cohesion: 0.33
@@ -1569,7 +1599,7 @@ Cohesion: 0.29
 Nodes (6): float2, float3, NativeArray, NativeList, NavigationRouteJob, IJob
 
 ### Community 295 - "ShipHullFootprint"
-Cohesion: 0.20
+Cohesion: 0.22
 Nodes (11): Quaternion, Vector2, Vector3, ShipHullFootprint, Center, HalfExtents, Rotation, Quaternion (+3 more)
 
 ### Community 296 - ".ToNumerics"
@@ -1580,20 +1610,20 @@ Nodes (5): NumericsQuaternion, NumericsVector3, Quaternion, Vector3, NumericsCon
 Cohesion: 0.25
 Nodes (7): Camera, IReadOnlyList, List, Plane, Vector2, Vector3, CameraFrustumProjection
 
+### Community 298 - "SettingsUiPrefabTests"
+Cohesion: 0.36
+Nodes (5): CanvasGroup, GameObject, MonoBehaviour, Test, SettingsUiPrefabTests
+
 ### Community 299 - "HardPointType"
 Cohesion: 0.17
 Nodes (11): HardPointType, Any, Engines, Hangar, IonPulseCannon, MissileDefense, PointDefense, ShieldGenerator (+3 more)
-
-### Community 300 - "MovementPhase"
-Cohesion: 0.40
-Nodes (4): MovementPhase, Arriving, Idle, Moving
 
 ### Community 301 - "SettingsPrompt"
 Cohesion: 0.08
 Nodes (24): DisplayConfirmationCountdown, IReadOnlyList, SettingsPrompt, Actions, IsVisible, Kind, Message, SettingsPromptAction (+16 more)
 
 ### Community 302 - "CameraActions"
-Cohesion: 0.22
+Cohesion: 0.18
 Nodes (8): CameraActions, @DragDelta, @DragPan, enabled, @Move, @Zoom, @ZoomScroll, ICameraActions
 
 ### Community 303 - "IHealthData"
@@ -1604,13 +1634,13 @@ Nodes (20): HardPointHealth, IReadOnlyList, ShipClass, IHealthData, HardPointHea
 Cohesion: 0.25
 Nodes (6): Vector3, FakeMovement, CurrentPosition, IsMoving, NavigationRadius, StopCount
 
-### Community 305 - "TooltipUiController"
-Cohesion: 0.17
-Nodes (6): ITooltipUi, TooltipUiController, ITooltipModelObserver, Anchor, Content, IsVisible
+### Community 305 - "TooltipUi"
+Cohesion: 0.08
+Nodes (18): ITooltipUi, Image, TextMeshProUGUI, TooltipMatchupRowView, TextMeshProUGUI, TooltipRequirementRowView, TextMeshProUGUI, TooltipStatRowView (+10 more)
 
-### Community 306 - "ShipAbilityState"
-Cohesion: 0.40
-Nodes (4): ShipAbilityState, Active, Ready, Recovering
+### Community 306 - "UiActions"
+Cohesion: 0.35
+Nodes (4): UiActions, @Cancel, enabled, IUiActions
 
 ### Community 307 - "TestFlightData"
 Cohesion: 0.17
@@ -1620,17 +1650,25 @@ Nodes (12): TestFlightData, Acceleration, BankResponse, BreakDistance, CombatSpe
 Cohesion: 0.18
 Nodes (10): IShipMoveData, BodyRotationMaxAngle, Height, HullBottom, HullTop, HyperSpaceDuration, NavigationRadius, RotationSpeed (+2 more)
 
-### Community 309 - "AiPlayerInstaller"
-Cohesion: 0.50
-Nodes (5): FactionCatalog, AiPlayerInstaller, AssetService, FactionCatalog, Owner
+### Community 309 - "MuzzleFlashView"
+Cohesion: 0.29
+Nodes (6): Color, LineRenderer, Transform, Vector3, MuzzleFlashView, IsPlaying
 
 ### Community 310 - "IEntity"
-Cohesion: 0.02
-Nodes (69): HardPointType, AttackDataFactory, IReadOnlyList, IEntity, HealthModel, Id, Owner, EntityDetection (+61 more)
+Cohesion: 0.04
+Nodes (49): Entity, HealthModel, Id, Owner, IEntity, HealthModel, Id, Owner (+41 more)
+
+### Community 311 - "UnitRequest"
+Cohesion: 0.19
+Nodes (6): FactionData, UnitRequest, FactionData, Id, Key, IReinforcementPresenter
 
 ### Community 312 - "CinematicCameraModel"
 Cohesion: 0.33
 Nodes (4): CinematicCameraModel, IsActive, ICinematicCameraModelObserver, IsActive
+
+### Community 313 - "PlanetView"
+Cohesion: 0.27
+Nodes (6): IPlanetModelObserver, CloudOrbitSpeed, PlanetOrbitSpeed, MaterialPropertyBlock, MeshRenderer, PlanetView
 
 ### Community 314 - "CinematicInterestScorer"
 Cohesion: 0.26
@@ -1652,9 +1690,9 @@ Nodes (10): FakeShipMoveData, BodyRotationMaxAngle, Height, HullBottom, HullTop,
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Trace an intermittent Invalid AABB canvas error during combat after spawning test ships., Source Nodes
 
-### Community 319 - "EmpireAtWar.Entities.Map.Generation"
-Cohesion: 0.08
-Nodes (14): MapGenerationSettings, AsteroidFieldBuilder, FieldVolumeCover, MapFeatureRadii, BattleSite, MiningSite, Zone, MapNodeKind (+6 more)
+### Community 319 - "GameSpeed"
+Cohesion: 0.28
+Nodes (5): GameSpeed, Fast, Normal, SpeedRecorder, Value
 
 ### Community 320 - "RenderAuditProfilerToolTests"
 Cohesion: 0.25
@@ -1704,9 +1742,13 @@ Nodes (3): Answer, Q: How does defend platform reinforcement preview position fl
 Cohesion: 0.50
 Nodes (3): Answer, Q: Which prefab and mesh transforms define the correctly spawned Acclamator orientation versus AcclamatorReinforcementView?, Source Nodes
 
-### Community 333 - ".IsLocal"
-Cohesion: 0.22
-Nodes (7): ICollection, List, MarqueeCandidate, Entry, ScreenPoint, SelectionQuery, MarqueeCandidate
+### Community 333 - "StaticViewInstaller"
+Cohesion: 0.28
+Nodes (5): View, StaticViewInstaller, AssetService, View, ViewComponentsInstaller
+
+### Community 334 - "BoostEnginePowerAbility"
+Cohesion: 0.25
+Nodes (6): ShipAbilityDefinition, BoostEnginePowerAbility, IInstantiator, IShipAbility, BoostEnginePowerSettings, StatModifier
 
 ### Community 335 - "DynamicEntityInstaller"
 Cohesion: 0.24
@@ -1716,33 +1758,53 @@ Nodes (8): GameObjectContext, Inject, Transform, Vector3, DynamicEntityInstaller
 Cohesion: 0.38
 Nodes (6): Color, Rect, Vector3, VertexHelper, HudFrame, EmpireAtWar.Components.Ui
 
+### Community 337 - "BoostShieldPowerAbility"
+Cohesion: 0.25
+Nodes (6): ShipAbilityDefinition, BoostShieldPowerAbility, IInstantiator, IShipAbility, BoostShieldPowerSettings, StatModifier
+
 ### Community 338 - "UnitActionsPresenterTests"
-Cohesion: 0.10
-Nodes (21): FakeAbilities, FakeCancelInput, FakeCommand, FakeEntity, FakeOrders, FakeSelection, GameObject, HashSet (+13 more)
+Cohesion: 0.06
+Nodes (26): FakeAbilities, FakeCancelInput, FakeCommand, FakeEntity, FakeOrders, FakeSelection, GameObject, HashSet (+18 more)
 
 ### Community 339 - "SettingsUi"
 Cohesion: 0.05
 Nodes (21): Action, Button, TMP_Text, KeyBindingRow, IReadOnlyList, TMP_Dropdown, SettingsDropdownRow, Button (+13 more)
 
 ### Community 340 - "FighterKinematics"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (9): Vector3, FighterKinematics, Bank, Forward, Position, Speed, Test, FighterFlightTests (+1 more)
 
-### Community 341 - "SpawnAreaGridModel"
-Cohesion: 0.22
-Nodes (5): SpawnAreaGridModel, Resolution, Test, SpawnAreaGridModelTests, EmpireAtWar.Models.SpawnArea
+### Community 341 - "SpawnAreaOverlay"
+Cohesion: 0.11
+Nodes (11): SpawnAreaGridModel, Resolution, Inject, INotifier, Material, MeshRenderer, Texture2D, SpawnAreaOverlay (+3 more)
 
-### Community 342 - "FakeCommand"
-Cohesion: 0.22
-Nodes (9): IReadOnlyList, Vector3, FakeCommand, Entity, Health, Modifiers, RadarRange, Slots (+1 more)
+### Community 342 - "CinematicClassProfile"
+Cohesion: 0.25
+Nodes (6): ShipClass, ShipClass, CinematicClassProfile, FramingDistance, InterestWeight, ShipClass
 
-### Community 345 - "MonoComponent"
-Cohesion: 0.12
-Nodes (10): Inject, IMonoComponent, MonoComponent, Id, Model, Inject, Sprite, SharedSelectionData (+2 more)
+### Community 343 - "IReinforcementVisitor"
+Cohesion: 0.29
+Nodes (5): IVisitor, IReinforcementVisitor, ScrollRect, EmpireAtWar.Patterns.Visitor, ISpawnShipUi
+
+### Community 344 - "BoostWeaponPowerAbility"
+Cohesion: 0.25
+Nodes (6): ShipAbilityDefinition, BoostWeaponPowerAbility, IInstantiator, IShipAbility, BoostWeaponPowerSettings, StatModifier
+
+### Community 345 - "InvulnerabilityAbility"
+Cohesion: 0.25
+Nodes (6): ShipAbilityDefinition, InvulnerabilityAbility, IInstantiator, IShipAbility, InvulnerabilitySettings, StatModifier
+
+### Community 346 - "ShipNavigationPlan"
+Cohesion: 0.22
+Nodes (9): ShipNavigationPlan, Destination, Detour, IsDeferred, IsStationary, MovementDuration, Route, Trajectory (+1 more)
 
 ### Community 347 - "MapLayoutView"
-Cohesion: 0.09
-Nodes (22): Awaitable, CancellationToken, IObserver, IReadOnlyList, List, BattleMapLoader, Awaitable, CancellationToken (+14 more)
+Cohesion: 0.11
+Nodes (17): MapFeatureRadii, BattleSite, MiningSite, Zone, Awaitable, CancellationToken, GameObject, IReadOnlyList (+9 more)
+
+### Community 348 - "FakeCommand"
+Cohesion: 0.22
+Nodes (9): IReadOnlyList, Vector3, FakeCommand, Entity, Health, Modifiers, RadarRange, Slots (+1 more)
 
 ### Community 349 - "FactionType"
 Cohesion: 0.33
@@ -1752,29 +1814,41 @@ Nodes (5): FactionType, Empire, Rebellion, Republic, Separatist
 Cohesion: 0.32
 Nodes (3): Rect, RectTransform, SafeAreaHelper
 
+### Community 351 - "CloakAbility"
+Cohesion: 0.29
+Nodes (4): ShipAbilityDefinition, CloakAbility, IInstantiator, IShipAbility
+
 ### Community 352 - ".Solve"
 Cohesion: 0.40
 Nodes (4): Quaternion, Vector3, CinematicShotSolver, Pose
 
+### Community 353 - "SquadronInstaller"
+Cohesion: 0.32
+Nodes (7): Inject, Quaternion, Squadron, SquadronType, SquadronInstaller, DataPath, PrefabPath
+
 ### Community 354 - "CloakView"
-Cohesion: 0.33
+Cohesion: 0.29
 Nodes (4): Inject, Material, Renderer, CloakView
 
-### Community 355 - ".SelectionBegan_ClearsPreviousSelectionBeforeApplyingHit"
-Cohesion: 0.09
-Nodes (18): IMarqueeSelectionPresenter, ISelectionInput, BattleActions, SelectionInput, SelectionType, FakeEntity, HealthModel, Id (+10 more)
+### Community 355 - "FakeEntity"
+Cohesion: 0.40
+Nodes (4): FakeEntity, HealthModel, Id, Owner
 
-### Community 356 - ".Enter"
-Cohesion: 0.20
-Nodes (3): ICinematicCameraController, Dictionary, CinematicActivityTracker
+### Community 356 - "UiHitTest"
+Cohesion: 0.29
+Nodes (6): List, PointerEventData, Vector2, UiHitTest, EventSystem, RaycastResult
+
+### Community 357 - "TooltipAnchorKind"
+Cohesion: 0.40
+Nodes (4): TooltipAnchorKind, Cursor, HudFixed, UiRect
 
 ### Community 358 - "TargetSelectionRequest"
 Cohesion: 0.24
 Nodes (8): IWeaponPresenter, Quaternion, Vector3, WeaponComponent, Queue(), TargetSelectionCandidateRecord, TargetSelectionRequest, TargetSelectionCandidate
 
-### Community 359 - "HeroUi"
-Cohesion: 0.21
-Nodes (5): Dictionary, RectTransform, HeroUi, IHeroPresenter, EmpireAtWar.Entities.Heroes
+### Community 359 - "TeamColorView"
+Cohesion: 0.22
+Nodes (7): MeshRenderer, TeamColorView, GameObject, MeshRenderer, Test, TeamColorViewPrefabTests, EmpireAtWar.Components.TeamColor
 
 ### Community 360 - "Q: HeroUi.RemoveHero KeyNotFoundException during Entity.LateDispose"
 Cohesion: 0.40
@@ -1782,7 +1856,7 @@ Nodes (4): Answer, Outcome, Q: HeroUi.RemoveHero KeyNotFoundException during Ent
 
 ### Community 361 - "ShipAbilityDefinition"
 Cohesion: 0.05
-Nodes (32): IPhasedShipAbility, IsComplete, SurvivesCasterDeath, IShipAbility, ShipAbilityAiUse, Defensive, Escape, Offensive (+24 more)
+Nodes (38): IShipAbility, ShipAbilityAiUse, Defensive, Escape, Offensive, Sprite, ShipAbilityDefinition, AiUse (+30 more)
 
 ### Community 362 - "HealthModelStub"
 Cohesion: 0.12
@@ -1792,61 +1866,97 @@ Nodes (15): HardPointType, ShipClass, HealthModelStub, HardPointModels, HasLiveH
 Cohesion: 0.43
 Nodes (3): InputAction, List, BindingSlotCatalog
 
-### Community 364 - "UnitMatchupData"
-Cohesion: 0.22
-Nodes (9): IEnumerable, UnitMatchupData, StrongAgainst, WeakAgainst, UnitMatchupEntry, Content, TooltipIcon, IconKey (+1 more)
+### Community 364 - "IFighterAttackRunObserver"
+Cohesion: 0.33
+Nodes (3): IFighterAttackRunObserver, Inject, FighterTorpedoHardPoint
 
-### Community 366 - "ReinforcementZonesSystem"
-Cohesion: 0.06
-Nodes (36): Bounds, Vector3, ZoneSpot, Center, IsCapturable, Owner, ReinforcementZoneData, AsteroidSpawnBlockMargin (+28 more)
+### Community 365 - ".InstallBindings"
+Cohesion: 0.29
+Nodes (5): AudioMixer, TimerPoolService, ProjectContextInstaller, TimerPoolService, TimerPoolTick
+
+### Community 366 - ".CreateSystem"
+Cohesion: 0.17
+Nodes (16): ReinforcementZoneData, AsteroidSpawnBlockMargin, CaptureSpeedPerNetShip, HomeAreaRadius, RelaySpawnBlockRadius, SquadronCaptureWeight, BindingFlags, Canvas (+8 more)
 
 ### Community 368 - "Q: enemy spawn defend platform and spawnable mining facilities inside their station - fix it - how this happened - maybe station has wrong colliders - fix the root issues - not the symptoms"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: enemy spawn defend platform and spawnable mining facilities inside their station - fix it - how this happened - maybe station has wrong colliders - fix the root issues - not the symptoms, Source Nodes
 
-### Community 369 - "HardPointHealth"
-Cohesion: 0.40
-Nodes (4): HardPointHealth, HardPointType, Health, HullDamageMultiplier
-
-### Community 370 - "TestEntity"
+### Community 369 - "IRoute"
 Cohesion: 0.33
-Nodes (5): TestEntity, HealthModel, Id, Owner, TestCommand
+Nodes (3): IRoute, IPauseMenuRoute, EmpireAtWar.Entities.MainMenu
+
+### Community 370 - ".ShipReinforcementUiPrefab_IsConfiguredCorrectly"
+Cohesion: 0.40
+Nodes (4): MonoBehaviour, MPImage, Test, ShipReinforcementUiPrefabTests
 
 ### Community 371 - "FighterView"
 Cohesion: 0.12
 Nodes (14): Collider, HardPointType, ParticleSystem, Quaternion, Transform, Vector3, FighterView, Gun (+6 more)
 
 ### Community 372 - "TooltipService"
-Cohesion: 0.13
-Nodes (13): TooltipHandle, Id, TooltipModel, Anchor, Content, IsVisible, TooltipService, SetUp (+5 more)
+Cohesion: 0.09
+Nodes (22): ITooltipContentProvider, IsValid, Key, Source, Func, TooltipContentProvider, IsValid, Key (+14 more)
+
+### Community 373 - "Installer"
+Cohesion: 0.33
+Nodes (5): View, ModelDependencyInstaller, Transform, MonoComponentInstaller, Installer
 
 ### Community 374 - ".TryCalculateAim"
 Cohesion: 0.50
 Nodes (3): Quaternion, Vector3, WeaponTargetSelector
 
-### Community 377 - "ShipClass"
-Cohesion: 0.20
-Nodes (9): ShipClass, Bomber, Capital, Corvette, Fighter, Frigate, HeavyCapital, Interceptor (+1 more)
+### Community 375 - "FakeEntity"
+Cohesion: 0.40
+Nodes (4): FakeEntity, HealthModel, Id, Owner
 
-### Community 379 - "WeaponsData"
-Cohesion: 0.17
-Nodes (11): AssetReferenceT, WeaponType, Dictionary, List, WeaponsData, DictionaryWrapper, ShipType, ShipsData (+3 more)
+### Community 376 - "AiPlayerInstaller"
+Cohesion: 0.50
+Nodes (5): FactionCatalog, AiPlayerInstaller, AssetService, FactionCatalog, Owner
+
+### Community 377 - "ShipClass"
+Cohesion: 0.12
+Nodes (13): HardPointHealth, HardPointType, Health, HullDamageMultiplier, ShipClass, Bomber, Capital, Corvette (+5 more)
+
+### Community 378 - "SelectionInput"
+Cohesion: 0.40
+Nodes (3): ISelectionInput, BattleActions, SelectionInput
+
+### Community 379 - "ShipInstaller"
+Cohesion: 0.19
+Nodes (10): AssetReferenceT, DictionaryWrapper, ShipType, ShipsData, Inject, Ship, ShipType, ShipInstaller (+2 more)
+
+### Community 380 - ".CoreGamePrefab_HasOneFullyWiredButtonPerAction"
+Cohesion: 0.60
+Nodes (3): GameObject, Test, UnitActionsPrefabTests
+
+### Community 381 - "Q: compare rebellion and empire faction ships to republic/separatist (cis) price stats build duration"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: compare rebellion and empire faction ships to republic/separatist (cis) price stats build duration, Source Nodes
 
 ### Community 382 - ".FindTurn"
 Cohesion: 0.43
 Nodes (3): IReadOnlyList, Vector2, WeaponFacingSolver
+
+### Community 383 - "IRadarData"
+Cohesion: 0.50
+Nodes (3): IRadarData, Delay, Range
+
+### Community 384 - "IShipData"
+Cohesion: 0.50
+Nodes (4): IShipData, DestroyDelay, MinMoveCoefficient, Wreck
 
 ### Community 385 - ".PrefabImplementsTooltipContractAndHasCanvasGroup"
 Cohesion: 0.33
 Nodes (6): CanvasGroup, GameObject, Graphic, MonoBehaviour, Test, TooltipPrefabTests
 
 ### Community 386 - "EnemyUnitCommander"
-Cohesion: 0.11
-Nodes (12): Dictionary, IReadOnlyList, Vector3, EnemyUnitCommander, ActiveShipCount, CurrentState, Id, LastDecision (+4 more)
+Cohesion: 0.08
+Nodes (25): Vector3, IShipEntity, CurrentOrder, EntityId, NavigationRadius, NavigationSpeed, Owner, WorldPosition (+17 more)
 
 ### Community 387 - "EmpireAtWar.Models.Factions"
-Cohesion: 0.05
-Nodes (32): EmpireAtWar.Entities.EnemyFaction.Controllers, EmpireAtWar.Services.Cheats, EmpireAtWar.Services.Player, EmpireAtWar.Controllers.Factions, EmpireAtWar.Views.SpawnArea, EmpireAtWar.Controllers.Economy, EmpireAtWar.Models.Factions, EmpireAtWar.Services.Stations (+24 more)
+Cohesion: 0.06
+Nodes (22): EmpireAtWar.Entities.EnemyFaction.Controllers, EmpireAtWar.Services.Cheats, EmpireAtWar.Controllers.Factions, EmpireAtWar.Controllers.Economy, EmpireAtWar.Models.Factions, EmpireAtWar.Services.Stations, EmpireAtWar.Models.Reinforcement, EmpireAtWar.Views.Reinforcement (+14 more)
 
 ### Community 388 - ".StartRecorder"
 Cohesion: 0.33
@@ -1854,11 +1964,7 @@ Nodes (3): ProfilerMarker, ProfilerCategory, ProfilerRecorderOptions
 
 ### Community 391 - "EmpireAtWar.Models.Players"
 Cohesion: 0.04
-Nodes (27): GameMode, Skirmish, EmpireAtWar.Services.OwnedAreas, EmpireAtWar.Services.ReinforcementZones, EmpireAtWar.Views.ReinforcementZones, EmpireAtWar.Services.Vision, EmpireAtWar.Models.ReinforcementZones, EmpireAtWar.Commands.Game (+19 more)
-
-### Community 392 - "Mode"
-Cohesion: 0.50
-Nodes (4): Mode, Engage, Loiter, Travel
+Nodes (24): EmpireAtWar.Services.OwnedAreas, EmpireAtWar.Services.Player, EmpireAtWar.Services.ReinforcementZones, EmpireAtWar.Views.SpawnArea, EmpireAtWar.Views.ReinforcementZones, EmpireAtWar.Services.Vision, EmpireAtWar.Models.ReinforcementZones, EmpireAtWar.Services.ShipSpawning (+16 more)
 
 ### Community 396 - "BattleOutcome"
 Cohesion: 0.33
@@ -1869,28 +1975,28 @@ Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Compare both Arquitens variants: stats, model/prefab size, hardpoints and abilities, Source Nodes
 
 ### Community 401 - "CameraInput"
-Cohesion: 0.21
-Nodes (8): BattleActions, CameraActions, Vector2, CameraInput, Move, Vector2, ICameraInput, Move
+Cohesion: 0.10
+Nodes (17): BattleActions, CameraActions, Vector2, CameraInput, Move, Inject, INotifier, Vector2 (+9 more)
 
 ## Knowledge Gaps
-- **2536 isolated node(s):** `CanAcquireTarget`, `HealthFacade`, `IsDestroyed`, `TargetClass`, `TargetHealth` (+2531 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 4220 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **2539 isolated node(s):** `CanAcquireTarget`, `HealthFacade`, `IsDestroyed`, `TargetClass`, `TargetHealth` (+2534 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 4225 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `PlayerId` connect `PlayerId` to `PlayerOrderInputHandlerTests`, `RadarContact`, `.CreateSpawnPoints`, `Squadron`, `EnemyUnitLimitModel`, `UnitWreckData`, `CaptureSitesSystem`, `ShipSpawnClearance`, `SuperWeaponType`, `PlayerOrderInputHandler`, `TeamId`, `ILocalPlayer`, `MiningFacility`, `.Generate`, `HealthComponent`, `ReinforcementSpawnRuleTests`, `PlayerSlot`, `IonPulseAbility`, `IPlayerRelations`, `EnemyFactionController`, `HangarComponent`, `ICaptureSitesSystem`, `UnitSpawnView`, `CaptureSiteModel`, `EconomyService`, `EntityComponentData`, `ITickable`, `UnitOrderService`, `FakeHealth`, `SkirmishModel`, `IEntityTransformFacade`, `SelectionContext`, `.InstallBindings`, `ShipMoveComponent`, `DefendPlatform`, `MapLayout`, `RadarComponent`, `Ship`, `FakeShip`, `SelectionComponent`, `HeroUiController`, `ReinforcementZoneView`, `FakeHealth`, `IMapModelObserver`, `LivingHealth`, `UnitActionId`, `FakeHealth`, `MapNode`, `GameData`, `FakeHealth`, `IShipEntity`, `FakeHealth`, `FakeHealth`, `.InstallBindings`, `CaptureStrengthBuilder`, `SquadronFlightComponent`, `IEntityLocator`, `FakeHealthModel`, `ReinforcementService`, `SquadronHealthComponent`, `AttackMoveEngagement`, `IStationFacingService`, `FakeHealth`, `SpaceStation`, `FakeHealth`, `CinematicCandidate`, `IStationRegistry`, `ISceneService`, `IHealthModelObserver`, `MiniMapMarker`, `IEntity`, `FakeEntity`, `.IsLocal`, `UnitActionsPresenterTests`, `MonoComponent`, `MapLayoutView`, `CloakView`, `.SelectionBegan_ClearsPreviousSelectionBeforeApplyingHit`, `HealthModelStub`, `ReinforcementZonesSystem`, `IgnoredSpawnClearance`, `TestEntity`?**
-  _High betweenness centrality (0.134) - this node is a cross-community bridge._
-- **Why does `IEntity` connect `IEntity` to `TestCommand`, `EnemyUnitCommander`, `EmpireAtWar.Components.Ship.Movement`, `PlayerOrderInputHandlerTests`, `HardPointOverlayPresenter`, `EmpireAtWar.Models.Players`, `SuperWeaponPresenter`, `SuperWeaponFireService`, `HeroUiController`, `Squadron`, `ShipUiController`, `PlayerId`, `ShipSfxService`, `IHardPointModel`, `ISelectionContext`, `FakeHealth`, `ShipOrderFacade`, `IStationRegistry`, `EnemySquadronCommander`, `UnitActionsPresenter`, `IHealthModelObserver`, `ShipSelectionGroupUi`, `FullSalvoAbility`, `UnitActionId`, `SuperWeaponType`, `SelectionEntry`, `EmpireAtWar.Entities.BaseEntity`, `ShipAbilitySlot`, `PlayerFactionModel`, `EmpireAtWar.Tests.Editor`, `PlayerOrderInputHandler`, `HardPointOverlayModel`, `SquadronPilot`, `.InstallFeatures`, `IonPulseAbility`, `FakeEntity`, `EnemyFactionController`, `HangarComponent`, `ICaptureSitesSystem`, `UnitOrderFeedbackUiController`, `EconomyService`, `UiCancelRouter`, `CaptureStrengthBuilder`, `FakeOrderService`, `UnitOrderService`, `UnitActionsPresenterTests`, `HardPointMarkerData`, `IEntityLocator`, `IEntityTransformFacade`, `SelectionContext`, `FakeCamera`, `FakeCommand`, `.InstallBindings`, `CombatModifiers`, `HealthOverlayPresenter`, `.SelectionBegan_ClearsPreviousSelectionBeforeApplyingHit`, `AudioShipComponent`, `AttackMoveEngagement`, `IRadarModelObserver`, `EnemyTaskForceExecutor`, `EnemyUnitLimitModel`, `EmpireAtWar.Mvc`, `RadarComponent`, `TestEntity`, `SelectionService`, `Ship`, `FakeShip`?**
-  _High betweenness centrality (0.116) - this node is a cross-community bridge._
-- **Why does `EmpireAtWar.Mvc` connect `EmpireAtWar.Mvc` to `EmpireAtWar.Components.Ship.Movement`, `EmpireAtWar.Models.Factions`, `IModelObserver`, `SpaceStation`, `EmpireAtWar.Models.Players`, `SettingsModel`, `MarqueeRectangle`, `AddressableAssetService`, `FrameworkComponent`, `SettingsService`, `SuperWeaponType`, `EmpireAtWar.Entities.BaseEntity`, `EmpireAtWar.Tests.Editor`, `IShipEntity`, `BaseUi`, `EmpireAtWar.Services.Settings`, `EconomyService`, `Installer`, `TooltipIconData`, `IEntityLocator`, `HardPointOverlayData`, `IEntityTransformFacade`, `MainRouteController`, `MonoComponent`, `SceneService`, `Controller`, `IAssetService`, `RadarComponent`, `Data`, `EmpireAtWar.Services.Tooltip`, `MiningFacilityData`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+- **Why does `PlayerId` connect `PlayerId` to `PlayerOrderInputHandlerTests`, `RadarContact`, `IEntityTransformFacade`, `.CreateSpawnPoints`, `Squadron`, `UnitWreckData`, `CaptureSitePresenter`, `ShipSpawnClearance`, `SuperWeaponType`, `MiniMapMarker`, `PlayerOrderInputHandler`, `BattleVictoryModel`, `TeamColorPalette`, `.Generate`, `HealthComponent`, `ReinforcementSpawnRuleTests`, `IShipAbilityFacade`, `IVisionService`, `.ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds`, `HangarComponent`, `EnemySquadronCommander`, `SpawnBlockerService`, `UnitSpawnView`, `CaptureSiteModel`, `SpaceStation`, `IShipSpawnPoints`, `EntityComponentData`, `IncomingMissile`, `FakeCommand`, `FakeHealth`, `SkirmishModel`, `ShipSfxData`, `IShipMovement`, `SelectionContext`, `IInitializable`, `.PreferredShipAtLimit_SelectsAnotherAvailableShip`, `ShipMoveComponent`, `CaptureSitesSystem`, `MapLayoutGeneratorTests`, `RadarComponent`, `FogVisibilityComponent`, `Ship`, `EnemyTaskForceExecutor`, `IHealthModelObserver`, `MapLayout`, `UnitTypeId`, `WeaponProfile`, `SelectionComponent`, `OwnerRelation`, `ReinforcementZonesSystem`, `FakeHealth`, `EnemyStructurePlacementServiceTests`, `LivingHealth`, `UnitActionId`, `SquadronIconComponent`, `FakeHealth`, `MapNode`, `GameData`, `FakeHealth`, `FakeHealth`, `ILocalPlayer`, `TeamId`, `SquadronFlightComponent`, `ViewEntity`, `HeroUiController`, `FakeHealthModel`, `SquadronHealthComponent`, `AttackMoveEngagement`, `FakeHealth`, `MiningFacility`, `ISiteFacilityBuilder`, `CinematicCandidate`, `EnemyFactionController`, `TrackingSceneService`, `ICaptureSite`, `SelectionEntry`, `IEntity`, `FakeEntity`, `UnitActionsPresenterTests`, `SpawnAreaOverlay`, `MapLayoutView`, `SquadronInstaller`, `CloakView`, `FakeEntity`, `HealthModelStub`, `.CreateSystem`, `IgnoredSpawnClearance`, `FakeEntity`, `ShipInstaller`, `EnemyUnitCommander`?**
+  _High betweenness centrality (0.127) - this node is a cross-community bridge._
+- **Why does `IEntity` connect `IEntity` to `IHealthModelObserver`, `EmpireAtWar.Components.Weapon`, `EmpireAtWar.Models.Factions`, `EnemyUnitCommander`, `PlayerOrderInputHandlerTests`, `HardPointOverlayPresenter`, `SuperWeaponPresenter`, `IEntityTransformFacade`, `Squadron`, `UnitOrderFeedbackUiController`, `ShipUiController`, `ShipSfxService`, `IHardPointModel`, `ISelectionContext`, `FakeHealth`, `SquadronOrderFacade`, `UnitActionsPresenter`, `ShipSelectionGroupUi`, `UnitActionId`, `FullSalvoAbility`, `ShipAbilityFacade`, `SelectionEntry`, `SuperWeaponType`, `EmpireAtWar.Entities.BaseEntity`, `ShipOrderRunner`, `ShipAbilityService`, `PlayerOrderInputHandler`, `HardPointOverlayModel`, `TooltipContent`, `SquadronPilot`, `.InstallFeatures`, `PlayerId`, `IShipAbilityFacade`, `FakeEntity`, `.ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds`, `HangarComponent`, `TeamId`, `FakeOrderService`, `FakeCommand`, `BoostEnginePowerAbility`, `BoostShieldPowerAbility`, `UnitActionsPresenterTests`, `ViewEntity`, `IShipMovement`, `SfxProfile`, `SelectionContext`, `BoostWeaponPowerAbility`, `HeroUiController`, `IInitializable`, `InvulnerabilityAbility`, `FakeCamera`, `FakeCommand`, `CloakAbility`, `TestFacade`, `.PreferredShipAtLimit_SelectsAnotherAvailableShip`, `HealthOverlayPresenter`, `FakeEntity`, `AudioShipComponent`, `AttackMoveEngagement`, `ShipAbilityDefinition`, `EmpireAtWar.Mvc`, `RadarComponent`, `FakeEntity`, `SelectionService`, `Ship`, `CombatModifiers`, `EnemyTaskForceExecutor`?**
+  _High betweenness centrality (0.112) - this node is a cross-community bridge._
+- **Why does `EmpireAtWar.Mvc` connect `EmpireAtWar.Mvc` to `EmpireAtWar.Components.Weapon`, `EmpireAtWar.Models.Factions`, `IModelObserver`, `MiningFacility`, `EmpireAtWar.Models.Players`, `WeaponProfile`, `.InstallBindings`, `AudioDialogShipComponent`, `AddressableAssetService`, `FrameworkComponent`, `SettingsService`, `SuperWeaponType`, `EmpireAtWar.Entities.BaseEntity`, `EmpireAtWar.Services.Camera`, `SquadronPilot`, `IEntity`, `SpaceStation`, `HardPointOverlayData`, `IInitializable`, `EntityInstaller`, `Controller`, `EmpireAtWar.Tests.Editor`, `SceneService`, `EmpireAtWar.Services.ShipAbilities`, `ISceneService`, `RadarComponent`, `ShipAbilityId`, `.InstallBindings`, `EmpireAtWar.Services.Tooltip`, `Ship`?**
+  _High betweenness centrality (0.046) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `PlayerId` (e.g. with `.CreateDefaultDuel()` and `.CreatePlayers()`) actually correct?**
   _`PlayerId` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `CanAcquireTarget`, `HealthFacade`, `IsDestroyed` to the rest of the system?**
-  _2536 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2539 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `SettingsRouteController` be split into smaller, more focused modules?**
-  _Cohesion score 0.07617051013277429 - nodes in this community are weakly interconnected._
-- **Should `EmpireAtWar.Components.Ship.Movement` be split into smaller, more focused modules?**
-  _Cohesion score 0.04869215291750503 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07767722473604827 - nodes in this community are weakly interconnected._
+- **Should `EmpireAtWar.Components.Weapon` be split into smaller, more focused modules?**
+  _Cohesion score 0.045442395081529 - nodes in this community are weakly interconnected._

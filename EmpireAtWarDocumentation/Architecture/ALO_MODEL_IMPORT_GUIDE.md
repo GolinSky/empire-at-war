@@ -58,7 +58,7 @@ uvx --from mcp-for-blender==2.1.3 python Tools/Blender/mcp_call.py request.json
 
 - Rothana source: `C:/Users/golin/Downloads/Rothana.2/Models/Rothana_Stardestroyer_Full_Armed.ALO`.
 - Its importer produced 99 bones from a verified 100-bone source because it removed identity `Root`. Restore a missing root only after checking the actual source; do not add one to every model.
-- `Hull_LOD_1` contains engine geometry and must remain visible. `Shield`, `Col` and `Shadow` remain in the asset with renderers disabled.
+- `Hull_LOD_1` contains engine geometry and must remain visible. `Shield`, `Col` and `Shadow` stay in the `.blend`/FBX (source fidelity) but not in game prefabs; see step 4.
 - No ALA files were supplied for Rothana. Animation conversion was not implemented or validated.
 
 ### 3. Prepare export and validate the FBX round trip
@@ -92,7 +92,7 @@ bpy.ops.import_scene.fbx(
 
 1. Confirm the correct open project with `unity status --json`; inspect available schemas before unfamiliar `unity command` operations.
 2. Import FBX, textures and external materials into the type-first locations below. Explicitly remap FBX material slots to project materials.
-3. Use `EmpireAtWar/Ship Lit` for opaque hull surfaces. Configure additive engine/window effects separately; retain disabled helpers.
+3. Use `EmpireAtWar/Ship Lit` for opaque hull surfaces. Configure additive engine/window effects separately. Disable helper renderers first, then strip them from the prefabs (step 7).
 4. Set albedo/data texture import types correctly. Rothana normals use linear normal-map import with green-channel flip to match ALAMO; verify the convention for each new model.
 5. Create a geometry/attachment-only visual prefab. Center its visible bounds, verify bow `+Z` and up `+Y`, and choose gameplay length relative to existing ships.
 6. Keep the gameplay root at unit scale. Fit collision, shields, ion-effect bounds, selection marker, navigation radius and hangar exit to the final visible hull; recompute vertical range with banking.
@@ -153,11 +153,22 @@ bpy.ops.import_scene.fbx(
 
 ### 7. Build the separate preview, wreck and icon
 
-- **Placement preview:** create `<Ship>ReinforcementView.prefab` with the same visible geometry, size and orientation; assign the shared `Assets/Art/Materials/Vfx/Hologram.mat` to visible slots.
-- Assign its `UnitSpawnView` explicitly in `ReinforcementData`; fit trigger bounds and use the existing kinematic/no-gravity setup. Keep helpers disabled and prefab root at identity; spawn height comes from ship data.
+- **Placement preview:** create `<Ship>ReinforcementView.prefab` with the same visible geometry, size and orientation; assign the shared `Assets/Art/Materials/Vfx/Hologram.mat` to visible slots and to `UnitSpawnView.hologramMaterial`. Only slots using that material are tinted; every listed `meshRenderers` entry must have one (`UnitSpawnViewTests`).
+- Assign its `UnitSpawnView` explicitly in `ReinforcementData`; fit trigger bounds and use the existing kinematic/no-gravity setup. Strip helpers (step 7a) and keep prefab root at identity; spawn height comes from ship data.
 - **Wreck:** create dedicated wreck materials and data, using only intended visible opaque hull meshes. Preserve team-livery settings where the wreck shader uses them.
 - **Icon:** render the actual model with transparent background at `512 × 512`, matching existing framing. Inspect alpha, silhouette and crop; assign the imported sprite to all three icon consumers.
 - Icon and wreck generators must respect disabled helper renderers. Do not enable every renderer or regenerate unrelated ships as part of one import.
+
+### 7a. Strip helper meshes from game prefabs
+
+- Decision: FBX/`.blend` keep collision/shadow/shield/LOD helpers; unit prefabs drop them. Why: unused mesh data in bundles, extra GameObjects per spawn (×4–8 per squadron), stale renderer lists. Avoid: deleting helpers in Blender or the FBX.
+- After the view, wreck and preview prefabs exist: `Tools/Rendering/Report Helper Meshes In Unit Prefabs` → review → `Tools/Rendering/Strip Helper Meshes From Unit Prefabs`. Code: `Assets/Scripts/Editor/Rendering/UnitHelperMeshStripper.cs`.
+- Candidate: renderer **disabled in the saved prefab** + name matches `collis*ion|shadow|shield|lod_?\d|col`. Visible geometry (`Hull_LOD_1`) and `*Blast*` effect meshes are never candidates.
+- Removed only when the GameObject has no children, only Transform/MeshFilter/MeshRenderer, and is referenced solely by renderer lists (`TeamColorView`, `FogVisibilityComponent`, `UnitWreckView`, `UnitSpawnView`, `ExplosionVfx`, `explosionHullRenderers`); those entries are removed. Anything else → `KEEP` with reason.
+- Removal is a removed-GameObject override on the nested FBX instance, recorded in the innermost owning prefab. Repeats until a pass removes nothing (parent helpers become leaves).
+- Gameplay shields (`ShieldSurface` with `Shield`) are blocked automatically.
+- Guard: `UnitHelperMeshTests.UnitPrefabs_ContainNoStrippableHelperMeshes`.
+- 2026-10-07 baseline: 271 helpers / ~368k triangles removed from 88 committed unit prefabs; in-progress imports (Executor, MC80 Independence, Acclamator Assault, Raider Corvette) were left for their own import.
 - Use a geometry-only clone for isolated preview rendering. Instantiating an uninjected gameplay prefab can invoke component cleanup/lifecycle code and create unrelated errors.
 
 ### 8. Configure and visually verify team colors
@@ -198,7 +209,7 @@ bpy.ops.import_scene.fbx(
 | Material livery strength left at `0` | Red paint ignored team ownership despite correct renderer bindings | Inspect material livery properties and owned-color renders, including wreck materials. |
 | Import scale treated as final size | Model was far too small | Measure visible gameplay bounds and fit every dependent volume after scaling. |
 | Reliance on automatic paint detection | Sparse red trim was missed; yellow hangar markings could be selected | Inspect source texture regions and explicitly choose livery materials/hue. |
-| Helper/LOD names taken at face value | Hidden helpers could enter icons/wrecks; real engine geometry could be removed | Inspect geometry and honor saved renderer state. |
+| Helper/LOD names taken at face value | Hidden helpers could enter icons/wrecks; real engine geometry could be removed | Inspect geometry and honor saved renderer state; strip only disabled helpers with the step 7a tool. |
 | Full gameplay prefab used for an isolated render | Uninjected component cleanup produced a `WeaponComponent.Release` error | Render a geometry-only clone with appropriate layers/camera/lights; do not add production null guards to accommodate a preview. |
 | Source `Is_Targetable=No` copied as hull-only targeting (Imperial Arquitens, 2026-10-06) | Empty `ShipUnits` + empty `hardPointHealth` → no hardpoints shown or targetable in battle | Always bind weapon hardpoints to `ShipUnits` with matching `hardPointHealth`; the build/verify scripts must assert `ShipUnits` count > 0. Ignore source targetability flags. |
 | A working conversion script mistaken for a generic importer | Hardcoded Rothana names/counts/root repair would fail or corrupt another model | Audit each source and adapt the script; keep model-specific repairs explicit. |

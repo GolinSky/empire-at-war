@@ -22,7 +22,7 @@ updated: 2026-10-06
 - Non-targetable: 5 medium 3-burst turbolasers, 4 medium turbolasers, 4 medium turbo-ions, 6 heavy lasers, 1 composite beam. IDs `19..38`.
 - Automatic weapons: `31`; composite weapon profile `45` is ability-only. New heavy dual profile `43`; long-range 2-burst turbo-ion profile `44`.
 - `Fire Composite Beam` ability `25`: `6 s`, recovery `45 s`, range `375`, raw damage `1,000`; hull coefficient `1`, shield coefficient `0.1`.
-- Composite targets: `Frigate`, `Capital`, `HeavyCapital`; excludes corvettes, strikecraft, and structures. Explicit `ICompositeBeamFacade` muzzle follows banking body.
+- Composite targets: `Frigate`, `Cruiser`, `Capital`, `HeavyCapital`; excludes corvettes, strikecraft, and structures. Explicit `ICompositeBeamFacade` muzzle follows banking body.
 - Shared Tractor Beam ability `22`: corvettes/frigates only; speed multiplier `0.25`, duration `20 s`, recovery `25 s`, range `150`.
 - User-selected hangar: TIE Avenger `202` (`3` total launches, `1` active), TIE Punisher `205` (`2` total launches, `1` active). Punishers substitute for source TIE Scimitars. Launch delay/interval `4/30 s`.
 - Campaign economy from source XML: `26,000` credits, build `520 s`, tech `4`, capacity `9`. Limit `10`, shared tuning, size, and copied matchups remain provisional.

@@ -6,6 +6,8 @@ namespace EmpireAtWar.Views.Reinforcement
     public class UnitSpawnView : MonoBehaviour
     {
         [SerializeField] private MeshRenderer[] meshRenderers;
+        // Slots using this material are tinted; its base color is the "can be spawned" color.
+        [SerializeField] private Material hologramMaterial;
         private List<Collider> _triggeredCollider = new List<Collider>();
         // A property block tints every renderer without creating Material instances.
         private MaterialPropertyBlock _propertyBlock;
@@ -27,8 +29,7 @@ namespace EmpireAtWar.Views.Reinforcement
         private void Awake()
         {
             _propertyBlock = new MaterialPropertyBlock();
-            Material hologram = meshRenderers[0].sharedMaterial;
-            _canBeSpawnedColor = hologram.GetColor(BASE_COLOR_ID);
+            _canBeSpawnedColor = hologramMaterial.GetColor(BASE_COLOR_ID);
             _hologramSlots = new List<int>[meshRenderers.Length];
             for (var i = 0; i < meshRenderers.Length; i++)
             {
@@ -36,7 +37,7 @@ namespace EmpireAtWar.Views.Reinforcement
                 _hologramSlots[i] = new List<int>();
                 for (var slot = 0; slot < materials.Length; slot++)
                 {
-                    if (materials[slot] == hologram)
+                    if (materials[slot] == hologramMaterial)
                         _hologramSlots[i].Add(slot);
                 }
             }

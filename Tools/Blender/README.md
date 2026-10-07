@@ -376,6 +376,7 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - `HangarComponent.isDestroyable` defaults true for existing hangars; this ship sets false and keeps its hangar outside the health list. Weapon profiles 34/35/36 and matching firing audio added; original Victory assets retained.
 - Saved asset checks passed with no missing scripts or broken references; no new Unity import/serialization/production compile errors. No automated tests or Play Mode run. Runtime acceptance and provisional balance/source differences remain in `TODOs/Features/VictoryI_Import.md`.
 
+
 ## Victory II Star Destroyer - 2026-10-06
 
 - Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; reference `GameDesign/Victory II Import`. AOTR advanced unit `E_Victory_Star_Destroyer_2_Fighters` uses `EV_VSD_II.ALO`; source stats 12,000 hull / 10,000 shields; user speed 20.
