@@ -49,6 +49,80 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(new EnemyProductionDecisionModel().NeedsMinimumFleet(shipCount), Is.EqualTo(expected));
         }
 
+        [TestCase(EnemyAiDifficulty.Easy)]
+        [TestCase(EnemyAiDifficulty.Medium)]
+        [TestCase(EnemyAiDifficulty.Hard)]
+        public void AtEconomicFloor_ResearchesIncomeBeforeShips(EnemyAiDifficulty difficulty)
+        {
+            EnemyProductionCategory result = EvaluateResearch(
+                EnemyStrategicState.CaptureZone, difficulty, canResearchIncome: true, canResearchCombat: true);
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
+        }
+
+        [Test]
+        public void BelowMinimumFleet_BuildsShipBeforeIncomeResearch()
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.CaptureZone, EnemyAiDifficulty.Medium,
+                    1, 0, 0, 1, 1, 1, 1,
+                    true, true, true, true, true, true, true, false, true, true));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
+        [TestCase(EnemyAiDifficulty.Easy, EnemyProductionCategory.Ship)]
+        [TestCase(EnemyAiDifficulty.Medium, EnemyProductionCategory.Research)]
+        public void HoldState_ResearchesCombatFromMediumDifficulty(
+            EnemyAiDifficulty difficulty,
+            EnemyProductionCategory expected)
+        {
+            EnemyProductionCategory result = EvaluateResearch(
+                EnemyStrategicState.Hold, difficulty, canResearchIncome: false, canResearchCombat: true);
+
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void NothingElseAffordable_ResearchesCombat()
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.CaptureZone, EnemyAiDifficulty.Easy,
+                    1, 3, 3, 1, 1, 1, 1,
+                    true, true, false, false, true, false, true, false, false, true));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
+        }
+
+        [TestCase(false, EnemyProductionCategory.Research)]
+        [TestCase(true, EnemyProductionCategory.Level)]
+        public void UltraHardDueTechnology_LevelsBeforeCombatResearch(
+            bool canLevelUp,
+            EnemyProductionCategory expected)
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.HuntFleet, EnemyAiDifficulty.UltraHard,
+                    3, 3, 5, 1, 2, 3, 1,
+                    true, true, true, true, true, true, true, canLevelUp, false, true));
+
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void UltraHardAtMiningTarget_ResearchesIncomeBeforeLevel()
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.HuntFleet, EnemyAiDifficulty.UltraHard,
+                    3, 3, 5, 1, 2, 3, 1,
+                    true, true, true, true, true, true, true, true, true, true));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
+        }
+
         [Test]
         public void CaptureFleet_BalancesQuickShipsWithSlowerReinforcements()
         {
@@ -340,6 +414,22 @@ namespace EmpireAtWar.Tests.Editor
                     canLevelUp));
         }
 
+        /// <summary>Established fleet at the economic floor and defense target; ships and defense are affordable, level is not.</summary>
+        private static EnemyProductionCategory EvaluateResearch(
+            EnemyStrategicState state,
+            EnemyAiDifficulty difficulty,
+            bool canResearchIncome,
+            bool canResearchCombat)
+        {
+            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
+            return new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    state, difficulty,
+                    miningFloor, 3, 3, 1, 1, miningFloor, 1,
+                    true, true, true, true, true, true, false, false,
+                    canResearchIncome, canResearchCombat));
+        }
+
         private static EnemyProductionCategory EvaluateUltraHard(
             int shipCount,
             int shipsOrdered,
@@ -452,6 +542,7 @@ namespace EmpireAtWar.Tests.Editor
                     new RecordingPurchaseProcessor();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
+                    research: new FactionResearchModel(CreateRoster(definition)),
                     purchaseProcessor: purchaseProcessor,
                     requestFactory: new UnitRequestFactory(),
                     economyModel: new EconomyModelStub(10000f),
@@ -525,6 +616,8 @@ namespace EmpireAtWar.Tests.Editor
                     new RecordingPurchaseProcessor();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
+                    // All research is done so only the ship rebuild competes for money.
+                    research: CreateCompletedResearch(definition),
                     purchaseProcessor: purchaseProcessor,
                     requestFactory: new UnitRequestFactory(),
                     economyModel: new EconomyModelStub(money),
@@ -571,6 +664,68 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     Assert.That(purchaseProcessor.LastRequest, Is.Null);
                 }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        [Test]
+        public void EconomicFloorReached_BuysAffordableIncomeResearchOncePerLine()
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Empire);
+
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                FactionResearchModel research = new FactionResearchModel(CreateRoster(definition));
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                PlayerSlot owner = TestPlayers.CreateDuel(EnemyAiDifficulty.Medium).Get(TestPlayers.Enemy);
+                EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, unitLimitModel,
+                    EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).MinimumMiningFacilities);
+                ReserveDefensePlatform(factionModel, unitLimitModel);
+                Assert.That(research.TryGetNextTier(ResearchType.IncreasedProduction, out ResearchTierData tier),
+                    Is.True);
+
+                // No ships are listed, so the minimum-fleet rule cannot claim the purchase.
+                RecordingPurchaseProcessor purchaseProcessor = new RecordingPurchaseProcessor();
+                EnemyProductionStrategy strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: research,
+                    purchaseProcessor: purchaseProcessor,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(tier.FactionData.Price),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: unitLimitModel,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    stationRegistry: new OperationalStationRegistry(),
+                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.Medium),
+                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
+                        new UnitCombatProfileCatalog(null, null, null, null)),
+                    profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
+                    counterModel: new EnemyCounterProductionModel(),
+                    owner: owner);
+
+                strategy.Start();
+                strategy.Tick(0f);
+
+                Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ResearchUnitRequest>());
+                ResearchUnitRequest request = (ResearchUnitRequest)purchaseProcessor.LastRequest;
+                Assert.That(request.Key, Is.EqualTo(ResearchType.IncreasedProduction));
+                Assert.That(request.Tier, Is.EqualTo(1));
+
+                // While the tier is in progress its reservation keeps the AI from buying the line again.
+                Assert.That(unitLimitModel.TryReserve(UnitLimitKey.From(request),
+                    request.FactionData.MaxCount, request.FactionData.UnitCapacity, MAX_UNIT_CAPACITY), Is.True);
+                strategy.Tick(10f);
+
+                Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(1));
             }
             finally
             {
@@ -646,12 +801,30 @@ namespace EmpireAtWar.Tests.Editor
 
         private static EnemyFactionModel CreateFactionModel(FactionDefinition definition)
         {
-            FactionRoster roster = new FactionRoster(
+            return new EnemyFactionModel(LoadSharedData<StationLevelData>(), CreateRoster(definition));
+        }
+
+        private static FactionResearchModel CreateCompletedResearch(FactionDefinition definition)
+        {
+            FactionResearchModel research = new FactionResearchModel(CreateRoster(definition));
+            foreach (ResearchType researchType in research.ResearchTypes)
+            {
+                while (research.TryGetNextTier(researchType, out _))
+                {
+                    research.Complete(researchType);
+                }
+            }
+
+            return research;
+        }
+
+        private static FactionRoster CreateRoster(FactionDefinition definition)
+        {
+            return new FactionRoster(
                 definition,
                 LoadSharedData<MiningFacilityCatalog>(),
                 LoadSharedData<DefendPlatformCatalog>(),
                 LoadSharedData<SuperWeaponCatalog>());
-            return new EnemyFactionModel(LoadSharedData<StationLevelData>(), roster);
         }
 
         private static T LoadSharedData<T>() where T : ScriptableObject

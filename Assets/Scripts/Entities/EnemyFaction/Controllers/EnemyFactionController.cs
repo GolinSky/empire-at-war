@@ -48,6 +48,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly TimerPoolService _timerPoolService;
+        private readonly FactionResearchModel _research;
 
         private bool _isInitialized;
 
@@ -69,6 +70,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
             TimerPoolService timerPoolService,
+            FactionResearchModel research,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
             PlayerSlot owner) : base(model)
@@ -79,6 +81,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
             _timerPoolService = timerPoolService;
+            _research = research;
             _economyProvider = economyProvider;
             _wallet = wallet;
             _shipSpawnPoints = shipSpawnPoints;
@@ -138,6 +141,21 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     _economyProvider.RecalculateIncome(this);
                   //  Debug.Log($"Upgrade level {Model.CurrentLevel}");
                     break;
+                case ResearchUnitRequest researchUnitRequest:
+                {
+                    if (!TryReserveAndSpend(researchUnitRequest))
+                    {
+                        return;
+                    }
+
+                    // The reservation blocks a second purchase of this line until the tier completes.
+                    ScheduleBuild(researchUnitRequest, () =>
+                        {
+                            _research.Complete(researchUnitRequest.Key);
+                            ReleaseUnit(researchUnitRequest);
+                        });
+                    break;
+                }
                 case ShipUnitRequest shipUnitRequest:
                 {
                     if (!TryReserveAndSpend(shipUnitRequest))

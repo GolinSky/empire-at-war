@@ -9,7 +9,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         Ship = 1,
         Mining = 2,
         Defense = 3,
-        Level = 4
+        Level = 4,
+        Research = 5
     }
 
     public readonly struct EnemyProductionSnapshot
@@ -32,6 +33,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasLevelUpOption { get; }
         public bool CanLevelUp { get; }
 
+        /// <summary>An unlocked, not yet queued research tier that raises income is affordable.</summary>
+        public bool CanResearchIncome { get; }
+
+        /// <summary>An unlocked, not yet queued combat research tier is affordable.</summary>
+        public bool CanResearchCombat { get; }
+
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
             EnemyAiDifficulty difficulty,
@@ -49,7 +56,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasDefenseOption,
             bool canBuildDefense,
             bool hasLevelUpOption,
-            bool canLevelUp)
+            bool canLevelUp,
+            bool canResearchIncome = false,
+            bool canResearchCombat = false)
         {
             StrategicState = strategicState;
             Difficulty = difficulty;
@@ -68,6 +77,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanBuildDefense = canBuildDefense;
             HasLevelUpOption = hasLevelUpOption;
             CanLevelUp = canLevelUp;
+            CanResearchIncome = canResearchIncome;
+            CanResearchCombat = canResearchCombat;
         }
     }
 
@@ -135,6 +146,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     : EnemyProductionCategory.None;
             }
 
+            // Income research is cheap and pays for itself, so it follows the economic floor.
+            if (snapshot.CanResearchIncome)
+            {
+                return EnemyProductionCategory.Research;
+            }
+
             if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&
                 snapshot.CanBuildDefense)
             {
@@ -146,6 +163,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 if (snapshot.Difficulty >= EnemyAiDifficulty.Hard && snapshot.CanLevelUp)
                 {
                     return EnemyProductionCategory.Level;
+                }
+
+                if (snapshot.Difficulty >= EnemyAiDifficulty.Medium && snapshot.CanResearchCombat)
+                {
+                    return EnemyProductionCategory.Research;
                 }
             }
 
@@ -159,8 +181,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return EnemyProductionCategory.Defense;
             }
 
-            return snapshot.CanLevelUp
-                ? EnemyProductionCategory.Level
+            if (snapshot.CanLevelUp)
+            {
+                return EnemyProductionCategory.Level;
+            }
+
+            return snapshot.CanResearchCombat
+                ? EnemyProductionCategory.Research
                 : EnemyProductionCategory.None;
         }
 
@@ -187,10 +214,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     : EnemyProductionCategory.None;
             }
 
+            if (snapshot.CanResearchIncome)
+            {
+                return EnemyProductionCategory.Research;
+            }
+
             if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel &&
                 snapshot.HasLevelUpOption && snapshot.CanLevelUp)
             {
                 return EnemyProductionCategory.Level;
+            }
+
+            if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel && snapshot.CanResearchCombat)
+            {
+                return EnemyProductionCategory.Research;
             }
 
             if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&
