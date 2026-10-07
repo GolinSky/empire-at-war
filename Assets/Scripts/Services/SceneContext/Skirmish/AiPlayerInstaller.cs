@@ -2,6 +2,7 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
@@ -34,6 +35,9 @@ namespace EmpireAtWar.SceneContext
             Container.BindInterfacesExt<EnemyService>();
             Container.Bind<EnemyStrategicDecisionModel>().AsSingle();
             Container.Bind<EnemyProductionDecisionModel>().AsSingle();
+            Container.Bind<EnemyCounterProductionModel>().AsSingle();
+            Container.Bind<UnitCombatProfileCatalog>().AsSingle();
+            Container.Bind<ForceCompositionBuilder>().AsSingle();
             Container.Bind<EnemyStrategicContextBuilder>().AsSingle();
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
             Container.Bind<EnemyProductionStrategy>().AsSingle();

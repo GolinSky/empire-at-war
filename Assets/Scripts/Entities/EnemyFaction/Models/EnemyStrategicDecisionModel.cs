@@ -25,8 +25,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasEnemyBaseTarget { get; }
         public bool HasOwnBase { get; }
         public int OwnedCapturableZoneCount { get; }
-        public int EnemyShipsNearOwnBase { get; }
         public bool HasThreatenedSite { get; }
+
+        /// <summary>Own fleet strength over the focused enemy team's fleet; 1 is an even fight.</summary>
+        public float FleetAdvantage { get; }
+
+        /// <summary>Strength of hostiles near the own base over the own fleet; 0 when none are near.</summary>
+        public float BaseThreatRatio { get; }
 
         public EnemyStrategicSnapshot(
             BattleVictoryCondition victoryCondition,
@@ -34,7 +39,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int ownShipCount,
             int enemyShipCount,
             int ownedCapturableZoneCount,
-            int enemyShipsNearOwnBase,
+            float fleetAdvantage,
+            float baseThreatRatio,
             bool hasCaptureTarget,
             bool hasEnemyBaseTarget,
             bool hasOwnBase,
@@ -48,7 +54,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasEnemyBaseTarget = hasEnemyBaseTarget;
             HasOwnBase = hasOwnBase;
             OwnedCapturableZoneCount = ownedCapturableZoneCount;
-            EnemyShipsNearOwnBase = enemyShipsNearOwnBase;
+            FleetAdvantage = fleetAdvantage;
+            BaseThreatRatio = baseThreatRatio;
             HasThreatenedSite = hasThreatenedSite;
         }
     }
@@ -67,8 +74,66 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         }
     }
 
+    /// <summary>
+    /// Scores every <see cref="EnemyStrategicRule"/> and picks the highest. Strength checks use
+    /// <see cref="EnemyStrategicSnapshot.FleetAdvantage"/>, which comes from the damage matrix, not ship counts.
+    /// </summary>
     public sealed class EnemyStrategicDecisionModel : PureModel
     {
+        /// <summary>Bonus for the current state so near-equal options do not flip every decision.</summary>
+        private const float HYSTERESIS = 0.05f;
+
+        private static readonly EnemyStrategicRule[] _rules =
+        {
+            new EnemyStrategicRule(EnemyStrategicState.RebuildFleet, 1f,
+                "No combat ships are available.",
+                (s, p) => ResponseCurve.When(s.OwnShipCount == 0)),
+            new EnemyStrategicRule(EnemyStrategicState.DefendBase, 0.9f,
+                "A nearby enemy task force threatens the home base.",
+                (s, p) => ResponseCurve.When(s.HasOwnBase) *
+                          ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio)),
+            new EnemyStrategicRule(EnemyStrategicState.RetreatValue, 0.8f,
+                "The enemy fleet outmatches ours, so the fleet withdraws to its base.",
+                (s, p) => ResponseCurve.When(s.HasOwnBase && s.EnemyShipCount > 0) *
+                          ResponseCurve.AtMost(s.FleetAdvantage, p.RetreatAdvantage)),
+            new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.7f,
+                "Enemy ships are contesting an owned capture site.",
+                (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
+            new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.6f,
+                "The configured map-control floor has not been established.",
+                (s, p) => ResponseCurve.When(s.HasCaptureTarget &&
+                                             s.OwnedCapturableZoneCount < p.MinimumControlledZones)),
+            new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.5f,
+                "The objective is base destruction and the fleet outmatches the defenders.",
+                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
+                                             s.HasEnemyBaseTarget) *
+                          ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
+            new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.5f,
+                "The objective is the enemy fleet and the matchup favors attacking.",
+                (s, p) => ResponseCurve.When(s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
+                                             s.EnemyShipCount > 0) *
+                          ResponseCurve.AtLeast(s.FleetAdvantage, p.HuntAdvantage)),
+            new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.4f,
+                "Map control is the best use of the fleet until the matchup improves.",
+                (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
+            new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.3f,
+                "Enemy ships block the route to the base objective.",
+                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
+                                             s.EnemyShipCount > 0) *
+                          ResponseCurve.AtLeast(s.FleetAdvantage, p.HuntAdvantage)),
+            new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.2f,
+                "No other target remains before the base objective.",
+                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
+                                             s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
+            new EnemyStrategicRule(EnemyStrategicState.Hold, 0.05f,
+                "No valid strategic target is currently available.",
+                (s, p) => 1f)
+        };
+
+        private EnemyStrategicState _lastState;
+
+        private bool _hasLastState;
+
         public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot)
         {
             if (snapshot.OwnShipCount < 0)
@@ -87,136 +152,49 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     nameof(snapshot.OwnedCapturableZoneCount));
             }
 
-            if (snapshot.EnemyShipsNearOwnBase < 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(snapshot.EnemyShipsNearOwnBase));
-            }
-
-            if (snapshot.OwnShipCount == 0)
-            {
-                return new EnemyStrategicDecision(
-                    state: EnemyStrategicState.RebuildFleet,
-                    committedShipCount: 0,
-                    reason: "No combat ships are available.");
-            }
-
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(snapshot.Difficulty);
-            int committedShipCount = Math.Max(
-                1,
-                Math.Min(
-                    snapshot.OwnShipCount,
-                    CalculateThreshold(
-                        snapshot.OwnShipCount,
-                        profile.CommittedFleetRatio)));
-
-            int defenseThreshold = Math.Max(
-                1,
-                CalculateThreshold(
-                    snapshot.OwnShipCount,
-                    profile.DefenseThreatRatio));
-            if (snapshot.HasOwnBase &&
-                snapshot.EnemyShipsNearOwnBase >= defenseThreshold)
+            EnemyStrategicRule best = _rules[_rules.Length - 1];
+            float bestScore = 0f;
+            foreach (EnemyStrategicRule rule in _rules)
             {
-                return new EnemyStrategicDecision(
-                    state: EnemyStrategicState.DefendBase,
-                    committedShipCount: committedShipCount,
-                    reason: "A nearby enemy task force threatens the home base.");
-            }
-
-            if (snapshot.HasOwnBase && snapshot.EnemyShipCount - snapshot.OwnShipCount >=
-                profile.OutnumberedRetreatCount)
-            {
-                return new EnemyStrategicDecision(
-                    state: EnemyStrategicState.RetreatValue,
-                    committedShipCount: snapshot.OwnShipCount,
-                    reason: "The fleet is outnumbered and is withdrawing to its base.");
-            }
-
-            if (snapshot.HasThreatenedSite)
-            {
-                return new EnemyStrategicDecision(
-                    state: EnemyStrategicState.CaptureZone,
-                    committedShipCount: committedShipCount,
-                    reason: "Enemy ships are contesting an owned capture site.");
-            }
-
-            if (snapshot.HasCaptureTarget &&
-                snapshot.OwnedCapturableZoneCount < profile.MinimumControlledZones)
-            {
-                return new EnemyStrategicDecision(
-                    state: EnemyStrategicState.CaptureZone,
-                    committedShipCount: committedShipCount,
-                    reason: "The configured map-control floor has not been established.");
-            }
-
-            if (snapshot.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase)
-            {
-                int requiredShips = Math.Max(
-                    1,
-                    CalculateThreshold(
-                        Math.Max(1, snapshot.EnemyShipCount),
-                        profile.RequiredAttackRatio));
-                if (snapshot.HasEnemyBaseTarget && snapshot.OwnShipCount >= requiredShips)
+                float score = rule.Score(snapshot, profile);
+                if (score > 0f && _hasLastState && rule.State == _lastState)
                 {
-                    return new EnemyStrategicDecision(
-                        state: EnemyStrategicState.AssaultBase,
-                        committedShipCount: committedShipCount,
-                        reason: "The selected victory condition is base destruction and the attack threshold is met.");
+                    score += HYSTERESIS;
                 }
 
-                if (snapshot.HasCaptureTarget)
+                if (score > bestScore)
                 {
-                    return new EnemyStrategicDecision(
-                        state: EnemyStrategicState.CaptureZone,
-                        committedShipCount: committedShipCount,
-                        reason: "More map control is needed before assaulting the base.");
-                }
-
-                if (snapshot.EnemyShipCount > 0)
-                {
-                    return new EnemyStrategicDecision(
-                        state: EnemyStrategicState.HuntFleet,
-                        committedShipCount: committedShipCount,
-                        reason: "Enemy ships block the route to the base objective.");
-                }
-
-                if (snapshot.HasEnemyBaseTarget)
-                {
-                    return new EnemyStrategicDecision(
-                        state: EnemyStrategicState.AssaultBase,
-                        committedShipCount: committedShipCount,
-                        reason: "No other target remains before the base objective.");
-                }
-            }
-            else
-            {
-                if (snapshot.EnemyShipCount > 0)
-                {
-                    return new EnemyStrategicDecision(
-                        state: EnemyStrategicState.HuntFleet,
-                        committedShipCount: committedShipCount,
-                        reason: "The selected victory condition prioritizes eliminating the enemy fleet.");
-                }
-
-                if (snapshot.HasCaptureTarget)
-                {
-                    return new EnemyStrategicDecision(
-                        state: EnemyStrategicState.CaptureZone,
-                        committedShipCount: committedShipCount,
-                        reason: "No visible fleet target exists, so the AI expands map control.");
+                    best = rule;
+                    bestScore = score;
                 }
             }
 
+            _lastState = best.State;
+            _hasLastState = true;
             return new EnemyStrategicDecision(
-                state: EnemyStrategicState.Hold,
-                committedShipCount: committedShipCount,
-                reason: "No valid strategic target is currently available.");
+                state: best.State,
+                committedShipCount: CalculateCommittedShipCount(best.State, snapshot.OwnShipCount, profile),
+                reason: best.Reason);
         }
 
-        private static int CalculateThreshold(int unitCount, float ratio)
+        private static int CalculateCommittedShipCount(
+            EnemyStrategicState state,
+            int ownShipCount,
+            EnemyAiDifficultyProfile profile)
         {
-            return (int)Math.Ceiling(unitCount * (decimal)ratio);
+            if (state == EnemyStrategicState.RebuildFleet)
+            {
+                return 0;
+            }
+
+            if (state == EnemyStrategicState.RetreatValue)
+            {
+                return ownShipCount;
+            }
+
+            return Math.Max(1, Math.Min(ownShipCount,
+                (int)Math.Ceiling(ownShipCount * (decimal)profile.CommittedFleetRatio)));
         }
     }
 }

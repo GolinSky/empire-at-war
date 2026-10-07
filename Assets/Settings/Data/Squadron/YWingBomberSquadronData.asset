@@ -40,3 +40,11 @@ MonoBehaviour:
   <Delay>k__BackingField: 0.25
   <WeaponRange>k__BackingField: 70
   <VisionRange>k__BackingField: 175
+  <MemberCount>k__BackingField: 6
+  weaponLoadout:
+  - weaponType: 46
+    count: 6
+  - weaponType: 47
+    count: 6
+  - weaponType: 48
+    count: 12

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -55,8 +56,12 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
         private readonly IPlayerRoster _playerRoster;
+        private readonly ForceCompositionBuilder _forceBuilder;
 
         private readonly PlayerSlot _owner;
+        private readonly ForceComposition _ownForce = new ForceComposition();
+        private readonly ForceComposition _focusTeamForce = new ForceComposition();
+        private readonly ForceComposition _baseThreatForce = new ForceComposition();
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
@@ -65,8 +70,10 @@ namespace EmpireAtWar.Services.Enemy
             IEntityLocator entityLocator,
             IGameModelObserver gameModel,
             IPlayerRoster playerRoster,
+            ForceCompositionBuilder forceBuilder,
             PlayerSlot owner)
         {
+            _forceBuilder = forceBuilder;
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _captureSites = captureSites;
@@ -101,12 +108,14 @@ namespace EmpireAtWar.Services.Enemy
                 origin);
             // Strength is compared against the whole team of the focused enemy.
             List<IShipEntity> focusTeamShips = GetShips(ship => _playerRoster.IsAllied(focusEnemy, ship.Owner));
-            List<IShipEntity> hostileShips = GetShips(ship => _playerRoster.IsHostile(self, ship.Owner));
             int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
-            int enemyShipsNearOwnBase = CountShipsNearBase(
-                hostileShips,
-                ownBase,
-                BASE_THREAT_RADIUS);
+            _forceBuilder.Build(_ownForce, entity => entity.Owner == self);
+            _forceBuilder.Build(_focusTeamForce,
+                entity => focusEnemy != PlayerId.None && _playerRoster.IsAllied(focusEnemy, entity.Owner));
+            BuildBaseThreat(ownBase);
+            float baseThreatRatio = _baseThreatForce.IsEmpty
+                ? 0f
+                : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
 
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 victoryCondition: _gameModel.VictoryCondition,
@@ -117,7 +126,8 @@ namespace EmpireAtWar.Services.Enemy
                 hasEnemyBaseTarget: enemyBaseTarget != null,
                 hasOwnBase: ownBase != null,
                 ownedCapturableZoneCount: ownedCapturableZoneCount,
-                enemyShipsNearOwnBase: enemyShipsNearOwnBase,
+                fleetAdvantage: CombatMatchup.Advantage(_ownForce, _focusTeamForce),
+                baseThreatRatio: baseThreatRatio,
                 hasThreatenedSite: hasThreatenedSite);
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
@@ -200,30 +210,29 @@ namespace EmpireAtWar.Services.Enemy
             return FormationModel.CalculateCenter(positions);
         }
 
-        private static int CountShipsNearBase(
-            IReadOnlyList<IShipEntity> ships,
-            GameEntity ownBase,
-            float threatRadius)
+        /// <summary>Hostile ships and squadrons within <see cref="BASE_THREAT_RADIUS"/> of the own base.</summary>
+        private void BuildBaseThreat(GameEntity ownBase)
         {
             if (ownBase == null)
             {
-                return 0;
+                _baseThreatForce.Clear();
+                return;
             }
 
+            PlayerId self = _owner.Id;
             Vector3 basePosition = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
-            float threatRadiusSquared = threatRadius * threatRadius;
-            int count = 0;
-            foreach (IShipEntity ship in ships)
+            float threatRadiusSquared = BASE_THREAT_RADIUS * BASE_THREAT_RADIUS;
+            _forceBuilder.Build(_baseThreatForce, entity =>
             {
-                Vector3 offset = ship.WorldPosition - basePosition;
-                offset.y = 0f;
-                if (offset.sqrMagnitude <= threatRadiusSquared)
+                if (!_playerRoster.IsHostile(self, entity.Owner))
                 {
-                    count++;
+                    return false;
                 }
-            }
 
-            return count;
+                Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - basePosition;
+                offset.y = 0f;
+                return offset.sqrMagnitude <= threatRadiusSquared;
+            });
         }
 
         private GameEntity FindClosestEntity(Predicate<GameEntity> hasRole, Predicate<PlayerId> includeOwner, Vector3 origin)

@@ -5,6 +5,8 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
@@ -32,6 +34,17 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyProductionDecisionModel _decisionModel;
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
+        private readonly IPlayerRoster _playerRoster;
+        private readonly ForceCompositionBuilder _forceBuilder;
+        private readonly UnitCombatProfileCatalog _profileCatalog;
+        private readonly EnemyCounterProductionModel _counterModel;
+
+        private readonly ForceComposition _ownForce = new ForceComposition();
+        private readonly ForceComposition _hostileForce = new ForceComposition();
+        private readonly Dictionary<UnitTypeId, int> _liveUnitCounts = new Dictionary<UnitTypeId, int>();
+        private readonly List<ProductionCandidate> _candidates = new List<ProductionCandidate>();
+        private readonly List<UnitTypeId> _candidateIds = new List<UnitTypeId>();
+        private readonly List<FactionData> _candidateData = new List<FactionData>();
 
         private float _decisionTimer;
 
@@ -48,9 +61,17 @@ namespace EmpireAtWar.Services.Enemy
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
+            IPlayerRoster playerRoster,
+            ForceCompositionBuilder forceBuilder,
+            UnitCombatProfileCatalog profileCatalog,
+            EnemyCounterProductionModel counterModel,
             PlayerSlot owner)
         {
             _owner = owner;
+            _playerRoster = playerRoster;
+            _forceBuilder = forceBuilder;
+            _profileCatalog = profileCatalog;
+            _counterModel = counterModel;
             _factionModel = factionModel;
             _purchaseProcessor = purchaseProcessor;
             _requestFactory = requestFactory;
@@ -112,11 +133,13 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildDefense = hasDefenseOption && IsAffordable(defense.Value);
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
+            KeyValuePair<ShipType, FactionData> ship = default;
             bool isUltraHard = _owner.Difficulty == EnemyAiDifficulty.UltraHard;
-            bool hasShipOption = TrySelectShip(
-                shipCount,
-                out KeyValuePair<ShipType, FactionData> ship);
-            bool canBuildShip = hasShipOption && IsAffordable(ship.Value);
+            // A counter to the hostile composition replaces the size-based pick whenever one improves the matchup.
+            bool hasCounter = TrySelectCounterUnit(out UnitTypeId counterId, out FactionData counterData);
+            bool hasShipOption = hasCounter || TrySelectShip(shipCount, out ship);
+            FactionData shipChoice = hasCounter ? counterData : ship.Value;
+            bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
@@ -147,11 +170,16 @@ namespace EmpireAtWar.Services.Enemy
                     hasLevelUpOption,
                     canLevelUp));
 
-            bool buildSquadron = category == EnemyProductionCategory.Ship &&
+            bool buildSquadron = !hasCounter &&
+                                 category == EnemyProductionCategory.Ship &&
                                  TrySelectSquadron(shipCount, out squadron) &&
                                  IsAffordable(squadron.Value);
             UnitRequest request = category switch
             {
+                EnemyProductionCategory.Ship when hasCounter && counterId.IsShip =>
+                    _requestFactory.ConstructUnitRequest(counterData, counterId.ShipType),
+                EnemyProductionCategory.Ship when hasCounter =>
+                    _requestFactory.ConstructUnitRequest(counterData, counterId.SquadronType),
                 EnemyProductionCategory.Ship when buildSquadron =>
                     _requestFactory.ConstructUnitRequest(squadron.Value, squadron.Key),
                 EnemyProductionCategory.Ship =>
@@ -173,7 +201,7 @@ namespace EmpireAtWar.Services.Enemy
 
             Debug.Log(
                 $"[EnemyAI:Production] State={_stateProvider.CurrentState}, " +
-                $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, " +
+                $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, Counter={hasCounter}, " +
                 $"Unit={request.Id}, Mining={miningFacilityCount}/{miningFacilityTarget}, " +
                 $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
                 $"Cost={request.FactionData.Price}, " +
@@ -244,6 +272,65 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return found;
+        }
+
+        /// <summary>
+        /// Rates every buildable ship and squadron against all hostile units; units already bought but not yet
+        /// in play count toward the own force so the same counter is not bought twice.
+        /// </summary>
+        private bool TrySelectCounterUnit(out UnitTypeId selectedId, out FactionData selectedData)
+        {
+            selectedId = default;
+            selectedData = null;
+            PlayerId self = _owner.Id;
+            _forceBuilder.Build(_hostileForce, entity => _playerRoster.IsHostile(self, entity.Owner));
+            if (_hostileForce.IsEmpty)
+            {
+                return false;
+            }
+
+            _forceBuilder.Build(_ownForce, entity => entity.Owner == self, _liveUnitCounts);
+            _candidates.Clear();
+            _candidateIds.Clear();
+            _candidateData.Clear();
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                AddCounterOption<ShipUnitRequest>(UnitTypeId.Ship(option.Key), option.Key.ToString(), option.Value);
+            }
+
+            foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
+            {
+                AddCounterOption<SquadronUnitRequest>(UnitTypeId.Squadron(option.Key), option.Key.ToString(),
+                    option.Value);
+            }
+
+            if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index))
+            {
+                return false;
+            }
+
+            selectedId = _candidateIds[index];
+            selectedData = _candidateData[index];
+            return true;
+        }
+
+        private void AddCounterOption<TRequest>(UnitTypeId unitTypeId, string requestId, FactionData data)
+        {
+            _liveUnitCounts.TryGetValue(unitTypeId, out int liveCount);
+            int pendingCount = _unitLimitModel.GetReservedCount<TRequest>(requestId) - liveCount;
+            for (int i = 0; i < pendingCount; i++)
+            {
+                _ownForce.AddNew(_profileCatalog.Get(unitTypeId), true);
+            }
+
+            if (!IsAvailable(data) || !CanReserve<TRequest>(requestId, data))
+            {
+                return;
+            }
+
+            _candidates.Add(new ProductionCandidate(_profileCatalog.Get(unitTypeId), data.Price));
+            _candidateIds.Add(unitTypeId);
+            _candidateData.Add(data);
         }
 
         private bool TrySelectShip(

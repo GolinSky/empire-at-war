@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
@@ -72,5 +73,10 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float HangarInitialDelay { get; private set; } = 4f;
         [field: SerializeField] public float HangarLaunchInterval { get; private set; } = 8f;
         public IReadOnlyList<HangarBay> HangarBays => hangarBays;
+
+        [Header("AI Combat Profile")]
+        [Tooltip("Baked by Tools/AI/Bake Weapon Loadouts from the view prefab's WeaponComponent hardpoints.")]
+        [SerializeField] private List<WeaponLoadoutEntry> weaponLoadout = new List<WeaponLoadoutEntry>();
+        public IReadOnlyList<WeaponLoadoutEntry> WeaponLoadout => weaponLoadout;
     }
 }

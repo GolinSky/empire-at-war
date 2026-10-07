@@ -252,7 +252,8 @@ namespace EmpireAtWar.Services.Enemy
                 $"Objective={_gameModel.VictoryCondition}, State={decision.State}, " +
                 $"Committed={decision.CommittedShipCount}/{LastSnapshot.OwnShipCount}, " +
                 $"EnemyShips={LastSnapshot.EnemyShipCount}, " +
-                $"BaseThreats={LastSnapshot.EnemyShipsNearOwnBase}, " +
+                $"FleetAdvantage={LastSnapshot.FleetAdvantage:F2}, " +
+                $"BaseThreat={LastSnapshot.BaseThreatRatio:F2}, " +
                 $"ControlledZones={LastSnapshot.OwnedCapturableZoneCount}, " +
                 $"Reason={decision.Reason}");
             DecisionChanged?.Invoke(decision);
