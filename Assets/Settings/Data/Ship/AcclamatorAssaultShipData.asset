@@ -29,7 +29,7 @@ MonoBehaviour:
   <ShipClass>k__BackingField: 8
   <Hull>k__BackingField: 5000
   <Shields>k__BackingField: 2500
-  <ShieldRegenerateValue>k__BackingField: 3.125
+  <ShieldRegenerateValue>k__BackingField: 4.1666665
   <ShieldRegenerateDelay>k__BackingField: 1
   hardPointHealth:
   - hardPointType: 0
