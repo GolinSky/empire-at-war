@@ -96,13 +96,25 @@ namespace EmpireAtWar
             _isScrolling = Mathf.Abs(delta.y) >= Mathf.Abs(delta.x);
             if (_isScrolling)
                 _scrollRect.OnBeginDrag(eventData);
-            else if (!_isBlocked)
-                _reinforcementVisitor.Handle(this);
+            else
+                StartPlacement();
         }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            if (_isScrolling) _scrollRect.OnDrag(eventData);
+            if (!_isScrolling) return;
+
+            // A vertical drag that leaves the list is a placement, not a scroll.
+            if (RectTransformUtility.RectangleContainsScreenPoint(
+                    _scrollRect.viewport, eventData.position, eventData.pressEventCamera))
+            {
+                _scrollRect.OnDrag(eventData);
+                return;
+            }
+
+            _scrollRect.OnEndDrag(eventData);
+            _isScrolling = false;
+            StartPlacement();
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
@@ -113,7 +125,13 @@ namespace EmpireAtWar
 
         private void UpdateUnitCountText()
         {
-            unitCountText.text = _count.ToString();
+            unitCountText.text = $"x{_count}";
+        }
+
+        private void StartPlacement()
+        {
+            if (!_isBlocked)
+                _reinforcementVisitor.Handle(this);
         }
 
         private void Destroy()

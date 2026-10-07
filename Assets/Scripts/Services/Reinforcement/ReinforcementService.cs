@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
     /// <summary>Runs the drag-to-place flow: input lock, preview, validation and release.
     /// What may be placed where is decided by the request's <see cref="IReinforcementPlacement"/>.</summary>
-    public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
+    public class ReinforcementService : Service, IReinforcementService, ILateTickable, IInitializable,
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>
     {
         private readonly IInputLock _inputLock;
@@ -83,7 +83,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _inputLock.Acquire();
         }
 
-        public void Tick()
+        // Runs after the camera moves so the preview stays under the cursor while the view pans.
+        public void LateTick()
         {
             if (!_model.IsTrySpawning)
             {
@@ -132,7 +133,8 @@ namespace EmpireAtWar.Services.Reinforcement
             CancelPlacement();
             _currentRequest = request;
             _placement = placement;
-            _placementLock = _inputLock.Acquire();
+            // Battle input only: the camera stays movable so the player can pan to a drop point.
+            _placementLock = _inputLock.AcquireBattle();
             _model.IsTrySpawning = true;
             _preview = placement.CreatePreview();
             _spawnAreaOverlay.Show(_owner.Id);

@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Input
         private readonly GameInputActions _actions;
 
         private int _lockCount;
+        private int _battleLockCount;
 
         public event Action<bool> LockChanged;
 
@@ -40,7 +41,14 @@ namespace EmpireAtWar.Services.Input
                 SetGameplayEnabled(false);
             }
 
-            return new LockHandle(this);
+            return new LockHandle(Release);
+        }
+
+        public IDisposable AcquireBattle()
+        {
+            _battleLockCount++;
+            UpdateBattleActions();
+            return new LockHandle(ReleaseBattle);
         }
 
         private void Release()
@@ -52,31 +60,48 @@ namespace EmpireAtWar.Services.Input
             }
         }
 
+        private void ReleaseBattle()
+        {
+            _battleLockCount--;
+            UpdateBattleActions();
+        }
+
         private void SetGameplayEnabled(bool isEnabled)
         {
             if (isEnabled)
             {
                 _actions.Camera.Enable();
-                _actions.Battle.Enable();
             }
             else
             {
                 _actions.Camera.Disable();
-                _actions.Battle.Disable();
             }
 
+            UpdateBattleActions();
             LockChanged?.Invoke(!isEnabled);
+        }
+
+        private void UpdateBattleActions()
+        {
+            if (_lockCount == 0 && _battleLockCount == 0)
+            {
+                _actions.Battle.Enable();
+            }
+            else
+            {
+                _actions.Battle.Disable();
+            }
         }
 
         private sealed class LockHandle : IDisposable
         {
-            private readonly InputLockService _inputLockService;
+            private readonly Action _release;
 
             private bool _isReleased;
 
-            public LockHandle(InputLockService inputLockService)
+            public LockHandle(Action release)
             {
-                _inputLockService = inputLockService;
+                _release = release;
             }
 
             public void Dispose()
@@ -87,7 +112,7 @@ namespace EmpireAtWar.Services.Input
                 }
 
                 _isReleased = true;
-                _inputLockService.Release();
+                _release();
             }
         }
     }

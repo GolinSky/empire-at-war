@@ -45,6 +45,32 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void BattleLock_KeepsCameraEnabled()
+        {
+            IDisposable battleLock = _inputLockService.AcquireBattle();
+
+            Assert.That(_inputLockService.IsLocked, Is.False);
+            Assert.That(_provider.Actions.Battle.enabled, Is.False);
+            Assert.That(_provider.Actions.Camera.enabled, Is.True);
+
+            battleLock.Dispose();
+
+            Assert.That(_provider.Actions.Battle.enabled, Is.True);
+        }
+
+        [Test]
+        public void ReleasingFullLock_KeepsBattleLockedWhileBattleLockIsHeld()
+        {
+            IDisposable battleLock = _inputLockService.AcquireBattle();
+            _inputLockService.Acquire().Dispose();
+
+            Assert.That(_provider.Actions.Battle.enabled, Is.False);
+            Assert.That(_provider.Actions.Camera.enabled, Is.True);
+
+            battleLock.Dispose();
+        }
+
+        [Test]
         public void ReleasingHandleTwice_DoesNotReleaseAnotherLock()
         {
             IDisposable first = _inputLockService.Acquire();

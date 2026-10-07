@@ -202,6 +202,8 @@ namespace EmpireAtWar.Tests.Editor
                 return new Handle(this);
             }
 
+            public IDisposable AcquireBattle() => throw new NotSupportedException();
+
             private sealed class Handle : IDisposable
             {
                 private readonly InputLockStub _owner;
