@@ -59,5 +59,6 @@
         HeavyBurstIonBlaster = 60,
         HeavyBurstConcussionMissile = 61,
         DualRepeatingPointDefense = 62,
+        AssaultMissile = 63,
     }
 }

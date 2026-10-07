@@ -29,5 +29,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         CompositeBeam = 25,
         ArquitensBoostWeaponPower = 23,
         Pursuit = 30,
+        AcclamatorBoostWeaponPower = 31,
     }
 }
