@@ -238,23 +238,9 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: StarDestroyer2ShipData
-      value:
-        m_AssetGUID: 2ced7bd7afed0b240873462f8f4fcd41
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MunificentShipData
       value:
         m_AssetGUID: 2f1adfeeeb291814aa6cf57198365aab
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: StarDestroyer1ShipData
-      value:
-        m_AssetGUID: 3d6ced770e54a9e409ab435c0e52ec58
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -329,13 +315,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: StarDestroyer1ShipView
-      value:
-        m_AssetGUID: 219821300eda4f94a89310e6a97d30eb
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MiningFacilityView
       value:
         m_AssetGUID: 523e9838d779ae944a61bd904bf8f2fb
@@ -346,13 +325,6 @@ MonoBehaviour:
     - key: ProvidenceShipView
       value:
         m_AssetGUID: 6d020e23c659ac141ab82d2f25751fa2
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: StarDestroyer2ShipView
-      value:
-        m_AssetGUID: 6fe00dc9b94303b489d883da86697685
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

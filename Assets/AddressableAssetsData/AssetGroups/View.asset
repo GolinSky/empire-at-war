@@ -55,11 +55,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 219821300eda4f94a89310e6a97d30eb
-    m_Address: StarDestroyer1ShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 21d3c8b2d3c013d4ab0c615706ecf2ce
     m_Address: VultureSquadronView
     m_ReadOnly: 0
@@ -142,11 +137,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fd0cc7d74bff17459c45351f3dfa248
     m_Address: TIEPunisherSquadronView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6fe00dc9b94303b489d883da86697685
-    m_Address: StarDestroyer2ShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
