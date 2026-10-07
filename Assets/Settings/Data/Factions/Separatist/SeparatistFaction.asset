@@ -49,7 +49,8 @@ MonoBehaviour:
     - key: 102
       value:
         matchups: {fileID: 11400000, guid: 8178ba0fff7501a4887859b5e2e4069e, type: 2}
-        description: Medium turbolasers concentrate fire on corvettes and frigates.
+        description: Four dual medium turbolaser batteries and two proton torpedo
+          launchers concentrate fire on corvettes and frigates.
         role: "Frigate \xB7 Medium gunship"
         iconKey: abf3987a701188747b639680e9203c3e:21300000
         isHero: 0
@@ -57,7 +58,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 40
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 3200
-        <BuildTime>k__BackingField: 25
+        <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: abf3987a701188747b639680e9203c3e,
           type: 3}
@@ -131,17 +132,16 @@ MonoBehaviour:
     - key: 107
       value:
         matchups: {fileID: 11400000, guid: 5253bdace10ccf24b9253110f4869c48, type: 2}
-        description: Lightly armed CIS transport with 300 hull, 20 shields and a
-          medium laser cannon. Its weapon cannot be targeted separately. Avoid sustained
-          combat with warships.
+        description: CIS transport with 500 hull, 600 shields and four medium laser
+          cannon hardpoints. Avoid sustained combat with warships.
         role: "Transport \xB7 Light support"
         iconKey: 69c29902694322d4aacf1446e4b7f487:21300000
         isHero: 0
         <Name>k__BackingField: C-9979 Lander
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 500
-        <BuildTime>k__BackingField: 10
+        <Price>k__BackingField: 1200
+        <BuildTime>k__BackingField: 20
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 69c29902694322d4aacf1446e4b7f487,
           type: 3}

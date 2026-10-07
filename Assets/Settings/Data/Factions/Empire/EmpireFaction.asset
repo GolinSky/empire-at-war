@@ -30,7 +30,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Victory I Star Destroyer \u2014 Advanced Loadout"
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 3500
+        <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 3896a253ad3c5024b8b7260fb0c214a9,
@@ -38,7 +38,7 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
-        description: '20,000 hull; 16,000 shields; speed 250. Targetable: six heavy
+        description: '4,500 hull; 4,000 shields; speed 15. Targetable: six heavy
           two-burst turbolasers, two heavy two-burst turbo-ion cannons, two medium
           turbo-ion cannons, two shield generators, two engines, tractor beam and
           hangar. Additional weapons: three medium three-burst turbolasers, four
@@ -99,11 +99,11 @@ MonoBehaviour:
     - key: 206
       value:
         matchups: {fileID: 11400000, guid: d97e28a4f08e56d4facc33597cbd7d32, type: 2}
-        description: 28,000 hull; 18,000 shields; speed 25. Ten targetable heavy
-          dual turbolasers and two heavy long-range 2-burst turbo-ion cannons; two
-          shield generators, three engines, hangar and tractor beam. Five medium
-          3-burst turbolasers, four medium turbolasers, four medium turbo-ions, six
-          heavy lasers and composite beam are not separately targetable. Fire Composite
+        description: 6,500 hull; 4,500 shields; speed 25. Ten targetable heavy dual
+          turbolasers and two heavy long-range 2-burst turbo-ion cannons; two shield
+          generators, three engines, hangar and tractor beam. Five medium 3-burst
+          turbolasers, four medium turbolasers, four medium turbo-ions, six heavy
+          lasers and composite beam are not separately targetable. Fire Composite
           Beam targets ships larger than corvettes and has poor shield damage. Tractor
           Beam restricts enemy movement. TIE Avenger and TIE Punisher complement.
         role: Ship of the Line / Capital Ship
@@ -120,7 +120,7 @@ MonoBehaviour:
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
-        description: '21,000 hull; 18,000 shields; speed 25. Targetable: eight light
+        description: '5,500 hull; 4,200 shields; speed 25. Targetable: eight light
           long-range 4-rapid-burst dual turbolasers, two medium long-range 2-burst
           turbo-ion cannons, two shield generators, three engines, tractor beam and
           hangar. Additional weapons: three medium 3-burst turbolasers, six light
@@ -202,7 +202,7 @@ MonoBehaviour:
     - key: 210
       value:
         matchups: {fileID: 11400000, guid: 5c515caf8c0852b458b6d5a383fd1fa5, type: 2}
-        description: 22,000 hull; 16,000 shields; speed 22. Eight targetable heavy
+        description: 7,000 hull; 5,000 shields; speed 22. Eight targetable heavy
           2-burst turbolasers, two medium long-range dual turbolasers, two shield
           generators, three engines and tractor beam. Seven medium 3-burst turbolasers,
           four light turbolasers and four heavy laser cannons are not separately

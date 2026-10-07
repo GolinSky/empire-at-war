@@ -28,7 +28,7 @@ MonoBehaviour:
     type: 2}
   <ShipClass>k__BackingField: 3
   <Hull>k__BackingField: 2500
-  <Shields>k__BackingField: 1200
+  <Shields>k__BackingField: 2000
   <ShieldRegenerateValue>k__BackingField: 36
   <ShieldRegenerateDelay>k__BackingField: 3
   hardPointHealth:
@@ -58,7 +58,9 @@ MonoBehaviour:
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
   - weaponType: 5
-    count: 1
+    count: 4
+  - weaponType: 6
+    count: 2
   - weaponType: 8
     count: 2
   - weaponType: 14

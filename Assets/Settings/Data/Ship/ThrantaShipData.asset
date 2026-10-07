@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ThrantaShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 72
+  <Speed>k__BackingField: 35
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 6
   <HullBottom>k__BackingField: -5.7344046
@@ -27,7 +27,7 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: e7ef10a09a831bc4690697863a399284,
     type: 2}
   <ShipClass>k__BackingField: 2
-  <Hull>k__BackingField: 1250
+  <Hull>k__BackingField: 800
   <Shields>k__BackingField: 900
   <ShieldRegenerateValue>k__BackingField: 15
   <ShieldRegenerateDelay>k__BackingField: 3
@@ -45,10 +45,8 @@ MonoBehaviour:
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
-  - weaponType: 1
-    count: 2
   - weaponType: 8
-    count: 4
+    count: 6
   - weaponType: 10
     count: 1
   - weaponType: 13
