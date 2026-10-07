@@ -31,7 +31,7 @@ Material:
     m_Floats:
     - _Ambient: 0.2
     - _Brightness: 1
-    - _Extinction: 30
+    - _Extinction: 3
     - _Flow: 0.0189
     - _LightAbsorption: 15
     - _Samples: 80
