@@ -41,6 +41,9 @@ MonoBehaviour:
   - <ShipClass>k__BackingField: 3
     <InterestWeight>k__BackingField: 3
     <FramingDistance>k__BackingField: 70
+  - <ShipClass>k__BackingField: 8
+    <InterestWeight>k__BackingField: 3.5
+    <FramingDistance>k__BackingField: 90
   - <ShipClass>k__BackingField: 4
     <InterestWeight>k__BackingField: 4
     <FramingDistance>k__BackingField: 110
