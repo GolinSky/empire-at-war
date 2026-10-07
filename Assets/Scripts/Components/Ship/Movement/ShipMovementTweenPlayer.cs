@@ -11,6 +11,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float BANK_SMOOTH_TIME = 0.6f;
         private const float ROUTE_HEADING_TOLERANCE = 1f;
         private const float MINIMUM_TANGENT_STEP = 0.05f;
+        // Seconds to reach full route speed from rest; braking uses the same rate.
+        private const float SPEED_RAMP_TIME = 1.5f;
+        // Floor so braking never stalls the hull just short of the route end.
+        private const float MINIMUM_SPEED_FACTOR = 0.1f;
 
         private const int ROUTE_STEP_SEARCH_ITERATIONS = 8;
 
@@ -28,6 +32,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private float _routeProgress;
         private float _routeSpeed;
+        private float _currentSpeed;
         private float _rotationSpeed;
         private float _turnAcceleration;
         private float _maximumBankAngle;
@@ -98,6 +103,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             StopPath();
             _hasLookDirection = false;
             _angularVelocity = 0f;
+            _currentSpeed = 0f;
             _translationSequence.KillExt();
             _translationSequence = DOTween.Sequence();
             _translationSequence.Append(_rootTransform
@@ -127,6 +133,11 @@ namespace EmpireAtWar.Components.Ship.Movement
             _turnAcceleration = turnAcceleration;
             _maximumBankAngle = maximumBankAngle;
             _isTurningToRoute = plan.TurnDuration > Mathf.Epsilon;
+            if (_isTurningToRoute)
+            {
+                // The hull turns in place before it moves, so it starts the route from rest.
+                _currentSpeed = 0f;
+            }
             _currentPathTangent = null;
             DisplayRoute(plan.Trajectory);
         }
@@ -134,6 +145,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void StopPath()
         {
             _route = null;
+            _currentSpeed = 0f;
             _pathCompleted = null;
             _currentPathTangent = null;
             _isTurningToRoute = false;
@@ -182,7 +194,14 @@ public void Tick(float deltaTime)
                 _isTurningToRoute = false;
             }
 
-            float requestedStep = _routeSpeed * deltaTime /
+            // A re-plan keeps the current speed, so pursuit re-paths do not restart from rest.
+            float acceleration = _routeSpeed / SPEED_RAMP_TIME;
+            float remainingDistance = (1f - _routeProgress) * _route.Length;
+            float targetSpeed = Mathf.Max(
+                Mathf.Min(_routeSpeed, Mathf.Sqrt(2f * acceleration * remainingDistance)),
+                _routeSpeed * MINIMUM_SPEED_FACTOR);
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * deltaTime);
+            float requestedStep = _currentSpeed * deltaTime /
                 Mathf.Max(_route.Length, Mathf.Epsilon);
             float nextProgress = Mathf.Min(1f, _routeProgress + requestedStep);
             float allowedTurn = Mathf.Max(
