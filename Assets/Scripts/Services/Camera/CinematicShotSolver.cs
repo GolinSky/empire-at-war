@@ -7,6 +7,30 @@ namespace EmpireAtWar.Services.Camera
     {
         private const float WIDE_SHOT_YAW = 40f;
 
+        private const float FRAMING_MARGIN = 1.25f;
+        // Low/high shots have the shortest camera offset: approximately 0.9 times the framing distance.
+        private const float MIN_SHOT_DISTANCE_FACTOR = 0.9f;
+
+        public static float CalculateFramingDistance(float classDistance, float radius, float fieldOfView)
+        {
+            float halfFieldOfView = fieldOfView * 0.5f * Mathf.Deg2Rad;
+            float hullDistance = radius * FRAMING_MARGIN /
+                                 (Mathf.Sin(halfFieldOfView) * MIN_SHOT_DISTANCE_FACTOR);
+            return Mathf.Max(classDistance, hullDistance);
+        }
+
+        public static Pose InterpolatePose(
+            Vector3 currentPosition, Pose desired, Vector3 lookPoint, float blend)
+        {
+            Vector3 currentOffset = currentPosition - lookPoint;
+            Vector3 desiredOffset = desired.position - lookPoint;
+            Vector3 offset = Vector3.Slerp(currentOffset, desiredOffset, blend);
+            float distance = Mathf.Max(offset.magnitude, desiredOffset.magnitude);
+            Vector3 direction = offset.sqrMagnitude > Mathf.Epsilon ? offset.normalized : desiredOffset.normalized;
+            Vector3 position = lookPoint + direction * distance;
+            return new Pose(position, Quaternion.LookRotation(lookPoint - position, Vector3.up));
+        }
+
         public static Pose Solve(
             CinematicShot shot,
             Vector3 anchor,
@@ -14,6 +38,7 @@ namespace EmpireAtWar.Services.Camera
             Vector3 focusOffset,
             float framingDistance,
             float wideDistanceMultiplier,
+            float fieldOfView,
             float progress)
         {
             Vector3 forward = anchorRotation * Vector3.forward;
@@ -38,14 +63,15 @@ namespace EmpireAtWar.Services.Camera
                     break;
                 case CinematicShotType.LowHigh:
                     position = anchor - forward * 0.7f * d + right * side * 0.35f * d + Vector3.up * side * 0.45f * d;
-                    lookPoint = anchor + forward * 0.5f * d;
+                    lookPoint = anchor;
                     break;
                 case CinematicShotType.Chase:
                     position = anchor - forward * 0.9f * d + Vector3.up * 0.25f * d;
-                    lookPoint = anchor + forward * 0.6f * d;
+                    lookPoint = anchor;
                     break;
                 case CinematicShotType.Wide:
-                    float wideDistance = d * wideDistanceMultiplier;
+                    float wideDistance = d * wideDistanceMultiplier +
+                        focusOffset.magnitude * FRAMING_MARGIN / Mathf.Sin(fieldOfView * 0.5f * Mathf.Deg2Rad);
                     Vector3 center = anchor + focusOffset;
                     Vector3 direction = Quaternion.Euler(0f, WIDE_SHOT_YAW * side, 0f) * -forward;
                     position = center + direction * wideDistance + Vector3.up * 0.5f * wideDistance;

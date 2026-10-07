@@ -159,6 +159,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 _focusOffset,
                 _framingDistance,
                 _settings.WideShotDistanceMultiplier,
+                _cameraService.FieldOfView,
                 Mathf.Clamp01(_shotElapsed / _shotDuration));
 
             if (_isCutPending)
@@ -169,10 +170,12 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             }
 
             float blend = 1f - Mathf.Exp(-_settings.FollowSharpness * deltaTime);
-            Transform cameraTransform = _cameraService.CameraTransform;
-            _cameraService.SetPose(
-                Vector3.Lerp(cameraTransform.position, desired.position, blend),
-                Quaternion.Slerp(cameraTransform.rotation, desired.rotation, blend));
+            Vector3 lookPoint = _shot.Type == CinematicShotType.Wide
+                ? _anchorPosition + _focusOffset
+                : _anchorPosition;
+            Pose blended = CinematicShotSolver.InterpolatePose(
+                _cameraService.CameraPosition, desired, lookPoint, blend);
+            _cameraService.SetPose(blended.position, blended.rotation);
         }
 
         private void StartShot(CinematicShot shot)
@@ -215,6 +218,12 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             Transform target = entity.GetFacade<IEntityTransformFacade>().Transform;
             _anchorPosition = target.position;
             _anchorRotation = target.rotation;
+            if (entity.TryGetFacade<IMoveFacade>(out IMoveFacade movement))
+            {
+                _framingDistance = CinematicShotSolver.CalculateFramingDistance(
+                    _settings.GetClassProfile(entity.HealthModel.ShipClass).FramingDistance,
+                    movement.NavigationRadius, _cameraService.FieldOfView);
+            }
         }
 
         private void CollectCandidates()
