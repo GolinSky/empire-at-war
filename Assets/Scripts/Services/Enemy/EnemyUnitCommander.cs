@@ -248,12 +248,12 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             Debug.Log(
-                $"[EnemyAI] Difficulty={_owner.Difficulty}, " +
+                $"[EnemyAI] Player={_owner.Id}:{_owner.Faction}, Difficulty={_owner.Difficulty}, " +
                 $"Objective={_gameModel.VictoryCondition}, State={decision.State}, " +
                 $"Committed={decision.CommittedShipCount}/{LastSnapshot.OwnShipCount}, " +
                 $"EnemyShips={LastSnapshot.EnemyShipCount}, " +
                 $"FleetAdvantage={LastSnapshot.FleetAdvantage:F2}, " +
-                $"BaseThreat={LastSnapshot.BaseThreatRatio:F2}, " +
+                $"BaseThreat={LastSnapshot.BaseThreatRatio:F2}, LocalAdvantage={LastSnapshot.LocalAdvantage:F2}, " +
                 $"ControlledZones={LastSnapshot.OwnedCapturableZoneCount}, " +
                 $"Reason={decision.Reason}");
             DecisionChanged?.Invoke(decision);

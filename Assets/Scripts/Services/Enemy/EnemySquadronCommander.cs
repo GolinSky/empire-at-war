@@ -48,7 +48,14 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<KeyValuePair<ISquadron, float>> _escortCandidates =
             new List<KeyValuePair<ISquadron, float>>();
 
+        private readonly IEnemyStructurePlacementService _structurePlacement;
+
         private int _nextEscortTarget;
+
+        /// <summary>Squadron revealing fog because no build space is visible; null when none is needed.</summary>
+        private ISquadron _scout;
+
+        private Vector3 _scoutTarget;
 
         public EnemySquadronCommander(
             ICaptureSitesSystem captureSites,
@@ -57,9 +64,11 @@ namespace EmpireAtWar.Services.Enemy
             IPlayerRoster playerRoster,
             ForceCompositionBuilder forceBuilder,
             UnitCombatProfileCatalog profileCatalog,
+            IEnemyStructurePlacementService structurePlacement,
             PlayerSlot owner)
         {
             _owner = owner;
+            _structurePlacement = structurePlacement;
             _captureSites = captureSites;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
@@ -99,6 +108,7 @@ namespace EmpireAtWar.Services.Enemy
             _decisionTimer.StartTimer();
             AssessThreats();
             AssignEscorts();
+            AssignScout();
             _orderBuffer.Clear();
             _orderBuffer.AddRange(_squadrons.Keys);
             foreach (ISquadron squadron in _orderBuffer)
@@ -107,8 +117,38 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        /// <summary>When no build space is visible, the non-escort squadron closest to the nearest fog spot scouts it.</summary>
+        private void AssignScout()
+        {
+            _scout = null;
+            // Squadrons exist only after the battle map has loaded, and without one there is nobody to send.
+            if (_squadrons.Count == 0 ||
+                _structurePlacement.TryGetPosition(out _) ||
+                !_structurePlacement.TryGetScoutTarget(out _scoutTarget))
+            {
+                return;
+            }
+
+            float closest = float.MaxValue;
+            foreach (ISquadron squadron in _squadrons.Keys)
+            {
+                float distance = (squadron.WorldPosition - _scoutTarget).sqrMagnitude;
+                if (!_escorts.Contains(squadron) && distance < closest)
+                {
+                    closest = distance;
+                    _scout = squadron;
+                }
+            }
+        }
+
         private void IssueOrder(ISquadron squadron)
         {
+            if (squadron == _scout)
+            {
+                squadron.AttackMoveTo(_scoutTarget);
+                return;
+            }
+
             if (_escorts.Contains(squadron))
             {
                 // Guard re-issued to the same ship is ignored by the squadron; escorts spread across threatened ships.
@@ -235,6 +275,10 @@ namespace EmpireAtWar.Services.Enemy
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);
+            if (_scout == squadron)
+            {
+                _scout = null;
+            }
         }
     }
 }

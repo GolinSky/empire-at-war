@@ -39,6 +39,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>An unlocked, not yet queued combat research tier is affordable.</summary>
         public bool CanResearchCombat { get; }
 
+        /// <summary>At least one ship type (not squadron) is unlocked and within its limits.</summary>
+        public bool CanOrderShips { get; }
+
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
             EnemyAiDifficulty difficulty,
@@ -58,7 +61,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasLevelUpOption,
             bool canLevelUp,
             bool canResearchIncome = false,
-            bool canResearchCombat = false)
+            bool canResearchCombat = false,
+            bool canOrderShips = true)
         {
             StrategicState = strategicState;
             Difficulty = difficulty;
@@ -79,6 +83,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanLevelUp = canLevelUp;
             CanResearchIncome = canResearchIncome;
             CanResearchCombat = canResearchCombat;
+            CanOrderShips = canOrderShips;
         }
     }
 
@@ -125,7 +130,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
             }
 
-            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanBuildShip)
+            // No ship type is unlocked (Empire at level 1): levelling up is the only way to a fleet.
+            if (!snapshot.CanOrderShips && IsLevelDue(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)) &&
+                snapshot.CanLevelUp)
+            {
+                return EnemyProductionCategory.Level;
+            }
+
+            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.CanBuildShip)
             {
                 return EnemyProductionCategory.Ship;
             }
@@ -159,11 +171,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             // Cheap units are always affordable, so a due level must be saved for or it is never reached.
-            if (ShouldSaveForLevel(snapshot, profile))
+            // Without any ship type the AI buys squadrons while it saves instead of idling.
+            if (IsLevelDue(snapshot, profile))
             {
-                return snapshot.CanLevelUp
-                    ? EnemyProductionCategory.Level
-                    : EnemyProductionCategory.None;
+                if (snapshot.CanLevelUp)
+                {
+                    return EnemyProductionCategory.Level;
+                }
+
+                if (snapshot.CanOrderShips)
+                {
+                    return EnemyProductionCategory.None;
+                }
             }
 
             if (snapshot.StrategicState == EnemyStrategicState.Hold)
@@ -202,7 +221,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private static EnemyProductionCategory EvaluateUltraHard(
             EnemyProductionSnapshot snapshot)
         {
-            if (snapshot.ShipCount == 0)
+            // Without any ship type at this level the rebuild cannot succeed, so the AI moves on to economy,
+            // levelling and squadrons instead of waiting forever.
+            if (snapshot.ShipCount == 0 && snapshot.CanOrderShips)
             {
                 if (snapshot.CanBuildShip)
                 {
@@ -227,8 +248,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return EnemyProductionCategory.Research;
             }
 
-            if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel &&
-                snapshot.HasLevelUpOption && snapshot.CanLevelUp)
+            if (IsLevelDue(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)) &&
+                snapshot.CanLevelUp)
             {
                 return EnemyProductionCategory.Level;
             }
@@ -264,15 +285,23 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         /// <summary>
         /// A level is due once <see cref="EnemyAiDifficultyProfile.ShipOrdersPerLevel"/> ships per current level
-        /// were ordered; a base under attack keeps buying units instead.
+        /// were ordered, or at once when no ship type can be ordered at the current level; a base under attack
+        /// keeps buying units instead.
         /// </summary>
-        private static bool ShouldSaveForLevel(
+        private static bool IsLevelDue(
             EnemyProductionSnapshot snapshot,
             EnemyAiDifficultyProfile profile)
         {
             return snapshot.HasLevelUpOption &&
                    snapshot.StrategicState != EnemyStrategicState.DefendBase &&
-                   snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel * profile.ShipOrdersPerLevel;
+                   (!snapshot.CanOrderShips ||
+                    snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel * profile.ShipOrdersPerLevel);
         }
+
+        /// <summary>A due level is saved for while ships can still be ordered; without ships, squadrons are bought.</summary>
+        private static bool ShouldSaveForLevel(
+            EnemyProductionSnapshot snapshot,
+            EnemyAiDifficultyProfile profile) =>
+            snapshot.CanOrderShips && IsLevelDue(snapshot, profile);
     }
 }

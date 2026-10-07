@@ -50,6 +50,9 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float BASE_THREAT_RADIUS = 100f;
 
+        /// <summary>Hostiles this close to the fleet center can engage it soon: twice the common ship weapon range (500).</summary>
+        private const float LOCAL_ENGAGEMENT_RADIUS = 1000f;
+
         private readonly IShipService _shipService;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly ICaptureSitesSystem _captureSites;
@@ -60,8 +63,10 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly PlayerSlot _owner;
         private readonly ForceComposition _ownForce = new ForceComposition();
+        private readonly ForceComposition _ownTeamForce = new ForceComposition();
         private readonly ForceComposition _focusTeamForce = new ForceComposition();
         private readonly ForceComposition _baseThreatForce = new ForceComposition();
+        private readonly ForceComposition _localThreatForce = new ForceComposition();
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
@@ -110,9 +115,13 @@ namespace EmpireAtWar.Services.Enemy
             List<IShipEntity> focusTeamShips = GetShips(ship => _playerRoster.IsAllied(focusEnemy, ship.Owner));
             int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self);
+            // Team games compare whole teams; alone against a 2-player team every AI looks outmatched and retreats.
+            _forceBuilder.Build(_ownTeamForce, entity => _playerRoster.IsAllied(self, entity.Owner));
             _forceBuilder.Build(_focusTeamForce,
                 entity => focusEnemy != PlayerId.None && _playerRoster.IsAllied(focusEnemy, entity.Owner));
             BuildBaseThreat(ownBase);
+            // Retreat answers what is actually near the fleet, not the enemy's whole army across the map.
+            BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
             float baseThreatRatio = _baseThreatForce.IsEmpty
                 ? 0f
                 : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
@@ -126,9 +135,10 @@ namespace EmpireAtWar.Services.Enemy
                 hasEnemyBaseTarget: enemyBaseTarget != null,
                 hasOwnBase: ownBase != null,
                 ownedCapturableZoneCount: ownedCapturableZoneCount,
-                fleetAdvantage: CombatMatchup.Advantage(_ownForce, _focusTeamForce),
+                fleetAdvantage: CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
                 baseThreatRatio: baseThreatRatio,
-                hasThreatenedSite: hasThreatenedSite);
+                hasThreatenedSite: hasThreatenedSite,
+                localAdvantage: CombatMatchup.Advantage(_ownForce, _localThreatForce));
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
             foreach (IShipEntity ship in ownShips)
@@ -219,19 +229,25 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
+            BuildHostilesNear(_baseThreatForce,
+                ownBase.GetFacade<IEntityTransformFacade>().Transform.position, BASE_THREAT_RADIUS);
+        }
+
+        /// <summary>Hostile ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>
+        private void BuildHostilesNear(ForceComposition force, Vector3 center, float radius)
+        {
             PlayerId self = _owner.Id;
-            Vector3 basePosition = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
-            float threatRadiusSquared = BASE_THREAT_RADIUS * BASE_THREAT_RADIUS;
-            _forceBuilder.Build(_baseThreatForce, entity =>
+            float radiusSquared = radius * radius;
+            _forceBuilder.Build(force, entity =>
             {
                 if (!_playerRoster.IsHostile(self, entity.Owner))
                 {
                     return false;
                 }
 
-                Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - basePosition;
+                Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - center;
                 offset.y = 0f;
-                return offset.sqrMagnitude <= threatRadiusSquared;
+                return offset.sqrMagnitude <= radiusSquared;
             });
         }
 

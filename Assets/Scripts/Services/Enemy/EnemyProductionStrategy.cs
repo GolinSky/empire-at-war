@@ -142,12 +142,17 @@ namespace EmpireAtWar.Services.Enemy
             // Squadrons support ships, at most one per SHIPS_PER_SQUADRON ships. Cheap squadrons always win on
             // gain per credit and never grow the fleet, so without the cap they would crowd out ships, mining
             // and station upgrades.
+            // With no ship type unlocked (Empire at level 1) squadrons are the only units, so the cap is lifted.
+            bool canOrderShips = CanOrderAnyShip();
             bool hasCounter = TrySelectCounterUnit(
-                _decisionModel.NeedsMinimumFleet(shipCount) || !HasSquadronRoom(shipCount),
+                canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !HasSquadronRoom(shipCount)),
                 out UnitTypeId counterId,
                 out FactionData counterData);
-            bool hasShipOption = hasCounter || TrySelectShip(shipCount, out ship);
-            FactionData shipChoice = hasCounter ? counterData : ship.Value;
+            bool hasShip = !hasCounter && TrySelectShip(shipCount, out ship);
+            bool hasSquadronFallback = !hasCounter && !hasShip && !canOrderShips &&
+                                       TrySelectSquadron(shipCount, true, out squadron);
+            bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
+            FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
             bool hasLevelUpOption = levelData != null;
@@ -164,6 +169,13 @@ namespace EmpireAtWar.Services.Enemy
             int defensePlatformTarget = isUltraHard
                 ? 1 + _stateProvider.ActiveShipCount / 3
                 : 1;
+
+            if (TryBuyScout(shipCount,
+                    hasMiningSelection && miningFacilityCount < miningFacilityTarget,
+                    canPlaceStructure))
+            {
+                return;
+            }
 
             EnemyProductionCategory category = _decisionModel.Evaluate(
                 new EnemyProductionSnapshot(
@@ -185,12 +197,14 @@ namespace EmpireAtWar.Services.Enemy
                     hasLevelUpOption,
                     canLevelUp,
                     canResearchIncome,
-                    canResearchCombat));
+                    canResearchCombat,
+                    canOrderShips));
 
             bool buildSquadron = !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
-                                 TrySelectSquadron(shipCount, out squadron) &&
-                                 IsAffordable(squadron.Value);
+                                 (hasSquadronFallback ||
+                                  TrySelectSquadron(shipCount, false, out squadron) &&
+                                  IsAffordable(squadron.Value));
             UnitRequest request = category switch
             {
                 EnemyProductionCategory.Ship when hasCounter && counterId.IsShip =>
@@ -221,7 +235,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             Debug.Log(
-                $"[EnemyAI:Production] State={_stateProvider.CurrentState}, " +
+                $"[EnemyAI:Production] Player={_owner.Id}:{_owner.Faction}, State={_stateProvider.CurrentState}, " +
                 $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, Counter={hasCounter}, " +
                 $"Unit={request.Id}, Mining={miningFacilityCount}/{miningFacilityTarget}, " +
                 $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
@@ -404,7 +418,10 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
-        private bool HasSquadronRoom(int shipCount)
+        private bool HasSquadronRoom(int shipCount) =>
+            CountReservedSquadrons() < shipCount / SHIPS_PER_SQUADRON;
+
+        private int CountReservedSquadrons()
         {
             int squadronCount = 0;
             foreach (KeyValuePair<SquadronType, FactionData> option
@@ -414,16 +431,55 @@ namespace EmpireAtWar.Services.Enemy
                     option.Key.ToString());
             }
 
-            return squadronCount < shipCount / SHIPS_PER_SQUADRON;
+            return squadronCount;
         }
 
-        /// <summary>Picks the cheapest available squadron while <see cref="HasSquadronRoom"/>.</summary>
+        /// <summary>True when any ship type is unlocked at the current level and within its limits.</summary>
+        private bool CanOrderAnyShip()
+        {
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                if (IsAvailable(option.Value) && CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Mining has no visible place to go: one fighter is bought to scout the fog for build space.
+        /// The squadron commander flies a squadron to the scout target.
+        /// </summary>
+        private bool TryBuyScout(int shipCount, bool needsMining, bool canPlaceStructure)
+        {
+            if (!needsMining ||
+                canPlaceStructure ||
+                CountReservedSquadrons() > 0 ||
+                !_enemyStructurePlacementService.TryGetScoutTarget(out _) ||
+                !TrySelectSquadron(shipCount, true, out KeyValuePair<SquadronType, FactionData> scout) ||
+                !IsAffordable(scout.Value))
+            {
+                return false;
+            }
+
+            UnitRequest request = _requestFactory.ConstructUnitRequest(scout.Value, scout.Key);
+            Debug.Log(
+                $"[EnemyAI:Production] Player={_owner.Id}:{_owner.Faction}, Category=Scout, Unit={request.Id}, " +
+                $"Cost={request.FactionData.Price}, Money={_economyModel.Money}");
+            _purchaseProcessor.Purchase(request);
+            return true;
+        }
+
+        /// <summary>Picks the cheapest available squadron while <see cref="HasSquadronRoom"/>, or regardless of the ship ratio.</summary>
         private bool TrySelectSquadron(
             int shipCount,
+            bool ignoreShipRatio,
             out KeyValuePair<SquadronType, FactionData> selected)
         {
             selected = default;
-            if (!HasSquadronRoom(shipCount))
+            if (!ignoreShipRatio && !HasSquadronRoom(shipCount))
             {
                 return false;
             }

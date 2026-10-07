@@ -33,6 +33,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>Strength of hostiles near the own base over the own fleet; 0 when none are near.</summary>
         public float BaseThreatRatio { get; }
 
+        /// <summary>Own fleet strength over hostiles near the fleet; the clamp maximum when none are near.</summary>
+        public float LocalAdvantage { get; }
+
         public EnemyStrategicSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -44,7 +47,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasCaptureTarget,
             bool hasEnemyBaseTarget,
             bool hasOwnBase,
-            bool hasThreatenedSite = false)
+            bool hasThreatenedSite = false,
+            float localAdvantage = Combat.CombatMatchup.MAX_ADVANTAGE)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -56,6 +60,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             OwnedCapturableZoneCount = ownedCapturableZoneCount;
             FleetAdvantage = fleetAdvantage;
             BaseThreatRatio = baseThreatRatio;
+            LocalAdvantage = localAdvantage;
             HasThreatenedSite = hasThreatenedSite;
         }
     }
@@ -93,9 +98,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.HasOwnBase) *
                           ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio)),
             new EnemyStrategicRule(EnemyStrategicState.RetreatValue, 0.8f,
-                "The enemy fleet outmatches ours, so the fleet withdraws to its base.",
-                (s, p) => ResponseCurve.When(s.HasOwnBase && s.EnemyShipCount > 0) *
-                          ResponseCurve.AtMost(s.FleetAdvantage, p.RetreatAdvantage)),
+                "Hostiles near the fleet outmatch it, so the fleet withdraws to its base.",
+                (s, p) => ResponseCurve.When(s.HasOwnBase) *
+                          ResponseCurve.AtMost(s.LocalAdvantage, p.RetreatAdvantage)),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.7f,
                 "Enemy ships are contesting an owned capture site.",
                 (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
@@ -109,17 +114,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                                              s.HasEnemyBaseTarget) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.5f,
-                "The objective is the enemy fleet and the matchup favors attacking.",
+                "The objective is the enemy fleet and our team clearly outmatches it.",
                 (s, p) => ResponseCurve.When(s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
                                              s.EnemyShipCount > 0) *
-                          ResponseCurve.AtLeast(s.FleetAdvantage, p.HuntAdvantage)),
-            new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.4f,
-                "Map control is the best use of the fleet until the matchup improves.",
+                          ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
+            // Expansion is the default activity: the next closest relay or site, then the farther ones.
+            new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.45f,
+                "Expanding map control to the next closest relay or site.",
                 (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.3f,
-                "Enemy ships block the route to the base objective.",
-                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
-                                             s.EnemyShipCount > 0) *
+                "Nothing is left to capture, so the fleet hunts the enemy.",
+                (s, p) => ResponseCurve.When(s.EnemyShipCount > 0) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.HuntAdvantage)),
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.2f,
                 "No other target remains before the base objective.",

@@ -54,12 +54,14 @@ namespace EmpireAtWar.Tests.Editor
             vision.Register(TestPlayers.Enemy, _root.transform, 100000f);
             StructureSpawnClearance structureClearance =
                 new StructureSpawnClearance(new LayersStub(), new[] { _structurePrefab });
-            ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, new SpawnBlockerService(roster),
+            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, blockers,
                 new OpenShipClearance(), structureClearance, _zones, new NoCaptureSites(), _map);
             return new EnemyStructurePlacementService(
                 mapModel: new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
+                vision: vision, blockers: blockers,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab);
         }
 
@@ -106,11 +108,21 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void OccupiedStationWithoutCapturedZone_HasNoMapWideFallback()
+        public void OccupiedStationWithoutCapturedZone_UsesNearestVisibleSpotFurtherOut()
         {
             Block(_map.Station, new Vector3(210f, 40f, 210f));
 
-            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.False);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
+
+            // Outside the 210-unit block centered on the station.
+            Assert.That(Mathf.Max(Mathf.Abs(position.x - _map.Station.x), Mathf.Abs(position.z - _map.Station.z)),
+                Is.GreaterThan(105f));
+        }
+
+        [Test]
+        public void FullySeenMap_HasNothingToScout()
+        {
+            Assert.That(_enemyStructurePlacementService.TryGetScoutTarget(out _), Is.False);
         }
 
         [Test]

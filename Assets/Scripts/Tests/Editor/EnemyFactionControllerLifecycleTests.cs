@@ -349,6 +349,12 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetScoutTarget(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public void RecordDestroyedPosition(Vector3 position)
             {
             }
@@ -363,6 +369,12 @@ namespace EmpireAtWar.Tests.Editor
             public int ResetCount { get; private set; }
 
             public bool TryGetPosition(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public bool TryGetScoutTarget(out Vector3 position)
             {
                 position = default;
                 return false;
