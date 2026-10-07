@@ -36,10 +36,10 @@ MonoBehaviour:
   <SeekerWarheadRange>k__BackingField: 0
   <SeekerWarheadRecharge>k__BackingField: 10
   <SeekerWarheadMinimumTravel>k__BackingField: 10
-  <Range>k__BackingField: 175
+  <Range>k__BackingField: 350
   <Delay>k__BackingField: 0.25
   <WeaponRange>k__BackingField: 70
-  <VisionRange>k__BackingField: 175
+  <VisionRange>k__BackingField: 350
   <MemberCount>k__BackingField: 6
   weaponLoadout:
   - weaponType: 46
