@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 431663308258579354}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.16527362, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50104, y: 690.501, z: 690.501}
+  m_LocalPosition: {x: -0.29982257, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6367, y: 1252.6365, z: 1252.6365}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -117,8 +117,8 @@ Transform:
   m_GameObject: {fileID: 1162088079711010866}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.16557364, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50104, y: 690.501, z: 690.501}
+  m_LocalPosition: {x: -0.30036685, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6367, y: 1252.6365, z: 1252.6365}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -207,8 +207,8 @@ Transform:
   m_GameObject: {fileID: 2137868950348718673}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.16526967, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50104, y: 690.501, z: 690.501}
+  m_LocalPosition: {x: -0.29981542, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6367, y: 1252.6365, z: 1252.6365}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -297,8 +297,8 @@ Transform:
   m_GameObject: {fileID: 2454039599738232115}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0003935154, y: 0.70837575, z: -0.70583534, w: 0.000393052}
-  m_LocalPosition: {x: -0.16557364, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50116, y: 690.501, z: 690.50104}
+  m_LocalPosition: {x: -0.30036685, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6368, y: 1252.6365, z: 1252.6367}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -387,8 +387,8 @@ Transform:
   m_GameObject: {fileID: 4116258230568217484}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.16526967, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50104, y: 690.501, z: 690.501}
+  m_LocalPosition: {x: -0.29981542, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6367, y: 1252.6365, z: 1252.6365}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -477,8 +477,8 @@ Transform:
   m_GameObject: {fileID: 4867720348497542457}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0003935154, y: 0.70837575, z: -0.70583534, w: 0.00039305195}
-  m_LocalPosition: {x: -0.16526967, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50116, y: 690.501, z: 690.50104}
+  m_LocalPosition: {x: -0.29981542, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6368, y: 1252.6365, z: 1252.6367}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -567,8 +567,8 @@ Transform:
   m_GameObject: {fileID: 7595051736413286106}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.16526967, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50104, y: 690.501, z: 690.501}
+  m_LocalPosition: {x: -0.29981542, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6367, y: 1252.6365, z: 1252.6365}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}
@@ -727,8 +727,8 @@ Transform:
   m_GameObject: {fileID: 9210141267245353787}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.16557364, y: -0.3681039, z: -13.942124}
-  m_LocalScale: {x: 690.50104, y: 690.501, z: 690.501}
+  m_LocalPosition: {x: -0.30036685, y: -0.66777664, z: -25.292383}
+  m_LocalScale: {x: 1252.6367, y: 1252.6365, z: 1252.6365}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204694605346375409}

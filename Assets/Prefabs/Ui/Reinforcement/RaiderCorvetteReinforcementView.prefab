@@ -96,7 +96,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.642543, y: 4.8079553, z: 24}
+  m_Size: {x: 6.3278317, y: 3.1551774, z: 15.749784}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8320943844914997207
 PrefabInstance:
@@ -110,6 +110,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RaiderCorvette
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943552496105278444, guid: 65597af0496da094da35d01d993f2970,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.656241
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943552496105278444, guid: 65597af0496da094da35d01d993f2970,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.656241
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943552496105278444, guid: 65597af0496da094da35d01d993f2970,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.656241
       objectReference: {fileID: 0}
     - target: {fileID: 1943552496105278444, guid: 65597af0496da094da35d01d993f2970,
         type: 3}

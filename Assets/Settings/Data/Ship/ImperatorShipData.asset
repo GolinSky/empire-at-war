@@ -16,13 +16,13 @@ MonoBehaviour:
   <Speed>k__BackingField: 14
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 1
-  <HullBottom>k__BackingField: -24.346012
-  <HullTop>k__BackingField: 24.646
+  <HullBottom>k__BackingField: -25.562963
+  <HullTop>k__BackingField: 25.877947
   <RotationSpeed>k__BackingField: 5
   <TurnAcceleration>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 5
-  <NavigationRadius>k__BackingField: 81
+  <NavigationRadius>k__BackingField: 85.048836
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: 0267a90234a92114b943b66b30ebe5ca,
     type: 2}
