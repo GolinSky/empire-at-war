@@ -1,0 +1,122 @@
+[
+  {
+    "name": "HP_Victory_Missile_01",
+    "bone": "MuzzleB_01",
+    "targetable": true,
+    "id": 0
+  },
+  {
+    "name": "HP_Victory_Missile_02",
+    "bone": "MuzzleB_04",
+    "targetable": true,
+    "id": 1
+  },
+  {
+    "name": "HP_Victory_Missile_03",
+    "bone": "MuzzleB_07",
+    "targetable": true,
+    "id": 2
+  },
+  {
+    "name": "HP_Victory_Missile_04",
+    "bone": "MuzzleB_10",
+    "targetable": true,
+    "id": 3
+  },
+  {
+    "name": "HP_Victory_Torpedo_01",
+    "bone": "MuzzleA_05",
+    "targetable": true,
+    "id": 4
+  },
+  {
+    "name": "HP_Victory_Torpedo_02",
+    "bone": "MuzzleA_03",
+    "targetable": true,
+    "id": 5
+  },
+  {
+    "name": "ShieldGenerator",
+    "bone": "HP_S_BONE_03",
+    "targetable": true,
+    "id": 6
+  },
+  {
+    "name": "Engine1",
+    "bone": "HP_E_BONE_01",
+    "targetable": true,
+    "id": 7
+  },
+  {
+    "name": "Engine2",
+    "bone": "HP_E_BONE_02",
+    "targetable": true,
+    "id": 8
+  },
+  {
+    "name": "TractorBeam",
+    "bone": "HP_T_BONE",
+    "targetable": true,
+    "id": 9
+  },
+  {
+    "name": "HP_Victory_Weapon_01",
+    "bone": "MuzzleC_08",
+    "targetable": false,
+    "id": 10
+  },
+  {
+    "name": "HP_Victory_Weapon_02",
+    "bone": "MuzzleC_09",
+    "targetable": false,
+    "id": 11
+  },
+  {
+    "name": "HP_Victory_Weapon_03",
+    "bone": "MuzzleC_04",
+    "targetable": false,
+    "id": 12
+  },
+  {
+    "name": "HP_Victory_Weapon_04",
+    "bone": "MuzzleC_05",
+    "targetable": false,
+    "id": 13
+  },
+  {
+    "name": "LightDualTurbolaser1",
+    "bone": "T_01/FB_00",
+    "targetable": false,
+    "id": 14
+  },
+  {
+    "name": "LightDualTurbolaser2",
+    "bone": "T_02/FB_00",
+    "targetable": false,
+    "id": 15
+  },
+  {
+    "name": "LightDualTurbolaser3",
+    "bone": "T_03/FB_00",
+    "targetable": false,
+    "id": 16
+  },
+  {
+    "name": "LightDualTurbolaser4",
+    "bone": "T_04/FB_00",
+    "targetable": false,
+    "id": 17
+  },
+  {
+    "name": "LightDualTurbolaser5",
+    "bone": "T_05/FB_00",
+    "targetable": false,
+    "id": 18
+  },
+  {
+    "name": "LightDualTurbolaser6",
+    "bone": "T_06/FB_00",
+    "targetable": false,
+    "id": 19
+  }
+]

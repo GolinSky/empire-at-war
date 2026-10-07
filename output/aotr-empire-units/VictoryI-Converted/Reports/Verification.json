@@ -1,0 +1,113 @@
+{
+  "asset": "Assets/Prefabs/Models/Ships/VictoryIShipView.prefab",
+  "hull": 12000,
+  "shields": 8000,
+  "speed": 175,
+  "targetableHardpoints": [
+    {
+      "name": "HP_Victory_Missile_01",
+      "Id": 0,
+      "type": 0
+    },
+    {
+      "name": "HP_Victory_Missile_02",
+      "Id": 1,
+      "type": 0
+    },
+    {
+      "name": "HP_Victory_Missile_03",
+      "Id": 2,
+      "type": 0
+    },
+    {
+      "name": "HP_Victory_Missile_04",
+      "Id": 3,
+      "type": 0
+    },
+    {
+      "name": "HP_Victory_Torpedo_01",
+      "Id": 4,
+      "type": 0
+    },
+    {
+      "name": "HP_Victory_Torpedo_02",
+      "Id": 5,
+      "type": 0
+    },
+    {
+      "name": "ShieldGenerator",
+      "Id": 6,
+      "type": 2
+    },
+    {
+      "name": "Engine1",
+      "Id": 7,
+      "type": 1
+    },
+    {
+      "name": "Engine2",
+      "Id": 8,
+      "type": 1
+    },
+    {
+      "name": "TractorBeam",
+      "Id": 9,
+      "type": 7
+    }
+  ],
+  "weapons": [
+    {
+      "type": 34,
+      "count": 4
+    },
+    {
+      "type": 35,
+      "count": 2
+    },
+    {
+      "type": 28,
+      "count": 4
+    },
+    {
+      "type": 36,
+      "count": 6
+    }
+  ],
+  "bounds": [
+    67.5321045,
+    38.153862,
+    110.0
+  ],
+  "navigationRadius": 70.0,
+  "bankedRange": [
+    -20.4311733,
+    19.40985
+  ],
+  "hangarExit": [
+    -0.04431825,
+    -28.4311733,
+    -5.088708
+  ],
+  "geometry": [
+    {
+      "name": "VictoryI",
+      "meshes": 44,
+      "triangles": 21749,
+      "bones": 178,
+      "maximumBoneError": 4.70912528E-06
+    },
+    {
+      "name": "VictoryITurret",
+      "meshes": 6,
+      "triangles": 1138,
+      "bones": 8,
+      "maximumBoneError": 1.75650925E-08
+    }
+  ],
+  "registrations": true,
+  "dependencies": true,
+  "missingScripts": 0,
+  "brokenReferences": 0,
+  "playMode": false,
+  "automatedTests": false
+}

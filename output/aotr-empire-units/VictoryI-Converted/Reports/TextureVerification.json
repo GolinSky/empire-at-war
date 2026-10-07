@@ -1,0 +1,92 @@
+[
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Victory_SD.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryI\\VictoryI_EV_Victory_SD_Albedo.png",
+    "size": [
+      2048,
+      2048
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Victory_SD_I_Thruster.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryI\\VictoryI_EV_Victory_SD_I_Thruster_Emissive.png",
+    "size": [
+      128,
+      128
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\P_VSD_ENG.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryI\\VictoryI_P_VSD_ENG_Emissive.png",
+    "size": [
+      512,
+      512
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Victory_SD.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryI\\VictoryI_EV_Victory_SD_Albedo.png",
+    "size": [
+      2048,
+      2048
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Victory_SD_b.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryI\\VictoryI_EV_Victory_SD_b_Normal.png",
+    "size": [
+      2048,
+      2048
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Victory_SD.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryITurret\\VictoryITurret_EV_Victory_SD_Albedo.png",
+    "size": [
+      2048,
+      2048
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Victory_SD_b.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\VictoryITurret\\VictoryITurret_EV_Victory_SD_b_Normal.png",
+    "size": [
+      2048,
+      2048
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Tie_F_I_Def_Diffuse.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\TIEInterceptor\\TIEInterceptor_EV_Tie_F_I_Def_Diffuse_Albedo.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Tie_F_I_Def_Normal.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\TIEInterceptor\\TIEInterceptor_EV_Tie_F_I_Def_Normal_Normal.png",
+    "size": [
+      512,
+      512
+    ],
+    "pixel_identical": true
+  },
+  {
+    "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\P_Orange_ENG.dds",
+    "png": "Assets\\Art\\Textures\\Models\\EmpireShips\\TIEInterceptor\\TIEInterceptor_P_Orange_ENG_Emissive.png",
+    "size": [
+      512,
+      512
+    ],
+    "pixel_identical": true
+  }
+]

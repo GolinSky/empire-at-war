@@ -1,0 +1,4271 @@
+[
+  {
+    "name": "VictoryI",
+    "source": {
+      "meshes": {
+        "Hull.002": {
+          "triangles": 8612,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Antenna_1.002": {
+          "triangles": 404,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Collision.002": {
+          "triangles": 177,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "COLLISION"
+          ]
+        },
+        "Antennae.002": {
+          "triangles": 102,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Thruster_Glow_R.002": {
+          "triangles": 286,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD_I_Thruster Material"
+          ]
+        },
+        "Turret_Bases.002": {
+          "triangles": 324,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Thruster_Glow_L.002": {
+          "triangles": 286,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD_I_Thruster Material"
+          ]
+        },
+        "LensEffect_Small.006": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material"
+          ]
+        },
+        "LensEffect_Small2.002": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material"
+          ]
+        },
+        "LensEffect_Small01.002": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material"
+          ]
+        },
+        "LensEffect_Small.007": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material"
+          ]
+        },
+        "LensEffect_Small.008": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material"
+          ]
+        },
+        "LensEffect_Small03.002": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material"
+          ]
+        },
+        "Missile_Batteries_L_02.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_L_05.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_L_04.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_Front_L.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_Front_R.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_R01.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_R02.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Missile_Batteries_R03.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Wing_R_U.002": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Wing_R_L.002": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Wing_L_L.002": {
+          "triangles": 22,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Wing_L_U.002": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Hangar_Light.002": {
+          "triangles": 113,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material1"
+          ]
+        },
+        "Shadow.036": {
+          "triangles": 28,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.037": {
+          "triangles": 28,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.038": {
+          "triangles": 12,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.039": {
+          "triangles": 8311,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.040": {
+          "triangles": 304,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.041": {
+          "triangles": 408,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.042": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.043": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.044": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.045": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.046": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.047": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.048": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.049": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.050": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.051": {
+          "triangles": 342,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.052": {
+          "triangles": 20,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadow.053": {
+          "triangles": 14,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material1"
+          ]
+        }
+      },
+      "bones": {
+        "VictoryIRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "VictoryIRig/Hull": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553960800170898
+          ]
+        },
+        "VictoryIRig/Antenna_1": {
+          "parent": "Hull",
+          "head": [
+            17.53732681274414,
+            162.550537109375,
+            109.35555267333984
+          ]
+        },
+        "VictoryIRig/Collision": {
+          "parent": "Hull",
+          "head": [
+            -0.02784564532339573,
+            32.5931396484375,
+            2.1157631874084473
+          ]
+        },
+        "VictoryIRig/Antennae": {
+          "parent": "Hull",
+          "head": [
+            -21.847829818725586,
+            137.14759826660156,
+            81.63153839111328
+          ]
+        },
+        "VictoryIRig/Thruster_Glow_R": {
+          "parent": "Hull",
+          "head": [
+            -31.763643264770508,
+            215.72064208984375,
+            -2.0068485736846924
+          ]
+        },
+        "VictoryIRig/Turret_Bases": {
+          "parent": "Hull",
+          "head": [
+            -0.06646301597356796,
+            -6.629295349121094,
+            -1.0553956031799316
+          ]
+        },
+        "VictoryIRig/Thruster_Glow_L": {
+          "parent": "Hull",
+          "head": [
+            31.630701065063477,
+            215.7206573486328,
+            -2.006847858428955
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE": {
+          "parent": "Hull",
+          "head": [
+            -0.05907538905739784,
+            -273.5597229003906,
+            2.605419635772705
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.001": {
+          "parent": "Hull",
+          "head": [
+            -0.059066902846097946,
+            41.23915481567383,
+            35.13214874267578
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.002": {
+          "parent": "Hull",
+          "head": [
+            -0.05906469747424126,
+            92.93260955810547,
+            51.18162536621094
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.003": {
+          "parent": "Hull",
+          "head": [
+            -0.0590609572827816,
+            225.64158630371094,
+            -44.91474151611328
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION": {
+          "parent": "Hull",
+          "head": [
+            -0.15470196306705475,
+            -0.45975789427757263,
+            -28.420957565307617
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.001": {
+          "parent": "Hull",
+          "head": [
+            -0.15469981729984283,
+            -76.31816101074219,
+            -19.438026428222656
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.002": {
+          "parent": "Hull",
+          "head": [
+            -19.62344741821289,
+            -53.0834846496582,
+            -19.630413055419922
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.003": {
+          "parent": "Hull",
+          "head": [
+            19.490556716918945,
+            -53.08347702026367,
+            -19.630414962768555
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.004": {
+          "parent": "Hull",
+          "head": [
+            20.6765193939209,
+            -76.26594543457031,
+            -14.710512161254883
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.005": {
+          "parent": "Hull",
+          "head": [
+            -21.230592727661133,
+            -76.26593017578125,
+            -14.710511207580566
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.004": {
+          "parent": "Hull",
+          "head": [
+            16.785242080688477,
+            163.49725341796875,
+            128.19644165039062
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_01": {
+          "parent": "Hull",
+          "head": [
+            -27.022920608520508,
+            159.9617156982422,
+            100.73739624023438
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_02": {
+          "parent": "Hull",
+          "head": [
+            26.963233947753906,
+            159.96163940429688,
+            100.73680877685547
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_02": {
+          "parent": "Hull",
+          "head": [
+            -29.989696502685547,
+            209.4732666015625,
+            2.2544116973876953
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_02_EMITDAMAGE": {
+          "parent": "HP_E_BONE_02",
+          "head": [
+            -29.98971176147461,
+            209.47328186035156,
+            2.254436492919922
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED": {
+          "parent": "HP_E_BONE_02_EMITDAMAGE",
+          "head": [
+            -31.419443130493164,
+            216.3079071044922,
+            -1.8100287914276123
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML": {
+          "parent": "HP_E_BONE_02_EMITDAMAGE",
+          "head": [
+            0.34999918937683105,
+            225.20083618164062,
+            -17.7096004486084
+          ]
+        },
+        "VictoryIRig/Engine_Particles_R": {
+          "parent": "HP_E_BONE_02",
+          "head": [
+            -29.98971176147461,
+            209.47329711914062,
+            2.254396438598633
+          ]
+        },
+        "VictoryIRig/LensEffect_Small": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            -32.35123825073242,
+            227.8578643798828,
+            -0.6704541444778442
+          ]
+        },
+        "VictoryIRig/LensEffect_Small2": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            0.7653846144676208,
+            229.01419067382812,
+            -17.141334533691406
+          ]
+        },
+        "VictoryIRig/LensEffect_Small01": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            -29.49152374267578,
+            227.8578643798828,
+            -0.6704514622688293
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_BIG": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            -31.419038772583008,
+            223.3120574951172,
+            -1.810025691986084
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_SMALL": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            0.3500020503997803,
+            225.20082092285156,
+            -17.70960235595703
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_01": {
+          "parent": "Hull",
+          "head": [
+            30.375171661376953,
+            208.9783172607422,
+            2.2544126510620117
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_01_EMITDAMAGE": {
+          "parent": "HP_E_BONE_01",
+          "head": [
+            30.375141143798828,
+            208.97833251953125,
+            2.2544362545013428
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.001": {
+          "parent": "HP_E_BONE_01_EMITDAMAGE",
+          "head": [
+            31.419015884399414,
+            216.30801391601562,
+            -1.8100279569625854
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.001": {
+          "parent": "HP_E_BONE_01_EMITDAMAGE",
+          "head": [
+            0.34990882873535156,
+            224.7917938232422,
+            18.11088752746582
+          ]
+        },
+        "VictoryIRig/Engine_Particles_L": {
+          "parent": "HP_E_BONE_01",
+          "head": [
+            30.375144958496094,
+            208.9783172607422,
+            2.2544126510620117
+          ]
+        },
+        "VictoryIRig/LensEffect_Small.001": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            31.53119659423828,
+            227.85609436035156,
+            -0.648604154586792
+          ]
+        },
+        "VictoryIRig/LensEffect_Small.002": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            0.7654644846916199,
+            225.61451721191406,
+            16.95343589782715
+          ]
+        },
+        "VictoryIRig/LensEffect_Small03": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            32.51035690307617,
+            227.8560791015625,
+            -0.6486043930053711
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_BIG.001": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            31.419025421142578,
+            223.9332733154297,
+            -1.8100303411483765
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_SMALL.001": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            0.3499126136302948,
+            224.7917938232422,
+            18.110891342163086
+          ]
+        },
+        "VictoryIRig/MuzzleA_00": {
+          "parent": "Hull",
+          "head": [
+            -0.392963707447052,
+            30.884971618652344,
+            27.073667526245117
+          ]
+        },
+        "VictoryIRig/MuzzleC_01": {
+          "parent": "Hull",
+          "head": [
+            31.712818145751953,
+            -161.3893280029297,
+            0.019151922315359116
+          ]
+        },
+        "VictoryIRig/MuzzleC_02": {
+          "parent": "Hull",
+          "head": [
+            40.43671417236328,
+            -128.31646728515625,
+            0.4724005460739136
+          ]
+        },
+        "VictoryIRig/MuzzleC_03": {
+          "parent": "Hull",
+          "head": [
+            67.18258666992188,
+            -36.391883850097656,
+            -0.1382708102464676
+          ]
+        },
+        "VictoryIRig/MuzzleC_04": {
+          "parent": "Hull",
+          "head": [
+            76.08563995361328,
+            -4.779017448425293,
+            -0.13827663660049438
+          ]
+        },
+        "VictoryIRig/HP_T_BONE": {
+          "parent": "Hull",
+          "head": [
+            -0.33333301544189453,
+            -233.37606811523438,
+            0.01916348561644554
+          ]
+        },
+        "VictoryIRig/SPAWN_00": {
+          "parent": "Hull",
+          "head": [
+            -0.06840682029724121,
+            -0.5544557571411133,
+            -16.5739688873291
+          ]
+        },
+        "VictoryIRig/SPAWN_00_EMITDAMAGE": {
+          "parent": "SPAWN_00",
+          "head": [
+            -0.06840842962265015,
+            -0.5544633865356445,
+            -16.573970794677734
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.002": {
+          "parent": "SPAWN_00_EMITDAMAGE",
+          "head": [
+            -0.06645572930574417,
+            4.968967437744141,
+            -16.8320369720459
+          ]
+        },
+        "VictoryIRig/MuzzleC_10": {
+          "parent": "Hull",
+          "head": [
+            132.73829650878906,
+            190.033935546875,
+            0.47230905294418335
+          ]
+        },
+        "VictoryIRig/MuzzleC_11": {
+          "parent": "Hull",
+          "head": [
+            -132.83154296875,
+            189.01170349121094,
+            0.4723202586174011
+          ]
+        },
+        "VictoryIRig/MuzzleC_05": {
+          "parent": "Hull",
+          "head": [
+            -76.21878814697266,
+            -4.779312610626221,
+            -0.1381346583366394
+          ]
+        },
+        "VictoryIRig/MuzzleC_06": {
+          "parent": "Hull",
+          "head": [
+            -67.31485748291016,
+            -36.391754150390625,
+            -0.13812397420406342
+          ]
+        },
+        "VictoryIRig/MuzzleC_07": {
+          "parent": "Hull",
+          "head": [
+            -40.834720611572266,
+            -128.316162109375,
+            -0.13810481131076813
+          ]
+        },
+        "VictoryIRig/MuzzleC_00": {
+          "parent": "Hull",
+          "head": [
+            -31.615449905395508,
+            -161.06170654296875,
+            -0.13810604810714722
+          ]
+        },
+        "VictoryIRig/MuzzleC_08": {
+          "parent": "Hull",
+          "head": [
+            -21.80983543395996,
+            -196.1334686279297,
+            -0.13809213042259216
+          ]
+        },
+        "VictoryIRig/MuzzleC_09": {
+          "parent": "Hull",
+          "head": [
+            21.698654174804688,
+            -196.13345336914062,
+            -0.1380915343761444
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_03": {
+          "parent": "Hull",
+          "head": [
+            0.014851258136332035,
+            173.9181671142578,
+            85.90338134765625
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_EMITDAMAGE": {
+          "parent": "HP_S_BONE_03",
+          "head": [
+            0.014759705401957035,
+            173.9181671142578,
+            85.90340423583984
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.002": {
+          "parent": "HP_S_BONE_EMITDAMAGE",
+          "head": [
+            -0.09075711667537689,
+            195.2699432373047,
+            93.85574340820312
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.003": {
+          "parent": "HP_S_BONE_EMITDAMAGE",
+          "head": [
+            -26.796480178833008,
+            159.78675842285156,
+            99.39900970458984
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.004": {
+          "parent": "HP_S_BONE_EMITDAMAGE",
+          "head": [
+            27.442054748535156,
+            159.78671264648438,
+            99.39900970458984
+          ]
+        },
+        "VictoryIRig/Missile_03": {
+          "parent": "Hull",
+          "head": [
+            80.3802719116211,
+            63.96103286743164,
+            -0.09432470053434372
+          ]
+        },
+        "VictoryIRig/Missile_03__EMITDAMAGE": {
+          "parent": "Missile_03",
+          "head": [
+            80.38026428222656,
+            63.961036682128906,
+            -0.09432040899991989
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.005": {
+          "parent": "Missile_03__EMITDAMAGE",
+          "head": [
+            86.3438491821289,
+            72.26487731933594,
+            -0.026082752272486687
+          ]
+        },
+        "VictoryIRig/Missile_04": {
+          "parent": "Hull",
+          "head": [
+            99.22759246826172,
+            121.86908721923828,
+            -0.09434474259614944
+          ]
+        },
+        "VictoryIRig/Missile_04__EMITDAMAGE": {
+          "parent": "Missile_04",
+          "head": [
+            99.22760772705078,
+            121.86910247802734,
+            -0.09433569014072418
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.006": {
+          "parent": "Missile_04__EMITDAMAGE",
+          "head": [
+            99.57025909423828,
+            109.7925033569336,
+            -0.0260798130184412
+          ]
+        },
+        "VictoryIRig/Missile_01": {
+          "parent": "Hull",
+          "head": [
+            -81.86840057373047,
+            63.96104049682617,
+            -0.9325380921363831
+          ]
+        },
+        "VictoryIRig/Missile_01__EMITDAMAGE01": {
+          "parent": "Missile_01",
+          "head": [
+            -81.86841583251953,
+            63.96104431152344,
+            -0.9325281381607056
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.007": {
+          "parent": "Missile_01__EMITDAMAGE01",
+          "head": [
+            -82.23761749267578,
+            51.81916427612305,
+            -0.9358839988708496
+          ]
+        },
+        "VictoryIRig/Missile_02": {
+          "parent": "Hull",
+          "head": [
+            -100.71578216552734,
+            121.86910247802734,
+            -0.9325358867645264
+          ]
+        },
+        "VictoryIRig/Missile_02__EMITDAMAGE01": {
+          "parent": "Missile_02",
+          "head": [
+            -100.71576690673828,
+            121.86910247802734,
+            -0.9325309991836548
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.008": {
+          "parent": "Missile_02__EMITDAMAGE01",
+          "head": [
+            -101.05842590332031,
+            109.79251098632812,
+            -0.9358893036842346
+          ]
+        },
+        "VictoryIRig/T_04": {
+          "parent": "Hull",
+          "head": [
+            78.2647705078125,
+            145.0223388671875,
+            15.6214599609375
+          ]
+        },
+        "VictoryIRig/T_04_EMITDAMAGE": {
+          "parent": "T_04",
+          "head": [
+            78.2647933959961,
+            145.0223846435547,
+            15.621475219726562
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.003": {
+          "parent": "T_04_EMITDAMAGE",
+          "head": [
+            77.90332794189453,
+            145.3943328857422,
+            17.718706130981445
+          ]
+        },
+        "VictoryIRig/T_06": {
+          "parent": "Hull",
+          "head": [
+            78.26476287841797,
+            160.612548828125,
+            16.852354049682617
+          ]
+        },
+        "VictoryIRig/T_06_EMITDAMAGE": {
+          "parent": "T_06",
+          "head": [
+            78.26477813720703,
+            160.6125946044922,
+            16.852371215820312
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.004": {
+          "parent": "T_06_EMITDAMAGE",
+          "head": [
+            77.90331268310547,
+            160.82545471191406,
+            19.208534240722656
+          ]
+        },
+        "VictoryIRig/T_05": {
+          "parent": "Hull",
+          "head": [
+            77.980712890625,
+            129.65542602539062,
+            14.393400192260742
+          ]
+        },
+        "VictoryIRig/T_05_EMITDAMAGE": {
+          "parent": "T_05",
+          "head": [
+            77.98070526123047,
+            129.65541076660156,
+            14.393439292907715
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.005": {
+          "parent": "T_05_EMITDAMAGE",
+          "head": [
+            77.90328216552734,
+            129.9170379638672,
+            16.224483489990234
+          ]
+        },
+        "VictoryIRig/T_03": {
+          "parent": "Hull",
+          "head": [
+            -78.1136474609375,
+            129.6554412841797,
+            14.393414497375488
+          ]
+        },
+        "VictoryIRig/T_03_EMITDAMAGE": {
+          "parent": "T_03",
+          "head": [
+            -78.11370086669922,
+            129.65545654296875,
+            14.393428802490234
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.006": {
+          "parent": "T_03_EMITDAMAGE",
+          "head": [
+            -78.29178619384766,
+            129.9170684814453,
+            16.2244815826416
+          ]
+        },
+        "VictoryIRig/T_02": {
+          "parent": "Hull",
+          "head": [
+            -78.3976821899414,
+            145.0223846435547,
+            15.621456146240234
+          ]
+        },
+        "VictoryIRig/T_02_EMITDAMAGE": {
+          "parent": "T_02",
+          "head": [
+            -78.39772033691406,
+            145.02236938476562,
+            15.621482849121094
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.007": {
+          "parent": "T_02_EMITDAMAGE",
+          "head": [
+            -78.29178619384766,
+            145.39431762695312,
+            17.71872329711914
+          ]
+        },
+        "VictoryIRig/T_01": {
+          "parent": "Hull",
+          "head": [
+            -78.39768981933594,
+            160.6126251220703,
+            16.852352142333984
+          ]
+        },
+        "VictoryIRig/T_01_EMITDAMAGE": {
+          "parent": "T_01",
+          "head": [
+            -78.39776611328125,
+            160.6126251220703,
+            16.85236358642578
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.008": {
+          "parent": "T_01_EMITDAMAGE",
+          "head": [
+            -78.29174041748047,
+            160.8253631591797,
+            19.20853042602539
+          ]
+        },
+        "VictoryIRig/MuzzleA_01": {
+          "parent": "Hull",
+          "head": [
+            -39.028141021728516,
+            56.46805191040039,
+            21.840167999267578
+          ]
+        },
+        "VictoryIRig/MuzzleA_02": {
+          "parent": "Hull",
+          "head": [
+            40.41790008544922,
+            56.468048095703125,
+            21.840152740478516
+          ]
+        },
+        "VictoryIRig/MuzzleA_04": {
+          "parent": "Hull",
+          "head": [
+            48.30961608886719,
+            -59.222434997558594,
+            -0.13826441764831543
+          ]
+        },
+        "VictoryIRig/MuzzleA_03": {
+          "parent": "Hull",
+          "head": [
+            33.186798095703125,
+            -110.79873657226562,
+            -0.13824783265590668
+          ]
+        },
+        "VictoryIRig/Torpedo_01": {
+          "parent": "Hull",
+          "head": [
+            41.1873779296875,
+            -83.10303497314453,
+            -0.13825415074825287
+          ]
+        },
+        "VictoryIRig/Torpedo_00": {
+          "parent": "Hull",
+          "head": [
+            -41.222808837890625,
+            -83.3712387084961,
+            -0.13811804354190826
+          ]
+        },
+        "VictoryIRig/MuzzleA_05": {
+          "parent": "Hull",
+          "head": [
+            -47.839237213134766,
+            -61.640419006347656,
+            -0.13812100887298584
+          ]
+        },
+        "VictoryIRig/MuzzleA_06": {
+          "parent": "Hull",
+          "head": [
+            -34.284732818603516,
+            -107.29093170166016,
+            -0.13811138272285461
+          ]
+        },
+        "VictoryIRig/MuzzleC_12": {
+          "parent": "Hull",
+          "head": [
+            -20.938657760620117,
+            -77.15909576416016,
+            16.05392074584961
+          ]
+        },
+        "VictoryIRig/MuzzleC_13": {
+          "parent": "Hull",
+          "head": [
+            21.034421920776367,
+            -77.15911102294922,
+            16.053911209106445
+          ]
+        },
+        "VictoryIRig/MuzzleB_12": {
+          "parent": "Hull",
+          "head": [
+            109.572265625,
+            147.56964111328125,
+            0.9255692362785339
+          ]
+        },
+        "VictoryIRig/MuzzleB_11": {
+          "parent": "Hull",
+          "head": [
+            103.80825805664062,
+            127.83218383789062,
+            0.925575852394104
+          ]
+        },
+        "VictoryIRig/MuzzleB_07": {
+          "parent": "Hull",
+          "head": [
+            76.88867950439453,
+            33.600616455078125,
+            0.9256095290184021
+          ]
+        },
+        "VictoryIRig/MuzzleB_08": {
+          "parent": "Hull",
+          "head": [
+            82.49070739746094,
+            53.53293991088867,
+            0.9255951046943665
+          ]
+        },
+        "VictoryIRig/MuzzleB_09": {
+          "parent": "Hull",
+          "head": [
+            88.80926513671875,
+            75.76399993896484,
+            0.925603985786438
+          ]
+        },
+        "VictoryIRig/MuzzleB_10": {
+          "parent": "Hull",
+          "head": [
+            97.50560760498047,
+            105.70402526855469,
+            0.9255824089050293
+          ]
+        },
+        "VictoryIRig/MuzzleB_01": {
+          "parent": "Hull",
+          "head": [
+            -78.08909606933594,
+            33.542667388916016,
+            -2.242067575454712
+          ]
+        },
+        "VictoryIRig/MuzzleB_06": {
+          "parent": "Hull",
+          "head": [
+            -111.06048583984375,
+            147.5696258544922,
+            -2.2420973777770996
+          ]
+        },
+        "VictoryIRig/MuzzleB_05": {
+          "parent": "Hull",
+          "head": [
+            -105.29640197753906,
+            127.83213806152344,
+            -2.2421133518218994
+          ]
+        },
+        "VictoryIRig/MuzzleB_04": {
+          "parent": "Hull",
+          "head": [
+            -98.99375915527344,
+            105.70401000976562,
+            -2.2420763969421387
+          ]
+        },
+        "VictoryIRig/MuzzleB_03": {
+          "parent": "Hull",
+          "head": [
+            -90.29740142822266,
+            75.76402282714844,
+            -2.2420926094055176
+          ]
+        },
+        "VictoryIRig/MuzzleB_02": {
+          "parent": "Hull",
+          "head": [
+            -83.97888946533203,
+            53.532901763916016,
+            -2.2420706748962402
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_L_02": {
+          "parent": "Hull",
+          "head": [
+            91.26104736328125,
+            90.93663024902344,
+            -0.692544162273407
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_L_05": {
+          "parent": "Hull",
+          "head": [
+            105.2187271118164,
+            139.10958862304688,
+            -0.6925647258758545
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_L_04": {
+          "parent": "Hull",
+          "head": [
+            77.13020324707031,
+            42.71210861206055,
+            -0.6925427317619324
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_Front_L": {
+          "parent": "Hull",
+          "head": [
+            43.24261474609375,
+            -86.96002197265625,
+            -0.6925069093704224
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_Front_R": {
+          "parent": "Hull",
+          "head": [
+            -43.9354362487793,
+            -86.96001434326172,
+            -0.6925081014633179
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_R01": {
+          "parent": "Hull",
+          "head": [
+            -77.4526596069336,
+            41.78432846069336,
+            -0.6925373077392578
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_R02": {
+          "parent": "Hull",
+          "head": [
+            -91.76459503173828,
+            89.8646469116211,
+            -0.6925392746925354
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_R03": {
+          "parent": "Hull",
+          "head": [
+            -106.12321472167969,
+            137.9654998779297,
+            -0.6925679445266724
+          ]
+        },
+        "VictoryIRig/PI_DAMAGE_ELEC_CAP00": {
+          "parent": "Hull",
+          "head": [
+            16.785242080688477,
+            163.49725341796875,
+            128.19644165039062
+          ]
+        },
+        "VictoryIRig/P_FIRE_BIG_CHAIN_ALT1": {
+          "parent": "Hull",
+          "head": [
+            16.785242080688477,
+            163.49725341796875,
+            128.19644165039062
+          ]
+        },
+        "VictoryIRig/P_FIRE_BIG_CHAIN_ALT2": {
+          "parent": "Hull",
+          "head": [
+            16.785242080688477,
+            163.49725341796875,
+            128.19644165039062
+          ]
+        },
+        "VictoryIRig/P_FIRE_HUGE00_CHAIN_ALT2": {
+          "parent": "Hull",
+          "head": [
+            16.785242080688477,
+            163.49725341796875,
+            128.19644165039062
+          ]
+        },
+        "VictoryIRig/HP_BRIDGE": {
+          "parent": "Hull",
+          "head": [
+            0.014850713312625885,
+            138.46641540527344,
+            78.66228485107422
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE": {
+          "parent": "Hull",
+          "head": [
+            -0.05907538905739784,
+            -273.5597229003906,
+            2.605419635772705
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.001": {
+          "parent": "Hull",
+          "head": [
+            -0.059066902846097946,
+            41.23915481567383,
+            35.13214874267578
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.002": {
+          "parent": "Hull",
+          "head": [
+            -0.05906469747424126,
+            92.93260955810547,
+            51.18162536621094
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.003": {
+          "parent": "Hull",
+          "head": [
+            -0.0590609572827816,
+            225.64158630371094,
+            -44.91474151611328
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.004": {
+          "parent": "Hull",
+          "head": [
+            -0.15470196306705475,
+            -0.45975789427757263,
+            -28.420957565307617
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.005": {
+          "parent": "Hull",
+          "head": [
+            -0.15469981729984283,
+            -76.31816101074219,
+            -19.438026428222656
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.006": {
+          "parent": "Hull",
+          "head": [
+            -19.62344741821289,
+            -53.0834846496582,
+            -19.630413055419922
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.007": {
+          "parent": "Hull",
+          "head": [
+            19.490556716918945,
+            -53.08347702026367,
+            -19.630414962768555
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.008": {
+          "parent": "Hull",
+          "head": [
+            20.6765193939209,
+            -76.26594543457031,
+            -14.710512161254883
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.009": {
+          "parent": "Hull",
+          "head": [
+            -21.230592727661133,
+            -76.26593017578125,
+            -14.710511207580566
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.010": {
+          "parent": "Hull",
+          "head": [
+            16.785242080688477,
+            163.49725341796875,
+            128.19644165039062
+          ]
+        },
+        "VictoryIRig/Wing_R_U": {
+          "parent": "Root",
+          "head": [
+            -89.29226684570312,
+            82.0754165649414,
+            1.9004297256469727
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.005": {
+          "parent": "Wing_R_U",
+          "head": [
+            -152.74948120117188,
+            147.1610870361328,
+            0.9121124744415283
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.006": {
+          "parent": "Wing_R_U",
+          "head": [
+            -111.15158081054688,
+            4.677433967590332,
+            -0.054203592240810394
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.011": {
+          "parent": "Wing_R_U",
+          "head": [
+            -152.74948120117188,
+            147.1610870361328,
+            0.9121124744415283
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.012": {
+          "parent": "Wing_R_U",
+          "head": [
+            -111.15158081054688,
+            4.677433967590332,
+            -0.054203592240810394
+          ]
+        },
+        "VictoryIRig/Wing_R_L": {
+          "parent": "Root",
+          "head": [
+            -89.29219055175781,
+            82.07540130615234,
+            -6.976251602172852
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.007": {
+          "parent": "Wing_R_L",
+          "head": [
+            -152.21360778808594,
+            147.79859924316406,
+            -4.556113243103027
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.008": {
+          "parent": "Wing_R_L",
+          "head": [
+            -111.15205383300781,
+            4.187529563903809,
+            -3.706430196762085
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.013": {
+          "parent": "Wing_R_L",
+          "head": [
+            -152.21360778808594,
+            147.79859924316406,
+            -4.556113243103027
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.014": {
+          "parent": "Wing_R_L",
+          "head": [
+            -111.15205383300781,
+            4.187529563903809,
+            -3.706430196762085
+          ]
+        },
+        "VictoryIRig/Wing_L_L": {
+          "parent": "Root",
+          "head": [
+            88.29525756835938,
+            81.94538879394531,
+            -6.976325988769531
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.009": {
+          "parent": "Wing_L_L",
+          "head": [
+            152.14071655273438,
+            146.7891387939453,
+            -4.092193603515625
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.010": {
+          "parent": "Wing_L_L",
+          "head": [
+            110.95245361328125,
+            4.459423542022705,
+            -3.2766425609588623
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.015": {
+          "parent": "Wing_L_L",
+          "head": [
+            152.14071655273438,
+            146.7891387939453,
+            -4.092193603515625
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.016": {
+          "parent": "Wing_L_L",
+          "head": [
+            110.95245361328125,
+            4.459423542022705,
+            -3.2766425609588623
+          ]
+        },
+        "VictoryIRig/Wing_L_U": {
+          "parent": "Root",
+          "head": [
+            88.29523468017578,
+            81.94538879394531,
+            3.010038375854492
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.011": {
+          "parent": "Wing_L_U",
+          "head": [
+            111.11688232421875,
+            4.949355125427246,
+            -0.10257310420274734
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.012": {
+          "parent": "Wing_L_U",
+          "head": [
+            152.19320678710938,
+            146.15171813964844,
+            0.6398564577102661
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.017": {
+          "parent": "Wing_L_U",
+          "head": [
+            111.11688232421875,
+            4.949355125427246,
+            -0.10257310420274734
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.018": {
+          "parent": "Wing_L_U",
+          "head": [
+            152.19320678710938,
+            146.15171813964844,
+            0.6398564577102661
+          ]
+        },
+        "VictoryIRig/Hangar_Light": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553960800170898
+          ]
+        },
+        "VictoryIRig/Shadow": {
+          "parent": "Root",
+          "head": [
+            88.29525756835938,
+            81.94538879394531,
+            -6.976325988769531
+          ]
+        },
+        "VictoryIRig/Shadow.001": {
+          "parent": "Root",
+          "head": [
+            88.29523468017578,
+            81.94538879394531,
+            3.010038375854492
+          ]
+        },
+        "VictoryIRig/Shadow.002": {
+          "parent": "Root",
+          "head": [
+            -89.29219055175781,
+            82.07540130615234,
+            -6.976251602172852
+          ]
+        },
+        "VictoryIRig/Shadow.003": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553960800170898
+          ]
+        },
+        "VictoryIRig/Shadow.004": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553960800170898
+          ]
+        },
+        "VictoryIRig/Shadow.005": {
+          "parent": "Root",
+          "head": [
+            -0.06646302342414856,
+            -6.629295349121094,
+            -1.0553960800170898
+          ]
+        },
+        "VictoryIRig/Shadow.006": {
+          "parent": "Root",
+          "head": [
+            -106.12320709228516,
+            137.96548461914062,
+            -0.692535400390625
+          ]
+        },
+        "VictoryIRig/Shadow.007": {
+          "parent": "Root",
+          "head": [
+            -91.76457977294922,
+            89.86466979980469,
+            -0.6925125122070312
+          ]
+        },
+        "VictoryIRig/Shadow.008": {
+          "parent": "Root",
+          "head": [
+            -77.45265197753906,
+            41.784339904785156,
+            -0.6925277709960938
+          ]
+        },
+        "VictoryIRig/Shadow.009": {
+          "parent": "Root",
+          "head": [
+            105.21874237060547,
+            139.10958862304688,
+            -0.6925506591796875
+          ]
+        },
+        "VictoryIRig/Shadow.010": {
+          "parent": "Root",
+          "head": [
+            77.13021850585938,
+            42.712127685546875,
+            -0.6925239562988281
+          ]
+        },
+        "VictoryIRig/Shadow.011": {
+          "parent": "Root",
+          "head": [
+            91.26105499267578,
+            90.9366455078125,
+            -0.6925277709960938
+          ]
+        },
+        "VictoryIRig/Shadow.012": {
+          "parent": "Root",
+          "head": [
+            -43.93544387817383,
+            -86.96002197265625,
+            -0.6925277709960938
+          ]
+        },
+        "VictoryIRig/Shadow.013": {
+          "parent": "Root",
+          "head": [
+            43.24262237548828,
+            -86.96003723144531,
+            -0.6925277709960938
+          ]
+        },
+        "VictoryIRig/Shadow.014": {
+          "parent": "Root",
+          "head": [
+            -21.84783172607422,
+            137.14761352539062,
+            81.631591796875
+          ]
+        },
+        "VictoryIRig/Shadow.015": {
+          "parent": "Root",
+          "head": [
+            17.537324905395508,
+            162.55056762695312,
+            109.35560607910156
+          ]
+        },
+        "VictoryIRig/Shadow.016": {
+          "parent": "Root",
+          "head": [
+            -89.29226684570312,
+            82.0754165649414,
+            1.9004297256469727
+          ]
+        },
+        "VictoryIRig/Shadow.017": {
+          "parent": "Root",
+          "head": [
+            -89.29226684570312,
+            82.0754165649414,
+            1.9004297256469727
+          ]
+        }
+      },
+      "bounds_min": [
+        -153.13531494140625,
+        -276.93438720703125,
+        -47.00288391113281
+      ],
+      "bounds_max": [
+        152.59083557128906,
+        229.01426696777344,
+        128.4871063232422
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Hull.002": {
+          "triangles": 8612,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Antenna_1.002": {
+          "triangles": 404,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Collision.002": {
+          "triangles": 177,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "COLLISION.002"
+          ]
+        },
+        "Antennae.002": {
+          "triangles": 102,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Thruster_Glow_R.002": {
+          "triangles": 286,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD_I_Thruster Material.002"
+          ]
+        },
+        "Turret_Bases.002": {
+          "triangles": 324,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Thruster_Glow_L.002": {
+          "triangles": 286,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD_I_Thruster Material.002"
+          ]
+        },
+        "LensEffect_Small.006": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material.002"
+          ]
+        },
+        "LensEffect_Small2.002": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material.002"
+          ]
+        },
+        "LensEffect_Small01.002": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material.002"
+          ]
+        },
+        "LensEffect_Small.007": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material.002"
+          ]
+        },
+        "LensEffect_Small.008": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material.002"
+          ]
+        },
+        "LensEffect_Small03.002": {
+          "triangles": 8,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_VSD_ENG Material.002"
+          ]
+        },
+        "Missile_Batteries_L_02.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_L_05.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_L_04.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_Front_L.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_Front_R.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_R01.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_R02.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Missile_Batteries_R03.002": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Wing_R_U.002": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Wing_R_L.002": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Wing_L_L.002": {
+          "triangles": 22,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Wing_L_U.002": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.002"
+          ]
+        },
+        "Hangar_Light.002": {
+          "triangles": 113,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material1.002"
+          ]
+        },
+        "Shadow.036": {
+          "triangles": 28,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.037": {
+          "triangles": 28,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.038": {
+          "triangles": 12,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.039": {
+          "triangles": 8311,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.040": {
+          "triangles": 304,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.041": {
+          "triangles": 408,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.042": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.043": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.044": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.045": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.046": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.047": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.048": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.049": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.050": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.051": {
+          "triangles": 342,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.052": {
+          "triangles": 20,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.002"
+          ]
+        },
+        "Shadow.053": {
+          "triangles": 14,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material1.002"
+          ]
+        }
+      },
+      "bones": {
+        "VictoryIRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "VictoryIRig/Hull": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553950071334839
+          ]
+        },
+        "VictoryIRig/Antenna_1": {
+          "parent": "Hull",
+          "head": [
+            17.537324905395508,
+            162.55055236816406,
+            109.35556030273438
+          ]
+        },
+        "VictoryIRig/Collision": {
+          "parent": "Hull",
+          "head": [
+            -0.02784622646868229,
+            32.5931396484375,
+            2.1157643795013428
+          ]
+        },
+        "VictoryIRig/Antennae": {
+          "parent": "Hull",
+          "head": [
+            -21.84783172607422,
+            137.1475830078125,
+            81.63153839111328
+          ]
+        },
+        "VictoryIRig/Thruster_Glow_R": {
+          "parent": "Hull",
+          "head": [
+            -31.763647079467773,
+            215.72064208984375,
+            -2.006847381591797
+          ]
+        },
+        "VictoryIRig/Turret_Bases": {
+          "parent": "Hull",
+          "head": [
+            -0.06646301597356796,
+            -6.629295349121094,
+            -1.0553945302963257
+          ]
+        },
+        "VictoryIRig/Thruster_Glow_L": {
+          "parent": "Hull",
+          "head": [
+            31.63069725036621,
+            215.72064208984375,
+            -2.0068466663360596
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE": {
+          "parent": "Hull",
+          "head": [
+            -0.059071410447359085,
+            -273.5597229003906,
+            2.6054208278656006
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.001": {
+          "parent": "Hull",
+          "head": [
+            -0.05906761810183525,
+            41.23915481567383,
+            35.13214874267578
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.002": {
+          "parent": "Hull",
+          "head": [
+            -0.05906618386507034,
+            92.93260955810547,
+            51.1816291809082
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.003": {
+          "parent": "Hull",
+          "head": [
+            -0.059064414352178574,
+            225.64158630371094,
+            -44.91474151611328
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION": {
+          "parent": "Hull",
+          "head": [
+            -0.1547020524740219,
+            -0.45975807309150696,
+            -28.420957565307617
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.001": {
+          "parent": "Hull",
+          "head": [
+            -0.15469877421855927,
+            -76.31816101074219,
+            -19.43802261352539
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.002": {
+          "parent": "Hull",
+          "head": [
+            -19.62344741821289,
+            -53.0834846496582,
+            -19.63041114807129
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.003": {
+          "parent": "Hull",
+          "head": [
+            19.490556716918945,
+            -53.08348083496094,
+            -19.630414962768555
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.004": {
+          "parent": "Hull",
+          "head": [
+            20.67652130126953,
+            -76.26594543457031,
+            -14.710511207580566
+          ]
+        },
+        "VictoryIRig/P_BLINK_CAUTION.005": {
+          "parent": "Hull",
+          "head": [
+            -21.2305908203125,
+            -76.26593017578125,
+            -14.71051025390625
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.004": {
+          "parent": "Hull",
+          "head": [
+            16.785240173339844,
+            163.49725341796875,
+            128.19642639160156
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_01": {
+          "parent": "Hull",
+          "head": [
+            -27.02292251586914,
+            159.96168518066406,
+            100.7374038696289
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_02": {
+          "parent": "Hull",
+          "head": [
+            26.963232040405273,
+            159.96163940429688,
+            100.73681640625
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_02": {
+          "parent": "Hull",
+          "head": [
+            -29.989700317382812,
+            209.4732666015625,
+            2.254412889480591
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_02_EMITDAMAGE": {
+          "parent": "HP_E_BONE_02",
+          "head": [
+            -29.989715576171875,
+            209.4732666015625,
+            2.2544374465942383
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED": {
+          "parent": "HP_E_BONE_02_EMITDAMAGE",
+          "head": [
+            -31.41942024230957,
+            216.30787658691406,
+            -1.8100371360778809
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML": {
+          "parent": "HP_E_BONE_02_EMITDAMAGE",
+          "head": [
+            0.35010606050491333,
+            225.20079040527344,
+            -17.709428787231445
+          ]
+        },
+        "VictoryIRig/Engine_Particles_R": {
+          "parent": "HP_E_BONE_02",
+          "head": [
+            -29.989715576171875,
+            209.47328186035156,
+            2.254397392272949
+          ]
+        },
+        "VictoryIRig/LensEffect_Small": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            -32.35122299194336,
+            227.8578338623047,
+            -0.6704707741737366
+          ]
+        },
+        "VictoryIRig/LensEffect_Small2": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            0.7654908895492554,
+            229.01416015625,
+            -17.141162872314453
+          ]
+        },
+        "VictoryIRig/LensEffect_Small01": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            -29.491506576538086,
+            227.8578338623047,
+            -0.6704521179199219
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_BIG": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            -31.419015884399414,
+            223.31202697753906,
+            -1.8100357055664062
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_SMALL": {
+          "parent": "Engine_Particles_R",
+          "head": [
+            0.3501107692718506,
+            225.20077514648438,
+            -17.709430694580078
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_01": {
+          "parent": "Hull",
+          "head": [
+            30.375167846679688,
+            208.97830200195312,
+            2.254413604736328
+          ]
+        },
+        "VictoryIRig/HP_E_BONE_01_EMITDAMAGE": {
+          "parent": "HP_E_BONE_01",
+          "head": [
+            30.375139236450195,
+            208.9783172607422,
+            2.254437208175659
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.001": {
+          "parent": "HP_E_BONE_01_EMITDAMAGE",
+          "head": [
+            31.419015884399414,
+            216.30799865722656,
+            -1.81002676486969
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.001": {
+          "parent": "HP_E_BONE_01_EMITDAMAGE",
+          "head": [
+            0.34990426898002625,
+            224.79177856445312,
+            18.110891342163086
+          ]
+        },
+        "VictoryIRig/Engine_Particles_L": {
+          "parent": "HP_E_BONE_01",
+          "head": [
+            30.37514305114746,
+            208.97830200195312,
+            2.254413604736328
+          ]
+        },
+        "VictoryIRig/LensEffect_Small.001": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            31.53119659423828,
+            227.8560791015625,
+            -0.6486021876335144
+          ]
+        },
+        "VictoryIRig/LensEffect_Small.002": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            0.7654598951339722,
+            225.614501953125,
+            16.953439712524414
+          ]
+        },
+        "VictoryIRig/LensEffect_Small03": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            32.51035690307617,
+            227.85606384277344,
+            -0.6486024260520935
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_BIG.001": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            31.419025421142578,
+            223.93325805664062,
+            -1.8100287914276123
+          ]
+        },
+        "VictoryIRig/PE_VSD_ENG_SMALL.001": {
+          "parent": "Engine_Particles_L",
+          "head": [
+            0.3499080240726471,
+            224.79177856445312,
+            18.11089515686035
+          ]
+        },
+        "VictoryIRig/MuzzleA_00": {
+          "parent": "Hull",
+          "head": [
+            -0.392964243888855,
+            30.88496971130371,
+            27.073667526245117
+          ]
+        },
+        "VictoryIRig/MuzzleC_01": {
+          "parent": "Hull",
+          "head": [
+            31.71282196044922,
+            -161.38934326171875,
+            0.01915300264954567
+          ]
+        },
+        "VictoryIRig/MuzzleC_02": {
+          "parent": "Hull",
+          "head": [
+            40.43671417236328,
+            -128.31646728515625,
+            0.47240161895751953
+          ]
+        },
+        "VictoryIRig/MuzzleC_03": {
+          "parent": "Hull",
+          "head": [
+            67.18258666992188,
+            -36.391883850097656,
+            -0.13826972246170044
+          ]
+        },
+        "VictoryIRig/MuzzleC_04": {
+          "parent": "Hull",
+          "head": [
+            76.08563232421875,
+            -4.779016494750977,
+            -0.13827556371688843
+          ]
+        },
+        "VictoryIRig/HP_T_BONE": {
+          "parent": "Hull",
+          "head": [
+            -0.3333296477794647,
+            -233.37606811523438,
+            0.019164446741342545
+          ]
+        },
+        "VictoryIRig/SPAWN_00": {
+          "parent": "Hull",
+          "head": [
+            -0.06840690970420837,
+            -0.5544559359550476,
+            -16.57396697998047
+          ]
+        },
+        "VictoryIRig/SPAWN_00_EMITDAMAGE": {
+          "parent": "SPAWN_00",
+          "head": [
+            -0.06840827316045761,
+            -0.5544634461402893,
+            -16.5739688873291
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.002": {
+          "parent": "SPAWN_00_EMITDAMAGE",
+          "head": [
+            -0.06645325571298599,
+            4.968966484069824,
+            -16.832035064697266
+          ]
+        },
+        "VictoryIRig/MuzzleC_10": {
+          "parent": "Hull",
+          "head": [
+            132.73829650878906,
+            190.03395080566406,
+            0.47231027483940125
+          ]
+        },
+        "VictoryIRig/MuzzleC_11": {
+          "parent": "Hull",
+          "head": [
+            -132.83154296875,
+            189.01170349121094,
+            0.4723213315010071
+          ]
+        },
+        "VictoryIRig/MuzzleC_05": {
+          "parent": "Hull",
+          "head": [
+            -76.21879577636719,
+            -4.779313564300537,
+            -0.13813358545303345
+          ]
+        },
+        "VictoryIRig/MuzzleC_06": {
+          "parent": "Hull",
+          "head": [
+            -67.31485748291016,
+            -36.39175796508789,
+            -0.13812296092510223
+          ]
+        },
+        "VictoryIRig/MuzzleC_07": {
+          "parent": "Hull",
+          "head": [
+            -40.834720611572266,
+            -128.316162109375,
+            -0.13810372352600098
+          ]
+        },
+        "VictoryIRig/MuzzleC_00": {
+          "parent": "Hull",
+          "head": [
+            -31.615446090698242,
+            -161.06170654296875,
+            -0.13810501992702484
+          ]
+        },
+        "VictoryIRig/MuzzleC_08": {
+          "parent": "Hull",
+          "head": [
+            -21.809831619262695,
+            -196.13348388671875,
+            -0.1380910575389862
+          ]
+        },
+        "VictoryIRig/MuzzleC_09": {
+          "parent": "Hull",
+          "head": [
+            21.698657989501953,
+            -196.13345336914062,
+            -0.13809052109718323
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_03": {
+          "parent": "Hull",
+          "head": [
+            0.014848567545413971,
+            173.91815185546875,
+            85.90338134765625
+          ]
+        },
+        "VictoryIRig/HP_S_BONE_EMITDAMAGE": {
+          "parent": "HP_S_BONE_03",
+          "head": [
+            0.014757014811038971,
+            173.91815185546875,
+            85.90340423583984
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.002": {
+          "parent": "HP_S_BONE_EMITDAMAGE",
+          "head": [
+            -0.09075886011123657,
+            195.2699432373047,
+            93.85575103759766
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.003": {
+          "parent": "HP_S_BONE_EMITDAMAGE",
+          "head": [
+            -26.796480178833008,
+            159.7867431640625,
+            99.3990249633789
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.004": {
+          "parent": "HP_S_BONE_EMITDAMAGE",
+          "head": [
+            27.442054748535156,
+            159.7866973876953,
+            99.39901733398438
+          ]
+        },
+        "VictoryIRig/Missile_03": {
+          "parent": "Hull",
+          "head": [
+            80.38026428222656,
+            63.96104049682617,
+            -0.09432362765073776
+          ]
+        },
+        "VictoryIRig/Missile_03__EMITDAMAGE": {
+          "parent": "Missile_03",
+          "head": [
+            80.38025665283203,
+            63.96104049682617,
+            -0.09431932866573334
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.005": {
+          "parent": "Missile_03__EMITDAMAGE",
+          "head": [
+            86.34384155273438,
+            72.26487731933594,
+            -0.026083022356033325
+          ]
+        },
+        "VictoryIRig/Missile_04": {
+          "parent": "Hull",
+          "head": [
+            99.22758483886719,
+            121.86908721923828,
+            -0.09434361010789871
+          ]
+        },
+        "VictoryIRig/Missile_04__EMITDAMAGE": {
+          "parent": "Missile_04",
+          "head": [
+            99.22760009765625,
+            121.86910247802734,
+            -0.09433456510305405
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.006": {
+          "parent": "Missile_04__EMITDAMAGE",
+          "head": [
+            99.57025146484375,
+            109.7925033569336,
+            -0.02607816644012928
+          ]
+        },
+        "VictoryIRig/Missile_01": {
+          "parent": "Hull",
+          "head": [
+            -81.868408203125,
+            63.961036682128906,
+            -0.9325369596481323
+          ]
+        },
+        "VictoryIRig/Missile_01__EMITDAMAGE01": {
+          "parent": "Missile_01",
+          "head": [
+            -81.86842346191406,
+            63.96104431152344,
+            -0.9325270652770996
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.007": {
+          "parent": "Missile_01__EMITDAMAGE01",
+          "head": [
+            -82.23762512207031,
+            51.81916427612305,
+            -0.9358848929405212
+          ]
+        },
+        "VictoryIRig/Missile_02": {
+          "parent": "Hull",
+          "head": [
+            -100.71578979492188,
+            121.86909484863281,
+            -0.9325347542762756
+          ]
+        },
+        "VictoryIRig/Missile_02__EMITDAMAGE01": {
+          "parent": "Missile_02",
+          "head": [
+            -100.71577453613281,
+            121.86909484863281,
+            -0.9325299263000488
+          ]
+        },
+        "VictoryIRig/P_FIRE_MED.008": {
+          "parent": "Missile_02__EMITDAMAGE01",
+          "head": [
+            -101.05843353271484,
+            109.7925033569336,
+            -0.9358901977539062
+          ]
+        },
+        "VictoryIRig/T_04": {
+          "parent": "Hull",
+          "head": [
+            78.2647705078125,
+            145.0223388671875,
+            15.621460914611816
+          ]
+        },
+        "VictoryIRig/T_04_EMITDAMAGE": {
+          "parent": "T_04",
+          "head": [
+            78.26478576660156,
+            145.0223846435547,
+            15.621478080749512
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.003": {
+          "parent": "T_04_EMITDAMAGE",
+          "head": [
+            77.9033203125,
+            145.3943328857422,
+            17.718708038330078
+          ]
+        },
+        "VictoryIRig/T_06": {
+          "parent": "Hull",
+          "head": [
+            78.26475524902344,
+            160.612548828125,
+            16.852352142333984
+          ]
+        },
+        "VictoryIRig/T_06_EMITDAMAGE": {
+          "parent": "T_06",
+          "head": [
+            78.2647705078125,
+            160.61257934570312,
+            16.852365493774414
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.004": {
+          "parent": "T_06_EMITDAMAGE",
+          "head": [
+            77.9032974243164,
+            160.825439453125,
+            19.208526611328125
+          ]
+        },
+        "VictoryIRig/T_05": {
+          "parent": "Hull",
+          "head": [
+            77.98070526123047,
+            129.65542602539062,
+            14.393400192260742
+          ]
+        },
+        "VictoryIRig/T_05_EMITDAMAGE": {
+          "parent": "T_05",
+          "head": [
+            77.98069763183594,
+            129.6553955078125,
+            14.393437385559082
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.005": {
+          "parent": "T_05_EMITDAMAGE",
+          "head": [
+            77.90327453613281,
+            129.91700744628906,
+            16.2244815826416
+          ]
+        },
+        "VictoryIRig/T_03": {
+          "parent": "Hull",
+          "head": [
+            -78.11365509033203,
+            129.65542602539062,
+            14.393416404724121
+          ]
+        },
+        "VictoryIRig/T_03_EMITDAMAGE": {
+          "parent": "T_03",
+          "head": [
+            -78.11370849609375,
+            129.65542602539062,
+            14.39342975616455
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.006": {
+          "parent": "T_03_EMITDAMAGE",
+          "head": [
+            -78.29179382324219,
+            129.9170379638672,
+            16.224483489990234
+          ]
+        },
+        "VictoryIRig/T_02": {
+          "parent": "Hull",
+          "head": [
+            -78.3976821899414,
+            145.02236938476562,
+            15.621459007263184
+          ]
+        },
+        "VictoryIRig/T_02_EMITDAMAGE": {
+          "parent": "T_02",
+          "head": [
+            -78.39771270751953,
+            145.02236938476562,
+            15.621487617492676
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.007": {
+          "parent": "T_02_EMITDAMAGE",
+          "head": [
+            -78.29177856445312,
+            145.39430236816406,
+            17.71872901916504
+          ]
+        },
+        "VictoryIRig/T_01": {
+          "parent": "Hull",
+          "head": [
+            -78.39769744873047,
+            160.61260986328125,
+            16.852352142333984
+          ]
+        },
+        "VictoryIRig/T_01_EMITDAMAGE": {
+          "parent": "T_01",
+          "head": [
+            -78.39777374267578,
+            160.61260986328125,
+            16.85236167907715
+          ]
+        },
+        "VictoryIRig/P_FIRE_SML.008": {
+          "parent": "T_01_EMITDAMAGE",
+          "head": [
+            -78.29173278808594,
+            160.82534790039062,
+            19.208532333374023
+          ]
+        },
+        "VictoryIRig/MuzzleA_01": {
+          "parent": "Hull",
+          "head": [
+            -39.028141021728516,
+            56.46805191040039,
+            21.84016990661621
+          ]
+        },
+        "VictoryIRig/MuzzleA_02": {
+          "parent": "Hull",
+          "head": [
+            40.41790008544922,
+            56.468048095703125,
+            21.840152740478516
+          ]
+        },
+        "VictoryIRig/MuzzleA_04": {
+          "parent": "Hull",
+          "head": [
+            48.30961608886719,
+            -59.222434997558594,
+            -0.13826332986354828
+          ]
+        },
+        "VictoryIRig/MuzzleA_03": {
+          "parent": "Hull",
+          "head": [
+            33.186798095703125,
+            -110.79873657226562,
+            -0.13824675977230072
+          ]
+        },
+        "VictoryIRig/Torpedo_01": {
+          "parent": "Hull",
+          "head": [
+            41.1873779296875,
+            -83.10303497314453,
+            -0.13825306296348572
+          ]
+        },
+        "VictoryIRig/Torpedo_00": {
+          "parent": "Hull",
+          "head": [
+            -41.222808837890625,
+            -83.3712387084961,
+            -0.1381169557571411
+          ]
+        },
+        "VictoryIRig/MuzzleA_05": {
+          "parent": "Hull",
+          "head": [
+            -47.839237213134766,
+            -61.640419006347656,
+            -0.1381199210882187
+          ]
+        },
+        "VictoryIRig/MuzzleA_06": {
+          "parent": "Hull",
+          "head": [
+            -34.284732818603516,
+            -107.29093170166016,
+            -0.13811030983924866
+          ]
+        },
+        "VictoryIRig/MuzzleC_12": {
+          "parent": "Hull",
+          "head": [
+            -20.93865394592285,
+            -77.15909576416016,
+            16.053922653198242
+          ]
+        },
+        "VictoryIRig/MuzzleC_13": {
+          "parent": "Hull",
+          "head": [
+            21.034425735473633,
+            -77.15911102294922,
+            16.053911209106445
+          ]
+        },
+        "VictoryIRig/MuzzleB_12": {
+          "parent": "Hull",
+          "head": [
+            109.57225799560547,
+            147.56964111328125,
+            0.9255703687667847
+          ]
+        },
+        "VictoryIRig/MuzzleB_11": {
+          "parent": "Hull",
+          "head": [
+            103.8082504272461,
+            127.83219909667969,
+            0.92557692527771
+          ]
+        },
+        "VictoryIRig/MuzzleB_07": {
+          "parent": "Hull",
+          "head": [
+            76.88867950439453,
+            33.600616455078125,
+            0.9256106019020081
+          ]
+        },
+        "VictoryIRig/MuzzleB_08": {
+          "parent": "Hull",
+          "head": [
+            82.49070739746094,
+            53.53293991088867,
+            0.9255961775779724
+          ]
+        },
+        "VictoryIRig/MuzzleB_09": {
+          "parent": "Hull",
+          "head": [
+            88.80926513671875,
+            75.76399993896484,
+            0.9256048202514648
+          ]
+        },
+        "VictoryIRig/MuzzleB_10": {
+          "parent": "Hull",
+          "head": [
+            97.50559997558594,
+            105.70402526855469,
+            0.9255834817886353
+          ]
+        },
+        "VictoryIRig/MuzzleB_01": {
+          "parent": "Hull",
+          "head": [
+            -78.08909606933594,
+            33.54266357421875,
+            -2.2420663833618164
+          ]
+        },
+        "VictoryIRig/MuzzleB_06": {
+          "parent": "Hull",
+          "head": [
+            -111.06049346923828,
+            147.56959533691406,
+            -2.242096424102783
+          ]
+        },
+        "VictoryIRig/MuzzleB_05": {
+          "parent": "Hull",
+          "head": [
+            -105.2964096069336,
+            127.83213806152344,
+            -2.242112159729004
+          ]
+        },
+        "VictoryIRig/MuzzleB_04": {
+          "parent": "Hull",
+          "head": [
+            -98.99376678466797,
+            105.70401000976562,
+            -2.242075204849243
+          ]
+        },
+        "VictoryIRig/MuzzleB_03": {
+          "parent": "Hull",
+          "head": [
+            -90.29740142822266,
+            75.76402282714844,
+            -2.242091655731201
+          ]
+        },
+        "VictoryIRig/MuzzleB_02": {
+          "parent": "Hull",
+          "head": [
+            -83.97888946533203,
+            53.532901763916016,
+            -2.242069721221924
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_L_02": {
+          "parent": "Hull",
+          "head": [
+            91.26103973388672,
+            90.93663024902344,
+            -0.692543089389801
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_L_05": {
+          "parent": "Hull",
+          "head": [
+            105.21871948242188,
+            139.10958862304688,
+            -0.6925636529922485
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_L_04": {
+          "parent": "Hull",
+          "head": [
+            77.13019561767578,
+            42.71210861206055,
+            -0.6925417184829712
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_Front_L": {
+          "parent": "Hull",
+          "head": [
+            43.24261474609375,
+            -86.96002197265625,
+            -0.6925057768821716
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_Front_R": {
+          "parent": "Hull",
+          "head": [
+            -43.9354362487793,
+            -86.96001434326172,
+            -0.6925070881843567
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_R01": {
+          "parent": "Hull",
+          "head": [
+            -77.4526596069336,
+            41.78432846069336,
+            -0.6925362348556519
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_R02": {
+          "parent": "Hull",
+          "head": [
+            -91.76459503173828,
+            89.8646469116211,
+            -0.6925382018089294
+          ]
+        },
+        "VictoryIRig/Missile_Batteries_R03": {
+          "parent": "Hull",
+          "head": [
+            -106.12321472167969,
+            137.96548461914062,
+            -0.6925668716430664
+          ]
+        },
+        "VictoryIRig/PI_DAMAGE_ELEC_CAP00": {
+          "parent": "Hull",
+          "head": [
+            16.785240173339844,
+            163.49725341796875,
+            128.19642639160156
+          ]
+        },
+        "VictoryIRig/P_FIRE_BIG_CHAIN_ALT1": {
+          "parent": "Hull",
+          "head": [
+            16.785240173339844,
+            163.49725341796875,
+            128.19642639160156
+          ]
+        },
+        "VictoryIRig/P_FIRE_BIG_CHAIN_ALT2": {
+          "parent": "Hull",
+          "head": [
+            16.785240173339844,
+            163.49725341796875,
+            128.19642639160156
+          ]
+        },
+        "VictoryIRig/P_FIRE_HUGE00_CHAIN_ALT2": {
+          "parent": "Hull",
+          "head": [
+            16.785240173339844,
+            163.49725341796875,
+            128.19642639160156
+          ]
+        },
+        "VictoryIRig/HP_BRIDGE": {
+          "parent": "Hull",
+          "head": [
+            0.014848550781607628,
+            138.46640014648438,
+            78.66228485107422
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE": {
+          "parent": "Hull",
+          "head": [
+            -0.059071410447359085,
+            -273.5597229003906,
+            2.6054208278656006
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.001": {
+          "parent": "Hull",
+          "head": [
+            -0.05906761810183525,
+            41.23915481567383,
+            35.13214874267578
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.002": {
+          "parent": "Hull",
+          "head": [
+            -0.05906618386507034,
+            92.93260955810547,
+            51.1816291809082
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.003": {
+          "parent": "Hull",
+          "head": [
+            -0.059064414352178574,
+            225.64158630371094,
+            -44.91474151611328
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.004": {
+          "parent": "Hull",
+          "head": [
+            -0.1547020524740219,
+            -0.45975807309150696,
+            -28.420957565307617
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.005": {
+          "parent": "Hull",
+          "head": [
+            -0.15469877421855927,
+            -76.31816101074219,
+            -19.43802261352539
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.006": {
+          "parent": "Hull",
+          "head": [
+            -19.62344741821289,
+            -53.0834846496582,
+            -19.63041114807129
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.007": {
+          "parent": "Hull",
+          "head": [
+            19.490556716918945,
+            -53.08348083496094,
+            -19.630414962768555
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.008": {
+          "parent": "Hull",
+          "head": [
+            20.67652130126953,
+            -76.26594543457031,
+            -14.710511207580566
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.009": {
+          "parent": "Hull",
+          "head": [
+            -21.2305908203125,
+            -76.26593017578125,
+            -14.71051025390625
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.010": {
+          "parent": "Hull",
+          "head": [
+            16.785240173339844,
+            163.49725341796875,
+            128.19642639160156
+          ]
+        },
+        "VictoryIRig/Wing_R_U": {
+          "parent": "Root",
+          "head": [
+            -89.29226684570312,
+            82.0754165649414,
+            1.900416374206543
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.005": {
+          "parent": "Wing_R_U",
+          "head": [
+            -152.74948120117188,
+            147.1610870361328,
+            0.9120901226997375
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.006": {
+          "parent": "Wing_R_U",
+          "head": [
+            -111.15158081054688,
+            4.6774187088012695,
+            -0.054194703698158264
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.011": {
+          "parent": "Wing_R_U",
+          "head": [
+            -152.74948120117188,
+            147.1610870361328,
+            0.9120901226997375
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.012": {
+          "parent": "Wing_R_U",
+          "head": [
+            -111.15158081054688,
+            4.6774187088012695,
+            -0.054194703698158264
+          ]
+        },
+        "VictoryIRig/Wing_R_L": {
+          "parent": "Root",
+          "head": [
+            -89.29219055175781,
+            82.07540130615234,
+            -6.976264953613281
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.007": {
+          "parent": "Wing_R_L",
+          "head": [
+            -152.213623046875,
+            147.79859924316406,
+            -4.556127071380615
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.008": {
+          "parent": "Wing_R_L",
+          "head": [
+            -111.15206146240234,
+            4.187521457672119,
+            -3.7064263820648193
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.013": {
+          "parent": "Wing_R_L",
+          "head": [
+            -152.213623046875,
+            147.79859924316406,
+            -4.556127071380615
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.014": {
+          "parent": "Wing_R_L",
+          "head": [
+            -111.15206146240234,
+            4.187521457672119,
+            -3.7064263820648193
+          ]
+        },
+        "VictoryIRig/Wing_L_L": {
+          "parent": "Root",
+          "head": [
+            88.29525756835938,
+            81.94538879394531,
+            -6.976339340209961
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.009": {
+          "parent": "Wing_L_L",
+          "head": [
+            152.14071655273438,
+            146.78912353515625,
+            -4.0922322273254395
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.010": {
+          "parent": "Wing_L_L",
+          "head": [
+            110.95245361328125,
+            4.459426403045654,
+            -3.276655912399292
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.015": {
+          "parent": "Wing_L_L",
+          "head": [
+            152.14071655273438,
+            146.78912353515625,
+            -4.0922322273254395
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.016": {
+          "parent": "Wing_L_L",
+          "head": [
+            110.95245361328125,
+            4.459426403045654,
+            -3.276655912399292
+          ]
+        },
+        "VictoryIRig/Wing_L_U": {
+          "parent": "Root",
+          "head": [
+            88.29523468017578,
+            81.94538879394531,
+            3.0100250244140625
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.011": {
+          "parent": "Wing_L_U",
+          "head": [
+            111.11688232421875,
+            4.94934606552124,
+            -0.1025681272149086
+          ]
+        },
+        "VictoryIRig/P_BLINK_WHITE.012": {
+          "parent": "Wing_L_U",
+          "head": [
+            152.19322204589844,
+            146.15171813964844,
+            0.6398354172706604
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.017": {
+          "parent": "Wing_L_U",
+          "head": [
+            111.11688232421875,
+            4.94934606552124,
+            -0.1025681272149086
+          ]
+        },
+        "VictoryIRig/PPTW_ORANGE.018": {
+          "parent": "Wing_L_U",
+          "head": [
+            152.19322204589844,
+            146.15171813964844,
+            0.6398354172706604
+          ]
+        },
+        "VictoryIRig/Hangar_Light": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553950071334839
+          ]
+        },
+        "VictoryIRig/Shadow": {
+          "parent": "Root",
+          "head": [
+            88.29525756835938,
+            81.94538879394531,
+            -6.976339340209961
+          ]
+        },
+        "VictoryIRig/Shadow.001": {
+          "parent": "Root",
+          "head": [
+            88.29523468017578,
+            81.94538879394531,
+            3.0100250244140625
+          ]
+        },
+        "VictoryIRig/Shadow.002": {
+          "parent": "Root",
+          "head": [
+            -89.29219055175781,
+            82.07540130615234,
+            -6.976264953613281
+          ]
+        },
+        "VictoryIRig/Shadow.003": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553950071334839
+          ]
+        },
+        "VictoryIRig/Shadow.004": {
+          "parent": "Root",
+          "head": [
+            -0.06646299362182617,
+            -6.629295349121094,
+            -1.0553950071334839
+          ]
+        },
+        "VictoryIRig/Shadow.005": {
+          "parent": "Root",
+          "head": [
+            -0.06646302342414856,
+            -6.629295349121094,
+            -1.0553950071334839
+          ]
+        },
+        "VictoryIRig/Shadow.006": {
+          "parent": "Root",
+          "head": [
+            -106.12320709228516,
+            137.96548461914062,
+            -0.6925578713417053
+          ]
+        },
+        "VictoryIRig/Shadow.007": {
+          "parent": "Root",
+          "head": [
+            -91.76457977294922,
+            89.86466979980469,
+            -0.692527174949646
+          ]
+        },
+        "VictoryIRig/Shadow.008": {
+          "parent": "Root",
+          "head": [
+            -77.45265197753906,
+            41.784339904785156,
+            -0.6925345659255981
+          ]
+        },
+        "VictoryIRig/Shadow.009": {
+          "parent": "Root",
+          "head": [
+            105.21874237060547,
+            139.10958862304688,
+            -0.6925733089447021
+          ]
+        },
+        "VictoryIRig/Shadow.010": {
+          "parent": "Root",
+          "head": [
+            77.13021850585938,
+            42.712127685546875,
+            -0.6925309300422668
+          ]
+        },
+        "VictoryIRig/Shadow.011": {
+          "parent": "Root",
+          "head": [
+            91.26105499267578,
+            90.9366455078125,
+            -0.6925426125526428
+          ]
+        },
+        "VictoryIRig/Shadow.012": {
+          "parent": "Root",
+          "head": [
+            -43.93544387817383,
+            -86.96002197265625,
+            -0.6925135850906372
+          ]
+        },
+        "VictoryIRig/Shadow.013": {
+          "parent": "Root",
+          "head": [
+            43.24262237548828,
+            -86.96003723144531,
+            -0.6925135850906372
+          ]
+        },
+        "VictoryIRig/Shadow.014": {
+          "parent": "Root",
+          "head": [
+            -21.84783172607422,
+            137.1476287841797,
+            81.6315689086914
+          ]
+        },
+        "VictoryIRig/Shadow.015": {
+          "parent": "Root",
+          "head": [
+            17.537324905395508,
+            162.5505828857422,
+            109.35558319091797
+          ]
+        },
+        "VictoryIRig/Shadow.016": {
+          "parent": "Root",
+          "head": [
+            -89.29226684570312,
+            82.0754165649414,
+            1.900416374206543
+          ]
+        },
+        "VictoryIRig/Shadow.017": {
+          "parent": "Root",
+          "head": [
+            -89.29226684570312,
+            82.0754165649414,
+            1.900416374206543
+          ]
+        }
+      },
+      "bounds_min": [
+        -153.1352996826172,
+        -276.93438720703125,
+        -47.00286102294922
+      ],
+      "bounds_max": [
+        152.59083557128906,
+        229.0142364501953,
+        128.48709106445312
+      ]
+    },
+    "materials": [
+      {
+        "name": "COLLISION",
+        "shader": "MeshCollision.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "EV_Victory_SD Material1",
+        "shader": "alDefault.fx",
+        "base": "EV_Victory_SD.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_Albedo.png"
+      },
+      {
+        "name": "SHADOW",
+        "shader": "MeshShadowVolume.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "EV_Victory_SD_I_Thruster Material",
+        "shader": "MeshAdditive.fx",
+        "base": "EV_Victory_SD_I_Thruster.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_I_Thruster_Emissive.png"
+      },
+      {
+        "name": "P_VSD_ENG Material",
+        "shader": "MeshAdditive.fx",
+        "base": "P_VSD_ENG.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_P_VSD_ENG_Emissive.png"
+      },
+      {
+        "name": "EV_Victory_SD Material",
+        "shader": "MeshBumpSpecGlowColorize.fx",
+        "base": "EV_Victory_SD.dds",
+        "normal": "EV_Victory_SD_b.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_TeamMask.png",
+        "maskCoverage": 1.0,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_b_Normal.png"
+      }
+    ],
+    "bone_error": 0.00020828561466065937,
+    "bounds_error": 3.0517578125e-05
+  },
+  {
+    "name": "VictoryITurret",
+    "source": {
+      "meshes": {
+        "Base.012": {
+          "triangles": 88,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Turret.012": {
+          "triangles": 218,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Barrel.012": {
+          "triangles": 256,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material"
+          ]
+        },
+        "Barrel_Shadow.012": {
+          "triangles": 240,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Turret_Shadow.012": {
+          "triangles": 224,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Base_Shadow.012": {
+          "triangles": 112,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        }
+      },
+      "bones": {
+        "VictoryITurretRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "VictoryITurretRig/Base": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "VictoryITurretRig/Turret": {
+          "parent": "Base",
+          "head": [
+            -8.786960279394407e-06,
+            1.1108766794204712,
+            3.1932103633880615
+          ]
+        },
+        "VictoryITurretRig/Barrel": {
+          "parent": "Turret",
+          "head": [
+            0.02160198800265789,
+            -0.1599370241165161,
+            4.27432918548584
+          ]
+        },
+        "VictoryITurretRig/FB_00": {
+          "parent": "Barrel",
+          "head": [
+            -4.555618488666369e-06,
+            -4.431152820587158,
+            4.247563362121582
+          ]
+        },
+        "VictoryITurretRig/Barrel_Shadow": {
+          "parent": "Barrel",
+          "head": [
+            0.02160198800265789,
+            -0.1599370241165161,
+            4.27432918548584
+          ]
+        },
+        "VictoryITurretRig/Turret_Shadow": {
+          "parent": "Turret",
+          "head": [
+            -8.548541700292844e-06,
+            1.1108765602111816,
+            3.1932103633880615
+          ]
+        },
+        "VictoryITurretRig/Base_Shadow": {
+          "parent": "Base",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -2.04545521736145,
+        -5.020173072814941,
+        1.8440347048453987e-05
+      ],
+      "bounds_max": [
+        2.0454554557800293,
+        5.344239234924316,
+        4.718350887298584
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Base.012": {
+          "triangles": 88,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.003"
+          ]
+        },
+        "Turret.012": {
+          "triangles": 218,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.003"
+          ]
+        },
+        "Barrel.012": {
+          "triangles": 256,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Victory_SD Material.003"
+          ]
+        },
+        "Barrel_Shadow.012": {
+          "triangles": 240,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.003"
+          ]
+        },
+        "Turret_Shadow.012": {
+          "triangles": 224,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.003"
+          ]
+        },
+        "Base_Shadow.012": {
+          "triangles": 112,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.003"
+          ]
+        }
+      },
+      "bones": {
+        "VictoryITurretRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "VictoryITurretRig/Base": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "VictoryITurretRig/Turret": {
+          "parent": "Base",
+          "head": [
+            -8.647380127513316e-06,
+            1.1108771562576294,
+            3.193211078643799
+          ]
+        },
+        "VictoryITurretRig/Barrel": {
+          "parent": "Turret",
+          "head": [
+            0.021602148190140724,
+            -0.15993632376194,
+            4.274329662322998
+          ]
+        },
+        "VictoryITurretRig/FB_00": {
+          "parent": "Barrel",
+          "head": [
+            -4.339986844570376e-06,
+            -4.43115234375,
+            4.247564792633057
+          ]
+        },
+        "VictoryITurretRig/Barrel_Shadow": {
+          "parent": "Barrel",
+          "head": [
+            0.021602148190140724,
+            -0.15993638336658478,
+            4.274329662322998
+          ]
+        },
+        "VictoryITurretRig/Turret_Shadow": {
+          "parent": "Turret",
+          "head": [
+            -8.349357813131064e-06,
+            1.1108770370483398,
+            3.1932108402252197
+          ]
+        },
+        "VictoryITurretRig/Base_Shadow": {
+          "parent": "Base",
+          "head": [
+            1.942165910517532e-14,
+            1.9421655717043532e-14,
+            1.1920928955078125e-07
+          ]
+        }
+      },
+      "bounds_min": [
+        -2.045454978942871,
+        -5.020172119140625,
+        1.801819962565787e-05
+      ],
+      "bounds_max": [
+        2.0454554557800293,
+        5.344239234924316,
+        4.718351364135742
+      ]
+    },
+    "materials": [
+      {
+        "name": "SHADOW",
+        "shader": "MeshShadowVolume.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "EV_Victory_SD Material",
+        "shader": "MeshBumpSpecGlowColorize.fx",
+        "base": "EV_Victory_SD.dds",
+        "normal": "EV_Victory_SD_b.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/VictoryITurret/VictoryITurret_EV_Victory_SD_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/VictoryITurret/VictoryITurret_EV_Victory_SD_TeamMask.png",
+        "maskCoverage": 1.0,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/VictoryITurret/VictoryITurret_EV_Victory_SD_b_Normal.png"
+      }
+    ],
+    "bone_error": 1.5232313549523944e-06,
+    "bounds_error": 9.5367431640625e-07
+  },
+  {
+    "name": "TIEInterceptor",
+    "source": {
+      "meshes": {
+        "Tie_I": {
+          "triangles": 2646,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Tie_F_I_Def_Diffuse Material"
+          ]
+        },
+        "Glow_Engine": {
+          "triangles": 4,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_Orange_ENG Material"
+          ]
+        },
+        "TIE_I_Collission": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "COLLISION"
+          ]
+        },
+        "TIE_I_Shadowmesh": {
+          "triangles": 176,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        }
+      },
+      "bones": {
+        "TIEInterceptorRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/HULL": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEB_00": {
+          "parent": "HULL",
+          "head": [
+            -1.3593388554839945e-16,
+            -0.6401599645614624,
+            -0.5478069186210632
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEC_00": {
+          "parent": "HULL",
+          "head": [
+            1.267656538668781e-16,
+            -3.9419965744018555,
+            0.6223397254943848
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEC_01": {
+          "parent": "HULL",
+          "head": [
+            1.267656538668781e-16,
+            -3.9419965744018555,
+            -0.6224644184112549
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_00": {
+          "parent": "HULL",
+          "head": [
+            -2.088801145553589,
+            -3.9419965744018555,
+            0.6223397254943848
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_03": {
+          "parent": "HULL",
+          "head": [
+            -2.088801145553589,
+            -3.9419965744018555,
+            -0.6224644184112549
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_01": {
+          "parent": "HULL",
+          "head": [
+            2.088801145553589,
+            -3.9419965744018555,
+            0.6223397254943848
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_02": {
+          "parent": "HULL",
+          "head": [
+            2.088801145553589,
+            -3.9419965744018555,
+            -0.6224644184112549
+          ]
+        },
+        "TIEInterceptorRig/MUZZLED_00": {
+          "parent": "HULL",
+          "head": [
+            1.267656538668781e-16,
+            -3.9419965744018555,
+            -8.344650268554688e-07
+          ]
+        },
+        "TIEInterceptorRig/TIE_I_Collission": {
+          "parent": "HULL",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/TIE_I_Shadowmesh": {
+          "parent": "HULL",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEB_01": {
+          "parent": "HULL",
+          "head": [
+            2.901358127593994,
+            -0.591825008392334,
+            -2.5704503059387207e-07
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEB_02": {
+          "parent": "HULL",
+          "head": [
+            -2.901358127593994,
+            -0.591825008392334,
+            -2.5704503059387207e-07
+          ]
+        }
+      },
+      "bounds_min": [
+        -2.300581455230713,
+        -3.8777222633361816,
+        -1.7691950798034668
+      ],
+      "bounds_max": [
+        2.300581455230713,
+        1.521607756614685,
+        1.7656447887420654
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Tie_I": {
+          "triangles": 2646,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "EV_Tie_F_I_Def_Diffuse Material.001"
+          ]
+        },
+        "TIE_I_Collission": {
+          "triangles": 24,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "COLLISION.003"
+          ]
+        },
+        "TIE_I_Shadowmesh": {
+          "triangles": 176,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.004"
+          ]
+        },
+        "Glow_Engine": {
+          "triangles": 4,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_Orange_ENG Material.001"
+          ]
+        }
+      },
+      "bones": {
+        "TIEInterceptorRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/HULL": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEB_00": {
+          "parent": "HULL",
+          "head": [
+            -1.3593388554839945e-16,
+            -0.6401600241661072,
+            -0.5478067994117737
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEC_00": {
+          "parent": "HULL",
+          "head": [
+            1.267656538668781e-16,
+            -3.9419965744018555,
+            0.6223403811454773
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEC_01": {
+          "parent": "HULL",
+          "head": [
+            1.267656538668781e-16,
+            -3.9419965744018555,
+            -0.6224637627601624
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_00": {
+          "parent": "HULL",
+          "head": [
+            -2.088801145553589,
+            -3.9419965744018555,
+            0.6223403811454773
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_03": {
+          "parent": "HULL",
+          "head": [
+            -2.088801145553589,
+            -3.9419965744018555,
+            -0.6224637627601624
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_01": {
+          "parent": "HULL",
+          "head": [
+            2.088801145553589,
+            -3.9419965744018555,
+            0.6223403811454773
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEA_02": {
+          "parent": "HULL",
+          "head": [
+            2.088801145553589,
+            -3.9419965744018555,
+            -0.6224637627601624
+          ]
+        },
+        "TIEInterceptorRig/MUZZLED_00": {
+          "parent": "HULL",
+          "head": [
+            1.267656538668781e-16,
+            -3.9419965744018555,
+            -1.922322780956165e-07
+          ]
+        },
+        "TIEInterceptorRig/TIE_I_Collission": {
+          "parent": "HULL",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/TIE_I_Shadowmesh": {
+          "parent": "HULL",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEB_01": {
+          "parent": "HULL",
+          "head": [
+            2.901358127593994,
+            -0.591825008392334,
+            -1.606244950380642e-07
+          ]
+        },
+        "TIEInterceptorRig/MUZZLEB_02": {
+          "parent": "HULL",
+          "head": [
+            -2.901358127593994,
+            -0.591825008392334,
+            -1.606244950380642e-07
+          ]
+        }
+      },
+      "bounds_min": [
+        -2.300581455230713,
+        -3.8777222633361816,
+        -1.7691951990127563
+      ],
+      "bounds_max": [
+        2.300581455230713,
+        1.5216076374053955,
+        1.7656447887420654
+      ]
+    },
+    "materials": [
+      {
+        "name": "EV_Tie_F_I_Def_Diffuse Material",
+        "shader": "MeshBumpColorize.fx",
+        "base": "EV_Tie_F_I_Def_Diffuse.dds",
+        "normal": "EV_Tie_F_I_Def_Normal.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/TIEInterceptor/TIEInterceptor_EV_Tie_F_I_Def_Diffuse_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/TIEInterceptor/TIEInterceptor_EV_Tie_F_I_Def_Diffuse_TeamMask.png",
+        "maskCoverage": 1.0,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/TIEInterceptor/TIEInterceptor_EV_Tie_F_I_Def_Normal_Normal.png"
+      },
+      {
+        "name": "COLLISION",
+        "shader": "MeshCollision.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "SHADOW",
+        "shader": "MeshShadowVolume.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "P_Orange_ENG Material",
+        "shader": "MeshAdditive.fx",
+        "base": "P_Orange_ENG.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/TIEInterceptor/TIEInterceptor_P_Orange_ENG_Emissive.png"
+      }
+    ],
+    "bone_error": 6.556510925292969e-07,
+    "bounds_error": 1.1920928955078125e-07
+  }
+]
