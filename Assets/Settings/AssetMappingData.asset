@@ -359,7 +359,7 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
     - key: EmpireSpaceStationView
       value:
-        m_AssetGUID: 9c0c6e83b6cae5b4891c8397b9e908b5
+        m_AssetGUID: 5abd78ead6c104d4193f2e5fe839d045
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

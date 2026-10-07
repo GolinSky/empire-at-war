@@ -105,10 +105,10 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var row = Enumerable.Range(0, rows.arraySize).Select(rows.GetArrayElementAtIndex).Single(p => p.FindPropertyRelative("key").stringValue == faction + "SpaceStationView");
                 string path = AssetDatabase.GUIDToAssetPath(row.FindPropertyRelative("value.m_AssetGUID").stringValue);
-                string expected = faction == FactionType.Rebellion ? VIEW : PREFABS + (faction == FactionType.Separatist ? "Separatist" : "Republic") + "SpaceStationView.prefab";
+                string expected = PREFABS + faction + "SpaceStationView.prefab";
                 Assert.That(path, Is.EqualTo(expected));
                 var root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                Assert.That(root.GetComponent<StationLevelView>() != null, Is.EqualTo(faction == FactionType.Rebellion));
+                Assert.That(root.GetComponent<StationLevelView>() != null, Is.EqualTo(faction == FactionType.Rebellion || faction == FactionType.Empire));
             }
             var levels = AssetDatabase.LoadAssetAtPath<StationLevelData>("Assets/Settings/Data/Factions/Shared/StationLevelData.asset");
             var rebel = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
