@@ -90,13 +90,14 @@ namespace EmpireAtWar.Tests.Editor
             EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
                 new EnemyProductionSnapshot(
                     EnemyStrategicState.CaptureZone, EnemyAiDifficulty.Easy,
-                    1, 3, 3, 1, 1, 1, 1,
+                    1, 3, 2, 1, 1, 1, 1,
                     true, true, false, false, true, false, true, false, false, true));
 
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
         }
 
-        [TestCase(false, EnemyProductionCategory.Research)]
+        // An unaffordable due level is saved for; spending on research would keep the AI at its level.
+        [TestCase(false, EnemyProductionCategory.None)]
         [TestCase(true, EnemyProductionCategory.Level)]
         public void UltraHardDueTechnology_LevelsBeforeCombatResearch(
             bool canLevelUp,
@@ -109,6 +110,44 @@ namespace EmpireAtWar.Tests.Editor
                     true, true, true, true, true, true, true, canLevelUp, false, true));
 
             Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [TestCase(EnemyAiDifficulty.Easy, 3)]
+        [TestCase(EnemyAiDifficulty.Medium, 2)]
+        [TestCase(EnemyAiDifficulty.Hard, 2)]
+        public void DueLevel_IsBoughtOrSavedForInsteadOfCheapUnits(EnemyAiDifficulty difficulty, int shipsOrdered)
+        {
+            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
+            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
+
+            EnemyProductionCategory affordable = model.Evaluate(new EnemyProductionSnapshot(
+                EnemyStrategicState.HuntFleet, difficulty,
+                miningFloor, 3, shipsOrdered, 1, 1, miningFloor, 1,
+                true, true, true, true, true, true, true, true));
+            EnemyProductionCategory unaffordable = model.Evaluate(new EnemyProductionSnapshot(
+                EnemyStrategicState.HuntFleet, difficulty,
+                miningFloor, 3, shipsOrdered, 1, 1, miningFloor, 1,
+                true, true, true, true, true, true, true, false));
+            EnemyProductionCategory notDue = model.Evaluate(new EnemyProductionSnapshot(
+                EnemyStrategicState.HuntFleet, difficulty,
+                miningFloor, 3, shipsOrdered - 1, 1, 1, miningFloor, 1,
+                true, true, true, true, true, true, true, false));
+
+            Assert.That(affordable, Is.EqualTo(EnemyProductionCategory.Level));
+            Assert.That(unaffordable, Is.EqualTo(EnemyProductionCategory.None));
+            Assert.That(notDue, Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
+        [Test]
+        public void BaseUnderAttack_KeepsBuyingShipsWhileLevelIsDue()
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.DefendBase, EnemyAiDifficulty.Medium,
+                    1, 3, 10, 1, 1, 1, 1,
+                    true, true, true, true, true, true, true, false));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
         [Test]
