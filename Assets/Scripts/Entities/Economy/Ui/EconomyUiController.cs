@@ -101,7 +101,7 @@ namespace EmpireAtWar.Presenters.Economy
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => _isTooltipActive, () =>
                 new TooltipContent(title: "Economy",
-                    description: $"Income is paid every {_data.IncomeDelay:0.#} s. Station levels and mining facilities increase income.",
+                    description: $"Income is paid every {_data.IncomeDelay:0.#} s. Station levels and your team's mining facilities increase income.",
                     stats: new[]
                     {
                         new TooltipStat(label: "Credits", current: _model.Money),

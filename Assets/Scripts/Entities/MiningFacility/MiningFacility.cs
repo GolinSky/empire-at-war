@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
@@ -17,7 +18,10 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class MiningFacility : MonoBehaviour, IController, IIncomeProvider,
         IInitializable, ILateDisposable
     {
-        private IEconomyProvider _economyProvider;
+        private IPlayerRoster _playerRoster;
+        private IPlayerRegistry _playerRegistry;
+        // The owner's and every ally's economy: the whole team earns this facility's income.
+        private readonly List<IEconomyProvider> _teamEconomies = new();
         private IHealthComponent _healthComponent;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
@@ -41,7 +45,8 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         [Inject]
         private void Construct(
-            IEconomyProvider economyProvider,
+            IPlayerRoster playerRoster,
+            IPlayerRegistry playerRegistry,
             IHealthComponent healthComponent,
             IUnitWreckService unitWreckService,
             IUnitExplosionService unitExplosionService,
@@ -52,7 +57,8 @@ namespace EmpireAtWar.Entities.MiningFacility
             Vector3 startPosition,
             PlayerId owner)
         {
-            _economyProvider = economyProvider;
+            _playerRoster = playerRoster;
+            _playerRegistry = playerRegistry;
             _healthComponent = healthComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
@@ -68,7 +74,15 @@ namespace EmpireAtWar.Entities.MiningFacility
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
-            _economyProvider.AddProvider(this);
+            foreach (PlayerSlot player in _playerRoster.Players)
+            {
+                if (_playerRoster.IsAllied(_owner, player.Id))
+                {
+                    IEconomyProvider economy = _playerRegistry.GetEconomy(player.Id);
+                    economy.AddProvider(this);
+                    _teamEconomies.Add(economy);
+                }
+            }
             _research.OnResearchCompleted += HandleResearchCompleted;
         }
 
@@ -92,7 +106,11 @@ namespace EmpireAtWar.Entities.MiningFacility
             }
 
             _research.OnResearchCompleted -= HandleResearchCompleted;
-            _economyProvider.RemoveProvider(this);
+            foreach (IEconomyProvider economy in _teamEconomies)
+            {
+                economy.RemoveProvider(this);
+            }
+            _teamEconomies.Clear();
             if (playDeathEffects)
             {
                 OnRelease?.Invoke();
@@ -110,7 +128,10 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         private void HandleResearchCompleted(ResearchType researchType)
         {
-            _economyProvider.RecalculateIncome(this);
+            foreach (IEconomyProvider economy in _teamEconomies)
+            {
+                economy.RecalculateIncome(this);
+            }
         }
     }
 }

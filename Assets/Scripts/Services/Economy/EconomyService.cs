@@ -4,7 +4,9 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Player;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
@@ -20,6 +22,8 @@ namespace EmpireAtWar.Services.Economy
 
         private readonly EconomyModel _model;
         private readonly INotifier<BattleState> _battleState;
+        private readonly IPlayerRegistry _playerRegistry;
+        private readonly PlayerId _owner;
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
         private float _commonIncome;
@@ -29,10 +33,17 @@ namespace EmpireAtWar.Services.Economy
         public float Income => DEFAULT_INCOME;
         public float TotalIncome => _commonIncome;
 
-        public EconomyService(EconomyModel model, EconomyData data, INotifier<BattleState> battleState)
+        public EconomyService(
+            EconomyModel model,
+            EconomyData data,
+            INotifier<BattleState> battleState,
+            IPlayerRegistry playerRegistry,
+            PlayerSlot owner)
         {
             _model = model;
             _battleState = battleState;
+            _playerRegistry = playerRegistry;
+            _owner = owner.Id;
             _incomeTimer = TimerFactory.ConstructTimer(data.IncomeDelay);
         }
 
@@ -40,11 +51,14 @@ namespace EmpireAtWar.Services.Economy
         {
             AddProvider(this);
             _battleState.AddObserver(this);
+            // Registered so allied mining facilities can pay into this economy too.
+            _playerRegistry.RegisterEconomy(_owner, this);
         }
 
         public void LateDispose()
         {
             _battleState.RemoveObserver(this);
+            _playerRegistry.UnregisterEconomy(_owner);
         }
 
         public void UpdateState(BattleState state)
