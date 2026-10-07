@@ -1,0 +1,104 @@
+#pragma kernel Bake
+
+RWStructuredBuffer<uint> _Voxels;
+int3 _Resolution;
+int _Variant;
+
+float Hash(float3 p)
+{
+    p = frac(p * 0.1031);
+    p += dot(p, p.yzx + 33.33);
+    return frac((p.x + p.y) * p.z);
+}
+
+float Noise(float3 p)
+{
+    float3 i = floor(p), f = frac(p);
+    f = f * f * f * (f * (f * 6 - 15) + 10);
+    return lerp(lerp(lerp(Hash(i), Hash(i + float3(1,0,0)), f.x),
+                     lerp(Hash(i + float3(0,1,0)), Hash(i + float3(1,1,0)), f.x), f.y),
+                lerp(lerp(Hash(i + float3(0,0,1)), Hash(i + float3(1,0,1)), f.x),
+                     lerp(Hash(i + float3(0,1,1)), Hash(i + 1), f.x), f.y), f.z);
+}
+
+float Fbm(float3 p)
+{
+    float result = 0, amplitude = 0.52;
+    [unroll] for (int octave = 0; octave < 6; octave++)
+    {
+        result += Noise(p) * amplitude;
+        p = p.yzx * 2.03 + float3(7.1, 3.7, 1.3);
+        amplitude *= 0.49;
+    }
+    return result;
+}
+
+float Ellipsoid(float3 p, float3 center, float3 radius)
+{
+    return length((p - center) / radius);
+}
+
+float Shape(float3 p)
+{
+    if (_Variant == 0)
+    {
+        p.y -= p.x * 0.42 + sin(p.x * 10) * 0.035;
+        float bank = min(Ellipsoid(p, float3(-0.19,0,0), float3(0.26,0.18,0.19)),
+                         Ellipsoid(p, float3(0.14,0.01,0.02), float3(0.30,0.23,0.22)));
+        float cavity = Ellipsoid(p, float3(-0.06,0.075,-0.015), float3(0.16,0.10,0.28));
+        return max(bank, 1.8 - cavity);
+    }
+    if (_Variant == 1)
+    {
+        p.x += p.y * 0.18;
+        float left = Ellipsoid(p, float3(-0.19,0.02,0), float3(0.075,0.30,0.18));
+        float middle = Ellipsoid(p, float3(-0.025,0.07,0.01), float3(0.10,0.36,0.20));
+        float right = Ellipsoid(p, float3(0.18,-0.015,0), float3(0.09,0.23,0.16));
+        float base = Ellipsoid(p, float3(0.01,-0.24,0.025), float3(0.31,0.13,0.20));
+        return min(min(left, middle), min(right, base));
+    }
+    p.y += p.x * 0.30;
+    float wing = abs(p.x);
+    float width = 0.045 + wing * 0.72;
+    float shell = length(float2(p.y / width, p.z / (0.06 + wing * 0.36)));
+    return max(shell, wing / 0.43);
+}
+
+[numthreads(4,4,4)]
+void Bake(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id >= (uint3)_Resolution)) return;
+    float3 p = (id + 0.5) / _Resolution - 0.5;
+    float3 seed = float3(17.4, 42.8, 9.3) * (_Variant + 1);
+    float3 warp = float3(Fbm(p * 4 + seed), Fbm(p * 4 + seed + 37), Fbm(p * 4 + seed + 71)) - 0.5;
+    float3 q = p + warp * 0.21;
+    float3 flow = q * float3(12,12,3);
+    flow += float3(Fbm(flow + seed + 11), Fbm(flow + seed + 29), Fbm(flow + seed + 53)) * 1.5;
+    float turbulence = Fbm(flow + seed);
+    float fine = Fbm(q * float3(55,55,16) + seed + warp * 3);
+    float shape = Shape(q);
+    float envelope = 1 - smoothstep(0.9, 1.38, shape);
+    // Turbulent isosurfaces give thin illuminated folds around opaque dust, not lit smoke balls.
+    float surface = shape + (turbulence - 0.5) * 0.82 + (fine - 0.5) * 0.20;
+    float rim = exp(-abs(surface - 0.92) * 19);
+    float innerFold = exp(-abs(turbulence + (fine - 0.5) * 0.14 - 0.48) * 65) * envelope;
+    float strands = pow(saturate(fine * 1.95), 4);
+    float dust = envelope * smoothstep(0.49, 0.62, turbulence + (fine - 0.5) * 0.22);
+    // Front dust veils obscure embedded light; the rear gas stays luminous.
+    dust *= 0.4 + 0.6 * (1 - smoothstep(-0.12, 0.16, p.z));
+    float cool = (rim * 0.12 + innerFold * 1.9 + envelope * 0.015) * strands;
+    float warm = rim * (0.08 + fine * 0.22) + exp(-abs(turbulence + (fine - 0.5) * 0.14 - 0.56) * 75) * envelope * strands;
+    float illumination = 0.25 + 1.5 * exp(-length((p - float3(0.10,-0.07,0.06)) * float3(5,7,4)));
+    cool *= illumination;
+    warm *= illumination;
+    if (_Variant == 2)
+    {
+        float core = exp(-dot(p * float3(18,12,12), p * float3(18,12,12)));
+        cool += core * 0.9;
+        warm *= 1.35;
+    }
+    float boundary = 1 - smoothstep(0.44, 0.49, max(abs(p.x), max(abs(p.y), abs(p.z))));
+    float4 field = saturate(float4(cool, warm, dust, envelope * (0.12 + fine * 0.20)) * boundary);
+    uint4 bytes = (uint4)round(field * 255);
+    _Voxels[id.x + _Resolution.x * (id.y + _Resolution.y * id.z)] = bytes.x | (bytes.y << 8) | (bytes.z << 16) | (bytes.w << 24);
+}
