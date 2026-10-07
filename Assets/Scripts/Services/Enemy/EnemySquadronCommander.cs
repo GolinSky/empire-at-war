@@ -17,12 +17,15 @@ namespace EmpireAtWar.Services.Enemy
     /// <summary>
     /// Sends station-launched AI squadrons to defend threatened sites and capture the closest
     /// zone or site; squadrons hunt only when nothing is left to capture. While hostile strikecraft
-    /// are in play, squadrons that destroy them faster than they destroy hostile ships escort the
-    /// own ships those strikecraft hurt the most.
+    /// are in play, the squadrons that destroy them fastest escort the
+    /// own ships those strikecraft hurt the most, only until the escorts match the strikecraft.
     /// </summary>
     public sealed class EnemySquadronCommander : IEnemySquadronCommander, ITickable, ILateDisposable
     {
         private const float DECISION_INTERVAL = 3f;
+
+        /// <summary>Escorts stop being added once they match the hostile strikecraft (advantage 1).</summary>
+        private const float EVEN_FIGHT = 1f;
 
         private readonly ICaptureSitesSystem _captureSites;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
@@ -39,7 +42,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _hostileStrikecraft = new ForceComposition();
         private readonly ForceComposition _hostileShips = new ForceComposition();
         private readonly ForceComposition _squadronForce = new ForceComposition();
+        private readonly ForceComposition _escortForce = new ForceComposition();
         private readonly List<IEntity> _escortTargets = new List<IEntity>();
+        private readonly HashSet<ISquadron> _escorts = new HashSet<ISquadron>();
+        private readonly List<KeyValuePair<ISquadron, float>> _escortCandidates =
+            new List<KeyValuePair<ISquadron, float>>();
 
         private int _nextEscortTarget;
 
@@ -78,6 +85,7 @@ namespace EmpireAtWar.Services.Enemy
                 _profileCatalog.Get(UnitTypeId.Squadron(squadronType)), handler));
             squadron.Released += handler;
             AssessThreats();
+            AssignEscorts();
             IssueOrder(squadron);
         }
 
@@ -90,6 +98,7 @@ namespace EmpireAtWar.Services.Enemy
 
             _decisionTimer.StartTimer();
             AssessThreats();
+            AssignEscorts();
             _orderBuffer.Clear();
             _orderBuffer.AddRange(_squadrons.Keys);
             foreach (ISquadron squadron in _orderBuffer)
@@ -100,7 +109,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private void IssueOrder(ISquadron squadron)
         {
-            if (ShouldEscort(_squadrons[squadron].Profile))
+            if (_escorts.Contains(squadron))
             {
                 // Guard re-issued to the same ship is ignored by the squadron; escorts spread across threatened ships.
                 squadron.Guard(_escortTargets[_nextEscortTarget % _escortTargets.Count], Vector3.zero);
@@ -140,7 +149,8 @@ namespace EmpireAtWar.Services.Enemy
 
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed)
+                if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed &&
+                    StrikecraftThreat(entity) > 0f)
                 {
                     _escortTargets.Add(entity);
                 }
@@ -162,22 +172,49 @@ namespace EmpireAtWar.Services.Enemy
             return _hostileStrikecraft.HullDps(shipClass) + _hostileStrikecraft.PiercingDps(shipClass);
         }
 
-        private bool ShouldEscort(UnitCombatProfile profile)
+        /// <summary>
+        /// Picks the best anti-strikecraft squadrons, in order, until together they match the hostile strikecraft.
+        /// Everyone else keeps capturing, so escorts never absorb the whole wing.
+        /// </summary>
+        private void AssignEscorts()
         {
-            if (_hostileStrikecraft.IsEmpty || _escortTargets.Count == 0)
+            _escorts.Clear();
+            if (_escortTargets.Count == 0)
             {
-                return false;
+                return;
             }
 
-            if (_hostileShips.IsEmpty)
+            _escortCandidates.Clear();
+            foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
-                return true;
+                if (TryRateEscort(pair.Value.Profile, out float timeToClearStrikecraft))
+                {
+                    _escortCandidates.Add(new KeyValuePair<ISquadron, float>(pair.Key, timeToClearStrikecraft));
+                }
             }
 
+            _escortCandidates.Sort((first, second) => first.Value.CompareTo(second.Value));
+            _escortForce.Clear();
+            foreach (KeyValuePair<ISquadron, float> candidate in _escortCandidates)
+            {
+                if (CombatMatchup.Advantage(_escortForce, _hostileStrikecraft) >= EVEN_FIGHT)
+                {
+                    return;
+                }
+
+                _escortForce.AddNew(_squadrons[candidate.Key].Profile, false);
+                _escorts.Add(candidate.Key);
+            }
+        }
+
+        /// <summary>A squadron suits escort duty when it clears hostile strikecraft faster than hostile ships.</summary>
+        private bool TryRateEscort(UnitCombatProfile profile, out float timeToClearStrikecraft)
+        {
             _squadronForce.Clear();
             _squadronForce.AddNew(profile, false);
-            return CombatMatchup.TimeToDestroy(_squadronForce, _hostileStrikecraft) <=
-                   CombatMatchup.TimeToDestroy(_squadronForce, _hostileShips);
+            timeToClearStrikecraft = CombatMatchup.TimeToDestroy(_squadronForce, _hostileStrikecraft);
+            return _hostileShips.IsEmpty ||
+                   timeToClearStrikecraft <= CombatMatchup.TimeToDestroy(_squadronForce, _hostileShips);
         }
 
         private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
@@ -197,6 +234,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);
+            _escorts.Remove(squadron);
         }
     }
 }

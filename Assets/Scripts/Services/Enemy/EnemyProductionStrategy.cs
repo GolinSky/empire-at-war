@@ -139,10 +139,11 @@ namespace EmpireAtWar.Services.Enemy
             KeyValuePair<ShipType, FactionData> ship = default;
             bool isUltraHard = _owner.Difficulty == EnemyAiDifficulty.UltraHard;
             // A counter to the hostile composition replaces the size-based pick whenever one improves the matchup.
-            // Below the minimum fleet only ships qualify: squadrons never grow the fleet, so cheap squadron
-            // counters would hold the AI in that rule forever and starve mining and station upgrades.
+            // Squadrons support ships, at most one per SHIPS_PER_SQUADRON ships. Cheap squadrons always win on
+            // gain per credit and never grow the fleet, so without the cap they would crowd out ships, mining
+            // and station upgrades.
             bool hasCounter = TrySelectCounterUnit(
-                _decisionModel.NeedsMinimumFleet(shipCount),
+                _decisionModel.NeedsMinimumFleet(shipCount) || !HasSquadronRoom(shipCount),
                 out UnitTypeId counterId,
                 out FactionData counterData);
             bool hasShipOption = hasCounter || TrySelectShip(shipCount, out ship);
@@ -402,12 +403,9 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
-        /// <summary>Picks the cheapest available squadron while the fleet has fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
-        private bool TrySelectSquadron(
-            int shipCount,
-            out KeyValuePair<SquadronType, FactionData> selected)
+        /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
+        private bool HasSquadronRoom(int shipCount)
         {
-            selected = default;
             int squadronCount = 0;
             foreach (KeyValuePair<SquadronType, FactionData> option
                      in _factionModel.SquadronFactionData)
@@ -416,7 +414,16 @@ namespace EmpireAtWar.Services.Enemy
                     option.Key.ToString());
             }
 
-            if (squadronCount >= shipCount / SHIPS_PER_SQUADRON)
+            return squadronCount < shipCount / SHIPS_PER_SQUADRON;
+        }
+
+        /// <summary>Picks the cheapest available squadron while <see cref="HasSquadronRoom"/>.</summary>
+        private bool TrySelectSquadron(
+            int shipCount,
+            out KeyValuePair<SquadronType, FactionData> selected)
+        {
+            selected = default;
+            if (!HasSquadronRoom(shipCount))
             {
                 return false;
             }

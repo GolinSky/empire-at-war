@@ -158,6 +158,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return EnemyProductionCategory.Defense;
             }
 
+            // Cheap units are always affordable, so a due level must be saved for or it is never reached.
+            if (ShouldSaveForLevel(snapshot, profile))
+            {
+                return snapshot.CanLevelUp
+                    ? EnemyProductionCategory.Level
+                    : EnemyProductionCategory.None;
+            }
+
             if (snapshot.StrategicState == EnemyStrategicState.Hold)
             {
                 if (snapshot.Difficulty >= EnemyAiDifficulty.Hard && snapshot.CanLevelUp)
@@ -225,7 +233,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return EnemyProductionCategory.Level;
             }
 
-            if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel && snapshot.CanResearchCombat)
+            if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel && snapshot.CanResearchCombat &&
+                !ShouldSaveForLevel(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)))
             {
                 return EnemyProductionCategory.Research;
             }
@@ -238,6 +247,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     : EnemyProductionCategory.None;
             }
 
+            if (ShouldSaveForLevel(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)))
+            {
+                return EnemyProductionCategory.None;
+            }
+
             if (snapshot.HasShipOption)
             {
                 return snapshot.CanBuildShip
@@ -246,6 +260,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             return EnemyProductionCategory.None;
+        }
+
+        /// <summary>
+        /// A level is due once <see cref="EnemyAiDifficultyProfile.ShipOrdersPerLevel"/> ships per current level
+        /// were ordered; a base under attack keeps buying units instead.
+        /// </summary>
+        private static bool ShouldSaveForLevel(
+            EnemyProductionSnapshot snapshot,
+            EnemyAiDifficultyProfile profile)
+        {
+            return snapshot.HasLevelUpOption &&
+                   snapshot.StrategicState != EnemyStrategicState.DefendBase &&
+                   snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel * profile.ShipOrdersPerLevel;
         }
     }
 }
