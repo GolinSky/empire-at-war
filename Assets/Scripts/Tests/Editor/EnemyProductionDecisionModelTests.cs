@@ -40,6 +40,15 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
+        // The strategy restricts counters to ships below this size; squadrons cannot end the rebuild.
+        [TestCase(0, true)]
+        [TestCase(2, true)]
+        [TestCase(3, false)]
+        public void NeedsMinimumFleet_UntilThreeShips(int shipCount, bool expected)
+        {
+            Assert.That(new EnemyProductionDecisionModel().NeedsMinimumFleet(shipCount), Is.EqualTo(expected));
+        }
+
         [Test]
         public void CaptureFleet_BalancesQuickShipsWithSlowerReinforcements()
         {

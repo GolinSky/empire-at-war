@@ -77,6 +77,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private const int FLAGSHIP_MAX_COUNT = 3;
         private const float FLAGSHIP_PRIORITY = 0f;
 
+        /// <summary>Squadrons do not count toward the fleet, so a fleet below the minimum must buy ships.</summary>
+        public bool NeedsMinimumFleet(int shipCount) => shipCount < MINIMUM_FLEET_SIZE;
+
         public float CalculateShipPriority(
             EnemyStrategicState state,
             int shipCount,
@@ -111,7 +114,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
             }
 
-            if (snapshot.ShipCount < MINIMUM_FLEET_SIZE && snapshot.CanBuildShip)
+            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanBuildShip)
             {
                 return EnemyProductionCategory.Ship;
             }

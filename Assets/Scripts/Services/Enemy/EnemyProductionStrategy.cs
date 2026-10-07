@@ -136,7 +136,12 @@ namespace EmpireAtWar.Services.Enemy
             KeyValuePair<ShipType, FactionData> ship = default;
             bool isUltraHard = _owner.Difficulty == EnemyAiDifficulty.UltraHard;
             // A counter to the hostile composition replaces the size-based pick whenever one improves the matchup.
-            bool hasCounter = TrySelectCounterUnit(out UnitTypeId counterId, out FactionData counterData);
+            // Below the minimum fleet only ships qualify: squadrons never grow the fleet, so cheap squadron
+            // counters would hold the AI in that rule forever and starve mining and station upgrades.
+            bool hasCounter = TrySelectCounterUnit(
+                _decisionModel.NeedsMinimumFleet(shipCount),
+                out UnitTypeId counterId,
+                out FactionData counterData);
             bool hasShipOption = hasCounter || TrySelectShip(shipCount, out ship);
             FactionData shipChoice = hasCounter ? counterData : ship.Value;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
@@ -278,7 +283,10 @@ namespace EmpireAtWar.Services.Enemy
         /// Rates every buildable ship and squadron against all hostile units; units already bought but not yet
         /// in play count toward the own force so the same counter is not bought twice.
         /// </summary>
-        private bool TrySelectCounterUnit(out UnitTypeId selectedId, out FactionData selectedData)
+        private bool TrySelectCounterUnit(
+            bool shipsOnly,
+            out UnitTypeId selectedId,
+            out FactionData selectedData)
         {
             selectedId = default;
             selectedData = null;
@@ -295,13 +303,14 @@ namespace EmpireAtWar.Services.Enemy
             _candidateData.Clear();
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
-                AddCounterOption<ShipUnitRequest>(UnitTypeId.Ship(option.Key), option.Key.ToString(), option.Value);
+                AddCounterOption<ShipUnitRequest>(UnitTypeId.Ship(option.Key), option.Key.ToString(), option.Value,
+                    true);
             }
 
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
             {
                 AddCounterOption<SquadronUnitRequest>(UnitTypeId.Squadron(option.Key), option.Key.ToString(),
-                    option.Value);
+                    option.Value, !shipsOnly);
             }
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index))
@@ -314,7 +323,12 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        private void AddCounterOption<TRequest>(UnitTypeId unitTypeId, string requestId, FactionData data)
+        /// <summary>Counts pending units of this type into the own force; adds it as a candidate when <paramref name="isSelectable"/>.</summary>
+        private void AddCounterOption<TRequest>(
+            UnitTypeId unitTypeId,
+            string requestId,
+            FactionData data,
+            bool isSelectable)
         {
             _liveUnitCounts.TryGetValue(unitTypeId, out int liveCount);
             int pendingCount = _unitLimitModel.GetReservedCount<TRequest>(requestId) - liveCount;
@@ -323,7 +337,7 @@ namespace EmpireAtWar.Services.Enemy
                 _ownForce.AddNew(_profileCatalog.Get(unitTypeId), true);
             }
 
-            if (!IsAvailable(data) || !CanReserve<TRequest>(requestId, data))
+            if (!isSelectable || !IsAvailable(data) || !CanReserve<TRequest>(requestId, data))
             {
                 return;
             }
