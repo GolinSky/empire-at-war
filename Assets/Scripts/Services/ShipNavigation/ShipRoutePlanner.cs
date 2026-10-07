@@ -30,6 +30,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     internal static class ShipRoutePlanner
     {
+        private static readonly float[] HANDLE_SCALES = { 1f, 0.5f, 0.25f };
+
         public static ShipRoutePlan Build(
             IShipNavigationAgent agent,
             Vector3 forward,
@@ -43,10 +45,13 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 origin = agent.NavigationPosition;
             bool isOriginClear = ShipAvoidancePlanner.IsPointClear(
                 origin, contacts, agent.NavigationHeight, heightTolerance, clearance);
+            // A ship that starts inside an obstacle's clearance (e.g. beside an idle
+            // ship) may still curve, as long as it only moves away until it is out.
+            bool allowEscape = !isOriginClear;
             waypoints.Clear();
-            if (isOriginClear && IsSegmentClear(
+            if (IsSegmentClear(
                     origin, destination, contacts, agent.NavigationHeight,
-                    heightTolerance, clearance))
+                    heightTolerance, clearance, allowEscape))
             {
                 waypoints.Add(origin);
                 waypoints.Add(destination);
@@ -65,24 +70,31 @@ namespace EmpireAtWar.Services.ShipNavigation
                     Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon)));
             Vector3 firstLeg = GetPlanarDirection(waypoints[1] - origin, forward);
 
-            if (isOriginClear)
+            // Each smooth option retries with tighter curves: full-size handles swing
+            // wide of the waypoint legs and can cut into an obstacle's clearance.
+            // 1) Curved route that keeps the current heading: no turn in place.
+            if (waypoints.Count == 2 ||
+                Vector3.Dot(GetPlanarDirection(forward, firstLeg), firstLeg) > 0f)
             {
-                // 1) Curved route that keeps the current heading: no turn in place.
-                if (waypoints.Count == 2 ||
-                    Vector3.Dot(GetPlanarDirection(forward, firstLeg), firstLeg) > 0f)
+                for (int i = 0; i < HANDLE_SCALES.Length; i++)
                 {
                     ShipBezierRoute courseRoute = BuildSmoothRoute(
-                        waypoints, forward, minimumTurnRadius);
-                    if (IsRouteClear(courseRoute, contacts, agent, heightTolerance, clearance))
+                        waypoints, forward, minimumTurnRadius, HANDLE_SCALES[i]);
+                    if (IsRouteClear(courseRoute, contacts, agent, heightTolerance,
+                            clearance, allowEscape))
                     {
                         return new ShipRoutePlan(destination: destination, detour: detour, route: courseRoute, turnDuration: 0f);
                     }
                 }
+            }
 
-                // 2) Turn in place towards the first leg, then follow a smooth route.
+            // 2) Turn in place towards the first leg, then follow a smooth route.
+            for (int i = 0; i < HANDLE_SCALES.Length; i++)
+            {
                 ShipBezierRoute turnedRoute = BuildSmoothRoute(
-                    waypoints, firstLeg, minimumTurnRadius);
-                if (IsRouteClear(turnedRoute, contacts, agent, heightTolerance, clearance))
+                    waypoints, firstLeg, minimumTurnRadius, HANDLE_SCALES[i]);
+                if (IsRouteClear(turnedRoute, contacts, agent, heightTolerance,
+                        clearance, allowEscape))
                 {
                     return new ShipRoutePlan(
                         destination: destination, detour: detour, route: turnedRoute,
@@ -107,13 +119,14 @@ namespace EmpireAtWar.Services.ShipNavigation
         private static ShipBezierRoute BuildSmoothRoute(
             List<Vector3> waypoints,
             Vector3 startDirection,
-            float minimumTurnRadius)
+            float minimumTurnRadius,
+            float handleScale)
         {
             return waypoints.Count == 2
                 ? ShipBezierPath.BuildDirectRoute(
-                    waypoints[0], startDirection, waypoints[1], minimumTurnRadius)
+                    waypoints[0], startDirection, waypoints[1], minimumTurnRadius, handleScale)
                 : ShipBezierPath.BuildWaypointRoute(
-                    waypoints, startDirection, minimumTurnRadius);
+                    waypoints, startDirection, minimumTurnRadius, handleScale);
         }
 
         private static bool IsRouteClear(
@@ -121,10 +134,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             IReadOnlyList<RadarContact> contacts,
             IShipNavigationAgent agent,
             float heightTolerance,
-            float clearance)
+            float clearance,
+            bool allowEscape = false)
         {
             return ShipAvoidancePlanner.IsRouteClear(
-                route, contacts, agent.NavigationHeight, heightTolerance, clearance);
+                route, contacts, agent.NavigationHeight, heightTolerance, clearance,
+                allowEscape);
         }
 
         private static bool IsSegmentClear(
@@ -133,11 +148,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             IReadOnlyList<RadarContact> contacts,
             float shipHeight,
             float heightTolerance,
-            float clearance)
+            float clearance,
+            bool allowEscape)
         {
             return ShipAvoidancePlanner.IsRouteClear(
                 ShipBezierPath.BuildPolylineRoute(new[] { start, end }),
-                contacts, shipHeight, heightTolerance, clearance);
+                contacts, shipHeight, heightTolerance, clearance, allowEscape);
         }
 
         private static ShipRoutePlan BuildStationaryPlan(Vector3 origin, Vector3 forward)

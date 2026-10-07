@@ -261,6 +261,31 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void Plan_StartInsideClearanceFacingAway_KeepsDirectCurvedRoute()
+        {
+            RadarContact obstacle = new RadarContact(
+                new Vector3(-10f, 0f, 0f),
+                8f,
+                false);
+            FakeAgent agent = new FakeAgent(Vector3.zero, 0f, 5f, 10f, 30f);
+            ShipNavigationService service = CreateService(new[] { obstacle });
+            service.Register(agent, agent.NavigationPosition);
+
+            ShipNavigationPlan plan = service.Plan(
+                agent,
+                Vector3.right,
+                new Vector3(60f, 0f, 20f),
+                System.Array.Empty<RadarContact>(),
+                0.5f,
+                agent.NavigationRadius,
+                _mapRange);
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Detour.HasValue, Is.False);
+            Assert.That(plan.TurnDuration, Is.Zero);
+        }
+
+        [Test]
         public void Plan_CrossingShipContacts_KeepDirectDestinations()
         {
             FakeAgent horizontalShip = new FakeAgent(

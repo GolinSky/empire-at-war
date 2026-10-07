@@ -125,7 +125,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             IReadOnlyList<RadarContact> contacts,
             float shipHeight,
             float heightTolerance,
-            float clearance)
+            float clearance,
+            bool allowEscape = false)
         {
             if (route == null)
             {
@@ -153,7 +154,18 @@ namespace EmpireAtWar.Components.Ship.Movement
                     contact.Position.z);
                 float safeRadius = contact.Radius + clearance;
                 float safeRadiusSquared = safeRadius * safeRadius;
-                for (int sampleIndex = 1;
+                int firstSegment = 1;
+                if (allowEscape)
+                {
+                    firstSegment = GetFirstSegmentAfterEscape(
+                        samples, center, safeRadiusSquared);
+                    if (firstSegment < 0)
+                    {
+                        return false;
+                    }
+                }
+
+                for (int sampleIndex = firstSegment;
                      sampleIndex < samples.Length;
                      sampleIndex++)
                 {
@@ -173,6 +185,35 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             return true;
         }
+
+        // A route that starts inside a contact's clearance may cross it only while it
+        // moves away from the contact. Returns the first segment to check normally,
+        // or -1 when the route turns back towards the contact before leaving it.
+        private static int GetFirstSegmentAfterEscape(
+            Vector3[] samples,
+            Vector2 center,
+            float safeRadiusSquared)
+        {
+            int index = 0;
+            float distanceSquared = GetPlanarDistanceSquared(samples[0], center);
+            while (index < samples.Length - 1 && distanceSquared < safeRadiusSquared)
+            {
+                float nextDistanceSquared =
+                    GetPlanarDistanceSquared(samples[index + 1], center);
+                if (nextDistanceSquared < distanceSquared)
+                {
+                    return -1;
+                }
+
+                distanceSquared = nextDistanceSquared;
+                index++;
+            }
+
+            return index + 1;
+        }
+
+        private static float GetPlanarDistanceSquared(Vector3 point, Vector2 center) =>
+            (new Vector2(point.x, point.z) - center).sqrMagnitude;
 
         internal static bool IsPointClear(
             Vector3 point,
