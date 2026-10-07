@@ -409,7 +409,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8779115, y: 0.8779115, z: 0.8779115}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8274630685611795133}
@@ -906,7 +906,7 @@ RectTransform:
   m_GameObject: {fileID: 1770420265360530497}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8779115, y: 0.8779115, z: 0.8779115}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6495476530168953641}
@@ -914,7 +914,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -65.3136}
+  m_AnchoredPosition: {x: 0, y: -57.33956}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6101852841275341204
@@ -3339,8 +3339,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 371.2948, y: 129.15974, z: 975.93933}
-  m_Center: {x: 0, y: 0, z: -0.000030517578}
+  m_Size: {x: 325.964, y: 113.39082, z: 856.7884}
+  m_Center: {x: 0, y: 0, z: -0.000026791733}
 --- !u!120 &4854698115447462397
 LineRenderer:
   serializedVersion: 3
@@ -3510,8 +3510,8 @@ MonoBehaviour:
   ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
     type: 3}
   ionFieldBounds:
-    m_Center: {x: 0, y: 0, z: -0.000030517578}
-    m_Extent: {x: 191.10762, y: 66.47928, z: 502.32172}
+    m_Center: {x: 0, y: 0, z: -0.000026791733}
+    m_Extent: {x: 167.77557, y: 58.362923, z: 440.99402}
   <ShipUnits>k__BackingField:
   - {fileID: 8565910316789232138}
   - {fileID: 4420612729662218068}
@@ -5530,17 +5530,17 @@ PrefabInstance:
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 5.267469
       objectReference: {fileID: 0}
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 6
+      value: 5.267469
       objectReference: {fileID: 0}
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 6
+      value: 5.267469
       objectReference: {fileID: 0}
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}

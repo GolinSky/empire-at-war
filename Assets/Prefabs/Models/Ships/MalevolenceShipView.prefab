@@ -618,7 +618,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 137.4058, y: 83.90499, z: 492.75363}
+  m_Size: {x: 146.11325, y: 89.22207, z: 523.97955}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!120 &1273621297293648941
 LineRenderer:
@@ -790,7 +790,7 @@ MonoBehaviour:
     type: 3}
   ionFieldBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 66.70185, y: 40.73058, z: 239.2008}
+    m_Extent: {x: 70.928764, y: 43.311684, z: 254.35901}
   <ShipUnits>k__BackingField:
   - {fileID: 8511492017789620542}
   - {fileID: 3551816574972395025}
@@ -1514,7 +1514,7 @@ RectTransform:
   m_GameObject: {fileID: 1943447922487484447}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 23.805023, y: 23.805023, z: 23.805023}
+  m_LocalScale: {x: 25.313553, y: 25.313553, z: 25.313553}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6540335726030992637}
@@ -1522,7 +1522,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -41.478085}
+  m_AnchoredPosition: {x: 0, y: -44.10656}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6550124865099166215
@@ -5032,7 +5032,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0633702, y: 1.0633702, z: 1.0633702}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5907875644856785851}
@@ -5953,17 +5953,17 @@ PrefabInstance:
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 6.3802214
       objectReference: {fileID: 0}
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 6
+      value: 6.3802214
       objectReference: {fileID: 0}
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 6
+      value: 6.3802214
       objectReference: {fileID: 0}
     - target: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
         type: 3}
