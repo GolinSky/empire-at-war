@@ -30,9 +30,17 @@ MonoBehaviour:
   <MemberShields>k__BackingField: 40
   <ShieldRegenerateValue>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 2
+  <LaserShieldDamageMultiplier>k__BackingField: 1
   <HullRepairPerSecond>k__BackingField: 0
   <Abilities>k__BackingField: 
+  <SeekerWarheadRange>k__BackingField: 0
+  <SeekerWarheadRecharge>k__BackingField: 10
+  <SeekerWarheadMinimumTravel>k__BackingField: 10
   <Range>k__BackingField: 175
   <Delay>k__BackingField: 0.25
   <WeaponRange>k__BackingField: 70
   <VisionRange>k__BackingField: 175
+  <MemberCount>k__BackingField: 6
+  weaponLoadout:
+  - weaponType: 15
+    count: 6

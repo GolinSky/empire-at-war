@@ -56,3 +56,12 @@ MonoBehaviour:
     maxActive: 2
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8
+  weaponLoadout:
+  - weaponType: 1
+    count: 14
+  - weaponType: 3
+    count: 6
+  - weaponType: 10
+    count: 5
+  - weaponType: 11
+    count: 2

@@ -5,6 +5,7 @@ using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -451,6 +452,12 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     stationRegistry: new OperationalStationRegistry(),
+                    playerRoster: TestPlayers.CreateDuel(difficulty),
+                    // No hostile units exist, so the size-based selection runs and no profile is ever rated.
+                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
+                        new UnitCombatProfileCatalog(null, null, null, null)),
+                    profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
+                    counterModel: new EnemyCounterProductionModel(),
                     owner: owner);
 
                 strategy.Start();
@@ -518,6 +525,12 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     stationRegistry: new OperationalStationRegistry(),
+                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
+                    // No hostile units exist, so the size-based selection runs and no profile is ever rated.
+                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
+                        new UnitCombatProfileCatalog(null, null, null, null)),
+                    profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
+                    counterModel: new EnemyCounterProductionModel(),
                     owner: owner);
 
                 strategy.Start();

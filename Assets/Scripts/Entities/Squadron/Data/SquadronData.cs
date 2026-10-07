@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
@@ -69,5 +71,12 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Header("Vision")]
         [Tooltip("Fog of war radius the squadron reveals for its team.")]
         [field: SerializeField, Min(0f)] public float VisionRange { get; private set; } = 175f;
+
+        [Header("AI Combat Profile")]
+        [Tooltip("Baked by Tools/AI/Bake Weapon Loadouts: fighters in the view prefab.")]
+        [field: SerializeField, Min(0)] public int MemberCount { get; private set; }
+        [Tooltip("Baked by Tools/AI/Bake Weapon Loadouts from the view prefab's WeaponComponent hardpoints.")]
+        [SerializeField] private List<WeaponLoadoutEntry> weaponLoadout = new List<WeaponLoadoutEntry>();
+        public IReadOnlyList<WeaponLoadoutEntry> WeaponLoadout => weaponLoadout;
     }
 }

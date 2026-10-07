@@ -186,7 +186,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 ReleaseUnit(squadronUnitRequest);
                             };
                             squadron.Released += handler;
-                            _squadronCommander.Command(squadron);
+                            _squadronCommander.Command(squadron, squadronUnitRequest.Key);
                         });
                     break;
                 }
