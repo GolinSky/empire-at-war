@@ -51,8 +51,63 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(mesh.uv, Has.Length.EqualTo(mesh.vertexCount));
         }
 
+        [TestCase(1, 6800)]
+        [TestCase(2, 9236)]
+        [TestCase(3, 9744)]
+        [TestCase(4, 14160)]
+        [TestCase(5, 16960)]
+        public void RepublicLevel_UsesItsDistinctOriginalCumulativeHull(int level, int triangles)
+        {
+            var model = LoadModel("Republic", level);
+            Assert.That(model.HullRenderers, Has.Length.EqualTo(level));
+            Assert.That(model.HullRenderers.Sum(r => r.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3), Is.EqualTo(triangles));
+            foreach (var renderer in model.HullRenderers)
+            {
+                var mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
+                string path = AssetDatabase.GetAssetPath(mesh);
+                Assert.That(path, Does.EndWith("/Level" + level + "/RepublicSpaceStationLevel" + level + ".fbx"));
+                Assert.That(((ModelImporter)AssetImporter.GetAtPath(path)).importNormals, Is.EqualTo(ModelImporterNormals.Import));
+                Assert.That(mesh.normals, Has.Length.EqualTo(mesh.vertexCount));
+            }
+        }
+
         [Test]
-        public void EachLevel_HasCompleteVisualAndGameplayData([Values("Rebellion", "Empire", "Separatist")] string faction,
+        public void RepublicWreck_UsesOnlyFinalLevelHull()
+        {
+            var station = AssetDatabase.LoadAssetAtPath<GameObject>(ViewPath("Republic"));
+            var levels = new SerializedObject(station.GetComponent<StationLevelView>()).FindProperty("levelModels");
+            var finalModel = (StationLevelModel)levels.GetArrayElementAtIndex(LEVELS - 1).objectReferenceValue;
+            var sources = EmpireAtWar.Editor.Rendering.ShipWreckBuilder.GetSourceRenderers(station);
+            Assert.That(sources, Is.EquivalentTo(finalModel.HullRenderers));
+            var wreck = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Wrecks/RepublicSpaceStationWreckView.prefab");
+            Assert.That(wreck.transform.localScale, Is.EqualTo(Vector3.one));
+            Assert.That(wreck.GetComponentsInChildren<MeshFilter>(true).Select(f => f.sharedMesh),
+                Is.EquivalentTo(sources.Select(r => r.GetComponent<MeshFilter>().sharedMesh)));
+        }
+
+        [Test]
+        public void RepublicEmbeddedArt_StaysVisibleWhenHardPointIsDestroyed()
+        {
+            var root = PrefabUtility.LoadPrefabContents(ViewPath("Republic"));
+            try
+            {
+                var view = root.GetComponent<StationLevelView>();
+                typeof(StationLevelView).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
+                view.ApplyLevel(LEVELS);
+                foreach (var point in root.GetComponentsInChildren<HardPoint>(true))
+                {
+                    point.SetInstalled(false);
+                    point.UpdateData(0f);
+                }
+                view.ApplyLevel(LEVELS);
+                Assert.That(view.CurrentModel.HullRenderers.All(r => r.gameObject.activeInHierarchy), Is.True);
+                Assert.That(view.CurrentModel.Mounts.All(m => m.Art == null), Is.True);
+            }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
+        }
+
+        [Test]
+        public void EachLevel_HasCompleteVisualAndGameplayData([Values("Rebellion", "Empire", "Republic", "Separatist")] string faction,
             [NUnit.Framework.Range(1, LEVELS)] int level)
         {
             var model = LoadModel(faction, level);
@@ -62,7 +117,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.ShieldPlanes, Has.Length.EqualTo(1024));
             Assert.That(model.LaunchExit.IsChildOf(root.transform), Is.True);
             Assert.That(model.LaunchExit.localPosition.y, Is.LessThan(model.HullBounds.min.y));
-            Assert.That(root.GetComponentsInChildren<Transform>(true).Any(t => t.name == "Spawn_00"), Is.True);
+            Assert.That(root.GetComponentsInChildren<Transform>(true).Any(t => t.name == (faction == "Republic" ? "HP_Spawn_01" : "Spawn_00")), Is.True);
             Assert.That(root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled)
                 .SelectMany(r => r.sharedMaterials).All(m => m != null && m.shader != null), Is.True);
             Assert.That(root.GetComponentsInChildren<MeshRenderer>(true).Any(r => r.enabled && (r.name.Contains("Shadow") || r.name.EndsWith("_Blast"))), Is.False);
@@ -71,6 +126,7 @@ namespace EmpireAtWar.Tests.Editor
         // EaW swaps station levels in place; the original models share one origin, so shared anchors never move.
         [TestCase("Rebellion")]
         [TestCase("Empire")]
+        [TestCase("Republic")]
         [TestCase("Separatist")]
         public void Levels_ShareOnePivot(string faction)
         {
@@ -96,6 +152,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase("Rebellion")]
         [TestCase("Empire")]
+        [TestCase("Republic")]
         [TestCase("Separatist")]
         public void Mounts_MatchUnlockedHardPointTypesAndArt(string faction)
         {
@@ -109,7 +166,7 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (var mount in model.Mounts)
                 {
                     Assert.That(mount.Point.IsChildOf(model.transform), Is.True);
-                    if (faction == "Separatist") Assert.That(mount.Art, Is.Null, "RaW embeds weapon art in the hull.");
+                    if (faction == "Republic" || faction == "Separatist") Assert.That(mount.Art, Is.Null, "RaW embeds weapon art in the hull.");
                     else
                     {
                         Assert.That(mount.Art.transform.IsChildOf(model.transform), Is.True);
@@ -125,7 +182,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EntityLevelHandler_SwapsModelsWithoutReplacingGameplay([Values("Rebellion", "Empire", "Separatist")] string faction,
+        public void EntityLevelHandler_SwapsModelsWithoutReplacingGameplay([Values("Rebellion", "Empire", "Republic", "Separatist")] string faction,
             [Values(1, 5)] int initialLevel)
         {
             GameObject root = PrefabUtility.LoadPrefabContents(ViewPath(faction));
@@ -216,7 +273,7 @@ namespace EmpireAtWar.Tests.Editor
                 string path = AssetDatabase.GUIDToAssetPath(row.FindPropertyRelative("value.m_AssetGUID").stringValue);
                 Assert.That(path, Is.EqualTo(ViewPath(faction.ToString())));
                 var root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                bool leveled = faction == FactionType.Rebellion || faction == FactionType.Empire || faction == FactionType.Separatist;
+                bool leveled = faction == FactionType.Rebellion || faction == FactionType.Empire || faction == FactionType.Republic || faction == FactionType.Separatist;
                 Assert.That(root.GetComponent<StationLevelView>() != null, Is.EqualTo(leveled));
                 if (!leveled) continue;
                 Assert.That(new SerializedObject(root.GetComponent<StationLevelView>()).FindProperty("levelModels").arraySize, Is.EqualTo(levels.MaxLevel));
@@ -226,6 +283,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase("Rebellion")]
         [TestCase("Empire")]
+        [TestCase("Republic")]
         [TestCase("Separatist")]
         public void ShieldSwap_UsesNewSurfaceForImpacts(string faction)
         {
@@ -283,13 +341,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             hardPoint.TryGetWeaponType(out WeaponType weapon);
             string name = weapon.ToString();
-            return anchor.Split('_')[1].ToUpperInvariant() switch
+            return anchor.Split('_')[1].ToUpperInvariant().TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') switch
             {
-                "SHG" => hardPoint.HardPointType == HardPointType.ShieldGenerator,
-                "TBL" or "TBL2" => name.Contains("TurboLaser"),
+                "SHG" or "SHIELD" => hardPoint.HardPointType == HardPointType.ShieldGenerator,
+                "TBL" or "TL" => name.Contains("TurboLaser"),
                 "LC" => name.EndsWith("Laser") && !name.Contains("TurboLaser"),
-                "CCM" or "CM" => weapon == WeaponType.ConcussionMissile,
-                "PRT" => weapon == WeaponType.ProtonTorpedo,
+                "CCM" or "CM" or "MIS" => weapon == WeaponType.ConcussionMissile,
+                "PRT" or "TRP" => weapon == WeaponType.ProtonTorpedo,
                 "IC" => name.Contains("IonCannon"),
                 _ => false
             };
