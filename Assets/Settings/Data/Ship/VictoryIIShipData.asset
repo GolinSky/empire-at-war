@@ -44,7 +44,7 @@ MonoBehaviour:
   - hardPointType: 7
     health: 500
     hullDamageMultiplier: 1
-  <Range>k__BackingField: 325
+  <Range>k__BackingField: 600
   <Delay>k__BackingField: 0.25
   abilities: 0c00000016000000
   hangarBays:
