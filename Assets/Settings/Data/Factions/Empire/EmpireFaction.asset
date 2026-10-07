@@ -49,7 +49,7 @@ MonoBehaviour:
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
         isHero: 0
-        <Name>k__BackingField: "ISD I"
+        <Name>k__BackingField: ISD I
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 8500
