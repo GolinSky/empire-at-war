@@ -149,6 +149,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void SetBuildOptionsVisible(bool isVisible)
         {
+            buildOptions.transform.localScale = Vector3.one * 0.5f;
             buildOptions.SetActive(isVisible);
             if (isVisible)
             {
