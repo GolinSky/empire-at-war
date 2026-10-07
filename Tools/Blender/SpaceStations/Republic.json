@@ -1,0 +1,133 @@
+{
+  "view": "Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab",
+  "levels": [
+    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel5.prefab"
+  ],
+  "artPrefix": "ReB_",
+  "mounts": [
+    {
+      "hardPoint": 0,
+      "anchors": {
+        "1": "HP_Shield"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 1,
+      "anchors": {
+        "1": "HP01_TL_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 2,
+      "anchors": {
+        "2": "HP02_TL_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 3,
+      "anchors": {
+        "4": "FP03_TL01_01"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 4,
+      "anchors": {
+        "5": "HP05_TL01_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 5,
+      "anchors": {
+        "1": "HP01_LC_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 6,
+      "anchors": {
+        "1": "HP01_MIS_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 7,
+      "anchors": {
+        "2": "HP02_LC_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 8,
+      "anchors": {
+        "2": "HP02_TRP_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 9,
+      "anchors": {
+        "3": "HP01_MIS_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 10,
+      "anchors": {
+        "3": "HP02_TRP_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 11,
+      "anchors": {
+        "3": "FP03_IC01_01"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 12,
+      "anchors": {
+        "4": "FP03_LC01_01"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 13,
+      "anchors": {
+        "4": "FP03_IC02_01"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 14,
+      "anchors": {
+        "5": "HP04_MIS01_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 15,
+      "anchors": {
+        "5": "HP04_TRP01_BONE"
+      },
+      "art": null
+    },
+    {
+      "hardPoint": 16,
+      "anchors": {
+        "5": "HP02_IC_BONE"
+      },
+      "art": null
+    }
+  ],
+  "spawnAnchor": "HP_Spawn_01"
+}

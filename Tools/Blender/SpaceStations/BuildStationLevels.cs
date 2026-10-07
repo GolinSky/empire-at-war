@@ -80,7 +80,7 @@ public static class BuildStationLevels
                 Transform launch = root.transform.Find("GameplayLaunchExit");
                 if (launch == null) launch = new GameObject("GameplayLaunchExit").transform;
                 launch.SetParent(root.transform, false);
-                Vector3 spawn = root.transform.InverseTransformPoint(transforms.Single(t => t.name == "Spawn_00").position);
+                Vector3 spawn = root.transform.InverseTransformPoint(transforms.Single(t => t.name == ((string)config["spawnAnchor"] ?? "Spawn_00")).position);
                 launch.localPosition = new Vector3(spawn.x, bounds.min.y - LAUNCH_DROP, spawn.z);
 
                 var surface = UnityEngine.Object.Instantiate(donorShield.gameObject, root.transform);
@@ -163,7 +163,7 @@ public static class BuildStationLevels
 
     private static void RequireMatchingType(string faction, HardPoint hardPoint, string anchorName, bool missileSubstitution)
     {
-        string token = anchorName.Split('_')[1].ToUpperInvariant();
+        string token = anchorName.Split('_')[1].ToUpperInvariant().TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
         hardPoint.TryGetWeaponType(out WeaponType weapon);
         string name = weapon.ToString();
         if (missileSubstitution)
@@ -174,11 +174,11 @@ public static class BuildStationLevels
         }
         bool matches = token switch
         {
-            "SHG" => hardPoint.HardPointType == HardPointType.ShieldGenerator,
-            "TBL" or "TBL2" => name.Contains("TurboLaser"),
+            "SHG" or "SHIELD" => hardPoint.HardPointType == HardPointType.ShieldGenerator,
+            "TBL" or "TL" => name.Contains("TurboLaser"),
             "LC" => name.EndsWith("Laser") && !name.Contains("TurboLaser"),
-            "CCM" or "CM" => weapon == WeaponType.ConcussionMissile,
-            "PRT" => weapon == WeaponType.ProtonTorpedo,
+            "CCM" or "CM" or "MIS" => weapon == WeaponType.ConcussionMissile,
+            "PRT" or "TRP" => weapon == WeaponType.ProtonTorpedo,
             "IC" => name.Contains("IonCannon"),
             _ => throw new InvalidOperationException($"{faction}: unknown station anchor type {token} in {anchorName}.")
         };
