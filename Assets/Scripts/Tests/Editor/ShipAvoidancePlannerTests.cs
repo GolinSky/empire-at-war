@@ -128,5 +128,43 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(isClear, Is.False);
         }
 
+        [Test]
+        public void IsRouteClear_AllowEscape_AcceptsRouteLeavingObstacle()
+        {
+            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
+                Vector3.zero,
+                Vector3.right,
+                new Vector3(30f, 0f, 0f));
+
+            bool isClear = ShipAvoidancePlanner.IsRouteClear(
+                route,
+                new[] { new RadarContact(new Vector3(-1f, 0f, 0f), 3f, false) },
+                0f,
+                0.5f,
+                2f,
+                allowEscape: true);
+
+            Assert.That(isClear, Is.True);
+        }
+
+        [Test]
+        public void IsRouteClear_AllowEscape_RejectsRouteHeadingIntoObstacle()
+        {
+            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
+                Vector3.zero,
+                Vector3.right,
+                new Vector3(30f, 0f, 0f));
+
+            bool isClear = ShipAvoidancePlanner.IsRouteClear(
+                route,
+                new[] { new RadarContact(new Vector3(2f, 0f, 0f), 3f, false) },
+                0f,
+                0.5f,
+                2f,
+                allowEscape: true);
+
+            Assert.That(isClear, Is.False);
+        }
+
     }
 }

@@ -202,11 +202,11 @@ namespace EmpireAtWar.Components.Ship.Movement
             Stopped?.Invoke();
         }
 
+        // Engine damage only changes speed; the current route stays valid.
         public void ApplyMoveCoefficient(float coefficient)
         {
-            bool wasMoving = IsMoving;
             Model.ApplyMoveCoefficient(coefficient);
-            if (wasMoving) Plan(Model.Destination.ToUnity());
+            _motion.SetRouteSpeed(Model.Speed);
         }
 
         public void HandleSelection(bool isSelected) =>

@@ -15,7 +15,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector3 origin,
             Vector3 originForward,
             Vector3 destination,
-            float minimumTurnRadius = 0f)
+            float minimumTurnRadius = 0f,
+            float handleScale = 1f)
         {
             if (minimumTurnRadius < 0f)
             {
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                         distance * TURNAROUND_RADIUS_FACTOR));
             }
 
-            float controlDistance = Mathf.Min(
+            float controlDistance = handleScale * Mathf.Min(
                 distance * 0.5f,
                 Mathf.Max(
                     distance * CONTROL_DISTANCE_FACTOR,
@@ -109,7 +110,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         public static ShipBezierRoute BuildWaypointRoute(
             IReadOnlyList<Vector3> waypoints,
             Vector3 originForward,
-            float minimumTurnRadius)
+            float minimumTurnRadius,
+            float handleScale = 1f)
         {
             if (waypoints.Count < 2)
             {
@@ -132,14 +134,15 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Vector3 endTangent = i + 1 == lastIndex
                     ? legDirection
                     : GetPlanarDirection(waypoints[i + 2] - start, legDirection);
-                float startHandle = i == 0
+                float startHandle = handleScale * (i == 0
                     ? Mathf.Min(
                         distance * 0.5f,
                         Mathf.Max(
                             distance * WAYPOINT_CONTROL_DISTANCE_FACTOR,
                             minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR))
-                    : distance * WAYPOINT_CONTROL_DISTANCE_FACTOR;
-                float endHandle = distance * WAYPOINT_CONTROL_DISTANCE_FACTOR;
+                    : distance * WAYPOINT_CONTROL_DISTANCE_FACTOR);
+                float endHandle =
+                    handleScale * distance * WAYPOINT_CONTROL_DISTANCE_FACTOR;
                 segments[i] = new CubicBezierSegment(
                     start,
                     start + startTangent * startHandle,
