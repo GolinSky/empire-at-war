@@ -624,7 +624,8 @@ namespace EmpireAtWar.Tests.Editor
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
-                    counterModel: new EnemyCounterProductionModel(),
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
                     owner: owner);
 
                 strategy.Start();
@@ -699,7 +700,8 @@ namespace EmpireAtWar.Tests.Editor
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
-                    counterModel: new EnemyCounterProductionModel(),
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
                     owner: owner);
 
                 strategy.Start();
@@ -776,7 +778,8 @@ namespace EmpireAtWar.Tests.Editor
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
-                    counterModel: new EnemyCounterProductionModel(),
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
                     owner: owner);
 
                 strategy.Start();

@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IGameModelObserver _gameModel;
         private readonly IPlayerRoster _playerRoster;
         private readonly ForceCompositionBuilder _forceBuilder;
+        private readonly HostileIntelModel _intel;
 
         private readonly PlayerSlot _owner;
         private readonly ForceComposition _ownForce = new ForceComposition();
@@ -76,8 +78,10 @@ namespace EmpireAtWar.Services.Enemy
             IGameModelObserver gameModel,
             IPlayerRoster playerRoster,
             ForceCompositionBuilder forceBuilder,
+            TeamIntelRegistry intelRegistry,
             PlayerSlot owner)
         {
+            _intel = intelRegistry.Get(owner.Team);
             _forceBuilder = forceBuilder;
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
@@ -107,18 +111,18 @@ namespace EmpireAtWar.Services.Enemy
             GameEntity enemyBaseTarget = FindClosestEntity(EntityRoles.IsPlayerBase,
                 owner => owner == focusEnemy,
                 origin);
-            // Any hostile ship is a fair fleet target; the closest one wins.
-            GameEntity enemyFleetTarget = FindClosestEntity(EntityRoles.IsShip,
-                owner => _playerRoster.IsHostile(self, owner),
-                origin);
+            // Hostiles are known only through the team's intel: what was seen, weighted by how fresh it is.
+            float now = Time.time;
+            // Any known hostile ship is a fair fleet target; the closest one still alive wins.
+            GameEntity enemyFleetTarget = FindClosestKnownShip(origin, now);
             // Strength is compared against the whole team of the focused enemy.
-            List<IShipEntity> focusTeamShips = GetShips(ship => _playerRoster.IsAllied(focusEnemy, ship.Owner));
+            int focusTeamShipCount = CountKnownShips(focusEnemy, now);
             int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self);
             // Team games compare whole teams; alone against a 2-player team every AI looks outmatched and retreats.
             _forceBuilder.Build(_ownTeamForce, entity => _playerRoster.IsAllied(self, entity.Owner));
-            _forceBuilder.Build(_focusTeamForce,
-                entity => focusEnemy != PlayerId.None && _playerRoster.IsAllied(focusEnemy, entity.Owner));
+            _forceBuilder.BuildKnown(_focusTeamForce, _intel, now,
+                sighting => focusEnemy != PlayerId.None && _playerRoster.IsAllied(focusEnemy, sighting.Owner));
             BuildBaseThreat(ownBase);
             // Retreat answers what is actually near the fleet, not the enemy's whole army across the map.
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
@@ -130,7 +134,7 @@ namespace EmpireAtWar.Services.Enemy
                 victoryCondition: _gameModel.VictoryCondition,
                 difficulty: _owner.Difficulty,
                 ownShipCount: ownShips.Count,
-                enemyShipCount: focusTeamShips.Count,
+                enemyShipCount: focusTeamShipCount,
                 hasCaptureTarget: hasCaptureTarget,
                 hasEnemyBaseTarget: enemyBaseTarget != null,
                 hasOwnBase: ownBase != null,
@@ -168,10 +172,50 @@ namespace EmpireAtWar.Services.Enemy
                 return closestStation.Owner;
             }
 
-            GameEntity closestShip = FindClosestEntity(EntityRoles.IsShip,
-                owner => _playerRoster.IsHostile(self, owner),
-                home);
+            GameEntity closestShip = FindClosestKnownShip(home, Time.time);
             return closestShip != null ? closestShip.Owner : PlayerId.None;
+        }
+
+        /// <summary>The living hostile ship whose last known position is closest to <paramref name="origin"/>.</summary>
+        private GameEntity FindClosestKnownShip(Vector3 origin, float now)
+        {
+            GameEntity closest = null;
+            float closestDistance = float.MaxValue;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (!sighting.UnitTypeId.IsShip ||
+                    _intel.GetConfidence(sighting, now) <= 0f ||
+                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity))
+                {
+                    continue;
+                }
+
+                float distance = (ToVector(sighting.Position) - origin).sqrMagnitude;
+                if (distance < closestDistance)
+                {
+                    closest = entity;
+                    closestDistance = distance;
+                }
+            }
+
+            return closest;
+        }
+
+        private int CountKnownShips(PlayerId focusEnemy, float now)
+        {
+            int count = 0;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (sighting.UnitTypeId.IsShip &&
+                    focusEnemy != PlayerId.None &&
+                    _playerRoster.IsAllied(focusEnemy, sighting.Owner) &&
+                    _intel.GetConfidence(sighting, now) > 0f)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
@@ -236,16 +280,10 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Hostile ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>
         private void BuildHostilesNear(ForceComposition force, Vector3 center, float radius)
         {
-            PlayerId self = _owner.Id;
             float radiusSquared = radius * radius;
-            _forceBuilder.Build(force, entity =>
+            _forceBuilder.BuildKnown(force, _intel, Time.time, sighting =>
             {
-                if (!_playerRoster.IsHostile(self, entity.Owner))
-                {
-                    return false;
-                }
-
-                Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - center;
+                Vector3 offset = ToVector(sighting.Position) - center;
                 offset.y = 0f;
                 return offset.sqrMagnitude <= radiusSquared;
             });

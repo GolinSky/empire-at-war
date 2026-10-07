@@ -810,7 +810,7 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 21
     displayName: Heavy Fighter Laser Cannon
-    damageType: 0
+    damageType: 13
     damage: 8
     shotsPerSalvo: 2
     shotInterval: 0.08
@@ -825,7 +825,7 @@ MonoBehaviour:
     size: {x: 0.45, y: 0.45, z: 0.6}
   - weaponType: 24
     displayName: X-Wing Laser Cannon
-    damageType: 0
+    damageType: 13
     damage: 5
     shotsPerSalvo: 1
     shotInterval: 0.1
@@ -840,7 +840,7 @@ MonoBehaviour:
     size: {x: 0.45, y: 0.45, z: 0.6}
   - weaponType: 29
     displayName: Light Repeating Laser
-    damageType: 0
+    damageType: 13
     damage: 5
     shotsPerSalvo: 8
     shotInterval: 0.1
@@ -855,7 +855,7 @@ MonoBehaviour:
     size: {x: 0.45, y: 0.45, z: 0.6}
   - weaponType: 46
     displayName: Light Dual Laser
-    damageType: 0
+    damageType: 13
     damage: 5
     shotsPerSalvo: 2
     shotInterval: 0.08
@@ -870,7 +870,7 @@ MonoBehaviour:
     size: {x: 0.45, y: 0.45, z: 0.6}
   - weaponType: 15
     displayName: Fighter Laser Cannon
-    damageType: 0
+    damageType: 13
     damage: 5
     shotsPerSalvo: 2
     shotInterval: 0.08

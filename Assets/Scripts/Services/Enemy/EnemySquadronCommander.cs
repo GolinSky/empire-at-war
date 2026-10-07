@@ -3,7 +3,10 @@ using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.CaptureSites;
@@ -11,6 +14,7 @@ using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
+using static EmpireAtWar.Utils.FormationConversion;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -49,6 +53,7 @@ namespace EmpireAtWar.Services.Enemy
             new List<KeyValuePair<ISquadron, float>>();
 
         private readonly IEnemyStructurePlacementService _structurePlacement;
+        private readonly HostileIntelModel _intel;
 
         private int _nextEscortTarget;
 
@@ -65,9 +70,11 @@ namespace EmpireAtWar.Services.Enemy
             ForceCompositionBuilder forceBuilder,
             UnitCombatProfileCatalog profileCatalog,
             IEnemyStructurePlacementService structurePlacement,
+            TeamIntelRegistry intelRegistry,
             PlayerSlot owner)
         {
             _owner = owner;
+            _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
             _captureSites = captureSites;
             _reinforcementZonesSystem = reinforcementZonesSystem;
@@ -117,14 +124,15 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        /// <summary>When no build space is visible, the non-escort squadron closest to the nearest fog spot scouts it.</summary>
+        /// <summary>
+        /// One non-escort squadron scouts: first for build space when none is visible, otherwise to refresh the
+        /// team's most valuable stale intel, or to find the enemy at its nearest base when nothing is known.
+        /// </summary>
         private void AssignScout()
         {
             _scout = null;
             // Squadrons exist only after the battle map has loaded, and without one there is nobody to send.
-            if (_squadrons.Count == 0 ||
-                _structurePlacement.TryGetPosition(out _) ||
-                !_structurePlacement.TryGetScoutTarget(out _scoutTarget))
+            if (_squadrons.Count == 0 || !TryGetScoutTarget(out _scoutTarget))
             {
                 return;
             }
@@ -139,6 +147,56 @@ namespace EmpireAtWar.Services.Enemy
                     _scout = squadron;
                 }
             }
+        }
+
+        private bool TryGetScoutTarget(out Vector3 target)
+        {
+            if (!_structurePlacement.TryGetPosition(out _) &&
+                _structurePlacement.TryGetScoutTarget(out target))
+            {
+                return true;
+            }
+
+            if (_intel.TryGetScoutTarget(Time.time, out FormationPoint stale))
+            {
+                target = ToVector(stale);
+                return true;
+            }
+
+            target = default;
+            return _intel.Sightings.Count == 0 && TryGetNearestHostileBase(out target);
+        }
+
+        private bool TryGetNearestHostileBase(out Vector3 position)
+        {
+            position = default;
+            float closest = float.MaxValue;
+            Vector3 origin = default;
+            foreach (ISquadron squadron in _squadrons.Keys)
+            {
+                origin = squadron.WorldPosition;
+                break;
+            }
+
+            // Station locations are part of the map, so the AI may head for them without having seen them.
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (!entity.IsPlayerBase() || !_playerRoster.IsHostile(_owner.Id, entity.Owner) ||
+                    entity.HealthModel.IsDestroyed)
+                {
+                    continue;
+                }
+
+                Vector3 candidate = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                float distance = (candidate - origin).sqrMagnitude;
+                if (distance < closest)
+                {
+                    closest = distance;
+                    position = candidate;
+                }
+            }
+
+            return closest < float.MaxValue;
         }
 
         private void IssueOrder(ISquadron squadron)
@@ -176,10 +234,9 @@ namespace EmpireAtWar.Services.Enemy
         private void AssessThreats()
         {
             PlayerId self = _owner.Id;
-            _forceBuilder.Build(_hostileStrikecraft,
-                entity => _playerRoster.IsHostile(self, entity.Owner) && entity.IsSquadron());
-            _forceBuilder.Build(_hostileShips,
-                entity => _playerRoster.IsHostile(self, entity.Owner) && entity.IsShip());
+            float now = Time.time;
+            _forceBuilder.BuildKnown(_hostileStrikecraft, _intel, now, sighting => sighting.UnitTypeId.IsSquadron);
+            _forceBuilder.BuildKnown(_hostileShips, _intel, now, sighting => sighting.UnitTypeId.IsShip);
             _escortTargets.Clear();
             _nextEscortTarget = 0;
             if (_hostileStrikecraft.IsEmpty)

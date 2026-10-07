@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -53,8 +54,32 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        /// <summary>
+        /// Clears <paramref name="force"/> and fills it with the hostile units the team knows of, each weighted by
+        /// how much its sighting is still trusted. This is how the AI sees hostiles: through intel, not the map.
+        /// </summary>
+        public void BuildKnown(
+            ForceComposition force,
+            HostileIntelModel intel,
+            float now,
+            Predicate<HostileSighting> include)
+        {
+            force.Clear();
+            foreach (HostileSighting sighting in intel.Sightings)
+            {
+                float confidence = intel.GetConfidence(sighting, now);
+                if (confidence <= 0f || !include(sighting))
+                {
+                    continue;
+                }
+
+                force.Add(_catalog.Get(sighting.UnitTypeId), sighting.Hull * confidence,
+                    sighting.Shields * confidence, sighting.OffenseScale * confidence);
+            }
+        }
+
         /// <summary>Destroyed hardpoints (ship systems, squadron fighters) stop firing.</summary>
-        private static float GetOffenseScale(IHealthModelObserver health)
+        public static float GetOffenseScale(IHealthModelObserver health)
         {
             if (health.HardPointModels.Length == 0)
             {
