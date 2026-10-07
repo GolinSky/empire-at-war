@@ -58,7 +58,8 @@ namespace EmpireAtWar.ViewComponents.Station
 
             launchPoint.position = next.LaunchExit.position;
             selectionMarker.localPosition = new Vector3(bounds.center.x, bounds.min.y - 2f, bounds.center.z);
-            selectionMarker.sizeDelta = new Vector2(bounds.size.x, bounds.size.z);
+            float selectionSize = Mathf.Max(bounds.size.x, bounds.size.z);
+            selectionMarker.sizeDelta = Vector2.one * selectionSize;
             shield.transform.localPosition = next.ShieldCenter;
             shield.SetHull(shieldMesh, next.ShieldMesh, next.ShieldPlanes);
         }

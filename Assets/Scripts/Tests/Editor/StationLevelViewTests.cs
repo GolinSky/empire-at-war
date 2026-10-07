@@ -191,6 +191,7 @@ namespace EmpireAtWar.Tests.Editor
                 var station = root.GetComponent<SpaceStationEntity>();
                 var view = root.GetComponent<StationLevelView>();
                 var data = AssetDatabase.LoadAssetAtPath<SpaceStationData>("Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset");
+                var selectionMarker = (RectTransform)new SerializedObject(view).FindProperty("selectionMarker").objectReferenceValue;
                 var upgrade = new RecordingHealthUpgrade();
                 var ionField = new RecordingIonField();
                 typeof(SpaceStationEntity).GetField("_healthUpgrade", PRIVATE_INSTANCE).SetValue(station, upgrade);
@@ -216,6 +217,9 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(ionField.Bounds, Is.EqualTo(current.HullBounds));
                     Assert.That(root.GetComponent<BoxCollider>().center, Is.EqualTo(current.HullBounds.center));
                     Assert.That(root.GetComponent<BoxCollider>().size, Is.EqualTo(current.HullBounds.size));
+                    float selectionSize = Mathf.Max(current.HullBounds.size.x, current.HullBounds.size.z);
+                    Assert.That(selectionMarker.rect.width, Is.EqualTo(selectionSize).Within(.001f));
+                    Assert.That(selectionMarker.rect.height, Is.EqualTo(selectionSize).Within(.001f));
                     Assert.That(shield.GetComponent<MeshFilter>().sharedMesh, Is.SameAs(current.ShieldMesh));
                     Assert.That(shield.transform.localPosition, Is.EqualTo(current.ShieldCenter));
                     Assert.That(Vector3.Distance(launch.position, current.LaunchExit.position), Is.LessThan(.001f));
