@@ -138,6 +138,34 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(notDue, Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
+        // Empire has no level-1 ship; with relays blocking structures the AI used to wait forever at level 1.
+        [TestCase(EnemyAiDifficulty.Medium)]
+        [TestCase(EnemyAiDifficulty.UltraHard)]
+        public void NoShipAtCurrentLevel_LevelsUpInsteadOfWaiting(EnemyAiDifficulty difficulty)
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.RebuildFleet, difficulty,
+                    0, 0, 0, 0, 1, 3, 1,
+                    false, false, false, false, false, false, true, true, canOrderShips: false));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Level));
+        }
+
+        // Ship category here is the squadron the strategy picked because no ship type is unlocked.
+        [TestCase(EnemyAiDifficulty.Medium)]
+        [TestCase(EnemyAiDifficulty.UltraHard)]
+        public void NoShipAtCurrentLevel_BuysSquadronsWhileLevelIsUnaffordable(EnemyAiDifficulty difficulty)
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.RebuildFleet, difficulty,
+                    0, 0, 0, 0, 1, 3, 1,
+                    false, true, true, false, false, false, true, false, canOrderShips: false));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
         [Test]
         public void BaseUnderAttack_KeepsBuyingShipsWhileLevelIsDue()
         {
@@ -923,6 +951,12 @@ namespace EmpireAtWar.Tests.Editor
             {
                 position = Vector3.zero;
                 return true;
+            }
+
+            public bool TryGetScoutTarget(out Vector3 position)
+            {
+                position = default;
+                return false;
             }
         }
 
