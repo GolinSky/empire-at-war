@@ -11,6 +11,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipClass.Fighter, false)]
         [TestCase(ShipClass.Bomber, false)]
         [TestCase(ShipClass.Interceptor, false)]
+        [TestCase(ShipClass.Cruiser, false)]
         [TestCase(ShipClass.Capital, false)]
         [TestCase(ShipClass.HeavyCapital, false)]
         [TestCase(ShipClass.Structure, false)]

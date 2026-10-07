@@ -40,6 +40,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
             target.HealthModel.ShipClass == ShipClass.Frigate ||
+            target.HealthModel.ShipClass == ShipClass.Cruiser ||
             target.HealthModel.ShipClass == ShipClass.Capital ||
             target.HealthModel.ShipClass == ShipClass.HeavyCapital ||
             target.IsPlayerBase();

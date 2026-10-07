@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.Ship.Health
         Interceptor = 7,
         Corvette = 2,
         Frigate = 3,
+        Cruiser = 8,
         Capital = 4,
         HeavyCapital = 5,
         Structure = 6,

@@ -26,7 +26,7 @@ MonoBehaviour:
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: be6ae42ea1ae9e946b7befc65cbe5c02,
     type: 2}
-  <ShipClass>k__BackingField: 4
+  <ShipClass>k__BackingField: 8
   <Hull>k__BackingField: 4500
   <Shields>k__BackingField: 3500
   <ShieldRegenerateValue>k__BackingField: 4.375

@@ -298,7 +298,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
               type: 3}
           effects:
-          - shipClasses: 020000000300000004000000
+          - shipClasses: 02000000030000000800000004000000
             stat: 1
             multiplier: 1.25
         - factionData:
@@ -317,7 +317,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
               type: 3}
           effects:
-          - shipClasses: 02000000030000000400000005000000
+          - shipClasses: 0200000003000000080000000400000005000000
             stat: 1
             multiplier: 1.25
     - key: 3
@@ -358,7 +358,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
               type: 3}
           effects:
-          - shipClasses: 020000000300000004000000
+          - shipClasses: 02000000030000000800000004000000
             stat: 2
             multiplier: 1.15
         - factionData:
@@ -377,7 +377,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
               type: 3}
           effects:
-          - shipClasses: 02000000030000000400000005000000
+          - shipClasses: 0200000003000000080000000400000005000000
             stat: 2
             multiplier: 1.15
     - key: 4
