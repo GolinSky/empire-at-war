@@ -1008,3 +1008,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: RaiderCorvetteShipView
+      value:
+        m_AssetGUID: 97d22c97a3a205549808c07e00bc0ae5
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: RaiderCorvetteShipData
+      value:
+        m_AssetGUID: 83d8e6e9f96ea624ba5718568ab77a0b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

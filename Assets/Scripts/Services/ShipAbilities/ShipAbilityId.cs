@@ -28,5 +28,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         PowerToMainBatteries = 24,
         CompositeBeam = 25,
         ArquitensBoostWeaponPower = 23,
+        Pursuit = 30,
     }
 }

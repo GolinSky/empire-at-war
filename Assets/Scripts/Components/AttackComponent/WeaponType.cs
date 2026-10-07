@@ -50,5 +50,8 @@
         LightDualLaser = 46,
         HeavyDualIonStunner = 47,
         MediumProtonTorpedo = 48,
+        HeavyBurstIonBlaster = 60,
+        HeavyBurstConcussionMissile = 61,
+        DualRepeatingPointDefense = 62,
     }
 }
