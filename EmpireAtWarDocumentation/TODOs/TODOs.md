@@ -235,7 +235,8 @@
   - **Rule**: `CameraService` owns the input-lock rule; `CameraInput` has no `enabled` fallback.
   - **Decision**: `VelocitySmoothing` stays in `Assets/Scripts/Components/Utils/`.
   - **Status**: sections 1–4 implemented; Unity compile clean; asset values, GUIDs and Addressables entry verified.
-  - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic acceptance; open `MainMenuScene` has unsaved changes. No automated tests run.
+  - **Cinematic fix**: 2026-10-07 framing adapts to navigation radius + camera FOV; chase/low-high shots center on the ship. Transitions orbit the look point with minimum clearance; wide shots include focus-offset clearance. Cinematic EditMode tests 17/17 passed; compilation clean.
+  - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic visual acceptance. `MainMenuScene` was clean on 2026-10-07; no Play Mode run.
 
 - [ ] **Battle startup sequence (state/speed notifiers, async map, gated systems)**
   - **Plan**: [[TODOs/Refactoring/Battle_Startup_Sequence_Plan|Battle Startup Sequence Plan]]

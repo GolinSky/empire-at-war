@@ -84,5 +84,111 @@ namespace EmpireAtWar.Tests.CinematicCamera
 
             Assert.That(scorer.TrySelect(Array.Empty<CinematicCandidate>(), -1, out _), Is.False);
         }
+
+        [Test]
+        public void FramingDistance_KeepsClassMinimumForSmallUnits()
+        {
+            Assert.That(CinematicShotSolver.CalculateFramingDistance(170f, 8f, 30f), Is.EqualTo(170f));
+        }
+
+        [TestCase(90f)]
+        [TestCase(1060f)]
+        public void ShotTransitions_StayOutsideHullAndKeepItFramed(float radius)
+        {
+            const float FIELD_OF_VIEW = 30f;
+            Vector3 anchor = new Vector3(150f, 80f, -200f);
+            float distance = CinematicShotSolver.CalculateFramingDistance(20f, radius, FIELD_OF_VIEW);
+            foreach (CinematicShotType fromType in Enum.GetValues(typeof(CinematicShotType)))
+            foreach (CinematicShotType toType in Enum.GetValues(typeof(CinematicShotType)))
+            foreach (float fromSide in new[] { -1f, 1f })
+            foreach (float toSide in new[] { -1f, 1f })
+            {
+                Pose from = CinematicShotSolver.Solve(
+                    new CinematicShot(fromType, fromSide, 3f), anchor, Quaternion.identity,
+                    Vector3.zero, distance, 2.5f, FIELD_OF_VIEW, 1f);
+                Pose to = CinematicShotSolver.Solve(
+                    new CinematicShot(toType, toSide, 3f), anchor, Quaternion.identity,
+                    Vector3.zero, distance, 2.5f, FIELD_OF_VIEW, 0f);
+                for (int i = 1; i <= 20; i++)
+                {
+                    Pose pose = CinematicShotSolver.InterpolatePose(from.position, to, anchor, i / 20f);
+                    Vector3 toHull = anchor - pose.position;
+                    Assert.That(toHull.magnitude, Is.GreaterThan(radius),
+                        $"{fromType}/{fromSide} -> {toType}/{toSide}, step {i}");
+                    float hullAngle = Mathf.Asin(radius / toHull.magnitude) * Mathf.Rad2Deg;
+                    float centerAngle = Vector3.Angle(pose.rotation * Vector3.forward, toHull);
+                    Assert.That(centerAngle + hullAngle, Is.LessThan(FIELD_OF_VIEW * 0.5f),
+                        $"{fromType}/{fromSide} -> {toType}/{toSide}, step {i}");
+                }
+            }
+        }
+
+        [TestCase(125f, 0f, 0f)]
+        [TestCase(-125f, 0f, 0f)]
+        [TestCase(0f, 125f, 0f)]
+        [TestCase(0f, 0f, 300f)]
+        public void WideShot_WithOffsetFocusKeepsSubjectFramed(float x, float y, float z)
+        {
+            const float RADIUS = 10f;
+            const float FIELD_OF_VIEW = 30f;
+            Vector3 focus = new Vector3(x, y, z);
+            float distance = CinematicShotSolver.CalculateFramingDistance(20f, RADIUS, FIELD_OF_VIEW);
+            foreach (float side in new[] { -1f, 1f })
+            {
+                Pose desired = CinematicShotSolver.Solve(
+                    new CinematicShot(CinematicShotType.Wide, side, 3f), Vector3.zero, Quaternion.identity,
+                    focus, distance, 2.5f, FIELD_OF_VIEW, 0f);
+                Vector3 current = new Vector3(-distance, 0f, 0f);
+                for (int i = 1; i <= 20; i++)
+                {
+                    Pose pose = CinematicShotSolver.InterpolatePose(current, desired, focus, i / 20f);
+                    Vector3 toHull = -pose.position;
+                    Assert.That(toHull.magnitude, Is.GreaterThan(RADIUS));
+                    float hullAngle = Mathf.Asin(RADIUS / toHull.magnitude) * Mathf.Rad2Deg;
+                    float centerAngle = Vector3.Angle(pose.rotation * Vector3.forward, toHull);
+                    Assert.That(centerAngle + hullAngle, Is.LessThan(FIELD_OF_VIEW * 0.5f));
+                }
+            }
+        }
+
+        [Test]
+        public void Interpolation_RecoversWhenMovingSubjectReachesCameraPosition()
+        {
+            Vector3 focus = new Vector3(100f, 80f, 50f);
+            Pose desired = new Pose(focus + Vector3.back * 100f, Quaternion.identity);
+            Pose pose = CinematicShotSolver.InterpolatePose(focus, desired, focus, 0.1f);
+            Assert.That(Vector3.Distance(pose.position, focus), Is.EqualTo(100f).Within(0.001f));
+            Assert.That(Vector3.Angle(pose.rotation * Vector3.forward, focus - pose.position),
+                Is.LessThan(0.01f));
+        }
+
+        [TestCase(10f, 30f)]
+        [TestCase(90f, 30f)]
+        [TestCase(290f, 30f)]
+        [TestCase(1060f, 30f)]
+        [TestCase(90f, 60f)]
+        public void Shots_KeepResizedHullInsideFieldOfView(float radius, float fieldOfView)
+        {
+            float distance = CinematicShotSolver.CalculateFramingDistance(20f, radius, fieldOfView);
+            Vector3 anchor = new Vector3(150f, 80f, -200f);
+            Quaternion rotation = Quaternion.Euler(0f, 73f, 0f);
+            foreach (CinematicShotType type in Enum.GetValues(typeof(CinematicShotType)))
+            {
+                foreach (float side in new[] { -1f, 1f })
+                {
+                    foreach (float progress in new[] { 0f, 0.5f, 1f })
+                    {
+                        Pose pose = CinematicShotSolver.Solve(
+                            new CinematicShot(type, side, 3f), anchor, rotation,
+                            Vector3.zero, distance, 2.5f, fieldOfView, progress);
+                        Vector3 toHull = anchor - pose.position;
+                        float centerAngle = Vector3.Angle(pose.rotation * Vector3.forward, toHull);
+                        float hullAngle = Mathf.Asin(radius / toHull.magnitude) * Mathf.Rad2Deg;
+                        Assert.That(centerAngle + hullAngle, Is.LessThan(fieldOfView * 0.5f),
+                            $"{type}, side {side}, progress {progress}");
+                    }
+                }
+            }
+        }
     }
 }
