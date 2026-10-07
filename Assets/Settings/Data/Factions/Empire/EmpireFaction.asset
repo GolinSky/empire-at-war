@@ -49,7 +49,7 @@ MonoBehaviour:
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
         isHero: 0
-        <Name>k__BackingField: "Imperial I Star Destroyer \u2014 Advanced Loadout"
+        <Name>k__BackingField: "ISD I"
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 8500
@@ -109,7 +109,7 @@ MonoBehaviour:
         role: Ship of the Line / Capital Ship
         iconKey: dcd7ea16edf5bfd4ca9c2f1c95c1fda4:21300000
         isHero: 0
-        <Name>k__BackingField: Imperial III Star Destroyer
+        <Name>k__BackingField: ISD III
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 26000
@@ -131,7 +131,7 @@ MonoBehaviour:
         role: Capital ship / Ship of the line
         iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
         isHero: 0
-        <Name>k__BackingField: Imperial II Star Destroyer
+        <Name>k__BackingField: ISD II
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 25000
