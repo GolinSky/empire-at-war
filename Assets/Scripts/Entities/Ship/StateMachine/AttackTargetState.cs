@@ -161,6 +161,22 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return;
             }
 
+            // Formation slots are packed around the target itself; a ship already in range
+            // holds there instead of flying onto the target's hull. Later drift re-closes
+            // to the standoff point, which gives the same hysteresis as a single-ship attack.
+            if (!_isClosingRange && inRange)
+            {
+                if (_shipMoveComponent.IsMoving)
+                {
+                    _shipMoveComponent.Stop();
+                }
+
+                _shipMoveComponent.LookAtTarget(TargetPosition);
+                _isClosingRange = true;
+                _hasPursuitDestination = false;
+                return;
+            }
+
             Vector3 destination = _isClosingRange ? StandoffPosition : MovementTargetPosition;
             float updateDistance = PursuitDestinationUpdateDistance;
             if (_hasPursuitDestination &&
