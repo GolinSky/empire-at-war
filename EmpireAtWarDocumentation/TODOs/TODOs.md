@@ -290,6 +290,7 @@
   - **Plan**: [[Done/Features/Spawn_Blockers_And_Relays|Spawn Blockers and Relays]]
   - **Completed**: 2026-10-05; vision service, spawn blockers, unified spawn rule (ships/squadrons/structures, player + AI), zones → capturable relays, spawn overlay, unified structure clearance, relay model.
   - **Verification**: EditMode 982/1019 pass (37 failures pre-existing or from parallel ship imports); Play Mode skirmish checked live blockers, relay capture flip, AI deployment, overlay; no feature errors.
+  - **2026-10-08**: Captured relays keep `RelaySpawnBlockRadius` visible for their team until recaptured. EditMode 32/32 pass across relay, vision, spawn-point and spawn-rule tests; no new Play Mode run.
 
 - [x] **Implement unit actions (ship orders)**
   - **Plan**: [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]

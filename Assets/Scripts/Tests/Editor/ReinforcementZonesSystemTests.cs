@@ -8,6 +8,10 @@ using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.SpawnBlocking;
+using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Ship;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -115,12 +119,126 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void OwnedRelay_RevealsItsSpawnRangeForItsTeam(bool isCapturable)
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
+            try
+            {
+                SetField(data, "<RelaySpawnBlockRadius>k__BackingField", 1234f);
+                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Ally,
+                    isCapturable, new Vector3(100f, 200f, -300f));
+                CreateSystem(root, data, new SpawnBlockerService(TestPlayers.CreateTeamGame()), vision, zone);
+                Vector3 edge = zone.Center + Vector3.right * data.RelaySpawnBlockRadius;
+
+                Assert.That(vision.IsVisible(TestPlayers.Ally, edge), Is.True);
+                Assert.That(vision.IsVisible(TestPlayers.Human, edge + Vector3.up * 500f), Is.True);
+                Assert.That(vision.IsVisible(TestPlayers.Enemy, zone.Center), Is.False);
+                Assert.That(vision.IsVisible(TestPlayers.Human, edge + Vector3.right), Is.False);
+                Assert.That(vision.Sources, Has.Count.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Relay_CaptureTransfersVisionAndKeepsItWithoutUnits(bool initiallyOwned)
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            VisionService vision = new VisionService(roster);
+            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform,
+                    initiallyOwned ? TestPlayers.Human : PlayerId.None, true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
+                CaptureSquadrons squadrons = new CaptureSquadrons { Owner = TestPlayers.Enemy };
+                SetField(system, "_shipService", new ShipService());
+                SetField(system, "_squadronRegistry", squadrons);
+                SetField(system, "_captureStrengthBuilder", new CaptureStrengthBuilder(roster));
+                Vector3 edge = Vector3.right * data.RelaySpawnBlockRadius;
+                Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.EqualTo(initiallyOwned));
+                Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.False);
+                if (!initiallyOwned) Assert.That(vision.Sources, Is.Empty);
+                int changes = 0;
+                system.OwnershipChanged += () =>
+                {
+                    changes++;
+                    Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.True);
+                    Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.False);
+                    Assert.That(blockers.IsBlocked(TestPlayers.Enemy, edge), Is.False);
+                };
+
+                MethodInfo tick = typeof(ReinforcementZonesSystem).GetMethod("TickZones", PRIVATE_INSTANCE);
+                tick.Invoke(system, new object[] { zone.CaptureDuration / data.SquadronCaptureWeight });
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Enemy));
+                squadrons.Owner = PlayerId.None;
+                tick.Invoke(system, new object[] { zone.CaptureDuration });
+
+                Assert.That(changes, Is.EqualTo(1));
+                Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.True);
+                Assert.That(vision.IsVisible(TestPlayers.SecondEnemy, edge), Is.True);
+                Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.False);
+                Assert.That(blockers.IsBlocked(TestPlayers.Human, edge), Is.True);
+                Assert.That(vision.Sources, Has.Count.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void RelayVision_IsRemovedOnDisposalOrMapReplacement(bool dispose)
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data,
+                    new SpawnBlockerService(TestPlayers.CreateTeamGame()), vision, zone);
+                BattleMap emptyMap = CreateMap();
+                SetField(system, "_battleMap", new ReplayNotifier<BattleMap>(emptyMap));
+                Assert.That(vision.IsVisible(TestPlayers.Human, zone.Center), Is.True);
+
+                if (dispose) system.LateDispose();
+                else system.UpdateState(emptyMap);
+                Object.DestroyImmediate(zone.gameObject);
+
+                Assert.That(vision.Sources, Is.Empty);
+                Assert.That(vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
             ReinforcementZoneData data, params ReinforcementZoneView[] zones) =>
             CreateSystem(root, data, new SpawnBlockerService(TestPlayers.CreateTeamGame()), zones);
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
             ReinforcementZoneData data, SpawnBlockerService blockers, params ReinforcementZoneView[] zones)
+            => CreateSystem(root, data, blockers, new VisionService(TestPlayers.CreateTeamGame()), zones);
+
+        private static ReinforcementZonesSystem CreateSystem(GameObject root,
+            ReinforcementZoneData data, SpawnBlockerService blockers, VisionService vision,
+            params ReinforcementZoneView[] zones)
         {
             ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
             SetField(system, "_data", data);
@@ -130,7 +248,12 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_playerRoster", roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
             SetField(system, "_spawnBlockerService", blockers);
-            system.UpdateState(new BattleMap(
+            SetField(system, "_visionService", vision);
+            system.UpdateState(CreateMap(zones));
+            return system;
+        }
+
+        private static BattleMap CreateMap(params ReinforcementZoneView[] zones) => new BattleMap(
                 layout: new MapLayout(
                     stationPositions: new Dictionary<PlayerId, Vector3>(),
                     zones: System.Array.Empty<ZoneSpot>(),
@@ -142,9 +265,7 @@ namespace EmpireAtWar.Tests.Editor
                 zoneViews: zones,
                 siteViews: System.Array.Empty<CaptureSiteView>(),
                 obstacles: System.Array.Empty<MapObstacle>(),
-                stationObstacles: System.Array.Empty<StationObstacle>()));
-            return system;
-        }
+                stationObstacles: System.Array.Empty<StationObstacle>());
 
         private static ReinforcementZoneView CreateZone(
             Transform parent,
@@ -170,6 +291,22 @@ namespace EmpireAtWar.Tests.Editor
             FieldInfo field = target.GetType().GetField(fieldName, PRIVATE_INSTANCE);
             Assert.That(field, Is.Not.Null, $"Expected field '{fieldName}' to exist.");
             field.SetValue(target, value);
+        }
+
+        private sealed class CaptureSquadrons : ISquadronRegistry
+        {
+            public string Id => nameof(CaptureSquadrons);
+            public PlayerId Owner { get; set; } = PlayerId.None;
+
+            public void AddSquadronStrength(System.Func<Vector3, bool> contains, float weight,
+                CaptureStrengthBuilder tally)
+            {
+                if (Owner != PlayerId.None && contains(Vector3.zero)) tally.Add(Owner, weight);
+            }
+
+            public bool HasSquadronInside(System.Func<Vector3, bool> contains,
+                System.Predicate<PlayerId> isOwnerIncluded) =>
+                Owner != PlayerId.None && contains(Vector3.zero) && isOwnerIncluded(Owner);
         }
 
         private sealed class FakeMapModel : IMapModelObserver
