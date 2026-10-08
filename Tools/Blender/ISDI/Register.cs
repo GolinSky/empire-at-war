@@ -42,7 +42,7 @@ public static class RegisterImperialAdvanced
             else
             {
                 var root=PrefabUtility.LoadPrefabContents(view);
-                try{var c=root.GetComponentsInChildren<MonoBehaviour>(true).Single(m=>m.GetType().Name=="SquadronIconComponent");var so=new SerializedObject(c);((UnityEngine.UI.Image)so.FindProperty("silhouetteImage").objectReferenceValue).sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/SquadronIcon/"+name+"Silhouette.png");PrefabUtility.SaveAsPrefabAsset(root,view);}
+                try{var c=root.GetComponentsInChildren<MonoBehaviour>(true).Single(m=>m.GetType().Name=="SquadronIconComponent");var so=new SerializedObject(c);((UnityEngine.UI.Image)so.FindProperty("silhouetteImage").objectReferenceValue).sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/SquadronIcon/"+name+"Silhouette.png");((UnityEngine.UI.Image)so.FindProperty("iconImage").objectReferenceValue).sprite=icon;PrefabUtility.SaveAsPrefabAsset(root,view);}
                 finally{PrefabUtility.UnloadPrefabContents(root);}
             }
         }
