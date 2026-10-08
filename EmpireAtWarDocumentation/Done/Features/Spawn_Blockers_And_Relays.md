@@ -16,12 +16,13 @@ completed: 2026-10-05
 - `IsBlocked(team, pos)` → any blocker `B` with `!IsAllied(B.Owner, team)` and XZ distance ≤ `B.Radius`.
 - `PlayerId.None` is never allied → neutral relays and asteroids block everyone.
 - Station, defend platform, mining facility → block hostiles only.
-- Captured relay → owner team may spawn in range; hostiles may not. Relay gives no vision.
+- Captured relay → persistent team vision across `RelaySpawnBlockRadius`; owner team may spawn in range; hostiles may not.
+- Relay vision persists after units leave; recapture transfers it to the new owner's team. Neutral relays give no vision.
 - Squadrons use the same rule as ships (player placement). AI squadrons still launch from the station.
 - Vision and spawn checks ignore height (XZ). Drawn fog keeps camera projection; spawn overlay is flat.
 
 ## Decision
-- Two layers: `IVisionService` (per-unit vision) + `ISpawnBlockerService` (spawn-block circles).
+- Two layers: `IVisionService` (team vision) + `ISpawnBlockerService` (spawn-block circles).
   - Why: a revealed point may still be closed to deployment.
   - Avoid: spawn checks reading `FogOfWarSystem` (local-player only, camera-dependent, faded).
 - Keep `ReinforcementZone*` class names; the zone view now represents a relay capture ring + blocker.
@@ -66,6 +67,8 @@ completed: 2026-10-05
   - Human visible ≈11.6% / open ≈9.0% of the small map at start.
   - No errors from this feature; exit showed pre-existing UI teardown exceptions (`EconomyUiController`, `CoreGameUiController` → see Scene Teardown bug).
 - Final EditMode 1019: 982 pass / 37 fail; only new failures are `DispatcherShipView` wreck tests (parallel import).
+- [x] 2026-10-08 — Relay vision: register owned relays at `RelaySpawnBlockRadius`, update vision before `OwnershipChanged`, unregister on map replacement/disposal.
+  - EditMode 32/32 pass: `ReinforcementZonesSystemTests` 10, `VisionServiceTests` 6, `ShipSpawnPointsTests` 6, `ReinforcementSpawnRuleTests` 10. Six new relay cases failed before the change and pass after it; no Play Mode run.
 
 ## Notes
 - Human home anchor (906 from station) sits outside station vision 900; home spawn still succeeds by sampling the visible part. Large maps (`DefaultZoneGap 360`) shrink that overlap — watch AI fallback if no relay is held.
