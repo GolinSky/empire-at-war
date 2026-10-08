@@ -34,7 +34,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 6,000 beam damage
+        description: Fire a focused laser beam at an enemy. Deals 3,000 beam damage
           continuously over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
@@ -45,12 +45,27 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 7607833764655792203
+    - key: 33
+      value:
+        icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
+        displayName: Laser Beam
+        description: Fire a focused laser beam at an enemy. Deals 12,000 beam damage
+          continuously over 8 s, then recovers for 50 s.
+        duration: 8
+        recoveryDelay: 50
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 7607833764655792233
     - key: 25
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Fire Composite Beam
         description: Fire the composite beam for 6 seconds at an enemy ship larger
-          than a corvette or a space station. Deals 1,000 damage before armor/shield
+          than a corvette or a space station. Deals 4,000 damage before armor/shield
           modifiers, with only 10% damage against shields. Recovers in 45 seconds.
         duration: 6
         recoveryDelay: 45
@@ -65,7 +80,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Proton Beam
-        description: Focus a proton beam on an enemy target; deals 6,000 beam damage
+        description: Focus a proton beam on an enemy target; deals 3,000 beam damage
           continuously over 8 s.
         duration: 8
         recoveryDelay: 50
@@ -633,7 +648,7 @@ MonoBehaviour:
       type: {class: CompositeBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        damage: 1000
+        damage: 4000
     - rid: 6801466921437888601
       type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -690,7 +705,7 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 6000
+        damage: 3000
     - rid: 7607833764655792204
       type: {class: InvulnerabilitySettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -753,3 +768,9 @@ MonoBehaviour:
           damageTakenMultiplier: 1
         commandRadius: 400
         targetDamageMultiplier: 1
+    - rid: 7607833764655792233
+      type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        damageType: 7
+        damage: 12000

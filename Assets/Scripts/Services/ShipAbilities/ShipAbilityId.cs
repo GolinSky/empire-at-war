@@ -32,5 +32,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         Pursuit = 30,
         AcclamatorBoostWeaponPower = 31,
         TectorBoostWeaponPower = 32,
+        ExecutorLaserBeam = 33,
     }
 }

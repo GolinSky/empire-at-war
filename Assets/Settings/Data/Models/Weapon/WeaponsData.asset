@@ -601,7 +601,7 @@ MonoBehaviour:
   - weaponType: 45
     displayName: Composite Beam
     damageType: 12
-    damage: 1000
+    damage: 4000
     shotsPerSalvo: 1
     shotInterval: 0
     reload: 45
@@ -616,10 +616,10 @@ MonoBehaviour:
   - weaponType: 12
     displayName: Laser Beam
     damageType: 7
-    damage: 150
+    damage: 1000
     shotsPerSalvo: 1
     shotInterval: 0
-    reload: 15
+    reload: 30
     range: 75
     strikecraftOnly: 0
     interceptable: 0

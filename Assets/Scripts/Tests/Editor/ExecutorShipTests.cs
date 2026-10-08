@@ -26,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Hull, Is.EqualTo(200000));
             Assert.That(data.Shields, Is.EqualTo(200000));
             Assert.That(data.Speed, Is.EqualTo(15));
-            Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.LaserBeam, ShipAbilityId.TractorBeam }));
+            Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.ExecutorLaserBeam, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
@@ -104,7 +104,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(AssetDatabase.GetAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").objectReferenceValue),
                 Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab"));
             ShipAbilityCatalog catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
-            Assert.That(catalog.Get(ShipAbilityId.LaserBeam).Settings, Is.Not.Null);
+            Assert.That(catalog.Get(ShipAbilityId.ExecutorLaserBeam).Settings, Is.Not.Null);
             Assert.That(catalog.Get(ShipAbilityId.TractorBeam).Settings, Is.Not.Null);
         }
 
