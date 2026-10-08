@@ -87,8 +87,8 @@ public static class BuildImperialArt
                             AddModel(SHIP+part+i.ToString("00"),Bone(model,"TA_ISD"+(part=="TLT"?"_":"1_")+part+"_"+i.ToString("00")),manifest);
                 }
                 var points=Points(root);var bounds=BoundsOf(points);
-                // Preserve the hull basis; turn the fighter rigs to face Unity +Z.
-                container.transform.localRotation=Quaternion.Euler(0,variant==SHIP?0:180,0);
+                // The Interceptor export already faces +Z; the other fighter rigs need a half-turn.
+                container.transform.localRotation=Quaternion.Euler(0,variant==SHIP || variant=="TIEInterceptor"?0:180,0);
                 points=Points(root);bounds=BoundsOf(points);
                 float length=variant==SHIP?180:variant=="TIEInterceptor"?4:5;
                 float scale=length/bounds.size.z;
