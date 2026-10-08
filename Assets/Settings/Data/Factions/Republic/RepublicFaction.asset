@@ -145,7 +145,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 110
-        <UnitCapacity>k__BackingField: 5
+        <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 771dbf8529c7a394b864ffcb0bd556d7,
           type: 3}
     - key: 10
