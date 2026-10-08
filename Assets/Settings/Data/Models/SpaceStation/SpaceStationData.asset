@@ -34,7 +34,7 @@ MonoBehaviour:
       hullDamageMultiplier: 1
     <Range>k__BackingField: 900
     <Delay>k__BackingField: 0.25
-    <WeaponRange>k__BackingField: 187.5
+    <WeaponRange>k__BackingField: 900
     <VisionRange>k__BackingField: 900
     <SpawnBlockRadius>k__BackingField: 1200
   wrecks:
