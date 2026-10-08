@@ -441,7 +441,7 @@ MonoBehaviour:
           rid: 6801466921437888588
     - key: 22
       value:
-        icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
+        icon: {fileID: 21300000, guid: 44e885e262d0a944db799fce4dd7a43b, type: 3}
         displayName: Tractor Beam
         description: Restrict a targeted enemy corvette or frigate to 25% speed for
           up to 20 s within 225 units. Ends when the beam hardpoint, caster or target
@@ -629,10 +629,10 @@ MonoBehaviour:
           range: 75
           strikecraftOnly: 0
           interceptable: 0
-          shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+          shotPrefab: {fileID: 383474084171235543, guid: 1f1a771756f8831439df9261368929ab,
             type: 3}
           projectileSpeed: 0
-          color: {r: 1, g: 1, b: 0, a: 1}
+          color: {r: 0.2, g: 0.9, b: 0.45, a: 1}
           size: {x: 0.8, y: 0.4, z: 1}
     - rid: 6801466921437888599
       type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
