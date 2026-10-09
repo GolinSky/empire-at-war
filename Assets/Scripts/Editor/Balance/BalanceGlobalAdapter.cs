@@ -50,7 +50,7 @@ namespace EmpireAtWar.Editor.Balance
                             string member = char.ToLowerInvariant(shipClass.ToString()[0]) + shipClass.ToString().Substring(1);
                             registry.Add(matrix, key + kind + "/" + shipClass, row.propertyPath + "." + kind + "." + member,
                                 "Global Data", context + " → " + shipClass + " " + kind, "Shared Profile", true, registry.Units,
-                                maximum: kind == "accuracy" ? 1 : double.PositiveInfinity);
+                                maximum: kind == "accuracy" ? 1 : double.PositiveInfinity, serializedTarget: serialized);
                         }
                 }
         }

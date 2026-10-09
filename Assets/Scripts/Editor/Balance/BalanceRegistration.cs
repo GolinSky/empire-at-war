@@ -11,13 +11,19 @@ namespace EmpireAtWar.Editor.Balance
         public readonly Dictionary<string, BalanceField> Fields = new Dictionary<string, BalanceField>();
         public readonly List<BalanceUnit> Units = new List<BalanceUnit>();
         public readonly List<string> Errors = new List<string>();
+        private readonly Dictionary<Object, string> _targetIdentities = new Dictionary<Object, string>();
+        private readonly Dictionary<Object, List<BalanceField>> _targetFields = new Dictionary<Object, List<BalanceField>>();
+
+        public IEnumerable<BalanceField> FieldsFor(Object target) => _targetFields.TryGetValue(target, out List<BalanceField> fields)
+            ? fields : Enumerable.Empty<BalanceField>();
 
         public BalanceField Add(Object target, string key, string path, string group, string context,
             string owner, bool shared, IEnumerable<BalanceUnit> users, Type enumType = null, double minimum = 0,
-            double maximum = double.PositiveInfinity, bool positive = false, string alias = "", string dependency = "")
+            double maximum = double.PositiveInfinity, bool positive = false, string alias = "", string dependency = "", SerializedObject serializedTarget = null)
         {
-            using (SerializedObject serialized = new SerializedObject(target))
+            using (SerializedObject owned = serializedTarget == null ? new SerializedObject(target) : null)
             {
+                SerializedObject serialized = serializedTarget ?? owned;
                 SerializedProperty property = serialized.FindProperty(path);
                 if (property == null) throw new InvalidOperationException($"Approved schema missing: {target.name}/{path}");
                 BalanceValueKind kind = property.isArray ? BalanceValueKind.EnumSet : property.propertyType switch
@@ -28,8 +34,13 @@ namespace EmpireAtWar.Editor.Balance
                     SerializedPropertyType.Enum => BalanceValueKind.Enum,
                     _ => throw new InvalidOperationException($"Unapproved value type: {path}")
                 };
-                string identity = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(target)) + "/"
-                    + (target is UnityEngine.Component ? GlobalObjectId.GetGlobalObjectIdSlow(target).ToString() : "root") + "/" + key;
+                if (!_targetIdentities.TryGetValue(target, out string targetIdentity))
+                {
+                    targetIdentity = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(target)) + "/"
+                        + (target is UnityEngine.Component ? GlobalObjectId.GetGlobalObjectIdSlow(target).ToString() : "root");
+                    _targetIdentities.Add(target, targetIdentity);
+                }
+                string identity = targetIdentity + "/" + key;
                 if (!Fields.TryGetValue(identity, out BalanceField field))
                 {
                     field = new BalanceField
@@ -42,6 +53,12 @@ namespace EmpireAtWar.Editor.Balance
                     if ((kind == BalanceValueKind.Enum || kind == BalanceValueKind.EnumSet) && enumType == null)
                         throw new InvalidOperationException($"Missing enum schema: {key}");
                     Fields.Add(identity, field);
+                    if (!_targetFields.TryGetValue(target, out List<BalanceField> targetFields))
+                    {
+                        targetFields = new List<BalanceField>();
+                        _targetFields.Add(target, targetFields);
+                    }
+                    targetFields.Add(field);
                 }
                 foreach (BalanceUnit unit in users)
                     if (field.Users.All(existing => existing.Id != unit.Id)) field.Users.Add(unit);
@@ -78,9 +95,10 @@ namespace EmpireAtWar.Editor.Balance
         public void AutoFields(Object target, string path, string key, string names, string group, string context,
             string owner, bool shared, IEnumerable<BalanceUnit> users)
         {
-            foreach (string name in names.Split(' '))
-                Add(target, key + name, path + Auto(name), group, context, owner, shared, users,
-                    positive: name == "ShieldRegenerateDelay" || name == "Delay" || name == "HangarLaunchInterval");
+            using (SerializedObject serialized = new SerializedObject(target))
+                foreach (string name in names.Split(' '))
+                    Add(target, key + name, path + Auto(name), group, context, owner, shared, users,
+                        positive: name == "ShieldRegenerateDelay" || name == "Delay" || name == "HangarLaunchInterval", serializedTarget: serialized);
         }
     }
 }
