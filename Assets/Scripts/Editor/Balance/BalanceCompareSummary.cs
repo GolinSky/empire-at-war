@@ -12,8 +12,9 @@ namespace EmpireAtWar.Editor.Balance
         {
             VisualElement grid = new VisualElement { name = "compare-grid" }; grid.AddToClassList("balance-compare-grid"); panel.Add(grid);
             BalanceCompareSelection.Bind(grid, state, refresh);
-            List<string> dps = units.Select(unit => BalanceUnitView.BaseDps(unit, registry, state.Draft)).ToList();
-            double ceiling = dps.Select(value => Number(value) ?? 0).Append(1).Max();
+            BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry);
+            List<BalanceDpsEstimate> dps = units.Select(unit => estimator.Estimate(unit, state.Draft)).ToList();
+            double ceiling = dps.Where(estimate => estimate.HasValue).Select(estimate => estimate.Value).Append(1).Max();
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
             string[][] durability = { new[] { "Hull", "MemberHull" }, new[] { "Shields", "MemberShields" } };
             float[] maxima = durability.Select(stats => units.Select(unit => Field(unit, registry, stats)).Where(field => field != null)
@@ -59,10 +60,10 @@ namespace EmpireAtWar.Editor.Balance
                 Editable(card, "Build time (s)", Field(unit, registry, "BuildTime"), state, usage, edit);
                 Section(card, "Firepower");
                 Editable(card, "Weapon range", Field(unit, registry, unit.Kind == "Ship" ? "Range" : "WeaponRange"), state, usage, edit);
-                Metric(card, "Base DPS", dps[i], "dmg/s");
-                if (Number(dps[i]) is double value)
+                Metric(card, "Base DPS", dps[i].ToString(), "dmg/s");
+                if (dps[i].HasValue)
                 {
-                    ProgressBar bar = new ProgressBar { lowValue = 0, highValue = (float)ceiling, value = (float)value, title = "" };
+                    ProgressBar bar = new ProgressBar { lowValue = 0, highValue = (float)ceiling, value = (float)dps[i].Value, title = "" };
                     bar.AddToClassList("balance-dps-meter"); card.Add(bar);
                 }
                 int count = unit.Mounts.Distinct().Count();
@@ -78,7 +79,7 @@ namespace EmpireAtWar.Editor.Balance
             }
             BalanceCompareSelection.Update(grid, state);
             Label assumptions = Text(panel, "Draft values · DPS is an AI estimate before accuracy, target modifiers, firing arcs and abilities.", "balance-compare-assumptions");
-            assumptions.tooltip = "Base DPS = mounts × damage × shots per salvo / reload. This estimate does not simulate full firing-sequence timing, movement, interception or target switching.";
+            assumptions.tooltip = BalanceDpsEstimator.FORMULA + " This estimate does not simulate projectile travel, movement, interception or target switching.";
         }
 
         public static void BuildHardpoints(VisualElement panel, BalanceUnit unit, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit)

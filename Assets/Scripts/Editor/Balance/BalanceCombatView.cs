@@ -32,6 +32,7 @@ namespace EmpireAtWar.Editor.Balance
                     Label empty = new Label("Add units to inspect and edit their hardpoints."); empty.AddToClassList("balance-muted"); scroll.Add(empty);
                 }
                 VisualElement grid = new VisualElement { name = "combat-grid" }; grid.AddToClassList("balance-compare-grid"); scroll.Add(grid);
+                BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry);
                 foreach (BalanceUnit unit in units)
                 {
                     VisualElement slot = new VisualElement { userData = unit.Id }; slot.AddToClassList("balance-compare-slot"); grid.Add(slot);
@@ -42,7 +43,7 @@ namespace EmpireAtWar.Editor.Balance
                         { text = "×", name = "combat-remove-unit", tooltip = "Remove " + unit.Name + " from selected units" };
                     remove.AddToClassList("balance-compare-remove"); header.Add(remove);
                     Label caption = new Label(unit.Faction + " · " + unit.Class); caption.AddToClassList("balance-compare-caption"); card.Add(caption);
-                    Label dps = new Label("Base DPS · " + BalanceUnitView.BaseDps(unit, registry, state.Draft));
+                    Label dps = new Label("Base DPS · " + estimator.Estimate(unit, state.Draft));
                     dps.AddToClassList("balance-muted"); card.Add(dps);
                     Label hardpoints = new Label("Hardpoints (" + unit.Mounts.Distinct().Count() + ")");
                     hardpoints.AddToClassList("balance-compare-section"); card.Add(hardpoints);

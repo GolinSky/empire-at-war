@@ -90,7 +90,7 @@ namespace EmpireAtWar.Editor.Balance
             VisualElement summary = new VisualElement(); summary.AddToClassList("balance-summary"); panel.Add(summary);
             EditableStat(summary, unit, registry, state, edit, unit.Kind == "Squadron" ? "Hull / member" : "Hull HP", "Hull", "MemberHull");
             EditableStat(summary, unit, registry, state, edit, unit.Kind == "Squadron" ? "Shield / member" : "Shield", "Shields", "MemberShields");
-            Stat(summary, "Base DPS · estimate", BaseDps(unit, registry, state.Draft));
+            Stat(summary, "Base DPS · estimate", new BalanceDpsEstimator(registry).Estimate(unit, state.Draft).ToString());
             Stat(summary, "Speed", Value(unit, registry, state, "Speed", "CruiseSpeed"));
         }
 
@@ -114,30 +114,12 @@ namespace EmpireAtWar.Editor.Balance
             return "N/A";
         }
 
-        public static string BaseDps(BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft)
-        {
-            var mounts = registry.Fields.Values.Where(field => !field.SharedMountSource && field.Stat == "WeaponType" && field.Users.Any(user => user.Id == unit.Id)).ToList();
-            if (mounts.Count == 0) return "N/A";
-            double total = 0;
-            foreach (var group in mounts.GroupBy(field => field.DraftValue(draft)))
-            {
-                string prefix = "weapon/" + group.Key + "/";
-                if (!registry.Fields.Values.Any(field => field.Stat == prefix + "damage"))
-                    return "Missing weapon profile: " + BalanceFieldView.Display(group.First(), group.Key);
-                double Read(string stat) => double.Parse(registry.Fields.Values.Single(field => field.Stat == prefix + stat).DraftValue(draft), CultureInfo.InvariantCulture);
-                double reload = Read("reload");
-                if (reload <= 0 || !double.IsFinite(reload)) return "Invalid draft";
-                total += group.Count() * Read("damage") * Read("shotsPerSalvo") / reload;
-            }
-            return double.IsFinite(total) ? total.ToString("N1", CultureInfo.InvariantCulture) : "Invalid draft";
-        }
-
         private static void Stat(VisualElement panel, string title, string value)
         {
             VisualElement card = new VisualElement(); card.AddToClassList("balance-stat");
             Label label = new Label(title); label.AddToClassList("balance-muted"); card.Add(label);
             Label number = new Label(value); number.AddToClassList("balance-stat-value"); card.Add(number);
-            card.tooltip = "Read-only draft value. Base DPS = mounts × damage × shots / reload; excludes accuracy, target modifiers, firing arcs, abilities and movement.";
+            card.tooltip = "Read-only draft value. " + BalanceDpsEstimator.FORMULA + " Excludes accuracy, target modifiers, firing arcs, abilities, movement and projectile travel.";
             panel.Add(card);
         }
     }
