@@ -39,7 +39,9 @@
 - Collider, selection marker, ion volume, renderer lists and 1,024-plane shield rebuilt for the final model.
 - Dedicated weapon profiles **67 / 68 / 69**; existing medium dual **53** and light dual **36** reused. Triple profiles preserve source 150 / 157.5 damage, 3 pulses, 7.5 / 8.5 s interval, mean recharge 15.25 / 17.25 s and range 9,000 × 0.05 = 450 units.
 - Heavy dual laser: 35 source combined damage represented by two 17.5 shots; mean recharge **3.8705 s**, range **150**. The **0.08 s** shot separation and existing projectile art/damage matrices are project conventions.
-- Source price **7,500 credits**, build **250 s**, population **3**, starbase level **1**, limit **2**. Regeneration, hardpoint health, attack range and gameplay size remain project choices inherited from the station pipeline.
+- Source price **7,500 credits**, build **250 s**, population **3**, starbase level **1**, limit **2**. Regeneration, hardpoint health and gameplay size remain project choices inherited from the station pipeline.
+- Weapon, radar and fog vision radius: **900 units**, matching `SpaceStationData`. Runtime hardpoints use the entity weapon radius; profile ranges retain source metadata. Spawn blocking remains **500 units**.
+- Each weapon has an outward-facing parent pivot. Runtime targeting measures yaw against the parent, so rotating the weapon alone leaves all firing arcs facing station-forward. Preserve every source muzzle position and rotation.
 
 ## Rebuild
 
@@ -75,6 +77,12 @@ python Tools/Blender/AotrEmpressStation/Package.py
 - Unowned + eight owned palette previews rendered in Unity. Color changes affect **769–9,055** pixels of a 900×900 image (>4/255 channel change), preserving neutral hull regions.
 - Unity compilation completed successfully. No Empress import/serialization errors. Existing Balance Editor `RememberScroll` errors were observed and left outside this task.
 - No automated Unity test suite or battle playthrough run.
+
+### Combat fix — 2026-10-09
+
+- Before: inherited **500-unit** radius could not reach capital ships; weapon-local yaw rotations did not orient parent-relative targeting arcs.
+- After: **900-unit** weapon/radar/vision radii; **30** outward-facing weapon parent pivots with original muzzle poses and saved bindings preserved. Builder recreates the same setup.
+- `EmpressDefensePlatformCombatTests`: **3 failed before → 3 passed after**. Long-range batteries cover **24 approach directions** at **400 / 800 units**, tested with station headings **0° / 73°**. No battle playthrough run.
 
 ## Conversion limitations
 

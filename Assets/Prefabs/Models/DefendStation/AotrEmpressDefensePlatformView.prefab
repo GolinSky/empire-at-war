@@ -25,12 +25,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91344401419578042}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.86359036, z: -0, w: 0.50419414}
-  m_LocalPosition: {x: -134.71884, y: -14.498049, z: -76.04735}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 6422910034244141520}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4255927930128689733
 MonoBehaviour:
@@ -54,6 +54,38 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 69
+--- !u!1 &286290689580094681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 293472487311600331}
+  m_Layer: 0
+  m_Name: HP_Empress_HTIC_01_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &293472487311600331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286290689580094681}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.70857024, z: -0, w: 0.7056403}
+  m_LocalPosition: {x: -51.550945, y: 48.638344, z: -0.21360397}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 497744771555831564}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &384050559122718303
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,12 +111,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384050559122718303}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.71495086, z: -0, w: 0.6991747}
-  m_LocalPosition: {x: 52.04438, y: 48.638344, z: -1.1613712}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 7487681122120474003}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6940521627808062390
 MonoBehaviour:
@@ -148,39 +180,39 @@ Transform:
   - {fileID: 5637441176310439845}
   - {fileID: 101349502811395699}
   - {fileID: 8236149074356897458}
-  - {fileID: 6352422229258820307}
-  - {fileID: 3852254385275811535}
-  - {fileID: 4512473608041056580}
-  - {fileID: 2727483992891200638}
-  - {fileID: 6861512079088458881}
-  - {fileID: 4033840392182352237}
-  - {fileID: 2396873362248570524}
-  - {fileID: 216228337932987124}
-  - {fileID: 6102302670574489277}
-  - {fileID: 3754099427765224810}
-  - {fileID: 545861446694039712}
-  - {fileID: 7559964777976261989}
-  - {fileID: 4162930392489207351}
-  - {fileID: 2206700291193476276}
-  - {fileID: 3265461150075559168}
-  - {fileID: 7726224941565219970}
-  - {fileID: 8876907862378224469}
-  - {fileID: 1338840872773020228}
-  - {fileID: 8830729087624437203}
-  - {fileID: 2552497637437199192}
-  - {fileID: 6176393907683957510}
-  - {fileID: 7294011676413251651}
-  - {fileID: 83241443004005963}
-  - {fileID: 1684287631864590548}
-  - {fileID: 497744771555831564}
-  - {fileID: 3595892574599528639}
-  - {fileID: 6557156284569507683}
-  - {fileID: 794774273826211776}
-  - {fileID: 5809432660772868012}
-  - {fileID: 7125517188578168705}
   - {fileID: 999819223569197910}
   - {fileID: 6069907576421974967}
   - {fileID: 3514895310019482713}
+  - {fileID: 6147552763180269331}
+  - {fileID: 6988822654275542535}
+  - {fileID: 3772482761630537343}
+  - {fileID: 6422910034244141520}
+  - {fileID: 1703355191588323104}
+  - {fileID: 4877402744569888221}
+  - {fileID: 6823652355183317303}
+  - {fileID: 5435102852799304012}
+  - {fileID: 5797392712938342471}
+  - {fileID: 206624115701088613}
+  - {fileID: 1716079067775727847}
+  - {fileID: 8954277157851832973}
+  - {fileID: 8534703083465550901}
+  - {fileID: 8023259484982139556}
+  - {fileID: 4441226190507899738}
+  - {fileID: 4193703302201082456}
+  - {fileID: 7210806189571061278}
+  - {fileID: 3415105900132042124}
+  - {fileID: 6297255063644650776}
+  - {fileID: 5021618134507606981}
+  - {fileID: 4749257595441172765}
+  - {fileID: 6718924838389143561}
+  - {fileID: 7264686958314306895}
+  - {fileID: 2631473338668898325}
+  - {fileID: 293472487311600331}
+  - {fileID: 2464568332922227176}
+  - {fileID: 7487681122120474003}
+  - {fileID: 7186283030024702134}
+  - {fileID: 8491311918640171719}
+  - {fileID: 2170696173773438237}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3098522355029747233
@@ -539,6 +571,70 @@ MonoBehaviour:
   - {fileID: 4983421247641311596}
   - {fileID: 4803012193471559431}
   - {fileID: 3291800770654672724}
+--- !u!1 &452969158336929191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5021618134507606981}
+  m_Layer: 0
+  m_Name: HP_Empress_MTL_02_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5021618134507606981
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 452969158336929191}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.11350727, z: -0, w: 0.9935372}
+  m_LocalPosition: {x: 25.869518, y: -10.988976, z: 111.74112}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2552497637437199192}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &724793621636087686
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 206624115701088613}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_04_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &206624115701088613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724793621636087686}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.14565457, z: -0, w: 0.98933554}
+  m_LocalPosition: {x: 11.931271, y: -4.713891, z: 39.64234}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3754099427765224810}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &823259476790250610
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,12 +660,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 823259476790250610}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.14565407, z: -0, w: 0.9893356}
-  m_LocalPosition: {x: -11.931227, y: -4.713891, z: 39.64234}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 5797392712938342471}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7129836658996488602
 MonoBehaviour:
@@ -593,6 +689,102 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 36
+--- !u!1 &1056807834964456603
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8954277157851832973}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_06_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8954277157851832973
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056807834964456603}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.90413797, z: -0, w: 0.42724064}
+  m_LocalPosition: {x: 66.2574, y: -4.713893, z: -54.453217}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7559964777976261989}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1138871059632217996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7487681122120474003}
+  m_Layer: 0
+  m_Name: HP_Empress_HTIC_03_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7487681122120474003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138871059632217996}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.71495086, z: -0, w: 0.6991747}
+  m_LocalPosition: {x: 52.04438, y: 48.638344, z: -1.1613712}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6557156284569507683}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1147136030941468228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5797392712938342471}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_03_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5797392712938342471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147136030941468228}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.14565407, z: -0, w: 0.9893356}
+  m_LocalPosition: {x: -11.931227, y: -4.713891, z: 39.64234}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6102302670574489277}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1174711341876275333
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,12 +810,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174711341876275333}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.12277196, z: -0, w: 0.9924349}
-  m_LocalPosition: {x: 27.480387, y: -14.498026, z: 109.36995}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 6147552763180269331}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2107639715431118917
 MonoBehaviour:
@@ -720,12 +912,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1352986129285027838}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.12336129, z: -0, w: 0.99236184}
-  m_LocalPosition: {x: -27.618525, y: -14.498026, z: 109.36995}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 6988822654275542535}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3315108221466471429
 MonoBehaviour:
@@ -749,6 +941,38 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 69
+--- !u!1 &1383447967399072873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6988822654275542535}
+  m_Layer: 0
+  m_Name: HP_Empress_HLC_02_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6988822654275542535
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383447967399072873}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.12336129, z: -0, w: 0.99236184}
+  m_LocalPosition: {x: -27.618525, y: -14.498026, z: 109.36995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3852254385275811535}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1854277120834288575
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,12 +998,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854277120834288575}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.95139414, z: -0, w: 0.307976}
-  m_LocalPosition: {x: 54.326153, y: -4.713891, z: -75.11875}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 1716079067775727847}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4467960882128031100
 MonoBehaviour:
@@ -828,12 +1052,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2038789965173231090}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.90413797, z: -0, w: 0.42724064}
-  m_LocalPosition: {x: 66.2574, y: -4.713893, z: -54.453217}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 8954277157851832973}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &312630315567584632
 MonoBehaviour:
@@ -882,12 +1106,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2179388390104759647}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.98543787, z: -0, w: 0.170036}
-  m_LocalPosition: {x: 25.982584, y: 47.989647, z: -73.04895}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 8023259484982139556}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5616667655862305437
 MonoBehaviour:
@@ -936,12 +1160,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2363531394074155285}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9345199, z: -0, w: 0.35591087}
-  m_LocalPosition: {x: 109.79643, y: -10.988976, z: -123.23903}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 4749257595441172765}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4319542509593895388
 MonoBehaviour:
@@ -990,12 +1214,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2459625754348933107}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.9860965, z: -0, w: 0.16617371}
-  m_LocalPosition: {x: -25.484486, y: 47.989647, z: -73.46687}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 8534703083465550901}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8370283915196649726
 MonoBehaviour:
@@ -1019,6 +1243,102 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 36
+--- !u!1 &2830539372110068143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1716079067775727847}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_05_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1716079067775727847
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2830539372110068143}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.95139414, z: -0, w: 0.307976}
+  m_LocalPosition: {x: 54.326153, y: -4.713891, z: -75.11875}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 545861446694039712}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2861188629520241323
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6422910034244141520}
+  m_Layer: 0
+  m_Name: HP_Empress_HLC_04_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6422910034244141520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2861188629520241323}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.86359036, z: -0, w: 0.50419414}
+  m_LocalPosition: {x: -134.71884, y: -14.498049, z: -76.04735}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2727483992891200638}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2883150287934713652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2631473338668898325}
+  m_Layer: 0
+  m_Name: HP_Empress_MTL_06_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2631473338668898325
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2883150287934713652}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.9318644, z: -0, w: 0.36280677}
+  m_LocalPosition: {x: -108.431175, y: -10.988976, z: -118.14406}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1684287631864590548}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3328791514926217274
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,12 +1364,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3328791514926217274}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.00000019470718}
-  m_LocalPosition: {x: 0.00003824747, y: 48.638336, z: -89.50247}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 2464568332922227176}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1766626742506760619
 MonoBehaviour:
@@ -1098,12 +1418,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3383214253697176067}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.86617047, z: -0, w: 0.49974868}
-  m_LocalPosition: {x: 135.66591, y: -10.988979, z: -78.43175}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 6718924838389143561}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4779305609518463970
 MonoBehaviour:
@@ -1152,12 +1472,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3690779165524734072}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9477463, z: -0, w: 0.31902525}
-  m_LocalPosition: {x: 40.190517, y: 53.402412, z: -52.933773}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 8491311918640171719}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6512955211421503749
 MonoBehaviour:
@@ -1206,12 +1526,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3836736437678866119}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.11350727, z: -0, w: 0.9935372}
-  m_LocalPosition: {x: 25.869518, y: -10.988976, z: 111.74112}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 5021618134507606981}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1914327138760722608
 MonoBehaviour:
@@ -1235,6 +1555,38 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 53
+--- !u!1 &4018984906504692805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6823652355183317303}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_01_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6823652355183317303
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4018984906504692805}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.89593416, z: -0, w: 0.44418696}
+  m_LocalPosition: {x: -64.89214, y: -4.713891, z: -49.35825}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2396873362248570524}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4182129330617082028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1260,12 +1612,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4182129330617082028}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.86391693, z: -0, w: 0.5036343}
-  m_LocalPosition: {x: 135.27202, y: -14.498049, z: -76.59099}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 1703355191588323104}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2711620685856223677
 MonoBehaviour:
@@ -1314,12 +1666,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199763784414717877}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9369426, z: -0, w: 0.3494835}
-  m_LocalPosition: {x: 107.72254, y: -14.498056, z: -124.30802}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 4877402744569888221}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1650337636917042032
 MonoBehaviour:
@@ -1343,6 +1695,134 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 69
+--- !u!1 &4382312446130878379
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4749257595441172765}
+  m_Layer: 0
+  m_Name: HP_Empress_MTL_03_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4749257595441172765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4382312446130878379}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9345199, z: -0, w: 0.35591087}
+  m_LocalPosition: {x: 109.79643, y: -10.988976, z: -123.23903}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6176393907683957510}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4421663085817037742
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7264686958314306895}
+  m_Layer: 0
+  m_Name: HP_Empress_MTL_05_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7264686958314306895
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4421663085817037742}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.86001873, z: -0, w: 0.5102625}
+  m_LocalPosition: {x: -134.30067, y: -10.988976, z: -73.33676}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 83241443004005963}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4485872683580281837
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3415105900132042124}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_12_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3415105900132042124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4485872683580281837}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.86920583, z: -0, w: 0.49445042}
+  m_LocalPosition: {x: -50.42015, y: 47.989647, z: -29.976547}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1338840872773020228}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4743359063234415697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7210806189571061278}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_11_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7210806189571061278
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4743359063234415697}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.5155179, z: -0, w: 0.8568788}
+  m_LocalPosition: {x: -25.484495, y: 47.989647, z: 13.513767}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8876907862378224469}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4802435342504701191
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,12 +1848,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4802435342504701191}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.9493195, z: -0, w: 0.31431276}
-  m_LocalPosition: {x: -39.364883, y: 53.420105, z: -52.930206}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 7186283030024702134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6027588070002387468
 MonoBehaviour:
@@ -1397,6 +1877,102 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 67
+--- !u!1 &4908444071825784020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8534703083465550901}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_07_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8534703083465550901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908444071825784020}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.9860965, z: -0, w: 0.16617371}
+  m_LocalPosition: {x: -25.484486, y: 47.989647, z: -73.46687}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4162930392489207351}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5013692737170603064
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4193703302201082456}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_10_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4193703302201082456
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5013692737170603064}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.51988626, z: -0, w: 0.85423553}
+  m_LocalPosition: {x: 25.74269, y: 47.989647, z: 13.315689}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7726224941565219970}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5047272991564313440
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2170696173773438237}
+  m_Layer: 0
+  m_Name: HP_Empress_HTLaser_03_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2170696173773438237
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5047272991564313440}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.0005861268, z: -0, w: 0.9999998}
+  m_LocalPosition: {x: 0.019119412, y: 53.387352, z: 16.309952}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7125517188578168705}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5334382664052385171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1482,6 +2058,38 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 1
+--- !u!1 &5400852808937004490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4877402744569888221}
+  m_Layer: 0
+  m_Name: HP_Empress_HLC_06_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4877402744569888221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5400852808937004490}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9369426, z: -0, w: 0.3494835}
+  m_LocalPosition: {x: 107.72254, y: -14.498056, z: -124.30802}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4033840392182352237}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5403023542800260248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,12 +2115,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5403023542800260248}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.113507114, z: -0, w: 0.9935372}
-  m_LocalPosition: {x: -25.869482, y: -10.988976, z: 111.74112}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 6297255063644650776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8561533406310802779
 MonoBehaviour:
@@ -1561,12 +2169,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5649769630728725548}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.94804305, z: -0, w: 0.31814215}
-  m_LocalPosition: {x: -52.9609, y: -4.713891, z: -70.02377}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 5435102852799304012}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1631506203718336899
 MonoBehaviour:
@@ -1615,12 +2223,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5787724059464791704}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.89593416, z: -0, w: 0.44418696}
-  m_LocalPosition: {x: -64.89214, y: -4.713891, z: -49.35825}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 6823652355183317303}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8177833373112073502
 MonoBehaviour:
@@ -1767,6 +2375,38 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6260633865976340941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2464568332922227176}
+  m_Layer: 0
+  m_Name: HP_Empress_HTIC_02_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2464568332922227176
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6260633865976340941}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.00000019470718}
+  m_LocalPosition: {x: 0.00003824747, y: 48.638336, z: -89.50247}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3595892574599528639}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6586947242164329781
 GameObject:
   m_ObjectHideFlags: 0
@@ -1815,6 +2455,70 @@ MonoBehaviour:
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 30
+--- !u!1 &6623908432110589191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8491311918640171719}
+  m_Layer: 0
+  m_Name: HP_Empress_HTLaser_02_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8491311918640171719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6623908432110589191}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9477463, z: -0, w: 0.31902525}
+  m_LocalPosition: {x: 40.190517, y: 53.402412, z: -52.933773}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5809432660772868012}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6664029282979443439
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7186283030024702134}
+  m_Layer: 0
+  m_Name: HP_Empress_HTLaser_01_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7186283030024702134
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6664029282979443439}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.9493195, z: -0, w: 0.31431276}
+  m_LocalPosition: {x: -39.364883, y: 53.420105, z: -52.930206}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 794774273826211776}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6699906460754471793
 GameObject:
   m_ObjectHideFlags: 0
@@ -1840,12 +2544,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6699906460754471793}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.0005861268, z: -0, w: 0.9999998}
-  m_LocalPosition: {x: 0.019119412, y: 53.387352, z: 16.309952}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 2170696173773438237}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7538958816304429976
 MonoBehaviour:
@@ -1894,12 +2598,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6826969876357918116}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.51988626, z: -0, w: 0.85423553}
-  m_LocalPosition: {x: 25.74269, y: 47.989647, z: 13.315689}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 4193703302201082456}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &357961682109880183
 MonoBehaviour:
@@ -1948,12 +2652,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6828787879180380345}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.70857024, z: -0, w: 0.7056403}
-  m_LocalPosition: {x: -51.550945, y: 48.638344, z: -0.21360397}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 293472487311600331}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8252912113553480415
 MonoBehaviour:
@@ -2002,12 +2706,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6904718077653350051}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.14565457, z: -0, w: 0.98933554}
-  m_LocalPosition: {x: 11.931271, y: -4.713891, z: 39.64234}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 206624115701088613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6272349807460954950
 MonoBehaviour:
@@ -2056,12 +2760,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7004799839827616762}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.86001873, z: -0, w: 0.5102625}
-  m_LocalPosition: {x: -134.30067, y: -10.988976, z: -73.33676}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 7264686958314306895}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1251374745017240529
 MonoBehaviour:
@@ -2110,12 +2814,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7014341618957695267}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.86920565, z: -0, w: 0.49445075}
-  m_LocalPosition: {x: 50.42021, y: 47.989647, z: -29.976536}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 4441226190507899738}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4038296141882139122
 MonoBehaviour:
@@ -2139,6 +2843,70 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 36
+--- !u!1 &7036051218848294388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4441226190507899738}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_09_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4441226190507899738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7036051218848294388}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.86920565, z: -0, w: 0.49445075}
+  m_LocalPosition: {x: 50.42021, y: 47.989647, z: -29.976536}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3265461150075559168}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7199554299210535350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6147552763180269331}
+  m_Layer: 0
+  m_Name: HP_Empress_HLC_01_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6147552763180269331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7199554299210535350}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.12277196, z: -0, w: 0.9924349}
+  m_LocalPosition: {x: 27.480387, y: -14.498026, z: 109.36995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6352422229258820307}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7256384200651171032
 GameObject:
   m_ObjectHideFlags: 0
@@ -2196,12 +2964,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7400809651060072317}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.9369941, z: -0, w: 0.3493453}
-  m_LocalPosition: {x: -107.21527, y: -14.498056, z: -123.79651}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 3772482761630537343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6971684342278849194
 MonoBehaviour:
@@ -2225,6 +2993,134 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 69
+--- !u!1 &7427047880970229272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8023259484982139556}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_08_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8023259484982139556
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7427047880970229272}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.98543787, z: -0, w: 0.170036}
+  m_LocalPosition: {x: 25.982584, y: 47.989647, z: -73.04895}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2206700291193476276}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7458432743615717057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1703355191588323104}
+  m_Layer: 0
+  m_Name: HP_Empress_HLC_05_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1703355191588323104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7458432743615717057}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.86391693, z: -0, w: 0.5036343}
+  m_LocalPosition: {x: 135.27202, y: -14.498049, z: -76.59099}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6861512079088458881}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7472127145948851582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6718924838389143561}
+  m_Layer: 0
+  m_Name: HP_Empress_MTL_04_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6718924838389143561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7472127145948851582}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.86617047, z: -0, w: 0.49974868}
+  m_LocalPosition: {x: 135.66591, y: -10.988979, z: -78.43175}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7294011676413251651}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7520374202244727164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5435102852799304012}
+  m_Layer: 0
+  m_Name: HP_Empress_LTL_02_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5435102852799304012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7520374202244727164}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.94804305, z: -0, w: 0.31814215}
+  m_LocalPosition: {x: -52.9609, y: -4.713891, z: -70.02377}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 216228337932987124}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7630136020885365081
 GameObject:
   m_ObjectHideFlags: 0
@@ -2250,12 +3146,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7630136020885365081}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.9318644, z: -0, w: 0.36280677}
-  m_LocalPosition: {x: -108.431175, y: -10.988976, z: -118.14406}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 2631473338668898325}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1750471951713244302
 MonoBehaviour:
@@ -2279,6 +3175,38 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 53
+--- !u!1 &7632178118759622244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6297255063644650776}
+  m_Layer: 0
+  m_Name: HP_Empress_MTL_01_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6297255063644650776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7632178118759622244}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.113507114, z: -0, w: 0.9935372}
+  m_LocalPosition: {x: -25.869482, y: -10.988976, z: 111.74112}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8830729087624437203}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7726285607705871687
 GameObject:
   m_ObjectHideFlags: 0
@@ -3436,12 +4364,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8660909851329572991}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.86920583, z: -0, w: 0.49445042}
-  m_LocalPosition: {x: -50.42015, y: 47.989647, z: -29.976547}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 3415105900132042124}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6732953555369213836
 MonoBehaviour:
@@ -3490,12 +4418,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8810114931897515284}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.5155179, z: -0, w: 0.8568788}
-  m_LocalPosition: {x: -25.484495, y: 47.989647, z: 13.513767}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1345302067295067274}
+  m_Father: {fileID: 7210806189571061278}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2615701408482474514
 MonoBehaviour:
@@ -3519,6 +4447,38 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 36
+--- !u!1 &9117882590238611404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3772482761630537343}
+  m_Layer: 0
+  m_Name: HP_Empress_HLC_03_Mount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3772482761630537343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117882590238611404}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.9369941, z: -0, w: 0.3493453}
+  m_LocalPosition: {x: -107.21527, y: -14.498056, z: -123.79651}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4512473608041056580}
+  m_Father: {fileID: 1345302067295067274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9208288799206979059
 GameObject:
   m_ObjectHideFlags: 0
