@@ -7,7 +7,7 @@ namespace EmpireAtWar.Tests.Editor
 {
     /// <summary>
     /// Imported models keep their collision/shadow/shield/LOD helpers in the FBX; unit prefabs must not.
-    /// Fix failures with Tools/Rendering/Strip Helper Meshes From Unit Prefabs.
+    /// Fix failures with Tools/Empire At War/Rendering/Materials/Strip Helper Meshes From Unit Prefabs.
     /// </summary>
     public sealed class UnitHelperMeshTests
     {

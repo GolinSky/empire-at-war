@@ -23,6 +23,7 @@ using UnityEngine.SceneManagement;
 namespace EmpireAtWar.Editor.Squadrons
 {
     /// <summary>Generates the "{SquadronType}SquadronView" prefabs from a fighter model.</summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Rebuilds squadron view prefabs from the builder specifications. Build Squadron Views covers Delta-7 and Belbullab-22; A-Wing has a separate command.")]
     public static class SquadronViewPrefabBuilder
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Editor.Squadrons
         private const float ICON_SHADOW_OFFSET = -1.5f;
         private const float ICON_PADDING = 9f;
 
-        [MenuItem("Tools/Squadrons/Build Squadron Views")]
+        [MenuItem("Tools/Empire At War/Units/Squadrons/Build Squadron Views")]
         public static void BuildAll()
         {
             Build(new SquadronViewSpec(type: SquadronType.Delta7,
@@ -60,7 +61,7 @@ namespace EmpireAtWar.Editor.Squadrons
             AssetDatabase.SaveAssets();
         }
 
-        [MenuItem("Tools/Squadrons/Build A-Wing Squadron View")]
+        [MenuItem("Tools/Empire At War/Units/Squadrons/Build A-Wing Squadron View")]
         public static void BuildAWing()
         {
             Build(new SquadronViewSpec(type: SquadronType.AWing,

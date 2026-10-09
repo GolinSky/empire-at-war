@@ -9,6 +9,7 @@ namespace EmpireAtWar.Editor
 {
     /// <summary>Wraps each shield tightly around its hull: a convex shell of the visible renderers plus a margin,
     /// saved as a per-view mesh and as the planes <see cref="Shield"/> clips shots against.</summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Bake shield hull geometry for current unit prefabs.")]
     public static class ShieldHullBaker
     {
         private const string VIEW_FOLDER = "Assets/Prefabs/Models";
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Editor
         private const float MARGIN_RATIO = 0.03f;
         private const float MIN_MARGIN = 0.75f;
 
-        [MenuItem("Tools/Ships/Bake Shield Hulls")]
+        [MenuItem("Tools/Empire At War/Units/Ships/Bake Shield Hulls")]
         public static void BakeAll()
         {
             StringBuilder report = new StringBuilder("Shield hulls baked:\n");

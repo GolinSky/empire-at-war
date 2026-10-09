@@ -14,6 +14,7 @@ namespace EmpireAtWar.Editor.CaptureSites
     /// Builds the battle asteroid entity assets: the XQ6 platform's components on the asteroid mine's machinery, with
     /// turbolaser turrets on the site rocks around it.
     /// </summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Build the current asteroid defense-platform view, installer and data assets.")]
     public static class BattleAsteroidAssetBuilder
     {
         private const string CANNON_MODEL_PATH =
@@ -47,7 +48,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         // Muzzle of the unscaled cannon model, whose barrels point along -X.
         private static readonly Vector3 MUZZLE_OFFSET = new Vector3(-0.2f, 0.09f, 0f);
 
-        [MenuItem("Tools/Empire At War/Capture Sites/Build Battle Asteroid Assets")]
+        [MenuItem("Tools/Empire At War/World/Capture Sites/Build Battle Asteroid Assets")]
         public static void Build()
         {
             BuildView();

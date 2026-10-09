@@ -6,9 +6,10 @@ using UnityEngine;
 
 namespace EmpireAtWar.Editor
 {
+    [EmpireAtWar.Editor.EditorToolInfo("Audit battle rendering and instancing. Use during a representative battle for meaningful results.")]
     public static class BattleInstancingAudit
     {
-        private const string MENU_PATH = "Tools/Performance/Audit Battle Instancing";
+        private const string MENU_PATH = "Tools/Empire At War/Diagnostics/Performance/Audit Battle Instancing";
         private const string SHIP_FOLDER = "Assets/Prefabs/Models/Ships";
         private const string DEFEND_PLATFORM_FOLDER = "Assets/Prefabs/Models/DefendStation";
         private const string MINING_FACILITY_FOLDER = "Assets/Prefabs/Models/MiningFacilities";

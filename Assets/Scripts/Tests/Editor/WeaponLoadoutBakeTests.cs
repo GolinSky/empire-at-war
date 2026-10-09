@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string WEAPONS_DATA = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";
         private const string DAMAGE_MATRIX = "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset";
-        private const string REBAKE_HINT = "Run Tools/AI/Bake Weapon Loadouts.";
+        private const string REBAKE_HINT = "Run Tools/Empire At War/Units/AI/Bake Weapon Loadouts.";
 
         [Test]
         public void ShipLoadouts_MatchViewPrefabs()

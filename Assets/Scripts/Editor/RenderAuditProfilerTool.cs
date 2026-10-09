@@ -15,6 +15,7 @@ using UnityEngine.Rendering;
 namespace EmpireAtWar.Editor
 {
     [InitializeOnLoad]
+    [EditorToolInfo("Capture two profiler frames and per-thread summaries. Outputs are written to Logs/RenderAudit.")]
     internal static class RenderAuditProfilerTool
     {
         private const string SESSION_ACTIVE_KEY = "EmpireAtWar.RenderAudit.Profiler.Active";
@@ -42,7 +43,7 @@ namespace EmpireAtWar.Editor
             };
         }
 
-[MenuItem("Tools/Render Audit/Capture Profiler (2 frames)")]
+[MenuItem("Tools/Empire At War/Diagnostics/Render Audit/Capture Profiler (2 frames)")]
         private static void CaptureFromMenu()
         {
             Debug.Log(JsonConvert.SerializeObject(CaptureProfiler()));

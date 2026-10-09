@@ -10,6 +10,7 @@ using UnityEngine;
 namespace EmpireAtWar.Editor
 {
     [InitializeOnLoad]
+    [EditorToolInfo("Capture one Frame Debugger frame using the existing render-audit workflow. Outputs are written to Logs/RenderAudit.")]
     internal static class RenderAuditFrameDebuggerTool
     {
         private const int LOCAL_EDITOR_CONNECTION = -1;
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Editor
             };
         }
 
-[MenuItem("Tools/Render Audit/Capture Frame Debugger (1 frame)")]
+[MenuItem("Tools/Empire At War/Diagnostics/Render Audit/Capture Frame Debugger (1 frame)")]
         private static void CaptureFromMenu()
         {
             Debug.Log(Newtonsoft.Json.JsonConvert.SerializeObject(CaptureFrameDebugger(1, 120)));

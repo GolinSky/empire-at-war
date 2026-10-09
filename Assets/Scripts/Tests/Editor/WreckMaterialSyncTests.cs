@@ -11,7 +11,7 @@ namespace EmpireAtWar.Tests.Editor
     /// <summary>
     /// A wreck must look exactly like its unit at the swap. Wreck materials are copies of the unit's
     /// Ship Lit materials, so they go stale when those are edited.
-    /// Fix failures with Tools/Rendering/Sync Wreck Materials (or rebuild the wreck for mesh/scale failures).
+    /// Fix failures with Tools/Empire At War/Rendering/Materials/Sync Wreck Materials (or rebuild the wreck for mesh/scale failures).
     /// </summary>
     public sealed class WreckMaterialSyncTests
     {
@@ -65,7 +65,7 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             Assert.That(mismatches, Is.Empty,
-                "Wreck materials are out of sync; run Tools/Rendering/Sync Wreck Materials.\n" +
+                "Wreck materials are out of sync; run Tools/Empire At War/Rendering/Materials/Sync Wreck Materials.\n" +
                 string.Join("\n", mismatches));
         }
 

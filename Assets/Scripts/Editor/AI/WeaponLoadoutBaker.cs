@@ -14,6 +14,7 @@ namespace EmpireAtWar.Editor.AI
 {
     /// <summary>Counts each unit view's WeaponComponent hardpoints per weapon type and caches the result in its
     /// ShipData / SquadronData, so the AI can rate units it has not spawned without loading their prefabs.</summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Bake AI weapon-loadout summaries from current ship and squadron prefabs into their data assets.")]
     public static class WeaponLoadoutBaker
     {
         public const string SHIP_DATA_FOLDER = "Assets/Settings/Data/Ship";
@@ -29,7 +30,7 @@ namespace EmpireAtWar.Editor.AI
         private const string LOADOUT_PROPERTY = "weaponLoadout";
         private const string MEMBER_COUNT_PROPERTY = "<MemberCount>k__BackingField";
 
-        [MenuItem("Tools/AI/Bake Weapon Loadouts")]
+        [MenuItem("Tools/Empire At War/Units/AI/Bake Weapon Loadouts")]
         public static void BakeAll()
         {
             StringBuilder report = new StringBuilder("Weapon loadouts baked:\n");
