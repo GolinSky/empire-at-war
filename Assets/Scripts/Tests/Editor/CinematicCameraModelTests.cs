@@ -162,6 +162,54 @@ namespace EmpireAtWar.Tests.CinematicCamera
                 Is.LessThan(0.01f));
         }
 
+        [TestCase(0f, 80f, 0f)]
+        [TestCase(499f, 80f, 299f)]
+        [TestCase(-499f, 80f, -299f)]
+        [TestCase(0f, -520f, 0f)]
+        public void ConstrainedShotsAndTransitions_StayInsideMapAndZoomLimits(float x, float y, float z)
+        {
+            Vector3 anchor = new Vector3(x, y, z);
+            Vector3 min = new Vector3(-500f, 60f, -300f);
+            Vector3 max = new Vector3(500f, 940f, 300f);
+            float distance = CinematicShotSolver.CalculateFramingDistance(170f, 1060f, 30f);
+            Vector3 current = new Vector3(-4000f, 5000f, 3000f);
+            foreach (CinematicShotType type in Enum.GetValues(typeof(CinematicShotType)))
+            foreach (float side in new[] { -1f, 1f })
+            {
+                Vector3 focusOffset = new Vector3(100f, 0f, -100f);
+                Vector3 lookPoint = type == CinematicShotType.Wide ? anchor + focusOffset : anchor;
+                Pose desired = CinematicShotSolver.Solve(
+                    new CinematicShot(type, side, 3f), anchor, Quaternion.identity,
+                    focusOffset, distance, 2.5f, 30f, 0f);
+                desired = CinematicShotSolver.ConstrainPose(desired, lookPoint, min, max, max.y);
+                for (int i = 0; i <= 20; i++)
+                {
+                    Pose pose = CinematicShotSolver.InterpolatePose(current, desired, lookPoint, i / 20f);
+                    pose = CinematicShotSolver.ConstrainPose(pose, lookPoint, min, max, max.y);
+                    Assert.That(pose.position.x, Is.InRange(min.x, max.x));
+                    Assert.That(pose.position.y, Is.InRange(min.y, max.y));
+                    Assert.That(pose.position.z, Is.InRange(min.z, max.z));
+                    Assert.That(Vector3.Distance(pose.position, lookPoint), Is.LessThanOrEqualTo(max.y + 0.001f));
+                    Assert.That(Vector3.Angle(pose.rotation * Vector3.forward, lookPoint - pose.position),
+                        Is.LessThan(0.05f));
+                }
+            }
+        }
+
+        [TestCase(500f, 300f)]
+        [TestCase(3000f, 3000f)]
+        public void ConstrainedOutwardCornerShot_DoesNotCollapseOntoSubject(float halfWidth, float halfDepth)
+        {
+            Vector3 min = new Vector3(-halfWidth, 60f, -halfDepth);
+            Vector3 max = new Vector3(halfWidth, 940f, halfDepth);
+            Pose pose = CinematicShotSolver.ConstrainPose(
+                new Pose(max + Vector3.one * 1000f, Quaternion.identity), max, min, max, 940f);
+            Assert.That(Vector3.Distance(pose.position, max), Is.GreaterThan(0f));
+            Assert.That(Vector3.Distance(pose.position, max), Is.LessThanOrEqualTo(940.001f));
+            Assert.That(Vector3.Angle(pose.rotation * Vector3.forward, max - pose.position),
+                Is.LessThan(0.05f));
+        }
+
         [TestCase(10f, 30f)]
         [TestCase(90f, 30f)]
         [TestCase(290f, 30f)]

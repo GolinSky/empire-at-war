@@ -11,6 +11,7 @@ using UnityEngine;
 using Zenject;
 using Random = System.Random;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Map;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Controller
 {
@@ -28,6 +29,8 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
 
         private readonly CinematicCameraModel _model;
         private readonly CinematicCameraData _settings;
+        private readonly IMapModelObserver _mapModel;
+        private readonly CameraData _cameraData;
         private readonly CinematicActivityTracker _activityTracker = new();
         private readonly CinematicInterestScorer _scorer;
         private readonly CinematicShotSequencer _sequencer;
@@ -64,10 +67,14 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             INotifier<BattleState> battleState,
             IPlayerRoster playerRoster,
             CinematicCameraModel model,
-            CinematicCameraData cinematicCameraData) : base(uiService, cancelRouter)
+            CinematicCameraData cinematicCameraData,
+            IMapModelObserver mapModel,
+            CameraData cameraData) : base(uiService, cancelRouter)
         {
             _model = model;
             _settings = cinematicCameraData;
+            _mapModel = mapModel;
+            _cameraData = cameraData;
             _cameraService = cameraService;
             _inputLock = inputLock;
             _pointerInput = pointerInput;
@@ -162,6 +169,13 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 _cameraService.FieldOfView,
                 Mathf.Clamp01(_shotElapsed / _shotDuration));
 
+            Vector3 lookPoint = _shot.Type == CinematicShotType.Wide
+                ? _anchorPosition + _focusOffset
+                : _anchorPosition;
+            Vector3 min = new Vector3(_mapModel.SizeRange.Min.x, _cameraData.ZoomRange.Min, _mapModel.SizeRange.Min.y);
+            Vector3 max = new Vector3(_mapModel.SizeRange.Max.x, _cameraData.ZoomRange.Max, _mapModel.SizeRange.Max.y);
+            desired = CinematicShotSolver.ConstrainPose(desired, lookPoint, min, max, _cameraData.ZoomRange.Max);
+
             if (_isCutPending)
             {
                 _isCutPending = false;
@@ -170,11 +184,9 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             }
 
             float blend = 1f - Mathf.Exp(-_settings.FollowSharpness * deltaTime);
-            Vector3 lookPoint = _shot.Type == CinematicShotType.Wide
-                ? _anchorPosition + _focusOffset
-                : _anchorPosition;
             Pose blended = CinematicShotSolver.InterpolatePose(
                 _cameraService.CameraPosition, desired, lookPoint, blend);
+            blended = CinematicShotSolver.ConstrainPose(blended, lookPoint, min, max, _cameraData.ZoomRange.Max);
             _cameraService.SetPose(blended.position, blended.rotation);
         }
 

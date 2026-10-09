@@ -137,6 +137,13 @@ public class CinematicCameraData : Data
 - Verification: `CinematicCameraModelTests` 17/17 passed; 4,000 transition samples, offset-wide shots and recovery from a subject reaching the camera position. Unity compilation and scoped diff checks passed.
 - Navigation radius remains the hull-size proxy. This does not add collision avoidance against unrelated nearby ships or scenery; Play Mode visual acceptance remains pending.
 
+## Cinematic Map Bounds — 2026-10-09
+- `CinematicCameraPresenter` injects `IMapModelObserver` and `CameraData`; constrains shot endpoints and interpolated poses before `SetPose`.
+- X/Z limits = exact `SizeRange` rectangle, without manual-camera padding. Y limits = `CameraData.ZoomRange`; distance to the shot look point is capped at `ZoomRange.Max`.
+- `CinematicShotSolver.ConstrainPose` preserves subject aim after constraints; outward corner shots use a bounded inward position instead of collapsing onto the subject.
+- Map/zoom bounds take priority over full-hull framing for oversized units. Earlier unconstrained framing guarantees do not apply after the bounds constraint.
+- Verification: cinematic EditMode tests 23/23 passed, including 840 constrained transition samples and two map-corner recovery cases. Unity compilation and scoped diff check passed; no new console errors. Play Mode visual acceptance remains pending.
+
 ## TODO
 - Manual acceptance remains pending. On 2026-10-07 `MainMenuScene` was clean; EditMode tests ran, Play Mode was not entered.
 - Remaining: lock/release behavior for cinematic, minimap drag and reinforcement placement; wheel/R/F/invert/rebind behavior; cinematic shot timing and framing.

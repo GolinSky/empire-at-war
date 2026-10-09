@@ -31,6 +31,22 @@ namespace EmpireAtWar.Services.Camera
             return new Pose(position, Quaternion.LookRotation(lookPoint - position, Vector3.up));
         }
 
+        public static Pose ConstrainPose(
+            Pose pose, Vector3 lookPoint, Vector3 min, Vector3 max, float maxDistance)
+        {
+            Vector3 position = lookPoint + Vector3.ClampMagnitude(pose.position - lookPoint, maxDistance);
+            position.x = Mathf.Clamp(position.x, min.x, max.x);
+            position.y = Mathf.Clamp(position.y, min.y, max.y);
+            position.z = Mathf.Clamp(position.z, min.z, max.z);
+            // An outward shot at a map corner can otherwise collapse onto its subject.
+            if ((lookPoint - position).sqrMagnitude <= Mathf.Epsilon)
+            {
+                position = lookPoint + Vector3.ClampMagnitude((min + max) * 0.5f - lookPoint, maxDistance);
+            }
+
+            return new Pose(position, Quaternion.LookRotation(lookPoint - position, Vector3.up));
+        }
+
         public static Pose Solve(
             CinematicShot shot,
             Vector3 anchor,
