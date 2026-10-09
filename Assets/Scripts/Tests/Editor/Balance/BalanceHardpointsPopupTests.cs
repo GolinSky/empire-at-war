@@ -22,19 +22,20 @@ namespace EmpireAtWar.Tests.Editor
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             EditorWindow popupHost = ScriptableObject.CreateInstance<EditorWindow>();
             int edits = 0;
-            BalanceHardpointsPopup popup = new BalanceHardpointsPopup(unit, registry, state, (field, value) =>
+            BalanceEditorController controller = null;
+            controller = new BalanceEditorController(state, () =>
             {
                 edits++;
-                state.Draft.Set(field.Snapshot(), value);
                 host.rootVisualElement.Clear();
-                BalanceCompareView.Build(host.rootVisualElement, registry, state, (_, __) => { }, () => { });
+                BalanceCompareView.Build(host.rootVisualElement, registry, controller, false);
             });
+            BalanceHardpointsPopup popup = new BalanceHardpointsPopup(unit, registry, controller);
             try
             {
                 host.position = new Rect(100, 100, 960, 700);
                 host.rootVisualElement.AddToClassList("balance-root");
                 host.rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/Balance/BalanceEditor.uss"));
-                BalanceCompareView.Build(host.rootVisualElement, registry, state, (_, __) => { }, () => { });
+                BalanceCompareView.Build(host.rootVisualElement, registry, new BalanceEditorController(state, () => { }), false);
                 host.Show(); yield return null; yield return null;
                 Button button = host.rootVisualElement.Q<Button>("compare-view-hardpoints");
                 Assert.That(button.text, Is.EqualTo("View hardpoints (" + unit.Mounts.Distinct().Count() + ")"));

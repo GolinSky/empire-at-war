@@ -9,7 +9,7 @@ namespace EmpireAtWar.Editor.Balance
     {
         private const float DRAG_THRESHOLD = 4f;
 
-        public static void Bind(VisualElement handle, VisualElement slot, VisualElement grid, BalanceWindowState state, Action refresh, Action<bool, bool> select)
+        public static void Bind(VisualElement handle, VisualElement slot, VisualElement grid, BalanceEditorController controller, Action<bool, bool> select)
         {
             int pointer = -1;
             Vector2 start = default;
@@ -60,15 +60,20 @@ namespace EmpireAtWar.Editor.Balance
             handle.RegisterCallback<PointerUpEvent>(evt =>
             {
                 if (evt.pointerId != pointer || evt.button != 0) return;
-                bool moved = false;
+                string target = null;
+                bool dropAfter = false;
                 if (dragging)
                 {
                     FindDestination(evt.position);
                     if (destination != null)
-                        moved = BalanceCompareOrder.Move(state, (string)slot.userData, (string)destination.userData, after);
+                    {
+                        target = (string)destination.userData;
+                        dropAfter = after;
+                    }
                 }
-                Reset(); evt.StopPropagation();
-                if (moved) refresh();
+                Reset();
+                evt.StopPropagation();
+                if (target != null) controller.MovePin((string)slot.userData, target, dropAfter);
             });
             handle.RegisterCallback<PointerCaptureOutEvent>(_ => Reset());
             handle.RegisterCallback<PointerCancelEvent>(_ => Reset());

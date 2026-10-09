@@ -22,7 +22,7 @@ namespace EmpireAtWar.Tests.Editor
                 BalanceRegistration registry = new BalanceRegistration();
                 registry.Units.Add(new BalanceUnit { Id = "test/1", Name = "Victory II Star Destroyer — Advanced Loadout", Kind = BalanceUnitKind.Ship, Class = "HeavyCapital", Faction = "Empire" });
                 VisualElement roster = new VisualElement(); roster.style.height = 500; host.rootVisualElement.Add(roster);
-                BalanceRosterView.Build(roster, registry, new BalanceWindowState(), () => { });
+                BalanceRosterView.Build(roster, registry, new BalanceEditorController(new BalanceWindowState(), () => { }));
                 host.Show();
                 foreach (int width in new[] { 255, 220 })
                 {
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
                     host.rootVisualElement.Clear();
                     VisualElement panel = new VisualElement(); panel.style.height = 650; host.rootVisualElement.Add(panel);
                     BalanceWindowState state = new BalanceWindowState { Pins = registry.Units.Take(count).Select(unit => unit.Id).ToList() };
-                    BalanceCompareView.Build(panel, registry, state, (_, __) => { }, () => { });
+                    BalanceCompareView.Build(panel, registry, new BalanceEditorController(state, () => { }), false);
                     foreach (var layout in new[] { (Width: 280, Columns: 1), (Width: 720, Columns: 2), (Width: 1080, Columns: 3), (Width: 1800, Columns: 5), (Width: 720, Columns: 2) })
                     {
                         panel.style.width = layout.Width;
