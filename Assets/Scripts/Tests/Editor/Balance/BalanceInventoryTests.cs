@@ -14,9 +14,9 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration inventory = BalanceInventory.Build();
             Assert.That(inventory.Errors, Is.Empty);
             FactionCatalog catalog = BalanceRegistration.One<FactionCatalog>();
-            Assert.That(inventory.Units.Count(unit => unit.Kind == "Ship"), Is.EqualTo(catalog.Factions.Sum(faction => faction.Ships.Count)));
-            Assert.That(inventory.Units.Count(unit => unit.Kind == "Squadron"), Is.EqualTo(catalog.Factions.Sum(faction => faction.Squadrons.Count)));
-            Assert.That(inventory.Units.Where(unit => unit.Kind == "Ship" || unit.Kind == "Squadron").All(unit => unit.Data != null && unit.Prefab != null && unit.Fields.ContainsKey("Price")), Is.True);
+            Assert.That(inventory.Units.Count(unit => unit.Kind == BalanceUnitKind.Ship), Is.EqualTo(catalog.Factions.Sum(faction => faction.Ships.Count)));
+            Assert.That(inventory.Units.Count(unit => unit.Kind == BalanceUnitKind.Squadron), Is.EqualTo(catalog.Factions.Sum(faction => faction.Squadrons.Count)));
+            Assert.That(inventory.Units.Where(unit => unit.Kind == BalanceUnitKind.Ship || unit.Kind == BalanceUnitKind.Squadron).All(unit => unit.Data != null && unit.Prefab != null && unit.Fields.ContainsKey("Price")), Is.True);
             Assert.That(inventory.Fields.Values.Any(field => field.Path.Contains("HullBottom") || field.Path.Contains("HullTop") || field.Path.Contains("MemberCount") || field.Path == "weaponLoadout"), Is.False);
             Assert.That(inventory.Fields.Values.All(field => !field.Key.Contains("Array.data") && !field.Key.Contains("rid:")), Is.True);
         }
@@ -64,14 +64,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration inventory = BalanceInventory.Build();
             Assert.That(inventory.Errors, Is.Empty);
-            BalanceUnit[] units = inventory.Units.Where(unit => unit.Kind == "Ship").Take(2).ToArray();
+            BalanceUnit[] units = inventory.Units.Where(unit => unit.Kind == BalanceUnitKind.Ship).Take(2).ToArray();
             BalanceField hull = inventory.Fields[units[0].Fields["Hull"]];
             BalanceDraft draft = new BalanceDraft();
             draft.Set(hull.Snapshot(), "12345");
             Assert.That(draft.Value(units[1].Fields["Hull"], "unchanged"), Is.EqualTo("unchanged"));
             Assert.That(hull.Read(), Is.Not.EqualTo("12345"));
-            Assert.That(inventory.Fields[units[0].Fields["Price"]].Owner, Is.EqualTo("Faction Entry"));
-            Assert.That(hull.Owner, Is.EqualTo("Unit Data"));
+            Assert.That(inventory.Fields[units[0].Fields["Price"]].Owner, Is.EqualTo(BalanceFieldOwner.FactionEntry));
+            Assert.That(hull.Owner, Is.EqualTo(BalanceFieldOwner.UnitData));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
             BalancePreset preset = UnityEngine.ScriptableObject.CreateInstance<BalancePreset>();
             try
             {
-                BalancePresetService.Save(preset, inventory, new BalanceDraft(), "Full registered set");
+                BalancePresetService.Save(preset, inventory, new BalanceDraft(), BalancePresetScope.FullRegisteredSet);
                 Assert.That(preset.Values.Count, Is.EqualTo(inventory.Fields.Count));
                 for (int i = 0; i < targets.Length; i++) Assert.That(UnityEditor.EditorJsonUtility.ToJson(targets[i]), Is.EqualTo(before[i]));
             }

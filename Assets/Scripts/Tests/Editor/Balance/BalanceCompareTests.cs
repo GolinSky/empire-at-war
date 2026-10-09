@@ -22,9 +22,9 @@ namespace EmpireAtWar.Tests.Editor
         public IEnumerator Picker_FiltersSelectsAndAddsEachUnitOnce()
         {
             BalanceRegistration registry = new BalanceRegistration();
-            registry.Units.Add(new BalanceUnit { Id = "empire/1", Name = "Alpha", Faction = "Empire", Kind = "Ship", Class = "Frigate" });
-            registry.Units.Add(new BalanceUnit { Id = "empire/2", Name = "Beta", Faction = "Empire", Kind = "Ship", Class = "Frigate" });
-            registry.Units.Add(new BalanceUnit { Id = "republic/1", Name = "Gamma", Faction = "Republic", Kind = "Ship", Class = "Frigate" });
+            registry.Units.Add(new BalanceUnit { Id = "empire/1", Name = "Alpha", Faction = "Empire", Kind = BalanceUnitKind.Ship, Class = "Frigate" });
+            registry.Units.Add(new BalanceUnit { Id = "empire/2", Name = "Beta", Faction = "Empire", Kind = BalanceUnitKind.Ship, Class = "Frigate" });
+            registry.Units.Add(new BalanceUnit { Id = "republic/1", Name = "Gamma", Faction = "Republic", Kind = BalanceUnitKind.Ship, Class = "Frigate" });
             BalanceWindowState state = new BalanceWindowState();
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             int refreshes = 0;
@@ -92,13 +92,13 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     ShipData data = ScriptableObject.CreateInstance<ShipData>();
                     AssetDatabase.CreateAsset(data, TEST_FOLDER + "/Ship" + i + ".asset");
-                    BalanceUnit unit = new BalanceUnit { Id = "test/" + i, Name = "Ship " + i, Kind = "Ship", Class = "Frigate", Faction = i == 0 ? "Empire" : secondFaction, Data = data };
+                    BalanceUnit unit = new BalanceUnit { Id = "test/" + i, Name = "Ship " + i, Kind = BalanceUnitKind.Ship, Class = "Frigate", Faction = i == 0 ? "Empire" : secondFaction, Data = data };
                     registry.Units.Add(unit);
-                    unit.Fields["Hull"] = registry.Add(data, "Hull", BalanceRegistration.Auto("Hull"), "Combat", unit.Name, "Unit Data", false, new[] { unit }).Key;
-                    unit.Fields["Speed"] = registry.Add(data, "Speed", BalanceRegistration.Auto("Speed"), "Movement", unit.Name, "Unit Data", false, new[] { unit }).Key;
-                    unit.Fields["HeightTier"] = registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), "Movement", unit.Name, "Unit Data", false, new[] { unit }, typeof(ShipHeightTier)).Key;
+                    unit.Fields["Hull"] = registry.Add(data, "Hull", BalanceRegistration.Auto("Hull"), BalanceFieldGroup.Combat, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }).Key;
+                    unit.Fields["Speed"] = registry.Add(data, "Speed", BalanceRegistration.Auto("Speed"), BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }).Key;
+                    unit.Fields["HeightTier"] = registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipHeightTier)).Key;
                 }
-                BalanceField shared = registry.Add(registry.Units[0].Data, "Shields", BalanceRegistration.Auto("Shields"), "Combat", "Shared test profile", "Shared Profile", true, registry.Units);
+                BalanceField shared = registry.Add(registry.Units[0].Data, "Shields", BalanceRegistration.Auto("Shields"), BalanceFieldGroup.Combat, "Shared test profile", BalanceFieldOwner.SharedProfile, true, registry.Units);
                 foreach (BalanceUnit unit in registry.Units) unit.Fields["Shields"] = shared.Key;
                 AssetDatabase.SaveAssets();
                 Dictionary<string, byte[]> before = registry.Units.ToDictionary(unit => AssetDatabase.GetAssetPath(unit.Data), unit => File.ReadAllBytes(AssetDatabase.GetAssetPath(unit.Data)));

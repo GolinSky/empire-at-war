@@ -8,7 +8,7 @@ namespace EmpireAtWar.Editor.Balance
         public string Id;
         public string Name;
         public string Faction;
-        public string Kind;
+        public BalanceUnitKind Kind;
         public string Class;
         public Object Data;
         public GameObject Prefab;

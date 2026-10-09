@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration registry = new BalanceRegistration();
             BalanceUnit unit = new BalanceUnit
             {
-                Id = "test/ship", Name = "Test ship", Kind = "Ship", Faction = "Test",
+                Id = "test/ship", Name = "Test ship", Kind = BalanceUnitKind.Ship, Faction = "Test",
                 Data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH), Prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH)
             };
             registry.Units.Add(unit);
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
                 using (SerializedObject serialized = new SerializedObject(data))
                     foreach (SerializedProperty profile in BalanceRegistration.Elements(serialized.FindProperty("weapons")))
                         result.Add(data, "weapon/" + profile.FindPropertyRelative("weaponType").intValue + "/damage", profile.propertyPath + ".damage",
-                            "Weapons", "Test", "Shared Profile", true, Array.Empty<BalanceUnit>());
+                            BalanceFieldGroup.Weapons, "Test", BalanceFieldOwner.SharedProfile, true, Array.Empty<BalanceUnit>());
                 return result;
             };
             string key = scan().Fields.Values.Single(field => field.Read() == "10").Key;

@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceField settings = registry.Fields.Values.First(field => field.Stat.StartsWith("settings/") && field.Stat.Split('/')[1].Contains('+'));
             string id = settings.Stat.Split('/')[1].Split('+')[0];
             BalanceField definition = registry.Fields.Values.Single(field => field.Stat == "ability/" + id + "/duration");
-            BalanceUnit unit = registry.Units.First(entry => entry.Kind == "Ship" && !settings.Users.Contains(entry));
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship && !settings.Users.Contains(entry));
             BalanceField assignment = registry.Fields[unit.Fields["Abilities"]];
             string before = assignment.Read();
             BalanceDraft draft = new BalanceDraft(); draft.Set(assignment.Snapshot(), id);
@@ -65,7 +65,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration registry = BalanceInventory.Build();
             Assert.That(registry.Errors, Is.Empty);
-            BalanceUnit unit = registry.Units.First(entry => entry.Kind == "Ship");
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship);
             BalanceField mount = registry.Fields.Values.First(field => !field.SharedMountSource && field.Stat == "WeaponType" && field.Users.Contains(unit));
             BalanceWindowState state = new BalanceWindowState(); state.Draft.Set(mount.Snapshot(), id.ToString());
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);

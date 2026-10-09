@@ -44,21 +44,43 @@ namespace EmpireAtWar.Editor.Balance
             panel.Add(heading);
             Summary(panel, unit, registry, state, edit);
             VisualElement tabs = new VisualElement(); tabs.AddToClassList("balance-subtabs"); panel.Add(tabs);
-            foreach (string tab in new[] { "Stats", "Weapons", "Abilities", "Hardpoints" })
+            foreach (BalanceUnitTab tab in Enum.GetValues(typeof(BalanceUnitTab)))
             {
-                Button button = new Button(() => { state.UnitTab = tab; refresh(); }) { text = tab };
+                Button button = new Button(() => { state.UnitTab = tab; refresh(); }) { text = tab.ToString() };
                 button.EnableInClassList("balance-tab-active", state.UnitTab == tab); tabs.Add(button);
             }
-            if (state.UnitTab == "Stats")
-                BalanceRosterView.Filter(panel, "Category", new List<string> { "All Groups", "Combat", "Movement", "Economy", "Hangar", "Advanced" },
-                    state.UnitGroup, value => state.UnitGroup = value, refresh);
+            if (state.UnitTab == BalanceUnitTab.Stats)
+            {
+                EnumField category = new EnumField("Category", state.UnitGroup);
+                category.RegisterValueChangedCallback(evt => { state.UnitGroup = (BalanceStatsCategory)evt.newValue; refresh(); });
+                panel.Add(category);
+            }
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
             var fields = registry.Fields.Values.Where(field => !field.SharedMountSource && usage.Users(field).Any(user => user.Id == unit.Id))
-                .Where(field => state.UnitTab == "Stats" ? new[] { "Combat", "Movement", "Economy", "Hangar", "Advanced" }.Contains(field.Group)
-                    && field.Stat != "Abilities" && (state.UnitGroup == "All Groups" || field.Group == state.UnitGroup)
-                    : state.UnitTab == "Abilities" ? field.Group == "Abilities" || field.Stat == "Abilities" : field.Group == state.UnitTab).ToList();
+                .Where(field => InTab(field, state.UnitTab, state.UnitGroup)).ToList();
             Fields(panel, fields, state, edit, select, "unit-" + unit.Id + "-" + state.UnitTab + "-" + state.UnitGroup, usage);
         }
+
+        private static bool InTab(BalanceField field, BalanceUnitTab tab, BalanceStatsCategory category) => tab switch
+        {
+            BalanceUnitTab.Stats => field.Stat != "Abilities" && InCategory(field.Group, category),
+            BalanceUnitTab.Weapons => field.Group == BalanceFieldGroup.Weapons,
+            BalanceUnitTab.Abilities => field.Group == BalanceFieldGroup.Abilities || field.Stat == "Abilities",
+            BalanceUnitTab.Hardpoints => field.Group == BalanceFieldGroup.Hardpoints,
+            _ => throw new ArgumentOutOfRangeException(nameof(tab), tab, null)
+        };
+
+        private static bool InCategory(BalanceFieldGroup group, BalanceStatsCategory category) => category switch
+        {
+            BalanceStatsCategory.All => group == BalanceFieldGroup.Combat || group == BalanceFieldGroup.Movement
+                || group == BalanceFieldGroup.Economy || group == BalanceFieldGroup.Hangar || group == BalanceFieldGroup.Advanced,
+            BalanceStatsCategory.Combat => group == BalanceFieldGroup.Combat,
+            BalanceStatsCategory.Movement => group == BalanceFieldGroup.Movement,
+            BalanceStatsCategory.Economy => group == BalanceFieldGroup.Economy,
+            BalanceStatsCategory.Hangar => group == BalanceFieldGroup.Hangar,
+            BalanceStatsCategory.Advanced => group == BalanceFieldGroup.Advanced,
+            _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
+        };
 
         public static void Fields(VisualElement panel, IEnumerable<BalanceField> fields, BalanceWindowState state,
             Action<BalanceField, string> edit, Action<BalanceField> select, string viewKey, BalanceDraftUsage usage)
@@ -74,7 +96,7 @@ namespace EmpireAtWar.Editor.Balance
             {
                 row.Clear();
                 List<BalanceField> section = sections[index];
-                Foldout group = new Foldout { text = section[0].Group + " · " + section[0].Context,
+                Foldout group = new Foldout { text = section[0].GroupLabel + " · " + section[0].Context,
                     value = true, viewDataKey = section[0].Key };
                 group.AddToClassList("balance-field-section");
                 VisualElement grid = new VisualElement(); grid.AddToClassList("balance-field-grid"); group.Add(grid);
@@ -88,8 +110,8 @@ namespace EmpireAtWar.Editor.Balance
         public static void Summary(VisualElement panel, BalanceUnit unit, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit)
         {
             VisualElement summary = new VisualElement(); summary.AddToClassList("balance-summary"); panel.Add(summary);
-            EditableStat(summary, unit, registry, state, edit, unit.Kind == "Squadron" ? "Hull / member" : "Hull HP", "Hull", "MemberHull");
-            EditableStat(summary, unit, registry, state, edit, unit.Kind == "Squadron" ? "Shield / member" : "Shield", "Shields", "MemberShields");
+            EditableStat(summary, unit, registry, state, edit, unit.Kind == BalanceUnitKind.Squadron ? "Hull / member" : "Hull HP", "Hull", "MemberHull");
+            EditableStat(summary, unit, registry, state, edit, unit.Kind == BalanceUnitKind.Squadron ? "Shield / member" : "Shield", "Shields", "MemberShields");
             Stat(summary, "Base DPS · estimate", new BalanceDpsEstimator(registry).Estimate(unit, state.Draft).ToString());
             Stat(summary, "Speed", Value(unit, registry, state, "Speed", "CruiseSpeed"));
         }

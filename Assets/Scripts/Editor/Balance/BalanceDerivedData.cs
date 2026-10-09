@@ -34,7 +34,7 @@ namespace EmpireAtWar.Editor.Balance
                     entry.FindPropertyRelative("weaponType").intValue = (int)groups[i].Key;
                     entry.FindPropertyRelative("count").intValue = groups[i].Count();
                 }
-                if (unit.Kind == "Squadron")
+                if (unit.Kind == BalanceUnitKind.Squadron)
                 {
                     UnityEngine.Object health = components.Single(component => component.GetType().Name == "SquadronHealthComponent");
                     serialized.FindProperty(BalanceRegistration.Auto("MemberCount")).intValue = BalancePrefabBindings.References(health, "fighters").Count;

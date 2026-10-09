@@ -41,7 +41,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (!Enum.IsDefined(idType, id)) throw new InvalidOperationException($"Unknown roster ID: {faction.name}/{id}");
                 Object data = resolve(id);
                 if (data == null) throw new MissingReferenceException($"Unmapped roster data: {faction.name}/{roster}/{id}");
-                string kind = roster == "ships" ? "Ship" : "Squadron";
+                BalanceUnitKind kind = roster == "ships" ? BalanceUnitKind.Ship : BalanceUnitKind.Squadron;
                 string prefabKey = Enum.GetName(idType, id) + kind + "View";
                 GameObject prefab = BalanceAssetResolver.Load<GameObject>(mapping.GetAssetKey(prefabKey));
                 if (prefab == null) throw new MissingReferenceException($"Unmapped prefab: {prefabKey}");
@@ -68,8 +68,8 @@ namespace EmpireAtWar.Editor.Balance
             using (SerializedObject serialized = new SerializedObject(target))
             foreach (string name in new[] { "Price", "BuildTime", "UnitCapacity", "MaxCount", "AvailableLevel" })
             {
-                BalanceField field = registry.Add(target, key + name, path + BalanceRegistration.Auto(name), "Economy", unit.Name,
-                    shared ? "Shared Profile" : "Faction Entry", shared, new[] { unit }, serializedTarget: serialized);
+                BalanceField field = registry.Add(target, key + name, path + BalanceRegistration.Auto(name), BalanceFieldGroup.Economy, unit.Name,
+                    shared ? BalanceFieldOwner.SharedProfile : BalanceFieldOwner.FactionEntry, shared, new[] { unit }, serializedTarget: serialized);
                 unit.Fields[name] = field.Key;
             }
         }
@@ -82,13 +82,13 @@ namespace EmpireAtWar.Editor.Balance
                 : "MemberHull MemberShields ShieldRegenerateValue ShieldRegenerateDelay LaserShieldDamageMultiplier HullRepairPerSecond Range Delay WeaponRange VisionRange";
             string movement = ship ? "Speed RotationSpeed TurnAcceleration HyperSpaceDuration BodyRotationMaxAngle NavigationRadius MinMoveCoefficient"
                 : "CruiseSpeed CombatSpeed Acceleration TurnRate MaxBankAngle BankResponse Height FormationSpacing LoiterRadius NavigationRadius GuardRadius BreakDistance ExtendDistance";
-            registry.AutoFields(data, "", "", combat, "Combat", unit.Name, "Unit Data", false, new[] { unit });
-            registry.AutoFields(data, "", "", movement, "Movement", unit.Name, "Unit Data", false, new[] { unit });
-            registry.AutoFields(data, "", "", ship ? "HangarInitialDelay HangarLaunchInterval" : "SeekerWarheadRange SeekerWarheadRecharge SeekerWarheadMinimumTravel", "Hangar", unit.Name, "Unit Data", false, new[] { unit });
-            registry.Add(data, "Abilities", ship ? "abilities" : BalanceRegistration.Auto("Abilities"), "Advanced", unit.Name, "Unit Data", false, new[] { unit }, typeof(ShipAbilityId));
+            registry.AutoFields(data, "", "", combat, BalanceFieldGroup.Combat, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
+            registry.AutoFields(data, "", "", movement, BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
+            registry.AutoFields(data, "", "", ship ? "HangarInitialDelay HangarLaunchInterval" : "SeekerWarheadRange SeekerWarheadRecharge SeekerWarheadMinimumTravel", BalanceFieldGroup.Hangar, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
+            registry.Add(data, "Abilities", ship ? "abilities" : BalanceRegistration.Auto("Abilities"), BalanceFieldGroup.Advanced, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipAbilityId));
             if (ship)
             {
-                registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), "Movement", unit.Name, "Unit Data", false, new[] { unit }, typeof(ShipHeightTier));
+                registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipHeightTier));
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
                     Health(registry, data, serialized.FindProperty("hardPointHealth"), "hardPointHealth", unit);
@@ -107,7 +107,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (!types.Add(id)) throw new InvalidOperationException($"Duplicate hardpoint health type: {data.name}/{id}");
                 foreach (string name in new[] { "health", "hullDamageMultiplier" })
                     registry.Add(data, key + "/" + id + "/" + name, entry.propertyPath + "." + name,
-                        "Hardpoints", unit.Name + " / " + ((EmpireAtWar.Components.Ship.Health.HardPointType)id), "Unit Data", unit.Kind == "Structure", new[] { unit }, positive: name == "health");
+                        BalanceFieldGroup.Hardpoints, unit.Name + " / " + ((EmpireAtWar.Components.Ship.Health.HardPointType)id), BalanceFieldOwner.UnitData, unit.Kind == BalanceUnitKind.Structure, new[] { unit }, positive: name == "health");
             }
         }
 
@@ -120,7 +120,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (!ids.Add(id)) throw new InvalidOperationException($"Ambiguous hangar bay identity: {data.name}/{id}");
                 foreach (string name in new[] { "reserve", "maxActive" })
                     registry.Add(data, key + "/" + id + "/" + name, entry.propertyPath + "." + name,
-                        "Hangar", unit.Name + " / " + ((SquadronType)id), "Unit Data", unit.Kind == "Structure", new[] { unit });
+                        BalanceFieldGroup.Hangar, unit.Name + " / " + ((SquadronType)id), BalanceFieldOwner.UnitData, unit.Kind == BalanceUnitKind.Structure, new[] { unit });
             }
         }
     }

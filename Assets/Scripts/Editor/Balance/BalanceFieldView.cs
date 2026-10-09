@@ -21,7 +21,7 @@ namespace EmpireAtWar.Editor.Balance
             title.AddToClassList("balance-title"); heading.Add(title);
             Button details = new Button(select) { text = "Info", tooltip = "Source, canonical identity and all affected units" };
             details.AddToClassList("balance-info"); heading.Add(details);
-            Label scope = new Label(field.Shared ? field.Owner + " · " + field.DescribeScope(usage.Users(field)) : field.Owner);
+            Label scope = new Label(field.Shared ? field.OwnerLabel + " · " + field.DescribeScope(usage.Users(field)) : field.OwnerLabel);
             scope.AddToClassList("balance-scope"); card.Add(scope);
             if (field.AliasWarning.Length != 0) card.Add(new Label(field.AliasWarning));
             VisualElement control = Control(field, value, usage, edit); control.AddToClassList("balance-editable");
@@ -105,7 +105,7 @@ namespace EmpireAtWar.Editor.Balance
         {
             panel.Clear();
             panel.Add(new Label(field.Context + " / " + field.Label));
-            panel.Add(new Label(field.Owner));
+            panel.Add(new Label(field.OwnerLabel));
             panel.Add(new Label(field.DescribeScope(usage.Users(field))));
             if (field.AliasWarning.Length != 0) panel.Add(new Label(field.AliasWarning));
             ObjectField source = new ObjectField("Source asset / object") { value = field.Target, allowSceneObjects = false };
@@ -119,8 +119,8 @@ namespace EmpireAtWar.Editor.Balance
                 users.Add(new Label(unit.Caption));
             panel.Add(users);
             if (field.Dependency.Length != 0) panel.Add(new Label("Dependencies: current subtype, component and mount bindings are checked at Apply."));
-            if (field.Group == "Abilities") panel.Add(new HelpBox("Tuning can leave numeric text in ability descriptions stale. Review the descriptions after Apply.", HelpBoxMessageType.Warning));
-            if (field.Owner == "Prefab Override") panel.Add(new HelpBox("Writes create overrides in this owning unit prefab. Nested source assets and structure remain intact.", HelpBoxMessageType.Info));
+            if (field.Group == BalanceFieldGroup.Abilities) panel.Add(new HelpBox("Tuning can leave numeric text in ability descriptions stale. Review the descriptions after Apply.", HelpBoxMessageType.Warning));
+            if (field.Owner == BalanceFieldOwner.PrefabOverride) panel.Add(new HelpBox("Writes create overrides in this owning unit prefab. Nested source assets and structure remain intact.", HelpBoxMessageType.Info));
             if (field.Stat == "MinYaw" || field.Stat == "MaxYaw") panel.Add(new HelpBox("Yaw is measured in degrees. Targeting compares angles in −180 … 180; wider stored limits are valid and preserved.", HelpBoxMessageType.Info));
         }
     }

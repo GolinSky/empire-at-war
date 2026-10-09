@@ -17,8 +17,8 @@ namespace EmpireAtWar.Editor.Balance
         public IEnumerable<BalanceField> FieldsFor(Object target) => _targetFields.TryGetValue(target, out List<BalanceField> fields)
             ? fields : Enumerable.Empty<BalanceField>();
 
-        public BalanceField Add(Object target, string key, string path, string group, string context,
-            string owner, bool shared, IEnumerable<BalanceUnit> users, Type enumType = null, double minimum = 0,
+        public BalanceField Add(Object target, string key, string path, BalanceFieldGroup group, string context,
+            BalanceFieldOwner owner, bool shared, IEnumerable<BalanceUnit> users, Type enumType = null, double minimum = 0,
             double maximum = double.PositiveInfinity, bool positive = false, string alias = "", string dependency = "", SerializedObject serializedTarget = null)
         {
             using (SerializedObject owned = serializedTarget == null ? new SerializedObject(target) : null)
@@ -92,8 +92,8 @@ namespace EmpireAtWar.Editor.Balance
             return AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[0]));
         }
 
-        public void AutoFields(Object target, string path, string key, string names, string group, string context,
-            string owner, bool shared, IEnumerable<BalanceUnit> users)
+        public void AutoFields(Object target, string path, string key, string names, BalanceFieldGroup group, string context,
+            BalanceFieldOwner owner, bool shared, IEnumerable<BalanceUnit> users)
         {
             using (SerializedObject serialized = new SerializedObject(target))
                 foreach (string name in names.Split(' '))

@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration registry = BalanceInventory.Build();
             Assert.That(registry.Errors, Is.Empty);
-            BalanceUnit unit = registry.Units.First(entry => entry.Kind == "Ship" && entry.Mounts.Count > 12);
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship && entry.Mounts.Count > 12);
             BalanceWindowState state = new BalanceWindowState { Pins = new System.Collections.Generic.List<string> { unit.Id } };
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             EditorWindow popupHost = ScriptableObject.CreateInstance<EditorWindow>();

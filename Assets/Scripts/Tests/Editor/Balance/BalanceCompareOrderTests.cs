@@ -35,7 +35,7 @@ namespace EmpireAtWar.Tests.Editor
                     BalanceUnit unit = new BalanceUnit { Id = i.ToString(), Data = data };
                     registry.Units.Add(unit);
                     unit.Fields[stat] = registry.Add(data, unit.Id + "/" + stat, BalanceRegistration.Auto(property),
-                        "Test", "Test", "Test", false, new[] { unit }, sort == BalanceCompareSort.HeightLevel ? typeof(ShipHeightTier) : null).Key;
+                        BalanceFieldGroup.Combat, "Test", BalanceFieldOwner.UnitData, false, new[] { unit }, sort == BalanceCompareSort.HeightLevel ? typeof(ShipHeightTier) : null).Key;
                 }
                 registry.Units.Add(new BalanceUnit { Id = "missing" });
                 BalanceWindowState state = new BalanceWindowState { Pins = new List<string> { "missing", "2", "1", "0" }, CompareSort = sort };
@@ -61,7 +61,7 @@ namespace EmpireAtWar.Tests.Editor
             string[] classes = { "Bomber", "Interceptor", "Corvette", "Frigate", "Cruiser", "Capital", "HeavyCapital", "Structure" };
             BalanceRegistration registry = new BalanceRegistration();
             for (int i = 0; i < classes.Length; i++)
-                registry.Units.Add(new BalanceUnit { Id = i.ToString(), Class = classes[i], Kind = i < 2 ? "Squadron" : "Ship" });
+                registry.Units.Add(new BalanceUnit { Id = i.ToString(), Class = classes[i], Kind = i < 2 ? BalanceUnitKind.Squadron : BalanceUnitKind.Ship });
             BalanceWindowState state = new BalanceWindowState
                 { Pins = registry.Units.Select(unit => unit.Id).Reverse().ToList(), CompareSort = BalanceCompareSort.Class };
             BalanceCompareOrder.Sort(registry, state);
@@ -85,7 +85,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration registry = new BalanceRegistration();
             for (int i = 0; i < 6; i++)
-                registry.Units.Add(new BalanceUnit { Id = i.ToString(), Name = "Ship " + i, Kind = "Ship", Class = "Frigate", Faction = "Empire" });
+                registry.Units.Add(new BalanceUnit { Id = i.ToString(), Name = "Ship " + i, Kind = BalanceUnitKind.Ship, Class = "Frigate", Faction = "Empire" });
             BalanceWindowState state = new BalanceWindowState { Pins = registry.Units.Select(unit => unit.Id).ToList(), CompareSort = BalanceCompareSort.Class };
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             int refreshes = 0;

@@ -28,15 +28,15 @@ namespace EmpireAtWar.Editor.Balance
                     }
                     VisualElement row = new VisualElement(); row.AddToClassList("balance-card");
                     row.Add(new Label(field.Context + " / " + field.Label + ": " + BalanceFieldView.Display(field, change.Before) + " → " + BalanceFieldView.Display(field, change.After)));
-                    row.Add(new Label(field.Owner + " · " + field.DescribeScope(usage.Users(field))));
+                    row.Add(new Label(field.OwnerLabel + " · " + field.DescribeScope(usage.Users(field))));
                     if (field.InheritsSource && state.Draft.Changes.Any(entry => entry.Key == field.SourceKey && entry.After == change.After))
                         row.Add(new Label("Linked effective value: the shared source write covers this cell; no owning override is created."));
                     if (field.AliasWarning.Length != 0) row.Add(new Label(field.AliasWarning));
                     Foldout impact = new Foldout { text = "Used by (includes filtered units)" };
                     foreach (BalanceUnit unit in usage.Users(field)) impact.Add(new Label(unit.Caption));
                     row.Add(impact);
-                    if (field.Owner == "Prefab Override" || field.SharedMountSource) row.Add(new Label("Derived update: affected unit weapon loadouts; squadron member counts when applicable."));
-                    if (field.Group == "Abilities") row.Add(new Label("Review affected ability descriptions for stale numeric text."));
+                    if (field.Owner == BalanceFieldOwner.PrefabOverride || field.SharedMountSource) row.Add(new Label("Derived update: affected unit weapon loadouts; squadron member counts when applicable."));
+                    if (field.Group == BalanceFieldGroup.Abilities) row.Add(new Label("Review affected ability descriptions for stale numeric text."));
                     if (field.Read() != change.Before || field.Schema != change.Schema)
                     {
                         row.Add(new Label("Current external value: " + BalanceFieldView.Display(field, field.Read())));

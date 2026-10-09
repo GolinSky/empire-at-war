@@ -45,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
         private static BalanceRegistration Inventory()
         {
             BalanceRegistration registry = new BalanceRegistration();
-            registry.Add(AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH), "Hull", BalanceRegistration.Auto("Hull"), "Combat", "Test", "Unit Data", false, Array.Empty<BalanceUnit>());
+            registry.Add(AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH), "Hull", BalanceRegistration.Auto("Hull"), BalanceFieldGroup.Combat, "Test", BalanceFieldOwner.UnitData, false, Array.Empty<BalanceUnit>());
             return registry;
         }
 
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceDraft draft = new BalanceDraft(); draft.Set(field.Snapshot(), "140");
             BalancePreset preset = ScriptableObject.CreateInstance<BalancePreset>();
             AssetDatabase.CreateAsset(preset, TEST_FOLDER + "/Preset.asset");
-            BalancePresetService.Save(preset, registry, draft, "Changed fields only");
+            BalancePresetService.Save(preset, registry, draft, BalancePresetScope.ChangedFieldsOnly);
             draft.Discard();
             AssetDatabase.ImportAsset(TEST_FOLDER + "/Preset.asset", ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
             BalancePresetService.Load(AssetDatabase.LoadAssetAtPath<BalancePreset>(TEST_FOLDER + "/Preset.asset"), Inventory(), draft);
@@ -145,7 +145,7 @@ namespace EmpireAtWar.Tests.Editor
                 using (SerializedObject serialized = new SerializedObject(catalog))
                 {
                     SerializedProperty entry = BalanceRegistration.Keyed(serialized, "definitions.keyValue").Single(row => row.FindPropertyRelative("key").intValue == 10);
-                    registry.Add(catalog, "settings/1+10/damage", entry.propertyPath + ".value.settings.damage", "Abilities", "Shared beams", "Shared Profile", true, Array.Empty<BalanceUnit>(), alias: "Shared settings — Laser Beam + Proton Beam");
+                    registry.Add(catalog, "settings/1+10/damage", entry.propertyPath + ".value.settings.damage", BalanceFieldGroup.Abilities, "Shared beams", BalanceFieldOwner.SharedProfile, true, Array.Empty<BalanceUnit>(), alias: "Shared settings — Laser Beam + Proton Beam");
                 }
                 return registry;
             };
