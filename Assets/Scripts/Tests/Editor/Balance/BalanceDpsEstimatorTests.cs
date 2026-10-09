@@ -26,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration registry = BalanceInventory.Build();
             Assert.That(registry.Errors, Is.Empty);
-            BalanceUnit unit = registry.Units.First(entry => entry.Kind == "Ship" && entry.Mounts.Any());
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship && entry.Mounts.Any());
             List<BalanceField> mounts = unit.Mounts.Distinct().SelectMany(registry.FieldsFor)
                 .Where(field => !field.SharedMountSource && field.Stat == "WeaponType").ToList();
             Assert.That(mounts, Is.Not.Empty);
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Estimate_UnarmedUnitHasNoValue()
         {
             BalanceRegistration registry = new BalanceRegistration();
-            BalanceUnit unit = new BalanceUnit { Id = "test/unarmed", Kind = "Ship" };
+            BalanceUnit unit = new BalanceUnit { Id = "test/unarmed", Kind = BalanceUnitKind.Ship };
 
             BalanceDpsEstimate estimate = new BalanceDpsEstimator(registry).Estimate(unit, new BalanceDraft());
 

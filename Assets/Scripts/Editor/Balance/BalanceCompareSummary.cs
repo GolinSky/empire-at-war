@@ -45,7 +45,7 @@ namespace EmpireAtWar.Editor.Balance
                     BalanceField field = Field(unit, registry, durability[stat]);
                     VisualElement row = new VisualElement(); row.AddToClassList("balance-compare-health"); card.Add(row);
                     string label = stat == 0 ? "Health" : "Shield";
-                    Text(row, label + (unit.Kind == "Squadron" ? " / member · HP" : " · HP"), "balance-muted");
+                    Text(row, label + (unit.Kind == BalanceUnitKind.Squadron ? " / member · HP" : " · HP"), "balance-muted");
                     if (field == null) Text(row, "N/A", "balance-compare-value");
                     else
                     {
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Editor.Balance
                 Editable(card, "Cost (credits)", Field(unit, registry, "Price"), state, usage, edit);
                 Editable(card, "Build time (s)", Field(unit, registry, "BuildTime"), state, usage, edit);
                 Section(card, "Firepower");
-                Editable(card, "Weapon range", Field(unit, registry, unit.Kind == "Ship" ? "Range" : "WeaponRange"), state, usage, edit);
+                Editable(card, "Weapon range", Field(unit, registry, unit.Kind == BalanceUnitKind.Ship ? "Range" : "WeaponRange"), state, usage, edit);
                 Metric(card, "Base DPS", dps[i].ToString(), "dmg/s");
                 if (dps[i].HasValue)
                 {

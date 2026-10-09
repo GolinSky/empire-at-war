@@ -45,7 +45,7 @@ namespace EmpireAtWar.Editor.Balance
 
         private static int ClassRank(BalanceUnit unit)
         {
-            if (unit.Kind == "Squadron") return 0;
+            if (unit.Kind == BalanceUnitKind.Squadron) return 0;
             if (!Enum.TryParse(unit.Class, out ShipClass shipClass)) return 6;
             return shipClass switch
             {

@@ -35,7 +35,7 @@ namespace EmpireAtWar.Editor.Balance
         private static BalanceUnit Structure(BalanceRegistration registry, FactionDefinition faction, Object data, string id,
             string name, string prefabKey, AssetMappingData mapping)
         {
-            BalanceUnit unit = new BalanceUnit { Id = faction.FactionType + "/" + id, Name = name, Faction = faction.FactionType.ToString(), Class = "Structure", Kind = "Structure", Data = data };
+            BalanceUnit unit = new BalanceUnit { Id = faction.FactionType + "/" + id, Name = name, Faction = faction.FactionType.ToString(), Class = "Structure", Kind = BalanceUnitKind.Structure, Data = data };
             registry.Units.Add(unit);
             if (prefabKey.Length != 0)
             {
@@ -44,12 +44,12 @@ namespace EmpireAtWar.Editor.Balance
                 BalancePrefabBindings.Register(registry, unit);
                 string prefix = BalanceRegistration.Auto("ComponentData") + ".";
                 registry.AutoFields(data, prefix, "", "Hull Shields ShieldRegenerateValue ShieldRegenerateDelay Range Delay WeaponRange VisionRange SpawnBlockRadius",
-                    "Combat", name, "Shared Profile", true, new[] { unit });
+                    BalanceFieldGroup.Combat, name, BalanceFieldOwner.SharedProfile, true, new[] { unit });
                 using (SerializedObject serialized = new SerializedObject(data))
                     BalanceUnitAdapter.Health(registry, data, serialized.FindProperty(prefix + "hardPointHealth"), "hardPointHealth", unit);
             }
             if (data is MiningFacilityData)
-                registry.AutoFields(data, "", "", "Income", "Global Data", name, "Shared Profile", true, new[] { unit });
+                registry.AutoFields(data, "", "", "Income", BalanceFieldGroup.GlobalData, name, BalanceFieldOwner.SharedProfile, true, new[] { unit });
             foreach (BalanceField field in registry.Fields.Values.Where(field => field.Target == data)) unit.Fields[field.Stat] = field.Key;
             return unit;
         }
@@ -74,14 +74,14 @@ namespace EmpireAtWar.Editor.Balance
             SpaceStationData station = BalanceRegistration.One<SpaceStationData>();
             List<BalanceUnit> users = registry.Units.Where(unit => unit.Data == station).ToList();
             foreach (BalanceUnit unit in users)
-                registry.AutoFields(station, "", "", "HangarInitialDelay HangarLaunchInterval", "Hangar", "Station hangar", "Shared Profile", true, new[] { unit });
+                registry.AutoFields(station, "", "", "HangarInitialDelay HangarLaunchInterval", BalanceFieldGroup.Hangar, "Station hangar", BalanceFieldOwner.SharedProfile, true, new[] { unit });
             using (SerializedObject serialized = new SerializedObject(levels))
             {
                 SerializedProperty entries = serialized.FindProperty("levels");
                 for (int level = 1; level <= entries.arraySize; level++)
                     foreach (string name in new[] { "Price", "BuildTime", "UnitCapacity", "MaxCount", "AvailableLevel" })
                         registry.Add(levels, "level/" + level + "/" + name, entries.GetArrayElementAtIndex(level - 1).propertyPath + "." + BalanceRegistration.Auto(name),
-                            "Global Data", "Station upgrade " + level, "Shared Profile", true, users);
+                            BalanceFieldGroup.GlobalData, "Station upgrade " + level, BalanceFieldOwner.SharedProfile, true, users);
             }
             using (SerializedObject serialized = new SerializedObject(station))
             {
@@ -89,13 +89,13 @@ namespace EmpireAtWar.Editor.Balance
                 for (int level = 1; level <= stats.arraySize; level++)
                     foreach (string name in new[] { "hullMultiplier", "shieldsMultiplier", "shieldRegenerateMultiplier" })
                         registry.Add(station, "level/" + level + "/" + name, stats.GetArrayElementAtIndex(level - 1).propertyPath + "." + name,
-                            "Global Data", "Station level " + level, "Shared Profile", true, users, positive: true);
+                            BalanceFieldGroup.GlobalData, "Station level " + level, BalanceFieldOwner.SharedProfile, true, users, positive: true);
                 foreach (SerializedProperty bay in BalanceRegistration.Keyed(serialized, "hangarBays.keyValue"))
                 {
                     int faction = bay.FindPropertyRelative("key").intValue;
                     foreach (string name in new[] { "reserve", "maxActive" })
-                        registry.Add(station, "hangar/" + faction + "/" + name, bay.propertyPath + ".value." + name, "Hangar", "Station " + (FactionType)faction,
-                            "Faction Entry", false, users.Where(unit => unit.Faction == ((FactionType)faction).ToString()));
+                        registry.Add(station, "hangar/" + faction + "/" + name, bay.propertyPath + ".value." + name, BalanceFieldGroup.Hangar, "Station " + (FactionType)faction,
+                            BalanceFieldOwner.FactionEntry, false, users.Where(unit => unit.Faction == ((FactionType)faction).ToString()));
                 }
             }
         }
@@ -110,9 +110,9 @@ namespace EmpireAtWar.Editor.Balance
                     List<BalanceUnit> users = registry.Units.Where(unit => unit.Id.EndsWith("SuperWeaponCatalog/" + id)).ToList();
                     string key = "super/" + id + "/";
                     SerializedProperty value = entry.FindPropertyRelative("value");
-                    BalanceWeaponAdapter.Profile(registry, data, value.FindPropertyRelative("weapon"), key + "weapon/", "Weapons", ((SuperWeaponType)id).ToString(), users);
+                    BalanceWeaponAdapter.Profile(registry, data, value.FindPropertyRelative("weapon"), key + "weapon/", BalanceFieldGroup.Weapons, ((SuperWeaponType)id).ToString(), users);
                     foreach (string name in new[] { "firingDelay", "stunDuration", "areaDamage", "areaRadius" })
-                        registry.Add(data, key + name, value.propertyPath + "." + name, "Global Data", ((SuperWeaponType)id).ToString(), "Shared Profile", true, users);
+                        registry.Add(data, key + name, value.propertyPath + "." + name, BalanceFieldGroup.GlobalData, ((SuperWeaponType)id).ToString(), BalanceFieldOwner.SharedProfile, true, users);
                 }
         }
     }

@@ -20,7 +20,7 @@ namespace EmpireAtWar.Tests.Editor
                 host.position = new Rect(100, 100, 960, 550);
                 host.rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/Balance/BalanceEditor.uss"));
                 BalanceRegistration registry = new BalanceRegistration();
-                registry.Units.Add(new BalanceUnit { Id = "test/1", Name = "Victory II Star Destroyer — Advanced Loadout", Kind = "Ship", Class = "HeavyCapital", Faction = "Empire" });
+                registry.Units.Add(new BalanceUnit { Id = "test/1", Name = "Victory II Star Destroyer — Advanced Loadout", Kind = BalanceUnitKind.Ship, Class = "HeavyCapital", Faction = "Empire" });
                 VisualElement roster = new VisualElement(); roster.style.height = 500; host.rootVisualElement.Add(roster);
                 BalanceRosterView.Build(roster, registry, new BalanceWindowState(), () => { });
                 host.Show();
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration registry = new BalanceRegistration();
             for (int i = 0; i < 9; i++)
-                registry.Units.Add(new BalanceUnit { Id = "test/" + i, Name = "Ship " + i, Kind = "Ship", Class = "Frigate", Faction = "Empire" });
+                registry.Units.Add(new BalanceUnit { Id = "test/" + i, Name = "Ship " + i, Kind = BalanceUnitKind.Ship, Class = "Frigate", Faction = "Empire" });
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             try
             {

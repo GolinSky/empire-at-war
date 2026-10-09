@@ -12,8 +12,8 @@ namespace EmpireAtWar.Editor.Balance
         public string Key;
         public string Stat;
         public string Label;
-        public string Group;
-        public string Owner;
+        public BalanceFieldGroup Group;
+        public BalanceFieldOwner Owner;
         public string Context;
         public string AliasWarning = "";
         public string Dependency = "";
@@ -33,10 +33,12 @@ namespace EmpireAtWar.Editor.Balance
         public string PresetSchema => $"{Kind}|{EnumType}|{AliasWarning}|{Dependency}|{SourceKey}";
         public string Schema => $"{PresetSchema}|{InheritsSource}|{string.Join(";", Users.Select(unit => unit.Id).Distinct().OrderBy(id => id))}";
         public string ScopeLabel => DescribeScope(Users);
+        public string GroupLabel => ObjectNames.NicifyVariableName(Group.ToString());
+        public string OwnerLabel => ObjectNames.NicifyVariableName(Owner.ToString());
 
         public string DescribeScope(IEnumerable<BalanceUnit> users)
         {
-            if (!Shared) return Owner;
+            if (!Shared) return OwnerLabel;
             BalanceUnit[] consumers = users.GroupBy(unit => unit.Id).Select(group => group.First()).ToArray();
             string[] factions = consumers.Select(unit => unit.Faction).Distinct().OrderBy(name => name).ToArray();
             return factions.Length == 0 ? "Global profile — no current users"

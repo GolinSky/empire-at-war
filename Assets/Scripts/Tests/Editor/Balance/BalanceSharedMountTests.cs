@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
         private static BalanceRegistration Inventory()
         {
             BalanceRegistration registry = new BalanceRegistration();
-            BalanceUnit unit = new BalanceUnit { Id = "Test/1", Name = "Owner", Faction = "Test", Kind = "Ship",
+            BalanceUnit unit = new BalanceUnit { Id = "Test/1", Name = "Owner", Faction = "Test", Kind = BalanceUnitKind.Ship,
                 Prefab = AssetDatabase.LoadAssetAtPath<GameObject>(OWNER_PATH), Data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH) };
             registry.Units.Add(unit);
             BalancePrefabBindings.Register(registry, unit);
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
             draft.Set(local.Snapshot(), "true");
             BalancePreset preset = ScriptableObject.CreateInstance<BalancePreset>();
             AssetDatabase.CreateAsset(preset, TEST_FOLDER + "/Preset.asset");
-            BalancePresetService.Save(preset, registry, draft, "Full registered set");
+            BalancePresetService.Save(preset, registry, draft, BalancePresetScope.FullRegisteredSet);
             BalanceApplyService.Apply(draft, Inventory);
             BalanceRegistration saved = Inventory();
             Assert.That(saved.Fields[shared.Key].Read(), Is.EqualTo("true"));
@@ -121,7 +121,7 @@ namespace EmpireAtWar.Tests.Editor
             BalancePreset preset = ScriptableObject.CreateInstance<BalancePreset>();
             try
             {
-                BalancePresetService.Save(preset, registry, draft, fullScope ? "Full registered set" : "Changed fields only");
+                BalancePresetService.Save(preset, registry, draft, fullScope ? BalancePresetScope.FullRegisteredSet : BalancePresetScope.ChangedFieldsOnly);
                 if (legacySchema) preset.SetValues(fullScope, preset.Values.Select(entry =>
                     new BalanceSnapshot(entry.Key, registry.Fields[entry.Key].Schema, entry.Value)).ToList());
                 BalanceApplyService.Apply(draft, Inventory);

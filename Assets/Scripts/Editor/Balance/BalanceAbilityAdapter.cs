@@ -41,7 +41,7 @@ namespace EmpireAtWar.Editor.Balance
                     List<BalanceUnit> users = Users(registry, id);
                     string key = "ability/" + id + "/";
                     foreach (string field in new[] { "duration", "recoveryDelay", "range", "aiUse" })
-                        registry.Add(catalog, key + field, value.propertyPath + "." + field, "Abilities", context, "Shared Profile", true, users,
+                        registry.Add(catalog, key + field, value.propertyPath + "." + field, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
                             field == "aiUse" ? typeof(ShipAbilityAiUse) : null);
                     SerializedProperty settings = value.FindPropertyRelative("settings");
                     if (settings.managedReferenceValue == null) throw new InvalidOperationException($"Missing settings: {context}");
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Editor.Balance
                         RegisterSetting(registry, catalog, settings, "settings/" + aliasIds + "/", field, context, aliasUsers, warning, subtype);
                 }
             }
-            foreach (BalanceField field in registry.Fields.Values.Where(field => field.Group == "Abilities"))
+            foreach (BalanceField field in registry.Fields.Values.Where(field => field.Group == BalanceFieldGroup.Abilities))
                 foreach (BalanceUnit unit in field.Users) unit.Fields[field.Stat] = field.Key;
         }
 
@@ -71,13 +71,13 @@ namespace EmpireAtWar.Editor.Balance
             if (name.EndsWith("tatModifier"))
             {
                 foreach (string member in new[] { "damageMultiplier", "fireDelayMultiplier", "speedMultiplier", "shieldRegenMultiplier", "damageTakenMultiplier" })
-                    registry.Add(catalog, key + name + "/" + member, property.propertyPath + "." + member, "Abilities", context, "Shared Profile", true, users,
+                    registry.Add(catalog, key + name + "/" + member, property.propertyPath + "." + member, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
                         positive: member == "fireDelayMultiplier", alias: alias, dependency: subtype);
             }
             else if (name == "beam" || name == "projectile")
-                BalanceWeaponAdapter.Profile(registry, catalog, property, key + name + "/", "Abilities", context, users, alias, subtype);
+                BalanceWeaponAdapter.Profile(registry, catalog, property, key + name + "/", BalanceFieldGroup.Abilities, context, users, alias, subtype);
             else
-                registry.Add(catalog, key + name, property.propertyPath, "Abilities", context, "Shared Profile", true, users,
+                registry.Add(catalog, key + name, property.propertyPath, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
                     name == "damageType" ? typeof(EmpireAtWar.Components.AttackComponent.DamageType)
                     : name == "targetClasses" ? typeof(EmpireAtWar.Components.Ship.Health.ShipClass) : null,
                     maximum: name == "malfunctionChance" ? 1 : double.PositiveInfinity,

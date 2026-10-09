@@ -8,7 +8,7 @@ namespace EmpireAtWar.Editor.Balance
     {
         public static void Register(BalanceRegistration registry)
         {
-            BalanceField[] mounts = registry.Fields.Values.Where(field => field.Owner == "Prefab Override").ToArray();
+            BalanceField[] mounts = registry.Fields.Values.Where(field => field.Owner == BalanceFieldOwner.PrefabOverride).ToArray();
             foreach (BalanceField mount in mounts)
             {
                 Object source = PrefabUtility.GetCorrespondingObjectFromSource(mount.Target);
@@ -22,8 +22,8 @@ namespace EmpireAtWar.Editor.Balance
                         // Generic mount templates can have an unassigned enum sentinel overridden by every unit.
                         // It has no runtime consumers and is not a canonical balance assignment.
                         if (!users.Any() && mount.Kind == BalanceValueKind.Enum && !System.Enum.IsDefined(mount.EnumType, sourceData.FindProperty(mount.Path).intValue)) continue;
-                    BalanceField shared = registry.Add(source, mount.Stat, mount.Path, "Hardpoints",
-                        "Shared mount source / " + source.name, "Shared Profile", true, users, mount.EnumType,
+                    BalanceField shared = registry.Add(source, mount.Stat, mount.Path, BalanceFieldGroup.Hardpoints,
+                        "Shared mount source / " + source.name, BalanceFieldOwner.SharedProfile, true, users, mount.EnumType,
                         mount.Minimum, mount.Maximum, mount.Positive, dependency: "source:" + GlobalObjectId.GetGlobalObjectIdSlow(source));
                     shared.SharedMountSource = true;
                     mount.SourceKey = shared.Key;

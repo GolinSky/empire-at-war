@@ -9,10 +9,10 @@ namespace EmpireAtWar.Editor.Balance
     {
         public const string PRESET_FOLDER = "Assets/Settings/Data/Balance/Presets";
 
-        public static void Save(BalancePreset preset, BalanceRegistration registry, BalanceDraft draft, string scope)
+        public static void Save(BalancePreset preset, BalanceRegistration registry, BalanceDraft draft, BalancePresetScope scope)
         {
             if (registry.Errors.Count != 0) throw new InvalidOperationException(string.Join("\n", registry.Errors));
-            var fields = scope == "Full registered set" ? registry.Fields.Values.ToList()
+            var fields = scope == BalancePresetScope.FullRegisteredSet ? registry.Fields.Values.ToList()
                 : draft.Changes.Select(change => registry.Fields.TryGetValue(change.Key, out BalanceField field) ? field
                     : throw new InvalidOperationException("Missing draft target: " + change.Key)).ToList();
             if (fields.Count == 0) throw new InvalidOperationException("The selected preset scope is empty.");
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (error.Length != 0) throw new InvalidOperationException(field.Context + "/" + field.Label + ": " + error);
                 values.Add(new BalanceSnapshot(field.Key, field.PresetSchema, value));
             }
-            preset.SetValues(scope == "Full registered set", values.OrderBy(entry => entry.Key).ToList());
+            preset.SetValues(scope == BalancePresetScope.FullRegisteredSet, values.OrderBy(entry => entry.Key).ToList());
             EditorUtility.SetDirty(preset);
             if (AssetDatabase.Contains(preset)) AssetDatabase.SaveAssets();
         }

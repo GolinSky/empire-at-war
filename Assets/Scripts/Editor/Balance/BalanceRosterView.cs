@@ -59,7 +59,9 @@ namespace EmpireAtWar.Editor.Balance
                 count.text = units.Count + " visible · " + state.Pins.Count + " in comparison";
             }
             Filter(filters, "Faction", new[] { "All Factions" }.Concat(registry.Units.Select(unit => unit.Faction).Distinct().OrderBy(name => name)).ToList(), state.Faction, value => state.Faction = value, FilterUnits);
-            Filter(filters, "Kind", new[] { "Ship", "Squadron", "Structure" }.ToList(), state.Kind, value => state.Kind = value, FilterUnits);
+            EnumField kindFilter = new EnumField("Kind", state.Kind);
+            kindFilter.RegisterValueChangedCallback(evt => { state.Kind = (BalanceUnitKind)evt.newValue; FilterUnits(); });
+            filters.Add(kindFilter);
             Filter(filters, "Class", new[] { "All Classes" }.Concat(registry.Units.Select(unit => unit.Class).Distinct().OrderBy(name => name)).ToList(), state.Class, value => state.Class = value, FilterUnits);
             search.RegisterValueChangedCallback(evt => { state.Search = evt.newValue; FilterUnits(); });
             list.selectionChanged += selected =>

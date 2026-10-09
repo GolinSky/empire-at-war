@@ -59,9 +59,9 @@ namespace EmpireAtWar.Editor.Balance
             {
                 if (!current.Fields.Values.Any(field => field.Stat == "ability/" + id + "/duration")) { errors.Add("Ability definition missing: " + id); continue; }
                 string subtype = catalog.Get((ShipAbilityId)id).Settings.GetType().Name;
-                if (subtype == "LockSFoilsSettings" && (unit.Kind != "Squadron" || !unit.Components.Any(component => component.GetType().Name == "SFoilsView")))
+                if (subtype == "LockSFoilsSettings" && (unit.Kind != BalanceUnitKind.Squadron || !unit.Components.Any(component => component.GetType().Name == "SFoilsView")))
                     errors.Add(unit.Name + ": Lock S-foils requires an existing squadron SFoilsView.");
-                if (subtype == "IonPulseSettings" && (unit.Kind != "Ship" || !unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == HardPointType.IonPulseCannon)
+                if (subtype == "IonPulseSettings" && (unit.Kind != BalanceUnitKind.Ship || !unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == HardPointType.IonPulseCannon)
                     || !((ShipData)unit.Data).HardPointHealth.Any(health => health.HardPointType == HardPointType.IonPulseCannon)))
                     errors.Add(unit.Name + ": Ion Pulse requires existing facing and cannon bindings.");
                 if (subtype == "CompositeBeamSettings")
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Editor.Balance
                             SerializedProperty property = serialized.FindProperty("compositeBeamMuzzle");
                             muzzle = property != null && property.objectReferenceValue != null;
                         }
-                    if (unit.Kind != "Ship" || !muzzle) errors.Add(unit.Name + ": Composite Beam requires an existing bound muzzle.");
+                    if (unit.Kind != BalanceUnitKind.Ship || !muzzle) errors.Add(unit.Name + ": Composite Beam requires an existing bound muzzle.");
                 }
                 if ((subtype == "PowerToMainBatteriesSettings" || subtype == "FullSalvoSettings" || subtype == "AssaultSettings")
                     && !unit.Mounts.OfType<WeaponHardPoint>().Any()) errors.Add(unit.Name + ": ability requires an existing weapon component and mounts.");

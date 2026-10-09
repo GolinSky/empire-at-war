@@ -15,7 +15,7 @@ namespace EmpireAtWar.Editor.Balance
         private const string UI_PATH = "Assets/Scripts/Editor/Balance/BalanceEditor";
         [SerializeField] private BalanceWindowState state = new BalanceWindowState();
         [SerializeField] private BalancePreset preset;
-        [SerializeField] private string presetScope = "Full registered set";
+        [SerializeField] private BalancePresetScope presetScope = BalancePresetScope.FullRegisteredSet;
         private BalanceRegistration _registry;
         private string _message = "";
         private VisualElement _details;
@@ -38,7 +38,6 @@ namespace EmpireAtWar.Editor.Balance
         {
             _refreshPending = false;
             if (_registry == null) _registry = BalanceInventory.Build();
-            if (new[] { "Weapons", "Abilities", "Hardpoints" }.Contains(state.Tab)) { state.UnitTab = state.Tab; state.Tab = "Units"; }
             if (state.SelectedUnit.Length == 0)
                 state.SelectedUnit = _registry.Units.First(unit => unit.Kind == state.Kind).Id;
             RememberScroll(); rootVisualElement.Clear(); rootVisualElement.AddToClassList("balance-root");
@@ -50,9 +49,9 @@ namespace EmpireAtWar.Editor.Balance
             rootVisualElement.Q<Label>("draft-status").text = "Draft · " + state.Draft.Changes.Count + " changes";
             Toolbar actions = rootVisualElement.Q<Toolbar>("actions"); ToolbarActions(actions);
             Toolbar tabs = rootVisualElement.Q<Toolbar>("navigation");
-            foreach (string tab in new[] { "Units", "Compare", "Combat", "Changes" })
+            foreach (BalanceTab tab in new[] { BalanceTab.Units, BalanceTab.Compare, BalanceTab.Combat, BalanceTab.Changes })
             {
-                ToolbarButton button = new ToolbarButton(() => { state.Tab = tab; Refresh(); }) { text = tab, name = "workflow-" + tab };
+                ToolbarButton button = new ToolbarButton(() => { state.Tab = tab; Refresh(); }) { text = tab.ToString(), name = "workflow-" + tab };
                 button.AddToClassList("balance-workflow"); button.EnableInClassList("balance-tab-active", state.Tab == tab); tabs.Add(button);
             }
             Label inventory = new Label(_registry.Units.Count + " units · " + _registry.Fields.Count + " fields"); inventory.AddToClassList("balance-inventory"); tabs.Add(inventory);
@@ -61,7 +60,7 @@ namespace EmpireAtWar.Editor.Balance
             foreach (string error in _registry.Errors) messages.Add(new HelpBox(error, HelpBoxMessageType.Error));
             VisualElement body = rootVisualElement.Q("workspace");
             VisualElement centre = new VisualElement(); centre.AddToClassList("balance-content"); _details = null;
-            if (state.ShowDetails && state.Tab != "Compare" && (state.Tab != "Units" || state.UnitDetailsOpen) && !(state.Tab == "Combat" && state.CombatTab == "Hardpoints"))
+            if (state.ShowDetails && state.Tab != BalanceTab.Compare && (state.Tab != BalanceTab.Units || state.UnitDetailsOpen) && !(state.Tab == BalanceTab.Combat && state.CombatTab == BalanceCombatTab.Hardpoints))
             {
                 TwoPaneSplitView inner = new TwoPaneSplitView(1, state.RightWidth, TwoPaneSplitViewOrientation.Horizontal) { viewDataKey = "balance-details" };
                 body.Add(inner); inner.Add(centre);
@@ -70,20 +69,20 @@ namespace EmpireAtWar.Editor.Balance
                 if (_registry.Fields.TryGetValue(state.SelectedField, out BalanceField selected)) Details(selected);
             }
             else body.Add(centre);
-            if (state.Tab == "Units") BalanceUnitView.Build(centre, _registry, state, Edit, Select, Refresh);
-            else if (state.Tab == "Combat") BalanceCombatView.Build(centre, _registry, state, Edit, Select, Refresh);
-            else if (state.Tab == "Compare")
+            if (state.Tab == BalanceTab.Units) BalanceUnitView.Build(centre, _registry, state, Edit, Select, Refresh);
+            else if (state.Tab == BalanceTab.Combat) BalanceCombatView.Build(centre, _registry, state, Edit, Select, Refresh);
+            else if (state.Tab == BalanceTab.Compare)
             {
                 BalanceCompareView.Build(centre, _registry, state, Edit, Refresh);
             }
-            else if (state.Tab == "Changes") BalanceChangesView.Build(centre, _registry, state,
+            else if (state.Tab == BalanceTab.Changes) BalanceChangesView.Build(centre, _registry, state,
                 () => Run(() => { _registry = BalanceApplyService.Apply(state.Draft, BalanceInventory.Build); _message = "Applied, saved, imported and read back. Previous apply can be restored."; }),
                 () => Run(() => { BalanceApplyService.RestorePrevious(); _registry = BalanceInventory.Build(); _message = "Previous apply restored and imported."; }), Refresh);
             else
             {
-                Label title = new Label(state.Tab); title.AddToClassList("balance-unit-name"); centre.Add(title);
-                BalanceUnitView.Fields(centre, _registry.Fields.Values.Where(field => !field.SharedMountSource && (state.Tab == "Ability catalog"
-                    ? field.Group == "Abilities" : field.Group == "Global Data" && !field.Stat.StartsWith("matrix/") && field.Stat != "missSpread")), state, Edit, Select, "tools-" + state.Tab, new BalanceDraftUsage(_registry, state.Draft));
+                Label title = new Label(ObjectNames.NicifyVariableName(state.Tab.ToString())); title.AddToClassList("balance-unit-name"); centre.Add(title);
+                BalanceUnitView.Fields(centre, _registry.Fields.Values.Where(field => !field.SharedMountSource && (state.Tab == BalanceTab.AbilityCatalog
+                    ? field.Group == BalanceFieldGroup.Abilities : field.Group == BalanceFieldGroup.GlobalData && !field.Stat.StartsWith("matrix/") && field.Stat != "missSpread")), state, Edit, Select, "tools-" + state.Tab, new BalanceDraftUsage(_registry, state.Draft));
             }
             foreach (ScrollView scroll in rootVisualElement.Query<ScrollView>().ToList())
             {
@@ -104,19 +103,19 @@ namespace EmpireAtWar.Editor.Balance
             presets.menu.AppendAction("Save preset", _ => Run(() => SavePreset(false)));
             presets.menu.AppendAction("Save as…", _ => Run(() => SavePreset(true)));
             presets.menu.AppendSeparator();
-            foreach (string scope in new[] { "Full registered set", "Changed fields only" })
-                presets.menu.AppendAction("Scope/" + scope, _ => presetScope = scope, _ => presetScope == scope ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
+            foreach (BalancePresetScope scope in Enum.GetValues(typeof(BalancePresetScope)))
+                presets.menu.AppendAction("Scope/" + ObjectNames.NicifyVariableName(scope.ToString()), _ => presetScope = scope, _ => presetScope == scope ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
             ToolbarMenu draft = new ToolbarMenu { text = "Draft" }; toolbar.Add(draft);
             draft.menu.AppendAction("Undo", _ => { state.Draft.Undo(); Refresh(); }, _ => state.Draft.UndoStates.Count == 0 ? DropdownMenuAction.Status.Disabled : DropdownMenuAction.Status.Normal);
             draft.menu.AppendAction("Redo", _ => { state.Draft.Redo(); Refresh(); }, _ => state.Draft.RedoStates.Count == 0 ? DropdownMenuAction.Status.Disabled : DropdownMenuAction.Status.Normal);
             draft.menu.AppendSeparator();
             draft.menu.AppendAction("Discard draft", _ => { state.Draft.Discard(); Refresh(); }, _ => state.Draft.Changes.Count == 0 ? DropdownMenuAction.Status.Disabled : DropdownMenuAction.Status.Normal);
             ToolbarMenu tools = new ToolbarMenu { text = "Tools" }; toolbar.Add(tools);
-            tools.menu.AppendAction("Global data", _ => { state.Tab = "Global Data"; Refresh(); });
-            tools.menu.AppendAction("Ability catalog", _ => { state.Tab = "Ability catalog"; Refresh(); });
+            tools.menu.AppendAction("Global data", _ => { state.Tab = BalanceTab.GlobalData; Refresh(); });
+            tools.menu.AppendAction("Ability catalog", _ => { state.Tab = BalanceTab.AbilityCatalog; Refresh(); });
             tools.menu.AppendAction("Refresh inventory", _ => { _registry = BalanceInventory.Build(); Refresh(); });
             VisualElement spacer = new VisualElement(); spacer.style.flexGrow = 1; toolbar.Add(spacer);
-            ToolbarButton review = new ToolbarButton(() => { _registry = BalanceInventory.Build(); state.Tab = "Changes"; Refresh(); })
+            ToolbarButton review = new ToolbarButton(() => { _registry = BalanceInventory.Build(); state.Tab = BalanceTab.Changes; Refresh(); })
                 { text = "Review & Apply", name = "review-apply" }; review.AddToClassList("balance-primary"); toolbar.Add(review);
         }
 

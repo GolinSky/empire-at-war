@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration registry = new BalanceRegistration();
             for (int i = 0; i < 3; i++)
-                registry.Units.Add(new BalanceUnit { Id = i.ToString(), Name = "Ship " + i, Kind = "Ship", Class = "Frigate", Faction = "Empire" });
+                registry.Units.Add(new BalanceUnit { Id = i.ToString(), Name = "Ship " + i, Kind = BalanceUnitKind.Ship, Class = "Frigate", Faction = "Empire" });
             BalanceWindowState state = new BalanceWindowState { Pins = new List<string> { "0", "1", "2" } };
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             void Build()
@@ -112,7 +112,7 @@ namespace EmpireAtWar.Tests.Editor
         public IEnumerator Selection_LeavesFocusedControlsAndButtonsAlone()
         {
             BalanceRegistration registry = new BalanceRegistration();
-            registry.Units.Add(new BalanceUnit { Id = "unit", Name = "Ship", Kind = "Ship", Class = "Frigate", Faction = "Empire" });
+            registry.Units.Add(new BalanceUnit { Id = "unit", Name = "Ship", Kind = BalanceUnitKind.Ship, Class = "Frigate", Faction = "Empire" });
             BalanceWindowState state = new BalanceWindowState { Pins = new List<string> { "unit" } };
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             try
