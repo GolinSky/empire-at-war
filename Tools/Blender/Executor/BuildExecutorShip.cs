@@ -120,7 +120,7 @@ public static class BuildExecutorShip
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
         var data=AssetDatabase.LoadAssetAtPath<ShipData>(DATA);data.name="ExecutorShipData";var so=new SerializedObject(data);
-        Set(so,"Hull",200000);Set(so,"Shields",200000);Set(so,"Speed",15);Set(so,"ShieldRegenerateValue",200);so.FindProperty("<ShipClass>k__BackingField").intValue=5;so.FindProperty("<HeightTier>k__BackingField").intValue=7;Set(so,"RotationSpeed",1.5f);Set(so,"TurnAcceleration",1.5f);Set(so,"ShieldRegenerateDelay",1);
+        Set(so,"Hull",200000);Set(so,"Shields",200000);Set(so,"Speed",15);Set(so,"ShieldRegenerateValue",200);so.FindProperty("<ShipClass>k__BackingField").intValue=5;so.FindProperty("<HeightTier>k__BackingField").intValue=(int)ShipHeightTier.Deep;Set(so,"RotationSpeed",1.5f);Set(so,"TurnAcceleration",1.5f);Set(so,"ShieldRegenerateDelay",1);
         Set(so,"HullBottom",bottom);Set(so,"HullTop",top);Set(so,"NavigationRadius",radius);Set(so,"Range",500);Set(so,"BodyRotationMaxAngle",3);
         var list=so.FindProperty("hardPointHealth");list.arraySize=4;
         int[] types={0,2,1,4};float[] hpValues={2500,4000,4000,4000};

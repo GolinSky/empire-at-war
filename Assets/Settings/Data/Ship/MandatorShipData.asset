@@ -15,7 +15,7 @@ MonoBehaviour:
   <MinMoveCoefficient>k__BackingField: 0.4
   <Speed>k__BackingField: 6
   heightTiers: {fileID: 11400000, guid: c0ccfe8fa64b01f478f5f2928bd7958e, type: 2}
-  <HeightTier>k__BackingField: 7
+  <HeightTier>k__BackingField: 0
   <HullBottom>k__BackingField: -55.58369
   <HullTop>k__BackingField: 55.695175
   <RotationSpeed>k__BackingField: 1.5
