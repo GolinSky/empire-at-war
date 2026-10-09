@@ -2,36 +2,61 @@
 category: Features
 status: done
 created: 2026-10-06
-completed: 2026-10-06
+reopened: 2026-10-09
+outcome: Workshop ISD II replacement committed; seven engine surfaces/emission
+  restored and 38 obsolete visuals removed.
+completed: 2026-10-09
 ---
 # ISD II
 
 ## Goal
 
-- Add the requested ISD II loadout to Empire without `Advanced` in new unit or asset names.
-- Run related Unity tests, fix ship issues and commit only this task's changes.
+- Replace Empire ISD II `205` visuals from Workshop `1770851727 / Star_Destroyer_II`.
+- Remove superseded ISD II visuals after checking retained dependencies; keep ISD I assets and gameplay identity distinct.
 
 ## Implementation
 
-- [x] Read `ALO_MODEL_IMPORT_GUIDE`, organization/UI rules and model map; verify live source definitions.
-- [x] Import 11 ISD II attachments; reuse hash-verified common hull and triple turrets. FBX roundtrip maximum geometry error `0.000103` source units; bone error `0.00000301`.
-- [x] Configure 21,000 hull / 18,000 shields / speed 25; 17 targetable hardpoints, 23 weapons and three engines.
-- [x] Add Power to Main Batteries: 33% shot/reload delay, other weapons disabled, shield regeneration zero, speed 25%, duration 20 s / recovery 60 s. Register existing Tractor Beam and TIE Interceptor/Brute/Punisher hangar; each bay launches one squadron plus one replacement.
-- [x] Save own shield, preview, wreck, icons, faction/asset/UI/audio registrations. Inspect hull, placement, wreck and eight team renders.
-- [x] Fix all 99 team-renderer bindings and broadside arcs; remove inherited `Advanced` names from new wreck materials.
-- [x] Final full EditMode suite: 1,066/1,067; all 11 ISD II/main-battery checks passed. Remaining failure: existing Victory II renderer bindings, outside this import.
-- [x] After wreck-material renames: saved-ship suite 8/8; console errors zero. Verify all staged Unity GUID dependencies and new asset names.
-- [x] Commit 123 scoped files: `f17fcd22` — `Add ISD II to Empire`.
-- [x] Team-color follow-up 2026-10-06: neutral hull/turrets and four mirrored foredeck stripes per side, shared with ISD I; matching wreck material. Team bindings now 100, fog 57, explosion/wreck pairs 43. Red/blue top/angled ship and wreck renders and all four saved-prefab checks passed; no import/serialization errors. No combat or automated Unity test run for this follow-up.
+- [x] Read full ALO import, organization and required UI guides; inspect live integration and balance.
+- [x] Resolve XML inheritance and source-specific structure/all 13 turret attachments.
+- [x] Convert 16 living/death visual parts through Blender; preserve geometry, UVs, material slots, bones and hierarchy.
+- [x] Preserve and label 38 obsolete visuals/snapshots; update the existing model/gameplay/wreck/placement/icons in place.
+- [x] Rebuild 24 targetable weapons and three systems; add unique weapon profiles/audio 70/71 and record source mappings.
+- [x] Fit shield/collider/hull limits/fog/selection, ownership and wreck bindings; correct inherited banking scale and stripe surface depth.
+- [x] Persist/import Unity assets; verify saved geometry, references, registrations, obsolete labels and screenshots.
+- [x] Restore all seven engine surfaces and visible glow; rear/top/bottom closeups and material reimports verified.
+- [x] Delete 38 obsolete ISD II visuals/snapshots and four empty folders; zero retained Unity asset dependencies.
+- [x] Commit only ISD II replacement/follow-up changes: `f0b035f9`; unrelated working changes preserved.
+- [x] Archive plan/research, reconcile backlog and verify moved links.
 
 ## Decision
 
-- Source: AOTR `E_Imperial_Star_Destroyer_2_Fighters`, inheriting `T_Imperial_Star_Destroyer_2`.
-- Common hull `Empire_Imperial_SD.ALO` matches existing conversion SHA-256 `2e7537437ef1c86a5b3116f370c96ab52f343319e4cbe626cdbd1d6bfae6922a`.
-- Existing user/parallel import changes remain outside this task's commit.
-- No manual skirmish or Play Mode run performed; automated checks cover saved configuration, registrations, hangar reserves and main-battery behavior.
+- Preserve live `5,500/4,200/25` hull/shields/speed, economy, fighter bays and abilities. Historical `21,000/18,000` notes are not current balance.
+- Own replacement hull/textures/materials and XML-specific attachments; active ISD II prefabs contain no ISD I or obsolete art dependencies.
+- Automated tests require an explicit request under the import guide. Saved-asset inspection and isolated renders completed; runtime combat is unverified.
+- Source values and mapping reasons: [[Done/Features/ISDII_Import - Research|Source mapping and evidence]].
+
+## Important Values
+
+- Source `40,000/20,000` hull/shields; speed `3` source units; cost/build/population `25,000/80 s/24`.
+- `24` weapons + shield + hangar + tractor → `27` unique targets. No source engine hardpoint; obsolete engine targets removed.
+- Saved geometry bounds `101 × 49.5 × 180`; roots/banking scale `1`.
+- Verify: `55` source hashes unchanged, `16` packed editable blends, `16` Blender/Unity geometry-UV-bone checks, four prefab/registration checks, eight team palettes.
+- Maximum Blender geometry error `0.000157953` source units; maximum Unity error `0.000003026` project units; exact saved mount positions.
+- Engine groups retain `1,428 / 1,840` triangles; `_Cull = 0`, emission intensity `2`, source blue/white textures, `RealtimeEmissive` flags.
+- Engine settings survive material reimport. Final Unity compilation/import ready; no new Console errors. No automated tests or combat Play Mode run.
 
 ## Files
 
-- `Tools/Blender/ISDII/README.md` — rebuild procedure, source differences and provisional values.
-- `Tools/Blender/ISDII/ImportEvidence.json` — source hashes, 11 model roundtrip reports and test evidence.
+- `Tools/Blender/ISDIIReplacement/README.md` — current instructions and mappings.
+- `Tools/Blender/ISDIIReplacement/ImportEvidence.json` — durable verification and obsolete records.
+- `Assets/Art/Models/EmpireShips/ISDIIReplacement/`; old ISD II visual folders/snapshots removed.
+- `output/ISDIIReplacement/` — screenshots, resolved source audit and editable blends.
+- `Tools/Blender/ISDII/` — historical AOTR tooling, marked obsolete.
+
+## Implementation History
+
+- 2026-10-06 initial AOTR import: commit `f17fcd22`; 11 related tests passed; full EditMode `1,066/1,067`, unrelated Victory II binding failure.
+- Original integration reused ISD I hull/triples, had 23 weapons/17 targets and then `21,000/18,000/25` balance.
+- 2026-10-09 replacement: own Workshop 1770851727 visuals/source loadout, current balance preserved; saved-asset verification only.
+
+- 2026-10-09 follow-up: restore two-sided/emissive engine materials, remove all 38 obsolete visuals/snapshots; commit `f0b035f9`. No retained Unity dependency or staged GUID gaps.

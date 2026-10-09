@@ -85,5 +85,5 @@ This replaces an existing model and preserves its current project balance and fi
 - Dedicated profiles/audio, existing Empire/HUD/placement/Addressable registrations, live balance, hangar identities and abilities verified. All 38 obsolete assets and metadata removed; no retained references.
 - Engine closeups from the rear, above and below verify three large blue and four small white exhaust surfaces. Saved emission/culling and original engine triangle totals verified after material import.
 - Inspected Unity top/stern, ship, wreck and hologram renders; eight different team palettes verified. Updated existing ISD II test expectations for the new loadout; **no automated tests or combat Play Mode run**.
-- Final Unity compilation/import checks are ready and Console contains no current errors. Runtime combat, turret firing, launches, abilities and destruction remain untested.
+- Final Unity compilation/import checks pass; no new ISD II errors after final engine reimport and saved-asset checks. Runtime combat, turret firing, launches, abilities and destruction remain untested.
 - Evidence: `ImportEvidence.json`, `output/ISDIIReplacement/SourceAudit.json`, `VerifiedUnity.json`, `Integrated.png`, `Top.png`, `EnginesRear*.png`, `Previews/` and `Blender/`.

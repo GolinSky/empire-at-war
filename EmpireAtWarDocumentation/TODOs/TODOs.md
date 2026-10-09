@@ -306,11 +306,17 @@
   - **Completed**: 2026-10-07; Empire ship `208`, hull/shields/speed `600/800/35`, ten non-targetable mounts, no fighters, self-activated Pursuit; dedicated art/shield/wreck/placement/icons and all registrations committed.
   - **Verification**: Raider `8/8` and ship-ability `17/17` tests passed; related ion/missile firing-cone bug fixed. Geometry/UV/bones, seven source hashes, saved references and eight live/wreck palettes verified. Broader observed suite `1,086/1,090`, with four unrelated failures; no combat Play Mode run.
 
-- [x] **Add ISD II**
+- [x] **Replace ISD II visuals from Workshop 1770851727**
   - **Plan**: [[Done/Features/ISDII_Import|ISD II Import]]
-  - **Completed**: 2026-10-06; Empire ship `205`, exact requested stats/loadout, Power to Main Batteries, Tractor Beam, three fighter types, own art/shield/placement/wreck/icons. Commit `f17fcd22`.
-  - **Team-color follow-up**: 2026-10-06 ISD I and ISD II now use four mirrored foredeck stripes per side with neutral hulls and matching wrecks. Saved ownership/fog/banking/explosion/wreck bindings and red/blue ship/wreck renders verified; no import/serialization errors. No combat or automated Unity test run for this fix.
-  - **Verification**: all 11 ship/ability tests passed; saved-ship checks 8/8 after naming fixes. Full EditMode 1,066/1,067; remaining failure is existing Victory II renderer bindings. Fixed ISD II broadside arcs and all 99 team bindings; GUID dependencies and renders verified. No manual skirmish/Play Mode run.
+  - **Research**: [[Done/Features/ISDII_Import - Research|Source mappings and evidence]]
+  - **Completed**: 2026-10-09; replacement and engine follow-up committed as `f0b035f9`. Own source hull, ISD II structure/all 13 turrets, source death clone, 24 weapons/27 targets; current balance/hangar/abilities retained.
+  - **Outcome**: model/gameplay/preview/wreck/icons updated in place; 38 previous visuals/snapshots removed after a zero-reference dependency check. ISD I dependencies removed from active ISD II art; existing ship 205 and GUID registrations retained.
+  - **Verification**: 55 unchanged source hashes, 16 Blender/Unity geometry-UV-bone checks, 16 packed editable blends, four saved-prefab/reference checks, exact mount positions and eight team palettes passed. Unity compilation successful; engine reimport/shader checks passed, no new ISD II errors. No automated tests or combat Play Mode run; runtime behavior unverified.
+  - **Files**: `Tools/Blender/ISDIIReplacement/README.md`, `ImportEvidence.json`, `output/ISDIIReplacement/`.
+  - **Initial import (2026-10-06)**: Empire ship 205, then-requested stats/loadout, Power to Main Batteries, Tractor Beam, three fighter types, own art/shield/placement/wreck/icons. Commit `f17fcd22`.
+  - **Historical team-color follow-up**: 2026-10-06 four mirrored stripes per side, neutral hulls/matching wrecks; saved ownership/fog/banking/explosion/wreck bindings and red/blue renders verified; no import/serialization errors or combat/automated test run.
+  - **Historical tests**: all 11 ship/ability tests and saved-ship checks 8/8 passed after naming fixes; full EditMode 1,066/1,067 (existing Victory II renderer-binding failure). Broadside arcs/all 99 team bindings and GUID dependencies/renders verified; no manual skirmish/Play Mode run.
+  - **Engine follow-up**: all seven exhaust surfaces visible; complete source engine triangles, two-sided culling and emission survive reimport. Rear/top/bottom screenshots saved; staged Unity references verified.
 
 - [x] **Spawn blockers and relays (replace reinforcement-zone spawning)**
   - **Plan**: [[Done/Features/Spawn_Blockers_And_Relays|Spawn Blockers and Relays]]
