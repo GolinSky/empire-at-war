@@ -309,6 +309,13 @@
   - **Verification**: 1,579 saved-asset checks; twelve geometry/UV/bone imports; zero muzzle displacement; 34 unchanged source hashes; six Republic records and five donor assets/metas unchanged. Eight live/wreck palettes and screenshots saved; Unity compilation successful. No Unity test suite or combat Play Mode run; balance mappings provisional.
   - **Engine fix**: two-sided additive mesh glow restored across all ten engine faces; complete source triangles retained. Rear/upper/lower glow/opaque views verified; refreshed archive and scoped commit created. Final Unity compilation successful.
 
+- [x] **Replace ISD I model from Remake**
+  - **Plan**: [[Done/Features/ISDI_Model_Replacement|ISD I Model Replacement]]
+  - **Reference**: [[GameDesign/ISD I Import]]
+  - **Completed**: 2026-10-09; full Workshop 1770851727 hull/structure/13 gun attachments and source wreck integrated. Current hull/shields/speed/economy and Interceptor/Brute/Punisher bays retained.
+  - **Verification**: 24 weapons/30 targets; original active registrations/GUIDs, geometry/UVs/materials/saved references, 56 source hashes, 100 lossless texture-reference copies and all eight live/wreck palettes passed. 63 original visual records obsolete; active ship has zero obsolete dependencies.
+  - **Limits**: no automated tests or combat Play Mode run by this task; source animations/animated EaW shader effects not recreated.
+
 - [x] **Add Raider Corvette to Empire**
   - **Plan**: [[Done/Features/RaiderCorvette_Import|Raider Corvette Import]]
   - **Reference**: [[GameDesign/Raider Corvette Import]]

@@ -1,0 +1,194 @@
+[
+  {
+    "source": "HP_ISD_1_New_HICT_01",
+    "bone": "ISDIPart01/FP_01",
+    "weapon_type": 31,
+    "source_projectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+    "source_pulses": "1",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HICT_02",
+    "bone": "ISDIPart02/FP_01",
+    "weapon_type": 31,
+    "source_projectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+    "source_pulses": "1",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HTLT_01",
+    "bone": "ISDIPart03/FP_02",
+    "weapon_type": 2,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Heavy",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HTLT_02",
+    "bone": "ISDIPart04/FP_02",
+    "weapon_type": 2,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Heavy",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HTLT_03",
+    "bone": "ISDIPart05/FP_02",
+    "weapon_type": 2,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Heavy",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HTLT_04",
+    "bone": "ISDIPart06/FP_02",
+    "weapon_type": 2,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Heavy",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HTLT_05",
+    "bone": "ISDIPart07/FP_02",
+    "weapon_type": 2,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Heavy",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_HTLT_06",
+    "bone": "ISDIPart08/FP_02",
+    "weapon_type": 2,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Heavy",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_LC_01",
+    "bone": "IC_01_FP_01",
+    "weapon_type": 8,
+    "source_projectile": "Proj_Ship_Laser_Heavy_G",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_LC_02",
+    "bone": "IC_02_FP_01",
+    "weapon_type": 8,
+    "source_projectile": "Proj_Ship_Laser_Heavy_G",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_LC_03",
+    "bone": "IC_03_FP_01",
+    "weapon_type": 8,
+    "source_projectile": "Proj_Ship_Laser_Heavy_G",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_LC_04",
+    "bone": "IC_04_FP_01",
+    "weapon_type": 8,
+    "source_projectile": "Proj_Ship_Laser_Heavy_G",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_LC_05",
+    "bone": "IC_05_FP_01",
+    "weapon_type": 8,
+    "source_projectile": "Proj_Ship_Laser_Heavy_G",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_LC_06",
+    "bone": "IC_06_FP_01",
+    "weapon_type": 8,
+    "source_projectile": "Proj_Ship_Laser_Heavy_G",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_TL_01",
+    "bone": "TL_01_FP_01",
+    "weapon_type": 33,
+    "source_projectile": "Proj_Ship_Turbolaser_Green",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_TL_02",
+    "bone": "TL_02_FP_01",
+    "weapon_type": 33,
+    "source_projectile": "Proj_Ship_Turbolaser_Green",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_TL_03",
+    "bone": "TL_03_FP_01",
+    "weapon_type": 33,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Facing",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_TL_04",
+    "bone": "TL_04_FP_01",
+    "weapon_type": 33,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Facing2",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_1_New_TL_05",
+    "bone": "TL_05_FP_01",
+    "weapon_type": 33,
+    "source_projectile": "Proj_Ship_Turbolaser_Green",
+    "source_pulses": "2",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_Center_TL_01",
+    "bone": "ISDIPart09/FP_03",
+    "weapon_type": 4,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Dual",
+    "source_pulses": "3",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_Center_TL_02",
+    "bone": "ISDIPart10/FP_03",
+    "weapon_type": 4,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Dual",
+    "source_pulses": "3",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_Center_TL_03",
+    "bone": "ISDIPart11/FP_03",
+    "weapon_type": 4,
+    "source_projectile": "Proj_Ship_Turbolaser_Green_Dual",
+    "source_pulses": "3",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_New_QIC_01",
+    "bone": "ISDIPart12/FP_01",
+    "weapon_type": 32,
+    "source_projectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+    "source_pulses": "1",
+    "targetable": true
+  },
+  {
+    "source": "HP_ISD_New_QIC_02",
+    "bone": "ISDIPart13/FP_01",
+    "weapon_type": 32,
+    "source_projectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+    "source_pulses": "1",
+    "targetable": true
+  }
+]

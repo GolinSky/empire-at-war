@@ -1,0 +1,4086 @@
+{
+  "variant": "ISDI",
+  "before": {
+    "meshes": {
+      "Collision": {
+        "vertices": 3157,
+        "triangles": 6071,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M022"
+        ]
+      },
+      "Shadow_2": {
+        "vertices": 6524,
+        "triangles": 11366,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M023"
+        ]
+      },
+      "Shadow_3": {
+        "vertices": 2567,
+        "triangles": 4992,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M024"
+        ]
+      },
+      "Shield": {
+        "vertices": 406,
+        "triangles": 572,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M025"
+        ]
+      },
+      "Hull_Kitbash_Trench_Inset": {
+        "vertices": 176,
+        "triangles": 84,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M026"
+        ]
+      },
+      "Hangar_3_Lights": {
+        "vertices": 886,
+        "triangles": 518,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M027"
+        ]
+      },
+      "Hangar_2_Lights": {
+        "vertices": 48,
+        "triangles": 30,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M028"
+        ]
+      },
+      "Hangar_3": {
+        "vertices": 3235,
+        "triangles": 1948,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M029"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Lights": {
+        "vertices": 6024,
+        "triangles": 4104,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M030"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_01": {
+        "vertices": 19359,
+        "triangles": 11121,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M031"
+        ]
+      },
+      "Hull_2": {
+        "vertices": 432,
+        "triangles": 240,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M032"
+        ]
+      },
+      "Kitbash_Lights_Unsymm": {
+        "vertices": 76,
+        "triangles": 42,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M033"
+        ]
+      },
+      "Hull_Kitbash_Superstructure": {
+        "vertices": 45,
+        "triangles": 32,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M034"
+        ]
+      },
+      "Hull_Kitbash_Trench": {
+        "vertices": 490,
+        "triangles": 350,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M035"
+        ]
+      },
+      "Hull_2_SD": {
+        "vertices": 7788,
+        "triangles": 4074,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M036"
+        ]
+      },
+      "Hull_Highcontrast": {
+        "vertices": 2565,
+        "triangles": 1805,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M037"
+        ]
+      },
+      "Hangar_3_Yellow": {
+        "vertices": 1276,
+        "triangles": 823,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M038"
+        ]
+      },
+      "Hull_Highcontrast.001": {
+        "vertices": 12281,
+        "triangles": 6822,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M039"
+        ]
+      },
+      "Hull_Lights_Grid": {
+        "vertices": 218,
+        "triangles": 110,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M040"
+        ]
+      },
+      "Hangar_3_Yellow_LightDim": {
+        "vertices": 986,
+        "triangles": 656,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M041"
+        ]
+      },
+      "Empire_ISD_Superstructure_Base": {
+        "vertices": 764,
+        "triangles": 480,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M042"
+        ]
+      },
+      "Empire_ISD_Bridge": {
+        "vertices": 3961,
+        "triangles": 2311,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M043"
+        ]
+      },
+      "CBridge_Kitbash": {
+        "vertices": 9208,
+        "triangles": 5004,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M044"
+        ]
+      },
+      "Hull_Highcontrast.002": {
+        "vertices": 1432,
+        "triangles": 838,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M045"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_02": {
+        "vertices": 20800,
+        "triangles": 11990,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M046"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_03": {
+        "vertices": 16036,
+        "triangles": 9392,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M047"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_04": {
+        "vertices": 15664,
+        "triangles": 9184,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M048"
+        ]
+      },
+      "Shadow_1": {
+        "vertices": 2511,
+        "triangles": 4873,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M049"
+        ]
+      },
+      "Engine_Glow_Big": {
+        "vertices": 1203,
+        "triangles": 1428,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M050"
+        ]
+      },
+      "Engine_Glow": {
+        "vertices": 1815,
+        "triangles": 1840,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M051"
+        ]
+      },
+      "Hull_Armor": {
+        "vertices": 6164,
+        "triangles": 2152,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M052"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Unsymm": {
+        "vertices": 2147,
+        "triangles": 1269,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M053"
+        ]
+      },
+      "Turr_Durr_Shadow_Blur": {
+        "vertices": 120,
+        "triangles": 220,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M054"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Pi_Damage_Elec_Mid_Dense": {
+        "parent": "Collision",
+        "head": [
+          153.34014892578125,
+          3.063976287841797,
+          -2.234787643828895e-08
+        ]
+      },
+      "Shadow_2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Shadow_3": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull_Kitbash_Trench_Inset": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_2_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_01": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Kitbash_Lights_Unsymm": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Superstructure": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Trench": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_2_SD": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Highcontrast": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3_Yellow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Highcontrast.001": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Lights_Grid": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3_Yellow_LightDim": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Empire_ISD_Superstructure_Base": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Empire_ISD_Bridge": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "CBridge_Kitbash": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Highcontrast.002": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_02": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_03": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_04": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "pe_imperial_star_destroyer_large": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          339.6676940917969,
+          -1.6391271628890536e-07
+        ]
+      },
+      "pe_imperial_star_destroyer_large.001": {
+        "parent": "Root",
+        "head": [
+          -99.864990234375,
+          339.6676940917969,
+          4.0961531340144575e-06
+        ]
+      },
+      "pe_imperial_star_destroyer_large.002": {
+        "parent": "Root",
+        "head": [
+          99.864990234375,
+          339.6676940917969,
+          -4.423671271069907e-06
+        ]
+      },
+      "pe_imperial_star_destroyer_small": {
+        "parent": "Root",
+        "head": [
+          47.9959716796875,
+          340.6260681152344,
+          16.621999740600586
+        ]
+      },
+      "pe_imperial_star_destroyer_small.001": {
+        "parent": "Root",
+        "head": [
+          -47.9959716796875,
+          340.6260681152344,
+          16.621999740600586
+        ]
+      },
+      "pe_imperial_star_destroyer_small.002": {
+        "parent": "Root",
+        "head": [
+          -47.9959716796875,
+          340.6260681152344,
+          -16.690183639526367
+        ]
+      },
+      "pe_imperial_star_destroyer_small.003": {
+        "parent": "Root",
+        "head": [
+          47.9959716796875,
+          340.6260681152344,
+          -16.621999740600586
+        ]
+      },
+      "TA_ISD1_ICD_02": {
+        "parent": "Root",
+        "head": [
+          105.5106201171875,
+          214.90771484375,
+          21.549606323242188
+        ]
+      },
+      "TA_ISD1_TLD_01": {
+        "parent": "Root",
+        "head": [
+          -107.15643310546875,
+          136.09152221679688,
+          16.596038818359375
+        ]
+      },
+      "TA_ISD1_TLD_02": {
+        "parent": "Root",
+        "head": [
+          105.298095703125,
+          136.092529296875,
+          16.57968521118164
+        ]
+      },
+      "TA_ISD1_TLD_03": {
+        "parent": "Root",
+        "head": [
+          -107.15887451171875,
+          162.5515594482422,
+          18.2227783203125
+        ]
+      },
+      "TA_ISD1_TLD_04": {
+        "parent": "Root",
+        "head": [
+          105.3011474609375,
+          162.5525665283203,
+          18.206424713134766
+        ]
+      },
+      "TA_ISD1_TLD_05": {
+        "parent": "Root",
+        "head": [
+          -107.15570068359375,
+          189.0133819580078,
+          19.85089111328125
+        ]
+      },
+      "TA_ISD1_TLD_06": {
+        "parent": "Root",
+        "head": [
+          105.298095703125,
+          189.01438903808594,
+          19.834529876708984
+        ]
+      },
+      "TA_ISD1_ICD_01": {
+        "parent": "Root",
+        "head": [
+          -106.99566650390625,
+          214.9149169921875,
+          21.432723999023438
+        ]
+      },
+      "TA_ISD2_TLO_01": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          162.01437377929688,
+          23.351303100585938
+        ]
+      },
+      "TA_ISD2_TLO_02": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          188.387451171875,
+          25.85931396484375
+        ]
+      },
+      "TA_ISD2_TLO_03": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          214.8507080078125,
+          28.413192749023438
+        ]
+      },
+      "TA_ISD2_TLO_04": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          135.63040161132812,
+          20.813308715820312
+        ]
+      },
+      "TA_ISD2_TLO_05": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          135.63040161132812,
+          20.813308715820312
+        ]
+      },
+      "TA_ISD2_TLO_06": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          162.01437377929688,
+          23.351303100585938
+        ]
+      },
+      "TA_ISD2_TLO_07": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          188.387451171875,
+          25.85931396484375
+        ]
+      },
+      "TA_ISD2_TLO_08": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          214.8507080078125,
+          28.413192749023438
+        ]
+      },
+      "TA_ISD_ICQ_01": {
+        "parent": "Root",
+        "head": [
+          -138.843505859375,
+          69.18772888183594,
+          -0.9230943918228149
+        ]
+      },
+      "TA_ISD_ICQ_02": {
+        "parent": "Root",
+        "head": [
+          138.843017578125,
+          69.18772888183594,
+          -0.9230943918228149
+        ]
+      },
+      "HP_SG": {
+        "parent": "Root",
+        "head": [
+          -1.0446386795592844e-06,
+          242.86207580566406,
+          122.26945495605469
+        ]
+      },
+      "HP_SG_Fire": {
+        "parent": "HP_SG",
+        "head": [
+          9.155272709904239e-05,
+          266.7606201171875,
+          127.35438537597656
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion": {
+        "parent": "HP_SG_Fire",
+        "head": [
+          58.35615539550781,
+          243.4615020751953,
+          153.5515899658203
+        ]
+      },
+      "P_Ship_Fire_Large": {
+        "parent": "HP_SG_Fire",
+        "head": [
+          -0.7956402897834778,
+          234.45211791992188,
+          125.19711303710938
+        ]
+      },
+      "TL_01": {
+        "parent": "Root",
+        "head": [
+          49.1317138671875,
+          -231.89743041992188,
+          -0.06578019261360168
+        ]
+      },
+      "IC_01": {
+        "parent": "Root",
+        "head": [
+          27.204986572265625,
+          -309.6398010253906,
+          -0.9243195652961731
+        ]
+      },
+      "HP_Trac_Bone": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          124.61665344238281,
+          77.11891174316406
+        ]
+      },
+      "HP_Trac_Bone_00": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          89.70439147949219,
+          68.65492248535156
+        ]
+      },
+      "IC_03": {
+        "parent": "Root",
+        "head": [
+          110.64697265625,
+          -23.522560119628906,
+          0.24722039699554443
+        ]
+      },
+      "TL_03": {
+        "parent": "Root",
+        "head": [
+          161.2359619140625,
+          145.30018615722656,
+          0.0
+        ]
+      },
+      "IC_05": {
+        "parent": "Root",
+        "head": [
+          188.0634765625,
+          229.4630584716797,
+          0.0
+        ]
+      },
+      "Spawn_00": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          5.863689422607422,
+          -20.617177963256836
+        ]
+      },
+      "Decal_Attach_01": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Decal_Attach_02": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Decal_Attach_03": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Decal_Attach_04": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "TA_ISD_ICQ_02_Fire": {
+        "parent": "Root",
+        "head": [
+          139.69793701171875,
+          67.68024444580078,
+          5.989331245422363
+        ]
+      },
+      "pf_small_w.alo": {
+        "parent": "TA_ISD_ICQ_02_Fire",
+        "head": [
+          141.34701538085938,
+          66.12886810302734,
+          -0.6065058708190918
+        ]
+      },
+      "TA_ISD_ICQ_01_Fire": {
+        "parent": "Root",
+        "head": [
+          -138.8922119140625,
+          69.11380004882812,
+          5.989331245422363
+        ]
+      },
+      "pf_small_w.alo.001": {
+        "parent": "TA_ISD_ICQ_01_Fire",
+        "head": [
+          -141.73155212402344,
+          66.38230895996094,
+          -0.9648547172546387
+        ]
+      },
+      "TA_ISD1_ICD_01_Fire": {
+        "parent": "Root",
+        "head": [
+          -102.447021484375,
+          208.4581298828125,
+          22.683847427368164
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.001": {
+        "parent": "TA_ISD1_ICD_01_Fire",
+        "head": [
+          -106.68739318847656,
+          215.7984619140625,
+          23.795978546142578
+        ]
+      },
+      "TA_ISD1_TLD_06_Fire": {
+        "parent": "Root",
+        "head": [
+          107.4091796875,
+          190.94566345214844,
+          20.959083557128906
+        ]
+      },
+      "P_Ship_Fire_Explosion": {
+        "parent": "TA_ISD1_TLD_06_Fire",
+        "head": [
+          108.76264953613281,
+          189.5981903076172,
+          20.86028480529785
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion": {
+        "parent": "TA_ISD1_TLD_06_Fire",
+        "head": [
+          95.74095153808594,
+          226.880126953125,
+          37.7050666809082
+        ]
+      },
+      "TA_ISD1_TLD_02_Fire": {
+        "parent": "Root",
+        "head": [
+          108.66949462890625,
+          151.95040893554688,
+          16.864744186401367
+        ]
+      },
+      "P_Ship_Fire_Explosion.001": {
+        "parent": "TA_ISD1_TLD_02_Fire",
+        "head": [
+          108.34265899658203,
+          137.98928833007812,
+          19.65939712524414
+        ]
+      },
+      "TA_ISD1_TLD_03_Fire": {
+        "parent": "Root",
+        "head": [
+          -110.619384765625,
+          163.37451171875,
+          18.079252243041992
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.002": {
+        "parent": "TA_ISD1_TLD_03_Fire",
+        "head": [
+          -107.50202941894531,
+          163.50482177734375,
+          19.335750579833984
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.001": {
+        "parent": "TA_ISD1_TLD_03_Fire",
+        "head": [
+          -93.2645492553711,
+          154.27371215820312,
+          36.418548583984375
+        ]
+      },
+      "TA_ISD1_TLD_01_Fire": {
+        "parent": "Root",
+        "head": [
+          -102.88134765625,
+          150.62112426757812,
+          18.58810043334961
+        ]
+      },
+      "P_Ship_Fire_Explosion.002": {
+        "parent": "TA_ISD1_TLD_01_Fire",
+        "head": [
+          -105.39675903320312,
+          134.7128448486328,
+          19.433185577392578
+        ]
+      },
+      "IC_01_FP_02": {
+        "parent": "Root",
+        "head": [
+          35.823394775390625,
+          -288.1476745605469,
+          2.455195188522339
+        ]
+      },
+      "IC_01_Fire": {
+        "parent": "Root",
+        "head": [
+          17.560791015625,
+          -326.13433837890625,
+          -4.132508754730225
+        ]
+      },
+      "P_Ship_Fire_Explosion.003": {
+        "parent": "IC_01_Fire",
+        "head": [
+          33.70823287963867,
+          -298.3533020019531,
+          0.7502312660217285
+        ]
+      },
+      "IC_01_FP_01": {
+        "parent": "Root",
+        "head": [
+          21.985107421875,
+          -332.5411376953125,
+          -0.5789247751235962
+        ]
+      },
+      "TL_01_Fire": {
+        "parent": "Root",
+        "head": [
+          47.292266845703125,
+          -231.89743041992188,
+          1.1376826763153076
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.003": {
+        "parent": "TL_01_Fire",
+        "head": [
+          58.19246292114258,
+          -214.47608947753906,
+          0.8976306915283203
+        ]
+      },
+      "TL_01_FP_02": {
+        "parent": "Root",
+        "head": [
+          45.98638916015625,
+          -246.2782745361328,
+          0.20505475997924805
+        ]
+      },
+      "TL_01_FP_01": {
+        "parent": "Root",
+        "head": [
+          61.626068115234375,
+          -203.68455505371094,
+          -1.280771017074585
+        ]
+      },
+      "IC_03_FP_02": {
+        "parent": "Root",
+        "head": [
+          95.82870483398438,
+          -86.87511444091797,
+          -3.3593244552612305
+        ]
+      },
+      "IC_03_Fire": {
+        "parent": "Root",
+        "head": [
+          105.85757446289062,
+          -44.88430404663086,
+          -2.528481960296631
+        ]
+      },
+      "pf_small_w": {
+        "parent": "IC_03_Fire",
+        "head": [
+          104.40808868408203,
+          -51.14850616455078,
+          -0.4324202537536621
+        ]
+      },
+      "IC_05_Fire": {
+        "parent": "Root",
+        "head": [
+          177.27801513671875,
+          194.43157958984375,
+          2.6565639972686768
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.002": {
+        "parent": "IC_05_Fire",
+        "head": [
+          191.06326293945312,
+          235.77052307128906,
+          -2.1823813915252686
+        ]
+      },
+      "IC_05_FP_01": {
+        "parent": "Root",
+        "head": [
+          200.97821044921875,
+          265.3585205078125,
+          1.7358527183532715
+        ]
+      },
+      "IC_05_FP_02": {
+        "parent": "Root",
+        "head": [
+          182.90740966796875,
+          206.036376953125,
+          0.2298814058303833
+        ]
+      },
+      "TL_03_Fire": {
+        "parent": "Root",
+        "head": [
+          153.9749755859375,
+          148.96054077148438,
+          2.607801675796509
+        ]
+      },
+      "P_Ship_Fire_Explosion.004": {
+        "parent": "TL_03_Fire",
+        "head": [
+          160.31227111816406,
+          131.1249237060547,
+          -2.717424154281616
+        ]
+      },
+      "TL_03_FP_02": {
+        "parent": "Root",
+        "head": [
+          173.234375,
+          170.30921936035156,
+          3.8255929946899414
+        ]
+      },
+      "TL_03_FP_01": {
+        "parent": "Root",
+        "head": [
+          156.55429077148438,
+          119.7803726196289,
+          -3.2310001850128174
+        ]
+      },
+      "TL_02": {
+        "parent": "Root",
+        "head": [
+          -49.13201904296875,
+          -231.89743041992188,
+          -0.06578019261360168
+        ]
+      },
+      "TL_02_Fire": {
+        "parent": "Root",
+        "head": [
+          -47.2919921875,
+          -231.89743041992188,
+          1.1376826763153076
+        ]
+      },
+      "P_Ship_Fire_Explosion.005": {
+        "parent": "TL_02_Fire",
+        "head": [
+          -49.54656982421875,
+          -234.62355041503906,
+          -0.8983066082000732
+        ]
+      },
+      "TL_02_FP_01": {
+        "parent": "Root",
+        "head": [
+          -61.6259765625,
+          -203.68455505371094,
+          -1.280771017074585
+        ]
+      },
+      "TL_02_FP_02": {
+        "parent": "Root",
+        "head": [
+          -45.98602294921875,
+          -246.2782745361328,
+          0.20505475997924805
+        ]
+      },
+      "TL_04": {
+        "parent": "Root",
+        "head": [
+          -161.2359619140625,
+          145.30018615722656,
+          0.0
+        ]
+      },
+      "TL_04_Fire": {
+        "parent": "Root",
+        "head": [
+          -153.0777587890625,
+          148.96054077148438,
+          2.607801675796509
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.004": {
+        "parent": "TL_04_Fire",
+        "head": [
+          -159.83592224121094,
+          141.3692626953125,
+          -2.1823813915252686
+        ]
+      },
+      "TL_04_FP_01": {
+        "parent": "Root",
+        "head": [
+          -156.55401611328125,
+          119.7803726196289,
+          -3.2310001850128174
+        ]
+      },
+      "TL_04_FP_02": {
+        "parent": "Root",
+        "head": [
+          -173.2340087890625,
+          170.30921936035156,
+          3.8255929946899414
+        ]
+      },
+      "IC_03_FP_01": {
+        "parent": "Root",
+        "head": [
+          124.93121337890625,
+          9.205459594726562,
+          -2.5250439643859863
+        ]
+      },
+      "IC_02": {
+        "parent": "Root",
+        "head": [
+          -27.20501708984375,
+          -309.6398010253906,
+          -0.9243195652961731
+        ]
+      },
+      "IC_02_Fire": {
+        "parent": "Root",
+        "head": [
+          -18.99652099609375,
+          -326.13433837890625,
+          -4.132508754730225
+        ]
+      },
+      "pf_small_w.001": {
+        "parent": "IC_02_Fire",
+        "head": [
+          -21.718002319335938,
+          -336.0731506347656,
+          -0.9724664688110352
+        ]
+      },
+      "IC_02_FP_01": {
+        "parent": "Root",
+        "head": [
+          -21.9849853515625,
+          -332.5411376953125,
+          -0.5789247751235962
+        ]
+      },
+      "IC_02_FP_02": {
+        "parent": "Root",
+        "head": [
+          -35.822998046875,
+          -288.1476745605469,
+          2.455195188522339
+        ]
+      },
+      "IC_04": {
+        "parent": "Root",
+        "head": [
+          -110.64697265625,
+          -23.522560119628906,
+          0.24722039699554443
+        ]
+      },
+      "IC_04_Fire": {
+        "parent": "Root",
+        "head": [
+          -101.9638671875,
+          -44.88430404663086,
+          -2.528481960296631
+        ]
+      },
+      "pf_small_w.002": {
+        "parent": "IC_04_Fire",
+        "head": [
+          -126.83241271972656,
+          9.15982437133789,
+          3.6802115440368652
+        ]
+      },
+      "pf_small_w.003": {
+        "parent": "IC_04_Fire",
+        "head": [
+          -91.3997802734375,
+          -94.00613403320312,
+          2.509154796600342
+        ]
+      },
+      "IC_04_FP_01": {
+        "parent": "Root",
+        "head": [
+          -124.9310302734375,
+          9.205459594726562,
+          -2.5250439643859863
+        ]
+      },
+      "IC_04_FP_02": {
+        "parent": "Root",
+        "head": [
+          -95.8289794921875,
+          -86.87511444091797,
+          -3.3593244552612305
+        ]
+      },
+      "IC_06": {
+        "parent": "Root",
+        "head": [
+          -188.06298828125,
+          229.4630584716797,
+          0.0
+        ]
+      },
+      "IC_06_Fire": {
+        "parent": "Root",
+        "head": [
+          -174.38916015625,
+          194.43157958984375,
+          2.6565639972686768
+        ]
+      },
+      "P_Ship_Fire_Explosion.006": {
+        "parent": "IC_06_Fire",
+        "head": [
+          -193.40682983398438,
+          244.6318817138672,
+          -0.6315066814422607
+        ]
+      },
+      "IC_06_FP_01": {
+        "parent": "Root",
+        "head": [
+          -200.97802734375,
+          265.3585205078125,
+          1.7358527183532715
+        ]
+      },
+      "IC_06_FP_02": {
+        "parent": "Root",
+        "head": [
+          -182.906982421875,
+          206.036376953125,
+          0.2298814058303833
+        ]
+      },
+      "TL_05": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -378.9659118652344,
+          0.0
+        ]
+      },
+      "TL_05_FP_01": {
+        "parent": "Root",
+        "head": [
+          5.780527114868164,
+          -384.0720520019531,
+          -1.46954345703125
+        ]
+      },
+      "TL_05_FP_02": {
+        "parent": "Root",
+        "head": [
+          -5.781000137329102,
+          -384.0720520019531,
+          -1.46954345703125
+        ]
+      },
+      "TL_05_Fire": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -377.4808044433594,
+          0.0
+        ]
+      },
+      "pf_small_w.004": {
+        "parent": "TL_05_Fire",
+        "head": [
+          1.5516047477722168,
+          -387.7703857421875,
+          3.3593575954437256
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.003": {
+        "parent": "TL_05_Fire",
+        "head": [
+          -3.319458246231079,
+          -384.29925537109375,
+          -0.9407137632369995
+        ]
+      },
+      "Shadow_1": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow_Big": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull_Armor": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Unsymm": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "HP_New_TA_02": {
+        "parent": "Root",
+        "head": [
+          -3.697769557220454e-07,
+          -18.021411895751953,
+          33.4602165222168
+        ]
+      },
+      "HP_New_TA_01": {
+        "parent": "Root",
+        "head": [
+          -2.350813446128086e-07,
+          -29.885608673095703,
+          32.59353256225586
+        ]
+      },
+      "Turr_Durr_Shadow_Blur": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          -1.6172032701433636e-05
+        ]
+      },
+      "HP_New_TA_03": {
+        "parent": "Root",
+        "head": [
+          8.329205058998923e-08,
+          -10.770269393920898,
+          35.77933120727539
+        ]
+      }
+    },
+    "bounds_min": [
+      -215.9496307373047,
+      -391.4871826171875,
+      -55.05691909790039
+    ],
+    "bounds_max": [
+      215.9496307373047,
+      378.2515869140625,
+      149.93739318847656
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Collision": {
+        "vertices": 3157,
+        "triangles": 6071,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M022.001"
+        ]
+      },
+      "Shadow_2": {
+        "vertices": 6524,
+        "triangles": 11366,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M023.001"
+        ]
+      },
+      "Shadow_3": {
+        "vertices": 2567,
+        "triangles": 4992,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M024.001"
+        ]
+      },
+      "Shield": {
+        "vertices": 406,
+        "triangles": 572,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M025.001"
+        ]
+      },
+      "Hull_Kitbash_Trench_Inset": {
+        "vertices": 176,
+        "triangles": 84,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M026.001"
+        ]
+      },
+      "Hangar_3_Lights": {
+        "vertices": 886,
+        "triangles": 518,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M027.001"
+        ]
+      },
+      "Hangar_2_Lights": {
+        "vertices": 48,
+        "triangles": 30,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M028.001"
+        ]
+      },
+      "Hangar_3": {
+        "vertices": 3235,
+        "triangles": 1948,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M029.001"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Lights": {
+        "vertices": 6024,
+        "triangles": 4104,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M030.001"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_01": {
+        "vertices": 19359,
+        "triangles": 11121,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M031.001"
+        ]
+      },
+      "Hull_2": {
+        "vertices": 432,
+        "triangles": 240,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M032.001"
+        ]
+      },
+      "Kitbash_Lights_Unsymm": {
+        "vertices": 76,
+        "triangles": 42,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M033.001"
+        ]
+      },
+      "Hull_Kitbash_Superstructure": {
+        "vertices": 45,
+        "triangles": 32,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M034.001"
+        ]
+      },
+      "Hull_Kitbash_Trench": {
+        "vertices": 490,
+        "triangles": 350,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M035.001"
+        ]
+      },
+      "Hull_2_SD": {
+        "vertices": 7788,
+        "triangles": 4074,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M036.001"
+        ]
+      },
+      "Hull_Highcontrast": {
+        "vertices": 2565,
+        "triangles": 1805,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M037.001"
+        ]
+      },
+      "Hangar_3_Yellow": {
+        "vertices": 1276,
+        "triangles": 823,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M038.001"
+        ]
+      },
+      "Hull_Highcontrast.001": {
+        "vertices": 12281,
+        "triangles": 6822,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M039.001"
+        ]
+      },
+      "Hull_Lights_Grid": {
+        "vertices": 218,
+        "triangles": 110,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M040.001"
+        ]
+      },
+      "Hangar_3_Yellow_LightDim": {
+        "vertices": 986,
+        "triangles": 656,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M041.001"
+        ]
+      },
+      "Empire_ISD_Superstructure_Base": {
+        "vertices": 764,
+        "triangles": 480,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M042.001"
+        ]
+      },
+      "Empire_ISD_Bridge": {
+        "vertices": 3961,
+        "triangles": 2311,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M043.001"
+        ]
+      },
+      "CBridge_Kitbash": {
+        "vertices": 9208,
+        "triangles": 5004,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M044.001"
+        ]
+      },
+      "Hull_Highcontrast.002": {
+        "vertices": 1432,
+        "triangles": 838,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M045.001"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_02": {
+        "vertices": 20800,
+        "triangles": 11990,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M046.001"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_03": {
+        "vertices": 16036,
+        "triangles": 9392,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M047.001"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_04": {
+        "vertices": 15664,
+        "triangles": 9184,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M048.001"
+        ]
+      },
+      "Shadow_1": {
+        "vertices": 2511,
+        "triangles": 4873,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M049.001"
+        ]
+      },
+      "Engine_Glow_Big": {
+        "vertices": 1203,
+        "triangles": 1428,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M050.001"
+        ]
+      },
+      "Engine_Glow": {
+        "vertices": 1815,
+        "triangles": 1840,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M051.001"
+        ]
+      },
+      "Hull_Armor": {
+        "vertices": 6164,
+        "triangles": 2152,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M052.001"
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Unsymm": {
+        "vertices": 2147,
+        "triangles": 1269,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDI_M053.001"
+        ]
+      },
+      "Turr_Durr_Shadow_Blur": {
+        "vertices": 120,
+        "triangles": 220,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDI_M054.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Pi_Damage_Elec_Mid_Dense": {
+        "parent": "Collision",
+        "head": [
+          153.34014892578125,
+          3.063976287841797,
+          -9.463921060159919e-07
+        ]
+      },
+      "Shadow_2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Shadow_3": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull_Kitbash_Trench_Inset": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_2_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_01": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Kitbash_Lights_Unsymm": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Superstructure": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Trench": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_2_SD": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Highcontrast": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3_Yellow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Highcontrast.001": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Lights_Grid": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hangar_3_Yellow_LightDim": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Empire_ISD_Superstructure_Base": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Empire_ISD_Bridge": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "CBridge_Kitbash": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Highcontrast.002": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_02": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_03": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_04": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "pe_imperial_star_destroyer_large": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          339.6676940917969,
+          -5.5502801842521876e-05
+        ]
+      },
+      "pe_imperial_star_destroyer_large.001": {
+        "parent": "Root",
+        "head": [
+          -99.864990234375,
+          339.6676940917969,
+          -5.1242735935375094e-05
+        ]
+      },
+      "pe_imperial_star_destroyer_large.002": {
+        "parent": "Root",
+        "head": [
+          99.864990234375,
+          339.6676940917969,
+          -5.976256215944886e-05
+        ]
+      },
+      "pe_imperial_star_destroyer_small": {
+        "parent": "Root",
+        "head": [
+          47.9959716796875,
+          340.6260681152344,
+          16.621944427490234
+        ]
+      },
+      "pe_imperial_star_destroyer_small.001": {
+        "parent": "Root",
+        "head": [
+          -47.9959716796875,
+          340.6260681152344,
+          16.621944427490234
+        ]
+      },
+      "pe_imperial_star_destroyer_small.002": {
+        "parent": "Root",
+        "head": [
+          -47.9959716796875,
+          340.6260681152344,
+          -16.69023895263672
+        ]
+      },
+      "pe_imperial_star_destroyer_small.003": {
+        "parent": "Root",
+        "head": [
+          47.9959716796875,
+          340.6260681152344,
+          -16.622055053710938
+        ]
+      },
+      "TA_ISD1_ICD_02": {
+        "parent": "Root",
+        "head": [
+          105.5106201171875,
+          214.90771484375,
+          21.549571990966797
+        ]
+      },
+      "TA_ISD1_TLD_01": {
+        "parent": "Root",
+        "head": [
+          -107.15643310546875,
+          136.09152221679688,
+          16.59601593017578
+        ]
+      },
+      "TA_ISD1_TLD_02": {
+        "parent": "Root",
+        "head": [
+          105.298095703125,
+          136.092529296875,
+          16.579662322998047
+        ]
+      },
+      "TA_ISD1_TLD_03": {
+        "parent": "Root",
+        "head": [
+          -107.15887451171875,
+          162.5515594482422,
+          18.22275161743164
+        ]
+      },
+      "TA_ISD1_TLD_04": {
+        "parent": "Root",
+        "head": [
+          105.3011474609375,
+          162.5525665283203,
+          18.206398010253906
+        ]
+      },
+      "TA_ISD1_TLD_05": {
+        "parent": "Root",
+        "head": [
+          -107.15570068359375,
+          189.0133819580078,
+          19.850860595703125
+        ]
+      },
+      "TA_ISD1_TLD_06": {
+        "parent": "Root",
+        "head": [
+          105.298095703125,
+          189.01438903808594,
+          19.83449935913086
+        ]
+      },
+      "TA_ISD1_ICD_01": {
+        "parent": "Root",
+        "head": [
+          -106.99566650390625,
+          214.9149169921875,
+          21.432689666748047
+        ]
+      },
+      "TA_ISD2_TLO_01": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          162.01437377929688,
+          23.351276397705078
+        ]
+      },
+      "TA_ISD2_TLO_02": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          188.387451171875,
+          25.859283447265625
+        ]
+      },
+      "TA_ISD2_TLO_03": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          214.8507080078125,
+          28.413158416748047
+        ]
+      },
+      "TA_ISD2_TLO_04": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          135.63040161132812,
+          20.81328582763672
+        ]
+      },
+      "TA_ISD2_TLO_05": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          135.63040161132812,
+          20.81328582763672
+        ]
+      },
+      "TA_ISD2_TLO_06": {
+        "parent": "Root",
+        "head": [
+          -106.6448974609375,
+          162.01437377929688,
+          23.351276397705078
+        ]
+      },
+      "TA_ISD2_TLO_07": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          188.387451171875,
+          25.859283447265625
+        ]
+      },
+      "TA_ISD2_TLO_08": {
+        "parent": "Root",
+        "head": [
+          106.64495849609375,
+          214.8507080078125,
+          28.413158416748047
+        ]
+      },
+      "TA_ISD_ICQ_01": {
+        "parent": "Root",
+        "head": [
+          -138.843505859375,
+          69.18772888183594,
+          -0.9231056571006775
+        ]
+      },
+      "TA_ISD_ICQ_02": {
+        "parent": "Root",
+        "head": [
+          138.843017578125,
+          69.18772888183594,
+          -0.9231056571006775
+        ]
+      },
+      "HP_SG": {
+        "parent": "Root",
+        "head": [
+          -1.0446386795592844e-06,
+          242.86209106445312,
+          122.26941680908203
+        ]
+      },
+      "HP_SG_Fire": {
+        "parent": "HP_SG",
+        "head": [
+          9.547454828862101e-05,
+          266.7606506347656,
+          127.35433959960938
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion": {
+        "parent": "HP_SG_Fire",
+        "head": [
+          58.35615539550781,
+          243.46151733398438,
+          153.55154418945312
+        ]
+      },
+      "P_Ship_Fire_Large": {
+        "parent": "HP_SG_Fire",
+        "head": [
+          -0.7956417202949524,
+          234.45213317871094,
+          125.19707489013672
+        ]
+      },
+      "TL_01": {
+        "parent": "Root",
+        "head": [
+          49.1317138671875,
+          -231.89743041992188,
+          -0.06574241071939468
+        ]
+      },
+      "IC_01": {
+        "parent": "Root",
+        "head": [
+          27.204986572265625,
+          -309.6398010253906,
+          -0.9242691397666931
+        ]
+      },
+      "HP_Trac_Bone": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          124.61666870117188,
+          77.11888885498047
+        ]
+      },
+      "HP_Trac_Bone_00": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          89.70439910888672,
+          68.6549072265625
+        ]
+      },
+      "IC_03": {
+        "parent": "Root",
+        "head": [
+          110.64697265625,
+          -23.522560119628906,
+          0.24722422659397125
+        ]
+      },
+      "TL_03": {
+        "parent": "Root",
+        "head": [
+          161.2359619140625,
+          145.30018615722656,
+          -2.3672404495300725e-05
+        ]
+      },
+      "IC_05": {
+        "parent": "Root",
+        "head": [
+          188.0634765625,
+          229.4630584716797,
+          -3.738427403732203e-05
+        ]
+      },
+      "Spawn_00": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          5.8636860847473145,
+          -20.61717987060547
+        ]
+      },
+      "Decal_Attach_01": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Decal_Attach_02": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Decal_Attach_03": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Decal_Attach_04": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "TA_ISD_ICQ_02_Fire": {
+        "parent": "Root",
+        "head": [
+          139.69793701171875,
+          67.68024444580078,
+          5.989320278167725
+        ]
+      },
+      "pf_small_w.alo": {
+        "parent": "TA_ISD_ICQ_02_Fire",
+        "head": [
+          141.34703063964844,
+          66.12886047363281,
+          -0.6065166592597961
+        ]
+      },
+      "TA_ISD_ICQ_01_Fire": {
+        "parent": "Root",
+        "head": [
+          -138.8922119140625,
+          69.11380004882812,
+          5.989319801330566
+        ]
+      },
+      "pf_small_w.alo.001": {
+        "parent": "TA_ISD_ICQ_01_Fire",
+        "head": [
+          -141.73155212402344,
+          66.38230895996094,
+          -0.964865505695343
+        ]
+      },
+      "TA_ISD1_ICD_01_Fire": {
+        "parent": "Root",
+        "head": [
+          -102.447021484375,
+          208.4581298828125,
+          22.683813095092773
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.001": {
+        "parent": "TA_ISD1_ICD_01_Fire",
+        "head": [
+          -106.68738555908203,
+          215.7984619140625,
+          23.79594612121582
+        ]
+      },
+      "TA_ISD1_TLD_06_Fire": {
+        "parent": "Root",
+        "head": [
+          107.4091796875,
+          190.94566345214844,
+          20.95905303955078
+        ]
+      },
+      "P_Ship_Fire_Explosion": {
+        "parent": "TA_ISD1_TLD_06_Fire",
+        "head": [
+          108.76264953613281,
+          189.5981903076172,
+          20.860254287719727
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion": {
+        "parent": "TA_ISD1_TLD_06_Fire",
+        "head": [
+          95.74095153808594,
+          226.880126953125,
+          37.70502853393555
+        ]
+      },
+      "TA_ISD1_TLD_02_Fire": {
+        "parent": "Root",
+        "head": [
+          108.66949462890625,
+          151.95040893554688,
+          16.86471939086914
+        ]
+      },
+      "P_Ship_Fire_Explosion.001": {
+        "parent": "TA_ISD1_TLD_02_Fire",
+        "head": [
+          108.34265899658203,
+          137.98928833007812,
+          19.65937614440918
+        ]
+      },
+      "TA_ISD1_TLD_03_Fire": {
+        "parent": "Root",
+        "head": [
+          -110.619384765625,
+          163.37451171875,
+          18.079225540161133
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.002": {
+        "parent": "TA_ISD1_TLD_03_Fire",
+        "head": [
+          -107.50202941894531,
+          163.50482177734375,
+          19.335723876953125
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.001": {
+        "parent": "TA_ISD1_TLD_03_Fire",
+        "head": [
+          -93.2645492553711,
+          154.27371215820312,
+          36.418521881103516
+        ]
+      },
+      "TA_ISD1_TLD_01_Fire": {
+        "parent": "Root",
+        "head": [
+          -102.88134765625,
+          150.62112426757812,
+          18.588075637817383
+        ]
+      },
+      "P_Ship_Fire_Explosion.002": {
+        "parent": "TA_ISD1_TLD_01_Fire",
+        "head": [
+          -105.39675903320312,
+          134.7128448486328,
+          19.433162689208984
+        ]
+      },
+      "IC_01_FP_02": {
+        "parent": "Root",
+        "head": [
+          35.823394775390625,
+          -288.1476745605469,
+          2.455242156982422
+        ]
+      },
+      "IC_01_Fire": {
+        "parent": "Root",
+        "head": [
+          17.560791015625,
+          -326.13433837890625,
+          -4.132455825805664
+        ]
+      },
+      "P_Ship_Fire_Explosion.003": {
+        "parent": "IC_01_Fire",
+        "head": [
+          33.70823669433594,
+          -298.35333251953125,
+          0.7502799034118652
+        ]
+      },
+      "IC_01_FP_01": {
+        "parent": "Root",
+        "head": [
+          21.985107421875,
+          -332.5411376953125,
+          -0.5788705945014954
+        ]
+      },
+      "TL_01_Fire": {
+        "parent": "Root",
+        "head": [
+          47.292266845703125,
+          -231.89743041992188,
+          1.1377204656600952
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.003": {
+        "parent": "TL_01_Fire",
+        "head": [
+          58.19245910644531,
+          -214.47608947753906,
+          0.8976656198501587
+        ]
+      },
+      "TL_01_FP_02": {
+        "parent": "Root",
+        "head": [
+          45.98638916015625,
+          -246.2782745361328,
+          0.20509488880634308
+        ]
+      },
+      "TL_01_FP_01": {
+        "parent": "Root",
+        "head": [
+          61.626068115234375,
+          -203.68455505371094,
+          -1.2807378768920898
+        ]
+      },
+      "IC_03_FP_02": {
+        "parent": "Root",
+        "head": [
+          95.82870483398438,
+          -86.87511444091797,
+          -3.3593103885650635
+        ]
+      },
+      "IC_03_Fire": {
+        "parent": "Root",
+        "head": [
+          105.85757446289062,
+          -44.88430404663086,
+          -2.5284745693206787
+        ]
+      },
+      "pf_small_w": {
+        "parent": "IC_03_Fire",
+        "head": [
+          104.40808868408203,
+          -51.148502349853516,
+          -0.43241214752197266
+        ]
+      },
+      "IC_05_Fire": {
+        "parent": "Root",
+        "head": [
+          177.27801513671875,
+          194.43157958984375,
+          2.6565322875976562
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.002": {
+        "parent": "IC_05_Fire",
+        "head": [
+          191.06324768066406,
+          235.77052307128906,
+          -2.182419776916504
+        ]
+      },
+      "IC_05_FP_01": {
+        "parent": "Root",
+        "head": [
+          200.97821044921875,
+          265.3585205078125,
+          1.7358094453811646
+        ]
+      },
+      "IC_05_FP_02": {
+        "parent": "Root",
+        "head": [
+          182.90740966796875,
+          206.036376953125,
+          0.22984783351421356
+        ]
+      },
+      "TL_03_Fire": {
+        "parent": "Root",
+        "head": [
+          153.9749755859375,
+          148.96054077148438,
+          2.6077773571014404
+        ]
+      },
+      "P_Ship_Fire_Explosion.004": {
+        "parent": "TL_03_Fire",
+        "head": [
+          160.31227111816406,
+          131.12490844726562,
+          -2.7174456119537354
+        ]
+      },
+      "TL_03_FP_02": {
+        "parent": "Root",
+        "head": [
+          173.234375,
+          170.30921936035156,
+          3.8255653381347656
+        ]
+      },
+      "TL_03_FP_01": {
+        "parent": "Root",
+        "head": [
+          156.55429077148438,
+          119.7803726196289,
+          -3.2310197353363037
+        ]
+      },
+      "TL_02": {
+        "parent": "Root",
+        "head": [
+          -49.13201904296875,
+          -231.89743041992188,
+          -0.06574241071939468
+        ]
+      },
+      "TL_02_Fire": {
+        "parent": "Root",
+        "head": [
+          -47.2919921875,
+          -231.89743041992188,
+          1.1377204656600952
+        ]
+      },
+      "P_Ship_Fire_Explosion.005": {
+        "parent": "TL_02_Fire",
+        "head": [
+          -49.546573638916016,
+          -234.62353515625,
+          -0.8982684016227722
+        ]
+      },
+      "TL_02_FP_01": {
+        "parent": "Root",
+        "head": [
+          -61.6259765625,
+          -203.68455505371094,
+          -1.2807378768920898
+        ]
+      },
+      "TL_02_FP_02": {
+        "parent": "Root",
+        "head": [
+          -45.98602294921875,
+          -246.2782745361328,
+          0.20509488880634308
+        ]
+      },
+      "TL_04": {
+        "parent": "Root",
+        "head": [
+          -161.2359619140625,
+          145.30018615722656,
+          -2.3672404495300725e-05
+        ]
+      },
+      "TL_04_Fire": {
+        "parent": "Root",
+        "head": [
+          -153.0777587890625,
+          148.96054077148438,
+          2.6077773571014404
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.004": {
+        "parent": "TL_04_Fire",
+        "head": [
+          -159.83590698242188,
+          141.3692626953125,
+          -2.1824045181274414
+        ]
+      },
+      "TL_04_FP_01": {
+        "parent": "Root",
+        "head": [
+          -156.55401611328125,
+          119.7803726196289,
+          -3.2310197353363037
+        ]
+      },
+      "TL_04_FP_02": {
+        "parent": "Root",
+        "head": [
+          -173.2340087890625,
+          170.30921936035156,
+          3.8255653381347656
+        ]
+      },
+      "IC_03_FP_01": {
+        "parent": "Root",
+        "head": [
+          124.93121337890625,
+          9.205459594726562,
+          -2.525045394897461
+        ]
+      },
+      "IC_02": {
+        "parent": "Root",
+        "head": [
+          -27.20501708984375,
+          -309.6398010253906,
+          -0.9242691397666931
+        ]
+      },
+      "IC_02_Fire": {
+        "parent": "Root",
+        "head": [
+          -18.99652099609375,
+          -326.13433837890625,
+          -4.132455825805664
+        ]
+      },
+      "pf_small_w.001": {
+        "parent": "IC_02_Fire",
+        "head": [
+          -21.718000411987305,
+          -336.0731506347656,
+          -0.9724116921424866
+        ]
+      },
+      "IC_02_FP_01": {
+        "parent": "Root",
+        "head": [
+          -21.9849853515625,
+          -332.5411376953125,
+          -0.5788705945014954
+        ]
+      },
+      "IC_02_FP_02": {
+        "parent": "Root",
+        "head": [
+          -35.822998046875,
+          -288.1476745605469,
+          2.455242156982422
+        ]
+      },
+      "IC_04": {
+        "parent": "Root",
+        "head": [
+          -110.64697265625,
+          -23.522560119628906,
+          0.24722422659397125
+        ]
+      },
+      "IC_04_Fire": {
+        "parent": "Root",
+        "head": [
+          -101.9638671875,
+          -44.88430404663086,
+          -2.5284745693206787
+        ]
+      },
+      "pf_small_w.002": {
+        "parent": "IC_04_Fire",
+        "head": [
+          -126.83241271972656,
+          9.159821510314941,
+          3.6802101135253906
+        ]
+      },
+      "pf_small_w.003": {
+        "parent": "IC_04_Fire",
+        "head": [
+          -91.3997802734375,
+          -94.00614166259766,
+          2.5091700553894043
+        ]
+      },
+      "IC_04_FP_01": {
+        "parent": "Root",
+        "head": [
+          -124.9310302734375,
+          9.205459594726562,
+          -2.525045394897461
+        ]
+      },
+      "IC_04_FP_02": {
+        "parent": "Root",
+        "head": [
+          -95.8289794921875,
+          -86.87511444091797,
+          -3.3593103885650635
+        ]
+      },
+      "IC_06": {
+        "parent": "Root",
+        "head": [
+          -188.06298828125,
+          229.4630584716797,
+          -3.738427403732203e-05
+        ]
+      },
+      "IC_06_Fire": {
+        "parent": "Root",
+        "head": [
+          -174.38916015625,
+          194.43157958984375,
+          2.6565322875976562
+        ]
+      },
+      "P_Ship_Fire_Explosion.006": {
+        "parent": "IC_06_Fire",
+        "head": [
+          -193.40682983398438,
+          244.6318817138672,
+          -0.6315463185310364
+        ]
+      },
+      "IC_06_FP_01": {
+        "parent": "Root",
+        "head": [
+          -200.97802734375,
+          265.3585205078125,
+          1.7358094453811646
+        ]
+      },
+      "IC_06_FP_02": {
+        "parent": "Root",
+        "head": [
+          -182.906982421875,
+          206.036376953125,
+          0.22984783351421356
+        ]
+      },
+      "TL_05": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -378.9659118652344,
+          6.174138252390549e-05
+        ]
+      },
+      "TL_05_FP_01": {
+        "parent": "Root",
+        "head": [
+          5.780527114868164,
+          -384.0720520019531,
+          -1.4694808721542358
+        ]
+      },
+      "TL_05_FP_02": {
+        "parent": "Root",
+        "head": [
+          -5.781000137329102,
+          -384.0720520019531,
+          -1.4694808721542358
+        ]
+      },
+      "TL_05_Fire": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -377.4808044433594,
+          6.149942782940343e-05
+        ]
+      },
+      "pf_small_w.004": {
+        "parent": "TL_05_Fire",
+        "head": [
+          1.551603078842163,
+          -387.7703857421875,
+          3.3594207763671875
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.003": {
+        "parent": "TL_05_Fire",
+        "head": [
+          -3.3194591999053955,
+          -384.29925537109375,
+          -0.9406511783599854
+        ]
+      },
+      "Shadow_1": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow_Big": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull_Armor": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "Hull_Kitbash_Pieces_ISD_Unsymm": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "HP_New_TA_02": {
+        "parent": "Root",
+        "head": [
+          -3.697769557220454e-07,
+          -18.021406173706055,
+          33.46022033691406
+        ]
+      },
+      "HP_New_TA_01": {
+        "parent": "Root",
+        "head": [
+          -2.350813446128086e-07,
+          -29.885602951049805,
+          32.593536376953125
+        ]
+      },
+      "Turr_Durr_Shadow_Blur": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.6347585137947993e-12,
+          -1.6172032701433636e-05
+        ]
+      },
+      "HP_New_TA_03": {
+        "parent": "Root",
+        "head": [
+          8.329205058998923e-08,
+          -10.770263671875,
+          35.77933120727539
+        ]
+      }
+    },
+    "bounds_min": [
+      -215.9496307373047,
+      -391.4871826171875,
+      -55.057071685791016
+    ],
+    "bounds_max": [
+      215.9496307373047,
+      378.2516174316406,
+      149.9373016357422
+    ]
+  },
+  "materials": [
+    {
+      "name": "ISDI_M027",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDI_Hangar_Imp_Light",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hangar_Imp_Light.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M042",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Empire_ISD_Superstructure_Base",
+      "normal": "ISDI_Empire_ISD_Superstructure_Base_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Empire_ISD_Superstructure_Base.dds",
+        "NormalTexture": "Empire_ISD_Superstructure_Base_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M046",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDI_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M039",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Material_HighContrast",
+      "normal": "ISDI_Hull_Material_HighLowContrast_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Material_HighContrast.dds",
+        "NormalTexture": "Hull_Material_HighLowContrast_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M025",
+      "shader": "MeshShield.fx",
+      "base": "ISDI_NONE",
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          0.5
+        ],
+        "BaseUVScale": [
+          20.0
+        ],
+        "WaveUVScale": [
+          1.0
+        ],
+        "DistortUVScale": [
+          1.0
+        ],
+        "BaseUVScrollRate": [
+          1.0
+        ],
+        "WaveUVScrollRate": [
+          1.0
+        ],
+        "DistortUVScrollRate": [
+          1.0
+        ],
+        "BaseTexture": "None.dds",
+        "WaveTexture": "None.dds",
+        "DistortionTexture": "None.dds"
+      }
+    },
+    {
+      "name": "ISDI_M024",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M033",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD_Lights",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD_Lights.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M035",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Trench_ISD",
+      "normal": "ISDI_Hull_Kitbash_Trench_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Trench_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Trench_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M034",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Superstructure_Base",
+      "normal": "ISDI_Hull_Superstructure_Base_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Superstructure_Base.dds",
+        "NormalTexture": "Hull_Superstructure_Base_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M041",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDI_Hangar_Imp_Yellow_Light_Dim",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hangar_Imp_Yellow_Light_Dim.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M052",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_16",
+      "normal": "ISDI_Hull_16_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          31.989999771118164
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_16.dds",
+        "NormalTexture": "Hull_16_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M026",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Trench_ISD_Inset",
+      "normal": "ISDI_Hull_Kitbash_Trench_ISD_Inset_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Trench_ISD_Inset.dds",
+        "NormalTexture": "Hull_Kitbash_Trench_ISD_Inset_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M038",
+      "shader": "MeshGloss.fx",
+      "base": "ISDI_Hangar_3_Yellow",
+      "normal": null,
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.3019607961177826,
+          0.3019607961177826,
+          0.3019607961177826,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "BaseTexture": "Hangar_3_Yellow.dds"
+      }
+    },
+    {
+      "name": "ISDI_M043",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Empire_ISD_Bridge",
+      "normal": "ISDI_Empire_ISD_Bridge_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Empire_ISD_Bridge.dds",
+        "NormalTexture": "Empire_ISD_Bridge_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M040",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDI_Hull_Lights_Grid",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hull_Lights_Grid.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M049",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M032",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_2_SD",
+      "normal": "ISDI_Hull_2_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_2_SD.dds",
+        "NormalTexture": "Hull_2_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M047",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDI_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M029",
+      "shader": "MeshGloss.fx",
+      "base": "ISDI_Hangar_3",
+      "normal": null,
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.3019607961177826,
+          0.3019607961177826,
+          0.3019607961177826,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "BaseTexture": "Hangar_3.dds"
+      }
+    },
+    {
+      "name": "ISDI_M045",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Material_HighContrast",
+      "normal": "ISDI_Hull_Material_HighLowContrast_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Material_HighContrast.dds",
+        "NormalTexture": "Hull_Material_HighLowContrast_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M023",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M050",
+      "shader": "MeshShield.fx",
+      "base": "ISDI_Engine_Glow_Fancy_Blue",
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          1.0
+        ],
+        "BaseUVScale": [
+          1.0
+        ],
+        "WaveUVScale": [
+          0.5
+        ],
+        "DistortUVScale": [
+          1.0
+        ],
+        "BaseUVScrollRate": [
+          0.0
+        ],
+        "WaveUVScrollRate": [
+          0.10000000149011612
+        ],
+        "DistortUVScrollRate": [
+          0.30000001192092896
+        ],
+        "BaseTexture": "Engine_Glow_Fancy_Blue.tga",
+        "WaveTexture": "Engine_Glow_Blue_wave.tga",
+        "DistortionTexture": "Engine_Glow_Blue_dist.tga"
+      }
+    },
+    {
+      "name": "ISDI_M037",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Material_HighContrast",
+      "normal": "ISDI_Hull_Material_HighLowContrast_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Material_HighContrast.dds",
+        "NormalTexture": "Hull_Material_HighLowContrast_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M044",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDI_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M030",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD_Lights",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD_Lights.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M048",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDI_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M028",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDI_Hangar_2",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hangar_2.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M051",
+      "shader": "MeshShield.fx",
+      "base": "ISDI_Engine_Glow_Fancy_White",
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          1.0
+        ],
+        "BaseUVScale": [
+          1.0
+        ],
+        "WaveUVScale": [
+          0.5
+        ],
+        "DistortUVScale": [
+          1.0
+        ],
+        "BaseUVScrollRate": [
+          0.0
+        ],
+        "WaveUVScrollRate": [
+          0.10000000149011612
+        ],
+        "DistortUVScrollRate": [
+          0.30000001192092896
+        ],
+        "BaseTexture": "Engine_Glow_Fancy_White.tga",
+        "WaveTexture": "Engine_Glow_Blue_wave.tga",
+        "DistortionTexture": "Engine_Glow_Blue_dist.tga"
+      }
+    },
+    {
+      "name": "ISDI_M022",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M054",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDI_M036",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_16",
+      "normal": "ISDI_Hull_16_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          31.989999771118164
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_16.dds",
+        "NormalTexture": "Hull_16_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M053",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDI_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDI_M031",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDI_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDI_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    }
+  ],
+  "bone_error": 6.320296209058894e-05,
+  "geometry_error": 0.00015795230865478516
+}

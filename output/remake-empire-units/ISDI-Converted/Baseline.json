@@ -1,0 +1,15 @@
+{
+  "dataJson": "{\"MonoBehaviour\":{\"m_Enabled\":true,\"m_EditorHideFlags\":0,\"m_Name\":\"ISDIShipData\",\"m_EditorClassIdentifier\":\"Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData\",\"<MinMoveCoefficient>k__BackingField\":0.4000000059604645,\"<Speed>k__BackingField\":15.0,\"heightTiers\":{\"fileID\":11400000,\"guid\":\"f4dc0cc9c112ddb4d8209fb4b8d1d9de\",\"type\":2},\"<HeightTier>k__BackingField\":2,\"<HullBottom>k__BackingField\":-17.5620059967041,\"<HullTop>k__BackingField\":32.27301788330078,\"<RotationSpeed>k__BackingField\":5.0,\"<TurnAcceleration>k__BackingField\":5.0,\"<HyperSpaceDuration>k__BackingField\":0.6000000238418579,\"<BodyRotationMaxAngle>k__BackingField\":5.0,\"<NavigationRadius>k__BackingField\":97.9986572265625,\"<DestroyDelay>k__BackingField\":0.3499999940395355,\"<Wreck>k__BackingField\":{\"fileID\":11400000,\"guid\":\"c9149ad3d2d4aa744840faa73249ecff\",\"type\":2},\"<ShipClass>k__BackingField\":4,\"<Hull>k__BackingField\":4500.0,\"<Shields>k__BackingField\":4000.0,\"<ShieldRegenerateValue>k__BackingField\":6.666666507720947,\"<ShieldRegenerateDelay>k__BackingField\":1.0,\"hardPointHealth\":[{\"hardPointType\":0,\"health\":750.0,\"hullDamageMultiplier\":1.0},{\"hardPointType\":1,\"health\":1000.0,\"hullDamageMultiplier\":1.0},{\"hardPointType\":2,\"health\":1000.0,\"hullDamageMultiplier\":1.0},{\"hardPointType\":4,\"health\":2000.0,\"hullDamageMultiplier\":1.0},{\"hardPointType\":7,\"health\":1500.0,\"hullDamageMultiplier\":1.0}],\"<Range>k__BackingField\":750.0,\"<Delay>k__BackingField\":0.25,\"abilities\":[21,22],\"hangarBays\":[{\"squadronType\":203,\"reserve\":2,\"maxActive\":1},{\"squadronType\":204,\"reserve\":2,\"maxActive\":1},{\"squadronType\":205,\"reserve\":2,\"maxActive\":1}],\"<HangarInitialDelay>k__BackingField\":4.0,\"<HangarLaunchInterval>k__BackingField\":30.0,\"weaponLoadout\":[{\"weaponType\":2,\"count\":6},{\"weaponType\":4,\"count\":3},{\"weaponType\":8,\"count\":4},{\"weaponType\":31,\"count\":2},{\"weaponType\":32,\"count\":2},{\"weaponType\":33,\"count\":4}]}}",
+  "length": 167.997711,
+  "bounds": "Center: (0.00, 0.00, 0.00), Extents: (47.89, 31.99, 84.00)",
+  "guids": {
+    "Assets/Prefabs/Models/Ships/ISDI.prefab": "5b4c10e57642ba742a6b6a9f32dc181c",
+    "Assets/Prefabs/Models/Ships/ISDIShipView.prefab": "c5a735dafc563ad45b16c92aeabb3b3f",
+    "Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab": "6d3fc6fd8c8219942a1473edcc762f67",
+    "Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView.prefab": "31a950c34955e204ca8e7103b1c1dd00",
+    "Assets/Settings/Data/Ship/ISDIShipData.asset": "0c379a49e2b12644b963e47657c852bf",
+    "Assets/Settings/Data/Ship/Wreck/ISDIWreckData.asset": "c9149ad3d2d4aa744840faa73249ecff",
+    "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png": "b8f66d736a9c0a841b8957320119ca55",
+    "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette.png": "19481b170a477c743897332500fed176"
+  }
+}

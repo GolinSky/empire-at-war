@@ -1,56 +1,54 @@
 ---
 category: Features
 type: reference
-updated: 2026-10-06
+updated: 2026-10-09
+source_workshop: "1770851727"
 ---
 # ISD I Import
 
 ## Decision
 
-- Add `E_Imperial_Star_Destroyer_1_Fighters` to Empire as `ShipType.ISDI = 201`.
-- Model map → `Empire_Imperial_SD.ALO`; standard/advanced share this hull. Attach ISD-I parts, 6 TLD, 2 ICD and 3 triple turrets.
-- Preserve requested 20,000 hull / 16,000 shields / speed 250. Source displays 250 but stores `Max_Speed=2.5`; project data uses literal 250 units/s.
-- Source has 3 engines → expose only left/right as targetable, matching the request. Keep all visible engine geometry.
+- Empire `ShipType.ISDI = 201`: replace visuals with Workshop `1770851727` `Star_Destroyer`; existing registrations/GUIDs retained.
+- User, 2026-10-09: keep current hull/shields/speed, economy and Interceptor/Brute/Punisher bays.
+- Previous AOTR visual set → `ISDIObsoleteAOTR` art folders and `*_ObsoleteAOTR` snapshots; all 63 records labeled `Obsolete`. [[GameDesign/ISD I Import - AOTR History]] preserves historical decisions.
 
 ## Implementation
 
-- Targetable hardpoints: 6 heavy 2-burst turbolasers; 2 heavy 2-burst turbo-ion; 2 medium turbo-ion; 2 shields; 2 engines; tractor; hangar. IDs 0..15.
-- Non-targetable: 3 medium 3-burst turbolasers, 4 light turbolasers, 4 lasers. IDs 16..26; 21 weapon bindings / 27 fog hardpoint bindings / 16 health bindings.
-- Shields fail only when both generators are destroyed. HP: weapon 750; shield/engine 1,000; hangar 2,000; tractor 1,500. Shield regeneration 20/s.
-- `ImperialBoostEnginePower=21`: speed ×2, weapon delay ×4, shield regeneration ×0; 20 s duration / 50 s recovery.
-- `TractorBeam=22`: enemy speed ×0.25; 25 s recovery. Targets only `TractorBeamSettings.targetClasses` (default Corvette, Frigate); ineligible clicks are rejected, caster does not fly to them. Stops on beam/caster/target loss, target removal, ion stun or leaving planar range; modifier removed on stop.
-- Advanced bays: TIEInterceptor 203 / TIEBrute 204 / TIEPunisher 205; each 2 total launches and 1 active squadron. Initial/shared interval 4/30 s.
-- Squadron counts 8/6/4; member hull/shields 15/0, 50/0, 55/30; Punisher regeneration 0.15/s. Dedicated models, gameplay/placement prefabs, data, icons and Empire registrations.
-- Registrations: Empire roster; ShipsData; data/view maps and existing Addressables groups; HUD/tooltip; reinforcement; wreck; matchups; abilities/audio; ShipIconGenerator.
-- Team-color fix 2026-10-06: neutral hull/turrets, four mirrored foredeck stripes per side shared with ISD II. Fitted 540-vertex / 250-triangle mesh preserves source albedo/UVs/normals; avoids repeated markings from tiled hull UVs. Stripe mask strength 1; hull mask/rim strengths 0.
-- Stripe renderer follows `BankingBody`; explicit ownership/fog/explosion bindings and matching wreck renderer/filter pair. Team arrays I/II 90/100; wreck pairs 40/43. Red/blue top/angled ship and wreck renders plus all four saved-prefab checks passed; no import/serialization errors. No combat or automated Unity tests run for this fix.
+- XML chain: `Star_Destroyer → Star_Destroyer_Upkeep → Star_Destroyer_Template → Capital_Base → Vessel_Base → SFX_Base`.
+- Hull `Empire_Imperial_SD.ALO`; structure `Empire_Imperial_SD_1.alo`; 13 gun attachments at their XML bones. Dedicated `Empire_Imperial_SD_DeathClone.ALO` wreck + source structure attachment.
+- 24 weapons: 6 heavy turbolasers, 2 heavy turbo-ion, 2 medium turbo-ion, 3 medium triple turbolasers, 5 light turbolasers, 6 lasers. Existing profiles `2/31/32/4/33/8`; source mounts add 3 weapons over the former 21.
+- All weapons targetable: IDs `0..23`; retained systems `24..29` = 2 shields, 2 engines, tractor, hangar. Health: weapons 750; shields/engines 1,000; tractor 1,500; hangar 2,000.
+- Shield pair derived around `HP_SG`; outer engine geometry centers retained as two targets; tractor `HP_TRAC_BONE_00`; hangar `SPAWN_00`, exit 8 units below hull.
+- Retain abilities `ImperialBoostEnginePower=21` and `TractorBeam=22`. Source Full Salvo/upkeep omitted to retain existing behavior/balance. Shared weapon/ability definitions untouched by replacement; source projectile/pulse/cone mappings recorded in evidence.
+- Opaque Ship Lit surfaces, lossless albedo/linear normals with green flip, separate additive effects. Source UVs, original material slots/parameters and auxiliary maps preserved. Team stripes fit 10 source-material surfaces / 905 derived triangles; original geometry unchanged.
 
 ## Important Values
 
-- Visible hull/effects 102.61 × 68.56 × 180; opaque collider/placement/wreck 100.89 × 53.10 × 180 project units. Root scale 1; bow +Z; up +Y.
-- Navigation radius 105; bank ±5°; hull Y −18.816692 .. 34.578710. Hangar exit (0.51, −26.82, −2.82), 8 units below collider.
-- Ship cost/build/level/population 22,000 / 440 s / 3 / 8. Fighter cost/build: Interceptor 525/18 s, Brute 600/7 s, Punisher 1,500/50 s; level/population 1/1.
-- Provisional: ship limit 3; fighter limit 10; size, turn/range/arcs, fighter movement tuning, light turbolaser damage 10; tractor duration/range 20 s / 150 units. Punisher missiles reuse the project concussion profile.
-- 16 conversions verified in Blender; Unity preserves mesh/bone counts and UV presence. Maximum Unity bone displacement 0.000001986 units. Punisher loses 14 confirmed zero-area triangles: 6,172 → 6,158.
-- 36 source ALO/DDS hashes unchanged; decoded PNG pixels match. Separate RGB-derived additive coverage avoids opaque glow planes.
-- 13 saved prefabs: no missing scripts, broken references or embedded FBX materials. Eight palettes rendered; blue/green, icons, hologram and fresh wreck inspected. Final Console error count 0; scripts compile and assets persist; MainMenuScene remains clean.
+- Retained hull/shields/speed: `4500/4000/15`; regeneration `6.6666665/s`; range/delay `750/0.25 s`.
+- Retained cost/build/level/population/max: `4500/40 s/3/5/3`. Navigation radius `97.998657`; bank ±5°.
+- Bays: Interceptor `203`, Brute `204`, Punisher `205`; each reserve `2`, active `1`; initial/shared delays `4/30 s`. Fighter assets unchanged.
+- Source values: hull `40000`, shields `15000`, regeneration `300/s`, speed `3 EaW units`, cost `18000`, build `70 s`, population `20`. No direct unit conversion applied to balance.
+- Opaque hull/collider/placement: `94.26325 × 49.6460953 × 167.997711` project units; roots `1`, bow `+Z`, up `+Y`; banked Y `−24.82305 .. 25.089714`.
 
-## Edge Cases
+## Verification
 
-- ALAMO global shadow cleanup can alter unrelated scenes → convert in an isolated Blender process, not just a separate scene.
-- Texture imports can reload ModelImporter → apply every material remap together after texture reimports.
-- Nested turret FBXs contain 100× / −90° X transport → cancel that basis before attachment. Keep disabled helpers and rig hierarchy.
-- Collider/preview/wreck use opaque geometry; additive planes stay out of hologram and wreck geometry.
-- No automated tests or Play Mode verification.
+- 16 Blender conversions; original visible binary triangle/material counts and UV-corner matching verified. Maximum geometry/bone error `0.000158/0.000099` source units; Unity bone error ≤ `0.000002346`; muzzle error `0`.
+- 56 source hashes unchanged; 100 decoded texture-reference copies pixel-identical. Original archived FBX/PNG files unchanged; 56 original asset/folder GUIDs retained.
+- Active and archived saved prefabs: no missing scripts/broken references. Active ISD I has zero obsolete dependencies; all 30 targets, ownership/fog/explosion/shield/hangar references and AI loadout verified.
+- Existing ship/data/View Addressables, roster/matchups, HUD/tooltip/icon generator, placement `UnitSpawnView`, abilities, weapon profiles and fighter dependencies verified without duplicate registrations.
+- 55 helpers / 67,130 triangles stripped from unit prefabs; gameplay shield retained. Imported source files keep helpers; ALAMO welds duplicate collision/shadow geometry only.
+- Icons/silhouette/placement/top/stern and all 8 live/wreck palettes inspected. Final saved verification and script compilation passed; imports idle and compilation-failed flag false. Concurrent-task Console history preserved.
 
 ## Files
 
-- `Tools/Blender/ISDI/README.md` — source, exact muzzle mapping, conversion workflow, tuning and verification.
-- `Tools/Blender/prepare_isd_i.py`, `export_isd_i.py` — source-specific conversion.
-- `Assets/Prefabs/Models/Ships/ISDIShipView.prefab`, `Assets/Settings/Data/Ship/ISDIShipData.asset` — gameplay.
-- `Temp/ISDIImport/` — ignored packed sources, conversion/Unity reports and previews.
+- `Tools/Blender/ISDIRemake/README.md` — mappings, rebuild order, verification limits.
+- `Tools/Blender/ISDIRemake/Evidence/`, `Previews/` — source/Unity reports and integrated ship screenshots.
+- `output/remake-empire-units/ISDI-Converted/` — 16 editable packed Blender/FBX sets, textures and reports.
+- `Assets/Prefabs/Models/Ships/ISDIShipView.prefab`, `Assets/Settings/Data/Ship/ISDIShipData.asset` — active unit.
+- `Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab` — dedicated source wreck assembly.
+- Plan: [[Done/Features/ISDI_Model_Replacement]].
 
 ## TODO
 
-- Runtime acceptance: firing arcs, hangar launches/replacements, boost/tractor cleanup, shields, fog/selection, reinforcement and wreck/death behavior.
-- Balance acceptance for provisional project values. Source animations and animated shader effects were not recreated.
+- Runtime acceptance remains unrun: firing/arcs, hangar launches, boost/tractor cleanup, shields, fog/selection, reinforcement and wreck timing. No automated tests or Play Mode were started by this task, per `ALO_MODEL_IMPORT_GUIDE`.
+- Source ALA animations and animated EaW shader/refraction/proxy effects are not recreated; existing project effects and static source art are used.

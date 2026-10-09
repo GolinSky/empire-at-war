@@ -1,0 +1,504 @@
+{
+  "variant": "ISDIPart12",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 24,
+        "triangles": 8,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart12_M005"
+        ]
+      },
+      "Barrel": {
+        "vertices": 806,
+        "triangles": 402,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart12_M006"
+        ]
+      },
+      "Barrel_Lights": {
+        "vertices": 28,
+        "triangles": 10,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart12_M007"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 244,
+        "triangles": 440,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M008"
+        ]
+      },
+      "Collision_Barrel": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M009"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M010"
+        ]
+      },
+      "Collision_Turret": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M011"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -3.0001738196006045e-05,
+          -6.832508087158203,
+          1.4540501069859602e-07
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -1.4979904890060425,
+          -14.626192092895508,
+          -1.5072813034057617
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          1.4980005025863647,
+          -14.626192092895508,
+          1.505905270576477
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          0.13513484597206116,
+          -14.626192092895508,
+          -2.2527622434154182e-07
+        ]
+      },
+      "Barrel_Lights": {
+        "parent": "Barrel",
+        "head": [
+          5.333571607479826e-06,
+          -6.833000183105469,
+          8.358534309138577e-09
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -3.0001738196006045e-05,
+          -6.832508087158203,
+          1.4540501069859602e-07
+        ]
+      },
+      "Collision_Barrel": {
+        "parent": "Barrel",
+        "head": [
+          -1.578991799533469e-07,
+          -3.6123781204223633,
+          -6.19346636199225e-08
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision_Turret": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -4.008077144622803,
+      -14.430557250976562,
+      -3.1767611503601074
+    ],
+    "bounds_max": [
+      4.0080060958862305,
+      0.8596878051757812,
+      3.176792621612549
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 24,
+        "triangles": 8,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart12_M005.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 806,
+        "triangles": 402,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart12_M006.001"
+        ]
+      },
+      "Barrel_Lights": {
+        "vertices": 28,
+        "triangles": 10,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart12_M007.001"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 244,
+        "triangles": 440,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M008.001"
+        ]
+      },
+      "Collision_Barrel": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M009.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M010.001"
+        ]
+      },
+      "Collision_Turret": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart12_M011.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -3.115389699814841e-05,
+          -6.832508087158203,
+          1.2585618378579966e-06
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -1.4979928731918335,
+          -14.626192092895508,
+          -1.5072789192199707
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          1.4979981184005737,
+          -14.626192092895508,
+          1.505907654762268
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          0.13513243198394775,
+          -14.626192092895508,
+          2.157632934540743e-06
+        ]
+      },
+      "Barrel_Lights": {
+        "parent": "Barrel",
+        "head": [
+          4.1319726733490825e-06,
+          -6.833000183105469,
+          1.1215955737498007e-06
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -3.115389699814841e-05,
+          -6.832508087158203,
+          1.2585618378579966e-06
+        ]
+      },
+      "Collision_Barrel": {
+        "parent": "Barrel",
+        "head": [
+          -8.269488489531795e-07,
+          -3.6123781204223633,
+          5.265964659884048e-07
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision_Turret": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -4.008078575134277,
+      -14.430558204650879,
+      -3.176760673522949
+    ],
+    "bounds_max": [
+      4.008005619049072,
+      0.859688401222229,
+      3.1767945289611816
+    ]
+  },
+  "materials": [
+    {
+      "name": "ISDIPart12_M007",
+      "shader": "MeshAdditive.fx",
+      "base": "ISDIPart12_Hull_Kitbash_Pieces_ISD_Lights",
+      "normal": null,
+      "source_properties": {
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD_Lights.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart12_M010",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart12_M011",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart12_M005",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDIPart12_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDIPart12_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDIPart12_M006",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDIPart12_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDIPart12_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDIPart12_M008",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart12_M009",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    }
+  ],
+  "bone_error": 3.391989714079018e-06,
+  "geometry_error": 4.0249688663802466e-06
+}

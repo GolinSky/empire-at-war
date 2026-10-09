@@ -16,8 +16,8 @@ MonoBehaviour:
   <Speed>k__BackingField: 15
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2
-  <HullBottom>k__BackingField: -17.562006
-  <HullTop>k__BackingField: 32.273018
+  <HullBottom>k__BackingField: -24.82305
+  <HullTop>k__BackingField: 25.089714
   <RotationSpeed>k__BackingField: 5
   <TurnAcceleration>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 0.6
@@ -68,10 +68,10 @@ MonoBehaviour:
   - weaponType: 4
     count: 3
   - weaponType: 8
-    count: 4
+    count: 6
   - weaponType: 31
     count: 2
   - weaponType: 32
     count: 2
   - weaponType: 33
-    count: 4
+    count: 5

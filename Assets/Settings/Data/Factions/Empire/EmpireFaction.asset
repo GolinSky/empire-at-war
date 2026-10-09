@@ -38,14 +38,14 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
-        description: '4,500 hull; 4,000 shields; speed 15. Targetable: six heavy
-          two-burst turbolasers, two heavy two-burst turbo-ion cannons, two medium
-          turbo-ion cannons, two shield generators, two engines, tractor beam and
-          hangar. Additional weapons: three medium three-burst turbolasers, four
-          light turbolasers and four laser cannons. Launches TIE Interceptors, TIE
-          Brutes and TIE Punishers. Boost Engine Power doubles speed, quadruples
-          weapon delays and pauses shield regeneration for 20 s. Tractor Beam slows
-          a selected enemy to 40% speed.'
+        description: '4,500 hull; 4,000 shields; speed 15. Twenty-four targetable
+          weapons: six heavy two-burst turbolasers, two heavy two-burst turbo-ion
+          cannons, two medium turbo-ion cannons, three medium three-burst turbolasers,
+          five light turbolasers and six laser cannons. Two shield generators, two
+          engines, tractor beam and hangar are targetable. Launches TIE Interceptors,
+          TIE Brutes and TIE Punishers. Boost Engine Power doubles speed, quadruples
+          weapon delays and pauses shield regeneration for 20 s. Tractor Beam restricts
+          enemy corvette or frigate movement.'
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
         isHero: 0

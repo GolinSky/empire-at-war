@@ -1,0 +1,401 @@
+{
+  "variant": "ISDIPart08",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 993,
+        "triangles": 339,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart08_M004"
+        ]
+      },
+      "Barrel": {
+        "vertices": 324,
+        "triangles": 196,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart08_M005"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 102,
+        "triangles": 196,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart08_M006"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 201,
+        "triangles": 386,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart08_M007"
+        ]
+      },
+      "Collision": {
+        "vertices": 12,
+        "triangles": 20,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart08_M008"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          0.0006498408038169146,
+          -1.7583515644073486,
+          5.928437232971191
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          3.749810275621712e-07,
+          -16.792551040649414,
+          5.989914894104004
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -1.0045342445373535,
+          -16.792551040649414,
+          5.989914894104004
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          1.0049998760223389,
+          -16.792551040649414,
+          5.9899163246154785
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          0.0006498408038169146,
+          -1.758351445198059,
+          5.92843770980835
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -10.406096458435059,
+      -16.661190032958984,
+      -0.9805576205253601
+    ],
+    "bounds_max": [
+      10.406328201293945,
+      13.086575508117676,
+      10.359731674194336
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 993,
+        "triangles": 339,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart08_M004.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 324,
+        "triangles": 196,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart08_M005.001"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 102,
+        "triangles": 196,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart08_M006.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 201,
+        "triangles": 386,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart08_M007.001"
+        ]
+      },
+      "Collision": {
+        "vertices": 12,
+        "triangles": 20,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart08_M008.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          0.0006495647830888629,
+          -1.7583506107330322,
+          5.92843770980835
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          -2.3788652470102534e-06,
+          -16.79254913330078,
+          5.989917755126953
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -1.0045371055603027,
+          -16.79254913330078,
+          5.989917278289795
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          1.0049971342086792,
+          -16.79254913330078,
+          5.989919185638428
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          0.0006495647830888629,
+          -1.7583504915237427,
+          5.928438186645508
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -10.406094551086426,
+      -16.661190032958984,
+      -0.9805585145950317
+    ],
+    "bounds_max": [
+      10.406330108642578,
+      13.086576461791992,
+      10.359732627868652
+    ]
+  },
+  "materials": [
+    {
+      "name": "ISDIPart08_M004",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDIPart08_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDIPart08_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDIPart08_M005",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDIPart08_Hull_Kitbash_Pieces_ISD",
+      "normal": "ISDIPart08_Hull_Kitbash_Pieces_ISD_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_Kitbash_Pieces_ISD.dds",
+        "NormalTexture": "Hull_Kitbash_Pieces_ISD_B.dds"
+      }
+    },
+    {
+      "name": "ISDIPart08_M006",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart08_M007",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart08_M008",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    }
+  ],
+  "bone_error": 4.405349028049017e-06,
+  "geometry_error": 6.02478843249327e-06
+}

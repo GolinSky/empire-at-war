@@ -1,0 +1,353 @@
+{
+  "variant": "ISDIPart10",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 390,
+        "triangles": 150,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart10_M004"
+        ]
+      },
+      "Barrel": {
+        "vertices": 42,
+        "triangles": 26,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart10_M005"
+        ]
+      },
+      "Coll": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart10_M006"
+        ]
+      },
+      "Shadow": {
+        "vertices": 14,
+        "triangles": 24,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart10_M007"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          -2.2447159153671237e-07,
+          4.051779270172119
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          9.072209650184959e-10,
+          -2.2379120423465793e-07,
+          4.056967735290527
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          0.9706383347511292,
+          -4.410791873931885,
+          4.028156280517578
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          9.110277687796042e-08,
+          -4.410791397094727,
+          4.028156280517578
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          -0.967858612537384,
+          -4.410791397094727,
+          4.028156280517578
+        ]
+      },
+      "Coll": {
+        "parent": "Turret",
+        "head": [
+          4.262119546183385e-09,
+          -1.4277092930115032e-07,
+          4.051779270172119
+        ]
+      },
+      "Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          -2.2447159153671237e-07,
+          4.051779270172119
+        ]
+      }
+    },
+    "bounds_min": [
+      -2.977726459503174,
+      -4.332502841949463,
+      0.004419585689902306
+    ],
+    "bounds_max": [
+      2.9777262210845947,
+      3.19832444190979,
+      5.515198707580566
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 390,
+        "triangles": 150,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart10_M004.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 42,
+        "triangles": 26,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ISDIPart10_M005.001"
+        ]
+      },
+      "Coll": {
+        "vertices": 8,
+        "triangles": 12,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart10_M006.001"
+        ]
+      },
+      "Shadow": {
+        "vertices": 14,
+        "triangles": 24,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ISDIPart10_M007.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          4.2170000824626186e-07,
+          4.051779270172119
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          2.4740538506762277e-09,
+          4.232257424519048e-07,
+          4.056967735290527
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          0.9706376194953918,
+          -4.410791397094727,
+          4.0281572341918945
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          -6.000296366437397e-07,
+          -4.410790920257568,
+          4.0281572341918945
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          -0.9678593873977661,
+          -4.410790920257568,
+          4.0281572341918945
+        ]
+      },
+      "Coll": {
+        "parent": "Turret",
+        "head": [
+          1.3310775482592956e-14,
+          5.034006562709692e-07,
+          4.051779270172119
+        ]
+      },
+      "Shadow": {
+        "parent": "Turret",
+        "head": [
+          3.430482790145063e-20,
+          4.2170000824626186e-07,
+          4.051779270172119
+        ]
+      }
+    },
+    "bounds_min": [
+      -2.977725028991699,
+      -4.332502365112305,
+      0.004418642725795507
+    ],
+    "bounds_max": [
+      2.9777281284332275,
+      3.1983249187469482,
+      5.515199661254883
+    ]
+  },
+  "materials": [
+    {
+      "name": "ISDIPart10_M006",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "ISDIPart10_M004",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDIPart10_Hull_1",
+      "normal": "ISDIPart10_Hull_1_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          0.960784375667572,
+          0.9215686917304993,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_1.dds",
+        "NormalTexture": "Hull_1_B.dds"
+      }
+    },
+    {
+      "name": "ISDIPart10_M005",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ISDIPart10_Hull_1",
+      "normal": "ISDIPart10_Hull_1_B",
+      "source_properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          0.960784375667572,
+          0.9215686917304993,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Hull_1.dds",
+        "NormalTexture": "Hull_1_B.dds"
+      }
+    },
+    {
+      "name": "ISDIPart10_M007",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "source_properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    }
+  ],
+  "bone_error": 1.318058037012576e-06,
+  "geometry_error": 3.0502874889116025e-06
+}
