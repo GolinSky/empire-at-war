@@ -28,7 +28,9 @@ public static class BuildEmpressPlatform
         var component = data.FindProperty("<ComponentData>k__BackingField");
         component.FindPropertyRelative("<Hull>k__BackingField").floatValue = golan.FindPropertyRelative("<Hull>k__BackingField").floatValue * .6f;
         component.FindPropertyRelative("<Shields>k__BackingField").floatValue = golan.FindPropertyRelative("<Shields>k__BackingField").floatValue * 2;
-        component.FindPropertyRelative("<WeaponRange>k__BackingField").floatValue = 500;
+        var station = Load("Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset").FindProperty("<ComponentData>k__BackingField");
+        foreach (string field in new[] { "<Range>k__BackingField", "<WeaponRange>k__BackingField", "<VisionRange>k__BackingField" })
+            component.FindPropertyRelative(field).floatValue = station.FindPropertyRelative(field).floatValue;
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = null;
         Save(data);
         if (!File.Exists(VIEW)) AssetDatabase.CopyAsset("Assets/Prefabs/Models/DefendStation/DefendPlatformView.prefab",VIEW);
@@ -38,7 +40,9 @@ public static class BuildEmpressPlatform
             root.name = "AotrEmpressDefensePlatformView";
             root.transform.SetLocalPositionAndRotation(Vector3.zero,Quaternion.identity);
             root.transform.localScale = Vector3.one;
-            foreach (var point in root.GetComponentsInChildren<HardPoint>(true)) UnityEngine.Object.DestroyImmediate(point.gameObject);
+            foreach (var point in root.GetComponentsInChildren<HardPoint>(true))
+                UnityEngine.Object.DestroyImmediate(point.transform.parent.name == point.name + "_Mount"
+                    ? point.transform.parent.gameObject : point.gameObject);
             var shield = root.GetComponentsInChildren<Shield>(true).Single();
             foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.transform != shield.transform).ToArray())
                 UnityEngine.Object.DestroyImmediate(renderer.gameObject);
@@ -74,6 +78,13 @@ public static class BuildEmpressPlatform
                 go.transform.position = position;
                 float yaw = Mathf.Atan2(position.x,position.z)*Mathf.Rad2Deg;
                 go.transform.rotation = Quaternion.Euler(0,yaw,0);
+                if (!generator)
+                {
+                    var mount = new GameObject(name + "_Mount");
+                    mount.transform.SetParent(root.transform,false);
+                    mount.transform.SetPositionAndRotation(position,go.transform.rotation);
+                    go.transform.SetParent(mount.transform,true);
+                }
                 HardPoint point;
                 if (generator) point = go.AddComponent<HardPoint>();
                 else
