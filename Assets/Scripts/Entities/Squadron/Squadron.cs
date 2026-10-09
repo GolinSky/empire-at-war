@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Weapon;
@@ -42,6 +44,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private IWeaponComponent _weapon;
         private IWeaponFireEvents _weaponFireEvents;
         private IShipSfxService _shipSfxService;
+        private ISelectionModelObserver _selectionModel;
+        private IAudioDialogShipComponent _audioDialog;
         private IAttackDataFactory _attackDataFactory;
         private ICameraService _cameraService;
         private ILayerService _layerService;
@@ -84,7 +88,8 @@ namespace EmpireAtWar.Entities.Squadrons
             GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents,
             IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
             SFoilsModel sFoils, List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> sFoilsViews,
-            ShipAbilityService abilities, IShipAbilityFacade abilityCaster)
+            ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
+            [InjectOptional] IAudioDialogShipComponent audioDialog)
         {
             _flight = flight;
             _health = health;
@@ -92,6 +97,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _weapon = weapon;
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
+            _selectionModel = selectionModel;
+            _audioDialog = audioDialog;
             _sFoils = sFoils;
             _sFoilsViews = sFoilsViews;
             _orders = orders;
@@ -115,6 +122,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _weaponFireEvents.ShotEmitted += HandleShotEmitted;
             _sFoils.Changed += HandleSFoilsChanged;
             foreach (var view in _sFoilsViews) view.SetClosed(_sFoils.IsClosed, true);
+            if (_audioDialog != null) _selectionModel.OnSelected += _audioDialog.HandleSelection;
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
@@ -151,6 +159,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_orders.Matches(UnitOrderType.Move, ToPoint(worldPosition))) return;
             _orders.Replace(UnitOrderType.Move, ToPoint(worldPosition));
+            PlayMoveVoice(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
         }
@@ -161,6 +170,8 @@ namespace EmpireAtWar.Entities.Squadrons
             if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked() ||
                 _orders.Matches(UnitOrderType.Attack, target: target)) return;
             _orders.Replace(UnitOrderType.Attack, target: target);
+            if (_audioDialog != null)
+                _audioDialog.HandleAttack(target.GetFacade<IEntityTransformFacade>().Transform.position);
             Engage(target);
         }
 
@@ -176,6 +187,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_orders.Matches(UnitOrderType.AttackMove, ToPoint(worldPosition))) return;
             _orders.Replace(UnitOrderType.AttackMove, ToPoint(worldPosition));
+            PlayMoveVoice(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
         }
@@ -196,6 +208,7 @@ namespace EmpireAtWar.Entities.Squadrons
             foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
             if (_orders.MatchesWaypoints(points)) return;
             _orders.Replace(UnitOrderType.WaypointMove, points[0], waypoints: points);
+            PlayMoveVoice(waypoints[0]);
             Disengage();
             _pilot.FlyTo(waypoints[0]);
         }
@@ -211,6 +224,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_orders.Matches(UnitOrderType.Retreat, ToPoint(destination))) return;
             _orders.Replace(UnitOrderType.Retreat, ToPoint(destination));
+            PlayMoveVoice(destination);
             Disengage();
             _pilot.FlyTo(destination);
         }
@@ -220,6 +234,12 @@ namespace EmpireAtWar.Entities.Squadrons
             _orders.Clear();
             Disengage();
             _pilot.Loiter(_flight.Centroid);
+            if (_audioDialog != null) _audioDialog.HandleStopped();
+        }
+
+        private void PlayMoveVoice(Vector3 destination)
+        {
+            if (_audioDialog != null) _audioDialog.HandleMove(destination);
         }
 
         private void HandleEnemyAdded(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> args)
@@ -230,6 +250,8 @@ namespace EmpireAtWar.Entities.Squadrons
                 _weapon.AddTarget(new AttackData(entity.HealthModel, healthFacade, HardPointType.Any, entity),
                     AttackType.Base);
             }
+
+            if (_audioDialog != null) _audioDialog.HandleEnemyDetected();
         }
 
         private void UpdateOrder()
@@ -368,6 +390,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;
             _weaponFireEvents.ShotEmitted -= HandleShotEmitted;
             _sFoils.Changed -= HandleSFoilsChanged;
+            if (_audioDialog != null) _selectionModel.OnSelected -= _audioDialog.HandleSelection;
             _shipSfxService.ReleaseShip(_entity.Value);
             _orders.Clear();
             _engaged = null;

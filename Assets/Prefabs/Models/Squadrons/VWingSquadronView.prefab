@@ -240,6 +240,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &1009537583193186337
@@ -293,6 +294,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &1189228934318670502
@@ -346,6 +348,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &1545924037083309259
@@ -403,6 +406,7 @@ GameObject:
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
   - component: {fileID: 1139883098706175716}
+  - component: {fileID: 1455560286730453559}
   m_Layer: 0
   m_Name: VWingSquadronView
   m_TagString: Untagged
@@ -612,6 +616,18 @@ MonoBehaviour:
   - {fileID: 7407977265069094509}
   - {fileID: 742689824333772417}
   - {fileID: 2688507307927569933}
+--- !u!114 &1455560286730453559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &2382013464077537138
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,6 +910,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &2701116820227948658
@@ -1333,6 +1350,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &3501328251192476392
@@ -2226,6 +2244,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &4915964646511746842
@@ -2354,6 +2373,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &5051421923163436041
@@ -2472,6 +2492,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &5119075628347250920
@@ -2907,6 +2928,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &5566071100517273471
@@ -3158,6 +3180,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &6303902249948825444
@@ -3211,6 +3234,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &6660291212277142780
@@ -3264,6 +3288,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &7010599363961463077
@@ -3355,6 +3380,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &7371012496606340059
@@ -3623,6 +3649,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &7964969372822379523
@@ -3714,6 +3741,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &8626018438970144843
@@ -3767,6 +3795,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &8644761329622121167
@@ -3820,6 +3849,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &8734740590959352929
@@ -3873,6 +3903,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &8943489403811112362
@@ -3926,6 +3957,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &9105970875688067453
@@ -3979,6 +4011,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 15
 --- !u!1 &9120503480572074864

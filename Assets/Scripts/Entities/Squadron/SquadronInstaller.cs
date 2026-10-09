@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private Quaternion _startRotation;
 
         private bool _isHiddenByLocalFog;
+        private bool _isLocal;
 
         protected override string DataPath => _squadronType + base.DataPath;
         protected override string PrefabPath => _squadronType + base.PrefabPath;
@@ -31,6 +33,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public void Construct(ILocalPlayer localPlayer, PlayerId owner, SquadronType squadronType, Quaternion startRotation)
         {
             _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
+            _isLocal = localPlayer.IsLocal(owner);
             _owner = owner;
             _squadronType = squadronType;
             _startRotation = startRotation;
@@ -71,6 +74,9 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.BindInterfacesAndSelfTo<SquadronHealthComponent>().FromComponentInHierarchy().AsCached();
             Container.BindInterfacesAndSelfTo<SquadronFlightComponent>().FromComponentInHierarchy().AsCached();
             Container.BindInterfacesAndSelfTo<SquadronIconComponent>().FromComponentInHierarchy().AsCached();
+            // Voice lines only play for the local player's own squadrons.
+            if (_isLocal)
+                Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>().FromComponentInHierarchy().AsCached();
 
             Container.BindInterfacesExt<SquadronOrderFacade>();
             Container.BindInterfacesExt<SquadronAbilityFacade>();
