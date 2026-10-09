@@ -78,6 +78,15 @@ completed: 2026-10-09
 - Other field editing remains in Units/Combat; Review & Apply persists staged changes.
 - Missing/inapplicable values display N/A; DPS remains an AI estimate.
 
+### Combat hardpoint grid — 2026-10-09
+
+- Combat defaults to Hardpoints; full-width 330 px unit cards reuse Compare's visual style and searchable faction/bulk/individual Add units picker.
+- Compare and Combat share pinned units, picker filters and draft assignments. Removing a card preserves staged edits.
+- Each card shows faction/class, estimated base DPS, mount count and all hardpoints. Weapon assignments use existing owning-prefab controls; non-weapon subsystems retain their type labels.
+- Hardpoint lists have 420 px scrollable viewports. Combat has no roster; Hardpoints also hides the field inspector. Weapons and Damage matrix remain available with field Info.
+- Unity compilation/import passed. Live UI checks: **47 hardpoints / 37 weapon assignments** across four Republic ships; **960/1400/1800 px** layouts, bulk/individual additions, duplicate exclusion, draft redraw/removal and shared Compare selection.
+- Edited prefab bytes remained unchanged. Report: `Library/BalanceEditor/combat-grid-check.json`. No NUnit suite or Play Mode run for this follow-up.
+
 ### Supported data adapters
 
 - **Ship/squadron:** health, regeneration, movement/flight, range, radar, existing hangar/countermeasure parameters and compatible existing ability assignments.

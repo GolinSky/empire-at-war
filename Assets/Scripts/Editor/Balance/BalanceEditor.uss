@@ -140,6 +140,9 @@
 .balance-compare-hardpoint .balance-compare-stat { flex-direction: column; align-items: stretch; }
 .balance-compare-hardpoint .balance-compare-input { width: auto; }
 .balance-compare-hardpoint .balance-compare-label { width: auto; margin-bottom: 3px; }
+.balance-combat-hardpoints { height: 420px; margin-top: 4px; }
+.balance-combat-card .balance-compare-hardpoint { padding: 8px; margin-bottom: 8px; background-color: var(--balance-canvas); border-width: 1px; border-color: var(--balance-line); border-radius: 4px; }
+.balance-combat-card .balance-compare-hardpoint-name { font-size: 12px; -unity-font-style: bold; margin-bottom: 6px; }
 .balance-dps-meter { height: 5px; margin: 3px 0; }
 .balance-dps-meter .unity-progress-bar__container { height: 5px; }
 .balance-dps-meter .unity-progress-bar__background { height: 5px; border-width: 0; border-radius: 3px; background-color: var(--balance-control); }
