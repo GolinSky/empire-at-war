@@ -14,3 +14,7 @@
 #hub-content > .unity-help-box { margin-bottom: 10px; }
 #hub-run { align-self: flex-start; background-color: #2563eb; color: #f8fafc; padding: 12px 20px; margin-top: 12px; white-space: normal; }
 #hub-hint, #hub-empty { color: #94a3b8; white-space: normal; margin-top: 14px; }
+.hub-tool-open #hub-title, .hub-tool-open #hub-tabs, .hub-tool-open #hub-sidebar,
+.hub-tool-open #hub-tool-title, .hub-tool-open #hub-content > .unity-help-box { display: none; }
+.hub-tool-open #hub-content { padding: 0; }
+#hub-tool-navigation { height: 24px; flex-shrink: 0; padding: 0; }

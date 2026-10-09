@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements">
+    <ui:VisualElement class="balance-shell">
+        <ui:VisualElement class="balance-header">
+            <ui:Label text="Game design" class="balance-heading" />
+            <ui:Label name="draft-status" class="balance-muted" />
+        </ui:VisualElement>
+        <editor:Toolbar name="actions" class="balance-actions" />
+        <editor:Toolbar name="navigation" class="balance-navigation" />
+        <ui:VisualElement name="messages" />
+        <ui:VisualElement name="workspace" class="balance-workspace" />
+    </ui:VisualElement>
+</ui:UXML>

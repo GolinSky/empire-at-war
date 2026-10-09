@@ -258,6 +258,7 @@
 
 ### Tooling
 
+
 - [ ] **Add Jenkins GitHub draft releases**
   - **Plan**: [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
   - **Status**: 2026-10-03 scripts and draft-only job installed; GitHub CLI/Copy Artifact checksums verified; PowerShell parsing, Jenkins Pipeline validation, configuration readback, and installed hashes passed. No builds, uploads, or automated tests ran.
@@ -273,6 +274,23 @@
 - [ ] Ensure all feature data container classes (`<Feature>Data`) inherit from `Data` ScriptableObject.
 
 ## Done
+
+### Tooling
+
+- [x] **Implement Game Design Balance Editor**
+  - **Completed**: 2026-10-09; installed staged UI Toolkit workbench and allowlisted adapters.
+  - **Plan**: [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]
+  - **Research**: [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
+  - **Scope**: UI Toolkit; approved ScriptableObject/prefab data fields; faction views, editable same-/cross-faction ship comparisons, shared weapon/ability labels, hardpoints and Editor-applied presets.
+  - **Deferred**: hard-coded AI configuration and ally/enemy multipliers remain outside this data-only scope.
+  - **Outcome**: canonical usage/alias inventory, recoverable draft, editable comparison, tuning panels and scoped preset apply/restore implemented.
+  - **UI refinement (2026-10-08)**: Units/Compare/Combat/Changes; compact 32 px roster, nested unit tabs, full-width responsive details, draft stat overview and optional inspector. Layout/field/scroll checks passed; Balance EditMode rerun 24/24.
+  - **Verification**: balance acceptance 24/24; full EditMode 1,279/1,284 (five existing AI/engine/Acclamator check failures). Clean skirmish startup/running; Apply blocked in Play Mode. Shutdown exposed two existing null-parent UI route disposal errors.
+  - **Review fixes (2026-10-09)**: all six preset, missing-profile, draft-consumer and comparison/roster issues fixed. Added 11 regressions; 34/35 final suite plus isolated 1/1 rerun after a Pipeline timeout-log failure. All 35 cases have passing results; native 1400×850 / 960×550 layouts verified.
+  - **Comparison grid (2026-10-09)**: faction/search picker with select/unselect-all and bulk addition; responsive 330 px slots without a row cap; drag handles reorder across rows and switch to Manual. Ascending draft-aware Price/Height Level/Availability Level/Class ordering; class sequence squadrons → corvette → frigate → cruiser → capital → heavy capital/dreadnought. Balance EditMode **45/45 passed**; no new Play Mode run.
+  - **Editable cards/performance (2026-10-09)**: immediate result-click additions; editable source stats, height enum and existing hardpoint weapon types. Inventory 10.605 s → 1.794 s; 9,135-field preset save 407 ms; one-field Apply/read-back 4,273 ms. UI and temporary-asset persistence/restore verified; live balance values preserved.
+
+
 
 ### Features
 
