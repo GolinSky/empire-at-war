@@ -34,11 +34,23 @@ namespace EmpireAtWar.Editor.Balance
             });
         }
 
-        public static void Select(VisualElement grid, BalanceWindowState state, string id, bool additive)
+        public static void Select(VisualElement grid, BalanceWindowState state, string id, bool additive, bool range)
         {
+            var order = grid.Children().Select(slot => (string)slot.userData).ToList();
+            int anchor = order.IndexOf(state.CompareSelectionAnchor);
             if (!additive) state.CompareSelection.Clear();
-            if (state.CompareSelection.Contains(id)) state.CompareSelection.Remove(id);
-            else state.CompareSelection.Add(id);
+            if (range && anchor >= 0)
+            {
+                int target = order.IndexOf(id);
+                for (int index = Math.Min(anchor, target); index <= Math.Max(anchor, target); index++)
+                    if (!state.CompareSelection.Contains(order[index])) state.CompareSelection.Add(order[index]);
+            }
+            else
+            {
+                state.CompareSelectionAnchor = id;
+                if (state.CompareSelection.Contains(id)) state.CompareSelection.Remove(id);
+                else state.CompareSelection.Add(id);
+            }
             Update(grid, state);
         }
 
