@@ -90,7 +90,7 @@ MonoBehaviour:
         <Name>k__BackingField: Malevolence
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 60000
+        <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 120
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 026b6c5cca68d9b49918db3c7c0c0a5f,
