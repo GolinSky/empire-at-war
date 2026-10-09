@@ -242,7 +242,8 @@
   - **Decision**: `VelocitySmoothing` stays in `Assets/Scripts/Components/Utils/`.
   - **Status**: sections 1–4 implemented; Unity compile clean; asset values, GUIDs and Addressables entry verified.
   - **Cinematic fix**: 2026-10-07 framing adapts to navigation radius + camera FOV; chase/low-high shots center on the ship. Transitions orbit the look point with minimum clearance; wide shots include focus-offset clearance. Cinematic EditMode tests 17/17 passed; compilation clean.
-  - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic visual acceptance. `MainMenuScene` was clean on 2026-10-07; no Play Mode run.
+  - **Map-bounds fix**: 2026-10-09 shots and transitions stay within exact map X/Z bounds and camera zoom Y limits; viewing distance capped at `ZoomRange.Max`. Cinematic tests 23/23 passed; compilation clean.
+  - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic visual acceptance. `MainMenuScene` was clean on 2026-10-09; no Play Mode run.
 
 - [ ] **Battle startup sequence (state/speed notifiers, async map, gated systems)**
   - **Plan**: [[TODOs/Refactoring/Battle_Startup_Sequence_Plan|Battle Startup Sequence Plan]]
