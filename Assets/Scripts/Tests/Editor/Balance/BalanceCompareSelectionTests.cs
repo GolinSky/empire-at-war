@@ -12,6 +12,33 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class BalanceCompareSelectionTests
     {
+        [Test]
+        public void Selection_ShiftRangesFollowDisplayedOrderAndRetainAnchor()
+        {
+            VisualElement grid = new VisualElement();
+            for (int i = 0; i < 10; i++) grid.Add(new VisualElement { userData = i.ToString() });
+            BalanceWindowState state = new BalanceWindowState();
+            BalanceCompareSelection.Select(grid, state, "0", false, false);
+            BalanceCompareSelection.Select(grid, state, "9", false, true);
+            Assert.That(state.CompareSelection, Is.EqualTo(Enumerable.Range(0, 10).Select(i => i.ToString())));
+            BalanceCompareSelection.Select(grid, state, "4", false, true);
+            Assert.That(state.CompareSelection, Is.EqualTo(new[] { "0", "1", "2", "3", "4" }));
+            Assert.That(state.CompareSelectionAnchor, Is.EqualTo("0"));
+            BalanceCompareSelection.Select(grid, state, "9", false, false);
+            BalanceCompareSelection.Select(grid, state, "6", false, true);
+            Assert.That(state.CompareSelection, Is.EqualTo(new[] { "6", "7", "8", "9" }));
+            grid.Insert(0, grid.ElementAt(9));
+            BalanceCompareSelection.Select(grid, state, "1", false, true);
+            Assert.That(state.CompareSelection, Is.EqualTo(new[] { "9", "0", "1" }));
+            BalanceCompareSelection.Select(grid, state, "4", true, false);
+            BalanceCompareSelection.Select(grid, state, "6", true, true);
+            Assert.That(state.CompareSelection, Is.EqualTo(new[] { "9", "0", "1", "4", "5", "6" }));
+            grid.Remove(grid.Children().Single(slot => (string)slot.userData == "4"));
+            BalanceCompareSelection.Select(grid, state, "7", false, true);
+            Assert.That(state.CompareSelection, Is.EqualTo(new[] { "7" }));
+            Assert.That(state.CompareSelectionAnchor, Is.EqualTo("7"));
+        }
+
         [UnityTest]
         public IEnumerator Selection_ClickCtrlClickSelectAllAndDeletePersistAcrossRedraws()
         {
@@ -36,9 +63,10 @@ namespace EmpireAtWar.Tests.Editor
                 yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "0" }));
                 Assert.That(Card("0").ClassListContains("balance-compare-selected"), Is.True);
-                Click(Card("1"), true);
+                Click(Card("1"), false, true);
                 yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "0", "1" }));
+                Assert.That(Card("1").ClassListContains("balance-compare-selected"), Is.True);
                 Click(Card("0"), true);
                 yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "1" }));
@@ -118,11 +146,12 @@ namespace EmpireAtWar.Tests.Editor
             finally { host.Close(); }
         }
 
-        private static void Click(VisualElement target, bool control)
+        private static void Click(VisualElement target, bool control, bool shift = false)
         {
             Vector2 position = target.ClassListContains("balance-compare-card")
                 ? target.worldBound.min + new Vector2(3, 3) : target.worldBound.center;
             EventModifiers modifiers = control ? EventModifiers.Control : EventModifiers.None;
+            if (shift) modifiers |= EventModifiers.Shift;
             using (PointerDownEvent evt = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, mousePosition = position, button = 0, modifiers = modifiers }))
                 target.SendEvent(evt);
             using (PointerUpEvent evt = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, mousePosition = position, button = 0, modifiers = modifiers }))
