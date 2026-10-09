@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private const float MIN_STARTING_MONEY = 500f;
         private const float MAX_STARTING_MONEY = 10000f;
         private const float DEFAULT_STARTING_MONEY = 2000f;
-        private const float MONEY_STEP = 500f;
+        private const float MONEY_STEP = 100f;
 
         private const int HUMAN_SLOT_INDEX = 0;
 

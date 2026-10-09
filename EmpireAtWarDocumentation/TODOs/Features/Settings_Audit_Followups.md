@@ -33,7 +33,7 @@ tags:
 
 ## Steps
 1. [x] ST2: `JsonSettingsRepository(string directory)`; `ProjectContextInstaller` binds `.WithArguments(Application.persistentDataPath)`.
-2. [x] ST1: tests written, **not run** (run only on request): `SettingsDataTests`, `JsonSettingsRepositoryTests` (temp dir, corrupt → `.bak` + `.corrupt`, locked file), `SettingsServiceTests` (fake repo + recording applier), `SettingsDraftEditorTests` (fake options), `DisplayConfirmationCountdownTests`, `SettingsUiPrefabTests`.
+2. [x] ST1: tests written (execution evidence below): `SettingsDataTests`, `JsonSettingsRepositoryTests` (temp dir, corrupt → `.bak` + `.corrupt`, locked file), `SettingsServiceTests` (fake repo + recording applier), `SettingsDraftEditorTests` (fake options), `DisplayConfirmationCountdownTests`, `SettingsUiPrefabTests`.
    - Route-controller prompt/Escape transitions not unit-tested: needs a fake `ISettingsUi`/`BaseUi`; countdown covered via `DisplayConfirmationCountdown` instead.
 3. [x] ST3: `IsDirty` = `SettingsData.Matches` (field compare per section, no JSON). `SettingsDraftEditor.Open()` caches resolutions + labels per opening; frame-rate labels static; `GraphicsSettingsApplier` caches `QualitySettings.names`.
 4. [x] ST4: `ICameraPreferences` exposes getters only (`PanSpeedMultiplier`, `ZoomSpeedMultiplier`, `EdgeScrolling`, `InvertZoom`), read from saved settings.
@@ -44,4 +44,5 @@ tags:
 - Verified 2026-09-30: compile clean; prefab references assigned (editor eval); Play Mode open → edit → Discard, audio tooltip hover, no console errors.
 
 ## Verification
+- 2026-10-09 slider follow-up: `SettingsUiPrefabTests` 4/4 and `SliderInteractionTests` 11/11 passed; shared prefab/size variant, bar raycasts, rounded values, and handle position verified. Other settings core test suites remain unrun in this task.
 - Compile clean. Manual Play Mode: change each row → Apply → restart → values persist; display change → Revert/Keep/timeout; corrupt `settings.json` → loads the `.bak`.

@@ -53,6 +53,9 @@ status: in-progress
   - Penpot styling implemented: main-menu starfield, Rajdhani typography, beveled `HudFrame` panels, selected-tab accents, grouped rows, sliders, checkboxes, dropdowns, footer actions and confirmation card. Empty status shows “Changes apply across all categories.”; unsaved status uses amber.
   - Verified: prefab imported and saved; both changed scripts have no diagnostics; settings, tab, rebinding-template and prompt Inspector references assigned. Isolated 1920×1080 previews inspected for all four categories; Controls renders 21 live-asset bindings with 1294 px content in a 438 px viewport. Audio/Display/Camera content fits its viewport.
   - No automated tests, Play Mode session or live rebind capture run for this layout change. Live category/rebind acceptance remains pending.
+  - 2026-10-09: six Settings sliders → `Assets/Prefabs/Ui/Controls/MenuSlider.prefab` (470 × 28 px); Skirmish money slider → `SkirmishSlider.prefab` variant (448 × 28 px). Existing visuals and bindings preserved; shared transparent hit area covers the full 28 px height.
+  - Rounding: audio 1%; camera 0.05×; starting credits $100. Bar clicks update the rounded value and handle; 98% audio → 98%, 98% of the money range → $9,800.
+  - Verification: `SliderInteractionTests` 11/11, `SettingsUiPrefabTests` 4/4, `SkirmishUiPrefabTests` 2/2, `SkirmishModelTests` 4/4. Compilation clean; isolated slider render checked. No manual Play Mode acceptance for this fix.
 - Verified 2026-09-30 in Play Mode: rows render, Apply writes file, unsaved prompt, Discard, conflict detection (Up=S → Move Down; Ctrl+A ≠ A). No automated tests run.
 
 ## TODO

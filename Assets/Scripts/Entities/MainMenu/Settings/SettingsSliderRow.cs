@@ -36,7 +36,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         private void RaiseValueChanged(float value)
         {
-            ValueChanged?.Invoke(Mathf.Round(value / STEP) * STEP);
+            float step = showAsPercent ? 0.01f : STEP;
+            float roundedValue = Mathf.Clamp(Mathf.Round(value / step) * step, slider.minValue, slider.maxValue);
+            Render(roundedValue);
+            ValueChanged?.Invoke(roundedValue);
         }
     }
 }
