@@ -2,29 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using UnityEditor;
 
 namespace EmpireAtWar.Editor.Balance
 {
     public static class BalanceAbilityAdapter
     {
-        private static readonly Dictionary<string, string[]> SETTINGS = new Dictionary<string, string[]>
+        private static readonly Dictionary<Type, string[]> SETTINGS = new Dictionary<Type, string[]>
         {
-            ["AssaultSettings"] = new[] { "statModifier" },
-            ["BoostEnginePowerSettings"] = new[] { "statModifier" },
-            ["BoostShieldPowerSettings"] = new[] { "statModifier" },
-            ["BoostWeaponPowerSettings"] = new[] { "statModifier" },
-            ["InvulnerabilitySettings"] = new[] { "statModifier" },
-            ["LockSFoilsSettings"] = new[] { "statModifier" },
-            ["PowerToMainBatteriesSettings"] = new[] { "fireDelayMultiplier", "statModifier" },
-            ["CloakSettings"] = Array.Empty<string>(),
-            ["FullSalvoSettings"] = new[] { "projectileFireDelayMultiplier", "otherFireDelayMultiplier" },
-            ["CompositeBeamSettings"] = new[] { "damage" },
-            ["ProtonBeamSettings"] = new[] { "damage", "damageType" },
-            ["TractorBeamSettings"] = new[] { "speedMultiplier", "targetClasses", "beam" },
-            ["IonShotSettings"] = new[] { "disableDuration", "projectile" },
-            ["ConcentrateFireSettings"] = new[] { "allyStatModifier", "commandRadius", "targetDamageMultiplier" },
-            ["IonPulseSettings"] = new[] { "chargeDuration", "alignmentTimeout", "alignmentTolerance", "waveSpeed", "waveRadius", "waveThickness", "disableDuration", "malfunctionChance" }
+            [typeof(AssaultSettings)] = new[] { "statModifier" },
+            [typeof(BoostEnginePowerSettings)] = new[] { "statModifier" },
+            [typeof(BoostShieldPowerSettings)] = new[] { "statModifier" },
+            [typeof(BoostWeaponPowerSettings)] = new[] { "statModifier" },
+            [typeof(InvulnerabilitySettings)] = new[] { "statModifier" },
+            [typeof(LockSFoilsSettings)] = new[] { "statModifier" },
+            [typeof(PowerToMainBatteriesSettings)] = new[] { "fireDelayMultiplier", "statModifier" },
+            [typeof(CloakSettings)] = Array.Empty<string>(),
+            [typeof(FullSalvoSettings)] = new[] { "projectileFireDelayMultiplier", "otherFireDelayMultiplier" },
+            [typeof(CompositeBeamSettings)] = new[] { "damage" },
+            [typeof(ProtonBeamSettings)] = new[] { "damage", "damageType" },
+            [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "targetClasses", "beam" },
+            [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },
+            [typeof(ConcentrateFireSettings)] = new[] { "allyStatModifier", "commandRadius", "targetDamageMultiplier" },
+            [typeof(IonPulseSettings)] = new[] { "chargeDuration", "alignmentTimeout", "alignmentTolerance", "waveSpeed", "waveRadius", "waveThickness", "disableDuration", "malfunctionChance" }
         };
 
         public static void Register(BalanceRegistration registry)
@@ -45,8 +46,11 @@ namespace EmpireAtWar.Editor.Balance
                             field == "aiUse" ? typeof(ShipAbilityAiUse) : null);
                     SerializedProperty settings = value.FindPropertyRelative("settings");
                     if (settings.managedReferenceValue == null) throw new InvalidOperationException($"Missing settings: {context}");
-                    string subtype = settings.managedReferenceValue.GetType().Name;
-                    if (!SETTINGS.TryGetValue(subtype, out string[] allowed)) throw new InvalidOperationException($"Unapproved ability subtype: {subtype}");
+                    Type settingsType = settings.managedReferenceValue.GetType();
+                    if (!SETTINGS.TryGetValue(settingsType, out string[] allowed))
+                        throw new InvalidOperationException($"Unapproved ability subtype: {settingsType.Name}");
+                    // The type name is part of each field's preset schema, so it stays the dependency key.
+                    string subtype = settingsType.Name;
                     // Reference IDs are used for this scan only. Durable identity is the sorted canonical ability ID set.
                     List<SerializedProperty> aliases = definitions.Where(other => other.FindPropertyRelative("value.settings").managedReferenceId == settings.managedReferenceId)
                         .OrderBy(other => other.FindPropertyRelative("key").intValue).ToList();
