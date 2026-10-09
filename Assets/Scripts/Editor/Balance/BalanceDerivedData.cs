@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 
@@ -10,7 +12,7 @@ namespace EmpireAtWar.Editor.Balance
     {
         public static string Preview(BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft)
         {
-            return string.Join(", ", unit.Components.Where(component => component.GetType().Name == "WeaponComponent")
+            return string.Join(", ", unit.Components.OfType<WeaponComponent>()
                 .SelectMany(component => BalancePrefabBindings.References(component, "hardPoints")).Cast<WeaponHardPoint>().Select(mount =>
                 registry.Fields.Values.Single(field => field.Target == mount && field.Stat == "WeaponType"))
                 .GroupBy(field => (WeaponType)int.Parse(field.DraftValue(draft))).OrderBy(group => group.Key)
@@ -21,7 +23,7 @@ namespace EmpireAtWar.Editor.Balance
         {
             UnityEngine.GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(AssetDatabase.GetAssetPath(unit.Prefab));
             List<UnityEngine.Object> components = BalancePrefabBindings.Components(prefab).ToList();
-            List<WeaponHardPoint> mounts = components.Where(component => component.GetType().Name == "WeaponComponent")
+            List<WeaponHardPoint> mounts = components.OfType<WeaponComponent>()
                 .SelectMany(component => BalancePrefabBindings.References(component, "hardPoints")).Cast<WeaponHardPoint>().ToList();
             using (SerializedObject serialized = new SerializedObject(unit.Data))
             {
@@ -36,7 +38,7 @@ namespace EmpireAtWar.Editor.Balance
                 }
                 if (unit.Kind == BalanceUnitKind.Squadron)
                 {
-                    UnityEngine.Object health = components.Single(component => component.GetType().Name == "SquadronHealthComponent");
+                    SquadronHealthComponent health = components.OfType<SquadronHealthComponent>().Single();
                     serialized.FindProperty(BalanceRegistration.Auto("MemberCount")).intValue = BalancePrefabBindings.References(health, "fighters").Count;
                 }
                 serialized.ApplyModifiedPropertiesWithoutUndo();

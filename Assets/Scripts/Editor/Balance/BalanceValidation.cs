@@ -5,8 +5,10 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.ViewComponents.Health;
-using UnityEditor;
+using EmpireAtWar.ViewComponents.Squadrons;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Editor.Balance
 {
@@ -58,26 +60,24 @@ namespace EmpireAtWar.Editor.Balance
             foreach (int id in value.Length == 0 ? Array.Empty<int>() : value.Split(',').Select(int.Parse))
             {
                 if (!current.Fields.Values.Any(field => field.Stat == "ability/" + id + "/duration")) { errors.Add("Ability definition missing: " + id); continue; }
-                string subtype = catalog.Get((ShipAbilityId)id).Settings.GetType().Name;
-                if (subtype == "LockSFoilsSettings" && (unit.Kind != BalanceUnitKind.Squadron || !unit.Components.Any(component => component.GetType().Name == "SFoilsView")))
+                ShipAbilitySettings settings = catalog.Get((ShipAbilityId)id).Settings;
+                bool ship = unit.Kind == BalanceUnitKind.Ship;
+                if (settings is LockSFoilsSettings
+                    && (unit.Kind != BalanceUnitKind.Squadron || !unit.Components.OfType<SFoilsView>().Any()))
                     errors.Add(unit.Name + ": Lock S-foils requires an existing squadron SFoilsView.");
-                if (subtype == "IonPulseSettings" && (unit.Kind != BalanceUnitKind.Ship || !unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == HardPointType.IonPulseCannon)
-                    || !((ShipData)unit.Data).HardPointHealth.Any(health => health.HardPointType == HardPointType.IonPulseCannon)))
+                if (settings is IonPulseSettings && (!ship || !HasIonPulseCannon(unit)))
                     errors.Add(unit.Name + ": Ion Pulse requires existing facing and cannon bindings.");
-                if (subtype == "CompositeBeamSettings")
-                {
-                    bool muzzle = false;
-                    foreach (UnityEngine.Object component in unit.Components.Where(component => component.GetType().Name == "Ship"))
-                        using (SerializedObject serialized = new SerializedObject(component))
-                        {
-                            SerializedProperty property = serialized.FindProperty("compositeBeamMuzzle");
-                            muzzle = property != null && property.objectReferenceValue != null;
-                        }
-                    if (unit.Kind != BalanceUnitKind.Ship || !muzzle) errors.Add(unit.Name + ": Composite Beam requires an existing bound muzzle.");
-                }
-                if ((subtype == "PowerToMainBatteriesSettings" || subtype == "FullSalvoSettings" || subtype == "AssaultSettings")
-                    && !unit.Mounts.OfType<WeaponHardPoint>().Any()) errors.Add(unit.Name + ": ability requires an existing weapon component and mounts.");
+                if (settings is CompositeBeamSettings
+                    && (!ship || !unit.Components.OfType<ShipEntity>().Any(entity => entity.CompositeBeamMuzzle != null)))
+                    errors.Add(unit.Name + ": Composite Beam requires an existing bound muzzle.");
+                if ((settings is PowerToMainBatteriesSettings || settings is FullSalvoSettings || settings is AssaultSettings)
+                    && !unit.Mounts.OfType<WeaponHardPoint>().Any())
+                    errors.Add(unit.Name + ": ability requires an existing weapon component and mounts.");
             }
         }
+
+        private static bool HasIonPulseCannon(BalanceUnit unit) =>
+            unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == HardPointType.IonPulseCannon)
+            && ((ShipData)unit.Data).HardPointHealth.Any(health => health.HardPointType == HardPointType.IonPulseCannon);
     }
 }
