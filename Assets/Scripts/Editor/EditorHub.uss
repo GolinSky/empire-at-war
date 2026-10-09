@@ -1,0 +1,16 @@
+.editor-hub { background-color: #080c14; color: #f8fafc; }
+#hub-title { font-size: 20px; -unity-font-style: bold; padding: 16px; border-bottom-width: 2px; border-bottom-color: #38bdf8; }
+#hub-tabs { flex-direction: row; padding: 8px; flex-wrap: wrap; }
+#hub-tabs > Button { padding: 8px 14px; }
+#hub-workspace { flex-direction: row; flex-grow: 1; min-height: 0; }
+#hub-sidebar { width: 270px; min-width: 270px; background-color: #0f172a; padding: 10px; }
+#hub-search { margin-bottom: 10px; }
+#hub-list { flex-grow: 1; }
+#hub-list Button { white-space: normal; -unity-text-align: middle-left; padding: 10px; margin-bottom: 4px; }
+#hub-group { color: #94a3b8; -unity-font-style: bold; margin-top: 12px; margin-bottom: 6px; }
+#hub-tabs > .hub-selected, #hub-list .hub-selected { color: #38bdf8; background-color: #182232; border-left-width: 3px; border-left-color: #38bdf8; }
+#hub-content { flex-grow: 1; flex-shrink: 1; min-width: 0; padding: 12px; }
+#hub-tool-title { font-size: 22px; -unity-font-style: bold; margin-bottom: 10px; white-space: normal; }
+#hub-content > .unity-help-box { margin-bottom: 10px; }
+#hub-run { align-self: flex-start; background-color: #2563eb; color: #f8fafc; padding: 12px 20px; margin-top: 12px; white-space: normal; }
+#hub-hint, #hub-empty { color: #94a3b8; white-space: normal; margin-top: 14px; }

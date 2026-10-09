@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 internal static class SceneToolbarDropdown
 {
     private const string TOOLBAR_ELEMENT_PATH = "EmpireAtWar/Scene Selector";
-    private const string ADD_TO_TOOLBAR_MENU = "Tools/Scene Selector/Add to Main Toolbar";
+    private const string ADD_TO_TOOLBAR_MENU = "Tools/Empire At War/Workflow/Scene Selector/Add to Main Toolbar";
     private const string SCENES_ROOT = "Assets/Scenes";
     private const string SELECT_SCENE_LABEL = "Select Scene";
     private const string TOOLTIP = "Open a scene from Assets/Scenes";
@@ -38,6 +38,7 @@ internal static class SceneToolbarDropdown
     }
 
     [MenuItem(ADD_TO_TOOLBAR_MENU)]
+    [EmpireAtWar.Editor.EditorToolInfo("Show the current scene selector on Unity's main toolbar. The toolbar provides navigation between project scenes.")]
     private static void AddToMainToolbar()
     {
         var showAllMethod = typeof(MainToolbar).GetMethod(

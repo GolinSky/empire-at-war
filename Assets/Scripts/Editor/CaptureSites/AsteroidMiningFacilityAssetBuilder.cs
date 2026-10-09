@@ -12,6 +12,7 @@ using Zenject;
 namespace EmpireAtWar.Editor.CaptureSites
 {
     /// <summary>Builds the asteroid mine entity assets from the Space Mining Facility model.</summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Build asteroid mining-facility assets or repair the mining-facility shield. These are maintenance operations on existing content.")]
     public static class AsteroidMiningFacilityAssetBuilder
     {
         public const string MODEL_PATH =
@@ -31,7 +32,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         // Recentres the model's XZ footprint on the site pivot; shared by the site's rocks and scaffold.
         public static readonly Vector3 MODEL_OFFSET = new Vector3(-7f, 0f, -3.5f);
 
-        [MenuItem("Tools/Empire At War/Capture Sites/Build Asteroid Mine Assets")]
+        [MenuItem("Tools/Empire At War/World/Capture Sites/Build Asteroid Mine Assets")]
         public static void Build()
         {
             BuildView();
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         }
 
         /// <summary>Gives the original mining facility the same impact-only shield as ships.</summary>
-        [MenuItem("Tools/Empire At War/Capture Sites/Fix Mining Facility Shield")]
+        [MenuItem("Tools/Empire At War/World/Capture Sites/Fix Mining Facility Shield")]
         public static void FixMiningFacilityShield()
         {
             GameObject root = PrefabUtility.LoadPrefabContents(SOURCE_VIEW_PATH);

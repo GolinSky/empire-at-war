@@ -7,6 +7,7 @@ using UnityEngine;
 namespace EmpireAtWar.Editor
 {
     [InitializeOnLoad]
+    [EditorToolInfo("Capture or cancel a coordinated profiler, Render Graph, Rendering Debugger and Frame Debugger audit. Outputs are written to Logs/RenderAudit.")]
     internal static class RenderAuditOrchestrator
     {
         private static CaptureOperation _activeCapture;
@@ -23,13 +24,13 @@ namespace EmpireAtWar.Editor
             };
         }
 
-[MenuItem("Tools/Render Audit/Capture All (2 frames, 1 Frame Debugger frame)")]
+[MenuItem("Tools/Empire At War/Diagnostics/Render Audit/Capture All (2 frames, 1 Frame Debugger frame)")]
         private static void CaptureFromMenu()
         {
             Debug.Log(Newtonsoft.Json.JsonConvert.SerializeObject(StartCapture(2, 180, 1)));
         }
 
-        [MenuItem("Tools/Render Audit/Cancel Capture")]
+        [MenuItem("Tools/Empire At War/Diagnostics/Render Audit/Cancel Capture")]
         private static void CancelFromMenu()
         {
             CancelActiveCapture();

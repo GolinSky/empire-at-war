@@ -5,12 +5,13 @@ using UnityEngine;
 
 namespace EmpireAtWar
 {
+    [Editor.EditorToolInfo("Outdated: writes noise PNGs under the retired Assets/Graphics/Shaders path. Retained for reference; update paths before reuse.")]
     public class NoiseTextureGenerator
     {
         public static int width = 256;
         public static int height = 256;
 
-        [MenuItem("CUSTOM/Noise/Generate Main (Low-Freq) Noise")]
+        [MenuItem("Tools/Empire At War/Legacy/Noise/Generate Main (Low-Freq) Noise")]
         public static void GenerateMainNoiseTexture()
         {
             float scale = 4f;
@@ -20,7 +21,7 @@ namespace EmpireAtWar
             SaveTexture(tex, path);
         }
 
-        [MenuItem("CUSTOM/Noise/Generate Detail (High-Freq) Noise")]
+        [MenuItem("Tools/Empire At War/Legacy/Noise/Generate Detail (High-Freq) Noise")]
         public static void GenerateDetailNoiseTexture()
         {
             float scale = 10f;

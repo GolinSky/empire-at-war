@@ -4,9 +4,10 @@ using UnityEditor;
 namespace EmpireAtWar.Editor
 {
     [InitializeOnLoad]
+    [EmpireAtWar.Editor.EditorToolInfo("Capture a 10-second battle performance sample. Requires Play Mode.")]
     public static class BattlePerformanceCaptureMenu
     {
-        private const string CAPTURE_MENU_PATH = "Tools/Performance/Capture Battle (10 Seconds)";
+        private const string CAPTURE_MENU_PATH = "Tools/Empire At War/Diagnostics/Performance/Capture Battle (10 Seconds)";
 
         static BattlePerformanceCaptureMenu()
         {

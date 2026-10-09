@@ -9,6 +9,7 @@ using UnityEngine.Rendering;
 
 namespace EmpireAtWar.Editor
 {
+    [EmpireAtWar.Editor.EditorToolInfo("Regenerate ship icons and update ship UI data and faction definitions.")]
     public static class ShipIconGenerator
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Ships";
@@ -58,7 +59,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.MC80Independence, PrefabName = "MC80IndependenceShipView.prefab", IconFileName = "MC80IndependenceIcon.png" },
         };
 
-        [MenuItem("Tools/Generate Ship Icons")]
+        [MenuItem("Tools/Empire At War/Rendering/Icons/Generate Ship Icons")]
         public static void GenerateAllShipIcons()
         {
             if (!Directory.Exists(ICON_OUTPUT_FOLDER))

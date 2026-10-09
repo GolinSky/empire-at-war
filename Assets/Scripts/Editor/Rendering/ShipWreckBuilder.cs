@@ -12,10 +12,11 @@ namespace EmpireAtWar.Editor.Rendering
     /// Every Ship Lit renderer is copied with its original mesh; only the materials are Ship Wreck
     /// copies (same textures and colors). The shader cuts the mesh into parts at runtime. Safe to re-run.
     /// </summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Build a wreck from a selected supported view prefab, or synchronize existing wreck materials.")]
     public static class ShipWreckBuilder
     {
-        private const string BUILD_MENU_PATH = "Tools/Rendering/Build Wreck From Selected View";
-        private const string SYNC_MENU_PATH = "Tools/Rendering/Sync Wreck Materials";
+        private const string BUILD_MENU_PATH = "Tools/Empire At War/Rendering/Materials/Build Wreck From Selected View";
+        private const string SYNC_MENU_PATH = "Tools/Empire At War/Rendering/Materials/Sync Wreck Materials";
         private const string SHIP_LIT_SHADER_NAME = "EmpireAtWar/Ship Lit";
         private const string SHIP_WRECK_SHADER_PATH = "Assets/Art/Shaders/Units/ShipWreck.shader";
         // Ship views drop "ShipView" (VenatorShipView -> Venator); other unit views drop "View".

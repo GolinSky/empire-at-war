@@ -11,6 +11,7 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Editor.CaptureSites
 {
     /// <summary>Builds the capture-site prefabs and data; maps spawn the sites at generated positions.</summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Capture-site authoring and maintenance. Build Sites rebuilds data and prefabs; the other commands rebuild site prefabs or apply obstacles and the mini-map icon.")]
     public static class CaptureSiteEditorTool
     {
         private const float SITE_RADIUS = 40f;
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private static readonly Color LABEL_COLOR = new Color32(0x94, 0xA3, 0xB8, 0xFF);
         private static readonly Color VALUE_COLOR = new Color32(0x38, 0xBD, 0xF8, 0xFF);
 
-        [MenuItem("Tools/Empire At War/Capture Sites/Build Sites")]
+        [MenuItem("Tools/Empire At War/World/Capture Sites/Build Sites")]
         public static void Build()
         {
             AsteroidMiningFacilityAssetBuilder.Build();
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         /// <summary>
         /// Rebuilds only the site prefabs. Both map slots share one layout: the owner picks the facility after capture.
         /// </summary>
-        [MenuItem("Tools/Empire At War/Capture Sites/Rebuild Site Prefabs")]
+        [MenuItem("Tools/Empire At War/World/Capture Sites/Rebuild Site Prefabs")]
         public static void BuildSitePrefabs()
         {
             EnsureFolder(PREFAB_FOLDER);
@@ -63,7 +64,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         }
 
         /// <summary>Applies rock obstacles and the minimap icon to the existing site assets without rebuilding them.</summary>
-        [MenuItem("Tools/Empire At War/Capture Sites/Apply Obstacles And Mini Map Icon")]
+        [MenuItem("Tools/Empire At War/World/Capture Sites/Apply Obstacles And Mini Map Icon")]
         public static void ApplyObstaclesAndMiniMapIcon()
         {
             GameObject root = PrefabUtility.LoadPrefabContents(SITE_PREFAB_PATH);

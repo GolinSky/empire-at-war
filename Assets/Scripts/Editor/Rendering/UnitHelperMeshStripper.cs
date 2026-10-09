@@ -13,10 +13,11 @@ namespace EmpireAtWar.Editor.Rendering
     /// A helper goes only when its renderer is disabled in the saved prefab, its GameObject holds nothing but
     /// Transform, MeshFilter and MeshRenderer, it has no children, and nothing but a renderer list references it.
     /// </summary>
+    [EmpireAtWar.Editor.EditorToolInfo("Report helper meshes first; Strip removes eligible helper meshes from unit prefabs using the existing tool.")]
     public static class UnitHelperMeshStripper
     {
-        private const string REPORT_MENU_PATH = "Tools/Rendering/Report Helper Meshes In Unit Prefabs";
-        private const string STRIP_MENU_PATH = "Tools/Rendering/Strip Helper Meshes From Unit Prefabs";
+        private const string REPORT_MENU_PATH = "Tools/Empire At War/Rendering/Materials/Report Helper Meshes In Unit Prefabs";
+        private const string STRIP_MENU_PATH = "Tools/Empire At War/Rendering/Materials/Strip Helper Meshes From Unit Prefabs";
         private const string PREFAB_EXTENSION = ".prefab";
 
         public static readonly string[] UNIT_PREFAB_FOLDERS = { "Assets/Prefabs/Models", "Assets/Prefabs/Ui/Reinforcement" };

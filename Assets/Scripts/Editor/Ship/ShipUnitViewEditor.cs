@@ -6,9 +6,10 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Editor.Ship
 {
+    [EmpireAtWar.Editor.EditorToolInfo("Select a ship-view root GameObject first. Assigns sequential hardpoint IDs using the existing setup command; save the edited scene or prefab afterwards.")]
     public static class ShipUnitViewEditor
     {
-        [MenuItem("Custom/Ships/SetUpShipUnits")]
+        [MenuItem("Tools/Empire At War/Units/Ships/Set Up Ship Hardpoint IDs")]
         public static void SetUpShipUnits()
         {
             GameObject selectionObject = (GameObject)Selection.objects.FirstOrDefault();

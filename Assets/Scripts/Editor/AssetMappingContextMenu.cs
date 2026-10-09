@@ -6,11 +6,13 @@ using UnityEngine;
 
 namespace EmpireAtWar.Editor
 {
+    [EmpireAtWar.Editor.EditorToolInfo("Add selected assets to the asset mapping, or rebuild all mappings from Addressables.")]
     public static class AssetMappingContextMenu
     {
         private const string MAPPING_DATA_PATH = "Assets/Settings/AssetMappingData.asset";
 
         [MenuItem("Assets/Add to Asset Mapping", false, 20)]
+        [MenuItem("Tools/Empire At War/Workflow/Asset Mapping/Add Selected Assets", false, 20)]
         private static void AddToAssetMapping()
         {
             AssetMappingData mappingData = GetOrCreateMappingData();
@@ -46,7 +48,7 @@ namespace EmpireAtWar.Editor
             AssetDatabase.SaveAssets();
         }
 
-        [MenuItem("Tools/Asset Mapping/Rebuild From Addressables")]
+        [MenuItem("Tools/Empire At War/Workflow/Asset Mapping/Rebuild From Addressables")]
         public static void RebuildFromAddressables()
         {
             AssetMappingData mappingData = GetOrCreateMappingData();
@@ -86,6 +88,7 @@ namespace EmpireAtWar.Editor
         }
 
         [MenuItem("Assets/Add to Asset Mapping", true)]
+        [MenuItem("Tools/Empire At War/Workflow/Asset Mapping/Add Selected Assets", true)]
         private static bool ValidateAddToAssetMapping()
         {
             return Selection.objects is { Length: > 0 };

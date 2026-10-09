@@ -14,8 +14,10 @@ namespace EmpireAtWar.Editor.Tools
     /// on Unity Editor startup if they are not already running.
     /// </summary>
     [InitializeOnLoad]
+    [EmpireAtWar.Editor.EditorToolInfo("Legacy workflow: external-app auto-start was used for the old Obsidian-dependent setup. The current empire-vault connection uses stdio and does not require the Obsidian app. Existing preferences and startup behavior are preserved.")]
     public static class AutoAppStartup
     {
+        private const string CONFIG_MENU_PATH = "Tools/Empire At War/Legacy/External Apps/Configure...";
         private const string PREF_ENABLED_KEY = "AutoAppStartup_Enabled";
         private const string PREF_PATHS_KEY = "AutoAppStartup_Paths";
         private const string SESSION_CHECKED_KEY = "AutoAppStartup_AlreadyChecked_Session";
@@ -137,16 +139,17 @@ namespace EmpireAtWar.Editor.Tools
             }
         }
 
-        [MenuItem("Tools/Auto App Startup/Launch Required Applications Now", false, 10)]
+        [MenuItem("Tools/Empire At War/Legacy/External Apps/Launch Required Applications Now", false, 10)]
         private static void MenuItemLaunchNow()
         {
             LaunchAllApps(isManualTrigger: true);
         }
 
-        [MenuItem("Tools/Auto App Startup/Configure...", false, 11)]
+        [MenuItem(CONFIG_MENU_PATH, false, 11)]
+        [EditorToolInfo("Legacy external-app launcher settings. The current vault connection does not require Obsidian to run. Preferences change only when you edit these controls.", typeof(AutoAppStartupWindow))]
         private static void MenuItemOpenConfig()
         {
-            AutoAppStartupWindow.ShowWindow();
+            EditorHubWindow.OpenTool(CONFIG_MENU_PATH);
         }
     }
 
