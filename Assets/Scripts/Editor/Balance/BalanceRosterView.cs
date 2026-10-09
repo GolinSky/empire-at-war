@@ -18,6 +18,8 @@ namespace EmpireAtWar.Editor.Balance
             ListView list = new ListView(units, 32, () =>
             {
                 VisualElement row = new VisualElement(); row.AddToClassList("balance-roster-row");
+                Image icon = new Image { name = "unit-icon", scaleMode = UnityEngine.ScaleMode.ScaleToFit, pickingMode = PickingMode.Ignore };
+                icon.AddToClassList("balance-unit-icon-small"); row.Add(icon);
                 Label name = new Label { name = "unit-name" }; name.AddToClassList("balance-roster-name"); row.Add(name);
                 Label kind = new Label { name = "unit-class" }; kind.AddToClassList("balance-roster-class"); row.Add(kind);
                 Button pin = new Button(() =>
@@ -34,6 +36,8 @@ namespace EmpireAtWar.Editor.Balance
             }, (row, index) =>
             {
                 BalanceUnit unit = units[index]; row.userData = unit; row.tooltip = unit.Caption;
+                Image icon = row.Q<Image>("unit-icon"); icon.sprite = unit.Icon;
+                icon.style.display = unit.Icon == null ? DisplayStyle.None : DisplayStyle.Flex;
                 row.Q<Label>("unit-name").text = unit.Name;
                 row.Q<Label>("unit-class").text = unit.Class;
                 Button pin = row.Q<Button>("unit-pin");

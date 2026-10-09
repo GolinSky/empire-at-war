@@ -87,6 +87,8 @@ namespace EmpireAtWar.Editor.Balance
                     UpdateActions();
                 });
                 Label name = new Label { name = "picker-unit-name", pickingMode = PickingMode.Ignore };
+                Image icon = new Image { name = "unit-icon", scaleMode = UnityEngine.ScaleMode.ScaleToFit, pickingMode = PickingMode.Ignore };
+                icon.AddToClassList("balance-unit-icon-small"); row.Add(icon);
                 name.AddToClassList("balance-picker-name"); row.Add(name);
                 Button add = new Button { name = "picker-add", text = "+ Add" }; row.Add(add);
                 add.clicked += () =>
@@ -100,6 +102,8 @@ namespace EmpireAtWar.Editor.Balance
             list.bindItem = (row, index) =>
             {
                 BalanceUnit unit = units[index]; row.userData = unit;
+                Image icon = row.Q<Image>("unit-icon"); icon.sprite = unit.Icon;
+                icon.style.display = unit.Icon == null ? DisplayStyle.None : DisplayStyle.Flex;
                 row.Q<Toggle>("picker-select").SetValueWithoutNotify(selected.Contains(unit.Id));
                 row.Q<Label>("picker-unit-name").text = unit.Caption; row.tooltip = unit.Caption;
             };

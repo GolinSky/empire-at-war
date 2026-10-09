@@ -12,6 +12,7 @@ namespace EmpireAtWar.Editor.Balance
         public string Class;
         public Object Data;
         public GameObject Prefab;
+        public Sprite Icon;
         public readonly Dictionary<string, string> Fields = new Dictionary<string, string>();
         public readonly List<Object> Mounts = new List<Object>();
         public readonly List<Object> Components = new List<Object>();

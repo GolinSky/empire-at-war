@@ -48,6 +48,8 @@
 .balance-roster-list .unity-collection-view__item--selected { background-color: var(--balance-active); border-left-width: 2px; border-left-color: var(--balance-accent); }
 .balance-content { flex-grow: 1; min-width: 280px; min-height: 0; padding: 18px; }
 .balance-unit-heading { margin-bottom: 14px; }
+.balance-unit-icon { width: 56px; height: 40px; flex-shrink: 0; margin-right: 8px; }
+.balance-unit-icon-small { width: 32px; height: 26px; flex-shrink: 0; margin-right: 6px; }
 .balance-unit-name { font-size: 22px; -unity-font-style: bold; margin-bottom: 8px; }
 .balance-summary { flex-direction: row; flex-wrap: wrap; margin-bottom: 12px; }
 .balance-stat { flex-grow: 1; flex-basis: 128px; min-width: 128px; background-color: var(--balance-panel); padding: 12px; margin-right: 8px; margin-bottom: 6px; border-radius: 6px; border-width: 1px; border-color: var(--balance-line); }

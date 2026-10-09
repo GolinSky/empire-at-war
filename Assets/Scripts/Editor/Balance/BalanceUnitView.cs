@@ -34,6 +34,11 @@ namespace EmpireAtWar.Editor.Balance
                 return;
             }
             VisualElement heading = new VisualElement(); heading.AddToClassList("balance-unit-heading");
+            if (unit.Icon != null)
+            {
+                Image icon = new Image { name = "unit-icon", sprite = unit.Icon, scaleMode = UnityEngine.ScaleMode.ScaleToFit, pickingMode = PickingMode.Ignore };
+                icon.AddToClassList("balance-unit-icon"); heading.Add(icon);
+            }
             Label name = new Label(unit.Name); name.AddToClassList("balance-unit-name"); heading.Add(name);
             Label caption = new Label(unit.Faction + " · " + unit.Class + " · " + unit.Kind); caption.AddToClassList("balance-muted"); heading.Add(caption);
             panel.Add(heading);

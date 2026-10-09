@@ -50,6 +50,7 @@ namespace EmpireAtWar.Editor.Balance
                 {
                     Id = faction.FactionType + "/" + roster + "/" + id,
                     Name = value.FindPropertyRelative(BalanceRegistration.Auto("Name")).stringValue,
+                    Icon = (Sprite)value.FindPropertyRelative(BalanceRegistration.Auto("Icon")).objectReferenceValue,
                     Faction = faction.FactionType.ToString(), Kind = kind, Data = data, Prefab = prefab,
                     Class = data is ShipData ship ? ship.ShipClass.ToString() : ((SquadronData)data).ShipClass.ToString()
                 };

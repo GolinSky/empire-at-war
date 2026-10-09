@@ -265,3 +265,9 @@ completed: 2026-10-09
     - Inclusive forward/reverse Shift+click ranges follow displayed order; repeated ranges keep their anchor. Ctrl+Shift+click adds a range.
     - Ten-unit range, shrinking range, reordered cards, removed anchor and attached pointer input verified.
     - Balance EditMode **50/50 passed** in **45.12 s**; Console errors: 0. No Play Mode run.
+
+16. [x] **Reuse faction unit icons — 2026-10-09**
+    - Read faction roster/buildable `FactionData.Icon` references into `BalanceUnit.Icon`; show existing sprites on Units/Compare cards, unit details, picker results and roster rows.
+    - ScaleToFit preserves proportions; card/details images 56 × 40 px, list images 32 × 26 px. Entries without an icon keep their text-only display.
+    - Live inventory: 87 entries, 83 assigned icons; all ship/squadron icon references match faction UI sources. Two attached card icons measured 56 × 40 px without overflow. Report: `Library/BalanceEditor/icon-check.txt`.
+    - Last full Balance run: 49/50 passed in 22.67 s; remaining synthetic control test fixed by scrolling targets into view. Selection rerun: 3/3 passed in 0.31 s. Earlier transient failures included a Pipeline timeout and preset-load failure; both passed in the last full run. No Play Mode run.

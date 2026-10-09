@@ -293,6 +293,7 @@
   - **Hardpoint popup (2026-10-09)**: View hardpoints replaces embedded lists; 620 × ≤560 px popup shows all mounts, retains draft weapon edits and stays open across comparison refreshes. Balance EditMode **46/46 passed**, 0 Console errors; no new Play Mode run.
   - **Comparison selection (2026-10-09)**: click selects one card; Ctrl+click toggles cards; Ctrl+A selects all; Delete removes selected cards. Selection survives sorting/redraws; fields/buttons keep normal input; removal preserves drafts. Balance EditMode **49/49 passed** in **36.40 s**; no Play Mode run.
   - **Shift selection (2026-10-09)**: Shift+click selects the inclusive range in displayed order; Ctrl+Shift+click adds a range. Forward/reverse ranges, retained anchor, reorder and removed-anchor behavior verified. Balance EditMode **50/50 passed** in **45.12 s**, 0 Console errors; no Play Mode run.
+  - **Unit icons (2026-10-09)**: reuse faction roster/buildable sprites on cards, details, picker and roster rows. Live icon identities and 56 × 40 px card geometry verified. Full Balance 49/50; corrected selection test rerun 3/3 passed. No Play Mode run.
   - **Editable cards/performance (2026-10-09)**: immediate result-click additions; editable source stats, height enum and existing hardpoint weapon types. Inventory 10.605 s → 1.794 s; 9,135-field preset save 407 ms; one-field Apply/read-back 4,273 ms. UI and temporary-asset persistence/restore verified; live balance values preserved.
 
 

@@ -63,14 +63,16 @@ namespace EmpireAtWar.Tests.Editor
                 yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "0" }));
                 Assert.That(Card("0").ClassListContains("balance-compare-selected"), Is.True);
+                ScrollView viewport = host.rootVisualElement.Query<ScrollView>().ToList().Single(scroll => scroll.viewDataKey == "balance-compare-scroll");
+                viewport.ScrollTo(Card("1")); yield return null; yield return null;
                 Click(Card("1"), false, true);
                 yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "0", "1" }));
                 Assert.That(Card("1").ClassListContains("balance-compare-selected"), Is.True);
+                viewport.ScrollTo(Card("0")); yield return null; yield return null;
                 Click(Card("0"), true);
                 yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "1" }));
-                ScrollView viewport = host.rootVisualElement.Query<ScrollView>().ToList().Single(scroll => scroll.viewDataKey == "balance-compare-scroll");
                 viewport.ScrollTo(Card("2")); yield return null; yield return null;
                 Click(Card("2"), false);
                 yield return null;
@@ -121,6 +123,8 @@ namespace EmpireAtWar.Tests.Editor
                 BalanceCompareView.Build(host.rootVisualElement, registry, state, (_, __) => { }, () => { });
                 host.Show(); yield return null; yield return null;
                 VisualElement card = host.rootVisualElement.Q(className: "balance-compare-card");
+                ScrollView viewport = host.rootVisualElement.Query<ScrollView>().ToList().Single(scroll => scroll.viewDataKey == "balance-compare-scroll");
+                viewport.ScrollTo(card); yield return null; yield return null;
                 Click(card, false); yield return null;
                 Assert.That(state.CompareSelection, Is.EqualTo(new[] { "unit" }));
                 TextField text = new TextField { value = "editable" }; card.Add(text);

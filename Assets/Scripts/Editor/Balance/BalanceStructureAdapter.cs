@@ -63,6 +63,7 @@ namespace EmpireAtWar.Editor.Balance
                 SerializedProperty value = entry.FindPropertyRelative("value");
                 BalanceUnit unit = Structure(registry, faction, data, catalog.GetType().Name + "/" + id,
                     value.FindPropertyRelative(BalanceRegistration.Auto("Name")).stringValue, prefabKey, mapping);
+                unit.Icon = (Sprite)value.FindPropertyRelative(BalanceRegistration.Auto("Icon")).objectReferenceValue;
                 BalanceUnitAdapter.Economy(registry, catalog, value.propertyPath + ".", "entry/" + id + "/", unit, true);
             }
         }
