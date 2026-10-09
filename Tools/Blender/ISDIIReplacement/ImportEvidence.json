@@ -1,0 +1,666 @@
+{
+  "source_mod": "1770851727",
+  "unit": "Star_Destroyer_II",
+  "chain": [
+    "SFX_Base",
+    "Vessel_Base",
+    "Capital_Base",
+    "Star_Destroyer_Template",
+    "Star_Destroyer_II_Template",
+    "Star_Destroyer_II_Upkeep",
+    "Star_Destroyer_II"
+  ],
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\Units_Space_Empire_Star_Destroyer_Imperial.xml": "77932d6139fd5616233cf476e78676adc1e755b96e3dd9eeda25fbdbec037b2f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\_Default_Base.xml": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\Hardpoints\\Hardpoints_Empire_Star_Destroyer_Imperial.xml": "c86d3a8ab5b890ee256eb88ee6200d6c14bfd9f9df5ee63eb214aa5e1d034090",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\PROJECTILES.XML": "4514777f4cfa04beb78e784f097e8a5b6ca982f9fb72057a10cf684c508c04f7",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD.ALO": "42a2c606be5cafe7655773bd28bf2b9cb71e3bf1fd2a7cdab44f88e849a2f75e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_ISD_Bridge.dds": "f5f3d19db862a9ddcf382431cbf040b506ca0c9ed0fbb82b3304e554cd569521",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_ISD_Bridge_B.dds": "ea01e0a6f807c39c4aa791d44e6ac3ed39bbc303db8deaa1141f6d3abbbd4cf9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_ISD_Superstructure_Base.dds": "606b6e8c0e8fa04e96fdef128a0ce1243282edd305df1be30fc79cfb428113b0",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_ISD_Superstructure_Base_B.dds": "f0d99fb08ea50c4e651cf4061decb995174b9ce0878946f93964c0ecc26b6940",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_dist.tga": "1350923773197367e0f33863e88adcbfc1e52d6e9c89ff3c347d9fe41b7d2c83",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_wave.tga": "6d8d9fb3d488cac71c38d30434ee7f98ea7e86491f460402a78963b38cb77513",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Fancy_Blue.tga": "2144816c33c7fced5a1de03476cbeb8bf10ca413b02c222a582f304fdff138bb",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Fancy_White.tga": "c985b69fed5c007c76a9ea9f8f95cc8073a4ee15e6ebe223c3dacf40529de3f5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hangar_2.dds": "d6d9eabc04f92cc958427ff0565ec3b98f0727850d97bd146c4b359a4e8f8971",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hangar_3.dds": "24cfdf7a9a6d9156e9d218b2d2f6f4a1545dae63096534471dbb08da9af9572b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hangar_3_Yellow.dds": "4772506816a289a85283643da3a091f43b886b84934357acffb71ef005b71d82",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hangar_Imp_Light.dds": "99e4c686b364d54257aa7d48ff9ac7842d2ba09e8c00199fad4bf0928ab16a64",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hangar_Imp_Yellow_Light_Dim.dds": "e97560464e44e36e596d86361958c0c10f17dcac00a3350c7b8e79e74f98efa5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_16.dds": "a52cc7b8c7707bedf40c95a6b8c826dc10200d122e69348c3cd649e8882a5380",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_16_B.dds": "4490fec3117c1a92a2659619f2fc9278f3e4cd353ec18a1f3c24e6562ea601e2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_2_B.dds": "abeb18f6aa02afc024f284ff836909a5062de8a81b19c84f4a6404a7f554d309",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_2_SD.dds": "0b763b84bacdab59c5be47b8a3e2afd587c4de367671851e0376817a21fb0f5f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD.dds": "20ebc9e65f866fe4bb48131fd65c607652209532aff9b71b558b9c3e688ab4fa",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD_B.dds": "678eec9f6056e0f1205e7e9e630eb4dd602754dc0490a2253d6c251659728f8d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD_Lights.dds": "0e6cf802ec0fce1471b41afe2974dae74b1458c2ba9b8e5d75e424b179d978d4",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Trench_ISD.dds": "e2eb3ff821e823e7583d6c9ae0ca9a43968e741b652ef8276e449d3b1e726b58",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Trench_ISD_B.dds": "fb8b554dbe84d14695c86216fd039526fe710b5af7dc9917ae6f43e26fa982d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Trench_ISD_Inset.dds": "fa80bebc27f413aa9b667ab1a997dfc9ca9c4ac0cb5634663b66cf0b7ad7938a",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Kitbash_Trench_ISD_Inset_B.dds": "d82c3a9ff0fb9f70b115bd315bde67ecbb8a1cc4cf969a75df9a649a7d152c4c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds": "4db44b1aae46f1b27410acaa42edcc54728b6c919a9030178557bd4294783b0d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Material_HighContrast.dds": "d13277386488d52716d59ec242047bc8ce30e350d75821b203684c1593df0c64",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Material_HighLowContrast_B.dds": "3e3338bccb0bbd6cb8bce87d35fdd1b9f1c9c9e2895be9e7635decbfbe82df8b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Superstructure_Base.dds": "ff6e6dbbe197a9c40518beea6cc6f441125bebfd07c34539ec36827760de27ce",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Superstructure_Base_B.dds": "dd61f882f7eda6db3015fcae8b825911b49bd34a1b0d00fbdb060871f5c3e5e1",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\NONE.DDS": "7a7950c15c130ffeadecaa1040a8fe692a7a9580e4b8dabd7b502ed6e81e0e94",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_DeathClone.ALO": "ed29d1a2dc3578d18cd899c15f3c15cbac77c027c26f928f173bc6abd724177a",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Armor_B.dds": "32b1421c60bad76d1276e7a1b9d5ee7cf4d426cdc4b97bab41e89bc8abe747ab",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Armor_Thick.dds": "3ef6a582a29eb066822a8fabd0c82b58a8bfc598123ed6f2c3a04adbdfbafb92",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Material_LowContrast.dds": "3034349a924466665d783c3368437f28b7c3220a44106e2bcac3b904f657d4bf",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2.alo": "f1cdff3c8e30797f863fbe009a720a52325eb8a4be17ba11a62f9d318b4134f5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_ICQ_01.ALO": "51396d5f02656fa141dba0b6c160275de8c7d1eadce7d5d35b619804cf2b2990",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_ICQ_02.ALO": "0522da3010815937eade225a742bd41c01a165cc91d4c6f3ffdf26f59c2d40fc",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_Center_Turret_01.ALO": "899af826606250206809fa1be659cf8fb9592d9909ea1c3fed80f31ec1249a62",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_1.dds": "5bfdd345a8ca6dad87a10fec920d33bd3863a1a68fb336d528c5cc4591540247",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_1_B.dds": "34aa45039cfdb06250b8887f6e463eb24282f1a4344dc38fa71fe040c7875ca5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_Center_Turret_02.ALO": "899af826606250206809fa1be659cf8fb9592d9909ea1c3fed80f31ec1249a62",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_Center_Turret_03.ALO": "4c1bad6e2959aa28bc8ae4a3490bfd5d675b6a9c7d0b64b88702132d31c6be2b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_01.ALO": "96804d9980f42c3675f79055ad8018c2b3582ceee219e2ac9e15165355c724fb",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_02.ALO": "fbc3a6d52cc6d710fd804cd79213a360b64b9454979b6320efe03edd0b7f79c2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_03.ALO": "96f382bc0447c2c456c7dacd45449f0cf43512334164076ad810c8ecd6c9f6b5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_04.ALO": "98f7e6af3e98a78000c782bcb2dcfeff425e19cf75b07bbc2e94f75b5f050d82",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_05.ALO": "43d494024a6ccfe8471d19764d0b5b368a632170923a84d878ae28985b0c9f69",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_06.ALO": "ebb342dc6c43116de2c7efb3d1facd869666c68ac1dc73d7b1bb3d0f4b35b63c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_07.ALO": "48db807ca032efc80a7210db3be40650915350b7b7ccfaf5f62f0a2358050360",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Imperial_SD_2_TLO_08.ALO": "7cc1c719bbaf00b37271d8880f7372408254272ac63ea67756db244670fa9940"
+  },
+  "source_hashes_unchanged": true,
+  "attachments": [
+    {
+      "variant": "ISDIIParts",
+      "bone": "Decal_Attach_04",
+      "hardpoint": "HP_ISD_New_ISD2"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_QIC_01",
+      "bone": "Ta_ISD_ICQ_01",
+      "hardpoint": "HP_ISD_New_QIC_01"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_QIC_02",
+      "bone": "Ta_ISD_ICQ_02",
+      "hardpoint": "HP_ISD_New_QIC_02"
+    },
+    {
+      "variant": "ISDII_HP_ISD_Center_TL_01",
+      "bone": "HP_New_TA_01",
+      "hardpoint": "HP_ISD_Center_TL_01"
+    },
+    {
+      "variant": "ISDII_HP_ISD_Center_TL_02",
+      "bone": "HP_New_TA_02",
+      "hardpoint": "HP_ISD_Center_TL_02"
+    },
+    {
+      "variant": "ISDII_HP_ISD_Center_TL_03",
+      "bone": "HP_New_TA_03",
+      "hardpoint": "HP_ISD_Center_TL_03"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_01",
+      "bone": "TA_ISD2_TLO_01",
+      "hardpoint": "HP_ISD_New_OTL_01"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_02",
+      "bone": "TA_ISD2_TLO_02",
+      "hardpoint": "HP_ISD_New_OTL_02"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_03",
+      "bone": "TA_ISD2_TLO_03",
+      "hardpoint": "HP_ISD_New_OTL_03"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_04",
+      "bone": "TA_ISD2_TLO_04",
+      "hardpoint": "HP_ISD_New_OTL_04"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_05",
+      "bone": "TA_ISD2_TLO_05",
+      "hardpoint": "HP_ISD_New_OTL_05"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_06",
+      "bone": "TA_ISD2_TLO_06",
+      "hardpoint": "HP_ISD_New_OTL_06"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_07",
+      "bone": "TA_ISD2_TLO_07",
+      "hardpoint": "HP_ISD_New_OTL_07"
+    },
+    {
+      "variant": "ISDII_HP_ISD_New_OTL_08",
+      "bone": "TA_ISD2_TLO_08",
+      "hardpoint": "HP_ISD_New_OTL_08"
+    }
+  ],
+  "conversions": [
+    {
+      "model": "ISDII_HP_ISD_Center_TL_01",
+      "geometry_error": 3.0502874889116025e-06,
+      "bone_error": 1.318058037012576e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_02",
+      "geometry_error": 3.0502874889116025e-06,
+      "bone_error": 1.318058037012576e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_03",
+      "geometry_error": 3.0502874889116025e-06,
+      "bone_error": 1.318058037012576e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_01",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_02",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_03",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_04",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_05",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_06",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_07",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_08",
+      "geometry_error": 2.8310637681574623e-06,
+      "bone_error": 2.6656007498500226e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_QIC_01",
+      "geometry_error": 4.0249688663802466e-06,
+      "bone_error": 3.391989714079018e-06
+    },
+    {
+      "model": "ISDII_HP_ISD_New_QIC_02",
+      "geometry_error": 4.0249688663802466e-06,
+      "bone_error": 3.391989714079018e-06
+    },
+    {
+      "model": "ISDIIDeath",
+      "geometry_error": 0.00011820946069600042,
+      "bone_error": 9.863133412498554e-05
+    },
+    {
+      "model": "ISDIIHull",
+      "geometry_error": 0.00015795230865478516,
+      "bone_error": 6.320296209058894e-05
+    },
+    {
+      "model": "ISDIIParts",
+      "geometry_error": 0.00012302029034879378,
+      "bone_error": 2.6347584899033437e-12
+    }
+  ],
+  "editable_blends": [
+    {
+      "model": "ISDIIHull",
+      "meshes": 33,
+      "bones": 147,
+      "packed_images": 73
+    },
+    {
+      "model": "ISDIIDeath",
+      "meshes": 35,
+      "bones": 132,
+      "packed_images": 77
+    },
+    {
+      "model": "ISDIIParts",
+      "meshes": 7,
+      "bones": 8,
+      "packed_images": 8
+    },
+    {
+      "model": "ISDII_HP_ISD_New_QIC_01",
+      "meshes": 7,
+      "bones": 11,
+      "packed_images": 8
+    },
+    {
+      "model": "ISDII_HP_ISD_New_QIC_02",
+      "meshes": 7,
+      "bones": 11,
+      "packed_images": 8
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_01",
+      "meshes": 4,
+      "bones": 8,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_02",
+      "meshes": 4,
+      "bones": 8,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_03",
+      "meshes": 4,
+      "bones": 8,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_01",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_02",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_03",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_04",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_05",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_06",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_07",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_08",
+      "meshes": 5,
+      "bones": 9,
+      "packed_images": 6
+    }
+  ],
+  "saved_unity": {
+    "art": [
+      {
+        "model": "ISDII_HP_ISD_Center_TL_01",
+        "bone_error": 3.16649675e-08,
+        "geometry_error": 7.138952e-08,
+        "verified_vertices": 326
+      },
+      {
+        "model": "ISDII_HP_ISD_Center_TL_02",
+        "bone_error": 3.16649675e-08,
+        "geometry_error": 7.138952e-08,
+        "verified_vertices": 326
+      },
+      {
+        "model": "ISDII_HP_ISD_Center_TL_03",
+        "bone_error": 3.16649675e-08,
+        "geometry_error": 7.138952e-08,
+        "verified_vertices": 326
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_01",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_02",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_03",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_04",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_05",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_06",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_07",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_OTL_08",
+        "bone_error": 3.071953e-08,
+        "geometry_error": 6.6890145e-08,
+        "verified_vertices": 1478
+      },
+      {
+        "model": "ISDII_HP_ISD_New_QIC_01",
+        "bone_error": 6.62484e-08,
+        "geometry_error": 1.03774582e-07,
+        "verified_vertices": 1289
+      },
+      {
+        "model": "ISDII_HP_ISD_New_QIC_02",
+        "bone_error": 6.62484e-08,
+        "geometry_error": 1.03774582e-07,
+        "verified_vertices": 1289
+      },
+      {
+        "model": "ISDIIDeath",
+        "bone_error": 1.925885e-06,
+        "geometry_error": 3.02519265e-06,
+        "verified_vertices": 177933
+      },
+      {
+        "model": "ISDIIHull",
+        "bone_error": 1.00968782e-06,
+        "geometry_error": 3.02052831e-06,
+        "verified_vertices": 175987
+      },
+      {
+        "model": "ISDIIParts",
+        "bone_error": 3.737639e-14,
+        "geometry_error": 1.51259633e-06,
+        "verified_vertices": 10676
+      }
+    ],
+    "prefabs": [
+      {
+        "path": "Assets/Prefabs/Models/Ships/ISDII.prefab",
+        "visible_renderers": 59,
+        "bounds": "(101.00, 49.50, 180.00)"
+      },
+      {
+        "path": "Assets/Prefabs/Models/Ships/ISDIIShipView.prefab",
+        "visible_renderers": 59,
+        "bounds": "(101.00, 49.50, 180.00)"
+      },
+      {
+        "path": "Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab",
+        "visible_renderers": 25,
+        "bounds": "(101.00, 49.50, 180.00)"
+      },
+      {
+        "path": "Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab",
+        "visible_renderers": 49,
+        "bounds": "(101.00, 49.50, 180.00)"
+      }
+    ],
+    "engines": [
+      {
+        "renderer": "Engine_Glow",
+        "triangles": 1840,
+        "cull": 0,
+        "emission_intensity": 2,
+        "emission_enabled": true
+      },
+      {
+        "renderer": "Engine_Glow_Big",
+        "triangles": 1428,
+        "cull": 0,
+        "emission_intensity": 2,
+        "emission_enabled": true
+      }
+    ],
+    "ship": {
+      "weapons": 24,
+      "targets": 27,
+      "mount_error": 0.0,
+      "loadout": {
+        "10": 6,
+        "36": 2,
+        "33": 3,
+        "71": 2,
+        "4": 3,
+        "70": 8
+      }
+    },
+    "obsolete_visuals": 38,
+    "registrations": [
+      {
+        "path": "Assets/Prefabs/Models/Ships/ISDIIShipView.prefab",
+        "guid": "f24f9301127af634ab504e1c96f3d728",
+        "address": "ISDIIShipView"
+      },
+      {
+        "path": "Assets/Settings/Data/Ship/ISDIIShipData.asset",
+        "guid": "9864bdd7b03aa4d4d812b8f34e008399",
+        "address": "ISDIIShipData"
+      }
+    ]
+  },
+  "obsolete": {
+    "obsolete": [
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDII.prefab",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIIcon.png",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIReinforcementView.prefab",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIShipView.prefab",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIShipViewShield.asset",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIISilhouette.png",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIWreckView.prefab",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIIICQ01.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIIICQ02.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIIParts.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO01.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO02.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO03.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO04.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO05.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO06.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO07.fbx",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO08.fbx",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Helper_MeshCollision.mat",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Helper_MeshShadowVolume.mat",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hangar_Imp_1k_MeshGloss_Wreck.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hull_Superstructure_Base_MeshBumpColorize_Wreck.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_B.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_Lights.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_Lights_Additive.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hullplates_ISD_diffuse.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hullplates_ISD_diffuse_TeamMask.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hullplates_normal_specular.png"
+    ],
+    "legacy_shared_ISDI_dependencies": [
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Kitbash_Pieces_ISD_B.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Kitbash_Pieces_ISD.png",
+      "Assets/Art/Models/EmpireShips/ISDI/ISDITLT01.fbx",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize.mat",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Helper_MeshShadowVolume.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hullplates_ISD_diffuse.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hangar_Imp_1k_Additive.png",
+      "Assets/Art/Models/EmpireShips/ISDI/ISDITLT02.fbx",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Empire_Imperial_Star_Destroyer_Armor_B.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_P_ISD_ENG_MeshAdditive.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_P_ISD_ENG_Additive.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hull_Lights_Grid_MeshAdditive.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Superstructure_Base.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Kitbash_Pieces_ISD_Lights_Additive.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Superstructure_Base_B.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hull_Superstructure_Base_MeshBumpColorize.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Lights_Grid_Additive.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hangar_Imp_1k_MeshGloss.mat",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Superstructure_Base_TeamMask.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+      "Assets/Art/Models/EmpireShips/ISDI/ISDI.fbx",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Empire_Imperial_Star_Destroyer_Armor_TeamMask.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Helper_MeshCollision.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hangar_Imp_1k.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hullplates_normal_specular.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Empire_Imperial_Star_Destroyer_Armor.png",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hangar_Imp_1k_MeshAdditive.mat",
+      "Assets/Art/Models/EmpireShips/ISDI/ISDITLT03.fbx",
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_Hullplates_ISD_diffuse_TeamMask.png",
+      "Assets/Art/Models/EmpireShips/ISDI/ISDI_TeamStripes.asset",
+      "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_TeamStripes.mat",
+      "Assets/Art/Materials/Wrecks/ISDI/ISDI_TeamStripes_Wreck.mat"
+    ],
+    "shared_policy": "ISD II usage obsolete; shared assets remain active for ISD I. Replacement has no ISD I dependencies.",
+    "removed_guids": {
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDII.prefab": "814e80fa9cce1b24cba92460c1d39e28",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIIcon.png": "0dad2c67faf580f49ab86577b512fc4f",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIReinforcementView.prefab": "dbca145b0c1378544bf615267387a319",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIShipView.prefab": "68c6776ad9fc30d4da13c5ab9a73e8d0",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIShipViewShield.asset": "f98faf8e31ad74e42b9d7e3c38ac026a",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIISilhouette.png": "42a51d05596399e4e9b2fc19812156ef",
+      "Assets/Art/Models/EmpireShips/ISDIIObsolete/ISDIIWreckView.prefab": "983dea2066cd993409cd0de620ade9b1",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIIICQ01.fbx": "d18ed5c6fa613104d82e50fcaaf4e384",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIIICQ02.fbx": "7b2f3953f7737a04ba2cfe2653402f1b",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIIParts.fbx": "b4c789d568f76ad4d8ede532736aabc9",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO01.fbx": "06c17a2440d47ff4f94c9468d041c1fe",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO02.fbx": "69c1c054b7dd6f248b787f10bd79db04",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO03.fbx": "35ac5c7b46273624f8f862c99bba9315",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO04.fbx": "c7233e24314e2784eb09843a4c8f6246",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO05.fbx": "b9ad37e33797aed428d929a2645303ad",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO06.fbx": "41a775c986cd7054483aafc1ff1235cb",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO07.fbx": "af5992883e8ab7141a30be4d7d0b43b6",
+      "Assets/Art/Models/EmpireShips/ISDII/ISDIITLO08.fbx": "d6390d1de0270ef4eb93f31713878b10",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Helper_MeshCollision.mat": "493977f4b46add84abdb84979019be17",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Helper_MeshShadowVolume.mat": "3e827d8d058ef5c4ea7fd95ca94ed2c1",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat": "16ed88bc6de041b46a6a51eacec0ec6c",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat": "8af496d040e185743b5d05b87f85645f",
+      "Assets/Art/Materials/Models/EmpireShips/ISDII/ISDII_Hullplates_ISD_diffuse_MeshBumpColorize.mat": "de9ff89cff23adf45b7cc0862575f3d8",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck.mat": "35baef58d18fa6c4292833df38e40e1a",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hangar_Imp_1k_MeshGloss_Wreck.mat": "b7a6b16644c5d144fa5de962ccf77fcb",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat": "deabd6ccbb33d3e489160fff23eed568",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hull_Superstructure_Base_MeshBumpColorize_Wreck.mat": "020630fc5d4dc87469e23cddff2909f0",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Common_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat": "679e69af3e9539c4c93b651fb36db55c",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat": "e0ccabb6ee6c1e742a5ab61bca28846f",
+      "Assets/Art/Materials/Wrecks/ISDII/ISDII_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat": "9139bdcce9889944fa1efe66ec23667d",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD.png": "e3f699039aec9d04ba10703e72c68446",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_B.png": "dc65f64763f1abc409966b98b3cc4355",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_Lights.png": "f5f00f1c1749c1645a09d1c9af3bc339",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_Lights_Additive.png": "8ef597c789a786248b4bc0591d0bf19d",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hull_Kitbash_Pieces_ISD_TeamMask.png": "9e013c1a4ad33f24f9f9a2e18ac38be1",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hullplates_ISD_diffuse.png": "517122b45c095084cb668792834e8af1",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hullplates_ISD_diffuse_TeamMask.png": "4de450fdf31a83549b855c12720a6dab",
+      "Assets/Art/Textures/Models/EmpireShips/ISDII/ISDII_Hullplates_normal_specular.png": "afabaf592af804d4fbca94ea1451e897"
+    },
+    "removed": true,
+    "retained_references": [],
+    "removal_policy": "Delete the old ISD II visual set and snapshots; preserve replacement assets, active prefab/icon GUIDs, and other ships' art."
+  },
+  "team_palettes_verified": 8,
+  "automated_tests_run": false,
+  "combat_play_mode_run": false,
+  "final_editor": {
+    "version": "6000.4.7f1",
+    "compiling": false,
+    "playing": false,
+    "dirty_prefabs": [],
+    "compilation_status": {
+      "status": "completed",
+      "failed": false,
+      "errors": []
+    },
+    "shaders": [
+      {
+        "name": "Universal Render Pipeline/Particles/Unlit",
+        "error": false
+      },
+      {
+        "name": "EmpireAtWar/Ship Lit",
+        "error": false
+      },
+      {
+        "name": "EmpireAtWar/Ion Glow",
+        "error": false
+      },
+      {
+        "name": "Universal Render Pipeline/2D/Sprite-Unlit-Default",
+        "error": false
+      },
+      {
+        "name": "EmpireAtWar/Ship Shield",
+        "error": false
+      },
+      {
+        "name": "EmpireAtWar/Ion Field",
+        "error": false
+      },
+      {
+        "name": "EmpireAtWar/Ship Wreck",
+        "error": false
+      },
+      {
+        "name": "Universal Render Pipeline/Simple Lit",
+        "error": false
+      }
+    ],
+    "scenes": [
+      {
+        "name": "MainMenuScene",
+        "path": "Assets/Scenes/MainMenuScene.unity",
+        "isDirty": false
+      }
+    ],
+    "engine_reimport_verified": true
+  }
+}
