@@ -60,8 +60,18 @@ namespace EmpireAtWar.Editor.Balance
             if (change.After == change.Before) Changes.Remove(change);
         }
 
-        public void Remove(string key) { Remember(); Changes.RemoveAll(change => change.Key == key); }
-        public void Discard() { Remember(); Changes.Clear(); }
+        public void Remove(string key)
+        {
+            Remember();
+            Changes.RemoveAll(change => change.Key == key);
+        }
+
+        public void Discard()
+        {
+            Remember();
+            Changes.Clear();
+        }
+
         public void Undo() => Transfer(UndoStates, RedoStates);
         public void Redo() => Transfer(RedoStates, UndoStates);
 

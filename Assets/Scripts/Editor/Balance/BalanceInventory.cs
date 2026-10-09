@@ -15,7 +15,10 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceWeaponAdapter.Register(registry);
                 BalanceSharedMountAdapter.Register(registry);
             }
-            catch (Exception exception) { registry.Errors.Add(exception.Message); }
+            catch (Exception exception)
+            {
+                registry.Errors.Add(exception.Message);
+            }
             return registry;
         }
     }

@@ -35,7 +35,8 @@ namespace EmpireAtWar.Editor.Balance
             if (state.CombatTab == BalanceCombatTab.Hardpoints) Hardpoints(panel, heading, registry, controller);
             else Profiles(panel, registry, controller);
 
-            Label assumptions = new Label("Draft values · Base DPS is an estimate before accuracy, target modifiers, firing arcs, abilities and movement. TTK and battle simulations are not implemented.");
+            Label assumptions = new Label("Draft values · Base DPS is an estimate before accuracy, target modifiers, firing arcs, abilities and movement. "
+                + "TTK and battle simulations are not implemented.");
             assumptions.AddToClassList("balance-compare-assumptions");
             panel.Add(assumptions);
         }

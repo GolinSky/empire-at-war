@@ -25,7 +25,8 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "targetClasses", "beam" },
             [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },
             [typeof(ConcentrateFireSettings)] = new[] { "allyStatModifier", "commandRadius", "targetDamageMultiplier" },
-            [typeof(IonPulseSettings)] = new[] { "chargeDuration", "alignmentTimeout", "alignmentTolerance", "waveSpeed", "waveRadius", "waveThickness", "disableDuration", "malfunctionChance" }
+            [typeof(IonPulseSettings)] = new[] { "chargeDuration", "alignmentTimeout", "alignmentTolerance", "waveSpeed", "waveRadius",
+                "waveThickness", "disableDuration", "malfunctionChance" }
         };
 
         public static void Register(BalanceRegistration registry)
@@ -55,7 +56,8 @@ namespace EmpireAtWar.Editor.Balance
                     List<SerializedProperty> aliases = definitions.Where(other => other.FindPropertyRelative("value.settings").managedReferenceId == settings.managedReferenceId)
                         .OrderBy(other => other.FindPropertyRelative("key").intValue).ToList();
                     string aliasIds = string.Join("+", aliases.Select(other => other.FindPropertyRelative("key").intValue));
-                    string warning = aliases.Count > 1 ? "Shared settings — " + string.Join(" + ", aliases.Select(other => other.FindPropertyRelative("value.displayName").stringValue)) : "";
+                    IEnumerable<string> aliasNames = aliases.Select(other => other.FindPropertyRelative("value.displayName").stringValue);
+                    string warning = aliases.Count > 1 ? "Shared settings — " + string.Join(" + ", aliasNames) : "";
                     List<BalanceUnit> aliasUsers = aliases.SelectMany(other => Users(registry, other.FindPropertyRelative("key").intValue)).Distinct().ToList();
                     foreach (string field in allowed)
                         RegisterSetting(registry, catalog, settings, "settings/" + aliasIds + "/", field, context, aliasUsers, warning, subtype);

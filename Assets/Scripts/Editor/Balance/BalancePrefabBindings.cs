@@ -57,12 +57,16 @@ namespace EmpireAtWar.Editor.Balance
             foreach (Object mount in unit.Mounts.Distinct())
             {
                 string context = unit.Name + " / " + ((Component)mount).gameObject.name;
-                registry.Add(mount, "unlockLevel", "unlockLevel", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: 1, dependency: topology);
+                registry.Add(mount, "unlockLevel", "unlockLevel", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false,
+                    new[] { unit }, minimum: 1, dependency: topology);
                 if (mount is WeaponHardPoint)
                 {
-                    registry.Add(mount, "WeaponType", BalanceRegistration.Auto("WeaponType"), BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, typeof(WeaponType), dependency: topology);
-                    registry.Add(mount, "MinYaw", "yAxisRange." + BalanceRegistration.Auto("Min"), BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology);
-                    registry.Add(mount, "MaxYaw", "yAxisRange." + BalanceRegistration.Auto("Max"), BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology);
+                    registry.Add(mount, "WeaponType", BalanceRegistration.Auto("WeaponType"), BalanceFieldGroup.Hardpoints, context,
+                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, typeof(WeaponType), dependency: topology);
+                    registry.Add(mount, "MinYaw", "yAxisRange." + BalanceRegistration.Auto("Min"), BalanceFieldGroup.Hardpoints, context,
+                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology);
+                    registry.Add(mount, "MaxYaw", "yAxisRange." + BalanceRegistration.Auto("Max"), BalanceFieldGroup.Hardpoints, context,
+                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology);
                     registry.Add(mount, "mainBattery", "mainBattery", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, dependency: topology);
                 }
                 if (mount is MissileInterceptorHardPoint)

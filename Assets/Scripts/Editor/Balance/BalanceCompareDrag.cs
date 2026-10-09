@@ -26,7 +26,8 @@ namespace EmpireAtWar.Editor.Balance
             void Reset()
             {
                 int captured = pointer;
-                pointer = -1; dragging = false;
+                pointer = -1;
+                dragging = false;
                 ClearDestination();
                 slot.RemoveFromClassList("balance-dragging");
                 if (captured >= 0 && handle.HasPointerCapture(captured)) handle.ReleasePointer(captured);
@@ -45,15 +46,18 @@ namespace EmpireAtWar.Editor.Balance
                 for (VisualElement element = evt.target as VisualElement; element != handle; element = element.parent)
                     if (element is Button || element.ClassListContains("unity-base-field")) return;
                 select(evt.ctrlKey, evt.shiftKey);
-                pointer = evt.pointerId; start = evt.position;
-                handle.Focus(); handle.CapturePointer(pointer);
+                pointer = evt.pointerId;
+                start = evt.position;
+                handle.Focus();
+                handle.CapturePointer(pointer);
                 evt.StopPropagation();
             });
             handle.RegisterCallback<PointerMoveEvent>(evt =>
             {
                 if (evt.pointerId != pointer) return;
                 if (!dragging && Vector2.Distance(start, evt.position) < DRAG_THRESHOLD) return;
-                dragging = true; slot.AddToClassList("balance-dragging");
+                dragging = true;
+                slot.AddToClassList("balance-dragging");
                 FindDestination(evt.position);
                 evt.StopPropagation();
             });
@@ -80,7 +84,8 @@ namespace EmpireAtWar.Editor.Balance
             handle.RegisterCallback<KeyDownEvent>(evt =>
             {
                 if (evt.keyCode != KeyCode.Escape) return;
-                Reset(); evt.StopPropagation();
+                Reset();
+                evt.StopPropagation();
             });
             handle.RegisterCallback<DetachFromPanelEvent>(_ => Reset());
         }

@@ -84,11 +84,14 @@ namespace EmpireAtWar.Editor.Balance
                 : "CruiseSpeed CombatSpeed Acceleration TurnRate MaxBankAngle BankResponse Height FormationSpacing LoiterRadius NavigationRadius GuardRadius BreakDistance ExtendDistance";
             registry.AutoFields(data, "", "", combat, BalanceFieldGroup.Combat, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
             registry.AutoFields(data, "", "", movement, BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
-            registry.AutoFields(data, "", "", ship ? "HangarInitialDelay HangarLaunchInterval" : "SeekerWarheadRange SeekerWarheadRecharge SeekerWarheadMinimumTravel", BalanceFieldGroup.Hangar, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
-            registry.Add(data, "Abilities", ship ? "abilities" : BalanceRegistration.Auto("Abilities"), BalanceFieldGroup.Advanced, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipAbilityId));
+            string hangar = ship ? "HangarInitialDelay HangarLaunchInterval" : "SeekerWarheadRange SeekerWarheadRecharge SeekerWarheadMinimumTravel";
+            registry.AutoFields(data, "", "", hangar, BalanceFieldGroup.Hangar, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
+            registry.Add(data, "Abilities", ship ? "abilities" : BalanceRegistration.Auto("Abilities"), BalanceFieldGroup.Advanced, unit.Name,
+                BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipAbilityId));
             if (ship)
             {
-                registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipHeightTier));
+                registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), BalanceFieldGroup.Movement, unit.Name,
+                    BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipHeightTier));
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
                     Health(registry, data, serialized.FindProperty("hardPointHealth"), "hardPointHealth", unit);
@@ -107,7 +110,8 @@ namespace EmpireAtWar.Editor.Balance
                 if (!types.Add(id)) throw new InvalidOperationException($"Duplicate hardpoint health type: {data.name}/{id}");
                 foreach (string name in new[] { "health", "hullDamageMultiplier" })
                     registry.Add(data, key + "/" + id + "/" + name, entry.propertyPath + "." + name,
-                        BalanceFieldGroup.Hardpoints, unit.Name + " / " + ((EmpireAtWar.Components.Ship.Health.HardPointType)id), BalanceFieldOwner.UnitData, unit.Kind == BalanceUnitKind.Structure, new[] { unit }, positive: name == "health");
+                        BalanceFieldGroup.Hardpoints, unit.Name + " / " + ((EmpireAtWar.Components.Ship.Health.HardPointType)id), BalanceFieldOwner.UnitData,
+                        unit.Kind == BalanceUnitKind.Structure, new[] { unit }, positive: name == "health");
             }
         }
 

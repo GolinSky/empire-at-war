@@ -82,7 +82,9 @@ namespace EmpireAtWar.Editor.Balance
             if (Kind == BalanceValueKind.Float && (number > float.MaxValue || number < -float.MaxValue)) return "Float overflow.";
             if (Kind == BalanceValueKind.Integer && (number != Math.Round(number) || number > int.MaxValue || number < int.MinValue))
                 return "Expected a 32-bit integer; bulk operations round away from zero.";
-            return number < Minimum || number > Maximum || (Positive && number <= 0) ? $"Required range: {(Positive ? "> 0" : Minimum.ToString(CultureInfo.InvariantCulture))} … {Maximum}." : "";
+            bool inRange = number >= Minimum && number <= Maximum && (!Positive || number > 0);
+            string lower = Positive ? "> 0" : Minimum.ToString(CultureInfo.InvariantCulture);
+            return inRange ? "" : $"Required range: {lower} … {Maximum}.";
         }
     }
 }

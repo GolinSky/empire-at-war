@@ -70,8 +70,16 @@ namespace EmpireAtWar.Editor.Balance
             catch (Exception exception)
             {
                 string rollback;
-                try { RestoreFiles(record); rollback = "Rollback imported and verified."; File.Delete(RESTORE_PATH); }
-                catch (Exception failure) { rollback = "Rollback failed: " + failure.Message + ". Recovery snapshot: " + RESTORE_PATH; }
+                try
+                {
+                    RestoreFiles(record);
+                    rollback = "Rollback imported and verified.";
+                    File.Delete(RESTORE_PATH);
+                }
+                catch (Exception failure)
+                {
+                    rollback = "Rollback failed: " + failure.Message + ". Recovery snapshot: " + RESTORE_PATH;
+                }
                 throw new InvalidOperationException($"Apply failed. Written/attempted assets: {string.Join(", ", written)}. {rollback}\n{exception.Message}", exception);
             }
         }
@@ -98,7 +106,10 @@ namespace EmpireAtWar.Editor.Balance
                 PrefabUtility.SaveAsPrefabAsset(root, path, out bool success);
                 if (!success) throw new IOException("Could not save prefab: " + path);
             }
-            finally { PrefabUtility.UnloadPrefabContents(root); }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
         }
 
         private static void Write(UnityEngine.Object target, IEnumerable<BalanceField> fields, BalanceDraft draft)

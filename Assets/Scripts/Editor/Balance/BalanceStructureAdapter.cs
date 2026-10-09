@@ -22,9 +22,11 @@ namespace EmpireAtWar.Editor.Balance
             {
                 Structure(registry, faction, BalanceRegistration.One<SpaceStationData>(), "Station", "Space station", faction.FactionType + "SpaceStationView", mapping);
                 foreach (MiningFacilityType id in faction.MiningFacilities)
-                    Buildable(registry, faction, BalanceRegistration.One<MiningFacilityCatalog>(), (int)id, BalanceAssetResolver.Load<MiningFacilityData>(mapping.GetAssetKey(nameof(MiningFacilityData))), "Mining facility", "MiningFacilityView", mapping);
+                    Buildable(registry, faction, BalanceRegistration.One<MiningFacilityCatalog>(), (int)id,
+                        BalanceAssetResolver.Load<MiningFacilityData>(mapping.GetAssetKey(nameof(MiningFacilityData))), "Mining facility", "MiningFacilityView", mapping);
                 foreach (DefendPlatformType id in faction.DefendPlatforms)
-                    Buildable(registry, faction, BalanceRegistration.One<DefendPlatformCatalog>(), (int)id, BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(nameof(DefendPlatformData))), "Defense platform", "DefendPlatformView", mapping);
+                    Buildable(registry, faction, BalanceRegistration.One<DefendPlatformCatalog>(), (int)id,
+                        BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(nameof(DefendPlatformData))), "Defense platform", "DefendPlatformView", mapping);
                 foreach (SuperWeaponType id in faction.SuperWeapons)
                     Buildable(registry, faction, BalanceRegistration.One<SuperWeaponCatalog>(), (int)id, BalanceRegistration.One<SuperWeaponData>(), "Super weapon", "", mapping);
             }
@@ -35,7 +37,8 @@ namespace EmpireAtWar.Editor.Balance
         private static BalanceUnit Structure(BalanceRegistration registry, FactionDefinition faction, Object data, string id,
             string name, string prefabKey, AssetMappingData mapping)
         {
-            BalanceUnit unit = new BalanceUnit { Id = faction.FactionType + "/" + id, Name = name, Faction = faction.FactionType.ToString(), Class = "Structure", Kind = BalanceUnitKind.Structure, Data = data };
+            BalanceUnit unit = new BalanceUnit { Id = faction.FactionType + "/" + id, Name = name, Faction = faction.FactionType.ToString(),
+                Class = "Structure", Kind = BalanceUnitKind.Structure, Data = data };
             registry.Units.Add(unit);
             if (prefabKey.Length != 0)
             {
@@ -74,7 +77,8 @@ namespace EmpireAtWar.Editor.Balance
             SpaceStationData station = BalanceRegistration.One<SpaceStationData>();
             List<BalanceUnit> users = registry.Units.Where(unit => unit.Data == station).ToList();
             foreach (BalanceUnit unit in users)
-                registry.AutoFields(station, "", "", "HangarInitialDelay HangarLaunchInterval", BalanceFieldGroup.Hangar, "Station hangar", BalanceFieldOwner.SharedProfile, true, new[] { unit });
+                registry.AutoFields(station, "", "", "HangarInitialDelay HangarLaunchInterval", BalanceFieldGroup.Hangar, "Station hangar",
+                    BalanceFieldOwner.SharedProfile, true, new[] { unit });
             using (SerializedObject serialized = new SerializedObject(levels))
             {
                 SerializedProperty entries = serialized.FindProperty("levels");
@@ -112,7 +116,8 @@ namespace EmpireAtWar.Editor.Balance
                     SerializedProperty value = entry.FindPropertyRelative("value");
                     BalanceWeaponAdapter.Profile(registry, data, value.FindPropertyRelative("weapon"), key + "weapon/", BalanceFieldGroup.Weapons, ((SuperWeaponType)id).ToString(), users);
                     foreach (string name in new[] { "firingDelay", "stunDuration", "areaDamage", "areaRadius" })
-                        registry.Add(data, key + name, value.propertyPath + "." + name, BalanceFieldGroup.GlobalData, ((SuperWeaponType)id).ToString(), BalanceFieldOwner.SharedProfile, true, users);
+                        registry.Add(data, key + name, value.propertyPath + "." + name, BalanceFieldGroup.GlobalData,
+                            ((SuperWeaponType)id).ToString(), BalanceFieldOwner.SharedProfile, true, users);
                 }
         }
     }
