@@ -145,6 +145,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67f1a163dc9867b4cb976c26d6fb9513
+    m_Address: CorellianBattlecruiserShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fe145e29f7c63b48891be7c7b366040
     m_Address: TIEAvengerSquadronData
     m_ReadOnly: 0

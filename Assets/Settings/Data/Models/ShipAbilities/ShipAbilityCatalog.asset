@@ -150,6 +150,21 @@ MonoBehaviour:
         aiUse: 0
         settings:
           rid: 6801466898397790290
+    - key: 34
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Power to Shields
+        description: Double shield regeneration for 15 seconds; weapon damage and
+          movement speed fall by 25%. Recovers 40 seconds after expiry.
+        duration: 15
+        recoveryDelay: 40
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 7607833764655792205
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}

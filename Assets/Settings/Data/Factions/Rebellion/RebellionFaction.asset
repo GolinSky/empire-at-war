@@ -134,6 +134,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
           type: 3}
+    - key: 306
+      value:
+        matchups: {fileID: 11400000, guid: cfffd4866130fe34faafe00094f56ef4, type: 2}
+        description: Corellian Battlecruiser reinforces the fleet with replacement
+          X-Wing, A-Wing and Y-Wing bomber squadrons from one hangar. Armed with
+          four heavy two-burst barrage rocket launchers, eight medium turbolasers
+          and five laser cannons. Power to Shields doubles shield regeneration for
+          15 seconds.
+        role: Fleet reinforcement / Squadron support
+        iconKey: fe1f61f0ff4f03a47a7a2a16340c510d:21300000
+        isHero: 0
+        <Name>k__BackingField: Corellian Battlecruiser
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2000
+        <BuildTime>k__BackingField: 81
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: fe1f61f0ff4f03a47a7a2a16340c510d,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

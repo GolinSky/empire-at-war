@@ -33,5 +33,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         AcclamatorBoostWeaponPower = 31,
         TectorBoostWeaponPower = 32,
         ExecutorLaserBeam = 33,
+        CorellianBattlecruiserPowerToShields = 34,
     }
 }
