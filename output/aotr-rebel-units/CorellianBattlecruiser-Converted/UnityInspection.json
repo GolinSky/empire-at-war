@@ -1,0 +1,62 @@
+{
+  "unityGeometry": {
+    "models": 5,
+    "meshes": 37,
+    "triangles": 9751,
+    "boneErrorUnits": 1.22878123E-06
+  },
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/CorellianBattlecruiser.prefab",
+      "size": [
+        43.5615463,
+        36.2110023,
+        140.0
+      ],
+      "visibleMeshes": 33
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/CorellianBattlecruiserShipView.prefab",
+      "size": [
+        43.5615463,
+        36.2110023,
+        140.0
+      ],
+      "visibleMeshes": 33
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/CorellianBattlecruiserReinforcementView.prefab",
+      "size": [
+        31.35379,
+        36.2110023,
+        140.0
+      ],
+      "visibleMeshes": 25
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/CorellianBattlecruiserWreckView.prefab",
+      "size": [
+        31.3537922,
+        36.2110023,
+        140.0
+      ],
+      "visibleMeshes": 25
+    }
+  ],
+  "gameplay": {
+    "targetableHardpoints": 20,
+    "weaponCounts": {
+      "rockets": 4,
+      "mediumTurbolasers": 8,
+      "laserCannons": 5
+    },
+    "squadronTypes": [
+      300,
+      1,
+      3
+    ],
+    "launchClearance": 8.0,
+    "shieldRegenerationPerSecond": 17.7777767
+  },
+  "registrationsVerified": true
+}

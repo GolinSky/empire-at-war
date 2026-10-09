@@ -2,3 +2,4 @@
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.tga filter=lfs diff=lfs merge=lfs -text
 output/aotr-rebel-units/MC80Independence-Converted/MC80Independence.blend filter=lfs diff=lfs merge=lfs -text
+output/aotr-rebel-units/CorellianBattlecruiser-Converted/*.blend filter=lfs diff=lfs merge=lfs -text

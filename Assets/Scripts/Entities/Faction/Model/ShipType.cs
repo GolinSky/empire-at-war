@@ -46,6 +46,7 @@ namespace EmpireAtWar.Models.Factions
         HomeOne = 303,
         MC75Profundity = 304,
         MC80Independence = 305,
+        CorellianBattlecruiser = 306,
 
     }
 }

@@ -1078,6 +1078,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CorellianBattlecruiserShipView
+      value:
+        m_AssetGUID: d2d14274a52f5114e92215c1a06979e5
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CorellianBattlecruiserShipData
+      value:
+        m_AssetGUID: 67f1a163dc9867b4cb976c26d6fb9513
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: AotrGolanIIIDefensePlatformView
       value:
         m_AssetGUID: 545b0f416ed9ad74ca4d2877cd15a76d

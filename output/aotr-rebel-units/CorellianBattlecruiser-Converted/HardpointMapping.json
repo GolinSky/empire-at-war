@@ -1,0 +1,141 @@
+[
+  {
+    "id": 0,
+    "name": "HP_GS_BattleCruiser_Turbo_01",
+    "bone": null,
+    "muzzle": "TL_01",
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "HP_GS_BattleCruiser_Turbo_02",
+    "bone": null,
+    "muzzle": "TL_02",
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "HP_GS_BattleCruiser_Turbo_03",
+    "bone": null,
+    "muzzle": "TL_03",
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "HP_GS_BattleCruiser_Turbo_04",
+    "bone": null,
+    "muzzle": "TL_04",
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "HP_GS_BattleCruiser_Turbo_05",
+    "bone": null,
+    "muzzle": "TL_05",
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "HP_GS_BattleCruiser_Turbo_06",
+    "bone": null,
+    "muzzle": "TL_06",
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "HP_GS_BattleCruiser_Turbo_07",
+    "bone": null,
+    "muzzle": "TL_07",
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "HP_GS_BattleCruiser_Turbo_08",
+    "bone": null,
+    "muzzle": "TL_08",
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "HP_GS_BattleCruiser_Laser_01",
+    "bone": null,
+    "muzzle": "MuzzleA_01",
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "HP_GS_BattleCruiser_Laser_02",
+    "bone": null,
+    "muzzle": "MuzzleA_03",
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "HP_GS_BattleCruiser_Laser_03",
+    "bone": null,
+    "muzzle": "MuzzleA_04",
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "HP_GS_BattleCruiser_Laser_04",
+    "bone": null,
+    "muzzle": "LC_01",
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "HP_GS_BattleCruiser_Laser_05",
+    "bone": null,
+    "muzzle": "LC_03",
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "HP_GS_BattleCruiser_Rakete_01",
+    "bone": "RL_01",
+    "muzzle": "RL_01_FB_1",
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "HP_GS_BattleCruiser_Rakete_02",
+    "bone": "RL_02",
+    "muzzle": "RL_02_FB_1",
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "HP_GS_BattleCruiser_Rakete_03",
+    "bone": "RL_03",
+    "muzzle": "RL_03_FB_1",
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "HP_GS_BattleCruiser_Rakete_04",
+    "bone": "RL_04",
+    "muzzle": "RL_04_FB_1",
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "HP_GS_BattleCruiser_Engines_01",
+    "bone": "HP_E_Bone",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 18,
+    "name": "HP_GS_BattleCruiser_Shield_Generator_01",
+    "bone": "HP_S_Bone",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 19,
+    "name": "CorellianHangar",
+    "targetable": true,
+    "derivedHangar": true
+  }
+]

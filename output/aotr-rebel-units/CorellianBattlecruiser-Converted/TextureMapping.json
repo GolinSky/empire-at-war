@@ -1,0 +1,82 @@
+{
+  "CORBC_ARMOR_DIFFUSE.DDS": [
+    "CorellianBattlecruiser_CorBC_armor_diffuse_Albedo",
+    false
+  ],
+  "CORBC_ARMOR_NORMAL.DDS": [
+    "CorellianBattlecruiser_CorBC_armor_normal_Normal",
+    true
+  ],
+  "CORBC_ARMOR_SPECULAR.DDS": [
+    "CorellianBattlecruiser_CorBC_armor_specular_Albedo",
+    false
+  ],
+  "CORBC_ENGINEERING_DIFFUSE.DDS": [
+    "CorellianBattlecruiser_CorBC_engineering_diffuse_Albedo",
+    false
+  ],
+  "CORBC_ENGINEERING_NORMAL.DDS": [
+    "CorellianBattlecruiser_CorBC_engineering_normal_Normal",
+    true
+  ],
+  "CORBC_ENGINEERING_SPECULAR.DDS": [
+    "CorellianBattlecruiser_CorBC_engineering_specular_Albedo",
+    false
+  ],
+  "CORBC_ENGINES_DIFFUSE.DDS": [
+    "CorellianBattlecruiser_CorBC_engines_diffuse_Albedo",
+    false
+  ],
+  "CORBC_ENGINES_NORMAL.DDS": [
+    "CorellianBattlecruiser_CorBC_engines_normal_Normal",
+    true
+  ],
+  "CORBC_ENGINES_SPECULAR.DDS": [
+    "CorellianBattlecruiser_CorBC_engines_specular_Albedo",
+    false
+  ],
+  "CORBC_HULL_DIFFUSE.DDS": [
+    "CorellianBattlecruiser_CorBC_hull_diffuse_Albedo",
+    false
+  ],
+  "CORBC_HULL_NORMAL.DDS": [
+    "CorellianBattlecruiser_CorBC_hull_normal_Normal",
+    true
+  ],
+  "CORBC_HULL_SPECULAR.DDS": [
+    "CorellianBattlecruiser_CorBC_hull_specular_Albedo",
+    false
+  ],
+  "P_ISD_ENG.DDS": [
+    "CorellianBattlecruiser_P_ISD_ENG_Albedo",
+    false
+  ],
+  "WATCHKEEPER_ENGINE.DDS": [
+    "CorellianBattlecruiser_watchkeeper_engine_Albedo",
+    false
+  ],
+  "BS_ACCLAMATOR.DDS": [
+    "CorellianBattlecruiser_BS_ACCLAMATOR_Albedo",
+    false
+  ],
+  "EV_ACCLAMATOR_BUMP.DDS": [
+    "CorellianBattlecruiser_EV_Acclamator_bump_Normal",
+    true
+  ],
+  "EV_VENATOR_HULL.DDS": [
+    "CorellianBattlecruiser_EV_Venator_Hull_Albedo",
+    false
+  ],
+  "EV_VENATOR_HULL_NORMAL.DDS": [
+    "CorellianBattlecruiser_EV_Venator_Hull_normal_Normal",
+    true
+  ],
+  "EV_VENATOR_HULL_SPECULAR.DDS": [
+    "CorellianBattlecruiser_EV_Venator_Hull_specular_Albedo",
+    false
+  ],
+  "VENATORLIGHTINGMAP.DDS": [
+    "CorellianBattlecruiser_Venatorlightingmap_Albedo",
+    false
+  ]
+}

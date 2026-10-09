@@ -1,0 +1,2109 @@
+{
+  "models": {
+    "CorellianBattlecruiser": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\CV_Battlecruiser.ALO",
+      "sha256": "0f5c86155a61208b5974193b4fc7e06af6c205652067923c2ffede277fc0c8fd",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_armor_diffuse.dds",
+                "NormalTexture": "CorBC_armor_normal.dds",
+                "SpecularTexture": "CorBC_armor_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 714,
+              "triangleCount": 452,
+              "materialName": "CorellianBattlecruiser_Material00"
+            }
+          ],
+          "name": "Front",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 3516,
+              "triangleCount": 4730,
+              "materialName": "CorellianBattlecruiser_Material01"
+            }
+          ],
+          "name": "Collision",
+          "hidden": false,
+          "collision": true
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.29019609093666077,
+                  0.5568627715110779,
+                  1.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5333333611488342,
+                  0.7098039388656616,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  0.9137255549430847,
+                  0.9137255549430847,
+                  0.9137255549430847,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "BaseTexture": "watchkeeper_engine.dds"
+              },
+              "shader": "MeshGloss.fx",
+              "vertexCount": 82,
+              "triangleCount": 74,
+              "materialName": "CorellianBattlecruiser_Material02"
+            }
+          ],
+          "name": "THRUSTER",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_hull_diffuse.dds",
+                "NormalTexture": "CorBC_hull_normal.dds",
+                "SpecularTexture": "CorBC_hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 1132,
+              "triangleCount": 538,
+              "materialName": "CorellianBattlecruiser_Material03"
+            }
+          ],
+          "name": "DISH_BOTTOM",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_hull_diffuse.dds",
+                "NormalTexture": "CorBC_hull_normal.dds",
+                "SpecularTexture": "CorBC_hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 1194,
+              "triangleCount": 530,
+              "materialName": "CorellianBattlecruiser_Material03"
+            }
+          ],
+          "name": "Object01",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_engineering_diffuse.dds",
+                "NormalTexture": "CorBC_engineering_normal.dds",
+                "SpecularTexture": "CorBC_engineering_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 2224,
+              "triangleCount": 1776,
+              "materialName": "CorellianBattlecruiser_Material04"
+            }
+          ],
+          "name": "Turret_Sockets",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_hull_diffuse.dds",
+                "NormalTexture": "CorBC_hull_normal.dds",
+                "SpecularTexture": "CorBC_hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 1068,
+              "triangleCount": 580,
+              "materialName": "CorellianBattlecruiser_Material03"
+            }
+          ],
+          "name": "Superstructure",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_engineering_diffuse.dds",
+                "NormalTexture": "CorBC_engineering_normal.dds",
+                "SpecularTexture": "CorBC_engineering_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 2490,
+              "triangleCount": 1398,
+              "materialName": "CorellianBattlecruiser_Material04"
+            }
+          ],
+          "name": "Engines",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.4860000014305115
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_hull_diffuse.dds",
+                "NormalTexture": "CorBC_hull_normal.dds",
+                "SpecularTexture": "CorBC_hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 1320,
+              "triangleCount": 794,
+              "materialName": "CorellianBattlecruiser_Material03"
+            }
+          ],
+          "name": "Midshiphull",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ],
+                "Emissive": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "CorBC_engines_diffuse.dds",
+                "NormalTexture": "CorBC_engines_normal.dds",
+                "SpecularTexture": "CorBC_engines_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 717,
+              "triangleCount": 548,
+              "materialName": "CorellianBattlecruiser_Material05"
+            }
+          ],
+          "name": "Object02",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 2586,
+              "triangleCount": 3214,
+              "materialName": "CorellianBattlecruiser_Material01"
+            }
+          ],
+          "name": "Object03",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "P_ISD_ENG.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  0.01568627543747425,
+                  0.1411764770746231,
+                  0.3294117748737335,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 9,
+              "triangleCount": 8,
+              "materialName": "CorellianBattlecruiser_Material06"
+            }
+          ],
+          "name": "Plane01",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "P_ISD_ENG.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  0.01568627543747425,
+                  0.1411764770746231,
+                  0.3294117748737335,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 9,
+              "triangleCount": 8,
+              "materialName": "CorellianBattlecruiser_Material06"
+            }
+          ],
+          "name": "Plane02",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "P_ISD_ENG.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  0.01568627543747425,
+                  0.1411764770746231,
+                  0.3294117748737335,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 9,
+              "triangleCount": 8,
+              "materialName": "CorellianBattlecruiser_Material06"
+            }
+          ],
+          "name": "Plane03",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "P_ISD_ENG.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  0.01568627543747425,
+                  0.1411764770746231,
+                  0.3294117748737335,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 9,
+              "triangleCount": 8,
+              "materialName": "CorellianBattlecruiser_Material06"
+            }
+          ],
+          "name": "Plane04",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "P_ISD_ENG.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  0.29411765933036804,
+                  0.6784313917160034,
+                  0.8980392813682556,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 9,
+              "triangleCount": 8,
+              "materialName": "CorellianBattlecruiser_Material07"
+            }
+          ],
+          "name": "Plane05",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "P_ISD_ENG.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  0.29411765933036804,
+                  0.6784313917160034,
+                  0.8980392813682556,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 9,
+              "triangleCount": 8,
+              "materialName": "CorellianBattlecruiser_Material07"
+            }
+          ],
+          "name": "Plane06",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {},
+              "shader": "alDefault.fx",
+              "vertexCount": 18,
+              "triangleCount": 16,
+              "materialName": "CorellianBattlecruiser_Material08"
+            }
+          ],
+          "name": "Plane07",
+          "hidden": true,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {},
+              "shader": "alDefault.fx",
+              "vertexCount": 18,
+              "triangleCount": 16,
+              "materialName": "CorellianBattlecruiser_Material08"
+            }
+          ],
+          "name": "Plane08",
+          "hidden": true,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 7
+        },
+        {
+          "mesh": 3,
+          "bone": 8
+        },
+        {
+          "mesh": 4,
+          "bone": 9
+        },
+        {
+          "mesh": 5,
+          "bone": 10
+        },
+        {
+          "mesh": 6,
+          "bone": 11
+        },
+        {
+          "mesh": 7,
+          "bone": 12
+        },
+        {
+          "mesh": 8,
+          "bone": 13
+        },
+        {
+          "mesh": 9,
+          "bone": 14
+        },
+        {
+          "mesh": 10,
+          "bone": 15
+        },
+        {
+          "mesh": 11,
+          "bone": 55
+        },
+        {
+          "mesh": 12,
+          "bone": 56
+        },
+        {
+          "mesh": 13,
+          "bone": 57
+        },
+        {
+          "mesh": 14,
+          "bone": 58
+        },
+        {
+          "mesh": 15,
+          "bone": 59
+        },
+        {
+          "mesh": 16,
+          "bone": 60
+        },
+        {
+          "mesh": 17,
+          "bone": 61
+        },
+        {
+          "mesh": 18,
+          "bone": 63
+        }
+      ],
+      "proxies": [
+        {
+          "name": "pi_damage_elec_SD00",
+          "bone": 3
+        },
+        {
+          "name": "P_FIRE_HUGE00_CHAIN_ALT2",
+          "bone": 4
+        },
+        {
+          "name": "P_FIRE_BIG_CHAIN_ALT1",
+          "bone": 5
+        },
+        {
+          "name": "P_FIRE_BIG_CHAIN_ALT2",
+          "bone": 6
+        },
+        {
+          "name": "P_BLINK_WHITE",
+          "bone": 16
+        },
+        {
+          "name": "P_BLINK_WHITE",
+          "bone": 17
+        },
+        {
+          "name": "P_BLINK_WHITE",
+          "bone": 18
+        },
+        {
+          "name": "P_BLINK_WHITE",
+          "bone": 19
+        },
+        {
+          "name": "P_BLINK_WHITE",
+          "bone": 20
+        },
+        {
+          "name": "P_BLINK_WHITE",
+          "bone": 21
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 36
+        },
+        {
+          "name": "PE_CORSEC_CRUISER_Small",
+          "bone": 62
+        },
+        {
+          "name": "PE_CORSEC_CRUISER_Small",
+          "bone": 64
+        },
+        {
+          "name": "PE_CORSEC_CRUISER_BIG",
+          "bone": 65
+        },
+        {
+          "name": "PE_CORSEC_CRUISER_BIG",
+          "bone": 66
+        },
+        {
+          "name": "PTE_ENG_ISD_BIG",
+          "bone": 67
+        },
+        {
+          "name": "PTE_ENG_ISD_BIG",
+          "bone": 68
+        },
+        {
+          "name": "P_FIRE_LRG",
+          "bone": 70
+        },
+        {
+          "name": "P_FIRE_LRG",
+          "bone": 71
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 72
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 73
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 76
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 81
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 86
+        },
+        {
+          "name": "P_FIRE_MED",
+          "bone": 91
+        },
+        {
+          "name": "PPTW_ORANGE",
+          "bone": 105
+        },
+        {
+          "name": "PPTW_ORANGE",
+          "bone": 106
+        },
+        {
+          "name": "PPTW_ORANGE",
+          "bone": 107
+        },
+        {
+          "name": "PPTW_ORANGE",
+          "bone": 108
+        },
+        {
+          "name": "PPTW_ORANGE",
+          "bone": 109
+        },
+        {
+          "name": "PPTW_ORANGE",
+          "bone": 110
+        }
+      ]
+    },
+    "CorellianBattlecruiserTurret01": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\BS_Acclamator_turret_center.ALO",
+      "sha256": "b73087d3f10318c0401a598bc6e7604587bc4027a45e8e0c91e99777c49bfcc3",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.0
+                ],
+                "Specular": [
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "BS_ACCLAMATOR.dds",
+                "NormalTexture": "EV_Acclamator_bump.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 120,
+              "triangleCount": 40,
+              "materialName": "CorellianBattlecruiser_Material09"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.0
+                ],
+                "Specular": [
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "BS_ACCLAMATOR.dds",
+                "NormalTexture": "EV_Acclamator_bump.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 624,
+              "triangleCount": 208,
+              "materialName": "CorellianBattlecruiser_Material09"
+            }
+          ],
+          "name": "Barrelbase",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.0
+                ],
+                "Specular": [
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "BS_ACCLAMATOR.dds",
+                "NormalTexture": "EV_Acclamator_bump.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 132,
+              "triangleCount": 44,
+              "materialName": "CorellianBattlecruiser_Material09"
+            }
+          ],
+          "name": "Barrels",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 3
+        }
+      ],
+      "proxies": []
+    },
+    "CorellianBattlecruiserTurret02": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\BS_Acclamator_turret_center2.ALO",
+      "sha256": "b73087d3f10318c0401a598bc6e7604587bc4027a45e8e0c91e99777c49bfcc3",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.0
+                ],
+                "Specular": [
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "BS_ACCLAMATOR.dds",
+                "NormalTexture": "EV_Acclamator_bump.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 120,
+              "triangleCount": 40,
+              "materialName": "CorellianBattlecruiser_Material09"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.0
+                ],
+                "Specular": [
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "BS_ACCLAMATOR.dds",
+                "NormalTexture": "EV_Acclamator_bump.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 624,
+              "triangleCount": 208,
+              "materialName": "CorellianBattlecruiser_Material09"
+            }
+          ],
+          "name": "Barrelbase",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.5568627715110779,
+                  0.0
+                ],
+                "Specular": [
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.3137255012989044,
+                  0.0
+                ],
+                "Shininess": [
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "BS_ACCLAMATOR.dds",
+                "NormalTexture": "EV_Acclamator_bump.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 132,
+              "triangleCount": 44,
+              "materialName": "CorellianBattlecruiser_Material09"
+            }
+          ],
+          "name": "Barrels",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 3
+        }
+      ],
+      "proxies": []
+    },
+    "CorellianBattlecruiserTurret03": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\EV_Venator_Turret1.ALO",
+      "sha256": "132ee888984a6045e7f57418b3fca46d4cb5c5f6176747209f113a162c89d313",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 256,
+              "triangleCount": 196,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Barrels",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "Venatorlightingmap.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 6,
+              "triangleCount": 4,
+              "materialName": "CorellianBattlecruiser_Material11"
+            }
+          ],
+          "name": "Lightmesh",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 264,
+              "triangleCount": 88,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Extras",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 12,
+              "triangleCount": 10,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Turret Pad",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 36,
+              "triangleCount": 28,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Extras 2",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 292,
+              "triangleCount": 242,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 2
+        },
+        {
+          "mesh": 1,
+          "bone": 1
+        },
+        {
+          "mesh": 2,
+          "bone": 1
+        },
+        {
+          "mesh": 3,
+          "bone": 0
+        },
+        {
+          "mesh": 4,
+          "bone": 1
+        },
+        {
+          "mesh": 5,
+          "bone": 1
+        }
+      ],
+      "proxies": []
+    },
+    "CorellianBattlecruiserTurret04": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\EV_Venator_Turret2.ALO",
+      "sha256": "132ee888984a6045e7f57418b3fca46d4cb5c5f6176747209f113a162c89d313",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 256,
+              "triangleCount": 196,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Barrels",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "Venatorlightingmap.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 6,
+              "triangleCount": 4,
+              "materialName": "CorellianBattlecruiser_Material11"
+            }
+          ],
+          "name": "Lightmesh",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 264,
+              "triangleCount": 88,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Extras",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 12,
+              "triangleCount": 10,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Turret Pad",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 36,
+              "triangleCount": 28,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Extras 2",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Colorization": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "EV_Venator_Hull.dds",
+                "NormalTexture": "EV_Venator_Hull_normal.dds",
+                "SpecularTexture": "EV_Venator_Hull_specular.dds"
+              },
+              "shader": "MeshBumpSpecGlowColorize.fx",
+              "vertexCount": 292,
+              "triangleCount": 242,
+              "materialName": "CorellianBattlecruiser_Material10"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 2
+        },
+        {
+          "mesh": 1,
+          "bone": 1
+        },
+        {
+          "mesh": 2,
+          "bone": 1
+        },
+        {
+          "mesh": 3,
+          "bone": 0
+        },
+        {
+          "mesh": 4,
+          "bone": 1
+        },
+        {
+          "mesh": 5,
+          "bone": 1
+        }
+      ],
+      "proxies": []
+    }
+  },
+  "materials": [
+    {
+      "name": "CorellianBattlecruiser_Material00",
+      "shader": "MeshBumpSpecGlowColorize.fx",
+      "properties": {
+        "Diffuse": [
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "Emissive": [
+          1.0,
+          1.0,
+          1.0,
+          0.4860000014305115
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "CorBC_armor_diffuse.dds",
+        "NormalTexture": "CorBC_armor_normal.dds",
+        "SpecularTexture": "CorBC_armor_specular.dds"
+      },
+      "base": "CorellianBattlecruiser_CorBC_armor_diffuse_Albedo",
+      "normal": "CorellianBattlecruiser_CorBC_armor_normal_Normal"
+    },
+    {
+      "name": "CorellianBattlecruiser_Material01",
+      "shader": "MeshShadowVolume.fx",
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "CorellianBattlecruiser_Material02",
+      "shader": "MeshGloss.fx",
+      "properties": {
+        "Emissive": [
+          0.29019609093666077,
+          0.5568627715110779,
+          1.0,
+          0.0
+        ],
+        "Diffuse": [
+          0.5333333611488342,
+          0.7098039388656616,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.9137255549430847,
+          0.9137255549430847,
+          0.9137255549430847,
+          0.0
+        ],
+        "Shininess": [
+          0.0
+        ],
+        "BaseTexture": "watchkeeper_engine.dds"
+      },
+      "base": "CorellianBattlecruiser_watchkeeper_engine_Albedo",
+      "normal": null
+    },
+    {
+      "name": "CorellianBattlecruiser_Material03",
+      "shader": "MeshBumpSpecGlowColorize.fx",
+      "properties": {
+        "Diffuse": [
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "Emissive": [
+          1.0,
+          1.0,
+          1.0,
+          0.4860000014305115
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "CorBC_hull_diffuse.dds",
+        "NormalTexture": "CorBC_hull_normal.dds",
+        "SpecularTexture": "CorBC_hull_specular.dds"
+      },
+      "base": "CorellianBattlecruiser_CorBC_hull_diffuse_Albedo",
+      "normal": "CorellianBattlecruiser_CorBC_hull_normal_Normal"
+    },
+    {
+      "name": "CorellianBattlecruiser_Material04",
+      "shader": "MeshBumpSpecGlowColorize.fx",
+      "properties": {
+        "Diffuse": [
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "Emissive": [
+          1.0,
+          1.0,
+          1.0,
+          0.4860000014305115
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "CorBC_engineering_diffuse.dds",
+        "NormalTexture": "CorBC_engineering_normal.dds",
+        "SpecularTexture": "CorBC_engineering_specular.dds"
+      },
+      "base": "CorellianBattlecruiser_CorBC_engineering_diffuse_Albedo",
+      "normal": "CorellianBattlecruiser_CorBC_engineering_normal_Normal"
+    },
+    {
+      "name": "CorellianBattlecruiser_Material05",
+      "shader": "MeshBumpSpecGlowColorize.fx",
+      "properties": {
+        "Diffuse": [
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "Emissive": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "CorBC_engines_diffuse.dds",
+        "NormalTexture": "CorBC_engines_normal.dds",
+        "SpecularTexture": "CorBC_engines_specular.dds"
+      },
+      "base": "CorellianBattlecruiser_CorBC_engines_diffuse_Albedo",
+      "normal": "CorellianBattlecruiser_CorBC_engines_normal_Normal"
+    },
+    {
+      "name": "CorellianBattlecruiser_Material06",
+      "shader": "MeshAdditive.fx",
+      "properties": {
+        "BaseTexture": "P_ISD_ENG.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          0.01568627543747425,
+          0.1411764770746231,
+          0.3294117748737335,
+          0.0
+        ]
+      },
+      "base": "CorellianBattlecruiser_P_ISD_ENG_Albedo",
+      "normal": null
+    },
+    {
+      "name": "CorellianBattlecruiser_Material07",
+      "shader": "MeshAdditive.fx",
+      "properties": {
+        "BaseTexture": "P_ISD_ENG.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          0.29411765933036804,
+          0.6784313917160034,
+          0.8980392813682556,
+          0.0
+        ]
+      },
+      "base": "CorellianBattlecruiser_P_ISD_ENG_Albedo",
+      "normal": null
+    },
+    {
+      "name": "CorellianBattlecruiser_Material08",
+      "shader": "alDefault.fx",
+      "properties": {},
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "CorellianBattlecruiser_Material09",
+      "shader": "MeshBumpColorize.fx",
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          0.5568627715110779,
+          0.5568627715110779,
+          0.5568627715110779,
+          0.0
+        ],
+        "Specular": [
+          0.3137255012989044,
+          0.3137255012989044,
+          0.3137255012989044,
+          0.0
+        ],
+        "Shininess": [
+          0.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "BS_ACCLAMATOR.dds",
+        "NormalTexture": "EV_Acclamator_bump.dds"
+      },
+      "base": "CorellianBattlecruiser_BS_ACCLAMATOR_Albedo",
+      "normal": "CorellianBattlecruiser_EV_Acclamator_bump_Normal"
+    },
+    {
+      "name": "CorellianBattlecruiser_Material10",
+      "shader": "MeshBumpSpecGlowColorize.fx",
+      "properties": {
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "EV_Venator_Hull.dds",
+        "NormalTexture": "EV_Venator_Hull_normal.dds",
+        "SpecularTexture": "EV_Venator_Hull_specular.dds"
+      },
+      "base": "CorellianBattlecruiser_EV_Venator_Hull_Albedo",
+      "normal": "CorellianBattlecruiser_EV_Venator_Hull_normal_Normal"
+    },
+    {
+      "name": "CorellianBattlecruiser_Material11",
+      "shader": "MeshAdditive.fx",
+      "properties": {
+        "BaseTexture": "Venatorlightingmap.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "base": "CorellianBattlecruiser_Venatorlightingmap_Albedo",
+      "normal": null
+    }
+  ]
+}

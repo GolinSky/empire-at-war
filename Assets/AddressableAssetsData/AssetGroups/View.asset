@@ -275,6 +275,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2d14274a52f5114e92215c1a06979e5
+    m_Address: CorellianBattlecruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d350016d0347cd346baf0a1fce39145c
     m_Address: VictoryIIShipView
     m_ReadOnly: 0

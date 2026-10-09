@@ -63,6 +63,7 @@
         HeavyBurstConcussionMissile = 61,
         DualRepeatingPointDefense = 62,
         AssaultMissile = 63,
+        HeavyBurstBarrageRocket = 64,
         HeavyAssaultMissile = 65,
         HeavyProtonTorpedo = 66,
     }

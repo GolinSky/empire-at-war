@@ -673,6 +673,21 @@ MonoBehaviour:
     projectileSpeed: 75
     color: {r: 1, g: 0.25, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 64
+    displayName: Heavy 2-Burst Barrage Rocket Launcher
+    damageType: 0
+    damage: 50
+    shotsPerSalvo: 2
+    shotInterval: 1
+    reload: 2
+    range: 600
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 90
+    color: {r: 1, g: 0.15, b: 0.05, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 35
     displayName: Barrage-Rocket Launcher
     damageType: 0
