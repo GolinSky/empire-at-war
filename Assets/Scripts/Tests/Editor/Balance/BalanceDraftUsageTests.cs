@@ -72,7 +72,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceDpsEstimate estimate = new BalanceDpsEstimator(registry).Estimate(unit, state.Draft);
             Assert.That(estimate.HasValue, Is.False);
             Assert.That(estimate.Problem, Does.Contain("Missing weapon profile"));
-            VisualElement card = BalanceFieldView.Create(mount, state, usage, _ => { }, () => { });
+            VisualElement card = BalanceFieldView.Create(mount, state.Draft, usage, _ => { }, () => { });
             Assert.That(card.Q<HelpBox>().text, Does.Contain("Missing weapon profile"));
             Assert.That(card.Q<DropdownField>().choices, Does.Not.Contain(Enum.GetName(mount.EnumType, id)));
             Assert.That(card.Q<DropdownField>().choices.Count, Is.EqualTo(usage.WeaponIds.Count));

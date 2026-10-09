@@ -13,7 +13,6 @@ namespace EmpireAtWar.Editor.Balance
         public List<string> CompareSelection = new List<string>();
         public string CompareSelectionAnchor = "";
         [NonSerialized] public bool CompareFocusPending;
-        public List<string> BulkKeys = new List<string>();
         public string Faction = "All Factions";
         public BalanceUnitKind Kind = BalanceUnitKind.Ship;
         public string Class = "All Classes";

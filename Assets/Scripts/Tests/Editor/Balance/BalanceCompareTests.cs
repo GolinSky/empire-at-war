@@ -32,7 +32,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 host.position = new Rect(100, 100, 960, 550);
                 host.rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/Balance/BalanceEditor.uss"));
-                BalanceCompareView.Build(host.rootVisualElement, registry, state, (_, __) => { }, () => refreshes++);
+                BalanceCompareView.Build(host.rootVisualElement, registry, new BalanceEditorController(state, () => refreshes++), false);
                 host.Show();
                 yield return null; yield return null;
                 VisualElement picker = host.rootVisualElement.Q("compare-picker");
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
                 AssetDatabase.SaveAssets();
                 Dictionary<string, byte[]> before = registry.Units.ToDictionary(unit => AssetDatabase.GetAssetPath(unit.Data), unit => File.ReadAllBytes(AssetDatabase.GetAssetPath(unit.Data)));
                 BalanceWindowState state = new BalanceWindowState { Pins = registry.Units.Select(unit => unit.Id).ToList() };
-                Action build = () => { host.rootVisualElement.Clear(); BalanceCompareView.Build(host.rootVisualElement, registry, state, (field, value) => state.Draft.Set(field.Snapshot(), value), () => { }); };
+                Action build = () => { host.rootVisualElement.Clear(); BalanceCompareView.Build(host.rootVisualElement, registry, new BalanceEditorController(state, () => { }), false); };
                 host.Show(); build();
                 var hulls = host.rootVisualElement.Query<VisualElement>(className: "balance-hull-editor").ToList().Select(editor => editor.Q<FloatField>("stat-value")).ToList();
                 hulls[0].value = 125;

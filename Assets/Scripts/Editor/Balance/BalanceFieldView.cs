@@ -9,43 +9,46 @@ namespace EmpireAtWar.Editor.Balance
 {
     public static class BalanceFieldView
     {
-        public static VisualElement Create(BalanceField field, BalanceWindowState state, BalanceDraftUsage usage, Action<string> edit, Action select, bool bulk = false, Action bulkSelectionChanged = null)
+        public static VisualElement Create(BalanceField field, BalanceDraft draft, BalanceDraftUsage usage, Action<string> edit, Action select)
         {
-            VisualElement card = new VisualElement { userData = field.Key }; card.AddToClassList("balance-card");
+            VisualElement card = new VisualElement { userData = field.Key };
+            card.AddToClassList("balance-card");
             string current = field.Read();
-            string value = field.DraftValue(state.Draft);
+            string value = field.DraftValue(draft);
             bool changed = value != current;
             card.EnableInClassList("balance-changed", changed);
-            VisualElement heading = new VisualElement(); heading.AddToClassList("balance-field-heading"); card.Add(heading);
+
+            VisualElement heading = new VisualElement();
+            heading.AddToClassList("balance-field-heading");
+            card.Add(heading);
             Label title = new Label((changed ? "• " : "") + field.Label) { tooltip = field.Context + " / " + field.Label };
-            title.AddToClassList("balance-title"); heading.Add(title);
+            title.AddToClassList("balance-title");
+            heading.Add(title);
             Button details = new Button(select) { text = "Info", tooltip = "Source, canonical identity and all affected units" };
-            details.AddToClassList("balance-info"); heading.Add(details);
+            details.AddToClassList("balance-info");
+            heading.Add(details);
+
             Label scope = new Label(field.Shared ? field.OwnerLabel + " · " + field.DescribeScope(usage.Users(field)) : field.OwnerLabel);
-            scope.AddToClassList("balance-scope"); card.Add(scope);
+            scope.AddToClassList("balance-scope");
+            card.Add(scope);
             if (field.AliasWarning.Length != 0) card.Add(new Label(field.AliasWarning));
-            VisualElement control = Control(field, value, usage, edit); control.AddToClassList("balance-editable");
+
+            VisualElement control = Control(field, value, usage, edit);
+            control.AddToClassList("balance-editable");
             control.tooltip = "Original value: " + Display(field, current);
-            bool sourceStaged = field.InheritsSource && state.Draft.Changes.Any(change => change.Key == field.SourceKey);
-            control.SetEnabled(!sourceStaged); card.Add(control);
+            bool sourceStaged = field.InheritsSource && draft.Changes.Any(change => change.Key == field.SourceKey);
+            control.SetEnabled(!sourceStaged);
+            card.Add(control);
             if (sourceStaged) card.Add(new Label("Linked to staged shared source. Apply it before staging a distinct local override."));
             if (changed)
             {
                 Label values = new Label("Original " + Display(field, current) + " → Draft " + Display(field, value));
-                values.AddToClassList("balance-value"); card.Add(values);
+                values.AddToClassList("balance-value");
+                card.Add(values);
             }
+
             string error = usage.Validate(field, value);
             if (error.Length != 0) card.Add(new HelpBox(error, HelpBoxMessageType.Error));
-            if (bulk)
-            {
-                Toggle selected = new Toggle("Select for bulk edit") { value = state.BulkKeys.Contains(field.Key) };
-                selected.RegisterValueChangedCallback(evt =>
-                {
-                    state.BulkKeys.Remove(field.Key); if (evt.newValue) state.BulkKeys.Add(field.Key);
-                    if (bulkSelectionChanged != null) bulkSelectionChanged();
-                });
-                card.Add(selected);
-            }
             return card;
         }
 

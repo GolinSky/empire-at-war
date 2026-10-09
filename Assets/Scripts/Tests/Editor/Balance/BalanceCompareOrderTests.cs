@@ -94,7 +94,7 @@ namespace EmpireAtWar.Tests.Editor
                 host.position = new Rect(100, 100, 960, 900);
                 host.rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/Balance/BalanceEditor.uss"));
                 VisualElement panel = new VisualElement(); panel.style.width = 720; panel.style.height = 850; host.rootVisualElement.Add(panel);
-                BalanceCompareView.Build(panel, registry, state, (_, __) => { }, () => refreshes++);
+                BalanceCompareView.Build(panel, registry, new BalanceEditorController(state, () => refreshes++), false);
                 host.Show(); yield return null; yield return null;
                 var slots = panel.Query<VisualElement>(className: "balance-compare-slot").ToList();
                 VisualElement handle = slots[0].Q("compare-drag-handle");

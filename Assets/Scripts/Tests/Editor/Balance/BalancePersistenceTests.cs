@@ -117,13 +117,13 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration registry = Inventory(); BalanceField field = registry.Fields.Values.Single();
             BalanceWindowState state = new BalanceWindowState();
             byte[] before = File.ReadAllBytes(DATA_PATH);
-            UnityEngine.UIElements.VisualElement first = BalanceFieldView.Create(field, state, new BalanceDraftUsage(registry, state.Draft), value => state.Draft.Set(field.Snapshot(), value), () => { }, true);
+            UnityEngine.UIElements.VisualElement first = BalanceFieldView.Create(field, state.Draft, new BalanceDraftUsage(registry, state.Draft), value => state.Draft.Set(field.Snapshot(), value), () => { });
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
             try
             {
                 host.Show(); host.rootVisualElement.Add(first);
                 first.Q<FloatField>().value = 150;
-                UnityEngine.UIElements.VisualElement linked = BalanceFieldView.Create(field, state, new BalanceDraftUsage(registry, state.Draft), value => state.Draft.Set(field.Snapshot(), value), () => { }, true);
+                UnityEngine.UIElements.VisualElement linked = BalanceFieldView.Create(field, state.Draft, new BalanceDraftUsage(registry, state.Draft), value => state.Draft.Set(field.Snapshot(), value), () => { });
                 host.rootVisualElement.Add(linked);
                 Assert.That(linked.Q<FloatField>().value, Is.EqualTo(150));
                 Assert.That(state.Draft.Changes.Count, Is.EqualTo(1));
