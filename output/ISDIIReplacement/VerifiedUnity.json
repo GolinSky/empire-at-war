@@ -1,0 +1,164 @@
+{
+  "art": [
+    {
+      "model": "ISDII_HP_ISD_Center_TL_01",
+      "bone_error": 3.16649675E-08,
+      "geometry_error": 7.138952E-08,
+      "verified_vertices": 326
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_02",
+      "bone_error": 3.16649675E-08,
+      "geometry_error": 7.138952E-08,
+      "verified_vertices": 326
+    },
+    {
+      "model": "ISDII_HP_ISD_Center_TL_03",
+      "bone_error": 3.16649675E-08,
+      "geometry_error": 7.138952E-08,
+      "verified_vertices": 326
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_01",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_02",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_03",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_04",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_05",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_06",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_07",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_OTL_08",
+      "bone_error": 3.071953E-08,
+      "geometry_error": 6.6890145E-08,
+      "verified_vertices": 1478
+    },
+    {
+      "model": "ISDII_HP_ISD_New_QIC_01",
+      "bone_error": 6.62484E-08,
+      "geometry_error": 1.03774582E-07,
+      "verified_vertices": 1289
+    },
+    {
+      "model": "ISDII_HP_ISD_New_QIC_02",
+      "bone_error": 6.62484E-08,
+      "geometry_error": 1.03774582E-07,
+      "verified_vertices": 1289
+    },
+    {
+      "model": "ISDIIDeath",
+      "bone_error": 1.925885E-06,
+      "geometry_error": 3.02519265E-06,
+      "verified_vertices": 177933
+    },
+    {
+      "model": "ISDIIHull",
+      "bone_error": 1.00968782E-06,
+      "geometry_error": 3.02052831E-06,
+      "verified_vertices": 175987
+    },
+    {
+      "model": "ISDIIParts",
+      "bone_error": 3.737639E-14,
+      "geometry_error": 1.51259633E-06,
+      "verified_vertices": 10676
+    }
+  ],
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/ISDII.prefab",
+      "visible_renderers": 59,
+      "bounds": "(101.00, 49.50, 180.00)"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/ISDIIShipView.prefab",
+      "visible_renderers": 59,
+      "bounds": "(101.00, 49.50, 180.00)"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab",
+      "visible_renderers": 25,
+      "bounds": "(101.00, 49.50, 180.00)"
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab",
+      "visible_renderers": 49,
+      "bounds": "(101.00, 49.50, 180.00)"
+    }
+  ],
+  "engines": [
+    {
+      "renderer": "Engine_Glow",
+      "triangles": 1840,
+      "cull": 0,
+      "emission_intensity": 2,
+      "emission_enabled": true
+    },
+    {
+      "renderer": "Engine_Glow_Big",
+      "triangles": 1428,
+      "cull": 0,
+      "emission_intensity": 2,
+      "emission_enabled": true
+    }
+  ],
+  "ship": {
+    "weapons": 24,
+    "targets": 27,
+    "mount_error": 0.0,
+    "loadout": {
+      "10": 6,
+      "36": 2,
+      "33": 3,
+      "71": 2,
+      "4": 3,
+      "70": 8
+    }
+  },
+  "obsolete_visuals": 38,
+  "registrations": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/ISDIIShipView.prefab",
+      "guid": "f24f9301127af634ab504e1c96f3d728",
+      "address": "ISDIIShipView"
+    },
+    {
+      "path": "Assets/Settings/Data/Ship/ISDIIShipData.asset",
+      "guid": "9864bdd7b03aa4d4d812b8f34e008399",
+      "address": "ISDIIShipData"
+    }
+  ]
+}

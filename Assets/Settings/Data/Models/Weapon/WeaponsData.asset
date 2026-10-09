@@ -253,6 +253,21 @@ MonoBehaviour:
     projectileSpeed: 133
     color: {r: 1, g: 0, b: 0.12, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 70
+    displayName: ISD II Octuple Turbolaser
+    damageType: 2
+    damage: 135
+    shotsPerSalvo: 1
+    shotInterval: 0.75
+    reload: 4.5
+    range: 350
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 41
     displayName: Light Long-Range 4-Rapid-Burst Dual Turbolaser
     damageType: 2
@@ -456,6 +471,21 @@ MonoBehaviour:
     shotInterval: 0.08
     reload: 10.25
     range: 325
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 71
+    displayName: ISD II Quad Ion Cannon
+    damageType: 4
+    damage: 225
+    shotsPerSalvo: 1
+    shotInterval: 0.7
+    reload: 6
+    range: 300
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,

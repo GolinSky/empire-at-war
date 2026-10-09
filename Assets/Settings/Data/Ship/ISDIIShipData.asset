@@ -16,8 +16,8 @@ MonoBehaviour:
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2
-  <HullBottom>k__BackingField: -17.562006
-  <HullTop>k__BackingField: 29.659405
+  <HullBottom>k__BackingField: -24.748056
+  <HullTop>k__BackingField: 25.914349
   <RotationSpeed>k__BackingField: 5
   <TurnAcceleration>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 0.6
@@ -35,9 +35,6 @@ MonoBehaviour:
   - hardPointType: 0
     health: 750
     hullDamageMultiplier: 1
-  - hardPointType: 1
-    health: 1000
-    hullDamageMultiplier: 1
   - hardPointType: 2
     health: 1000
     hullDamageMultiplier: 1
@@ -47,7 +44,7 @@ MonoBehaviour:
   - hardPointType: 7
     health: 1500
     hullDamageMultiplier: 1
-  <Range>k__BackingField: 787.5
+  <Range>k__BackingField: 350
   <Delay>k__BackingField: 0.25
   abilities: 1800000016000000
   hangarBays:
@@ -63,13 +60,15 @@ MonoBehaviour:
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 30
   weaponLoadout:
+  - weaponType: 10
+    count: 6
+  - weaponType: 36
+    count: 2
+  - weaponType: 33
+    count: 3
+  - weaponType: 71
+    count: 2
   - weaponType: 4
     count: 3
-  - weaponType: 28
-    count: 4
-  - weaponType: 33
-    count: 6
-  - weaponType: 41
+  - weaponType: 70
     count: 8
-  - weaponType: 42
-    count: 2

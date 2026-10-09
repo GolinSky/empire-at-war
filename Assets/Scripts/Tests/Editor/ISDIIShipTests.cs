@@ -32,19 +32,16 @@ namespace EmpireAtWar.Tests.Editor
             HardPoint[] hardPoints = view.GetComponentsInChildren<HardPoint>(true);
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();
-            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(30));
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(17));
-            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.EqualTo(3));
-            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(2));
-            Assert.That(weapons.Length, Is.EqualTo(23));
-            foreach (var expected in new[] { (WeaponType.LightRapidDualTurbolaser, 8), (WeaponType.MediumLongRangeTurboIon, 2),
-                (WeaponType.MediumTurboLaser, 3), (WeaponType.LightTurbolaser, 6), (WeaponType.HeavyLaser, 4) })
+            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(27));
+            Assert.That(health.ShipUnits.Count, Is.EqualTo(27));
+            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.Zero);
+            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
+            Assert.That(weapons.Length, Is.EqualTo(24));
+            foreach (var expected in new[] { (WeaponType.ISDIIOctupleTurbolaser, 8), (WeaponType.ISDIIQuadIonCannon, 2),
+                (WeaponType.MediumTurboLaser, 3), (WeaponType.LightTurbolaser, 3), (WeaponType.LightDualTurbolaser, 2), (WeaponType.IonCannon, 6) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             Assert.That(weapons.Count(w => new SerializedObject(w).FindProperty("mainBattery").boolValue), Is.EqualTo(8));
-            Assert.That(weapons.Where(w => w.WeaponType == WeaponType.LightRapidDualTurbolaser || w.WeaponType == WeaponType.MediumLongRangeTurboIon)
-                .All(health.ShipUnits.Contains), Is.True);
-            Assert.That(weapons.Where(w => w.WeaponType == WeaponType.MediumTurboLaser || w.WeaponType == WeaponType.LightTurbolaser || w.WeaponType == WeaponType.HeavyLaser)
-                .Any(health.ShipUnits.Contains), Is.False);
+            Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
             MonoBehaviour hangar = Component(view, "HangarComponent");
             SerializedObject hangarConfig = new SerializedObject(hangar);
             Assert.That(hangarConfig.FindProperty("hangarHardPoint").objectReferenceValue, Is.EqualTo(health.ShipUnits.Single(h => h.HardPointType == HardPointType.Hangar)));
@@ -58,7 +55,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             WeaponHardPoint[] batteries = view.GetComponentsInChildren<WeaponHardPoint>(true)
-                .Where(w => w.WeaponType == WeaponType.LightRapidDualTurbolaser || w.WeaponType == WeaponType.MediumLongRangeTurboIon).ToArray();
+                .Where(w => w.WeaponType == WeaponType.ISDIIOctupleTurbolaser || w.WeaponType == WeaponType.ISDIIQuadIonCannon).ToArray();
             Assert.That(batteries.Count(w => w.transform.localPosition.x < 0), Is.EqualTo(5));
             Assert.That(batteries.Count(w => w.transform.localPosition.x > 0), Is.EqualTo(5));
             foreach (WeaponHardPoint battery in batteries)
@@ -66,7 +63,7 @@ namespace EmpireAtWar.Tests.Editor
                 float side = battery.transform.localPosition.x < 0 ? -90f : 90f;
                 Assert.That((battery.MinYaw + battery.MaxYaw) / 2f, Is.EqualTo(side), battery.name);
                 Assert.That(battery.MaxYaw - battery.MinYaw,
-                    Is.EqualTo(battery.WeaponType == WeaponType.LightRapidDualTurbolaser ? 100f : 80f), battery.name);
+                    Is.EqualTo(battery.WeaponType == WeaponType.ISDIIOctupleTurbolaser ? 90f : 80f), battery.name);
             }
         }
 
@@ -122,10 +119,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(definition.Duration, Is.EqualTo(20f));
             Assert.That(definition.RecoveryDelay, Is.EqualTo(60f));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            Assert.That(profiles.GetProfile(WeaponType.LightRapidDualTurbolaser).ShotsPerSalvo, Is.EqualTo(4));
-            Assert.That(profiles.GetProfile(WeaponType.MediumLongRangeTurboIon).ShotsPerSalvo, Is.EqualTo(2));
-            Assert.That(profiles.GetProfile(WeaponType.LightRapidDualTurbolaser).Range, Is.EqualTo(450));
-            Assert.That(profiles.GetProfile(WeaponType.MediumLongRangeTurboIon).Range, Is.EqualTo(525));
+            Assert.That(profiles.GetProfile(WeaponType.ISDIIOctupleTurbolaser).ShotsPerSalvo, Is.EqualTo(1));
+            Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).ShotsPerSalvo, Is.EqualTo(1));
+            Assert.That(profiles.GetProfile(WeaponType.ISDIIOctupleTurbolaser).Range, Is.EqualTo(350));
+            Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).Range, Is.EqualTo(300));
         }
 
         [TestCase("Assets/Prefabs/Models/Ships/ISDII.prefab")]

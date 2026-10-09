@@ -69,5 +69,7 @@
         HeavyLongRangeTripleTurbolaser = 67,
         HeavyLongRangeTripleTurboIon = 68,
         HeavyDualLaser = 69,
+        ISDIIOctupleTurbolaser = 70,
+        ISDIIQuadIonCannon = 71,
     }
 }

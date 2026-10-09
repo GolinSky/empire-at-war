@@ -120,14 +120,11 @@ MonoBehaviour:
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
-        description: '5,500 hull; 4,200 shields; speed 25. Targetable: eight light
-          long-range 4-rapid-burst dual turbolasers, two medium long-range 2-burst
-          turbo-ion cannons, two shield generators, three engines, tractor beam and
-          hangar. Additional weapons: three medium 3-burst turbolasers, six light
-          turbolasers and four heavy laser cannons. Power to Main Batteries boosts
-          main-battery firing rate, disables other weapons, halts shield regeneration
-          and reduces speed. Tractor Beam restricts enemy movement. Launches TIE
-          Interceptors, TIE Brutes and TIE Punishers.'
+        description: 5,500 hull; 4,200 shields; speed 25. Eight octuple turbolasers,
+          two quad ion turrets, six ion cannons, five hull turbolasers and three
+          center turrets. Every weapon is targetable; shield generator, hangar, tractor
+          beam are targetable. Power to Main Batteries and Tractor Beam. Existing
+          TIE Interceptor, Brute and Punisher complement.
         role: Capital ship / Ship of the line
         iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
         isHero: 0

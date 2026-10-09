@@ -1,0 +1,53 @@
+{
+  "version": "6000.4.7f1",
+  "compiling": false,
+  "playing": false,
+  "dirty_prefabs": [],
+  "compilation_status": {
+    "status": "completed",
+    "failed": false,
+    "errors": []
+  },
+  "shaders": [
+    {
+      "name": "Universal Render Pipeline/Particles/Unlit",
+      "error": false
+    },
+    {
+      "name": "EmpireAtWar/Ship Lit",
+      "error": false
+    },
+    {
+      "name": "EmpireAtWar/Ion Glow",
+      "error": false
+    },
+    {
+      "name": "Universal Render Pipeline/2D/Sprite-Unlit-Default",
+      "error": false
+    },
+    {
+      "name": "EmpireAtWar/Ship Shield",
+      "error": false
+    },
+    {
+      "name": "EmpireAtWar/Ion Field",
+      "error": false
+    },
+    {
+      "name": "EmpireAtWar/Ship Wreck",
+      "error": false
+    },
+    {
+      "name": "Universal Render Pipeline/Simple Lit",
+      "error": false
+    }
+  ],
+  "scenes": [
+    {
+      "name": "MainMenuScene",
+      "path": "Assets/Scenes/MainMenuScene.unity",
+      "isDirty": false
+    }
+  ],
+  "engine_reimport_verified": true
+}
