@@ -217,6 +217,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f0a9b1821246f484dbc3d7fcaa7828d1,
           type: 3}
+    - key: 211
+      value:
+        matchups: {fileID: 11400000, guid: 2e867f7906f912745a1d170c737e565a, type: 2}
+        description: '15,000 hull and shields. Republic Venator hardpoint layout:
+          ten Imperial green heavy dual turbolasers, two heavy turbolasers, two heavy
+          ion cannons and one SPHAT beam. Intensify Firepower increases firing rate
+          for 15 s. Launches TIE Fighters and TIE Bombers.'
+        role: Capital carrier / Anti-frigate
+        iconKey: d612310c959d0bb4d93c64dba1f5b3f4:21300000
+        isHero: 0
+        <Name>k__BackingField: Imperial Venator
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 17200
+        <BuildTime>k__BackingField: 70
+        <UnitCapacity>k__BackingField: 26
+        <Icon>k__BackingField: {fileID: 21300000, guid: d612310c959d0bb4d93c64dba1f5b3f4,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

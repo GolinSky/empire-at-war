@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: ImperialVenatorShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  <Speed>k__BackingField: 18
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 3
+  <HullBottom>k__BackingField: -15.332612
+  <HullTop>k__BackingField: 13.539487
+  <RotationSpeed>k__BackingField: 7.5
+  <TurnAcceleration>k__BackingField: 7.5
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 15
+  <NavigationRadius>k__BackingField: 72
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: a8374b123a8935247982c0ed0785d59e,
+    type: 2}
+  <ShipClass>k__BackingField: 4
+  <Hull>k__BackingField: 15000
+  <Shields>k__BackingField: 15000
+  <ShieldRegenerateValue>k__BackingField: 15
+  <ShieldRegenerateDelay>k__BackingField: 3
+  hardPointHealth:
+  - hardPointType: 0
+    health: 400
+    hullDamageMultiplier: 1
+  - hardPointType: 1
+    health: 600
+    hullDamageMultiplier: 1
+  - hardPointType: 2
+    health: 600
+    hullDamageMultiplier: 1
+  - hardPointType: 4
+    health: 400
+    hullDamageMultiplier: 1
+  <Range>k__BackingField: 750
+  <Delay>k__BackingField: 0.25
+  abilities: 23000000
+  hangarBays:
+  - squadronType: 200
+    reserve: 3
+    maxActive: 1
+  - squadronType: 201
+    reserve: 6
+    maxActive: 2
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8
+  weaponLoadout:
+  - weaponType: 2
+    count: 2
+  - weaponType: 43
+    count: 10
+  - weaponType: 11
+    count: 2
+  - weaponType: 12
+    count: 1

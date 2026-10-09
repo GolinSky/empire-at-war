@@ -1120,3 +1120,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ImperialVenatorShipView
+      value:
+        m_AssetGUID: d47b48cf040c4cd4c8d53712ed54596b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ImperialVenatorShipData
+      value:
+        m_AssetGUID: 72f01462e360c354b87a37e0803d8808
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

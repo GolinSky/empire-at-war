@@ -4,6 +4,7 @@
 
 ### Features
 
+
 - [ ] **AI composition analysis and counter measures**
   - **Plan**: [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]
   - **Status**: 2026-10-07 implemented: baked weapon loadouts, damage-matrix force ratings, utility strategic rules, counter production and squadron escorts. AI/new tests 119/119; full EditMode 1151/1155 (4 unrelated). Commit `e5daa9ab`.
@@ -299,6 +300,14 @@
 
 
 ### Features
+
+- [x] **Integrate Imperial Venator into Empire**
+  - **Plan**: [[Done/Features/ImperialVenator_Import|Imperial Venator Import]]
+  - **Reference**: [[GameDesign/Imperial Venator Import]]
+  - **Completed**: 2026-10-09; exact `Venator_Empire` model/Imperial textures and ten XML attachments. Republic hardpoint copy; ten DBY-827 → Imperial green turbolasers. Approved tech-2 TIE Fighter/TIE Bomber, unsupported transport omitted.
+  - **Outcome**: Empire ship `211`, ability `35`, 15 weapons / 18 unique targets; own art/gameplay/shield/wreck/placement/icons and all registrations saved.
+  - **Verification**: 1,579 saved-asset checks; twelve geometry/UV/bone imports; zero muzzle displacement; 34 unchanged source hashes; six Republic records and five donor assets/metas unchanged. Eight live/wreck palettes and screenshots saved; Unity compilation successful. No Unity test suite or combat Play Mode run; balance mappings provisional.
+  - **Engine fix**: two-sided additive mesh glow restored across all ten engine faces; complete source triangles retained. Rear/upper/lower glow/opaque views verified; refreshed archive and scoped commit created. Final Unity compilation successful.
 
 - [x] **Add Raider Corvette to Empire**
   - **Plan**: [[Done/Features/RaiderCorvette_Import|Raider Corvette Import]]
