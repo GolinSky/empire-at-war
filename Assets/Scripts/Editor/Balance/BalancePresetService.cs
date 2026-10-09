@@ -26,7 +26,7 @@ namespace EmpireAtWar.Editor.Balance
             }
             preset.SetValues(scope == "Full registered set", values.OrderBy(entry => entry.Key).ToList());
             EditorUtility.SetDirty(preset);
-            AssetDatabase.SaveAssets();
+            if (AssetDatabase.Contains(preset)) AssetDatabase.SaveAssets();
         }
 
         public static void Load(BalancePreset preset, BalanceRegistration registry, BalanceDraft draft)

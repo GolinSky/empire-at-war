@@ -57,17 +57,18 @@ namespace EmpireAtWar.Editor.Balance
                 Economy(registry, faction, value.propertyPath + ".", roster + "/" + id + "/", unit, false);
                 RegisterData(registry, unit);
                 string topology = BalancePrefabBindings.Register(registry, unit);
-                foreach (BalanceField field in registry.Fields.Values.Where(field => field.Target == data))
+                foreach (BalanceField field in registry.FieldsFor(data))
                     field.Dependency = topology;
             }
         }
 
         public static void Economy(BalanceRegistration registry, Object target, string path, string key, BalanceUnit unit, bool shared)
         {
+            using (SerializedObject serialized = new SerializedObject(target))
             foreach (string name in new[] { "Price", "BuildTime", "UnitCapacity", "MaxCount", "AvailableLevel" })
             {
                 BalanceField field = registry.Add(target, key + name, path + BalanceRegistration.Auto(name), "Economy", unit.Name,
-                    shared ? "Shared Profile" : "Faction Entry", shared, new[] { unit });
+                    shared ? "Shared Profile" : "Faction Entry", shared, new[] { unit }, serializedTarget: serialized);
                 unit.Fields[name] = field.Key;
             }
         }
@@ -93,7 +94,7 @@ namespace EmpireAtWar.Editor.Balance
                     Hangar(registry, data, serialized.FindProperty("hangarBays"), "hangarBays", unit);
                 }
             }
-            foreach (BalanceField field in registry.Fields.Values.Where(field => field.Target == data)) unit.Fields[field.Stat] = field.Key;
+            foreach (BalanceField field in registry.FieldsFor(data)) unit.Fields[field.Stat] = field.Key;
         }
 
         public static void Health(BalanceRegistration registry, Object data, SerializedProperty entries, string key, BalanceUnit unit)

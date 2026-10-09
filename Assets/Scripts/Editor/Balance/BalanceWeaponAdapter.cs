@@ -22,7 +22,7 @@ namespace EmpireAtWar.Editor.Balance
                     List<BalanceUnit> users = registry.Units.Where(unit => unit.Mounts.OfType<WeaponHardPoint>().Any(mount => (int)mount.WeaponType == id)).ToList();
                     Profile(registry, weapons, profile, "weapon/" + id + "/", "Weapons", profile.FindPropertyRelative("displayName").stringValue, users);
                     // A linked shared profile cell appears alongside each consuming unit in Compare.
-                    foreach (BalanceField field in registry.Fields.Values.Where(field => field.Target == weapons && field.Stat.StartsWith("weapon/" + id + "/")))
+                    foreach (BalanceField field in registry.FieldsFor(weapons).Where(field => field.Stat.StartsWith("weapon/" + id + "/")))
                         foreach (BalanceUnit unit in users) unit.Fields[field.Stat] = field.Key;
                 }
             }
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Editor.Balance
             {
                 BalanceField field = registry.Add(target, key + name, profile.propertyPath + "." + name, group, context, "Shared Profile", true, users,
                     name == "damageType" ? typeof(DamageType) : null, minimum: name == "shotsPerSalvo" ? 1 : 0,
-                    positive: name == "reload" && target is WeaponsData, alias: alias, dependency: dependency);
+                    positive: name == "reload" && target is WeaponsData, alias: alias, dependency: dependency, serializedTarget: profile.serializedObject);
                 if (name == "range") field.Label = "Profile range (ordinary units use Unit Data fire range)";
             }
         }

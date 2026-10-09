@@ -22,6 +22,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TargetLookup_PreservesAllRegisteredFieldsWithoutDuplicates()
+        {
+            BalanceRegistration inventory = BalanceInventory.Build();
+            Assert.That(inventory.Errors, Is.Empty);
+            foreach (var group in inventory.Fields.Values.GroupBy(field => field.Target))
+                Assert.That(inventory.FieldsFor(group.Key), Is.EquivalentTo(group), group.Key.name);
+            foreach (BalanceUnit unit in inventory.Units)
+                foreach (var mount in unit.Mounts.Distinct())
+                    foreach (BalanceField field in inventory.FieldsFor(mount))
+                        Assert.That(unit.Fields["mount/" + field.Key], Is.EqualTo(field.Key));
+        }
+
+        [Test]
         public void WeaponConsumers_IncludeEveryBoundShipSquadronAndStructure()
         {
             BalanceRegistration inventory = BalanceInventory.Build();

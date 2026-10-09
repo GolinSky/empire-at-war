@@ -71,7 +71,7 @@ namespace EmpireAtWar.Editor.Balance
                         registry.Add(mount, name, name, "Hardpoints", context, "Prefab Override", false, new[] { unit }, positive: name == "reload",
                             maximum: name == "interceptChance" ? 1 : double.PositiveInfinity, dependency: topology);
                 }
-                foreach (BalanceField field in registry.Fields.Values.Where(field => field.Target == mount))
+                foreach (BalanceField field in registry.FieldsFor(mount))
                     unit.Fields["mount/" + field.Key] = field.Key;
             }
             return topology;

@@ -97,7 +97,6 @@ namespace EmpireAtWar.Editor.Balance
                     Write(BalancePrefabBindings.InContents(target.Key, root), target, draft);
                 PrefabUtility.SaveAsPrefabAsset(root, path, out bool success);
                 if (!success) throw new IOException("Could not save prefab: " + path);
-                AssetDatabase.SaveAssets();
             }
             finally { PrefabUtility.UnloadPrefabContents(root); }
         }
