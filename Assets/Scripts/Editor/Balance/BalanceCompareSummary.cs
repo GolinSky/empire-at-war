@@ -26,6 +26,11 @@ namespace EmpireAtWar.Editor.Balance
                 VisualElement heading = new VisualElement(); heading.AddToClassList("balance-compare-card-heading"); card.Add(heading);
                 Label drag = new Label("↕") { name = "compare-drag-handle", tooltip = "Drag to reorder; Escape cancels", focusable = true };
                 heading.Add(drag);
+                if (unit.Icon != null)
+                {
+                    Image icon = new Image { name = "unit-icon", sprite = unit.Icon, scaleMode = UnityEngine.ScaleMode.ScaleToFit, pickingMode = PickingMode.Ignore };
+                    icon.AddToClassList("balance-unit-icon"); heading.Add(icon);
+                }
                 BalanceCompareDrag.Bind(card, slot, grid, state, refresh, (additive, range) => BalanceCompareSelection.Select(grid, state, unit.Id, additive, range));
                 card.tooltip = "Click to select; Ctrl+click to toggle; Shift+click to select a range. Ctrl+A selects all; Delete removes selected units. Drag the background to reorder.";
                 Text(heading, unit.Name, "balance-compare-unit-name");
