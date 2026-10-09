@@ -23,14 +23,20 @@ namespace EmpireAtWar.Editor.Balance
         {
             switch (kind)
             {
-                case BalanceValueKind.Float: property.floatValue = float.Parse(value, CultureInfo.InvariantCulture); break;
-                case BalanceValueKind.Boolean: property.boolValue = bool.Parse(value); break;
+                case BalanceValueKind.Float:
+                    property.floatValue = float.Parse(value, CultureInfo.InvariantCulture);
+                    break;
+                case BalanceValueKind.Boolean:
+                    property.boolValue = bool.Parse(value);
+                    break;
                 case BalanceValueKind.EnumSet:
                     int[] ids = value.Length == 0 ? Array.Empty<int>() : value.Split(',').Select(int.Parse).ToArray();
                     property.arraySize = ids.Length;
                     for (int i = 0; i < ids.Length; i++) property.GetArrayElementAtIndex(i).intValue = ids[i];
                     break;
-                default: property.intValue = int.Parse(value, CultureInfo.InvariantCulture); break;
+                default:
+                    property.intValue = int.Parse(value, CultureInfo.InvariantCulture);
+                    break;
             }
         }
 

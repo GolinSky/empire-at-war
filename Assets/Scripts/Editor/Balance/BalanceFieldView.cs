@@ -122,9 +122,12 @@ namespace EmpireAtWar.Editor.Balance
                 users.Add(new Label(unit.Caption));
             panel.Add(users);
             if (field.Dependency.Length != 0) panel.Add(new Label("Dependencies: current subtype, component and mount bindings are checked at Apply."));
-            if (field.Group == BalanceFieldGroup.Abilities) panel.Add(new HelpBox("Tuning can leave numeric text in ability descriptions stale. Review the descriptions after Apply.", HelpBoxMessageType.Warning));
-            if (field.Owner == BalanceFieldOwner.PrefabOverride) panel.Add(new HelpBox("Writes create overrides in this owning unit prefab. Nested source assets and structure remain intact.", HelpBoxMessageType.Info));
-            if (field.Stat == "MinYaw" || field.Stat == "MaxYaw") panel.Add(new HelpBox("Yaw is measured in degrees. Targeting compares angles in −180 … 180; wider stored limits are valid and preserved.", HelpBoxMessageType.Info));
+            if (field.Group == BalanceFieldGroup.Abilities)
+                panel.Add(new HelpBox("Tuning can leave numeric text in ability descriptions stale. Review the descriptions after Apply.", HelpBoxMessageType.Warning));
+            if (field.Owner == BalanceFieldOwner.PrefabOverride)
+                panel.Add(new HelpBox("Writes create overrides in this owning unit prefab. Nested source assets and structure remain intact.", HelpBoxMessageType.Info));
+            if (field.Stat == "MinYaw" || field.Stat == "MaxYaw")
+                panel.Add(new HelpBox("Yaw is measured in degrees. Targeting compares angles in −180 … 180; wider stored limits are valid and preserved.", HelpBoxMessageType.Info));
         }
     }
 }

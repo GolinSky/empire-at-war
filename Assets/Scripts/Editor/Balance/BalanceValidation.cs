@@ -19,7 +19,12 @@ namespace EmpireAtWar.Editor.Balance
             List<string> errors = new List<string>(current.Errors);
             foreach (BalanceChange change in draft.Changes)
             {
-                if (!current.Fields.TryGetValue(change.Key, out BalanceField field)) { errors.Add("Missing target: " + change.Key); continue; }
+                if (!current.Fields.TryGetValue(change.Key, out BalanceField field))
+                {
+                    errors.Add("Missing target: " + change.Key);
+                    continue;
+                }
+
                 if (field.Schema != change.Schema) errors.Add("Ownership/schema changed: " + field.Context + "/" + field.Label);
                 if (field.Read() != change.Before) errors.Add("External edit conflict: " + field.Context + "/" + field.Label);
                 string error = field.Validate(change.After);
@@ -59,7 +64,12 @@ namespace EmpireAtWar.Editor.Balance
             ShipAbilityCatalog catalog = BalanceRegistration.One<ShipAbilityCatalog>();
             foreach (int id in value.Length == 0 ? Array.Empty<int>() : value.Split(',').Select(int.Parse))
             {
-                if (!current.Fields.Values.Any(field => field.Stat == "ability/" + id + "/duration")) { errors.Add("Ability definition missing: " + id); continue; }
+                if (!current.Fields.Values.Any(field => field.Stat == "ability/" + id + "/duration"))
+                {
+                    errors.Add("Ability definition missing: " + id);
+                    continue;
+                }
+
                 ShipAbilitySettings settings = catalog.Get((ShipAbilityId)id).Settings;
                 bool ship = unit.Kind == BalanceUnitKind.Ship;
                 if (settings is LockSFoilsSettings

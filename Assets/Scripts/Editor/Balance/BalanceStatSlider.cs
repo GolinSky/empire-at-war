@@ -23,22 +23,29 @@ namespace EmpireAtWar.Editor.Balance
             control.AddToClassList("balance-stat-editor");
             control.AddToClassList(field.Stat.Contains("Shield") ? "balance-shield-editor" : "balance-hull-editor");
             control.EnableInClassList("balance-changed", field.DraftValue(draft) != field.Read());
-            VisualElement row = new VisualElement(); row.AddToClassList("balance-stat-inputs"); control.Add(row);
+            VisualElement row = new VisualElement();
+            row.AddToClassList("balance-stat-inputs");
+            control.Add(row);
             Slider slider = new Slider((float)field.Minimum, maximum) { name = "stat-slider" };
-            slider.AddToClassList("balance-stat-slider"); row.Add(slider);
+            slider.AddToClassList("balance-stat-slider");
+            row.Add(slider);
             FloatField input = new FloatField { name = "stat-value", isDelayed = true };
-            input.AddToClassList("balance-stat-input"); row.Add(input);
+            input.AddToClassList("balance-stat-input");
+            row.Add(input);
             input.tooltip = field.Label + " · saved value: " + field.Read();
             VisualElement fill = new VisualElement { pickingMode = PickingMode.Ignore };
-            fill.AddToClassList("balance-stat-fill"); slider.Q("unity-tracker").Add(fill);
-            HelpBox error = new HelpBox("", HelpBoxMessageType.Error); control.Add(error);
+            fill.AddToClassList("balance-stat-fill");
+            slider.Q("unity-tracker").Add(fill);
+            HelpBox error = new HelpBox("", HelpBoxMessageType.Error);
+            control.Add(error);
             bool dragging = false;
 
             void Display(float value)
             {
                 input.SetValueWithoutNotify(value);
                 string message = field.Validate(value.ToString("R", CultureInfo.InvariantCulture));
-                error.text = message; error.style.display = message.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+                error.text = message;
+                error.style.display = message.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
                 slider.SetEnabled(message.Length == 0);
                 if (message.Length != 0) return;
                 slider.highValue = Math.Max(slider.highValue, value);
@@ -57,10 +64,14 @@ namespace EmpireAtWar.Editor.Balance
             void FinishDrag()
             {
                 if (!dragging) return;
-                dragging = false; Commit(input.value);
+                dragging = false;
+                Commit(input.value);
             }
 
-            slider.RegisterCallback<PointerDownEvent>(evt => { if (evt.button == 0) dragging = true; }, TrickleDown.TrickleDown);
+            slider.RegisterCallback<PointerDownEvent>(evt =>
+            {
+                if (evt.button == 0) dragging = true;
+            }, TrickleDown.TrickleDown);
             slider.Q("unity-drag-container").RegisterCallback<PointerUpEvent>(_ => FinishDrag());
             slider.RegisterCallback<PointerCaptureOutEvent>(_ => FinishDrag());
             slider.RegisterValueChangedCallback(evt =>
@@ -68,7 +79,11 @@ namespace EmpireAtWar.Editor.Balance
                 Display(Mathf.Round(evt.newValue));
                 if (!dragging) Commit(input.value);
             });
-            input.RegisterValueChangedCallback(evt => { Display(evt.newValue); Commit(evt.newValue); });
+            input.RegisterValueChangedCallback(evt =>
+            {
+                Display(evt.newValue);
+                Commit(evt.newValue);
+            });
             Display(initial);
             return control;
         }

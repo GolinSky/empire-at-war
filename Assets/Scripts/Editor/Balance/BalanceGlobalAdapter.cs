@@ -19,14 +19,16 @@ namespace EmpireAtWar.Editor.Balance
             registry.AutoFields(economy, "", "", "IncomeDelay StartMoneyAmount", BalanceFieldGroup.GlobalData, "Economy", BalanceFieldOwner.SharedProfile, true, registry.Units);
             Object matchups = BalanceRegistration.One<ShipClassMatchupData>();
             registry.Add(matchups, "strongBonus", "strongBonus", BalanceFieldGroup.GlobalData, "Class production preference", BalanceFieldOwner.SharedProfile, true, registry.Units);
-            registry.Add(matchups, "weakPenalty", "weakPenalty", BalanceFieldGroup.GlobalData, "Class production preference", BalanceFieldOwner.SharedProfile, true, registry.Units, maximum: 1);
+            registry.Add(matchups, "weakPenalty", "weakPenalty", BalanceFieldGroup.GlobalData, "Class production preference",
+                BalanceFieldOwner.SharedProfile, true, registry.Units, maximum: 1);
             using (SerializedObject serialized = new SerializedObject(matchups))
                 foreach (SerializedProperty row in BalanceRegistration.Elements(serialized.FindProperty("matchups")))
                 {
                     int id = row.FindPropertyRelative("shipClass").intValue;
                     foreach (string name in new[] { "strongAgainst", "weakAgainst" })
                         registry.Add(matchups, "class/" + id + "/" + name, row.propertyPath + "." + name, BalanceFieldGroup.GlobalData,
-                            ((ShipClass)id) + " production preference", BalanceFieldOwner.SharedProfile, true, registry.Units.Where(unit => unit.Class == ((ShipClass)id).ToString()), typeof(ShipClass));
+                            ((ShipClass)id) + " production preference", BalanceFieldOwner.SharedProfile, true,
+                            registry.Units.Where(unit => unit.Class == ((ShipClass)id).ToString()), typeof(ShipClass));
                 }
             Matrix(registry);
             foreach (FactionDefinition faction in BalanceRegistration.One<FactionCatalog>().Factions) Research(registry, faction);
