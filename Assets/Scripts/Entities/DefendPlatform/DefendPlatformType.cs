@@ -5,5 +5,6 @@
         Xq6 = 0,
         BattleAsteroid = 1,
         GolanIII = 2,
+        Empress = 3,
     }
 }

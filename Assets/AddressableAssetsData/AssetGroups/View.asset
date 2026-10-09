@@ -220,6 +220,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e4b91ea8a035d94da292e3708a13e78
+    m_Address: AotrEmpressDefensePlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a18a912eef2f13e4cb56ec916afc1e10
     m_Address: AcclamatorAssaultShipView
     m_ReadOnly: 0

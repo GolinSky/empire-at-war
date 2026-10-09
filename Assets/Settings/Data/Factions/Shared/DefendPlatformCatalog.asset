@@ -32,6 +32,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 988c54fd851290641a5fe8c93eff1927,
           type: 3}
+    - key: 3
+      value:
+        matchups: {fileID: 0}
+        description: 6,000 hull; 24,000 shields. 3 heavy three-burst long-range turbolasers,
+          3 heavy three-burst long-range turbo-ion cannons, 6 medium long-range dual
+          turbolasers, 12 light dual turbolasers and 6 heavy dual laser cannons.
+          Emphasizes shields and ion weaponry; Golan III emphasizes hull armor, heavy
+          turbolasers and torpedoes.
+        role: Shield-heavy ion defense platform
+        iconKey: 653b257a6a126934d96618b6c8874dae:21300000
+        isHero: 0
+        <Name>k__BackingField: XQ-3 Empress
+        <MaxCount>k__BackingField: 2
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 7500
+        <BuildTime>k__BackingField: 250
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 653b257a6a126934d96618b6c8874dae,
+          type: 3}
     - key: 0
       value:
         matchups: {fileID: 0}

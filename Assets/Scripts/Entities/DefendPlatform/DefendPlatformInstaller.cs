@@ -14,10 +14,18 @@ namespace EmpireAtWar
 
         private bool _isHiddenByLocalFog;
 
-        protected override string DataPath => _defendPlatformType == DefendPlatformType.GolanIII
-            ? "AotrGolanIIIDefensePlatformData" : base.DataPath;
-        protected override string PrefabPath => _defendPlatformType == DefendPlatformType.GolanIII
-            ? "AotrGolanIIIDefensePlatformView" : base.PrefabPath;
+        protected override string DataPath => _defendPlatformType switch
+        {
+            DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformData",
+            DefendPlatformType.Empress => "AotrEmpressDefensePlatformData",
+            _ => base.DataPath,
+        };
+        protected override string PrefabPath => _defendPlatformType switch
+        {
+            DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformView",
+            DefendPlatformType.Empress => "AotrEmpressDefensePlatformView",
+            _ => base.PrefabPath,
+        };
 
         [Inject]
         public void Construct(ILocalPlayer localPlayer, DefendPlatformType defendPlatformType, PlayerId owner)

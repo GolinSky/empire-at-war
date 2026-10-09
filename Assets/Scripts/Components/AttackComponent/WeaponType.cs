@@ -66,5 +66,8 @@
         HeavyBurstBarrageRocket = 64,
         HeavyAssaultMissile = 65,
         HeavyProtonTorpedo = 66,
+        HeavyLongRangeTripleTurbolaser = 67,
+        HeavyLongRangeTripleTurboIon = 68,
+        HeavyDualLaser = 69,
     }
 }
