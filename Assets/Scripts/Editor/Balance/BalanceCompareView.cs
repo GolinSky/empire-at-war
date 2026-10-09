@@ -10,6 +10,7 @@ namespace EmpireAtWar.Editor.Balance
         public static void Build(VisualElement panel, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit, Action refresh)
         {
             BalanceCompareOrder.Sort(registry, state);
+            state.CompareSelection.RemoveAll(id => !state.Pins.Contains(id));
             List<BalanceUnit> units = state.Pins.Select(id => registry.Units.FirstOrDefault(unit => unit.Id == id)).Where(unit => unit != null).ToList();
             VisualElement heading = new VisualElement(); heading.AddToClassList("balance-compare-heading"); panel.Add(heading);
             Label title = new Label("Unit comparison"); title.AddToClassList("balance-compare-title"); heading.Add(title);
@@ -35,6 +36,12 @@ namespace EmpireAtWar.Editor.Balance
             if (units.Count == 0)
             {
                 Label empty = new Label("Add units to compare their stats."); empty.AddToClassList("balance-muted"); scroll.Add(empty);
+                if (state.CompareFocusPending)
+                {
+                    TextField search = picker.Q<TextField>("compare-search");
+                    search.schedule.Execute(search.Focus);
+                    state.CompareFocusPending = false;
+                }
             }
             else BalanceCompareSummary.Build(scroll, units, registry, state, edit, refresh);
         }

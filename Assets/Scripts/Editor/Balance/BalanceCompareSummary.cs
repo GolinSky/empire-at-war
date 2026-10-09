@@ -11,6 +11,7 @@ namespace EmpireAtWar.Editor.Balance
         public static void Build(VisualElement panel, List<BalanceUnit> units, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit, Action refresh)
         {
             VisualElement grid = new VisualElement { name = "compare-grid" }; grid.AddToClassList("balance-compare-grid"); panel.Add(grid);
+            BalanceCompareSelection.Bind(grid, state, refresh);
             List<string> dps = units.Select(unit => BalanceUnitView.BaseDps(unit, registry, state.Draft)).ToList();
             double ceiling = dps.Select(value => Number(value) ?? 0).Append(1).Max();
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
@@ -25,7 +26,8 @@ namespace EmpireAtWar.Editor.Balance
                 VisualElement heading = new VisualElement(); heading.AddToClassList("balance-compare-card-heading"); card.Add(heading);
                 Label drag = new Label("↕") { name = "compare-drag-handle", tooltip = "Drag to reorder; Escape cancels", focusable = true };
                 heading.Add(drag);
-                BalanceCompareDrag.Bind(card, slot, grid, state, refresh);
+                BalanceCompareDrag.Bind(card, slot, grid, state, refresh, additive => BalanceCompareSelection.Select(grid, state, unit.Id, additive));
+                card.tooltip = "Click to select; Ctrl+click to toggle. Ctrl+A selects all; Delete removes selected units. Drag the background to reorder.";
                 Text(heading, unit.Name, "balance-compare-unit-name");
                 Button remove = new Button(() => { state.Pins.Remove(unit.Id); refresh(); })
                     { text = "×", name = "compare-remove-unit", tooltip = "Remove " + unit.Name + " from comparison" };
@@ -64,6 +66,7 @@ namespace EmpireAtWar.Editor.Balance
                 hardpoints.SetEnabled(count > 0);
                 card.Add(hardpoints);
             }
+            BalanceCompareSelection.Update(grid, state);
             Label assumptions = Text(panel, "Draft values · DPS is an AI estimate before accuracy, target modifiers, firing arcs and abilities.", "balance-compare-assumptions");
             assumptions.tooltip = "Base DPS = mounts × damage × shots per salvo / reload. This estimate does not simulate full firing-sequence timing, movement, interception or target switching.";
         }

@@ -20,6 +20,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceUnit unit = registry.Units.First(entry => entry.Kind == "Ship" && entry.Mounts.Count > 12);
             BalanceWindowState state = new BalanceWindowState { Pins = new System.Collections.Generic.List<string> { unit.Id } };
             EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
+            EditorWindow popupHost = ScriptableObject.CreateInstance<EditorWindow>();
             int edits = 0;
             BalanceHardpointsPopup popup = new BalanceHardpointsPopup(unit, registry, state, (field, value) =>
             {
@@ -38,7 +39,13 @@ namespace EmpireAtWar.Tests.Editor
                 Button button = host.rootVisualElement.Q<Button>("compare-view-hardpoints");
                 Assert.That(button.text, Is.EqualTo("View hardpoints (" + unit.Mounts.Distinct().Count() + ")"));
                 Assert.That(host.rootVisualElement.Q(className: "balance-compare-hardpoint"), Is.Null);
-                UnityEditor.PopupWindow.Show(button.worldBound, popup);
+                // Use a persistent host so desktop focus changes cannot dismiss the popup during assertions.
+                typeof(PopupWindowContent).GetProperty("editorWindow").SetValue(popup, popupHost);
+                popupHost.minSize = popup.GetWindowSize();
+                popupHost.maxSize = popup.GetWindowSize();
+                popupHost.position = new Rect(100, 100, popup.GetWindowSize().x, popup.GetWindowSize().y);
+                popup.OnOpen();
+                popupHost.Show();
                 yield return null; yield return null;
                 VisualElement root = popup.editorWindow.rootVisualElement;
                 Assert.That(popup.editorWindow.position.width, Is.EqualTo(620).Within(2));
@@ -62,7 +69,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                if (popup.editorWindow != null) popup.editorWindow.Close();
+                popupHost.Close();
                 host.Close();
             }
         }

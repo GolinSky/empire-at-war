@@ -9,7 +9,7 @@ namespace EmpireAtWar.Editor.Balance
     {
         private const float DRAG_THRESHOLD = 4f;
 
-        public static void Bind(VisualElement handle, VisualElement slot, VisualElement grid, BalanceWindowState state, Action refresh)
+        public static void Bind(VisualElement handle, VisualElement slot, VisualElement grid, BalanceWindowState state, Action refresh, Action<bool> select)
         {
             int pointer = -1;
             Vector2 start = default;
@@ -44,6 +44,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (evt.button != 0) return;
                 for (VisualElement element = evt.target as VisualElement; element != handle; element = element.parent)
                     if (element is Button || element.ClassListContains("unity-base-field")) return;
+                select(evt.ctrlKey);
                 pointer = evt.pointerId; start = evt.position;
                 handle.Focus(); handle.CapturePointer(pointer);
                 evt.StopPropagation();

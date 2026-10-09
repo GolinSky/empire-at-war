@@ -10,6 +10,8 @@ namespace EmpireAtWar.Editor.Balance
         public string SelectedUnit = "";
         public string SelectedField = "";
         public List<string> Pins = new List<string>();
+        public List<string> CompareSelection = new List<string>();
+        [NonSerialized] public bool CompareFocusPending;
         public List<string> BulkKeys = new List<string>();
         public string Faction = "All Factions";
         public string Kind = "Ship";
