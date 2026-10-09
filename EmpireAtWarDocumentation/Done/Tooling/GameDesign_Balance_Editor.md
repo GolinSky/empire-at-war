@@ -65,13 +65,14 @@ completed: 2026-10-09
 - Compare uses the full workspace; no roster sidebar or field inspector.
 - **Add units** opens a searchable picker with faction filtering, unit checkboxes, Select all / Unselect all for matching results, and Add selected. Individual + Add remains available. Existing comparison units are excluded; no count limit.
 - Cards wrap to available width: 330 px slots, maximum 100% for narrow panels; no column cap. Remove units using each card’s × button.
-- Drag the ↕ handle to insert before/after another card, including across rows; insertion marker shows the drop position. Escape cancels. Dragging switches order to Manual.
+- Drag the card background or ↕ handle to insert before/after another card, including across rows; insertion marker shows the drop position. Escape cancels. Dragging switches order to Manual. Buttons and fields retain their input behavior.
 - Order by: Manual, Price, Height Level, Availability Level (`AvailableLevel`), Class. Numeric order is ascending and draft-aware; missing stats sort last. Ties preserve current order.
 - Class order: squadrons (fighter/bomber/interceptor) → corvette → frigate → cruiser → capital → heavy capital/dreadnought (`HeavyCapital`) → structures.
 - Each stat has its own bordered background. Labels and values stay adjacent; card widths remain compact with two selected units.
 - Health/shield bars and numeric inputs edit the draft; shared health fields retain their visible scope label and canonical linked value.
 - Movement speed, height level, build cost/time and weapon range are editable controls; base DPS stays read-only. Ships use `HeightTier` enum and `Range`; squadrons use numeric `Height` and `WeaponRange`; structures use `WeaponRange`.
-- Every existing hardpoint is listed in a compact scroll area. Only weapon assignment is editable; non-weapon subsystem types are labels. No add/remove hardpoint controls; owning prefab identity and shared-source rules remain intact.
+- **View hardpoints (N)** replaces each card’s embedded list. Opens a 620 px wide popup, maximum 560 px high, with a scrollable list, larger names, weapon assignment controls, and non-weapon subsystem labels. Close button/Escape dismiss it.
+- Popup weapon edits use the existing draft, validation, owning prefab identity and shared-source rules. The popup remains open and retains its scroll position when edits refresh the comparison. No add/remove hardpoint controls.
 - Detailed editing foldout, baseline selection, comparison deltas and bulk controls were removed from Compare on user request.
 - Other field editing remains in Units/Combat; Review & Apply persists staged changes.
 - Missing/inapplicable values display N/A; DPS remains an AI estimate.
@@ -228,3 +229,9 @@ completed: 2026-10-09
     - Drag handle with before/after markers and Escape cancellation; retain manual order in persisted pins.
     - Draft-aware ascending price/height/availability and requested class sequence; missing stats last.
     - Balance EditMode 45/45 passed in 25.02 s; Unity compilation/import and Console error checks clean.
+
+13. [x] **Background dragging and hardpoint popup — 2026-10-09**
+    - Card backgrounds and the existing handle drag across rows; buttons and fields keep normal input.
+    - Replaced embedded hardpoint lists with View hardpoints; 620 × ≤560 px popup lists all mounts and preserves draft weapon editing.
+    - Popup remains open across comparison refreshes; scroll offset is retained on its own list rebuild.
+    - Balance EditMode **46/46 passed** in **27.43 s**; background drag, control exclusion, popup geometry/all-mount coverage and draft-only edits verified. Console errors: 0. No Play Mode run.
