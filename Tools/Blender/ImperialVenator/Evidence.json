@@ -1,0 +1,857 @@
+{
+  "date": "2026-10-09",
+  "unit": "Venator_Empire",
+  "inheritance": [
+    "Venator_Empire",
+    "Venator_Upkeep",
+    "Venator_Template",
+    "Capital_Base",
+    "Vessel_Base",
+    "SFX_Base"
+  ],
+  "source_values": {
+    "SFXEvent_Select": "Unit_Select_Jedi_Cruiser",
+    "SFXEvent_Attack_Hardpoint": "HARD_POINT_DUMMY_ART, Unit_Attack_Jedi_Cruiser",
+    "SFXEvent_Hardpoint_Destroyed": "HARD_POINT_FIGHTER_BAY, Unit_Lost_Bay_Jedi_Cruiser",
+    "Variant_Of_Existing_Type": "Venator_Upkeep",
+    "Mouse_Collide_Override_Sphere_Radius": "50.0",
+    "Armor_Type": "Armor_Starship",
+    "Shield_Armor_Type": "Shield_Starship",
+    "Mass": "0.999",
+    "Damage": "40",
+    "GUI_Row": "1",
+    "Size_Value": "30",
+    "Hyperspace": "Yes",
+    "Hyperspace_Speed": "0.4",
+    "Layer_Z_Adjust": "0",
+    "MovementClass": "Space",
+    "OverrideAcceleration": "0.035",
+    "OverrideDeceleration": "0.035",
+    "Victory_Relevant": "yes",
+    "Space_Full_Stop_Command": "Yes",
+    "Has_Space_Evaluator": "True",
+    "Energy_Capacity": "99999",
+    "Energy_Refresh_Rate": "9999",
+    "Tech_Level": "0",
+    "Required_Timeline": "0",
+    "Required_Ground_Base_Level": "0",
+    "Required_Star_Base_Level": "2",
+    "Build_Tab_Space_Units": "Yes",
+    "Build_Initially_Locked": "No",
+    "Build_Can_Be_Unlocked_By_Slicer": "No",
+    "Tactical_Production_Queue": "Tactical_Units",
+    "GUI_Offset": "0 0 0",
+    "GUI_Velocity": "45",
+    "Select_Box_Scale": "1",
+    "Select_Box_Z_Adjust": "1",
+    "Is_Visible_On_Radar": "Yes",
+    "Multisample_FOW_Check": "Yes",
+    "Exclude_From_Distance_Fade": "true",
+    "Dense_FOW_Reveal_Range_Multiplier": "1",
+    "Spawned_Squadron_Delay_Seconds": "0.5",
+    "Behavior": "SELECTABLE, DUMMY_STARSHIP",
+    "SpaceBehavior": "SIMPLE_SPACE_LOCOMOTOR, SPAWN_SQUADRON, ABILITY_COUNTDOWN, SELECTABLE, POWERED, SHIELDED, HIDE_WHEN_FOGGED, REVEAL, TARGETING, UNIT_AI, ASTEROID_FIELD_DAMAGE, DAMAGE_TRACKING, ION_STUN_EFFECT, NEBULA",
+    "Collidable_By_Projectile_Living": "Yes",
+    "Asteroid_Damage_Hit_Particles": "Large_Damage_Space",
+    "Surface_Bombardment_Capable": "yes",
+    "Ranking_In_Category": "1",
+    "Squadron_Capacity": "50",
+    "Formation_Priority": "1",
+    "Score_Cost_Credits": "1",
+    "Idle_Chase_Range": "0.0",
+    "Guard_Chase_Range": "1000.0",
+    "Attack_Move_Response_Range": "400.0",
+    "Targeting_Stickiness_Time_Threshold": "5.0",
+    "SFXEvent_Damaged_By_Asteroid": "SFX_Asteroid_Detonation",
+    "Lua_Script": "ObjectScript_PowerToShields_Layer_Z",
+    "Encyclopedia_Unit_Class": "TEXT_ENCYCLOPEDIA_CLASS_CAPITAL",
+    "Visible_On_Radar_When_Fogged": "Yes",
+    "Is_Visible_On_Enemy_Radar": "Yes",
+    "Ship_Class": "Capital",
+    "Space_Layer": "Capital",
+    "GUI_Bracket_Size": "2",
+    "Space_Model_Name": "Empire_Venator_Star_Destroyer.ALO",
+    "Scale_Factor": "1",
+    "Custom_Hard_XExtent": "255.0",
+    "Custom_Hard_YExtent": "116.0",
+    "Moniker": "Neutral_Venator.txt",
+    "Icon_Name": "I_BUTTON_UNIT_EMPIRE_SD_VENATOR.TGA",
+    "Text_ID": "TEXT_TOOLTIP_VENATOR_EMPIRE_NAME",
+    "Encyclopedia_Text": "TEXT_TOOLTIP_VENATOR\n\t\tTEXT_LINE \n\t\tTEXT_TOOLTIP_VENATOR_EMPIRE_STATS_1\n\t\tFROM_T2\n\t\tTEXT_TOOLTIP_VENATOR_EMPIRE_STATS_2\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_UPKEEP_250\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_SQUADRON_ATTRITION_SHIP_REFUND_7200",
+    "CategoryMask": "Capital | AntiFrigate",
+    "Targeting_Priority_Set": "Frigate",
+    "Radar_Icon_Name": "I_Radar_Republic_Venator.tga",
+    "Radar_Icon_Size": "0.06  0.06",
+    "Max_Speed": "3",
+    "Bank_Turn_Angle": "20",
+    "Max_Rate_Of_Roll": "0.05",
+    "Max_Rate_Of_Turn": "0.075",
+    "Shield_Points": "15000",
+    "Tactical_Health": "15000",
+    "Shield_Refresh_Rate": "300",
+    "Space_FOW_Reveal_Range": "3000",
+    "Targeting_Max_Attack_Distance": "2500",
+    "Affiliation": "Empire",
+    "Population_Value": "26",
+    "AI_Combat_Power": "1100",
+    "Build_Cost_Credits": "17200",
+    "Build_Time_Seconds": "70",
+    "Tactical_Build_Cost_Multiplayer": "17200",
+    "Tactical_Build_Time_Seconds": "55",
+    "HardPoints": "HP_Venator_Face,\n\t\tHP_Venator_Medium_TL_01,\n\t\tHP_Venator_Medium_TL_02,\n\t\tHP_Venator_SPHAT,\t\n\t\tHP_Venator_Heavy_TL_01,\n\t\tHP_Venator_Heavy_TL_02,\n\t\tHP_Venator_Heavy_TL_03,\n\t\tHP_Venator_Heavy_TL_04,\n\t\tHP_Venator_Heavy_TL_05,\n\t\tHP_Venator_Heavy_TL_06,\n\t\tHP_Venator_Heavy_TL_07,\n\t\tHP_Venator_Heavy_TL_08,\n\t\tHP_Venator_Laser_01,\n\t\tHP_Venator_Laser_02,\n\t\tHP_Venator_Laser_03,\n\t\tHP_Venator_Laser_04,\n\t\tHP_Venator_Torpedoes_01,\n\t\tHP_Venator_S_01,\n\t\tHP_Venator_H_01",
+    "Death_Explosions": "New_Space_Explosion_Small_Heat",
+    "Death_Clone": "Damage_Normal, Death_Clone_Venator",
+    "SFXEvent_Build_Started": "EHD_Build_Vehicle",
+    "SFXEvent_Build_Cancelled": "EHD_Unit_Canceled",
+    "SFXEvent_Build_Complete": "Unit_Complete_Jedi_Cruiser",
+    "SFXEvent_Move": "Unit_Move_Jedi_Cruiser",
+    "SFXEvent_Stop": "Unit_Stop_Jedi_Cruiser",
+    "SFXEvent_Guard": "Unit_Guard_Jedi_Cruiser",
+    "SFXEvent_Attack": "Unit_Attack_Jedi_Cruiser",
+    "SFXEvent_Barrage": "Unit_Barrage_Jedi_Cruiser",
+    "SFXEvent_Fleet_Move": "Unit_Fleet_Move_Jedi_Cruiser",
+    "SFXEvent_Move_Into_Nebula": "Unit_Nebula_Jedi_Cruiser",
+    "SFXEvent_Move_Into_Asteroid_Field": "Unit_Asteroids_Jedi_Cruiser",
+    "SFXEvent_Bombard_Select_Target": "EHD_Bombard_Select_Target",
+    "SFXEvent_Bombard_Incoming": "EHD_Bombard_Incoming",
+    "SFXEvent_Engine_Idle_Loop": "Unit_Acclamator_Idle_Engine_Loop",
+    "SFXEvent_Engine_Moving_Loop": "Unit_Acclamator_Moving_Engine_Loop",
+    "SFXEvent_Engine_Cinematic_Focus_Loop": "Unit_Acclamator_Cinematic_Engine_Loop",
+    "SFXEvent_Health_Critical_Warning": "Unit_Alarm_Generic_1",
+    "SFXEvent_Unit_Lost": "Unit_Alarm_Generic_1",
+    "Death_SFXEvent_Start_Die": "Unit_Cruiser_Death_SFX",
+    "Unit_Abilities_Data": "",
+    "Abilities": "",
+    "Required_Special_Structures": "E_Shipyard_3",
+    "Starting_Spawned_Units_Tech_1": "Space_LAAT_Garrison, 1",
+    "Reserve_Spawned_Units_Tech_1": "Space_LAAT_Garrison, 1",
+    "Starting_Spawned_Units_Tech_2": "Gozanti_Garrison_E, 1",
+    "Reserve_Spawned_Units_Tech_2": "Gozanti_Garrison_E, 1",
+    "Destruction_Survivors": "7200_Reverse_Death_Penalty_Dummy, 1.0"
+  },
+  "source_garrison": [
+    {
+      "Starting_Spawned_Units_Tech_1": "Arc-170_Garrison_E, 2"
+    },
+    {
+      "Reserve_Spawned_Units_Tech_1": "Arc-170_Garrison_E, 6"
+    },
+    {
+      "Starting_Spawned_Units_Tech_1": "V-Wing_Garrison_E, 2"
+    },
+    {
+      "Reserve_Spawned_Units_Tech_1": "V-Wing_Garrison_E, 6"
+    },
+    {
+      "Starting_Spawned_Units_Tech_1": "Space_LAAT_Garrison, 1"
+    },
+    {
+      "Reserve_Spawned_Units_Tech_1": "Space_LAAT_Garrison, 1"
+    },
+    {
+      "Starting_Spawned_Units_Tech_2": "TIE_Fighter_Garrison, 1"
+    },
+    {
+      "Reserve_Spawned_Units_Tech_2": "TIE_Fighter_Garrison, 3"
+    },
+    {
+      "Starting_Spawned_Units_Tech_2": "TIE_Bomber_Garrison, 2"
+    },
+    {
+      "Reserve_Spawned_Units_Tech_2": "TIE_Bomber_Garrison, 6"
+    },
+    {
+      "Starting_Spawned_Units_Tech_2": "Gozanti_Garrison_E, 1"
+    },
+    {
+      "Reserve_Spawned_Units_Tech_2": "Gozanti_Garrison_E, 1"
+    }
+  ],
+  "source_abilities": "<Unit_Abilities_Data SubObjectList=\"Yes\">\n\t\t\t<Unit_Ability>\n\t\t\t\t<Type>FULL_SALVO</Type>\n\t\t\t\t<Recharge_Seconds>60</Recharge_Seconds>\n\t\t\t\t<Expiration_Seconds>15</Expiration_Seconds>\n\t\t\t\t<SFXEvent_GUI_Unit_Ability_Activated>Unit_Barrage_Jedi_Cruiser</SFXEvent_GUI_Unit_Ability_Activated>\n\t\t\t\t<Alternate_Name_Text>TEXT_TOOLTIP_ABILITY_INTENSIFY_FIREPOWER_NAME</Alternate_Name_Text>\n\t\t\t\t<Alternate_Description_Text>TEXT_TOOLTIP_ABILITY_INTENSIFY_FIREPOWER</Alternate_Description_Text>\n\t\t\t\t<Alternate_Icon_Name>i_sa_intensify_firepower.tga</Alternate_Icon_Name>\n\t\t\t</Unit_Ability>\n\t\t</Unit_Abilities_Data>\n\t",
+  "model_textures": {
+    "ImperialVenator": {
+      "Empire_Venator_Star_Destroyer_Bridge.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_Venator_Star_Destroyer_Bridge.dds",
+      "Empire_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_Venator_Star_Destroyer_Hull.dds",
+      "Engine_Exhaust.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Exhaust.dds",
+      "Engine_Exhaust_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Exhaust_B.dds",
+      "Engine_Glow_Blue_dist.tga": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_dist.tga",
+      "Engine_Glow_Blue_wave.tga": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_wave.tga",
+      "Engine_Glow_Fancy_Blue.tga": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Fancy_Blue.tga",
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "NB_SHIELDWAVE.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Nb_shieldwave.dds",
+      "Nb_shieldbase_Blue.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Nb_shieldbase_Blue.dds",
+      "Nb_shieldripple.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Nb_shieldripple.dds",
+      "Neutral_Republic_Venator_Hangar_Lights.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Hangar_Lights.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Bridge_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Bridge_B.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Medium_TL_01": {
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Medium_TL_02": {
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_01": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_02": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_03": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_04": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_05": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_06": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_07": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenator_Heavy_TL_08": {
+      "Hull_Lights_Grid.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    },
+    "ImperialVenatorDeath": {
+      "Engine_Exhaust.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Exhaust.dds",
+      "Engine_Exhaust_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Exhaust_B.dds",
+      "Engine_Glow_Blue_dist.tga": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_dist.tga",
+      "Engine_Glow_Blue_wave.tga": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_wave.tga",
+      "Engine_Glow_Fancy_Blue.tga": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Fancy_Blue.tga",
+      "Lights_Grid_Orange_Desaturated_Dense.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Lights_Grid_Orange_Desaturated_Dense.dds",
+      "Lights_Grid_Orange_Desaturated_Sparse.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Lights_Grid_Orange_Desaturated_Sparse.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Bridge.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Bridge.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Bridge_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Bridge_B.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds",
+      "Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds"
+    }
+  },
+  "attachments": [
+    {
+      "name": "HP_Venator_Medium_TL_01",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_MTL_01.ALO",
+      "bone": "TL_09"
+    },
+    {
+      "name": "HP_Venator_Medium_TL_02",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_MTL_02.ALO",
+      "bone": "TL_10"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_01",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_01.ALO",
+      "bone": "TL_01"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_02",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_02.ALO",
+      "bone": "TL_02"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_03",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_03.ALO",
+      "bone": "TL_03"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_04",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_04.ALO",
+      "bone": "TL_04"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_05",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_05.ALO",
+      "bone": "TL_05"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_06",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_06.ALO",
+      "bone": "TL_06"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_07",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_07.ALO",
+      "bone": "TL_07"
+    },
+    {
+      "name": "HP_Venator_Heavy_TL_08",
+      "model": "Neutral_Republic_Venator_Star_Destroyer_HTL_08.ALO",
+      "bone": "TL_08"
+    }
+  ],
+  "death_clone": {
+    "inheritance": [
+      "Death_Clone_Venator"
+    ],
+    "resolved": {
+      "Space_Model_Name": "Neutral_Republic_Venator_Star_Destroyer_Deathclone.ALO",
+      "Death_SFXEvent_Start_Die": "Unit_Star_Destroyer_Death_SFX",
+      "Remove_Upon_Death": "true",
+      "Scale_Factor": "1",
+      "Max_Speed": "0.25",
+      "Max_Thrust": "0.05",
+      "Bank_Turn_Angle": "5",
+      "Layer_Z_Adjust": "-330.0",
+      "Max_Rate_Of_Roll": "0.02",
+      "Max_Rate_Of_Turn": "0.02"
+    }
+  },
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Venator_Star_Destroyer.ALO": "a4b58da0fa9014f69aa04155a7af894c503693f920f3749131cd0513a7a2b630",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_Venator_Star_Destroyer_Bridge.dds": "177ed3f5a9b62e2174df227b4babe9ae8b9ba6e0aefa123eca78460885c89dd1",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Empire_Venator_Star_Destroyer_Hull.dds": "a80392ba205e68debb9a33ba3d27b02de36d28b9edf04c455d159619d1ed25c2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Exhaust.dds": "90f3c6deaaa426b40f127b749df5bb9e2a099e1b97d6c01ada01f68418b5ad19",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Exhaust_B.dds": "1284f64e5e418b8199092624cef533991c1dd620f8a3f3abb9a681cec54135c2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_dist.tga": "1350923773197367e0f33863e88adcbfc1e52d6e9c89ff3c347d9fe41b7d2c83",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_wave.tga": "6d8d9fb3d488cac71c38d30434ee7f98ea7e86491f460402a78963b38cb77513",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Engine_Glow_Fancy_Blue.tga": "2144816c33c7fced5a1de03476cbeb8bf10ca413b02c222a582f304fdff138bb",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds": "4db44b1aae46f1b27410acaa42edcc54728b6c919a9030178557bd4294783b0d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Nb_shieldwave.dds": "0c792d8c9fe76662a66ac3e9b7b9112ed6429e8745ebd8e6fbd55ddc83ab5c03",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Nb_shieldbase_Blue.dds": "1ae7d7b5ead7b370739fac6f710aa65bb22050db0f55c89a7c83257144002392",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Nb_shieldripple.dds": "8f9e6463e174ff56d0b6d45cb43deb4aff54249ee40b8980ca7b427f0d6693f8",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Hangar_Lights.dds": "b7ce72957a764ec1121440dc45b5369845bacc59690a045986743876d1418d22",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Bridge_B.dds": "ba24b59f59cc49ac9b2f1e8907abba22fe8749f44cda3d4dc5373441bcac601f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "9a95e14baeaf0e568c870e0ec56a9a16bdb7ca2f17998c27c499b7bb37deb366",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_MTL_01.ALO": "1ff463525c52de4fdfe7a7a1664572a9b1cd4582872ac4cf50d6626ee93935dc",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "2d40fde39427c7505ff5be2f43f32d3454c759687c2841f880b887e837795e02",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_MTL_02.ALO": "7b5cdb8b04a55455f5b10354ee43529569430a8b23ef70be203f2f74d8e466a8",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_01.ALO": "6db88913d0d78593d8f64f27856b6abc766115371531c1567b8ed7086c700f48",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_02.ALO": "4800ee4ce3fbf28f5d8fd3a46807ecfb1970d5d50416f97f93255c3245adac9f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_03.ALO": "40cd14d56ab13e39a464873be7a94947e7d2c0aa01495d1e36bb6ef0407a3b42",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_04.ALO": "2aa27a6576bb546970282f260fb09211096b143f8f90d5b2e13be58b5e7efa1c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_05.ALO": "00932644a15600854fe3f7572fff95da452170399f9584a8cecba38b8307a665",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_06.ALO": "2937861c06dcf8ba31e4c6a31937be9f66d74cb4016e22681137596e2a17a3d0",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_07.ALO": "5bb4c0190677d26c0d1d40bd1f0913d0b23eeea872f7ffe83ec3ffa4cdbdb7e3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_08.ALO": "5bb4c0190677d26c0d1d40bd1f0913d0b23eeea872f7ffe83ec3ffa4cdbdb7e3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_Deathclone.ALO": "bf52cc934f0732a0d82b241afbcb32aaa0f635d12b144c86e84b595118840468",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Lights_Grid_Orange_Desaturated_Dense.dds": "8e7ba5baa3033d36b463a13795bc4985102bb82676cc23b56daeeef2084eb445",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Lights_Grid_Orange_Desaturated_Sparse.dds": "f8b2ad7c146fd13e0c8ec624778387ddeab66645107ea0073a3af7f1c563e305",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Bridge.dds": "9d39844de8d6a8895d046af00f042ecb62f6da105830144b9521be43f319283b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\Units_Space_Empire_Venator.xml": "e00a5346c12dcc2682caec6e0cb6a89279dc7ab66d5eba4eee66c54c367696e8",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\Units_Space_Neutral_Republic_Venator.xml": "556fa242b2189cf768fa9850c99ba844bf5fef9778e5c5b6b6fafd686a66a84c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\_Default_Base.xml": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\XML\\Units\\Space\\Hardpoints\\Hardpoints_Neutral_Republic_Venator.xml": "3ce1d8e628bb02499c977f1ffaa133d5c1def7dc7de4f4133b0c9b12ac52d20c"
+  },
+  "source_files_unchanged": true,
+  "republic_records_unchanged": [
+    [
+      "Assets/Settings/Data/Ship/ShipsData.asset",
+      "shipsData.keyValue",
+      0
+    ],
+    [
+      "Assets/Settings/AssetMappingData.asset",
+      "assetMappings.keyValue",
+      "VenatorShipView"
+    ],
+    [
+      "Assets/Settings/AssetMappingData.asset",
+      "assetMappings.keyValue",
+      "VenatorShipData"
+    ],
+    [
+      "Assets/Settings/Data/Models/ShipUi/ShipUiData.asset",
+      "shipIconWrapper.keyValue",
+      0
+    ],
+    [
+      "Assets/Settings/Data/Reinforcement/ReinforcementData.asset",
+      "spawnShipWrapper.keyValue",
+      0
+    ],
+    [
+      "Assets/Settings/Data/Factions/Republic/RepublicFaction.asset",
+      "ships.keyValue",
+      0
+    ]
+  ],
+  "republic_assets_unchanged": [
+    "Assets/Prefabs/Models/Ships/VenatorShipView.prefab",
+    "Assets/Settings/Data/Ship/VenatorShipData.asset",
+    "Assets/Prefabs/Ui/Reinforcement/VenatorReinforcementView.prefab",
+    "Assets/Settings/Data/Ship/Wreck/VenatorWreckData.asset",
+    "Assets/Prefabs/Models/Wrecks/VenatorWreckView.prefab"
+  ],
+  "conversions": [
+    {
+      "name": "ImperialVenator",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Empire_Venator_Star_Destroyer.ALO",
+      "meshes": 10,
+      "bones": 68,
+      "geometry_error": 6.291359902370698e-05,
+      "bone_error": 5.799531936645508e-05
+    },
+    {
+      "name": "ImperialVenator_Medium_TL_01",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_MTL_01.ALO",
+      "meshes": 4,
+      "bones": 6,
+      "geometry_error": 2.547183416228485e-06,
+      "bone_error": 1.6825887811529808e-06
+    },
+    {
+      "name": "ImperialVenator_Medium_TL_02",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_MTL_02.ALO",
+      "meshes": 4,
+      "bones": 6,
+      "geometry_error": 2.547183416228485e-06,
+      "bone_error": 1.6825887811529808e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_01",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_01.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_02",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_02.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_03",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_03.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_04",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_04.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_05",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_05.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_06",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_06.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_07",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_07.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_08",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_HTL_08.ALO",
+      "meshes": 7,
+      "bones": 11,
+      "geometry_error": 1.5266237824995157e-06,
+      "bone_error": 1.3696104637475082e-06
+    },
+    {
+      "name": "ImperialVenatorDeath",
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_Deathclone.ALO",
+      "meshes": 8,
+      "bones": 39,
+      "geometry_error": 6.823937919616058e-05,
+      "bone_error": 0.0002729575167846423
+    }
+  ],
+  "unity_geometry": [
+    {
+      "name": "ImperialVenator",
+      "meshes": 10,
+      "triangles": 53187,
+      "maximumBoneError": 1.09482426e-06
+    },
+    {
+      "name": "ImperialVenator_Medium_TL_01",
+      "meshes": 4,
+      "triangles": 1001,
+      "maximumBoneError": 3.122607e-08
+    },
+    {
+      "name": "ImperialVenator_Medium_TL_02",
+      "meshes": 4,
+      "triangles": 1001,
+      "maximumBoneError": 3.122607e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_01",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_02",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_03",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_04",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_05",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_06",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_07",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenator_Heavy_TL_08",
+      "meshes": 7,
+      "triangles": 1292,
+      "maximumBoneError": 2.49900065e-08
+    },
+    {
+      "name": "ImperialVenatorDeath",
+      "meshes": 8,
+      "triangles": 40865,
+      "maximumBoneError": 3.9321003e-06
+    }
+  ],
+  "engines": [
+    {
+      "name": "Engine_Exhaust",
+      "enabled": true,
+      "active": true,
+      "bounds": "Center: (0.00, -7.16, -48.17), Extents: (13.71, 3.77, 10.43)",
+      "vertices": 370,
+      "triangles": 540,
+      "colorCount": 0,
+      "alpha": [],
+      "rgb": [],
+      "uvMin": [
+        0.0269353911,
+        -0.9733105
+      ],
+      "uvMax": [
+        0.972820044,
+        -0.0276523829
+      ],
+      "materials": [
+        {
+          "name": "ImperialVenator_Engine_Exhaust_Slot00",
+          "shader": "EmpireAtWar/Ship Lit",
+          "texture": "Assets/Art/Textures/Models/EmpireShips/ImperialVenator/ImperialVenator_Engine_Exhaust.png",
+          "keywords": [],
+          "cull": -1.0,
+          "blend": -1.0,
+          "color": "RGBA(1.000, 1.000, 1.000, 1.000)"
+        }
+      ]
+    },
+    {
+      "name": "Engine_Exhaust_Glow",
+      "enabled": true,
+      "active": true,
+      "bounds": "Center: (0.00, -7.16, -48.19), Extents: (13.67, 3.73, 10.41)",
+      "vertices": 370,
+      "triangles": 540,
+      "colorCount": 0,
+      "alpha": [],
+      "rgb": [],
+      "uvMin": [
+        0.0269353911,
+        -0.9733105
+      ],
+      "uvMax": [
+        0.972820044,
+        -0.0276523829
+      ],
+      "materials": [
+        {
+          "name": "ImperialVenator_Engine_Exhaust_Glow_Slot00",
+          "shader": "Universal Render Pipeline/Unlit",
+          "texture": "Assets/Art/Textures/Models/EmpireShips/ImperialVenator/ImperialVenator_Engine_Exhaust_Additive.png",
+          "keywords": [
+            "_SURFACE_TYPE_TRANSPARENT"
+          ],
+          "cull": 0.0,
+          "blend": 5.0,
+          "color": "RGBA(1.000, 1.000, 1.000, 1.000)"
+        }
+      ]
+    },
+    {
+      "name": "Engine_Glow.005",
+      "enabled": true,
+      "active": true,
+      "bounds": "Center: (0.00, -7.22, -49.05), Extents: (13.83, 3.88, 10.95)",
+      "vertices": 1220,
+      "triangles": 1400,
+      "colorCount": 0,
+      "alpha": [],
+      "rgb": [],
+      "uvMin": [
+        5.591591e-05,
+        -0.7192029
+      ],
+      "uvMax": [
+        0.9994655,
+        0.0940361
+      ],
+      "materials": [
+        {
+          "name": "ImperialVenator_Engine_Glow_Slot00",
+          "shader": "Universal Render Pipeline/Unlit",
+          "texture": "Assets/Art/Textures/Models/EmpireShips/ImperialVenator/ImperialVenator_Engine_Glow_Fancy_Blue_Additive.png",
+          "keywords": [
+            "_SURFACE_TYPE_TRANSPARENT"
+          ],
+          "cull": 0.0,
+          "blend": 5.0,
+          "color": "RGBA(2.000, 2.000, 2.000, 1.000)"
+        }
+      ]
+    }
+  ],
+  "mounts": [
+    {
+      "name": "DualProjectileL4",
+      "Id": 0,
+      "bone": "ImperialVenator_Heavy_TL_07/FP_01",
+      "position": [
+        -9.105682,
+        -3.54027867,
+        -2.98448372
+      ]
+    },
+    {
+      "name": "DualProjectileL3",
+      "Id": 1,
+      "bone": "ImperialVenator_Heavy_TL_06/FP_01",
+      "position": [
+        -9.425616,
+        -3.17213345,
+        -11.3229723
+      ]
+    },
+    {
+      "name": "DualProjectileL2",
+      "Id": 2,
+      "bone": "ImperialVenator_Heavy_TL_05/FP_01",
+      "position": [
+        -9.745975,
+        -2.797699,
+        -19.9217339
+      ]
+    },
+    {
+      "name": "DualProjectileL1",
+      "Id": 3,
+      "bone": "ImperialVenator_Heavy_TL_08/FP_01",
+      "position": [
+        -10.0637407,
+        -2.42288733,
+        -28.0467377
+      ]
+    },
+    {
+      "name": "DualProjectileR3",
+      "Id": 4,
+      "bone": "ImperialVenator_Heavy_TL_04/FP_01",
+      "position": [
+        9.119878,
+        -3.54027867,
+        -2.98448372
+      ]
+    },
+    {
+      "name": "DualProjectileR2",
+      "Id": 5,
+      "bone": "ImperialVenator_Heavy_TL_03/FP_01",
+      "position": [
+        9.439834,
+        -3.17213345,
+        -11.32297
+      ]
+    },
+    {
+      "name": "DualProjectileR1",
+      "Id": 6,
+      "bone": "ImperialVenator_Heavy_TL_02/FP_01",
+      "position": [
+        9.760172,
+        -2.7976985,
+        -19.9217339
+      ]
+    },
+    {
+      "name": "DualProjectileR4",
+      "Id": 7,
+      "bone": "ImperialVenator_Heavy_TL_01/FP_01",
+      "position": [
+        10.07794,
+        -2.42288733,
+        -28.0467358
+      ]
+    },
+    {
+      "name": "IonProjectileR",
+      "Id": 8,
+      "bone": "Laser_Hardpoint_02_Fire",
+      "position": [
+        11.7135944,
+        -7.23480225,
+        15.6293087
+      ]
+    },
+    {
+      "name": "IonProjectileL",
+      "Id": 9,
+      "bone": "Laser_Hardpoint_01_Fire",
+      "position": [
+        -11.6425276,
+        -7.23480225,
+        15.65724
+      ]
+    },
+    {
+      "name": "DualTurboLaserDualProjectileR",
+      "Id": 10,
+      "bone": "ImperialVenator_Medium_TL_01/FP_01",
+      "position": [
+        11.2492266,
+        -7.119146,
+        32.2215576
+      ]
+    },
+    {
+      "name": "DualTurboLaserDualProjectileL",
+      "Id": 11,
+      "bone": "ImperialVenator_Medium_TL_02/FP_01",
+      "position": [
+        -11.2079191,
+        -7.11911774,
+        32.3798752
+      ]
+    },
+    {
+      "name": "TurboLaserProjectileR",
+      "Id": 12,
+      "bone": "Laser_01",
+      "position": [
+        5.364691,
+        -7.27800655,
+        50.3161621
+      ]
+    },
+    {
+      "name": "TurboLaserProjectileL",
+      "Id": 13,
+      "bone": "Laser_08",
+      "position": [
+        -5.35050631,
+        -7.27800655,
+        50.3161621
+      ]
+    },
+    {
+      "name": "LaserBeam",
+      "Id": 14,
+      "bone": "SPHAT",
+      "position": [
+        0.00710223336,
+        -11.3150139,
+        -2.60827446
+      ]
+    },
+    {
+      "name": "ShieldGenerator",
+      "Id": 15,
+      "bone": "Shield_Generator",
+      "position": [
+        2.53780472e-05,
+        1.45947933,
+        -24.7952175
+      ]
+    },
+    {
+      "name": "Engines",
+      "Id": 16,
+      "bone": "mean of ten authored engine emitters",
+      "position": [
+        4.62770477e-05,
+        -6.975142,
+        -47.1659126
+      ]
+    },
+    {
+      "name": "HangarUnit",
+      "Id": 17,
+      "bone": "SPAWN_00",
+      "position": [
+        0.00710223336,
+        -10.1150074,
+        -2.60827446
+      ]
+    }
+  ],
+  "verification": {
+    "checks": 1579,
+    "targetable": 18,
+    "weapons": 15,
+    "hull": 15000,
+    "shields": 15000,
+    "speed": 18,
+    "hangarBays": 2,
+    "maximumMountError": 0.0,
+    "automatedTestsRun": false,
+    "playModeRun": false
+  }
+}

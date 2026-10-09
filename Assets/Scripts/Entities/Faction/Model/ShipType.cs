@@ -38,6 +38,7 @@ namespace EmpireAtWar.Models.Factions
         RaiderCorvette = 208,
         AcclamatorAssault = 209,
         Tector = 210,
+        ImperialVenator = 211,
 
         //rebellion
         NebulonB = 300,

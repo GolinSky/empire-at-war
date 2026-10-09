@@ -290,6 +290,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d47b48cf040c4cd4c8d53712ed54596b
+    m_Address: ImperialVenatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d67ee971a66b0ae4b9242ecb0497df01
     m_Address: ThrantaShipView
     m_ReadOnly: 0
