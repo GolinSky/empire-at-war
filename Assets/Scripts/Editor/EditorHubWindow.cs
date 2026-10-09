@@ -48,8 +48,8 @@ namespace EmpireAtWar.Editor
             if (!_tools.Any(tool => tool.Category == category)) category = _tools[0].Category;
             VisualElement root = rootVisualElement;
             root.Clear();
-            root.styleSheets.Clear();
-            root.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(STYLE_PATH));
+            StyleSheet sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(STYLE_PATH);
+            if (!root.styleSheets.Contains(sheet)) root.styleSheets.Add(sheet);
             root.AddToClassList("editor-hub");
             root.Add(new Label("EMPIRE AT WAR  /  EDITOR HUB") { name = "hub-title" });
             _tabs = new VisualElement { name = "hub-tabs" };
@@ -98,6 +98,7 @@ namespace EmpireAtWar.Editor
                 }
             }
             EditorToolEntry selected = visible.FirstOrDefault(tool => tool.MenuPath == selectedMenu);
+            rootVisualElement.EnableInClassList("hub-tool-open", selected != null && selected.WindowType != null);
             _content.Clear();
             if (selected == null)
             {
@@ -107,7 +108,20 @@ namespace EmpireAtWar.Editor
             _content.Add(new Label(selected.Title) { name = "hub-tool-title" });
             _content.Add(new HelpBox(selected.Description, selected.IsLegacy ? HelpBoxMessageType.Warning : HelpBoxMessageType.Info));
             if (selected.WindowType != null)
+            {
+                var navigation = new Toolbar { name = "hub-tool-navigation" };
+                var picker = new ToolbarMenu { text = "Switch tool", name = "hub-tool-picker" };
+                foreach (EditorToolEntry tool in _tools)
+                    picker.menu.AppendAction(tool.Category + "/" + tool.Group + "/" + tool.Title, _ =>
+                    {
+                        category = tool.Category; selectedMenu = tool.MenuPath; search = "";
+                        rootVisualElement.Q<ToolbarSearchField>("hub-search").SetValueWithoutNotify("");
+                        RefreshTabs(); RefreshList();
+                    }, tool.MenuPath == selectedMenu ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
+                navigation.Add(picker);
+                _content.Add(navigation);
                 _content.Add(_host.GetContent(selected.WindowType));
+            }
             else
             {
                 var run = new Button(() =>

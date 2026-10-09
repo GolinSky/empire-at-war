@@ -2,6 +2,8 @@
 
 Open **Tools > Empire At War > Editor Hub**. Category tabs, grouped tool lists and category search provide one entry point for project tools. Window tools render inside the hub; commands call their existing Unity menu handlers and preserve their validators.
 
+Open window tools use the full content area with a compact **Switch tool** menu. The launcher sidebar and duplicate headings are hidden while editing; switching to a command restores the category browser. The hub preserves Unity's default styles so navigation text and controls render correctly.
+
 The inventory below covers project-owned tools in `Assets/Scripts/Editor`, plus the vendor editors under `Assets/Plugins` and `Assets/ThirdParty`. Unity's built-in and Package Manager editors keep their standard locations.
 
 ## Status assessment — 2026-10-09

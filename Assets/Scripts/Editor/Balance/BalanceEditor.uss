@@ -1,0 +1,146 @@
+.balance-root {
+    --balance-canvas: #171a20;
+    --balance-panel: #1f232b;
+    --balance-control: #292e38;
+    --balance-text: #edf0f5;
+    --balance-muted: #a8b1bf;
+    --balance-line: #363d48;
+    --balance-active: #29364e;
+    --balance-accent: #7daaff;
+    --balance-candidate: #e9ae7c;
+    background-color: var(--balance-canvas);
+    color: var(--balance-text);
+    font-size: 12px;
+}
+.balance-root.balance-light {
+    --balance-canvas: #f7f8fa;
+    --balance-panel: #ffffff;
+    --balance-control: #eef1f5;
+    --balance-text: #212a36;
+    --balance-muted: #5d6877;
+    --balance-line: #dce1e8;
+    --balance-active: #eaf0fb;
+    --balance-accent: #356aca;
+    --balance-candidate: #9b5923;
+}
+.balance-root > TemplateContainer, .balance-shell, .balance-workspace { flex-grow: 1; min-height: 0; }
+.balance-root Label { white-space: normal; }
+.balance-header { flex-direction: row; align-items: center; padding: 12px 16px; background-color: var(--balance-panel); border-bottom-width: 1px; border-bottom-color: var(--balance-line); }
+.balance-heading { font-size: 17px; -unity-font-style: bold; flex-grow: 1; }
+.balance-muted, .balance-inventory, .balance-scope { color: var(--balance-muted); }
+.balance-actions { height: 36px; padding: 4px 12px; }
+#preset-picker { width: 190px; margin-left: 6px; }
+.balance-navigation { height: 40px; padding-left: 12px; border-bottom-width: 1px; border-bottom-color: var(--balance-line); }
+.balance-workflow { min-width: 84px; height: 32px; margin-right: 6px; border-radius: 4px; border-width: 0; font-size: 13px; }
+.balance-root .balance-tab-active { color: var(--balance-text); background-color: var(--balance-active); border-bottom-width: 2px; border-bottom-color: var(--balance-accent); }
+.balance-inventory { flex-grow: 1; -unity-text-align: middle-right; padding-right: 12px; font-size: 11px; }
+.balance-roster { background-color: var(--balance-panel); padding: 12px 8px; min-height: 0; border-right-width: 1px; border-right-color: var(--balance-line); }
+.balance-section-title { color: var(--balance-muted); font-size: 11px; -unity-font-style: bold; margin-bottom: 10px; padding-left: 4px; }
+#roster-search { margin-bottom: 10px; }
+.balance-roster-filters .unity-base-field__label { min-width: 44px; }
+.balance-roster-list { flex-grow: 1; min-height: 0; margin-top: 8px; }
+.balance-roster-row { flex-direction: row; align-items: center; height: 32px; padding-left: 4px; padding-right: 2px; }
+.balance-roster-name { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.balance-root .balance-roster-name, .balance-root .balance-roster-class { white-space: nowrap; }
+.balance-roster-class { color: var(--balance-muted); font-size: 10px; flex-shrink: 0; max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-left: 4px; }
+.balance-pin { width: 24px; height: 24px; flex-shrink: 0; margin-left: 4px; padding: 0; }
+.balance-root .balance-pinned { color: var(--balance-accent); border-color: var(--balance-accent); background-color: var(--balance-active); }
+.balance-roster-list .unity-collection-view__item--selected { background-color: var(--balance-active); border-left-width: 2px; border-left-color: var(--balance-accent); }
+.balance-content { flex-grow: 1; min-width: 280px; min-height: 0; padding: 18px; }
+.balance-unit-heading { margin-bottom: 14px; }
+.balance-unit-name { font-size: 22px; -unity-font-style: bold; margin-bottom: 8px; }
+.balance-summary { flex-direction: row; flex-wrap: wrap; margin-bottom: 12px; }
+.balance-stat { flex-grow: 1; flex-basis: 128px; min-width: 128px; background-color: var(--balance-panel); padding: 12px; margin-right: 8px; margin-bottom: 6px; border-radius: 6px; border-width: 1px; border-color: var(--balance-line); }
+.balance-stat-value { color: var(--balance-text); font-size: 24px; -unity-font-style: bold; margin-top: 6px; }
+.balance-stat-adjustable { flex-basis: 240px; min-width: 240px; }
+.balance-stat-adjustable .balance-stat-editor { margin-top: 8px; }
+.balance-stat-inputs { flex-direction: row; align-items: center; min-height: 30px; }
+.balance-stat-slider { flex-grow: 1; flex-shrink: 1; min-width: 64px; margin: 0 10px 0 0; }
+.balance-stat-input { width: 88px; flex-shrink: 0; margin: 0; }
+.balance-stat-input .unity-base-field__input { min-height: 28px; border-width: 1px; border-color: var(--balance-line); border-radius: 4px; }
+.balance-stat-input .unity-base-text-field__input { -unity-text-align: middle-right; }
+.balance-stat-slider .unity-base-slider__tracker { height: 8px; margin-top: -4px; border-width: 0; border-radius: 4px; background-color: var(--balance-control); overflow: hidden; }
+.balance-stat-fill { position: absolute; left: 0; top: 0; bottom: 0; background-color: var(--balance-accent); }
+.balance-hull-editor .balance-stat-fill { background-color: #66b38e; }
+.balance-stat-slider .unity-base-slider__dragger { width: 12px; height: 18px; margin-top: -9px; border-radius: 4px; border-width: 1px; border-color: var(--balance-panel); background-color: var(--balance-accent); }
+.balance-hull-editor .unity-base-slider__dragger { background-color: #66b38e; }
+.balance-stat-editor.balance-changed { border-left-width: 0; }
+.balance-stat-editor.balance-changed .balance-stat-input .unity-base-field__input { border-color: var(--balance-accent); }
+.balance-subtabs { flex-direction: row; margin-bottom: 12px; height: 32px; }
+.balance-subtabs Button { min-width: 80px; margin-right: 6px; }
+.balance-field-list { flex-grow: 1; min-height: 0; margin-top: 12px; }
+.balance-field-section { margin-bottom: 12px; }
+.balance-field-grid { flex-direction: row; flex-wrap: wrap; }
+.balance-card { background-color: var(--balance-panel); border-color: var(--balance-line); border-width: 1px; border-radius: 6px; margin: 4px; padding: 10px; }
+.balance-field-grid > .balance-card { flex-basis: 255px; flex-grow: 1; min-width: 235px; }
+.balance-field-heading { flex-direction: row; align-items: center; margin-bottom: 6px; }
+.balance-title { color: var(--balance-text); -unity-font-style: bold; white-space: normal; flex-grow: 1; }
+.balance-info { font-size: 11px; width: 38px; height: 22px; flex-shrink: 0; }
+.balance-scope { font-size: 11px; margin-bottom: 8px; white-space: normal; }
+.balance-editable > .unity-base-field__label { display: none; }
+.balance-editable .unity-base-field__input { min-height: 26px; border-width: 1px; border-color: var(--balance-line); border-radius: 4px; }
+.balance-changed { border-left-width: 3px; border-left-color: var(--balance-accent); }
+.balance-value { color: var(--balance-accent); white-space: normal; margin-top: 6px; }
+.balance-inspector { background-color: var(--balance-panel); padding: 14px; border-left-width: 1px; border-left-color: var(--balance-line); }
+.balance-compare-heading { flex-direction: row; align-items: center; margin-bottom: 10px; }
+.balance-compare-title { font-size: 17px; -unity-font-style: bold; margin-right: 12px; }
+#compare-order { margin-left: 14px; width: 230px; flex-shrink: 0; }
+#compare-order > .unity-base-field__label { min-width: 55px; }
+#compare-drag-handle { width: 20px; flex-shrink: 0; -unity-text-align: middle-center; color: var(--balance-accent); }
+.balance-dragging { opacity: 0.5; }
+.balance-drop-before { border-left-width: 2px; border-left-color: var(--balance-accent); }
+.balance-drop-after { border-right-width: 2px; border-right-color: var(--balance-accent); }
+#compare-add-unit { height: 28px; margin-left: 14px; }
+.balance-compare-picker { max-width: 650px; padding: 8px; margin-bottom: 10px; background-color: var(--balance-panel); border-width: 1px; border-color: var(--balance-line); border-radius: 6px; }
+.balance-picker-filters { flex-direction: row; align-items: center; }
+.balance-picker-actions { flex-direction: row; align-items: center; margin-top: 6px; }
+#compare-add-selected { margin-left: auto; }
+#picker-select { flex-shrink: 0; margin-right: 6px; }
+#compare-search { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-right: 8px; }
+#compare-faction { width: 210px; flex-shrink: 0; }
+#compare-faction > .unity-base-field__label { min-width: 45px; }
+.balance-picker-list { height: 192px; margin-top: 6px; }
+.balance-picker-row { flex-direction: row; align-items: center; height: 30px; margin: 1px 0; padding: 0 6px; }
+.balance-picker-name { flex-grow: 1; flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }
+.balance-root .balance-picker-name { white-space: nowrap; }
+.balance-compare-grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; width: 100%; }
+.balance-compare-slot { width: 330px; max-width: 100%; flex-shrink: 0; padding: 0 8px 12px 0; }
+.balance-compare-card { flex-grow: 1; min-width: 0; padding: 10px; background-color: var(--balance-panel); border-width: 1px; border-color: var(--balance-line); border-radius: 6px; }
+.balance-compare-card-heading { flex-direction: row; align-items: flex-start; min-height: 38px; }
+.balance-compare-unit-name { flex-grow: 1; flex-shrink: 1; font-size: 14px; -unity-font-style: bold; margin: 0; }
+.balance-compare-remove { width: 20px; height: 20px; flex-shrink: 0; padding: 0; margin: 0 0 0 4px; font-size: 15px; }
+.balance-compare-caption { color: var(--balance-muted); font-size: 10px; min-height: 28px; margin: 2px 0 0; }
+.balance-compare-section { color: var(--balance-muted); font-size: 10px; -unity-font-style: bold; margin: 10px 0 5px; }
+.balance-compare-health, .balance-compare-stat { background-color: var(--balance-canvas); border-width: 1px; border-color: var(--balance-line); border-radius: 4px; margin-bottom: 4px; padding: 5px 6px; }
+.balance-compare-health > Label { font-size: 11px; margin: 0 0 3px; }
+.balance-compare-card .balance-stat-inputs { min-height: 24px; }
+.balance-compare-card .balance-stat-slider { min-width: 30px; margin-right: 6px; }
+.balance-compare-card .balance-stat-input { width: 68px; font-size: 11px; }
+.balance-compare-card .balance-stat-input .unity-base-field__input { min-height: 23px; }
+.balance-compare-stat { flex-direction: row; align-items: center; min-height: 29px; font-size: 11px; }
+.balance-compare-label { width: 98px; flex-shrink: 0; color: var(--balance-muted); margin: 0 5px 0 0; }
+.balance-compare-value { flex-shrink: 1; margin: 0; font-size: 12px; -unity-font-style: bold; }
+.balance-compare-input { width: 90px; flex-shrink: 1; min-width: 0; margin: 0; font-size: 11px; }
+.balance-compare-input > .unity-base-field__label { display: none; }
+.balance-compare-input .unity-base-field__input { min-width: 0; min-height: 23px; }
+.balance-compare-input .unity-base-text-field__input { -unity-text-align: middle-right; }
+.balance-compare-input .unity-popup-field__text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.balance-compare-edit .balance-scope { margin: 0 2px 4px; font-size: 10px; }
+.balance-compare-hardpoint { margin-bottom: 4px; padding-top: 3px; border-top-width: 1px; border-top-color: var(--balance-line); }
+.balance-compare-hardpoint-name { font-size: 11px; margin: 3px 0; }
+.balance-compare-hardpoint .balance-compare-stat { flex-direction: column; align-items: stretch; }
+.balance-compare-hardpoint .balance-compare-input { width: auto; }
+.balance-compare-hardpoint .balance-compare-label { width: auto; margin-bottom: 3px; }
+.balance-dps-meter { height: 5px; margin: 3px 0; }
+.balance-dps-meter .unity-progress-bar__container { height: 5px; }
+.balance-dps-meter .unity-progress-bar__background { height: 5px; border-width: 0; border-radius: 3px; background-color: var(--balance-control); }
+.balance-dps-meter .unity-progress-bar__progress { height: 5px; border-width: 0; border-radius: 3px; background-color: var(--balance-accent); }
+.balance-dps-meter .unity-progress-bar__title-container { display: none; }
+.balance-compare-assumptions { color: var(--balance-muted); font-size: 11px; margin: 2px 0 8px; }
+.balance-root Button { color: var(--balance-text); background-color: var(--balance-control); border-color: var(--balance-line); border-radius: 4px; }
+.balance-root Button:hover { background-color: var(--balance-active); }
+.balance-root .balance-primary { background-color: #356aca; color: #ffffff; border-color: #7daaff; border-width: 1px; padding-left: 12px; padding-right: 12px; }
+.balance-root .balance-primary:hover { background-color: #285bb9; }
+.balance-root .unity-base-field__input { background-color: var(--balance-control); color: var(--balance-text); }
+.balance-root .unity-base-text-field__input, .balance-root .unity-popup-field__text, .balance-root .unity-base-field__label { color: var(--balance-text); }
+.balance-root Toolbar { background-color: var(--balance-panel); }
