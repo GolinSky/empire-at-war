@@ -42,6 +42,8 @@ namespace EmpireAtWar.Editor.Balance
             handle.RegisterCallback<PointerDownEvent>(evt =>
             {
                 if (evt.button != 0) return;
+                for (VisualElement element = evt.target as VisualElement; element != handle; element = element.parent)
+                    if (element is Button || element.ClassListContains("unity-base-field")) return;
                 pointer = evt.pointerId; start = evt.position;
                 handle.Focus(); handle.CapturePointer(pointer);
                 evt.StopPropagation();

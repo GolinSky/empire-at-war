@@ -21,11 +21,11 @@ namespace EmpireAtWar.Editor.Balance
             {
                 BalanceUnit unit = units[i];
                 VisualElement slot = new VisualElement { userData = unit.Id }; slot.AddToClassList("balance-compare-slot"); grid.Add(slot);
-                VisualElement card = new VisualElement { userData = unit.Id }; card.AddToClassList("balance-compare-card"); slot.Add(card);
+                VisualElement card = new VisualElement { userData = unit.Id, focusable = true }; card.AddToClassList("balance-compare-card"); slot.Add(card);
                 VisualElement heading = new VisualElement(); heading.AddToClassList("balance-compare-card-heading"); card.Add(heading);
                 Label drag = new Label("↕") { name = "compare-drag-handle", tooltip = "Drag to reorder; Escape cancels", focusable = true };
                 heading.Add(drag);
-                BalanceCompareDrag.Bind(drag, slot, grid, state, refresh);
+                BalanceCompareDrag.Bind(card, slot, grid, state, refresh);
                 Text(heading, unit.Name, "balance-compare-unit-name");
                 Button remove = new Button(() => { state.Pins.Remove(unit.Id); refresh(); })
                     { text = "×", name = "compare-remove-unit", tooltip = "Remove " + unit.Name + " from comparison" };
@@ -58,22 +58,27 @@ namespace EmpireAtWar.Editor.Balance
                     ProgressBar bar = new ProgressBar { lowValue = 0, highValue = (float)ceiling, value = (float)value, title = "" };
                     bar.AddToClassList("balance-dps-meter"); card.Add(bar);
                 }
-                var mounts = unit.Mounts.Distinct().ToList();
-                Section(card, "Hardpoints · " + mounts.Count);
-                ScrollView hardpoints = new ScrollView { viewDataKey = "balance-compare-hardpoints-" + unit.Id };
-                hardpoints.style.height = Math.Min(240, mounts.Count * 82);
-                hardpoints.AddToClassList("balance-compare-hardpoints"); card.Add(hardpoints);
-                foreach (var mount in mounts)
-                {
-                    VisualElement hardpoint = new VisualElement(); hardpoint.AddToClassList("balance-compare-hardpoint"); hardpoints.Add(hardpoint);
-                    Text(hardpoint, mount.name, "balance-compare-hardpoint-name");
-                    BalanceField weapon = registry.Fields.Values.FirstOrDefault(field => field.Target == mount && !field.SharedMountSource && field.Stat == "WeaponType");
-                    if (weapon != null) Editable(hardpoint, "Weapon type", weapon, state, usage, edit);
-                    else Text(hardpoint, ((EmpireAtWar.ViewComponents.Health.HardPoint)mount).HardPointType.ToString(), "balance-muted");
-                }
+                int count = unit.Mounts.Distinct().Count();
+                Button hardpoints = new Button { text = "View hardpoints (" + count + ")", name = "compare-view-hardpoints" };
+                hardpoints.clicked += () => UnityEditor.PopupWindow.Show(hardpoints.worldBound, new BalanceHardpointsPopup(unit, registry, state, edit));
+                hardpoints.SetEnabled(count > 0);
+                card.Add(hardpoints);
             }
             Label assumptions = Text(panel, "Draft values · DPS is an AI estimate before accuracy, target modifiers, firing arcs and abilities.", "balance-compare-assumptions");
             assumptions.tooltip = "Base DPS = mounts × damage × shots per salvo / reload. This estimate does not simulate full firing-sequence timing, movement, interception or target switching.";
+        }
+
+        public static void BuildHardpoints(VisualElement panel, BalanceUnit unit, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit)
+        {
+            BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
+            foreach (var mount in unit.Mounts.Distinct())
+            {
+                VisualElement hardpoint = new VisualElement(); hardpoint.AddToClassList("balance-compare-hardpoint"); panel.Add(hardpoint);
+                Text(hardpoint, mount.name, "balance-compare-hardpoint-name");
+                BalanceField weapon = registry.Fields.Values.FirstOrDefault(field => field.Target == mount && !field.SharedMountSource && field.Stat == "WeaponType");
+                if (weapon != null) Editable(hardpoint, "Weapon type", weapon, state, usage, edit);
+                else Text(hardpoint, ((EmpireAtWar.ViewComponents.Health.HardPoint)mount).HardPointType.ToString(), "balance-muted");
+            }
         }
 
         private static BalanceField Field(BalanceUnit unit, BalanceRegistration registry, params string[] stats)

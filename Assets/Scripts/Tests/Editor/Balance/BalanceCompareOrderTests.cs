@@ -124,6 +124,35 @@ namespace EmpireAtWar.Tests.Editor
                 order.value = BalanceCompareSort.Price;
                 Assert.That(state.CompareSort, Is.EqualTo(BalanceCompareSort.Price));
                 Assert.That(refreshes, Is.EqualTo(2));
+                VisualElement card = slots[0].Q(className: "balance-compare-card");
+                start = card.worldBound.center;
+                using (PointerDownEvent evt = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, mousePosition = start, button = 0 }))
+                    card.SendEvent(evt);
+                using (PointerMoveEvent evt = PointerMoveEvent.GetPooled(new Event { type = EventType.MouseDrag, mousePosition = drop, button = 0 }))
+                    card.SendEvent(evt);
+                using (PointerUpEvent evt = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, mousePosition = drop, button = 0 }))
+                    card.SendEvent(evt);
+                Assert.That(state.Pins, Is.EqualTo(new[] { "1", "2", "3", "0", "4", "5" }));
+                Assert.That(refreshes, Is.EqualTo(2), "Dropping back at the same position is a no-op.");
+                drop = slots[5].worldBound.center + new Vector2(30, 0);
+                using (PointerDownEvent evt = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, mousePosition = start, button = 0 }))
+                    card.SendEvent(evt);
+                using (PointerMoveEvent evt = PointerMoveEvent.GetPooled(new Event { type = EventType.MouseDrag, mousePosition = drop, button = 0 }))
+                    card.SendEvent(evt);
+                using (PointerUpEvent evt = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, mousePosition = drop, button = 0 }))
+                    card.SendEvent(evt);
+                Assert.That(state.Pins, Is.EqualTo(new[] { "1", "2", "3", "4", "5", "0" }));
+                Assert.That(refreshes, Is.EqualTo(3));
+                FloatField input = new FloatField(); card.Add(input);
+                using (PointerDownEvent evt = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, mousePosition = start, button = 0 }))
+                    input.SendEvent(evt);
+                using (PointerMoveEvent evt = PointerMoveEvent.GetPooled(new Event { type = EventType.MouseDrag, mousePosition = drop, button = 0 }))
+                    card.SendEvent(evt);
+                using (PointerUpEvent evt = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, mousePosition = drop, button = 0 }))
+                    card.SendEvent(evt);
+                Assert.That(refreshes, Is.EqualTo(3), "Numeric controls must not start card dragging.");
+                input.value = 42;
+                Assert.That(input.value, Is.EqualTo(42));
             }
             finally { host.Close(); }
         }
