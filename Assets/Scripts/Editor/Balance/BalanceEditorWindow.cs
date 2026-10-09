@@ -60,7 +60,7 @@ namespace EmpireAtWar.Editor.Balance
             if (_message.Length != 0) messages.Add(new HelpBox(_message, HelpBoxMessageType.Info));
             foreach (string error in _registry.Errors) messages.Add(new HelpBox(error, HelpBoxMessageType.Error));
             VisualElement body = rootVisualElement.Q("workspace");
-            if (state.Tab != "Compare")
+            if (state.Tab != "Compare" && state.Tab != "Combat")
             {
                 TwoPaneSplitView outer = new TwoPaneSplitView(0, state.LeftWidth, TwoPaneSplitViewOrientation.Horizontal) { viewDataKey = "balance-left" };
                 outer.AddToClassList("balance-workspace"); body.Add(outer); body = outer;
@@ -69,7 +69,7 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceRosterView.Build(roster, _registry, state, Refresh);
             }
             VisualElement centre = new VisualElement(); centre.AddToClassList("balance-content"); _details = null;
-            if (state.ShowDetails && state.Tab != "Compare")
+            if (state.ShowDetails && state.Tab != "Compare" && !(state.Tab == "Combat" && state.CombatTab == "Hardpoints"))
             {
                 TwoPaneSplitView inner = new TwoPaneSplitView(1, state.RightWidth, TwoPaneSplitViewOrientation.Horizontal) { viewDataKey = "balance-details" };
                 body.Add(inner); inner.Add(centre);

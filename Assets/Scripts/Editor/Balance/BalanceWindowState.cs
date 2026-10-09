@@ -21,7 +21,7 @@ namespace EmpireAtWar.Editor.Balance
         public string Tab = "Units";
         public string UnitTab = "Stats";
         public string UnitGroup = "All Groups";
-        public string CombatTab = "Weapons";
+        public string CombatTab = "Hardpoints";
         public string CombatSearch = "";
         public string CompareSearch = "";
         public string CompareFaction = "";

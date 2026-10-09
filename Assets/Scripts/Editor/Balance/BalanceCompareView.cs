@@ -18,8 +18,20 @@ namespace EmpireAtWar.Editor.Balance
             EnumField order = new EnumField("Order by", state.CompareSort) { name = "compare-order", tooltip = "Ascending order using draft values. Drag cards to switch to Manual." };
             order.RegisterValueChangedCallback(evt => { state.CompareSort = (BalanceCompareSort)evt.newValue; refresh(); });
             heading.Add(order);
+            AddPicker(panel, heading, registry, state, units.Count == 0, refresh);
+            ScrollView scroll = new ScrollView { viewDataKey = "balance-compare-scroll" };
+            scroll.style.flexGrow = 1; scroll.style.minHeight = 0; panel.Add(scroll);
+            if (units.Count == 0)
+            {
+                Label empty = new Label("Add units to compare their stats."); empty.AddToClassList("balance-muted"); scroll.Add(empty);
+            }
+            else BalanceCompareSummary.Build(scroll, units, registry, state, edit, refresh);
+        }
+
+        public static void AddPicker(VisualElement panel, VisualElement heading, BalanceRegistration registry, BalanceWindowState state, bool empty, Action refresh)
+        {
             VisualElement picker = Picker(registry, state, refresh);
-            if (units.Count == 0) state.ComparePickerOpen = true;
+            if (empty) state.ComparePickerOpen = true;
             Button add = new Button { text = state.ComparePickerOpen ? "Close picker" : "+ Add units", name = "compare-add-unit" };
             add.clicked += () =>
             {
@@ -31,19 +43,12 @@ namespace EmpireAtWar.Editor.Balance
             add.AddToClassList("balance-primary"); heading.Add(add);
             panel.Add(picker);
             picker.style.display = state.ComparePickerOpen ? DisplayStyle.Flex : DisplayStyle.None;
-            ScrollView scroll = new ScrollView { viewDataKey = "balance-compare-scroll" };
-            scroll.style.flexGrow = 1; scroll.style.minHeight = 0; panel.Add(scroll);
-            if (units.Count == 0)
+            if (empty && state.CompareFocusPending)
             {
-                Label empty = new Label("Add units to compare their stats."); empty.AddToClassList("balance-muted"); scroll.Add(empty);
-                if (state.CompareFocusPending)
-                {
-                    TextField search = picker.Q<TextField>("compare-search");
-                    search.schedule.Execute(search.Focus);
-                    state.CompareFocusPending = false;
-                }
+                TextField search = picker.Q<TextField>("compare-search");
+                search.schedule.Execute(search.Focus);
+                state.CompareFocusPending = false;
             }
-            else BalanceCompareSummary.Build(scroll, units, registry, state, edit, refresh);
         }
 
         private static VisualElement Picker(BalanceRegistration registry, BalanceWindowState state, Action refresh)
@@ -74,7 +79,7 @@ namespace EmpireAtWar.Editor.Balance
             list.makeItem = () =>
             {
                 VisualElement row = new VisualElement(); row.AddToClassList("balance-picker-row");
-                Toggle selection = new Toggle { name = "picker-select", tooltip = "Select unit for comparison" }; row.Add(selection);
+                Toggle selection = new Toggle { name = "picker-select", tooltip = "Select unit to add" }; row.Add(selection);
                 selection.RegisterValueChangedCallback(evt =>
                 {
                     string id = ((BalanceUnit)row.userData).Id;
