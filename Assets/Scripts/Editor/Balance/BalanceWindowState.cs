@@ -20,6 +20,7 @@ namespace EmpireAtWar.Editor.Balance
         public string Group = "All Groups";
         public string Tab = "Units";
         public string UnitTab = "Stats";
+        public bool UnitDetailsOpen;
         public string UnitGroup = "All Groups";
         public string CombatTab = "Hardpoints";
         public string CombatSearch = "";

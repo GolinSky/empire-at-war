@@ -7,13 +7,13 @@ namespace EmpireAtWar.Editor.Balance
 {
     public static class BalanceCompareView
     {
-        public static void Build(VisualElement panel, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit, Action refresh)
+        public static void Build(VisualElement panel, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit, Action refresh, Action<BalanceUnit> openUnit = null)
         {
             BalanceCompareOrder.Sort(registry, state);
             state.CompareSelection.RemoveAll(id => !state.Pins.Contains(id));
             List<BalanceUnit> units = state.Pins.Select(id => registry.Units.FirstOrDefault(unit => unit.Id == id)).Where(unit => unit != null).ToList();
             VisualElement heading = new VisualElement(); heading.AddToClassList("balance-compare-heading"); panel.Add(heading);
-            Label title = new Label("Unit comparison"); title.AddToClassList("balance-compare-title"); heading.Add(title);
+            Label title = new Label(openUnit == null ? "Unit comparison" : "Units"); title.AddToClassList("balance-compare-title"); heading.Add(title);
             Label count = new Label(units.Count + " units"); count.AddToClassList("balance-muted"); heading.Add(count);
             EnumField order = new EnumField("Order by", state.CompareSort) { name = "compare-order", tooltip = "Ascending order using draft values. Drag cards to switch to Manual." };
             order.RegisterValueChangedCallback(evt => { state.CompareSort = (BalanceCompareSort)evt.newValue; refresh(); });
@@ -23,9 +23,9 @@ namespace EmpireAtWar.Editor.Balance
             scroll.style.flexGrow = 1; scroll.style.minHeight = 0; panel.Add(scroll);
             if (units.Count == 0)
             {
-                Label empty = new Label("Add units to compare their stats."); empty.AddToClassList("balance-muted"); scroll.Add(empty);
+                Label empty = new Label(openUnit == null ? "Add units to compare their stats." : "Add units to edit their stats, weapons, abilities and hardpoints."); empty.AddToClassList("balance-muted"); scroll.Add(empty);
             }
-            else BalanceCompareSummary.Build(scroll, units, registry, state, edit, refresh);
+            else BalanceCompareSummary.Build(scroll, units, registry, state, edit, refresh, openUnit);
         }
 
         public static void AddPicker(VisualElement panel, VisualElement heading, BalanceRegistration registry, BalanceWindowState state, bool empty, Action refresh)

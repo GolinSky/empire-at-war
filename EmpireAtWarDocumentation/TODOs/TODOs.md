@@ -282,6 +282,7 @@
   - **Plan**: [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]
   - **Research**: [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
   - **Scope**: UI Toolkit; approved ScriptableObject/prefab data fields; faction views, editable same-/cross-faction ship comparisons, shared weapon/ability labels, hardpoints and Editor-applied presets.
+  - **Units layout (2026-10-09)**: Compare cards and searchable single/bulk Add units; Edit unit opens full details. No ship sidebar. Unity compile and 27 live UI checks passed.
   - **Deferred**: hard-coded AI configuration and ally/enemy multipliers remain outside this data-only scope.
   - **Outcome**: canonical usage/alias inventory, recoverable draft, editable comparison, tuning panels and scoped preset apply/restore implemented.
   - **Combat grid (2026-10-09)**: Compare-style Add units picker and full-width unit cards with 420 px hardpoint lists; shared selections/drafts, no roster, preserved weapon profiles/damage matrix. Unity compile/import and live UI checks passed: 47 mounts/37 assignment controls, 960/1400/1800 px layouts; no live prefab writes or NUnit/Play Mode run.

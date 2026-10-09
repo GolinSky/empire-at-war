@@ -8,7 +8,7 @@ namespace EmpireAtWar.Editor.Balance
 {
     public static class BalanceCompareSummary
     {
-        public static void Build(VisualElement panel, List<BalanceUnit> units, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit, Action refresh)
+        public static void Build(VisualElement panel, List<BalanceUnit> units, BalanceRegistration registry, BalanceWindowState state, Action<BalanceField, string> edit, Action refresh, Action<BalanceUnit> openUnit = null)
         {
             VisualElement grid = new VisualElement { name = "compare-grid" }; grid.AddToClassList("balance-compare-grid"); panel.Add(grid);
             BalanceCompareSelection.Bind(grid, state, refresh);
@@ -30,7 +30,7 @@ namespace EmpireAtWar.Editor.Balance
                 card.tooltip = "Click to select; Ctrl+click to toggle. Ctrl+A selects all; Delete removes selected units. Drag the background to reorder.";
                 Text(heading, unit.Name, "balance-compare-unit-name");
                 Button remove = new Button(() => { state.Pins.Remove(unit.Id); refresh(); })
-                    { text = "×", name = "compare-remove-unit", tooltip = "Remove " + unit.Name + " from comparison" };
+                    { text = "×", name = "compare-remove-unit", tooltip = "Remove " + unit.Name };
                 remove.AddToClassList("balance-compare-remove"); heading.Add(remove);
                 Text(card, unit.Faction + " · " + unit.Class, "balance-compare-caption");
                 Section(card, "Durability");
@@ -65,6 +65,11 @@ namespace EmpireAtWar.Editor.Balance
                 hardpoints.clicked += () => UnityEditor.PopupWindow.Show(hardpoints.worldBound, new BalanceHardpointsPopup(unit, registry, state, edit));
                 hardpoints.SetEnabled(count > 0);
                 card.Add(hardpoints);
+                if (openUnit != null)
+                {
+                    Button details = new Button(() => openUnit(unit)) { text = "Edit unit", name = "units-edit-unit" };
+                    details.AddToClassList("balance-unit-edit"); card.Add(details);
+                }
             }
             BalanceCompareSelection.Update(grid, state);
             Label assumptions = Text(panel, "Draft values · DPS is an AI estimate before accuracy, target modifiers, firing arcs and abilities.", "balance-compare-assumptions");

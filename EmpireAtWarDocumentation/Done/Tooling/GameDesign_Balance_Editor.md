@@ -44,11 +44,19 @@ completed: 2026-10-09
 - Menu: `Tools/Empire At War/Game Design/Balance Editor`; embedded `BalanceEditorWindow` in the shared Editor Hub.
 - Header: draft change count; preset selector, Preset actions/Draft/Tools menus, primary Review & Apply action.
 - Workflows: Units, Compare, Combat, Changes. Units nests Stats, Weapons, Abilities and Hardpoints; Tools exposes Global Data and Ability catalog.
-- Roster: resizable 255 px default width, 32 px virtualized rows, inline pin, live search and faction/kind/class filters.
+- Units: full-width Compare cards and searchable Add units picker; no left roster sidebar in any workflow. Units/Compare/Combat share the chosen unit IDs and picker filters.
 - Unit details: fill remaining width; draft-aware Hull/Shields/Speed and estimated base DPS; responsive field grids grouped by category/context.
 - Field Info opens a closable source/identity/usage inspector. Shared scope remains visible beside every editable field; changed fields show an indicator and original-value tooltip.
 - Combat: existing shared weapon profiles and damage matrix; estimated base DPS excludes target accuracy/modifiers, arcs, abilities and movement. TTK/simulations are not implemented.
 - Preserve draft, selection, pins, filters, per-view scroll offsets and panel widths; close with a draft offers save/discard/cancel.
+
+### Units workspace — 2026-10-09
+
+- Reuse `BalanceCompareView` and `BalanceCompareSummary`: identical cards, search/faction filtering, single/bulk addition, ordering, drag and removal.
+- Each Units card has **Edit unit** → existing Stats/Weapons/Abilities/Hardpoints detail editor; **Back to units** retains cards and staged edits.
+- Persist `UnitDetailsOpen`; hide the field inspector on the card overview. Selected unit and draft remain canonical across views.
+- Verification: Unity compilation passed; 27 live UI checks passed, including picker actions, draft-only edits, detail navigation/persistence and measured 960/1400 px content layouts. Evidence: `Library/BalanceEditor/units-layout-check.json`.
+- Console retains unrelated ISDI import errors from concurrent asset work. No Play Mode or NUnit suite run for this layout change.
 
 ### Shared scope — mandatory UI
 
