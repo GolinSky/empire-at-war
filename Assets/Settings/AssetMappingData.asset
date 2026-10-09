@@ -1106,3 +1106,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: AotrEmpressDefensePlatformView
+      value:
+        m_AssetGUID: 9e4b91ea8a035d94da292e3708a13e78
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AotrEmpressDefensePlatformData
+      value:
+        m_AssetGUID: 3929d0fbdcb048841bb03c024cbcb945
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

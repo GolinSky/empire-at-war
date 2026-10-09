@@ -75,6 +75,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3929d0fbdcb048841bb03c024cbcb945
+    m_Address: AotrEmpressDefensePlatformData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c82cfd092878f14087ee2689ea29b7f
     m_Address: AsteroidMiningFacilityData
     m_ReadOnly: 0
