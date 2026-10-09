@@ -436,5 +436,5 @@ MonoBehaviour:
             stat: 3
             multiplier: 0.85
   miningFacilities: 00000000
-  defendPlatforms: 00000000
+  defendPlatforms: 0000000002000000
   superWeapons: 000000000100000002000000

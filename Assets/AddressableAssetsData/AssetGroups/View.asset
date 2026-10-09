@@ -110,6 +110,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 545b0f416ed9ad74ca4d2877cd15a76d
+    m_Address: AotrGolanIIIDefensePlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 54d09cd5e31fdef4690255567dcdbea9
     m_Address: XWingSquadronView
     m_ReadOnly: 0

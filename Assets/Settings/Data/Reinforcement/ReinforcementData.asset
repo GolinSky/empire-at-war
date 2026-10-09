@@ -183,6 +183,9 @@ MonoBehaviour:
         type: 3}
   defendPlatformWrapper:
     keyValue:
+    - key: 2
+      value: {fileID: 5422768365347329368, guid: cde314be341eb8d438166d17ab347c65,
+        type: 3}
     - key: 0
       value: {fileID: 5422768365347329368, guid: 87174290095be7649a260133a3e3f11a,
         type: 3}

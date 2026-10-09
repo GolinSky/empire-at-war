@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84b59a172d32cdc468702c4d460029ec
+    m_Address: AotrGolanIIIDefensePlatformData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8881836f549b03847be8d3173622e376
     m_Address: LoadingData
     m_ReadOnly: 0

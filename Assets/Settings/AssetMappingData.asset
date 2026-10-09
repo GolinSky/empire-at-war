@@ -1078,3 +1078,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: AotrGolanIIIDefensePlatformView
+      value:
+        m_AssetGUID: 545b0f416ed9ad74ca4d2877cd15a76d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AotrGolanIIIDefensePlatformData
+      value:
+        m_AssetGUID: 84b59a172d32cdc468702c4d460029ec
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
