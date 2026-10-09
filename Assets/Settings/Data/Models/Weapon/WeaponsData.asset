@@ -703,6 +703,21 @@ MonoBehaviour:
     projectileSpeed: 80
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 65
+    displayName: Heavy Assault Missile Launcher
+    damageType: 5
+    damage: 50
+    shotsPerSalvo: 3
+    shotInterval: 1.5
+    reload: 15
+    range: 300
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 35
+    color: {r: 1, g: 0.55, b: 0.1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 63
     displayName: 4-Burst Assault-Missile Launcher
     damageType: 5
@@ -792,6 +807,21 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 25
     color: {r: 0.3, g: 0.7, b: 1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 66
+    displayName: Heavy Proton Torpedo Launcher
+    damageType: 6
+    damage: 150
+    shotsPerSalvo: 1
+    shotInterval: 0
+    reload: 10
+    range: 200
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+      type: 3}
+    projectileSpeed: 25
+    color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 6
     displayName: Proton Torpedo Launcher
