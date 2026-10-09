@@ -239,7 +239,7 @@
 - [ ] **Refactor camera system (input guard, smoothing util, scroll fix, cinematic data)**
   - **Plan**: [[TODOs/Refactoring/Camera_System_Refactor_Plan|Camera System Refactor Plan]]
   - **Rule**: `CameraService` owns the input-lock rule; `CameraInput` has no `enabled` fallback.
-  - **Decision**: `VelocitySmoothing` stays in `Assets/Scripts/Components/Utils/`.
+  - **Decision**: `VelocitySmoothing` stays in `Assets/Scripts/Utils/`.
   - **Status**: sections 1–4 implemented; Unity compile clean; asset values, GUIDs and Addressables entry verified.
   - **Cinematic fix**: 2026-10-07 framing adapts to navigation radius + camera FOV; chase/low-high shots center on the ship. Transitions orbit the look point with minimum clearance; wide shots include focus-offset clearance. Cinematic EditMode tests 17/17 passed; compilation clean.
   - **Map-bounds fix**: 2026-10-09 shots and transitions stay within exact map X/Z bounds and camera zoom Y limits; viewing distance capped at `ZoomRange.Max`. Cinematic tests 23/23 passed; compilation clean.

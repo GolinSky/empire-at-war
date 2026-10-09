@@ -1,5 +1,5 @@
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.CoroutineService;

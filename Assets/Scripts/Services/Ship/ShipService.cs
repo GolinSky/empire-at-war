@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Ship;
 using UnityEngine;
 
-namespace EmpireAtWar.Ship
+namespace EmpireAtWar.Services.Ships
 {
     public interface IShipService : IService
     {

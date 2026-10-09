@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Selection;
 using Zenject;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;

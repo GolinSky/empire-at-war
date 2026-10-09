@@ -14,7 +14,7 @@ created: 2026-09-30
 ## Files
 - `Assets/Scripts/Services/Camera/CameraInput.cs`
 - `Assets/Scripts/Services/Camera/CameraService.cs` (235 lines — over 200, see TODO)
-- `Assets/Scripts/Components/Utils/VelocitySmoothing.cs`, `Assets/Scripts/Tests/Editor/VelocitySmoothingTests.cs`
+- `Assets/Scripts/Utils/VelocitySmoothing.cs`, `Assets/Scripts/Tests/Editor/VelocitySmoothingTests.cs`
 - `Assets/Scripts/Services/Camera/CinematicCameraData.cs`, `CinematicClassProfile.cs`, `CameraData.cs`
 - `Assets/Settings/Data/Models/Camera/CinematicCameraData.asset` (cinematic tuning); `CameraData.asset` (manual camera tuning)
 - `Assets/Settings/Input/EmpireAtWar.inputactions` (`Camera` map)
@@ -47,11 +47,11 @@ created: 2026-09-30
 ### Facts
 - `VelocitySmoothing.MoveTowardsTarget(current, input, maxSpeed, accel, decel, dt)` has no camera knowledge: clamp input → target velocity → `Vector2.MoveTowards` with accel/decel rate.
 - Single caller: `CameraService.Tick()`. Tests: `VelocitySmoothingTests` (3 cases; renamed, not executed).
-- Shared math lives in the external `com.script-utils.math` package (`GolinSky/ScriptUtilities`, namespace `Utilities.ScriptUtils.Math`); in-project helpers live in `Assets/Scripts/Components/Utils/`.
+- Shared math lives in the external `com.script-utils.math` package (`GolinSky/ScriptUtilities`, namespace `Utilities.ScriptUtils.Math`); in-project helpers live in `Assets/Scripts/Utils/`.
 
 ### Decision
-- Chosen: rename to `VelocitySmoothing` (static, `MoveTowardsTarget(...)`) in `Assets/Scripts/Components/Utils/`; rename tests to match.
-- Decision: user chose the in-project `Assets/Scripts/Components/Utils/` location; do not upstream into `com.script-utils.math`.
+- Chosen: rename to `VelocitySmoothing` (static, `MoveTowardsTarget(...)`) in `Assets/Scripts/Utils/`; rename tests to match.
+- Decision: user chose the in-project `Assets/Scripts/Utils/` location; do not upstream into `com.script-utils.math`.
 - Move via Unity-aware tooling so `.meta` GUIDs survive.
 
 ### Steps

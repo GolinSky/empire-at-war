@@ -4,7 +4,7 @@ using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.MainMenu;
 using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using UnityEngine;
 using Zenject;
 

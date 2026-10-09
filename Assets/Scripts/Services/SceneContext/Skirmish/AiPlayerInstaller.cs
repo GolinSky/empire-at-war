@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.EnemyFaction.Data;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.SuperWeapons;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;

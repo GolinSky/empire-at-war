@@ -2,7 +2,7 @@ using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Extentions
+namespace EmpireAtWar.Extensions
 {
     public class ViewDependencyBuilder : DependencyBuilder<ViewDependencyBuilder>
     {

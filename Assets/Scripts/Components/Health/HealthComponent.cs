@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents;

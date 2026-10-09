@@ -1,4 +1,4 @@
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;

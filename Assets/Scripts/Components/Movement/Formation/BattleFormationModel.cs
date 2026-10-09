@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Components.Movement.Formation
 {

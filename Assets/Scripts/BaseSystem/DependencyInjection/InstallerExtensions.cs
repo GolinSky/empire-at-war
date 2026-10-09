@@ -5,7 +5,7 @@ using UnityEngine;
 using Zenject;
 using Zenject.Internal;
 
-namespace EmpireAtWar.Extentions
+namespace EmpireAtWar.Extensions
 {
     public static class InstallerExtensions
     {

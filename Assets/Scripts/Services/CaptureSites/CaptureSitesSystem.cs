@@ -13,6 +13,7 @@ using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using EmpireAtWar.Services.Vision;
 using Zenject;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.CaptureSites
 {

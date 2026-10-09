@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Selection;
 using Zenject;
 

@@ -9,7 +9,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using Zenject;

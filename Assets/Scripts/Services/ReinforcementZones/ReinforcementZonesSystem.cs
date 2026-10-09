@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using EmpireAtWar.Services.Vision;
 using Zenject;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.ReinforcementZones
 {

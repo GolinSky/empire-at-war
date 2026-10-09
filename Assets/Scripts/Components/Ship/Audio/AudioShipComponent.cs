@@ -3,7 +3,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;

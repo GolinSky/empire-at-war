@@ -14,6 +14,7 @@ using UnityEngine;
 using Zenject;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.Enemy
 {

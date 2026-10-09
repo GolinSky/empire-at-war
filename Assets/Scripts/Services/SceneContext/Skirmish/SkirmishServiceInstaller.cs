@@ -2,7 +2,7 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.Health.Overlay;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Weapon;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Cheats;
@@ -19,6 +19,7 @@ using Zenject;
 using UnityEngine;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Utils;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {

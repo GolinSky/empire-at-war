@@ -9,7 +9,7 @@ using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Selection;

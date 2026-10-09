@@ -15,6 +15,7 @@ using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.Enemy
 {

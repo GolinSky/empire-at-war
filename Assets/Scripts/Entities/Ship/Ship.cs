@@ -26,6 +26,7 @@ using UnityEngine.Rendering;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Ship
 {

@@ -1,6 +1,6 @@
 ﻿using Zenject;
 
-namespace EmpireAtWar.Extentions
+namespace EmpireAtWar.Extensions
 {
     public abstract class DependencyBuilder<TInheritor>:IDependencyBuilder where TInheritor: class, IDependencyBuilder
     {
