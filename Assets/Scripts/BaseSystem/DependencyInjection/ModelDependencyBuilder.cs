@@ -2,7 +2,7 @@ using System;
 using EmpireAtWar.Mvc;
 using Zenject;
 
-namespace EmpireAtWar.Extentions
+namespace EmpireAtWar.Extensions
 {
     //todo: remove 
     public class ModelDependencyBuilder:DependencyBuilder<ModelDependencyBuilder>

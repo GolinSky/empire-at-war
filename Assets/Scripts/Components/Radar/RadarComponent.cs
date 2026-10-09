@@ -13,7 +13,7 @@ using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 
 namespace EmpireAtWar.Components.Radar
 {

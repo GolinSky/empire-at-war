@@ -165,7 +165,7 @@ I<Feature>Presenter (UiController) ──►  WorldTooltipPresenter
 - `Assets/Scripts/Services/Tooltip/` holds the service, model, provider interface, content, anchor, handle, and plain timing.
 - `Assets/Scripts/Entities/Tooltip/` holds `TooltipUiController`, `ITooltipUi`, `TooltipUi`, the sub-widgets, `TooltipSettings`, `TooltipIconData`, unit matchup data, content helpers, and `WorldTooltipPresenter`.
 - `Assets/Scripts/Components/Ui/Tooltip/TooltipTrigger.cs`.
-- `Assets/Scripts/Components/Ui/Base/UiType.cs` gets the new `Tooltip` entry. `UiController.cs` is **unchanged**.
+- `Assets/Scripts/BaseSystem/Ui/UiType.cs` gets the new `Tooltip` entry. `UiController.cs` is **unchanged**.
 - `Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab`, `Assets/Settings/Data/Tooltip/TooltipSettings.asset`, `Assets/Settings/Data/Tooltip/TooltipIconData.asset`, and `Assets/Settings/Data/Tooltip/Matchups/`.
 - `Assets/Scripts/Services/SceneContext/Skirmish/SkirmishMainInstaller.cs` gets the new bindings.
 

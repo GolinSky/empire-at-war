@@ -17,12 +17,12 @@ tags:
 
 | Site | Lookup | Fix |
 |---|---|---|
-| `Components/Ui/Base/UiInstaller.cs:31` | `instance.GetComponent<BaseUi>()` after instantiate | instantiate the prefab typed as `BaseUi` (serialized/configured as `BaseUi`) |
-| `Components/Utils/DrawCircle.cs:20` | `GetComponent<LineRenderer>()` | `[SerializeField] LineRenderer lineRenderer` (already the field name) |
-| `Components/Utils/Ui/SafeAreaHelper.cs:14` | `GetComponent<RectTransform>()` | `[SerializeField] RectTransform rectTransform`, or `(RectTransform)transform` |
+| `BaseSystem/Ui/UiInstaller.cs:31` | `instance.GetComponent<BaseUi>()` after instantiate | instantiate the prefab typed as `BaseUi` (serialized/configured as `BaseUi`) |
+| `Utils/DrawCircle.cs:20` | `GetComponent<LineRenderer>()` | `[SerializeField] LineRenderer lineRenderer` (already the field name) |
+| `Utils/Ui/SafeAreaHelper.cs:14` | `GetComponent<RectTransform>()` | `[SerializeField] RectTransform rectTransform`, or `(RectTransform)transform` |
 | `Entities/ReinforcementZones/ReinforcementZoneView.cs:58` | `_captureCanvas.GetComponent<CanvasScaler>()` | serialize the `CanvasScaler` |
 | `Services/SceneContext/ViewInstallers/Base/StaticViewInstaller.cs:22` | `GetComponent<View>()` | `[SerializeField] View view` |
-| `Components/Utils/DebugRangeCircle.cs:33` | `Shader.Find("Sprites/Default")` | inject/serialize a `Material` (debug config SO); fails in builds if the shader is stripped |
+| `Utils/DebugRangeCircle.cs:33` | `Shader.Find("Sprites/Default")` | inject/serialize a `Material` (debug config SO); fails in builds if the shader is stripped |
 
 - Kept: `EntityMediator.cs:88` `collider.GetComponentInParent<IViewEntity>()` → a physics hit has no inspector reference; acceptable.
 - `UnitSpawnView` → Teardown/Leaks plan. `AddressableAssetService` → Fail-Fast plan.

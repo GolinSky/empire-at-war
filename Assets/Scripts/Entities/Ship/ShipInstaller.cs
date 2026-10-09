@@ -12,7 +12,7 @@ using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;

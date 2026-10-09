@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Extentions
+﻿namespace EmpireAtWar.Extensions
 {
     public enum EntityBindType
     {

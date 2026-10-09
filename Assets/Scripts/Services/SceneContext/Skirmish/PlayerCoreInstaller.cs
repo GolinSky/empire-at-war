@@ -4,7 +4,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.Heroes;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Presenters.Cheats;

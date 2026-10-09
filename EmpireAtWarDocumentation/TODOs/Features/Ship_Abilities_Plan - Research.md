@@ -145,7 +145,7 @@ status: in-progress
 - Ability-specific numbers **never** go into the definition; they go into that ability's settings class (§3.5).
 
 - Inspector support:
-- `Assets/Scripts/Components/Utils/SubclassSelectorAttribute.cs` is a `PropertyAttribute`.
+- `Assets/Scripts/Utils/SubclassSelectorAttribute.cs` is a `PropertyAttribute`.
 - `Assets/Scripts/Editor/SubclassSelectorDrawer.cs` draws a type dropdown, built from `TypeCache`, over the default managed-reference field.
 
 - **Renaming or moving a settings class breaks saved data** unless you add `[UnityEngine.Scripting.APIUpdating.MovedFrom(...)]`.

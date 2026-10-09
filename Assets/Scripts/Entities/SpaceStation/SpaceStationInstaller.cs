@@ -2,7 +2,7 @@
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.SpaceStation;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 using Zenject;

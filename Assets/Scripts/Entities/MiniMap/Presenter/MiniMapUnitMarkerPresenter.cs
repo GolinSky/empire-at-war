@@ -1,6 +1,6 @@
 using System;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Selection;

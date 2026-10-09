@@ -5,7 +5,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;

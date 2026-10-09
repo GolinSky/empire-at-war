@@ -3,7 +3,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;

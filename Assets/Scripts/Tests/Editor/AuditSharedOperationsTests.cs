@@ -15,6 +15,7 @@ using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Tests.Editor
 {

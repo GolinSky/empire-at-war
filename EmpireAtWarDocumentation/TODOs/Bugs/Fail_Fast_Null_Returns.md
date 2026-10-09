@@ -23,7 +23,7 @@ tags:
 | `Services/ShipAbilities/ShipAbilityService.cs:176` `FindSlot` | `null` | optional (callers use `is ShipAbilitySlot slot` / `slot == null`) | `TryFindSlot(caster, id, out ShipAbilitySlot slot)` |
 
 ## Files (owned)
-- The four files above + `Components/BaseSystem/IAssetService.cs`
+- The four files above + `BaseSystem/IAssetService.cs`
 - `AttackDataFactory` callers: `Components/Weapon/StationCombatPresenter.cs:50`, `Entities/Ship/EntityFacades/StationaryAttackFacade.cs:23`, `Entities/Ship/StateMachine/AttackMoveState.cs:73`, `AttackTargetState.cs:101,120`, `GuardState.cs:76`, `HuntState.cs:103`, `Entities/Squadron/Squadron.cs:279` (edit only the call lines)
 - `LoadComponent` callers (read-only check): `HardPoint.cs:74`, `AudioService.cs:47,49`
 - `SceneData` caller (read-only check): `SceneService.cs:93`

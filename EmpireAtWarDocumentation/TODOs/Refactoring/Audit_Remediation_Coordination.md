@@ -44,10 +44,10 @@ tags:
 | Plan | Owns |
 |---|---|
 | Teardown/Leaks | `Services/UnitWreck/UnitWreckService.cs`, `Services/UnitExplosion/UnitExplosionService.cs`, `Entities/Reinforcement/UnitSpawnView.cs` + spawn preview prefabs, `Components/ViewComponents/FogOfWarSystem.cs` |
-| Fail-fast | `Services/SceneService/SceneData.cs`, `Services/Repository/AddressableAssetService.cs`, `Components/BaseSystem/IAssetService.cs`, `Components/AttackComponent/AttackDataFactory.cs` + its 8 callers, `Services/ShipAbilities/ShipAbilityService.cs` |
+| Fail-fast | `Services/SceneService/SceneData.cs`, `Services/Repository/AddressableAssetService.cs`, `BaseSystem/IAssetService.cs`, `Components/AttackComponent/AttackDataFactory.cs` + its 8 callers, `Services/ShipAbilities/ShipAbilityService.cs` |
 | Tally dedup | `Services/CaptureSites/CaptureSitesSystem.cs`, `Services/ReinforcementZones/ReinforcementZonesSystem.cs`, `Services/Ship/ShipPopulation.cs`, `Tests/Editor/AuditSharedOperationsTests.cs` |
 | Identity keys | `Entities/Faction/Ui/BuildPipelineView.cs`, `Entities/Reinforcement/ReinforcementUi.cs`, `Services/Reinforcement/ReinforcementService.cs`, `Entities/EnemyFaction/Models/UnitLimitKey.cs` and its users |
-| Component binding | `Components/Ui/Base/UiInstaller.cs`, `Components/Utils/DrawCircle.cs`, `Components/Utils/Ui/SafeAreaHelper.cs`, `Entities/ReinforcementZones/ReinforcementZoneView.cs`, `Services/SceneContext/ViewInstallers/Base/StaticViewInstaller.cs`, `Components/Utils/DebugRangeCircle.cs` + affected prefabs |
+| Component binding | `BaseSystem/Ui/UiInstaller.cs`, `Utils/DrawCircle.cs`, `Utils/Ui/SafeAreaHelper.cs`, `Entities/ReinforcementZones/ReinforcementZoneView.cs`, `Services/SceneContext/ViewInstallers/Base/StaticViewInstaller.cs`, `Utils/DebugRangeCircle.cs` + affected prefabs |
 | Settings | `Services/Settings/*`, `Services/Graphics/*`, `Entities/MainMenu/Settings/*`, new settings tests. Not `Services/Input/*`. |
 
 ## TODO

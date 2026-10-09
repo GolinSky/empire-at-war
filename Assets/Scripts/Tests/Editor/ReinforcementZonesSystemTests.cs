@@ -15,6 +15,7 @@ using EmpireAtWar.Utils;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
+using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Tests.Editor
 {

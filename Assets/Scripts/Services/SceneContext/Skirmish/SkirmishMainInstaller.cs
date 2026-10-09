@@ -30,7 +30,7 @@ using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Extentions;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Menu;

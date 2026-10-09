@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Extentions;
+﻿using EmpireAtWar.Extensions;
 using UnityEngine;
 using Zenject;
 

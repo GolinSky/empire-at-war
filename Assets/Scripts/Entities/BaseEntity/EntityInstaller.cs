@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Extentions;
+﻿using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Presenters.MiniMap;
 using UnityEngine;
