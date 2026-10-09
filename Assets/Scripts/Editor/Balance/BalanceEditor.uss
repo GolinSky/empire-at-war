@@ -130,6 +130,8 @@
 .balance-compare-hardpoint { margin-bottom: 4px; padding-top: 3px; border-top-width: 1px; border-top-color: var(--balance-line); }
 .balance-compare-hardpoint-name { font-size: 11px; margin: 3px 0; }
 #compare-view-hardpoints { height: 28px; margin-top: 8px; }
+.balance-unit-edit { height: 28px; margin-top: 6px; }
+.balance-units-back { align-self: flex-start; height: 28px; margin-bottom: 12px; }
 .balance-hardpoints-popup { padding: 14px; }
 .balance-hardpoints-heading { flex-direction: row; align-items: center; margin-bottom: 8px; }
 .balance-hardpoints-title { flex-grow: 1; flex-shrink: 1; font-size: 16px; -unity-font-style: bold; white-space: normal; }

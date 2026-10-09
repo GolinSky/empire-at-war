@@ -12,6 +12,21 @@ namespace EmpireAtWar.Editor.Balance
         public static void Build(VisualElement panel, BalanceRegistration registry, BalanceWindowState state,
             Action<BalanceField, string> edit, Action<BalanceField> select, Action refresh)
         {
+            if (!state.UnitDetailsOpen)
+            {
+                BalanceCompareView.Build(panel, registry, state, edit, refresh, selected =>
+                {
+                    state.SelectedUnit = selected.Id;
+                    state.SelectedField = "";
+                    state.ShowDetails = false;
+                    state.UnitDetailsOpen = true;
+                    refresh();
+                });
+                return;
+            }
+            Button back = new Button(() => { state.UnitDetailsOpen = false; state.ShowDetails = false; refresh(); })
+                { text = "Back to units", name = "units-back" };
+            back.AddToClassList("balance-units-back"); panel.Add(back);
             BalanceUnit unit = registry.Units.FirstOrDefault(entry => entry.Id == state.SelectedUnit);
             if (unit == null)
             {
