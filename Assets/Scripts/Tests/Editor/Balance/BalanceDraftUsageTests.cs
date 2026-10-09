@@ -69,8 +69,9 @@ namespace EmpireAtWar.Tests.Editor
             BalanceField mount = registry.Fields.Values.First(field => !field.SharedMountSource && field.Stat == "WeaponType" && field.Users.Contains(unit));
             BalanceWindowState state = new BalanceWindowState(); state.Draft.Set(mount.Snapshot(), id.ToString());
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
-            string summary = BalanceUnitView.BaseDps(unit, registry, state.Draft);
-            Assert.That(summary, Does.Contain("Missing weapon profile"));
+            BalanceDpsEstimate estimate = new BalanceDpsEstimator(registry).Estimate(unit, state.Draft);
+            Assert.That(estimate.HasValue, Is.False);
+            Assert.That(estimate.Problem, Does.Contain("Missing weapon profile"));
             VisualElement card = BalanceFieldView.Create(mount, state, usage, _ => { }, () => { });
             Assert.That(card.Q<HelpBox>().text, Does.Contain("Missing weapon profile"));
             Assert.That(card.Q<DropdownField>().choices, Does.Not.Contain(Enum.GetName(mount.EnumType, id)));
