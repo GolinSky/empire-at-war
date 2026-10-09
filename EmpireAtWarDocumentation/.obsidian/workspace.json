@@ -188,6 +188,13 @@
   },
   "active": "9014e3d432ff3f1a",
   "lastOpenFiles": [
+    "Done/Tooling/GameDesign_Balance_Editor - Research.md",
+    "Done/Tooling/GameDesign_Balance_Editor.md",
+    "TODOs/Tooling/GameDesign_Balance_Editor - Research.md",
+    "TODOs/Tooling/GameDesign_Balance_Editor.md",
+    "GameDesign/AOTR Golan III Defense Platform Import.md",
+    "GameDesign/Corellian Battlecruiser Import.md",
+    "Done/Tooling",
     "Architecture/REPUBLIC_SPACE_STATION_MODEL_IMPORT_GUIDE.md",
     "Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE.md",
     "TODOs/Features/AI_Composition_Counters.md",
@@ -208,12 +215,6 @@
     "GameDesign/Victory II Import.md",
     "TODOs/Features/VictoryII_Import.md",
     "TODOs/Features/YWingBomber_Import.md",
-    "GameDesign/Y-Wing Bomber Import.md",
-    "Done/Features/ImperialII_Import.md",
-    "GameDesign/Imperial III Star Destroyer Import.md",
-    "TODOs/Features/ImperialII_Import.md",
-    "GameDesign/ArquitensImperialCruiser Import.md",
-    "GameDesign/Arquitens Advanced Import.md",
     "GameDesign/Corellian Corvette Import.md.tmp.58056.bc89b044b557",
     "GameDesign/Nebulon-B Import.md.tmp.58056.534006750f7c",
     "TODOs/Tooling",
@@ -222,7 +223,6 @@
     "TODOs/Refactoring/Codebase Audit 2026-09-27",
     "TODOs/Refactoring",
     "TODOs/Optimization",
-    "Done/Refactoring",
-    "Done/Features"
+    "Done/Refactoring"
   ]
 }

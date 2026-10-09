@@ -5,6 +5,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -52,6 +53,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        [Inject(Id = EntityBindType.ViewTransform)] private Transform _viewTransform;
         private DebugRangeCircle _attackRangeCircle;
 #endif
 
@@ -227,7 +229,7 @@ namespace EmpireAtWar.Components.Weapon
                 return;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _attackRangeCircle.Draw(transform.position, Model.OptimalAttackRange);
+            _attackRangeCircle.Draw(_viewTransform.position, Model.OptimalAttackRange);
 #endif
             if (hardPoints == null || hardPoints.Count == 0)
                 return;
