@@ -458,6 +458,7 @@ GameObject:
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
   - component: {fileID: 1139883098706175716}
+  - component: {fileID: 7729732850566956743}
   m_Layer: 0
   m_Name: YWingSquadronView
   m_TagString: Untagged
@@ -672,6 +673,18 @@ MonoBehaviour:
   - {fileID: 9062116457761214963}
   - {fileID: 3272584999798718024}
   - {fileID: 1029348744981802691}
+--- !u!114 &7729732850566956743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &2382013464077537138
 GameObject:
   m_ObjectHideFlags: 0

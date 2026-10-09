@@ -1874,6 +1874,7 @@ GameObject:
   - component: {fileID: 5259228285351426918}
   - component: {fileID: 2157226560756004583}
   - component: {fileID: 6410026500573442608}
+  - component: {fileID: 6912330726031605107}
   m_Layer: 0
   m_Name: DroidBomberSquadronView
   m_TagString: Untagged
@@ -2329,6 +2330,18 @@ MonoBehaviour:
   - {fileID: 2420324641694920836}
   - {fileID: 8522948164320347469}
   - {fileID: 928828431296644967}
+--- !u!114 &6912330726031605107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139966785138268518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &5354079951053631740
 GameObject:
   m_ObjectHideFlags: 0

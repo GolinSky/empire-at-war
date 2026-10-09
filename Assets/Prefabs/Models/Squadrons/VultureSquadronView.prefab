@@ -32082,6 +32082,7 @@ GameObject:
   - component: {fileID: 5259228285351426918}
   - component: {fileID: 2157226560756004583}
   - component: {fileID: 6410026500573442608}
+  - component: {fileID: 5167168002462823808}
   m_Layer: 0
   m_Name: VultureSquadronView
   m_TagString: Untagged
@@ -32375,6 +32376,18 @@ MonoBehaviour:
   - {fileID: 5185259588396072107}
   - {fileID: 2879074709047468197}
   - {fileID: 1915311465724823077}
+--- !u!114 &5167168002462823808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139966785138268518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &5413055772174472877
 GameObject:
   m_ObjectHideFlags: 0

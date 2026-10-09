@@ -1355,6 +1355,7 @@ GameObject:
   - component: {fileID: 2438442675913171415}
   - component: {fileID: 1139883098706175716}
   - component: {fileID: 4125252901682534135}
+  - component: {fileID: 3635918387614992477}
   m_Layer: 0
   m_Name: XWingSquadronView
   m_TagString: Untagged
@@ -1664,6 +1665,18 @@ MonoBehaviour:
   - {fileID: 1066715921688861992}
   opened: {fileID: 5462628573573126155, guid: af6ba8465b029a94992143a8b4331183, type: 3}
   closed: {fileID: 5216084433564173977, guid: af6ba8465b029a94992143a8b4331183, type: 3}
+--- !u!114 &3635918387614992477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &1816910562666282389
 GameObject:
   m_ObjectHideFlags: 0

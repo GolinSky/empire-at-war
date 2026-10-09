@@ -1560,6 +1560,7 @@ GameObject:
   - component: {fileID: 5259228285351426918}
   - component: {fileID: 2157226560756004583}
   - component: {fileID: 6410026500573442608}
+  - component: {fileID: 4716127729803408635}
   m_Layer: 0
   m_Name: Belbullab22SquadronView
   m_TagString: Untagged
@@ -1743,6 +1744,18 @@ MonoBehaviour:
   - {fileID: 2581843268356220194}
   - {fileID: 6198644078951638440}
   - {fileID: 2860613498069391094}
+--- !u!114 &4716127729803408635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139966785138268518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &5383165998155913611
 GameObject:
   m_ObjectHideFlags: 0
@@ -2057,6 +2070,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
+  mainBattery: 0
   prewarmEffects: 2
   <WeaponType>k__BackingField: 15
 --- !u!1 &5885832452784735174
@@ -2336,6 +2350,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
+  mainBattery: 0
   prewarmEffects: 2
   <WeaponType>k__BackingField: 15
 --- !u!1 &7020256302479004675
@@ -2469,6 +2484,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
+  mainBattery: 0
   prewarmEffects: 2
   <WeaponType>k__BackingField: 15
 --- !u!1 &7501195633313286785
@@ -2705,6 +2721,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
+  mainBattery: 0
   prewarmEffects: 2
   <WeaponType>k__BackingField: 15
 --- !u!1 &8929359204056738334

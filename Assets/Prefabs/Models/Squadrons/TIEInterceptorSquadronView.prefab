@@ -15346,6 +15346,7 @@ GameObject:
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
   - component: {fileID: 1139883098706175716}
+  - component: {fileID: 6619461309688173793}
   m_Layer: 0
   m_Name: TIEInterceptorSquadronView
   m_TagString: Untagged
@@ -15605,6 +15606,18 @@ MonoBehaviour:
   - {fileID: 2612173204691248992}
   - {fileID: 5366584578806106708}
   - {fileID: 4101592171774474875}
+--- !u!114 &6619461309688173793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!1 &1798714492449445502
 GameObject:
   m_ObjectHideFlags: 0
