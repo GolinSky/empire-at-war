@@ -64,7 +64,8 @@ completed: 2026-10-09
 
 - Compare uses the full workspace; no roster sidebar or field inspector.
 - **Add units** opens a searchable picker with faction filtering, unit checkboxes, Select all / Unselect all for matching results, and Add selected. Individual + Add remains available. Existing comparison units are excluded; no count limit.
-- Cards wrap to available width: 330 px slots, maximum 100% for narrow panels; no column cap. Remove units using each card’s × button.
+- Cards wrap to available width: 330 px slots, maximum 100% for narrow panels; no column cap. Click selects one card; Ctrl+click toggles selection; selected cards have an accent outline. Ctrl+A selects all compared units; Delete removes selected units. Each card’s × button removes that unit.
+- Selection persists through sorting and redraws. Buttons and fields retain their own shortcuts; keyboard removal restores grid focus or opens/focuses the picker when no units remain. Removing comparison cards leaves the staged draft unchanged.
 - Drag the card background or ↕ handle to insert before/after another card, including across rows; insertion marker shows the drop position. Escape cancels. Dragging switches order to Manual. Buttons and fields retain their input behavior.
 - Order by: Manual, Price, Height Level, Availability Level (`AvailableLevel`), Class. Numeric order is ascending and draft-aware; missing stats sort last. Ties preserve current order.
 - Class order: squadrons (fighter/bomber/interceptor) → corvette → frigate → cruiser → capital → heavy capital/dreadnought (`HeavyCapital`) → structures.
@@ -235,3 +236,9 @@ completed: 2026-10-09
     - Replaced embedded hardpoint lists with View hardpoints; 620 × ≤560 px popup lists all mounts and preserves draft weapon editing.
     - Popup remains open across comparison refreshes; scroll offset is retained on its own list rebuild.
     - Balance EditMode **46/46 passed** in **27.43 s**; background drag, control exclusion, popup geometry/all-mount coverage and draft-only edits verified. Console errors: 0. No Play Mode run.
+
+14. [x] **Comparison selection and keyboard removal — 2026-10-09**
+    - Click selects one card; Ctrl+click adds/removes cards; Ctrl+A selects all compared units; Delete removes selected cards.
+    - Accent outline, retained selection across sorting/redraws, keyboard focus restoration and normal field/button input verified. Removal leaves drafts unchanged and returns units to the picker.
+    - Popup test uses a persistent host with the popup’s size to avoid desktop-focus dismissal during assertions.
+    - Balance EditMode **49/49 passed** in **36.40 s**. No Play Mode run.
