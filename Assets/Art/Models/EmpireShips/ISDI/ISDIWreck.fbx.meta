@@ -1,0 +1,285 @@
+fileFormatVersion: 2
+guid: a4d40c478bfd02f41855daed58b06e69
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M022
+    second: {fileID: 2100000, guid: 2935265a52b215b4e9f748054a11830b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M023
+    second: {fileID: 2100000, guid: c1a11eb29623d304f815e9c12b24845b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M024
+    second: {fileID: 2100000, guid: 997a0982a3fe2d848a93ccdf4a154903, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M025
+    second: {fileID: 2100000, guid: c7024dec88ec040449f7dfbcdd2961ed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M026
+    second: {fileID: 2100000, guid: 36a4ee29a60eaa64bb7a8c175bf7c133, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M027
+    second: {fileID: 2100000, guid: 43d9ef93eede54a43afc4778c8f74a99, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M028
+    second: {fileID: 2100000, guid: a55283d8d4283594594d3e66d139dd21, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M029
+    second: {fileID: 2100000, guid: 64ec7099b79f23148a2888e0bfc1dfa4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M030
+    second: {fileID: 2100000, guid: 5ae5611d1291ba44aa0ad8c1e6925982, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M031
+    second: {fileID: 2100000, guid: 45b9df7a1c980de448e117cb27876e61, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M032
+    second: {fileID: 2100000, guid: 35f48f7f748892e4c9cd889e21063395, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M033
+    second: {fileID: 2100000, guid: 4169bb47a84241049892d97214c17618, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M034
+    second: {fileID: 2100000, guid: 2beb4968acfb7c3489ad7ac232fd8ec0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M035
+    second: {fileID: 2100000, guid: 6849f1c94b3d96d4ebbeffbe513fe457, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M036
+    second: {fileID: 2100000, guid: 0f6755f7031abc04a84a4f5d7ab370e1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M037
+    second: {fileID: 2100000, guid: f1a47edf7c2fe3041a24d528e6faf88a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M038
+    second: {fileID: 2100000, guid: 2a2e9b06e9aa32d4386ddc5c7d30339d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M039
+    second: {fileID: 2100000, guid: 63a0735176b4d0a4ebfb6750fa22c003, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M040
+    second: {fileID: 2100000, guid: ef4975e96e4d5bb4681c2d20d6069f60, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M041
+    second: {fileID: 2100000, guid: c35931c189d84c345a9ef42f0cd29900, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M042
+    second: {fileID: 2100000, guid: 92cc3dbc80d0a074e99b41f7f209bc22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M043
+    second: {fileID: 2100000, guid: 232f260c16a38b14083b8899242cba61, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M044
+    second: {fileID: 2100000, guid: 38880c412d8afe94298af889869cded9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M045
+    second: {fileID: 2100000, guid: 80fbcb8dc841fc942ab3455589ff6e96, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M046
+    second: {fileID: 2100000, guid: d908bdae4dbaef64e96bbd1f2e5539b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M047
+    second: {fileID: 2100000, guid: 347e0cd553297ce469bf5b82c41b8ba2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M048
+    second: {fileID: 2100000, guid: de0cdfb8013bb3a4594560bc8dcae5ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M049
+    second: {fileID: 2100000, guid: 721ade8dae9330847927811c0a21890d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M050
+    second: {fileID: 2100000, guid: 2137db1ad0ea9d345a5d1b801df3b5ca, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M051
+    second: {fileID: 2100000, guid: f87dbb8f93a5b7b48a21186ead00320c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M052
+    second: {fileID: 2100000, guid: 4cd8fa2dcdec7804b94f203571ba02a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M053
+    second: {fileID: 2100000, guid: 4671ce049ce56f64c84665c663c28a40, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M054
+    second: {fileID: 2100000, guid: ba1678ea8436c1040b0124f9704794f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M055
+    second: {fileID: 2100000, guid: 3b174ca962cdbdf4eb8e375be6f6a3f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ISDIWreck_M056
+    second: {fileID: 2100000, guid: 9884b17c7b8d5e44fbf0122b664c38a5, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 1
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.0002
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

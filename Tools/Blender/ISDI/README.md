@@ -1,3 +1,5 @@
+> ISD I visuals were superseded on 2026-10-09 by Workshop 1770851727. Current integration: [ISDIRemake/README.md](../ISDIRemake/README.md). This legacy workflow remains historical/fighter reference; its ISD I builders and shared stripe builder must not be run over the replacement.
+
 # ISD I
 
 - Imported 2026-10-06 after reading `ALO_MODEL_IMPORT_GUIDE`, `PROJECT_ORGANIZATION` and `UI_UX_GUIDELINES` through `empire-vault`.

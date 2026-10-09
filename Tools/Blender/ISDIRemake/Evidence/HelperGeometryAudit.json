@@ -1,0 +1,290 @@
+[
+  {
+    "variant": "ISDI",
+    "mesh": "Collision",
+    "binary_triangles": 6082,
+    "blender_triangles": 6071,
+    "unique_nondegenerate_position_triangles": 6071,
+    "hidden": true
+  },
+  {
+    "variant": "ISDI",
+    "mesh": "Shadow_2",
+    "binary_triangles": 44682,
+    "blender_triangles": 11366,
+    "unique_nondegenerate_position_triangles": 11366,
+    "hidden": true
+  },
+  {
+    "variant": "ISDI",
+    "mesh": "Shadow_3",
+    "binary_triangles": 19341,
+    "blender_triangles": 4992,
+    "unique_nondegenerate_position_triangles": 4992,
+    "hidden": true
+  },
+  {
+    "variant": "ISDI",
+    "mesh": "Shadow_1",
+    "binary_triangles": 19620,
+    "blender_triangles": 4873,
+    "unique_nondegenerate_position_triangles": 4875,
+    "hidden": true
+  },
+  {
+    "variant": "ISDI",
+    "mesh": "Turr_Durr_Shadow_Blur",
+    "binary_triangles": 830,
+    "blender_triangles": 220,
+    "unique_nondegenerate_position_triangles": 220,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart00",
+    "mesh": "ISD1_Shadow",
+    "binary_triangles": 1986,
+    "blender_triangles": 508,
+    "unique_nondegenerate_position_triangles": 508,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart00",
+    "mesh": "Shadow",
+    "binary_triangles": 3652,
+    "blender_triangles": 913,
+    "unique_nondegenerate_position_triangles": 926,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart00",
+    "mesh": "Collision",
+    "binary_triangles": 922,
+    "blender_triangles": 910,
+    "unique_nondegenerate_position_triangles": 917,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart01",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 754,
+    "blender_triangles": 192,
+    "unique_nondegenerate_position_triangles": 192,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart01",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1307,
+    "blender_triangles": 396,
+    "unique_nondegenerate_position_triangles": 396,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart02",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 754,
+    "blender_triangles": 192,
+    "unique_nondegenerate_position_triangles": 192,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart02",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1307,
+    "blender_triangles": 396,
+    "unique_nondegenerate_position_triangles": 396,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart03",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 756,
+    "blender_triangles": 196,
+    "unique_nondegenerate_position_triangles": 196,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart03",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1254,
+    "blender_triangles": 386,
+    "unique_nondegenerate_position_triangles": 386,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart04",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 756,
+    "blender_triangles": 196,
+    "unique_nondegenerate_position_triangles": 196,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart04",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1254,
+    "blender_triangles": 386,
+    "unique_nondegenerate_position_triangles": 386,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart05",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 756,
+    "blender_triangles": 196,
+    "unique_nondegenerate_position_triangles": 196,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart05",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1254,
+    "blender_triangles": 386,
+    "unique_nondegenerate_position_triangles": 386,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart06",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 756,
+    "blender_triangles": 196,
+    "unique_nondegenerate_position_triangles": 196,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart06",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1254,
+    "blender_triangles": 386,
+    "unique_nondegenerate_position_triangles": 386,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart07",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 756,
+    "blender_triangles": 196,
+    "unique_nondegenerate_position_triangles": 196,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart07",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1254,
+    "blender_triangles": 386,
+    "unique_nondegenerate_position_triangles": 386,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart08",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 756,
+    "blender_triangles": 196,
+    "unique_nondegenerate_position_triangles": 196,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart08",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 1254,
+    "blender_triangles": 386,
+    "unique_nondegenerate_position_triangles": 386,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart09",
+    "mesh": "Shadow",
+    "binary_triangles": 96,
+    "blender_triangles": 24,
+    "unique_nondegenerate_position_triangles": 24,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart10",
+    "mesh": "Shadow",
+    "binary_triangles": 96,
+    "blender_triangles": 24,
+    "unique_nondegenerate_position_triangles": 24,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart11",
+    "mesh": "Shadow",
+    "binary_triangles": 96,
+    "blender_triangles": 24,
+    "unique_nondegenerate_position_triangles": 24,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart12",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 1709,
+    "blender_triangles": 440,
+    "unique_nondegenerate_position_triangles": 440,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart12",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 36,
+    "blender_triangles": 12,
+    "unique_nondegenerate_position_triangles": 12,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart13",
+    "mesh": "Barrel_Shadow",
+    "binary_triangles": 1709,
+    "blender_triangles": 440,
+    "unique_nondegenerate_position_triangles": 440,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIPart13",
+    "mesh": "Turret_Shadow",
+    "binary_triangles": 36,
+    "blender_triangles": 12,
+    "unique_nondegenerate_position_triangles": 12,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIWreck",
+    "mesh": "Shadow_1",
+    "binary_triangles": 19968,
+    "blender_triangles": 4958,
+    "unique_nondegenerate_position_triangles": 4967,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIWreck",
+    "mesh": "Collision",
+    "binary_triangles": 6414,
+    "blender_triangles": 6402,
+    "unique_nondegenerate_position_triangles": 6402,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIWreck",
+    "mesh": "Shadow_2",
+    "binary_triangles": 40072,
+    "blender_triangles": 10202,
+    "unique_nondegenerate_position_triangles": 10202,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIWreck",
+    "mesh": "Shadow_3",
+    "binary_triangles": 19404,
+    "blender_triangles": 4992,
+    "unique_nondegenerate_position_triangles": 4992,
+    "hidden": true
+  },
+  {
+    "variant": "ISDIWreck",
+    "mesh": "DISS_Shadow_2",
+    "binary_triangles": 4557,
+    "blender_triangles": 1164,
+    "unique_nondegenerate_position_triangles": 1164,
+    "hidden": true
+  }
+]

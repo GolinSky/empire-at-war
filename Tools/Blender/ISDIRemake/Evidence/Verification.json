@@ -1,0 +1,137 @@
+{
+  "checks": 30340,
+  "geometry": [
+    {
+      "name": "ISDI",
+      "meshes": 33,
+      "triangles": 106741,
+      "bones": 147,
+      "maximumUnityBoneError": 1.48768459E-06
+    },
+    {
+      "name": "ISDIPart00",
+      "meshes": 9,
+      "triangles": 5269,
+      "bones": 11,
+      "maximumUnityBoneError": 2.13248063E-06
+    },
+    {
+      "name": "ISDIPart01",
+      "meshes": 6,
+      "triangles": 1206,
+      "bones": 10,
+      "maximumUnityBoneError": 1.86210866E-06
+    },
+    {
+      "name": "ISDIPart02",
+      "meshes": 6,
+      "triangles": 1206,
+      "bones": 10,
+      "maximumUnityBoneError": 1.86210866E-06
+    },
+    {
+      "name": "ISDIPart03",
+      "meshes": 5,
+      "triangles": 1137,
+      "bones": 9,
+      "maximumUnityBoneError": 1.28886427E-07
+    },
+    {
+      "name": "ISDIPart04",
+      "meshes": 5,
+      "triangles": 1137,
+      "bones": 9,
+      "maximumUnityBoneError": 1.28886427E-07
+    },
+    {
+      "name": "ISDIPart05",
+      "meshes": 5,
+      "triangles": 1137,
+      "bones": 9,
+      "maximumUnityBoneError": 1.28886427E-07
+    },
+    {
+      "name": "ISDIPart06",
+      "meshes": 5,
+      "triangles": 1137,
+      "bones": 9,
+      "maximumUnityBoneError": 1.28886427E-07
+    },
+    {
+      "name": "ISDIPart07",
+      "meshes": 5,
+      "triangles": 1137,
+      "bones": 9,
+      "maximumUnityBoneError": 1.28886427E-07
+    },
+    {
+      "name": "ISDIPart08",
+      "meshes": 5,
+      "triangles": 1137,
+      "bones": 9,
+      "maximumUnityBoneError": 1.28886427E-07
+    },
+    {
+      "name": "ISDIPart09",
+      "meshes": 4,
+      "triangles": 212,
+      "bones": 8,
+      "maximumUnityBoneError": 3.2529698E-08
+    },
+    {
+      "name": "ISDIPart10",
+      "meshes": 4,
+      "triangles": 212,
+      "bones": 8,
+      "maximumUnityBoneError": 3.2529698E-08
+    },
+    {
+      "name": "ISDIPart11",
+      "meshes": 4,
+      "triangles": 212,
+      "bones": 8,
+      "maximumUnityBoneError": 3.2529698E-08
+    },
+    {
+      "name": "ISDIPart12",
+      "meshes": 7,
+      "triangles": 896,
+      "bones": 11,
+      "maximumUnityBoneError": 7.417913E-08
+    },
+    {
+      "name": "ISDIPart13",
+      "meshes": 7,
+      "triangles": 896,
+      "bones": 11,
+      "maximumUnityBoneError": 7.417913E-08
+    },
+    {
+      "name": "ISDIWreck",
+      "meshes": 35,
+      "triangles": 107434,
+      "bones": 132,
+      "maximumUnityBoneError": 2.34543336E-06
+    }
+  ],
+  "maximumMountError": 0.0,
+  "hull": 4500.0,
+  "shields": 4000.0,
+  "speed": 15.0,
+  "bounds": [
+    94.26325,
+    49.6460953,
+    167.997711
+  ],
+  "targetableHardpoints": 30,
+  "weapons": 24,
+  "attachments": 14,
+  "registrations": true,
+  "materials": true,
+  "savedReferences": true,
+  "retainedBalance": true,
+  "retainedHangar": true,
+  "obsoleteDependencies": 0,
+  "playModeAcceptance": false,
+  "automatedTests": false
+}
