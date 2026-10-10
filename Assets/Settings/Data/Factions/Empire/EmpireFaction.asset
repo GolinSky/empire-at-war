@@ -230,8 +230,8 @@ MonoBehaviour:
         <Name>k__BackingField: Imperial Venator
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 17200
-        <BuildTime>k__BackingField: 70
+        <Price>k__BackingField: 4500
+        <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 26
         <Icon>k__BackingField: {fileID: 21300000, guid: d612310c959d0bb4d93c64dba1f5b3f4,
           type: 3}
