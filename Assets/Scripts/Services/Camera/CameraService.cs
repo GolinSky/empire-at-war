@@ -7,7 +7,6 @@ using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Utils;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace EmpireAtWar.Services.Camera
@@ -47,7 +46,7 @@ namespace EmpireAtWar.Services.Camera
         private ICameraPreferences _preferences;
         private IInputLock _inputLock;
 
-        [SerializeField, FormerlySerializedAs("_camera")] private UnityEngine.Camera camera;
+        [SerializeField] private UnityEngine.Camera sceneCamera;
         private CameraData _cameraData;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
 
@@ -65,7 +64,7 @@ namespace EmpireAtWar.Services.Camera
         public Vector3 CameraPosition => transform.position;
         public Transform CameraTransform => transform;
         public Vector3 CameraForward => transform.forward;
-        public float FieldOfView => camera.fieldOfView;
+        public float FieldOfView => sceneCamera.fieldOfView;
 
         [Inject]
         public void Constructor(
@@ -115,22 +114,22 @@ namespace EmpireAtWar.Services.Camera
 
         public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
         {
-            return _frustumProjection.Project(camera, mapMin, mapMax);
+            return _frustumProjection.Project(sceneCamera, mapMin, mapMax);
         }
 
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
         {
-            return camera.WorldToViewportPoint(currentPosition);
+            return sceneCamera.WorldToViewportPoint(currentPosition);
         }
 
         public Vector2 WorldToScreenPoint(Vector3 position)
         {
-            return camera.WorldToScreenPoint(position);
+            return sceneCamera.WorldToScreenPoint(position);
         }
 
         public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)
         {
-            Ray ray = camera.ScreenPointToRay(screenPoint);
+            Ray ray = sceneCamera.ScreenPointToRay(screenPoint);
             _plane.SetNormalAndPosition(Vector3.up, Vector3.up * position.y);
 
             if (_plane.Raycast(ray, out float distance))
@@ -141,7 +140,7 @@ namespace EmpireAtWar.Services.Camera
 
         public RaycastHit ScreenPointToRay(Vector2 screenPoint)
         {
-            Ray ray = camera.ScreenPointToRay(screenPoint);
+            Ray ray = sceneCamera.ScreenPointToRay(screenPoint);
             Physics.Raycast(ray, out RaycastHit hit);
             return hit;
         }
