@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using UnityEngine;
@@ -68,13 +69,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                 ShipRotationKinematics.CalculateMinimumTurnRadius(
                     Mathf.Max(agent.NavigationSpeed, 0f),
                     Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon)));
-            Vector3 firstLeg = GetPlanarDirection(waypoints[1] - origin, forward);
+            Vector3 firstLeg = PlanarGeometry.NormalizeDirection(waypoints[1] - origin, forward);
 
             // Each smooth option retries with tighter curves: full-size handles swing
             // wide of the waypoint legs and can cut into an obstacle's clearance.
             // 1) Curved route that keeps the current heading: no turn in place.
             if (waypoints.Count == 2 ||
-                Vector3.Dot(GetPlanarDirection(forward, firstLeg), firstLeg) > 0f)
+                Vector3.Dot(PlanarGeometry.NormalizeDirection(forward, firstLeg), firstLeg) > 0f)
             {
                 for (int i = 0; i < HANDLE_SCALES.Length; i++)
                 {
@@ -172,23 +173,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             ShipBezierRoute route)
         {
             return ShipRotationKinematics.CalculateTurnDuration(
-                Quaternion.LookRotation(GetPlanarDirection(forward, Vector3.forward), Vector3.up),
+                Quaternion.LookRotation(PlanarGeometry.NormalizeDirection(forward, Vector3.forward), Vector3.up),
                 route.InitialTangent,
                 Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));
-        }
-
-        private static Vector3 GetPlanarDirection(Vector3 direction, Vector3 fallback)
-        {
-            direction.y = 0f;
-            if (direction.sqrMagnitude > Mathf.Epsilon)
-            {
-                return direction.normalized;
-            }
-
-            fallback.y = 0f;
-            return fallback.sqrMagnitude > Mathf.Epsilon
-                ? fallback.normalized
-                : Vector3.forward;
         }
     }
 }

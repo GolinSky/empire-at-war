@@ -1,3 +1,4 @@
+using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 
@@ -20,11 +21,7 @@ namespace EmpireAtWar.Services.OwnedAreas
         /// <summary>True when a circle of <paramref name="margin"/> radius at the position overlaps this one.</summary>
         public bool Contains(Vector3 position, float margin)
         {
-            Vector3 center = Transform.position;
-            float x = position.x - center.x;
-            float z = position.z - center.z;
-            float reach = Radius + margin;
-            return x * x + z * z <= reach * reach;
+            return PlanarGeometry.ContainsCircle(position, Transform.position, Radius + margin);
         }
     }
 }

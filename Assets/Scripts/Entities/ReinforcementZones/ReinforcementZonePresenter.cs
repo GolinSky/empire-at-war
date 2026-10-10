@@ -1,3 +1,4 @@
+using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Views.ReinforcementZones;
@@ -46,9 +47,7 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
 
         public bool Contains(UnityEngine.Vector3 position)
         {
-            float x = position.x - Center.x;
-            float z = position.z - Center.z;
-            return x * x + z * z <= Radius * Radius;
+            return PlanarGeometry.ContainsCircle(position, Center, Radius);
         }
 
         private void Render()

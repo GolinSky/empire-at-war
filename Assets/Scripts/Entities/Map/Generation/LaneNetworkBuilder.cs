@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using Random = System.Random;
 
@@ -62,17 +63,17 @@ namespace EmpireAtWar.Entities.Map.Generation
                 for (int to = from + 1; to < nodes.Count; to++)
                 {
                     Vector3 middle = (nodes[from].Center + nodes[to].Center) * 0.5f;
-                    float radius = MapGeometry.Distance(nodes[from].Center, nodes[to].Center) * 0.5f;
+                    float radius = PlanarGeometry.Distance(nodes[from].Center, nodes[to].Center) * 0.5f;
                     bool isClear = true;
                     for (int other = 0; other < nodes.Count && isClear; other++)
                     {
                         isClear = other == from || other == to ||
-                            MapGeometry.Distance(nodes[other].Center, middle) >= radius;
+                            PlanarGeometry.Distance(nodes[other].Center, middle) >= radius;
                     }
 
                     foreach (MapStation station in stations)
                     {
-                        isClear &= MapGeometry.Distance(station.Position, middle) >= radius;
+                        isClear &= PlanarGeometry.Distance(station.Position, middle) >= radius;
                     }
 
                     isGabriel[from, to] = isClear;
@@ -106,7 +107,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                             continue;
                         }
 
-                        float weight = MapGeometry.Distance(nodes[from].Center, nodes[to].Center) *
+                        float weight = PlanarGeometry.Distance(nodes[from].Center, nodes[to].Center) *
                             (isGabriel[from, to] ? 1f : NON_GABRIEL_WEIGHT);
                         if (weight < bestWeight)
                         {

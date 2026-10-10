@@ -1,3 +1,4 @@
+using EmpireAtWar.Utils;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Services.Player;
@@ -152,10 +153,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             foreach (CaptureSiteView view in _siteViews)
             {
-                float x = position.x - view.Center.x;
-                float z = position.z - view.Center.z;
-                float radius = view.Radius + clearance;
-                if (x * x + z * z <= radius * radius)
+                if (PlanarGeometry.ContainsCircle(position, view.Center, view.Radius + clearance))
                 {
                     return true;
                 }

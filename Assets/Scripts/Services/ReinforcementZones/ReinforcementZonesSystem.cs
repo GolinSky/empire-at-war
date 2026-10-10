@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
@@ -172,10 +173,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                float x = position.x - zone.Center.x;
-                float z = position.z - zone.Center.z;
-                float radius = zone.Radius + clearance;
-                if (x * x + z * z <= radius * radius)
+                if (PlanarGeometry.ContainsCircle(position, zone.Center, zone.Radius + clearance))
                 {
                     return true;
                 }

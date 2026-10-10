@@ -1,3 +1,4 @@
+using EmpireAtWar.Utils;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
@@ -80,10 +81,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public bool Contains(Vector3 position, float clearance = 0f)
         {
-            float x = position.x - Center.x;
-            float z = position.z - Center.z;
-            float radius = Radius + clearance;
-            return x * x + z * z <= radius * radius;
+            return PlanarGeometry.ContainsCircle(position, Center, Radius + clearance);
         }
 
         /// <returns>True when the site changed owner.</returns>

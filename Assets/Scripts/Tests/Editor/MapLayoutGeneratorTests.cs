@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -178,7 +179,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     foreach (MapLane lane in layout.Lanes)
                     {
-                        Assert.That(MapGeometry.DistanceToPolyline(volume.Center, lane.Points) - volume.Radius,
+                        Assert.That(PlanarGeometry.DistanceToPolyline(volume.Center, lane.Points) - volume.Radius,
                             Is.GreaterThanOrEqualTo(passableHalfWidth), "An asteroid field blocks a lane.");
                     }
                 }
@@ -212,13 +213,13 @@ namespace EmpireAtWar.Tests.Editor
                         {
                             foreach (FieldVolume volume in field.Volumes)
                             {
-                                Assert.That(MapGeometry.Distance(volume.Center, station) - volume.Radius,
+                                Assert.That(PlanarGeometry.Distance(volume.Center, station) - volume.Radius,
                                     Is.GreaterThanOrEqualTo(footprint), $"{mapSize} seed {seed} volume");
                             }
 
                             foreach (AsteroidSpot rock in field.Rocks)
                             {
-                                Assert.That(MapGeometry.Distance(rock.Position, station),
+                                Assert.That(PlanarGeometry.Distance(rock.Position, station),
                                     Is.GreaterThanOrEqualTo(footprint), $"{mapSize} seed {seed} rock");
                             }
                         }
@@ -316,7 +317,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 if (site.FacilityType == SiteFacilityType.Mining)
                 {
-                    closest = Mathf.Min(closest, MapGeometry.Distance(station, site.Center));
+                    closest = Mathf.Min(closest, PlanarGeometry.Distance(station, site.Center));
                 }
             }
 
@@ -327,7 +328,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (ZoneSpot zone in layout.Zones)
             {
-                if (MapGeometry.Distance(zone.Center, position) < TOLERANCE)
+                if (PlanarGeometry.Distance(zone.Center, position) < TOLERANCE)
                 {
                     return true;
                 }
@@ -340,7 +341,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (SiteSpot site in layout.Sites)
             {
-                if (MapGeometry.Distance(site.Center, position) < TOLERANCE)
+                if (PlanarGeometry.Distance(site.Center, position) < TOLERANCE)
                 {
                     return true;
                 }
@@ -353,8 +354,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (MapLane lane in layout.Lanes)
             {
-                if (MapGeometry.Distance(lane.Points[0], position) < TOLERANCE ||
-                    MapGeometry.Distance(lane.Points[lane.Points.Count - 1], position) < TOLERANCE)
+                if (PlanarGeometry.Distance(lane.Points[0], position) < TOLERANCE ||
+                    PlanarGeometry.Distance(lane.Points[lane.Points.Count - 1], position) < TOLERANCE)
                 {
                     return true;
                 }

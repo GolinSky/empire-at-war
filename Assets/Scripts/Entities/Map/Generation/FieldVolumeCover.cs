@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Map.Generation
@@ -36,7 +37,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 volumes.Add(new FieldVolume(center, radius));
                 // Cells the circle only partly reaches count as covered; the next circle would add little.
                 float coverage = radius + grid.CellSize * PARTIAL_COVER_SHARE;
-                uncovered.RemoveAll(cell => MapGeometry.Distance(grid.GetCenter(cell), center) <= coverage);
+                uncovered.RemoveAll(cell => PlanarGeometry.Distance(grid.GetCenter(cell), center) <= coverage);
             }
 
             return volumes;
