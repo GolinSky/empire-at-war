@@ -107,7 +107,7 @@ namespace EmpireAtWar.Components.FogOfWar
             TrackRenderers(explosion.Renderers);
         }
 
-        private void TrackIonStun(IonStunView ionStun)
+        private void TrackIonStun(IIonStunRenderers ionStun)
         {
             TrackRenderers(ionStun.Renderers);
         }

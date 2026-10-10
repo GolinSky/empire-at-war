@@ -5,7 +5,7 @@ using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public sealed class IonStunView : MonoBehaviour, IIonStunView
+    public sealed class IonStunView : MonoBehaviour, IIonStunView, IIonStunRenderers
     {
         private const int ARC_POINTS = 20;
 
