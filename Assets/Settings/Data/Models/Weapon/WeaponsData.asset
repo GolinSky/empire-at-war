@@ -16,11 +16,11 @@ MonoBehaviour:
   - weaponType: 23
     displayName: Medium Laser Cannon
     damageType: 0
-    damage: 6
-    shotsPerSalvo: 1
-    shotInterval: 0.5
-    reload: 5
-    range: 100
+    damage: 7.5
+    shotsPerSalvo: 3
+    shotInterval: 0.1
+    reload: 1.5
+    range: 125
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -31,14 +31,14 @@ MonoBehaviour:
   - weaponType: 69
     displayName: Heavy Dual Laser Cannon
     damageType: 0
-    damage: 17.5
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 3.8705
+    damage: 35
+    shotsPerSalvo: 3
+    shotInterval: 0.1
+    reload: 2.8
     range: 150
     strikecraftOnly: 0
     interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
     color: {r: 1, g: 0.15, b: 0.05, a: 1}
@@ -47,10 +47,10 @@ MonoBehaviour:
     displayName: Heavy Laser Cannon
     damageType: 0
     damage: 17.5
-    shotsPerSalvo: 1
-    shotInterval: 1
-    reload: 2.25
-    range: 200
+    shotsPerSalvo: 3
+    shotInterval: 0.1
+    reload: 2.8
+    range: 150
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -91,10 +91,10 @@ MonoBehaviour:
   - weaponType: 7
     displayName: Dual Laser Cannon
     damageType: 0
-    damage: 6
-    shotsPerSalvo: 6
+    damage: 12
+    shotsPerSalvo: 3
     shotInterval: 0.1
-    reload: 2
+    reload: 1.5
     range: 100
     strikecraftOnly: 0
     interceptable: 0
@@ -196,11 +196,11 @@ MonoBehaviour:
   - weaponType: 33
     displayName: Light Turbolaser
     damageType: 2
-    damage: 10
-    shotsPerSalvo: 1
+    damage: 16
+    shotsPerSalvo: 3
     shotInterval: 0.2
     reload: 4
-    range: 87.5
+    range: 175
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -215,7 +215,7 @@ MonoBehaviour:
     shotsPerSalvo: 3
     shotInterval: 0.2
     reload: 4
-    range: 87.5
+    range: 200
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -245,7 +245,7 @@ MonoBehaviour:
     shotsPerSalvo: 3
     shotInterval: 0.2
     reload: 5
-    range: 87.5
+    range: 200
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -286,11 +286,11 @@ MonoBehaviour:
   - weaponType: 36
     displayName: Light Dual Turbolaser
     damageType: 2
-    damage: 45
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 6.91
-    range: 125
+    damage: 32
+    shotsPerSalvo: 3
+    shotInterval: 0.2
+    reload: 4
+    range: 175
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
@@ -331,11 +331,11 @@ MonoBehaviour:
   - weaponType: 5
     displayName: Dual Medium Turbolaser
     damageType: 2
-    damage: 25
-    shotsPerSalvo: 6
+    damage: 50
+    shotsPerSalvo: 3
     shotInterval: 0.2
-    reload: 7
-    range: 87.5
+    reload: 5
+    range: 200
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
@@ -377,10 +377,10 @@ MonoBehaviour:
     displayName: Heavy Turbolaser
     damageType: 3
     damage: 50
-    shotsPerSalvo: 2
+    shotsPerSalvo: 3
     shotInterval: 0.3
     reload: 8
-    range: 75
+    range: 225
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -436,11 +436,11 @@ MonoBehaviour:
   - weaponType: 3
     displayName: Dual Heavy Turbolaser
     damageType: 3
-    damage: 50
-    shotsPerSalvo: 4
+    damage: 100
+    shotsPerSalvo: 3
     shotInterval: 0.3
-    reload: 10
-    range: 75
+    reload: 8
+    range: 225
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
@@ -451,11 +451,11 @@ MonoBehaviour:
   - weaponType: 9
     displayName: DBY-827 Heavy Turbolaser
     damageType: 3
-    damage: 45
-    shotsPerSalvo: 4
+    damage: 90
+    shotsPerSalvo: 3
     shotInterval: 0.3
-    reload: 10
-    range: 75
+    reload: 8
+    range: 225
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
@@ -466,14 +466,14 @@ MonoBehaviour:
   - weaponType: 37
     displayName: Medium Dual Turbo-Ion Cannon
     damageType: 4
-    damage: 30
-    shotsPerSalvo: 2
+    damage: 150
+    shotsPerSalvo: 1
     shotInterval: 0.08
-    reload: 10.25
-    range: 325
+    reload: 6
+    range: 225
     strikecraftOnly: 0
     interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 55
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
@@ -511,11 +511,11 @@ MonoBehaviour:
   - weaponType: 32
     displayName: Medium Turbo-Ion Cannon
     damageType: 4
-    damage: 30
+    damage: 75
     shotsPerSalvo: 1
     shotInterval: 0.2
     reload: 6
-    range: 75
+    range: 225
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -556,11 +556,11 @@ MonoBehaviour:
   - weaponType: 57
     displayName: Light Turbo-Ion Cannon
     damageType: 4
-    damage: 50
+    damage: 62.5
     shotsPerSalvo: 1
     shotInterval: 3
     reload: 6.25
-    range: 250
+    range: 200
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -575,7 +575,7 @@ MonoBehaviour:
     shotsPerSalvo: 2
     shotInterval: 0.2
     reload: 6
-    range: 75
+    range: 200
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -593,7 +593,7 @@ MonoBehaviour:
     range: 450
     strikecraftOnly: 0
     interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 45
     color: {r: 0.2, g: 0.6, b: 1, a: 1}
@@ -631,11 +631,11 @@ MonoBehaviour:
   - weaponType: 31
     displayName: Heavy Turbo-Ion Cannon
     damageType: 4
-    damage: 60
+    damage: 78
     shotsPerSalvo: 2
     shotInterval: 0.2
     reload: 10
-    range: 75
+    range: 250
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -661,11 +661,11 @@ MonoBehaviour:
   - weaponType: 11
     displayName: Heavy Ion Cannon
     damageType: 4
-    damage: 60
+    damage: 62.5
     shotsPerSalvo: 2
     shotInterval: 0.2
     reload: 10
-    range: 75
+    range: 225
     strikecraftOnly: 0
     interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -720,7 +720,7 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 52
     displayName: Heavy 8-Burst Artillery-Rocket Launcher
-    damageType: 11
+    damageType: 5
     damage: 20
     shotsPerSalvo: 8
     shotInterval: 3
@@ -735,7 +735,7 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 34
     displayName: Heavy Artillery-Rocket Launcher
-    damageType: 11
+    damageType: 5
     damage: 20
     shotsPerSalvo: 4
     shotInterval: 3
@@ -750,7 +750,7 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 64
     displayName: Heavy 2-Burst Barrage Rocket Launcher
-    damageType: 0
+    damageType: 5
     damage: 50
     shotsPerSalvo: 2
     shotInterval: 1
@@ -765,7 +765,7 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 35
     displayName: Barrage-Rocket Launcher
-    damageType: 0
+    damageType: 5
     damage: 40
     shotsPerSalvo: 6
     shotInterval: 2
