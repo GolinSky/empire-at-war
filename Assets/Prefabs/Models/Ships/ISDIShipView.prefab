@@ -206,7 +206,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 31
+  <WeaponType>k__BackingField: 11
 --- !u!135 &7951092455702929266
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5492,7 +5492,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 33
+  <WeaponType>k__BackingField: 1
 --- !u!135 &2118757405989055179
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6423,7 +6423,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 33
+  <WeaponType>k__BackingField: 1
 --- !u!135 &7439671852275327898
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -11962,7 +11962,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 31
+  <WeaponType>k__BackingField: 11
 --- !u!135 &2070918640324346603
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12145,7 +12145,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 33
+  <WeaponType>k__BackingField: 1
 --- !u!135 &5234639964737289373
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12431,7 +12431,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 33
+  <WeaponType>k__BackingField: 1
 --- !u!135 &7421419238237858492
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -18776,7 +18776,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 33
+  <WeaponType>k__BackingField: 1
 --- !u!135 &740678788837030541
 SphereCollider:
   m_ObjectHideFlags: 0

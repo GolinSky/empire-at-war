@@ -38,13 +38,12 @@ MonoBehaviour:
   <SeekerWarheadMinimumTravel>k__BackingField: 10
   <Range>k__BackingField: 350
   <Delay>k__BackingField: 0.25
-  <WeaponRange>k__BackingField: 70
   <VisionRange>k__BackingField: 350
   <MemberCount>k__BackingField: 4
   weaponLoadout:
-  - weaponType: 13
-    count: 8
   - weaponType: 15
     count: 4
   - weaponType: 22
+    count: 8
+  - weaponType: 30
     count: 8

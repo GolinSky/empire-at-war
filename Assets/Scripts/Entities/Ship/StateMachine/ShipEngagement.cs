@@ -14,7 +14,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
                    weapon.HasEnoughRange(movement.GetRange(
                        enemy.GetFacade<IEntityTransformFacade>().Transform.position),
-                       ContactDistance(movement, enemy));
+                       ContactDistance(movement, enemy), enemy.HealthModel.ShipClass);
         }
 
         /// <summary>

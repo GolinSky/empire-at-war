@@ -141,7 +141,8 @@ namespace EmpireAtWar.Editor.Balance
             panel.Add(summary);
             EditableStat(summary, unit, registry, controller, squadron ? "Hull / member" : "Hull HP", "Hull", "MemberHull");
             EditableStat(summary, unit, registry, controller, squadron ? "Shield / member" : "Shield", "Shields", "MemberShields");
-            Stat(summary, "Base DPS · estimate", new BalanceDpsEstimator(registry).Estimate(unit, draft).ToString());
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+                Stat(summary, "Base DPS · estimate", estimator.Estimate(unit, draft).ToString());
             Stat(summary, "Speed", Value(unit, registry, draft, "Speed", "CruiseSpeed"));
         }
 

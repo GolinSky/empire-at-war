@@ -53,7 +53,7 @@ MonoBehaviour:
     <Max>k__BackingField: 30
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 63
+  <WeaponType>k__BackingField: 35
 --- !u!1 &938206353794103067
 GameObject:
   m_ObjectHideFlags: 0
@@ -2369,7 +2369,7 @@ MonoBehaviour:
     <Max>k__BackingField: 30
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 63
+  <WeaponType>k__BackingField: 35
 --- !u!1 &6623681445740066052
 GameObject:
   m_ObjectHideFlags: 0

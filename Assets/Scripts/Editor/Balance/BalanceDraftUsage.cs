@@ -12,7 +12,7 @@ namespace EmpireAtWar.Editor.Balance
         public BalanceDraftUsage(BalanceRegistration registry, BalanceDraft draft)
         {
             _registry = registry;
-            WeaponIds = registry.Fields.Values.Where(field => field.Stat.StartsWith("weapon/") && field.Stat.EndsWith("/damage"))
+            WeaponIds = registry.Fields.Values.Where(field => field.Stat.StartsWith("weapon/") && field.Stat.EndsWith("/" + BalanceWeaponAdapter.DEFINITION_MARKER))
                 .Select(field => int.Parse(field.Stat.Split('/')[1])).Distinct().OrderBy(id => id).ToArray();
             var weaponUsers = registry.Fields.Values.Where(field => !field.SharedMountSource && field.Stat == "WeaponType")
                 .GroupBy(field => field.DraftValue(draft)).ToDictionary(group => group.Key,

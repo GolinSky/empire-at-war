@@ -1,23 +1,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
 
 namespace EmpireAtWar.Editor.Balance
 {
-    // Base DPS from draft values: mounts × damage × shots per salvo / firing cycle.
+    // Base DPS from draft values: mounts × each weapon's derived damage per second.
     // Excludes accuracy, damage matrix, research, abilities, firing arcs and projectile travel.
-    public sealed class BalanceDpsEstimator
+    public sealed class BalanceDpsEstimator : System.IDisposable
     {
-        public const string FORMULA = "Base DPS = mounts × damage × shots per salvo / max(reload, (shots − 1) × shot interval).";
+        public const string FORMULA = "Base DPS = mounts × damage × shots per salvo / max(reload, (shots − 1) × shot interval), " +
+                                      "with each weapon's stats derived from its family, caliber, range class, mount, pattern and variant.";
 
         private readonly BalanceRegistration _registry;
-        private readonly Dictionary<string, BalanceField> _profiles;
+        private readonly BalanceWeaponPreview _weapons;
 
         public BalanceDpsEstimator(BalanceRegistration registry)
         {
             _registry = registry;
-            _profiles = registry.Fields.Values.Where(field => field.Stat.StartsWith("weapon/"))
-                .ToDictionary(field => field.Stat);
+            _weapons = new BalanceWeaponPreview(registry);
         }
 
         public BalanceDpsEstimate Estimate(BalanceUnit unit, BalanceDraft draft)
@@ -31,17 +32,13 @@ namespace EmpireAtWar.Editor.Balance
             double total = 0;
             foreach (IGrouping<string, BalanceField> group in mounts.GroupBy(field => field.DraftValue(draft)))
             {
-                string prefix = "weapon/" + group.Key + "/";
-                if (!_profiles.ContainsKey(prefix + "damage"))
+                WeaponType type = (WeaponType)int.Parse(group.Key, CultureInfo.InvariantCulture);
+                if (!_weapons.TryGetProfile(type, draft, out WeaponProfile profile))
                     return BalanceDpsEstimate.Unavailable("Missing weapon profile: " + BalanceFieldView.Display(group.First(), group.Key));
-
-                double reload = Read(prefix + "reload", draft);
-                double interval = Read(prefix + "shotInterval", draft);
-                int shots = (int)Read(prefix + "shotsPerSalvo", draft);
-                if (!(BalanceWeaponMath.CycleSeconds(shots, interval, reload) > 0))
+                if (!(profile.CycleSeconds > 0))
                     return BalanceDpsEstimate.Unavailable(BalanceDpsEstimate.INVALID_DRAFT);
 
-                total += group.Count() * BalanceWeaponMath.SalvoDps(Read(prefix + "damage", draft), shots, interval, reload);
+                total += group.Count() * (double)profile.DamagePerSecond;
             }
 
             return double.IsFinite(total)
@@ -49,7 +46,6 @@ namespace EmpireAtWar.Editor.Balance
                 : BalanceDpsEstimate.Unavailable(BalanceDpsEstimate.INVALID_DRAFT);
         }
 
-        private double Read(string stat, BalanceDraft draft) =>
-            double.Parse(_profiles[stat].DraftValue(draft), CultureInfo.InvariantCulture);
+        public void Dispose() => _weapons.Dispose();
     }
 }

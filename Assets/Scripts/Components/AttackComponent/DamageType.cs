@@ -5,7 +5,6 @@ namespace EmpireAtWar.Components.AttackComponent
         Laser = 0,
         PointDefense = 1,
         Turbolaser = 2,
-        HeavyTurbolaser = 3,
         Ion = 4,
         ConcussionMissile = 5,
         ProtonTorpedo = 6,

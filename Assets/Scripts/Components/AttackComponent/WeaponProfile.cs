@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 
@@ -35,6 +36,46 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private Color color = Color.white;
         [SerializeField] private Vector3 size = Vector3.one;
 
+        // Set only on profiles built from the weapon rules; serialized ability and super weapon profiles keep the defaults.
+        [NonSerialized] private WeaponFamily? _family;
+        [NonSerialized] private bool _usesFactionColor;
+        [NonSerialized] private bool _hasTargetSizeBias;
+        [NonSerialized] private ShipClassValues _damageBias;
+        [NonSerialized] private ShipClassValues _accuracyBias;
+        [NonSerialized] private float _accuracyMultiplier = 1f;
+
+        public WeaponProfile()
+        {
+        }
+
+        public WeaponProfile(WeaponType weaponType, string displayName, WeaponFamily family, DamageType damageType,
+            float damage, int shotsPerSalvo, float shotInterval, float reload, float range, bool strikecraftOnly,
+            bool interceptable, ShotEffect shotPrefab, float projectileSpeed, Color color, Vector3 size,
+            bool usesFactionColor, bool hasTargetSizeBias, ShipClassValues damageBias, ShipClassValues accuracyBias,
+            float accuracyMultiplier)
+        {
+            this.weaponType = weaponType;
+            this.displayName = displayName;
+            this.damageType = damageType;
+            this.damage = damage;
+            this.shotsPerSalvo = shotsPerSalvo;
+            this.shotInterval = shotInterval;
+            this.reload = reload;
+            this.range = range;
+            this.strikecraftOnly = strikecraftOnly;
+            this.interceptable = interceptable;
+            this.shotPrefab = shotPrefab;
+            this.projectileSpeed = projectileSpeed;
+            this.color = color;
+            this.size = size;
+            _family = family;
+            _usesFactionColor = usesFactionColor;
+            _hasTargetSizeBias = hasTargetSizeBias;
+            _damageBias = damageBias;
+            _accuracyBias = accuracyBias;
+            _accuracyMultiplier = accuracyMultiplier;
+        }
+
         public WeaponType WeaponType => weaponType;
         public string DisplayName => displayName;
         public DamageType DamageType => damageType;
@@ -49,5 +90,23 @@ namespace EmpireAtWar.Components.AttackComponent
         public float ProjectileSpeed => projectileSpeed;
         public Color Color => color;
         public Vector3 Size => size;
+
+        public WeaponFamily Family => _family ?? throw new InvalidOperationException(
+            $"{weaponType} was not built from the weapon rules and has no family.");
+        public float AccuracyMultiplier => _accuracyMultiplier;
+        public bool UsesFactionColor => _usesFactionColor;
+
+        public WeaponProfile WithColor(Color boltColor) => new WeaponProfile(weaponType, displayName, Family, damageType,
+            damage, shotsPerSalvo, shotInterval, reload, range, strikecraftOnly, interceptable, shotPrefab,
+            projectileSpeed, boltColor, size, false, _hasTargetSizeBias, _damageBias, _accuracyBias, _accuracyMultiplier);
+
+        public float GetDamageBias(ShipClass targetClass) => _hasTargetSizeBias ? _damageBias[targetClass] : 1f;
+
+        public float GetAccuracyBias(ShipClass targetClass) => _hasTargetSizeBias ? _accuracyBias[targetClass] : 1f;
+
+        // Firing cycle: the reload starts with the first shot, but a long salvo can outlast it.
+        public float CycleSeconds => Mathf.Max(reload, (shotsPerSalvo - 1) * shotInterval);
+
+        public float DamagePerSecond => damage * shotsPerSalvo / CycleSeconds;
     }
 }

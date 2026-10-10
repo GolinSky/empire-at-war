@@ -12,994 +12,1630 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d7bb179ab8bdcf4bb97f86a17c92f1c, type: 3}
   m_Name: WeaponsData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.AttackComponent.WeaponsData
-  weapons:
-  - weaponType: 23
-    displayName: Medium Laser Cannon
-    damageType: 0
-    damage: 7.5
-    shotsPerSalvo: 3
-    shotInterval: 0.1
-    reload: 1.5
-    range: 125
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 69
-    displayName: Heavy Dual Laser Cannon
-    damageType: 0
-    damage: 35
-    shotsPerSalvo: 3
-    shotInterval: 0.1
-    reload: 2.8
-    range: 150
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 28
-    displayName: Heavy Laser Cannon
-    damageType: 0
-    damage: 17.5
-    shotsPerSalvo: 3
-    shotInterval: 0.1
-    reload: 2.8
-    range: 150
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 40
-    displayName: 2-Burst Laser Cannon
-    damageType: 0
-    damage: 7.5
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 1.25
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 8
-    displayName: Laser Cannon
+  families:
+  - family: 0
+    platform: 0
     damageType: 0
     damage: 6
     shotsPerSalvo: 3
     shotInterval: 0.1
+    burstInterval: 0.15
     reload: 1.5
-    range: 100
+    range: 300
     strikecraftOnly: 0
     interceptable: 0
+    targetSizeBias: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
     projectileSpeed: 133
+    factionColored: 1
     color: {r: 1, g: 0.31, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
-  - weaponType: 7
-    displayName: Dual Laser Cannon
-    damageType: 0
-    damage: 12
-    shotsPerSalvo: 3
-    shotInterval: 0.1
-    reload: 1.5
-    range: 100
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.68, b: 0, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 54
-    displayName: Repeating Point-Defense Mount
-    damageType: 1
-    damage: 4
-    shotsPerSalvo: 6
-    shotInterval: 0.1
-    reload: 3.998
-    range: 125
-    strikecraftOnly: 1
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 80
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 62
-    displayName: Dual Repeating Point Defense
-    damageType: 1
-    damage: 8
-    shotsPerSalvo: 6
-    shotInterval: 0.2
-    reload: 5.58
-    range: 175
-    strikecraftOnly: 1
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 14
-    displayName: Point Defense Laser
-    damageType: 1
-    damage: 4
-    shotsPerSalvo: 8
-    shotInterval: 0.08
-    reload: 2
-    range: 75
-    strikecraftOnly: 1
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 90
-    color: {r: 1, g: 0.85, b: 0.2, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 19
-    displayName: Mass Driver Cannon
-    damageType: 11
-    damage: 35
-    shotsPerSalvo: 3
-    shotInterval: 0.5
-    reload: 5
-    range: 140
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 90
-    color: {r: 0.85, g: 0.9, b: 1, a: 1}
-    size: {x: 0.6, y: 0.6, z: 1}
-  - weaponType: 27
-    displayName: Light Close-Range Turbolaser
-    damageType: 2
-    damage: 18
-    shotsPerSalvo: 3
-    shotInterval: 0.2
-    reload: 3.75
-    range: 150
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 39
-    displayName: Light Long-Range 2-Burst Turbolaser
-    damageType: 2
-    damage: 67.5
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 9.75
-    range: 562.5
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 33
-    displayName: Light Turbolaser
+  - family: 1
+    platform: 0
     damageType: 2
     damage: 16
     shotsPerSalvo: 3
     shotInterval: 0.2
+    burstInterval: 0.25
     reload: 4
-    range: 175
+    range: 450
     strikecraftOnly: 0
     interceptable: 0
+    targetSizeBias: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
     projectileSpeed: 133
+    factionColored: 1
     color: {r: 1, g: 0.04, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
-  - weaponType: 1
-    displayName: Turbolaser
-    damageType: 2
-    damage: 20
-    shotsPerSalvo: 3
+  - family: 2
+    platform: 0
+    damageType: 4
+    damage: 30
+    shotsPerSalvo: 2
     shotInterval: 0.2
-    reload: 4
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.04, b: 0, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 38
-    displayName: Medium 3-Burst Turbolaser
-    damageType: 2
-    damage: 70
-    shotsPerSalvo: 3
-    shotInterval: 0.25
-    reload: 6.75
-    range: 325
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 4
-    displayName: Medium Turbolaser
-    damageType: 2
-    damage: 25
-    shotsPerSalvo: 3
-    shotInterval: 0.2
-    reload: 5
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0, b: 0.12, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 70
-    displayName: ISD II Octuple Turbolaser
-    damageType: 2
-    damage: 135
-    shotsPerSalvo: 1
-    shotInterval: 0.75
-    reload: 4.5
-    range: 350
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 41
-    displayName: Light Long-Range 4-Rapid-Burst Dual Turbolaser
-    damageType: 2
-    damage: 135
-    shotsPerSalvo: 4
-    shotInterval: 0.25
-    reload: 17.1705
-    range: 450
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 36
-    displayName: Light Dual Turbolaser
-    damageType: 2
-    damage: 32
-    shotsPerSalvo: 3
-    shotInterval: 0.2
-    reload: 4
-    range: 175
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 53
-    displayName: Medium Long-Range 2-Burst Dual Turbolaser
-    damageType: 2
-    damage: 210
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 21.719
-    range: 393.75
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 55
-    displayName: Medium Dual Turbolaser
-    damageType: 2
-    damage: 70
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 8.91
-    range: 325
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 5
-    displayName: Dual Medium Turbolaser
-    damageType: 2
-    damage: 50
-    shotsPerSalvo: 3
-    shotInterval: 0.2
-    reload: 5
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0, b: 0.05, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 67
-    displayName: Heavy Long-Range 3-Burst Turbolaser
-    damageType: 3
-    damage: 150
-    shotsPerSalvo: 3
-    shotInterval: 0.25
-    reload: 15.25
-    range: 450
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 45
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 49
-    displayName: Heavy Long-Range 2-Burst Turbolaser
-    damageType: 3
-    damage: 150
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 15
-    range: 450
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 45
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 2
-    displayName: Heavy Turbolaser
-    damageType: 3
-    damage: 50
-    shotsPerSalvo: 3
-    shotInterval: 0.3
-    reload: 8
-    range: 225
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0, b: 0, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 20
-    displayName: Quad Turbolaser
-    damageType: 3
-    damage: 50
-    shotsPerSalvo: 8
-    shotInterval: 0.3
-    reload: 10
-    range: 75
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.98, g: 0, b: 0.19, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 50
-    displayName: Heavy 2-Burst Dual Turbolaser
-    damageType: 3
-    damage: 300
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 20
-    range: 450
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 45
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 43
-    displayName: Heavy Dual Turbolaser
-    damageType: 3
-    damage: 100
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 10.91
+    burstInterval: 0.25
+    reload: 6
     range: 500
     strikecraftOnly: 0
     interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 40
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 3
-    displayName: Dual Heavy Turbolaser
-    damageType: 3
-    damage: 100
-    shotsPerSalvo: 3
-    shotInterval: 0.3
-    reload: 8
-    range: 225
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.98, g: 0, b: 0.19, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 9
-    displayName: DBY-827 Heavy Turbolaser
-    damageType: 3
-    damage: 90
-    shotsPerSalvo: 3
-    shotInterval: 0.3
-    reload: 8
-    range: 225
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0, g: 0.78, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 37
-    displayName: Medium Dual Turbo-Ion Cannon
-    damageType: 4
-    damage: 150
-    shotsPerSalvo: 1
-    shotInterval: 0.08
-    reload: 6
-    range: 225
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 71
-    displayName: ISD II Quad Ion Cannon
-    damageType: 4
-    damage: 225
-    shotsPerSalvo: 1
-    shotInterval: 0.7
-    reload: 6
-    range: 300
-    strikecraftOnly: 0
-    interceptable: 0
+    targetSizeBias: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
     projectileSpeed: 55
+    factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
-  - weaponType: 42
-    displayName: Medium Long-Range 2-Burst Turbo-Ion Cannon
-    damageType: 4
-    damage: 225
-    shotsPerSalvo: 2
+  - family: 3
+    platform: 0
+    damageType: 11
+    damage: 35
+    shotsPerSalvo: 3
+    shotInterval: 0.5
+    burstInterval: 0.25
+    reload: 5
+    range: 450
+    strikecraftOnly: 0
+    interceptable: 0
+    targetSizeBias: 1
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 0}
+    projectileSpeed: 90
+    factionColored: 0
+    color: {r: 0.85, g: 0.9, b: 1, a: 1}
+    size: {x: 0.6, y: 0.6, z: 1}
+  - family: 4
+    platform: 0
+    damageType: 5
+    damage: 40
+    shotsPerSalvo: 4
     shotInterval: 0.25
-    reload: 19.25
-    range: 525
+    burstInterval: 0.4
+    reload: 10
+    range: 550
     strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+    interceptable: 1
+    targetSizeBias: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
-    projectileSpeed: 55
-    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 32
-    displayName: Medium Turbo-Ion Cannon
+    multiBarrelShotPrefab: {fileID: 0}
+    projectileSpeed: 35
+    factionColored: 0
+    color: {r: 1, g: 0.55, b: 0.1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - family: 5
+    platform: 0
+    damageType: 6
+    damage: 90
+    shotsPerSalvo: 2
+    shotInterval: 0.4
+    burstInterval: 0.4
+    reload: 12
+    range: 350
+    strikecraftOnly: 0
+    interceptable: 1
+    targetSizeBias: 1
+    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 0}
+    projectileSpeed: 25
+    factionColored: 0
+    color: {r: 0.3, g: 0.6, b: 1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - family: 6
+    platform: 0
     damageType: 4
-    damage: 75
+    damage: 64
     shotsPerSalvo: 1
-    shotInterval: 0.2
-    reload: 6
-    range: 225
+    shotInterval: 0
+    burstInterval: 0.4
+    reload: 15
+    range: 350
     strikecraftOnly: 0
+    interceptable: 1
+    targetSizeBias: 1
+    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 0}
+    projectileSpeed: 25
+    factionColored: 0
+    color: {r: 0.3, g: 0.7, b: 1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - family: 7
+    platform: 0
+    damageType: 1
+    damage: 4
+    shotsPerSalvo: 8
+    shotInterval: 0.08
+    burstInterval: 0.08
+    reload: 2
+    range: 200
+    strikecraftOnly: 1
     interceptable: 0
+    targetSizeBias: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 55
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 90
+    factionColored: 1
+    color: {r: 1, g: 0.85, b: 0.2, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - family: 8
+    platform: 0
+    damageType: 7
+    damage: 640
+    shotsPerSalvo: 1
+    shotInterval: 0
+    burstInterval: 0
+    reload: 30
+    range: 460
+    strikecraftOnly: 0
+    interceptable: 0
+    targetSizeBias: 1
+    shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
-  - weaponType: 47
-    displayName: Heavy Dual Ion Stunner
-    damageType: 4
-    damage: 4
+  - family: 20
+    platform: 1
+    damageType: 13
+    damage: 5
     shotsPerSalvo: 2
     shotInterval: 0.08
+    burstInterval: 0.1
+    reload: 0.9
+    range: 70
+    strikecraftOnly: 0
+    interceptable: 0
+    targetSizeBias: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 140
+    factionColored: 1
+    color: {r: 1, g: 0.25, b: 0.1, a: 1}
+    size: {x: 0.45, y: 0.45, z: 0.6}
+  - family: 21
+    platform: 1
+    damageType: 4
+    damage: 1.3
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    burstInterval: 0.1
     reload: 4.91
     range: 70
     strikecraftOnly: 0
     interceptable: 0
+    targetSizeBias: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
     projectileSpeed: 55
+    factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
-  - weaponType: 56
-    displayName: Medium Dual Turbo-Ion Cannon
-    damageType: 4
-    damage: 75
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 10.25
-    range: 325
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.3, g: 0.7, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 57
-    displayName: Light Turbo-Ion Cannon
-    damageType: 4
-    damage: 62.5
-    shotsPerSalvo: 1
-    shotInterval: 3
-    reload: 6.25
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.3, g: 0.7, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 10
-    displayName: Ion Cannon
-    damageType: 4
-    damage: 30
-    shotsPerSalvo: 2
-    shotInterval: 0.2
-    reload: 6
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 51
-    displayName: Heavy Long-Range 2-Burst Dual Turbo-Ion
-    damageType: 4
-    damage: 315
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 22.66
-    range: 450
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 45
-    color: {r: 0.2, g: 0.6, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 68
-    displayName: Heavy Long-Range 3-Burst Turbo-Ion Cannon
-    damageType: 4
-    damage: 157.5
-    shotsPerSalvo: 3
-    shotInterval: 0.25
-    reload: 17.25
-    range: 450
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 40
-    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 44
-    displayName: Heavy Long-Range 2-Burst Turbo-Ion Cannon
-    damageType: 4
-    damage: 210
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 12.25
-    range: 500
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 40
-    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 31
-    displayName: Heavy Turbo-Ion Cannon
-    damageType: 4
-    damage: 78
-    shotsPerSalvo: 2
-    shotInterval: 0.2
-    reload: 10
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.55, g: 1, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 60
-    displayName: Heavy 2-Burst Ion Blaster
-    damageType: 4
-    damage: 8
-    shotsPerSalvo: 2
-    shotInterval: 0.25
-    reload: 3.25
-    range: 125
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 1, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 11
-    displayName: Heavy Ion Cannon
-    damageType: 4
-    damage: 62.5
-    shotsPerSalvo: 2
-    shotInterval: 0.2
-    reload: 10
-    range: 225
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.55, g: 1, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 45
-    displayName: Composite Beam
-    damageType: 12
-    damage: 4000
-    shotsPerSalvo: 1
-    shotInterval: 0
-    reload: 45
-    range: 375
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
-      type: 3}
-    projectileSpeed: 0
-    color: {r: 1, g: 0.4, b: 0.05, a: 1}
-    size: {x: 1.5, y: 1.5, z: 1.5}
-  - weaponType: 12
-    displayName: Laser Beam
-    damageType: 7
-    damage: 1000
-    shotsPerSalvo: 1
-    shotInterval: 0
-    reload: 30
-    range: 75
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
-      type: 3}
-    projectileSpeed: 0
-    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 30
-    displayName: Fighter Concussion-Missile Launcher
+  - family: 22
+    platform: 1
     damageType: 5
     damage: 40
     shotsPerSalvo: 1
     shotInterval: 0.5
+    burstInterval: 0.4
     reload: 15
-    range: 70
+    range: 80
     strikecraftOnly: 0
     interceptable: 1
+    targetSizeBias: 0
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
+    multiBarrelShotPrefab: {fileID: 0}
     projectileSpeed: 35
+    factionColored: 0
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 52
-    displayName: Heavy 8-Burst Artillery-Rocket Launcher
-    damageType: 5
-    damage: 20
-    shotsPerSalvo: 8
-    shotInterval: 0.4
-    reload: 15
-    range: 500
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 75
-    color: {r: 1, g: 0.25, b: 0.1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 34
-    displayName: Heavy Artillery-Rocket Launcher
-    damageType: 5
-    damage: 20
-    shotsPerSalvo: 4
-    shotInterval: 0.4
-    reload: 15
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 75
-    color: {r: 1, g: 0.25, b: 0.1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 64
-    displayName: Heavy 2-Burst Barrage Rocket Launcher
-    damageType: 5
-    damage: 50
-    shotsPerSalvo: 2
-    shotInterval: 0.4
-    reload: 2
-    range: 600
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 90
-    color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 35
-    displayName: Barrage-Rocket Launcher
-    damageType: 5
-    damage: 40
-    shotsPerSalvo: 6
-    shotInterval: 0.4
-    reload: 15
-    range: 100
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 90
-    color: {r: 1, g: 0.25, b: 0.65, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 61
-    displayName: Heavy 5-Burst Concussion Missile
-    damageType: 5
-    damage: 20
-    shotsPerSalvo: 5
-    shotInterval: 0.4
-    reload: 15
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 80
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 65
-    displayName: Heavy Assault Missile Launcher
-    damageType: 5
-    damage: 50
-    shotsPerSalvo: 3
-    shotInterval: 1.5
-    reload: 15
-    range: 300
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 35
-    color: {r: 1, g: 0.55, b: 0.1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 63
-    displayName: 4-Burst Assault-Missile Launcher
-    damageType: 5
-    damage: 30
-    shotsPerSalvo: 4
-    shotInterval: 0.4
-    reload: 15
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 35
-    color: {r: 1, g: 0.55, b: 0.1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 13
-    displayName: Concussion Missile Launcher
-    damageType: 5
-    damage: 40
-    shotsPerSalvo: 4
-    shotInterval: 0.25
-    reload: 10
-    range: 75
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 35
-    color: {r: 1, g: 0.55, b: 0.1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 48
-    displayName: Medium Proton-Torpedo Launcher
-    damageType: 6
-    damage: 90
-    shotsPerSalvo: 1
-    shotInterval: 0
-    reload: 20
-    range: 70
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
-      type: 3}
-    projectileSpeed: 25
-    color: {r: 0.3, g: 0.6, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 22
-    displayName: Fighter Proton Torpedo
+  - family: 23
+    platform: 1
     damageType: 6
     damage: 90
     shotsPerSalvo: 1
     shotInterval: 0.4
+    burstInterval: 0.4
     reload: 8
-    range: 55
+    range: 60
     strikecraftOnly: 0
     interceptable: 1
+    targetSizeBias: 0
     shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
       type: 3}
+    multiBarrelShotPrefab: {fileID: 0}
     projectileSpeed: 25
+    factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 25
-    displayName: Med Lrg Proton TRP
-    damageType: 6
-    damage: 80
-    shotsPerSalvo: 1
-    shotInterval: 3.75
-    reload: 7.5
-    range: 150
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
-      type: 3}
-    projectileSpeed: 25
+  calibers:
+  - caliber: 0
+    damageMultiplier: 1
+    rangeMultiplier: 1
+    damageBias:
+      fighter: 1
+      bomber: 1
+      interceptor: 1
+      corvette: 1
+      frigate: 1
+      cruiser: 0.95
+      capital: 0.9
+      heavyCapital: 0.85
+      structure: 0.9
+    accuracyBias:
+      fighter: 1
+      bomber: 1
+      interceptor: 1
+      corvette: 1
+      frigate: 1
+      cruiser: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+  - caliber: 1
+    damageMultiplier: 1.25
+    rangeMultiplier: 1.15
+    damageBias:
+      fighter: 0.6
+      bomber: 0.6
+      interceptor: 0.6
+      corvette: 0.85
+      frigate: 1
+      cruiser: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    accuracyBias:
+      fighter: 0.6
+      bomber: 0.6
+      interceptor: 0.6
+      corvette: 0.85
+      frigate: 1
+      cruiser: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+  - caliber: 2
+    damageMultiplier: 1.5625
+    rangeMultiplier: 1.3
+    damageBias:
+      fighter: 0.3
+      bomber: 0.3
+      interceptor: 0.3
+      corvette: 0.6
+      frigate: 0.95
+      cruiser: 1.1
+      capital: 1.25
+      heavyCapital: 1.35
+      structure: 1.25
+    accuracyBias:
+      fighter: 0.2
+      bomber: 0.2
+      interceptor: 0.2
+      corvette: 0.55
+      frigate: 0.85
+      cruiser: 0.95
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+  rangeClasses:
+  - rangeClass: 0
+    rangeMultiplier: 1
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    accuracyMultiplier: 1
+  - rangeClass: 1
+    rangeMultiplier: 0.7
+    damageMultiplier: 1.25
+    reloadMultiplier: 1
+    accuracyMultiplier: 1
+  - rangeClass: 2
+    rangeMultiplier: 1.5
+    damageMultiplier: 1.5
+    reloadMultiplier: 2
+    accuracyMultiplier: 1.2
+  factionColors:
+  - faction: 0
+    color: {r: 1, g: 0.31, b: 0, a: 1}
+  - faction: 1
     color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 26
-    displayName: Medium Ion Torpedo
-    damageType: 4
-    damage: 80
-    shotsPerSalvo: 1
-    shotInterval: 7.5
-    reload: 15
-    range: 150
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
-      type: 3}
-    projectileSpeed: 25
-    color: {r: 0.3, g: 0.7, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 66
-    displayName: Heavy Proton Torpedo Launcher
-    damageType: 6
-    damage: 150
-    shotsPerSalvo: 1
-    shotInterval: 0
-    reload: 10
-    range: 200
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
-      type: 3}
-    projectileSpeed: 25
-    color: {r: 0.3, g: 0.6, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
+  - faction: 2
+    color: {r: 1, g: 0.04, b: 0, a: 1}
+  - faction: 3
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+  weapons:
+  - weaponType: 1
+    displayName: Light Turbolaser
+    family: 1
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 2
+    displayName: Heavy Turbolaser
+    family: 1
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 3
+    displayName: Heavy Dual Turbolaser
+    family: 1
+    caliber: 2
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 4
+    displayName: Medium Turbolaser
+    family: 1
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 5
+    displayName: Medium Dual Turbolaser
+    family: 1
+    caliber: 1
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 6
-    displayName: Proton Torpedo Launcher
-    damageType: 6
-    damage: 90
-    shotsPerSalvo: 2
-    shotInterval: 0.4
-    reload: 12
-    range: 75
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
-      type: 3}
-    projectileSpeed: 25
-    color: {r: 0.3, g: 0.6, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
+    displayName: Light Proton Torpedo Launcher
+    family: 5
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 7
+    displayName: Light Dual Laser Cannon
+    family: 0
+    caliber: 0
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 8
+    displayName: Light Laser Cannon
+    family: 0
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 9
+    displayName: DBY-827 Heavy Turbolaser
+    family: 1
+    caliber: 2
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 1
+    faction: 0
+    unit: 
+    damageMultiplier: 0.9
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 'DBY-827 turret of Republic Venator, Rothana and Resolute: lighter than
+      the shared heavy dual turbolaser.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 1
+    color: {r: 0, g: 0.78, b: 1, a: 1}
+  - weaponType: 10
+    displayName: Light Ion Cannon
+    family: 2
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 11
+    displayName: Heavy Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 12
+    displayName: Heavy Laser Beam
+    family: 8
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 13
+    displayName: Light Missile Launcher
+    family: 4
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 14
+    displayName: Light Point Defense Laser
+    family: 7
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 15
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 19
+    displayName: Light Mass Driver Cannon
+    family: 3
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 20
+    displayName: Quad Turbolaser
+    family: 1
+    caliber: 2
+    mount: 4
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator main battery.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 21
     displayName: Heavy Fighter Laser Cannon
-    damageType: 13
-    damage: 8
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 1.5
-    range: 40
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 140
-    color: {r: 0.2, g: 1, b: 0.2, a: 1}
-    size: {x: 0.45, y: 0.45, z: 0.6}
+    family: 20
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 22
+    displayName: Light Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 23
+    displayName: Medium Laser Cannon
+    family: 0
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 24
     displayName: X-Wing Laser Cannon
-    damageType: 13
-    damage: 5
-    shotsPerSalvo: 1
-    shotInterval: 0.1
-    reload: 1.5
-    range: 45
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 140
-    color: {r: 1, g: 0.25, b: 0.1, a: 1}
-    size: {x: 0.45, y: 0.45, z: 0.6}
+    family: 20
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: XWing
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: T-65 X-Wing cannons.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 26
+    displayName: Medium Ion Torpedo Launcher
+    family: 6
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 27
+    displayName: Light Close-Range Turbolaser
+    family: 1
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 1
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 28
+    displayName: Heavy Laser Cannon
+    family: 0
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 29
-    displayName: Light Repeating Laser
-    damageType: 13
-    damage: 5
-    shotsPerSalvo: 8
-    shotInterval: 0.1
-    reload: 4.25
-    range: 70
-    strikecraftOnly: 0
-    interceptable: 0
+    displayName: Light 8-Burst Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    pattern: 1
+    burstShots: 8
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 30
+    displayName: Light Fighter Missile Launcher
+    family: 22
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 32
+    displayName: Medium Ion Cannon
+    family: 2
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 34
+    displayName: Heavy Long-Range 8-Burst Missile Launcher
+    family: 4
+    caliber: 2
+    mount: 1
+    pattern: 1
+    burstShots: 8
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 75
+    size: {x: 1.2, y: 1.2, z: 1.2}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 35
+    displayName: Light 6-Burst Missile Launcher
+    family: 4
+    caliber: 0
+    mount: 1
+    pattern: 1
+    burstShots: 6
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 90
+    size: {x: 1.2, y: 1.2, z: 1.2}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 36
+    displayName: Light Dual Turbolaser
+    family: 1
+    caliber: 0
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 37
+    displayName: Medium Dual Ion Cannon
+    family: 2
+    caliber: 1
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 38
+    displayName: Medium 3-Burst Turbolaser
+    family: 1
+    caliber: 1
+    mount: 1
+    pattern: 1
+    burstShots: 3
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 39
+    displayName: Light Long-Range 2-Burst Turbolaser
+    family: 1
+    caliber: 0
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 40
+    displayName: Light 2-Burst Laser Cannon
+    family: 0
+    caliber: 0
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 41
+    displayName: Light Long-Range 4-Burst Dual Turbolaser
+    family: 1
+    caliber: 0
+    mount: 2
+    pattern: 1
+    burstShots: 4
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 42
+    displayName: Medium Long-Range 2-Burst Ion Cannon
+    family: 2
+    caliber: 1
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 43
+    displayName: Imperial Heavy Dual Turbolaser
+    family: 1
+    caliber: 2
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 1
+    faction: 3
+    unit: 
+    damageMultiplier: 1.1
+    reloadMultiplier: 1
+    rangeMultiplier: 1.15
+    reason: 'Imperial heavy dual turbolaser (ISD III, Imperial Venator): hits harder
+      and reaches farther than the shared one.'
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 40
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 44
+    displayName: Heavy Long-Range 2-Burst Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 140
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 0.45, y: 0.45, z: 0.6}
+    projectileSpeed: 40
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 45
+    displayName: Composite Beam
+    family: 8
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: ISDIII
+    damageMultiplier: 4
+    reloadMultiplier: 1.5
+    rangeMultiplier: 0.625
+    reason: 'ISD III Composite Beam ability: one huge, slow shot.'
+    overrideVisual: 1
+    shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+      type: 3}
+    projectileSpeed: 0
+    size: {x: 1.5, y: 1.5, z: 1.5}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 46
-    displayName: Light Dual Laser
-    damageType: 13
-    damage: 5
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 0.785
-    range: 50
-    strikecraftOnly: 0
-    interceptable: 0
+    displayName: Light Dual Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 47
+    displayName: Heavy Dual Fighter Ion Cannon
+    family: 21
+    caliber: 2
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 48
+    displayName: Medium Proton Torpedo Launcher
+    family: 5
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 49
+    displayName: Heavy Long-Range 2-Burst Turbolaser
+    family: 1
+    caliber: 2
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 140
-    color: {r: 1, g: 0.2, b: 0.1, a: 1}
-    size: {x: 0.45, y: 0.45, z: 0.6}
-  - weaponType: 15
-    displayName: Fighter Laser Cannon
-    damageType: 13
-    damage: 5
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 0.9
-    range: 35
-    strikecraftOnly: 0
-    interceptable: 0
+    projectileSpeed: 45
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 50
+    displayName: Heavy Long-Range 2-Burst Dual Turbolaser
+    family: 1
+    caliber: 2
+    mount: 2
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 45
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 51
+    displayName: Heavy Long-Range 2-Burst Dual Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 2
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 45
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 53
+    displayName: Medium Long-Range 2-Burst Dual Turbolaser
+    family: 1
+    caliber: 1
+    mount: 2
+    pattern: 1
+    burstShots: 2
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 55
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 54
+    displayName: Light 6-Burst Point Defense Laser
+    family: 7
+    caliber: 0
+    mount: 1
+    pattern: 1
+    burstShots: 6
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 140
-    color: {r: 1, g: 0.25, b: 0.1, a: 1}
-    size: {x: 0.45, y: 0.45, z: 0.6}
+    projectileSpeed: 80
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 55
+    displayName: MC80 Medium Dual Turbolaser
+    family: 1
+    caliber: 1
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: MC80Independence
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 'MC80 Independence battery: archetype stats under its own name.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 56
+    displayName: MC80 Medium Dual Ion Cannon
+    family: 2
+    caliber: 1
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: MC80Independence
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 'MC80 Independence battery: archetype stats under its own name.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 60
+    displayName: Heavy 2-Burst Ion Blaster
+    family: 2
+    caliber: 2
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: RaiderCorvette
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Raider Corvette ion blaster.
+    overrideVisual: 1
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 133
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 62
+    displayName: Light 6-Burst Dual Point Defense Laser
+    family: 7
+    caliber: 0
+    mount: 2
+    pattern: 1
+    burstShots: 6
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 133
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 64
+    displayName: Heavy 2-Burst Missile Launcher
+    family: 4
+    caliber: 2
+    mount: 1
+    pattern: 1
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 90
+    size: {x: 1.2, y: 1.2, z: 1.2}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 65
+    displayName: Heavy Missile Launcher
+    family: 4
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 66
+    displayName: Heavy Proton Torpedo Launcher
+    family: 5
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 67
+    displayName: Heavy Long-Range 3-Burst Triple Turbolaser
+    family: 1
+    caliber: 2
+    mount: 3
+    pattern: 1
+    burstShots: 3
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 45
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 68
+    displayName: Heavy Long-Range 3-Burst Triple Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 3
+    pattern: 1
+    burstShots: 3
+    rangeClass: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 40
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 69
+    displayName: Heavy Dual Laser Cannon
+    family: 0
+    caliber: 2
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 70
+    displayName: ISD II Octuple Turbolaser
+    family: 1
+    caliber: 2
+    mount: 8
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: ISDII
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: ISD II main battery.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 71
+    displayName: ISD II Quad Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 4
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: ISDII
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: ISD II ion battery.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 72
+    displayName: Medium Fighter Proton Torpedo
+    family: 23
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}

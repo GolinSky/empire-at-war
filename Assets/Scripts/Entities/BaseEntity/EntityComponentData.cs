@@ -11,8 +11,7 @@ using UnityEngine;
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData, ISpawnBlockerData,
-        IWeaponRangeData
+    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData, ISpawnBlockerData
     {
         [Header("Destruction Settings")]
         [Tooltip("Seconds the dead unit stays under its explosion before it is removed.")]
@@ -31,10 +30,6 @@ namespace EmpireAtWar.Entities.BaseEntity
         [Tooltip("Radius in which the structure detects enemies. Matches VisionRange.")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
-
-        [Header("Weapon Settings")]
-        [Tooltip("How far the structure's hardpoints can fire.")]
-        [field: SerializeField, Min(0f)] public float WeaponRange { get; private set; }
 
         [Header("Vision Settings")]
         [Tooltip("Fog of war radius this structure reveals for its team.")]

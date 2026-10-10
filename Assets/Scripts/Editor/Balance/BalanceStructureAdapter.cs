@@ -46,7 +46,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (unit.Prefab == null) throw new MissingReferenceException($"Unmapped structure prefab: {prefabKey}");
                 BalancePrefabBindings.Register(registry, unit);
                 string prefix = BalanceRegistration.Auto("ComponentData") + ".";
-                registry.AutoFields(data, prefix, "", "Hull Shields ShieldRegenerateValue ShieldRegenerateDelay Range Delay WeaponRange VisionRange SpawnBlockRadius",
+                registry.AutoFields(data, prefix, "", "Hull Shields ShieldRegenerateValue ShieldRegenerateDelay Range Delay VisionRange SpawnBlockRadius",
                     BalanceFieldGroup.Combat, name, BalanceFieldOwner.SharedProfile, true, new[] { unit });
                 using (SerializedObject serialized = new SerializedObject(data))
                     BalanceUnitAdapter.Health(registry, data, serialized.FindProperty(prefix + "hardPointHealth"), "hardPointHealth", unit);

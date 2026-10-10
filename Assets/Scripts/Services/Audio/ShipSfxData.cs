@@ -11,6 +11,9 @@ namespace EmpireAtWar.Services.Audio
     [CreateAssetMenu(fileName = "ShipSfxData", menuName = "Data/Audio/Ship SFX")]
     public sealed class ShipSfxData : Data
     {
+        [Tooltip("Default sound of each weapon family.")]
+        [SerializeField] private WeaponFamilyAudioProfile[] weaponFamilies;
+        [Tooltip("Weapons that sound different from their family, plus weapons outside the families.")]
         [SerializeField] private WeaponAudioProfile[] weapons;
         [SerializeField] private ShipAbilityAudioProfile[] abilities;
         [SerializeField] private SfxProfile engine;
@@ -52,11 +55,33 @@ namespace EmpireAtWar.Services.Audio
 
         public ShipVoiceSet GetVoiceSet(FactionType faction) => voices.Dictionary[faction];
 
+        /// <summary>The weapon's own sound if it has one, otherwise its family's sound.</summary>
+        public SfxProfile GetWeapon(WeaponType type, WeaponFamily family)
+        {
+            if (TryGetWeaponOverride(type, out SfxProfile sfx)) return sfx;
+            foreach (WeaponFamilyAudioProfile profile in weaponFamilies)
+                if (profile.Family == family) return profile.Sfx;
+            throw new System.InvalidOperationException($"Missing weapon audio for {type} and its family {family}.");
+        }
+
+        /// <summary>Sound of a weapon outside the weapon families, such as a super weapon.</summary>
         public SfxProfile GetWeapon(WeaponType type)
         {
-            foreach (WeaponAudioProfile profile in weapons)
-                if (profile.WeaponType == type) return profile.Sfx;
+            if (TryGetWeaponOverride(type, out SfxProfile sfx)) return sfx;
             throw new System.InvalidOperationException($"Missing weapon audio for {type}.");
+        }
+
+        private bool TryGetWeaponOverride(WeaponType type, out SfxProfile sfx)
+        {
+            foreach (WeaponAudioProfile profile in weapons)
+            {
+                if (profile.WeaponType != type) continue;
+                sfx = profile.Sfx;
+                return true;
+            }
+
+            sfx = null;
+            return false;
         }
 
         public ShipAbilityAudioProfile GetAbility(ShipAbilityId id)

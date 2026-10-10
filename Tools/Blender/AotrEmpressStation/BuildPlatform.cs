@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -57,7 +57,7 @@ public static class BuildEmpressPlatform
                 WeaponType type;
                 bool generator = name.StartsWith("HP_Empress_Shield_");
                 if (name.StartsWith("HP_Empress_HTLaser_")) type = WeaponType.HeavyLongRangeTripleTurbolaser;
-                else if (name.StartsWith("HP_Empress_HTIC_")) type = WeaponType.HeavyLongRangeTripleTurboIon;
+                else if (name.StartsWith("HP_Empress_HTIC_")) type = WeaponType.HeavyLongRangeTripleIonCannon;
                 else if (name.StartsWith("HP_Empress_MTL_")) type = WeaponType.MediumLongRangeDualTurbolaser;
                 else if (name.StartsWith("HP_Empress_LTL_")) type = WeaponType.LightDualTurbolaser;
                 else if (name.StartsWith("HP_Empress_HLC_")) type = WeaponType.HeavyDualLaser;

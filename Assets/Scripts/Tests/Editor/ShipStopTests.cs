@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Orders;
@@ -61,9 +62,11 @@ namespace EmpireAtWar.Tests.Editor
             public int ResetCount { get; private set; }
             public float AttackDistance => 100f;
 
+            public float GetEngagementRange(ShipClass targetClass) => 100f;
+
             public void AddTarget(AttackData data, AttackType type) { }
 
-            public bool HasEnoughRange(float distance, float contactDistance) => true;
+            public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => true;
 
             public void ResetTarget() => ResetCount++;
 

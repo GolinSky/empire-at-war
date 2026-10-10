@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
@@ -29,9 +31,9 @@ namespace EmpireAtWar.Components.Weapon
         // Continuous weapons such as beams land their damage in ticks this far apart.
         private const float DAMAGE_TICK_INTERVAL = 0.1f;
 
-        private IWeaponRangeData _rangeData;
         private ISelectionModelObserver _selection;
         private ILocalPlayer _localPlayer;
+        private IPlayerRoster _playerRoster;
         private PlayerId _owner;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
 
@@ -67,22 +69,22 @@ namespace EmpireAtWar.Components.Weapon
 
         public event Action<WeaponProfile, Transform> ShotEmitted;
 
-        public float AttackDistance => Model.OptimalAttackRange;
+        public float AttackDistance => Model.MaxWeaponRange;
 
         [Inject]
-        private void Construct(IWeaponRangeData rangeData, ISelectionModelObserver selection,
+        private void Construct(ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
-            ILocalPlayer localPlayer, PlayerId owner)
+            ILocalPlayer localPlayer, IPlayerRoster playerRoster, PlayerId owner)
         {
             _localPlayer = localPlayer;
+            _playerRoster = playerRoster;
             _owner = owner;
             _missiles = missiles;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
             _weaponsData = weaponsData;
             _damageMatrix = damageMatrix;
-            _rangeData = rangeData;
             _rangeCircleFactory = rangeCircleFactory;
             _selection = selection;
         }
@@ -92,14 +94,27 @@ namespace EmpireAtWar.Components.Weapon
             _isInitialized = true;
             _respectsLocalFog = _localPlayer.IsFriendly(_owner);
             _attackCoordinator.Register(this);
-            Model.SetAttackRange(_rangeData.WeaponRange * _modifiers.VisionMultiplier);
 
+            // Every hardpoint fires to its own weapon's range; nebulae and other vision effects scale it.
+            FactionType faction = _playerRoster.Get(_owner).Faction;
+            List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
-                hardPoint.SetData(_weaponsData.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, _damageMatrix.MissSpread,
+                WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction);
+                profiles.Add(profile);
+                hardPoint.SetData(profile, profile.Range * _modifiers.VisionMultiplier, _damageMatrix.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter, _missiles);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
+
+            Dictionary<ShipClass, float> engagementRanges = new Dictionary<ShipClass, float>();
+            float maxRange = 0f;
+            foreach (ShipClass targetClass in (ShipClass[])Enum.GetValues(typeof(ShipClass)))
+                engagementRanges.Add(targetClass,
+                    WeaponEngagementRange.Calculate(profiles, targetClass, _damageMatrix) * _modifiers.VisionMultiplier);
+            foreach (WeaponProfile profile in profiles)
+                maxRange = Mathf.Max(maxRange, profile.Range * _modifiers.VisionMultiplier);
+            Model.SetRanges(maxRange, engagementRanges);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _attackRangeCircle = _rangeCircleFactory.Create("AttackRange", Color.red, _selection);
 #endif
@@ -190,9 +205,11 @@ namespace EmpireAtWar.Components.Weapon
         private bool CanAcquire(AttackData group) =>
             group.CanAcquireTarget && !(_respectsLocalFog && group.TargetEntity.IsHiddenByFog());
 
-        public bool HasEnoughRange(float distance, float contactDistance)
+        public float GetEngagementRange(ShipClass targetClass) => Model.GetEngagementRange(targetClass);
+
+        public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass)
         {
-            return distance <= Mathf.Max(Model.OptimalAttackRange * ENGAGE_RANGE_FACTOR,
+            return distance <= Mathf.Max(Model.GetEngagementRange(targetClass) * ENGAGE_RANGE_FACTOR,
                 contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
@@ -229,7 +246,7 @@ namespace EmpireAtWar.Components.Weapon
                 return;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _attackRangeCircle.Draw(_viewTransform.position, Model.OptimalAttackRange);
+            _attackRangeCircle.Draw(_viewTransform.position, Model.MaxWeaponRange);
 #endif
             if (hardPoints == null || hardPoints.Count == 0)
                 return;
@@ -456,13 +473,15 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public bool RollHit(AttackData attackData, WeaponProfile profile) =>
-            Model.RollHit(profile.DamageType, attackData.TargetClass, UnityEngine.Random.value);
+            Model.RollHit(profile.DamageType, attackData.TargetClass,
+                profile.AccuracyMultiplier * profile.GetAccuracyBias(attackData.TargetClass), UnityEngine.Random.value);
 
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay,
             float damageDuration, IncomingMissile missile)
         {
             if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
-            float damage = profile.Damage * _modifiers.GetDamageMultiplier(attackData.TargetEntity);
+            float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
+                           _modifiers.GetDamageMultiplier(attackData.TargetEntity);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
             for (int i = 0; i < ticks; i++)
             {
