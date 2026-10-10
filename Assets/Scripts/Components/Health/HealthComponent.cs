@@ -45,7 +45,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         private bool _isReleased;
 
-        public event Action<IonStunView> IonStunViewSpawned;
+        public event Action<IIonStunRenderers> IonStunViewSpawned;
 
         public event Action OnValueChanged
         {
