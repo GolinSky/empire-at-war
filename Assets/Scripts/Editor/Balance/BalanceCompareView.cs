@@ -57,14 +57,26 @@ namespace EmpireAtWar.Editor.Balance
             if (empty) controller.SetComparePickerOpen(true);
             bool open = controller.State.ComparePickerOpen;
             Button add = new Button { text = open ? "Close picker" : "+ Add units", name = "compare-add-unit" };
-            add.clicked += () =>
+            void SetOpen(bool nowOpen)
             {
-                bool nowOpen = !controller.State.ComparePickerOpen;
                 controller.SetComparePickerOpen(nowOpen);
                 picker.style.display = nowOpen ? DisplayStyle.Flex : DisplayStyle.None;
                 add.text = nowOpen ? "Close picker" : "+ Add units";
                 if (nowOpen) picker.Q<TextField>("compare-search").Focus();
-            };
+            }
+            add.clicked += () => SetOpen(!controller.State.ComparePickerOpen);
+            void CloseOutside(PointerDownEvent evt)
+            {
+                VisualElement target = (VisualElement)evt.target;
+                if (evt.button == 0 && controller.State.ComparePickerOpen
+                    && target != picker && !picker.Contains(target)
+                    && target != add && !add.Contains(target))
+                    SetOpen(false);
+            }
+            picker.RegisterCallback<AttachToPanelEvent>(evt =>
+                evt.destinationPanel.visualTree.RegisterCallback<PointerDownEvent>(CloseOutside, TrickleDown.TrickleDown));
+            picker.RegisterCallback<DetachFromPanelEvent>(evt =>
+                evt.originPanel.visualTree.UnregisterCallback<PointerDownEvent>(CloseOutside, TrickleDown.TrickleDown));
             add.AddToClassList("balance-primary");
             heading.Add(add);
             panel.Add(picker);
@@ -155,6 +167,13 @@ namespace EmpireAtWar.Editor.Balance
                 row.Add(name);
                 Button add = new Button { name = "picker-add", text = "+ Add" };
                 row.Add(add);
+                row.RegisterCallback<PointerDownEvent>(evt =>
+                {
+                    VisualElement target = (VisualElement)evt.target;
+                    if (evt.button == 0 && target != selection && !selection.Contains(target)
+                        && target != add && !add.Contains(target))
+                        selection.value = !selection.value;
+                });
                 add.clicked += () =>
                 {
                     controller.AddPins(new[] { ((BalanceUnit)row.userData).Id });

@@ -19,6 +19,72 @@ namespace EmpireAtWar.Tests.Editor
         private const string TEST_FOLDER = "Assets/Scripts/Tests/Editor/Balance/TemporaryCompareAssets";
 
         [UnityTest]
+        public IEnumerator Picker_RowSelectionAndOutsideDismissalWorkAcrossTabs()
+        {
+            BalanceRegistration registry = new BalanceRegistration();
+            registry.Units.Add(new BalanceUnit { Id = "empire/1", Name = "Alpha", Faction = "Empire", Kind = BalanceUnitKind.Ship });
+            EditorWindow host = ScriptableObject.CreateInstance<EditorWindow>();
+            void Click(VisualElement target)
+            {
+                Vector2 position = target.worldBound.center;
+                using (PointerDownEvent evt = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, mousePosition = position, button = 0 }))
+                    target.SendEvent(evt);
+                using (PointerUpEvent evt = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, mousePosition = position, button = 0 }))
+                    target.SendEvent(evt);
+            }
+            try
+            {
+                host.position = new Rect(100, 100, 960, 550);
+                host.rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/Balance/BalanceEditor.uss"));
+                host.Show();
+                for (int tab = 0; tab < 3; tab++)
+                {
+                    host.rootVisualElement.Clear();
+                    BalanceWindowState state = new BalanceWindowState { CombatTab = BalanceCombatTab.Hardpoints };
+                    BalanceEditorController controller = new BalanceEditorController(state, () => { });
+                    VisualElement panel = new VisualElement();
+                    panel.style.flexGrow = 1;
+                    host.rootVisualElement.Add(panel);
+                    if (tab == 2) BalanceCombatView.Build(panel, registry, controller);
+                    else BalanceCompareView.Build(panel, registry, controller, tab == 0);
+                    Button outside = new Button { text = "Outside picker" };
+                    host.rootVisualElement.Add(outside);
+                    yield return null; yield return null;
+                    VisualElement picker = panel.Q("compare-picker");
+                    Button open = panel.Q<Button>("compare-add-unit");
+                    Button addSelected = picker.Q<Button>("compare-add-selected");
+                    VisualElement row = picker.Query<VisualElement>(className: "balance-picker-row").ToList()
+                        .Single(element => element.userData is BalanceUnit unit && unit.Id == "empire/1");
+                    Toggle toggle = row.Q<Toggle>("picker-select");
+                    Click(row.Q<Label>("picker-unit-name"));
+                    Assert.That(toggle.value, Is.True);
+                    Assert.That(addSelected.text, Is.EqualTo("Add selected (1)"));
+                    Click(row);
+                    Assert.That(toggle.value, Is.False);
+                    Click(toggle.Q(className: "unity-toggle__input"));
+                    Assert.That(toggle.value, Is.True, "Checkbox must toggle only once");
+                    Click(picker.Q<TextField>("compare-search"));
+                    Assert.That(state.ComparePickerOpen, Is.True);
+                    Click(outside);
+                    Assert.That(state.ComparePickerOpen, Is.False);
+                    Assert.That(picker.resolvedStyle.display, Is.EqualTo(DisplayStyle.None));
+                    Assert.That(open.text, Is.EqualTo("+ Add units"));
+                    Click(open);
+                    Assert.That(state.ComparePickerOpen, Is.True);
+                    Assert.That(toggle.value, Is.True, "Closing preserves pending selections");
+                    Click(open);
+                    Assert.That(state.ComparePickerOpen, Is.False);
+                    Click(open);
+                    yield return null; yield return null;
+                    Click(row.Q<Button>("picker-add"));
+                    Assert.That(state.Pins, Is.EqualTo(new[] { "empire/1" }));
+                    Assert.That(addSelected.text, Is.EqualTo("Add selected (0)"));
+                }
+            }
+            finally { host.Close(); }
+        }
+
+        [UnityTest]
         public IEnumerator Picker_FiltersSelectsAndAddsEachUnitOnce()
         {
             BalanceRegistration registry = new BalanceRegistration();

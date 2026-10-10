@@ -4,7 +4,6 @@
 
 ### Features
 
-
 - [ ] **AI composition analysis and counter measures**
   - **Plan**: [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]
   - **Status**: 2026-10-07 implemented: baked weapon loadouts, damage-matrix force ratings, utility strategic rules, counter production and squadron escorts. AI/new tests 119/119; full EditMode 1151/1155 (4 unrelated). Commit `e5daa9ab`.
