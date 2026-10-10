@@ -1,8 +1,9 @@
 {
   "source_hashes_unchanged": 56,
   "lossless_texture_copies": 100,
-  "original_archive_guids_retained": 56,
-  "original_archive_binary_files_unchanged": 33,
+  "old_visual_records_removed": 63,
+  "shared_tector_assets_preserved": 39,
+  "unused_records_deleted": 24,
   "visible_binary_triangle_counts": true,
   "live_and_wreck_palettes": 8,
   "transparent_icon_size": [

@@ -1,7 +1,7 @@
 ---
 category: Features
 type: reference
-updated: 2026-10-09
+updated: 2026-10-10
 source_workshop: "1770851727"
 ---
 # ISD I Import
@@ -10,7 +10,7 @@ source_workshop: "1770851727"
 
 - Empire `ShipType.ISDI = 201`: replace visuals with Workshop `1770851727` `Star_Destroyer`; existing registrations/GUIDs retained.
 - User, 2026-10-09: keep current hull/shields/speed, economy and Interceptor/Brute/Punisher bays.
-- Previous AOTR visual set → `ISDIObsoleteAOTR` art folders and `*_ObsoleteAOTR` snapshots; all 63 records labeled `Obsolete`. [[GameDesign/ISD I Import - AOTR History]] preserves historical decisions.
+- Previous AOTR visual set removed on 2026-10-10: delete 24 unused records; move 39 shared assets to `Tector/Tector_AOTR*`, retaining their GUIDs/content. All 63 archive paths absent. Commit `327da32c` and [[GameDesign/ISD I Import - AOTR History]] preserve the original archive/history.
 
 ## Implementation
 
@@ -33,11 +33,11 @@ source_workshop: "1770851727"
 ## Verification
 
 - 16 Blender conversions; original visible binary triangle/material counts and UV-corner matching verified. Maximum geometry/bone error `0.000158/0.000099` source units; Unity bone error ≤ `0.000002346`; muzzle error `0`.
-- 56 source hashes unchanged; 100 decoded texture-reference copies pixel-identical. Original archived FBX/PNG files unchanged; 56 original asset/folder GUIDs retained.
-- Active and archived saved prefabs: no missing scripts/broken references. Active ISD I has zero obsolete dependencies; all 30 targets, ownership/fog/explosion/shield/hangar references and AI loadout verified.
+- 56 source hashes unchanged; 100 decoded texture-reference copies pixel-identical. Tector's 39 shared assets retain content/GUIDs/imported mesh IDs; 38 existing consumer files unchanged. Seventeen PNGs restored from verified original LFS objects.
+- Active ISD I and Tector saved prefabs: no missing scripts/broken references. Deleted GUIDs have zero remaining serialized references. Active ISD I has zero obsolete dependencies; all 30 targets, ownership/fog/explosion/shield/hangar references and AI loadout verified.
 - Existing ship/data/View Addressables, roster/matchups, HUD/tooltip/icon generator, placement `UnitSpawnView`, abilities, weapon profiles and fighter dependencies verified without duplicate registrations.
 - 55 helpers / 67,130 triangles stripped from unit prefabs; gameplay shield retained. Imported source files keep helpers; ALAMO welds duplicate collision/shadow geometry only.
-- Icons/silhouette/placement/top/stern and all 8 live/wreck palettes inspected. Final saved verification and script compilation passed; imports idle and compilation-failed flag false. Concurrent-task Console history preserved.
+- Icons/silhouette/placement/top/stern and all 8 live/wreck palettes inspected. Cleanup verification: 18,217 saved-asset checks passed; imports idle and compilation-failed flag false. No new Console errors after LFS texture repair; earlier Console history retained.
 
 ## Files
 

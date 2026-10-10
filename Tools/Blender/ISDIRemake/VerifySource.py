@@ -1,5 +1,5 @@
-"""Verify source files, lossless textures, archived GUIDs and visible triangle fidelity."""
-import hashlib,json,re,subprocess
+"""Verify source files, lossless textures, old-visual cleanup and visible triangle fidelity."""
+import hashlib,json,re
 from pathlib import Path
 from PIL import Image,ImageChops
 
@@ -20,19 +20,15 @@ for name,variant in audit['variants'].items():
   key=mesh['name'] if index==0 else mesh['name']+'.'+str(index).zfill(3)
   if not report['before']['meshes'][key]['hidden']:
    assert sum(m['triangleCount'] for m in mesh['materials'])==report['before']['meshes'][key]['triangles'],key
-archive_guids=archive_binaries=0
-for folder in ('Assets/Art/Models/EmpireShips','Assets/Art/Materials/Models/EmpireShips','Assets/Art/Textures/Models/EmpireShips','Assets/Art/Materials/Wrecks'):
- paths=subprocess.check_output(['git','ls-files',folder+'/ISDI',folder+'/ISDI.meta'],text=True).splitlines()
- for original in paths:
-  target=Path(original.replace('/ISDI','/ISDIObsoleteAOTR',1))
-  old=subprocess.check_output(['git','show','HEAD:'+original])
-  assert target.exists(),str(target)
-  if original.endswith('.meta'):
-   guid=re.search(rb'^guid: (\w+)',old,re.M).group(1)
-   assert guid==re.search(rb'^guid: (\w+)',target.read_bytes(),re.M).group(1),str(target)
-   archive_guids+=1
-  elif target.suffix.lower() in ('.png','.fbx'):
-   assert old==target.read_bytes(),str(target);archive_binaries+=1
+cleanup=json.loads((TASK/'Cleanup.json').read_text())
+for original in cleanup['originalArchiveRecords']:
+ assert not Path(original).exists() and not Path(original+'.meta').exists(),original
+for moved in cleanup['movedAssets']:
+ target=Path(moved['newPath']);content=target.read_bytes()
+ if target.suffix=='.png':assert content.startswith(b'\x89PNG\r\n\x1a\n'),str(target)
+ if target.suffix=='.mat':content=re.sub(rb'(?m)^  m_Name:.*\r?\n',b'',content)
+ assert hashlib.sha256(content).hexdigest()==moved['contentSha256'],str(target)
+ assert re.search(r'^guid: (\w+)',Path(str(target)+'.meta').read_text(),re.M)[1]==moved['guid'],str(target)
 palette=[]
 base=Image.open(TASK/'Previews/Team0.png').convert('RGB')
 for i in range(1,8):
@@ -45,5 +41,5 @@ assert icon.size==(512,512) and icon.getchannel('A').getextrema()==(0,255)
 bounds=icon.getchannel('A').getbbox();assert bounds[0]>0 and bounds[1]>0 and bounds[2]<512 and bounds[3]<512
 silhouette=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette.png').convert('RGBA')
 assert silhouette.getchannel('A').tobytes()==icon.getchannel('A').tobytes()
-result=dict(source_hashes_unchanged=len(audit['source_hashes']),lossless_texture_copies=textures,original_archive_guids_retained=archive_guids,original_archive_binary_files_unchanged=archive_binaries,visible_binary_triangle_counts=True,live_and_wreck_palettes=8,transparent_icon_size=list(icon.size),icon_crop=list(bounds))
+result=dict(source_hashes_unchanged=len(audit['source_hashes']),lossless_texture_copies=textures,old_visual_records_removed=len(cleanup['originalArchiveRecords']),shared_tector_assets_preserved=len(cleanup['movedAssets']),unused_records_deleted=len(cleanup['deletedAssets']),visible_binary_triangle_counts=True,live_and_wreck_palettes=8,transparent_icon_size=list(icon.size),icon_crop=list(bounds))
 (TASK/'SourceVerification.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))

@@ -1,5 +1,5 @@
 {
-  "checks": 30340,
+  "checks": 18217,
   "geometry": [
     {
       "name": "ISDI",
@@ -132,6 +132,8 @@
   "retainedBalance": true,
   "retainedHangar": true,
   "obsoleteDependencies": 0,
+  "oldVisualsRemoved": true,
+  "sharedTectorAssetsPreserved": 39,
   "playModeAcceptance": false,
   "automatedTests": false
 }
