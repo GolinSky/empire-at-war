@@ -14,7 +14,7 @@ namespace EmpireAtWar.Models.Health
     /// The ship dies only when the hull reaches zero.
     /// </summary>
     [Serializable]
-    public class HealthModel : PureModel
+    public class HealthModel : Model
     {
         private readonly IHealthData _data;
 

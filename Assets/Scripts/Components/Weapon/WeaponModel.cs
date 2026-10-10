@@ -5,7 +5,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public class WeaponModel : PureModel
+    public class WeaponModel : Model
     {
         private readonly IReadOnlyDictionary<(DamageType, ShipClass), float> _accuracy;
 

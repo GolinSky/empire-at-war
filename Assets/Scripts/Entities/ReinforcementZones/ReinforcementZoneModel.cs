@@ -3,7 +3,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.ReinforcementZones
 {
-    public sealed class ReinforcementZoneModel : PureModel
+    public sealed class ReinforcementZoneModel : Model
     {
         private readonly IPlayerRelations _relations;
 

@@ -41,7 +41,7 @@ flowchart LR
 ```
 
 ### Components and Responsibilities:
-1. **Model (`PureModel` / Pure C#):** Contains runtime state, business rules, and standard C# events. It has **no** references to `UnityEngine`, serialized fields, or prefabs.
+1. **Model (`Model` / Pure C#):** Contains runtime state, business rules, and standard C# events. It has **no** references to `UnityEngine`, serialized fields, or prefabs.
 2. **View (`BaseUi` / `MonoBehaviour`):** Captures UI events and forwards user intent to the Presenter. It contains **no** gameplay logic or service dependencies.
 3. **Presenter (`UiController`):** Coordinates model updates with the view, handles initialization, and forwards requests to Services.
 4. **Service (`Service`):** Handles application/gameplay flows, background actions, and interactions with external/non-UI systems.

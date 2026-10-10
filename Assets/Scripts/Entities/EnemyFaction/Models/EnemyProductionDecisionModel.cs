@@ -87,7 +87,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         }
     }
 
-    public sealed class EnemyProductionDecisionModel : PureModel
+    public sealed class EnemyProductionDecisionModel : Model
     {
         private const int MINIMUM_FLEET_SIZE = 3;
         private const int FLAGSHIP_MAX_COUNT = 3;

@@ -9,7 +9,7 @@ namespace EmpireAtWar.Models.Factions
     /// Completed research of one faction. Each research line applies only the effects of its latest
     /// completed tier; effects of different lines stack multiplicatively.
     /// </summary>
-    public sealed class FactionResearchModel : PureModel, IFactionResearchModelObserver
+    public sealed class FactionResearchModel : Model, IFactionResearchModelObserver
     {
         private readonly Dictionary<ResearchType, ResearchLineData> _lines;
         private readonly Dictionary<ResearchType, int> _completedTiers = new();

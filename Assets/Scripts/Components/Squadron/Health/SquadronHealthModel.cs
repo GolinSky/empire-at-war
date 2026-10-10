@@ -12,7 +12,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
     /// Every fighter has its own hull and shields; a hit only damages the fighter it lands on.
     /// The squadron is destroyed when its last fighter dies.
     /// </summary>
-    public sealed class SquadronHealthModel : PureModel
+    public sealed class SquadronHealthModel : Model
     {
         private readonly ISquadronHealthData _data;
 

@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.CaptureSites
     /// and losing the facility returns the site to Neutral.
     /// An operational facility locks the site: it must be destroyed before the site can be captured.
     /// </summary>
-    public sealed class CaptureSiteModel : PureModel
+    public sealed class CaptureSiteModel : Model
     {
         private readonly IPlayerRelations _relations;
 

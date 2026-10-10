@@ -7,7 +7,7 @@ namespace EmpireAtWar.Components.Hangar
     /// Finite squadron reserve with a cap on simultaneously deployed squadrons per bay.
     /// Lost squadrons are replaced from the reserve after the launch interval; an empty reserve launches nothing.
     /// </summary>
-    public sealed class HangarModel : PureModel
+    public sealed class HangarModel : Model
     {
         private readonly IHangarData _data;
 

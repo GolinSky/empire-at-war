@@ -5,7 +5,7 @@ using EmpireAtWar.Mvc;
 namespace EmpireAtWar.Entities.MainMenu.Settings
 {
     /// <summary>Render state of the settings screen. Values mirror the settings draft; the presenter writes them.</summary>
-    public class SettingsModel : PureModel, ISettingsModelObserver
+    public class SettingsModel : Model, ISettingsModelObserver
     {
         public event Action Changed;
 

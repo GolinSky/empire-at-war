@@ -10,7 +10,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
     /// raises the advantage more than one that does not. The designer matchup table and a repeat penalty
     /// then shape the pick so the fleet stays varied.
     /// </summary>
-    public sealed class EnemyCounterProductionModel : PureModel
+    public sealed class EnemyCounterProductionModel : Model
     {
         /// <summary>Smallest log-advantage gain worth a purchase; below it the force is already saturated.</summary>
         private const double MINIMUM_GAIN = 0.001;

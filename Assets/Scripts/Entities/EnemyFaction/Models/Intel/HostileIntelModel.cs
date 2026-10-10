@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
     /// records, so allies share intel. A newer report replaces an older one; old reports fade by
     /// <see cref="IntelConfidence"/> and are dropped once forgotten.
     /// </summary>
-    public sealed class HostileIntelModel : PureModel
+    public sealed class HostileIntelModel : Model
     {
         private readonly Dictionary<long, HostileSighting> _sightings = new Dictionary<long, HostileSighting>();
         private readonly List<long> _expired = new List<long>();

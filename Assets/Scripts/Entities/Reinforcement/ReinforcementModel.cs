@@ -25,7 +25,7 @@ namespace EmpireAtWar.Models.Reinforcement
         bool CanSpawnUnit(SquadronType squadronType);
     }
 
-    public class ReinforcementModel : PureModel, IReinforcementModelObserver
+    public class ReinforcementModel : Model, IReinforcementModelObserver
     {
         private readonly ReinforcementData _data;
         private readonly Dictionary<ShipType, FactionData> _shipFactionData = new();

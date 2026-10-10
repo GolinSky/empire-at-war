@@ -5,7 +5,7 @@ using EmpireAtWar.Mvc;
 namespace EmpireAtWar.Models.Health
 {
     [Serializable]
-    public class HardPointModel : PureModel
+    public class HardPointModel : Model
     {
         private float _originHealth;
 
