@@ -51,16 +51,18 @@ namespace EmpireAtWar.Editor
             StyleSheet sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(STYLE_PATH);
             if (!root.styleSheets.Contains(sheet)) root.styleSheets.Add(sheet);
             root.AddToClassList("editor-hub");
-            root.Add(new Label("EMPIRE AT WAR  /  EDITOR HUB") { name = "hub-title" });
+            var header = new VisualElement { name = "hub-header" };
+            header.Add(new Label("EDITOR HUB") { name = "hub-title" });
+            var searchField = new ToolbarSearchField { name = "hub-search", value = search, tooltip = "Search tools in this category" };
+            searchField.RegisterValueChangedCallback(evt => { search = evt.newValue; RefreshList(); });
+            header.Add(searchField);
+            root.Add(header);
             _tabs = new VisualElement { name = "hub-tabs" };
             root.Add(_tabs);
             var workspace = new VisualElement { name = "hub-workspace" };
             root.Add(workspace);
             var sidebar = new VisualElement { name = "hub-sidebar" };
             workspace.Add(sidebar);
-            var searchField = new ToolbarSearchField { name = "hub-search", value = search, tooltip = "Search tools in this category" };
-            searchField.RegisterValueChangedCallback(evt => { search = evt.newValue; RefreshList(); });
-            sidebar.Add(searchField);
             _list = new ScrollView { name = "hub-list" };
             sidebar.Add(_list);
             _content = new VisualElement { name = "hub-content" };
@@ -124,14 +126,17 @@ namespace EmpireAtWar.Editor
             }
             else
             {
+                var card = new VisualElement { name = "hub-command-card" };
+                foreach (VisualElement element in _content.Children().ToArray()) card.Add(element);
+                _content.Add(card);
                 var run = new Button(() =>
                 {
                     if (selected.IsEnabled && !EditorApplication.ExecuteMenuItem(selected.MenuPath))
                         Debug.LogError("Could not execute editor command: " + selected.MenuPath);
                 }) { text = "Run " + selected.Title, name = "hub-run" };
                 run.SetEnabled(selected.IsEnabled);
-                _content.Add(run);
-                _content.Add(new Label("Uses the existing command. Check the Console for its result.") { name = "hub-hint" });
+                card.Add(run);
+                card.Add(new Label("Uses the existing command. Check the Console for its result.") { name = "hub-hint" });
             }
             UpdateState();
         }

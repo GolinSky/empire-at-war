@@ -1,7 +1,7 @@
 # Graph Report - empire-at-war  (2026-10-10)
 
 ## Corpus Check
-- 1083 files · ~206,823 words
+- 1083 files · ~206,817 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
