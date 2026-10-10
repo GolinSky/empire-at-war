@@ -2,7 +2,6 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.ShipNavigation;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace EmpireAtWar.Components.Obstacles
 {
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Components.Obstacles
     public sealed class MapObstacle : MonoBehaviour, IMapObstacleContactSource,
         IMiniMapObstacleSource
     {
-        [SerializeField, FormerlySerializedAs("_obstacleCollider")] private Collider obstacleCollider;
+        [SerializeField] private Collider obstacleCollider;
 
         public Bounds WorldBounds => obstacleCollider.bounds;
 
