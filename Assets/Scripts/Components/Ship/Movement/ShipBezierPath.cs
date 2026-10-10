@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Movement
@@ -28,9 +29,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             route.y = 0f;
             float distance = route.magnitude;
             Vector3 routeDirection = distance <= Mathf.Epsilon
-                ? GetPlanarDirection(originForward, Vector3.forward)
+                ? PlanarGeometry.NormalizeDirection(originForward, Vector3.forward)
                 : route / distance;
-            Vector3 startDirection = GetPlanarDirection(
+            Vector3 startDirection = PlanarGeometry.NormalizeDirection(
                 originForward,
                 routeDirection);
             if (Vector3.Dot(startDirection, routeDirection) < 0f)
@@ -93,7 +94,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             float remainingDistance = Vector3.Distance(
                 halfTurnPoint,
                 destination);
-            Vector3 finalArrivalDirection = GetPlanarDirection(
+            Vector3 finalArrivalDirection = PlanarGeometry.NormalizeDirection(
                 destination - halfTurnPoint,
                 arrivalDirection);
             float approachHandle = Mathf.Max(
@@ -126,14 +127,14 @@ namespace EmpireAtWar.Components.Ship.Movement
             {
                 Vector3 start = waypoints[i];
                 Vector3 end = waypoints[i + 1];
-                Vector3 legDirection = GetPlanarDirection(end - start, originForward);
+                Vector3 legDirection = PlanarGeometry.NormalizeDirection(end - start, originForward);
                 float distance = Vector3.Distance(start, end);
                 Vector3 startTangent = i == 0
-                    ? GetPlanarDirection(originForward, legDirection)
-                    : GetPlanarDirection(end - waypoints[i - 1], legDirection);
+                    ? PlanarGeometry.NormalizeDirection(originForward, legDirection)
+                    : PlanarGeometry.NormalizeDirection(end - waypoints[i - 1], legDirection);
                 Vector3 endTangent = i + 1 == lastIndex
                     ? legDirection
-                    : GetPlanarDirection(waypoints[i + 2] - start, legDirection);
+                    : PlanarGeometry.NormalizeDirection(waypoints[i + 2] - start, legDirection);
                 float startHandle = handleScale * (i == 0
                     ? Mathf.Min(
                         distance * 0.5f,
@@ -177,22 +178,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             return new ShipBezierRoute(segments);
-        }
-
-        private static Vector3 GetPlanarDirection(
-            Vector3 requestedDirection,
-            Vector3 fallback)
-        {
-            requestedDirection.y = 0f;
-            if (requestedDirection.sqrMagnitude > Mathf.Epsilon)
-            {
-                return requestedDirection.normalized;
-            }
-
-            fallback.y = 0f;
-            return fallback.sqrMagnitude > Mathf.Epsilon
-                ? fallback.normalized
-                : Vector3.forward;
         }
     }
 }

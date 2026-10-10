@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using Zenject;
 
@@ -65,7 +66,7 @@ namespace EmpireAtWar.Services.Input
         private void Press(Vector2 position)
         {
             bool isOverUi = _uiHitTest.IsOverUi(position);
-            _drag.Begin(ToNumerics(position), isOverUi);
+            _drag.Begin(position.ToNumerics(), isOverUi);
             if (!isOverUi)
             {
                 WorldPressed?.Invoke(position);
@@ -74,7 +75,7 @@ namespace EmpireAtWar.Services.Input
 
         private void Track(Vector2 position)
         {
-            System.Numerics.Vector2 movement = _drag.Move(ToNumerics(position));
+            System.Numerics.Vector2 movement = _drag.Move(position.ToNumerics());
             TryStartDrag(position);
             if (_drag.HasDragged && movement.LengthSquared() > Mathf.Epsilon)
             {
@@ -106,18 +107,13 @@ namespace EmpireAtWar.Services.Input
 
         private bool TryStartDrag(Vector2 position)
         {
-            if (!_drag.TryStartDrag(ToNumerics(position)))
+            if (!_drag.TryStartDrag(position.ToNumerics()))
             {
                 return false;
             }
 
             DragStarted?.Invoke(new Vector2(_drag.PressPosition.X, _drag.PressPosition.Y));
             return true;
-        }
-
-        private static System.Numerics.Vector2 ToNumerics(Vector2 position)
-        {
-            return new System.Numerics.Vector2(position.x, position.y);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 using Random = System.Random;
@@ -35,7 +36,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             List<MapNode> nodes)
         {
             nodes.Clear();
-            Vector3 center = MapGeometry.GetCenter(size.Bounds);
+            Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
             AddDefaultZones(size, stations, center, nodes);
             if (!TryAddHomeMining(size, stations, center, difficulty, random, nodes))
             {
@@ -161,10 +162,10 @@ namespace EmpireAtWar.Entities.Map.Generation
 
         private static int FindMirroredStation(IReadOnlyList<MapStation> stations, Vector3 center, int index)
         {
-            Vector3 reflected = MapGeometry.Reflect(stations[index].Position, center);
+            Vector3 reflected = PlanarGeometry.Reflect(stations[index].Position, center);
             for (int i = 0; i < stations.Count; i++)
             {
-                if (i != index && MapGeometry.Distance(stations[i].Position, reflected) < MIRROR_TOLERANCE)
+                if (i != index && PlanarGeometry.Distance(stations[i].Position, reflected) < MIRROR_TOLERANCE)
                 {
                     return i;
                 }
@@ -198,7 +199,7 @@ namespace EmpireAtWar.Entities.Map.Generation
 
                 int index = nodes.Count;
                 nodes.Add(new MapNode(kind: kind, center: position, radius: radius, owner: PlayerId.None) { Mirror = index + 1 });
-                nodes.Add(new MapNode(kind: kind, center: MapGeometry.Reflect(position, center), radius: radius, owner: PlayerId.None) { Mirror = index });
+                nodes.Add(new MapNode(kind: kind, center: PlanarGeometry.Reflect(position, center), radius: radius, owner: PlayerId.None) { Mirror = index });
             }
 
             return true;
@@ -225,8 +226,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                     Mathf.Lerp(min.x, max.x, (float)random.NextDouble()),
                     0f,
                     Mathf.Lerp(min.y, max.y, (float)random.NextDouble()));
-                Vector3 mirror = MapGeometry.Reflect(candidate, center);
-                if (MapGeometry.Distance(candidate, mirror) < outer * 2f + size.PointSpacing ||
+                Vector3 mirror = PlanarGeometry.Reflect(candidate, center);
+                if (PlanarGeometry.Distance(candidate, mirror) < outer * 2f + size.PointSpacing ||
                     !IsClear(candidate, outer, size, stations, nodes) ||
                     !IsClear(mirror, outer, size, stations, nodes))
                 {
@@ -234,15 +235,15 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
 
                 validCandidates++;
-                float score = MapGeometry.Distance(candidate, mirror);
+                float score = PlanarGeometry.Distance(candidate, mirror);
                 foreach (MapNode node in nodes)
                 {
-                    score = Mathf.Min(score, MapGeometry.Distance(candidate, node.Center));
+                    score = Mathf.Min(score, PlanarGeometry.Distance(candidate, node.Center));
                 }
 
                 foreach (MapStation station in stations)
                 {
-                    score = Mathf.Min(score, MapGeometry.Distance(candidate, station.Position) - station.Radius);
+                    score = Mathf.Min(score, PlanarGeometry.Distance(candidate, station.Position) - station.Radius);
                 }
 
                 if (score > bestScore)
@@ -272,7 +273,7 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             foreach (MapStation station in stations)
             {
-                if (MapGeometry.Distance(position, station.Position) < station.Radius + outer)
+                if (PlanarGeometry.Distance(position, station.Position) < station.Radius + outer)
                 {
                     return false;
                 }
@@ -282,7 +283,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             {
                 // Point spacing leaves lane room between two asteroid pockets; default zones have none.
                 float spacing = node.HasPocket ? size.PointSpacing : 0f;
-                if (MapGeometry.Distance(position, node.Center) < outer + GetOuterRadius(node, size) + spacing)
+                if (PlanarGeometry.Distance(position, node.Center) < outer + GetOuterRadius(node, size) + spacing)
                 {
                     return false;
                 }

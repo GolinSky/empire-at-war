@@ -2,7 +2,7 @@
 
 namespace EmpireAtWar.Utils
 {
-    public static class DotweenExtensions_v2
+    public static class SequenceExtensions
     {
         public static bool KillExt(this Sequence sequence)
         {

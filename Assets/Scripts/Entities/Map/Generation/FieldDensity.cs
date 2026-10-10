@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using Random = System.Random;
 
@@ -42,7 +43,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             _stations = stations;
             _nodes = nodes;
             _lanes = lanes;
-            _center = MapGeometry.GetCenter(size.Bounds);
+            _center = PlanarGeometry.GetCenter(size.Bounds);
             _shapeOffset = RandomOffset(random);
             _chokeOffset = RandomOffset(random);
             _ridgeOffset = RandomOffset(random);
@@ -72,7 +73,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             foreach (MapStation station in _stations)
             {
-                if (MapGeometry.Distance(position, station.Position) <
+                if (PlanarGeometry.Distance(position, station.Position) <
                     station.Radius + _settings.ZoneClearance + _size.FieldCellSize)
                 {
                     return true;
@@ -81,7 +82,7 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             foreach (MapNode node in _nodes)
             {
-                if (MapGeometry.Distance(position, node.Center) < node.Radius + _settings.ZoneClearance)
+                if (PlanarGeometry.Distance(position, node.Center) < node.Radius + _settings.ZoneClearance)
                 {
                     return true;
                 }
@@ -102,7 +103,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             float halfWidth = width * 0.5f;
             foreach (MapLane lane in _lanes)
             {
-                if (MapGeometry.DistanceToPolyline(position, lane.Points) < halfWidth)
+                if (PlanarGeometry.DistanceToPolyline(position, lane.Points) < halfWidth)
                 {
                     return true;
                 }
@@ -121,7 +122,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
 
                 float inner = node.Radius + _settings.ZoneClearance;
-                float distance = MapGeometry.Distance(position, node.Center);
+                float distance = PlanarGeometry.Distance(position, node.Center);
                 if (distance >= inner && distance < inner + _size.PocketThickness)
                 {
                     return true;
@@ -148,7 +149,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         // the average of two independent samples is flatter, so its spread is restored.
         private float GetSymmetricNoise(Vector3 position, Vector2 offset, float featureSize)
         {
-            Vector3 mirror = MapGeometry.Reflect(position, _center);
+            Vector3 mirror = PlanarGeometry.Reflect(position, _center);
             float average = (GetNoise(position, offset, featureSize) + GetNoise(mirror, offset, featureSize)) * 0.5f;
             return Mathf.Clamp01(0.5f + (average - 0.5f) * SYMMETRY_CONTRAST);
         }

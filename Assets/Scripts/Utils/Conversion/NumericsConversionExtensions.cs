@@ -1,4 +1,5 @@
 using NumericsQuaternion = System.Numerics.Quaternion;
+using NumericsVector2 = System.Numerics.Vector2;
 using NumericsVector3 = System.Numerics.Vector3;
 using UnityEngine;
 
@@ -6,6 +7,11 @@ namespace EmpireAtWar.Utils
 {
     public static class NumericsConversionExtensions
     {
+        public static NumericsVector2 ToNumerics(this Vector2 value)
+        {
+            return new NumericsVector2(value.x, value.y);
+        }
+
         public static NumericsVector3 ToNumerics(this Vector3 value)
         {
             return new NumericsVector3(value.x, value.y, value.z);
