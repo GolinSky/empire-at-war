@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "command": "command console",
+  "data": {
+    "command": "console",
+    "parameters": {
+      "level": "error",
+      "since": 37,
+      "tail": 30
+    },
+    "result": {
+      "entries": [],
+      "cursor": 41,
+      "returned": 0,
+      "dropped": false
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

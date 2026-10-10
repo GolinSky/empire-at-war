@@ -1,0 +1,394 @@
+{
+  "originalArchiveCommit": "327da32c",
+  "originalArchiveRecords": [
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_MeshAdditive.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_MeshGloss.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Helper_MeshCollision.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Helper_MeshShadowVolume.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Lights_Grid_MeshAdditive.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_MeshBumpColorize.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_P_ISD_ENG_MeshAdditive.mat",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_TeamStripes.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_MeshGloss_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_TeamStripes_Wreck.mat",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDI.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_TeamStripes.asset",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDIICD01.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDIICD02.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDIParts.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD01.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD02.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD03.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD04.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD05.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD06.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLT01.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLT02.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLT03.fbx",
+    "Assets/Art/Models/Shields/ISDIShipViewShield_ObsoleteAOTR.asset",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_B.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_TeamMask.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_Additive.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_B.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_Lights.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_Lights_Additive.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Lights_Grid.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Lights_Grid_Additive.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_B.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_TeamMask.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse_TeamMask.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_normal_specular.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_P_ISD_ENG.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_P_ISD_ENG_Additive.png",
+    "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon_ObsoleteAOTR.png",
+    "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette_ObsoleteAOTR.png",
+    "Assets/Prefabs/Models/Ships/ISDI_ObsoleteAOTR.prefab",
+    "Assets/Prefabs/Models/Ships/ISDIShipView_ObsoleteAOTR.prefab",
+    "Assets/Prefabs/Models/Wrecks/ISDIWreckView_ObsoleteAOTR.prefab",
+    "Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView_ObsoleteAOTR.prefab"
+  ],
+  "movedAssets": [
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize.mat",
+      "guid": "b51b33bcd38ba984a9b51697bbdc476e",
+      "contentSha256": "3097ffef52a0c3ac57792b91f2771f3d49266b3ed41145a07ac0187b79b44b0c",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_MeshAdditive.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k_MeshAdditive.mat",
+      "guid": "b5fe542de72a5a64a9941f290167031e",
+      "contentSha256": "0ba3f48cdba24b191f9e2edd6a159b043445cf36d75d653331e0ee32719b3cae",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_MeshGloss.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k_MeshGloss.mat",
+      "guid": "e6c5534badfeb52409e41ca93564ecb4",
+      "contentSha256": "8b40ba42feb339c310f28e119135f091f0a2c5bf99701d4e320646100a59ea59",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Helper_MeshCollision.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Helper_MeshCollision.mat",
+      "guid": "2d57a90a0e59c4a4697709f461da150e",
+      "contentSha256": "27e5271544785d9e4a1212d815313e4cd1a818716fcd9036f987102af8ee9c8c",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Helper_MeshShadowVolume.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Helper_MeshShadowVolume.mat",
+      "guid": "7c7521ff1bf6bda42b5c52445d57d314",
+      "contentSha256": "27e5271544785d9e4a1212d815313e4cd1a818716fcd9036f987102af8ee9c8c",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+      "guid": "46e21ae6eaf109843a0148d36874c4ad",
+      "contentSha256": "cd3e93d6664eb7c9cfa5213ece38f36d272f576b24a9564dcab04ee363273817",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+      "guid": "6f51952df540d4545988901e7e1eb88f",
+      "contentSha256": "38a34245688a0fd25baafbda4dda12daf5bbf50fcdd2a81802642d852827b059",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Lights_Grid_MeshAdditive.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Lights_Grid_MeshAdditive.mat",
+      "guid": "8fed54da33845e94989637082d7abd70",
+      "contentSha256": "ff815d4dff9190404f1eca81ca2e5d7adae35d21b4e6a4365e5850523f763359",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_MeshBumpColorize.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base_MeshBumpColorize.mat",
+      "guid": "99288eb06c46bf44a9c8024c9cb45e84",
+      "contentSha256": "b4b5ee5b60298ad24580c1963d762913ca3a0d9252b06b7cb099eafe805fa408",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+      "guid": "31029dbb6e56aea4f9706a0c182db474",
+      "contentSha256": "780f5400b38fbaa2c51b9ae5f1feed3c79a5e5547a44336a57bf26fe35dd272e",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_P_ISD_ENG_MeshAdditive.mat",
+      "newPath": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_P_ISD_ENG_MeshAdditive.mat",
+      "guid": "47e6ee463ff22994cadb036fb4ae1a73",
+      "contentSha256": "89d1ee7ef4688aa658ec0f740f54dde793a4c5ffcdbeb28f17680e4524e093df",
+      "binary": false
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDI.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTR.fbx",
+      "guid": "a0a0fcff0f9960c44973e57ca83f3c34",
+      "contentSha256": "b190272fd50fc3343029d2b5b1278a55d1f31299d549939771f3eafde53d7dc7",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDIParts.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRParts.fbx",
+      "guid": "43126d3ef40ebf94a8fc340bb21046ed",
+      "contentSha256": "6befce60454b659d247da479f789654e7d418f7e3fcc13689f9b01b709d52ed0",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD01.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD01.fbx",
+      "guid": "c4caf3582617cef4b8c0b7e03e197374",
+      "contentSha256": "09328d312921208597efe8e879ca900b7b5658f1ea4f0a67ae93ce91b295682c",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD02.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD02.fbx",
+      "guid": "15acd39c81e50f54896fb7bd61898c22",
+      "contentSha256": "44f222e57a902a492552921bf8a73f26d5ff95f189e28a440591f2eed133f4fe",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD03.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD03.fbx",
+      "guid": "34c1e4368299af04a92067de14d7b81d",
+      "contentSha256": "fe3cfa993e949b81c5b284b42f4201a459ce757549896644bc3278a31d5b1339",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD04.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD04.fbx",
+      "guid": "1b42789da8433f945a26c19a5efd06aa",
+      "contentSha256": "0c07e7c07f6190a69c1c69bb20220547b3ba98950ccd7646bc628f72e7bd7091",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD05.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD05.fbx",
+      "guid": "31a9ab079d8b6a040aabc305c294390e",
+      "contentSha256": "38a2d762875bbc005ad2b27a521806b361473122535ce4d9c552f6e973d536fc",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLD06.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD06.fbx",
+      "guid": "909f63b516ebf294caaa615575145cf5",
+      "contentSha256": "cbc877e9885b56a342399d8d98e05c3abd65992df6e526f9791be00856b0cbea",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLT01.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLT01.fbx",
+      "guid": "d02c1be7c85f2a7468ccce3d95424701",
+      "contentSha256": "6795132d305b4ec39a151406f21cd16d243139e08d86e8bb553134260321cae6",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLT02.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLT02.fbx",
+      "guid": "297d26a59d2cf6f488ce0a9c0463695f",
+      "contentSha256": "bba6d5f6099ca9c474c7e973cd890f57d83d2340aff48378e17e051b21e2ee4b",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDITLT03.fbx",
+      "newPath": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLT03.fbx",
+      "guid": "4bf16a4773080cc43928298268dadd40",
+      "contentSha256": "8c2c9132b7e32473e34edc206e280ae1b8a101c6b1011735b284918e62ce98f5",
+      "binary": true
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor.png",
+      "guid": "242b2f845a3be7c4d9f1d0d4549a0c27",
+      "contentSha256": "f23c8dc6b2a54efe8b79069d8cb743377564a2a3706d58d04df52e6e009ecea8",
+      "binary": true,
+      "originalLfsPointerSha256": "c56622b6e4ae371e047aecbd27945f82e0340eee96b17875f116bc75351849be"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_B.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor_B.png",
+      "guid": "df7a6ef0c818dfa43ac58a6bed31e936",
+      "contentSha256": "f187b7079b4f0801222fc9ef7a1ad48bf48542c86a37985600c10df7f0e6ae7d",
+      "binary": true,
+      "originalLfsPointerSha256": "e8a6255e12d8de373cbbe50d1d74a7b503903dbd3d7b9d7d29b59fb5a73de846"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_TeamMask.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor_TeamMask.png",
+      "guid": "d14b90473ddc90644ba3ebe629652207",
+      "contentSha256": "363a707f7fe2153d380c2980586655e27563ded071795f1d3f945e97d4f32c9e",
+      "binary": true,
+      "originalLfsPointerSha256": "61634d9bb862e0a2d57243aacb771d60f062d63df4222fe9b7ec38a6cb860e81"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k.png",
+      "guid": "a249d3a5729840245a8fa0284221b6ee",
+      "contentSha256": "9e71b4b1b038f2b339f10ace46eec6ae648f61a69635030b88fd4dd5d2c7497f",
+      "binary": true,
+      "originalLfsPointerSha256": "b38e23074c970adee46732824c8b717fe50d425d8e4b06dbd5973ee4a9c3e028"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_Additive.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k_Additive.png",
+      "guid": "f2840bdeb1edc2d4faa9cb21c709bfe0",
+      "contentSha256": "f02bb3bdb5c09d491cdb8b62e5e592cf9da72f49e966fb5d785fc8748127d2f0",
+      "binary": true,
+      "originalLfsPointerSha256": "357bb0d9f766e0321e4e8bd4d3e878b91fbb005d3799b1b52ab058b56488b677"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD.png",
+      "guid": "0e3c431705d9bdc478dc18ab80493a00",
+      "contentSha256": "d03179dfedfb3ce2bc11b2256d621051799fe467992d596b62f9ad463f04df9b",
+      "binary": true,
+      "originalLfsPointerSha256": "d93d6c6ad9b9a45301c56451d4eae5c35878ccd3935b8aab7de1a926a590524d"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_B.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_B.png",
+      "guid": "5fff27645580e5545bd2c06836aa876e",
+      "contentSha256": "6a4854e951325bc0af12b5badc5b9c1c3535299ded606ad6c920633d76781d15",
+      "binary": true,
+      "originalLfsPointerSha256": "56477f6edc0979ab00cabbc36e16d899fbe3ad55ac3c17873072b7832b8ce328"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_Lights_Additive.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_Lights_Additive.png",
+      "guid": "5ce41ae12480a504390c0ca9a8c6151a",
+      "contentSha256": "f30d5695019850e80519c5930a3411ada3c0cae0453ee39104a50355ad47557b",
+      "binary": true,
+      "originalLfsPointerSha256": "9561a5fbffb636660e6648c942393054da38e73c7fc62e838343d8d8d24b6fe9"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+      "guid": "ca326f65b4664c845a88cc77208945d5",
+      "contentSha256": "92d103ae3b35360d5c817ca0287ddaf222ce4889a230003c99128f0c56eef900",
+      "binary": true,
+      "originalLfsPointerSha256": "fcae87ba19b6a8355322a8d41fe8944c23e05ffbd6b11fddcba6802a10cc30b2"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Lights_Grid_Additive.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Lights_Grid_Additive.png",
+      "guid": "1251b56cb971a6f419b5ee32f19c068a",
+      "contentSha256": "ea096679558e7dec5f10139ffd6d0434caf631994b03df0966becd9e7bbfe758",
+      "binary": true,
+      "originalLfsPointerSha256": "d687ca1913881443446ee1cb406f24fe9bc4fd5407a4260816e3338a2e4d9aa9"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base.png",
+      "guid": "37cbc21824b632d458b045b4b341ee99",
+      "contentSha256": "ca7377555abee5e05b5a43387013f9d1747c279979dc36e34e8aa9e471647d09",
+      "binary": true,
+      "originalLfsPointerSha256": "58cc05d5ebce6f34d1e4fb743d3dc6c19ec111e5e913754e751883438f4b0581"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_B.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base_B.png",
+      "guid": "2fc773d68b2fd8e47802c71afce2f0e7",
+      "contentSha256": "974bbf46bc4dd94e77936ed8033660373a54cabe3b8507c160e85076b44022ee",
+      "binary": true,
+      "originalLfsPointerSha256": "76fea4037e5958dee35b84f7fc39153eaaf07e1467e1848099d8281b2c882fa6"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_TeamMask.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base_TeamMask.png",
+      "guid": "0087aa3d921ccec4c85f88aef4b48d10",
+      "contentSha256": "92d103ae3b35360d5c817ca0287ddaf222ce4889a230003c99128f0c56eef900",
+      "binary": true,
+      "originalLfsPointerSha256": "fcae87ba19b6a8355322a8d41fe8944c23e05ffbd6b11fddcba6802a10cc30b2"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_ISD_diffuse.png",
+      "guid": "f4608f9542b48664ab8a8a3064ae18b2",
+      "contentSha256": "487f6d11315af5e19d70d02e18f7a24b906d7debfa4f8105e69e906ee6613ff2",
+      "binary": true,
+      "originalLfsPointerSha256": "33627e682eb5e601a5958735614141f5aa9f093110ba363150e2a74c76bd3824"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse_TeamMask.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_ISD_diffuse_TeamMask.png",
+      "guid": "9616acc9a0f3f754db3702076fae65c4",
+      "contentSha256": "92d103ae3b35360d5c817ca0287ddaf222ce4889a230003c99128f0c56eef900",
+      "binary": true,
+      "originalLfsPointerSha256": "fcae87ba19b6a8355322a8d41fe8944c23e05ffbd6b11fddcba6802a10cc30b2"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hullplates_normal_specular.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_normal_specular.png",
+      "guid": "e526a571a8bf2b949acd469a466e715c",
+      "contentSha256": "fdb6aae2974ace010b9ff905c1e598eb781b7e12957b276ce1f584f0cd82cce7",
+      "binary": true,
+      "originalLfsPointerSha256": "1efd0466c947c72f31642f803a37a9f7fb5ed18dedabae5c53d0e3964c02245d"
+    },
+    {
+      "oldPath": "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_P_ISD_ENG_Additive.png",
+      "newPath": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_P_ISD_ENG_Additive.png",
+      "guid": "c264e877576f7c048a0c9f3e2e33de97",
+      "contentSha256": "bd66a3cb7f8a567017eb57bfb4c8755bd689e3a42bfab74e17ca1a5bb6344dbc",
+      "binary": true,
+      "originalLfsPointerSha256": "cf2b54a80e3f3a4348a1ad481b52f99b8ae545e3770191f286b07c3d55807e21"
+    }
+  ],
+  "deletedAssets": [
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR",
+    "Assets/Art/Materials/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_TeamStripes.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hangar_Imp_1k_MeshGloss_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hull_Superstructure_Base_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat",
+    "Assets/Art/Materials/Wrecks/ISDIObsoleteAOTR/ISDI_TeamStripes_Wreck.mat",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_TeamStripes.asset",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDIICD01.fbx",
+    "Assets/Art/Models/EmpireShips/ISDIObsoleteAOTR/ISDIICD02.fbx",
+    "Assets/Art/Models/Shields/ISDIShipViewShield_ObsoleteAOTR.asset",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Kitbash_Pieces_ISD_Lights.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_Hull_Lights_Grid.png",
+    "Assets/Art/Textures/Models/EmpireShips/ISDIObsoleteAOTR/ISDI_P_ISD_ENG.png",
+    "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon_ObsoleteAOTR.png",
+    "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette_ObsoleteAOTR.png",
+    "Assets/Prefabs/Models/Ships/ISDI_ObsoleteAOTR.prefab",
+    "Assets/Prefabs/Models/Ships/ISDIShipView_ObsoleteAOTR.prefab",
+    "Assets/Prefabs/Models/Wrecks/ISDIWreckView_ObsoleteAOTR.prefab",
+    "Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView_ObsoleteAOTR.prefab"
+  ],
+  "completed": "2026-10-10",
+  "sharedAssetsMoved": 39,
+  "unusedRecordsDeleted": 24,
+  "tectorConsumerFilesUnchanged": 38,
+  "tectorReferencesVerified": true,
+  "importedMeshIdsPreserved": true,
+  "oldVisualPathsAbsent": true,
+  "restoredLfsTextureFiles": 17
+}

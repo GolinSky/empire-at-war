@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Blender/ISDIRemake/Cleanup.cs",
+      "timeout_ms": 120000
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 309,
+      "executeMs": 8094,
+      "assemblyName": "PipelineRunScript_Cleanup_58333febc2ca4a41aff7718103410bb5",
+      "success": true,
+      "result": "Moved 39 shared assets to Tector; deleted 24 unused records. Tector geometry, GUIDs and saved references preserved."
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

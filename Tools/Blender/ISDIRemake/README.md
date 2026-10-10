@@ -6,7 +6,7 @@
 - Source: Workshop `1770851727`, `D:/SteamLibrary/steamapps/workshop/content/32470/1770851727/Data`.
 - Unit inheritance: `Star_Destroyer → Star_Destroyer_Upkeep → Star_Destroyer_Template → Capital_Base → Vessel_Base → SFX_Base`.
 - User choices, 2026-10-09: retain current balance and Interceptor/Brute/Punisher bays. Source weapon layout is rebuilt with existing project weapon profiles; no shared weapon or ability definitions were changed by this replacement.
-- Original AOTR visual folders moved to `ISDIObsoleteAOTR` under models, materials, textures and wreck materials. All 63 assets/folders/snapshots have `Obsolete` labels. Original 56 asset/folder GUIDs retained; archived prefab snapshots reference archived visuals, shield and icons.
+- Previous AOTR visuals removed on 2026-10-10: 24 unused assets/folders/snapshots deleted; 39 shared assets moved to `Tector/Tector_AOTR*` with their GUIDs and visual content retained. All 63 old archive paths are absent. The original archive remains recoverable from commit `327da32c`.
 
 ## Model and materials
 
@@ -53,9 +53,9 @@
 
 - Blender position/UV-corner matching tolerance: `0.001` source units / `0.00001` UV units. Maximum measured geometry error `0.000158`; bone error `0.000099` source units.
 - Unity imports: original converted mesh/triangle counts, all UVs/material slots and bone hierarchy verified across 16 FBXs. Maximum bone displacement `0.000002346` project units; gameplay muzzle displacement `0`.
-- 56 original source hashes unchanged; 100 decoded texture-reference copies pixel-identical. Original archive FBX/PNG files unchanged; original GUIDs retained.
-- Saved active and archived prefabs: no missing scripts/broken references. Active ISD I visual dependencies contain zero `Obsolete` assets. Helper stripping removed 55 source helpers / 67,130 triangles from unit prefabs; gameplay shield retained.
-- Final saved verification and ephemeral script compilation passed; Editor compilation-failed flag false, imports idle. Historical Console errors from concurrent ISD II / Balance work were not cleared or modified.
+- 56 original source hashes unchanged; 100 decoded texture-reference copies pixel-identical. Tector's 39 retained shared assets preserve GUIDs/content and imported mesh IDs; its 38 existing consumer files are unchanged. Seventeen archived PNGs were LFS pointers; their original image bytes were restored from verified local LFS objects.
+- Saved active ISD I and Tector prefabs: no missing scripts/broken references. Active ISD I visual dependencies contain zero `Obsolete` assets; deleted GUIDs have zero remaining serialized references. Helper stripping removed 55 source helpers / 67,130 triangles from unit prefabs; gameplay shield retained.
+- Final saved verification: 18,217 checks passed; ephemeral scripts compiled, Editor compilation-failed flag false, imports idle. No new Console errors after the texture repair; earlier Console history retained.
 - Transparent 512×512 icon/silhouette, placement, top/stern and all eight live/wreck palettes saved in `Previews/`. This task did not run automated tests or enter Play Mode, per ALO guide.
 - Runtime combat acceptance remains unrun: firing/arcs, launches, abilities, shields, fog/selection and death timing. Source ALA animations and animated EaW wave/refraction/proxy effects are not recreated; existing project effects and static source art are used.
 
@@ -64,6 +64,6 @@
 - Active art: `Assets/Art/{Models,Materials/Models,Textures/Models}/EmpireShips/ISDI/`; wreck materials `Assets/Art/Materials/Wrecks/ISDI/`.
 - Active prefabs: `ISDI.prefab`, `ISDIShipView.prefab`, `ISDIWreckView.prefab`, `ISDIReinforcementView.prefab`. Existing settings remain under `Assets/Settings/Data/Ship/`.
 - Editable package: `output/remake-empire-units/ISDI-Converted/` (16 packed `.blend`/FBX sets, textures and reports). Checked evidence: `Evidence/`; working conversion data: ignored `Temp/ISDIRemakeImport/`.
-- `Prepare.py` audits the installed source; `Convert.py` uses the isolated Blender MCP; `PreserveParameters.py` keeps auxiliary maps and parameters; `Stage.py` stages art. `Baseline.cs`/`Archive.cs` were the one-time migration steps; keep the captured baseline.
+- `Prepare.py` audits the installed source; `Convert.py` uses the isolated Blender MCP; `PreserveParameters.py` keeps auxiliary maps and parameters; `Stage.py` stages art. `Baseline.cs`/`Archive.cs`/`Cleanup.cs` were one-time migrations; do not rerun them on the current integration. Keep the captured baseline and `Evidence/Cleanup.json` disposition report.
 - Unity rebuild order: `BuildArt.cs`, `ApplySourceTints.cs`, `BuildStripes.cs`, `BuildShip.cs`, `BuildPreview.cs`, `Finalize.cs`, `Render.cs`, `Verify.cs`. Run with `unity command run_script --file <file> --timeout_ms 120000 --timeout 150 --json`; inspect nested `result.success`.
-- Restore `Baseline.json` and `GameplayMapping.json` from `Evidence/` when rebuilding temporary data. Finish with `uv run --with pillow python Tools/Blender/ISDIRemake/VerifySource.py`.
+- When Unity clears `Temp`, restore `Evidence/*.json` to `Temp/ISDIRemakeImport/`, plus each `<Variant>/ConversionReport.json` and `Previews/` from the editable package. Finish with `uv run --with pillow python Tools/Blender/ISDIRemake/VerifySource.py`.

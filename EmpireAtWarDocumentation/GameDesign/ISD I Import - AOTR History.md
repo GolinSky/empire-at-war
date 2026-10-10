@@ -7,6 +7,7 @@ status: obsolete
 # ISD I Import — AOTR History
 
 - Historical reference: superseded ISD I visuals and original balance values. Current integration: [[GameDesign/ISD I Import]]. Original fighter-import notes remain historical evidence.
+- Obsolete visual archive removed on 2026-10-10; original archive recoverable from commit `327da32c`. Shared source assets needed by Tector moved to its art folders with original GUIDs and visual content.
 
 ## Decision
 

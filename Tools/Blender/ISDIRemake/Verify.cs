@@ -151,17 +151,21 @@ public static class VerifyISDIRemake
         }
         var stripes=Visible(visual).Where(r=>r.name.StartsWith("TeamStripes")).ToArray();Check(stripes.Length>0 && stripes.All(stripe=>stripe.sharedMaterial.GetFloat("_TeamMaskStrength")==1 && stripe.sharedMaterial.GetTexture("_TeamMaskMap")!=null),"Fitted team stripe material");
         Check(Visible(wreck).Where(r=>r.name.StartsWith("TeamStripes")).All(r=>r.sharedMaterial.GetFloat("_TeamMaskStrength")==1),"Wreck stripe opt-in");
-        foreach(var path in JArray.Parse(File.ReadAllText(TASK+"ObsoleteAssets.json")))Check(AssetDatabase.GetLabels(AssetDatabase.LoadMainAssetAtPath((string)path)).Contains("Obsolete"),"Obsolete label "+path);
-        foreach(var path in JArray.Parse(File.ReadAllText(TASK+"ObsoleteAssets.json")).Select(p=>(string)p).Where(p=>p.EndsWith(".prefab")))
+        var cleanup=JObject.Parse(File.ReadAllText(TASK+"Cleanup.json"));
+        foreach(string path in cleanup["originalArchiveRecords"].Values<string>())
+            Check(!File.Exists(path) && !Directory.Exists(path) && !File.Exists(path+".meta"),"Old ISD I visual removed "+path);
+        foreach(var moved in cleanup["movedAssets"])
         {
-            foreach(var dependency in AssetDatabase.GetDependencies(path,true)) Check(!((JObject)baseline["guids"]).Properties().Where(p=>p.Name.EndsWith(".prefab") || p.Name.EndsWith(".png")).Any(p=>p.Name==dependency),"Archived snapshot uses archived visuals "+dependency);
-            var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            foreach(var component in prefab.GetComponentsInChildren<Component>(true))
+            string path=(string)moved["newPath"];
+            Check(AssetDatabase.AssetPathToGUID(path)==(string)moved["guid"],"Shared Tector GUID retained "+path);
+            Check(!AssetDatabase.GetLabels(AssetDatabase.LoadMainAssetAtPath(path)).Contains("Obsolete"),"Active Tector source "+path);
+            if(path.EndsWith(".png"))
             {
-                var iterator=new SerializedObject(component).GetIterator();while(iterator.Next(true))if(iterator.propertyType==SerializedPropertyType.ObjectReference)Check(iterator.objectReferenceValue!=null || iterator.objectReferenceEntityIdValue.Equals(default(UnityEngine.EntityId)),"Archived reference "+path+"/"+iterator.propertyPath);
+                var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                Check(texture!=null && texture.width>4 && texture.height>4,"Decoded Tector texture imported "+path);
             }
         }
-        var result=new {checks=_checks.Count,geometry,maximumMountError=mountError,hull=Number(data,"Hull"),shields=Number(data,"Shields"),speed=Number(data,"Speed"),bounds=new[]{bounds.size.x,bounds.size.y,bounds.size.z},targetableHardpoints=30,weapons=24,attachments=14,registrations=true,materials=true,savedReferences=true,retainedBalance=true,retainedHangar=true,obsoleteDependencies=0,playModeAcceptance=false,automatedTests=false};
+        var result=new {checks=_checks.Count,geometry,maximumMountError=mountError,hull=Number(data,"Hull"),shields=Number(data,"Shields"),speed=Number(data,"Speed"),bounds=new[]{bounds.size.x,bounds.size.y,bounds.size.z},targetableHardpoints=30,weapons=24,attachments=14,registrations=true,materials=true,savedReferences=true,retainedBalance=true,retainedHangar=true,obsoleteDependencies=0,oldVisualsRemoved=true,sharedTectorAssetsPreserved=(int)cleanup["sharedAssetsMoved"],playModeAcceptance=false,automatedTests=false};
         File.WriteAllText(TASK+"Verification.json",JsonConvert.SerializeObject(result,Formatting.Indented));File.WriteAllText(TASK+"VerificationChecks.json",JsonConvert.SerializeObject(_checks,Formatting.Indented));return JsonConvert.SerializeObject(result);
     }
     private static Mesh MeshOf(Renderer r)=>r is SkinnedMeshRenderer s?s.sharedMesh:r.GetComponents<MeshFilter>().Single().sharedMesh;
