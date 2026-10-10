@@ -12,7 +12,7 @@ namespace EmpireAtWar.Models.Economy
         float Money { get; }
     }
 
-    public class EconomyModel : PureModel, IEconomyModelObserver
+    public class EconomyModel : Model, IEconomyModelObserver
     {
         private float _money;
 

@@ -83,7 +83,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     /// Scores every <see cref="EnemyStrategicRule"/> and picks the highest. Strength checks use
     /// <see cref="EnemyStrategicSnapshot.FleetAdvantage"/>, which comes from the damage matrix, not ship counts.
     /// </summary>
-    public sealed class EnemyStrategicDecisionModel : PureModel
+    public sealed class EnemyStrategicDecisionModel : Model
     {
         /// <summary>Bonus for the current state so near-equal options do not flip every decision.</summary>
         private const float HYSTERESIS = 0.05f;

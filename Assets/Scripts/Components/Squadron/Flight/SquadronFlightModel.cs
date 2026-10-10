@@ -6,7 +6,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.Squadrons.Flight
 {
-    public sealed class SquadronFlightModel : PureModel
+    public sealed class SquadronFlightModel : Model
     {
         private readonly IFighterFlightData _data;
 

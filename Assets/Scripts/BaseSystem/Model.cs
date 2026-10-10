@@ -1,6 +1,6 @@
 namespace EmpireAtWar.Mvc
 {
-    public abstract class PureModel
+    public abstract class Model
     {
       
     }

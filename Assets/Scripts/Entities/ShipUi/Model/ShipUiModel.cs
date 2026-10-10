@@ -6,7 +6,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.ShipUi
 {
-    public class ShipUiModel : PureModel, IShipUiModelObserver
+    public class ShipUiModel : Model, IShipUiModelObserver
     {
         public event Action OnSelectionChanged;
 

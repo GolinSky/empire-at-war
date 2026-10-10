@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.Game
     /// Players drop out one by one; a team loses when all of its players are defeated and the last
     /// team standing wins. The outcome is reported from the local player's point of view.
     /// </summary>
-    public sealed class BattleVictoryModel : PureModel
+    public sealed class BattleVictoryModel : Model
     {
         private readonly HashSet<PlayerId> _observedBases = new HashSet<PlayerId>();
         private readonly HashSet<TeamId> _survivingTeams = new HashSet<TeamId>();

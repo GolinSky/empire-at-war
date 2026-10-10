@@ -21,7 +21,7 @@ namespace EmpireAtWar.Models.Factions
         IReadOnlyList<ProductionQueueSnapshot> GetProductionQueueSnapshots();
     }
 
-    public class PlayerFactionModel : PureModel, IPlayerFactionModelObserver
+    public class PlayerFactionModel : Model, IPlayerFactionModelObserver
     {
         private const int MAX_ACTIVE_PIPELINES = 7;
 

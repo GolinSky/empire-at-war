@@ -2,7 +2,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Model
 {
-    public class CinematicCameraModel : PureModel, ICinematicCameraModelObserver
+    public class CinematicCameraModel : Mvc.Model, ICinematicCameraModelObserver
     {
         public bool IsActive { get; private set; }
 

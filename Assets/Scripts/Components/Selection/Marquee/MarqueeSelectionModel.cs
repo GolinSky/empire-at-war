@@ -39,7 +39,7 @@ namespace EmpireAtWar.Components.Selection.Marquee
         }
     }
 
-    public sealed class MarqueeSelectionModel : PureModel
+    public sealed class MarqueeSelectionModel : Model
     {
         private MarqueePoint _start;
 

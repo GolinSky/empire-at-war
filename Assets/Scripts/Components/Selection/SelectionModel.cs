@@ -10,7 +10,7 @@ namespace EmpireAtWar.Models.Selection
         bool IsSelected { get; }
     }
 
-    public class SelectionModel : PureModel, ISelectionModelObserver
+    public class SelectionModel : Model, ISelectionModelObserver
     {
         private bool _isSelected;
 

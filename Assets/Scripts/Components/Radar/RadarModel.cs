@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 namespace EmpireAtWar.Components.Radar
 {
-    public class RadarModel : PureModel, IRadarModelObserver
+    public class RadarModel : Model, IRadarModelObserver
     {
         private readonly IRadarData _data;
         private readonly EmpireAtWar.Components.Combat.CombatModifiers _modifiers;

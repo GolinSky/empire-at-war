@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.SuperWeapons
     /// fires once and must be bought again. After firing, that weapon type cannot fire again for
     /// <see cref="COOLDOWN_DURATION"/> seconds, but a new charge can be built meanwhile.
     /// </summary>
-    public sealed class SuperWeaponModel : PureModel, ISuperWeaponModelObserver
+    public sealed class SuperWeaponModel : Model, ISuperWeaponModelObserver
     {
         public const float COOLDOWN_DURATION = 120f;
 

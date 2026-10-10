@@ -11,7 +11,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
-    public class SkirmishModel : PureModel, ISkirmishModelObserver
+    public class SkirmishModel : Model, ISkirmishModelObserver
     {
         private const float MIN_STARTING_MONEY = 500f;
         private const float MAX_STARTING_MONEY = 10000f;

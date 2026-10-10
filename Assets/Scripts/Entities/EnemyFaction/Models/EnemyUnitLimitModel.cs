@@ -4,7 +4,7 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
-    public sealed class EnemyUnitLimitModel : PureModel
+    public sealed class EnemyUnitLimitModel : Model
     {
         private readonly Dictionary<UnitLimitKey, int> _reservedCounts =
             new Dictionary<UnitLimitKey, int>();
