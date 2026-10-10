@@ -63,7 +63,7 @@ MonoBehaviour:
     damageType: 0
     damage: 7.5
     shotsPerSalvo: 2
-    shotInterval: 0.5
+    shotInterval: 0.25
     reload: 1.25
     range: 200
     strikecraftOnly: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
     damageType: 2
     damage: 67.5
     shotsPerSalvo: 2
-    shotInterval: 4.75
+    shotInterval: 0.25
     reload: 9.75
     range: 562.5
     strikecraftOnly: 0
@@ -228,7 +228,7 @@ MonoBehaviour:
     damageType: 2
     damage: 70
     shotsPerSalvo: 3
-    shotInterval: 3.25
+    shotInterval: 0.25
     reload: 6.75
     range: 325
     strikecraftOnly: 0
@@ -273,7 +273,7 @@ MonoBehaviour:
     damageType: 2
     damage: 135
     shotsPerSalvo: 4
-    shotInterval: 0.317
+    shotInterval: 0.25
     reload: 17.1705
     range: 450
     strikecraftOnly: 0
@@ -303,7 +303,7 @@ MonoBehaviour:
     damageType: 2
     damage: 210
     shotsPerSalvo: 2
-    shotInterval: 8.16
+    shotInterval: 0.25
     reload: 21.719
     range: 393.75
     strikecraftOnly: 0
@@ -348,7 +348,7 @@ MonoBehaviour:
     damageType: 3
     damage: 150
     shotsPerSalvo: 3
-    shotInterval: 7.5
+    shotInterval: 0.25
     reload: 15.25
     range: 450
     strikecraftOnly: 0
@@ -363,7 +363,7 @@ MonoBehaviour:
     damageType: 3
     damage: 150
     shotsPerSalvo: 2
-    shotInterval: 7.5
+    shotInterval: 0.25
     reload: 15
     range: 450
     strikecraftOnly: 0
@@ -408,7 +408,7 @@ MonoBehaviour:
     damageType: 3
     damage: 300
     shotsPerSalvo: 2
-    shotInterval: 7.5
+    shotInterval: 0.25
     reload: 20
     range: 450
     strikecraftOnly: 0
@@ -498,7 +498,7 @@ MonoBehaviour:
     damageType: 4
     damage: 225
     shotsPerSalvo: 2
-    shotInterval: 9.5
+    shotInterval: 0.25
     reload: 19.25
     range: 525
     strikecraftOnly: 0
@@ -588,7 +588,7 @@ MonoBehaviour:
     damageType: 4
     damage: 315
     shotsPerSalvo: 2
-    shotInterval: 11.33
+    shotInterval: 0.25
     reload: 22.66
     range: 450
     strikecraftOnly: 0
@@ -603,7 +603,7 @@ MonoBehaviour:
     damageType: 4
     damage: 157.5
     shotsPerSalvo: 3
-    shotInterval: 8.5
+    shotInterval: 0.25
     reload: 17.25
     range: 450
     strikecraftOnly: 0
@@ -618,7 +618,7 @@ MonoBehaviour:
     damageType: 4
     damage: 210
     shotsPerSalvo: 2
-    shotInterval: 6
+    shotInterval: 0.25
     reload: 12.25
     range: 500
     strikecraftOnly: 0
@@ -648,7 +648,7 @@ MonoBehaviour:
     damageType: 4
     damage: 8
     shotsPerSalvo: 2
-    shotInterval: 1.5
+    shotInterval: 0.25
     reload: 3.25
     range: 125
     strikecraftOnly: 0
@@ -723,7 +723,7 @@ MonoBehaviour:
     damageType: 5
     damage: 20
     shotsPerSalvo: 8
-    shotInterval: 3
+    shotInterval: 0.4
     reload: 15
     range: 500
     strikecraftOnly: 0
@@ -738,7 +738,7 @@ MonoBehaviour:
     damageType: 5
     damage: 20
     shotsPerSalvo: 4
-    shotInterval: 3
+    shotInterval: 0.4
     reload: 15
     range: 250
     strikecraftOnly: 0
@@ -753,7 +753,7 @@ MonoBehaviour:
     damageType: 5
     damage: 50
     shotsPerSalvo: 2
-    shotInterval: 1
+    shotInterval: 0.4
     reload: 2
     range: 600
     strikecraftOnly: 0
@@ -768,7 +768,7 @@ MonoBehaviour:
     damageType: 5
     damage: 40
     shotsPerSalvo: 6
-    shotInterval: 2
+    shotInterval: 0.4
     reload: 15
     range: 100
     strikecraftOnly: 0
@@ -783,7 +783,7 @@ MonoBehaviour:
     damageType: 5
     damage: 20
     shotsPerSalvo: 5
-    shotInterval: 0.75
+    shotInterval: 0.4
     reload: 15
     range: 250
     strikecraftOnly: 0
@@ -813,7 +813,7 @@ MonoBehaviour:
     damageType: 5
     damage: 30
     shotsPerSalvo: 4
-    shotInterval: 1
+    shotInterval: 0.4
     reload: 15
     range: 250
     strikecraftOnly: 0
