@@ -31,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static readonly SerializedReference[] REQUIRED_REFERENCES =
         {
-            new SerializedReference(typeof(CameraService), "camera"),
+            new SerializedReference(typeof(CameraService), "sceneCamera"),
             new SerializedReference(typeof(MapObstacle), "obstacleCollider"),
             new SerializedReference(typeof(SelectionComponent), "selectedCanvas"),
             new SerializedReference(typeof(SelectionComponent), "selectedImage"),
