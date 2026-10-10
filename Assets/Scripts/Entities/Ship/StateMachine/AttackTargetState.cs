@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using System;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class AttackTargetState: IBaseState
     {
-        // Pursuit ends at this fraction of AttackDistance, well inside the engage range
+        // Pursuit ends at this fraction of the engagement range, well inside the engage range
         // (WeaponComponent stops engaging past 0.8), so small target drift does not restart movement.
         private const float STANDOFF_RANGE_FACTOR = 0.65f;
         // A moving ship only halts early when the target closes inside this fraction.
@@ -36,8 +36,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _isClosingRange;
 
         private Vector3 TargetPosition => _mainTargetTransform.position;
+        // The distance depends on what is being attacked: heavy guns hold back from capitals, lasers close on corvettes.
+        private float EngagementRange => _weaponComponent.GetEngagementRange(_mainTarget.ShipClass);
         private Vector3 MovementTargetPosition => TargetPosition +
-            Vector3.ClampMagnitude(_formationOffset, _weaponComponent.AttackDistance * 0.8f);
+            Vector3.ClampMagnitude(_formationOffset, EngagementRange * 0.8f);
         private Vector3 StandoffPosition
         {
             get
@@ -46,13 +48,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 fromTarget.y = 0f;
                 // Hulls larger than the weapon range close to contact instead of an unreachable point.
                 return TargetPosition + fromTarget.normalized * Mathf.Max(
-                    _weaponComponent.AttackDistance * STANDOFF_RANGE_FACTOR, ContactDistance);
+                    EngagementRange * STANDOFF_RANGE_FACTOR, ContactDistance);
             }
         }
         private float ContactDistance => ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
-            _weaponComponent.AttackDistance * 0.1f);
+            EngagementRange * 0.1f);
 
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits || _mainTargetEntity.IsCloaked();
 
@@ -154,7 +156,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private void UpdateFormationMove()
         {
             bool inRange = _weaponComponent.HasEnoughRange(
-                _shipMoveComponent.GetRange(TargetPosition), ContactDistance);
+                _shipMoveComponent.GetRange(TargetPosition), ContactDistance, _mainTarget.ShipClass);
             if (_isClosingRange && inRange && !_shipMoveComponent.IsMoving)
             {
                 _shipMoveComponent.LookAtTarget(TargetPosition);
@@ -221,7 +223,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             _wasMoving = _shipMoveComponent.IsMoving;
             float range = _shipMoveComponent.GetRange(TargetPosition);
-            if (!_shipMoveComponent.IsMoving && _weaponComponent.HasEnoughRange(range, ContactDistance))
+            if (!_shipMoveComponent.IsMoving && _weaponComponent.HasEnoughRange(range, ContactDistance, _mainTarget.ShipClass))
             {
                 _shipMoveComponent.LookAtTarget(TargetPosition);
                 _hasPursuitDestination = false;
@@ -229,7 +231,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             if (_shipMoveComponent.IsMoving &&
-                range <= _weaponComponent.AttackDistance * MINIMUM_RANGE_FACTOR)
+                range <= EngagementRange * MINIMUM_RANGE_FACTOR)
             {
                 _shipMoveComponent.Stop();
                 _shipMoveComponent.LookAtTarget(TargetPosition);

@@ -14,7 +14,7 @@ namespace EmpireAtWar.Entities.Squadrons.Data
 {
     [CreateAssetMenu(fileName = "SquadronData", menuName = "Data/SquadronData")]
     public class SquadronData : Mvc.Data, IFighterFlightData,
-        ISquadronHealthData, IRadarData, IFogVisionData, IWeaponRangeData
+        ISquadronHealthData, IRadarData, IFogVisionData
     {
         [Header("Orders")]
         [Tooltip("Radius used when compacting group move orders.")]
@@ -63,10 +63,6 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Tooltip("Radius in which the squadron detects enemies. Matches VisionRange.")]
         [field: SerializeField] public float Range { get; private set; } = 175f;
         [field: SerializeField] public float Delay { get; private set; } = 0.25f;
-
-        [Header("Weapons")]
-        [Tooltip("How far the fighters' hardpoints can fire.")]
-        [field: SerializeField, Min(0f)] public float WeaponRange { get; private set; } = 70f;
 
         [Header("Vision")]
         [Tooltip("Fog of war radius the squadron reveals for its team.")]

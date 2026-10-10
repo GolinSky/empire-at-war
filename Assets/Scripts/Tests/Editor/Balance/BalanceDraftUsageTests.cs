@@ -16,8 +16,8 @@ namespace EmpireAtWar.Tests.Editor
             BalanceUnit unit = registry.Units.First(entry => entry.Id == "Separatist/ships/101");
             var mounts = registry.Fields.Values.Where(field => !field.SharedMountSource && field.Stat == "WeaponType" && field.Users.Contains(unit)).ToList();
             string oldId = mounts[0].Read();
-            BalanceField oldProfile = registry.Fields.Values.Single(field => field.Stat == "weapon/" + oldId + "/damage");
-            BalanceField newProfile = registry.Fields.Values.First(field => field.Stat.StartsWith("weapon/") && field.Stat.EndsWith("/damage") && !field.Users.Contains(unit));
+            BalanceField oldProfile = registry.Fields.Values.Single(field => field.Stat == "weapon/" + oldId + "/" + BalanceWeaponAdapter.DEFINITION_MARKER);
+            BalanceField newProfile = registry.Fields.Values.First(field => field.Stat.StartsWith("weapon/") && field.Stat.EndsWith("/" + BalanceWeaponAdapter.DEFINITION_MARKER) && !field.Users.Contains(unit));
             string schema = newProfile.Schema;
             BalanceDraft draft = new BalanceDraft();
             var replaced = mounts.Where(field => field.Read() == oldId).ToList();

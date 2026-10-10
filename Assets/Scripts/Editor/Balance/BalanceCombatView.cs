@@ -66,9 +66,9 @@ namespace EmpireAtWar.Editor.Balance
             VisualElement grid = new VisualElement { name = "combat-grid" };
             grid.AddToClassList("balance-compare-grid");
             scroll.Add(grid);
-            BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry);
-            foreach (BalanceUnit unit in units)
-                Card(grid, unit, estimator.Estimate(unit, state.Draft), registry, controller);
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+                foreach (BalanceUnit unit in units)
+                    Card(grid, unit, estimator.Estimate(unit, state.Draft), registry, controller);
         }
 
         private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, BalanceRegistration registry, BalanceEditorController controller)

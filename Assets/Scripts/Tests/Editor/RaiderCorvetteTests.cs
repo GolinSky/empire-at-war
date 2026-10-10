@@ -43,13 +43,13 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(10));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             foreach (var expected in new[] { (WeaponType.BurstLaserCannon, 4, 2), (WeaponType.DualRepeatingPointDefense, 2, 6),
-                (WeaponType.HeavyBurstIonBlaster, 2, 2), (WeaponType.HeavyBurstConcussionMissile, 2, 5) })
+                (WeaponType.HeavyBurstIonBlaster, 2, 2), (WeaponType.HeavyBurstBarrageRocket, 2, 2) })
             {
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
                 Assert.That(profiles.GetProfile(expected.Item1).ShotsPerSalvo, Is.EqualTo(expected.Item3));
                 Assert.That(profiles.GetProfile(expected.Item1).ShotPrefab, Is.Not.Null);
             }
-            Assert.That(profiles.GetProfile(WeaponType.HeavyBurstConcussionMissile).Interceptable, Is.True);
+            Assert.That(profiles.GetProfile(WeaponType.HeavyBurstBarrageRocket).Interceptable, Is.True);
             Assert.That(profiles.GetProfile(WeaponType.DualRepeatingPointDefense).StrikecraftOnly, Is.True);
         }
 
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponHardPoint[] weapons = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW).GetComponentsInChildren<WeaponHardPoint>(true);
             foreach (WeaponHardPoint weapon in weapons)
             {
-                bool narrow = weapon.WeaponType == WeaponType.HeavyBurstIonBlaster || weapon.WeaponType == WeaponType.HeavyBurstConcussionMissile;
+                bool narrow = weapon.WeaponType == WeaponType.HeavyBurstIonBlaster || weapon.WeaponType == WeaponType.HeavyBurstBarrageRocket;
                 float center = narrow ? (weapon.transform.localPosition.x < 0 ? -45 : 45) : 0;
                 Assert.That((weapon.MinYaw + weapon.MaxYaw) / 2, Is.EqualTo(center).Within(.001f), weapon.name);
                 Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.EqualTo(narrow ? 100 : 240).Within(.001f), weapon.name);

@@ -93,7 +93,7 @@ namespace EmpireAtWar.Tests.Editor
                 for (int i = 0; i < 2; i++)
                 {
                     weapons.GetArrayElementAtIndex(i).FindPropertyRelative("weaponType").intValue = i;
-                    weapons.GetArrayElementAtIndex(i).FindPropertyRelative("damage").floatValue = 10 + i;
+                    weapons.GetArrayElementAtIndex(i).FindPropertyRelative("damageMultiplier").floatValue = 10 + i;
                 }
                 serialized.ApplyModifiedPropertiesWithoutUndo();
             }
@@ -102,7 +102,7 @@ namespace EmpireAtWar.Tests.Editor
                 BalanceRegistration result = new BalanceRegistration();
                 using (SerializedObject serialized = new SerializedObject(data))
                     foreach (SerializedProperty profile in BalanceRegistration.Elements(serialized.FindProperty("weapons")))
-                        result.Add(data, "weapon/" + profile.FindPropertyRelative("weaponType").intValue + "/damage", profile.propertyPath + ".damage",
+                        result.Add(data, "weapon/" + profile.FindPropertyRelative("weaponType").intValue + "/damageMultiplier", profile.propertyPath + ".damageMultiplier",
                             BalanceFieldGroup.Weapons, "Test", BalanceFieldOwner.SharedProfile, true, Array.Empty<BalanceUnit>());
                 return result;
             };

@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BalanceRegistration inventory = BalanceInventory.Build();
             Assert.That(inventory.Errors, Is.Empty);
-            foreach (BalanceField field in inventory.Fields.Values.Where(field => field.Stat.StartsWith("weapon/") && field.Stat.EndsWith("/damage")))
+            foreach (BalanceField field in inventory.Fields.Values.Where(field => field.Stat.StartsWith("weapon/") && field.Stat.EndsWith("/" + BalanceWeaponAdapter.DEFINITION_MARKER)))
             {
                 int id = int.Parse(field.Stat.Split('/')[1]);
                 var expected = inventory.Units.Where(unit => unit.Mounts.OfType<WeaponHardPoint>().Any(mount => (int)mount.WeaponType == id)).Select(unit => unit.Id).Distinct().OrderBy(value => value);

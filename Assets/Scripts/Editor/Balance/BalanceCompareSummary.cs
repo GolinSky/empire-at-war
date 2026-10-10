@@ -19,8 +19,9 @@ namespace EmpireAtWar.Editor.Balance
             panel.Add(grid);
             BalanceCompareSelection.Bind(grid, controller);
 
-            BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry);
-            List<BalanceDpsEstimate> dps = units.Select(unit => estimator.Estimate(unit, draft)).ToList();
+            List<BalanceDpsEstimate> dps;
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+                dps = units.Select(unit => estimator.Estimate(unit, draft)).ToList();
             double ceiling = dps.Where(estimate => estimate.HasValue).Select(estimate => estimate.Value).Append(1).Max();
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, draft);
             float[] maxima = DURABILITY
@@ -80,7 +81,7 @@ namespace EmpireAtWar.Editor.Balance
             Editable(card, "Build time (s)", Field(unit, registry, "BuildTime"), draft, usage, edit);
 
             Section(card, "Firepower");
-            Editable(card, "Weapon range", Field(unit, registry, unit.Kind == BalanceUnitKind.Ship ? "Range" : "WeaponRange"), draft, usage, edit);
+            Editable(card, "Radar range", Field(unit, registry, "Range"), draft, usage, edit);
             Metric(card, "Base DPS", dps.ToString(), "dmg/s");
             if (dps.HasValue)
             {

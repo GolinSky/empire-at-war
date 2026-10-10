@@ -21,7 +21,7 @@ namespace EmpireAtWar.Entities.Ship.Data
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
     public class ShipData : Mvc.Data, IShipData,
-        IShipMoveData, IHealthData, IRadarData, IHangarData, IWeaponRangeData
+        IShipMoveData, IHealthData, IRadarData, IHangarData
     {
         [Header("Ship Settings")]
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }
@@ -59,9 +59,6 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
-
-        // Ships fire as far as their radar reaches.
-        public float WeaponRange => Range;
 
         [Header("Abilities")]
         [SerializeField] private List<ShipAbilityId> abilities = new List<ShipAbilityId>();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using EmpireAtWar;
@@ -81,7 +81,7 @@ public static class VerifyEmpress
         var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
         var points=prefab.GetComponentsInChildren<WeaponHardPoint>(true);
         Check(points.Length==30,"Weapon count");
-        foreach(var group in new[]{new{type=WeaponType.HeavyLongRangeTripleTurbolaser,count=3},new{type=WeaponType.HeavyLongRangeTripleTurboIon,count=3},new{type=WeaponType.MediumLongRangeDualTurbolaser,count=6},new{type=WeaponType.LightDualTurbolaser,count=12},new{type=WeaponType.HeavyDualLaser,count=6}})
+        foreach(var group in new[]{new{type=WeaponType.HeavyLongRangeTripleTurbolaser,count=3},new{type=WeaponType.HeavyLongRangeTripleIonCannon,count=3},new{type=WeaponType.MediumLongRangeDualTurbolaser,count=6},new{type=WeaponType.LightDualTurbolaser,count=12},new{type=WeaponType.HeavyDualLaser,count=6}})
             Check(points.Count(p=>p.WeaponType==group.type)==group.count,"Weapon composition: "+group.type);
         var health=prefab.GetComponent<HealthComponent>();
         Check(health.ShipUnits.Count==33&&health.ShipUnits.Select(p=>p.Id).Distinct().Count()==33,"Targetable hardpoints/ids");
@@ -115,7 +115,7 @@ public static class VerifyEmpress
         var weapons=AssetDatabase.LoadAssetAtPath<EmpireAtWar.Components.AttackComponent.WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
         foreach(var point in points) Check(weapons.GetProfile(point.WeaponType)!=null,"Weapon profile");
         Check(weapons.GetProfile(WeaponType.HeavyLongRangeTripleTurbolaser).ShotsPerSalvo==3,"Three-shot turbolasers");
-        Check(weapons.GetProfile(WeaponType.HeavyLongRangeTripleTurboIon).ShotsPerSalvo==3,"Three-shot turbo-ions");
+        Check(weapons.GetProfile(WeaponType.HeavyLongRangeTripleIonCannon).ShotsPerSalvo==3,"Three-shot turbo-ions");
         Check(weapons.GetProfile(WeaponType.HeavyDualLaser).ShotsPerSalvo==2,"Dual heavy lasers");
         var catalog=AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>("Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset");
         Check(catalog.Get(DefendPlatformType.Empress).Name=="XQ-3 Empress","Catalog entry");

@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
             Assert.That(weapons.Length, Is.EqualTo(24));
             foreach (var expected in new[] { (WeaponType.ISDIIOctupleTurbolaser, 8), (WeaponType.ISDIIQuadIonCannon, 2),
-                (WeaponType.MediumTurboLaser, 3), (WeaponType.LightTurbolaser, 3), (WeaponType.LightDualTurbolaser, 2), (WeaponType.IonCannon, 6) })
+                (WeaponType.MediumTurboLaser, 3), (WeaponType.TurboLaser, 3), (WeaponType.LightDualTurbolaser, 2), (WeaponType.IonCannon, 6) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             Assert.That(weapons.Count(w => new SerializedObject(w).FindProperty("mainBattery").boolValue), Is.EqualTo(8));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
@@ -119,10 +119,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(definition.Duration, Is.EqualTo(20f));
             Assert.That(definition.RecoveryDelay, Is.EqualTo(60f));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            Assert.That(profiles.GetProfile(WeaponType.ISDIIOctupleTurbolaser).ShotsPerSalvo, Is.EqualTo(1));
-            Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).ShotsPerSalvo, Is.EqualTo(1));
-            Assert.That(profiles.GetProfile(WeaponType.ISDIIOctupleTurbolaser).Range, Is.EqualTo(350));
-            Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).Range, Is.EqualTo(300));
+            // Main batteries are Heavy Octuple / Quad mounts: the family's salvo, eight or four barrels per shot.
+            WeaponProfile heavyTurbolaser = profiles.GetProfile(WeaponType.HeavyTurboLaser);
+            WeaponProfile octuple = profiles.GetProfile(WeaponType.ISDIIOctupleTurbolaser);
+            Assert.That(octuple.ShotsPerSalvo, Is.EqualTo(heavyTurbolaser.ShotsPerSalvo));
+            Assert.That(octuple.Damage, Is.EqualTo(heavyTurbolaser.Damage * 8).Within(0.01f));
+            Assert.That(octuple.Range, Is.EqualTo(heavyTurbolaser.Range).Within(0.01f));
+            Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).Damage,
+                Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Damage * 4).Within(0.01f));
+            Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).Range,
+                Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Range).Within(0.01f));
         }
 
         [TestCase("Assets/Prefabs/Models/Ships/ISDII.prefab")]

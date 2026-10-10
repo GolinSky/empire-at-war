@@ -34,7 +34,7 @@ namespace EmpireAtWar.Editor.Balance
                     errors.Add(field.Context + ": apply the shared source before staging a distinct owning override for this field.");
                 if (field.Stat == "WeaponType")
                 {
-                    if (!current.Fields.Values.Any(profile => profile.Stat == "weapon/" + change.After + "/damage")) errors.Add("Weapon profile missing: " + change.After);
+                    if (!current.Fields.Values.Any(profile => profile.Stat == "weapon/" + change.After + "/" + BalanceWeaponAdapter.DEFINITION_MARKER)) errors.Add("Weapon profile missing: " + change.After);
                     foreach (BalanceUnit unit in field.Users.Where(unit => unit.Data is ShipData))
                         if (!((ShipData)unit.Data).HardPointHealth.Any(health => health.HardPointType == ((HardPoint)field.Target).HardPointType))
                             errors.Add(unit.Name + ": assignment requires existing hardpoint health data.");

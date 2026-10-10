@@ -1,28 +1,32 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Editor.Balance;
 using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class BalanceDpsEstimatorTests
     {
-        [TestCase(1, 0.5, 2.0, 2.0)]
-        [TestCase(4, 0.25, 3.0, 3.0)]
-        [TestCase(8, 3.0, 15.0, 21.0)]
-        public void Cycle_IsReloadOrSalvoDurationWhicheverIsLonger(int shots, double interval, double reload, double expected)
+        [TestCase(1, 0.5f, 2.0f, 2.0f)]
+        [TestCase(4, 0.25f, 3.0f, 3.0f)]
+        [TestCase(8, 3.0f, 15.0f, 21.0f)]
+        public void Cycle_IsReloadOrSalvoDurationWhicheverIsLonger(int shots, float interval, float reload, float expected)
         {
-            Assert.That(BalanceWeaponMath.CycleSeconds(shots, interval, reload), Is.EqualTo(expected).Within(1e-9));
+            Assert.That(Profile(21f, shots, interval, reload).CycleSeconds, Is.EqualTo(expected).Within(1e-5));
         }
 
         [Test]
-        public void SalvoDps_LongSalvoIsLimitedBySalvoDuration()
+        public void DamagePerSecond_LongSalvoIsLimitedBySalvoDuration()
         {
-            Assert.That(BalanceWeaponMath.SalvoDps(21, 8, 3, 15), Is.EqualTo(8).Within(1e-9));
+            Assert.That(Profile(21f, 8, 3f, 15f).DamagePerSecond, Is.EqualTo(8f).Within(1e-5));
         }
 
         [Test]
-        public void Estimate_UsesDraftProfilesAndSalvoDuration()
+        public void Estimate_UsesDraftWeaponRules()
         {
             BalanceRegistration registry = BalanceInventory.Build();
             Assert.That(registry.Errors, Is.Empty);
@@ -31,17 +35,31 @@ namespace EmpireAtWar.Tests.Editor
                 .Where(field => !field.SharedMountSource && field.Stat == "WeaponType").ToList();
             Assert.That(mounts, Is.Not.Empty);
 
+            double baseline;
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+                baseline = estimator.Estimate(unit, new BalanceDraft()).Value;
+
+            // Doubling every mounted weapon's variant damage doubles the estimate before anything is applied.
             BalanceDraft draft = new BalanceDraft();
-            var values = new Dictionary<string, string> { ["damage"] = "21", ["shotsPerSalvo"] = "8", ["shotInterval"] = "3", ["reload"] = "15" };
-            List<BalanceField> profiles = mounts.Select(mount => mount.Read()).Distinct()
-                .SelectMany(id => values.Keys.Select(stat => registry.Fields.Values.Single(field => field.Stat == "weapon/" + id + "/" + stat)))
+            List<BalanceField> multipliers = mounts.Select(mount => mount.Read()).Distinct()
+                .Select(id => registry.Fields.Values.Single(field =>
+                    field.Stat == "weapon/" + id + "/" + BalanceWeaponAdapter.DEFINITION_MARKER))
                 .ToList();
-            draft.SetMany(profiles.Select(field => field.Snapshot()).ToList(), profiles.Select(field => values[field.Stat.Split('/')[2]]).ToList());
+            draft.SetMany(multipliers.Select(field => field.Snapshot()).ToList(),
+                multipliers.Select(field => (double.Parse(field.Read(), CultureInfo.InvariantCulture) * 2)
+                    .ToString("R", CultureInfo.InvariantCulture)).ToList());
 
-            BalanceDpsEstimate estimate = new BalanceDpsEstimator(registry).Estimate(unit, draft);
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+            {
+                BalanceDpsEstimate estimate = estimator.Estimate(unit, draft);
+                Assert.That(estimate.HasValue, Is.True, estimate.Problem);
+                Assert.That(estimate.Value, Is.EqualTo(baseline * 2).Within(baseline * 1e-5));
+            }
 
-            Assert.That(estimate.HasValue, Is.True, estimate.Problem);
-            Assert.That(estimate.Value, Is.EqualTo(mounts.Count * 8.0).Within(1e-6));
+            WeaponsData saved = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            Assert.That(multipliers.Select(field => field.Read()), Is.EqualTo(multipliers.Select(field =>
+                saved.GetDefinition((WeaponType)int.Parse(field.Stat.Split('/')[1])).DamageMultiplier
+                    .ToString("R", CultureInfo.InvariantCulture))), "The preview must not write the asset.");
         }
 
         [Test]
@@ -50,10 +68,16 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration registry = new BalanceRegistration();
             BalanceUnit unit = new BalanceUnit { Id = "test/unarmed", Kind = BalanceUnitKind.Ship };
 
-            BalanceDpsEstimate estimate = new BalanceDpsEstimator(registry).Estimate(unit, new BalanceDraft());
-
-            Assert.That(estimate.HasValue, Is.False);
-            Assert.That(estimate.ToString(), Is.EqualTo(BalanceDpsEstimate.NOT_ARMED));
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+            {
+                BalanceDpsEstimate estimate = estimator.Estimate(unit, new BalanceDraft());
+                Assert.That(estimate.HasValue, Is.False);
+                Assert.That(estimate.ToString(), Is.EqualTo(BalanceDpsEstimate.NOT_ARMED));
+            }
         }
+
+        private static WeaponProfile Profile(float damage, int shots, float interval, float reload) =>
+            new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser, damage, shots, interval,
+                reload, 100f, false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 1f);
     }
 }

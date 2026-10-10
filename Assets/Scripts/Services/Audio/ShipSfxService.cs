@@ -73,7 +73,7 @@ namespace EmpireAtWar.Services.Audio
         public bool TryPlayWeaponShot(IEntity ship, WeaponProfile weapon, Transform muzzle)
         {
             if (_disposed || Time.timeScale == 0f || muzzle == null) return false;
-            SfxProfile sound = _data.GetWeapon(weapon.WeaponType);
+            SfxProfile sound = _data.GetWeapon(weapon.WeaponType, weapon.Family);
             float interval = weapon.ShotInterval / Time.timeScale;
             bool loop = sound.Loop && weapon.ShotsPerSalvo > 1 && interval <= MAX_WEAPON_LOOP_INTERVAL;
             float pitch = UnityEngine.Random.Range(0.96f, 1.04f);
