@@ -70,10 +70,11 @@ updated: 2026-10-11
 
 ### Phase 4 — Audio mix once per frame
 - Cause: `ShipSfxService.Request` calls `ApplyMix()` on every accepted shot and loop renewal; `Tick` calls it again. Each call: 2 loops over 20 slots + `_mixer.SetFloat("SfxDuckVolume")`.
-- [ ] Mark mix dirty in `Request`/`TryPlayVoice`/`Stop`; apply once per frame at the end of the frame (late tick after weapon fire).
-- [ ] Call `SetFloat` only when voice-duck state changes.
+- [x] Mark mix dirty in `Request`/`TryPlayVoice`/`Stop`; apply once per frame at the end of the frame (late tick after weapon fire).
+- [x] Call `SetFloat` only when voice-duck state changes.
 - [ ] Check first-frame audibility: new voices start at volume 0 in `_audioService.Play(..., 0f, ...)`; flushing in the same frame keeps them audible without a one-frame gap.
-- Done gate: `ApplyMix` ≤ 1/frame; listening check: same loudness, ducking, fades and voice stealing.
+- Implementation: dirty mix flush in `ShipSfxService.LateTick` at priority +1000, after coordinator −1000; new sources still start at zero and receive their volume during that frame's LateTick. Active voices keep per-frame gain/fade updates; duck mixer writes only on state transitions. Unity compilation passed, no new console errors; listening/captures skipped.
+- Done gate pending: runtime first-frame audibility, ≤1 mix/frame and listening parity require the user check.
 
 ### Phase 5 — Navigation planning
 - Cause: `ShipNavigationService.PlanRoute` builds a new `ShipPathGrid` (TempJob obstacle array + raster) per plan; 35 plans in one 81 ms frame.
