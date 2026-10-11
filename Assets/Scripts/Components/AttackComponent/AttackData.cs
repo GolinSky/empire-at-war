@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity;
@@ -31,14 +30,14 @@ namespace EmpireAtWar.Components.AttackComponent
         public ShipClass TargetClass => _shipUnitsProvider.ShipClass;
         public IHealthModelObserver TargetHealth => _shipUnitsProvider;
         public IEntity TargetEntity => _targetEntity;
-        public List<IHardPointModel> Units { get; private set; }
+        public List<IHardPointModel> Units { get; }
 
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType, IEntity targetEntity)
         {
             _targetEntity = targetEntity;
             _shipUnitsProvider = shipUnitsProvider;
             _hardPointType = hardPointType;
-            Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
+            Units = new List<IHardPointModel>(shipUnitsProvider.GetShipUnits(hardPointType));
             HealthFacade = healthFacade;
         }
 
@@ -52,9 +51,12 @@ namespace EmpireAtWar.Components.AttackComponent
             HealthFacade = healthFacade;
         }
 
+        // Runs per shot: reference compares skip List.Contains' EqualityComparer dispatch.
         public bool Contains(IHardPointModel hardPointModel)
         {
-            return Units.Contains(hardPointModel);
+            for (int i = 0; i < Units.Count; i++)
+                if (ReferenceEquals(Units[i], hardPointModel)) return true;
+            return false;
         }
 
         /// <summary>Destroyed hardpoints are only valid aim points once the whole ship is a wreck.</summary>
@@ -74,7 +76,14 @@ namespace EmpireAtWar.Components.AttackComponent
                 return;
             }
 
-            Units = _shipUnitsProvider.GetShipUnits(_hardPointType).ToList();
+            ReplaceUnits(_hardPointType);
+        }
+
+        // Refills the existing list so a refresh allocates only the provider's array.
+        private void ReplaceUnits(HardPointType hardPointType)
+        {
+            Units.Clear();
+            Units.AddRange(_shipUnitsProvider.GetShipUnits(hardPointType));
         }
 
         // A plain loop: List.Exists(CanTarget) allocates a predicate on every candidate rebuild.
@@ -95,7 +104,7 @@ namespace EmpireAtWar.Components.AttackComponent
             Units.Clear();
             if (_shipUnitsProvider.HasUnits)
             {
-                Units = _shipUnitsProvider.GetShipUnits(hardPointType).ToList();
+                ReplaceUnits(hardPointType);
                 UnitsChanged?.Invoke();
                 return Units is { Count: > 0 };
             }
