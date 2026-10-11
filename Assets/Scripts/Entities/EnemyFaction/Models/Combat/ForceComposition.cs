@@ -33,8 +33,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             int unitClass = (int)profile.ShipClass;
             _hull[unitClass] += hull;
             _shields[unitClass] += shields;
-            foreach (ShipClass target in Classes)
+            // Indexed: foreach over the IReadOnlyList boxes an enumerator, and the AI adds hundreds of units per frame.
+            for (int i = 0; i < Classes.Count; i++)
             {
+                ShipClass target = Classes[i];
                 int index = (int)target;
                 _hullDps[index] += profile.HullDps(target) * offenseScale;
                 _shieldDps[index] += profile.ShieldDps(target) * offenseScale;
