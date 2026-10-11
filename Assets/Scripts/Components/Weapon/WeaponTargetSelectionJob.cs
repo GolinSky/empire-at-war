@@ -37,15 +37,6 @@ namespace EmpireAtWar.Components.Weapon
                 Results[index] = result;
                 return;
             }
-            if (math.abs(input.ParentRotation.value.x) > 0.000001f ||
-                math.abs(input.ParentRotation.value.z) > 0.000001f)
-            {
-                result.RequiresSerialFallback = 1;
-                result.FallbackReason = FALLBACK_PARENT_TILT;
-                Results[index] = result;
-                return;
-            }
-
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
             for (int i = input.CandidateStart; i < input.CandidateStart + input.CandidateCount; i++)
             {
@@ -73,8 +64,17 @@ namespace EmpireAtWar.Components.Weapon
                 quaternion aim = quaternion.LookRotationSafe(direction, new float3(0f, 1f, 0f));
                 result.HasInRangeAim = 1;
                 result.LastInRangeAim = aim.value;
-                float3 localDirection = math.mul(inverseParentRotation, math.normalizesafe(direction, new float3(0f, 0f, 1f)));
-                float localYaw = math.degrees(math.atan2(localDirection.x, localDirection.z));
+                quaternion localAim = math.mul(inverseParentRotation, aim);
+                float sinPitch = 2f * (localAim.value.y * localAim.value.z - localAim.value.x * localAim.value.w);
+                // Unity and Mathematics choose different Euler branches near gimbal lock.
+                if (math.abs(sinPitch) >= 0.99999f)
+                {
+                    result.RequiresSerialFallback = 1;
+                    result.FallbackReason = FALLBACK_DEGENERATE_DIRECTION;
+                    Results[index] = result;
+                    return;
+                }
+                float localYaw = math.degrees(math.EulerZXY(localAim).y);
                 if (math.abs(localYaw) >= 179.999f ||
                     math.abs(localYaw - input.MinYaw) <= 0.001f ||
                     math.abs(localYaw - input.MaxYaw) <= 0.001f)
