@@ -21,7 +21,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 namespace EmpireAtWar.Components.Ship.Movement
 {
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent,
-        IShipNavigationAgent, IInitializable, ITickable, ILateDisposable
+        IShipNavigationAgent, IShipPlanRequester, IInitializable, ITickable, ILateDisposable
     {
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
@@ -52,6 +52,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isNavigationRegistered;
         private bool _isReleased;
         private bool _hasSolvedFacing;
+        // Orders wait in the navigation service's per-frame plan budget; the newest destination is planned.
+        private bool _hasQueuedPlan;
+        private bool _isInPlanQueue;
+        private bool _queuedPreserveCourse;
+        private Vector3 _queuedDestination;
         private Vector3 _solvedFacing;
         private Vector3 _solvedBearing;
         private float _solvedFacingTime;
@@ -72,7 +77,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationSpeed => Model.Speed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
         public Vector3 CurrentPosition => transform.position;
-        public bool IsMoving => Model.IsMoving;
+        // A ship waiting for its plan counts as moving, so a move order does not complete before it starts.
+        public bool IsMoving => Model.IsMoving || _hasQueuedPlan;
 
         [Inject]
         private void Construct(IMapModelObserver mapModel,
@@ -131,6 +137,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (_isReleased) return;
             _isReleased = true;
+            _hasQueuedPlan = false;
             _modifiers.Changed -= UpdateRouteSpeed;
             _shipSpawnClearance.ReleaseLanding(this);
             if (_isNavigationRegistered)
@@ -145,7 +152,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void MoveToPosition(Vector3 position, bool preserveCourse = false) =>
             SetTargetPosition(position, preserveCourse);
 
-        private Vector3 SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
+        private void SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
         {
             requestedPosition.y = Model.Height;
             Vector3 requested = ShipAvoidancePlanner.ClampToMap(requestedPosition,
@@ -157,20 +164,38 @@ namespace EmpireAtWar.Components.Ship.Movement
                 destination = Model.Destination.ToUnity();
             if (Model.HasDestination(destination.ToNumerics()))
             {
+                // Already heading there: a plan still waiting for another point is dropped.
+                _hasQueuedPlan = false;
                 if (Model.Phase == MovementPhase.Arriving &&
                     Model.PendingDestination.HasValue)
-                    return destination;
+                    return;
                 _shipNavigationService.CancelPendingDestination(this);
                 if (!Model.PendingDestination.HasValue)
-                    return destination;
+                    return;
             }
             _shipNavigationService.CancelPendingDestination(this);
             Model.Request(requested.ToNumerics());
             Model.TakePending();
-            Plan(destination, preserveCourse);
-            Vector3 applied = Model.Destination.ToUnity();
-            DestinationChanged?.Invoke(applied);
-            return applied;
+            QueuePlan(destination, preserveCourse);
+        }
+
+        private void QueuePlan(Vector3 destination, bool preserveCourse)
+        {
+            _queuedDestination = destination;
+            _queuedPreserveCourse = preserveCourse;
+            _hasQueuedPlan = true;
+            if (_isInPlanQueue) return;
+            _isInPlanQueue = true;
+            _shipNavigationService.RequestPlan(this);
+        }
+
+        public void ExecuteQueuedPlan()
+        {
+            _isInPlanQueue = false;
+            if (!_hasQueuedPlan || _isReleased) return;
+            _hasQueuedPlan = false;
+            Plan(_queuedDestination, _queuedPreserveCourse);
+            DestinationChanged?.Invoke(Model.Destination.ToUnity());
         }
 
         public void LookAtTarget(Vector3 targetPosition)
@@ -213,6 +238,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Stop()
         {
+            _hasQueuedPlan = false;
             bool ready = Model.Phase != MovementPhase.Arriving;
             Model.StopAt(transform.position.ToNumerics());
             if (ready)
