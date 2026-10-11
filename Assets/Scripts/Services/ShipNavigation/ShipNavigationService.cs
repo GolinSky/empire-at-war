@@ -8,6 +8,7 @@ using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Timing;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
@@ -80,7 +81,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             bool reserveAsPending = false);
     }
 
-    public sealed class ShipNavigationService : Service, IShipNavigationService
+    public sealed class ShipNavigationService : Service, IShipNavigationService, ILateTickable, IDisposable
     {
         private const int DESTINATION_CANDIDATE_RING_COUNT = 16;
         private const int DESTINATION_CANDIDATES_PER_RING = 8;
@@ -94,6 +95,11 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly ShipDestinationRegistry _destinationRegistry =
             new ShipDestinationRegistry();
         private readonly List<Vector3> _waypoints = new List<Vector3>();
+        private readonly ShipNavigationCache _cache = new ShipNavigationCache();
+
+        public void LateTick() => _cache.ClearGrids();
+
+        public void Dispose() => _cache.Dispose();
 
         public ShipNavigationService(
             IMapObstacleContactProvider mapObstacleContactProvider)
@@ -145,8 +151,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             BuildNavigationContacts(obstacleContacts, agent.NavigationHullSpan);
             AddIdleAgentContacts(agent);
 
-            using (ShipPathGrid pathGrid = new ShipPathGrid(
-                       obstacles: _mapObstacleContacts, clearance: clearance, mapRange: mapRange, origin: origin))
+            bool canReuseStationary = preserveCourse && !reserveAsPending;
+            ShipNavigationCache.Request request = new ShipNavigationCache.Request(agent, forward,
+                requestedDestination, mapRange, heightTolerance, clearance, _destinationRegistry.Version);
+            if (canReuseStationary && _cache.TryGetStationary(agent, request, _mapObstacleContacts,
+                    out ShipNavigationPlan cachedPlan)) return cachedPlan;
+            ShipPathGrid pathGrid = _cache.GetGrid(_mapObstacleContacts, mapRange, origin, clearance);
             {
                 // An unreachable order is not a failure: the ship heads for the
                 // reachable spot closest to what was asked for.
@@ -178,6 +188,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     float movementDuration =
                         routePlan.Route.Length /
                         Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
+                    _cache.RemoveStationary(agent);
                     return new ShipNavigationPlan(
                         destination: routePlan.Destination,
                         detour: routePlan.Detour,
@@ -198,7 +209,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 origin,
                 forward,
                 origin);
-            return new ShipNavigationPlan(
+            ShipNavigationPlan stationaryPlan = new ShipNavigationPlan(
                 destination: origin,
                 detour: null,
                 route: stationaryRoute,
@@ -206,6 +217,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                 movementDuration: 0f,
                 isStationary: true,
                 isDeferred: preserveCourse || reserveAsPending);
+            if (canReuseStationary) _cache.StoreStationary(agent, request, _mapObstacleContacts, stationaryPlan);
+            else _cache.RemoveStationary(agent);
+            return stationaryPlan;
         }
 
         // Destination candidates ring out from the center; reachability of each is
@@ -354,6 +368,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Unregister(IShipNavigationAgent agent)
         {
+            _cache.RemoveStationary(agent);
             int registrationId = GetRegistrationId(agent);
             _destinationRegistry.Unregister(registrationId);
             _registrationIds.Remove(agent);
@@ -361,6 +376,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Stop(IShipNavigationAgent agent)
         {
+            _cache.RemoveStationary(agent);
             _destinationRegistry.Stop(GetRegistrationId(agent));
         }
 

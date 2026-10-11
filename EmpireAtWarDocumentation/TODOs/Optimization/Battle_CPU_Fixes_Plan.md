@@ -79,10 +79,12 @@ updated: 2026-10-11
 ### Phase 5 — Navigation planning
 - Cause: `ShipNavigationService.PlanRoute` builds a new `ShipPathGrid` (TempJob obstacle array + raster) per plan; 35 plans in one 81 ms frame.
 - [ ] From Phase 0 counters, find the requesters of burst plans (stationary pursuit retries suspected).
-- [ ] Add retry backoff for stationary/unreachable pursuit: re-plan only when target cell, obstacle set or order changes.
-- [ ] Reuse one grid per frame per (map range, clearance, obstacle version) instead of per plan; keep idle-agent contacts and reservation ordering exact.
-- [ ] Preserve nearest-reachable fallback and destination reservations.
-- Done gate: plans/frame and max navigation frame fall; same routes and reservations in a reference scenario.
+- [x] Add retry backoff for stationary/unreachable pursuit: re-plan only when target cell, obstacle set or order changes.
+- [x] Reuse one grid per frame per (map range, clearance, obstacle version) instead of per plan; keep idle-agent contacts and reservation ordering exact.
+- [x] Preserve nearest-reachable fallback and destination reservations.
+- Implementation: `ShipNavigationCache` owns frame grids and exact stationary-pursuit results. Raster key compares map bounds, clearance and every height-filtered/idle contact; floods start fresh per plan to preserve direct-route candidate ordering. Failed pursuit retries resume on request/pose/speed/contact/reservation changes; movement, Stop and Unregister invalidate appropriately. Frame-end +2000 cleanup and disposal release native buffers. Existing navigation fixture disposes services.
+- Conservative limit: exact target changes or any moving reservation invalidate stationary reuse; no approximate cell backoff or delayed route response introduced. Saved evidence identifies 35 plans/81.268 ms burst but not their runtime callers.
+- Unity compilation passed; tests/captures skipped. Done gate pending: cache hit counts, routes/reservations and frame timings require the user capture.
 
 ### Phase 6 — Squadron tick
 - [ ] Use Phase 0 children (`UpdateOrder` / pilot / flight) to pick the leading cost.

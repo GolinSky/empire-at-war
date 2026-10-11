@@ -18,6 +18,7 @@ namespace EmpireAtWar.Tests.Movement
     public sealed class ShipNavigationServiceTests
     {
         private Vector2Range _mapRange;
+        private readonly List<ShipNavigationService> _services = new List<ShipNavigationService>();
 
         [SetUp]
         public void SetUp()
@@ -25,6 +26,13 @@ namespace EmpireAtWar.Tests.Movement
             _mapRange = new Vector2Range();
             SetRangeValue("<Min>k__BackingField", new Vector2(-100f, -100f));
             SetRangeValue("<Max>k__BackingField", new Vector2(100f, 100f));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            foreach (ShipNavigationService service in _services) service.Dispose();
+            _services.Clear();
         }
 
         [Test]
@@ -533,13 +541,15 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(plan.Route.Length, Is.LessThan(400f));
         }
 
-        private static ShipNavigationService CreateService(
+        private ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
-            return new ShipNavigationService(
+            ShipNavigationService service = new ShipNavigationService(
                 new FakeMapObstacleContactProvider(
                     staticObstacles ??
                     System.Array.Empty<RadarContact>()));
+            _services.Add(service);
+            return service;
         }
 
         private ShipNavigationPlan Plan(

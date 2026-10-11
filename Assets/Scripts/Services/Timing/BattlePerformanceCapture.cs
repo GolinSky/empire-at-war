@@ -76,7 +76,8 @@ namespace EmpireAtWar.Services.Timing
         private const int TARGET_FALLBACK_TARGET_VERSION = 59;
         private const int TARGET_FALLBACK_INVALID_CANDIDATE = 60;
         private const int TARGET_FALLBACK_OUT_OF_SPAN = 61;
-        private const int METRIC_COUNT = 62;
+        private const int NAVIGATION_STATIONARY_REUSE = 62;
+        private const int METRIC_COUNT = 63;
         private const int FIRST_MARKER_METRIC = SHIP_TICK;
 
         private static readonly string[] _metricNames =
@@ -109,6 +110,7 @@ namespace EmpireAtWar.Services.Timing
             "target_fallback_target_version_ns",
             "target_fallback_invalid_candidate_ns",
             "target_fallback_out_of_span_ns",
+            "navigation_stationary_reuse_ns",
         };
         private static readonly string[] _markerNames =
         {
@@ -165,6 +167,7 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.TARGET_FALLBACK_TARGET_VERSION,
             BattleProfilerMarkers.TARGET_FALLBACK_INVALID_CANDIDATE,
             BattleProfilerMarkers.TARGET_FALLBACK_OUT_OF_SPAN,
+            BattleProfilerMarkers.NAVIGATION_STATIONARY_REUSE,
         };
         private static readonly string[] _workloadNames =
         {
@@ -423,6 +426,7 @@ namespace EmpireAtWar.Services.Timing
             StartMarkerRecorder(TARGET_FALLBACK_TARGET_VERSION, BattleProfilerMarkers.TargetFallbackTargetVersion);
             StartMarkerRecorder(TARGET_FALLBACK_INVALID_CANDIDATE, BattleProfilerMarkers.TargetFallbackInvalidCandidate);
             StartMarkerRecorder(TARGET_FALLBACK_OUT_OF_SPAN, BattleProfilerMarkers.TargetFallbackOutOfSpan);
+            StartMarkerRecorder(NAVIGATION_STATIONARY_REUSE, BattleProfilerMarkers.NavigationStationaryReuse);
         }
 
         private void StartRecorder(int index, ProfilerCategory category, string name, ProfilerRecorderOptions options)

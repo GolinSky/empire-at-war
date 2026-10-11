@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Timing
         public const string DUE_IMPACT = "Battle.Attack.DueBatch.Impact";
         public const string SFX_APPLY_MIX = "Battle.Audio.ApplyMix";
         public const string NAVIGATION_GRID_BUILD = "Battle.Navigation.GridBuild";
+        public const string NAVIGATION_STATIONARY_REUSE = "Battle.Navigation.StationaryReuse";
         public const string NAVIGATION_PRESERVE_COURSE = "Battle.Navigation.PreserveCourse";
         public const string NAVIGATION_NEW_COURSE = "Battle.Navigation.NewCourse";
         public const string NAVIGATION_ARRIVAL = "Battle.Navigation.Arrival";
@@ -71,6 +72,7 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker DueImpact = new ProfilerMarker(DUE_IMPACT);
         public static readonly ProfilerMarker SfxApplyMix = new ProfilerMarker(SFX_APPLY_MIX);
         public static readonly ProfilerMarker NavigationGridBuild = new ProfilerMarker(NAVIGATION_GRID_BUILD);
+        public static readonly ProfilerMarker NavigationStationaryReuse = new ProfilerMarker(NAVIGATION_STATIONARY_REUSE);
         public static readonly ProfilerMarker NavigationPreserveCourse = new ProfilerMarker(NAVIGATION_PRESERVE_COURSE);
         public static readonly ProfilerMarker NavigationNewCourse = new ProfilerMarker(NAVIGATION_NEW_COURSE);
         public static readonly ProfilerMarker NavigationArrival = new ProfilerMarker(NAVIGATION_ARRIVAL);

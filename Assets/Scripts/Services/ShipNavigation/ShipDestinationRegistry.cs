@@ -12,6 +12,22 @@ namespace EmpireAtWar.Services.ShipNavigation
             new Dictionary<int, Entry>();
 
         private int _nextRegistrationId;
+        private int _version;
+
+        public int Version
+        {
+            get
+            {
+                foreach (Entry entry in _entries.Values)
+                {
+                    FormationPoint current = entry.CurrentPosition();
+                    if (PositionsEqual(current, entry.LastPosition)) continue;
+                    entry.LastPosition = current;
+                    _version++;
+                }
+                return _version;
+            }
+        }
 
         public int Register(
             Func<FormationPoint> currentPosition,
@@ -32,6 +48,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 navigationRadius: navigationRadius,
                 hullSpan: hullSpan,
                 activeFinalPosition: initialFinalPosition));
+            _version++;
             return registrationId;
         }
 
@@ -39,6 +56,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             GetEntry(registrationId);
             _entries.Remove(registrationId);
+            _version++;
         }
 
         public bool HasClearance(
@@ -68,6 +86,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     "The ship's final position is already occupied.");
             }
 
+            if (!entry.ActiveFinalPosition.HasValue || !PositionsEqual(entry.ActiveFinalPosition.Value, position) ||
+                entry.PendingFinalPosition.HasValue) _version++;
             entry.ActiveFinalPosition = position;
             entry.PendingFinalPosition = null;
         }
@@ -83,12 +103,15 @@ namespace EmpireAtWar.Services.ShipNavigation
                     "The ship's deferred final position is already occupied.");
             }
 
+            if (!entry.PendingFinalPosition.HasValue || !PositionsEqual(entry.PendingFinalPosition.Value, position)) _version++;
             entry.PendingFinalPosition = position;
         }
 
         public void CancelPendingFinalPosition(int registrationId)
         {
-            GetEntry(registrationId).PendingFinalPosition = null;
+            Entry entry = GetEntry(registrationId);
+            if (entry.PendingFinalPosition.HasValue) _version++;
+            entry.PendingFinalPosition = null;
         }
 
         public bool HullsOverlap(int registrationId, ShipHullSpan hullSpan) =>
@@ -114,7 +137,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         public void Stop(int registrationId)
         {
             Entry entry = GetEntry(registrationId);
-            entry.ActiveFinalPosition = entry.CurrentPosition();
+            FormationPoint position = entry.CurrentPosition();
+            if (!entry.ActiveFinalPosition.HasValue || !PositionsEqual(entry.ActiveFinalPosition.Value, position) ||
+                entry.PendingFinalPosition.HasValue) _version++;
+            entry.ActiveFinalPosition = position;
             entry.PendingFinalPosition = null;
         }
 
@@ -187,6 +213,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
         }
 
+        private static bool PositionsEqual(FormationPoint first, FormationPoint second) =>
+            first.X == second.X && first.Z == second.Z;
+
         private sealed class Entry
         {
             public Func<FormationPoint> CurrentPosition { get; }
@@ -194,6 +223,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             public ShipHullSpan HullSpan { get; }
             public FormationPoint? ActiveFinalPosition { get; set; }
             public FormationPoint? PendingFinalPosition { get; set; }
+            public FormationPoint LastPosition { get; set; }
 
             public Entry(
                 Func<FormationPoint> currentPosition,
@@ -205,6 +235,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 NavigationRadius = navigationRadius;
                 HullSpan = hullSpan;
                 ActiveFinalPosition = activeFinalPosition;
+                LastPosition = currentPosition();
             }
         }
     }
