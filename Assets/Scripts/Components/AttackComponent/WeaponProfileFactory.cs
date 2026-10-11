@@ -31,6 +31,10 @@ namespace EmpireAtWar.Components.AttackComponent
             ShotEffect shotPrefab = barrels > 1 && family.MultiBarrelShotPrefab != null
                 ? family.MultiBarrelShotPrefab
                 : family.ShotPrefab;
+            if (definition.Mount == WeaponMount.Quad && family.QuadShotPrefab != null)
+                shotPrefab = family.QuadShotPrefab;
+            if (definition.Mount == WeaponMount.Octuple && family.OctupleShotPrefab != null)
+                shotPrefab = family.OctupleShotPrefab;
             float projectileSpeed = family.ProjectileSpeed;
             Vector3 size = family.Size;
             if (definition.OverrideVisual)

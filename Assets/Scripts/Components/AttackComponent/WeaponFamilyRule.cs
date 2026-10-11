@@ -35,8 +35,10 @@ namespace EmpireAtWar.Components.AttackComponent
 
         [Header("Visual")]
         [SerializeField] private ShotEffect shotPrefab;
-        [Tooltip("Used by Dual and larger mounts. Leave empty to use the normal shot.")]
+        [Tooltip("Used by Dual and Triple mounts, and larger mounts without a dedicated prefab. Leave empty to use the normal shot.")]
         [SerializeField] private ShotEffect multiBarrelShotPrefab;
+        [SerializeField] private ShotEffect quadShotPrefab;
+        [SerializeField] private ShotEffect octupleShotPrefab;
         [Tooltip("Units per second. Ignored by beams.")]
         [SerializeField, Min(0f)] private float projectileSpeed;
         [Tooltip("Bolts take the owner's faction color instead of the family color.")]
@@ -58,6 +60,8 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool TargetSizeBias => targetSizeBias;
         public ShotEffect ShotPrefab => shotPrefab;
         public ShotEffect MultiBarrelShotPrefab => multiBarrelShotPrefab;
+        public ShotEffect QuadShotPrefab => quadShotPrefab;
+        public ShotEffect OctupleShotPrefab => octupleShotPrefab;
         public float ProjectileSpeed => projectileSpeed;
         public bool FactionColored => factionColored;
         public Color Color => color;

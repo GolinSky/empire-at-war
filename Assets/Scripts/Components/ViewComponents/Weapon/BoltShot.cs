@@ -68,18 +68,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             main.startSizeXMultiplier = profile.Size.x * sizeScale;
             main.startSizeYMultiplier = profile.Size.y * sizeScale;
             main.startSizeZMultiplier = profile.Size.z * sizeScale;
-            main.startSpeed = 0f;
+            main.startSpeed = STRETCH_AXIS_SPEED;
             main.startLifetime = travelTime + LIFETIME_MARGIN;
             ParticleSystem.SizeOverLifetimeModule sizeOverLifetime = vfx.sizeOverLifetime;
             sizeOverLifetime.enabled = false;
             ParticleSystem.EmissionModule emission = vfx.emission;
-            emission.enabled = false;
+            emission.enabled = true;
             vfx.Play(true);
-            vfx.Emit(new ParticleSystem.EmitParams
-            {
-                position = Vector3.zero,
-                velocity = Vector3.forward * STRETCH_AXIS_SPEED
-            }, 1);
             return travelTime;
         }
 
