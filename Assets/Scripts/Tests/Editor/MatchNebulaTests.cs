@@ -65,7 +65,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Stars_AreStationaryAndPersistForTheMatch()
         {
-            var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Vfx/SkirmishVfx.prefab");
+            var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Vfx/Nebula/SkirmishVfx.prefab");
             var stars = source.GetComponentsInChildren<ParticleSystem>();
             Assert.That(stars.Length,Is.EqualTo(2));
             foreach (var system in stars)

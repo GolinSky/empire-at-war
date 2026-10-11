@@ -27,7 +27,7 @@ namespace EmpireAtWar.Editor.Squadrons
     public static class SquadronViewPrefabBuilder
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
-        private const string EXPLOSION_PATH = "Assets/Prefabs/Vfx/FighterExplosionVfx.prefab";
+        private const string EXPLOSION_PATH = "Assets/Prefabs/Vfx/Explosions/FighterExplosionVfx.prefab";
         private const string TRAIL_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Engines.mat";
         private const string SELECTION_SOURCE_PATH = "Assets/Prefabs/Models/Ships/ArquitensShipView.prefab";
         private const string LAYER_DATA_PATH = "Assets/Settings/Data/Models/Layer/LayerData.asset";
