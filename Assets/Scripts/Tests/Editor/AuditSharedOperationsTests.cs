@@ -16,6 +16,14 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Utils;
+using EmpireAtWar.Views.ReinforcementZones;
+using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -81,6 +89,71 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [TestCase(false, false, true)]
+        [TestCase(true, true, true)]
+        [TestCase(true, false, false)]
+        public void BaseMarker_StationDestructionRemovesIconAndPreventsRediscovery(
+            bool hostile, bool discover, bool registerBeforeInitialize)
+        {
+            MiniMapData data = ScriptableObject.CreateInstance<MiniMapData>();
+            GameObject source = new GameObject("VisionSource");
+            BaseMiniMapPresenter presenter = null;
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerId owner = hostile ? TestPlayers.Enemy : TestPlayers.Human;
+                EntityLocator locator = new EntityLocator();
+                FakeHealth health = new FakeHealth(source.transform, false);
+                FakeEntity station = new FakeEntity(new PlayerBaseFacade(), health, owner, 100);
+                if (registerBeforeInitialize) locator.AddEntity(station);
+                VisionService vision = new VisionService(roster);
+                MapLayout layout = new MapLayout(
+                    new Dictionary<PlayerId, Vector3>
+                    {
+                        { TestPlayers.Human, Vector3.zero },
+                        { TestPlayers.Enemy, new Vector3(1000f, 0f, 0f) }
+                    },
+                    Array.Empty<ZoneSpot>(), Array.Empty<SiteSpot>(), Array.Empty<MapLane>(),
+                    Array.Empty<AsteroidField>(), default, Vector3.zero);
+                BattleMap map = new BattleMap(layout, Array.Empty<ReinforcementZoneView>(),
+                    Array.Empty<CaptureSiteView>(), Array.Empty<MapObstacle>(), Array.Empty<StationObstacle>());
+                presenter = new BaseMiniMapPresenter(vision, TestPlayers.CreateLocalPlayer(roster), roster,
+                    new ReplayNotifier<BattleMap>(map),
+                    AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                        "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset"), data, locator);
+                presenter.Initialize();
+                if (!registerBeforeInitialize) locator.AddEntity(station);
+                MiniMapMarker marker = data.Markers.Single(entry => entry.Owner == owner);
+                if (discover)
+                {
+                    vision.Register(TestPlayers.Human, source.transform, 10000f);
+                    presenter.LateTick();
+                }
+                Assert.That(marker.Visible, Is.EqualTo(!hostile || discover));
+                int removed = 0;
+                data.OnMarkerRemoved += entry => removed++;
+
+                health.Destroy();
+                Assert.That(marker.Visible, Is.False);
+                Assert.That(data.Markers.Any(entry => entry.Owner == owner), Is.False);
+                Assert.That(data.Markers.Count, Is.EqualTo(1));
+                vision.Register(TestPlayers.Human, source.transform, 10000f);
+                presenter.LateTick();
+                Assert.That(marker.Visible, Is.False);
+                locator.RemoveEntity(station);
+                Assert.That(removed, Is.EqualTo(1));
+                presenter.LateDispose();
+                presenter.LateDispose();
+                Assert.That(data.Markers, Is.Empty);
+            }
+            finally
+            {
+                if (presenter != null) presenter.LateDispose();
+                Object.DestroyImmediate(source);
                 Object.DestroyImmediate(data);
             }
         }
@@ -185,12 +258,12 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public event Action OnDestroy { add { } remove { } }
+            public event Action OnDestroy;
 
             public event Action OnValueChanged { add { } remove { } }
 
             public Transform Transform { get; }
-            public bool IsDestroyed { get; }
+            public bool IsDestroyed { get; private set; }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -210,6 +283,12 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
+
+            public void Destroy()
+            {
+                IsDestroyed = true;
+                OnDestroy?.Invoke();
+            }
         }
     }
 }

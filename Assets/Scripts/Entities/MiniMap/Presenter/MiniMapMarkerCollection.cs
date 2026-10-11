@@ -30,5 +30,13 @@ namespace EmpireAtWar.Presenters.MiniMap
 
             _markers.Clear();
         }
+
+        public void Remove(T source)
+        {
+            if (!_markers.TryGetValue(source, out MiniMapMarker marker)) return;
+            marker.SetVisible(false);
+            _miniMapData.RemoveMarker(marker);
+            _markers.Remove(source);
+        }
     }
 }
