@@ -88,10 +88,12 @@ updated: 2026-10-11
 
 ### Phase 6 — Squadron tick
 - [ ] Use Phase 0 children (`UpdateOrder` / pilot / flight) to pick the leading cost.
-- [ ] Remove duplicate/unchanged work first (e.g. re-evaluating unchanged orders each frame); lower update rates only with visible-behavior approval.
-- Done gate: measured child cost reduced; formation, targeting, member loss and order transitions unchanged.
+- [x] Remove duplicate pilot work: one formation world offset per live rank per travel tick, reused by lag and steering; one aim-position read per used target index per engage tick. Buffers allocated once with pilot; member-loss rank ordering retained. No update-rate changes.
+- Saved evidence: `Squadron.Tick` 8.469 ms / 109 calls per frame; children were uninstrumented. Choice is source-verified duplicate work, not a claimed measured leading child.
+- Unity compilation passed; tests/captures skipped. Done gate pending: child timings and formation/targeting/member-loss/order parity need the user capture.
 
 ### Phase 7 — Hardpoint readiness independent of visuals (approved gameplay change, 2026-10-11)
+- Owner: user; skipped in this execution.
 - Cause: `WeaponHardPoint.IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete`; `_sequence` stays `WaitingForEffects` until every `ShotEffect` finishes (`IsVisualComplete`, muzzle flash, missile trail particles). Visual tails can delay the next salvo.
 - [ ] `AttackSequenceState`: remove `_activeEffects`, `WaitingForEffects`, `RegisterEffect`, `TryCompleteEffect`; `StopEmitting` → `Ready`.
 - [ ] `WeaponHardPoint`: drop `RegisterEffect` in `EmitScheduledShot` and `OnTurretEffectCompleted`; fire rate = salvo + `_reloadTimer` only.
@@ -101,13 +103,14 @@ updated: 2026-10-11
 - Done gate: fire rate matches profile data per weapon; pool creations do not rise in warmed battles; no stuck/never-ready hardpoints.
 
 ### Phase 8 — Acceptance
+- Owner: user; skipped in this execution.
 - [ ] Matched captures vs Phase 0 baseline: CPU median/p95/p99, bytes/frame, GC stalls.
 - [ ] Behavior: target priority, range/arc edges, shot counts, impact timing, pause, owner/hardpoint death, pool drain, audio mix, routes.
 - [ ] Development Player confirmation of the largest gains.
 
 ## Edge Cases
 - Tilted ship + target exactly on yaw/range boundary → keep serial fallback.
-- Shared capture + target dies between capture and commit → generation check rejects; no redirect.
+- Shared capture + target dies between capture and commit → preserve existing version/generation serial retry; never commit the stale snapshot.
 - Event swap-remove during commit loop → index map must update before next lookup.
 - Mix flushed before weapons fire → one silent frame for new voices; flush after firing.
 - Grid reuse across agents with different hull spans/heights → key by clearance/height or keep per-agent contacts.
