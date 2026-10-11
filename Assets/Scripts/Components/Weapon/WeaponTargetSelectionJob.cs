@@ -22,6 +22,7 @@ namespace EmpireAtWar.Components.Weapon
 
         [ReadOnly] public NativeArray<Input> Inputs;
         [ReadOnly] public NativeArray<float3> CandidatePositions;
+        [ReadOnly] public NativeArray<byte> CandidateIsStrikecraft;
         [WriteOnly] public NativeArray<Result> Results;
 
         public void Execute(int index)
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Components.Weapon
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
             for (int i = input.CandidateStart; i < input.CandidateStart + input.CandidateCount; i++)
             {
+                if (input.StrikecraftOnly != 0 && CandidateIsStrikecraft[i] == 0) continue;
                 result.Visited++;
                 float3 direction = CandidatePositions[i] - input.Origin;
                 // Planar, like WeaponTargetSelector: ships on different height tiers must stay in range.
@@ -104,6 +106,7 @@ namespace EmpireAtWar.Components.Weapon
 
             public int CandidateStart;
             public int CandidateCount;
+            public int StrikecraftOnly;
         }
 
         internal struct Result

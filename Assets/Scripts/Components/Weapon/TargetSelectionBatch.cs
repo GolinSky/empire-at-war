@@ -15,10 +15,12 @@ namespace EmpireAtWar.Components.Weapon
 
         private readonly Func<IWeaponPresenter, int, bool> _isRegistered;
         private readonly List<TargetSelectionRequest> _targetSelectionRequests = new List<TargetSelectionRequest>();
-        private readonly List<TargetSelectionCandidateRecord> _targetSelectionCandidates = new List<TargetSelectionCandidateRecord>();
+        private readonly List<WeaponComponent.TargetSelectionCandidate> _targetSelectionCandidates = new List<WeaponComponent.TargetSelectionCandidate>();
+        private readonly Dictionary<WeaponComponent, TargetSelectionRequest> _capturedOwners = new Dictionary<WeaponComponent, TargetSelectionRequest>();
 
         private NativeArray<WeaponTargetSelectionJob.Input> _targetSelectionInputs;
         private NativeArray<Unity.Mathematics.float3> _targetSelectionPositions;
+        private NativeArray<byte> _targetSelectionClasses;
         private NativeArray<WeaponTargetSelectionJob.Result> _targetSelectionResults;
 
         public int RequestCount => _targetSelectionRequests.Count;
@@ -36,8 +38,10 @@ namespace EmpireAtWar.Components.Weapon
         {
             _targetSelectionRequests.Clear();
             _targetSelectionCandidates.Clear();
+            _capturedOwners.Clear();
             if (_targetSelectionInputs.IsCreated) _targetSelectionInputs.Dispose();
             if (_targetSelectionPositions.IsCreated) _targetSelectionPositions.Dispose();
+            if (_targetSelectionClasses.IsCreated) _targetSelectionClasses.Dispose();
             if (_targetSelectionResults.IsCreated) _targetSelectionResults.Dispose();
         }
 
@@ -75,6 +79,7 @@ namespace EmpireAtWar.Components.Weapon
 
                 _targetSelectionRequests.Clear();
                 _targetSelectionCandidates.Clear();
+                _capturedOwners.Clear();
                 return;
             }
 
@@ -96,14 +101,16 @@ namespace EmpireAtWar.Components.Weapon
                         MinYaw = request.HardPoint.MinYaw,
                         MaxYaw = request.HardPoint.MaxYaw,
                         CandidateStart = request.CandidateStart,
-                        CandidateCount = request.CandidateCount
+                        CandidateCount = request.CandidateCount,
+                        StrikecraftOnly = request.CandidateCount > 0 && request.HardPoint.StrikecraftOnly ? 1 : 0
                     };
                 }
 
                 for (int i = 0; i < _targetSelectionCandidates.Count; i++)
                 {
-                    Vector3 position = _targetSelectionCandidates[i].Candidate.Position;
+                    Vector3 position = _targetSelectionCandidates[i].Position;
                     _targetSelectionPositions[i] = new Unity.Mathematics.float3(position.x, position.y, position.z);
+                    _targetSelectionClasses[i] = _targetSelectionCandidates[i].IsStrikecraft ? (byte)1 : (byte)0;
                 }
             }
 
@@ -115,6 +122,7 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     Inputs = _targetSelectionInputs,
                     CandidatePositions = _targetSelectionPositions,
+                    CandidateIsStrikecraft = _targetSelectionClasses,
                     Results = _targetSelectionResults
                 };
                 JobHandle handle;
@@ -145,11 +153,12 @@ namespace EmpireAtWar.Components.Weapon
 #endif
             _targetSelectionRequests.Clear();
             _targetSelectionCandidates.Clear();
+            _capturedOwners.Clear();
         }
 
         private void CaptureTargetSelections()
         {
-            // Capture every request at one LateTick boundary before either selection path commits.
+            // Capture every owner once at one LateTick boundary before either selection path commits.
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.TargetBatchCapture.Auto())
 #endif
@@ -158,14 +167,20 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     TargetSelectionRequest request = _targetSelectionRequests[i];
                     if (!_isRegistered(request.Owner, request.OwnerGeneration)) continue;
-
-                    IReadOnlyList<WeaponComponent.TargetSelectionCandidate> candidates =
-                        request.Weapon.CaptureTargetSelection(request.HardPoint, out request.TargetVersion,
-                            out request.Origin, out request.ParentRotation);
-                    request.CandidateStart = _targetSelectionCandidates.Count;
-                    request.CandidateCount = candidates.Count;
-                    for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
-                        _targetSelectionCandidates.Add(new TargetSelectionCandidateRecord { Candidate = candidates[candidateIndex] });
+                    if (!_capturedOwners.TryGetValue(request.Weapon, out TargetSelectionRequest captured))
+                    {
+                        captured.CandidateStart = _targetSelectionCandidates.Count;
+                        request.Weapon.CaptureTargetSelection(_targetSelectionCandidates, out captured.TargetVersion);
+                        captured.CandidateCount = _targetSelectionCandidates.Count - captured.CandidateStart;
+                        _capturedOwners.Add(request.Weapon, captured);
+                    }
+                    request.CandidateStart = captured.CandidateStart;
+                    request.CandidateCount = captured.CandidateCount;
+                    request.TargetVersion = captured.TargetVersion;
+                    Transform weaponTransform = request.HardPoint.transform;
+                    request.Origin = weaponTransform.position;
+                    request.ParentRotation = weaponTransform.parent == null
+                        ? Quaternion.identity : weaponTransform.parent.rotation;
                     _targetSelectionRequests[i] = request;
                 }
             }
@@ -179,9 +194,10 @@ namespace EmpireAtWar.Components.Weapon
             WeaponTargetSelectionJob.Result result = new WeaponTargetSelectionJob.Result { CandidateIndex = -1 };
             for (int i = request.CandidateStart; i < request.CandidateStart + request.CandidateCount; i++)
             {
+                if (request.HardPoint.StrikecraftOnly && !_targetSelectionCandidates[i].IsStrikecraft) continue;
                 result.Visited++;
                 bool canAttack = WeaponTargetSelector.TryCalculateAim(
-                    _targetSelectionCandidates[i].Candidate.Position, request.Origin, request.ParentRotation,
+                    _targetSelectionCandidates[i].Position, request.Origin, request.ParentRotation,
                     request.HardPoint.MaxAttackDistance, request.HardPoint.MinYaw, request.HardPoint.MaxYaw,
                     out Quaternion aim, out bool inRange);
                 if (inRange)
@@ -219,7 +235,7 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             request.Weapon.CommitTargetSelection(request.HardPoint, request.TargetVersion, result,
-                result.CandidateIndex < 0 ? default : _targetSelectionCandidates[result.CandidateIndex].Candidate);
+                result.CandidateIndex < 0 ? default : _targetSelectionCandidates[result.CandidateIndex]);
         }
 
         private void EnsureTargetSelectionCapacity(int requestCount, int candidateCount)
@@ -227,6 +243,7 @@ namespace EmpireAtWar.Components.Weapon
             EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionInputs, requestCount);
             EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionResults, requestCount);
             EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionPositions, candidateCount);
+            EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionClasses, candidateCount);
         }
 
         private struct TargetSelectionRequest
@@ -245,10 +262,6 @@ namespace EmpireAtWar.Components.Weapon
             public int CandidateCount;
         }
 
-        private struct TargetSelectionCandidateRecord
-        {
-            public WeaponComponent.TargetSelectionCandidate Candidate;
-        }
 
 
 

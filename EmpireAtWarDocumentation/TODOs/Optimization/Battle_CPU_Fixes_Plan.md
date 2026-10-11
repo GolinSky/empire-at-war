@@ -53,11 +53,12 @@ updated: 2026-10-11
 
 ### Phase 2 — Capture targets once per ship, not per hardpoint
 - Cause: `WeaponComponent.CaptureTargetSelection` clears `_targetPositions` and rebuilds the full candidate list per request; `TargetSelectionBatch.CaptureTargetSelections` copies it again.
-- [ ] Per `LateTick` batch, capture each `WeaponComponent`'s ordered candidates once (validity, generation, position, target class).
-- [ ] Hardpoint requests reference the shared span; apply `CanEngage` (strikecraft-only) as a per-request class mask inside the job instead of a filtered copy.
-- [ ] Write candidates directly into the batch buffer; remove the second copy.
-- [ ] Invalidation: capture happens at one boundary per frame; keep `_targetVersion` + generation checks at commit.
-- Done gate: candidate records/frame ≈ unique (ship, enemy) pairs; same targets chosen; no new allocations.
+- [x] Per `LateTick` batch, capture each `WeaponComponent`'s ordered candidates once (validity, generation, position, target class).
+- [x] Hardpoint requests reference the shared span; apply `CanEngage` (strikecraft-only) as a per-request class mask inside the job instead of a filtered copy.
+- [x] Write candidates directly into the batch buffer; remove the second copy.
+- [x] Invalidation: capture happens at one boundary per frame; keep `_targetVersion` + generation checks at commit.
+- Implementation: batch-owned candidate list receives snapshots directly; owner spans and group acquisition eligibility are cached only during capture. Native class flags preserve strikecraft-only filtering on both paths. Unity compilation passed; existing job fixture supplies the new native buffer. New runs skipped.
+- Done gate pending: candidate counts, warmed allocations and target parity require the next user capture.
 
 ### Phase 3 — O(1) due-event lookup
 - Cause: `TryFindEvent` scans `_impacts` / `_sequences` for every due event; records use swap-remove (`RemoveImpactAt`, `RemoveSequenceAt`).

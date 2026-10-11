@@ -53,7 +53,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly HashSet<IHardPointModel> _candidateUnits = new HashSet<IHardPointModel>();
         private readonly List<IHardPointModel> _staleHandlerUnits = new List<IHardPointModel>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
-        private readonly List<TargetSelectionCandidate> _targetSelectionCandidates = new List<TargetSelectionCandidate>();
+        private readonly Dictionary<AttackData, bool> _targetGroupEligibility = new Dictionary<AttackData, bool>();
         private readonly List<Vector2> _turnArcs = new List<Vector2>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
@@ -159,7 +159,7 @@ namespace EmpireAtWar.Components.Weapon
             _unitDestroyedHandlers.Clear();
             _candidateUnits.Clear();
             _orderedCandidates.Clear();
-            _targetSelectionCandidates.Clear();
+            _targetGroupEligibility.Clear();
             _targetPositions.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
@@ -270,17 +270,20 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        internal IReadOnlyList<TargetSelectionCandidate> CaptureTargetSelection(WeaponHardPoint weapon,
-            out int targetVersion, out Vector3 origin, out Quaternion parentRotation)
+        internal void CaptureTargetSelection(List<TargetSelectionCandidate> candidates, out int targetVersion)
         {
             _targetPositions.Clear();
-            _targetSelectionCandidates.Clear();
+            _targetGroupEligibility.Clear();
             bool removedInvalidCandidate = false;
-
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
-                if (!CanAcquire(candidate.Group)) continue;
+                if (!_targetGroupEligibility.TryGetValue(candidate.Group, out bool canAcquire))
+                {
+                    canAcquire = CanAcquire(candidate.Group);
+                    _targetGroupEligibility.Add(candidate.Group, canAcquire);
+                }
+                if (!canAcquire) continue;
                 if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
@@ -288,25 +291,17 @@ namespace EmpireAtWar.Components.Weapon
                     removedInvalidCandidate = true;
                     continue;
                 }
-
-                if (!weapon.CanEngage(candidate.Group.TargetClass)) continue;
-
-                _targetSelectionCandidates.Add(new TargetSelectionCandidate
+                candidates.Add(new TargetSelectionCandidate
                 {
                     Group = candidate.Group,
                     Unit = candidate.Unit,
                     Generation = candidate.Unit.Generation,
-                    Position = GetTargetPosition(candidate.Unit)
+                    Position = GetTargetPosition(candidate.Unit),
+                    IsStrikecraft = candidate.Group.TargetClass.IsStrikecraft()
                 });
             }
-
             if (removedInvalidCandidate) _targetVersion++;
-
-            Transform weaponTransform = weapon.transform;
             targetVersion = _targetVersion;
-            origin = weaponTransform.position;
-            parentRotation = weaponTransform.parent == null ? Quaternion.identity : weaponTransform.parent.rotation;
-            return _targetSelectionCandidates;
         }
 
         private bool TryFireWeapon(WeaponHardPoint weapon)
@@ -557,6 +552,7 @@ namespace EmpireAtWar.Components.Weapon
             public Vector3 Position;
 
             public int Generation;
+            public bool IsStrikecraft;
         }
 
     }
