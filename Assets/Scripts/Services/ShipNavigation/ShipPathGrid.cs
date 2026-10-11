@@ -10,9 +10,8 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
-    // Owns the native buffers of one planning pass from one origin. All methods
-    // run on the main thread; every scheduled job is completed before its buffers
-    // are read, and every allocation is released in Dispose within the same frame.
+    // Shares one obstacle raster within a frame; floods remain specific to the current origin.
+    // Jobs complete before reuse, and the navigation cache disposes buffers at frame end.
     internal sealed class ShipPathGrid : IDisposable
     {
         private const float MINIMUM_CELL_SIZE = 4f;
@@ -23,7 +22,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         private const float HALF_DIAGONAL_FACTOR = 0.7072f;
 
         private readonly NavigationGridCells _cells;
-        private readonly float2 _origin;
+        private float2 _origin;
+        private readonly Vector2 _mapMin;
+        private readonly Vector2 _mapMax;
+        private readonly float _clearance;
         private NativeArray<float3> _obstacles;
         private NativeArray<byte> _blocked;
         private NativeArray<float> _costSoFar;
@@ -58,6 +60,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             // segment between two adjacent walkable nodes keeps full clearance.
             _inflation = clearance + cellSize * HALF_DIAGONAL_FACTOR;
             _origin = new float2(origin.x, origin.z);
+            _mapMin = mapRange.Min;
+            _mapMax = mapRange.Max;
+            _clearance = clearance;
             _obstacles = new NativeArray<float3>(obstacles.Count, Allocator.TempJob);
             for (int i = 0; i < obstacles.Count; i++)
             {
@@ -71,21 +76,34 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Dispose()
         {
-            if (_isFlooded)
-            {
-                _blocked.Dispose();
-                _costSoFar.Dispose();
-                _cameFrom.Dispose();
-                _rawPath.Dispose();
-                _path.Dispose();
-                _status.Dispose();
-                _isFlooded = false;
-            }
+            if (_blocked.IsCreated) _blocked.Dispose();
+            if (_costSoFar.IsCreated) _costSoFar.Dispose();
+            if (_cameFrom.IsCreated) _cameFrom.Dispose();
+            if (_rawPath.IsCreated) _rawPath.Dispose();
+            if (_path.IsCreated) _path.Dispose();
+            if (_status.IsCreated) _status.Dispose();
+            if (_obstacles.IsCreated) _obstacles.Dispose();
+        }
 
-            if (_obstacles.IsCreated)
+        public bool Matches(IReadOnlyList<RadarContact> obstacles, Vector2Range mapRange, float clearance)
+        {
+            if (!_mapMin.Equals(mapRange.Min) || !_mapMax.Equals(mapRange.Max) ||
+                _clearance != clearance || _obstacles.Length != obstacles.Count) return false;
+            for (int i = 0; i < obstacles.Count; i++)
             {
-                _obstacles.Dispose();
+                RadarContact contact = obstacles[i];
+                if (_obstacles[i].x != contact.Position.x || _obstacles[i].y != contact.Position.z ||
+                    _obstacles[i].z != contact.Radius) return false;
             }
+            return true;
+        }
+
+        public void SetOrigin(Vector3 origin)
+        {
+            _origin = new float2(origin.x, origin.z);
+            // Each plan must start without known-unreachable results so direct-route
+            // candidates keep the same ordering as a fresh grid.
+            _isFlooded = false;
         }
 
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)
@@ -196,25 +214,27 @@ namespace EmpireAtWar.Services.ShipNavigation
         private void Flood()
         {
             int cellCount = _cells.Count;
-            _blocked = new NativeArray<byte>(
-                cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-            new NavigationGridBlockJob
+            if (!_blocked.IsCreated)
             {
-                Obstacles = _obstacles,
-                Blocked = _blocked,
-                GridOrigin = _cells.Origin,
-                CellSize = _cells.CellSize,
-                Width = _cells.Width,
-                Inflation = _inflation
-            }.Schedule(cellCount, BLOCK_JOB_BATCH_SIZE).Complete();
-
-            _costSoFar = new NativeArray<float>(
-                cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-            _cameFrom = new NativeArray<int>(
-                cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-            _rawPath = new NativeList<float2>(64, Allocator.TempJob);
-            _path = new NativeList<float2>(16, Allocator.TempJob);
-            _status = new NativeArray<int>(1, Allocator.TempJob);
+                _blocked = new NativeArray<byte>(
+                    cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                new NavigationGridBlockJob
+                {
+                    Obstacles = _obstacles,
+                    Blocked = _blocked,
+                    GridOrigin = _cells.Origin,
+                    CellSize = _cells.CellSize,
+                    Width = _cells.Width,
+                    Inflation = _inflation
+                }.Schedule(cellCount, BLOCK_JOB_BATCH_SIZE).Complete();
+                _costSoFar = new NativeArray<float>(
+                    cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                _cameFrom = new NativeArray<int>(
+                    cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                _rawPath = new NativeList<float2>(64, Allocator.TempJob);
+                _path = new NativeList<float2>(16, Allocator.TempJob);
+                _status = new NativeArray<int>(1, Allocator.TempJob);
+            }
             _isFlooded = true;
 
             NativeArray<byte> closed = new NativeArray<byte>(

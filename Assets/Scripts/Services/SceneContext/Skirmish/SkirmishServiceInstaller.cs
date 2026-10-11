@@ -45,6 +45,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.BindInterfacesAndSelfTo<ShipSfxService>().AsSingle().NonLazy();
             Container.BindTickableExecutionOrder<ShipSfxService>(1000);
             Container.BindLateTickableExecutionOrder<ShipSfxService>(1000);
+            Container.BindLateTickableExecutionOrder<ShipNavigationService>(2000);
             Container.BindDisposableExecutionOrder<ShipSfxService>(-1000);
             Container.Bind<IImpactEffectView>().To<ImpactEffectView>()
                 .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
