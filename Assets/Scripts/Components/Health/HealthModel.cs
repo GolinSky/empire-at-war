@@ -45,7 +45,16 @@ namespace EmpireAtWar.Models.Health
         public bool HasShields => Shields > 0f;
         public bool IsLostShieldGenerator { get; private set; }
         public bool HasUnits => !IsDestroyed;
-        public bool HasLiveHardPoints => HardPointModels.Any(hardPoint => !hardPoint.IsDestroyed);
+        // Queried per target candidate; a loop avoids the LINQ enumerator allocation.
+        public bool HasLiveHardPoints
+        {
+            get
+            {
+                foreach (HardPointModel hardPoint in HardPointModels)
+                    if (!hardPoint.IsDestroyed) return true;
+                return false;
+            }
+        }
 
         public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers)
         {

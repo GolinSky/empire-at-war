@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.ViewComponents.Health;
 using Unity.Collections;
@@ -17,6 +18,8 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<TargetSelectionRequest> _targetSelectionRequests = new List<TargetSelectionRequest>();
         private readonly List<WeaponComponent.TargetSelectionCandidate> _targetSelectionCandidates = new List<WeaponComponent.TargetSelectionCandidate>();
         private readonly Dictionary<WeaponComponent, TargetSelectionRequest> _capturedOwners = new Dictionary<WeaponComponent, TargetSelectionRequest>();
+        // Many owners aim at the same hardpoints; each position is read once per capture.
+        private readonly Dictionary<IHardPointModel, Vector3> _capturedPositions = new Dictionary<IHardPointModel, Vector3>();
 
         private NativeArray<WeaponTargetSelectionJob.Input> _targetSelectionInputs;
         private NativeArray<Unity.Mathematics.float3> _targetSelectionPositions;
@@ -39,6 +42,7 @@ namespace EmpireAtWar.Components.Weapon
             _targetSelectionRequests.Clear();
             _targetSelectionCandidates.Clear();
             _capturedOwners.Clear();
+            _capturedPositions.Clear();
             if (_targetSelectionInputs.IsCreated) _targetSelectionInputs.Dispose();
             if (_targetSelectionPositions.IsCreated) _targetSelectionPositions.Dispose();
             if (_targetSelectionClasses.IsCreated) _targetSelectionClasses.Dispose();
@@ -163,6 +167,7 @@ namespace EmpireAtWar.Components.Weapon
             using (BattleProfilerMarkers.TargetBatchCapture.Auto())
 #endif
             {
+                _capturedPositions.Clear();
                 for (int i = 0; i < _targetSelectionRequests.Count; i++)
                 {
                     TargetSelectionRequest request = _targetSelectionRequests[i];
@@ -170,7 +175,8 @@ namespace EmpireAtWar.Components.Weapon
                     if (!_capturedOwners.TryGetValue(request.Weapon, out TargetSelectionRequest captured))
                     {
                         captured.CandidateStart = _targetSelectionCandidates.Count;
-                        request.Weapon.CaptureTargetSelection(_targetSelectionCandidates, out captured.TargetVersion);
+                        request.Weapon.CaptureTargetSelection(_targetSelectionCandidates, _capturedPositions,
+                            out captured.TargetVersion);
                         captured.CandidateCount = _targetSelectionCandidates.Count - captured.CandidateStart;
                         _capturedOwners.Add(request.Weapon, captured);
                     }
