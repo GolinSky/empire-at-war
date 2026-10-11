@@ -22,6 +22,8 @@ namespace EmpireAtWar.Services.Camera
 
         RaycastHit ScreenPointToRay(Vector2 screenPoint);
 
+        int ScreenPointRaycastAll(Vector2 screenPoint, RaycastHit[] results);
+
         Vector3 WorldToViewportPoint(Vector3 currentPosition);
 
         Vector2 WorldToScreenPoint(Vector3 position);
@@ -31,6 +33,8 @@ namespace EmpireAtWar.Services.Camera
         void MoveTo(Vector3 worldPoint);
 
         void SetPose(Vector3 position, Quaternion rotation);
+
+        void SetCullingMask(LayerMask mask);
     }
 
     [RequireComponent(typeof(UnityEngine.Camera))]
@@ -145,6 +149,12 @@ namespace EmpireAtWar.Services.Camera
             return hit;
         }
 
+        public int ScreenPointRaycastAll(Vector2 screenPoint, RaycastHit[] results)
+        {
+            Ray ray = sceneCamera.ScreenPointToRay(screenPoint);
+            return Physics.RaycastNonAlloc(ray, results);
+        }
+
         public void MoveTo(Vector3 worldPoint)
         {
             Vector3 targetCameraPosition = worldPoint;
@@ -163,6 +173,11 @@ namespace EmpireAtWar.Services.Camera
         {
             _keyboardVelocity = Vector2.zero;
             transform.SetPositionAndRotation(position, rotation);
+        }
+
+        public void SetCullingMask(LayerMask mask)
+        {
+            sceneCamera.cullingMask = mask;
         }
 
         public void Tick()

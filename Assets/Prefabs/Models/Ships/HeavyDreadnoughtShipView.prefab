@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3784387819371548149}
   - component: {fileID: 7103284528074192606}
   - component: {fileID: 2895850543096056623}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4932,7 +4932,7 @@ GameObject:
   - component: {fileID: 3324759988393466048}
   - component: {fileID: 5368310019642147005}
   - component: {fileID: 413929366897955647}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10072,6 +10072,7 @@ MonoBehaviour:
   - {fileID: 6234276243704695274}
   - {fileID: 1299462704031506737}
   - {fileID: 6872802254430186263}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &6167998220805005332
 BoxCollider:
   m_ObjectHideFlags: 0

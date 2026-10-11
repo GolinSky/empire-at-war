@@ -61,6 +61,12 @@ namespace EmpireAtWar.Components.FogOfWar
 
             _isHidden = IsCoveredByFog();
             ApplyVisibility();
+            // TEMP fog debug: stations lock visible on their first unhidden check.
+            if (staysRevealedOnceSeen)
+            {
+                Debug.Log($"[FogDebug] {name} Initialize at {transform.position} hidden={_isHidden}" +
+                          $" frame={Time.frameCount}{DescribeRevealingSources()}");
+            }
         }
 
         public void LateDispose()
@@ -97,6 +103,30 @@ namespace EmpireAtWar.Components.FogOfWar
 
             _isHidden = isHidden;
             ApplyVisibility();
+            // TEMP fog debug
+            if (staysRevealedOnceSeen && !_isHidden)
+            {
+                Debug.Log($"[FogDebug] {name} revealed for good at {transform.position}" +
+                          $" frame={Time.frameCount}{DescribeRevealingSources()}");
+            }
+        }
+
+        // TEMP fog debug: the local team's vision circles that reach this unit's footprint.
+        private string DescribeRevealingSources()
+        {
+            var text = new System.Text.StringBuilder();
+            foreach (EmpireAtWar.Services.OwnedAreas.OwnedCircle circle in _visionService.Sources)
+            {
+                if (!_localPlayer.IsFriendly(circle.Owner) || !circle.Contains(transform.position, revealRadius))
+                {
+                    continue;
+                }
+
+                text.Append($"\n  source={circle.Transform.name} owner={circle.Owner} pos={circle.Transform.position}" +
+                            $" radius={circle.Radius} dist={Vector3.Distance(circle.Transform.position, transform.position):F0}");
+            }
+
+            return _modifiers.IsCloaked ? $" cloaked{text}" : text.ToString();
         }
 
         private bool IsCoveredByFog() =>

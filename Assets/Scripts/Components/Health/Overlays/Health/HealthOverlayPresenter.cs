@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using Zenject;
 
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private readonly ISelectionQuery _selectionQuery;
         private readonly IPointerInput _pointerInput;
         private readonly ICameraService _cameraService;
+        private readonly IHudVisibilityObserver _hud;
         private IEntity _target;
         private ISelectionPositionProvider _targetPositionProvider;
 
@@ -24,8 +26,10 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             IHealthOverlayView view,
             ISelectionQuery selectionQuery,
             IPointerInput pointerInput,
-            ICameraService cameraService)
+            ICameraService cameraService,
+            IHudVisibilityObserver hud)
         {
+            _hud = hud;
             _view = view;
             _selectionQuery = selectionQuery;
             _pointerInput = pointerInput;
@@ -53,7 +57,8 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 return;
             }
 
-            IEntity desiredTarget = GetHoveredEntity();
+            // Hidden with the HUD, e.g. while the cinema camera runs.
+            IEntity desiredTarget = _hud.IsHudVisible ? GetHoveredEntity() : null;
             if (!ReferenceEquals(_target, desiredTarget))
             {
                 SetTarget(desiredTarget);

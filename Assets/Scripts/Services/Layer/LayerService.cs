@@ -7,24 +7,38 @@ namespace EmpireAtWar.Services.Layer
 {
     public interface ILayerService
     {
+        LayerMask CoreGameCameraMask { get; }
+
+        LayerMask CinemaCameraMask { get; }
+
         int GetLayer(LayerKey key);
 
         LayerMask GetMask(params LayerKey[] keys);
 
         bool IsInLayer(GameObject gameObject, LayerKey key);
 
+        /// <summary>Children on render-only layers (WorldUi, Fog) keep their layer.</summary>
         void Apply(GameObject gameObject, LayerKey key, bool includeChildren);
     }
 
     public sealed class LayerService : ILayerService
     {
         private readonly Dictionary<LayerKey, int> _layers = new Dictionary<LayerKey, int>();
+        private readonly int _renderOnlyMask;
+
+        public LayerMask CoreGameCameraMask { get; }
+        public LayerMask CinemaCameraMask { get; }
 
         public LayerService(LayerData layerModel)
         {
             Register(LayerKey.Unit, layerModel.UnitLayerMask);
             Register(LayerKey.Obstacle, layerModel.ObstacleLayerMask);
             Register(LayerKey.Dead, layerModel.DeadLayerMask);
+            Register(LayerKey.WorldUi, layerModel.WorldUiLayerMask);
+            Register(LayerKey.Fog, layerModel.FogLayerMask);
+            CoreGameCameraMask = layerModel.CoreGameCameraMask;
+            CinemaCameraMask = layerModel.CinemaCameraMask;
+            _renderOnlyMask = GetMask(LayerKey.WorldUi, LayerKey.Fog);
         }
 
         public int GetLayer(LayerKey key)
@@ -75,11 +89,17 @@ namespace EmpireAtWar.Services.Layer
             ApplyToChildren(gameObject.transform, layer);
         }
 
-        private static void ApplyToChildren(Transform parent, int layer)
+        private void ApplyToChildren(Transform parent, int layer)
         {
             for (int i = 0; i < parent.childCount; i++)
             {
                 Transform child = parent.GetChild(i);
+                // Physics layers must not pull world UI or fog back into the cinema camera.
+                if ((_renderOnlyMask & (1 << child.gameObject.layer)) != 0)
+                {
+                    continue;
+                }
+
                 child.gameObject.layer = layer;
                 ApplyToChildren(child, layer);
             }

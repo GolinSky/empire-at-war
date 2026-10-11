@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Utils;
 using UnityEngine;
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private readonly IPointerInput _pointerInput;
         private readonly IEntityLocator _entityLocator;
         private readonly INotifier<BattleState> _battleState;
+        private readonly ILayerService _layerService;
         private System.IDisposable _inputLockHandle;
 
         private readonly CinematicCameraModel _model;
@@ -69,7 +71,8 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             CinematicCameraModel model,
             CinematicCameraData cinematicCameraData,
             IMapModelObserver mapModel,
-            CameraData cameraData) : base(uiService, cancelRouter)
+            CameraData cameraData,
+            ILayerService layerService) : base(uiService, cancelRouter)
         {
             _model = model;
             _settings = cinematicCameraData;
@@ -80,6 +83,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _pointerInput = pointerInput;
             _entityLocator = entityLocator;
             _battleState = battleState;
+            _layerService = layerService;
 
             Random random = new Random();
             _scorer = new CinematicInterestScorer(settings: _settings, random: random, relations: playerRoster);
@@ -89,6 +93,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         public void Initialize()
         {
             _battleState.AddObserver(this);
+            _cameraService.SetCullingMask(_layerService.CoreGameCameraMask);
         }
 
         public void LateDispose()
@@ -111,6 +116,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _savedRotation = _cameraService.CameraTransform.rotation;
             _inputLockHandle = _inputLock.Acquire();
             UiService.SetHudVisible(false);
+            _cameraService.SetCullingMask(_layerService.CinemaCameraMask);
             Focus();
             _pointerInput.PrimaryReleased += OnPointerReleased;
             _model.SetActive(true);
@@ -307,6 +313,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _targetId = NO_TARGET;
             _cameraService.SetPose(_savedPosition, _savedRotation);
             UiService.SetHudVisible(true);
+            _cameraService.SetCullingMask(_layerService.CoreGameCameraMask);
             _inputLockHandle.Dispose();
             _model.SetActive(false);
         }

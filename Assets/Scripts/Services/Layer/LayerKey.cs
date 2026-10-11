@@ -4,6 +4,8 @@ namespace EmpireAtWar.Services.Layer
     {
         Unit,
         Obstacle,
-        Dead
+        Dead,
+        WorldUi,
+        Fog
     }
 }

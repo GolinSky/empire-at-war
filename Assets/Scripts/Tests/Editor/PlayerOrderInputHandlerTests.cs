@@ -206,6 +206,7 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public RaycastHit ScreenPointToRay(Vector2 point) => default;
+            public int ScreenPointRaycastAll(Vector2 point, RaycastHit[] results) => 0;
 
             public Vector3 WorldToViewportPoint(Vector3 point) => point;
 
@@ -217,6 +218,8 @@ namespace EmpireAtWar.Tests.Editor
             public void MoveTo(Vector3 point) { }
 
             public void SetPose(Vector3 position, Quaternion rotation) { }
+
+            public void SetCullingMask(LayerMask mask) { }
         }
 
         private sealed class FakeAbilities : IShipAbilityTargeting

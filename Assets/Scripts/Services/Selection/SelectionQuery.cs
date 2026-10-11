@@ -26,12 +26,15 @@ namespace EmpireAtWar.Services.Battle
 
     public sealed class SelectionQuery : ISelectionQuery
     {
+        private const int MAX_RAYCAST_HITS = 32;
+
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
 
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
+        private readonly RaycastHit[] _raycastHits = new RaycastHit[MAX_RAYCAST_HITS];
 
         public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer)
         {
@@ -55,19 +58,40 @@ namespace EmpireAtWar.Services.Battle
                 }
             }
 
-            RaycastHit raycastHit = _cameraService.ScreenPointToRay(screenPosition);
-            if (raycastHit.collider != null &&
-                _entityLocator.TryGetEntity(raycastHit, out IEntity entity) &&
-                !entity.HealthModel.IsDestroyed &&
-                !entity.IsHiddenByFog() &&
-                entity.TryGetFacade(out IEntitySelectionFacade command))
+            // Structures are large and would hide ships under or behind them, so a unit anywhere
+            // along the ray wins over a structure; within the same rank the closest hit wins.
+            int hitCount = _cameraService.ScreenPointRaycastAll(screenPosition, _raycastHits);
+            bool hasSelection = false;
+            bool isSelectionUnit = false;
+            float selectionDistance = float.MaxValue;
+            selection = default;
+            for (int i = 0; i < hitCount; i++)
             {
+                RaycastHit hit = _raycastHits[i];
+                if (!_entityLocator.TryGetEntity(hit, out IEntity entity) ||
+                    entity.HealthModel.IsDestroyed ||
+                    entity.IsHiddenByFog() ||
+                    !entity.TryGetFacade(out IEntitySelectionFacade command))
+                {
+                    continue;
+                }
+
+                bool isUnit = entity.IsUnit();
+                bool isBetter = !hasSelection ||
+                                (isUnit && !isSelectionUnit) ||
+                                (isUnit == isSelectionUnit && hit.distance < selectionDistance);
+                if (!isBetter)
+                {
+                    continue;
+                }
+
                 selection = new SelectionEntry(entity, command);
-                return true;
+                hasSelection = true;
+                isSelectionUnit = isUnit;
+                selectionDistance = hit.distance;
             }
 
-            selection = default;
-            return false;
+            return hasSelection;
         }
 
         public void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results)
@@ -169,9 +193,21 @@ namespace EmpireAtWar.Services.Battle
                 candidate => candidate.ScreenPoint,
                 _marqueeResults);
 
+            // Like the select-all shortcuts, a box that catches units selects only the units;
+            // structures are box-selected only when nothing else is inside.
+            bool hasUnits = false;
             for (int i = 0; i < _marqueeResults.Count; i++)
             {
-                results.Add(_marqueeResults[i].Entry);
+                hasUnits |= _marqueeResults[i].Entry.Entity.IsUnit();
+            }
+
+            for (int i = 0; i < _marqueeResults.Count; i++)
+            {
+                SelectionEntry entry = _marqueeResults[i].Entry;
+                if (!hasUnits || entry.Entity.IsUnit())
+                {
+                    results.Add(entry);
+                }
             }
         }
 

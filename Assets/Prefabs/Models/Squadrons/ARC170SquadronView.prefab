@@ -464,7 +464,7 @@ GameObject:
   - component: {fileID: 6691433625648496756}
   - component: {fileID: 6996868292943407368}
   - component: {fileID: 903823896635791182}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1251,7 +1251,7 @@ MonoBehaviour:
     <Max>k__BackingField: 15
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 79
   fighterIndex: 3
 --- !u!1 &2701116820227948658
 GameObject:
@@ -1264,7 +1264,7 @@ GameObject:
   - component: {fileID: 17562779613478090}
   - component: {fileID: 1135225493930976904}
   - component: {fileID: 206692325837568622}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1522,7 +1522,7 @@ GameObject:
   - component: {fileID: 2417136984699213675}
   - component: {fileID: 7541195374063910391}
   - component: {fileID: 2755669098668428818}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1607,7 +1607,7 @@ GameObject:
   - component: {fileID: 1388863309955470714}
   - component: {fileID: 7988807585895212125}
   - component: {fileID: 7061889558299071964}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2447,7 +2447,7 @@ GameObject:
   - component: {fileID: 5807850208677844119}
   - component: {fileID: 1490106060382907804}
   - component: {fileID: 4306681401371087721}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2694,7 +2694,7 @@ GameObject:
   - component: {fileID: 4011365351971541652}
   - component: {fileID: 6357267007478695547}
   - component: {fileID: 6128569966985311149}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Silhouette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2811,7 +2811,7 @@ MonoBehaviour:
     <Max>k__BackingField: 15
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 79
   fighterIndex: 0
 --- !u!1 &5051421923163436041
 GameObject:
@@ -3527,7 +3527,7 @@ MonoBehaviour:
     <Max>k__BackingField: 15
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 79
   fighterIndex: 1
 --- !u!1 &5824588639661248172
 GameObject:
@@ -4036,7 +4036,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3472105429108200897}
   - component: {fileID: 8325056799972518507}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: IconCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4143,7 +4143,7 @@ MonoBehaviour:
     <Max>k__BackingField: 15
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 79
   fighterIndex: 4
 --- !u!1 &7964969372822379523
 GameObject:
@@ -4236,7 +4236,7 @@ MonoBehaviour:
     <Max>k__BackingField: 15
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 79
   fighterIndex: 2
 --- !u!1 &8227484830482157239
 GameObject:

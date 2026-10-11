@@ -12,16 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fae06505f99476a873472b75fcf823d, type: 3}
   m_Name: LayerData
   m_EditorClassIdentifier: 
-  models: []
-  <PlayerLayerMask>k__BackingField:
+  <UnitLayerMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 64
-  <EnemyLayerMask>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 128
   <ObstacleLayerMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 512
   <DeadLayerMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 1024
+  <WorldUiLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 4096
+  <FogLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 8192
+  <CoreGameCameraMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  <CinemaCameraMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 4294954975

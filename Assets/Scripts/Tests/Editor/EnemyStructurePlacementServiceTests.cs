@@ -246,6 +246,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class LayersStub : ILayerService
         {
+            public LayerMask CoreGameCameraMask => throw new NotSupportedException();
+
+            public LayerMask CinemaCameraMask => throw new NotSupportedException();
+
             public LayerMask GetMask(params LayerKey[] keys) => 1 << OBSTACLE_LAYER;
 
             public int GetLayer(LayerKey key) => throw new NotSupportedException();

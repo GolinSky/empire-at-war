@@ -789,7 +789,7 @@ GameObject:
   - component: {fileID: 17562779613478090}
   - component: {fileID: 1135225493930976904}
   - component: {fileID: 206692325837568622}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1015,7 +1015,7 @@ GameObject:
   - component: {fileID: 2417136984699213675}
   - component: {fileID: 7541195374063910391}
   - component: {fileID: 2755669098668428818}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1100,7 +1100,7 @@ GameObject:
   - component: {fileID: 1388863309955470714}
   - component: {fileID: 7988807585895212125}
   - component: {fileID: 7061889558299071964}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1940,7 +1940,7 @@ GameObject:
   - component: {fileID: 4011365351971541652}
   - component: {fileID: 6357267007478695547}
   - component: {fileID: 6128569966985311149}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Silhouette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2875,7 +2875,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3472105429108200897}
   - component: {fileID: 8325056799972518507}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: IconCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2940,7 +2940,7 @@ GameObject:
   - component: {fileID: 5978080739269493874}
   - component: {fileID: 8723922355828334550}
   - component: {fileID: 3057203127263526880}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3236,7 +3236,7 @@ GameObject:
   - component: {fileID: 7091288612699676076}
   - component: {fileID: 2481580913223557181}
   - component: {fileID: 7412567243884337704}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
