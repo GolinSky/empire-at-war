@@ -173,6 +173,11 @@
 
 ### Optimization
 
+- [ ] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)**
+  - **Plan**: [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]
+  - **Status**: 2026-10-11 phases 0–6 implemented in separate commits: CPU reason/child markers, serial Euler yaw, shared target spans, due-ID maps, late-frame audio mix, frame raster/stationary retry cache and per-tick squadron reuse. Unity compilation passed. User requested existing 15:25/15:31 evidence; no new tests or captures.
+  - **Remaining**: new attribution, randomized target parity, audio listening, route/formation behavior and measured improvement gates. Plan stays active; phases 7–8 reserved for user implementation/acceptance.
+
 - [ ] **Optimize battle particle rendering**
   - **Plan**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Effects and squadron indicators]]
   - **Research**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research|Verified rendering and historical navigation evidence]]
