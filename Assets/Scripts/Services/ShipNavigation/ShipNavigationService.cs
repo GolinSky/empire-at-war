@@ -69,6 +69,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 position,
             float navigationRadius);
 
+        /// <summary>Queues the requester for a route plan; the service runs a few queued plans per frame.</summary>
+        void RequestPlan(IShipPlanRequester requester);
+
         ShipNavigationPlan Plan(
             IShipNavigationAgent agent,
             Vector3 forward,
@@ -83,8 +86,13 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     public sealed class ShipNavigationService : Service, IShipNavigationService, ILateTickable, IDisposable
     {
-        private const int DESTINATION_CANDIDATE_RING_COUNT = 16;
+        // An order searches two rings around its point; past that the ship heads for the nearest reachable spot.
+        private const int DESTINATION_CANDIDATE_RING_COUNT = 2;
+        // The nearest reachable spot only needs room for the hull: one ring of fallbacks around it.
+        private const int FALLBACK_CANDIDATE_RING_COUNT = 1;
         private const int DESTINATION_CANDIDATES_PER_RING = 8;
+        // Ships that get orders together (a group retargeting) wait a few frames instead of all planning at once.
+        private const int MAX_QUEUED_PLANS_PER_FRAME = 4;
 
         private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
 
@@ -96,8 +104,19 @@ namespace EmpireAtWar.Services.ShipNavigation
             new ShipDestinationRegistry();
         private readonly List<Vector3> _waypoints = new List<Vector3>();
         private readonly ShipNavigationCache _cache = new ShipNavigationCache();
+        private readonly Queue<IShipPlanRequester> _planQueue = new Queue<IShipPlanRequester>();
 
-        public void LateTick() => _cache.ClearGrids();
+        public void LateTick()
+        {
+            for (int i = 0; i < MAX_QUEUED_PLANS_PER_FRAME && _planQueue.Count > 0; i++)
+            {
+                _planQueue.Dequeue().ExecuteQueuedPlan();
+            }
+
+            _cache.ClearGrids();
+        }
+
+        public void RequestPlan(IShipPlanRequester requester) => _planQueue.Enqueue(requester);
 
         public void Dispose() => _cache.Dispose();
 
@@ -161,12 +180,12 @@ namespace EmpireAtWar.Services.ShipNavigation
                 // An unreachable order is not a failure: the ship heads for the
                 // reachable spot closest to what was asked for.
                 if (TryPlanNear(agent, registrationId, forward, requestedDestination,
-                        pathGrid, heightTolerance, clearance, mapRange,
+                        DESTINATION_CANDIDATE_RING_COUNT, pathGrid, heightTolerance, clearance, mapRange,
                         out ShipRoutePlan routePlan) ||
-                    pathGrid.TryGetNearestReachable(requestedDestination,
+                    pathGrid.TryGetNearestReachable(GetFallbackProbe(agent, requestedDestination),
                         agent.NavigationHeight, out Vector3 nearestReachable) &&
                     TryPlanNear(agent, registrationId, forward, nearestReachable,
-                        pathGrid, heightTolerance, clearance, mapRange,
+                        FALLBACK_CANDIDATE_RING_COUNT, pathGrid, heightTolerance, clearance, mapRange,
                         out routePlan))
                 {
                     bool isDeferred = reserveAsPending ||
@@ -224,13 +243,14 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         // Destination candidates ring out from the center; reachability of each is
         // answered by the single flood of the path grid, so failures cost no search.
-        // Within the first ring that holds a valid candidate the shortest route wins,
-        // so a blocked order ends on the ship's side of the obstacle, not the far one.
+        // Each ring is tried from the slot facing the ship outward and the first routable
+        // slot wins, so a blocked order ends on the ship's side of the obstacle.
         private bool TryPlanNear(
             IShipNavigationAgent agent,
             int registrationId,
             Vector3 forward,
             Vector3 center,
+            int ringCount,
             ShipPathGrid pathGrid,
             float heightTolerance,
             float clearance,
@@ -239,7 +259,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             using (BattleProfilerMarkers.NavigationCandidates.Auto())
             {
-                return TryPlanNearCandidates(agent, registrationId, forward, center,
+                return TryPlanNearCandidates(agent, registrationId, forward, center, ringCount,
                     pathGrid, heightTolerance, clearance, mapRange, out routePlan);
             }
         }
@@ -249,6 +269,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             int registrationId,
             Vector3 forward,
             Vector3 center,
+            int ringCount,
             ShipPathGrid pathGrid,
             float heightTolerance,
             float clearance,
@@ -257,21 +278,16 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             Vector3 origin = agent.NavigationPosition;
             float candidateSpacing = agent.NavigationRadius * 2f;
-            bool isFound = false;
+            float facingAngle = Mathf.Atan2(origin.z - center.z, origin.x - center.x);
             routePlan = default;
             for (int candidateIndex = 0;
-                 candidateIndex <=
-                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
+                 candidateIndex <= ringCount * DESTINATION_CANDIDATES_PER_RING;
                  candidateIndex++)
             {
-                if (isFound && IsFirstInRing(candidateIndex))
-                {
-                    return true;
-                }
-
                 Vector3 candidate = GetDestinationCandidate(
                     center,
                     candidateSpacing,
+                    facingAngle,
                     candidateIndex);
                 candidate = ShipAvoidancePlanner.ClampToMap(
                     candidate,
@@ -325,22 +341,14 @@ namespace EmpireAtWar.Services.ShipNavigation
                         clearance);
                 }
 
-                if (!candidatePlan.IsStationary &&
-                    (!isFound || candidatePlan.Route.Length < routePlan.Route.Length))
+                if (!candidatePlan.IsStationary)
                 {
                     routePlan = candidatePlan;
-                    isFound = true;
+                    return true;
                 }
             }
 
-            return isFound;
-        }
-
-        // Ring 0 is the requested point itself; each later ring starts a new slot cycle.
-        private static bool IsFirstInRing(int candidateIndex)
-        {
-            return candidateIndex > 0 &&
-                   (candidateIndex - 1) % DESTINATION_CANDIDATES_PER_RING == 0;
+            return false;
         }
 
         public void Register(
@@ -489,9 +497,22 @@ namespace EmpireAtWar.Services.ShipNavigation
             return registrationId;
         }
 
+        // The searched rings ran out; the nearest reachable spot is looked up from the outer slot facing the
+        // ship, so a blocked order still ends on the ship's side instead of wherever the grid is open.
+        private static Vector3 GetFallbackProbe(IShipNavigationAgent agent, Vector3 requestedDestination)
+        {
+            Vector3 towardShip = agent.NavigationPosition - requestedDestination;
+            towardShip.y = 0f;
+            if (towardShip.sqrMagnitude <= Mathf.Epsilon) return requestedDestination;
+            return requestedDestination + towardShip.normalized *
+                (agent.NavigationRadius * 2f * DESTINATION_CANDIDATE_RING_COUNT);
+        }
+
+        // Slots alternate outward from the one facing the ship: 0, +1, -1, +2, -2, ...
         private static Vector3 GetDestinationCandidate(
             Vector3 requestedDestination,
             float spacing,
+            float facingAngle,
             int candidateIndex)
         {
             if (candidateIndex == 0)
@@ -501,7 +522,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
             int ring = (candidateIndex - 1) / DESTINATION_CANDIDATES_PER_RING + 1;
             int slot = (candidateIndex - 1) % DESTINATION_CANDIDATES_PER_RING;
-            float angle = slot * Mathf.PI * 2f / DESTINATION_CANDIDATES_PER_RING;
+            int offset = (slot + 1) / 2 * (slot % 2 == 1 ? 1 : -1);
+            float angle = facingAngle + offset * Mathf.PI * 2f / DESTINATION_CANDIDATES_PER_RING;
             return requestedDestination + new Vector3(
                 Mathf.Cos(angle) * spacing * ring,
                 0f,

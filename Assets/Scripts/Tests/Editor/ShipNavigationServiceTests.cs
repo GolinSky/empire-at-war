@@ -541,6 +541,23 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(plan.Route.Length, Is.LessThan(400f));
         }
 
+        [Test]
+        public void RequestPlan_RunsAtMostFourQueuedPlansPerFrameInOrder()
+        {
+            ShipNavigationService service = CreateService();
+            List<int> executed = new List<int>();
+            for (int i = 0; i < 6; i++)
+            {
+                service.RequestPlan(new RecordingPlanRequester(i, executed));
+            }
+
+            service.LateTick();
+            Assert.That(executed, Is.EqualTo(new[] { 0, 1, 2, 3 }));
+
+            service.LateTick();
+            Assert.That(executed, Is.EqualTo(new[] { 0, 1, 2, 3, 4, 5 }));
+        }
+
         private ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
@@ -718,6 +735,20 @@ namespace EmpireAtWar.Tests.Movement
             public float NavigationRadius => 5f;
         }
 
+        private sealed class RecordingPlanRequester : IShipPlanRequester
+        {
+            private readonly int _index;
+            private readonly List<int> _executed;
+
+            public RecordingPlanRequester(int index, List<int> executed)
+            {
+                _index = index;
+                _executed = executed;
+            }
+
+            public void ExecuteQueuedPlan() => _executed.Add(_index);
+        }
+
         private sealed class RecordingShipNavigationService : IShipNavigationService
         {
             public string Id => nameof(RecordingShipNavigationService);
@@ -756,6 +787,9 @@ namespace EmpireAtWar.Tests.Movement
             {
                 return true;
             }
+
+            // Plans at once so component tests observe the plan without a frame loop.
+            public void RequestPlan(IShipPlanRequester requester) => requester.ExecuteQueuedPlan();
 
             public ShipNavigationPlan Plan(
                 IShipNavigationAgent agent,
