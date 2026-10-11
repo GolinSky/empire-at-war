@@ -173,6 +173,13 @@
 
 ### Optimization
 
+- [ ] **Optimize projectile VFX for PC without logic changes**
+  - **Plan**: [[TODOs/Optimization/Projectile_VFX_PC_Optimization_Plan|Projectile VFX PC Optimization]]
+  - **Research**: [[TODOs/Optimization/Projectile_VFX_PC_Optimization_Plan - Research|Prefab, material and runtime variation audit]]
+  - **Status**: 2026-10-11 audited 13 projectile prefabs, direct materials/textures, nested explosion dependencies and runtime profile writers. No code or asset changes; no new performance measurement.
+  - **Next**: verify equivalent head/trail material sharing, remove unnecessary bolt texture CPU copies, measure scoped fade/shader experiments and validate the full faction/mount/ability/superweapon variation matrix.
+  - **Constraints**: preserve gameplay, visual timing, pool lifecycle and runtime variation; coordinate existing beam smoke changes and desktop texture work.
+
 - [ ] **Apply moderate desktop asset compression**
   - **Plan**: [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression Plan]]
   - **Status**: 2026-10-11 Windows pass: 140 textures + music/weapon pilot; 162 candidate/exception readbacks. Builds succeeded: 2.762 → 2.083 GB (−679 MB / 24.6%); same existing planet shader error. Eight team colors × two views and both headless startups checked; 17 textures and mesh/ring/voice exceptions restored.
@@ -182,9 +189,26 @@
 - [ ] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)**
   - **Plan**: [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]
   - **Navigation route commitment 2026-10-11**: fixed pursuit/follow legs, firing-range targets for attack-move/guard/hunt, all completion plans queued, one arrival correction and failed-request suppression. Unity compile clean; 71/71 focused tests. Matched performance and gameplay acceptance remain open.
-  - **Post-audit fixes 2026-10-11**: selection group/card reuse, shared target-health/hardpoint capture, active shot-pool hierarchies with explicit idle cleanup, paused static-burst bolt simulation. Unity compile clean; 53/53 focused EditMode tests, including seeded render-mesh parity for all five bolt prefabs. Matched recapture and combat visual acceptance remain open.
-  - **Status**: 2026-10-11 phases 0–6 implemented in separate commits: CPU reason/child markers, serial Euler yaw, shared target spans, due-ID maps, late-frame audio mix, frame raster/stationary retry cache and per-tick squadron reuse. Unity compilation passed. User requested existing 15:25/15:31 evidence; no new tests or captures.
-  - **Remaining**: new attribution, randomized target parity, audio listening, route/formation behavior and measured improvement gates. Plan stays active; phases 7–8 reserved for user implementation/acceptance.
+  - **Status**: 2026-10-11 17:31 UTC observational audit complete: 187 frames / 10.008 s at 1×; frame median/p95 51.99/71.40 ms, mean allocations 67,367 B/frame. Original/previous medians 104.98/49.28 ms; changed target/projectile workload prevents matched speedup claims.
+  - **Evidence**: [Latest battle audit](<F:/Private/empire-at-war/Logs/BattleAudit/20261011T1730Z/analysis.md>); [[TODOs/Optimization/Battle_CPU_Fixes_Plan - Research|Phase 8 acceptance checklist]]. Fresh 90-frame Profiler + 40-frame allocation stacks; GC recording restored off, battle uninterrupted, zero console warnings/errors.
+  - **Implemented / observed**: selection reuse, shared health/hardpoint capture, active shot pools and static bolt bursts; prior 53/53 focused tests. Latest activation/particle self costs 0.065/0.768 ms; 2,824 idle components disabled and 1,093 flying bolts paused. No new tests or source changes in this audit.
+  - **Measured follow-up**: target capture 7.36 ms; navigation fallback flood/full-grid scan 4.315/3.892 ms; MPUIKit unused debug strings 16.4 KB/frame; one ~500 ms synchronous asset-read hitch; pool misses still occur.
+  - **Remaining**: matched ≥3×10 s captures at 1×/4×, controlled warm-selection/visual and combat behavior gates, Development Player confirmation, and Phase 7 visual-wait removal. Plan stays in progress.
+
+- [ ] **Attribute and reduce remaining battle CPU cost**
+  - **Plan**: [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]
+  - **Research**: [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
+  - **Status**: 15:25 battle median 8.1 FPS at 4×; radar 8.581 ms/frame after centralized source changes versus historical 656.729 ms. Fresh 15:31 median CPU/GPU 96.584/2.965 ms; observational comparisons, not matched benchmarks.
+  - **Analysis**: 2026-10-11 saved-data/live-source review complete at `74368d81`; user skipped another battle run. Confirmed repeated target snapshots, due-ID scanning, squadron order/steering/pose work, stationary route retries and repeated mixing of 20 audio voices; retained prior optimizations.
+  - **Next**: attribute snapshot/fallback and due-commit costs, allocation callers (3.727 MB/frame), squadron children, navigation requesters and audio mix; runtime/matched acceptance remains pending. Profiler summaries omit allocation metadata; incomplete Frame Debugger export needs bounded retries/checkpoints.
+  - **Ownership**: attack code in attack plan; effects/indicators in rendering plan. Read current source and coordinate shared files/Unity captures.
+
+- [ ] **Optimize battle attacks and projectile reuse**
+  - **Plan**: [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Attack preparation, commit and pooling]]
+  - **Research**: [[TODOs/Optimization/Battle_Attack_Optimization_Plan - Research|Implementation history and phase gates]]
+  - **Status**: current source traced; latest target capture 21.118 ms/frame, ~34,144 candidate records/frame; due apply 16.864 ms average with spikes; job dispatch/wait small.
+  - **Next**: target snapshot/fallback attribution, measured shared work, due-event lookup/emission/impact breakdown, warm-pool creation/lifecycle checks; preserve combat parity.
+  - **Remaining**: matched evidence, behavior gates and previous instancing acceptance; no new implementation claimed by 2026-10-11 planning update.
 
 - [ ] **Optimize battle particle rendering**
   - **Plan**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Effects and squadron indicators]]
@@ -194,12 +218,17 @@
   - **Next**: combat appearance/lifecycle acceptance and measured muzzle/bolt/smoke submission work; skip broad idle-session profiling. Shadows/motion blur only after higher-priority effects.
   - **Remaining**: matched repeated battle/Player timings and pooled reuse/death/scene-exit checks. CPU work lives in CPU plans; stars/bloom/SSAO remain lower priority.
 
-- [ ] **Optimize battle attacks and projectile reuse**
-  - **Plan**: [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Phased attack, pooling, Jobs + Burst, and instancing plan]]
-  - **Execution**: Complete and analyze each phase before advancing; start with readable attack states and busy/cancellation fixes.
-  - **Remaining**: manual parity, matched performance captures, measured Jobs thresholds, and actual instanced-draw evidence.
-
 ### Refactoring
+
+- [ ] **Weapon taxonomy and balance system**
+  - **Plan**: [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]]
+  - **Status**: 2026-10-10 decisions recorded (two families laser/turbolaser, turbo-ion = ion caliber, mount = barrels, burst = rapid fire, squadron tree, faction/ship variants). Quick fixes `c9fdcf9a` + Executor SFX `3845d442`; weapon EditMode tests pass except two failures in untouched ISD II hull / Corellian loadout-order data.
+  - **Decisions 2026-10-10 (2)**: turbo-ion → Heavy Ion; default caliber Light; per-gun range + AI engagement range; caliber shifts damage/accuracy by target size; octuple uncapped; damage type from family only; family SFX + test.
+  - **Decisions 2026-10-10 (3)**: Close/Standard/Long range class kept; turbo-ion keeps size as Ion; engagement distance per target in local ship AI; radar raised when shorter than guns (C-9979/Raider → 500, `1ecfb53e`).
+  - **Implemented 2026-10-10 (`daeae113`)**: all 7 phases — rule-derived weapon data, 7 merges + turbo-ion renames, per-gun range, per-target engagement range, faction/unit variants + faction bolt colors, squadron tree, family sounds, balance-editor rules + draft DPS. Rules and per-unit DPS: [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System - Mapping|Mapping]].
+  - **Verification**: full EditMode 1,383/1,405; 22 failures outside this work (height tiers, wrecks, team colors, helper meshes, ISD II hull, engine NRE, AI production). No Play Mode.
+  - **Class caliber rules (2026-10-11)**: 186 mounts upgraded on 14 capital/heavy-capital ships + Recusant; every family minimum Medium. Corvettes have no turbolasers; frigates have no heavy turbolasers. Shared smaller-ship weapons preserved; new MediumPointDefense (80). All 38 ships audited; zero rule violations. Weapon taxonomy 25/26 pass; existing StrikeFighterProtonTorpedo Shared/multiplier failure remains. No Play Mode.
+  - **Remaining**: user playtest; balance tuning (stations outranged, ISD II +200 %, missile reach vs radar); resolve existing StrikeFighterProtonTorpedo variant metadata.
 
 - [ ] **Fix UI Service (Decouple Gameplay Services from UI)**
   - **Task**: Move UI creation, UI prefab instantiation, and `IUiService` dependencies out of gameplay services into UI prefabs / `<Feature>UiController` presenters.

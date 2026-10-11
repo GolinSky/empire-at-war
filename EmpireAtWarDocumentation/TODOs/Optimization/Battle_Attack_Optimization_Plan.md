@@ -51,6 +51,22 @@ status: in-progress
 
 ## TODO
 
+### Current priorities — 2026-10-11
+- Execution plan: [[TODOs/Optimization/Battle_CPU_Fixes_Plan]] (phases 1–3 cover target preparation and due events; phase 7 supersedes "Busy means … waiting for its leased effects" — readiness no longer waits for visuals).
+- Evidence and capture manifest: [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]]; latest 15:25 battle remains CPU-bound after radar improvement.
+- [x] Trace current target capture and due-event apply code; distinguish preparation, job dispatch, commit and nested GC costs.
+- [ ] Target preparation first: latest 21.118 ms/frame, ~200 requests / 34,144 candidate records; split eligibility, position snapshot and span-copy costs.
+- [ ] Measure duplicate targets across hardpoints; test shared snapshots only with explicit movement/commit ordering and generation/version invalidation.
+- [ ] Attribute 9,864 fallback events / 15,579 requests by reason; preserve exact serial targeting parity before reducing fallbacks.
+- [ ] Split DueBatch.Apply into collect/sort, event lookup, shot emission, impact/damage and resulting effects; latest mean 16.864 ms, maximum 287.191 ms.
+- [ ] Profile linear TryFindEvent searches before replacing them; preserve stable due order, cancellation, generations and reentrant record changes.
+- [ ] Diagnose projectile acquisition/creation under warmed firing and deaths: 462 instances / 78 frames, 1.325 ms/frame instantiate; measure active/idle/retired/high-water counts.
+- [ ] Split BoltShot.Update into flight/tracking, impact completion and effect maintenance; current marker is not turret aiming.
+- [ ] Coordinate allocation stacks with [[TODOs/Optimization/Battle_CPU_Performance_Plan]]; do not double-count GC or projectile work inside due apply.
+- Acceptance: matched repeated captures show improvement beyond variation; verify target priority, range/arc edges, shot counts, impact timing, pause, owner/hardpoint death, stale results and pool drain.
+- Job dispatch/wait is currently small (target 0.056 ms, due 0.033 ms average); further job parallelization is not the first measured priority.
+
+
 - Manual angle/target/timing parity and lifecycle scenarios.
 - Matched Forward+ / Deferred+ battle captures; keep fleet, camera, lights, resolution, shadows identical.
 - Capture `Hybrid Batch Group` draw evidence; inspect GPU pass timings before more material changes.

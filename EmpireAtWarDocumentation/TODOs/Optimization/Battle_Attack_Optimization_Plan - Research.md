@@ -556,3 +556,11 @@ status: in-progress
 - Effective models were not exposed by the runner.
 - Parent audited materials and synthesized this plan.
 - No gameplay, material or prefab changes were made while creating it.
+
+## 2026-10-11 evidence update
+- Historical implementation records above are retained; source paths and no-capture/GPU-pressure statements describe their original dates.
+- Current CPU/GC/attack measurements and exact capture paths: [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]].
+- 15:25 capture: 78 frames / 10.143 s at 4×, target capture 21.118 ms/frame, apply 4.030 ms; due apply 16.864 ms average / 287.191 ms maximum.
+- Current source confirms per-request candidate and position-cache reset in WeaponComponent.CaptureTargetSelection and linear current-record search in CombatAttackCoordinator.TryFindEvent.
+- New work order: snapshot/fallback attribution → measured duplicate-work reduction → due commit breakdown → projectile lifecycle/creation measurement.
+- This update records investigation and next gates only; no new gameplay implementation or test result is claimed.
