@@ -118,6 +118,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // Beams deal damage continuously while they hold on the target.
         public override float DamageDuration => holdDuration;
 
+        protected override void ResetVisuals()
+        {
+            beam.enabled = false;
+            hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
         protected override bool IsVisualComplete() => !beam.enabled;
     }
 }

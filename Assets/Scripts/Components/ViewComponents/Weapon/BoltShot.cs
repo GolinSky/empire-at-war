@@ -16,6 +16,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // never drifts off the flying transform.
         private const float STRETCH_AXIS_SPEED = 0.001f;
         private const float LIFETIME_MARGIN = 1f;
+        private const float PARTICLE_BURST_TIME = 0.001f;
         // How fast the estimated target velocity follows the measured one, per second.
         private const float VELOCITY_SMOOTHING_RATE = 15f;
         // Velocity is measured only this long after launch, then the lead is locked. A lead that keeps
@@ -76,7 +77,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             sizeOverLifetime.enabled = false;
             ParticleSystem.EmissionModule emission = vfx.emission;
             emission.enabled = true;
-            vfx.Play(true);
+            // Bolt prefabs contain one static burst. Fly moves the local-space particles;
+            // simulate just the initial emission, then leave simulation paused until impact.
+            vfx.Simulate(PARTICLE_BURST_TIME, true, true, false);
             return travelTime;
         }
 
@@ -158,6 +161,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _lastAimPoint = ResolveAimPoint(_start, _target.position + _aimOffset);
             _flightAimPoint = _lastAimPoint + _targetVelocity * remaining;
         }
+
+        protected override void ResetVisuals() =>
+            vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         protected override bool IsVisualComplete() => !_isFlying;
     }

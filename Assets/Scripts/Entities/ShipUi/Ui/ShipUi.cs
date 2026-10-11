@@ -55,6 +55,8 @@ namespace EmpireAtWar.Views
             if (!_isEntry) _model.OnSelectionChanged -= UpdateVisibility;
             disableSelectionButton.onClick.RemoveListener(HandleSelection);
             focusButton.onClick.RemoveListener(HandleFocus);
+            _onSelected = null;
+            _onFocused = null;
             _isInitialized = false;
         }
 
@@ -78,6 +80,7 @@ namespace EmpireAtWar.Views
 
         public void ConfigureEntry(Sprite icon, ShipUiEntry entry, Action onSelected)
         {
+            Dispose();
             _isEntry = true;
             _onSelected = onSelected;
             _onFocused = entry.Focus;

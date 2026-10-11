@@ -81,6 +81,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             base.Update();
         }
 
+        protected override void ResetVisuals()
+        {
+            pulse.enabled = false;
+            impactFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
         protected override bool IsVisualComplete() => !_flying && !_flashing;
     }
 }
