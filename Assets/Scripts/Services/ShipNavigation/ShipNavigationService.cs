@@ -168,7 +168,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
             BuildNavigationContacts(obstacleContacts, agent.NavigationHullSpan);
-            AddIdleAgentContacts(agent);
 
             bool canReuseStationary = preserveCourse && !reserveAsPending;
             ShipNavigationCache.Request request = new ShipNavigationCache.Request(agent, forward,
@@ -437,24 +436,6 @@ namespace EmpireAtWar.Services.ShipNavigation
         private static bool IsAtHullHeight(RadarContact contact, ShipHullSpan hullSpan)
         {
             return hullSpan.Overlaps(new ShipHullSpan(contact.Bottom, contact.Top));
-        }
-
-        // Idle ships are treated as static obstacles for route planning; moving
-        // ships are kept apart by the final-position reservations instead.
-        private void AddIdleAgentContacts(IShipNavigationAgent plannedAgent)
-        {
-            foreach (KeyValuePair<IShipNavigationAgent, int> pair in _registrationIds)
-            {
-                if (pair.Key != plannedAgent &&
-                    _destinationRegistry.HullsOverlap(pair.Value, plannedAgent.NavigationHullSpan) &&
-                    _destinationRegistry.IsIdle(pair.Value))
-                {
-                    _mapObstacleContacts.Add(new RadarContact(
-                        pair.Key.NavigationPosition,
-                        pair.Key.NavigationRadius,
-                        false));
-                }
-            }
         }
 
         private void AddContactIfUnique(RadarContact contact)
