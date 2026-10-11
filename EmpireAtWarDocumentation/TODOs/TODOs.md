@@ -173,6 +173,12 @@
 
 ### Optimization
 
+- [ ] **Apply moderate desktop asset compression**
+  - **Plan**: [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression Plan]]
+  - **Status**: 2026-10-11 Windows pass: 140 textures + music/weapon pilot; 162 candidate/exception readbacks. Builds succeeded: 2.762 → 2.083 GB (−679 MB / 24.6%); same existing planet shader error. Eight team colors × two views and both headless startups checked; 17 textures and mesh/ring/voice exceptions restored.
+  - **Scope**: Windows PC + macOS; importer-only category policy, preserved source/GUIDs/resolution/sample rates; evidence and review queue in `Tools/DesktopAssetCompression`.
+  - **Next**: remaining categories, matched gameplay memory/loading/DSP captures, audio listening/startup/loop/crossfade and intended-scale visual acceptance; macOS module + actual Mac validation. Plan stays active.
+
 - [ ] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)**
   - **Plan**: [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]
   - **Status**: 2026-10-11 phases 0–6 implemented in separate commits: CPU reason/child markers, serial Euler yaw, shared target spans, due-ID maps, late-frame audio mix, frame raster/stationary retry cache and per-tick squadron reuse. Unity compilation passed. User requested existing 15:25/15:31 evidence; no new tests or captures.

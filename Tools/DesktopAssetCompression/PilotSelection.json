@@ -1,0 +1,11 @@
+[
+  {"path":"Assets/Art/Textures/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault_Ev_acclamator_diffuse_Albedo.png","category":"hull-color","compression":"normal","reason":"Ship Lit and Ship Wreck BaseMap; preserve sRGB, mipmaps and resolution."},
+  {"path":"Assets/Art/Textures/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault_Ev_acclamator_normal_Normal.png","category":"hull-normal","compression":"normal","reason":"Ship Lit and Ship Wreck BumpMap; preserve NormalMap type and linear sampling."},
+  {"path":"Assets/Art/Textures/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault_HullStripeMask.png","category":"team-mask","compression":"normal","reason":"Ship Lit and Ship Wreck TeamMaskMap; compare all eight team colors."},
+  {"path":"Assets/Art/Textures/Ui/Icons/ShipIcon/AcclamatorAssaultIcon.png","category":"ui-illustration","compression":"high","reason":"Rendered ship portrait; preserve sprite metadata, alpha and resolution."},
+  {"path":"Assets/Art/Textures/Ui/UnitSelectionRing.png","category":"world-selection-ring","compression":"high","reason":"SelectionComponent sprite consumer; preserve current mipmap choice pending camera-scale acceptance."},
+  {"path":"Assets/Art/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault.fbx","category":"precision-mesh","reason":"Measure Medium quantization, then retain original settings because source geometry acceptance is required."},
+  {"path":"Assets/Audio/Music/Ambient/TPM_Anakins_Theme.mp3","category":"music","format":"vorbis","loadType":"streaming","reason":"MusicAudioData dependency; retain sample rate, stereo, preload and background flags."},
+  {"path":"Assets/Audio/SFX/Weapons/GUN_TURBO_1.WAV","category":"frequent-weapon","format":"adpcm","loadType":"decompress","reason":"ShipSfxData weapon dependency; preserve DecompressOnLoad and preload."},
+  {"path":"Assets/Audio/SFX/Commands/Republic/Select/Clone_ship_select_14_eng.wav","category":"short-command-voice","format":"vorbis","loadType":"decompress","reason":"Command dependency; retain DecompressOnLoad and sample rate."}
+]

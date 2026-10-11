@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-11",
+  "unity": "6000.4.7f1",
+  "target": "StandaloneWindows64",
+  "graphicsApi": "Direct3D11",
+  "gpu": "NVIDIA GeForce RTX 5070",
+  "baselineBuild": {
+    "result": "Succeeded",
+    "totalSizeBytes": 2762002718,
+    "buildTimeMs": 892903,
+    "warnings": 6,
+    "errors": 1
+  },
+  "compressedBuild": {
+    "result": "Succeeded",
+    "totalSizeBytes": 2082952003,
+    "buildTimeMs": 370682,
+    "warnings": 6,
+    "errors": 1
+  },
+  "savedBuildBytes": 679050715,
+  "savedBuildPercent": 24.585447022720853,
+  "existingBuildError": "PlanetAutodeskInteractiveNoShadows MotionVectors: invalid subscript ObjectSpaceNormal",
+  "verifiedImporterPaths": 162,
+  "retainedTextureChanges": 140,
+  "retainedAudioChanges": 2,
+  "batchRestored": 17,
+  "renderComparisons": [
+    {
+      "image": "Team0-View0.png",
+      "rgbRmse8Bit": 0.648636507802758
+    },
+    {
+      "image": "Team0-View1.png",
+      "rgbRmse8Bit": 0.8466228039210499
+    },
+    {
+      "image": "Team1-View0.png",
+      "rgbRmse8Bit": 0.6497451282537278
+    },
+    {
+      "image": "Team1-View1.png",
+      "rgbRmse8Bit": 0.8492493549951248
+    },
+    {
+      "image": "Team2-View0.png",
+      "rgbRmse8Bit": 0.6492174964889623
+    },
+    {
+      "image": "Team2-View1.png",
+      "rgbRmse8Bit": 0.8486689599009434
+    },
+    {
+      "image": "Team3-View0.png",
+      "rgbRmse8Bit": 0.6392579417933213
+    },
+    {
+      "image": "Team3-View1.png",
+      "rgbRmse8Bit": 0.821167708966932
+    },
+    {
+      "image": "Team4-View0.png",
+      "rgbRmse8Bit": 0.6400411783322519
+    },
+    {
+      "image": "Team4-View1.png",
+      "rgbRmse8Bit": 0.823713343513325
+    },
+    {
+      "image": "Team5-View0.png",
+      "rgbRmse8Bit": 0.6395055402565956
+    },
+    {
+      "image": "Team5-View1.png",
+      "rgbRmse8Bit": 0.8231149426548
+    },
+    {
+      "image": "Team6-View0.png",
+      "rgbRmse8Bit": 0.6307858009857708
+    },
+    {
+      "image": "Team6-View1.png",
+      "rgbRmse8Bit": 0.7995321813312927
+    },
+    {
+      "image": "Team7-View0.png",
+      "rgbRmse8Bit": 0.6307858009857708
+    },
+    {
+      "image": "Team7-View1.png",
+      "rgbRmse8Bit": 0.7995321813312927
+    }
+  ],
+  "editorTextureMemoryReductionBytes": 996358349,
+  "pending": [
+    "Matched gameplay memory/loading/DSP CPU captures and audio listening/startup/loop/crossfade acceptance",
+    "Remaining texture, model and audio categories in ReviewQueue.json",
+    "macOS build module and validation on an actual supported Mac"
+  ],
+  "headlessStartup": {
+    "compressed": "No logged exceptions/errors",
+    "limitations": "Null graphics device; no gameplay, visual, memory or DSP acceptance",
+    "baseline": "No logged exceptions/errors"
+  }
+}
