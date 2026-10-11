@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 
@@ -23,6 +21,5 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         void HandleSelection(bool isSelected);
 
-        void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
     }
 }

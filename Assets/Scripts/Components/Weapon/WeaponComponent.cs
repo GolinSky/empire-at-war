@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
@@ -49,6 +49,9 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
         private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Action> _unitDestroyedHandlers = new Dictionary<IHardPointModel, Action>();
+        // Handlers survive rebuilds; only units that stop being live candidates lose theirs.
+        private readonly HashSet<IHardPointModel> _candidateUnits = new HashSet<IHardPointModel>();
+        private readonly List<IHardPointModel> _staleHandlerUnits = new List<IHardPointModel>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly List<TargetSelectionCandidate> _targetSelectionCandidates = new List<TargetSelectionCandidate>();
         private readonly List<Vector2> _turnArcs = new List<Vector2>();
@@ -154,6 +157,7 @@ namespace EmpireAtWar.Components.Weapon
                 handler.Key.OnDestroyed -= handler.Value;
             _subscribedGroups.Clear();
             _unitDestroyedHandlers.Clear();
+            _candidateUnits.Clear();
             _orderedCandidates.Clear();
             _targetSelectionCandidates.Clear();
             _targetPositions.Clear();
@@ -174,7 +178,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 case AttackType.Base:
                 {
-                    if (_attackDataList.Any(data => attackData.SameSource(data)))
+                    if (HasSameSource(attackData))
                     {
                         return;
                     }
@@ -190,7 +194,7 @@ namespace EmpireAtWar.Components.Weapon
                     _mainAttackData = attackData;
                     Subscribe(attackData);
 
-                    if (!_attackDataList.Any(data => attackData.SameSource(data)))
+                    if (!HasSameSource(attackData))
                     {
                         _attackDataList.Add(attackData);
                     }
@@ -405,9 +409,7 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             long rebuildStart = Stopwatch.GetTimestamp();
 #endif
-            foreach (KeyValuePair<IHardPointModel, Action> handler in _unitDestroyedHandlers)
-                handler.Key.OnDestroyed -= handler.Value;
-            _unitDestroyedHandlers.Clear();
+            _candidateUnits.Clear();
             _orderedCandidates.Clear();
             if (_mainAttackData != null)
             {
@@ -435,6 +437,8 @@ namespace EmpireAtWar.Components.Weapon
 
                 AddCandidates(group);
             }
+
+            DropStaleUnitHandlers();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             AttackSequenceDiagnostics.RecordCandidateRebuildTime(rebuildStart);
 #endif
@@ -448,12 +452,42 @@ namespace EmpireAtWar.Components.Weapon
                 if (group.CanTarget(units[i]))
                 {
                     _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = units[i] });
+                    _candidateUnits.Add(units[i]);
                     if (units[i].IsDestroyed || _unitDestroyedHandlers.ContainsKey(units[i])) continue;
                     IHardPointModel unit = units[i];
                     Action handler = () => OnUnitDestroyed(unit);
                     _unitDestroyedHandlers.Add(unit, handler);
                     unit.OnDestroyed += handler;
                 }
+        }
+
+        private void DropStaleUnitHandlers()
+        {
+            foreach (KeyValuePair<IHardPointModel, Action> handler in _unitDestroyedHandlers)
+                if (handler.Key.IsDestroyed || !_candidateUnits.Contains(handler.Key))
+                    _staleHandlerUnits.Add(handler.Key);
+            for (int i = 0; i < _staleHandlerUnits.Count; i++)
+            {
+                IHardPointModel unit = _staleHandlerUnits[i];
+                unit.OnDestroyed -= _unitDestroyedHandlers[unit];
+                _unitDestroyedHandlers.Remove(unit);
+            }
+
+            _staleHandlerUnits.Clear();
+        }
+
+        public bool HasTarget(IHealthFacade healthFacade)
+        {
+            for (int i = 0; i < _attackDataList.Count; i++)
+                if (_attackDataList[i].IsFrom(healthFacade)) return true;
+            return false;
+        }
+
+        private bool HasSameSource(AttackData attackData)
+        {
+            for (int i = 0; i < _attackDataList.Count; i++)
+                if (attackData.SameSource(_attackDataList[i])) return true;
+            return false;
         }
 
         // Rebuild instead of removing one candidate: the last destroyed hardpoint turns the ship into a wreck target.

@@ -11,6 +11,7 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Radar;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.Services.UnitExplosion;
@@ -89,6 +90,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesExt<EmpireAtWar.Services.FleetCommand.FleetCommandService>()
                 .BindInterfacesExt<MapObstacleContactProvider>()
                 .BindInterfacesExt<ShipNavigationService>()
+                .BindInterfacesExt<RadarScanService>()
                 .BindInterfacesExt<UnitWreckService>()
                 .BindInterfacesExt<UnitExplosionService>()
                 .BindInterfacesExt<SelectionQuery>()

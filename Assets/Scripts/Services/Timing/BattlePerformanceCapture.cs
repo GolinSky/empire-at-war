@@ -51,7 +51,10 @@ namespace EmpireAtWar.Services.Timing
         private const int NAVIGATION_ROUTE_BUILD = 34;
         private const int NAVIGATION_FLOOD = 35;
         private const int NAVIGATION_NEAREST_REACHABLE = 36;
-        private const int METRIC_COUNT = 37;
+        private const int RADAR_SNAPSHOT = 37;
+        private const int RADAR_JOB = 38;
+        private const int RADAR_APPLY = 39;
+        private const int METRIC_COUNT = 40;
         private const int FIRST_MARKER_METRIC = SHIP_TICK;
 
         private static readonly string[] _metricNames =
@@ -60,7 +63,8 @@ namespace EmpireAtWar.Services.Timing
             "ship_tick_ns", "weapon_tick_ns", "weapon_try_fire_ns", "projectile_get_or_create_ns", "projectile_instantiate_ns", "projectile_turret_update_ns", "projectile_laser_update_ns", "radar_scan_ns",
             "target_batch_ns", "target_batch_capture_ns", "target_batch_prepare_ns", "target_batch_serial_ns", "target_batch_job_ns", "target_batch_schedule_ns", "target_batch_complete_ns", "target_batch_apply_ns",
             "due_batch_ns", "due_batch_prepare_ns", "due_batch_serial_ns", "due_batch_job_ns", "due_batch_schedule_ns", "due_batch_complete_ns", "due_batch_apply_ns",
-            "navigation_plan_ns", "navigation_candidates_ns", "navigation_route_build_ns", "navigation_flood_ns", "navigation_nearest_reachable_ns"
+            "navigation_plan_ns", "navigation_candidates_ns", "navigation_route_build_ns", "navigation_flood_ns", "navigation_nearest_reachable_ns",
+            "radar_snapshot_ns", "radar_job_ns", "radar_apply_ns"
         };
         private static readonly string[] _markerNames =
         {
@@ -91,7 +95,10 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.NAVIGATION_CANDIDATES,
             BattleProfilerMarkers.NAVIGATION_ROUTE_BUILD,
             BattleProfilerMarkers.NAVIGATION_FLOOD,
-            BattleProfilerMarkers.NAVIGATION_NEAREST_REACHABLE
+            BattleProfilerMarkers.NAVIGATION_NEAREST_REACHABLE,
+            BattleProfilerMarkers.RADAR_SNAPSHOT,
+            BattleProfilerMarkers.RADAR_JOB,
+            BattleProfilerMarkers.RADAR_APPLY
         };
         private static readonly string[] _workloadNames =
         {
@@ -325,6 +332,9 @@ namespace EmpireAtWar.Services.Timing
             StartMarkerRecorder(NAVIGATION_ROUTE_BUILD, BattleProfilerMarkers.NavigationRouteBuild);
             StartMarkerRecorder(NAVIGATION_FLOOD, BattleProfilerMarkers.NavigationFlood);
             StartMarkerRecorder(NAVIGATION_NEAREST_REACHABLE, BattleProfilerMarkers.NavigationNearestReachable);
+            StartMarkerRecorder(RADAR_SNAPSHOT, BattleProfilerMarkers.RadarSnapshot);
+            StartMarkerRecorder(RADAR_JOB, BattleProfilerMarkers.RadarJob);
+            StartMarkerRecorder(RADAR_APPLY, BattleProfilerMarkers.RadarApply);
         }
 
         private void StartRecorder(int index, ProfilerCategory category, string name, ProfilerRecorderOptions options)

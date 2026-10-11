@@ -141,7 +141,6 @@ namespace EmpireAtWar.Ship
             }
 
             _radarComponent.Enemies.ItemAdded += HandleEnemyAdded;
-            _radarComponent.ContactsUpdated += _shipMoveComponent.HandleRadarContacts;
             _selectionModel.OnSelected += _shipMoveComponent.HandleSelection;
             _shipMoveComponent.HyperSpaceCompleted += _audioShipComponent.PlayHyperSpace;
             if (_audioDialogShipComponent != null)
@@ -225,7 +224,6 @@ namespace EmpireAtWar.Ship
             }
 
             _radarComponent.Enemies.ItemAdded -= HandleEnemyAdded;
-            _radarComponent.ContactsUpdated -= _shipMoveComponent.HandleRadarContacts;
             _selectionModel.OnSelected -= _shipMoveComponent.HandleSelection;
             _shipMoveComponent.HyperSpaceCompleted -= _audioShipComponent.PlayHyperSpace;
             if (_audioDialogShipComponent != null)
@@ -241,7 +239,8 @@ namespace EmpireAtWar.Ship
         {
             IEntity enemy = args.item;
             IHealthModelObserver healthModel = enemy.HealthModel;
-            if (healthModel.HasUnits && enemy.TryGetFacade(out IHealthFacade healthFacade))
+            if (healthModel.HasUnits && enemy.TryGetFacade(out IHealthFacade healthFacade) &&
+                !_weaponComponent.HasTarget(healthFacade))
             {
                 _weaponComponent.AddTarget(
                     new AttackData(healthModel, healthFacade, HardPointType.Any, enemy),

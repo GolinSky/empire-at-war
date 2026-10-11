@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.Weapon
@@ -13,6 +14,9 @@ namespace EmpireAtWar.Components.Weapon
         float GetEngagementRange(ShipClass targetClass);
 
         void AddTarget(AttackData attackData, AttackType attackType);
+
+        /// <summary>True when a target from this health source is already tracked; lets callers skip building AttackData.</summary>
+        bool HasTarget(IHealthFacade healthFacade);
 
         bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass);
 

@@ -440,51 +440,6 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void HandleRadarContacts_AfterRelease_DoesNotPlan()
-        {
-            GameObject gameObject = new GameObject(
-                nameof(HandleRadarContacts_AfterRelease_DoesNotPlan));
-            try
-            {
-                ShipMoveComponent component = CreateReadyComponent(
-                    gameObject, out _);
-                FieldInfo releasedField = typeof(ShipMoveComponent).GetField(
-                    "_isReleased",
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-                Assert.That(releasedField, Is.Not.Null);
-                releasedField.SetValue(component, true);
-
-                Assert.DoesNotThrow(
-                    () => component.HandleRadarContacts(
-                        System.Array.Empty<RadarContact>()));
-            }
-            finally
-            {
-                Object.DestroyImmediate(gameObject);
-            }
-        }
-
-        [Test]
-        public void HandleRadarContacts_NeverPlans()
-        {
-            GameObject gameObject = new GameObject(nameof(HandleRadarContacts_NeverPlans));
-            try
-            {
-                ShipMoveComponent component = CreateReadyComponent(
-                    gameObject,
-                    out RecordingShipNavigationService navigationService);
-
-                component.HandleRadarContacts(System.Array.Empty<RadarContact>());
-
-                Assert.That(navigationService.PlanCallCount, Is.Zero);
-            }
-            finally
-            {
-                Object.DestroyImmediate(gameObject);
-            }
-        }
-
-        [Test]
         public void Plan_EnclosedDestination_MovesToNearestReachableSpot()
         {
             FakeAgent agent = new FakeAgent(new Vector3(-60f, 0f, 0f), 0f, 4f, 10f, 30f);
@@ -544,7 +499,6 @@ namespace EmpireAtWar.Tests.Movement
                 GetModel(component).Queue(new System.Numerics.Vector3(25f, 0f, 0f));
 
                 component.Stop();
-                component.HandleRadarContacts(System.Array.Empty<RadarContact>());
 
                 Assert.That(navigationService.PendingCancellationCount, Is.EqualTo(1));
                 Assert.That(navigationService.PlanCallCount, Is.Zero);
