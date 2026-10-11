@@ -42,6 +42,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
+        internal bool StrikecraftOnly => _profile.StrikecraftOnly;
         internal float DelayBetweenShots =>
             _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
             _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);

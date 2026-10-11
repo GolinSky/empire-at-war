@@ -135,6 +135,7 @@ namespace EmpireAtWar.Tests.Weapon
                 new NativeArray<float3>(positions.Length == 0 ? 1 : positions.Length, Allocator.TempJob);
             NativeArray<WeaponTargetSelectionJob.Result> results =
                 new NativeArray<WeaponTargetSelectionJob.Result>(requestCount, Allocator.TempJob);
+            NativeArray<byte> candidateClasses = new NativeArray<byte>(candidatePositions.Length, Allocator.TempJob);
             try
             {
                 for (int i = 0; i < requestCount; i++) inputs[i] = input;
@@ -144,6 +145,7 @@ namespace EmpireAtWar.Tests.Weapon
                 {
                     Inputs = inputs,
                     CandidatePositions = candidatePositions,
+                    CandidateIsStrikecraft = candidateClasses,
                     Results = results
                 }.Schedule(requestCount, 1).Complete();
                 return results[0];
@@ -153,6 +155,7 @@ namespace EmpireAtWar.Tests.Weapon
                 inputs.Dispose();
                 candidatePositions.Dispose();
                 results.Dispose();
+                candidateClasses.Dispose();
             }
         }
 
