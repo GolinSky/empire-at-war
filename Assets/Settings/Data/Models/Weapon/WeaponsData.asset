@@ -700,20 +700,20 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 20
-    displayName: Quad Turbolaser
+    displayName: Heavy Long-Range Quad Turbolaser
     family: 1
     caliber: 2
     mount: 4
     pattern: 0
     burstShots: 2
-    rangeClass: 0
+    rangeClass: 2
     scope: 2
     faction: 0
     unit: Mandator
     damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Mandator main battery.
+    reason: Mandator main battery. Heavy caliber, Long range class.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1633,6 +1633,133 @@ MonoBehaviour:
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 73
+    displayName: Heavy Long-Range Turbolaser
+    family: 1
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 2
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator long-range battery. Heavy caliber, Long range class.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 74
+    displayName: Heavy Long-Range Dual Turbolaser
+    family: 1
+    caliber: 2
+    mount: 2
+    pattern: 0
+    burstShots: 2
+    rangeClass: 2
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator long-range battery. Heavy caliber, Long range class.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 75
+    displayName: Heavy Long-Range Proton Torpedo Launcher
+    family: 5
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 2
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator long-range battery. Heavy caliber, Long range class.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 76
+    displayName: Heavy Long-Range Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 2
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator long-range battery. Heavy caliber, Long range class.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 77
+    displayName: Heavy Long-Range Missile Launcher
+    family: 4
+    caliber: 2
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 2
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator long-range battery. Heavy caliber, Long range class.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 78
+    displayName: Long-Range Point Defense Laser
+    family: 7
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 2
+    scope: 2
+    faction: 0
+    unit: Mandator
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Mandator long-range point defense. Long range class, Light caliber to
+      keep hitting strikecraft.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

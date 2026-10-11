@@ -65,5 +65,11 @@
         ISDIIOctupleTurbolaser = 70,
         ISDIIQuadIonCannon = 71,
         MediumFighterProtonTorpedo = 72,
+        MandatorHeavyTurbolaser = 73,
+        MandatorDualTurbolaser = 74,
+        MandatorProtonTorpedo = 75,
+        MandatorIonCannon = 76,
+        MandatorMissileLauncher = 77,
+        MandatorPointDefense = 78,
     }
 }
