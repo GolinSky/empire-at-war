@@ -59,6 +59,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isInPlanQueue;
         private bool _queuedPreserveCourse;
         private Vector3 _queuedDestination;
+        private Vector3? _failedDestination;
+        private bool _hasArrivalCorrection;
         private float _lastPlanTime = float.NegativeInfinity;
         private Vector3 _solvedFacing;
         private Vector3 _solvedBearing;
@@ -161,12 +163,17 @@ namespace EmpireAtWar.Components.Ship.Movement
             requestedPosition.y = Model.Height;
             Vector3 requested = ShipAvoidancePlanner.ClampToMap(requestedPosition,
                 _mapModel.SizeRange, NavigationRadius);
+            if (preserveCourse && _failedDestination.HasValue &&
+                (requested - _failedDestination.Value).sqrMagnitude < NavigationRadius * NavigationRadius)
+                return;
+            bool retryFailed = _failedDestination.HasValue;
+            _failedDestination = null;
             Vector3 destination = requested;
-            if (Model.IsSameRequest(requested.ToNumerics()) &&
+            if (!retryFailed && Model.IsSameRequest(requested.ToNumerics()) &&
                 _shipNavigationService.IsPositionClear(this,
                     Model.Destination.ToUnity(), NavigationRadius))
                 destination = Model.Destination.ToUnity();
-            if (Model.HasDestination(destination.ToNumerics()))
+            if (!retryFailed && Model.HasDestination(destination.ToNumerics()))
             {
                 // Already heading there: a plan still waiting for another point is dropped.
                 _hasQueuedPlan = false;
@@ -180,6 +187,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _shipNavigationService.CancelPendingDestination(this);
             Model.Request(requested.ToNumerics());
             Model.TakePending();
+            _hasArrivalCorrection = false;
             QueuePlan(destination, preserveCourse);
         }
 
@@ -253,6 +261,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void Stop()
         {
             _hasQueuedPlan = false;
+            _failedDestination = null;
+            _hasArrivalCorrection = false;
             bool ready = Model.Phase != MovementPhase.Arriving;
             Model.StopAt(transform.position.ToNumerics());
             if (ready)
@@ -279,7 +289,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _shipSpawnClearance.ReleaseLanding(this);
             HyperSpaceCompleted?.Invoke();
             NumericsVector3? queued = Model.FinishArrival();
-            if (queued.HasValue) Plan(queued.Value.ToUnity());
+            if (queued.HasValue) QueuePlan(queued.Value.ToUnity(), false);
             else Model.Arrive(transform.position.ToNumerics());
         }
 
@@ -313,16 +323,19 @@ namespace EmpireAtWar.Components.Ship.Movement
                     $"Turn={plan.TurnDuration:F2}s, Move={plan.MovementDuration:F2}s, " +
                     $"Radius={NavigationRadius:F1}, Speed={NavigationSpeed:F1}, " +
                     $"TurnSpeed={NavigationRotationSpeed:F1}, Stationary={plan.IsStationary}");
+            if (plan.IsStationary)
+            {
+                // Autonomous pursuit waits for a changed destination or a fresh order.
+                _failedDestination = destination;
+                _motion.StopPath();
+                _shipNavigationService.Stop(this);
+                Model.TakePending();
+                Model.Arrive(transform.position.ToNumerics());
+                return;
+            }
             if (plan.IsDeferred)
             {
                 Model.Defer(destination.ToNumerics());
-                return;
-            }
-            if (plan.IsStationary)
-            {
-                // Nowhere reachable to go: the ship holds position instead of retrying.
-                _motion.StopPath();
-                Model.Arrive(transform.position.ToNumerics());
                 return;
             }
             Model.Accept(plan.Destination.ToNumerics());
@@ -330,17 +343,29 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.TurnAcceleration, Model.BodyRotationMaxAngle, () =>
                 {
                     if (_isReleased) return;
+                    if (_hasQueuedPlan)
+                    {
+                        Model.Arrive(transform.position.ToNumerics());
+                        return;
+                    }
                     NumericsVector3? deferred = Model.TakePending();
                     if (deferred.HasValue)
                     {
-                        Plan(deferred.Value.ToUnity());
-                        DestinationChanged?.Invoke(Model.Destination.ToUnity());
+                        QueuePlan(deferred.Value.ToUnity(), false);
                         return;
                     }
                     Model.Arrive(transform.position.ToNumerics());
                     if (!_shipNavigationService.IsPositionClear(this,
                             plan.Destination, NavigationRadius))
-                        Plan(plan.Destination);
+                    {
+                        if (_hasArrivalCorrection)
+                        {
+                            _failedDestination = Model.LastRequest.Value.ToUnity();
+                            return;
+                        }
+                        _hasArrivalCorrection = true;
+                        QueuePlan(plan.Destination, false);
+                    }
                 });
         }
 

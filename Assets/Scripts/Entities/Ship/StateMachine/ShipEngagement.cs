@@ -8,6 +8,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public static class ShipEngagement
     {
+        private const float STANDOFF_RANGE_FACTOR = 0.65f;
+
         public static bool CanEngage(IEntity enemy, IShipMovement movement,
             IWeaponComponent weapon)
         {
@@ -30,20 +32,25 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         }
 
         /// <summary>
-        /// Re-paths towards a moving target once it drifts from the last pursuit
-        /// destination, using the same threshold as AttackTargetState.
-        /// Returns the pursuit destination currently in use.
+        /// Commits to one firing-range approach until arrival or a new target.
         /// </summary>
-        public static Vector3 Pursue(IShipMovement movement, IWeaponComponent weapon,
-            Vector3 target, Vector3 pursuitDestination)
+        public static void Pursue(IShipMovement movement, IWeaponComponent weapon,
+            IEntity target, bool newTarget = false)
         {
-            float updateDistance = Mathf.Max(movement.NavigationRadius,
-                weapon.AttackDistance * 0.1f);
-            if (movement.IsMoving &&
-                (target - pursuitDestination).sqrMagnitude < updateDistance * updateDistance)
-                return pursuitDestination;
-            movement.MoveToPosition(target, preserveCourse: true);
-            return target;
+            if (!newTarget && movement.IsMoving) return;
+            movement.MoveToPosition(GetStandoffPosition(movement, weapon, target),
+                preserveCourse: !newTarget);
+        }
+
+        public static Vector3 GetStandoffPosition(IShipMovement movement,
+            IWeaponComponent weapon, IEntity target)
+        {
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            Vector3 fromTarget = movement.CurrentPosition - targetPosition;
+            fromTarget.y = 0f;
+            return targetPosition + fromTarget.normalized * Mathf.Max(
+                weapon.GetEngagementRange(target.HealthModel.ShipClass) * STANDOFF_RANGE_FACTOR,
+                ContactDistance(movement, target));
         }
     }
 }

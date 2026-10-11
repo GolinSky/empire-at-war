@@ -13,9 +13,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class AttackTargetState: IBaseState
     {
-        // Pursuit ends at this fraction of the engagement range, well inside the engage range
-        // (WeaponComponent stops engaging past 0.8), so small target drift does not restart movement.
-        private const float STANDOFF_RANGE_FACTOR = 0.65f;
         // A moving ship only halts early when the target closes inside this fraction.
         private const float MINIMUM_RANGE_FACTOR = 0.5f;
 
@@ -40,17 +37,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private float EngagementRange => _weaponComponent.GetEngagementRange(_mainTarget.ShipClass);
         private Vector3 MovementTargetPosition => TargetPosition +
             Vector3.ClampMagnitude(_formationOffset, EngagementRange * 0.8f);
-        private Vector3 StandoffPosition
-        {
-            get
-            {
-                Vector3 fromTarget = _shipMoveComponent.CurrentPosition - TargetPosition;
-                fromTarget.y = 0f;
-                // Hulls larger than the weapon range close to contact instead of an unreachable point.
-                return TargetPosition + fromTarget.normalized * Mathf.Max(
-                    EngagementRange * STANDOFF_RANGE_FACTOR, ContactDistance);
-            }
-        }
+        private Vector3 StandoffPosition => ShipEngagement.GetStandoffPosition(
+            _shipMoveComponent, _weaponComponent, _mainTargetEntity);
         private float ContactDistance => ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
@@ -157,50 +145,20 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             bool inRange = _weaponComponent.HasEnoughRange(
                 _shipMoveComponent.GetRange(TargetPosition), ContactDistance, _mainTarget.ShipClass);
-            if (_isClosingRange && inRange && !_shipMoveComponent.IsMoving)
+            if (inRange && (!_isClosingRange || !_shipMoveComponent.IsMoving))
             {
-                _shipMoveComponent.LookAtTarget(TargetPosition);
-                return;
-            }
-
-            // Formation slots are packed around the target itself; a ship already in range
-            // holds there instead of flying onto the target's hull. Later drift re-closes
-            // to the standoff point, which gives the same hysteresis as a single-ship attack.
-            if (!_isClosingRange && inRange)
-            {
-                if (_shipMoveComponent.IsMoving)
-                {
-                    _shipMoveComponent.Stop();
-                }
-
+                if (_shipMoveComponent.IsMoving) _shipMoveComponent.Stop();
                 _shipMoveComponent.LookAtTarget(TargetPosition);
                 _isClosingRange = true;
                 _hasPursuitDestination = false;
                 return;
             }
 
+            if (_hasPursuitDestination && _shipMoveComponent.IsMoving) return;
+
+            // After a formation leg, close any remaining gap from its actual endpoint.
+            if (_hasPursuitDestination) _isClosingRange = true;
             Vector3 destination = _isClosingRange ? StandoffPosition : MovementTargetPosition;
-            float updateDistance = PursuitDestinationUpdateDistance;
-            if (_hasPursuitDestination &&
-                (destination - _pursuitDestination).sqrMagnitude < updateDistance * updateDistance)
-            {
-                if (_shipMoveComponent.IsMoving)
-                {
-                    return;
-                }
-
-                if (inRange)
-                {
-                    _shipMoveComponent.LookAtTarget(TargetPosition);
-                    return;
-                }
-
-                // A congested or map-clamped slot can be outside weapon range.
-                // Close the remaining distance through the same reservation allocator.
-                _isClosingRange = true;
-                destination = StandoffPosition;
-            }
-
             _pursuitDestination = destination;
             _hasPursuitDestination = true;
             _shipMoveComponent.MoveToPosition(destination, preserveCourse: true);
@@ -238,6 +196,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _hasPursuitDestination = false;
                 return;
             }
+
+            // Keep the chosen endpoint even when our own detour changes the target bearing.
+            if (_hasPursuitDestination && _shipMoveComponent.IsMoving) return;
 
             Vector3 standoffPosition = StandoffPosition;
             float updateDistance = PursuitDestinationUpdateDistance;
