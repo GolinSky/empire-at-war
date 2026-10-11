@@ -181,6 +181,7 @@
 
 - [ ] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)**
   - **Plan**: [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]
+  - **Navigation route commitment 2026-10-11**: fixed pursuit/follow legs, firing-range targets for attack-move/guard/hunt, all completion plans queued, one arrival correction and failed-request suppression. Unity compile clean; 71/71 focused tests. Matched performance and gameplay acceptance remain open.
   - **Post-audit fixes 2026-10-11**: selection group/card reuse, shared target-health/hardpoint capture, active shot-pool hierarchies with explicit idle cleanup, paused static-burst bolt simulation. Unity compile clean; 53/53 focused EditMode tests, including seeded render-mesh parity for all five bolt prefabs. Matched recapture and combat visual acceptance remain open.
   - **Status**: 2026-10-11 phases 0–6 implemented in separate commits: CPU reason/child markers, serial Euler yaw, shared target spans, due-ID maps, late-frame audio mix, frame raster/stationary retry cache and per-tick squadron reuse. Unity compilation passed. User requested existing 15:25/15:31 evidence; no new tests or captures.
   - **Remaining**: new attribution, randomized target parity, audio listening, route/formation behavior and measured improvement gates. Plan stays active; phases 7–8 reserved for user implementation/acceptance.

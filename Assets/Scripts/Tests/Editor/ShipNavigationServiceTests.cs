@@ -558,6 +558,151 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(executed, Is.EqualTo(new[] { 0, 1, 2, 3, 4, 5 }));
         }
 
+        [Test]
+        public void FailedPursuit_HoldsUntilDestinationChangesOrNewOrderArrives()
+        {
+            GameObject ship = new GameObject("Failed pursuit");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                navigation.IsStationary = true;
+                Vector3 destination = Vector3.forward * 50f;
+                component.MoveToPosition(destination, preserveCourse: true);
+                for (int i = 0; i < 20; i++)
+                    component.MoveToPosition(destination + Vector3.right * 0.01f, preserveCourse: true);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(1));
+                Assert.That(component.IsMoving, Is.False);
+                Assert.That(GetModel(component).PendingDestination, Is.Null);
+
+                destination += Vector3.right * component.NavigationRadius * 2f;
+                component.MoveToPosition(destination, preserveCourse: true);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+                component.MoveToPosition(destination);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(3));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void QueuedOrders_OnlyPlanLatestDestination()
+        {
+            GameObject ship = new GameObject("Queued orders");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                navigation.ExecuteImmediately = false;
+                component.MoveToPosition(Vector3.forward * 25f);
+                component.MoveToPosition(Vector3.forward * 50f);
+                Assert.That(navigation.PlanCallCount, Is.Zero);
+                Assert.That(navigation.PendingPlans.Count, Is.EqualTo(1));
+                Assert.That(component.IsMoving, Is.True);
+                navigation.PendingPlans.Dequeue().ExecuteQueuedPlan();
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigation.LastDestination.z, Is.EqualTo(50f));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void HyperspaceCompletion_QueuesLandingPlan()
+        {
+            GameObject ship = new GameObject("Landing plan");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation, isReady: false);
+                component.MoveToPosition(Vector3.forward * 25f);
+                navigation.ExecuteImmediately = false;
+                typeof(ShipMoveComponent).GetMethod("FinishHyperSpaceJump",
+                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(component, null);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigation.PendingPlans.Count, Is.EqualTo(1));
+                Assert.That(component.IsMoving, Is.True);
+                navigation.PendingPlans.Dequeue().ExecuteQueuedPlan();
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void ArrivalConflict_QueuesOnlyOneCorrection()
+        {
+            GameObject ship = new GameObject("Arrival conflict");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                navigation.IsDeferred = false;
+                component.MoveToPosition(Vector3.forward * 25f);
+                navigation.ExecuteImmediately = false;
+                navigation.IsClear = false;
+                TickMotion(component, 1000f);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigation.PendingPlans.Count, Is.EqualTo(1));
+                navigation.PendingPlans.Dequeue().ExecuteQueuedPlan();
+                TickMotion(component, 1000f);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+                Assert.That(navigation.PendingPlans, Is.Empty);
+                Assert.That(component.IsMoving, Is.False);
+                for (int i = 0; i < 20; i++)
+                    component.MoveToPosition(Vector3.forward * 25f, preserveCourse: true);
+                Assert.That(navigation.PendingPlans, Is.Empty);
+                component.MoveToPosition(Vector3.forward * 25f);
+                Assert.That(navigation.PendingPlans.Count, Is.EqualTo(1));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void Arrival_DoesNotReplaceNewerQueuedOrder()
+        {
+            GameObject ship = new GameObject("New order at arrival");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                navigation.IsDeferred = false;
+                component.MoveToPosition(Vector3.forward * 25f);
+                navigation.ExecuteImmediately = false;
+                component.MoveToPosition(Vector3.forward * 50f);
+                navigation.IsClear = false;
+                TickMotion(component, 1000f);
+                navigation.PendingPlans.Dequeue().ExecuteQueuedPlan();
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+                Assert.That(navigation.LastDestination.z, Is.EqualTo(50f));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void DeferredCorrection_QueuesPlanAfterCurrentLeg()
+        {
+            GameObject ship = new GameObject("Deferred correction");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                navigation.IsDeferred = false;
+                component.MoveToPosition(Vector3.forward * 25f);
+                TickMotion(component, 0.01f);
+                SetPrivateField(component, "_lastPlanTime", -100f);
+                navigation.IsDeferred = true;
+                component.MoveToPosition(Vector3.right * 25f, preserveCourse: true);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+                navigation.ExecuteImmediately = false;
+                TickMotion(component, 1000f);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+                Assert.That(navigation.PendingPlans.Count, Is.EqualTo(1));
+                navigation.PendingPlans.Dequeue().ExecuteQueuedPlan();
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(3));
+                Assert.That(navigation.LastDestination.x, Is.EqualTo(25f));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        private static void TickMotion(ShipMoveComponent component, float deltaTime)
+        {
+            object motion = typeof(ShipMoveComponent).GetField("_motion",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(component);
+            motion.GetType().GetMethod("Tick").Invoke(motion, new object[] { deltaTime });
+        }
+
         private ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
@@ -755,6 +900,11 @@ namespace EmpireAtWar.Tests.Movement
             public int PlanCallCount { get; private set; }
             public int PendingCancellationCount { get; private set; }
             public Vector3 LastDestination { get; private set; }
+            public bool IsDeferred { get; set; } = true;
+            public bool IsStationary { get; set; }
+            public bool IsClear { get; set; } = true;
+            public bool ExecuteImmediately { get; set; } = true;
+            public Queue<IShipPlanRequester> PendingPlans { get; } = new Queue<IShipPlanRequester>();
 
             public void Register(
                 IShipNavigationAgent agent,
@@ -785,11 +935,14 @@ namespace EmpireAtWar.Tests.Movement
                 Vector3 position,
                 float navigationRadius)
             {
-                return true;
+                return IsClear;
             }
 
-            // Plans at once so component tests observe the plan without a frame loop.
-            public void RequestPlan(IShipPlanRequester requester) => requester.ExecuteQueuedPlan();
+            public void RequestPlan(IShipPlanRequester requester)
+            {
+                if (ExecuteImmediately) requester.ExecuteQueuedPlan();
+                else PendingPlans.Enqueue(requester);
+            }
 
             public ShipNavigationPlan Plan(
                 IShipNavigationAgent agent,
@@ -813,7 +966,8 @@ namespace EmpireAtWar.Tests.Movement
                         requestedDestination),
                     turnDuration: 0f,
                     movementDuration: 0f,
-                    isDeferred: true);
+                    isStationary: IsStationary,
+                    isDeferred: IsDeferred);
             }
         }
     }

@@ -49,7 +49,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Tick(float deltaTime)
         {
-            if (IsComplete) return;
+            if (IsComplete || _movement.IsMoving) return;
             float updateDistance = DestinationUpdateDistance;
             if ((TargetPosition - _destination).sqrMagnitude >= updateDistance * updateDistance) MoveToTarget();
         }

@@ -24,7 +24,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Transform _friendlyTransform;
 
         private Vector3 _offset;
-        private Vector3 _pursuitDestination;
         private Vector3 _followDestination;
 
         private bool _isReturning;
@@ -87,8 +86,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                         _settings.GuardChaseDistance) continue;
                     _engagementTarget = enemy;
                     _weapon.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
-                    _pursuitDestination = enemy.GetFacade<IEntityTransformFacade>().Transform.position;
-                    _movement.MoveToPosition(_pursuitDestination, preserveCourse: true);
+                    if (!ShipEngagement.CanEngage(enemy, _movement, _weapon))
+                        ShipEngagement.Pursue(_movement, _weapon, enemy, newTarget: true);
                     break;
                 }
             }
@@ -103,8 +102,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     if (_movement.IsMoving) _movement.Stop();
                     _movement.LookAtTarget(target);
                 }
-                else _pursuitDestination = ShipEngagement.Pursue(_movement, _weapon, target,
-                    _pursuitDestination);
+                else ShipEngagement.Pursue(_movement, _weapon, _engagementTarget);
             }
             else if (PlanarGeometry.Distance(_movement.CurrentPosition, home) >
                      _settings.GuardFollowRadius) Follow();
@@ -117,19 +115,19 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weapon.ResetTarget();
         }
 
-        // A moving friendly shifts the follow point every tick; re-path only once it
-        // drifts past half the follow radius instead of planning a route per tick.
+        // Finish the current follow leg before considering the friendly's new position.
         private void Follow()
         {
             Vector3 destination = _friendlyTransform.position + _offset;
             float updateDistance = Mathf.Max(_movement.NavigationRadius,
                 _settings.GuardFollowRadius * 0.5f);
-            if (_isFollowing && _movement.IsMoving &&
-                (destination - _followDestination).sqrMagnitude < updateDistance * updateDistance)
+            if (_isFollowing && (_movement.IsMoving ||
+                (destination - _followDestination).sqrMagnitude < updateDistance * updateDistance))
                 return;
+            bool preserveCourse = _isFollowing;
             _isFollowing = true;
             _followDestination = destination;
-            _movement.MoveToPosition(destination);
+            _movement.MoveToPosition(destination, preserveCourse);
         }
     }
 }

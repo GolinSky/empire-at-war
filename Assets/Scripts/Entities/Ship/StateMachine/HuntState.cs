@@ -22,7 +22,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly UnitOrderSettings _settings;
 
         private readonly PlayerId _side;
-        private Vector3 _pursuitDestination;
 
         private float _retargetTimer;
 
@@ -69,8 +68,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (_movement.IsMoving) _movement.Stop();
                 _movement.LookAtTarget(target);
             }
-            else _pursuitDestination = ShipEngagement.Pursue(_movement, _weapon, target,
-                _pursuitDestination);
+            else ShipEngagement.Pursue(_movement, _weapon, _target);
         }
 
         public void Exit()
@@ -102,8 +100,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 _weapon.AddTarget(_attackDataFactory.ConstructData(_target),
                     AttackType.MainTarget);
-                _pursuitDestination = _target.GetFacade<IEntityTransformFacade>().Transform.position;
-                _movement.MoveToPosition(_pursuitDestination);
+                if (!ShipEngagement.CanEngage(_target, _movement, _weapon))
+                    ShipEngagement.Pursue(_movement, _weapon, _target, newTarget: true);
             }
         }
     }
