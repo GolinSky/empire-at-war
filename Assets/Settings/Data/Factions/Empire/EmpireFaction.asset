@@ -41,8 +41,8 @@ MonoBehaviour:
         description: '4,500 hull; 4,000 shields; speed 15. Twenty-four targetable
           weapons: six heavy two-burst turbolasers, two heavy two-burst turbo-ion
           cannons, two medium turbo-ion cannons, three medium three-burst turbolasers,
-          five light turbolasers and six laser cannons. Two shield generators, two
-          engines, tractor beam and hangar are targetable. Launches TIE Interceptors,
+          five medium turbolasers and six medium laser cannons. Two shield generators,
+          two engines, tractor beam and hangar are targetable. Launches TIE Interceptors,
           TIE Brutes and TIE Punishers. Boost Engine Power doubles speed, quadruples
           weapon delays and pauses shield regeneration for 20 s. Tractor Beam restricts
           enemy corvette or frigate movement.'
@@ -121,10 +121,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
         description: 5,500 hull; 4,200 shields; speed 25. Eight octuple turbolasers,
-          two quad ion turrets, six ion cannons, five hull turbolasers and three
-          center turrets. Every weapon is targetable; shield generator, hangar, tractor
-          beam are targetable. Power to Main Batteries and Tractor Beam. Existing
-          TIE Interceptor, Brute and Punisher complement.
+          two quad ion turrets, six medium ion cannons, six medium turbolasers and
+          two medium dual turbolasers. Every weapon is targetable; shield generator,
+          hangar, tractor beam are targetable. Power to Main Batteries and Tractor
+          Beam. Existing TIE Interceptor, Brute and Punisher complement.
         role: Capital ship / Ship of the line
         iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
         isHero: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
         description: 7,000 hull; 5,000 shields; speed 22. Eight targetable heavy
           2-burst turbolasers, two medium long-range dual turbolasers, two shield
           generators, three engines and tractor beam. Seven medium 3-burst turbolasers,
-          four light turbolasers and four heavy laser cannons are not separately
+          four medium turbolasers and four heavy laser cannons are not separately
           targetable. Boost Weapon Power increases firepower at the expense of defense
           and speed. Tractor Beam restricts enemy movement. No hangars or fighter
           complement.

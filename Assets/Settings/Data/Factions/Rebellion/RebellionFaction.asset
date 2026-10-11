@@ -119,7 +119,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 41d0193e2f230fa4d9f62ec405cfd0c4, type: 2}
         description: MC80 Independence dreadnought with eight medium dual turbolasers
           and six medium dual turbo-ion cannons. Three engines and three hangars
-          are targetable. Eight light turbolasers, six light turbo-ions and eight
+          are targetable. Eight medium turbolasers, six medium ion cannons and eight
           heavy lasers remain operational until hull destruction. Power to Shields
           accelerates regeneration while reducing movement and firing rate. Carries
           X-Wing, Y-Wing and A-Wing squadrons.

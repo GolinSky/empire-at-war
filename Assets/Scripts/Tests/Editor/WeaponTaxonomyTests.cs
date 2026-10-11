@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
 using NUnit.Framework;
@@ -26,6 +27,41 @@ namespace EmpireAtWar.Tests.Editor
             { WeaponType.PlanetaryIonCannon, WeaponType.HypervelocityGun, WeaponType.PlasmaCannon };
 
         private static WeaponsData Weapons => AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS);
+
+        [TestCase(ShipClass.Corvette)]
+        [TestCase(ShipClass.Frigate)]
+        [TestCase(ShipClass.Capital)]
+        [TestCase(ShipClass.HeavyCapital)]
+        public void SavedShipWeapons_RespectClassCaliberRules(ShipClass shipClass)
+        {
+            WeaponsData weapons = Weapons;
+            foreach (ShipData data in LoadAll<ShipData>().Where(data => data.ShipClass == shipClass
+                || (shipClass == ShipClass.Capital && data.name == "RecusantShipData")))
+            {
+                foreach (WeaponLoadoutEntry entry in WeaponLoadoutBaker.DeriveLoadout(WeaponLoadoutBaker.LoadShipView(data)))
+                {
+                    WeaponDefinition definition = weapons.GetDefinition(entry.WeaponType);
+                    string context = $"{data.name} mounts {definition.DisplayName}";
+                    if (shipClass == ShipClass.Corvette)
+                        Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Turbolaser), context);
+                    else if (shipClass == ShipClass.Frigate && definition.Family == WeaponFamily.Turbolaser)
+                        Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), context);
+                    else if (shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
+                        Assert.That(definition.Caliber, Is.GreaterThanOrEqualTo(WeaponCaliber.Medium), context);
+                }
+            }
+        }
+
+        [Test]
+        public void SavedShipLoadouts_MatchTheirFiringHardpoints()
+        {
+            foreach (ShipData data in LoadAll<ShipData>())
+            {
+                var mounted = WeaponLoadoutBaker.DeriveLoadout(WeaponLoadoutBaker.LoadShipView(data));
+                Assert.That(data.WeaponLoadout.Select(entry => (entry.WeaponType, entry.Count)),
+                    Is.EquivalentTo(mounted.Select(entry => (entry.WeaponType, entry.Count))), data.name);
+            }
+        }
 
         [Test]
         public void EveryHardpointWeapon_HasOneDefinitionAndBuildsAProfile()

@@ -62,7 +62,7 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 4
     count: 8
-  - weaponType: 8
+  - weaponType: 23
     count: 5
   - weaponType: 64
     count: 4

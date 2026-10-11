@@ -717,9 +717,9 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 19
-    displayName: Light Mass Driver Cannon
+    displayName: Medium Mass Driver Cannon
     family: 3
-    caliber: 0
+    caliber: 1
     mount: 1
     pattern: 0
     burstShots: 2
@@ -1378,9 +1378,9 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 54
-    displayName: Light 6-Burst Point Defense Laser
+    displayName: Medium 6-Burst Point Defense Laser
     family: 7
-    caliber: 0
+    caliber: 1
     mount: 1
     pattern: 1
     burstShots: 6
@@ -1783,9 +1783,9 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 78
-    displayName: Long-Range Point Defense Laser
+    displayName: Medium Long-Range Point Defense Laser
     family: 7
-    caliber: 0
+    caliber: 1
     mount: 1
     pattern: 0
     burstShots: 2
@@ -1796,8 +1796,8 @@ MonoBehaviour:
     damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Mandator long-range point defense. Long range class, Light caliber to
-      keep hitting strikecraft.
+    reason: Mandator long-range point defense. Medium caliber follows the minimum
+      capital-ship caliber rule.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1820,6 +1820,27 @@ MonoBehaviour:
     rangeMultiplier: 1
     reason: Fighter-class torpedo. Half damage and 1.5x reload so fighters stay below
       dedicated bombers.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 80
+    displayName: Medium Point Defense Laser
+    family: 7
+    caliber: 1
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

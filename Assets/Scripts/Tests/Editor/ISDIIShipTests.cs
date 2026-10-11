@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
             Assert.That(weapons.Length, Is.EqualTo(24));
             foreach (var expected in new[] { (WeaponType.ISDIIOctupleTurbolaser, 8), (WeaponType.ISDIIQuadIonCannon, 2),
-                (WeaponType.MediumTurboLaser, 3), (WeaponType.TurboLaser, 3), (WeaponType.LightDualTurbolaser, 2), (WeaponType.IonCannon, 6) })
+                (WeaponType.MediumTurboLaser, 6), (WeaponType.DualMediumTurboLaser, 2), (WeaponType.MediumIonCannon, 6) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             Assert.That(weapons.Count(w => new SerializedObject(w).FindProperty("mainBattery").boolValue), Is.EqualTo(8));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
