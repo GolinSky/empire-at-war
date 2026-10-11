@@ -6,7 +6,6 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     public sealed class ShipDestinationRegistry
     {
-        private const float IDLE_POSITION_TOLERANCE = 1f;
 
         private readonly Dictionary<int, Entry> _entries =
             new Dictionary<int, Entry>();
@@ -112,26 +111,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             Entry entry = GetEntry(registrationId);
             if (entry.PendingFinalPosition.HasValue) _version++;
             entry.PendingFinalPosition = null;
-        }
-
-        public bool HullsOverlap(int registrationId, ShipHullSpan hullSpan) =>
-            GetEntry(registrationId).HullSpan.Overlaps(hullSpan);
-
-        public bool IsIdle(int registrationId)
-        {
-            Entry entry = GetEntry(registrationId);
-            if (entry.PendingFinalPosition.HasValue ||
-                !entry.ActiveFinalPosition.HasValue)
-            {
-                return false;
-            }
-
-            FormationPoint current = entry.CurrentPosition();
-            FormationPoint final = entry.ActiveFinalPosition.Value;
-            float deltaX = current.X - final.X;
-            float deltaZ = current.Z - final.Z;
-            return deltaX * deltaX + deltaZ * deltaZ <=
-                   IDLE_POSITION_TOLERANCE * IDLE_POSITION_TOLERANCE;
         }
 
         public void Stop(int registrationId)

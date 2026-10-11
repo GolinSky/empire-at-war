@@ -29,6 +29,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         // until the bearing to the target swings this far or the solve ages out (lost hardpoints change the arcs).
         private const float FACING_RESOLVE_ANGLE = 2f;
         private const float FACING_RESOLVE_INTERVAL = 1f;
+        // A ship chasing a moving target re-plans its course at most this often; new orders plan at once.
+        private const float REPATH_INTERVAL = 0.5f;
 
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
@@ -57,6 +59,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isInPlanQueue;
         private bool _queuedPreserveCourse;
         private Vector3 _queuedDestination;
+        private float _lastPlanTime = float.NegativeInfinity;
         private Vector3 _solvedFacing;
         private Vector3 _solvedBearing;
         private float _solvedFacingTime;
@@ -131,6 +134,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void Tick()
         {
             if (!_modifiers.IsIonDisabled) _motion.Tick(Time.deltaTime);
+            if (_hasQueuedPlan && !_isInPlanQueue && IsRepathDue()) EnqueuePlan();
         }
 
         public override void Release()
@@ -184,6 +188,15 @@ namespace EmpireAtWar.Components.Ship.Movement
             _queuedDestination = destination;
             _queuedPreserveCourse = preserveCourse;
             _hasQueuedPlan = true;
+            // A course correction while under way waits out the interval; Tick queues it once due.
+            if (preserveCourse && Model.IsMoving && !IsRepathDue()) return;
+            EnqueuePlan();
+        }
+
+        private bool IsRepathDue() => Time.time - _lastPlanTime >= REPATH_INTERVAL;
+
+        private void EnqueuePlan()
+        {
             if (_isInPlanQueue) return;
             _isInPlanQueue = true;
             _shipNavigationService.RequestPlan(this);
@@ -194,6 +207,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _isInPlanQueue = false;
             if (!_hasQueuedPlan || _isReleased) return;
             _hasQueuedPlan = false;
+            _lastPlanTime = Time.time;
             Plan(_queuedDestination, _queuedPreserveCourse);
             DestinationChanged?.Invoke(Model.Destination.ToUnity());
         }

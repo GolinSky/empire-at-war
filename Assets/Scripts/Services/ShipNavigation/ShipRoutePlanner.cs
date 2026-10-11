@@ -31,7 +31,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     internal static class ShipRoutePlanner
     {
-        private static readonly float[] HANDLE_SCALES = { 1f, 0.5f, 0.25f };
+        // One handle size per smooth option: half-size handles hold close to the waypoint legs.
+        private const float HANDLE_SCALE = 0.5f;
 
         public static ShipRoutePlan Build(
             IShipNavigationAgent agent,
@@ -71,36 +72,29 @@ namespace EmpireAtWar.Services.ShipNavigation
                     Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon)));
             Vector3 firstLeg = PlanarGeometry.NormalizeDirection(waypoints[1] - origin, forward);
 
-            // Each smooth option retries with tighter curves: full-size handles swing
-            // wide of the waypoint legs and can cut into an obstacle's clearance.
+            // At most three candidates per destination.
             // 1) Curved route that keeps the current heading: no turn in place.
             if (waypoints.Count == 2 ||
                 Vector3.Dot(PlanarGeometry.NormalizeDirection(forward, firstLeg), firstLeg) > 0f)
             {
-                for (int i = 0; i < HANDLE_SCALES.Length; i++)
+                ShipBezierRoute courseRoute = BuildSmoothRoute(
+                    waypoints, forward, minimumTurnRadius, HANDLE_SCALE);
+                if (IsRouteClear(courseRoute, contacts, agent, heightTolerance,
+                        clearance, allowEscape))
                 {
-                    ShipBezierRoute courseRoute = BuildSmoothRoute(
-                        waypoints, forward, minimumTurnRadius, HANDLE_SCALES[i]);
-                    if (IsRouteClear(courseRoute, contacts, agent, heightTolerance,
-                            clearance, allowEscape))
-                    {
-                        return new ShipRoutePlan(destination: destination, detour: detour, route: courseRoute, turnDuration: 0f);
-                    }
+                    return new ShipRoutePlan(destination: destination, detour: detour, route: courseRoute, turnDuration: 0f);
                 }
             }
 
             // 2) Turn in place towards the first leg, then follow a smooth route.
-            for (int i = 0; i < HANDLE_SCALES.Length; i++)
+            ShipBezierRoute turnedRoute = BuildSmoothRoute(
+                waypoints, firstLeg, minimumTurnRadius, HANDLE_SCALE);
+            if (IsRouteClear(turnedRoute, contacts, agent, heightTolerance,
+                    clearance, allowEscape))
             {
-                ShipBezierRoute turnedRoute = BuildSmoothRoute(
-                    waypoints, firstLeg, minimumTurnRadius, HANDLE_SCALES[i]);
-                if (IsRouteClear(turnedRoute, contacts, agent, heightTolerance,
-                        clearance, allowEscape))
-                {
-                    return new ShipRoutePlan(
-                        destination: destination, detour: detour, route: turnedRoute,
-                        turnDuration: CalculateTurnDuration(agent, forward, turnedRoute));
-                }
+                return new ShipRoutePlan(
+                    destination: destination, detour: detour, route: turnedRoute,
+                    turnDuration: CalculateTurnDuration(agent, forward, turnedRoute));
             }
 
             // 3) Straight legs between waypoints. Clear by construction of the path
