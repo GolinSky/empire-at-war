@@ -8,7 +8,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Fade_MovesTowardRevealedTargetByMaxDelta()
         {
-            FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
+            using FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
             grid.ResetTargets(false);
             grid.Reveal(4, 4, 2, 0f, 1f);
 
@@ -20,7 +20,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ResetTargets_WithHistory_KeepsExploredCellsDimlyVisible()
         {
-            FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
+            using FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
             grid.Reveal(4, 4, 2, 0f, 1f);
             grid.Fade(1f);
 
@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ResetTargets_WithoutHistory_ReturnsFullFog()
         {
-            FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
+            using FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
             grid.Reveal(4, 4, 2, 0f, 1f);
             grid.Fade(1f);
 
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void GetVisibility_OutsideGrid_SamplesClampedEdge()
         {
-            FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
+            using FogVisibilityGridModel grid = new FogVisibilityGridModel(8);
             grid.Reveal(7, 0, 1, 0f, 1f);
             grid.Fade(1f);
 

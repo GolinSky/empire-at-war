@@ -24,6 +24,12 @@ namespace EmpireAtWar.Models.FogOfWar
                 throw new ArgumentOutOfRangeException(nameof(edgeSoftness));
             }
 
+            return SoftVisibility(distance, radius, edgeSoftness);
+        }
+
+        /// <summary>Unchecked falloff for Burst jobs; callers validate the arguments once per reveal.</summary>
+        public static float SoftVisibility(float distance, float radius, float edgeSoftness)
+        {
             if (edgeSoftness == 0f)
             {
                 return distance <= radius ? 1f : 0f;

@@ -49,6 +49,10 @@ namespace EmpireAtWar.Services.Timing
         public const string PROJECTILE_INSTANTIATE = "Battle.Projectile.Instantiate";
         public const string PROJECTILE_TURRET_UPDATE = "Battle.Projectile.TurretUpdate";
         public const string PROJECTILE_LASER_UPDATE = "Battle.Projectile.LaserUpdate";
+        public const string PROJECTILE_TRACK = "Battle.Projectile.Track";
+        public const string PROJECTILE_MOVE = "Battle.Projectile.Move";
+        public const string PROJECTILE_EFFECT = "Battle.Projectile.Effect";
+        public const string SHIP_FACING_SOLVE = "Battle.Ship.FacingSolve";
         public const string RADAR_SCAN = "Battle.Radar.Scan";
         public const string RADAR_SNAPSHOT = "Battle.Radar.Snapshot";
         public const string RADAR_JOB = "Battle.Radar.Job";
@@ -116,6 +120,10 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker ProjectileInstantiate = new ProfilerMarker(PROJECTILE_INSTANTIATE);
         public static readonly ProfilerMarker ProjectileTurretUpdate = new ProfilerMarker(PROJECTILE_TURRET_UPDATE);
         public static readonly ProfilerMarker ProjectileLaserUpdate = new ProfilerMarker(PROJECTILE_LASER_UPDATE);
+        public static readonly ProfilerMarker ProjectileTrack = new ProfilerMarker(PROJECTILE_TRACK);
+        public static readonly ProfilerMarker ProjectileMove = new ProfilerMarker(PROJECTILE_MOVE);
+        public static readonly ProfilerMarker ProjectileEffect = new ProfilerMarker(PROJECTILE_EFFECT);
+        public static readonly ProfilerMarker ShipFacingSolve = new ProfilerMarker(SHIP_FACING_SOLVE);
         public static readonly ProfilerMarker RadarScan = new ProfilerMarker(RADAR_SCAN);
         public static readonly ProfilerMarker RadarSnapshot = new ProfilerMarker(RADAR_SNAPSHOT);
         public static readonly ProfilerMarker RadarJob = new ProfilerMarker(RADAR_JOB);

@@ -1,24 +1,36 @@
 using System;
-using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Jobs;
 
 namespace EmpireAtWar.Models.FogOfWar
 {
-    public sealed class FogVisibilityGridModel
+    /// <summary>
+    /// Fog visibility per cell. The per-cell passes run as Burst jobs: a 512² battle mask is 262,144 cells
+    /// faded and written every frame the fog changes.
+    /// </summary>
+    public sealed class FogVisibilityGridModel : IDisposable
     {
         private const float HISTORIC_VISIBILITY = 0.35f;
 
-        private readonly float[] _current;
-        private readonly float[] _target;
-        private readonly Dictionary<(int, float), float[]> _falloffs =
-            new Dictionary<(int, float), float[]>();
+        private NativeArray<float> _current;
+        private NativeArray<float> _target;
+        private NativeArray<int> _changed;
 
         public int Resolution { get; }
 
         public FogVisibilityGridModel(int resolution)
         {
             Resolution = resolution;
-            _current = new float[resolution * resolution];
-            _target = new float[resolution * resolution];
+            _current = new NativeArray<float>(resolution * resolution, Allocator.Persistent);
+            _target = new NativeArray<float>(resolution * resolution, Allocator.Persistent);
+            _changed = new NativeArray<int>(1, Allocator.Persistent);
+        }
+
+        public void Dispose()
+        {
+            _current.Dispose();
+            _target.Dispose();
+            _changed.Dispose();
         }
 
         public float GetVisibility(int index) => _current[index];
@@ -32,79 +44,47 @@ namespace EmpireAtWar.Models.FogOfWar
 
         public void ResetTargets(bool keepHistory)
         {
-            float baseVisibility = keepHistory ? HISTORIC_VISIBILITY : 0f;
-            for (int i = 0; i < _target.Length; i++)
+            new FogResetJob
             {
-                _target[i] = _current[i] > 0f ? baseVisibility : 0f;
-            }
+                Current = _current,
+                Target = _target,
+                BaseVisibility = keepHistory ? HISTORIC_VISIBILITY : 0f
+            }.Run();
         }
 
         public void Reveal(int centerX, int centerY, int radius, float edgeSoftness, float intensity)
         {
-            int outerRadius = (int)Math.Ceiling(radius * (1f + edgeSoftness));
-            int minX = Math.Min(Math.Max(centerX - outerRadius, 0), Resolution - 1);
-            int maxX = Math.Min(Math.Max(centerX + outerRadius, 0), Resolution - 1);
-            int minY = Math.Min(Math.Max(centerY - outerRadius, 0), Resolution - 1);
-            int maxY = Math.Min(Math.Max(centerY + outerRadius, 0), Resolution - 1);
-            int sqrOuterRadius = outerRadius * outerRadius;
-            float[] falloff = GetFalloff(radius, edgeSoftness, sqrOuterRadius);
-
-            for (int y = minY; y <= maxY; y++)
+            if (radius <= 0) throw new ArgumentOutOfRangeException(nameof(radius));
+            if (edgeSoftness < 0f || edgeSoftness > 1f) throw new ArgumentOutOfRangeException(nameof(edgeSoftness));
+            new FogRevealJob
             {
-                int dy = y - centerY;
-                int rowOffset = y * Resolution;
-                for (int x = minX; x <= maxX; x++)
-                {
-                    int dx = x - centerX;
-                    int distSqr = dx * dx + dy * dy;
-                    if (distSqr > sqrOuterRadius) continue;
-
-                    float visibility = falloff[distSqr] * intensity;
-                    int index = rowOffset + x;
-                    if (visibility > _target[index]) _target[index] = visibility;
-                }
-            }
-        }
-
-        // Pixel distances are integers, so the soft falloff only ever takes one value per
-        // squared distance. Caching it per radius replaces a sqrt and a falloff evaluation
-        // per pixel with an array read; the result is identical.
-        private float[] GetFalloff(int radius, float edgeSoftness, int sqrOuterRadius)
-        {
-            if (_falloffs.TryGetValue((radius, edgeSoftness), out float[] falloff))
-            {
-                return falloff;
-            }
-
-            // The registered radius is the middle of the
-            // feather, so its border is exactly half visible.
-            falloff = new float[sqrOuterRadius + 1];
-            for (int distSqr = 0; distSqr <= sqrOuterRadius; distSqr++)
-            {
-                falloff[distSqr] = FogVisibilityModel.CalculateSoftVisibility(
-                    (float)Math.Sqrt(distSqr), radius, edgeSoftness);
-            }
-
-            _falloffs.Add((radius, edgeSoftness), falloff);
-            return falloff;
+                Target = _target,
+                Resolution = Resolution,
+                CenterX = centerX,
+                CenterY = centerY,
+                Radius = radius,
+                EdgeSoftness = edgeSoftness,
+                Intensity = intensity
+            }.Run();
         }
 
         /// <summary>Moves current visibility toward the targets; returns true when any cell changed.</summary>
         public bool Fade(float maxDelta)
         {
-            bool changed = false;
-            for (int i = 0; i < _current.Length; i++)
+            new FogFadeJob
             {
-                float delta = _target[i] - _current[i];
-                if (delta == 0f) continue;
+                Current = _current,
+                Target = _target,
+                MaxDelta = maxDelta,
+                Changed = _changed
+            }.Run();
+            return _changed[0] != 0;
+        }
 
-                _current[i] = Math.Abs(delta) <= maxDelta
-                    ? _target[i]
-                    : _current[i] + Math.Sign(delta) * maxDelta;
-                changed = true;
-            }
-
-            return changed;
+        /// <summary>Writes visibility as one byte per cell, e.g. into an R8 texture's pixel data.</summary>
+        public void WriteBytes(NativeArray<byte> pixels)
+        {
+            new FogWriteJob { Current = _current, Pixels = pixels }.Run();
         }
     }
 }

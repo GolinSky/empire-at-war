@@ -48,10 +48,9 @@ namespace EmpireAtWar.Components.Weapon
         private List<AttackData> _attackDataList = new List<AttackData>();
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
         private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
-        // Handlers survive rebuilds; only units that stop being live candidates lose theirs.
-        private readonly HashSet<IHardPointModel> _destroyHandlerUnits = new HashSet<IHardPointModel>();
-        private readonly HashSet<IHardPointModel> _candidateUnits = new HashSet<IHardPointModel>();
-        private readonly List<IHardPointModel> _staleHandlerUnits = new List<IHardPointModel>();
+        // Groups whose target still had live hardpoints at the last rebuild. Destroyed hardpoints drop out
+        // lazily, so a group turning into a wreck needs one more rebuild to aim at its dead hardpoints.
+        private readonly HashSet<AttackData> _liveGroupsAtRebuild = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly Dictionary<AttackData, bool> _targetGroupEligibility = new Dictionary<AttackData, bool>();
         private readonly List<Vector2> _turnArcs = new List<Vector2>();
@@ -155,12 +154,9 @@ namespace EmpireAtWar.Components.Weapon
                 group.UnitsChanged -= InvalidateCandidates;
                 group.Destroyed -= InvalidateCandidates;
             }
-            foreach (IHardPointModel unit in _destroyHandlerUnits)
-                unit.OnDestroyed -= OnUnitDestroyed;
             _subscribedGroups.Clear();
-            _destroyHandlerUnits.Clear();
+            _liveGroupsAtRebuild.Clear();
             _candidatesDirty = false;
-            _candidateUnits.Clear();
             _orderedCandidates.Clear();
             _targetGroupEligibility.Clear();
             _targetPositions.Clear();
@@ -287,6 +283,7 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     canAcquire = CanAcquire(candidate.Group);
                     _targetGroupEligibility.Add(candidate.Group, canAcquire);
+                    InvalidateIfWrecked(candidate.Group);
                 }
                 if (!canAcquire) continue;
                 if (!candidate.Group.CanTarget(candidate.Unit))
@@ -420,13 +417,21 @@ namespace EmpireAtWar.Components.Weapon
             RebuildCandidates();
         }
 
+        // The last hardpoint lost turns the ship into a wreck whose destroyed hardpoints are valid aim points again.
+        private void InvalidateIfWrecked(AttackData group)
+        {
+            if (!_liveGroupsAtRebuild.Contains(group) || group.IsDestroyed || group.TargetHealth.HasLiveHardPoints) return;
+            AttackSequenceDiagnostics.RecordTargetInvalidation();
+            InvalidateCandidates();
+        }
+
         private void RebuildCandidates()
         {
             _targetVersion++;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             long rebuildStart = Stopwatch.GetTimestamp();
 #endif
-            _candidateUnits.Clear();
+            _liveGroupsAtRebuild.Clear();
             _orderedCandidates.Clear();
             if (_mainAttackData != null)
             {
@@ -455,7 +460,6 @@ namespace EmpireAtWar.Components.Weapon
                 AddCandidates(group);
             }
 
-            DropStaleUnitHandlers();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             AttackSequenceDiagnostics.RecordCandidateRebuildTime(rebuildStart);
 #endif
@@ -464,31 +468,13 @@ namespace EmpireAtWar.Components.Weapon
         private void AddCandidates(AttackData group)
         {
             group.RefreshStaleUnits();
+            if (group.TargetHealth.HasLiveHardPoints) _liveGroupsAtRebuild.Add(group);
             List<IHardPointModel> units = group.Units;
             for (int i = 0; i < units.Count; i++)
             {
                 IHardPointModel unit = units[i];
-                if (!group.CanTarget(unit)) continue;
-                _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = unit });
-                _candidateUnits.Add(unit);
-                if (unit.IsDestroyed || !_destroyHandlerUnits.Add(unit)) continue;
-                unit.OnDestroyed += OnUnitDestroyed;
+                if (group.CanTarget(unit)) _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = unit });
             }
-        }
-
-        private void DropStaleUnitHandlers()
-        {
-            foreach (IHardPointModel unit in _destroyHandlerUnits)
-                if (unit.IsDestroyed || !_candidateUnits.Contains(unit))
-                    _staleHandlerUnits.Add(unit);
-            for (int i = 0; i < _staleHandlerUnits.Count; i++)
-            {
-                IHardPointModel unit = _staleHandlerUnits[i];
-                unit.OnDestroyed -= OnUnitDestroyed;
-                _destroyHandlerUnits.Remove(unit);
-            }
-
-            _staleHandlerUnits.Clear();
         }
 
         // Destroyed groups stay listed until the next rebuild; they no longer count as targets.
@@ -504,13 +490,6 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _attackDataList.Count; i++)
                 if (!_attackDataList[i].IsDestroyed && attackData.SameSource(_attackDataList[i])) return true;
             return false;
-        }
-
-        // Rebuild instead of removing one candidate: the last destroyed hardpoint turns the ship into a wreck target.
-        private void OnUnitDestroyed()
-        {
-            AttackSequenceDiagnostics.RecordTargetInvalidation();
-            InvalidateCandidates();
         }
 
         private static Vector3 GetTargetPosition(Dictionary<IHardPointModel, Vector3> positions, IHardPointModel unit)

@@ -23,6 +23,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const float LEAD_SETTLE_TIME = 0.15f;
 
         [SerializeField] private ParticleSystem vfx;
+        private Transform _transform;
         private Transform _target;
 
         private Vector3 _aimOffset;
@@ -41,6 +42,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
         {
+            _transform = transform;
             Vector3 start = muzzle.position;
             _target = IsStrikecraftTarget ? null : target;
             _aimOffset = aimOffset;
@@ -89,6 +91,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 Fly();
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ProjectileEffect.Auto())
+#endif
             base.Update();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
@@ -100,17 +105,24 @@ namespace EmpireAtWar.ViewComponents.Weapon
             float remaining = Mathf.Max(_arrivalTime - Time.time, 0f);
             if (_target != null)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.ProjectileTrack.Auto())
+#endif
                 TrackTarget(remaining);
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ProjectileMove.Auto())
+            {
+#endif
             if (remaining <= 0f)
             {
                 Vector3 impactDirection = _lastAimPoint - _start;
-                transform.position = _lastAimPoint;
+                _transform.position = _lastAimPoint;
                 _isFlying = false;
                 _target = null;
                 vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                CompleteImpact(_lastAimPoint, impactDirection.sqrMagnitude > 0f ? impactDirection : transform.forward);
+                CompleteImpact(_lastAimPoint, impactDirection.sqrMagnitude > 0f ? impactDirection : _transform.forward);
                 return;
             }
 
@@ -118,8 +130,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             // so the path bends gently over the whole flight and the heading never snaps.
             float progress = 1f - remaining / _travelTime;
             Vector3 path = _flightAimPoint - _start;
-            transform.position = _start + path * progress;
-            if (path.sqrMagnitude > 0f) transform.rotation = Quaternion.LookRotation(path);
+            Vector3 position = _start + path * progress;
+            // One transform write per frame: each write notifies the bolt's particle system.
+            if (path.sqrMagnitude > 0f) _transform.SetPositionAndRotation(position, Quaternion.LookRotation(path));
+            else _transform.position = position;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
         }
 
         // Leads the target by the ship's travel velocity measured at launch over the remaining flight time.

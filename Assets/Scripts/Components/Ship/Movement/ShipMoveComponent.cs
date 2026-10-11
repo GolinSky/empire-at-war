@@ -25,6 +25,10 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
+        // Solving the firing turn reads every hardpoint transform. A stationary ship keeps its solved facing
+        // until the bearing to the target swings this far or the solve ages out (lost hardpoints change the arcs).
+        private const float FACING_RESOLVE_ANGLE = 2f;
+        private const float FACING_RESOLVE_INTERVAL = 1f;
 
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
@@ -47,6 +51,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         [SerializeField] private bool logNavigationDecisions;
         private bool _isNavigationRegistered;
         private bool _isReleased;
+        private bool _hasSolvedFacing;
+        private Vector3 _solvedFacing;
+        private Vector3 _solvedBearing;
+        private float _solvedFacingTime;
 
         public event Action<Vector3> DestinationChanged;
 
@@ -170,11 +178,26 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (_modifiers.IsIonDisabled) return;
             if (!IsMoving)
             {
-                float turn = _weaponFacing.GetFiringTurnAngle(targetPosition);
-                Vector3 facing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
-                _motion.PlayLookAt(facing, Model.RotationSpeed,
+                Vector3 bearing = targetPosition - transform.position;
+                bearing.y = 0f;
+                if (!_hasSolvedFacing || Time.time - _solvedFacingTime > FACING_RESOLVE_INTERVAL ||
+                    Vector3.Angle(bearing, _solvedBearing) > FACING_RESOLVE_ANGLE)
+                {
+                    float turn;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                    using (BattleProfilerMarkers.ShipFacingSolve.Auto())
+#endif
+                    turn = _weaponFacing.GetFiringTurnAngle(targetPosition);
+                    _solvedFacing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
+                    _solvedBearing = bearing;
+                    _solvedFacingTime = Time.time;
+                    _hasSolvedFacing = true;
+                }
+
+                _motion.PlayLookAt(_solvedFacing, Model.RotationSpeed,
                     Model.TurnAcceleration, Model.BodyRotationMaxAngle);
             }
+            else _hasSolvedFacing = false;
             LookingAt?.Invoke(targetPosition);
         }
 

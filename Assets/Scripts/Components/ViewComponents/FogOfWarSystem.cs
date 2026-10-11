@@ -3,7 +3,6 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
-using Unity.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -12,7 +11,6 @@ namespace ViewComponents
     public class FogOfWarSystem : MonoBehaviour, IFogOfWarSystem
     {
         private const int MAX_TEXTURE_RESOLUTION = 512;
-        private const float BYTE_MAX = 255f;
 
         [SerializeField] private MeshFilter meshFilter;
         [SerializeField] private Renderer fogRenderer;
@@ -109,6 +107,8 @@ namespace ViewComponents
         {
             Destroy(_fogMaterial);
             Destroy(_fogTexture);
+            // The grid exists only once InitializeArea has run.
+            if (_grid != null) _grid.Dispose();
         }
 
         private void Update()
@@ -130,12 +130,7 @@ namespace ViewComponents
 
         private void WritePixels()
         {
-            NativeArray<byte> pixels = _fogTexture.GetPixelData<byte>(0);
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                pixels[i] = (byte)(_grid.GetVisibility(i) * BYTE_MAX + 0.5f);
-            }
-
+            _grid.WriteBytes(_fogTexture.GetPixelData<byte>(0));
             _fogTexture.Apply();
         }
 

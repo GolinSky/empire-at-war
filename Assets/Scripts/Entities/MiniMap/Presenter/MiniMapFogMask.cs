@@ -3,7 +3,6 @@ using EmpireAtWar.Models.FogOfWar;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
-using Unity.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -17,7 +16,6 @@ namespace EmpireAtWar.Presenters.MiniMap
         IObserver<BattleMap>
     {
         private const int RESOLUTION = 128;
-        private const float BYTE_MAX = 255f;
         // Same pacing and feathering as the 3D fog so both layers reveal together.
         private const float UPDATE_INTERVAL = 0.1f;
         private const float FADE_SPEED = 3f;
@@ -55,6 +53,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         {
             _battleMap.RemoveObserver(this);
             Object.Destroy(_texture);
+            _grid.Dispose();
         }
 
         public void UpdateState(BattleMap battleMap)
@@ -94,12 +93,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         private void WritePixels()
         {
-            NativeArray<byte> pixels = _texture.GetPixelData<byte>(0);
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                pixels[i] = (byte)(_grid.GetVisibility(i) * BYTE_MAX + 0.5f);
-            }
-
+            _grid.WriteBytes(_texture.GetPixelData<byte>(0));
             _texture.Apply();
         }
     }
