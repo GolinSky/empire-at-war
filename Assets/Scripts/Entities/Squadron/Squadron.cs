@@ -38,6 +38,8 @@ namespace EmpireAtWar.Entities.Squadrons
         ILateDisposable
     {
         private const float RELEASED_CONTEXT_LIFETIME = 6f;
+        // Idle and guarding squadrons scan every enemy in range; spacing those scans keeps large air battles cheap.
+        private const float TARGET_SEARCH_INTERVAL = 0.25f;
 
         private ISquadronFlightComponent _flight;
         private IHealthComponent _health;
@@ -67,6 +69,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private ShipAbilityId _pendingAbilityId;
 
         private float _huntRetargetTimer;
+        private float _targetSearchTimer;
         private float _pendingAbilityRange;
         private float _guardedRadius;
 
@@ -127,6 +130,8 @@ namespace EmpireAtWar.Entities.Squadrons
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
+            // Staggered so squadrons launched together do not all search in the same frame.
+            _targetSearchTimer = UnityEngine.Random.Range(0f, TARGET_SEARCH_INTERVAL);
         }
 
         public void LateDispose() => Release(false);
@@ -282,12 +287,12 @@ namespace EmpireAtWar.Entities.Squadrons
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
                     // Fighters orbit one side of the guarded unit, so the whole guard area is
                     // searched in what the team sees rather than in the squadron's own radar.
-                    else if (!IsEngaging) DefendArea(_targetSelector.SelectSeen(
+                    else if (ShouldSearchTargets()) DefendArea(_targetSelector.SelectSeen(
                         _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
                         _guardedRadius + Data.GuardRadius));
                     break;
                 case UnitOrderType.AttackMove:
-                    if (!IsEngaging)
+                    if (ShouldSearchTargets())
                         DefendArea(_targetSelector.SelectNear(_radar.Enemies, _flight.Centroid, Data.GuardRadius));
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();
                     break;
@@ -301,7 +306,7 @@ namespace EmpireAtWar.Entities.Squadrons
                     else _orders.Clear();
                     break;
                 default:
-                    if (!IsEngaging)
+                    if (ShouldSearchTargets())
                         DefendArea(_targetSelector.SelectNear(_radar.Enemies, _pilot.LoiterCenter, Data.GuardRadius));
                     break;
             }
@@ -334,6 +339,16 @@ namespace EmpireAtWar.Entities.Squadrons
         }
 
         private bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();
+
+        /// <summary>A lost target is replaced at once; with no target the search runs on an interval.</summary>
+        private bool ShouldSearchTargets()
+        {
+            _targetSearchTimer -= Time.deltaTime;
+            if (IsEngaging) return false;
+            if (_engaged == null && _targetSearchTimer > 0f) return false;
+            _targetSearchTimer = TARGET_SEARCH_INTERVAL;
+            return true;
+        }
 
         /// <summary>Engages <paramref name="enemy"/> if any and resumes the order once enemies are gone.</summary>
         private void DefendArea(IEntity enemy)
