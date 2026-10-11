@@ -95,7 +95,62 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(mounted.Damage, Is.EqualTo(single.Damage * barrels).Within(0.001f));
             Assert.That(mounted.ShotsPerSalvo, Is.EqualTo(single.ShotsPerSalvo));
-            Assert.That(mounted.ShotPrefab, Is.EqualTo(family.MultiBarrelShotPrefab));
+            var expectedPrefab = mount == WeaponMount.Quad ? family.QuadShotPrefab :
+                mount == WeaponMount.Octuple ? family.OctupleShotPrefab : family.MultiBarrelShotPrefab;
+            Assert.That(expectedPrefab, Is.Not.Null);
+            Assert.That(mounted.ShotPrefab, Is.EqualTo(expectedPrefab));
+        }
+
+        [TestCase(WeaponMount.Single, 1, "Projectile")]
+        [TestCase(WeaponMount.Dual, 2, "DualProjectile")]
+        [TestCase(WeaponMount.Quad, 4, "QuadProjectile")]
+        [TestCase(WeaponMount.Octuple, 8, "OctupleProjectile")]
+        public void MountProjectiles_EmitDistinctBoltsInCompactRows(WeaponMount mount, int count, string prefabName)
+        {
+            WeaponProfile profile = Build(Weapons, mount, WeaponFirePattern.Standard);
+            Assert.That(profile.ShotPrefab.name, Is.EqualTo(prefabName));
+            var shot = UnityEngine.Object.Instantiate(profile.ShotPrefab);
+            var muzzle = new GameObject("Test muzzle");
+            var target = new GameObject("Test target");
+            try
+            {
+                target.transform.position = Vector3.forward * 133f;
+                var serialized = new SerializedObject(shot);
+                var particles = (ParticleSystem)serialized.FindProperty("vfx").objectReferenceValue;
+                for (int reuse = 0; reuse < 2; reuse++)
+                {
+                    // Exercise the runtime setup without a damage target, then advance particle simulation.
+                    if (reuse == 0)
+                        shot.Fire(muzzle.transform, target.transform, target.transform, Vector3.zero, profile);
+                    else
+                        typeof(EmpireAtWar.ViewComponents.Weapon.BoltShot).GetMethod("Play",
+                            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                            .Invoke(shot, new object[] { muzzle.transform, target.transform, Vector3.zero, profile });
+                    particles.Simulate(0.05f, true, false, true);
+                    var buffer = new ParticleSystem.Particle[count + 1];
+                    Assert.That(particles.GetParticles(buffer), Is.EqualTo(count));
+                    foreach (var particle in buffer.Take(count))
+                        Assert.That(Vector3.Dot(particle.velocity.normalized, Vector3.forward),
+                            Is.GreaterThan(0.999f), "Stretched bolts must point along flight");
+                    var positions = buffer.Take(count).Select(particle => particle.position).ToArray();
+                    Assert.That(positions.Distinct().Count(), Is.EqualTo(count));
+                    if (count >= 4)
+                    {
+                        Assert.That(positions.Count(position => position.y > 0f), Is.EqualTo(count / 2));
+                        Assert.That(positions.Count(position => position.y < 0f), Is.EqualTo(count / 2));
+                        Assert.That(positions.Max(position => position.x) - positions.Min(position => position.x),
+                            Is.LessThanOrEqualTo(5.3f));
+                    }
+                    particles.Simulate(0.25f, true, false, true);
+                    Assert.That(particles.particleCount, Is.EqualTo(count), "Only one burst per shot");
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shot.gameObject);
+                UnityEngine.Object.DestroyImmediate(muzzle);
+                UnityEngine.Object.DestroyImmediate(target);
+            }
         }
 
         [Test]

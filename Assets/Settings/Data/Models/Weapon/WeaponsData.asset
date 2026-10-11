@@ -29,6 +29,10 @@ MonoBehaviour:
       type: 3}
     multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
+      type: 3}
     projectileSpeed: 133
     factionColored: 1
     color: {r: 1, g: 0.31, b: 0, a: 1}
@@ -48,6 +52,10 @@ MonoBehaviour:
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
       type: 3}
     projectileSpeed: 133
     factionColored: 1
@@ -69,6 +77,10 @@ MonoBehaviour:
       type: 3}
     multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
+      type: 3}
     projectileSpeed: 55
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
@@ -88,6 +100,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 90
     factionColored: 0
     color: {r: 0.85, g: 0.9, b: 1, a: 1}
@@ -107,6 +121,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 35
     factionColored: 0
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
@@ -126,6 +142,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 25
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
@@ -145,6 +163,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 25
     factionColored: 0
     color: {r: 0.3, g: 0.7, b: 1, a: 1}
@@ -165,6 +185,10 @@ MonoBehaviour:
       type: 3}
     multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
+      type: 3}
     projectileSpeed: 90
     factionColored: 1
     color: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -184,6 +208,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 0
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
@@ -203,6 +229,10 @@ MonoBehaviour:
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
       type: 3}
     projectileSpeed: 140
     factionColored: 1
@@ -224,6 +254,10 @@ MonoBehaviour:
       type: 3}
     multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
+      type: 3}
     projectileSpeed: 55
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
@@ -243,6 +277,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 35
     factionColored: 0
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
@@ -262,6 +298,8 @@ MonoBehaviour:
     shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
       type: 3}
     multiBarrelShotPrefab: {fileID: 0}
+    quadShotPrefab: {fileID: 0}
+    octupleShotPrefab: {fileID: 0}
     projectileSpeed: 25
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
