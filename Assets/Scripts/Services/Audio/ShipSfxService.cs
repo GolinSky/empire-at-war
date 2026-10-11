@@ -237,7 +237,9 @@ namespace EmpireAtWar.Services.Audio
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
             if (viewport.z <= 0f || !_localPlayer.IsFriendly(ship.Owner) &&
                 (ship.IsCloaked() || !_visionService.IsVisible(_localPlayer.Id, position))) return 0f;
-            float outside = Mathf.Max(0f, -viewport.x, viewport.x - 1f, -viewport.y, viewport.y - 1f);
+            // Two-argument Max: the params overload allocates an array on every call.
+            float outside = Mathf.Max(Mathf.Max(0f, Mathf.Max(-viewport.x, viewport.x - 1f)),
+                Mathf.Max(-viewport.y, viewport.y - 1f));
             float edge = Mathf.Clamp01(Vector2.Distance(new Vector2(viewport.x, viewport.y),
                 new Vector2(0.5f, 0.5f)) / Mathf.Sqrt(0.5f));
             float gain = Mathf.Lerp(1f, _data.EdgeGain, edge) *
