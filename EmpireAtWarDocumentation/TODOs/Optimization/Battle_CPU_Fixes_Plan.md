@@ -23,7 +23,7 @@ updated: 2026-10-11
 | Hardpoint readiness | gameplay, not perf | `AttackSequenceState` waits for visual completion (`WaitingForEffects`) | 7 |
 
 ## Rules
-- Execution scope (2026-10-11): phases 0–6; user owns phases 7–8. Latest instruction skips new tests and captures; use saved 15:25/15:31 Editor evidence, compile and review each phase. Runtime parity, new attribution, listening and matched performance gates remain pending.
+- Implementation execution scope (2026-10-11): phases 0–6; user owns phases 7–8. That execution skipped tests/new captures and used saved 15:25/15:31 evidence. Later user-requested live audit is recorded under Phase 8; runtime parity, listening and matched performance gates remain pending.
 - Measure → change one thing → measure. ≥3 matched 10 s runs per variant, 1× and 4×; report median/p95/p99 + bytes/frame.
 - 4× Editor at ~8 FPS inflates per-frame work; compare only matched runs, confirm big wins in a Development Player.
 - Phases 1–6 must not change gameplay: same targets, shot counts, impact order/timing, cancellation, audio audibility.
@@ -64,7 +64,7 @@ updated: 2026-10-11
 - Cause: `TryFindEvent` scans `_impacts` / `_sequences` for every due event; records use swap-remove (`RemoveImpactAt`, `RemoveSequenceAt`).
 - [x] Keep `Dictionary<long, int>` (event sequence → index) per record list; update on add and swap-remove. Alternative: store index in `DueEvent` and verify `EventSequence` matches.
 - [x] Preserve stable due order, cancellation, generations and reentrant record changes during commit.
-- [ ] Use Phase 0 child markers to decide whether emission/impact work is the next target.
+- [x] 2026-10-11 live audit child attribution: impact 4.781 ms/frame vs emission 1.283 and lookup 0.009; impact is the next measured due-work target. Matching/parity gate remains open.
 - Implementation: sequence/impact ID maps updated before callbacks, on initial add, reschedule, cancellation, swap-remove and disposal. Sorting/timestamps remain unchanged. Unity compilation passed; tests/captures skipped.
 - Done gate pending: new child timings and runtime reentrant/cancellation parity are unmeasured.
 
@@ -87,7 +87,7 @@ updated: 2026-10-11
 - Unity compilation passed; tests/captures skipped. Done gate pending: cache hit counts, routes/reservations and frame timings require the user capture.
 
 ### Phase 6 — Squadron tick
-- [ ] Use Phase 0 children (`UpdateOrder` / pilot / flight) to pick the leading cost.
+- [x] 2026-10-11 live audit: `UpdateOrder` 10.725 ms/frame vs pilot 0.205 and flight 1.027; attribute order selection next. No additional implementation or cadence change.
 - [x] Remove duplicate pilot work: one formation world offset per live rank per travel tick, reused by lag and steering; one aim-position read per used target index per engage tick. Buffers allocated once with pilot; member-loss rank ordering retained. No update-rate changes.
 - Saved evidence: `Squadron.Tick` 8.469 ms / 109 calls per frame; children were uninstrumented. Choice is source-verified duplicate work, not a claimed measured leading child.
 - Unity compilation passed; tests/captures skipped. Done gate pending: child timings and formation/targeting/member-loss/order parity need the user capture.
@@ -103,10 +103,37 @@ updated: 2026-10-11
 - Done gate: fire rate matches profile data per weapon; pool creations do not rise in warmed battles; no stuck/never-ready hardpoints.
 
 ### Phase 8 — Acceptance
-- Owner: user; skipped in this execution.
-- [ ] Matched captures vs Phase 0 baseline: CPU median/p95/p99, bytes/frame, GC stalls.
-- [ ] Behavior: target priority, range/arc edges, shot counts, impact timing, pause, owner/hardpoint death, pool drain, audio mix, routes.
-- [ ] Development Player confirmation of the largest gains.
+- Owner: user; 2026-10-11 live audit requested and completed without stopping/pausing Play Mode. Acceptance remains open.
+- [x] Observational evidence: 10.047 s / 91-frame battle capture at 1×; fresh 60-frame Profiler and raw main-thread allocation attribution; two Render Graph frames and six Rendering Debugger panels; read the existing complete 888-event Frame Debugger capture and logs.
+- Current frame median/p95/p99: 104.981/194.972/227.891 ms; mean 1,365,793 allocated B/frame. Phase 0 baseline is 4× with different workload/source → no matched gain claim.
+- Attribution: target capture 22.789 ms, squadron orders 10.725 ms, projectile update 7.865 ms; due lookup 0.009 ms, SFX mix 0.007 ms and exactly one mix/frame. Impact/radar scopes contain 67.6%/21.3% of fresh main-thread allocated bytes; exact allocating stacks remain absent.
+- Evidence and full next-step checklist: [[TODOs/Optimization/Battle_CPU_Fixes_Plan - Research]]. New Frame Debugger capture requires pausing and was skipped under the active no-interruption constraint.
+- [ ] Matched captures vs Phase 0 baseline: ≥3 × 10 s per variant at 1× and separately 4×, fixed scenario/camera/population/settings; CPU/frame median/p95/p99, bytes/frame, GC stalls.
+- [ ] Behavior: target priority, range/arc/tilt edges, shot counts, impact timing, pause, owner/hardpoint death, pool drain, first-frame audio/ducking, routes/reservations and squadron formations/member loss.
+- [ ] Phase 7 prerequisite for whole-plan acceptance: live source still has `WaitingForEffects`, effect-completion callbacks and `ShotsPerSalvo` pool cap. Finish its fire-rate/overlap gates, or explicitly limit acceptance to phases 0–6.
+- [ ] Development Player confirmation of the largest gains. Tests/builds/scenario resets were not run against the protected live session.
+
+### Phase 9 — Post-audit hotspot fixes (2026-10-11)
+- [x] `2f57563f`: batch-shared target position cache; lazy candidate rebuild; allocation-free `AddCandidates`, `RefreshStaleUnits`, `HasLiveHardPoints`. Target capture 22.8 → 5.8 ms mean (CSV, different workload).
+- [x] `8c20aa58`: per-frame vision centre snapshot (`OwnedCircleSet`); Burst fog grid jobs; squadron idle/guard/attack-move search every ≤0.25 s; ship facing solve reused while bearing holds (2° / 1 s); per-hardpoint destruction subscriptions removed (wreck transition re-checked at capture); bolt single transform write + `Projectile.Track/Move/Effect` markers.
+- [x] 15:43 UTC recapture of `8c20aa58`: main thread median 44.3 ms (audit 86.0, 15:18 62.2); GC 97 KB/frame mean; allocation stacks 147 KB/frame. Evidence: `Logs/BattleAudit/20261011T1543Z/recapture.md`.
+- [x] `4327e1ec`: bugs found in that recapture — shield clip over 1,024 planes per tracked bolt per frame (`Projectile.Track` 18.5 ms) → Burst `ShieldSurfaceClipJob`; squadron search lockstep (8.6 ms every 0.25 s) → jittered reset; `FindNearestWalkableCell` full-grid scan (60.5 ms plan spike) → bounded ring search with parity test; `ForceComposition.Add` boxed enumerator.
+- Tests: EditMode 1,408/1,432; 24 failures are pre-existing asset/data checks unrelated to these files.
+- [x] 16:08 UTC recapture of `4327e1ec`: frame median 33.1 ms (~30 FPS), main thread 31.2 ms (audit 86.0); target capture 3.8, projectiles 1.8 (`Projectile.Track` 18.5 → 0.83 Profiler), squadron orders 0.83 (max 5.9), ship orders 0.71; allocations 23.7 KB/frame; 0 console errors. Evidence: `Logs/BattleAudit/20261011T1608Z/recapture.md`.
+- [x] `ShipSfxService.GetGain` 52 B/call = 5-argument `Mathf.Max` params array → two-argument rewrite (`889b247e`).
+- [x] Navigation burst: 17 plans in one frame → 36.5 ms (route build/flood). Resolved by the per-frame plan cap in `d138cb65`.
+- [x] 16:18 UTC matched-workload analysis (52,171 candidates vs audit 52,282): main thread median 55.7 ms vs 86.0; target capture 10.5 vs 22.7. Evidence: `Logs/BattleAudit/20261011T1618Z/analysis.md`.
+- [ ] Pool activation churn: `ActivateAwakeRecursively` 6.3 ms/frame (194 activations) from `ShotEffectPool` SetActive on lease/return; candidate fix keeps effects active with the component disabled when idle.
+- [x] Navigation bursts up to 72 ms (24 plans): 104/135 plans from ship states' preserve-course pursuit, 29 from `EnemyUnitCommander`; group retarget, not lockstep.
+- [x] `d138cb65` (user chose A+B+F): destination rings 16 → 2, slots ordered nearest the ship, first routable slot wins; fallback nearest-reachable probed from the ring slot facing the ship (1 ring); orders queue plans, `ShipNavigationService.LateTick` runs ≤4 per frame FIFO; queued ship counts as moving. Not chosen: 7 → 3 route variants, stand-off pursuit, 0.5 s re-path limit, nearby-only idle obstacles. Tests 1,409/1,433 (24 pre-existing). Runtime recapture pending.
+- [x] `889b247e`: `GetGain` params-array allocation (already in the user's build).
+- [x] `48210bd6`: route variants 7 → 3 (heading curve, turned curve at handle scale 0.5, polyline); pursuit re-path of a moving ship ≤ every 0.5 s (`ShipMoveComponent.REPATH_INTERVAL`), new orders immediate; idle ships removed as route obstacles (`IsIdle`/`HullsOverlap` deleted). Tests 1,409/1,433. Runtime recapture pending.
+- [x] 16:50 UTC analysis of `48210bd6` (283 weapons, 154 squadrons): frame median 49.3 ms (~20 FPS), main 47.0; navigation max 18.0 ms at ≤4 plans/frame (was 72.2); target capture 8.2; projectiles 1.4; 137 KB/frame GC mean. Evidence: `Logs/BattleAudit/20261011T1650Z/analysis.md`.
+- [ ] Selection UI rebuild spike: each selection change re-instantiates `ShipGroupUi`/`ShipSelectionGroupUi`/`ShipAbilityBarUi` widgets; every new `MPImage` creates a `Material` → ~2.5 MB in one frame. Reuse widgets.
+- Procedure for future captures: `Tools/BattleAudit/README.md` + `Tools/BattleAudit/battle_audit.py`.
+- [ ] Open decision: attack-move/guard/hunt pursue the target centre (inside its hull) → each re-path starts with an invalid point and runs the ring search; a stand-off point like `AttackTargetState` avoids it.
+- [ ] Unattributed: 5 MB CSV allocation frames and a 9-frame squadron-order streak (~12.3 ms); neither reproduced under Profiler.
+- Behavior changes to confirm in play: idle squadrons react ≤0.25 s later; stationary ship facing re-solves on 2° bearing change or 1 s.
 
 ## Edge Cases
 - Tilted ship + target exactly on yaw/range boundary → keep serial fallback.
