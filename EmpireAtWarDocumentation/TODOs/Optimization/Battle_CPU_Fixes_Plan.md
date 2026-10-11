@@ -62,10 +62,11 @@ updated: 2026-10-11
 
 ### Phase 3 — O(1) due-event lookup
 - Cause: `TryFindEvent` scans `_impacts` / `_sequences` for every due event; records use swap-remove (`RemoveImpactAt`, `RemoveSequenceAt`).
-- [ ] Keep `Dictionary<long, int>` (event sequence → index) per record list; update on add and swap-remove. Alternative: store index in `DueEvent` and verify `EventSequence` matches.
-- [ ] Preserve stable due order, cancellation, generations and reentrant record changes during commit.
+- [x] Keep `Dictionary<long, int>` (event sequence → index) per record list; update on add and swap-remove. Alternative: store index in `DueEvent` and verify `EventSequence` matches.
+- [x] Preserve stable due order, cancellation, generations and reentrant record changes during commit.
 - [ ] Use Phase 0 child markers to decide whether emission/impact work is the next target.
-- Done gate: lookup time ~0; due apply mean and spike drop; impact order/timestamps unchanged.
+- Implementation: sequence/impact ID maps updated before callbacks, on initial add, reschedule, cancellation, swap-remove and disposal. Sorting/timestamps remain unchanged. Unity compilation passed; tests/captures skipped.
+- Done gate pending: new child timings and runtime reentrant/cancellation parity are unmeasured.
 
 ### Phase 4 — Audio mix once per frame
 - Cause: `ShipSfxService.Request` calls `ApplyMix()` on every accepted shot and loop renewal; `Tick` calls it again. Each call: 2 loops over 20 slots + `_mixer.SetFloat("SfxDuckVolume")`.

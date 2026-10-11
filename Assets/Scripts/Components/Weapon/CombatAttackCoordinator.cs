@@ -21,6 +21,8 @@ namespace EmpireAtWar.Components.Weapon
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
         private readonly List<ImpactRecord> _impacts = new List<ImpactRecord>();
+        private readonly Dictionary<long, int> _sequenceIndices = new Dictionary<long, int>();
+        private readonly Dictionary<long, int> _impactIndices = new Dictionary<long, int>();
         private readonly List<DueEvent> _dueEvents = new List<DueEvent>();
         private static readonly Comparison<DueEvent> _compareDueEvents = CompareDueEvents;
         private readonly TargetSelectionBatch _targetSelection;
@@ -49,6 +51,8 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _impacts.Count; i++) AttackSequenceDiagnostics.RecordCancelledImpact();
             _impacts.Clear();
             _sequences.Clear();
+            _sequenceIndices.Clear();
+            _impactIndices.Clear();
             _owners.Clear();
             _targetSelection.Dispose();
             _dueEvents.Clear();
@@ -105,7 +109,7 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             // Coroutine waits resumed on a later frame; never emit a catch-up burst after a long frame.
-            _sequences.Add(new SequenceRecord
+            SequenceRecord sequence = new SequenceRecord
             {
                 Owner = owner,
                 OwnerGeneration = ownerGeneration,
@@ -118,7 +122,9 @@ namespace EmpireAtWar.Components.Weapon
                 NextTime = Time.time + hardPoint.DelayBetweenShots,
                 EarliestFrame = Time.frameCount + 1,
                 EventSequence = ++_nextEventSequence
-            });
+            };
+            _sequenceIndices.Add(sequence.EventSequence, _sequences.Count);
+            _sequences.Add(sequence);
         }
 
         internal void QueueTargetSelection(WeaponComponent weapon, WeaponHardPoint hardPoint)
@@ -147,7 +153,7 @@ namespace EmpireAtWar.Components.Weapon
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before scheduling damage.");
 
-            _impacts.Add(new ImpactRecord
+            ImpactRecord impact = new ImpactRecord
             {
                 Owner = owner,
                 OwnerGeneration = ownerGeneration,
@@ -161,7 +167,9 @@ namespace EmpireAtWar.Components.Weapon
                 DueTime = Time.time + delay,
                 EarliestFrame = Time.frameCount + 1,
                 EventSequence = ++_nextEventSequence
-            });
+            };
+            _impactIndices.Add(impact.EventSequence, _impacts.Count);
+            _impacts.Add(impact);
             AttackSequenceDiagnostics.RecordScheduledImpact();
         }
 
@@ -372,27 +380,7 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using var scope = BattleProfilerMarkers.DueLookup.Auto();
 #endif
-            if (isImpact)
-            {
-                for (int i = 0; i < _impacts.Count; i++)
-                    if (_impacts[i].EventSequence == sequence)
-                    {
-                        index = i;
-                        return true;
-                    }
-            }
-            else
-            {
-                for (int i = 0; i < _sequences.Count; i++)
-                    if (_sequences[i].EventSequence == sequence)
-                    {
-                        index = i;
-                        return true;
-                    }
-            }
-
-            index = -1;
-            return false;
+            return (isImpact ? _impactIndices : _sequenceIndices).TryGetValue(sequence, out index);
         }
 
         private void CommitDueEvent(bool isImpact, int index, float now, int frame)
@@ -447,6 +435,7 @@ namespace EmpireAtWar.Components.Weapon
             sequence.NextTime = now + sequence.HardPoint.DelayBetweenShots;
             sequence.EarliestFrame = frame + 1;
             sequence.EventSequence = ++_nextEventSequence;
+            _sequenceIndices.Add(sequence.EventSequence, _sequences.Count);
             _sequences.Add(sequence);
         }
 
@@ -487,14 +476,24 @@ namespace EmpireAtWar.Components.Weapon
         private void RemoveSequenceAt(int index)
         {
             int last = _sequences.Count - 1;
-            _sequences[index] = _sequences[last];
+            _sequenceIndices.Remove(_sequences[index].EventSequence);
+            if (index != last)
+            {
+                _sequences[index] = _sequences[last];
+                _sequenceIndices[_sequences[index].EventSequence] = index;
+            }
             _sequences.RemoveAt(last);
         }
 
         private void RemoveImpactAt(int index)
         {
             int last = _impacts.Count - 1;
-            _impacts[index] = _impacts[last];
+            _impactIndices.Remove(_impacts[index].EventSequence);
+            if (index != last)
+            {
+                _impacts[index] = _impacts[last];
+                _impactIndices[_impacts[index].EventSequence] = index;
+            }
             _impacts.RemoveAt(last);
         }
 
