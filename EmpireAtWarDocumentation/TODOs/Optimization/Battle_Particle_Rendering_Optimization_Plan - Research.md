@@ -1,7 +1,8 @@
 ---
 category: Optimization
-status: todo
+status: in-progress
 created: 2026-09-30
+updated: 2026-10-11
 ---
 # Battle particle rendering evidence — 2026-09-30
 
@@ -147,3 +148,53 @@ created: 2026-09-30
 - Snapshot settings/timings: `Logs/RenderAudit/20260930T165740445Z-capture/rendering-debugger.json`.
 - Full prefab/material inventory and replay summary: `output/RenderAuditReview_20260930/`.
 - Plan: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan]].
+
+### Rendering investigation — 2026-10-11
+- Source: `Logs/RenderAudit/20261011T115023720Z-capture/`; Frame Debugger frame 59290, 949/949 events, no truncation; event/data indices match throughout.
+- Frame Debugger events ≠ draws. Ignore Clear* event draw/shader fields; clear records retain previous shader information.
+- Transparent: 843 events / 1,234 reported draws = 1,078 non-Canvas + 156 world UI; opaque 279 draws; main-light shadows 354 draws.
+- Transparent shaders: URP Particles/Unlit 424 events / 661 draws; Ion Glow 147/219; URP Unlit 81/149. Shader names do not establish renderer type.
+- Particles/Unlit texture groups: smokeSheet03 247 draws; BlasterBolt 183; BlasterBolt_Tiled 111; TIEInterceptor engine texture 51; TIEBrute engine texture 20. Includes imported glow meshes.
+- Ion Glow: 143 events / 215 draws use brightness 6 + white material color, matching shared `MuzzleFlash.mat`; 4 events / 4 draws use brightness 4 + blue color, matching `IonArcGlow.mat`. Material-identity attribution is inferred from signatures; export lacks material IDs.
+- `MuzzleFlash.mat` is referenced by 12 projectile/beam prefabs; `MuzzleFlashView` uses LineRenderer vertex color and 0.1 s stored duration, without material cloning.
+- Different-material breaks: 363 events; Particles/Unlit 217, Ion Glow 95, MPUI 28, legacy alpha 10, legacy premultiply 11, legacy additive 1, Ion Field 1.
+- SRP-incompatible breaks: 158; Particles/Unlit 95, Ion Glow 47, MPUI 10, other shaders 6. Particle/Line/Canvas renderer restrictions matter; `IonGlow.shader` already uses UnityPerMaterial.
+- World UI: 39 repeated sequences of 2 MPUI + IconShadow + UI/Default = 156 draws / 624 vertices. Icon textures: TIEBomber 18, TIEFighter 11, TIEInterceptor 8, Belbullab22 2.
+- `SquadronIconComponent` controls world Canvas per squadron, checks friendly/vision visibility, and updates billboard transform every LateTick; source/prefab structure matches captured sequences.
+- Screen UI: 41 Canvas draws; world UI is already included in the transparent total.
+- Shadows: 347 Ship Lit + 7 Ship Wreck draws, 3,208,522 reported vertices / 5,878,500 indices; 2048×1024 atlas. No combat-particle ShadowCaster draw is present.
+- Current serialized HighFidelity: shadow distance 1,000, 2 cascades, main atlas setting 2,048; active-at-capture quality not explicitly recorded.
+- Rendering Debugger frame 59289: CPU / CPUInline / GPU column order verified in installed Core package. Transparency 2.0818 / 0.0013 / 1.754624 ms; opaque 0.3264 / 0.0041 / 0.450304; shadows 0.3538 / 0.0149 / 0.218112; bloom 0.0515 / 0.0336 / 0.046336; SSAO 0.0177 / 0.0096 / 0.054784.
+- GPU whole-frame and MotionBlur scope values are zero/unusable; do not interpret as zero cost. Timings are adjacent snapshots, not exact Frame Debugger event timings.
+- Post passes: bloom 16 DrawProcedural events (1 prefilter + 10 downsample + 5 upsample), SSAO 3, high-quality camera motion blur 1. Filter Clear* records to avoid false extra shader passes.
+- Render target 2560×1440; bloom starts 1280×720 then reaches 40×22; SSAO occlusion/horizontal blur 1280×720, final composite 2560×1440.
+- Profiler frames 122/123: 1,802/1,806 draws, 726/739 SetPass, 3,335,865/3,374,289 triangles; main-thread frame 858.1139/1,075.06763 ms; whole-frame GPU time unavailable.
+- Radar scans: 1,286/1,313 calls; inclusive 619.7048/629.7695 ms, self 589.5341/601.1728 ms. FixedBehaviourUpdate 66/67 calls indicates fixed-step catch-up; capture overhead/time scale must be isolated before claiming production FPS.
+- ParticleSystem.Update inclusive 0.9509/0.9202 ms; UGUI.Rendering.UpdateBatches inclusive 2.6495/4.4471 ms. Do not add nested self/inclusive timing.
+- Priority: isolate radar/fixed-step CPU amplification; rendering experiments on muzzle/bolt/trail submission and squadron indicator batching; measure smoke overlap before tuning; shadow LOD/distance second; bloom/SSAO lower priority at measured cost.
+- Verification: read-only capture/source/serialized-asset analysis; no Unity tests, Play Mode changes, code or asset mutations.
+
+### Later session supersedes CPU priority — 2026-10-11
+- Rendering investigation above uses the 14:50 audit. User pasted the rendering agent's matching analysis; preserve its source-verified findings and caveats.
+- 15:25 battle capture reports radar 8.581 ms/frame after source changed to centralized RadarScanService. The old 620 ms radar finding is not a current diagnosis.
+- 15:25–15:28 Capture All: profiler/Render Graph completed; rendering camera selector partial; Frame Debugger timed out at event 799 with zero saved frames.
+- 15:31 fresh profiler: median CPU 96.584 ms, GPU 2.965 ms; target preparation is largest steady exported main-thread hotspot.
+- Current capture manifest, CPU comparison and uncertainty: [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]].
+- Retain rendering priority: muzzle/bolt/smoke submission and squadron indicators → measured overdraw → shadows → motion blur; bloom/SSAO lower priority in available old GPU snapshot.
+
+### Targeted rendering changes — 2026-10-11
+- User direction: use the latest saved full battle capture; stop broad idle-session profiling. New startup and partial isolation captures are diagnostic only.
+- Runtime inventory: `output/ParticleRendering_20261011/runtime-inventory.json`; ordinary muzzle renderers share material ID 63632, `Assets/Art/Materials/Vfx/MuzzleFlash.mat`, Ion Glow. No clone fix justified by this snapshot.
+- Live `DualProjectile.mat`, `ShipExplosionSmoke.mat`, `Engines.mat`, `Vulture_MuzzleFlashHelper.mat`: already URP Particles/Unlit. Historical migration recommendations are obsolete for these assets.
+- All 18 squadron prefabs: merge black background + colored rounded frame into one standard Image with shared SquadronFrame material; rebind `SquadronIconComponent.frameImage` through SerializedObject.
+- 10 prefabs have identical unpacked icon/silhouette sprites → shared SquadronIcon shader composites both samples in one Image. Other 8 retain separate silhouette artwork and foreground Image.
+- Frame constants: 72×72 canvas, 3 px corner radius, 1.5 px border, black background alpha 0.5. Icon: 58.5/54 scale, normalized vertical offset 1.5/54; normalized offset preserves transparent sprite padding and zoom scaling.
+- Existing icon/color/component references remain; disabled Background/Icon graphics retain their objects. Component visibility, ownership/selection updates, sorting, screen scaling and hit-test logic were not edited.
+- 18-prefab fixture: 72 → 44 enabled graphics. Historical 39-indicator composition: 18 TIEBomber + 11 TIEFighter + 8 TIEInterceptor ×3; 2 Belbullab22 ×2 → projected 115 draws, previously 156. No new combat-frame measurement.
+- Before/after ownership colors and alpha 0.2/0.35 rendered at 720×720. Mean absolute RGB difference 0.015/255; max 16/255; 350 pixels >2/255. No missing/displaced icons observed; remaining differences are tiny sampling/edge changes.
+- Beam prefabs only: `LaserProjectile` and `ProtonBeamView` override nested `HitEffect/ppfxPipelineFire` emission 100/s → 50/s. `ExplosionVfx` source remains 100/s; lifetime 1–6 s, size and other systems unchanged.
+- Seed 12345, 6 s simulation: rate 100 → 362 live particles; rate 50 → 185. Both prefabs drain to zero after StopEmitting + 6.1 s simulation; stopped state verified. Manual Simulate changes playback state, so stop again after advancement to inspect IsAlive.
+- Targeted validation: all 18 saved indicator references/counts/shared materials passed; both new shaders have no compiler messages. `SerializedReferenceTests`: 2 passed, 0 failed, clean MainMenuScene before async run.
+- Assets saved through PrefabUtility/AssetDatabase; generated screenshot folder removed from Assets through AssetDatabase.DeleteAsset. Preview/validation scripts and JSON live outside Assets in `output/ParticleRendering_20261011`.
+- Earlier broad isolation was interrupted; diagnostic toggles/time scale restored. Its drifting draw counts and startup Profiler are excluded from acceptance. Unrelated RadarScanService teardown errors and transient concurrent ShipMoveComponent compile errors were observed; latest console interval had no new errors.
+- Remaining: combat density/readability and pooled reuse/death/scene exit, muzzle/bolt/smoke submission isolation, matched Player frame timing. No claimed sustained FPS gain.

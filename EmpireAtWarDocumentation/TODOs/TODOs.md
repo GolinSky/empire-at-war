@@ -174,10 +174,12 @@
 ### Optimization
 
 - [ ] **Optimize battle particle rendering**
-  - **Plan**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Particle rendering optimization]]
-  - **Research**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research|2026-09-30 capture and prefab analysis]]
-  - **Status**: Profiler export repaired; 2 regression tests passed; original recording recovered; 65 prefabs / 111 particle systems inspected. Jobs review confirms immediate completion, main-thread flood execution and per-Plan grid rebuilds.
-  - **Remaining**: compare ~200 FPS battle start with ~12 FPS mid-battle; prioritize ship/navigation CPU growth and accumulating combat effects. Star reduction deferred pending isolation.
+  - **Plan**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Effects and squadron indicators]]
+  - **Research**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research|Verified rendering and historical navigation evidence]]
+  - **Status**: 2026-10-11 applied changes from latest complete saved capture per user direction: 18 squadron indicators now use 2–3 graphics instead of 4; both beam-hit smoke systems emit 50/s instead of 100/s. Historical squadron mix projects 156 → 115 indicator draws; no FPS claim.
+  - **Verified**: saved references/materials for all 18, shader compilation and ownership/selection preview; seeded smoke population 362 → 185 and drain to zero; 2 serialized-reference tests passed. Runtime muzzle material is shared; listed URP migrations already exist.
+  - **Next**: combat appearance/lifecycle acceptance and measured muzzle/bolt/smoke submission work; skip broad idle-session profiling. Shadows/motion blur only after higher-priority effects.
+  - **Remaining**: matched repeated battle/Player timings and pooled reuse/death/scene-exit checks. CPU work lives in CPU plans; stars/bloom/SSAO remain lower priority.
 
 - [ ] **Optimize battle attacks and projectile reuse**
   - **Plan**: [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Phased attack, pooling, Jobs + Burst, and instancing plan]]
