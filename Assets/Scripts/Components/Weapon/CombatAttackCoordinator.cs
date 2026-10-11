@@ -346,6 +346,9 @@ namespace EmpireAtWar.Components.Weapon
 
         private void CommitCollectedDueEvents(float now, int frame)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.DueSort.Auto())
+#endif
             _dueEvents.Sort(_compareDueEvents);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _lastDueFlaggedCount = _dueEvents.Count;
@@ -366,6 +369,9 @@ namespace EmpireAtWar.Components.Weapon
 
         private bool TryFindEvent(bool isImpact, long sequence, out int index)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = BattleProfilerMarkers.DueLookup.Auto();
+#endif
             if (isImpact)
             {
                 for (int i = 0; i < _impacts.Count; i++)
@@ -391,6 +397,9 @@ namespace EmpireAtWar.Components.Weapon
 
         private void CommitDueEvent(bool isImpact, int index, float now, int frame)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = (isImpact ? BattleProfilerMarkers.DueImpact : BattleProfilerMarkers.DueEmission).Auto();
+#endif
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _dueCommittedCount++;
 #endif

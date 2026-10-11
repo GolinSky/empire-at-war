@@ -43,6 +43,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             float clearance)
         {
             Vector2 size = mapRange.Max - mapRange.Min;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = BattleProfilerMarkers.NavigationGridBuild.Auto();
+#endif
             float cellSize = Mathf.Max(
                 MINIMUM_CELL_SIZE,
                 Mathf.Max(size.x, size.y) / MAXIMUM_CELLS_PER_AXIS);

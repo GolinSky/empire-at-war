@@ -172,6 +172,9 @@ namespace EmpireAtWar.Ship
             using (BattleProfilerMarkers.ShipTick.Auto())
             {
 #endif
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ShipOrderTick.Auto())
+#endif
             _orders.Tick(Time.deltaTime);
             SynchronizeComponents();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -256,6 +259,9 @@ namespace EmpireAtWar.Ship
 
         private void SynchronizeComponents()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ShipAudio.Auto())
+#endif
             _audioShipComponent.UpdateAudio();
         }
 

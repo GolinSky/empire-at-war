@@ -369,7 +369,9 @@ namespace EmpireAtWar.Components.Weapon
                 (!CanAcquire(selectedCandidate.Group) || !IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
                  selectedCandidate.Unit.Generation != selectedCandidate.Generation))
             {
-                AttackSequenceDiagnostics.RecordTargetSelectionFallback();
+                AttackSequenceDiagnostics.RecordTargetSelectionFallback(_targetVersion != targetVersion
+                    ? WeaponTargetSelectionJob.FALLBACK_TARGET_VERSION
+                    : WeaponTargetSelectionJob.FALLBACK_INVALID_CANDIDATE);
                 CommitTargetSelectionSerial(weapon);
                 return;
             }

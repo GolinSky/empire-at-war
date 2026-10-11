@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using EmpireAtWar.Services.Timing;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -78,9 +79,10 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        public static void RecordTargetSelectionFallback()
+        public static void RecordTargetSelectionFallback(int reason = WeaponTargetSelectionJob.FALLBACK_NON_FINITE)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = BattleProfilerMarkers.TargetFallbackMarkers[reason].Auto();
             TargetSelectionFallbacks++;
 #endif
         }

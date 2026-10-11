@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
@@ -193,6 +194,9 @@ namespace EmpireAtWar.Services.Audio
 
         private void ApplyMix()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = BattleProfilerMarkers.SfxApplyMix.Auto();
+#endif
             float total = 0f;
             for (int i = 0; i < _slots.Length; i++)
                 if (_slots[i].Sound != null) total += GetVolume(_slots[i]);

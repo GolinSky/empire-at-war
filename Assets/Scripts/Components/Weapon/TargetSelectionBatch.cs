@@ -204,7 +204,7 @@ namespace EmpireAtWar.Components.Weapon
             AttackSequenceDiagnostics.RecordCandidateVisits(result.Visited);
             if (result.RequiresSerialFallback != 0)
             {
-                AttackSequenceDiagnostics.RecordTargetSelectionFallback();
+                AttackSequenceDiagnostics.RecordTargetSelectionFallback(result.FallbackReason);
                 result = EvaluateTargetSelectionSerial(request);
                 AttackSequenceDiagnostics.RecordCandidateVisits(result.Visited);
             }
@@ -213,7 +213,7 @@ namespace EmpireAtWar.Components.Weapon
                 (result.CandidateIndex < request.CandidateStart ||
                  result.CandidateIndex >= request.CandidateStart + request.CandidateCount))
             {
-                AttackSequenceDiagnostics.RecordTargetSelectionFallback();
+                AttackSequenceDiagnostics.RecordTargetSelectionFallback(WeaponTargetSelectionJob.FALLBACK_OUT_OF_SPAN);
                 request.Weapon.CommitTargetSelectionSerial(request.HardPoint);
                 return;
             }

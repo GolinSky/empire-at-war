@@ -20,6 +20,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -137,8 +138,17 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.SquadronOrder.Auto())
+#endif
             UpdateOrder();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.SquadronPilot.Auto())
+#endif
             _pilot.Tick(Time.deltaTime);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.SquadronFlight.Auto())
+#endif
             _flight.Step(Time.deltaTime);
         }
 
