@@ -54,7 +54,29 @@ namespace EmpireAtWar.Services.Timing
         private const int RADAR_SNAPSHOT = 37;
         private const int RADAR_JOB = 38;
         private const int RADAR_APPLY = 39;
-        private const int METRIC_COUNT = 40;
+        private const int SHIP_ORDER_TICK = 40;
+        private const int SHIP_AUDIO = 41;
+        private const int SQUADRON_ORDER = 42;
+        private const int SQUADRON_PILOT = 43;
+        private const int SQUADRON_FLIGHT = 44;
+        private const int DUE_SORT = 45;
+        private const int DUE_LOOKUP = 46;
+        private const int DUE_EMISSION = 47;
+        private const int DUE_IMPACT = 48;
+        private const int SFX_APPLY_MIX = 49;
+        private const int NAVIGATION_GRID_BUILD = 50;
+        private const int NAVIGATION_PRESERVE_COURSE = 51;
+        private const int NAVIGATION_NEW_COURSE = 52;
+        private const int NAVIGATION_ARRIVAL = 53;
+        private const int TARGET_FALLBACK_NON_FINITE = 54;
+        private const int TARGET_FALLBACK_PARENT_TILT = 55;
+        private const int TARGET_FALLBACK_RANGE_BOUNDARY = 56;
+        private const int TARGET_FALLBACK_YAW_BOUNDARY = 57;
+        private const int TARGET_FALLBACK_DEGENERATE_DIRECTION = 58;
+        private const int TARGET_FALLBACK_TARGET_VERSION = 59;
+        private const int TARGET_FALLBACK_INVALID_CANDIDATE = 60;
+        private const int TARGET_FALLBACK_OUT_OF_SPAN = 61;
+        private const int METRIC_COUNT = 62;
         private const int FIRST_MARKER_METRIC = SHIP_TICK;
 
         private static readonly string[] _metricNames =
@@ -64,7 +86,29 @@ namespace EmpireAtWar.Services.Timing
             "target_batch_ns", "target_batch_capture_ns", "target_batch_prepare_ns", "target_batch_serial_ns", "target_batch_job_ns", "target_batch_schedule_ns", "target_batch_complete_ns", "target_batch_apply_ns",
             "due_batch_ns", "due_batch_prepare_ns", "due_batch_serial_ns", "due_batch_job_ns", "due_batch_schedule_ns", "due_batch_complete_ns", "due_batch_apply_ns",
             "navigation_plan_ns", "navigation_candidates_ns", "navigation_route_build_ns", "navigation_flood_ns", "navigation_nearest_reachable_ns",
-            "radar_snapshot_ns", "radar_job_ns", "radar_apply_ns"
+            "radar_snapshot_ns", "radar_job_ns", "radar_apply_ns",
+            "ship_order_tick_ns",
+            "ship_audio_ns",
+            "squadron_order_ns",
+            "squadron_pilot_ns",
+            "squadron_flight_ns",
+            "due_sort_ns",
+            "due_lookup_ns",
+            "due_emission_ns",
+            "due_impact_ns",
+            "sfx_apply_mix_ns",
+            "navigation_grid_build_ns",
+            "navigation_preserve_course_ns",
+            "navigation_new_course_ns",
+            "navigation_arrival_ns",
+            "target_fallback_non_finite_ns",
+            "target_fallback_parent_tilt_ns",
+            "target_fallback_range_boundary_ns",
+            "target_fallback_yaw_boundary_ns",
+            "target_fallback_degenerate_direction_ns",
+            "target_fallback_target_version_ns",
+            "target_fallback_invalid_candidate_ns",
+            "target_fallback_out_of_span_ns",
         };
         private static readonly string[] _markerNames =
         {
@@ -98,7 +142,29 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.NAVIGATION_NEAREST_REACHABLE,
             BattleProfilerMarkers.RADAR_SNAPSHOT,
             BattleProfilerMarkers.RADAR_JOB,
-            BattleProfilerMarkers.RADAR_APPLY
+            BattleProfilerMarkers.RADAR_APPLY,
+            BattleProfilerMarkers.SHIP_ORDER_TICK,
+            BattleProfilerMarkers.SHIP_AUDIO,
+            BattleProfilerMarkers.SQUADRON_ORDER,
+            BattleProfilerMarkers.SQUADRON_PILOT,
+            BattleProfilerMarkers.SQUADRON_FLIGHT,
+            BattleProfilerMarkers.DUE_SORT,
+            BattleProfilerMarkers.DUE_LOOKUP,
+            BattleProfilerMarkers.DUE_EMISSION,
+            BattleProfilerMarkers.DUE_IMPACT,
+            BattleProfilerMarkers.SFX_APPLY_MIX,
+            BattleProfilerMarkers.NAVIGATION_GRID_BUILD,
+            BattleProfilerMarkers.NAVIGATION_PRESERVE_COURSE,
+            BattleProfilerMarkers.NAVIGATION_NEW_COURSE,
+            BattleProfilerMarkers.NAVIGATION_ARRIVAL,
+            BattleProfilerMarkers.TARGET_FALLBACK_NON_FINITE,
+            BattleProfilerMarkers.TARGET_FALLBACK_PARENT_TILT,
+            BattleProfilerMarkers.TARGET_FALLBACK_RANGE_BOUNDARY,
+            BattleProfilerMarkers.TARGET_FALLBACK_YAW_BOUNDARY,
+            BattleProfilerMarkers.TARGET_FALLBACK_DEGENERATE_DIRECTION,
+            BattleProfilerMarkers.TARGET_FALLBACK_TARGET_VERSION,
+            BattleProfilerMarkers.TARGET_FALLBACK_INVALID_CANDIDATE,
+            BattleProfilerMarkers.TARGET_FALLBACK_OUT_OF_SPAN,
         };
         private static readonly string[] _workloadNames =
         {
@@ -335,6 +401,28 @@ namespace EmpireAtWar.Services.Timing
             StartMarkerRecorder(RADAR_SNAPSHOT, BattleProfilerMarkers.RadarSnapshot);
             StartMarkerRecorder(RADAR_JOB, BattleProfilerMarkers.RadarJob);
             StartMarkerRecorder(RADAR_APPLY, BattleProfilerMarkers.RadarApply);
+            StartMarkerRecorder(SHIP_ORDER_TICK, BattleProfilerMarkers.ShipOrderTick);
+            StartMarkerRecorder(SHIP_AUDIO, BattleProfilerMarkers.ShipAudio);
+            StartMarkerRecorder(SQUADRON_ORDER, BattleProfilerMarkers.SquadronOrder);
+            StartMarkerRecorder(SQUADRON_PILOT, BattleProfilerMarkers.SquadronPilot);
+            StartMarkerRecorder(SQUADRON_FLIGHT, BattleProfilerMarkers.SquadronFlight);
+            StartMarkerRecorder(DUE_SORT, BattleProfilerMarkers.DueSort);
+            StartMarkerRecorder(DUE_LOOKUP, BattleProfilerMarkers.DueLookup);
+            StartMarkerRecorder(DUE_EMISSION, BattleProfilerMarkers.DueEmission);
+            StartMarkerRecorder(DUE_IMPACT, BattleProfilerMarkers.DueImpact);
+            StartMarkerRecorder(SFX_APPLY_MIX, BattleProfilerMarkers.SfxApplyMix);
+            StartMarkerRecorder(NAVIGATION_GRID_BUILD, BattleProfilerMarkers.NavigationGridBuild);
+            StartMarkerRecorder(NAVIGATION_PRESERVE_COURSE, BattleProfilerMarkers.NavigationPreserveCourse);
+            StartMarkerRecorder(NAVIGATION_NEW_COURSE, BattleProfilerMarkers.NavigationNewCourse);
+            StartMarkerRecorder(NAVIGATION_ARRIVAL, BattleProfilerMarkers.NavigationArrival);
+            StartMarkerRecorder(TARGET_FALLBACK_NON_FINITE, BattleProfilerMarkers.TargetFallbackNonFinite);
+            StartMarkerRecorder(TARGET_FALLBACK_PARENT_TILT, BattleProfilerMarkers.TargetFallbackParentTilt);
+            StartMarkerRecorder(TARGET_FALLBACK_RANGE_BOUNDARY, BattleProfilerMarkers.TargetFallbackRangeBoundary);
+            StartMarkerRecorder(TARGET_FALLBACK_YAW_BOUNDARY, BattleProfilerMarkers.TargetFallbackYawBoundary);
+            StartMarkerRecorder(TARGET_FALLBACK_DEGENERATE_DIRECTION, BattleProfilerMarkers.TargetFallbackDegenerateDirection);
+            StartMarkerRecorder(TARGET_FALLBACK_TARGET_VERSION, BattleProfilerMarkers.TargetFallbackTargetVersion);
+            StartMarkerRecorder(TARGET_FALLBACK_INVALID_CANDIDATE, BattleProfilerMarkers.TargetFallbackInvalidCandidate);
+            StartMarkerRecorder(TARGET_FALLBACK_OUT_OF_SPAN, BattleProfilerMarkers.TargetFallbackOutOfSpan);
         }
 
         private void StartRecorder(int index, ProfilerCategory category, string name, ProfilerRecorderOptions options)

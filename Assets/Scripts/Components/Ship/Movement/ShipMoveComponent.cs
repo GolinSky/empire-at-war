@@ -10,6 +10,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.StationFacing;
+using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
 using UnityEngine;
@@ -221,6 +222,12 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void Plan(Vector3 destination, bool preserveCourse = false)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = (Model.Phase == MovementPhase.Arriving
+                ? BattleProfilerMarkers.NavigationArrival
+                : preserveCourse ? BattleProfilerMarkers.NavigationPreserveCourse
+                : BattleProfilerMarkers.NavigationNewCourse).Auto();
+#endif
             if (Model.Phase == MovementPhase.Arriving)
             {
                 ShipNavigationPlan pendingPlan = _shipNavigationService.Plan(this,
