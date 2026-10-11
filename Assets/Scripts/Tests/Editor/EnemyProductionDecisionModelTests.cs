@@ -967,7 +967,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(OperationalStationRegistry);
 
-            public bool IsStationOperational(PlayerId owner) => true;
+            public bool HasProductionBase(PlayerId owner) => true;
 
             public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
                 throw new NotImplementedException();

@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Stations
 {
-    /// <summary>Tracks space stations registered in the <see cref="IEntityLocator"/>.</summary>
+    /// <summary>Tracks space stations and production bases registered in the <see cref="IEntityLocator"/>.</summary>
     public sealed class StationRegistry : Service, IStationRegistry, IDisposable
     {
         private readonly IEntityLocator _entityLocator;
 
         private readonly List<IEntity> _stations = new List<IEntity>();
+        private readonly List<IEntity> _productionBases = new List<IEntity>();
 
         public StationRegistry(IEntityLocator entityLocator)
         {
@@ -32,13 +34,13 @@ namespace EmpireAtWar.Services.Stations
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
         }
 
-        public bool IsStationOperational(PlayerId owner)
+        public bool HasProductionBase(PlayerId owner)
         {
-            foreach (IEntity station in _stations)
+            foreach (IEntity productionBase in _productionBases)
             {
-                if (station.Owner == owner &&
-                    !station.HealthModel.IsDestroyed &&
-                    station.HealthModel.HasUnits)
+                if (productionBase.Owner == owner &&
+                    !productionBase.HealthModel.IsDestroyed &&
+                    productionBase.HealthModel.HasUnits)
                 {
                     return true;
                 }
@@ -68,11 +70,17 @@ namespace EmpireAtWar.Services.Stations
             {
                 _stations.Add(entity);
             }
+
+            if (entity.TryGetFacade(out IProductionBaseFacade _))
+            {
+                _productionBases.Add(entity);
+            }
         }
 
         private void HandleEntityRemoved(IEntity entity)
         {
             _stations.Remove(entity);
+            _productionBases.Remove(entity);
         }
     }
 }

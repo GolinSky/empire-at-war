@@ -7,20 +7,21 @@ namespace EmpireAtWar.Entities.Game
     {
         public PlayerId Player { get; }
         public TeamId Team { get; }
-        public int ShipCount { get; }
+        /// <summary>Living ships, squadrons and structures other than the player base.</summary>
+        public int UnitCount { get; }
         public bool IsBaseAlive { get; }
         public bool HasPendingReinforcement { get; }
 
         public PlayerBattleState(
             PlayerId player,
             TeamId team,
-            int shipCount,
+            int unitCount,
             bool isBaseAlive,
             bool hasPendingReinforcement)
         {
             Player = player;
             Team = team;
-            ShipCount = shipCount;
+            UnitCount = unitCount;
             IsBaseAlive = isBaseAlive;
             HasPendingReinforcement = hasPendingReinforcement;
         }

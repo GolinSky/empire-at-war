@@ -123,7 +123,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Purchase(UnitRequest unitRequest)
         {
-            if (!_stationRegistry.IsStationOperational(Owner))
+            if (!_stationRegistry.HasProductionBase(Owner))
             {
                 return;
             }

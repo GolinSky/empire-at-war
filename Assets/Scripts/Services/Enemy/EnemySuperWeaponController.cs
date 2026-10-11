@@ -93,7 +93,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 _chargeTimeLeft.Remove(type);
-                if (_stationRegistry.IsStationOperational(_owner.Id))
+                if (_stationRegistry.HasProductionBase(_owner.Id))
                 {
                     _model.CompleteCharging(type);
                     continue;
@@ -107,7 +107,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
-            if (!_stationRegistry.IsStationOperational(_owner.Id) ||
+            if (!_stationRegistry.HasProductionBase(_owner.Id) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||
                 !_economyModel.TrySpend(data.Price))

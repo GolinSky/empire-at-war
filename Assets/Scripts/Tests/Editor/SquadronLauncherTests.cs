@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(NoStationRegistry);
 
-            public bool IsStationOperational(PlayerId owner) => false;
+            public bool HasProductionBase(PlayerId owner) => false;
 
             public bool TryGetLivingStation(PlayerId owner, out IEntity station)
             {

@@ -119,7 +119,7 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            if (!_stationRegistry.IsStationOperational(_owner.Id))
+            if (!_stationRegistry.HasProductionBase(_owner.Id))
             {
                 if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
                     _model.SetResoluteReserved(false);
@@ -156,7 +156,7 @@ namespace EmpireAtWar.Services.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            if (!_stationRegistry.IsStationOperational(_owner.Id) ||
+            if (!_stationRegistry.HasProductionBase(_owner.Id) ||
                 !_model.CanQueueUnit(unitRequest) ||
                 unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {

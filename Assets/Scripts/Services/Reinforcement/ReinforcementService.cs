@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
@@ -27,7 +26,6 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointerInput;
         private readonly ICameraService _cameraService;
-        private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ISpawnAreaOverlay _spawnAreaOverlay;
         private IDisposable _placementLock;
@@ -45,7 +43,6 @@ namespace EmpireAtWar.Services.Reinforcement
             IInputLock inputLock,
             IPointerInput pointerInput,
             ICameraService cameraService,
-            IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,
             ISpawnAreaOverlay spawnAreaOverlay,
             ReinforcementModel model,
@@ -58,7 +55,6 @@ namespace EmpireAtWar.Services.Reinforcement
             _inputLock = inputLock;
             _pointerInput = pointerInput;
             _cameraService = cameraService;
-            _stationRegistry = stationRegistry;
             _battleVictoryNotifier = battleVictoryNotifier;
             _spawnAreaOverlay = spawnAreaOverlay;
         }
@@ -94,7 +90,7 @@ namespace EmpireAtWar.Services.Reinforcement
             Vector3 position = _cameraService.GetWorldPoint(_pointerInput.Position, _preview.Position);
             position.y = 0;
             _preview.UpdatePosition(position);
-            _preview.SetPlacementValidity(IsPlacementValid(position));
+            _preview.SetPlacementValidity(_placement.IsPositionValid(position));
         }
 
         public void Add(UnitRequest request)
@@ -122,8 +118,8 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(UnitRequest request)
         {
-            if (_hasBattleEnded || !_stationRegistry.IsStationOperational(_owner.Id) ||
-                !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            // Units already in the pool stay deployable after the station falls.
+            if (_hasBattleEnded || !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
             {
                 _model.InvokeSpawnShipEvent(false);
                 return;
@@ -163,7 +159,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _preview.Position);
-            bool canSpawn = _preview.CanSpawn && IsPlacementValid(spawnPosition);
+            bool canSpawn = _preview.CanSpawn && _placement.IsPositionValid(spawnPosition);
 
             if (canSpawn)
             {
@@ -175,11 +171,6 @@ namespace EmpireAtWar.Services.Reinforcement
             _spawnAreaOverlay.Hide();
             _placementLock.Dispose();
             _model.InvokeSpawnShipEvent(canSpawn);
-        }
-
-        private bool IsPlacementValid(Vector3 position)
-        {
-            return _stationRegistry.IsStationOperational(_owner.Id) && _placement.IsPositionValid(position);
         }
     }
 }
