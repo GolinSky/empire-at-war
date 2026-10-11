@@ -99,7 +99,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick(float deltaTime)
         {
-            if (!_stationRegistry.IsStationOperational(_owner.Id))
+            if (!_stationRegistry.HasProductionBase(_owner.Id))
             {
                 return;
             }

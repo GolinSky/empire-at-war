@@ -10,7 +10,6 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -39,7 +38,6 @@ namespace EmpireAtWar.Tests.Editor
                 shipFactory: new ShipFactory(),
                 shipSpawnPoints: new NoShipSpawnPoints(),
                 entityLocator: new EmptyEntityLocator(),
-                stationRegistry: new OperationalStationRegistry(),
                 superWeaponModel: _superWeaponModel,
                 rangeDebugModel: new RangeDebugModel(),
                 owner: TestPlayers.CreateDuel().Get(TestPlayers.Human));
@@ -125,16 +123,6 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
-        }
-
-        private sealed class OperationalStationRegistry : IStationRegistry
-        {
-            public string Id => nameof(OperationalStationRegistry);
-
-            public bool IsStationOperational(PlayerId owner) => true;
-
-            public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
-                throw new NotImplementedException();
         }
 
         private sealed class EmptyEntityLocator : IEntityLocator

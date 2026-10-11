@@ -9,7 +9,6 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.ShipSpawning;
-using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using ShipEntity = EmpireAtWar.Ship.Ship;
@@ -35,7 +34,6 @@ namespace EmpireAtWar.Services.Cheats
     {
         private readonly IShipSpawnPoints _shipSpawnPoints;
         private readonly IEntityLocator _entityLocator;
-        private readonly IStationRegistry _stationRegistry;
 
         private readonly EconomyModel _economyModel;
         private readonly PlayerSlot _owner;
@@ -48,7 +46,6 @@ namespace EmpireAtWar.Services.Cheats
         public CheatService(
             IShipSpawnPoints shipSpawnPoints,
             IEntityLocator entityLocator,
-            IStationRegistry stationRegistry,
             EconomyModel economyModel,
             ReinforcementModel reinforcementModel,
             ShipFactory shipFactory,
@@ -62,7 +59,6 @@ namespace EmpireAtWar.Services.Cheats
             _shipFactory = shipFactory;
             _shipSpawnPoints = shipSpawnPoints;
             _entityLocator = entityLocator;
-            _stationRegistry = stationRegistry;
             _superWeaponModel = superWeaponModel;
             _rangeDebugModel = rangeDebugModel;
         }
@@ -93,11 +89,6 @@ namespace EmpireAtWar.Services.Cheats
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
-            }
-
-            if (!_stationRegistry.IsStationOperational(_owner.Id))
-            {
-                return false;
             }
 
             if (!_shipSpawnPoints.TryGetDefaultZoneSpawnPosition(

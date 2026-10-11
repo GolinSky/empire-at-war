@@ -21,9 +21,9 @@ namespace EmpireAtWar.Entities.Game
         {
             foreach (PlayerBattleState player in players)
             {
-                if (player.ShipCount < 0)
+                if (player.UnitCount < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(players), $"{player.Player} has a negative ship count.");
+                    throw new ArgumentOutOfRangeException(nameof(players), $"{player.Player} has a negative unit count.");
                 }
 
                 if (player.IsBaseAlive)
@@ -64,9 +64,9 @@ namespace EmpireAtWar.Entities.Game
 
             return victoryCondition switch
             {
-                // Fleet victory also waits for ships and for AI builds still on the way.
+                // Destroy-all also waits for every unit and building and for AI builds still on the way.
                 BattleVictoryCondition.DestroyEnemyFleet =>
-                    player.ShipCount == 0 && !player.HasPendingReinforcement,
+                    player.UnitCount == 0 && !player.HasPendingReinforcement,
                 BattleVictoryCondition.DestroyOpponentBase => true,
                 _ => throw new ArgumentOutOfRangeException(nameof(victoryCondition))
             };

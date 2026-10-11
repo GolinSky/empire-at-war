@@ -6,7 +6,8 @@ namespace EmpireAtWar.Services.Stations
 {
     public interface IStationRegistry : IService
     {
-        bool IsStationOperational(PlayerId owner);
+        /// <summary>True while the owner keeps a living station, Golan III or Empress to buy units from.</summary>
+        bool HasProductionBase(PlayerId owner);
 
         bool TryGetLivingStation(PlayerId owner, out IEntity station);
     }

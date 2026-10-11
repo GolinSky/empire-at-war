@@ -22,13 +22,18 @@ namespace EmpireAtWar.Entities.BaseEntity
     {
         private const int HEALTH_INITIALIZE_ORDER = -100;
 
-        public static DiContainer BindSelectionFeature(this DiContainer container, SelectionType selectionType)
+        public static DiContainer BindSelectionFeature(this DiContainer container, SelectionType selectionType) =>
+            container.BindSelectionFeature(selectionType, selectionType);
+
+        /// <param name="selectedAs">What selecting the entity opens; a production platform opens the faction UI like a station.</param>
+        public static DiContainer BindSelectionFeature(this DiContainer container, SelectionType selectionType,
+            SelectionType selectedAs)
         {
             container.BindEntityExt(selectionType);
             container.Bind<SelectionModel>().AsSingle();
             container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
             container.BindInterfacesAndSelfTo<SelectionComponent>().FromComponentsInHierarchy().AsCached();
-            container.BindInterfacesExt<SelectionFacade>();
+            container.BindInterfacesAndSelfTo<SelectionFacade>().AsSingle().WithArguments(selectedAs);
             return container;
         }
 

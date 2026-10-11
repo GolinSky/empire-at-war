@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Selection;
@@ -27,6 +28,10 @@ namespace EmpireAtWar
             _ => base.PrefabPath,
         };
 
+        // Golan III and Empress act as a station for production: they keep buying open and open the faction UI.
+        private bool IsProductionBase =>
+            _defendPlatformType == DefendPlatformType.GolanIII || _defendPlatformType == DefendPlatformType.Empress;
+
         [Inject]
         public void Construct(ILocalPlayer localPlayer, DefendPlatformType defendPlatformType, PlayerId owner)
         {
@@ -41,9 +46,15 @@ namespace EmpireAtWar
             Container.BindEntityExt(_defendPlatformType);
             Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
             Container.BindInterfacesExt<DefendPlatformTooltipFacade>();
+            if (IsProductionBase)
+            {
+                Container.BindInterfacesExt<ProductionBaseFacade>();
+            }
 
             Container
-                .BindSelectionFeature(SelectionType.DefendPlatform)
+                .BindSelectionFeature(
+                    SelectionType.DefendPlatform,
+                    IsProductionBase ? SelectionType.Base : SelectionType.DefendPlatform)
                 .BindHealthFeature()
                 .BindRadarFeature()
                 .BindWeaponFeature()

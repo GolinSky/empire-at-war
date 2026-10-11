@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly BattleVictoryModel _victoryModel;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
         private readonly int[] _shipCounts = new int[MatchRules.MAX_PLAYERS];
+        private readonly int[] _unitCounts = new int[MatchRules.MAX_PLAYERS];
         private readonly bool[] _aliveBases = new bool[MatchRules.MAX_PLAYERS];
         private readonly List<PlayerBattleState> _states = new List<PlayerBattleState>();
         private BattleResult _finalResult;
@@ -121,6 +122,7 @@ namespace EmpireAtWar.Services.Battle
             for (int i = 0; i < _shipCounts.Length; i++)
             {
                 _shipCounts[i] = 0;
+                _unitCounts[i] = 0;
                 _aliveBases[i] = false;
             }
 
@@ -135,6 +137,11 @@ namespace EmpireAtWar.Services.Battle
                 {
                     _aliveBases[entity.Owner.Index] |= !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
                 }
+                else if (!entity.HealthModel.IsDestroyed)
+                {
+                    // Ships, squadrons, defense platforms and mining facilities all keep a player in the battle.
+                    _unitCounts[entity.Owner.Index]++;
+                }
             }
 
             _states.Clear();
@@ -144,7 +151,7 @@ namespace EmpireAtWar.Services.Battle
                 _states.Add(new PlayerBattleState(
                     player.Id,
                     player.Team,
-                    _shipCounts[index],
+                    _unitCounts[index],
                     _aliveBases[index],
                     _playerRegistry.HasPendingReinforcement(player.Id)));
             }
@@ -161,12 +168,12 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (_localPlayer.IsFriendly(state.Player))
                 {
-                    playerShipCount += state.ShipCount;
+                    playerShipCount += _shipCounts[state.Player.Index];
                     isPlayerBaseAlive |= state.IsBaseAlive;
                     continue;
                 }
 
-                enemyShipCount += state.ShipCount;
+                enemyShipCount += _shipCounts[state.Player.Index];
                 isEnemyBaseAlive |= state.IsBaseAlive;
                 FactionType faction = _playerRoster.Get(state.Player).Faction;
                 if (!enemyFactions.Contains(faction))
