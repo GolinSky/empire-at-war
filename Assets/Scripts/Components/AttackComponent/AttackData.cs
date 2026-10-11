@@ -69,12 +69,20 @@ namespace EmpireAtWar.Components.AttackComponent
         /// </summary>
         public void RefreshStaleUnits()
         {
-            if (_isFocused || IsDestroyed || Units.Exists(CanTarget))
+            if (_isFocused || IsDestroyed || HasTargetableUnit())
             {
                 return;
             }
 
             Units = _shipUnitsProvider.GetShipUnits(_hardPointType).ToList();
+        }
+
+        // A plain loop: List.Exists(CanTarget) allocates a predicate on every candidate rebuild.
+        private bool HasTargetableUnit()
+        {
+            for (int i = 0; i < Units.Count; i++)
+                if (CanTarget(Units[i])) return true;
+            return false;
         }
 
         public void ApplyDamage(float damage, DamageType damageType, int id)

@@ -48,8 +48,8 @@ namespace EmpireAtWar.Components.Weapon
         private List<AttackData> _attackDataList = new List<AttackData>();
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
         private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
-        private readonly Dictionary<IHardPointModel, Action> _unitDestroyedHandlers = new Dictionary<IHardPointModel, Action>();
         // Handlers survive rebuilds; only units that stop being live candidates lose theirs.
+        private readonly HashSet<IHardPointModel> _destroyHandlerUnits = new HashSet<IHardPointModel>();
         private readonly HashSet<IHardPointModel> _candidateUnits = new HashSet<IHardPointModel>();
         private readonly List<IHardPointModel> _staleHandlerUnits = new List<IHardPointModel>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
@@ -64,6 +64,8 @@ namespace EmpireAtWar.Components.Weapon
 
         private int _currentWeaponIndex = 0;
         private int _targetVersion;
+        // Target changes only mark candidates stale; the next reader rebuilds once for all of them.
+        private bool _candidatesDirty;
 
         private bool _isReleased;
         private bool _isInitialized;
@@ -150,13 +152,14 @@ namespace EmpireAtWar.Components.Weapon
 
             foreach (AttackData group in _subscribedGroups)
             {
-                group.UnitsChanged -= RebuildCandidates;
-                group.Destroyed -= RebuildCandidates;
+                group.UnitsChanged -= InvalidateCandidates;
+                group.Destroyed -= InvalidateCandidates;
             }
-            foreach (KeyValuePair<IHardPointModel, Action> handler in _unitDestroyedHandlers)
-                handler.Key.OnDestroyed -= handler.Value;
+            foreach (IHardPointModel unit in _destroyHandlerUnits)
+                unit.OnDestroyed -= OnUnitDestroyed;
             _subscribedGroups.Clear();
-            _unitDestroyedHandlers.Clear();
+            _destroyHandlerUnits.Clear();
+            _candidatesDirty = false;
             _candidateUnits.Clear();
             _orderedCandidates.Clear();
             _targetGroupEligibility.Clear();
@@ -185,7 +188,7 @@ namespace EmpireAtWar.Components.Weapon
 
                     _attackDataList.Add(attackData);
                     Subscribe(attackData);
-                    RebuildCandidates();
+                    InvalidateCandidates();
                     break;
                 }
                 case AttackType.MainTarget:
@@ -200,7 +203,7 @@ namespace EmpireAtWar.Components.Weapon
                     }
 
                     UnsubscribeIfUnused(previousMain);
-                    RebuildCandidates();
+                    InvalidateCandidates();
                     break;
                 }
             }
@@ -237,7 +240,7 @@ namespace EmpireAtWar.Components.Weapon
             AttackData previousMain = _mainAttackData;
             _mainAttackData = null;
             UnsubscribeIfUnused(previousMain);
-            RebuildCandidates();
+            InvalidateCandidates();
         }
 
         public void Tick()
@@ -270,9 +273,11 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        internal void CaptureTargetSelection(List<TargetSelectionCandidate> candidates, out int targetVersion)
+        /// <summary>Positions are shared by every owner captured at the same batch boundary.</summary>
+        internal void CaptureTargetSelection(List<TargetSelectionCandidate> candidates,
+            Dictionary<IHardPointModel, Vector3> positions, out int targetVersion)
         {
-            _targetPositions.Clear();
+            EnsureCandidates();
             _targetGroupEligibility.Clear();
             bool removedInvalidCandidate = false;
             for (int i = 0; i < _orderedCandidates.Count; i++)
@@ -296,7 +301,7 @@ namespace EmpireAtWar.Components.Weapon
                     Group = candidate.Group,
                     Unit = candidate.Unit,
                     Generation = candidate.Unit.Generation,
-                    Position = GetTargetPosition(candidate.Unit),
+                    Position = GetTargetPosition(positions, candidate.Unit),
                     IsStrikecraft = candidate.Group.TargetClass.IsStrikecraft()
                 });
             }
@@ -315,6 +320,7 @@ namespace EmpireAtWar.Components.Weapon
             Vector3 origin = weaponTransform.position;
             Quaternion parentRotation = weaponTransform.parent == null
                 ? Quaternion.identity : weaponTransform.parent.rotation;
+            EnsureCandidates();
             _targetPositions.Clear();
 
             for (int i = 0; i < _orderedCandidates.Count; i++)
@@ -331,7 +337,7 @@ namespace EmpireAtWar.Components.Weapon
                 if (!weapon.CanEngage(candidate.Group.TargetClass)) continue;
 
                 AttackSequenceDiagnostics.RecordCandidateVisit();
-                Vector3 position = GetTargetPosition(candidate.Unit);
+                Vector3 position = GetTargetPosition(_targetPositions, candidate.Unit);
                 bool canAttack = WeaponTargetSelector.TryCalculateAim(position, origin, parentRotation,
                     weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw,
                     out _, out _);
@@ -388,16 +394,30 @@ namespace EmpireAtWar.Components.Weapon
         private void Subscribe(AttackData group)
         {
             if (!_subscribedGroups.Add(group)) return;
-            group.UnitsChanged += RebuildCandidates;
-            group.Destroyed += RebuildCandidates;
+            group.UnitsChanged += InvalidateCandidates;
+            group.Destroyed += InvalidateCandidates;
         }
 
         private void UnsubscribeIfUnused(AttackData group)
         {
             if (group == null || ReferenceEquals(group, _mainAttackData) || _attackDataList.Contains(group)) return;
             if (!_subscribedGroups.Remove(group)) return;
-            group.UnitsChanged -= RebuildCandidates;
-            group.Destroyed -= RebuildCandidates;
+            group.UnitsChanged -= InvalidateCandidates;
+            group.Destroyed -= InvalidateCandidates;
+        }
+
+        // The version changes immediately so selections captured before the change fall back at commit.
+        private void InvalidateCandidates()
+        {
+            _targetVersion++;
+            _candidatesDirty = true;
+        }
+
+        private void EnsureCandidates()
+        {
+            if (!_candidatesDirty) return;
+            _candidatesDirty = false;
+            RebuildCandidates();
         }
 
         private void RebuildCandidates()
@@ -446,59 +466,58 @@ namespace EmpireAtWar.Components.Weapon
             group.RefreshStaleUnits();
             List<IHardPointModel> units = group.Units;
             for (int i = 0; i < units.Count; i++)
-                if (group.CanTarget(units[i]))
-                {
-                    _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = units[i] });
-                    _candidateUnits.Add(units[i]);
-                    if (units[i].IsDestroyed || _unitDestroyedHandlers.ContainsKey(units[i])) continue;
-                    IHardPointModel unit = units[i];
-                    Action handler = () => OnUnitDestroyed(unit);
-                    _unitDestroyedHandlers.Add(unit, handler);
-                    unit.OnDestroyed += handler;
-                }
+            {
+                IHardPointModel unit = units[i];
+                if (!group.CanTarget(unit)) continue;
+                _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = unit });
+                _candidateUnits.Add(unit);
+                if (unit.IsDestroyed || !_destroyHandlerUnits.Add(unit)) continue;
+                unit.OnDestroyed += OnUnitDestroyed;
+            }
         }
 
         private void DropStaleUnitHandlers()
         {
-            foreach (KeyValuePair<IHardPointModel, Action> handler in _unitDestroyedHandlers)
-                if (handler.Key.IsDestroyed || !_candidateUnits.Contains(handler.Key))
-                    _staleHandlerUnits.Add(handler.Key);
+            foreach (IHardPointModel unit in _destroyHandlerUnits)
+                if (unit.IsDestroyed || !_candidateUnits.Contains(unit))
+                    _staleHandlerUnits.Add(unit);
             for (int i = 0; i < _staleHandlerUnits.Count; i++)
             {
                 IHardPointModel unit = _staleHandlerUnits[i];
-                unit.OnDestroyed -= _unitDestroyedHandlers[unit];
-                _unitDestroyedHandlers.Remove(unit);
+                unit.OnDestroyed -= OnUnitDestroyed;
+                _destroyHandlerUnits.Remove(unit);
             }
 
             _staleHandlerUnits.Clear();
         }
 
+        // Destroyed groups stay listed until the next rebuild; they no longer count as targets.
         public bool HasTarget(IHealthFacade healthFacade)
         {
             for (int i = 0; i < _attackDataList.Count; i++)
-                if (_attackDataList[i].IsFrom(healthFacade)) return true;
+                if (!_attackDataList[i].IsDestroyed && _attackDataList[i].IsFrom(healthFacade)) return true;
             return false;
         }
 
         private bool HasSameSource(AttackData attackData)
         {
             for (int i = 0; i < _attackDataList.Count; i++)
-                if (attackData.SameSource(_attackDataList[i])) return true;
+                if (!_attackDataList[i].IsDestroyed && attackData.SameSource(_attackDataList[i])) return true;
             return false;
         }
 
         // Rebuild instead of removing one candidate: the last destroyed hardpoint turns the ship into a wreck target.
-        private void OnUnitDestroyed(IHardPointModel unit)
+        private void OnUnitDestroyed()
         {
             AttackSequenceDiagnostics.RecordTargetInvalidation();
-            RebuildCandidates();
+            InvalidateCandidates();
         }
 
-        private Vector3 GetTargetPosition(IHardPointModel unit)
+        private static Vector3 GetTargetPosition(Dictionary<IHardPointModel, Vector3> positions, IHardPointModel unit)
         {
-            if (_targetPositions.TryGetValue(unit, out Vector3 position)) return position;
+            if (positions.TryGetValue(unit, out Vector3 position)) return position;
             position = unit.Position;
-            _targetPositions.Add(unit, position);
+            positions.Add(unit, position);
             AttackSequenceDiagnostics.RecordTargetSnapshot();
             return position;
         }
