@@ -72,5 +72,6 @@
         MandatorMissileLauncher = 77,
         MandatorPointDefense = 78,
         StrikeFighterProtonTorpedo = 79,
+        MediumPointDefense = 80,
     }
 }
