@@ -35,6 +35,9 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private readonly FighterManeuver[] _maneuvers;
         private readonly int[] _attackRuns;
+        private readonly Vector3[] _slotOffsets;
+        private readonly Vector3[] _aimPositions;
+        private int _cachedSlotCount;
         private Transform _escortAnchor;
         private IHardPointModel[] _aimUnits = Array.Empty<IHardPointModel>();
 
@@ -62,6 +65,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _flight = flight;
             _maneuvers = new FighterManeuver[flight.Count];
             _attackRuns = new int[flight.Count];
+            _slotOffsets = new Vector3[flight.Count];
+            _aimPositions = new Vector3[flight.Count];
             for (int i = 0; i < _maneuvers.Length; i++)
             {
                 _maneuvers[i] = new FighterManeuver(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
@@ -171,6 +176,7 @@ namespace EmpireAtWar.Entities.Squadrons
 
             _leaderHeading = Vector3.RotateTowards(_leaderHeading, toDestination / distance,
                 Data.TurnRate * LEADER_TURN_SHARE * Mathf.Deg2Rad * deltaTime, 0f);
+            _cachedSlotCount = 0;
             float leaderSpeed = GetSlotLag() > Data.FormationSpacing * LEADER_WAIT_SPACINGS
                 ? Data.CruiseSpeed * LEADER_WAIT_SPEED_SHARE
                 : Data.CruiseSpeed;
@@ -222,12 +228,18 @@ namespace EmpireAtWar.Entities.Squadrons
             }
 
             int rank = 0;
+            int capturedAimCount = 0;
             for (int i = 0; i < _flight.Count; i++)
             {
                 if (!_flight.IsAlive(i)) continue;
-                Vector3 aimPoint = _aimUnits.Length == 0
-                    ? _target.GetFacade<IEntityTransformFacade>().Transform.position
-                    : _aimUnits[rank % _aimUnits.Length].Position;
+                int aimIndex = _aimUnits.Length == 0 ? 0 : rank % _aimUnits.Length;
+                if (aimIndex == capturedAimCount)
+                {
+                    _aimPositions[capturedAimCount++] = _aimUnits.Length == 0
+                        ? _target.GetFacade<IEntityTransformFacade>().Transform.position
+                        : _aimUnits[aimIndex].Position;
+                }
+                Vector3 aimPoint = _aimPositions[aimIndex];
                 FighterManeuverPhase previousPhase = _maneuvers[i].Phase;
                 System.Numerics.Vector3 steering = _maneuvers[i].Resolve(
                     _flight.GetPosition(i).ToNumerics(), _flight.GetForward(i).ToNumerics(),
@@ -241,9 +253,14 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private Vector3 GetSlotPosition(int rank)
         {
-            System.Numerics.Vector3 offset = SquadronFormation.ToWorld(
-                SquadronFormation.GetSlot(rank, Data.FormationSpacing), _leaderHeading.ToNumerics());
-            return _leaderPosition + offset.ToUnity();
+            if (rank >= _cachedSlotCount)
+            {
+                System.Numerics.Vector3 offset = SquadronFormation.ToWorld(
+                    SquadronFormation.GetSlot(rank, Data.FormationSpacing), _leaderHeading.ToNumerics());
+                _slotOffsets[rank] = offset.ToUnity();
+                _cachedSlotCount = rank + 1;
+            }
+            return _leaderPosition + _slotOffsets[rank];
         }
 
         private float GetSlotLag()
