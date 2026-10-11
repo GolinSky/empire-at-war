@@ -12,7 +12,7 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Audio
 {
-    public sealed class ShipSfxService : IShipSfxService, ITickable, IDisposable
+    public sealed class ShipSfxService : IShipSfxService, ITickable, ILateTickable, IDisposable
     {
         private const float MIN_AUDIBLE_GAIN = 0.01f;
         private const float FADE_TIME = 0.04f;
@@ -39,6 +39,9 @@ namespace EmpireAtWar.Services.Audio
         private int _timeFrame = -1;
 
         private bool _disposed;
+        private bool _mixDirty = true;
+        private bool _hasDuckState;
+        private bool _voiceDucking;
 
         public ShipSfxService(IAudioService audioService, ICameraService cameraService, IVisionService visionService,
             ILocalPlayer localPlayer, ShipSfxSources sources, ShipSfxData data, CameraData cameraData)
@@ -99,7 +102,7 @@ namespace EmpireAtWar.Services.Audio
                 _slots[i].VolumeScale = scale;
                 _slots[i].EndsAt = _time + lease;
                 _sources.Sfx[i].pitch = pitch;
-                ApplyMix();
+                _mixDirty = true;
                 return true;
             }
             if (Time.timeScale == 0f || gain * scale < MIN_AUDIBLE_GAIN) return false;
@@ -121,7 +124,7 @@ namespace EmpireAtWar.Services.Audio
             _audioService.Play(source, clip, 0f, loop);
             _cooldowns[sound] = _time + sound.Cooldown;
             _starts.Enqueue(_time);
-            ApplyMix();
+            _mixDirty = true;
             return true;
         }
 
@@ -160,7 +163,7 @@ namespace EmpireAtWar.Services.Audio
             if (_disposed || _sources.Voice.isPlaying || Time.unscaledTime < _voiceReadyAt) return false;
             _audioService.Play(_sources.Voice, clip, _data.VoiceVolume, false);
             _voiceReadyAt = Time.unscaledTime + _data.VoiceCooldown;
-            ApplyMix();
+            _mixDirty = true;
             return true;
         }
 
@@ -173,6 +176,7 @@ namespace EmpireAtWar.Services.Audio
             for (int i = 0; i < _slots.Length; i++)
             {
                 if (_slots[i].Sound == null) continue;
+                _mixDirty = true;
                 if (_slots[i].FollowsEmitter)
                 {
                     if (_slots[i].Emitter == null) { Stop(i); continue; }
@@ -182,7 +186,15 @@ namespace EmpireAtWar.Services.Audio
                 if (_time >= _slots[i].EndsAt || _slots[i].Gain * _slots[i].VolumeScale < MIN_AUDIBLE_GAIN)
                     Stop(i);
             }
+        }
+
+        public void LateTick()
+        {
+            if (_disposed) return;
+            if (!_hasDuckState || _sources.Voice.isPlaying != _voiceDucking) _mixDirty = true;
+            if (!_mixDirty) return;
             ApplyMix();
+            _mixDirty = false;
         }
 
         private void UpdateTime()
@@ -201,8 +213,13 @@ namespace EmpireAtWar.Services.Audio
             for (int i = 0; i < _slots.Length; i++)
                 if (_slots[i].Sound != null) total += GetVolume(_slots[i]);
             float mix = MAX_MIX_VOLUME / Mathf.Max(MAX_MIX_VOLUME, total);
-            _mixer.SetFloat("SfxDuckVolume", _sources.Voice.isPlaying
-                ? 20f * Mathf.Log10(_data.VoiceDuckGain) : 0f);
+            bool voiceDucking = _sources.Voice.isPlaying;
+            if (!_hasDuckState || voiceDucking != _voiceDucking)
+            {
+                _mixer.SetFloat("SfxDuckVolume", voiceDucking ? 20f * Mathf.Log10(_data.VoiceDuckGain) : 0f);
+                _voiceDucking = voiceDucking;
+                _hasDuckState = true;
+            }
             for (int i = 0; i < _slots.Length; i++)
             {
                 if (_slots[i].Sound == null) continue;
@@ -236,6 +253,7 @@ namespace EmpireAtWar.Services.Audio
             for (int i = 0; i < _slots.Length; i++)
             {
                 if (_slots[i].Owner != ship) continue;
+                _mixDirty = true;
                 _slots[i].EndsAt = Mathf.Min(_slots[i].EndsAt, _time + FADE_TIME);
                 _slots[i].FollowsEmitter = false;
                 _slots[i].Emitter = null;
@@ -246,6 +264,7 @@ namespace EmpireAtWar.Services.Audio
         {
             _audioService.Stop(_sources.Sfx[index]);
             _slots[index] = default;
+            _mixDirty = true;
         }
 
         private struct VoiceSlot
