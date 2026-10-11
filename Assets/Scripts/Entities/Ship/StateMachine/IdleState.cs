@@ -47,8 +47,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_engagementTarget == null)
             {
                 float nearestDistance = float.PositiveInfinity;
-                foreach (IEntity enemy in _radarComponent.Enemies)
+                // Indexed: ObservableList boxes its enumerator.
+                for (int i = 0; i < _radarComponent.Enemies.Count; i++)
                 {
+                    IEntity enemy = _radarComponent.Enemies[i];
                     if (!ShipEngagement.CanEngage(enemy, _shipMoveComponent, _weaponComponent))
                     {
                         continue;

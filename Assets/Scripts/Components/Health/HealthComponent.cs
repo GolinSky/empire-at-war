@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
-using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Extensions;
@@ -188,27 +187,41 @@ namespace EmpireAtWar.Components.Ship.Health
                 return _hullTargets;
             }
 
-            IHardPointModel[] currentHardPoints = _hardPointAdapters
-                .Where(hardPoint => !hardPoint.IsDestroyed)
-                .Cast<IHardPointModel>()
-                .ToArray();
-            if (currentHardPoints.Length == 0)
+            // Counted first so the result is the only allocation: radar detections call this per new target.
+            int liveCount = 0;
+            int typedCount = 0;
+            int installedCount = 0;
+            foreach (HardPointAdapter hardPoint in _hardPointAdapters)
             {
-                return _hardPointAdapters
-                    .Where(hardPoint => hardPoint.IsInstalled)
-                    .Cast<IHardPointModel>()
-                    .ToArray();
+                if (hardPoint.IsInstalled) installedCount++;
+                if (hardPoint.IsDestroyed) continue;
+                liveCount++;
+                if (hardPoint.HardPointType == hardPointType) typedCount++;
             }
 
-            if (hardPointType == HardPointType.Any ||
-                currentHardPoints.All(hardPoint => hardPoint.HardPointType != hardPointType))
+            if (liveCount == 0)
             {
-                return currentHardPoints;
+                return CollectHardPoints(installedCount, true, false, hardPointType);
             }
 
-            return currentHardPoints
-                .Where(hardPoint => hardPoint.HardPointType == hardPointType)
-                .ToArray();
+            bool byType = hardPointType != HardPointType.Any && typedCount > 0;
+            return CollectHardPoints(byType ? typedCount : liveCount, false, byType, hardPointType);
+        }
+
+        private IHardPointModel[] CollectHardPoints(int count, bool installedOnly, bool byType,
+            HardPointType hardPointType)
+        {
+            IHardPointModel[] hardPoints = new IHardPointModel[count];
+            int index = 0;
+            foreach (HardPointAdapter hardPoint in _hardPointAdapters)
+            {
+                bool include = installedOnly
+                    ? hardPoint.IsInstalled
+                    : !hardPoint.IsDestroyed && (!byType || hardPoint.HardPointType == hardPointType);
+                if (include) hardPoints[index++] = hardPoint;
+            }
+
+            return hardPoints;
         }
 
         private void InitializeHardPoints()

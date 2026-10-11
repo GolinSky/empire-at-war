@@ -28,12 +28,13 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             _claims.Remove(member);
         }
 
-        public void Report(int member, IEnumerable<IEntity> detected)
+        // IList, not IEnumerable: the radar's ObservableList boxes its enumerator.
+        public void Report(int member, IList<IEntity> detected)
         {
             List<IEntity> contacts = _contacts[member];
             contacts.Clear();
-            foreach (IEntity enemy in detected)
-                if (IsAlive(enemy)) contacts.Add(enemy);
+            for (int i = 0; i < detected.Count; i++)
+                if (IsAlive(detected[i])) contacts.Add(detected[i]);
         }
 
         public bool Contains(IEntity enemy)

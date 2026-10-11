@@ -9,6 +9,7 @@ using EmpireAtWar.Patterns.StateMachine;
 using NUnit.Framework;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -65,6 +66,8 @@ namespace EmpireAtWar.Tests.Editor
             public float GetEngagementRange(ShipClass targetClass) => 100f;
 
             public void AddTarget(AttackData data, AttackType type) { }
+
+            public bool HasTarget(IHealthFacade healthFacade) => false;
 
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => true;
 

@@ -27,6 +27,10 @@ namespace EmpireAtWar.Services.Timing
         public const string PROJECTILE_TURRET_UPDATE = "Battle.Projectile.TurretUpdate";
         public const string PROJECTILE_LASER_UPDATE = "Battle.Projectile.LaserUpdate";
         public const string RADAR_SCAN = "Battle.Radar.Scan";
+        public const string RADAR_SNAPSHOT = "Battle.Radar.Snapshot";
+        public const string RADAR_JOB = "Battle.Radar.Job";
+        // One sample per delivered radar scan: reconciliation plus enemy-added listeners.
+        public const string RADAR_APPLY = "Battle.Radar.Apply";
         public const string NAVIGATION_PLAN = "Battle.Navigation.Plan";
         public const string NAVIGATION_CANDIDATES = "Battle.Navigation.Candidates";
         public const string NAVIGATION_ROUTE_BUILD = "Battle.Navigation.RouteBuild";
@@ -56,6 +60,9 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker ProjectileTurretUpdate = new ProfilerMarker(PROJECTILE_TURRET_UPDATE);
         public static readonly ProfilerMarker ProjectileLaserUpdate = new ProfilerMarker(PROJECTILE_LASER_UPDATE);
         public static readonly ProfilerMarker RadarScan = new ProfilerMarker(RADAR_SCAN);
+        public static readonly ProfilerMarker RadarSnapshot = new ProfilerMarker(RADAR_SNAPSHOT);
+        public static readonly ProfilerMarker RadarJob = new ProfilerMarker(RADAR_JOB);
+        public static readonly ProfilerMarker RadarApply = new ProfilerMarker(RADAR_APPLY);
         public static readonly ProfilerMarker NavigationPlan = new ProfilerMarker(NAVIGATION_PLAN);
         public static readonly ProfilerMarker NavigationCandidates = new ProfilerMarker(NAVIGATION_CANDIDATES);
         public static readonly ProfilerMarker NavigationRouteBuild = new ProfilerMarker(NAVIGATION_ROUTE_BUILD);

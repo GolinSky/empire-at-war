@@ -245,7 +245,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private void HandleEnemyAdded(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> args)
         {
             IEntity entity = args.item;
-            if (entity.HealthModel.HasUnits && entity.TryGetFacade(out IHealthFacade healthFacade))
+            if (entity.HealthModel.HasUnits && entity.TryGetFacade(out IHealthFacade healthFacade) &&
+                !_weapon.HasTarget(healthFacade))
             {
                 _weapon.AddTarget(new AttackData(entity.HealthModel, healthFacade, HardPointType.Any, entity),
                     AttackType.Base);

@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Models.Players;
-using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
@@ -38,7 +37,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         [SerializeField] private Transform bodyTransform;
         private CombatModifiers _modifiers;
         private ShipMovementTweenPlayer _motion;
-        private readonly List<RadarContact> _navigationContacts = new List<RadarContact>();
 
         [SerializeField] private Ease hyperSpaceEase;
         private Vector3 _startPosition;
@@ -212,14 +210,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void HandleSelection(bool isSelected) =>
             _motion.SetSelected(isSelected, IsMoving);
 
-        public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
-        {
-            if (_isReleased) return;
-            _navigationContacts.Clear();
-            for (int i = 0; i < contacts.Count; i++)
-                if (!contacts[i].IsShip) _navigationContacts.Add(contacts[i]);
-        }
-
         private void FinishHyperSpaceJump()
         {
             _shipSpawnClearance.ReleaseLanding(this);
@@ -234,7 +224,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (Model.Phase == MovementPhase.Arriving)
             {
                 ShipNavigationPlan pendingPlan = _shipNavigationService.Plan(this,
-                    transform.forward, destination, _navigationContacts, HEIGHT_TOLERANCE,
+                    transform.forward, destination, Array.Empty<RadarContact>(), HEIGHT_TOLERANCE,
                     NavigationRadius, _mapModel.SizeRange,
                     preserveCourse: true, reserveAsPending: true);
                 // Nothing is reachable from the jump point yet; plan again once the jump lands.
@@ -245,7 +235,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             destination.y = transform.position.y;
             ShipNavigationPlan plan = _shipNavigationService.Plan(this,
                 _motion.CurrentPathTangent ?? transform.forward,
-                destination, _navigationContacts, HEIGHT_TOLERANCE,
+                destination, Array.Empty<RadarContact>(), HEIGHT_TOLERANCE,
                 NavigationRadius, _mapModel.SizeRange,
                 preserveCourse && _motion.CurrentPathTangent.HasValue);
             if (logNavigationDecisions)

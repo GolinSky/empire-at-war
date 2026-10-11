@@ -78,8 +78,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_engagementTarget == null && !_isReturning)
             {
-                foreach (IEntity enemy in _radar.Enemies)
+                // Indexed: ObservableList boxes its enumerator.
+                for (int i = 0; i < _radar.Enemies.Count; i++)
                 {
+                    IEntity enemy = _radar.Enemies[i];
                     if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits || enemy.IsCloaked() ||
                         PlanarGeometry.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
                         _settings.GuardChaseDistance) continue;
