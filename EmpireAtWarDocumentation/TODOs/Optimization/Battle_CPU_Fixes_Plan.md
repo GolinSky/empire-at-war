@@ -46,7 +46,8 @@ updated: 2026-10-11
 ### Phase 1 — Stop target-selection serial fallbacks
 - Cause: `WeaponTargetSelectionJob.Execute` falls back when `ParentRotation.x/z > 0.000001` (any ship tilt/bank). Serial `WeaponTargetSelector` uses `(Quaternion.Inverse(parent) * LookRotation(dir, up)).eulerAngles.y`; job uses `atan2` of local direction → differ for tilted parents, so job bails out.
 - [ ] Confirm via Phase 0 counters that tilt is the leading reason.
-- [ ] Port the serial yaw exactly into Burst (quaternion → euler Y with Unity's decomposition), remove the tilt rejection; keep true boundary fallbacks.
+- [x] Use Burst-compatible `math.EulerZXY(inverseParent * worldAim).y` matching serial Unity rotation order; remove blanket tilt rejection. Keep range/yaw/degenerate fallback, including near-gimbal Euler branch ambiguity. Unity compilation passed; existing tilted-parent expectation updated, tests not run.
+- Tilt attribution/randomized parity/time gate pending: latest saved capture lacks reason counts; user skipped new runs.
 - [ ] EditMode parity test: random tilted/rolled parents, ranges and arcs → job and serial return the same `CandidateIndex` and aim.
 - Done gate: fallbacks drop to boundary cases only; target capture + selection time falls; zero parity mismatches.
 

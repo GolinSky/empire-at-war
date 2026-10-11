@@ -85,14 +85,19 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
-        public void ScheduledJob_RequestsSerialFallbackForTiltedParent()
+        public void ScheduledJob_MatchesSerialAimForTiltedParent()
         {
             Vector3[] positions = { new Vector3(0f, 0f, 5f) };
             WeaponTargetSelectionJob.Input input = Input(1);
             Quaternion rotation = Quaternion.Euler(20f, 30f, 0f);
             input.ParentRotation = new quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 
-            Assert.That(Run(8, input, positions).RequiresSerialFallback, Is.EqualTo(1));
+            WeaponTargetSelectionJob.Result result = Run(8, input, positions);
+            bool eligible = WeaponTargetSelector.TryCalculateAim(positions[0], Vector3.zero,
+                rotation, 10f, -180f, 180f, out Quaternion serialAim, out _);
+            Assert.That(result.RequiresSerialFallback, Is.Zero);
+            Assert.That(result.CandidateIndex, Is.EqualTo(eligible ? 0 : -1));
+            Assert.That(Quaternion.Angle(ToQuaternion(result.SelectedAim), serialAim), Is.LessThan(0.1f));
         }
 
         [Test]
