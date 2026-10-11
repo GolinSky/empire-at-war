@@ -6,7 +6,7 @@ using EmpireAtWar.Components.Environment;
 
 public static class BuildNebula
 {
-    private const string CLOUD_PREFAB = "Assets/Prefabs/Vfx/SkirmishVolumetricNebulaClouds.prefab";
+    private const string CLOUD_PREFAB = "Assets/Prefabs/Vfx/Nebula/SkirmishVolumetricNebulaClouds.prefab";
     private const string MATERIAL_FOLDER = "Assets/Art/Materials/Vfx/Nebula/";
     private const string TEXTURE_FOLDER = "Assets/Art/Textures/Vfx/Nebula/";
     private const int WIDTH = 512;
