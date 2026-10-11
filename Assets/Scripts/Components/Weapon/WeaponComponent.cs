@@ -271,7 +271,7 @@ namespace EmpireAtWar.Components.Weapon
 
         /// <summary>Positions are shared by every owner captured at the same batch boundary.</summary>
         internal void CaptureTargetSelection(List<TargetSelectionCandidate> candidates,
-            Dictionary<IHardPointModel, Vector3> positions, out int targetVersion)
+            TargetSelectionCapture capture, out int targetVersion)
         {
             EnsureCandidates();
             _targetGroupEligibility.Clear();
@@ -283,24 +283,22 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     canAcquire = CanAcquire(candidate.Group);
                     _targetGroupEligibility.Add(candidate.Group, canAcquire);
-                    InvalidateIfWrecked(candidate.Group);
+                    // A new wreck makes its destroyed hardpoints valid aim points again.
+                    if (_liveGroupsAtRebuild.Contains(candidate.Group) && capture.IsWreck(candidate.Group))
+                    {
+                        AttackSequenceDiagnostics.RecordTargetInvalidation();
+                        InvalidateCandidates();
+                    }
                 }
                 if (!canAcquire) continue;
-                if (!candidate.Group.CanTarget(candidate.Unit))
+                if (!capture.TryCapture(candidate.Group, candidate.Unit, out TargetSelectionCandidate snapshot))
                 {
                     _orderedCandidates.RemoveAt(i--);
                     AttackSequenceDiagnostics.RecordTargetInvalidation();
                     removedInvalidCandidate = true;
                     continue;
                 }
-                candidates.Add(new TargetSelectionCandidate
-                {
-                    Group = candidate.Group,
-                    Unit = candidate.Unit,
-                    Generation = candidate.Unit.Generation,
-                    Position = GetTargetPosition(positions, candidate.Unit),
-                    IsStrikecraft = candidate.Group.TargetClass.IsStrikecraft()
-                });
+                candidates.Add(snapshot);
             }
             if (removedInvalidCandidate) _targetVersion++;
             targetVersion = _targetVersion;
@@ -415,14 +413,6 @@ namespace EmpireAtWar.Components.Weapon
             if (!_candidatesDirty) return;
             _candidatesDirty = false;
             RebuildCandidates();
-        }
-
-        // The last hardpoint lost turns the ship into a wreck whose destroyed hardpoints are valid aim points again.
-        private void InvalidateIfWrecked(AttackData group)
-        {
-            if (!_liveGroupsAtRebuild.Contains(group) || group.IsDestroyed || group.TargetHealth.HasLiveHardPoints) return;
-            AttackSequenceDiagnostics.RecordTargetInvalidation();
-            InvalidateCandidates();
         }
 
         private void RebuildCandidates()

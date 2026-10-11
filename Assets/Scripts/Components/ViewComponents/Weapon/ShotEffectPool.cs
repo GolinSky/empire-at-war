@@ -88,7 +88,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 }
 
                 AttackSequenceDiagnostics.RecordPoolReused();
-                effect.gameObject.SetActive(true);
+                effect.enabled = true;
                 return effect;
             }
 
@@ -172,7 +172,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
             else
             {
-                effect.gameObject.SetActive(false);
+                effect.ResetForPool();
                 _available.Push(effect);
                 _availableMembers.Add(effect);
                 AttackSequenceDiagnostics.RecordPoolAvailable(1);
@@ -225,7 +225,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 ShotEffect effect = UnityEngine.Object.Instantiate(_prefab);
                 effect.EffectCompleted += OnEffectCompleted;
                 effect.EffectDestroyed += OnEffectDestroyed;
-                effect.gameObject.SetActive(false);
+                effect.ResetForPool();
                 _available.Push(effect);
                 _availableMembers.Add(effect);
                 AttackSequenceDiagnostics.RecordPoolCreated(false);

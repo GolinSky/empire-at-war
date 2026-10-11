@@ -21,6 +21,8 @@ namespace EmpireAtWar.Views
         private const float ROW_SPACING = 2f;
 
         private IReadOnlyList<ShipUiEntry> _ships;
+        private readonly List<ShipUi> _entries = new List<ShipUi>();
+        private readonly List<ShipAbilitySlot> _slots = new List<ShipAbilitySlot>();
 
         [SerializeField] private Button button;
         [SerializeField] private RectTransform groupRect;
@@ -51,9 +53,30 @@ namespace EmpireAtWar.Views
         private void OnDestroy()
         {
             button.onClick.RemoveListener(HandleClick);
+            UnsubscribeSummary();
+        }
+
+        private void UnsubscribeSummary()
+        {
             if (_shipCount > MAX_INDIVIDUAL_SHIPS)
                 foreach (ShipUiEntry ship in _ships)
                     ship.Health.OnValueChanged -= UpdateSummaryHealth;
+        }
+
+        public void Clear()
+        {
+            UnsubscribeSummary();
+            _ships = null;
+            _shipCount = 0;
+            _onClicked = null;
+            for (int i = 0; i < _entries.Count; i++)
+            {
+                _entries[i].Dispose();
+                _entries[i].gameObject.SetActive(false);
+                _entries[i].TooltipHover.ForwardTo(_tooltipHover, null);
+            }
+            _slots.Clear();
+            abilityBar.SetSlots(_slots, null);
         }
 
         public void Configure(ShipType shipType, Sprite icon, IReadOnlyList<ShipUiEntry> ships,
@@ -73,6 +96,7 @@ namespace EmpireAtWar.Views
         private void Configure(Sprite icon, IReadOnlyList<ShipUiEntry> ships,
             IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility)
         {
+            Clear();
             _onClicked = onClicked;
             _ships = ships;
             _shipCount = ships.Count;
@@ -80,19 +104,21 @@ namespace EmpireAtWar.Views
             summaryCard.SetActive(collapsed);
             entriesLayout.gameObject.SetActive(!collapsed);
 
-            List<ShipAbilitySlot> slots = new List<ShipAbilitySlot>();
+            int entryIndex = 0;
             foreach (ShipUiEntry ship in ships)
             {
                 if (collapsed)
                     ship.Health.OnValueChanged += UpdateSummaryHealth;
                 else
                 {
-                    ShipUi entry = Instantiate(entryPrefab, entriesLayout.transform);
+                    if (entryIndex == _entries.Count)
+                        _entries.Add(Instantiate(entryPrefab, entriesLayout.transform));
+                    ShipUi entry = _entries[entryIndex++];
                     entry.ConfigureEntry(icon, ship, HandleClick);
                     entry.TooltipHover.ForwardTo(_tooltipHover, ship);
                     entry.gameObject.SetActive(true);
                 }
-                slots.AddRange(ship.AbilitySlots);
+                _slots.AddRange(ship.AbilitySlots);
             }
             if (collapsed)
             {
@@ -101,7 +127,7 @@ namespace EmpireAtWar.Views
                 UpdateSummaryHealth();
             }
             abilityBar.SetModel(model);
-            abilityBar.SetSlots(slots, pressAbility);
+            abilityBar.SetSlots(_slots, pressAbility);
         }
 
         private void UpdateSummaryHealth()

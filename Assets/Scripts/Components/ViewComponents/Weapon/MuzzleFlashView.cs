@@ -60,10 +60,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             flash.SetPosition(1, _origin + _direction * _length);
         }
 
-        private void OnDisable()
+        public void Stop()
         {
             flash.enabled = false;
             _muzzle = null;
         }
+
+        private void OnDisable() => Stop();
     }
 }

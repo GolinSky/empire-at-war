@@ -24,6 +24,7 @@ namespace EmpireAtWar.Views
         [SerializeField] private ShipSelectionGroupUi groupPrefab;
         [SerializeField] private TooltipHoverView tooltipHover;
         private readonly List<ShipSelectionGroupUi> _groups = new List<ShipSelectionGroupUi>();
+        private int _groupCount;
         private RectTransform _content;
         private RectTransform _viewport;
 
@@ -62,39 +63,46 @@ namespace EmpireAtWar.Views
 
         public void ClearGroups()
         {
-            if (_groups.Count > 0)
+            if (_groupCount > 0)
                 _content.sizeDelta = new Vector2(0f, _content.sizeDelta.y);
-            for (int i = 0; i < _groups.Count; i++)
+            for (int i = 0; i < _groupCount; i++)
             {
+                _groups[i].Clear();
                 _groups[i].gameObject.SetActive(false);
-                Destroy(_groups[i].gameObject);
             }
-            _groups.Clear();
+            _groupCount = 0;
             _layoutDirty = true;
         }
 
         public void AddGroup(ShipType shipType, IReadOnlyList<ShipUiEntry> ships,
             Action<ShipAbilityId> pressAbility)
         {
-            ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
-            group.SetTooltipHover(tooltipHover);
+            ShipSelectionGroupUi group = GetGroup();
             group.Configure(shipType, _icons.GetShipIcon(shipType), ships, _model,
                 _presenter.SelectShipGroup, pressAbility);
             group.gameObject.SetActive(true);
-            _groups.Add(group);
             _layoutDirty = true;
         }
 
         public void AddGroup(SquadronType squadronType, IReadOnlyList<ShipUiEntry> squadrons,
             Action<ShipAbilityId> pressAbility)
         {
-            ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
-            group.SetTooltipHover(tooltipHover);
+            ShipSelectionGroupUi group = GetGroup();
             group.Configure(squadronType, _icons.GetSquadronIcon(squadronType), squadrons, _model,
                 _presenter.SelectSquadronGroup, pressAbility);
             group.gameObject.SetActive(true);
-            _groups.Add(group);
             _layoutDirty = true;
+        }
+
+        private ShipSelectionGroupUi GetGroup()
+        {
+            if (_groupCount == _groups.Count)
+            {
+                ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
+                group.SetTooltipHover(tooltipHover);
+                _groups.Add(group);
+            }
+            return _groups[_groupCount++];
         }
 
         public override void SetParent(Transform parent)
@@ -129,10 +137,10 @@ namespace EmpireAtWar.Views
             if (!_layoutDirty && size == _lastSize) return;
             _lastSize = size;
             _layoutDirty = false;
-            if (_groups.Count == 0) return;
+            if (_groupCount == 0) return;
 
             float x = 0f;
-            for (int i = 0; i < _groups.Count; i++)
+            for (int i = 0; i < _groupCount; i++)
             {
                 _groups[i].SetLayout(x, CARD_WIDTH, size.y);
                 x += _groups[i].GetWidth(CARD_WIDTH) + GROUP_SPACING;

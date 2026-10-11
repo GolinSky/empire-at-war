@@ -119,6 +119,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Seconds after arrival over which the shot's damage is spread; 0 lands it all on arrival.</summary>
         public virtual float DamageDuration => 0f;
 
+        public void ResetForPool()
+        {
+            muzzleFlash.Stop();
+            ResetVisuals();
+            enabled = false;
+        }
+
+        protected abstract void ResetVisuals();
+
         protected virtual void OnLeaseCompleted() { }
 
         protected virtual void OnIntercepted() { }
