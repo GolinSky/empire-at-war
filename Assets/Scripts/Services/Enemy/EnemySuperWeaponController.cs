@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
+using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using Zenject;
 
@@ -24,6 +26,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly IEntityLocator _entities;
+        private readonly IVisionService _vision;
         private readonly IStationRegistry _stationRegistry;
 
         private readonly SuperWeaponModel _model;
@@ -37,6 +40,7 @@ namespace EmpireAtWar.Services.Enemy
         private float _decisionTimer;
 
         public EnemySuperWeaponController(ISuperWeaponFireService superWeaponFireService, IEntityLocator entities,
+            IVisionService vision,
             IStationRegistry stationRegistry, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
             PlayerSlot owner)
@@ -47,6 +51,7 @@ namespace EmpireAtWar.Services.Enemy
             _economyModel = economyModel;
             _superWeaponFireService = superWeaponFireService;
             _entities = entities;
+            _vision = vision;
             _stationRegistry = stationRegistry;
         }
 
@@ -132,6 +137,8 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IEntity entity in _entities.Entities)
             {
                 if (!_superWeaponFireService.CanTarget(_owner.Id, entity)) continue;
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (!_vision.IsVisible(_owner.Id, position)) continue;
                 float score = type == SuperWeaponType.IonCannon
                     ? entity.HealthModel.Shields
                     : entity.HealthModel.Hull;
