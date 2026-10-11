@@ -9,7 +9,7 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class MatchNebulaTests
     {
-        private const string PREFAB = "Assets/Prefabs/Vfx/SkirmishVolumetricNebulaClouds.prefab";
+        private const string PREFAB = "Assets/Prefabs/Vfx/Nebula/SkirmishVolumetricNebulaClouds.prefab";
 
         [Test]
         public void MatchLoads_SelectAllCompositionsWithoutRepeatingOrChangingGameplayRandom()
