@@ -120,7 +120,7 @@ public static class BuildNebula
         material.shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Art/Shaders/Vfx/NebulaStars.shader");
         material.renderQueue = 2550;
         EditorUtility.SetDirty(material);
-        const string PREFAB = "Assets/Prefabs/Vfx/SkirmishVfx.prefab";
+        const string PREFAB = "Assets/Prefabs/Vfx/Nebula/SkirmishVfx.prefab";
         var root = PrefabUtility.LoadPrefabContents(PREFAB);
         try
         {

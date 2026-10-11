@@ -41,7 +41,7 @@ public static class PreviewNebula
             light.type = LightType.Directional;
             light.intensity = 1.5f;
             light.transform.rotation = Quaternion.Euler(30,-30,0);
-            var background = Clone(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Vfx/SkirmishVfx.prefab"),null,scene);
+            var background = Clone(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Vfx/Nebula/SkirmishVfx.prefab"),null,scene);
             var renderer = background.GetComponentsInChildren<MeshRenderer>().Single(r => r.name == "Nebula Volume");
             foreach (var stars in background.GetComponentsInChildren<ParticleSystem>())
             {
