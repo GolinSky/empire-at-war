@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2038511333583116946}
   - component: {fileID: 5370172198844081454}
   - component: {fileID: 6573619935056814527}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: HeaderDivider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 135233890183539801}
   - component: {fileID: 8536728736759458855}
   - component: {fileID: 8654983422565621743}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ProgressFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,7 +332,7 @@ GameObject:
   - component: {fileID: 1622487334221925114}
   - component: {fileID: 1439553587392312831}
   - component: {fileID: 7261505759188685563}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Status
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   - component: {fileID: 8944073991574954948}
   - component: {fileID: 8954919327882407688}
   - component: {fileID: 8895958698598722404}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: CapturePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -817,7 +817,7 @@ GameObject:
   - component: {fileID: 8477563999351868713}
   - component: {fileID: 1101914148242906406}
   - component: {fileID: 2685166790453926460}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WorldUi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -902,7 +902,7 @@ GameObject:
   - component: {fileID: 8141224806864153443}
   - component: {fileID: 1583317224546878475}
   - component: {fileID: 6055475403687252058}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1040,7 +1040,7 @@ GameObject:
   - component: {fileID: 6235860367094986336}
   - component: {fileID: 6065010822365994521}
   - component: {fileID: 7132834150288575866}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ProgressBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

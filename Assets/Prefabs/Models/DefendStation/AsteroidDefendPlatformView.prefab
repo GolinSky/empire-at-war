@@ -8984,7 +8984,7 @@ GameObject:
   - component: {fileID: 5637441176310439845}
   - component: {fileID: 5914117208170854696}
   - component: {fileID: 1632778987404257105}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10294,7 +10294,7 @@ GameObject:
   - component: {fileID: 5484777550926794194}
   - component: {fileID: 2897808423355678142}
   - component: {fileID: 5170145729685532881}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SelectedImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using Zenject;
 
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Components.Selection.Marquee
     {
         private readonly IPointerGestures _gestures;
         private readonly IMarqueeSelectionView _view;
+        private readonly IHudVisibilityObserver _hud;
 
         private readonly MarqueeSelectionModel _model;
 
@@ -22,8 +24,10 @@ namespace EmpireAtWar.Components.Selection.Marquee
         public MarqueeSelectionPresenter(
             IPointerGestures gestures,
             IMarqueeSelectionView view,
-            MarqueeSelectionModel model)
+            MarqueeSelectionModel model,
+            IHudVisibilityObserver hud)
         {
+            _hud = hud;
             _gestures = gestures;
             _model = model;
             _view = view;
@@ -47,12 +51,23 @@ namespace EmpireAtWar.Components.Selection.Marquee
 
         private void HandleDragStarted(Vector2 screenPosition)
         {
+            // The cinema camera hides the HUD; no marquee or selection change behind it.
+            if (!_hud.IsHudVisible)
+            {
+                return;
+            }
+
             _model.Begin(ToPoint(screenPosition));
             _view.Show(_model.Rectangle);
         }
 
         private void HandleDragChanged(Vector2 screenPosition)
         {
+            if (!_model.IsActive)
+            {
+                return;
+            }
+
             _model.Update(ToPoint(screenPosition));
             _view.Show(_model.Rectangle);
         }

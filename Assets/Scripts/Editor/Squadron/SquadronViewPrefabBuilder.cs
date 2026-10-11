@@ -30,6 +30,7 @@ namespace EmpireAtWar.Editor.Squadrons
         private const string EXPLOSION_PATH = "Assets/Prefabs/Vfx/FighterExplosionVfx.prefab";
         private const string TRAIL_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Engines.mat";
         private const string SELECTION_SOURCE_PATH = "Assets/Prefabs/Models/Ships/ArquitensShipView.prefab";
+        private const string LAYER_DATA_PATH = "Assets/Settings/Data/Models/Layer/LayerData.asset";
 
         private const float SELECTION_RING_SIZE = 8f;
         private const float SELECTION_RING_HEIGHT = -1f;
@@ -265,6 +266,14 @@ namespace EmpireAtWar.Editor.Squadrons
             iconObject.FindProperty("silhouetteImage").objectReferenceValue = silhouetteImage;
             iconObject.FindProperty("iconImage").objectReferenceValue = iconImage;
             iconObject.ApplyModifiedPropertiesWithoutUndo();
+
+            // World UI renders only for the core game camera, not the cinema camera.
+            int worldUiLayer = Mathf.RoundToInt(Mathf.Log(
+                AssetDatabase.LoadAssetAtPath<LayerData>(LAYER_DATA_PATH).WorldUiLayerMask.value, 2));
+            foreach (Transform child in canvasObject.GetComponentsInChildren<Transform>(true))
+            {
+                child.gameObject.layer = worldUiLayer;
+            }
         }
 
         private static T CreateIconImage<T>(string name, Transform parent, float padding)

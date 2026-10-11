@@ -1766,3 +1766,25 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 79
+    displayName: Strike Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    pattern: 0
+    burstShots: 2
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 0.5
+    reloadMultiplier: 1.5
+    rangeMultiplier: 1
+    reason: Fighter-class torpedo. Half damage and 1.5x reload so fighters stay below
+      dedicated bombers.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
