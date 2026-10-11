@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
 
 using EmpireAtWar.Components.Ship.Health;
 
@@ -29,6 +32,9 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private Vector4[] hullPlanes;
 
         private Bounds _meshBounds;
+        // Burst-ready copy of hullPlanes. Every tracked shot clips against all planes (1024 per baked hull) each frame.
+        private NativeArray<Vector4> _planes;
+        private NativeArray<float> _clipEnter;
 
         private int _impactCount;
 
@@ -37,6 +43,14 @@ namespace EmpireAtWar.ViewComponents.Health
         private void Awake()
         {
             _meshBounds = shieldRenderer.localBounds;
+            _planes = new NativeArray<Vector4>(hullPlanes, Allocator.Persistent);
+            _clipEnter = new NativeArray<float>(1, Allocator.Persistent);
+        }
+
+        private void OnDestroy()
+        {
+            _planes.Dispose();
+            _clipEnter.Dispose();
         }
 
         public void SetActive(bool active)
@@ -53,6 +67,11 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             meshFilter.sharedMesh = mesh;
             hullPlanes = planes;
+            if (_planes.IsCreated)
+            {
+                _planes.Dispose();
+                _planes = new NativeArray<Vector4>(hullPlanes, Allocator.Persistent);
+            }
             _meshBounds = mesh.bounds;
             shieldRenderer.localBounds = _meshBounds;
             _impactCount = 0;
@@ -65,21 +84,32 @@ namespace EmpireAtWar.ViewComponents.Health
             Transform surface = shieldRenderer.transform;
             Vector3 localOrigin = surface.InverseTransformPoint(origin);
             Vector3 direction = surface.InverseTransformPoint(target) - localOrigin;
-            float enter = float.NegativeInfinity;
-            float exit = float.PositiveInfinity;
-            for (int i = 0; i < hullPlanes.Length; i++)
-            {
-                Vector3 normal = hullPlanes[i];
-                float approach = Vector3.Dot(normal, direction);
-                float gap = hullPlanes[i].w - Vector3.Dot(normal, localOrigin);
-                if (approach < 0f) enter = Mathf.Max(enter, gap / approach);
-                else if (approach > 0f) exit = Mathf.Min(exit, gap / approach);
-                else if (gap < 0f) return target;
-            }
-
-            // An origin inside the shield must not shoot through the hull to its far surface.
-            if (enter > exit || enter < 0f || enter > 1f) return target;
+            float enter = ClipEnter(localOrigin, direction);
+            if (enter == ShieldSurfaceClipJob.MISS) return target;
             return surface.TransformPoint(localOrigin + direction * enter);
+        }
+
+        private float ClipEnter(Vector3 localOrigin, Vector3 direction)
+        {
+            if (_planes.IsCreated) return RunClip(_planes, _clipEnter, localOrigin, direction);
+
+            // Editor tools and tests call this on instances that never woke, so they clip against a short-lived copy.
+            using NativeArray<Vector4> planes = new NativeArray<Vector4>(hullPlanes, Allocator.TempJob);
+            using NativeArray<float> clipEnter = new NativeArray<float>(1, Allocator.TempJob);
+            return RunClip(planes, clipEnter, localOrigin, direction);
+        }
+
+        private static float RunClip(NativeArray<Vector4> planes, NativeArray<float> clipEnter, Vector3 localOrigin,
+            Vector3 direction)
+        {
+            new ShieldSurfaceClipJob
+            {
+                Planes = planes.Reinterpret<float4>(),
+                Origin = localOrigin,
+                Direction = direction,
+                Enter = clipEnter
+            }.Run();
+            return clipEnter[0];
         }
 
         public void ShowImpact(Vector3 position, float damage)

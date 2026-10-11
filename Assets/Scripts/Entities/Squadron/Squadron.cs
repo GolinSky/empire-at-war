@@ -346,7 +346,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _targetSearchTimer -= Time.deltaTime;
             if (IsEngaging) return false;
             if (_engaged == null && _targetSearchTimer > 0f) return false;
-            _targetSearchTimer = TARGET_SEARCH_INTERVAL;
+            // Jittered: squadrons that lost one shared target search in the same frame and would otherwise stay in step.
+            _targetSearchTimer = UnityEngine.Random.Range(0.5f, 1f) * TARGET_SEARCH_INTERVAL;
             return true;
         }
 

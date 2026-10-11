@@ -46,20 +46,51 @@ namespace EmpireAtWar.Services.ShipNavigation
                 return index;
             }
 
+            // Rings of growing Chebyshev radius around the clamped cell. A ring can only hold a closer node while
+            // its inner edge is nearer than the best found so far, so the search stops long before a full-grid scan.
+            // Ties keep the lowest index, which is what scanning every cell in order returns.
+            int centerX = index % Width;
+            int centerY = index / Width;
+            float centerOffset = math.distance(GetNodePosition(index), position);
+            int maxRadius = math.max(math.max(centerX, Width - 1 - centerX), math.max(centerY, Height - 1 - centerY));
             int best = -1;
             float bestDistance = float.PositiveInfinity;
-            for (int i = 0; i < blocked.Length; i++)
+            for (int radius = 1; radius <= maxRadius; radius++)
             {
-                if (blocked[i] != 0)
+                float ringGap = radius * CellSize - centerOffset;
+                if (best >= 0 && ringGap > 0f && ringGap * ringGap > bestDistance)
                 {
-                    continue;
+                    break;
                 }
 
-                float distance = math.distancesq(GetNodePosition(i), position);
-                if (distance < bestDistance)
+                for (int y = centerY - radius; y <= centerY + radius; y++)
                 {
-                    bestDistance = distance;
-                    best = i;
+                    if (y < 0 || y >= Height)
+                    {
+                        continue;
+                    }
+
+                    int step = y == centerY - radius || y == centerY + radius ? 1 : 2 * radius;
+                    for (int x = centerX - radius; x <= centerX + radius; x += step)
+                    {
+                        if (x < 0 || x >= Width)
+                        {
+                            continue;
+                        }
+
+                        int cell = y * Width + x;
+                        if (blocked[cell] != 0)
+                        {
+                            continue;
+                        }
+
+                        float distance = math.distancesq(GetNodePosition(cell), position);
+                        if (distance < bestDistance || distance == bestDistance && cell < best)
+                        {
+                            bestDistance = distance;
+                            best = cell;
+                        }
+                    }
                 }
             }
 
