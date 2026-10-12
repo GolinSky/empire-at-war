@@ -8,8 +8,8 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 
 public static class RegisterRaiderCorvette
 {
-    const string VIEW = "Assets/Prefabs/Models/Ships/RaiderCorvetteShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/RaiderCorvetteShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
     const string MATCHUPS = "Assets/Settings/Data/Tooltip/Matchups/RaiderCorvetteMatchups.asset";
     public static string Main()
     {
@@ -51,12 +51,12 @@ public static class RegisterRaiderCorvette
         {
             string guid = AssetDatabase.AssetPathToGUID(path);
             Entry(mapping.FindProperty("assetMappings.keyValue"), Path.GetFileNameWithoutExtension(path)).FindPropertyRelative("m_AssetGUID").stringValue = guid;
-            var donor = path == VIEW ? "Assets/Prefabs/Models/Ships/VictoryShipView.prefab" : "Assets/Settings/Data/Ship/VictoryShipData.asset";
+            var donor = path == VIEW ? "Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab" : "Assets/Settings/Data/Ship/Empire/VictoryShipData.asset";
             var entry = settings.CreateOrMoveEntry(guid, settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(donor)).parentGroup);
             entry.address = Path.GetFileNameWithoutExtension(path); EditorUtility.SetDirty(entry.parentGroup);
         }
         Save(mapping); EditorUtility.SetDirty(settings);
-        var ships = Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships = Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Entry(ships.FindProperty("shipsData.keyValue"), 208).FindPropertyRelative("m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(DATA); Save(ships);
         var ui = Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset"); Entry(ui.FindProperty("shipIconWrapper.keyValue"), 208).objectReferenceValue = icon; Save(ui);
         var tooltip = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset"); var icons = tooltip.FindProperty("icons");

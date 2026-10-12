@@ -73,7 +73,7 @@ public static class BuildImperialArt
         var summary=new List<string>();
         foreach (string variant in new[]{SHIP,"TIEInterceptor","TIEBrute","TIEPunisher"})
         {
-            string kind=variant==SHIP?"Ships":"Squadrons";
+            string kind=variant==SHIP?"Ships/Empire":"Squadrons";
             var root=new GameObject(variant);
             try
             {

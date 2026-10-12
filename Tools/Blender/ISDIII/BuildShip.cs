@@ -14,17 +14,17 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildISDIIIShip
 {
-    const string VISUAL="Assets/Prefabs/Models/Ships/ISDIII.prefab";
-    const string GAMEPLAY="Assets/Prefabs/Models/Ships/ISDIIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIIIShipData.asset";
-    const string WRECK_DATA="Assets/Settings/Data/Ship/Wreck/ISDIIIWreckData.asset";
+    const string VISUAL="Assets/Prefabs/Models/Ships/Empire/ISDIII.prefab";
+    const string GAMEPLAY="Assets/Prefabs/Models/Ships/Empire/ISDIIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIIShipData.asset";
+    const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Empire/ISDIIIWreckData.asset";
     const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/ISDIIIReinforcementView.prefab";
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("ISD III construction requires Edit Mode.");
-        Copy("Assets/Prefabs/Models/Ships/ISDIShipView.prefab",GAMEPLAY);
-        Copy("Assets/Settings/Data/Ship/ISDIShipData.asset",DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/ISDIWreckData.asset",WRECK_DATA);
+        Copy("Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab",GAMEPLAY);
+        Copy("Assets/Settings/Data/Ship/Empire/ISDIShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Empire/ISDIWreckData.asset",WRECK_DATA);
         var audit=JObject.Parse(File.ReadAllText("Temp/ISDIIIImport/SourceAudit.json"));
         var root=PrefabUtility.LoadPrefabContents(GAMEPLAY);
         Bounds bounds;float bottom,top,radius;

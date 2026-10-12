@@ -71,26 +71,26 @@ public static class BuildVictoryIIArt
                     model.transform.localScale*=scale;
                     model.transform.localPosition=-bounds.center*scale;
                 }
-                const string FOLDER="Ships";
-                PrefabUtility.SaveAsPrefabAsset(visual,"Assets/Prefabs/Models/"+FOLDER+"/"+name+".prefab");
+                string folder = name.Contains("Turret") ? "Cannons/Empire" : "Ships/Empire";
+                PrefabUtility.SaveAsPrefabAsset(visual,"Assets/Prefabs/Models/"+folder+"/"+name+".prefab");
             }
             finally { UnityEngine.Object.DestroyImmediate(visual); }
         }
-        var hull=PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/VictoryII.prefab");
+        var hull=PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/Empire/VictoryII.prefab");
         try
         {
             var rig=hull.transform.GetChild(0);
             for(int i=1;i<=6;i++)
             {
                 var bone=rig.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="T_0"+i);
-                var turret=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/VictoryIITurret"+(i==1?"01":"02")+".prefab"),bone);
+                var turret=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Cannons/Empire/VictoryIITurret"+(i==1?"01":"02")+".prefab"),bone);
                 turret.name="MediumBurstTurbolaser"+i;
                 turret.transform.localPosition=Vector3.zero;
                 var turretRig=turret.GetComponentsInChildren<Transform>(true).Single(t=>t.name.EndsWith("Rig"));
                 turret.transform.localRotation=Quaternion.Inverse(turretRig.localRotation);
                 turret.transform.localScale=Vector3.one/turretRig.localScale.x;
             }
-            PrefabUtility.SaveAsPrefabAsset(hull,"Assets/Prefabs/Models/Ships/VictoryII.prefab");
+            PrefabUtility.SaveAsPrefabAsset(hull,"Assets/Prefabs/Models/Ships/Empire/VictoryII.prefab");
         }
         finally { PrefabUtility.UnloadPrefabContents(hull); }
         AssetDatabase.SaveAssets();

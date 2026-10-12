@@ -16,8 +16,8 @@ using EmpireAtWar.Editor.Rendering;
 public static class VerifyISDIRemake
 {
     private const string TASK = "Temp/ISDIRemakeImport/";
-    private const string VIEW = "Assets/Prefabs/Models/Ships/ISDIShipView.prefab";
-    private const string DATA = "Assets/Settings/Data/Ship/ISDIShipData.asset";
+    private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab";
+    private const string DATA = "Assets/Settings/Data/Ship/Empire/ISDIShipData.asset";
     private static readonly List<string> _checks = new List<string>();
     public static string Main()
     {
@@ -31,7 +31,7 @@ public static class VerifyISDIRemake
             Check(JToken.DeepEquals(property.Value,after[property.Name]),"Retained balance/dependency "+property.Name);
         var data=new SerializedObject(dataAsset);
         var root=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDI.prefab");
+        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDI.prefab");
         var targets=References(Config(root,"HealthComponent").FindProperty("<ShipUnits>k__BackingField")).Cast<HardPoint>().ToArray();
         Check(targets.Length==30 && targets.Select(p=>p.Id).OrderBy(i=>i).SequenceEqual(Enumerable.Range(0,30)),"30 unique targetable hardpoints");
         Check(targets.All(p=>p.GetComponents<Collider>().Length==1),"Every hardpoint has a target collider");
@@ -87,7 +87,7 @@ public static class VerifyISDIRemake
             Check((float)report["geometry_error"]<.001f && (float)report["bone_error"]<.001f,"Blender round trip "+name);
             geometry.Add(new{name,meshes=rendererMeshes.Length,triangles=total,bones=((JObject)report["before"]["bones"]).Count,maximumUnityBoneError=boneError});
         }
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset","shipsData.keyValue",201).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Unique ship-data registration");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset","shipsData.keyValue",201).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Unique ship-data registration");
         foreach(var path in new[]{VIEW,DATA})
         {
             var guid=AssetDatabase.AssetPathToGUID(path);var key=Path.GetFileNameWithoutExtension(path);
@@ -130,12 +130,12 @@ public static class VerifyISDIRemake
         var tractor=(TractorBeamSettings)catalog.Get((ShipAbilityId)22).Settings;Check(tractor.SpeedMultiplier>0 && tractor.SpeedMultiplier<1 && tractor.Beam.ShotPrefab is EmpireAtWar.ViewComponents.Weapon.BeamShot,"Retained tractor ability");
         var derived=EmpireAtWar.Editor.AI.WeaponLoadoutBaker.DeriveLoadout(root);var loadout=data.FindProperty("weaponLoadout");
         Check(loadout.arraySize==derived.Count && Enumerable.Range(0,loadout.arraySize).All(i=>loadout.GetArrayElementAtIndex(i).FindPropertyRelative("weaponType").intValue==(int)derived[i].WeaponType && loadout.GetArrayElementAtIndex(i).FindPropertyRelative("count").intValue==derived[i].Count),"AI loadout matches mounted weapons");
-        var wreckData=new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Ship/Wreck/ISDIWreckData.asset"));var wreckObject=wreckData.FindProperty("<Prefab>k__BackingField").objectReferenceValue;
+        var wreckData=new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Models/Wrecks/Empire/ISDIWreckData.asset"));var wreckObject=wreckData.FindProperty("<Prefab>k__BackingField").objectReferenceValue;
         Check(AssetDatabase.GetAssetPath(wreckObject)=="Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab","Dedicated source wreck reference");
         var wreck=AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(wreckObject));
         Check(Visible(wreck).All(r=>r.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Wreck" && m.GetTexture("_BaseMap")!=null)),"Textured opaque source wreck");
         var wreckView=Config(wreck,"UnitWreckView");Check(References(wreckView.FindProperty("meshRenderers")).Length==Visible(wreck).Length && References(wreckView.FindProperty("meshFilters")).Length==Visible(wreck).Length,"Wreck renderer/filter bindings");
-        var paths=new[]{VIEW,"Assets/Prefabs/Models/Ships/ISDI.prefab",previewPath,"Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab"};
+        var paths=new[]{VIEW,"Assets/Prefabs/Models/Ships/Empire/ISDI.prefab",previewPath,"Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab"};
         Check(UnitHelperMeshStripper.FindHelpers(paths,Array.Empty<string>()).All(h=>h.BlockedBy!=null),"No strippable helper meshes");
         foreach(string path in paths)
         {

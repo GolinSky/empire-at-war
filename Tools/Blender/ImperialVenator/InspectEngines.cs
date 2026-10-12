@@ -8,7 +8,7 @@ public static class InspectImperialVenatorEngines
 {
     public static string Main()
     {
-        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ImperialVenator.prefab");
+        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ImperialVenator.prefab");
         var rows = root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.name.Contains("Engine")).Select(r =>
         {
             var mesh = r.GetComponents<MeshFilter>().Single().sharedMesh;

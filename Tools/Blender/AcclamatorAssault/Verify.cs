@@ -11,8 +11,8 @@ using EmpireAtWar.Components.AttackComponent;
 
 public static class VerifyAcclamatorAssault
 {
-    const string VIEW = "Assets/Prefabs/Models/Ships/AcclamatorAssaultShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/AcclamatorAssaultShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/AcclamatorAssaultShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/AcclamatorAssaultShipData.asset";
     public static string Main()
     {
         var root=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
@@ -55,7 +55,7 @@ public static class VerifyAcclamatorAssault
         var modifiers=ability.FindPropertyRelative("settings.statModifier");
         foreach(var row in new[]{new{name="damageMultiplier",value=1f},new{name="fireDelayMultiplier",value=.5f},new{name="speedMultiplier",value=.25f},new{name="shieldRegenMultiplier",value=0f},new{name="damageTakenMultiplier",value=1.5f}})
             Check(modifiers.FindPropertyRelative(row.name).floatValue==row.value,"Ability modifier "+row.name);
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset","shipsData.keyValue",209).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship registry");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset","shipsData.keyValue",209).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship registry");
         foreach(var path in new[]{VIEW,DATA})
         {
             var guid=AssetDatabase.AssetPathToGUID(path);var key=Path.GetFileNameWithoutExtension(path);
@@ -76,7 +76,7 @@ public static class VerifyAcclamatorAssault
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(spawn));
         Check(preview.transform.localPosition==Vector3.zero && preview.transform.localRotation==Quaternion.identity && preview.transform.localScale==Vector3.one,"Placement root identity");
         Check(preview.GetComponents<Rigidbody>().Single().isKinematic && !preview.GetComponents<Rigidbody>().Single().useGravity && preview.GetComponents<BoxCollider>().All(c=>c.isTrigger),"Placement physics");
-        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab");var bounds=BoundsOf(visual);
+        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/AcclamatorAssault.prefab");var bounds=BoundsOf(visual);
         Check(Mathf.Abs(bounds.size.z-70)<.01f && bounds.center.magnitude<.01f,"Centered 70-unit hull");
         var opaque=visual.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled && r.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit")).ToArray();
         var opaqueBounds=opaque[0].bounds;foreach(var renderer in opaque.Skip(1))opaqueBounds.Encapsulate(renderer.bounds);

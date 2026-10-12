@@ -12,11 +12,11 @@ public static class InspectAssaultFrigateMkII
 {
     const string NAME = "AssaultFrigateMkII";
     const string TASK = "Temp/AssaultFrigateMkIIImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/AssaultFrigateMkII.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/AssaultFrigateMkIIShipView.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkII.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkIIShipView.prefab";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/AssaultFrigateMkIIReinforcementView.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/AssaultFrigateMkIIWreckView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/AssaultFrigateMkIIShipData.asset";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/AssaultFrigateMkIIShipData.asset";
     const int SHIP_ID = 309;
 
     public static string Main()
@@ -131,7 +131,7 @@ public static class InspectAssaultFrigateMkII
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,tooltip.arraySize).Select(i=>tooltip.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==iconKey).FindPropertyRelative("sprite").objectReferenceValue==icon,"Tooltip icon");
         Check(Row(Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset").FindProperty("spawnShipWrapper.keyValue"),SHIP_ID).FindPropertyRelative("value").objectReferenceValue==spawn,"Placement registration");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registration");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registration");
         foreach(string asset in new[]{DATA,GAMEPLAY}) Check(AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(asset)).address==Path.GetFileNameWithoutExtension(asset),"Addressable entry");
         var ability=Row(Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").FindProperty("definitions.keyValue"),45).FindPropertyRelative("value");
         Check(ability.FindPropertyRelative("duration").floatValue==8 && ability.FindPropertyRelative("recoveryDelay").floatValue==35,"Ability timing");

@@ -8,8 +8,8 @@ public static class PersistAssaultFrigateMkII
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Assault Frigate persistence requires Edit Mode.");
-        var ship=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/AssaultFrigateMkIIShipView.prefab");
-        var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/AssaultFrigateMkIIShipData.asset"));
+        var ship=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkIIShipView.prefab");
+        var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/Rebellion/AssaultFrigateMkIIShipData.asset"));
         float angle=data.FindProperty("<BodyRotationMaxAngle>k__BackingField").floatValue;
         float bottom=float.PositiveInfinity, top=float.NegativeInfinity;
         var rotations=new[]{Quaternion.Euler(0,0,-angle),Quaternion.identity,Quaternion.Euler(0,0,angle)};

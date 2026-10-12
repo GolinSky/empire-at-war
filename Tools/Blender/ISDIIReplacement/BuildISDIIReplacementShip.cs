@@ -11,11 +11,11 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildISDIIReplacementShip
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/ImperatorShipView.prefab",VIEW);
+        Copy("Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab",VIEW);
         var root=PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;float hullBottom=0,hullTop=0;
         try
@@ -39,7 +39,7 @@ public static class BuildISDIIReplacementShip
                 if(renderer==null)continue;
                 var old=renderer.transform;while(old.parent!=root.transform)old=old.parent;UnityEngine.Object.DestroyImmediate(old.gameObject);
             }
-            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDII.prefab"),body);
+            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDII.prefab"),body);
             var weapons=new List<WeaponHardPoint>();var targets=new List<HardPoint>();
             var audit=JObject.Parse(File.ReadAllText("Temp/ISDIIReplacement/SourceAudit.json"));
             foreach(var hp in audit["hardpoints"])
@@ -115,7 +115,7 @@ public static class BuildISDIIReplacementShip
         loadout.arraySize=counts.Length;
         for(int i=0;i<counts.Length;i++) {var row=loadout.GetArrayElementAtIndex(i);row.FindPropertyRelative("weaponType").intValue=(int)counts[i].Key;row.FindPropertyRelative("count").intValue=counts[i].Count();}
         var wreck=ShipWreckBuilder.Build("Assets/Prefabs/Models/Wrecks/Source/ISDIIShipView.prefab");
-        var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/Wreck/ISDIIWreckData.asset"));
+        var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Models/Wrecks/Empire/ISDIIWreckData.asset"));
         wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=wreck;Save(wd);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue=wd.targetObject;Save(data);AssetDatabase.SaveAssets();
         return "ISD II: source loadout, every weapon targetable, refitted shield and source death-clone wreck. Existing balance preserved. Bounds "+bounds;

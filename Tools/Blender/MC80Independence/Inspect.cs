@@ -10,9 +10,9 @@ using EmpireAtWar.ViewComponents.Health;
 public static class InspectMC80Independence
 {
     const string DIRECTORY = "Temp/MC80IndependenceImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC80Independence.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/MC80IndependenceShipData.asset";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/MC80IndependenceShipData.asset";
 
     public static string Main()
     {
@@ -111,7 +111,7 @@ public static class InspectMC80Independence
         report["dependencies"] = new JArray(AssetDatabase.GetDependencies(new[]{GAMEPLAY,DATA},true).Where(p=>p.Contains("HomeOne")));
         var registrationChecks=new JObject();
         var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/MC80IndependenceIcon.png");
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),305).FindPropertyRelative("value");
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Ui/Reinforcement/MC80IndependenceReinforcementView.prefab");
         var ability=Row(Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").FindProperty("definitions.keyValue"),26).FindPropertyRelative("value");

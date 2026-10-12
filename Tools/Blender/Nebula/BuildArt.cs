@@ -11,7 +11,7 @@ public static class BuildNebulaArt
     const string MODELS = "Assets/Art/Models/RebellionShips/Nebula/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/Nebula/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/Nebula/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/Nebula.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/Nebula.prefab";
     const float LENGTH = 160;
 
     public static string Main()

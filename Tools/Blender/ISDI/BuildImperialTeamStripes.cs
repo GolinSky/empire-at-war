@@ -26,7 +26,7 @@ public static class BuildImperialTeamStripes
 
     public static string Main()
     {
-        var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIShipView.prefab");
+        var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab");
         var hullMaterial = AssetDatabase.LoadAssetAtPath<Material>(HULL_MATERIAL_PATH);
         var filters = source.GetComponentsInChildren<MeshFilter>(true).ToDictionary(f => f.transform);
         var renderers = source.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && r.sharedMaterials.Contains(hullMaterial)).ToArray();
@@ -104,7 +104,7 @@ public static class BuildImperialTeamStripes
         }
         foreach (string name in new[] {"ISDI", "ISDII"})
         {
-            SavePrefab("Assets/Prefabs/Models/Ships/" + name + "ShipView.prefab", stripeMesh, material, false);
+            SavePrefab("Assets/Prefabs/Models/Ships/Empire/" + name + "ShipView.prefab", stripeMesh, material, false);
             SavePrefab("Assets/Prefabs/Models/Wrecks/" + name + "WreckView.prefab", stripeMesh, wreckMaterial, true);
         }
         AssetDatabase.SaveAssets();

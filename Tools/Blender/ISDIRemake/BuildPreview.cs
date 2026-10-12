@@ -12,7 +12,7 @@ public static class BuildISDIRemakePreview
     {
         foreach(string name in new[]{"ISDI"})
         {
-            bool ship=name=="ISDI";string kind=ship?"Ships":"Squadrons",icons=ship?"ShipIcon":"SquadronIcon";
+            bool ship=name=="ISDI";string kind=ship?"Ships/Empire":"Squadrons",icons=ship?"ShipIcon":"SquadronIcon";
             var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/"+kind+"/"+name+".prefab");
             string path="Assets/Prefabs/Ui/Reinforcement/"+name+"ReinforcementView.prefab";
             if(!File.Exists(path))AssetDatabase.CopyAsset("Assets/Prefabs/Ui/Reinforcement/"+(ship?"Imperator":"TIEFighter")+"ReinforcementView.prefab",path);
@@ -32,7 +32,7 @@ public static class BuildISDIRemakePreview
                 foreach(var renderer in renderers)renderer.sharedMaterials=Enumerable.Repeat(material,renderer.sharedMaterials.Length).ToArray();
                 var spawn=root.GetComponents<MonoBehaviour>().Single(m=>m.GetType().Name=="UnitSpawnView");var so=new SerializedObject(spawn);
                 var array=so.FindProperty("meshRenderers");array.arraySize=renderers.Length;for(int i=0;i<renderers.Length;i++)array.GetArrayElementAtIndex(i).objectReferenceValue=renderers[i];
-                var shipData=ship?AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/ISDIShipData.asset"):null;
+                var shipData=ship?AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/Empire/ISDIShipData.asset"):null;
                 so.FindProperty("hologramMaterial").objectReferenceValue=material;so.FindProperty("height").floatValue=ship?(float)shipData.GetType().GetProperty("Height").GetValue(shipData):11;so.ApplyModifiedPropertiesWithoutUndo();
                 var bounds=renderers[0].bounds;foreach(var r in renderers.Skip(1))bounds.Encapsulate(r.bounds);
                 var box=root.GetComponents<BoxCollider>().Single();box.center=bounds.center;box.size=bounds.size;box.isTrigger=true;

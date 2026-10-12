@@ -12,7 +12,7 @@ public static class InspectMC80Surfaces
         var repair=JObject.Parse(File.ReadAllText("Temp/MC80IndependenceImport/SurfaceRepairReport.json"));
         var before=JObject.Parse(File.ReadAllText("Temp/MC80IndependenceImport/SourceSurfaceAudit.json"));
         var fbx=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Art/Models/RebellionShips/MC80Independence/MC80Independence.fbx");
-        var live=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/MC80Independence.prefab");
+        var live=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab");
         var meshes=fbx.GetComponentsInChildren<MeshFilter>(true).ToDictionary(f=>f.name);
         var renderers=live.GetComponentsInChildren<MeshRenderer>(true).ToDictionary(r=>r.name);
         var records=new JArray();

@@ -9,7 +9,7 @@ public static class BuildQuasarFireArt
     const string MODEL = "Assets/Art/Models/RebellionShips/QuasarFire/QuasarFire.fbx";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/QuasarFire/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/QuasarFire/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/QuasarFire.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/QuasarFire.prefab";
     const float LENGTH = 70;
 
     public static string Main()

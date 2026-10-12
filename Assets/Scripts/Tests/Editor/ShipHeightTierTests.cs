@@ -56,7 +56,9 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("VictoryShipData", ShipHeightTier.Low, -154f)]
         public void ShipAsset_PreservesTierAndHeight(string assetName, ShipHeightTier expectedTier, float expectedHeight)
         {
-            ShipData ship = AssetDatabase.LoadAssetAtPath<ShipData>("Assets/Settings/Data/Ship/" + assetName + ".asset");
+            ShipData ship = AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(
+                System.Array.Find(AssetDatabase.FindAssets(assetName + " t:ShipData", new[] { "Assets/Settings/Data/Ship" }),
+                    guid => System.IO.Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(guid)) == assetName)));
             Assert.That(ship, Is.Not.Null);
             Assert.That(ship.HeightTier, Is.EqualTo(expectedTier));
             Assert.That(ship.Height, Is.EqualTo(expectedHeight));

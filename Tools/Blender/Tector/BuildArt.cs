@@ -71,7 +71,7 @@ public static class BuildTectorArt
             modelImporter.weldVertices=false;modelImporter.meshCompression=ModelImporterMeshCompression.Off;modelImporter.isReadable=true;modelImporter.SaveAndReimport();
             _models[entry.Name]=AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
         }
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDI.prefab"));
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDI.prefab"));
         try
         {
             PrefabUtility.UnpackPrefabInstance(root,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
@@ -95,7 +95,7 @@ public static class BuildTectorArt
             float scale=180/bounds.size.z;
             geometry.localScale*=scale;geometry.localPosition=(geometry.localPosition-bounds.center)*scale;
             File.WriteAllText("Temp/TectorImport/ArtBounds.json",Newtonsoft.Json.JsonConvert.SerializeObject(new{size=new[]{BoundsOf(Points(root)).size.x,BoundsOf(Points(root)).size.y,BoundsOf(Points(root)).size.z},center=new[]{BoundsOf(Points(root)).center.x,BoundsOf(Points(root)).center.y,BoundsOf(Points(root)).center.z}}));
-            PrefabUtility.SaveAsPrefabAsset(root,"Assets/Prefabs/Models/Ships/Tector.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root,"Assets/Prefabs/Models/Ships/Empire/Tector.prefab");
         }
         finally{UnityEngine.Object.DestroyImmediate(root);}
         AssetDatabase.SaveAssets();

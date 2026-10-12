@@ -21,7 +21,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(1)]
         public void TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(int first)
         {
-            ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>("Assets/Settings/Data/Ship/ExecutorShipData.asset");
+            ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>("Assets/Settings/Data/Ship/Empire/ExecutorShipData.asset");
             var root = new GameObject("Engine regression") { hideFlags = HideFlags.HideAndDontSave };
             try
             {

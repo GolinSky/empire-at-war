@@ -70,7 +70,7 @@ public static class VerifyISDIIReplacement
         }
         results["art"]=art;
         var prefabs=new JArray();
-        foreach(string path in new[]{"Assets/Prefabs/Models/Ships/ISDII.prefab","Assets/Prefabs/Models/Ships/ISDIIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab"})
+        foreach(string path in new[]{"Assets/Prefabs/Models/Ships/Empire/ISDII.prefab","Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab"})
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
             Check(prefab.transform.localScale==Vector3.one,"Nonidentity root: "+path);
@@ -103,7 +103,7 @@ public static class VerifyISDIIReplacement
             prefabs.Add(new JObject{{"path",path},{"visible_renderers",renderers.Length},{"bounds",Bounds(renderers).size.ToString()}});
         }
         results["prefabs"]=prefabs;
-        var view=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIIShipView.prefab");
+        var view=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab");
         var engines=new JArray();
         foreach(var renderer in view.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled && r.name.StartsWith("Engine_Glow")))
         {
@@ -135,7 +135,7 @@ public static class VerifyISDIIReplacement
         }
         Check(mountError<.0001f,"Muzzle/attachment positions "+mountError);
         results["ship"]=new JObject{{"weapons",weapons.Length},{"targets",hardpoints.Length},{"mount_error",mountError},{"loadout",JObject.FromObject(weapons.GroupBy(w=>(int)w.WeaponType).ToDictionary(g=>g.Key.ToString(),g=>g.Count()))}};
-        var data=AssetDatabase.LoadAssetAtPath<ShipData>("Assets/Settings/Data/Ship/ISDIIShipData.asset");
+        var data=AssetDatabase.LoadAssetAtPath<ShipData>("Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset");
         Check(data.Hull==5500 && data.Shields==4200 && data.Speed==25,"Preserved ship balance");
         Check(data.Abilities.SequenceEqual(new[]{ShipAbilityId.PowerToMainBatteries,ShipAbilityId.TractorBeam}),"Preserved abilities");
         Check(data.HangarBays.Select(b=>(int)b.SquadronType).SequenceEqual(new[]{203,204,205}),"Preserved hangar bays");
@@ -152,7 +152,7 @@ public static class VerifyISDIIReplacement
         Check((bool)obsolete["removed"] && !obsolete["retained_references"].Any(),"Obsolete removal/dependency evidence");
         results["obsolete_visuals"] = obsolete["obsolete"].Count();
         var registrations=new JArray();
-        foreach(string path in new[]{"Assets/Prefabs/Models/Ships/ISDIIShipView.prefab","Assets/Settings/Data/Ship/ISDIIShipData.asset"})
+        foreach(string path in new[]{"Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab","Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset"})
         {
             string guid=AssetDatabase.AssetPathToGUID(path);var entry=AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid);
             Check(entry!=null && entry.address==Path.GetFileNameWithoutExtension(path),"Addressable: "+path);

@@ -2,7 +2,7 @@ using System;using System.IO;using System.Linq;using UnityEditor;using UnityEngi
 public static class FinalizeISDIRemake
 {
  public static string Main(){
- string[] paths={"Assets/Prefabs/Models/Ships/ISDI.prefab","Assets/Prefabs/Models/Ships/ISDIShipView.prefab","Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView.prefab"};
+ string[] paths={"Assets/Prefabs/Models/Ships/Empire/ISDI.prefab","Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab","Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView.prefab"};
  var helpers=UnitHelperMeshStripper.FindHelpers(paths,Array.Empty<string>());File.WriteAllText("Temp/ISDIRemakeImport/HelperReport.json",JsonConvert.SerializeObject(helpers,Formatting.Indented));
  string strip=UnitHelperMeshStripper.Strip(paths,Array.Empty<string>());File.WriteAllText("Temp/ISDIRemakeImport/HelperStrip.txt",strip);
  var faction=new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset"));var entries=faction.FindProperty("ships.keyValue");var value=Enumerable.Range(0,entries.arraySize).Select(i=>entries.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").intValue==201).FindPropertyRelative("value");

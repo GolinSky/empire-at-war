@@ -70,25 +70,25 @@ public static class BuildVictoryIArt
                     model.transform.localScale*=scale;
                     model.transform.localPosition=-bounds.center*scale;
                 }
-                string folder=name=="TIEInterceptor"?"Squadrons":"Ships";
+                string folder=name=="TIEInterceptor"?"Squadrons":name.Contains("Turret")?"Cannons/Empire":"Ships/Empire";
                 PrefabUtility.SaveAsPrefabAsset(visual,"Assets/Prefabs/Models/"+folder+"/"+name+".prefab");
             }
             finally { UnityEngine.Object.DestroyImmediate(visual); }
         }
-        var hull=PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/VictoryI.prefab");
+        var hull=PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/Empire/VictoryI.prefab");
         try
         {
             var rig=hull.transform.GetChild(0);
             for(int i=1;i<=6;i++)
             {
                 var bone=rig.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="T_0"+i);
-                var turret=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/VictoryITurret.prefab"),bone);
+                var turret=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Cannons/Empire/VictoryITurret.prefab"),bone);
                 turret.name="LightDualTurbolaser"+i;
                 turret.transform.localPosition=Vector3.zero;
                 turret.transform.localRotation=Quaternion.Inverse(turret.transform.GetChild(0).localRotation);
                 turret.transform.localScale=Vector3.one/turret.transform.GetChild(0).localScale.x;
             }
-            PrefabUtility.SaveAsPrefabAsset(hull,"Assets/Prefabs/Models/Ships/VictoryI.prefab");
+            PrefabUtility.SaveAsPrefabAsset(hull,"Assets/Prefabs/Models/Ships/Empire/VictoryI.prefab");
         }
         finally { PrefabUtility.UnloadPrefabContents(hull); }
         AssetDatabase.SaveAssets();

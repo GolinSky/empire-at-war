@@ -19,7 +19,7 @@ public static class BuildISDIRemakeStripes
 
     public static string Main()
     {
-        var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDI.prefab");
+        var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDI.prefab");
         var renderers = source.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && !r.name.StartsWith("TeamStripes") && r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();
         var materials = renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
         var stripes = new List<(Mesh Mesh, Material Material)>();
@@ -70,7 +70,7 @@ public static class BuildISDIRemakeStripes
             stripes.Add((saved, paint));
         }
         if (stripes.Count == 0) throw new InvalidOperationException("No source foredeck surfaces intersect team stripes.");
-        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/ISDI.prefab", "Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab" })
+        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/Empire/ISDI.prefab", "Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab" })
         {
             var root = PrefabUtility.LoadPrefabContents(path);
             try

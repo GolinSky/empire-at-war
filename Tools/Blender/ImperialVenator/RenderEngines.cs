@@ -14,7 +14,7 @@ public static class RenderImperialVenatorEngines
         var previousAmbient = RenderSettings.ambientLight;
         var previousMode = RenderSettings.ambientMode;
         var previousTarget = RenderTexture.active;
-        var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ImperialVenator.prefab"), scene);
+        var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ImperialVenator.prefab"), scene);
         foreach (var t in root.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = 30;
         var cameraObject = new GameObject("EngineCamera"); UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject, scene);
         var camera = cameraObject.AddComponent<Camera>(); camera.scene = scene; camera.enabled = false;

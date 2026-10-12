@@ -8,7 +8,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class HealthOverlayAnchorTests
     {
         private const string SHIP_PREFAB_PATH =
-            "Assets/Prefabs/Models/Ships/MunificentShipView.prefab";
+            "Assets/Prefabs/Models/Ships/Separatist/MunificentShipView.prefab";
         private const string STATION_PREFAB_PATH =
             "Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab";
 

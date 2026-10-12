@@ -14,18 +14,18 @@ using EmpireAtWar.Editor;
 public static class BuildAcclamatorAssaultShip
 {
     const string TASK = "Temp/AcclamatorAssaultImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab";
-    const string VIEW = "Assets/Prefabs/Models/Ships/AcclamatorAssaultShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/AcclamatorAssaultShipData.asset";
-    const string WRECK = "Assets/Settings/Data/Ship/Wreck/AcclamatorAssaultWreckData.asset";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Empire/AcclamatorAssault.prefab";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/AcclamatorAssaultShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/AcclamatorAssaultShipData.asset";
+    const string WRECK = "Assets/Settings/Data/Models/Wrecks/Empire/AcclamatorAssaultWreckData.asset";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/AcclamatorAssaultReinforcementView.prefab";
 
     public static string Main()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Acclamator construction requires Edit Mode.");
-        Copy("Assets/Prefabs/Models/Ships/AcclamatorShipView.prefab", VIEW);
-        Copy("Assets/Settings/Data/Ship/AcclamatorShipData.asset", DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/AcclamatorWreckData.asset", WRECK);
+        Copy("Assets/Prefabs/Models/Ships/Republic/AcclamatorShipView.prefab", VIEW);
+        Copy("Assets/Settings/Data/Ship/Republic/AcclamatorShipData.asset", DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Republic/AcclamatorWreckData.asset", WRECK);
         var root = PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;
         float bottom = float.MaxValue, top = float.MinValue, radius;
@@ -78,7 +78,7 @@ public static class BuildAcclamatorAssaultShip
                 config.FindProperty("<Id>k__BackingField").intValue=targets.Count; config.ApplyModifiedPropertiesWithoutUndo();
                 targets.Add(point); points.Add(point); mappings.Add(new{name=row.name,bone=row.bone,id=point.Id,targetable=true});
             }
-            var interceptorTemplate=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/MunificentShipView.prefab")
+            var interceptorTemplate=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Separatist/MunificentShipView.prefab")
                 .GetComponentsInChildren<MissileInterceptorHardPoint>(true).First();
             for(int i=1;i<=6;i++)
             {

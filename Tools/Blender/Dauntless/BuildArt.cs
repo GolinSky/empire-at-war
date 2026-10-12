@@ -11,7 +11,7 @@ public static class BuildDauntlessArt
     const string MODELS = "Assets/Art/Models/RebellionShips/Dauntless/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/Dauntless/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/Dauntless/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/Dauntless.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/Dauntless.prefab";
     const float LENGTH = 160;
 
     public static string Main()

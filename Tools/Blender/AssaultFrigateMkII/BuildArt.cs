@@ -11,7 +11,7 @@ public static class BuildAssaultFrigateMkIIArt
     const string MODELS = "Assets/Art/Models/RebellionShips/AssaultFrigateMkII/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/AssaultFrigateMkII/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/AssaultFrigateMkII/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/AssaultFrigateMkII.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkII.prefab";
     const float LENGTH = 100;
 
     public static string Main()

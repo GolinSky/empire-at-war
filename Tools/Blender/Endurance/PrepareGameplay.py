@@ -52,14 +52,14 @@ start = source.index('        var data=new SerializedObject')
 end = source.index('        var saved=AssetDatabase', start)
 source = source[:start] + '''        const string WRECK="Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab";
         const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab";
-        const string WRECK_DATA="Assets/Settings/Data/Ship/Wreck/EnduranceWreckData.asset";
+        const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Rebellion/EnduranceWreckData.asset";
         Directory.CreateDirectory("Assets/Art/Materials/Wrecks/Endurance");AssetDatabase.Refresh();
         BuildVariant(PREVIEW,"Assets/Prefabs/Ui/Reinforcement/HomeOneReinforcementView.prefab",false,bounds);
         BuildVariant(WRECK,"Assets/Prefabs/Models/Wrecks/HomeOneWreckView.prefab",true,bounds);
-        Copy("Assets/Settings/Data/Ship/Wreck/HomeOneWreckData.asset",WRECK_DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Rebellion/HomeOneWreckData.asset",WRECK_DATA);
         var wd=Load(WRECK_DATA);wd.targetObject.name="EnduranceWreckData";
         wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=Component(AssetDatabase.LoadAssetAtPath<GameObject>(WRECK),"UnitWreckView");Save(wd);
-        Copy("Assets/Settings/Data/Ship/HomeOneShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Ship/Rebellion/HomeOneShipData.asset",DATA);
         var data=Load(DATA);data.targetObject.name="EnduranceShipData";
         SetFloat(data,"Hull",9000);SetFloat(data,"Shields",7000);SetFloat(data,"Speed",18);
         SetFloat(data,"ShieldRegenerateValue",7000f/600f);SetFloat(data,"NavigationRadius",105);
@@ -83,7 +83,7 @@ start = variant.index('    static void BuildVariant')
 end = variant.index('    static void Configure', start)
 variant = variant[start:end].replace('MC75Profundity','Endurance')
 variant = variant.replace('AssetDatabase.CopyAsset(donor,path);', 'Copy(donor,path);')
-variant = variant.replace('VISUAL', '"Assets/Prefabs/Models/Ships/Endurance.prefab"')
+variant = variant.replace('VISUAL', '"Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab"')
 start = variant.index('                foreach(var source in renderers.Select')
 end = variant.index('                var view=Component', start)
 variant = variant[:start] + '''                foreach(var source in renderers.SelectMany(r=>r.sharedMaterials).Distinct())

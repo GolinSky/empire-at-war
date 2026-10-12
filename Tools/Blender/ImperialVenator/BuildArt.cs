@@ -82,7 +82,7 @@ public static class BuildImperialVenatorArt
             var bounds = BoundsOf(Points(root));
             float scale = 120 / bounds.size.z;
             geometry.transform.localScale = Vector3.one * scale; geometry.transform.localPosition = -bounds.center * scale;
-            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/ImperialVenator.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/Empire/ImperialVenator.prefab");
             var size = BoundsOf(Points(root));
             File.WriteAllText(ROOT + "ArtBounds.json", Newtonsoft.Json.JsonConvert.SerializeObject(new { scale, center = new[] { bounds.center.x, bounds.center.y, bounds.center.z }, size = new[] { size.size.x, size.size.y, size.size.z } }));
         }
@@ -96,7 +96,7 @@ public static class BuildImperialVenatorArt
             var bounds = JObject.Parse(File.ReadAllText(ROOT + "ArtBounds.json"));
             geometry.transform.localScale = Vector3.one * (float)bounds["scale"];
             var center = bounds["center"]; geometry.transform.localPosition = -new Vector3((float)center[0], (float)center[1], (float)center[2]) * (float)bounds["scale"];
-            PrefabUtility.SaveAsPrefabAsset(death, "Assets/Prefabs/Models/Ships/ImperialVenatorDeath.prefab");
+            PrefabUtility.SaveAsPrefabAsset(death, "Assets/Prefabs/Models/Wrecks/ImperialVenatorDeath.prefab");
         }
         finally { UnityEngine.Object.DestroyImmediate(death); }
         AssetDatabase.SaveAssets();

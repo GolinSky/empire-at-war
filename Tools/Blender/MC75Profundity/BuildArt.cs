@@ -9,7 +9,7 @@ public static class BuildMC75Art
     const string MODEL = "Assets/Art/Models/RebellionShips/MC75Profundity/MC75Profundity.fbx";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/MC75Profundity/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/MC75Profundity/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC75Profundity.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC75Profundity.prefab";
     const float LENGTH = 160;
 
     public static string Main()

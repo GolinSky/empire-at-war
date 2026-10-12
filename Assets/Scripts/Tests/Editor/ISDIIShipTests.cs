@@ -17,8 +17,8 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class ISDIIShipTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/ISDIIShipView.prefab";
-        private const string DATA = "Assets/Settings/Data/Ship/ISDIIShipData.asset";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab";
+        private const string DATA = "Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
 
         [Test]
         public void SavedShip_HasRequestedStatsWeaponsAndTargetableSystems()
@@ -99,7 +99,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That((int)ShipType.ISDII, Is.EqualTo(205));
             string guid = AssetDatabase.AssetPathToGUID(DATA);
-            ShipsData ships = AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/ShipsData.asset");
+            ShipsData ships = AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
             Assert.That(ships.GetShipDataPath(ShipType.ISDII), Is.EqualTo(guid));
             foreach (string path in new[] { DATA, VIEW })
             {
@@ -131,7 +131,7 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Range).Within(0.01f));
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/ISDII.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDII.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab")]

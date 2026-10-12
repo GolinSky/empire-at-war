@@ -8,7 +8,7 @@ public static class InspectImperialVenator
 {
     public static string Main()
     {
-        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/VenatorShipView.prefab");
+        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab");
         var report = new
         {
             hierarchy = root.GetComponentsInChildren<Transform>(true).Select(t => new { t.name, parent = t.parent == null ? null : t.parent.name, position = t.position, localPosition = t.localPosition, scale = t.localScale }),

@@ -11,7 +11,7 @@ public static class BuildCD273Art
     const string MODELS = "Assets/Art/Models/RebellionShips/CD273/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/CD273/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/CD273/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/CD273.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/CD273.prefab";
     const float LENGTH = 60;
 
     public static string Main()

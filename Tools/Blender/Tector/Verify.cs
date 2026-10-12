@@ -15,8 +15,8 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class VerifyTector
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/TectorShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/TectorShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/TectorShipData.asset";
     static int _checks;
 
     public static string Main()
@@ -36,10 +36,10 @@ public static class VerifyTector
         Check(Number(data,"Hull")==22000 && Number(data,"Shields")==16000 && Number(data,"Speed")==22,"Requested stats");
         Check(data.FindProperty("hangarBays").arraySize==0 && !Config(root,"HangarComponent").FindProperty("isDestroyable").boolValue,"No hangar or complement");
         Check(Ints(data.FindProperty("abilities")).SequenceEqual(new[]{32,22}),"Weapon boost and tractor abilities");
-        Check(AssetDatabase.GetAssetPath(data.FindProperty("<Wreck>k__BackingField").objectReferenceValue)=="Assets/Settings/Data/Ship/Wreck/TectorWreckData.asset","Own wreck data");
+        Check(AssetDatabase.GetAssetPath(data.FindProperty("<Wreck>k__BackingField").objectReferenceValue)=="Assets/Settings/Data/Models/Wrecks/Empire/TectorWreckData.asset","Own wreck data");
         var healthTypes=Enumerable.Range(0,data.FindProperty("hardPointHealth").arraySize).Select(i=>data.FindProperty("hardPointHealth").GetArrayElementAtIndex(i).FindPropertyRelative("hardPointType").intValue).ToArray();
         Check(targets.All(p=>healthTypes.Contains((int)p.HardPointType)),"Health for every target type");
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset","shipsData.keyValue",210).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship registry");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset","shipsData.keyValue",210).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship registry");
         foreach(var path in new[]{VIEW,DATA})
         {
             var guid=AssetDatabase.AssetPathToGUID(path);var key=Path.GetFileNameWithoutExtension(path);
@@ -76,7 +76,7 @@ public static class VerifyTector
             mountError=Mathf.Max(mountError,Vector3.Distance(point.transform.position,bone.position));
         }
         Check(mountError<.001f,"Actual attachment positions");
-        string[] paths={VIEW,"Assets/Prefabs/Models/Ships/Tector.prefab",AssetDatabase.GetAssetPath(spawn),"Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab"};
+        string[] paths={VIEW,"Assets/Prefabs/Models/Ships/Empire/Tector.prefab",AssetDatabase.GetAssetPath(spawn),"Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab"};
         foreach(var path in paths)
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);Check(prefab!=null && prefab.transform.localScale==Vector3.one,"Identity prefab "+path);

@@ -14,16 +14,16 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildVictoryIIShip
 {
-    const string VISUAL="Assets/Prefabs/Models/Ships/VictoryII.prefab";
-    const string GAMEPLAY="Assets/Prefabs/Models/Ships/VictoryIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/VictoryIIShipData.asset";
-    const string WRECK_DATA="Assets/Settings/Data/Ship/Wreck/VictoryIIWreckData.asset";
+    const string VISUAL="Assets/Prefabs/Models/Ships/Empire/VictoryII.prefab";
+    const string GAMEPLAY="Assets/Prefabs/Models/Ships/Empire/VictoryIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/VictoryIIShipData.asset";
+    const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Empire/VictoryIIWreckData.asset";
     const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/VictoryIIReinforcementView.prefab";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/VictoryShipView.prefab",GAMEPLAY);
-        Copy("Assets/Settings/Data/Ship/VictoryShipData.asset",DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/VictoryWreckData.asset",WRECK_DATA);
+        Copy("Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab",GAMEPLAY);
+        Copy("Assets/Settings/Data/Ship/Empire/VictoryShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Empire/VictoryWreckData.asset",WRECK_DATA);
         var audit=JObject.Parse(File.ReadAllText("Temp/VictoryIIImport/SourceAudit.json"));
         var root=PrefabUtility.LoadPrefabContents(GAMEPLAY);
         Bounds bounds;float bottom,top,radius;

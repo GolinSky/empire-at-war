@@ -20,7 +20,7 @@ public static class CaptureMC80Surfaces
         var texture=new Texture2D(1024,1024,TextureFormat.RGBA32,false);
         try
         {
-            var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/MC80Independence.prefab"),scene);
+            var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab"),scene);
             foreach(var transform in root.GetComponentsInChildren<Transform>(true)) transform.gameObject.layer=30;
             var cameraObject=new GameObject("SurfaceCamera"); UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject,scene);
             var camera=cameraObject.AddComponent<Camera>(); camera.scene=scene; camera.enabled=false;

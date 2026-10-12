@@ -16,7 +16,7 @@ public static class RenderISDIII
         var previousAmbient=RenderSettings.ambientLight;
         var previousMode=RenderSettings.ambientMode;
         var oldActive=RenderTexture.active;
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIII.prefab"),scene);
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDIII.prefab"),scene);
         foreach(var transform in root.GetComponentsInChildren<Transform>(true)) transform.gameObject.layer=30;
         var cameraObject=new GameObject("ISDIIIPreviewCamera"); UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject,scene);
         var camera=cameraObject.AddComponent<Camera>(); camera.scene=scene; camera.enabled=false;

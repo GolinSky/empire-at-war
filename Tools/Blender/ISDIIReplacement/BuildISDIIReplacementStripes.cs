@@ -26,7 +26,7 @@ public static class BuildISDIIReplacementStripes
 
     public static string Main()
     {
-        var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIIShipView.prefab");
+        var source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab");
         var hullMaterial = AssetDatabase.LoadAssetAtPath<Material>(HULL_MATERIAL_PATH);
         var filters = source.GetComponentsInChildren<MeshFilter>(true).ToDictionary(f => f.transform);
         var renderers = source.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && r.name != STRIPE_NAME && r.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit")).ToArray();
@@ -92,8 +92,8 @@ public static class BuildISDIIReplacementStripes
         }
         var material = CreateMaterial(hullMaterial, MATERIAL_PATH);
         var wreckMaterial = CreateMaterial(AssetDatabase.LoadAssetAtPath<Material>(HULL_WRECK_PATH), WRECK_MATERIAL_PATH);
-        SavePrefab("Assets/Prefabs/Models/Ships/ISDII.prefab", stripeMesh, material, false);
-        SavePrefab("Assets/Prefabs/Models/Ships/ISDIIShipView.prefab", stripeMesh, material, false);
+        SavePrefab("Assets/Prefabs/Models/Ships/Empire/ISDII.prefab", stripeMesh, material, false);
+        SavePrefab("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab", stripeMesh, material, false);
         SavePrefab("Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab", stripeMesh, wreckMaterial, true);
         AssetDatabase.SaveAssets();
         return "Saved own fitted ISD II team stripes: " + vertices.Count + " vertices / " + triangles.Count / 3 + " triangles; ownership, fog, banking, explosion and wreck bindings updated.";

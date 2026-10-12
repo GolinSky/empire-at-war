@@ -92,7 +92,7 @@ public static class BuildISDIRemakeArt
             scale = (float)JObject.Parse(File.ReadAllText(TASK + "Baseline.json"))["length"] / bounds.size.z;
             offset = -bounds.center * scale;
             geometry.transform.localScale = Vector3.one * scale; geometry.transform.localPosition = offset;
-            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/ISDI.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/Empire/ISDI.prefab");
             var size = BoundsOf(root).size;
             File.WriteAllText(TASK + "ArtBounds.json", new JObject { ["size"] = new JArray(size.x,size.y,size.z), ["scale"] = scale, ["offset"] = new JArray(offset.x,offset.y,offset.z) }.ToString());
         }

@@ -36,14 +36,14 @@ public static class VerifyExecutorGeometry
             Check(error<.001f,"Attachment displacement: "+name+" "+error);
             geometry.Add(new{name,meshes=meshes.Length,triangles,bones=((JObject)conversion["source"]["bones"]).Count,maximumBoneError=error});
         }
-        var root=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ExecutorShipView.prefab");
+        var root=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab");
         foreach(var component in root.GetComponentsInChildren<MonoBehaviour>(true))
         {
             var iterator=new SerializedObject(component).GetIterator();
             while(iterator.Next(true))if(iterator.propertyType==SerializedPropertyType.ObjectReference)
                 Check(iterator.objectReferenceValue!=null || iterator.objectReferenceInstanceIDValue==0,"Broken reference: "+component.name+"/"+iterator.propertyPath);
         }
-        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Executor.prefab");
+        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/Executor.prefab");
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab");
         var bounds=BoundsOf(visual);
         Check(Mathf.Abs(bounds.size.z-1900)<.01f,"Hull length");

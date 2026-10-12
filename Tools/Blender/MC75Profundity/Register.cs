@@ -8,8 +8,8 @@ public static class RegisterMC75
 {
     const int SHIP_ID=304;
     const int ABILITY_ID=19;
-    const string DATA="Assets/Settings/Data/Ship/MC75ProfundityShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/MC75ProfundityShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/MC75ProfundityShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/MC75ProfundityShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/MC75ProfundityIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/MC75ProfundityMatchups.asset";
 
@@ -38,7 +38,7 @@ public static class RegisterMC75
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=260;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=8;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");

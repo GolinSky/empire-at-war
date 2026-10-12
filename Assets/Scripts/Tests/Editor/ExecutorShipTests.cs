@@ -16,8 +16,8 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class ExecutorShipTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/ExecutorShipView.prefab";
-        private const string DATA = "Assets/Settings/Data/Ship/ExecutorShipData.asset";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab";
+        private const string DATA = "Assets/Settings/Data/Ship/Empire/ExecutorShipData.asset";
 
         [Test]
         public void SavedShip_MatchesRequestedStatsAndTargetability()
@@ -92,7 +92,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedRegistrations_ResolveOwnAssetsAndIcons()
         {
             Assert.That((int)ShipType.Executor, Is.EqualTo(207));
-            ShipsData ships = AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/ShipsData.asset");
+            ShipsData ships = AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
             Assert.That(ships.GetShipDataPath(ShipType.Executor), Is.EqualTo(AssetDatabase.AssetPathToGUID(DATA)));
             foreach (string path in new[] { VIEW, DATA })
                 Assert.That(AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(path)).address,
@@ -107,7 +107,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(catalog.Get(ShipAbilityId.TractorBeam).Settings, Is.Not.Null);
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Executor.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/Executor.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab")]

@@ -47,8 +47,8 @@
 ## Files
 
 - Art: `Assets/Art/{Models,Materials/Models,Textures/Models}/RebellionShips/Nebula/`.
-- Prefabs: `Assets/Prefabs/Models/Ships/Nebula.prefab`, `NebulaShipView.prefab`; dedicated wreck and reinforcement prefabs in their existing folders.
-- Data: `Assets/Settings/Data/Ship/NebulaShipData.asset`, `Ship/Wreck/NebulaWreckData.asset`.
+- Prefabs: `Assets/Prefabs/Models/Ships/Rebellion/Nebula.prefab`, `NebulaShipView.prefab`; dedicated wreck and reinforcement prefabs in their existing folders.
+- Data: `Assets/Settings/Data/Ship/Rebellion/NebulaShipData.asset`, `Ship/Wreck/NebulaWreckData.asset`.
 - Evidence: `Tools/Blender/Nebula/Evidence/`; review images: `Previews/`.
 - Editable conversion package: `output/remake-rebel-units/Nebula-Converted/`.
 

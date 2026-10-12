@@ -8,8 +8,8 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 
 public static class RegisterISDIIReplacement
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
     const int SHIP_ID=205;
     public static string Main()
     {

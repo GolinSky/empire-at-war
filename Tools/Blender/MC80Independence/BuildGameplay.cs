@@ -8,17 +8,17 @@ using EmpireAtWar.ViewComponents.Health;
 
 public static class BuildMC80IndependenceGameplay
 {
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC80Independence.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/MC80IndependenceReinforcementView.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/MC80IndependenceWreckView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/MC80IndependenceShipData.asset";
-    const string WRECK_DATA = "Assets/Settings/Data/Ship/Wreck/MC80IndependenceWreckData.asset";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/MC80IndependenceShipData.asset";
+    const string WRECK_DATA = "Assets/Settings/Data/Models/Wrecks/Rebellion/MC80IndependenceWreckData.asset";
 
     public static string Main()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Independence construction requires Edit Mode.");
-        AssetDatabase.CopyAsset("Assets/Prefabs/Models/Ships/HomeOneShipView.prefab",GAMEPLAY);
+        AssetDatabase.CopyAsset("Assets/Prefabs/Models/Ships/Rebellion/HomeOneShipView.prefab",GAMEPLAY);
         var root = PrefabUtility.LoadPrefabContents(GAMEPLAY);
         Bounds bounds;
         float bottom, top;
@@ -127,12 +127,12 @@ public static class BuildMC80IndependenceGameplay
         finally { PrefabUtility.UnloadPrefabContents(root); }
         BuildVariant(PREVIEW,"Assets/Prefabs/Ui/Reinforcement/HomeOneReinforcementView.prefab",false,bounds);
         BuildVariant(WRECK,"Assets/Prefabs/Models/Wrecks/HomeOneWreckView.prefab",true,bounds);
-        AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/Wreck/HomeOneWreckData.asset",WRECK_DATA);
+        AssetDatabase.CopyAsset("Assets/Settings/Data/Models/Wrecks/Rebellion/HomeOneWreckData.asset",WRECK_DATA);
         var data = Load(WRECK_DATA);
         data.targetObject.name="MC80IndependenceWreckData";
         data.FindProperty("<Prefab>k__BackingField").objectReferenceValue=Component(AssetDatabase.LoadAssetAtPath<GameObject>(WRECK),"UnitWreckView");
         Save(data);
-        AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/HomeOneShipData.asset",DATA);
+        AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/Rebellion/HomeOneShipData.asset",DATA);
         data=Load(DATA); data.targetObject.name="MC80IndependenceShipData";
         Set(data,"Hull",30000); Set(data,"Shields",40000); Set(data,"Speed",17);
         Set(data,"ShieldRegenerateValue",80); Set(data,"HullBottom",bottom); Set(data,"HullTop",top);

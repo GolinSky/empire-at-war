@@ -10,8 +10,8 @@ using EmpireAtWar.ViewComponents.Health;
 public static class ReplaceTectorVisuals
 {
     private const string OUTPUT = "F:/CodexArtifacts/tector-preview/UnityReplacement/";
-    private const string VISUAL = "Assets/Prefabs/Models/Ships/Tector.prefab";
-    private const string VIEW = "Assets/Prefabs/Models/Ships/TectorShipView.prefab";
+    private const string VISUAL = "Assets/Prefabs/Models/Ships/Empire/Tector.prefab";
+    private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab";
     private const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab";
     private const string WRECK = "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab";
 

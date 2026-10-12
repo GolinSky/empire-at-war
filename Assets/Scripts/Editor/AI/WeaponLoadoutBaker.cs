@@ -67,7 +67,7 @@ namespace EmpireAtWar.Editor.AI
         }
 
         public static GameObject LoadShipView(ShipData data) =>
-            LoadView(data.name, SHIP_DATA_SUFFIX, SHIP_VIEW_FOLDER, SHIP_VIEW_SUFFIX);
+            LoadView(data.name, SHIP_DATA_SUFFIX, $"{SHIP_VIEW_FOLDER}/{System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(data)))}", SHIP_VIEW_SUFFIX);
 
         public static GameObject LoadSquadronView(SquadronData data) =>
             LoadView(data.name, SQUADRON_DATA_SUFFIX, SQUADRON_VIEW_FOLDER, SQUADRON_VIEW_SUFFIX);

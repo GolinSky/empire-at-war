@@ -51,10 +51,10 @@
 ## Files and rebuild
 
 - Art: `Assets/Art/{Models,Materials/Models,Textures/Models}/RebellionShips/Endurance/`.
-- Visual/gameplay: `Assets/Prefabs/Models/Ships/Endurance.prefab`, `EnduranceShipView.prefab`.
-- Wreck: `Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab`; `Assets/Settings/Data/Ship/Wreck/EnduranceWreckData.asset`.
+- Visual/gameplay: `Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab`, `EnduranceShipView.prefab`.
+- Wreck: `Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab`; `Assets/Settings/Data/Models/Wrecks/Rebellion/EnduranceWreckData.asset`.
 - Placement: `Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab`.
-- Data: `Assets/Settings/Data/Ship/EnduranceShipData.asset`; matchups/icons in their existing type-first directories.
+- Data: `Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset`; matchups/icons in their existing type-first directories.
 - Evidence and renders: `Tools/Blender/Endurance/Evidence/`, `Previews/`. Editable piece `.blend` files: `Temp/EnduranceImport/<Piece>/<Piece>.blend`.
 
 ```powershell

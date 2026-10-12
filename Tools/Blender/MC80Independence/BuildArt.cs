@@ -9,7 +9,7 @@ public static class BuildMC80IndependenceArt
     const string MODEL = "Assets/Art/Models/RebellionShips/MC80Independence/MC80Independence.fbx";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/MC80Independence/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/MC80Independence/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC80Independence.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab";
     const float LENGTH = 220;
 
     public static string Main()

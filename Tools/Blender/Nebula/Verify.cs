@@ -13,8 +13,8 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 public static class VerifyNebula
 {
     const string TASK="Temp/NebulaImport/";
-    const string VIEW="Assets/Prefabs/Models/Ships/NebulaShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/NebulaShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/NebulaShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/NebulaShipData.asset";
     const int SHIP_ID=330;
     static readonly List<string> _checks=new List<string>();
 
@@ -22,7 +22,7 @@ public static class VerifyNebula
     {
         Check((int)EmpireAtWar.Models.Factions.ShipType.Nebula==SHIP_ID,"Compiled enum uses unique Nebula identifier");
         var root=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Nebula.prefab");
+        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/Nebula.prefab");
         var data=Load(DATA);
         var targets=References(Config(root,"HealthComponent").FindProperty("<ShipUnits>k__BackingField")).Cast<HardPoint>().ToArray();
         var guns=References(Config(root,"WeaponComponent").FindProperty("hardPoints")).Cast<WeaponHardPoint>().ToArray();
@@ -82,7 +82,7 @@ public static class VerifyNebula
             var part=visual.GetComponentsInChildren<Transform>(true).Single(t=>t.name==(string)attachment["variant"]);
             Check(part.parent.name.Equals((string)attachment["bone"],StringComparison.OrdinalIgnoreCase) && part.localPosition==Vector3.zero,"Source attachment "+part.name);
         }
-        foreach(string path in new[]{VIEW,"Assets/Prefabs/Models/Ships/Nebula.prefab","Assets/Prefabs/Models/Wrecks/NebulaWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/NebulaReinforcementView.prefab"})
+        foreach(string path in new[]{VIEW,"Assets/Prefabs/Models/Ships/Rebellion/Nebula.prefab","Assets/Prefabs/Models/Wrecks/NebulaWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/NebulaReinforcementView.prefab"})
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
             foreach(var transform in prefab.GetComponentsInChildren<Transform>(true))
@@ -107,7 +107,7 @@ public static class VerifyNebula
         string iconKey=iconGuid+":"+iconId;
         var icons=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,icons.arraySize).Select(i=>icons.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==iconKey).FindPropertyRelative("sprite").objectReferenceValue==icon,"Tooltip icon registry");
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Check(Row(ships.FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship data registry");
         Check(Row(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"),SHIP_ID).FindPropertyRelative("value").objectReferenceValue==icon,"HUD icon");
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Ui/Reinforcement/NebulaReinforcementView.prefab");

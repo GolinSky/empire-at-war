@@ -8,17 +8,17 @@ using EmpireAtWar.ViewComponents.Health;
 
 public static class BuildQuasarFireGameplay
 {
-    const string VISUAL = "Assets/Prefabs/Models/Ships/QuasarFire.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/QuasarFireShipView.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/QuasarFire.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/QuasarFireShipView.prefab";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/QuasarFireReinforcementView.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/QuasarFireWreckView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/QuasarFireShipData.asset";
-    const string WRECK_DATA = "Assets/Settings/Data/Ship/Wreck/QuasarFireWreckData.asset";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/QuasarFireShipData.asset";
+    const string WRECK_DATA = "Assets/Settings/Data/Models/Wrecks/Rebellion/QuasarFireWreckData.asset";
 
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Ship construction requires Edit Mode.");
-        if(AssetDatabase.LoadAssetAtPath<GameObject>(GAMEPLAY)==null) AssetDatabase.CopyAsset("Assets/Prefabs/Models/Ships/HomeOneShipView.prefab",GAMEPLAY);
+        if(AssetDatabase.LoadAssetAtPath<GameObject>(GAMEPLAY)==null) AssetDatabase.CopyAsset("Assets/Prefabs/Models/Ships/Rebellion/HomeOneShipView.prefab",GAMEPLAY);
         var root = PrefabUtility.LoadPrefabContents(GAMEPLAY);
         Bounds bounds;
         float bottom, top;
@@ -114,12 +114,12 @@ public static class BuildQuasarFireGameplay
         finally { PrefabUtility.UnloadPrefabContents(root); }
         BuildVariant(PREVIEW,"Assets/Prefabs/Ui/Reinforcement/HomeOneReinforcementView.prefab",false,bounds);
         BuildVariant(WRECK,"Assets/Prefabs/Models/Wrecks/HomeOneWreckView.prefab",true,bounds);
-        if(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(WRECK_DATA)==null) AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/Wreck/HomeOneWreckData.asset",WRECK_DATA);
+        if(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(WRECK_DATA)==null) AssetDatabase.CopyAsset("Assets/Settings/Data/Models/Wrecks/Rebellion/HomeOneWreckData.asset",WRECK_DATA);
         var data = Load(WRECK_DATA);
         data.targetObject.name="QuasarFireWreckData";
         data.FindProperty("<Prefab>k__BackingField").objectReferenceValue=Component(AssetDatabase.LoadAssetAtPath<GameObject>(WRECK),"UnitWreckView");
         Save(data);
-        if(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(DATA)==null) AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/HomeOneShipData.asset",DATA);
+        if(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(DATA)==null) AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/Rebellion/HomeOneShipData.asset",DATA);
         data=Load(DATA); data.targetObject.name="QuasarFireShipData";
         Set(data,"Hull",1700); Set(data,"Shields",1300); Set(data,"Speed",34);
         Set(data,"ShieldRegenerateValue",13); Set(data,"ShieldRegenerateDelay",3); Set(data,"HullBottom",bottom); Set(data,"HullTop",top);

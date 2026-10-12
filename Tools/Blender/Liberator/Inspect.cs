@@ -11,9 +11,9 @@ using EmpireAtWar.ViewComponents.Health;
 public static class InspectLiberator
 {
     const string TASK = "Temp/LiberatorImport/";
-    const string DATA = "Assets/Settings/Data/Ship/LiberatorShipData.asset";
-    const string VIEW = "Assets/Prefabs/Models/Ships/LiberatorShipView.prefab";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/Liberator.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/LiberatorShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Rebellion/LiberatorShipView.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/Liberator.prefab";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/LiberatorReinforcementView.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/LiberatorWreckView.prefab";
     const int SHIP_ID = 321;
@@ -97,7 +97,7 @@ public static class InspectLiberator
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),SHIP_ID).FindPropertyRelative("value");
         var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/LiberatorIcon.png");
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==4200 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==48 && faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue==icon,"Roster stats/icon");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"ShipsData");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"ShipsData");
         Check(Row(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"),SHIP_ID).FindPropertyRelative("value").objectReferenceValue==icon,"ShipUi icon");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId);
         string iconKey=iconGuid+":"+iconId;

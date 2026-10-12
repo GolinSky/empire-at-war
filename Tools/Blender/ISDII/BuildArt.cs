@@ -70,7 +70,7 @@ public static class BuildISDIIArt
             modelImporter.globalScale=.02f;modelImporter.importAnimation=false;modelImporter.preserveHierarchy=true;modelImporter.SaveAndReimport();
             _models[entry.Name]=AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
         }
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDI.prefab"));
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDI.prefab"));
         try
         {
             PrefabUtility.UnpackPrefabInstance(root,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
@@ -82,7 +82,7 @@ public static class BuildISDIIArt
             for(int i=1;i<=8;i++)AddModel(SHIP+"TLO"+i.ToString("00"),Bone(hull,"TA_ISD2_TLO_"+i.ToString("00")),manifest);
             for(int i=1;i<=2;i++)AddModel(SHIP+"ICQ"+i.ToString("00"),Bone(hull,"TA_ISD_ICQ_"+i.ToString("00")),manifest);
             foreach(var transform in root.GetComponentsInChildren<Transform>(true))transform.name=transform.name.Replace("ISDI","ISDII");
-            PrefabUtility.SaveAsPrefabAsset(root,"Assets/Prefabs/Models/Ships/ISDII.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root,"Assets/Prefabs/Models/Ships/Empire/ISDII.prefab");
         }
         finally{UnityEngine.Object.DestroyImmediate(root);}
         AssetDatabase.SaveAssets();

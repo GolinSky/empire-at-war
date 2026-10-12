@@ -27,8 +27,8 @@
 ## Files
 
 - Model art: `Assets/Art/Models/RebellionShips/Liberator/`; materials/textures use corresponding type-first paths.
-- Prefabs: `Assets/Prefabs/Models/Ships/Liberator.prefab`, `LiberatorShipView.prefab`, `Assets/Prefabs/Models/Wrecks/LiberatorWreckView.prefab`, `Assets/Prefabs/Ui/Reinforcement/LiberatorReinforcementView.prefab`.
-- Data: `Assets/Settings/Data/Ship/LiberatorShipData.asset`, `Ship/Wreck/LiberatorWreckData.asset`; icon/silhouette and matchups use established locations.
+- Prefabs: `Assets/Prefabs/Models/Ships/Rebellion/Liberator.prefab`, `LiberatorShipView.prefab`, `Assets/Prefabs/Models/Wrecks/LiberatorWreckView.prefab`, `Assets/Prefabs/Ui/Reinforcement/LiberatorReinforcementView.prefab`.
+- Data: `Assets/Settings/Data/Ship/Rebellion/LiberatorShipData.asset`, `Ship/Wreck/LiberatorWreckData.asset`; icon/silhouette and matchups use established locations.
 - Editable `.blend` files and detailed evidence: `output/remake-rebel-units/Liberator-Converted/`. Source images are packed in each `.blend`; source ALO/DDS hashes remain unchanged.
 - Working evidence: `Temp/LiberatorImport/`; durable summary: `ImportEvidence.json`.
 

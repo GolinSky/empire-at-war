@@ -21,7 +21,7 @@ public static class InspectTectorReplacement
     {
         Directory.CreateDirectory(OUTPUT);
         var report = new JObject();
-        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/Tector.prefab", "Assets/Prefabs/Models/Ships/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab" })
+        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/Empire/Tector.prefab", "Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab" })
         {
             var root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             var transforms = root.GetComponentsInChildren<Transform>(true);

@@ -10,11 +10,11 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildImperialShip
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIShipData.asset";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/ImperatorShipView.prefab",VIEW);
+        Copy("Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab",VIEW);
         var root=PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;float hullBottom=0,hullTop=0;
         try
@@ -37,7 +37,7 @@ public static class BuildImperialShip
                 if(renderer==null)continue;
                 var old=renderer.transform;while(old.parent!=root.transform)old=old.parent;UnityEngine.Object.DestroyImmediate(old.gameObject);
             }
-            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDI.prefab"),body);
+            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDI.prefab"),body);
             var weapons=new List<WeaponHardPoint>();var targets=new List<HardPoint>();
             for(int i=1;i<=6;i++)AddWeapon("HeavyTurbolaser"+i,"ISDITLD"+i.ToString("00")+"/FP_02",2,true);
             for(int i=1;i<=2;i++)AddWeapon("HeavyTurboIon"+i,"ISDIICD"+i.ToString("00")+"/FP_02",31,true);
@@ -97,7 +97,7 @@ public static class BuildImperialShip
             void AddSystem(string name,string bone,int type){var hp=Mount(name,bone).AddComponent<HardPoint>();Configure(hp,type,targets.Count,true);}
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
-        Copy("Assets/Settings/Data/Ship/ImperatorShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Ship/Republic/ImperatorShipData.asset",DATA);
         var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(DATA));data.targetObject.name="ISDIShipData";
         SetFloat(data,"Hull",20000);SetFloat(data,"Shields",16000);SetFloat(data,"Speed",250);SetFloat(data,"ShieldRegenerateValue",20);
         SetFloat(data,"NavigationRadius",105);SetFloat(data,"HullBottom",hullBottom);SetFloat(data,"HullTop",hullTop);
@@ -106,8 +106,8 @@ public static class BuildImperialShip
         SetFloat(data,"HangarLaunchInterval",30);
         var hpHealth=data.FindProperty("hardPointHealth");hpHealth.arraySize=5;int[] types={0,1,2,4,7};float[] hitPoints={750,1000,1000,2000,1500};
         for(int i=0;i<5;i++){var p=hpHealth.GetArrayElementAtIndex(i);p.FindPropertyRelative("hardPointType").intValue=types[i];p.FindPropertyRelative("health").floatValue=hitPoints[i];p.FindPropertyRelative("hullDamageMultiplier").floatValue=1;}
-        var wreck=ShipWreckBuilder.Build(VIEW);const string wreckPath="Assets/Settings/Data/Ship/Wreck/ISDIWreckData.asset";
-        Copy("Assets/Settings/Data/Ship/Wreck/ImperatorWreckData.asset",wreckPath);var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(wreckPath));wd.targetObject.name="ISDIWreckData";wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=wreck;Save(wd);
+        var wreck=ShipWreckBuilder.Build(VIEW);const string wreckPath="Assets/Settings/Data/Models/Wrecks/Empire/ISDIWreckData.asset";
+        Copy("Assets/Settings/Data/Models/Wrecks/Republic/ImperatorWreckData.asset",wreckPath);var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(wreckPath));wd.targetObject.name="ISDIWreckData";wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=wreck;Save(wd);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue=wd.targetObject;Save(data);AssetDatabase.SaveAssets();
         return "ISD I: 16 targetable hardpoints, 21 weapons, two hangar launches of each advanced squadron, shield shell and own wreck. Bounds "+bounds;
     }

@@ -8,8 +8,8 @@ public static class RegisterQuasarFire
 {
     const int SHIP_ID=(int)EmpireAtWar.Models.Factions.ShipType.QuasarFire;
     const int ABILITY_ID=(int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.FighterReinforcements;
-    const string DATA="Assets/Settings/Data/Ship/QuasarFireShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/QuasarFireShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/QuasarFireShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/QuasarFireShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/QuasarFireIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/QuasarFireMatchups.asset";
 
@@ -38,7 +38,7 @@ public static class RegisterQuasarFire
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=35;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=3;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");

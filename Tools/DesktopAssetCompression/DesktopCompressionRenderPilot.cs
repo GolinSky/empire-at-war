@@ -21,7 +21,7 @@ public static class DesktopCompressionRenderPilot
         var image = new Texture2D(512, 512, TextureFormat.RGBA32, false);
         try
         {
-            var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab"), scene);
+            var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/AcclamatorAssault.prefab"), scene);
             foreach (var transform in root.GetComponentsInChildren<Transform>(true)) transform.gameObject.layer = 30;
             var cameraObject = new GameObject("CompressionPilotCamera");
             UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject, scene);

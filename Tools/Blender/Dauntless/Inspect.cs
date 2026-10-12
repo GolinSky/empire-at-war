@@ -13,11 +13,11 @@ using EmpireAtWar.Components.AttackComponent;
 public static class InspectDauntless
 {
     const string TASK="Temp/DauntlessImport/";
-    const string VISUAL="Assets/Prefabs/Models/Ships/Dauntless.prefab";
-    const string VIEW="Assets/Prefabs/Models/Ships/DauntlessShipView.prefab";
+    const string VISUAL="Assets/Prefabs/Models/Ships/Rebellion/Dauntless.prefab";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/DauntlessShipView.prefab";
     const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/DauntlessReinforcementView.prefab";
     const string WRECK="Assets/Prefabs/Models/Wrecks/DauntlessWreckView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/DauntlessShipData.asset";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/DauntlessShipData.asset";
     static int _checks;
 
     public static string Main()
@@ -96,7 +96,7 @@ public static class InspectDauntless
         var icons=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,icons.arraySize).Any(i=>icons.GetArrayElementAtIndex(i).FindPropertyRelative("key").stringValue==iconKey && icons.GetArrayElementAtIndex(i).FindPropertyRelative("sprite").objectReferenceValue==icon),"Tooltip icon");
         Check(Row(Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset").FindProperty("spawnShipWrapper.keyValue"),310).FindPropertyRelative("value").objectReferenceValue==spawn,"Placement registration");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),310).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Data registration");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),310).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Data registration");
         foreach(var path in new[]{VIEW,DATA})
         {
             var address=Path.GetFileNameWithoutExtension(path);

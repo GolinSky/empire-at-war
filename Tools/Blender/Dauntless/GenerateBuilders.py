@@ -77,7 +77,7 @@ register=register[:start]+'''        value.FindPropertyRelative("displayName").s
         value.FindPropertyRelative("aiUse").intValue=0;
         value.FindPropertyRelative("settings").managedReferenceValue=new SensorJammingSettings();
         Save(catalog);
-        var overlay=Load("Assets/Settings/Data/Ship/HardPointOverlayData.asset");
+        var overlay=Load("Assets/Settings/Data/Models/Components/HardPointOverlayData.asset");
         var entries=overlay.FindProperty("entries");
         var sensor=Enumerable.Range(0,entries.arraySize).Select(i=>entries.GetArrayElementAtIndex(i)).SingleOrDefault(p=>p.FindPropertyRelative("hardPointType").intValue==10)??Append(entries);
         sensor.FindPropertyRelative("hardPointType").intValue=10;

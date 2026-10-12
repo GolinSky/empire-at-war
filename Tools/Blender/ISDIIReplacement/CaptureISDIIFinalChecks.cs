@@ -19,7 +19,7 @@ public static class CaptureISDIIFinalChecks
             if(!material.IsKeywordEnabled("_EMISSION") || material.GetFloat("_Cull")!=0)throw new InvalidOperationException("Engine settings lost on reimport: "+path);
         }
         AssetDatabase.SaveAssets();
-        var paths=new[]{"Assets/Prefabs/Models/Ships/ISDII.prefab","Assets/Prefabs/Models/Ships/ISDIIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab"};
+        var paths=new[]{"Assets/Prefabs/Models/Ships/Empire/ISDII.prefab","Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab","Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab"};
         var shaders=paths.SelectMany(AssetDatabase.GetDependencies).Distinct().Select(AssetDatabase.LoadMainAssetAtPath).OfType<Material>().Select(m=>m.shader).Distinct().ToArray();
         var scenes=Enumerable.Range(0,EditorSceneManager.sceneCount).Select(i=>EditorSceneManager.GetSceneAt(i)).ToArray();
         var dirty=paths.Where(p=>EditorUtility.IsDirty(AssetDatabase.LoadMainAssetAtPath(p))).ToArray();

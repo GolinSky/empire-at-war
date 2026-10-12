@@ -16,8 +16,8 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class VerifyEndurance
 {
-    private const string SHIP="Assets/Prefabs/Models/Ships/EnduranceShipView.prefab";
-    private const string DATA="Assets/Settings/Data/Ship/EnduranceShipData.asset";
+    private const string SHIP="Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab";
+    private const string DATA="Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset";
     private const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png";
     private static readonly List<string> _checks=new List<string>();
 
@@ -50,7 +50,7 @@ public static class VerifyEndurance
                 if(material.shader.name=="EmpireAtWar/Ship Lit")Check(material.GetFloat("_TeamMaskStrength")==0 && material.GetFloat("_TeamLiveryStrength")==1 && material.GetFloat("_TeamLiveryHueRange")==.06f && material.GetFloat("_TeamLiveryMinSaturation")==.5f,material.name+" red-paint-only team color");
             }
         }
-        string[] prefabs={"Assets/Prefabs/Models/Ships/Endurance.prefab",SHIP,"Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab"};
+        string[] prefabs={"Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",SHIP,"Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab","Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab"};
         foreach(string path in prefabs)
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -102,7 +102,7 @@ public static class VerifyEndurance
         Check(Row("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset","shipIconWrapper.keyValue",322).FindPropertyRelative("value").objectReferenceValue==icon,"HUD icon");
         var tooltip=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Tooltip/TooltipIconData.asset")).FindProperty("icons");
         Check(Enumerable.Range(0,tooltip.arraySize).Any(i=>tooltip.GetArrayElementAtIndex(i).FindPropertyRelative("sprite").objectReferenceValue==icon),"Tooltip icon");
-        Check(Row("Assets/Settings/Data/Ship/ShipsData.asset","shipsData.keyValue",322).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship data registry");
+        Check(Row("Assets/Settings/Data/Ship/Shared/ShipsData.asset","shipsData.keyValue",322).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship data registry");
         var preview=(MonoBehaviour)Row("Assets/Settings/Data/Reinforcement/ReinforcementData.asset","spawnShipWrapper.keyValue",322).FindPropertyRelative("value").objectReferenceValue;
         Check(AssetDatabase.GetAssetPath(preview)==prefabs[3],"Placement registry");
         var spawn=new SerializedObject(preview);var hologram=(Material)spawn.FindProperty("hologramMaterial").objectReferenceValue;

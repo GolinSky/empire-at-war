@@ -18,7 +18,7 @@ public static class RenderMC50
         var previousAmbient=RenderSettings.ambientLight;
         var previousMode=RenderSettings.ambientMode;
         var oldActive=RenderTexture.active;
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/MC50.prefab"),scene);
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/MC50.prefab"),scene);
         foreach(var transform in root.GetComponentsInChildren<Transform>(true))transform.gameObject.layer=30;
         var cameraObject=new GameObject("MC50PreviewCamera");UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject,scene);
         var camera=cameraObject.AddComponent<Camera>();camera.scene=scene;camera.enabled=false;

@@ -7,10 +7,10 @@ using Newtonsoft.Json.Linq;
 
 public static class FinalizeMC80Independence
 {
-    const string VIEW = "Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab";
-    const string WRECK_DATA = "Assets/Settings/Data/Ship/Wreck/MC80IndependenceWreckData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab";
+    const string WRECK_DATA = "Assets/Settings/Data/Models/Wrecks/Rebellion/MC80IndependenceWreckData.asset";
     static readonly string[] PREFABS = {
-        "Assets/Prefabs/Models/Ships/MC80Independence.prefab", VIEW,
+        "Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab", VIEW,
         "Assets/Prefabs/Models/Wrecks/MC80IndependenceWreckView.prefab",
         "Assets/Prefabs/Ui/Reinforcement/MC80IndependenceReinforcementView.prefab"
     };
