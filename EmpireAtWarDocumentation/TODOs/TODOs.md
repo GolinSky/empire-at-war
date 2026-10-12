@@ -211,6 +211,7 @@
 
 - [ ] **Attribute and reduce remaining battle CPU cost**
   - **Plan**: [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]
+  - **Fixes 2026-10-12 (committed)**: AI removed-caster crash; one shared squadron marker canvas (was 244 world canvases); bolt shield clip every 0.1 s; fog reveals in one parallel job; `Battle.Enemy.Build` + per-ship-state markers. Awaiting user battle re-capture.
   - **Research**: [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
   - **Status**: 15:25 battle median 8.1 FPS at 4×; radar 8.581 ms/frame after centralized source changes versus historical 656.729 ms. Fresh 15:31 median CPU/GPU 96.584/2.965 ms; observational comparisons, not matched benchmarks.
   - **Analysis**: 2026-10-11 saved-data/live-source review complete at `74368d81`; user skipped another battle run. Confirmed repeated target snapshots, due-ID scanning, squadron order/steering/pose work, stationary route retries and repeated mixing of 20 audio voices; retained prior optimizations.
