@@ -240,7 +240,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff33919f5e4ce1347b09772d37c08a8d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ViewComponents.FogOfWarSystem
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.FogOfWar.FogOfWarSystem
   meshFilter: {fileID: 2777577976553343944}
   fogRenderer: {fileID: 8093512405509483612}
   textureResolution: 1024

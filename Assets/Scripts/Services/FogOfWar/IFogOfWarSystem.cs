@@ -1,4 +1,4 @@
-namespace ViewComponents
+namespace EmpireAtWar.Services.FogOfWar
 {
     /// <summary>Draws the local team's vision. Visibility queries go through <c>IVisionService</c>.</summary>
     public interface IFogOfWarSystem
