@@ -1,0 +1,98 @@
+[
+  {
+    "id": 0,
+    "socket": "HP_03_FP_01",
+    "weaponProfile": 2,
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "socket": "HP_04_FP_01",
+    "weaponProfile": 2,
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "socket": "HP_01_FP_01",
+    "weaponProfile": 5,
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "socket": "HP_01_FP_02",
+    "weaponProfile": 5,
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "socket": "HP_02_FP_01",
+    "weaponProfile": 5,
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "socket": "HP_02_FP_02",
+    "weaponProfile": 5,
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "socket": "HP_03_FP_02",
+    "weaponProfile": 32,
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "socket": "HP_04_FP_02",
+    "weaponProfile": 32,
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "socket": "HP_01_Fire",
+    "weaponProfile": 8,
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "socket": "HP_02_Fire",
+    "weaponProfile": 8,
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "socket": "HP_03_Fire",
+    "weaponProfile": 8,
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "socket": "HP_04_Fire",
+    "weaponProfile": 8,
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "socket": "PE_MC_TIDE_S.001",
+    "weaponProfile": 14,
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "socket": "PE_MC_TIDE_S.002",
+    "weaponProfile": 14,
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "socket": "PE_MC_TIDE_M",
+    "system": "Engine",
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "socket": "Shield",
+    "system": "ShieldGenerator",
+    "targetable": true
+  }
+]

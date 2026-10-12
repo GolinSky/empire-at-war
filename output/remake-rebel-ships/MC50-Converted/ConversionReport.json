@@ -1,0 +1,1095 @@
+{
+  "variant": "MC50",
+  "before": {
+    "meshes": {
+      "Hull": {
+        "vertices": 20084,
+        "triangles": 13094,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M011"
+        ]
+      },
+      "Shadow": {
+        "vertices": 7368,
+        "triangles": 14570,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "MC50_M012"
+        ]
+      },
+      "Engine_Glow": {
+        "vertices": 1293,
+        "triangles": 1540,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M013"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 528,
+        "triangles": 506,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M014"
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "vertices": 528,
+        "triangles": 506,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M015"
+        ]
+      },
+      "Shield": {
+        "vertices": 151,
+        "triangles": 224,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "MC50_M016"
+        ]
+      },
+      "Hangar": {
+        "vertices": 1146,
+        "triangles": 382,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M017"
+        ]
+      },
+      "Hangar_Lights": {
+        "vertices": 1146,
+        "triangles": 382,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M018"
+        ]
+      },
+      "Col": {
+        "vertices": 2219,
+        "triangles": 3999,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "MC50_M019"
+        ]
+      },
+      "Lights": {
+        "vertices": 482,
+        "triangles": 389,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M020"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Pi_Damage_Elec_Small_Sparse": {
+        "parent": "Hull",
+        "head": [
+          2.0,
+          -4.795808792114258,
+          -2.449280470280535e-16
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          1.1790843927883543e-05,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          3.1136929988861084,
+          0.0
+        ]
+      },
+      "PE_MC_TIDE_M": {
+        "parent": "Root",
+        "head": [
+          -3.371208549651783e-06,
+          122.45787811279297,
+          14.518121719360352
+        ]
+      },
+      "PE_MC_TIDE_M.001": {
+        "parent": "Root",
+        "head": [
+          -2.3337377115240088e-06,
+          146.19244384765625,
+          22.572280883789062
+        ]
+      },
+      "PE_MC_TIDE_S": {
+        "parent": "Root",
+        "head": [
+          -2.3683583094680216e-06,
+          145.40042114257812,
+          28.05817985534668
+        ]
+      },
+      "PE_MC_TIDE_S.001": {
+        "parent": "Root",
+        "head": [
+          -26.519121170043945,
+          125.34674072265625,
+          1.3459967374801636
+        ]
+      },
+      "PE_MC_TIDE_M.002": {
+        "parent": "Root",
+        "head": [
+          -20.756885528564453,
+          125.34674072265625,
+          1.3458324670791626
+        ]
+      },
+      "PE_MC_TIDE_S.002": {
+        "parent": "Root",
+        "head": [
+          26.51899528503418,
+          125.34674072265625,
+          1.3459967374801636
+        ]
+      },
+      "PE_MC_TIDE_M.003": {
+        "parent": "Root",
+        "head": [
+          20.756996154785156,
+          125.34674072265625,
+          1.3458324670791626
+        ]
+      },
+      "PE_MC_TIDE_L": {
+        "parent": "Root",
+        "head": [
+          48.56897735595703,
+          57.5407829284668,
+          -9.521438598632812
+        ]
+      },
+      "PE_MC_TIDE_L.001": {
+        "parent": "Root",
+        "head": [
+          -48.569007873535156,
+          57.5407829284668,
+          -9.521438598632812
+        ]
+      },
+      "PE_MC_TIDE_LL": {
+        "parent": "Root",
+        "head": [
+          -38.40428161621094,
+          57.5407829284668,
+          -6.769339561462402
+        ]
+      },
+      "PE_MC_TIDE_LL.001": {
+        "parent": "Root",
+        "head": [
+          38.40399169921875,
+          57.5407829284668,
+          -6.769339561462402
+        ]
+      },
+      "HP_01": {
+        "parent": "Root",
+        "head": [
+          21.811845779418945,
+          -72.60382080078125,
+          -2.5196926593780518
+        ]
+      },
+      "HP_02": {
+        "parent": "Root",
+        "head": [
+          -21.812002182006836,
+          -72.60382080078125,
+          -2.5196926593780518
+        ]
+      },
+      "HP_03": {
+        "parent": "Root",
+        "head": [
+          -38.43097686767578,
+          -16.275096893310547,
+          -6.596433639526367
+        ]
+      },
+      "HP_04": {
+        "parent": "Root",
+        "head": [
+          38.430999755859375,
+          -16.275096893310547,
+          -6.596433639526367
+        ]
+      },
+      "HP_05": {
+        "parent": "Root",
+        "head": [
+          7.891165978435311e-07,
+          -107.80652618408203,
+          -8.441455841064453
+        ]
+      },
+      "HP_05_FP_01": {
+        "parent": "Root",
+        "head": [
+          5.620586875920708e-07,
+          -113.00100708007812,
+          -8.565114974975586
+        ]
+      },
+      "HP_01_FP_01": {
+        "parent": "Root",
+        "head": [
+          23.881370544433594,
+          -85.78385925292969,
+          -2.5196926593780518
+        ]
+      },
+      "HP_01_FP_02": {
+        "parent": "Root",
+        "head": [
+          32.02191162109375,
+          -62.51447296142578,
+          -5.403644561767578
+        ]
+      },
+      "HP_02_FP_01": {
+        "parent": "Root",
+        "head": [
+          -23.616804122924805,
+          -86.62027740478516,
+          -2.5196926593780518
+        ]
+      },
+      "HP_02_FP_02": {
+        "parent": "Root",
+        "head": [
+          -32.118629455566406,
+          -61.671504974365234,
+          -5.403644561767578
+        ]
+      },
+      "HP_03_FP_01": {
+        "parent": "Root",
+        "head": [
+          -41.074100494384766,
+          -31.785358428955078,
+          -7.170446395874023
+        ]
+      },
+      "HP_03_FP_02": {
+        "parent": "Root",
+        "head": [
+          -46.82573699951172,
+          -3.6278438568115234,
+          -8.725687980651855
+        ]
+      },
+      "HP_04_FP_01": {
+        "parent": "Root",
+        "head": [
+          40.89189910888672,
+          -30.069751739501953,
+          -7.170446395874023
+        ]
+      },
+      "HP_04_FP_02": {
+        "parent": "Root",
+        "head": [
+          46.90977478027344,
+          -4.4576873779296875,
+          -8.725687980651855
+        ]
+      },
+      "HP_05_Fire": {
+        "parent": "Root",
+        "head": [
+          7.891165978435311e-07,
+          -107.80652618408203,
+          -16.09785270690918
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion": {
+        "parent": "HP_05_Fire",
+        "head": [
+          6.484436511993408,
+          -107.08272552490234,
+          -9.35271167755127
+        ]
+      },
+      "HP_04_Fire": {
+        "parent": "Root",
+        "head": [
+          50.81334686279297,
+          -16.275096893310547,
+          -6.596433639526367
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion": {
+        "parent": "HP_04_Fire",
+        "head": [
+          39.413089752197266,
+          -36.29911422729492,
+          -5.929070472717285
+        ]
+      },
+      "HP_02_Fire": {
+        "parent": "Root",
+        "head": [
+          -31.081546783447266,
+          -72.60382080078125,
+          -2.5196926593780518
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.001": {
+        "parent": "HP_02_Fire",
+        "head": [
+          -14.319504737854004,
+          -49.092491149902344,
+          12.58549976348877
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.001": {
+        "parent": "HP_02_Fire",
+        "head": [
+          -24.247400283813477,
+          -80.38778686523438,
+          1.345996618270874
+        ]
+      },
+      "HP_03_Fire": {
+        "parent": "Root",
+        "head": [
+          -54.63447570800781,
+          -16.275096893310547,
+          -6.596433639526367
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.002": {
+        "parent": "HP_03_Fire",
+        "head": [
+          -43.58114242553711,
+          -8.87740707397461,
+          -6.2733049392700195
+        ]
+      },
+      "HP_Facing": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hangar_01": {
+        "parent": "Root",
+        "head": [
+          2.154768594664347e-07,
+          120.62242126464844,
+          -2.825822591781616
+        ]
+      },
+      "HP_01_Fire": {
+        "parent": "Root",
+        "head": [
+          36.82020568847656,
+          -72.60382080078125,
+          -2.5196926593780518
+        ]
+      },
+      "pf_small_w": {
+        "parent": "HP_01_Fire",
+        "head": [
+          29.80274200439453,
+          -28.893444061279297,
+          1.014035940170288
+        ]
+      },
+      "pf_small_w.001": {
+        "parent": "HP_01_Fire",
+        "head": [
+          24.369173049926758,
+          -57.68918228149414,
+          1.2816617488861084
+        ]
+      },
+      "Hangar": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hangar_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Col": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -54.33274459838867,
+      -138.07057189941406,
+      -21.56224822998047
+    ],
+    "bounds_max": [
+      54.33272933959961,
+      150.16896057128906,
+      30.75421905517578
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Hull": {
+        "vertices": 20084,
+        "triangles": 13094,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M011.001"
+        ]
+      },
+      "Shadow": {
+        "vertices": 7368,
+        "triangles": 14570,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "MC50_M012.001"
+        ]
+      },
+      "Engine_Glow": {
+        "vertices": 1293,
+        "triangles": 1540,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M013.001"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 528,
+        "triangles": 506,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M014.001"
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "vertices": 528,
+        "triangles": 506,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M015.001"
+        ]
+      },
+      "Shield": {
+        "vertices": 151,
+        "triangles": 224,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "MC50_M016.001"
+        ]
+      },
+      "Hangar": {
+        "vertices": 1146,
+        "triangles": 382,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M017.001"
+        ]
+      },
+      "Hangar_Lights": {
+        "vertices": 1146,
+        "triangles": 382,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M018.001"
+        ]
+      },
+      "Col": {
+        "vertices": 2219,
+        "triangles": 3999,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "MC50_M019.001"
+        ]
+      },
+      "Lights": {
+        "vertices": 482,
+        "triangles": 389,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "MC50_M020.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Pi_Damage_Elec_Small_Sparse": {
+        "parent": "Hull",
+        "head": [
+          2.0,
+          -4.795808792114258,
+          7.813363822606334e-07
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          1.1790843927883543e-05,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          3.1136929988861084,
+          -5.072849376119848e-07
+        ]
+      },
+      "PE_MC_TIDE_M": {
+        "parent": "Root",
+        "head": [
+          -3.371208549651783e-06,
+          122.45787811279297,
+          14.518101692199707
+        ]
+      },
+      "PE_MC_TIDE_M.001": {
+        "parent": "Root",
+        "head": [
+          -2.3337377115240088e-06,
+          146.19244384765625,
+          22.57225799560547
+        ]
+      },
+      "PE_MC_TIDE_S": {
+        "parent": "Root",
+        "head": [
+          -2.3683583094680216e-06,
+          145.40042114257812,
+          28.058156967163086
+        ]
+      },
+      "PE_MC_TIDE_S.001": {
+        "parent": "Root",
+        "head": [
+          -26.519121170043945,
+          125.34674072265625,
+          1.3459763526916504
+        ]
+      },
+      "PE_MC_TIDE_M.002": {
+        "parent": "Root",
+        "head": [
+          -20.756885528564453,
+          125.34674072265625,
+          1.3458120822906494
+        ]
+      },
+      "PE_MC_TIDE_S.002": {
+        "parent": "Root",
+        "head": [
+          26.51899528503418,
+          125.34674072265625,
+          1.3459763526916504
+        ]
+      },
+      "PE_MC_TIDE_M.003": {
+        "parent": "Root",
+        "head": [
+          20.756996154785156,
+          125.34674072265625,
+          1.3458120822906494
+        ]
+      },
+      "PE_MC_TIDE_L": {
+        "parent": "Root",
+        "head": [
+          48.56897735595703,
+          57.5407829284668,
+          -9.521448135375977
+        ]
+      },
+      "PE_MC_TIDE_L.001": {
+        "parent": "Root",
+        "head": [
+          -48.569007873535156,
+          57.5407829284668,
+          -9.521448135375977
+        ]
+      },
+      "PE_MC_TIDE_LL": {
+        "parent": "Root",
+        "head": [
+          -38.40428161621094,
+          57.5407829284668,
+          -6.769349098205566
+        ]
+      },
+      "PE_MC_TIDE_LL.001": {
+        "parent": "Root",
+        "head": [
+          38.40399169921875,
+          57.5407829284668,
+          -6.769349098205566
+        ]
+      },
+      "HP_01": {
+        "parent": "Root",
+        "head": [
+          21.811845779418945,
+          -72.60382080078125,
+          -2.5196807384490967
+        ]
+      },
+      "HP_02": {
+        "parent": "Root",
+        "head": [
+          -21.812002182006836,
+          -72.60382080078125,
+          -2.5196807384490967
+        ]
+      },
+      "HP_03": {
+        "parent": "Root",
+        "head": [
+          -38.43097686767578,
+          -16.27509880065918,
+          -6.596430778503418
+        ]
+      },
+      "HP_04": {
+        "parent": "Root",
+        "head": [
+          38.430999755859375,
+          -16.27509880065918,
+          -6.596430778503418
+        ]
+      },
+      "HP_05": {
+        "parent": "Root",
+        "head": [
+          7.891165978435311e-07,
+          -107.80652618408203,
+          -8.441438674926758
+        ]
+      },
+      "HP_05_FP_01": {
+        "parent": "Root",
+        "head": [
+          5.620586875920708e-07,
+          -113.00100708007812,
+          -8.565096855163574
+        ]
+      },
+      "HP_01_FP_01": {
+        "parent": "Root",
+        "head": [
+          23.881370544433594,
+          -85.78385925292969,
+          -2.5196785926818848
+        ]
+      },
+      "HP_01_FP_02": {
+        "parent": "Root",
+        "head": [
+          32.02191162109375,
+          -62.51447296142578,
+          -5.403634548187256
+        ]
+      },
+      "HP_02_FP_01": {
+        "parent": "Root",
+        "head": [
+          -23.616804122924805,
+          -86.62027740478516,
+          -2.5196785926818848
+        ]
+      },
+      "HP_02_FP_02": {
+        "parent": "Root",
+        "head": [
+          -32.118629455566406,
+          -61.671504974365234,
+          -5.403634548187256
+        ]
+      },
+      "HP_03_FP_01": {
+        "parent": "Root",
+        "head": [
+          -41.074100494384766,
+          -31.78536033630371,
+          -7.170441150665283
+        ]
+      },
+      "HP_03_FP_02": {
+        "parent": "Root",
+        "head": [
+          -46.82573699951172,
+          -3.627845287322998,
+          -8.725687026977539
+        ]
+      },
+      "HP_04_FP_01": {
+        "parent": "Root",
+        "head": [
+          40.89189910888672,
+          -30.069753646850586,
+          -7.170441627502441
+        ]
+      },
+      "HP_04_FP_02": {
+        "parent": "Root",
+        "head": [
+          46.90977478027344,
+          -4.457688808441162,
+          -8.725687026977539
+        ]
+      },
+      "HP_05_Fire": {
+        "parent": "Root",
+        "head": [
+          7.891165978435311e-07,
+          -107.80652618408203,
+          -16.097835540771484
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion": {
+        "parent": "HP_05_Fire",
+        "head": [
+          6.484436988830566,
+          -107.08272552490234,
+          -9.352694511413574
+        ]
+      },
+      "HP_04_Fire": {
+        "parent": "Root",
+        "head": [
+          50.81334686279297,
+          -16.27509880065918,
+          -6.596430778503418
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion": {
+        "parent": "HP_04_Fire",
+        "head": [
+          39.413089752197266,
+          -36.29911422729492,
+          -5.929065227508545
+        ]
+      },
+      "HP_02_Fire": {
+        "parent": "Root",
+        "head": [
+          -31.081546783447266,
+          -72.60382080078125,
+          -2.5196807384490967
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.001": {
+        "parent": "HP_02_Fire",
+        "head": [
+          -14.319513320922852,
+          -49.09248733520508,
+          12.5855073928833
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.001": {
+        "parent": "HP_02_Fire",
+        "head": [
+          -24.247404098510742,
+          -80.38778686523438,
+          1.3460099697113037
+        ]
+      },
+      "HP_03_Fire": {
+        "parent": "Root",
+        "head": [
+          -54.63447570800781,
+          -16.27509880065918,
+          -6.596430778503418
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.002": {
+        "parent": "HP_03_Fire",
+        "head": [
+          -43.581268310546875,
+          -8.877418518066406,
+          -6.273303508758545
+        ]
+      },
+      "HP_Facing": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hangar_01": {
+        "parent": "Root",
+        "head": [
+          2.154768594664347e-07,
+          120.62242126464844,
+          -2.8258421421051025
+        ]
+      },
+      "HP_01_Fire": {
+        "parent": "Root",
+        "head": [
+          36.82020568847656,
+          -72.60382080078125,
+          -2.5196807384490967
+        ]
+      },
+      "pf_small_w": {
+        "parent": "HP_01_Fire",
+        "head": [
+          29.80274200439453,
+          -28.89344596862793,
+          1.0140408277511597
+        ]
+      },
+      "pf_small_w.001": {
+        "parent": "HP_01_Fire",
+        "head": [
+          24.369171142578125,
+          -57.689178466796875,
+          1.281671404838562
+        ]
+      },
+      "Hangar": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hangar_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Col": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -54.33274459838867,
+      -138.07057189941406,
+      -21.562255859375
+    ],
+    "bounds_max": [
+      54.33272933959961,
+      150.16897583007812,
+      30.754194259643555
+    ]
+  },
+  "materials": [
+    {
+      "name": "MC50_M013",
+      "shader": "MeshShield.fx",
+      "base": "MC50_Engine_Glow_Fancy_Blue",
+      "normal": null
+    },
+    {
+      "name": "MC50_M016",
+      "shader": "MeshShield.fx",
+      "base": "MC50_NONE",
+      "normal": null
+    },
+    {
+      "name": "MC50_M019",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "MC50_M017",
+      "shader": "MeshGloss.fx",
+      "base": "MC50_Hangar_3",
+      "normal": null
+    },
+    {
+      "name": "MC50_M020",
+      "shader": "MeshAdditive.fx",
+      "base": "MC50_Hull_Lights_Grid_Sparse_Rebel",
+      "normal": null
+    },
+    {
+      "name": "MC50_M015",
+      "shader": "MeshAdditive.fx",
+      "base": "MC50_Engine_Exhaust",
+      "normal": null
+    },
+    {
+      "name": "MC50_M014",
+      "shader": "MeshBumpColorize.fx",
+      "base": "MC50_Engine_Exhaust",
+      "normal": "MC50_Engine_Exhaust_B"
+    },
+    {
+      "name": "MC50_M012",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "MC50_M018",
+      "shader": "MeshAdditive.fx",
+      "base": "MC50_Hangar_Imp_Light",
+      "normal": null
+    },
+    {
+      "name": "MC50_M011",
+      "shader": "MeshBumpColorize.fx",
+      "base": "MC50_Rebel_Mon_Calamari_Tide",
+      "normal": "MC50_Rebel_Mon_Calamari_Tide_B"
+    }
+  ],
+  "bone_error": 0.00012641221967763162,
+  "geometry_error": 4.644697441820496e-05
+}

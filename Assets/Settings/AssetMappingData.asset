@@ -1176,6 +1176,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC50ShipData
+      value:
+        m_AssetGUID: f90c2c253a724024e9e5aa025f5572d9
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC50ShipView
+      value:
+        m_AssetGUID: d720a68f8d256d04886c0e72d81f05ff
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: AssaultFrigateMkIIShipView
       value:
         m_AssetGUID: 89c4c6800d7ce9041bb471549c2379b9

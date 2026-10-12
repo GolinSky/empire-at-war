@@ -1,0 +1,50 @@
+{
+  "checks": 2296,
+  "meshes": 10,
+  "triangles": 35592,
+  "bones": 51,
+  "boneErrorUnits": 5.623091E-07,
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/MC50.prefab",
+      "size": [
+        41.46968,
+        19.9653778,
+        110.0
+      ]
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/MC50ShipView.prefab",
+      "size": [
+        41.46968,
+        19.9653778,
+        110.0
+      ]
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/MC50ReinforcementView.prefab",
+      "size": [
+        41.46968,
+        19.9653778,
+        109.348282
+      ]
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/MC50WreckView.prefab",
+      "size": [
+        41.46968,
+        19.9653778,
+        109.348289
+      ]
+    }
+  ],
+  "targetableHardpoints": 16,
+  "weaponCounts": [
+    2,
+    4,
+    2,
+    4,
+    2
+  ],
+  "registrationsVerified": true
+}

@@ -22,12 +22,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 010561448aafee74bb1d92d47bb33f3b
     m_Address: TIEAvengerSquadronView
-    - m_GUID: 13b95f5491d4d064cb67648cf70fa056
-    m_Address: CD273ShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  m_ReadOnly: 0
+  - m_GUID: 13b95f5491d4d064cb67648cf70fa056
+    m_Address: CD273ShipView
+    m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0150a3a72b6005a409e879331f63ff7e
@@ -322,6 +322,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d67ee971a66b0ae4b9242ecb0497df01
     m_Address: ThrantaShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d720a68f8d256d04886c0e72d81f05ff
+    m_Address: MC50ShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
