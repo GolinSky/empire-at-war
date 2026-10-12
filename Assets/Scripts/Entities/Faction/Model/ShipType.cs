@@ -58,5 +58,6 @@ namespace EmpireAtWar.Models.Factions
         AssaultFrigateMkII = 309,
         Endurance = 322,
 
+        Dauntless = 310,
     }
 }

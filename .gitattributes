@@ -8,3 +8,4 @@ output/ImperialVenator/*.zip filter=lfs diff=lfs merge=lfs -text
 output/ISDIIReplacement/Blender/*.blend filter=lfs diff=lfs merge=lfs -text
 output/remake-empire-units/ISDI-Converted/**/*.blend filter=lfs diff=lfs merge=lfs -text
 output/remake-rebel-units/Liberator-Converted/**/*.blend filter=lfs diff=lfs merge=lfs -text
+output/remake-rebel-units/Dauntless-Converted/*.blend filter=lfs diff=lfs merge=lfs -text

@@ -22,14 +22,17 @@ namespace EmpireAtWar.Components.Combat
 
         private bool _superWeaponDisabled;
         private int _ionPulseDisables;
+        private int _sensorJammers;
         private int _fighterCoordinations;
-        public float AccuracyMultiplier => _fighterCoordinations > 0 ? 1.2f : 1f;
+        public float AccuracyMultiplier => (_sensorJammers > 0 ? 0.8f : 1f) * (_fighterCoordinations > 0 ? 1.2f : 1f);
         public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
         /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
-        public bool HasTemporaryEffects => _active.Count > 0 || _fighterCoordinations > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
+        public bool HasTemporaryEffects => _active.Count > 0 || _sensorJammers > 0 || _fighterCoordinations > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
                                            _focusTarget != null || _projectileFireDelayMultiplier != 1f ||
                                            _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f;
         public bool IsCloaked { get; private set; }
+
+        public void AddSensorJamming() => _sensorJammers++;
 
         public void AddFighterCoordination()
         {
@@ -42,6 +45,12 @@ namespace EmpireAtWar.Components.Combat
             if (_fighterCoordinations == 0) throw new InvalidOperationException("No fighter coordination is active.");
             _fighterCoordinations--;
             Recalculate();
+        }
+
+        public void RemoveSensorJamming()
+        {
+            if (_sensorJammers == 0) throw new InvalidOperationException("No sensor jamming is active.");
+            _sensorJammers--;
         }
 
         public void SetCloaked(bool cloaked)

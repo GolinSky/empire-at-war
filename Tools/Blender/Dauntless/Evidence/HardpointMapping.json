@@ -1,0 +1,163 @@
+[
+  {
+    "id": 0,
+    "name": "DauntlessWeapon01",
+    "bone": "HP_01_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "DauntlessWeapon02",
+    "bone": "HP_02_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "DauntlessWeapon03",
+    "bone": "HP_03_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "DauntlessWeapon04",
+    "bone": "HP_04_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "DauntlessWeapon05",
+    "bone": "HP_05_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "DauntlessWeapon06",
+    "bone": "HP_06_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "DauntlessWeapon07",
+    "bone": "HP_07_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "DauntlessWeapon08",
+    "bone": "HP_08_FP_01",
+    "profile": 2,
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "DauntlessWeapon09",
+    "bone": "HP_09_FP_01",
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "DauntlessWeapon10",
+    "bone": "HP_10_FP_01",
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "DauntlessWeapon11",
+    "bone": "HP_11_FP_01",
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "DauntlessWeapon12",
+    "bone": "HP_12_FP_01",
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "DauntlessWeapon13",
+    "bone": "HP_13_FP_01",
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "DauntlessWeapon14",
+    "bone": "HP_14_FP_01",
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "DauntlessWeapon15",
+    "bone": "HP_15_FP_01",
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "DauntlessWeapon16",
+    "bone": "HP_16_FP_01",
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "DauntlessWeapon17",
+    "bone": "HP_17_FP_01",
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "DauntlessWeapon18",
+    "bone": "HP_18_FP_01",
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 18,
+    "name": "HP_Engine1",
+    "bone": "HP_Engine1",
+    "derivedPosition": false,
+    "targetable": true
+  },
+  {
+    "id": 19,
+    "name": "HP_Engine2",
+    "bone": "HP_Engine2",
+    "derivedPosition": false,
+    "targetable": true
+  },
+  {
+    "id": 20,
+    "name": "HP_Shield",
+    "bone": "HP_Shield",
+    "derivedPosition": false,
+    "targetable": true
+  },
+  {
+    "id": 21,
+    "name": "HP_Hangar",
+    "bone": "HP_Hangar",
+    "derivedPosition": false,
+    "targetable": true
+  },
+  {
+    "id": 22,
+    "name": "DauntlessSensorArray",
+    "bone": "Hull",
+    "derivedPosition": true,
+    "targetable": true
+  }
+]

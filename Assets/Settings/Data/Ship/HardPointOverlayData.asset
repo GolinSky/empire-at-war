@@ -54,6 +54,10 @@ MonoBehaviour:
     displayName: Missile Defense
     description: Destroying it stops missiles and torpedoes from being shot down.
     hardPointType: 9
+  - icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+    displayName: Sensor Array
+    description: Destroying it disables Sensor Jamming.
+    hardPointType: 10
   - icon: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
     displayName: Command Array
     description: Destroying it disables Fighter Coordination.

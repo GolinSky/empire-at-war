@@ -110,6 +110,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f83d7d16e8adf64fa05fc0b246694b4
+    m_Address: DauntlessShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 413c64af046c0534095a8e92f601bc37
     m_Address: StealthCorvetteShipData
     m_ReadOnly: 0

@@ -281,6 +281,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d,
           type: 3}
+    - key: 310
+      value:
+        matchups: {fileID: 11400000, guid: 7398eb1d6c6974a469f7180d66773898, type: 2}
+        description: Heavy frontline cruiser with eight heavy turbolasers, four medium
+          dual turbolasers, four heavy ion cannons and two point-defense lasers.
+          Deploys X-Wing and Y-Wing squadrons. Sensor Jamming reduces nearby enemy
+          accuracy by 20% for 8 seconds.
+        role: Frontline capital combat
+        iconKey: 66c1ea9cf4e49774d99aff299b8237ca:21300000
+        isHero: 0
+        <Name>k__BackingField: Dauntless Heavy Cruiser
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 5600
+        <BuildTime>k__BackingField: 60
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 66c1ea9cf4e49774d99aff299b8237ca,
+          type: 3}
     - key: 321
       value:
         matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}

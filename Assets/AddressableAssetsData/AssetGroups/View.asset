@@ -255,6 +255,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5aba968bba177044a0a0be73f0751eb
+    m_Address: DauntlessShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a5fb369e6e2e1954fa87deac0371f5ab
     m_Address: RothanaShipView
     m_ReadOnly: 0

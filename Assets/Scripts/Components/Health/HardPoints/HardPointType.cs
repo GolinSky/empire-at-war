@@ -14,5 +14,6 @@
         MissileDefense = 9,
         CommandArray = 11,
 
+        SensorArray = 10,
     }
 }
