@@ -25,6 +25,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Action<int> _effectCompleted;
 
         private readonly int _maxIdle;
+        // Most shots this pool has had in flight at once. Returned shots are kept up to it: dropping them while
+        // the next salvo is already due made the pool instantiate and destroy shots every salvo.
+        private int _peakActive;
 
         private bool _released;
 
@@ -55,6 +58,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 GetImpactSize(attackData.TargetClass), isHit);
             float duration = effect.Fire(_owner, targetTransform, target.Pivot, aimOffset, _profile, _boltFlights);
             _active.Add(effect, sequenceGeneration);
+            if (_active.Count > _peakActive) _peakActive = _active.Count;
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;
         }
@@ -165,7 +169,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 AttackSequenceDiagnostics.RecordOwnerlessActive(-1);
             }
 
-            if (_released || _availableMembers.Count >= _maxIdle)
+            if (_released || _availableMembers.Count >= Mathf.Max(_maxIdle, _peakActive))
             {
                 effect.EffectCompleted -= OnEffectCompleted;
                 effect.EffectDestroyed -= OnEffectDestroyed;
@@ -214,6 +218,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
         }
 
+        /// <summary>Adds one idle shot while the pool holds fewer than <paramref name="target"/> shots.</summary>
+        /// <returns>False once the pool is full or released.</returns>
+        public bool PrewarmOne(int target)
+        {
+            if (_released || _availableMembers.Count + _active.Count >= target) return false;
+            AddIdle();
+            return true;
+        }
+
         public void Prewarm(int count)
         {
             if (_released)
@@ -222,17 +235,19 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
 
             int desired = Mathf.Min(count, _maxIdle);
-            while (_availableMembers.Count < desired)
-            {
-                ShotEffect effect = UnityEngine.Object.Instantiate(_prefab);
-                effect.EffectCompleted += OnEffectCompleted;
-                effect.EffectDestroyed += OnEffectDestroyed;
-                effect.ResetForPool();
-                _available.Push(effect);
-                _availableMembers.Add(effect);
-                AttackSequenceDiagnostics.RecordPoolCreated(false);
-                AttackSequenceDiagnostics.RecordPoolAvailable(1);
-            }
+            while (_availableMembers.Count < desired) AddIdle();
+        }
+
+        private void AddIdle()
+        {
+            ShotEffect effect = UnityEngine.Object.Instantiate(_prefab);
+            effect.EffectCompleted += OnEffectCompleted;
+            effect.EffectDestroyed += OnEffectDestroyed;
+            effect.ResetForPool();
+            _available.Push(effect);
+            _availableMembers.Add(effect);
+            AttackSequenceDiagnostics.RecordPoolCreated(false);
+            AttackSequenceDiagnostics.RecordPoolAvailable(1);
         }
     }
 }

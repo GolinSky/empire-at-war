@@ -50,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 WeaponHardPoint weapon = obj.AddComponent<WeaponHardPoint>();
                 CombatModifiers modifiers = new CombatModifiers();
-                weapon.SetData(new WeaponProfile(), 100f, 0f, null, null, modifiers, null, null, null);
+                weapon.SetData(new WeaponProfile(), 100f, 0f, null, null, modifiers, null, null, null, null);
                 MethodInfo start = typeof(WeaponHardPoint).GetMethod("TryStartScheduledSequence", PRIVATE_INSTANCE);
                 MethodInfo emitting = typeof(WeaponHardPoint).GetMethod("IsEmitting", PRIVATE_INSTANCE);
                 object[] args = { 0 };
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Tests.Editor
                 WeaponProfile profile = new WeaponProfile();
                 typeof(WeaponProfile).GetField("shotInterval", PRIVATE_INSTANCE).SetValue(profile, 1f);
                 CombatModifiers modifiers = new CombatModifiers();
-                weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, null);
+                weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, null, null);
                 modifiers.SetMainBatteries(true, 0.33f);
                 Assert.That(typeof(WeaponHardPoint).GetProperty("DelayBetweenShots", PRIVATE_INSTANCE).GetValue(weapon), Is.EqualTo(0.33f));
                 MethodInfo start = typeof(WeaponHardPoint).GetMethod("TryStartScheduledSequence", PRIVATE_INSTANCE);

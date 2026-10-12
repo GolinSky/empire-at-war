@@ -75,6 +75,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IVisionService _vision;
         // Structures never move, so one the team has seen stays a known raid target until it is destroyed.
         private readonly HashSet<long> _seenStructures = new HashSet<long>();
+        // Targets stay picked while still valid: a new pick re-orders every committed ship, and each order makes
+        // the ship's weapons re-sort their candidates.
+        private GameEntity _localThreat;
+        private GameEntity _raidTarget;
 
         private readonly PlayerSlot _owner;
         private readonly ForceComposition _ownForce = new ForceComposition();
@@ -141,8 +145,10 @@ namespace EmpireAtWar.Services.Enemy
             BuildBaseThreat(ownBase);
             // Retreat answers what is actually near the fleet, not the enemy's whole army across the map.
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
-            GameEntity localThreatTarget = FindLocalThreat(origin, now);
-            GameEntity raidTarget = FindRaidTarget(origin, now);
+            _localThreat = FindLocalThreat(origin, now);
+            _raidTarget = FindRaidTarget(origin, now);
+            GameEntity localThreatTarget = _localThreat;
+            GameEntity raidTarget = _raidTarget;
             float baseThreatRatio = _baseThreatForce.IsEmpty
                 ? 0f
                 : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
@@ -178,11 +184,16 @@ namespace EmpireAtWar.Services.Enemy
                 raidTarget: raidTarget);
         }
 
-        /// <summary>The closest known hostile within <see cref="LOCAL_ENGAGEMENT_RADIUS"/>; ships win over squadrons.</summary>
+        /// <summary>
+        /// The closest known hostile within <see cref="LOCAL_ENGAGEMENT_RADIUS"/>; ships win over squadrons.
+        /// The previous pick stays while it is still known in range and no ship replaces a squadron pick.
+        /// </summary>
         private GameEntity FindLocalThreat(Vector3 origin, float now)
         {
             GameEntity closest = null;
             bool closestIsShip = false;
+            bool keepsPrevious = false;
+            bool previousIsShip = false;
             float closestDistance = float.MaxValue;
             float radiusSquared = LOCAL_ENGAGEMENT_RADIUS * LOCAL_ENGAGEMENT_RADIUS;
             foreach (HostileSighting sighting in _intel.Sightings)
@@ -191,6 +202,13 @@ namespace EmpireAtWar.Services.Enemy
                 offset.y = 0f;
                 float distance = offset.sqrMagnitude;
                 bool isShip = sighting.UnitTypeId.IsShip;
+                if (_localThreat != null && sighting.EntityId == _localThreat.Id && distance <= radiusSquared &&
+                    _intel.GetConfidence(sighting, now) > 0f && _entityLocator.TryGetEntity(sighting.EntityId, out _))
+                {
+                    keepsPrevious = true;
+                    previousIsShip = isShip;
+                }
+
                 if (distance > radiusSquared ||
                     closestIsShip && !isShip ||
                     isShip == closestIsShip && distance >= closestDistance ||
@@ -205,7 +223,7 @@ namespace EmpireAtWar.Services.Enemy
                 closestDistance = distance;
             }
 
-            return closest;
+            return keepsPrevious && (previousIsShip || !closestIsShip) ? _localThreat : closest;
         }
 
         /// <summary>
@@ -215,6 +233,7 @@ namespace EmpireAtWar.Services.Enemy
         private GameEntity FindRaidTarget(Vector3 origin, float now)
         {
             GameEntity closest = null;
+            bool keepsPrevious = false;
             float closestDistance = float.MaxValue;
             foreach (GameEntity entity in _entityLocator.Entities)
             {
@@ -229,6 +248,7 @@ namespace EmpireAtWar.Services.Enemy
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (_vision.IsVisible(_owner.Id, position)) _seenStructures.Add(entity.Id);
+                if (ReferenceEquals(entity, _raidTarget) && !IsDefended(position, now)) keepsPrevious = true;
                 float distance = (position - origin).sqrMagnitude;
                 if (distance >= closestDistance ||
                     !_seenStructures.Contains(entity.Id) ||
@@ -241,7 +261,7 @@ namespace EmpireAtWar.Services.Enemy
                 closestDistance = distance;
             }
 
-            return closest;
+            return keepsPrevious ? _raidTarget : closest;
         }
 
         private bool IsDefended(Vector3 position, float now)

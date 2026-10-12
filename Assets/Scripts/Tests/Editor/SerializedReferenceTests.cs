@@ -33,8 +33,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             new SerializedReference(typeof(CameraService), "sceneCamera"),
             new SerializedReference(typeof(MapObstacle), "obstacleCollider"),
-            new SerializedReference(typeof(SelectionComponent), "selectedCanvas"),
-            new SerializedReference(typeof(SelectionComponent), "selectedImage"),
+            new SerializedReference(typeof(SelectionComponent), "selectionRoot"),
+            new SerializedReference(typeof(SelectionComponent), "selectedRenderer"),
             new SerializedReference(typeof(BaseUi), "canvasGroup"),
             new SerializedReference(typeof(UiService), "defaultCanvas"),
             new SerializedReference(typeof(UiService), "dynamicCanvas"),

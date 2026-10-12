@@ -54,6 +54,7 @@ namespace EmpireAtWar.Components.Weapon
         private DebugRangeCircleFactory _rangeCircleFactory;
         [Inject] private ImpactEffectPresenter _impactPresenter;
         [Inject] private BoltFlightBatch _boltFlights;
+        [Inject] private ShotPoolPrewarmer _poolPrewarmer;
         private List<AttackData> _attackDataList = new List<AttackData>();
         // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
         // _candidateGroups. A group's candidates are contiguous; groups without candidates are not listed.
@@ -80,6 +81,8 @@ namespace EmpireAtWar.Components.Weapon
         private int _targetVersion;
         // Target changes only mark candidates stale; the next reader rebuilds once for all of them.
         private bool _candidatesDirty;
+        // The first candidate group is the main target's own block, added ahead of the listed groups.
+        private bool _hasMainBlock;
         private float _idleUntil;
         // Index = hardpoint: when it may select a target again.
         private float[] _retryAt = Array.Empty<float>();
@@ -133,7 +136,7 @@ namespace EmpireAtWar.Components.Weapon
                 WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction);
                 profiles.Add(profile);
                 hardPoint.SetData(profile, profile.Range * _modifiers.VisionMultiplier, _damageMatrix.MissSpread,
-                    this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles);
+                    this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
 
@@ -237,13 +240,14 @@ namespace EmpireAtWar.Components.Weapon
                     _mainAttackData = attackData;
                     Subscribe(attackData);
 
-                    if (!HasSameSource(attackData))
+                    bool isListed = !HasSameSource(attackData);
+                    if (isListed)
                     {
                         _attackDataList.Add(attackData);
                     }
 
                     UnsubscribeIfUnused(previousMain);
-                    InvalidateCandidates();
+                    SwitchMainCandidates(attackData, isListed);
                     break;
                 }
             }
@@ -280,7 +284,60 @@ namespace EmpireAtWar.Components.Weapon
             AttackData previousMain = _mainAttackData;
             _mainAttackData = null;
             UnsubscribeIfUnused(previousMain);
-            InvalidateCandidates();
+            SwitchMainCandidates(null, false);
+        }
+
+        /// <summary>
+        /// Gives the candidates the order a rebuild would: the main target's block, then the listed groups newest
+        /// first. A main target change touches only the old and new main blocks; ships change targets on every
+        /// order, and a full rebuild re-acquires every unit of every group in radar range.
+        /// </summary>
+        private void SwitchMainCandidates(AttackData newMain, bool isNewlyListed)
+        {
+            _targetVersion++;
+            CancelWaits();
+            if (_candidatesDirty) return;
+
+            if (_hasMainBlock) RemoveFirstGroup();
+            _hasMainBlock = false;
+            if (newMain == null) return;
+            // A newly listed main is the newest listed group, so a rebuild lists it first after the main block.
+            if (isNewlyListed) PrependGroup(newMain);
+            _hasMainBlock = PrependGroup(newMain);
+        }
+
+        private bool PrependGroup(AttackData group)
+        {
+            int first = _candidateCount;
+            int groupCount = _candidateGroups.Count;
+            AddCandidates(group);
+            if (_candidateGroups.Count == groupCount) return false;
+
+            for (int i = 0; i < first; i++) _candidateGroupIndices[i]++;
+            for (int i = first; i < _candidateCount; i++) _candidateGroupIndices[i] = 0;
+            _candidateGroups.RemoveAt(groupCount);
+            _candidateGroups.Insert(0, group);
+            MoveBlockToStart(_candidateSlots, 0, first, _candidateCount);
+            MoveBlockToStart(_candidateGroupIndices, 0, first, _candidateCount);
+            return true;
+        }
+
+        private void RemoveFirstGroup()
+        {
+            TargetSelectionCapture targets = _attackCoordinator.TargetUnits;
+            int blockEnd = 0;
+            while (blockEnd < _candidateCount && _candidateGroupIndices[blockEnd] == 0)
+            {
+                targets.Release(_candidateSlots[blockEnd]);
+                blockEnd++;
+            }
+
+            int remaining = _candidateCount - blockEnd;
+            Array.Copy(_candidateSlots, blockEnd, _candidateSlots, 0, remaining);
+            Array.Copy(_candidateGroupIndices, blockEnd, _candidateGroupIndices, 0, remaining);
+            for (int i = 0; i < remaining; i++) _candidateGroupIndices[i]--;
+            _candidateCount = remaining;
+            _candidateGroups.RemoveAt(0);
         }
 
         public void Tick()
@@ -526,7 +583,7 @@ namespace EmpireAtWar.Components.Weapon
             CancelWaits();
             if (_candidatesDirty) return;
 
-            int insertGroup = _candidateGroups.Count > 0 && ReferenceEquals(_candidateGroups[0], _mainAttackData) ? 1 : 0;
+            int insertGroup = _hasMainBlock ? 1 : 0;
             int insertAt = 0;
             while (insertAt < _candidateCount && _candidateGroupIndices[insertAt] < insertGroup) insertAt++;
             int first = _candidateCount;
@@ -578,7 +635,10 @@ namespace EmpireAtWar.Components.Weapon
                     AttackSequenceDiagnostics.RecordTargetInvalidation();
                 }
                 else
+                {
                     AddCandidates(_mainAttackData);
+                    _hasMainBlock = _candidateGroups.Count > 0;
+                }
             }
 
             for (int i = _attackDataList.Count - 1; i >= 0; i--)
@@ -635,6 +695,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _candidateCount; i++) targets.Release(_candidateSlots[i]);
             _candidateCount = 0;
             _candidateGroups.Clear();
+            _hasMainBlock = false;
         }
 
         // Destroyed groups stay listed until the next rebuild; they no longer count as targets.

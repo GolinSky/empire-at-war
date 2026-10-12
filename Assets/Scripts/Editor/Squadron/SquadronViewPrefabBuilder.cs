@@ -203,14 +203,13 @@ namespace EmpireAtWar.Editor.Squadrons
             GameObject canvas = Object.Instantiate(source.gameObject, root, false);
             canvas.name = source.name;
             canvas.transform.localPosition = new Vector3(0f, SELECTION_RING_HEIGHT, 0f);
-            RectTransform image = (RectTransform)canvas.transform.Find("SelectedImage");
-            image.sizeDelta = Vector2.one * SELECTION_RING_SIZE;
+            SpriteRenderer ring = canvas.transform.Find("SelectedImage").GetComponent<SpriteRenderer>();
 
             SerializedObject selectionObject = new SerializedObject(selection);
             selectionObject.FindProperty("selectionType").intValue = (int)SelectionType.Ship;
-            selectionObject.FindProperty("selectedCanvas").objectReferenceValue = canvas.GetComponent<Canvas>();
-            selectionObject.FindProperty("selectedImage").objectReferenceValue =
-                image.GetComponent<UnityEngine.UI.Image>();
+            selectionObject.FindProperty("selectionRoot").objectReferenceValue = canvas.transform;
+            selectionObject.FindProperty("selectedRenderer").objectReferenceValue = ring;
+            selectionObject.FindProperty("ringSize").vector2Value = Vector2.one * SELECTION_RING_SIZE;
             selectionObject.ApplyModifiedPropertiesWithoutUndo();
         }
 

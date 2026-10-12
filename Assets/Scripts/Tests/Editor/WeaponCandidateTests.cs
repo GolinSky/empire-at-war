@@ -57,6 +57,33 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
+        public void MainTargetSwitches_KeepRebuildOrderWithoutRebuilding()
+        {
+            AttackData first = Group(2);
+            AttackData second = Group(3);
+            AttackData newMain = Group(2);
+            _weapon.AddTarget(first, AttackType.Base);
+            _weapon.AddTarget(second, AttackType.Base);
+            Invoke("EnsureCandidates");
+
+            // A new main target, then a listed group as main, then no main.
+            _weapon.AddTarget(newMain, AttackType.MainTarget);
+            AssertMatchesRebuild();
+            _weapon.AddTarget(first, AttackType.MainTarget);
+            AssertMatchesRebuild();
+            _weapon.ResetTarget();
+            AssertMatchesRebuild();
+        }
+
+        private void AssertMatchesRebuild()
+        {
+            Assert.That(IsDirty(), Is.False);
+            List<(AttackData, IHardPointModel)> switched = Candidates();
+            Invoke("RebuildCandidates");
+            Assert.That(switched, Is.EqualTo(Candidates()));
+        }
+
+        [Test]
         public void TargetDestroyed_RebuildsOnlyOnceHalfTheGroupsAreDead()
         {
             HealthStub[] healths = new HealthStub[4];
