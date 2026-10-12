@@ -37,8 +37,8 @@ namespace EmpireAtWar.Services.Radar
         // Target indices are read while scan results are delivered, so entity changes wait for the next step.
         private readonly List<IEntity> _targets = new List<IEntity>();
         private readonly Dictionary<IEntity, int> _targetIndices = new Dictionary<IEntity, int>();
-        private readonly List<IEntity> _pendingAdded = new List<IEntity>();
-        private readonly List<IEntity> _pendingRemoved = new List<IEntity>();
+        // Applied in arrival order: a pooled unit can leave and rejoin between two radar steps.
+        private readonly List<(IEntity Entity, bool IsAdded)> _pendingChanges = new List<(IEntity Entity, bool IsAdded)>();
 
         private readonly Dictionary<PlayerId, int> _ownerSlots = new Dictionary<PlayerId, int>();
         private readonly List<PlayerId> _slotOwners = new List<PlayerId>();
@@ -68,15 +68,15 @@ namespace EmpireAtWar.Services.Radar
             _hostility = new NativeList<byte>(INITIAL_CAPACITY, Allocator.Persistent);
             _detectedBits = new NativeList<ulong>(INITIAL_CAPACITY, Allocator.Persistent);
 
-            _pendingAdded.AddRange(_entityLocator.Entities);
-            _entityLocator.EntityAdded += _pendingAdded.Add;
-            _entityLocator.EntityRemoved += _pendingRemoved.Add;
+            foreach (IEntity entity in _entityLocator.Entities) HandleEntityAdded(entity);
+            _entityLocator.EntityAdded += HandleEntityAdded;
+            _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
 
         public void Dispose()
         {
-            _entityLocator.EntityAdded -= _pendingAdded.Add;
-            _entityLocator.EntityRemoved -= _pendingRemoved.Add;
+            _entityLocator.EntityAdded -= HandleEntityAdded;
+            _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _targetTransforms.Dispose();
             _targetPositions.Dispose();
             _targetStates.Dispose();
@@ -242,34 +242,42 @@ namespace EmpireAtWar.Services.Radar
             }
         }
 
+        private void HandleEntityAdded(IEntity entity) => _pendingChanges.Add((entity, true));
+
+        private void HandleEntityRemoved(IEntity entity) => _pendingChanges.Add((entity, false));
+
         private void ApplyPendingTargets()
         {
-            for (int i = 0; i < _pendingAdded.Count; i++)
+            for (int i = 0; i < _pendingChanges.Count; i++)
             {
-                IEntity entity = _pendingAdded[i];
-                _targetIndices.Add(entity, _targets.Count);
-                _targets.Add(entity);
-                _targetTransforms.Add(entity.GetFacade<IEntityTransformFacade>().Transform);
+                (IEntity entity, bool isAdded) = _pendingChanges[i];
+                if (isAdded) AddTarget(entity);
+                else RemoveTarget(entity);
             }
 
-            for (int i = 0; i < _pendingRemoved.Count; i++)
-            {
-                IEntity entity = _pendingRemoved[i];
-                int index = _targetIndices[entity];
-                _targetIndices.Remove(entity);
-                int last = _targets.Count - 1;
-                IEntity moved = _targets[last];
-                _targets[index] = moved;
-                _targets.RemoveAt(last);
-                _targetTransforms.RemoveAtSwapBack(index);
-                if (index != last)
-                {
-                    _targetIndices[moved] = index;
-                }
-            }
+            _pendingChanges.Clear();
+        }
 
-            _pendingAdded.Clear();
-            _pendingRemoved.Clear();
+        private void AddTarget(IEntity entity)
+        {
+            _targetIndices.Add(entity, _targets.Count);
+            _targets.Add(entity);
+            _targetTransforms.Add(entity.GetFacade<IEntityTransformFacade>().Transform);
+        }
+
+        private void RemoveTarget(IEntity entity)
+        {
+            int index = _targetIndices[entity];
+            _targetIndices.Remove(entity);
+            int last = _targets.Count - 1;
+            IEntity moved = _targets[last];
+            _targets[index] = moved;
+            _targets.RemoveAt(last);
+            _targetTransforms.RemoveAtSwapBack(index);
+            if (index != last)
+            {
+                _targetIndices[moved] = index;
+            }
         }
 
         private void BuildHostility(int slotCount)

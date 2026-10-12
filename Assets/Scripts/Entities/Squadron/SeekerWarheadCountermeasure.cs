@@ -2,6 +2,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
@@ -9,7 +10,7 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
-    public sealed class SeekerWarheadCountermeasure : IInitializable, ITickable
+    public sealed class SeekerWarheadCountermeasure : IInitializable, ITickable, IRespawnable
     {
         private readonly SquadronData _data;
         private readonly IHealthModelObserver _health;
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _fighters = _health.GetShipUnits(HardPointType.Any);
             _readyTimes = new float[_fighters.Length];
         }
+
+        public void Respawn() => Initialize();
 
         public void Tick()
         {

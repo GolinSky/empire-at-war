@@ -19,7 +19,8 @@ namespace EmpireAtWar.Components.Radar
     {
         ObservableList<IEntity> Enemies { get; }
     }
-    public class RadarComponent : MonoComponent<RadarModel>, IInitializable, ITickable, IDisposable, IRadarComponent, IRadarScanner
+    public class RadarComponent : MonoComponent<RadarModel>, IInitializable, ITickable, IDisposable, IRadarComponent, IRadarScanner,
+        IRespawnable
     {
         private IRadarScanService _scanService;
         private ILayerService _layerService;
@@ -63,6 +64,12 @@ namespace EmpireAtWar.Components.Radar
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _radarRangeCircle = _rangeCircleFactory.Create("RadarRange", new Color(0.2f, 0.6f, 1f), _selection);
 #endif
+        }
+
+        public void Respawn()
+        {
+            _isReleased = false;
+            Initialize();
         }
 
         public void Tick()

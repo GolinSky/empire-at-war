@@ -22,6 +22,10 @@ namespace EmpireAtWar.Components.Combat
         private bool _superWeaponDisabled;
         private int _ionPulseDisables;
         public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
+        /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
+        public bool HasTemporaryEffects => _active.Count > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
+                                           _focusTarget != null || _projectileFireDelayMultiplier != 1f ||
+                                           _otherFireDelayMultiplier != 1f;
         public bool IsCloaked { get; private set; }
 
         public void SetCloaked(bool cloaked)

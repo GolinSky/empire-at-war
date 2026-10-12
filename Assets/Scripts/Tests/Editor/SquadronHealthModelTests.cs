@@ -103,14 +103,38 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.GetMemberShields(1), Is.EqualTo(MEMBER_SHIELDS));
         }
 
-        private SquadronHealthModel CreateModel(out HardPointModel[] members)
+        [Test]
+        public void InitializeMembers_AfterDestruction_RestoresLiveSquadron()
         {
-            members = new HardPointModel[MEMBER_COUNT];
+            SquadronHealthModel model = CreateModel(out _);
+            for (int i = 0; i < MEMBER_COUNT; i++)
+            {
+                model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, i);
+            }
+
+            model.InitializeMembers(CreateMembers());
+
+            Assert.That(model.IsDestroyed, Is.False);
+            Assert.That(model.HasUnits, Is.True);
+            Assert.That(model.AliveCount, Is.EqualTo(MEMBER_COUNT));
+            Assert.That(model.Hull, Is.EqualTo(MEMBER_HULL * MEMBER_COUNT));
+            Assert.That(model.Shields, Is.EqualTo(MEMBER_SHIELDS * MEMBER_COUNT));
+        }
+
+        private static HardPointModel[] CreateMembers()
+        {
+            HardPointModel[] members = new HardPointModel[MEMBER_COUNT];
             for (int i = 0; i < MEMBER_COUNT; i++)
             {
                 members[i] = new HardPointModel(id: i, hardPointType: HardPointType.Any);
             }
 
+            return members;
+        }
+
+        private SquadronHealthModel CreateModel(out HardPointModel[] members)
+        {
+            members = CreateMembers();
             SquadronHealthModel model = new SquadronHealthModel(new TestHealthData(), _matrix, new CombatModifiers());
             model.InitializeMembers(members);
             return model;

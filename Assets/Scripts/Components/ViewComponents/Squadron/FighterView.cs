@@ -60,6 +60,10 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             {
                 Explode();
             }
+            else if (!wasAlive && !IsDestroyed)
+            {
+                Restore();
+            }
         }
 
         private void Explode()
@@ -77,6 +81,24 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             }
 
             deathExplosion.Play(true);
+        }
+
+        // A reused squadron brings its destroyed fighters back.
+        private void Restore()
+        {
+            gun.UpdateData(_healthPercentage);
+            foreach (WeaponHardPoint additionalGun in additionalGuns)
+            {
+                additionalGun.UpdateData(_healthPercentage);
+            }
+            body.gameObject.SetActive(true);
+            hitCollider.enabled = true;
+            foreach (TrailRenderer trail in engineTrails)
+            {
+                trail.emitting = true;
+            }
+
+            deathExplosion.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
 #if UNITY_EDITOR

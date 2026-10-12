@@ -1,6 +1,6 @@
 ---
 category: Optimization
-status: todo
+status: in-progress
 created: 2026-10-12
 updated: 2026-10-12
 ---
@@ -17,7 +17,7 @@ updated: 2026-10-12
   - `GameObjectContext.Construct`: 3.32 ms (`LazyInjectAll` 0.78, `MiniMapUnitMarkerPresenter.Initialize` 0.50, `WeaponComponent.Initialize` 0.33).
   - `GameObject.Activate` 0.52 ms (`MPImage.Awake`).
 - Editor numbers ≈2–3× a Development Player; re-measure in a player before/after.
-- Already shipped mitigations: `ISquadronLaunchSlots` = max **1 reserve launch per frame** across hangars; Zenject reflection baking enabled (`Assets/Settings/Data/Zenject/ZenjectReflectionBakingSettings.asset`). Measure their effect first — baseline for this plan.
+- Already shipped mitigations: `ISquadronLaunchSlots` = max **1 reserve launch per frame** across hangars. Zenject reflection baking was tried and **removed 2026-10-12** (woven DLLs referenced themselves; editor silently ran stale code) — see [[TODOs/Optimization/Battle_CPU_Performance_Plan]].
 - Squadrons alive in large battles: ~107–149; ~60 hangars ticking.
 
 ## Current Lifecycle (verified 2026-10-12)
@@ -38,34 +38,42 @@ updated: 2026-10-12
 - Every per-squadron model/component gets an explicit `Reset`/`Respawn` path; no hidden state carried between lives.
 - One pool owner service (e.g. `SquadronPool : ISquadronSpawner`) replaces direct `SquadronFactory` use in the 3 creators; the factory stays as the pool's miss path.
 - No routine null guards; missing bindings must fail fast.
-- Measure in a Development Player before claiming gains.
+- No agent Play Mode runs or captures; gains are measured by the user.
 
 ## Implementation
 
 ### 1. Baseline
-- [ ] Re-measure launch cost with reflection baking + launch slots (editor and Development Player): per-spawn ms, frames > 16 ms during hangar waves.
-- [ ] If spawn ≤ ~3 ms in the player, stop and record the result (pooling may not be worth its risk).
+- [x] Use existing capture 4 (baked + launch slots, editor): spawn frames median 13.8 ms, max 26 ms. No agent re-measurement; user measures in-game.
 
-### 2. State inventory
-- [ ] List every per-squadron object and its mutable state: `SquadronHealthModel`, `SquadronFlightModel`/`SquadronFlightComponent` (craft spawn/death), `SquadronPilot`, `SquadronTargetSelector`, `UnitOrderModel`, `SFoilsModel`, `CombatModifiers`, `WeaponComponent`/`WeaponModel`/hardpoints (`AttackSequenceState`, reload timers, `_mountYaw`, target slots), `RadarComponent`/`RadarModel`, `SelectionModel`/`SelectionComponent`, `FogVisibilityComponent`, `SquadronIconComponent`, `MiniMapUnitMarkerPresenter`, `AudioDialogShipComponent`, `SeekerWarheadCountermeasure`, cloned `SquadronData`.
-- [ ] List every global registration: radar service, selection service, fog system, minimap, `ISquadronRegistry`, `IEntityLocator`, ship SFX service, combat coordinator (`Register/Unregister`), target table slots.
+### 2. State inventory (2026-10-12)
+- [x] Per-life state reset by re-running `Initialize` after clearing `_isReleased`: health (new members/adapters, `IsDestroyed` reset in `InitializeMembers`), flight (formation at new pose), radar, weapon (+ hardpoint `RestartAttackSequence`, effect pool rebuilt), selection (`IsSelected = false`), icon, minimap marker, seeker countermeasure.
+- [x] Orders cleared by `Release`; pilot reset by `Loiter`/`Escort` in `Squadron.Initialize`; `SFoilsModel` reopened; ability slots `Recovering → Ready`.
+- [x] Views: `FighterView.UpdateData` 0 → >0 restores body, collider, trails, guns; `HardPoint` replays its explosion on the next death (`_hasExploded`); `WeaponHardPoint.Destroyed` clears.
+- [x] Fog: keeps tracked explosion/ion renderers (reused), resubscribes, recomputes hidden state.
+- [x] Not reset: `CombatModifiers` (owned by external abilities) → reuse gated instead; `SquadronData` clone, pilot RNG, `TeamColorView` (owner-constant).
 
 ### 3. Identity and stale references
-- [ ] Decide identity on reuse: new unique id + re-registration in every global registry, or an entity generation counter checked by holders.
-- [ ] Find holders of squadron `IEntity`/health after death (attackers' `AttackData`, AI commanders, radar enemy lists, hangar `_launched`, selection) and prove they drop or ignore the old life.
+- [x] Same `Entity`/id per pooled squadron. Removed from `IEntityLocator` at despawn (= old `Destroy` time, 6 s after death), re-added at respawn.
+- [x] Holders re-check `IsAlive`/`IsDestroyed` every tick; weapons drop destroyed `AttackData` on next rebuild; dead ≥ 6 s before reuse.
+- [x] `Squadron.Released` listeners cleared on respawn (`SquadronReinforcementPlacement` never unsubscribed → would double-remove capacity).
+- Residual risk: a holder that keeps a dead squadron's `IEntity` > 6 s without checking health would see it alive again at the new position.
 
 ### 4. Pool service
-- [ ] Add pool service keyed by (PlayerId, SquadronType); `Rent(position, rotation)` → reset + activate; `Return` on `Released` after the death lifetime instead of `Destroy`.
-- [ ] Optional prewarm per owner/type from faction data at battle start, spread one per frame.
-- [ ] Replace `SquadronFactory` use in `HangarComponent`, `SquadronReinforcementPlacement`, `ReinforcementPlacementFactory`.
+- [x] `SquadronPool : ISquadronSpawner, ITickable` (`Services/Squadron`), bound in `SkirmishMainInstaller`; key (PlayerId, SquadronType); miss → `SquadronFactory`.
+- [x] Destroyed → despawn after `DEATH_PRESENTATION_SECONDS = 6` (replaces `Destroy(context, 6 s)`); `Squadron.Despawn` → `IDespawnable` parts + `SetActive(false)`.
+- [x] Reuse only when `Squadron.CanRespawn`: no `CombatModifiers.HasTemporaryEffects`, no active ability slot.
+- [x] `HangarComponent`, `SquadronReinforcementPlacement`, `ReinforcementPlacementFactory` use `ISquadronSpawner`.
+- Skipped: prewarm (optional); dropping a defeated owner's pool (inactive objects; destroyed with the scene).
 
 ### 5. Reset path
-- [ ] `Squadron.Respawn(position, rotation)`: entity-driven reset of every component from step 2, re-register globals, re-run `Initialize`-equivalent subscriptions.
-- [ ] Tests: respawned squadron equals a fresh one (health, craft count, orders, radar, weapon state, selection, fog, minimap, audio).
+- [x] `Squadron.Respawn(position, rotation)`: activate → health → flight → `IRespawnable` parts (binding order; `Entity` re-registers before minimap) → clear `Released` → `EntityComponentLifecycle.Restart` → `Initialize`.
+- [x] `IRespawnable`/`IDespawnable` (`Entities/BaseEntity`), `ISquadronHealthComponent`, `ISquadronFlightComponent.Respawn`; lists injected via `LazyInject` (Entity → facades → Squadron cycle).
+- [x] EditMode tests added: `AttackSequenceStateTests`, `CombatModifiersTests.HasTemporaryEffects_*`, `SquadronHealthModelTests.InitializeMembers_AfterDestruction_*`.
 
 ### 6. Acceptance
-- [ ] Play Mode: launches, deaths, reinforcement squadrons, hangar destruction, owner defeat, battle end/scene unload (no leaks, no errors).
-- [ ] Matched Development Player capture vs step 1.
+- [x] Compiles (no errors; build output contains new types).
+- [ ] EditMode run blocked: Editor domain keeps stale `Assembly-CSharp` (MVID 319b…, not on disk) after recompiles, clean rebuild and `RequestScriptReload`; new tests fail with `MissingMethodException`. Needs Editor restart, then rerun EditMode (expect 26 legacy failures only).
+- In-game checks are done by the user, not agents (no agent Play Mode runs).
 
 ## Edge Cases
 - Squadron dies while pooled return pending → returned twice; guard with the existing `_isReleased` flow.

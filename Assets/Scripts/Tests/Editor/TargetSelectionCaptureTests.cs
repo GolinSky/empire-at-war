@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
@@ -11,14 +12,25 @@ namespace EmpireAtWar.Tests.Weapon
 {
     public sealed class TargetSelectionCaptureTests
     {
+        private readonly List<GameObject> _objects = new List<GameObject>();
+
+        [TearDown]
+        public void DestroyObjects()
+        {
+            foreach (GameObject created in _objects)
+                if (created != null) UnityEngine.Object.DestroyImmediate(created);
+            _objects.Clear();
+        }
+
         [Test]
-        public void SharedUnit_UsesOneSlotAndReadsHealthAndPositionOnce()
+        public void SharedUnit_UsesOneSlotAndReadsHealthOnce()
         {
             TargetSelectionCapture capture = new TargetSelectionCapture();
             try
             {
                 HealthStub health = new HealthStub();
-                HardPointStub unit = new HardPointStub { CurrentPosition = Vector3.forward, Generation = 3 };
+                HardPointStub unit = Unit(Vector3.forward);
+                unit.Generation = 3;
                 AttackData group = new AttackData(health, null, unit, null);
 
                 int first = capture.Acquire(unit, health);
@@ -30,7 +42,7 @@ namespace EmpireAtWar.Tests.Weapon
                 Assert.That(second, Is.EqualTo(first));
                 Assert.That(capture.GetUnit(first), Is.SameAs(unit));
                 Assert.That(health.LiveReads, Is.EqualTo(1));
-                Assert.That(unit.PositionReads, Is.EqualTo(1));
+                Assert.That(unit.GenerationReads, Is.EqualTo(1));
                 Assert.That(capture.GetGeneration(first), Is.EqualTo(3));
                 Assert.That((Vector3)capture.Positions[first], Is.EqualTo(Vector3.forward));
                 Assert.That(capture.Flags[first] & TargetSelectionCapture.SLOT_VALID, Is.Not.Zero);
@@ -48,7 +60,7 @@ namespace EmpireAtWar.Tests.Weapon
             try
             {
                 HealthStub health = new HealthStub();
-                HardPointStub unit = new HardPointStub();
+                HardPointStub unit = Unit(Vector3.zero);
                 AttackData group = new AttackData(health, null, unit, null);
                 int slot = capture.Acquire(unit, health);
                 capture.MarkUsed(new[] { slot }, 1);
@@ -57,7 +69,7 @@ namespace EmpireAtWar.Tests.Weapon
 
                 unit.IsDestroyed = true;
                 unit.Generation = 7;
-                unit.CurrentPosition = Vector3.right;
+                unit.Transform.position = Vector3.right;
                 health.Live = false;
 
                 Assert.That(capture.IsWreck(group), Is.True);
@@ -66,7 +78,6 @@ namespace EmpireAtWar.Tests.Weapon
                 Assert.That(capture.Flags[slot] & TargetSelectionCapture.SLOT_VALID, Is.Not.Zero);
                 Assert.That(capture.GetGeneration(slot), Is.EqualTo(7));
                 Assert.That((Vector3)capture.Positions[slot], Is.EqualTo(Vector3.right));
-                Assert.That(unit.PositionReads, Is.EqualTo(2));
                 Assert.That(health.LiveReads, Is.EqualTo(2));
             }
             finally
@@ -85,7 +96,8 @@ namespace EmpireAtWar.Tests.Weapon
             try
             {
                 HealthStub health = new HealthStub { IsDestroyed = destroyed, Live = live };
-                HardPointStub unit = new HardPointStub { IsDestroyed = unitDestroyed };
+                HardPointStub unit = Unit(Vector3.zero);
+                unit.IsDestroyed = unitDestroyed;
                 AttackData group = new AttackData(health, null, unit, null);
                 int slot = capture.Acquire(unit, health);
 
@@ -94,7 +106,6 @@ namespace EmpireAtWar.Tests.Weapon
 
                 Assert.That((capture.Flags[slot] & TargetSelectionCapture.SLOT_VALID) != 0, Is.EqualTo(expected));
                 Assert.That(group.CanTarget(unit), Is.EqualTo(expected));
-                Assert.That(unit.PositionReads, Is.EqualTo(expected ? 1 : 0));
             }
             finally
             {
@@ -109,8 +120,8 @@ namespace EmpireAtWar.Tests.Weapon
             try
             {
                 HealthStub health = new HealthStub();
-                HardPointStub first = new HardPointStub();
-                HardPointStub second = new HardPointStub();
+                HardPointStub first = Unit(Vector3.zero);
+                HardPointStub second = Unit(Vector3.up);
                 int slot = capture.Acquire(first, health);
                 capture.Acquire(first, health);
 
@@ -120,6 +131,9 @@ namespace EmpireAtWar.Tests.Weapon
 
                 Assert.That(capture.GetUnit(slot), Is.Null);
                 Assert.That(capture.Acquire(second, health), Is.EqualTo(slot));
+                capture.MarkUsed(new[] { slot }, 1);
+                capture.Refresh();
+                Assert.That((Vector3)capture.Positions[slot], Is.EqualTo(Vector3.up));
                 Assert.That(capture.Acquire(first, health), Is.Not.EqualTo(slot));
             }
             finally
@@ -135,18 +149,19 @@ namespace EmpireAtWar.Tests.Weapon
             try
             {
                 HealthStub health = new HealthStub();
-                HardPointStub used = new HardPointStub();
-                HardPointStub unused = new HardPointStub();
+                HardPointStub used = Unit(Vector3.zero);
+                HardPointStub unused = Unit(Vector3.zero);
                 int usedSlot = capture.Acquire(used, health);
-                capture.Acquire(unused, health);
+                int unusedSlot = capture.Acquire(unused, health);
 
                 capture.MarkUsed(new[] { usedSlot, usedSlot }, 2);
                 capture.Refresh();
                 capture.ClearTargets();
                 capture.Refresh();
 
-                Assert.That(used.PositionReads, Is.EqualTo(1));
-                Assert.That(unused.PositionReads, Is.Zero);
+                Assert.That(used.GenerationReads, Is.EqualTo(1));
+                Assert.That(unused.GenerationReads, Is.Zero);
+                Assert.That(capture.Flags[unusedSlot], Is.Zero);
             }
             finally
             {
@@ -154,20 +169,63 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
+        [Test]
+        public void Refresh_SkipsDestroyedTransformOfFreedSlot()
+        {
+            TargetSelectionCapture capture = new TargetSelectionCapture();
+            try
+            {
+                HealthStub health = new HealthStub();
+                HardPointStub dead = Unit(Vector3.zero);
+                int deadSlot = capture.Acquire(dead, health);
+                int reusedSlot = capture.Acquire(Unit(Vector3.zero), health);
+                // Freed last, popped first: the dead slot stays free with its destroyed transform.
+                capture.Release(deadSlot);
+                capture.Release(reusedSlot);
+                UnityEngine.Object.DestroyImmediate(dead.Transform.gameObject);
+                int liveSlot = capture.Acquire(Unit(Vector3.left), health);
+
+                capture.MarkUsed(new[] { liveSlot }, 1);
+                capture.Refresh();
+
+                Assert.That(liveSlot, Is.EqualTo(reusedSlot));
+                Assert.That((Vector3)capture.Positions[liveSlot], Is.EqualTo(Vector3.left));
+            }
+            finally
+            {
+                capture.Dispose();
+            }
+        }
+
+        private HardPointStub Unit(Vector3 position)
+        {
+            GameObject unitObject = new GameObject("Unit");
+            _objects.Add(unitObject);
+            unitObject.transform.position = position;
+            return new HardPointStub(unitObject.transform);
+        }
+
         private sealed class HardPointStub : IHardPointModel
         {
+            private int _generation;
+
+            public HardPointStub(Transform transform) => Transform = transform;
+
             public event Action OnHardPointHealthChanged { add { } remove { } }
             public event Action OnDestroyed { add { } remove { } }
             public HardPointType HardPointType => HardPointType.Weapon;
             public float HealthPercentage => IsDestroyed ? 0f : 1f;
             public int Id => 0;
-            public int Generation { get; set; }
+            public int GenerationReads { get; private set; }
+            public int Generation
+            {
+                get { GenerationReads++; return _generation; }
+                set => _generation = value;
+            }
             public bool IsDestroyed { get; set; }
-            public int PositionReads { get; private set; }
-            public Vector3 CurrentPosition { get; set; }
-            public Vector3 Position { get { PositionReads++; return CurrentPosition; } }
-            public Transform Transform => throw new NotSupportedException();
-            public Transform Pivot => throw new NotSupportedException();
+            public Vector3 Position => Transform.position;
+            public Transform Transform { get; }
+            public Transform Pivot => Transform;
         }
 
         private sealed class HealthStub : IHealthModelObserver

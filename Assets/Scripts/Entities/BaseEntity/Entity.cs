@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         TFacade GetFacade<TFacade>() where TFacade : IEntityFacade;
     }
     
-    public class Entity: IEntity, IInitializable, ILateDisposable
+    public class Entity: IEntity, IInitializable, ILateDisposable, IRespawnable, IDespawnable
     {
         private readonly IEntityLocator _entityLocator;
 
@@ -51,6 +51,10 @@ namespace EmpireAtWar.Entities.BaseEntity
         {
             _entityLocator.RemoveEntity(this);
         }
+
+        public void Respawn() => _entityLocator.AddEntity(this);
+
+        public void Despawn() => _entityLocator.RemoveEntity(this);
 
         public bool TryGetFacade<TFacade>(out TFacade destinationFacade) where TFacade : IEntityFacade
         {

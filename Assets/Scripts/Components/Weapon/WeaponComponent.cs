@@ -22,7 +22,7 @@ using Zenject;
 namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
-        IWeaponFireEvents, IWeaponFacing
+        IWeaponFireEvents, IWeaponFacing, IRespawnable
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
@@ -141,6 +141,19 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _attackRangeCircle = _rangeCircleFactory.Create("AttackRange", Color.red, _selection);
 #endif
+        }
+
+        public void Respawn()
+        {
+            foreach (WeaponHardPoint hardPoint in hardPoints)
+            {
+                hardPoint.RestartAttackSequence();
+            }
+
+            _isReleased = false;
+            _currentWeaponIndex = 0;
+            _idleUntil = 0f;
+            Initialize();
         }
 
         private void OnDestroy()

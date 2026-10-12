@@ -78,6 +78,15 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         public void LateDispose() => Release();
 
+        public void Respawn(Vector3 position, Quaternion rotation)
+        {
+            _startPosition = position;
+            _startRotation = rotation;
+            _spawnPositions.Clear();
+            _isReleased = false;
+            Initialize();
+        }
+
         public override void Release()
         {
             if (_isReleased)

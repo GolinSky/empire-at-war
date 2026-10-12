@@ -114,6 +114,13 @@ namespace EmpireAtWar.ViewComponents.Health
             _sequence.Release();
         }
 
+        /// <summary>Lets a released hardpoint fire again when its squadron is reused.</summary>
+        public void RestartAttackSequence()
+        {
+            _effectPool = null;
+            _sequence.Restart();
+        }
+
         private void OnDestroy()
         {
             ReleaseAttackSequence();
@@ -192,6 +199,10 @@ namespace EmpireAtWar.ViewComponents.Health
                 if (_attackCoordinator != null)
                     _attackCoordinator.CancelSequence(this, _sequence.Generation);
                 _sequence.StopEmitting(_sequence.Generation);
+            }
+            else
+            {
+                Destroyed = false;
             }
         }
 

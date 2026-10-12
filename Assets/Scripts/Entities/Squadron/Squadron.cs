@@ -2,12 +2,14 @@ using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
+using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -33,16 +35,16 @@ namespace EmpireAtWar.Entities.Squadrons
     /// <summary>
     /// Squadron-level order handling. The player commands the squadron; each fighter flies on its own
     /// through <see cref="SquadronPilot"/>, and weapons fire whenever a nose lines up with an enemy.
+    /// A destroyed squadron is not destroyed as a GameObject: the squadron pool despawns and later respawns it.
     /// </summary>
     public sealed class Squadron : MonoBehaviour, IController, ISquadron, IInitializable, ITickable,
         ILateDisposable
     {
-        private const float RELEASED_CONTEXT_LIFETIME = 6f;
         // Idle and guarding squadrons scan every enemy in range; spacing those scans keeps large air battles cheap.
         private const float TARGET_SEARCH_INTERVAL = 0.25f;
 
         private ISquadronFlightComponent _flight;
-        private IHealthComponent _health;
+        private ISquadronHealthComponent _health;
         private IRadarComponent _radar;
         private IWeaponComponent _weapon;
         private IWeaponFireEvents _weaponFireEvents;
@@ -54,6 +56,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private ILayerService _layerService;
         private ShipAbilityService _abilities;
         private IShipAbilityFacade _abilityCaster;
+        private CombatModifiers _modifiers;
         private IEntity _engaged;
 
         private UnitOrderModel _orders;
@@ -63,6 +66,9 @@ namespace EmpireAtWar.Entities.Squadrons
         private GameObjectContext _context;
         private LazyInject<IEntity> _entity;
         private EntityComponentLifecycle _componentLifecycle;
+        // Lazy: the entity among them resolves facades that depend on this squadron.
+        private LazyInject<List<IRespawnable>> _respawnables;
+        private LazyInject<List<IDespawnable>> _despawnables;
         private SFoilsModel _sFoils;
         private List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> _sFoilsViews;
 
@@ -83,9 +89,28 @@ namespace EmpireAtWar.Entities.Squadrons
         public Vector3 WorldPosition => _flight.Centroid;
         public float NavigationRadius => Data.NavigationRadius;
         public UnitOrderType CurrentOrder => _orders.Current;
+        public bool IsDestroyed => _health.Destroyed;
+
+        /// <summary>
+        /// True once nothing applied to the dead squadron is still running: abilities and timed effects would
+        /// otherwise end on, or carry over to, the next life.
+        /// </summary>
+        public bool CanRespawn
+        {
+            get
+            {
+                if (_modifiers.HasTemporaryEffects) return false;
+                foreach (ShipAbilitySlot slot in _abilityCaster.Slots)
+                {
+                    if (slot.State == ShipAbilityState.Active) return false;
+                }
+
+                return true;
+            }
+        }
 
         [Inject]
-        private void Construct(ISquadronFlightComponent flight, IHealthComponent health, IRadarComponent radar,
+        private void Construct(ISquadronFlightComponent flight, ISquadronHealthComponent health, IRadarComponent radar,
             IWeaponComponent weapon, IAttackDataFactory attackDataFactory, ICameraService cameraService,
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
@@ -93,7 +118,8 @@ namespace EmpireAtWar.Entities.Squadrons
             IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
             SFoilsModel sFoils, List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> sFoilsViews,
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
-            [InjectOptional] IAudioDialogShipComponent audioDialog)
+            CombatModifiers modifiers, LazyInject<List<IRespawnable>> respawnables,
+            LazyInject<List<IDespawnable>> despawnables, [InjectOptional] IAudioDialogShipComponent audioDialog)
         {
             _flight = flight;
             _health = health;
@@ -113,6 +139,9 @@ namespace EmpireAtWar.Entities.Squadrons
             _layerService = layerService;
             _abilities = abilities;
             _abilityCaster = abilityCaster;
+            _modifiers = modifiers;
+            _respawnables = respawnables;
+            _despawnables = despawnables;
             _orderSettings = orderSettings;
             _context = context;
             _entity = entity;
@@ -135,6 +164,28 @@ namespace EmpireAtWar.Entities.Squadrons
         }
 
         public void LateDispose() => Release(false);
+
+        /// <summary>Takes the dead squadron out of the battle once its death presentation has ended.</summary>
+        public void Despawn()
+        {
+            foreach (IDespawnable part in _despawnables.Value) part.Despawn();
+            _context.gameObject.SetActive(false);
+        }
+
+        /// <summary>Brings a despawned squadron back as a fresh one; listeners of the previous life are dropped.</summary>
+        public void Respawn(Vector3 position, Quaternion rotation)
+        {
+            _context.gameObject.SetActive(true);
+            // Health first: restoring the fighters' views must precede the formation and trail reset.
+            _health.Respawn();
+            _flight.Respawn(position, rotation);
+            foreach (IRespawnable part in _respawnables.Value) part.Respawn();
+            Released = null;
+            _isReleased = false;
+            _componentLifecycle.Restart();
+            _sFoils.SetClosed(false);
+            Initialize();
+        }
 
         public void Tick()
         {
@@ -425,7 +476,6 @@ namespace EmpireAtWar.Entities.Squadrons
             if (destroyed)
             {
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
-                Destroy(_context.gameObject, RELEASED_CONTEXT_LIFETIME);
             }
 
             Released?.Invoke();

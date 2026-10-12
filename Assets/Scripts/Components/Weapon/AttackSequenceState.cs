@@ -97,6 +97,15 @@ namespace EmpireAtWar.Components.Weapon
             CurrentStatus = Status.Released;
         }
 
+        /// <summary>Makes a released sequence ready again; the generation stays advanced so old effects stay ignored.</summary>
+        public void Restart()
+        {
+            if (CurrentStatus == Status.Released)
+            {
+                CurrentStatus = Status.Ready;
+            }
+        }
+
         public enum Status
         {
             Ready,

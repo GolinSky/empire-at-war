@@ -16,7 +16,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
     /// <summary>
     /// Exposes each fighter as a hardpoint so existing weapons can target and destroy them individually.
     /// </summary>
-    public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, IHealthComponent,
+    public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, ISquadronHealthComponent,
         IHealthModelObserver, IHealthTooltipObserver, IInitializable, ITickable, ILateDisposable
     {
         private ITimer _regenerateShieldsTimer;
@@ -93,6 +93,12 @@ namespace EmpireAtWar.Components.Squadrons.Health
         }
 
         public void LateDispose() => Release();
+
+        public void Respawn()
+        {
+            _isReleased = false;
+            Initialize();
+        }
 
         public void Tick()
         {

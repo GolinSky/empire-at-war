@@ -19,5 +19,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         void Steer(int index, Vector3 target, float speed);
 
         void Step(float deltaTime);
+
+        /// <summary>Spawns the fighters again in formation at the launch point of a reused squadron.</summary>
+        void Respawn(Vector3 position, Quaternion rotation);
     }
 }

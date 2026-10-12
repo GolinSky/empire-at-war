@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
@@ -22,7 +23,7 @@ namespace EmpireAtWar.Components.Ship.Selection
     }
 
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
-        IInitializable, ILateDisposable
+        IInitializable, ILateDisposable, IRespawnable
     {
         [SerializeField] private Canvas selectedCanvas;
         [SerializeField] private Image selectedImage;
@@ -52,6 +53,13 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void LateDispose()
         {
             Release();
+        }
+
+        public void Respawn()
+        {
+            Model.IsSelected = false;
+            _canBeSelected = true;
+            Initialize();
         }
 
         public override void Release()

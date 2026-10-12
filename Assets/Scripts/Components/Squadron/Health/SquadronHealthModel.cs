@@ -56,6 +56,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         {
             Members = new HardPointModel[members.Count];
             _shields = new float[members.Count];
+            IsDestroyed = false;
             for (int i = 0; i < members.Count; i++)
             {
                 Members[i] = members[i];

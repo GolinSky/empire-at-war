@@ -6,20 +6,23 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Utils;
 using Unity.Collections;
+using Unity.Jobs;
 using Unity.Mathematics;
-using UnityEngine;
+using UnityEngine.Jobs;
 
 namespace EmpireAtWar.Components.Weapon
 {
     /// <summary>
     /// Stable slots for every hardpoint some weapon may target. Weapons keep slot indices; each selection batch
-    /// refreshes every slot once (health state once per target, position once per eligible hardpoint) and the
-    /// selection job reads the slot arrays. Commits still validate live targets.
+    /// refreshes the used slots once (health state once per target; positions from every slot's transform in one
+    /// parallel job) and the selection job reads the slot arrays. Commits still validate live targets.
     /// </summary>
     internal sealed class TargetSelectionCapture : IDisposable
     {
         public const byte SLOT_VALID = 1;
         public const byte SLOT_STRIKECRAFT = 2;
+        private const int POSITION_JOB_BATCH_SIZE = 64;
+        private const int INITIAL_TRANSFORM_CAPACITY = 256;
 
         private readonly Dictionary<IHardPointModel, int> _slotsByUnit = new Dictionary<IHardPointModel, int>();
         private readonly List<IHardPointModel> _units = new List<IHardPointModel>();
@@ -40,6 +43,9 @@ namespace EmpireAtWar.Components.Weapon
 
         private NativeArray<float3> _positions;
         private NativeArray<byte> _flags;
+        // Index = slot. A freed slot keeps its old transform until reused; nothing reads it meanwhile.
+        // Every IHardPointModel's Position is its Transform's position.
+        private TransformAccessArray _transforms;
 
         public NativeArray<float3> Positions => _positions;
         public NativeArray<byte> Flags => _flags;
@@ -54,12 +60,14 @@ namespace EmpireAtWar.Components.Weapon
                 return slot;
             }
 
+            if (!_transforms.isCreated) _transforms = new TransformAccessArray(INITIAL_TRANSFORM_CAPACITY);
             if (_freeSlots.Count > 0)
             {
                 slot = _freeSlots.Pop();
                 _units[slot] = unit;
                 _healths[slot] = health;
                 _references[slot] = 1;
+                _transforms[slot] = unit.Transform;
             }
             else
             {
@@ -67,6 +75,7 @@ namespace EmpireAtWar.Components.Weapon
                 _units.Add(unit);
                 _healths.Add(health);
                 _references.Add(1);
+                _transforms.Add(unit.Transform);
             }
 
             _slotsByUnit.Add(unit, slot);
@@ -110,6 +119,12 @@ namespace EmpireAtWar.Components.Weapon
             NativeArrayBuffer.EnsureCapacity(ref _positions, count);
             NativeArrayBuffer.EnsureCapacity(ref _flags, count);
             if (_generations.Length < _positions.Length) Array.Resize(ref _generations, _positions.Length);
+            if (_usedSlots.Count > 0)
+            {
+                new TargetSlotPositionJob { Positions = _positions }
+                    .ScheduleReadOnly(_transforms, POSITION_JOB_BATCH_SIZE).Complete();
+            }
+
             for (int i = 0; i < _usedSlots.Count; i++)
             {
                 int slot = _usedSlots[i];
@@ -123,8 +138,6 @@ namespace EmpireAtWar.Components.Weapon
                     continue;
                 }
 
-                Vector3 position = unit.Position;
-                _positions[slot] = new float3(position.x, position.y, position.z);
                 _generations[slot] = unit.Generation;
                 _flags[slot] = (byte)(SLOT_VALID | (state.IsStrikecraft ? SLOT_STRIKECRAFT : 0));
                 AttackSequenceDiagnostics.RecordTargetSnapshot();
@@ -171,6 +184,7 @@ namespace EmpireAtWar.Components.Weapon
             ClearTargets();
             if (_positions.IsCreated) _positions.Dispose();
             if (_flags.IsCreated) _flags.Dispose();
+            if (_transforms.isCreated) _transforms.Dispose();
         }
 
         private TargetState GetTarget(IHealthModelObserver health)
