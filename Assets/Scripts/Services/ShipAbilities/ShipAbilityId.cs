@@ -36,5 +36,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         CorellianBattlecruiserPowerToShields = 34,
         ImperialVenatorIntensifyFirepower = 35,
         MC30cTorpedoSalvo = 36,
+        NebulaOverchargeWeapons = 38,
     }
 }

@@ -1,0 +1,374 @@
+[
+  {
+    "id": 0,
+    "name": "DualHeavyTurbolaser_1_0",
+    "source": "NebulaPart01/FP_01 with derived barrel offset",
+    "position": [
+      -24.2665672,
+      2.0436492,
+      -28.2337341
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "DualHeavyTurbolaser_1_1",
+    "source": "NebulaPart01/FP_01 with derived barrel offset",
+    "position": [
+      -22.966568,
+      2.0436492,
+      -28.2337341
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "DualHeavyTurbolaser_2_0",
+    "source": "NebulaPart02/FP_01 with derived barrel offset",
+    "position": [
+      22.9664478,
+      2.0436492,
+      -28.2337322
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "DualHeavyTurbolaser_2_1",
+    "source": "NebulaPart02/FP_01 with derived barrel offset",
+    "position": [
+      24.2664471,
+      2.0436492,
+      -28.2337322
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "DualHeavyTurbolaser_3_0",
+    "source": "NebulaPart03/FP_01 with derived barrel offset",
+    "position": [
+      -32.02963,
+      3.79164743,
+      -49.46224
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "DualHeavyTurbolaser_3_1",
+    "source": "NebulaPart03/FP_01 with derived barrel offset",
+    "position": [
+      -30.7296276,
+      3.79164743,
+      -49.46224
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "DualHeavyTurbolaser_4_0",
+    "source": "NebulaPart04/FP_01 with derived barrel offset",
+    "position": [
+      30.72979,
+      3.79772234,
+      -49.5608559
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "DualHeavyTurbolaser_4_1",
+    "source": "NebulaPart04/FP_01 with derived barrel offset",
+    "position": [
+      32.02979,
+      3.79772234,
+      -49.5608559
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "MediumTurbolaser_9",
+    "source": "NebulaPart09/FP_01",
+    "position": [
+      -21.8022976,
+      -5.03489876,
+      -5.97732162
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "MediumTurbolaser_10",
+    "source": "NebulaPart10/FP_01",
+    "position": [
+      21.81044,
+      -5.03489876,
+      -6.013651
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "MediumTurbolaser_11",
+    "source": "NebulaPart11/FP_01",
+    "position": [
+      -7.34258366,
+      8.79763,
+      -37.9753532
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "MediumTurbolaser_12",
+    "source": "NebulaPart12/FP_01",
+    "position": [
+      7.34247732,
+      8.79763,
+      -37.9753532
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "MediumTurbolaser_13",
+    "source": "NebulaPart13/FP_01",
+    "position": [
+      12.9622717,
+      8.938452,
+      -63.45976
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "MediumTurbolaser_14",
+    "source": "NebulaPart14/FP_01",
+    "position": [
+      -12.9506664,
+      8.937902,
+      -63.4613533
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "MediumIon_5",
+    "source": "NebulaPart05/FP_01",
+    "position": [
+      -13.7570963,
+      -4.080945,
+      35.8523331
+    ],
+    "profile": 32,
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "MediumIon_6",
+    "source": "NebulaPart06/FP_01",
+    "position": [
+      -7.663516,
+      -4.080941,
+      62.0257721
+    ],
+    "profile": 32,
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "MediumIon_7",
+    "source": "NebulaPart07/FP_01",
+    "position": [
+      7.663384,
+      -4.080941,
+      62.01861
+    ],
+    "profile": 32,
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "MediumIon_8",
+    "source": "NebulaPart08/FP_01",
+    "position": [
+      13.757123,
+      -4.080945,
+      35.8451424
+    ],
+    "profile": 32,
+    "targetable": true
+  },
+  {
+    "id": 18,
+    "name": "AssaultConcussion_MUZZLEA_01",
+    "source": "MUZZLEA_01",
+    "position": [
+      -19.1560879,
+      -0.4412514,
+      7.78266048
+    ],
+    "profile": 65,
+    "targetable": true
+  },
+  {
+    "id": 19,
+    "name": "AssaultConcussion_MUZZLEA_02",
+    "source": "MUZZLEA_02",
+    "position": [
+      19.1561565,
+      -0.4412514,
+      7.78266048
+    ],
+    "profile": 65,
+    "targetable": true
+  },
+  {
+    "id": 20,
+    "name": "PointDefense_MUZZLEA_03",
+    "source": "MUZZLEA_03",
+    "position": [
+      -20.015,
+      -0.441251874,
+      4.140522
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 21,
+    "name": "PointDefense_MUZZLEA_04",
+    "source": "MUZZLEA_04",
+    "position": [
+      20.0148621,
+      -0.441251874,
+      4.140522
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 22,
+    "name": "PointDefense_MUZZLEA_05",
+    "source": "MUZZLEA_05",
+    "position": [
+      -20.9373569,
+      6.009045,
+      -50.58769
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 23,
+    "name": "PointDefense_MUZZLEA_06",
+    "source": "MUZZLEA_06",
+    "position": [
+      20.93747,
+      6.009045,
+      -50.58769
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 24,
+    "name": "Engine_0",
+    "source": "Derived from stern hull bounds",
+    "position": [
+      -5.81538534,
+      0.0,
+      -73.6
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 25,
+    "name": "ShieldGenerator_0",
+    "source": "Shield_Gen with paired offset",
+    "position": [
+      -5.81538725,
+      12.59724,
+      -59.7952766
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 26,
+    "name": "Hangar_0",
+    "source": "Hanger with paired offset",
+    "position": [
+      -5.81538725,
+      -10.1009865,
+      -32.08761
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 27,
+    "name": "Engine_1",
+    "source": "Derived from stern hull bounds",
+    "position": [
+      5.81538534,
+      0.0,
+      -73.6
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 28,
+    "name": "ShieldGenerator_1",
+    "source": "Shield_Gen with paired offset",
+    "position": [
+      5.81538343,
+      12.59724,
+      -59.7952766
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 29,
+    "name": "Hangar_1",
+    "source": "Hanger with paired offset",
+    "position": [
+      5.81538343,
+      -10.1009865,
+      -32.08761
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 30,
+    "name": "TractorBeam",
+    "source": "MUZZLEA_00",
+    "position": [
+      4.80089959E-08,
+      -0.441247344,
+      79.8534
+    ],
+    "profile": 0,
+    "targetable": true
+  }
+]

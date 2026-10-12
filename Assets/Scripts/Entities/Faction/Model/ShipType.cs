@@ -49,6 +49,7 @@ namespace EmpireAtWar.Models.Factions
         MC80Independence = 305,
         CorellianBattlecruiser = 306,
         MC30c = 307,
+        Nebula = 330,
 
     }
 }

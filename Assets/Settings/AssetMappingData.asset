@@ -1162,3 +1162,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: NebulaShipView
+      value:
+        m_AssetGUID: 549969f5bcce41644a1cabc6434f1d8b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: NebulaShipData
+      value:
+        m_AssetGUID: ac3cef40f42f6f441963970d79701570
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

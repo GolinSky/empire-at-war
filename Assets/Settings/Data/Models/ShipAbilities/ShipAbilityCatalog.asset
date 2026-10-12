@@ -316,6 +316,21 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466944227639375
+    - key: 38
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Overcharge Weapons
+        description: Weapons fire 25% faster; shield regeneration stops for 10 seconds.
+          50 second cooldown.
+        duration: 10
+        recoveryDelay: 50
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801467062609510489
     - key: 5
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
@@ -757,6 +772,16 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         fireDelayMultiplier: 0.6666667
+    - rid: 6801467062609510489
+      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 0.8
+          speedMultiplier: 1
+          shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
