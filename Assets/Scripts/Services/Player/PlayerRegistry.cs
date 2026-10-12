@@ -12,6 +12,8 @@ namespace EmpireAtWar.Services.Player
             new Dictionary<PlayerId, ISiteFacilityBuilder>();
         private readonly Dictionary<PlayerId, IEnemyReinforcementObserver> _aiReinforcements =
             new Dictionary<PlayerId, IEnemyReinforcementObserver>();
+        private readonly Dictionary<PlayerId, IEnemyStationCheat> _aiStationCheats =
+            new Dictionary<PlayerId, IEnemyStationCheat>();
         private readonly Dictionary<PlayerId, IStationSpawner> _stationSpawners =
             new Dictionary<PlayerId, IStationSpawner>();
         private readonly Dictionary<PlayerId, IEconomyProvider> _economies =
@@ -25,6 +27,11 @@ namespace EmpireAtWar.Services.Player
         public void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement)
         {
             _aiReinforcements.Add(owner, reinforcement);
+        }
+
+        public void RegisterAiStationCheat(PlayerId owner, IEnemyStationCheat station)
+        {
+            _aiStationCheats.Add(owner, station);
         }
 
         public void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner)
@@ -45,6 +52,11 @@ namespace EmpireAtWar.Services.Player
         public void UnregisterAiReinforcement(PlayerId owner)
         {
             _aiReinforcements.Remove(owner);
+        }
+
+        public void UnregisterAiStationCheat(PlayerId owner)
+        {
+            _aiStationCheats.Remove(owner);
         }
 
         public void UnregisterStationSpawner(PlayerId owner)
@@ -70,6 +82,11 @@ namespace EmpireAtWar.Services.Player
         public IEconomyProvider GetEconomy(PlayerId owner)
         {
             return _economies[owner];
+        }
+
+        public IEnemyStationCheat GetAiStationCheat(PlayerId owner)
+        {
+            return _aiStationCheats[owner];
         }
 
         public bool HasPendingReinforcement(PlayerId owner)

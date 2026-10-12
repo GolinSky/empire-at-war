@@ -87,6 +87,8 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SpawnPlatformRequested += SpawnPlatform;
             _view.AddEnemyMoneyRequested += AddEnemyMoney;
             _view.AddAllEnemiesMoneyRequested += AddAllEnemiesMoney;
+            _view.LevelUpEnemyStationRequested += LevelUpEnemyStation;
+            _view.LevelUpAllEnemyStationsRequested += LevelUpAllEnemyStations;
         }
 
         public void LateDispose()
@@ -105,6 +107,8 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SpawnPlatformRequested -= SpawnPlatform;
             _view.AddEnemyMoneyRequested -= AddEnemyMoney;
             _view.AddAllEnemiesMoneyRequested -= AddAllEnemiesMoney;
+            _view.LevelUpEnemyStationRequested -= LevelUpEnemyStation;
+            _view.LevelUpAllEnemyStationsRequested -= LevelUpAllEnemyStations;
         }
 
         private List<FactionType> BuildShipCatalog()
@@ -247,6 +251,24 @@ namespace EmpireAtWar.Presenters.Cheats
             if (!TryParseMoney(value, out float amount)) return;
             foreach (PlayerSlot enemy in _enemies) _worldCheats.AddEnemyMoney(enemy.Id, amount);
             _view.SetStatus($"Added {amount:0.##} money to each of {_enemies.Count} enemies.");
+        }
+
+        private void LevelUpEnemyStation(PlayerId enemy)
+        {
+            _view.SetStatus(_worldCheats.ForceUpgradeEnemyStation(enemy)
+                ? $"{enemy} station upgraded by one level."
+                : $"{enemy} station is at maximum level or has no production base.");
+        }
+
+        private void LevelUpAllEnemyStations()
+        {
+            int upgraded = 0;
+            foreach (PlayerSlot enemy in _enemies)
+            {
+                if (_worldCheats.ForceUpgradeEnemyStation(enemy.Id)) upgraded++;
+            }
+
+            _view.SetStatus($"Upgraded {upgraded} of {_enemies.Count} enemy stations by one level.");
         }
 
         private ShipUnitRequest CreateRequest(ShipType shipType)

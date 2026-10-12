@@ -71,6 +71,14 @@ namespace EmpireAtWar.Services.Enemy
                     IssueAttackOrHunt(context, decision.CommittedShipCount,
                         context.EnemyBaseTarget, allowHunt: false);
                     return;
+                case EnemyStrategicState.EngageLocal:
+                    IssueAttackOrHunt(context, decision.CommittedShipCount,
+                        context.LocalThreatTarget, allowHunt: false);
+                    return;
+                case EnemyStrategicState.RaidStructures:
+                    IssueAttackOrHunt(context, decision.CommittedShipCount,
+                        context.RaidTarget, allowHunt: false);
+                    return;
                 case EnemyStrategicState.DefendBase:
                     if (context.OwnBase == null)
                     {

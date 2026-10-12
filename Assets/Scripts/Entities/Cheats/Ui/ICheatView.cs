@@ -15,6 +15,8 @@ namespace EmpireAtWar.Views.Cheats
         event Action<DefendPlatformType> SpawnPlatformRequested;
         event Action<PlayerId, string> AddEnemyMoneyRequested;
         event Action<string> AddAllEnemiesMoneyRequested;
+        event Action<PlayerId> LevelUpEnemyStationRequested;
+        event Action LevelUpAllEnemyStationsRequested;
 
         void SetEnemies(IReadOnlyList<PlayerSlot> enemies);
         void SetPlatforms(IReadOnlyList<DefendPlatformType> platforms);

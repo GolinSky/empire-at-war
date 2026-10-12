@@ -16,6 +16,7 @@ using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Services.Vision;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -27,6 +28,10 @@ namespace EmpireAtWar.Services.Enemy
         public GameEntity EnemyFleetTarget { get; }
         public GameEntity EnemyBaseTarget { get; }
         public GameEntity OwnBase { get; }
+        /// <summary>Closest known hostile near the fleet, ships before squadrons; null when none.</summary>
+        public GameEntity LocalThreatTarget { get; }
+        /// <summary>Closest known undefended hostile structure; null when none.</summary>
+        public GameEntity RaidTarget { get; }
         public IReadOnlyDictionary<IShipEntity, GameEntity> Receivers { get; }
 
         public EnemyStrategicContext(
@@ -36,7 +41,9 @@ namespace EmpireAtWar.Services.Enemy
             GameEntity ownBase,
             EnemyStrategicSnapshot snapshot,
             Vector3 captureTarget,
-            IReadOnlyDictionary<IShipEntity, GameEntity> receivers = null)
+            IReadOnlyDictionary<IShipEntity, GameEntity> receivers = null,
+            GameEntity localThreatTarget = null,
+            GameEntity raidTarget = null)
         {
             Snapshot = snapshot;
             Ships = ships;
@@ -45,6 +52,8 @@ namespace EmpireAtWar.Services.Enemy
             EnemyBaseTarget = enemyBaseTarget;
             OwnBase = ownBase;
             Receivers = receivers;
+            LocalThreatTarget = localThreatTarget;
+            RaidTarget = raidTarget;
         }
     }
 
@@ -63,6 +72,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IPlayerRoster _playerRoster;
         private readonly ForceCompositionBuilder _forceBuilder;
         private readonly HostileIntelModel _intel;
+        private readonly IVisionService _vision;
+        // Structures never move, so one the team has seen stays a known raid target until it is destroyed.
+        private readonly HashSet<long> _seenStructures = new HashSet<long>();
 
         private readonly PlayerSlot _owner;
         private readonly ForceComposition _ownForce = new ForceComposition();
@@ -80,8 +92,10 @@ namespace EmpireAtWar.Services.Enemy
             IPlayerRoster playerRoster,
             ForceCompositionBuilder forceBuilder,
             TeamIntelRegistry intelRegistry,
+            IVisionService vision,
             PlayerSlot owner)
         {
+            _vision = vision;
             _intel = intelRegistry.Get(owner.Team);
             _forceBuilder = forceBuilder;
             _shipService = shipService;
@@ -127,6 +141,8 @@ namespace EmpireAtWar.Services.Enemy
             BuildBaseThreat(ownBase);
             // Retreat answers what is actually near the fleet, not the enemy's whole army across the map.
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            GameEntity localThreatTarget = FindLocalThreat(origin, now);
+            GameEntity raidTarget = FindRaidTarget(origin, now);
             float baseThreatRatio = _baseThreatForce.IsEmpty
                 ? 0f
                 : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
@@ -143,7 +159,9 @@ namespace EmpireAtWar.Services.Enemy
                 fleetAdvantage: CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
                 baseThreatRatio: baseThreatRatio,
                 hasThreatenedSite: hasThreatenedSite,
-                localAdvantage: CombatMatchup.Advantage(_ownForce, _localThreatForce));
+                localAdvantage: CombatMatchup.Advantage(_ownForce, _localThreatForce),
+                hasLocalThreat: localThreatTarget != null,
+                hasRaidTarget: raidTarget != null);
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
             foreach (IShipEntity ship in ownShips)
@@ -155,7 +173,93 @@ namespace EmpireAtWar.Services.Enemy
                 enemyFleetTarget: enemyFleetTarget,
                 enemyBaseTarget: enemyBaseTarget,
                 ownBase: ownBase,
-                receivers: receivers);
+                receivers: receivers,
+                localThreatTarget: localThreatTarget,
+                raidTarget: raidTarget);
+        }
+
+        /// <summary>The closest known hostile within <see cref="LOCAL_ENGAGEMENT_RADIUS"/>; ships win over squadrons.</summary>
+        private GameEntity FindLocalThreat(Vector3 origin, float now)
+        {
+            GameEntity closest = null;
+            bool closestIsShip = false;
+            float closestDistance = float.MaxValue;
+            float radiusSquared = LOCAL_ENGAGEMENT_RADIUS * LOCAL_ENGAGEMENT_RADIUS;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                Vector3 offset = ToVector(sighting.Position) - origin;
+                offset.y = 0f;
+                float distance = offset.sqrMagnitude;
+                bool isShip = sighting.UnitTypeId.IsShip;
+                if (distance > radiusSquared ||
+                    closestIsShip && !isShip ||
+                    isShip == closestIsShip && distance >= closestDistance ||
+                    _intel.GetConfidence(sighting, now) <= 0f ||
+                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity))
+                {
+                    continue;
+                }
+
+                closest = entity;
+                closestIsShip = isShip;
+                closestDistance = distance;
+            }
+
+            return closest;
+        }
+
+        /// <summary>
+        /// The closest hostile structure (not a base) the team has seen, with no known hostile ship within
+        /// <see cref="LOCAL_ENGAGEMENT_RADIUS"/> of it.
+        /// </summary>
+        private GameEntity FindRaidTarget(Vector3 origin, float now)
+        {
+            GameEntity closest = null;
+            float closestDistance = float.MaxValue;
+            foreach (GameEntity entity in _entityLocator.Entities)
+            {
+                if (!_playerRoster.IsHostile(_owner.Id, entity.Owner) ||
+                    entity.IsUnit() ||
+                    entity.IsPlayerBase() ||
+                    entity.HealthModel.IsDestroyed ||
+                    !entity.HealthModel.HasUnits)
+                {
+                    continue;
+                }
+
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (_vision.IsVisible(_owner.Id, position)) _seenStructures.Add(entity.Id);
+                float distance = (position - origin).sqrMagnitude;
+                if (distance >= closestDistance ||
+                    !_seenStructures.Contains(entity.Id) ||
+                    IsDefended(position, now))
+                {
+                    continue;
+                }
+
+                closest = entity;
+                closestDistance = distance;
+            }
+
+            return closest;
+        }
+
+        private bool IsDefended(Vector3 position, float now)
+        {
+            float radiusSquared = LOCAL_ENGAGEMENT_RADIUS * LOCAL_ENGAGEMENT_RADIUS;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                Vector3 offset = ToVector(sighting.Position) - position;
+                offset.y = 0f;
+                if (sighting.UnitTypeId.IsShip &&
+                    offset.sqrMagnitude <= radiusSquared &&
+                    _intel.GetConfidence(sighting, now) > 0f)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
