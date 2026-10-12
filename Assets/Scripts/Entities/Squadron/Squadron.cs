@@ -165,6 +165,13 @@ namespace EmpireAtWar.Entities.Squadrons
 
         public void LateDispose() => Release(false);
 
+        /// <summary>Takes a squadron that never fought straight out of the battle, ready to be respawned.</summary>
+        public void Stow()
+        {
+            Release(false);
+            Despawn();
+        }
+
         /// <summary>Takes the dead squadron out of the battle once its death presentation has ended.</summary>
         public void Despawn()
         {

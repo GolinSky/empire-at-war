@@ -49,6 +49,9 @@ using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Views.SpawnArea;
 using EmpireAtWar.Models.ReinforcementZones;
+using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Entities.EnemyFaction.Data;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -147,7 +150,8 @@ public class SkirmishMainInstaller : MonoInstaller
                 AssetService.LoadComponent<BoxCollider>("DefendPlatformView"),
                 AssetService.LoadComponent<BoxCollider>("MiningFacilityView")
             });
-        Container.BindModel<MiniMapData>(AssetService);
+        // Holds the battle's markers, so each battle gets its own copy.
+        ModelDependencyBuilder.ConstructBuilder(Container).BindFromNewScriptable<MiniMapData>(AssetService);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         Container.BindInterfacesAndSelfTo<ReinforcementZoneMiniMapPresenter>()
             .AsSingle()
@@ -181,6 +185,10 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<LayerService>().AsSingle();
 
         Container.BindScriptableObject<ShipsData>(AssetService);
+        // Shared by every player's container.
+        Container.BindScriptableObject<ReinforcementData>(AssetService);
+        Container.BindScriptableObject<EconomyData>(AssetService);
+        Container.BindScriptableObject<ShipClassMatchupData>(AssetService);
 
         Container
             .BindInterfacesExt<UnitRequestFactory>();

@@ -182,6 +182,16 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 7015679492007026727, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
     - {fileID: -1727890810375498624, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: -8608533133057565533, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: -8531395306154123156, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: 2874745456931599251, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: 7973661940379632649, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: -8206327207277631045, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: 7519276063820788989, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: 2241137995676835570, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: 4697555480346148133, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: -7563621947489974266, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
+    - {fileID: 1381683963967185036, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c1b85ee20686d947a87ac45bf196bf3, type: 3}
@@ -265,7 +275,8 @@ PrefabInstance:
       value: YWingBomberTurret
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 343741970865126990, guid: f203a6fb5b9a040469199fe38bc024d9, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f203a6fb5b9a040469199fe38bc024d9, type: 3}

@@ -34,7 +34,8 @@ namespace EmpireAtWar
             Container.BindEntityExt(_startPosition);
 
             TData data = AssetService.Load<TData>(DataPath);
-            Container.BindInterfacesAndSelfTo<TData>().FromNewScriptableObject(data).AsSingle();
+            // Read-only: every entity of this type shares the loaded asset.
+            Container.BindInterfacesAndSelfTo<TData>().FromInstance(data).AsSingle();
 
             InstallFeatures(data);
 

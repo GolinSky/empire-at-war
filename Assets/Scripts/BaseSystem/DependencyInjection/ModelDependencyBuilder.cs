@@ -11,6 +11,18 @@ namespace EmpireAtWar.Extensions
         {
         }
 
+        /// <summary>Binds the loaded asset itself: read-only data is shared, never copied per context.</summary>
+        public DiContainer BindShared<TModel>(IAssetService assetService)
+            where TModel : Data
+        {
+            Container
+                .BindInterfacesAndSelfTo<TModel>()
+                .FromInstance(assetService.Load<TModel>(ConstructName<TModel>()))
+                .AsSingle();
+            return Container;
+        }
+
+        /// <summary>Binds a copy of the asset, for data that holds runtime state.</summary>
         public DiContainer BindFromNewScriptable<TModel>(IAssetService assetService,  Action onCompleted = null)
             where TModel : Data
         {

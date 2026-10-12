@@ -119,6 +119,12 @@ namespace EmpireAtWar.Components.Radar
 
         public override void Release()
         {
+            // Scene unload disposes the radar before its entity releases its components.
+            if (_isReleased)
+            {
+                return;
+            }
+
             _isReleased = true;
             _scanService.Unregister(this);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

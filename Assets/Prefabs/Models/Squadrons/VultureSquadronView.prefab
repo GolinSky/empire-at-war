@@ -32000,7 +32000,6 @@ GameObject:
   - component: {fileID: 8598202042970863376}
   - component: {fileID: 5259228285351426918}
   - component: {fileID: 2157226560756004583}
-  - component: {fileID: 6410026500573442608}
   - component: {fileID: 5167168002462823808}
   m_Layer: 0
   m_Name: VultureSquadronView
@@ -32247,54 +32246,6 @@ MonoBehaviour:
   - {fileID: 974176132217386633}
   revealRadius: 0
   staysRevealedOnceSeen: 0
---- !u!114 &6410026500573442608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5139966785138268518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
-  meshRenderers:
-  - {fileID: 9138561432476732420}
-  - {fileID: 1507593009152234509}
-  - {fileID: 1902431280844081370}
-  - {fileID: 8820284500535760084}
-  - {fileID: 5118332822612243028}
-  - {fileID: 1202957878114729904}
-  - {fileID: 8831410709418272697}
-  - {fileID: 8360292581058870126}
-  - {fileID: 1442419480499332960}
-  - {fileID: 2982661070861304288}
-  - {fileID: 1175582855660578128}
-  - {fileID: 8822050903257120089}
-  - {fileID: 8423130428359172494}
-  - {fileID: 1505822208075578752}
-  - {fileID: 2992021557538855680}
-  - {fileID: 7937330022247127290}
-  - {fileID: 295466774041231603}
-  - {fileID: 762081981373914148}
-  - {fileID: 7679284602910294058}
-  - {fileID: 6337204832462399146}
-  - {fileID: 3788674320977952377}
-  - {fileID: 6821451323992778352}
-  - {fileID: 5773730340578867879}
-  - {fileID: 3468141190371993257}
-  - {fileID: 955144210721456169}
-  - {fileID: 2210286352706547535}
-  - {fileID: 8399839292172171078}
-  - {fileID: 8798056363099319185}
-  - {fileID: 1880746023517337503}
-  - {fileID: 2844526860366090527}
-  - {fileID: 2540527172282022005}
-  - {fileID: 5296091249267515516}
-  - {fileID: 5185259588396072107}
-  - {fileID: 2879074709047468197}
-  - {fileID: 1915311465724823077}
 --- !u!114 &5167168002462823808
 MonoBehaviour:
   m_ObjectHideFlags: 0

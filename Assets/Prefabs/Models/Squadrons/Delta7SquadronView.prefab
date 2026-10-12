@@ -339,7 +339,6 @@ GameObject:
   - component: {fileID: 2249065435612880045}
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
-  - component: {fileID: 1139883098706175716}
   - component: {fileID: 2707941217064763360}
   m_Layer: 0
   m_Name: Delta7SquadronView
@@ -517,24 +516,6 @@ MonoBehaviour:
   - {fileID: 1256288030112164449}
   revealRadius: 0
   staysRevealedOnceSeen: 0
---- !u!114 &1139883098706175716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1758148520541430113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
-  meshRenderers:
-  - {fileID: 2000458561101706652}
-  - {fileID: 7167500405621296208}
-  - {fileID: 185293575550655065}
-  - {fileID: 2479805238689050746}
-  - {fileID: 6295076181410897928}
 --- !u!114 &2707941217064763360
 MonoBehaviour:
   m_ObjectHideFlags: 0

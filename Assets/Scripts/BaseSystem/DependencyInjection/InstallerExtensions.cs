@@ -87,7 +87,7 @@ namespace EmpireAtWar.Extensions
             ModelDependencyBuilder
                 .ConstructBuilder(container)
                 .AppendToPath(prefix, postfix)
-                .BindFromNewScriptable<TModel>(assetService);
+                .BindShared<TModel>(assetService);
             return container;
         }
 
@@ -99,7 +99,7 @@ namespace EmpireAtWar.Extensions
         {
             container
                 .BindInterfacesAndSelfTo<T>()
-                .FromNewScriptableObject(assetService.Load<T>(path ?? ConstructName<T>()))
+                .FromInstance(assetService.Load<T>(path ?? ConstructName<T>()))
                 .AsSingle();
             return container;
         }

@@ -141,6 +141,26 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 2588053062356841038, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
     - {fileID: -8162085893872336320, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -7632208745530460740, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: 4351232025945851336, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -5966752719856289618, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -5343760820025403522, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: 8110808101162945509, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -3440930738830581781, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -7878405942933471751, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -8079281585929645241, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: 1309024990273703765, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -7095639743892764495, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -6911768566129929228, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -642465974887856810, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -8885565502160923963, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -4143825958002716365, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -6899410396342538126, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: 8003603968241210736, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: 7824784119363991785, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -1063606728143900008, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: 2073988825181974452, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -4769518758406507441, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}

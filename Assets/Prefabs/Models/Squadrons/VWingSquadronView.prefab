@@ -405,7 +405,6 @@ GameObject:
   - component: {fileID: 2249065435612880045}
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
-  - component: {fileID: 1139883098706175716}
   - component: {fileID: 1455560286730453559}
   m_Layer: 0
   m_Name: VWingSquadronView
@@ -598,24 +597,6 @@ MonoBehaviour:
   - {fileID: 6214564734574230849}
   revealRadius: 0
   staysRevealedOnceSeen: 0
---- !u!114 &1139883098706175716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1758148520541430113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
-  meshRenderers:
-  - {fileID: 4532173399845803557}
-  - {fileID: 2287846275277921334}
-  - {fileID: 7407977265069094509}
-  - {fileID: 742689824333772417}
-  - {fileID: 2688507307927569933}
 --- !u!114 &1455560286730453559
 MonoBehaviour:
   m_ObjectHideFlags: 0

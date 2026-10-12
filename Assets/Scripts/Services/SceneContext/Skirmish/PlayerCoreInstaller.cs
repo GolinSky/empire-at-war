@@ -36,7 +36,6 @@ namespace EmpireAtWar
             Container.BindInstance(LocalPlayer.Slot);
             Container.Install<GameUnitsInstaller>();
             
-            Container.BindScriptableObject<ReinforcementData>(AssetService);
             Container.BindInterfacesAndSelfTo<ReinforcementModel>().AsSingle();
             Container.Bind<ReinforcementPreviewFactory>().AsSingle();
             Container.Bind<ReinforcementPlacementFactory>().AsSingle();
@@ -61,7 +60,6 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<HeroUiController>();
             Container.BindInterfacesNonLazyExt<ShipBuildUiController>();
             
-            Container.BindScriptableObject<EconomyData>(AssetService);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
             Container.BindInterfacesNonLazyExt<EconomyUiController>();
