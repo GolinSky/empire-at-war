@@ -77,6 +77,38 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(engagement.SelectTarget(stayer, BY_ID), Is.SameAs(near));
         }
 
+        [Test]
+        public void Contains_HoldsWhileAnyMemberReportsAndLeaveDropsReports()
+        {
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            FakeEntity enemy = new FakeEntity(1);
+            int first = engagement.Join();
+            int second = engagement.Join();
+            engagement.Report(first, new IEntity[] { enemy });
+            engagement.Report(second, new IEntity[] { enemy });
+
+            engagement.Report(first, Array.Empty<IEntity>());
+            Assert.That(engagement.Contains(enemy), Is.True);
+            engagement.Leave(second);
+            Assert.That(engagement.Contains(enemy), Is.False);
+        }
+
+        [Test]
+        public void SelectTarget_ReselectingReleasesThePreviousClaim()
+        {
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            FakeEntity near = new FakeEntity(1);
+            FakeEntity far = new FakeEntity(2);
+            int member = engagement.Join();
+            int other = engagement.Join();
+            engagement.Report(member, new IEntity[] { near, far });
+
+            Assert.That(engagement.SelectTarget(member, BY_ID), Is.SameAs(near));
+            // Re-selecting drops the member's own claim, so it does not count against the nearest enemy.
+            Assert.That(engagement.SelectTarget(member, BY_ID), Is.SameAs(near));
+            Assert.That(engagement.SelectTarget(other, BY_ID), Is.SameAs(far));
+        }
+
         private sealed class FakeEntity : IEntity
         {
             public long Id { get; }
