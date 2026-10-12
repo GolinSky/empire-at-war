@@ -153,6 +153,8 @@ updated: 2026-10-12
 - [x] Markers: `Battle.Enemy.Build` around enemy production callback (attributes `TimerPoolTick` spikes); `Battle.Ship.State.<StateType>` per ship state Tick.
 - EditMode: 1562 total, 1515 pass, 47 fail — all asset/data/balance/weapon-rule/UI-prefab tests outside this change; new and touched tests pass.
 - [ ] User battle re-capture: `Canvas.BuildBatch` calls, UI batching, `TransformChangeSystem`, `Battle.Projectile.Track`, `FogOfWarSystem.Update`, `Battle.Enemy.Build` vs `TimerPoolTick` spikes, top `Battle.Ship.State.*`. Visual check: markers follow squadrons, click/selection, hidden in cinema camera, bolts land on shields.
+- [x] Battle check 2026-10-12 22:00 Kyiv: marker frame missing → `SquadronFrame.shader` derived border from canvas-space vertices (only valid with one canvas per marker). Now reads centre offsets from UV1 written by `SquadronFrameMeshEffect` (18 prefabs); offscreen render verified. `1319d5ebf`.
+- [x] Same check: AI idle = `Hold`. Causes: `AssaultBase` fallback was DestroyOpponentBase-only (DestroyEnemyFleet also needs base + all units destroyed) → fallback now both objectives; with 168 player ships AI at pop cap 60/60 and FleetAdvantage 0.49 → holds by existing rules (design question, unchanged).
 - [ ] If `Battle.Enemy.Build` ≈ timer spikes → enemy ship pooling plan (like [[TODOs/Optimization/Squadron_Pooling_Plan]]).
 - [ ] `com.script-utils.time` (git package, GolinSky/ScriptUtilities): `TimerPoolService.Update` removes finished coroutines inside a forward loop → next coroutine skipped one frame. Fix upstream (iterate backwards); cannot edit in PackageCache.
 
