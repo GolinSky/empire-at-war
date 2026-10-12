@@ -12,7 +12,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         AssaultBase = 3,
         DefendBase = 4,
         Hold = 5,
-        RetreatValue = 6
+        RetreatValue = 6,
+        /// <summary>Attacks hostiles near the fleet that it is not outmatched by.</summary>
+        EngageLocal = 7,
+        /// <summary>Attacks a known, undefended hostile structure when nothing better is available.</summary>
+        RaidStructures = 8
     }
 
     public readonly struct EnemyStrategicSnapshot
@@ -26,6 +30,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasOwnBase { get; }
         public int OwnedCapturableZoneCount { get; }
         public bool HasThreatenedSite { get; }
+
+        /// <summary>A known hostile ship or squadron is within engagement range of the fleet.</summary>
+        public bool HasLocalThreat { get; }
+
+        /// <summary>A known hostile structure (not a base) has no known hostile ships near it.</summary>
+        public bool HasRaidTarget { get; }
 
         /// <summary>Own fleet strength over the focused enemy team's fleet; 1 is an even fight.</summary>
         public float FleetAdvantage { get; }
@@ -48,7 +58,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasEnemyBaseTarget,
             bool hasOwnBase,
             bool hasThreatenedSite = false,
-            float localAdvantage = Combat.CombatMatchup.MAX_ADVANTAGE)
+            float localAdvantage = Combat.CombatMatchup.MAX_ADVANTAGE,
+            bool hasLocalThreat = false,
+            bool hasRaidTarget = false)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -62,6 +74,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             BaseThreatRatio = baseThreatRatio;
             LocalAdvantage = localAdvantage;
             HasThreatenedSite = hasThreatenedSite;
+            HasLocalThreat = hasLocalThreat;
+            HasRaidTarget = hasRaidTarget;
         }
     }
 
@@ -108,6 +122,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 "The configured map-control floor has not been established.",
                 (s, p) => ResponseCurve.When(s.HasCaptureTarget &&
                                              s.OwnedCapturableZoneCount < p.MinimumControlledZones)),
+            // Outmatched overall but not where the fleet is: fight what is in front of it instead of freezing.
+            new EnemyStrategicRule(EnemyStrategicState.EngageLocal, 0.55f,
+                "Hostiles near the fleet do not outmatch it, so the fleet engages them.",
+                (s, p) => ResponseCurve.When(s.HasLocalThreat) *
+                          ResponseCurve.AtLeast(s.LocalAdvantage, p.RetreatAdvantage)),
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.5f,
                 "The objective is base destruction and the fleet outmatches the defenders.",
                 (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
@@ -130,6 +149,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.2f,
                 "No other target remains before the base objective.",
                 (s, p) => ResponseCurve.When(s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
+            // Too weak to hunt and nothing to capture: hit structures the enemy left undefended.
+            new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.1f,
+                "The enemy fleet is too strong, so the fleet raids an undefended structure.",
+                (s, p) => ResponseCurve.When(s.HasRaidTarget)),
             new EnemyStrategicRule(EnemyStrategicState.Hold, 0.05f,
                 "No valid strategic target is currently available.",
                 (s, p) => 1f)

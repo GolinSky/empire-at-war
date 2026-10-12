@@ -58,6 +58,14 @@ namespace EmpireAtWar.Services.Cheats
             _players.GetEconomy(enemy).AddMoney(amount);
         }
 
+        public bool ForceUpgradeEnemyStation(PlayerId enemy)
+        {
+            if (!_relations.IsHostile(_owner.Id, enemy))
+                throw new InvalidOperationException("The selected player is not an enemy.");
+
+            return _players.GetAiStationCheat(enemy).ForceUpgradeStation();
+        }
+
         public void AddPlatformReinforcement(DefendPlatformUnitRequest request)
         {
             _faction.ReserveStructure(request);

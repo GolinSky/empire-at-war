@@ -53,6 +53,53 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void OutmatchedOverall_EngagesWeakerHostilesNearFleet()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 115, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: 0.52f, hasCaptureTarget: false,
+                    hasLocalThreat: true, localAdvantage: 1.5f));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
+            Assert.That(decision.CommittedShipCount, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void OutmatchedNearFleet_RetreatsInsteadOfEngaging()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 115, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: 0.52f, hasCaptureTarget: false,
+                    hasLocalThreat: true, localAdvantage: 0.3f));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+        }
+
+        [Test]
+        public void OutmatchedWithNothingToCapture_RaidsUndefendedStructure()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 115, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: 0.52f, hasCaptureTarget: false, hasRaidTarget: true));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RaidStructures));
+        }
+
+        [Test]
+        public void OutmatchedWithNoTargetAtAll_Holds()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 115, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: 0.52f, hasCaptureTarget: false));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.Hold));
+        }
+
+        [Test]
         public void EasyDifficulty_CapturesZoneUntilSaferBaseThresholdIsMet()
         {
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
@@ -275,7 +322,9 @@ namespace EmpireAtWar.Tests.Editor
             bool hasCaptureTarget = true,
             bool hasOwnBase = true,
             bool hasThreatenedSite = false,
-            float localAdvantage = CombatMatchup.MAX_ADVANTAGE)
+            float localAdvantage = CombatMatchup.MAX_ADVANTAGE,
+            bool hasLocalThreat = false,
+            bool hasRaidTarget = false)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -289,7 +338,9 @@ namespace EmpireAtWar.Tests.Editor
                 hasEnemyBaseTarget: true,
                 hasOwnBase: hasOwnBase,
                 hasThreatenedSite: hasThreatenedSite,
-                localAdvantage: localAdvantage);
+                localAdvantage: localAdvantage,
+                hasLocalThreat: hasLocalThreat,
+                hasRaidTarget: hasRaidTarget);
         }
     }
 }

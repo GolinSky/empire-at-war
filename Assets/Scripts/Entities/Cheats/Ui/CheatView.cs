@@ -56,6 +56,8 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<DefendPlatformType> SpawnPlatformRequested;
         public event Action<PlayerId, string> AddEnemyMoneyRequested;
         public event Action<string> AddAllEnemiesMoneyRequested;
+        public event Action<PlayerId> LevelUpEnemyStationRequested;
+        public event Action LevelUpAllEnemyStationsRequested;
 
         public event Action<string> AddMoneyRequested;
 
@@ -159,6 +161,14 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.Space(8f);
             if (GUILayout.Button("Add Money to All Enemies", GUILayout.Height(36f)))
                 AddAllEnemiesMoneyRequested?.Invoke(_moneyAmount);
+            GUILayout.Space(8f);
+            foreach (PlayerSlot enemy in _enemies)
+            {
+                if (GUILayout.Button($"Level Up Station: {enemy.Id} ({enemy.Faction})", GUILayout.Height(36f)))
+                    LevelUpEnemyStationRequested?.Invoke(enemy.Id);
+            }
+            if (GUILayout.Button("Level Up All Enemy Stations", GUILayout.Height(36f)))
+                LevelUpAllEnemyStationsRequested?.Invoke();
         }
 
         private void Update()

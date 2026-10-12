@@ -29,7 +29,7 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic
-    public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IInitializable, ILateDisposable, IIncomeProvider,
+    public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IEnemyStationCheat, IInitializable, ILateDisposable, IIncomeProvider,
         IEnemyReinforcementObserver
     {
         private const float DEFAULT_INCOME = 5f;
@@ -107,6 +107,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
             _playerRegistry.RegisterAiReinforcement(Owner, this);
+            _playerRegistry.RegisterAiStationCheat(Owner, this);
             _isInitialized = true;
         }
 
@@ -121,7 +122,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             _economyProvider.RemoveProvider(this);
             _playerRegistry.UnregisterAiReinforcement(Owner);
+            _playerRegistry.UnregisterAiStationCheat(Owner);
             _isInitialized = false;
+        }
+
+        public bool ForceUpgradeStation()
+        {
+            if (Model.GetCurrentLevelFactionData() == null || !_stationRegistry.HasProductionBase(Owner)) return false;
+
+            Model.CurrentLevel++;
+            _economyProvider.RecalculateIncome(this);
+            return true;
         }
 
         public void Purchase(UnitRequest unitRequest)
