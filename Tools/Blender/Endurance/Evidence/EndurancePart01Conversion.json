@@ -1,0 +1,143 @@
+{
+  "variant": "EndurancePart01",
+  "before": {
+    "meshes": {
+      "tower": {
+        "vertices": 400,
+        "triangles": 216,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart01_M004"
+        ]
+      },
+      "lights": {
+        "vertices": 28,
+        "triangles": 18,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart01_M005"
+        ]
+      },
+      "shadow": {
+        "vertices": 60,
+        "triangles": 112,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart01_M006"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Core": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -31.612001419067383,
+      -28.5,
+      -116.56236267089844
+    ],
+    "bounds_max": [
+      -15.387998580932617,
+      -6.902990341186523,
+      -103.08915710449219
+    ]
+  },
+  "after": {
+    "meshes": {
+      "tower": {
+        "vertices": 400,
+        "triangles": 216,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart01_M004.001"
+        ]
+      },
+      "lights": {
+        "vertices": 28,
+        "triangles": 18,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart01_M005.001"
+        ]
+      },
+      "shadow": {
+        "vertices": 60,
+        "triangles": 112,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart01_M006.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Core": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -31.612001419067383,
+      -28.499998092651367,
+      -116.56236267089844
+    ],
+    "bounds_max": [
+      -15.387998580932617,
+      -6.902987480163574,
+      -103.08915710449219
+    ]
+  },
+  "materials": [
+    {
+      "name": "EndurancePart01_M005",
+      "shader": "MeshAdditive.fx",
+      "base": "EndurancePart01_Hull_Lights_Grid",
+      "normal": null
+    },
+    {
+      "name": "EndurancePart01_M004",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main",
+      "normal": "EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main_B"
+    },
+    {
+      "name": "EndurancePart01_M006",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    }
+  ],
+  "bone_error": 0.0,
+  "geometry_error": 2.86102294921875e-06
+}

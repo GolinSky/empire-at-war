@@ -41,5 +41,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         MC30cTorpedoSalvo = 36,
         NebulaOverchargeWeapons = 38,
         AssaultFrigateMkIIPowerToShields = 45,
+        FighterCoordination = 52,
+
     }
 }

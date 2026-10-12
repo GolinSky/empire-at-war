@@ -1232,3 +1232,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: EnduranceShipView
+      value:
+        m_AssetGUID: 869c8abfc930a964892aef3ee3c9f4a6
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: EnduranceShipData
+      value:
+        m_AssetGUID: fef3778c9889843489a563dd0efbf27b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

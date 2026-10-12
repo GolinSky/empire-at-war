@@ -1,0 +1,191 @@
+{
+  "variant": "EndurancePart00",
+  "before": {
+    "meshes": {
+      "core": {
+        "vertices": 956,
+        "triangles": 496,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M005"
+        ]
+      },
+      "bridge": {
+        "vertices": 751,
+        "triangles": 502,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M006"
+        ]
+      },
+      "shadow": {
+        "vertices": 578,
+        "triangles": 1048,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart00_M007"
+        ]
+      },
+      "kitbash": {
+        "vertices": 468,
+        "triangles": 292,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M008"
+        ]
+      },
+      "lights": {
+        "vertices": 60,
+        "triangles": 38,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M009"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Core": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -56.86207962036133,
+      -78.05401611328125,
+      4.773202896118164
+    ],
+    "bounds_max": [
+      56.86207962036133,
+      -58.2500114440918,
+      68.0
+    ]
+  },
+  "after": {
+    "meshes": {
+      "core": {
+        "vertices": 956,
+        "triangles": 496,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M005.001"
+        ]
+      },
+      "bridge": {
+        "vertices": 751,
+        "triangles": 502,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M006.001"
+        ]
+      },
+      "shadow": {
+        "vertices": 578,
+        "triangles": 1048,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart00_M007.001"
+        ]
+      },
+      "kitbash": {
+        "vertices": 468,
+        "triangles": 292,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M008.001"
+        ]
+      },
+      "lights": {
+        "vertices": 60,
+        "triangles": 38,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart00_M009.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Core": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -56.86207962036133,
+      -78.05401611328125,
+      4.773197650909424
+    ],
+    "bounds_max": [
+      56.86207962036133,
+      -58.2500114440918,
+      67.99999237060547
+    ]
+  },
+  "materials": [
+    {
+      "name": "EndurancePart00_M008",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second",
+      "normal": "EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second_B"
+    },
+    {
+      "name": "EndurancePart00_M006",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main",
+      "normal": "EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main_B"
+    },
+    {
+      "name": "EndurancePart00_M005",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main",
+      "normal": "EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main_B"
+    },
+    {
+      "name": "EndurancePart00_M009",
+      "shader": "MeshAdditive.fx",
+      "base": "EndurancePart00_Hull_Lights_Grid",
+      "normal": null
+    },
+    {
+      "name": "EndurancePart00_M007",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    }
+  ],
+  "bone_error": 0.0,
+  "geometry_error": 7.62939453125e-06
+}

@@ -1,0 +1,22 @@
+{
+  "source_hashes_unchanged": 40,
+  "lossless_texture_copies": 52,
+  "maximum_geometry_error": 8.90550043482113e-05,
+  "maximum_bone_error": 6.151014517439689e-05,
+  "live_palettes": 8,
+  "wreck_palettes": 8,
+  "team_changed_pixel_fraction": {
+    "Team": 0.09222394021388997,
+    "WreckTeam": 0.08898305084745763
+  },
+  "icon_crop": [
+    70,
+    162,
+    415,
+    353
+  ],
+  "unity_removed_zero_area_triangles": {
+    "Hull Primary": 6,
+    "hull": 8
+  }
+}
