@@ -68,7 +68,6 @@ namespace EmpireAtWar.Components.Weapon
         // lazily, so a group turning into a wreck needs one more rebuild to aim at its dead hardpoints.
         private readonly HashSet<AttackData> _liveGroupsAtRebuild = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
-        private readonly Dictionary<AttackData, bool> _targetGroupEligibility = new Dictionary<AttackData, bool>();
         private readonly List<Vector2> _turnArcs = new List<Vector2>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
@@ -204,7 +203,6 @@ namespace EmpireAtWar.Components.Weapon
             _liveGroupsAtRebuild.Clear();
             _candidatesDirty = false;
             ReleaseCandidates();
-            _targetGroupEligibility.Clear();
             _targetPositions.Clear();
             _turningSalvos.Clear();
             _attackDataList.Clear();
@@ -387,20 +385,15 @@ namespace EmpireAtWar.Components.Weapon
         internal void PrepareTargetSelection(TargetSelectionCapture capture)
         {
             EnsureCandidates();
-            _targetGroupEligibility.Clear();
             for (int i = 0; i < _candidateGroups.Count; i++)
             {
                 AttackData group = _candidateGroups[i];
-                if (!_targetGroupEligibility.TryGetValue(group, out bool canAcquire))
+                bool canAcquire = capture.CanAcquire(group, _respectsLocalFog, out bool isWreck);
+                // A new wreck makes its destroyed hardpoints valid aim points again.
+                if (isWreck && _liveGroupsAtRebuild.Contains(group))
                 {
-                    canAcquire = capture.CanAcquire(group, _respectsLocalFog);
-                    _targetGroupEligibility.Add(group, canAcquire);
-                    // A new wreck makes its destroyed hardpoints valid aim points again.
-                    if (_liveGroupsAtRebuild.Contains(group) && capture.IsWreck(group))
-                    {
-                        AttackSequenceDiagnostics.RecordTargetInvalidation();
-                        InvalidateCandidates();
-                    }
+                    AttackSequenceDiagnostics.RecordTargetInvalidation();
+                    InvalidateCandidates();
                 }
                 _groupEligibility[i] = canAcquire ? (byte)1 : (byte)0;
             }

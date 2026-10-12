@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Reflection;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -136,6 +138,53 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT + 1));
             Assert.That(PlayingExplosions(), Has.Count.EqualTo(PREWARM_COUNT + 1));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Tick_AfterAnchorOrParentDisabled_StopsLoopingExplosion(bool disableParent)
+        {
+            GameObject parent = Track(new GameObject("Owner"));
+            _anchor.SetParent(parent.transform);
+            _pool.Play(_anchor, null);
+            ExplosionVfx explosion = PlayingExplosions()[0];
+            (disableParent ? parent : _anchor.gameObject).SetActive(false);
+
+            _pool.Tick();
+
+            Assert.That(explosion.GetComponent<ParticleSystem>().isEmitting, Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void HardPoint_RestoredOrReenabledBeforeTick_RetiresOldFire(bool disable)
+        {
+            HardPoint hardPoint = _anchor.gameObject.AddComponent<HardPoint>();
+            DiContainer container = new DiContainer();
+            container.Bind<IHardPointExplosionPool>().FromInstance(_pool);
+            container.Inject(hardPoint);
+            hardPoint.UpdateData(0f);
+            ExplosionVfx oldFire = PlayingExplosions()[0];
+
+            if (disable)
+            {
+                GameObject owner = Track(new GameObject("Owner"));
+                _anchor.SetParent(owner.transform);
+                owner.SetActive(false);
+                // EditMode does not dispatch lifecycle callbacks on ordinary runtime MonoBehaviours.
+                typeof(HardPoint).GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(hardPoint, null);
+                owner.SetActive(true);
+            }
+            else
+            {
+                hardPoint.UpdateData(1f);
+            }
+
+            Assert.That(oldFire.GetComponent<ParticleSystem>().isEmitting, Is.False);
+            hardPoint.UpdateData(0f);
+            Assert.That(oldFire.GetComponent<ParticleSystem>().isEmitting, Is.False);
+            Assert.That(PlayingExplosions().FindAll(e => e.GetComponent<ParticleSystem>().isEmitting), Has.Count.EqualTo(1));
         }
 
         [Test]

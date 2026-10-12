@@ -10,5 +10,7 @@ namespace EmpireAtWar.Services.UnitExplosion
         /// A null fog visibility means the unit is never hidden by the local fog of war.
         /// </summary>
         void Play(Transform anchor, IFogVisibilityFacade fogVisibility);
+
+        void Stop(Transform anchor);
     }
 }

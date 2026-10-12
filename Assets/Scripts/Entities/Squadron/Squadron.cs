@@ -208,17 +208,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
-            _orderElapsed += Time.deltaTime;
-            _orderTimer -= Time.deltaTime;
-            if (_orderTimer <= 0f)
-            {
-                _orderTimer = ORDER_UPDATE_INTERVAL;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.SquadronOrder.Auto())
-#endif
-                UpdateOrder(_orderElapsed);
-                _orderElapsed = 0f;
-            }
+            TickOrder(Time.deltaTime);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronPilot.Auto())
@@ -228,6 +218,22 @@ namespace EmpireAtWar.Entities.Squadrons
             using (BattleProfilerMarkers.SquadronFlight.Auto())
 #endif
             _flight.Step(Time.deltaTime);
+        }
+
+        private void TickOrder(float deltaTime)
+        {
+            _orderElapsed += deltaTime;
+            _orderTimer -= deltaTime;
+            if (_orderTimer <= 0f)
+            {
+                // Preserve the phase through hitches, skipping missed checks instead of catching up in a burst.
+                _orderTimer = _orderTimer % ORDER_UPDATE_INTERVAL + ORDER_UPDATE_INTERVAL;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.SquadronOrder.Auto())
+#endif
+                UpdateOrder(_orderElapsed);
+                _orderElapsed = 0f;
+            }
         }
 
         private void HandleDestroyed() => Release(true);
