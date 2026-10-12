@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Blender/CD273/Inspect.cs",
+      "timeout_ms": 60000
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 151,
+      "executeMs": 105,
+      "assemblyName": "PipelineRunScript_Inspect_d26283d6fb054e33ab37fb9cbd2473fd",
+      "success": true,
+      "result": "{\r\n  \"meshes\": 15,\r\n  \"bones\": 107,\r\n  \"triangles\": 25512,\r\n  \"boneErrorUnits\": 7.260781E-07,\r\n  \"prefabs\": [\r\n    {\r\n      \"path\": \"Assets/Prefabs/Models/Ships/CD273.prefab\",\r\n      \"size\": [\r\n        10.9375229,\r\n        8.690276,\r\n        60.0000038\r\n      ]\r\n    },\r\n    {\r\n      \"path\": \"Assets/Prefabs/Models/Ships/CD273ShipView.prefab\",\r\n      \"size\": [\r\n        10.9375229,\r\n        8.690276,\r\n        60.0000038\r\n      ]\r\n    },\r\n    {\r\n      \"path\": \"Assets/Prefabs/Ui/Reinforcement/CD273ReinforcementView.prefab\",\r\n      \"size\": [\r\n        10.9375229,\r\n        8.690276,\r\n        60.0000038\r\n      ]\r\n    },\r\n    {\r\n      \"path\": \"Assets/Prefabs/Models/Wrecks/CD273WreckView.prefab\",\r\n      \"size\": [\r\n        10.9375229,\r\n        8.690277,\r\n        59.48125\r\n      ]\r\n    }\r\n  ],\r\n  \"targetableHardpoints\": 10,\r\n  \"registrationsVerified\": true\r\n}"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

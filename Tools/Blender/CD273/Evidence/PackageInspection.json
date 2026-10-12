@@ -1,0 +1,30 @@
+{
+  "source_hashes_verified": 13,
+  "assets_with_metadata": 50,
+  "icon_alpha_bounds": [
+    74,
+    154,
+    417,
+    333
+  ],
+  "palette_pixel_differences": {
+    "Team": [
+      1075,
+      1070,
+      1075,
+      1066,
+      1067,
+      1072,
+      1072
+    ],
+    "WreckTeam": [
+      3191,
+      4363,
+      4627,
+      4762,
+      4838,
+      4880,
+      4909
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+# CD-273 Corellian Destroyer
+
+- Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE`; balance: `GameDesign/Rebel units`, unit 4.
+- Source: Remake 4.0, Workshop `1770851727`; XML `Data/Xml/Units/Space/Units_Space_Rebel_CHG.xml`, `Corellian_Destroyer` → `Rebel_CD_273.ALO`. Textures resolve from `Data/Art/Textures` (`Texturesc` does not exist).
+- Source files stay unchanged; `Prepare.py` records binary slots, shader parameters, texture provenance and SHA-256 hashes. No separate turret art is referenced. Two ALA files exist (`IDLE_00`, `DIE_00`); animations and animated EaW shader effects are not converted.
+- Conversion uses an isolated Blender 3.6.23 MCP listener on `9896`, protocol 13, telemetry disabled. The shared listener and other Blender work stay untouched.
+- Run `uv run --with pillow python Tools/Blender/CD273/Prepare.py`, `python Tools/Blender/CD273/Convert.py`, then `uv run --with pillow python Tools/Blender/CD273/Stage.py`.
+- `Convert.py` repairs material-slot assignments from the source binary. FBX/blend retain every source mesh and attachment, including helpers. Blender FBX round trip: geometry error `0.00007205`, bone error `0.00003514` source units; UVs and hierarchy preserved.
+- Unity: run `unity command run_script --file Tools/Blender/CD273/<File>.cs --timeout_ms 60000 --json` for `BuildArt`, `BuildGameplay`, `Persist`, `Render`, `Register`, `Inspect`, in that order. Check nested `result.success`, not only the command envelope.
+- IDs: `ShipType.CD273=308`, `ShipAbilityId.CD273PowerToEngines=37`. All registrations are scoped to these IDs and their assets; existing Addressables groups are reused.
+- Requested stats: hull `2,400`, shields `1,700`, speed `52 units/s`, price `2,200`, build `32 s`. Weapon mounts: four medium lasers (`23`), two concussion missiles (`13`), two point-defense lasers (`14`). Existing family weapon profiles and audio resolve directly.
+- Mount mapping: medium lasers → `HP_LC_01..04`; missiles → `HP_ML_01_FP_01`, `HP_ML_02_FP_01`; point defense → `HP_LC_05..06`; engine → `HP_Engines`. Shield generator is derived on the upper rear hull. All ten hardpoints are targetable with ordered unique IDs and health entries.
+- User selected Power to Engines: speed ×`1.35`, no weapon or shield penalties. Duration `20 s` / recovery after expiry `50 s` are provisional, copied from the existing Corellian Corvette timing because the reference specifies only the speed bonus.
+- Gameplay choices: heavy corvette class, level `2`, population `2`, limit `3`, length `60`, navigation radius `33`, turning/acceleration `45`, bank `±15°`, shield regeneration `11.3333` every `3 s`, no hull regeneration, no hangar. These values are provisional where absent from Rebel units.
+- Geometry: root scale `1`, bow `+Z`, up `+Y`; visible size `10.9375 × 8.6903 × 60`; complete banking range `−4.513483 .. 4.513483`. Wreck contains opaque hull geometry (`59.48125` length); live model and placement include engine effects.
+- Normals are source `_B` maps: NormalMap, linear, green-channel flip. Source red paint uses HSV selection (hue `0`, range `.07`, saturation `.3`, strength `1`) on the hull atlas only. Source alpha is not a useful paint mask; team rim stays `0` so neutral hull panels retain their colors.
+- Source `MeshShield` engine glow uses a static additive approximation with original source color. Normal/albedo PNGs are lossless DDS decodes; additive alpha maps are separately derived.
+- Hidden source collision/shield/shadow meshes remain in the FBX/blend and are absent from all game prefabs. All nine authored visible meshes remain in model/gameplay/placement; five opaque meshes form the wreck.
+- Verified saved geometry: `15` meshes, `25,512` triangles, `107` bones; Unity bone error `0.0000007261` units before gameplay scaling. Saved references, hardpoints, material slots, normals, all icon consumers, wreck, placement, faction, ability/audio and Addressables pass `Inspect.cs`.
+- Preview rendering uses a separate Unity preview scene and restores global palette/ambient state. All eight live and wreck palette renders, transparent `512 × 512` icon and placement are packaged.
+- Run `uv run --with pillow python Tools/Blender/CD273/Package.py` for source hashes, metadata, icon crop and palette checks. Package: `output/remake-rebel-units/CD273-Converted/`.
+- No automated Unity tests or Play Mode combat run. Remaining runtime checks: firing arcs, shield/engine destruction, fog/selection, placement, ability timing and wreck lifecycle.

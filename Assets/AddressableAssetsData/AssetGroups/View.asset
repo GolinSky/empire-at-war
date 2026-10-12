@@ -17,7 +17,12 @@ MonoBehaviour:
   m_SerializeEntries:
   - m_GUID: 010561448aafee74bb1d92d47bb33f3b
     m_Address: TIEAvengerSquadronView
+    - m_GUID: 13b95f5491d4d064cb67648cf70fa056
+    m_Address: CD273ShipView
     m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0150a3a72b6005a409e879331f63ff7e

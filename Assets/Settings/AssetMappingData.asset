@@ -1190,3 +1190,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CD273ShipView
+      value:
+        m_AssetGUID: 13b95f5491d4d064cb67648cf70fa056
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CD273ShipData
+      value:
+        m_AssetGUID: 63d3d356ed5d781469d8411e38fb3498
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
