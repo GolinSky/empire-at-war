@@ -9,9 +9,19 @@ tags:
 ---
 # Tector Star Destroyer Import
 
+## Decision
+
+- 2026-10-12: Remake `1770851727` hull `Empire_Imperial_SD_Tector.ALO` replaces the existing visual, gameplay, placement, wreck and icon artwork in place.
+- User decision: turret meshes are omitted; previously imported turret assets remain unused. Existing 25 weapons/16 targets, all IDs/transforms/arcs, abilities and registrations stay unchanged.
+- Current hull/shields/speed: `8,000/8,000/22`. Historical initial AOTR values were `22,000/16,000/22`; later balance changes predate this visual replacement.
+- Current hull bounds: `100.997742 × 47.93703 × 180.000031`; existing conservative collision, ion, navigation, height and selection values retained. Renderer lists and shield artwork rebuilt; existing engine effects fitted to source anchors.
+- Passed: 579 core-data hashes, 46 component configurations, 31 hardpoint transforms, 437 serialized references, all prefab/icon GUIDs, source hashes and 30 lossless PNG copies. Blender/FBX preserves 31 meshes/142 bones and exact UVs; four Blender and Unity/placement/wreck/icon previews inspected.
+- Plan: [[Done/Features/Tector_Model_Replacement|Tector Model Replacement]]. Tooling/evidence: `Tools/Blender/TectorReplacement/`; editable Blender scene/previews: `F:/CodexArtifacts/tector-preview/`.
+- Following AOTR implementation/balance details record the initial integration. No automated Unity tests or combat Play Mode were run by the replacement.
+
 ## Important Values
 
-- Empire `ShipType.Tector = 210`; hull `22,000`, shields `16,000`, speed `22`.
+- Empire `ShipType.Tector = 210`; current hull `8,000`, shields `8,000`, speed `22`.
 - Targetable: `8` heavy 2-burst turbolasers + `2` medium long-range dual turbolasers + `2` shield generators + `3` engines + `1` tractor beam → `16` targets, IDs `0..15`.
 - Non-targetable: `7` medium 3-burst turbolasers + `4` light turbolasers + `4` heavy lasers → `25` weapons / `31` unique mount IDs overall.
 - No hangar hardpoint or fighter bays. User targetability overrides the import guide's default.
