@@ -15,6 +15,26 @@ MonoBehaviour:
   factionType: 2
   ships:
     keyValue:
+    - key: 312
+      value:
+        matchups: {fileID: 11400000, guid: 3b0a6ebe5bef68a47ae3adc0d8490257, type: 2}
+        description: Heavy assault cruiser with four dual heavy turbolasers, four
+          medium turbolasers, two medium ion cannons, four proton torpedo launchers
+          and two point-defense lasers. Two independent hangars carry one active
+          X-Wing and Y-Wing squadron, with one replacement each. Coordinated Assault
+          increases torpedo firing rate by 25% for 8 seconds; 40 seconds recovery.
+          Tractor Beam holds corvettes and frigates.
+        role: Fleet assault / Capital combat
+        iconKey: 60f458712418dd74393a49293c347c81:21300000
+        isHero: 0
+        <Name>k__BackingField: Bothan Assault Cruiser
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 5200
+        <BuildTime>k__BackingField: 58
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81,
+          type: 3}
     - key: 300
       value:
         matchups: {fileID: 11400000, guid: f2965c2e6d7e7ea42abf7182f9b60c04, type: 2}
