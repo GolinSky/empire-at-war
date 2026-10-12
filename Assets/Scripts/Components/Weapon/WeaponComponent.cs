@@ -30,6 +30,9 @@ namespace EmpireAtWar.Components.Weapon
         private const float CONTACT_ENGAGE_FACTOR = 1.15f;
         // Continuous weapons such as beams land their damage in ticks this far apart.
         private const float DAMAGE_TICK_INTERVAL = 0.1f;
+        // With every candidate beyond reach of all hardpoints the weapon waits this long before selecting again.
+        // Target changes (orders, new contacts) cancel the wait.
+        private const float IDLE_RESELECT_INTERVAL = 0.25f;
 
         private ISelectionModelObserver _selection;
         private ILocalPlayer _localPlayer;
@@ -46,7 +49,13 @@ namespace EmpireAtWar.Components.Weapon
         private DebugRangeCircleFactory _rangeCircleFactory;
         [Inject] private ImpactEffectPresenter _impactPresenter;
         private List<AttackData> _attackDataList = new List<AttackData>();
-        private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
+        // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
+        // _candidateGroups. A group's candidates are contiguous; groups without candidates are not listed.
+        private readonly List<AttackData> _candidateGroups = new List<AttackData>();
+        private int[] _candidateSlots = new int[16];
+        private int[] _candidateGroupIndices = new int[16];
+        private int _candidateCount;
+        private byte[] _groupEligibility = new byte[8];
         private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
         // Groups whose target still had live hardpoints at the last rebuild. Destroyed hardpoints drop out
         // lazily, so a group turning into a wreck needs one more rebuild to aim at its dead hardpoints.
@@ -65,6 +74,12 @@ namespace EmpireAtWar.Components.Weapon
         private int _targetVersion;
         // Target changes only mark candidates stale; the next reader rebuilds once for all of them.
         private bool _candidatesDirty;
+        private float _idleUntil;
+        // Salvos waiting for their mount to finish turning.
+        private readonly List<PendingSalvo> _turningSalvos = new List<PendingSalvo>();
+        // Largest distance between two hardpoints: a candidate farther than range + span from one hardpoint
+        // is out of every hardpoint's range.
+        private float _hardPointSpan;
 
         private bool _isReleased;
         private bool _isInitialized;
@@ -119,6 +134,10 @@ namespace EmpireAtWar.Components.Weapon
             foreach (WeaponProfile profile in profiles)
                 maxRange = Mathf.Max(maxRange, profile.Range * _modifiers.VisionMultiplier);
             Model.SetRanges(maxRange, engagementRanges);
+            for (int i = 0; i < hardPoints.Count; i++)
+                for (int j = i + 1; j < hardPoints.Count; j++)
+                    _hardPointSpan = Mathf.Max(_hardPointSpan,
+                        Vector3.Distance(hardPoints[i].transform.position, hardPoints[j].transform.position));
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _attackRangeCircle = _rangeCircleFactory.Create("AttackRange", Color.red, _selection);
 #endif
@@ -157,9 +176,10 @@ namespace EmpireAtWar.Components.Weapon
             _subscribedGroups.Clear();
             _liveGroupsAtRebuild.Clear();
             _candidatesDirty = false;
-            _orderedCandidates.Clear();
+            ReleaseCandidates();
             _targetGroupEligibility.Clear();
             _targetPositions.Clear();
+            _turningSalvos.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
         }
@@ -254,6 +274,10 @@ namespace EmpireAtWar.Components.Weapon
             if (hardPoints == null || hardPoints.Count == 0)
                 return;
 
+            FireTurnedSalvos();
+            if (Time.time < _idleUntil)
+                return;
+
             WeaponHardPoint weapon = hardPoints[_currentWeaponIndex];
             if (!weapon.IsDestroyed && !weapon.IsBusy)
             {
@@ -269,39 +293,36 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        /// <summary>Positions are shared by every owner captured at the same batch boundary.</summary>
-        internal void CaptureTargetSelection(List<TargetSelectionCandidate> candidates,
-            TargetSelectionCapture capture, out int targetVersion)
+        internal int TargetVersion => _targetVersion;
+        internal int CandidateCount => _candidateCount;
+        internal int CandidateGroupCount => _candidateGroups.Count;
+        internal int[] CandidateSlots => _candidateSlots;
+        internal int[] CandidateGroupIndices => _candidateGroupIndices;
+        internal byte[] GroupEligibility => _groupEligibility;
+
+        internal AttackData GetCandidateGroup(int index) => _candidateGroups[index];
+
+        /// <summary>Readies this frame's candidates: rebuilds stale ones and decides each group's eligibility once.</summary>
+        internal void PrepareTargetSelection(TargetSelectionCapture capture)
         {
             EnsureCandidates();
             _targetGroupEligibility.Clear();
-            bool removedInvalidCandidate = false;
-            for (int i = 0; i < _orderedCandidates.Count; i++)
+            for (int i = 0; i < _candidateGroups.Count; i++)
             {
-                TargetCandidate candidate = _orderedCandidates[i];
-                if (!_targetGroupEligibility.TryGetValue(candidate.Group, out bool canAcquire))
+                AttackData group = _candidateGroups[i];
+                if (!_targetGroupEligibility.TryGetValue(group, out bool canAcquire))
                 {
-                    canAcquire = CanAcquire(candidate.Group);
-                    _targetGroupEligibility.Add(candidate.Group, canAcquire);
+                    canAcquire = capture.CanAcquire(group, _respectsLocalFog);
+                    _targetGroupEligibility.Add(group, canAcquire);
                     // A new wreck makes its destroyed hardpoints valid aim points again.
-                    if (_liveGroupsAtRebuild.Contains(candidate.Group) && capture.IsWreck(candidate.Group))
+                    if (_liveGroupsAtRebuild.Contains(group) && capture.IsWreck(group))
                     {
                         AttackSequenceDiagnostics.RecordTargetInvalidation();
                         InvalidateCandidates();
                     }
                 }
-                if (!canAcquire) continue;
-                if (!capture.TryCapture(candidate.Group, candidate.Unit, out TargetSelectionCandidate snapshot))
-                {
-                    _orderedCandidates.RemoveAt(i--);
-                    AttackSequenceDiagnostics.RecordTargetInvalidation();
-                    removedInvalidCandidate = true;
-                    continue;
-                }
-                candidates.Add(snapshot);
+                _groupEligibility[i] = canAcquire ? (byte)1 : (byte)0;
             }
-            if (removedInvalidCandidate) _targetVersion++;
-            targetVersion = _targetVersion;
         }
 
         private bool TryFireWeapon(WeaponHardPoint weapon)
@@ -317,22 +338,19 @@ namespace EmpireAtWar.Components.Weapon
                 ? Quaternion.identity : weaponTransform.parent.rotation;
             EnsureCandidates();
             _targetPositions.Clear();
+            TargetSelectionCapture targets = _attackCoordinator.TargetUnits;
 
-            for (int i = 0; i < _orderedCandidates.Count; i++)
+            for (int i = 0; i < _candidateCount; i++)
             {
-                TargetCandidate candidate = _orderedCandidates[i];
-                if (!CanAcquire(candidate.Group)) continue;
-                if (!candidate.Group.CanTarget(candidate.Unit))
-                {
-                    _orderedCandidates.RemoveAt(i--);
-                    AttackSequenceDiagnostics.RecordTargetInvalidation();
-                    continue;
-                }
+                AttackData group = _candidateGroups[_candidateGroupIndices[i]];
+                IHardPointModel unit = targets.GetUnit(_candidateSlots[i]);
+                if (!CanAcquire(group)) continue;
+                if (!group.CanTarget(unit)) continue;
 
-                if (!weapon.CanEngage(candidate.Group.TargetClass)) continue;
+                if (!weapon.CanEngage(group.TargetClass)) continue;
 
                 AttackSequenceDiagnostics.RecordCandidateVisit();
-                Vector3 position = GetTargetPosition(_targetPositions, candidate.Unit);
+                Vector3 position = GetTargetPosition(_targetPositions, unit);
                 bool canAttack = WeaponTargetSelector.TryCalculateAim(position, origin, parentRotation,
                     weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw,
                     out _, out _);
@@ -342,7 +360,7 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                     AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
 #endif
-                    weapon.Attack(candidate.Group, candidate.Unit);
+                    Engage(weapon, group, unit);
                     return true;
                 }
             }
@@ -357,13 +375,12 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         internal void CommitTargetSelection(WeaponHardPoint weapon, int targetVersion,
-            WeaponTargetSelectionJob.Result result, TargetSelectionCandidate selectedCandidate)
+            WeaponTargetSelectionJob.Result result, AttackData group, IHardPointModel unit, int generation)
         {
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
 
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
-                (!CanAcquire(selectedCandidate.Group) || !IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
-                 selectedCandidate.Unit.Generation != selectedCandidate.Generation))
+                (!CanAcquire(group) || !IsTargetValid(group, unit) || unit.Generation != generation))
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback(_targetVersion != targetVersion
                     ? WeaponTargetSelectionJob.FALLBACK_TARGET_VERSION
@@ -374,10 +391,52 @@ namespace EmpireAtWar.Components.Weapon
 
             if (result.CandidateIndex < 0)
             {
+                if (result.NearestDistance > Model.MaxWeaponRange + _hardPointSpan)
+                    _idleUntil = Time.time + IDLE_RESELECT_INTERVAL;
                 return;
             }
 
-            weapon.Attack(selectedCandidate.Group, selectedCandidate.Unit);
+            Engage(weapon, group, unit);
+        }
+
+        // A turret turns to the target first; the salvo starts once the mount points at it.
+        private void Engage(WeaponHardPoint weapon, AttackData group, IHardPointModel unit)
+        {
+            float turnSeconds = weapon.TurnTowards(unit.Position);
+            if (turnSeconds <= 0f)
+            {
+                weapon.Attack(group, unit);
+                return;
+            }
+
+            _turningSalvos.Add(new PendingSalvo
+            {
+                HardPoint = weapon,
+                Group = group,
+                Unit = unit,
+                FireTime = Time.time + turnSeconds
+            });
+        }
+
+        // The target is checked again when the turn ends: it may have died, hidden or left range meanwhile.
+        private void FireTurnedSalvos()
+        {
+            for (int i = _turningSalvos.Count - 1; i >= 0; i--)
+            {
+                PendingSalvo salvo = _turningSalvos[i];
+                if (Time.time < salvo.FireTime) continue;
+                _turningSalvos.RemoveAt(i);
+                WeaponHardPoint weapon = salvo.HardPoint;
+                if (weapon.IsDestroyed || _modifiers.IsCloaked || !CanAcquire(salvo.Group) ||
+                    !IsTargetValid(salvo.Group, salvo.Unit)) continue;
+
+                Transform weaponTransform = weapon.transform;
+                Quaternion parentRotation = weaponTransform.parent == null
+                    ? Quaternion.identity : weaponTransform.parent.rotation;
+                if (!WeaponTargetSelector.TryCalculateAim(salvo.Unit.Position, weaponTransform.position,
+                        parentRotation, weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw, out _, out _)) continue;
+                weapon.Attack(salvo.Group, salvo.Unit);
+            }
         }
 
         internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)
@@ -406,6 +465,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             _targetVersion++;
             _candidatesDirty = true;
+            _idleUntil = 0f;
         }
 
         private void EnsureCandidates()
@@ -422,7 +482,7 @@ namespace EmpireAtWar.Components.Weapon
             long rebuildStart = Stopwatch.GetTimestamp();
 #endif
             _liveGroupsAtRebuild.Clear();
-            _orderedCandidates.Clear();
+            ReleaseCandidates();
             if (_mainAttackData != null)
             {
                 if (_mainAttackData.IsDestroyed)
@@ -459,12 +519,36 @@ namespace EmpireAtWar.Components.Weapon
         {
             group.RefreshStaleUnits();
             if (group.TargetHealth.HasLiveHardPoints) _liveGroupsAtRebuild.Add(group);
+            TargetSelectionCapture targets = _attackCoordinator.TargetUnits;
+            int groupIndex = _candidateGroups.Count;
+            int firstCandidate = _candidateCount;
             List<IHardPointModel> units = group.Units;
             for (int i = 0; i < units.Count; i++)
             {
                 IHardPointModel unit = units[i];
-                if (group.CanTarget(unit)) _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = unit });
+                if (!group.CanTarget(unit)) continue;
+                if (_candidateCount == _candidateSlots.Length)
+                {
+                    Array.Resize(ref _candidateSlots, _candidateCount * 2);
+                    Array.Resize(ref _candidateGroupIndices, _candidateCount * 2);
+                }
+                _candidateSlots[_candidateCount] = targets.Acquire(unit, group.TargetHealth);
+                _candidateGroupIndices[_candidateCount] = groupIndex;
+                _candidateCount++;
             }
+
+            if (_candidateCount == firstCandidate) return;
+            _candidateGroups.Add(group);
+            if (_groupEligibility.Length < _candidateGroups.Count)
+                Array.Resize(ref _groupEligibility, _groupEligibility.Length * 2);
+        }
+
+        private void ReleaseCandidates()
+        {
+            TargetSelectionCapture targets = _attackCoordinator.TargetUnits;
+            for (int i = 0; i < _candidateCount; i++) targets.Release(_candidateSlots[i]);
+            _candidateCount = 0;
+            _candidateGroups.Clear();
         }
 
         // Destroyed groups stay listed until the next rebuild; they no longer count as targets.
@@ -524,24 +608,12 @@ namespace EmpireAtWar.Components.Weapon
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>
             attackData.CanTarget(hardPointModel) && attackData.Contains(hardPointModel);
 
-        private struct TargetCandidate
+        private struct PendingSalvo
         {
-            public IHardPointModel Unit;
-
+            public WeaponHardPoint HardPoint;
             public AttackData Group;
-        }
-
-        internal struct TargetSelectionCandidate
-        {
             public IHardPointModel Unit;
-
-            public AttackData Group;
-
-            public Vector3 Position;
-
-            public int Generation;
-            public bool IsStrikecraft;
+            public float FireTime;
         }
-
     }
 }

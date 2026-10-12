@@ -17,7 +17,7 @@ namespace EmpireAtWar.ViewComponents.Health
     {
         private readonly ITimer _reloadTimer = TimerFactory.ConstructTimer();
 
-        [SerializeField] private FloatRange yAxisRange;
+        [SerializeField] private FloatRange yAxisRange = new FloatRange();
         [SerializeField] private bool mainBattery;
         private readonly AttackSequenceState _sequence = new AttackSequenceState();
         private ShotEffectPool _effectPool;
@@ -29,6 +29,9 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private float _maxAttackDistance;
         private float _missSpread;
+        // Local yaw the mount points at, inside the firing arc. Turning has no visual; it only delays the salvo.
+        private float _mountYaw;
+        private float _turnEndTime = float.NegativeInfinity;
 
         [SerializeField] private int prewarmEffects;
 
@@ -37,7 +40,7 @@ namespace EmpireAtWar.ViewComponents.Health
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
-        public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete;
+        public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete || Time.time < _turnEndTime;
         public float MaxAttackDistance => _maxAttackDistance;
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
@@ -72,6 +75,25 @@ namespace EmpireAtWar.ViewComponents.Health
             _modifiers = modifiers;
             _impactPresenter = impactPresenter;
             _missiles = missiles;
+            _mountYaw = (MinYaw + MaxYaw) * 0.5f;
+        }
+
+        /// <summary>
+        /// Turns the mount towards the target and returns how many seconds the turn takes; the hardpoint stays
+        /// busy until then. Weapons without a turn rate return 0.
+        /// </summary>
+        internal float TurnTowards(Vector3 targetPosition)
+        {
+            if (_profile.TurnRate <= 0f) return 0f;
+            Quaternion parentRotation = transform.parent == null ? Quaternion.identity : transform.parent.rotation;
+            Quaternion aim = Quaternion.LookRotation(targetPosition - transform.position, Vector3.up);
+            float targetYaw = Mathf.Clamp(
+                Mathf.DeltaAngle(0f, (Quaternion.Inverse(parentRotation) * aim).eulerAngles.y), MinYaw, MaxYaw);
+            // Both yaws lie inside the arc, so the mount turns through the arc, never across its dead zone.
+            float duration = Mathf.Abs(targetYaw - _mountYaw) / _profile.TurnRate;
+            _mountYaw = targetYaw;
+            _turnEndTime = Time.time + duration;
+            return duration;
         }
 
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)

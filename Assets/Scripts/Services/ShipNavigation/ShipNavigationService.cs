@@ -1,6 +1,7 @@
 using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
@@ -93,6 +94,9 @@ namespace EmpireAtWar.Services.ShipNavigation
         private const int DESTINATION_CANDIDATES_PER_RING = 8;
         // Ships that get orders together (a group retargeting) wait a few frames instead of all planning at once.
         private const int MAX_QUEUED_PLANS_PER_FRAME = 4;
+        // Once one plan has run, further queued plans wait for the next frame past this much planning time.
+        private const double PLAN_BUDGET_MILLISECONDS = 2.0;
+        private static readonly long PLAN_BUDGET_TICKS = (long)(Stopwatch.Frequency * PLAN_BUDGET_MILLISECONDS / 1000.0);
 
         private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
 
@@ -108,12 +112,12 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void LateTick()
         {
+            long start = Stopwatch.GetTimestamp();
             for (int i = 0; i < MAX_QUEUED_PLANS_PER_FRAME && _planQueue.Count > 0; i++)
             {
+                if (i > 0 && Stopwatch.GetTimestamp() - start > PLAN_BUDGET_TICKS) break;
                 _planQueue.Dequeue().ExecuteQueuedPlan();
             }
-
-            _cache.ClearGrids();
         }
 
         public void RequestPlan(IShipPlanRequester requester) => _planQueue.Enqueue(requester);

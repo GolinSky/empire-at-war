@@ -10,8 +10,8 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
-    // Shares one obstacle raster within a frame; floods remain specific to the current origin.
-    // Jobs complete before reuse, and the navigation cache disposes buffers at frame end.
+    // One obstacle raster and its region labels, kept across frames while the obstacles stay the same.
+    // Searches are specific to the current origin. Jobs complete before reuse; the navigation cache disposes buffers.
     internal sealed class ShipPathGrid : IDisposable
     {
         private const float MINIMUM_CELL_SIZE = 4f;
@@ -28,15 +28,21 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly float _clearance;
         private NativeArray<float3> _obstacles;
         private NativeArray<byte> _blocked;
+        private NativeArray<int> _regions;
         private NativeArray<float> _costSoFar;
         private NativeArray<int> _cameFrom;
+        private NativeArray<byte> _closed;
+        private NativeList<NavigationRouteJob.OpenNode> _open;
         private NativeList<float2> _rawPath;
         private NativeList<float2> _path;
         private NativeArray<int> _status;
 
         private readonly float _inflation;
 
-        private bool _isFlooded;
+        private int _originRegion;
+        // Unreachable answers start only after this plan's first search, so direct-route
+        // candidates keep the same ordering as before any search.
+        private bool _hasSearched;
 
         public ShipPathGrid(
             IReadOnlyList<RadarContact> obstacles,
@@ -45,9 +51,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             float clearance)
         {
             Vector2 size = mapRange.Max - mapRange.Min;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using var scope = BattleProfilerMarkers.NavigationGridBuild.Auto();
-#endif
             float cellSize = Mathf.Max(
                 MINIMUM_CELL_SIZE,
                 Mathf.Max(size.x, size.y) / MAXIMUM_CELLS_PER_AXIS);
@@ -59,11 +62,10 @@ namespace EmpireAtWar.Services.ShipNavigation
             // Inflating by half a cell diagonal guarantees that the straight
             // segment between two adjacent walkable nodes keeps full clearance.
             _inflation = clearance + cellSize * HALF_DIAGONAL_FACTOR;
-            _origin = new float2(origin.x, origin.z);
             _mapMin = mapRange.Min;
             _mapMax = mapRange.Max;
             _clearance = clearance;
-            _obstacles = new NativeArray<float3>(obstacles.Count, Allocator.TempJob);
+            _obstacles = new NativeArray<float3>(obstacles.Count, Allocator.Persistent);
             for (int i = 0; i < obstacles.Count; i++)
             {
                 RadarContact obstacle = obstacles[i];
@@ -72,13 +74,18 @@ namespace EmpireAtWar.Services.ShipNavigation
                     obstacle.Position.z,
                     obstacle.Radius);
             }
+
+            SetOrigin(origin);
         }
 
         public void Dispose()
         {
             if (_blocked.IsCreated) _blocked.Dispose();
+            if (_regions.IsCreated) _regions.Dispose();
             if (_costSoFar.IsCreated) _costSoFar.Dispose();
             if (_cameFrom.IsCreated) _cameFrom.Dispose();
+            if (_closed.IsCreated) _closed.Dispose();
+            if (_open.IsCreated) _open.Dispose();
             if (_rawPath.IsCreated) _rawPath.Dispose();
             if (_path.IsCreated) _path.Dispose();
             if (_status.IsCreated) _status.Dispose();
@@ -101,20 +108,22 @@ namespace EmpireAtWar.Services.ShipNavigation
         public void SetOrigin(Vector3 origin)
         {
             _origin = new float2(origin.x, origin.z);
-            // Each plan must start without known-unreachable results so direct-route
-            // candidates keep the same ordering as a fresh grid.
-            _isFlooded = false;
+            _originRegion = -1;
+            _hasSearched = false;
         }
 
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)
         {
-            EnsureFlood();
+            BeginSearch();
             NavigationRouteJob job = new NavigationRouteJob
             {
                 Blocked = _blocked,
+                Regions = _regions,
                 Obstacles = _obstacles,
                 CostSoFar = _costSoFar,
                 CameFrom = _cameFrom,
+                Closed = _closed,
+                Open = _open,
                 Cells = _cells,
                 Start = _origin,
                 Goal = new float2(destination.x, destination.z),
@@ -124,8 +133,11 @@ namespace EmpireAtWar.Services.ShipNavigation
                 Status = _status
             };
             // Same-frame contract: the caller needs the route now, so the
-            // job is completed immediately (Burst still runs the extraction).
-            job.Schedule().Complete();
+            // job is completed immediately (Burst still runs the search).
+            using (BattleProfilerMarkers.NavigationPathSearch.Auto())
+            {
+                job.Schedule().Complete();
+            }
 
             waypoints.Clear();
             if (_status[0] != NavigationRouteJob.STATUS_FOUND)
@@ -142,51 +154,39 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         /// <summary>
-        /// True only when the flood has already run and cannot reach the cell a route
-        /// to the point would end on. Matches <see cref="TryFindPath"/>: a point inside
-        /// the grid's inflation (e.g. snapped to an obstacle edge) uses its nearest walkable cell.
+        /// True only after this plan has searched and the cell a route to the point would end on lies outside
+        /// the ship's region. Matches <see cref="TryFindPath"/>: a point inside the grid's inflation
+        /// (e.g. snapped to an obstacle edge) uses its nearest walkable cell.
         /// </summary>
         public bool IsKnownUnreachable(Vector3 position)
         {
-            if (!_isFlooded)
+            if (!_hasSearched)
             {
                 return false;
             }
 
             int cell = _cells.FindNearestWalkableCell(_blocked, new float2(position.x, position.z));
-            return cell < 0 || float.IsPositiveInfinity(_costSoFar[cell]);
+            return cell < 0 || _originRegion < 0 || _regions[cell] != _originRegion;
         }
 
-        /// <summary>The reachable grid node closest to <paramref name="position"/>.</summary>
+        /// <summary>The grid node closest to <paramref name="position"/> that the ship can reach.</summary>
         public bool TryGetNearestReachable(Vector3 position, float height, out Vector3 nearest)
         {
-            EnsureFlood();
+            BeginSearch();
             using (BattleProfilerMarkers.NavigationNearestReachable.Auto())
             {
-                return TryFindNearestReachableCell(position, height, out nearest);
-            }
-        }
-
-        private bool TryFindNearestReachableCell(Vector3 position, float height, out Vector3 nearest)
-        {
-            float2 target = new float2(position.x, position.z);
-            int best = -1;
-            float bestDistance = float.PositiveInfinity;
-            for (int cell = 0; cell < _costSoFar.Length; cell++)
-            {
-                if (float.IsPositiveInfinity(_costSoFar[cell]))
+                new NavigationNearestReachableJob
                 {
-                    continue;
-                }
-
-                float distance = math.distancesq(_cells.GetNodePosition(cell), target);
-                if (distance < bestDistance)
-                {
-                    bestDistance = distance;
-                    best = cell;
-                }
+                    Blocked = _blocked,
+                    Regions = _regions,
+                    Cells = _cells,
+                    Start = _origin,
+                    Target = new float2(position.x, position.z),
+                    Result = _status
+                }.Schedule().Complete();
             }
 
+            int best = _status[0];
             if (best < 0)
             {
                 nearest = default;
@@ -198,27 +198,49 @@ namespace EmpireAtWar.Services.ShipNavigation
             return true;
         }
 
-        private void EnsureFlood()
+        private void BeginSearch()
         {
-            if (_isFlooded)
+            EnsureBuilt();
+            if (_hasSearched)
             {
                 return;
             }
 
-            using (BattleProfilerMarkers.NavigationFlood.Auto())
+            _hasSearched = true;
+            int originCell = _cells.FindNearestWalkableCell(_blocked, _origin);
+            _originRegion = originCell < 0 ? -1 : _regions[originCell];
+        }
+
+        private void EnsureBuilt()
+        {
+            if (_blocked.IsCreated)
             {
-                Flood();
+                return;
+            }
+
+            using (BattleProfilerMarkers.NavigationGridBuild.Auto())
+            {
+                Build();
             }
         }
 
-        private void Flood()
+        private void Build()
         {
             int cellCount = _cells.Count;
-            if (!_blocked.IsCreated)
+            _blocked = new NativeArray<byte>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _regions = new NativeArray<int>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _costSoFar = new NativeArray<float>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _cameFrom = new NativeArray<int>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _closed = new NativeArray<byte>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _open = new NativeList<NavigationRouteJob.OpenNode>(256, Allocator.Persistent);
+            _rawPath = new NativeList<float2>(64, Allocator.Persistent);
+            _path = new NativeList<float2>(16, Allocator.Persistent);
+            _status = new NativeArray<int>(1, Allocator.Persistent);
+            NativeArray<int> queue = new NativeArray<int>(
+                cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+            try
             {
-                _blocked = new NativeArray<byte>(
-                    cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-                new NavigationGridBlockJob
+                JobHandle blocked = new NavigationGridBlockJob
                 {
                     Obstacles = _obstacles,
                     Blocked = _blocked,
@@ -226,38 +248,18 @@ namespace EmpireAtWar.Services.ShipNavigation
                     CellSize = _cells.CellSize,
                     Width = _cells.Width,
                     Inflation = _inflation
-                }.Schedule(cellCount, BLOCK_JOB_BATCH_SIZE).Complete();
-                _costSoFar = new NativeArray<float>(
-                    cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-                _cameFrom = new NativeArray<int>(
-                    cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-                _rawPath = new NativeList<float2>(64, Allocator.TempJob);
-                _path = new NativeList<float2>(16, Allocator.TempJob);
-                _status = new NativeArray<int>(1, Allocator.TempJob);
-            }
-            _isFlooded = true;
-
-            NativeArray<byte> closed = new NativeArray<byte>(
-                cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-            NativeList<NavigationFloodJob.OpenNode> open =
-                new NativeList<NavigationFloodJob.OpenNode>(cellCount, Allocator.TempJob);
-            try
-            {
-                new NavigationFloodJob
+                }.Schedule(cellCount, BLOCK_JOB_BATCH_SIZE);
+                new NavigationRegionJob
                 {
                     Blocked = _blocked,
                     Cells = _cells,
-                    Start = _origin,
-                    CostSoFar = _costSoFar,
-                    CameFrom = _cameFrom,
-                    Closed = closed,
-                    Open = open
-                }.Schedule().Complete();
+                    Regions = _regions,
+                    Queue = queue
+                }.Schedule(blocked).Complete();
             }
             finally
             {
-                closed.Dispose();
-                open.Dispose();
+                queue.Dispose();
             }
         }
     }

@@ -38,6 +38,9 @@ namespace EmpireAtWar.Components.Weapon
         private int _dueCommittedCount;
 #endif
 
+        /// <summary>Shared hardpoint slots that weapons keep as their target candidates.</summary>
+        internal TargetSelectionCapture TargetUnits => _targetSelection.Units;
+
         public int PendingSequences => _sequences.Count;
         public int PendingImpacts => _impacts.Count;
 

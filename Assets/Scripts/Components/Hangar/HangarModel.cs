@@ -69,6 +69,15 @@ namespace EmpireAtWar.Components.Hangar
             return false;
         }
 
+        /// <summary>Runs the launch timer without launching, for a frame whose launch slot is already taken.</summary>
+        public void AdvanceCooldown(float deltaTime)
+        {
+            if (IsOperational)
+            {
+                _cooldown -= deltaTime;
+            }
+        }
+
         public void SquadronLost(int bay)
         {
             _active[bay] = Math.Max(0, _active[bay] - 1);

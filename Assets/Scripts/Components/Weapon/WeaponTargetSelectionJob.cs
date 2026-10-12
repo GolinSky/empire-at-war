@@ -21,14 +21,19 @@ namespace EmpireAtWar.Components.Weapon
         internal const int FALLBACK_OUT_OF_SPAN = 7;
 
         [ReadOnly] public NativeArray<Input> Inputs;
-        [ReadOnly] public NativeArray<float3> CandidatePositions;
-        [ReadOnly] public NativeArray<byte> CandidateIsStrikecraft;
+        // Each candidate is a hardpoint slot plus its target group, local to the owner's group block.
+        [ReadOnly] public NativeArray<int> CandidateSlots;
+        [ReadOnly] public NativeArray<int> CandidateGroups;
+        [ReadOnly] public NativeArray<byte> GroupEligible;
+        // Indexed by slot (see TargetSelectionCapture).
+        [ReadOnly] public NativeArray<float3> SlotPositions;
+        [ReadOnly] public NativeArray<byte> SlotFlags;
         [WriteOnly] public NativeArray<Result> Results;
 
         public void Execute(int index)
         {
             Input input = Inputs[index];
-            Result result = new Result { CandidateIndex = -1 };
+            Result result = new Result { CandidateIndex = -1, NearestDistance = float.PositiveInfinity };
             if (!math.all(math.isfinite(input.Origin)) ||
                 !math.all(math.isfinite(input.ParentRotation.value)) ||
                 !math.isfinite(input.MaxDistance) || !math.isfinite(input.MinYaw) || !math.isfinite(input.MaxYaw))
@@ -41,11 +46,16 @@ namespace EmpireAtWar.Components.Weapon
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
             for (int i = input.CandidateStart; i < input.CandidateStart + input.CandidateCount; i++)
             {
-                if (input.StrikecraftOnly != 0 && CandidateIsStrikecraft[i] == 0) continue;
+                if (GroupEligible[input.GroupStart + CandidateGroups[i]] == 0) continue;
+                int slot = CandidateSlots[i];
+                byte flags = SlotFlags[slot];
+                if ((flags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
+                if (input.StrikecraftOnly != 0 && (flags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
                 result.Visited++;
-                float3 direction = CandidatePositions[i] - input.Origin;
+                float3 direction = SlotPositions[slot] - input.Origin;
                 // Planar, like WeaponTargetSelector: ships on different height tiers must stay in range.
                 float distance = math.length(new float2(direction.x, direction.z));
+                result.NearestDistance = math.min(result.NearestDistance, distance);
                 if (!math.all(math.isfinite(direction)) || math.length(direction) <= 0.00001f ||
                     math.lengthsq(new float2(direction.x, direction.z)) <= math.lengthsq(direction) * 0.0000000001f)
                 {
@@ -106,6 +116,7 @@ namespace EmpireAtWar.Components.Weapon
 
             public int CandidateStart;
             public int CandidateCount;
+            public int GroupStart;
             public int StrikecraftOnly;
         }
 
@@ -113,6 +124,8 @@ namespace EmpireAtWar.Components.Weapon
         {
             public float4 SelectedAim;
             public float4 LastInRangeAim;
+            // Planar distance to the nearest eligible candidate visited; infinity when none was visited.
+            public float NearestDistance;
 
             public int CandidateIndex;
             public int Visited;

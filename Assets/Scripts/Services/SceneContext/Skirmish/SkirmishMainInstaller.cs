@@ -112,6 +112,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesExt<StationRegistry>();
         Container.BindInterfacesExt<SquadronRegistry>();
         Container.BindInterfacesExt<SquadronLauncher>();
+        Container.BindInterfacesExt<SquadronLaunchSlots>();
         
 
         BindPlayers();

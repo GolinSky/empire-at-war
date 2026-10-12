@@ -61,7 +61,7 @@ namespace EmpireAtWar.Services.Timing
         public const string NAVIGATION_PLAN = "Battle.Navigation.Plan";
         public const string NAVIGATION_CANDIDATES = "Battle.Navigation.Candidates";
         public const string NAVIGATION_ROUTE_BUILD = "Battle.Navigation.RouteBuild";
-        public const string NAVIGATION_FLOOD = "Battle.Navigation.Flood";
+        public const string NAVIGATION_PATH_SEARCH = "Battle.Navigation.PathSearch";
         public const string NAVIGATION_NEAREST_REACHABLE = "Battle.Navigation.NearestReachable";
 
         public static readonly ProfilerMarker ShipTick = new ProfilerMarker(SHIP_TICK);
@@ -131,7 +131,7 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker NavigationPlan = new ProfilerMarker(NAVIGATION_PLAN);
         public static readonly ProfilerMarker NavigationCandidates = new ProfilerMarker(NAVIGATION_CANDIDATES);
         public static readonly ProfilerMarker NavigationRouteBuild = new ProfilerMarker(NAVIGATION_ROUTE_BUILD);
-        public static readonly ProfilerMarker NavigationFlood = new ProfilerMarker(NAVIGATION_FLOOD);
+        public static readonly ProfilerMarker NavigationPathSearch = new ProfilerMarker(NAVIGATION_PATH_SEARCH);
         public static readonly ProfilerMarker NavigationNearestReachable =
             new ProfilerMarker(NAVIGATION_NEAREST_REACHABLE);
     }

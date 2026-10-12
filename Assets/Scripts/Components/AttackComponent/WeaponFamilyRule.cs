@@ -33,6 +33,10 @@ namespace EmpireAtWar.Components.AttackComponent
         [Tooltip("Caliber shifts damage and accuracy towards bigger targets. Off for strikecraft weapons.")]
         [SerializeField] private bool targetSizeBias = true;
 
+        [Header("Turret")]
+        [Tooltip("Degrees per second a Light mount turns towards a new target before its salvo. 0 fires without turning; squadron families never turn.")]
+        [SerializeField, Min(0f)] private float turnRate;
+
         [Header("Visual")]
         [SerializeField] private ShotEffect shotPrefab;
         [Tooltip("Used by Dual and Triple mounts, and larger mounts without a dedicated prefab. Leave empty to use the normal shot.")]
@@ -58,6 +62,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool StrikecraftOnly => strikecraftOnly;
         public bool Interceptable => interceptable;
         public bool TargetSizeBias => targetSizeBias;
+        public float TurnRate => turnRate;
         public ShotEffect ShotPrefab => shotPrefab;
         public ShotEffect MultiBarrelShotPrefab => multiBarrelShotPrefab;
         public ShotEffect QuadShotPrefab => quadShotPrefab;

@@ -27,6 +27,8 @@ namespace EmpireAtWar.Components.AttackComponent
             }
 
             float range = family.Range * caliber.RangeMultiplier * rangeClass.RangeMultiplier * definition.RangeMultiplier;
+            // Squadrons aim by flying, so their weapons never turn.
+            float turnRate = family.Platform == WeaponPlatform.Squadron ? 0f : family.TurnRate * caliber.TurnRateMultiplier;
 
             ShotEffect shotPrefab = barrels > 1 && family.MultiBarrelShotPrefab != null
                 ? family.MultiBarrelShotPrefab
@@ -50,7 +52,7 @@ namespace EmpireAtWar.Components.AttackComponent
             return new WeaponProfile(definition.WeaponType, definition.DisplayName, family.Family, family.DamageType,
                 damage, shots, interval, reload, range, family.StrikecraftOnly, family.Interceptable, shotPrefab,
                 projectileSpeed, color, size, usesFactionColor, family.TargetSizeBias, caliber.DamageBias,
-                caliber.AccuracyBias, rangeClass.AccuracyMultiplier);
+                caliber.AccuracyBias, rangeClass.AccuracyMultiplier, turnRate);
         }
     }
 }
