@@ -1,0 +1,86 @@
+[
+  {
+    "id": 0,
+    "name": "MediumTurbolaser01",
+    "bone": "LC_Quad_01",
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "MediumTurbolaser02",
+    "bone": "LC_Quad_02",
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "MediumTurbolaser03",
+    "bone": "LC_Quad_03",
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "MediumTurbolaser04",
+    "bone": "LC_Quad_04",
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "LightQuadTurbolaser01",
+    "bone": "LC_Quad_05",
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "LightQuadTurbolaser02",
+    "bone": "LC_Quad_06",
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "HeavyLaser01",
+    "bone": "LC_Quad_07",
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "HeavyLaser02",
+    "bone": "LC_Quad_08",
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "HeavyLaser03",
+    "bone": "LC_Quad_09",
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "HeavyLaser04",
+    "bone": "LC_Quad_10",
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "PointDefense01",
+    "bone": "LC_Quad_11",
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "PointDefense02",
+    "bone": "LC_Quad_12",
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "Engine",
+    "bone": "Engines",
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "ShieldGenerator",
+    "bone": "Shield_Generator_01",
+    "targetable": true
+  }
+]

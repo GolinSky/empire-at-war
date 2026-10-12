@@ -165,6 +165,21 @@ MonoBehaviour:
         aiUse: 0
         settings:
           rid: 7607833764655792205
+    - key: 45
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Power to Shields
+        description: +60% shield regeneration, -20% movement speed and weapon damage
+          for 8 seconds; 35-second recovery.
+        duration: 8
+        recoveryDelay: 35
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 6801467062609510482
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
@@ -772,6 +787,16 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         fireDelayMultiplier: 0.6666667
+    - rid: 6801467062609510482
+      type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 0.8
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 1.6
+          damageTakenMultiplier: 1
     - rid: 6801467062609510489
       type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

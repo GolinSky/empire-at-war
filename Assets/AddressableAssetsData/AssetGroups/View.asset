@@ -195,6 +195,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89c4c6800d7ce9041bb471549c2379b9
+    m_Address: AssaultFrigateMkIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b70c9c30de88af48a0ad58a72d76f4b
     m_Address: AsteroidMiningFacilityView
     m_ReadOnly: 0

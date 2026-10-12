@@ -1,0 +1,2969 @@
+{
+  "models": {
+    "AssaultFrigateMkII": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2.ALO",
+      "sha256": "b9b7d6b17124f0b09984178fe916a48f6ea026e41c2380c60c4de134158626f2",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 58038,
+              "triangleCount": 77384,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "Hull_Lights_Grid_Sparse_Rebel.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 594,
+              "triangleCount": 314,
+              "materialName": "AssaultFrigateMkII_Material01"
+            }
+          ],
+          "name": "Lights",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "EdgeBrightness": [
+                  1.0
+                ],
+                "BaseUVScale": [
+                  0.20999999344348907
+                ],
+                "WaveUVScale": [
+                  0.36000001430511475
+                ],
+                "DistortUVScale": [
+                  0.3199999928474426
+                ],
+                "BaseUVScrollRate": [
+                  -0.029999999329447746
+                ],
+                "WaveUVScrollRate": [
+                  0.019999999552965164
+                ],
+                "DistortUVScrollRate": [
+                  0.07000000029802322
+                ],
+                "BaseTexture": "Nb_shieldbase_Blue.dds",
+                "WaveTexture": "NB_SHIELDWAVE.dds",
+                "DistortionTexture": "Nb_shieldripple.dds"
+              },
+              "shader": "MeshShield.fx",
+              "vertexCount": 574,
+              "triangleCount": 960,
+              "materialName": "AssaultFrigateMkII_Material02"
+            }
+          ],
+          "name": "Shield",
+          "hidden": true,
+          "collision": true
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "EdgeBrightness": [
+                  1.0
+                ],
+                "BaseUVScale": [
+                  1.0
+                ],
+                "WaveUVScale": [
+                  0.5
+                ],
+                "DistortUVScale": [
+                  1.0
+                ],
+                "BaseUVScrollRate": [
+                  0.0
+                ],
+                "WaveUVScrollRate": [
+                  0.10000000149011612
+                ],
+                "DistortUVScrollRate": [
+                  0.30000001192092896
+                ],
+                "BaseTexture": "Engine_Glow_Fancy_Blue.dds",
+                "WaveTexture": "Engine_Glow_Blue_wave.dds",
+                "DistortionTexture": "Engine_Glow_Blue_dist.dds"
+              },
+              "shader": "MeshShield.fx",
+              "vertexCount": 345,
+              "triangleCount": 420,
+              "materialName": "AssaultFrigateMkII_Material03"
+            }
+          ],
+          "name": "Engine_Glow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "UVScrollRate": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ]
+              },
+              "shader": "MeshAdditive.fx",
+              "vertexCount": 150,
+              "triangleCount": 141,
+              "materialName": "AssaultFrigateMkII_Material04"
+            }
+          ],
+          "name": "Engine_Exhaust",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Color": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshCollision.fx",
+              "vertexCount": 8328,
+              "triangleCount": 7955,
+              "materialName": "AssaultFrigateMkII_Material05"
+            }
+          ],
+          "name": "Col",
+          "hidden": true,
+          "collision": true
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 16135,
+              "triangleCount": 19342,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Hull",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 42
+        },
+        {
+          "mesh": 1,
+          "bone": 53
+        },
+        {
+          "mesh": 2,
+          "bone": 73
+        },
+        {
+          "mesh": 3,
+          "bone": 74
+        },
+        {
+          "mesh": 4,
+          "bone": 76
+        },
+        {
+          "mesh": 5,
+          "bone": 43
+        },
+        {
+          "mesh": 6,
+          "bone": 43
+        }
+      ],
+      "proxies": [
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 3
+        },
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 4
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 5
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 6
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 7
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 10
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 11
+        },
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 12
+        },
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 31
+        },
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 36
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 37
+        },
+        {
+          "name": "P_SHIP_FIRE_EXPLOSION.ALO",
+          "bone": 40
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 41
+        },
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 46
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 47
+        },
+        {
+          "name": "P_SHIP_FIRE_SMALL_EXPLOSION.ALO",
+          "bone": 48
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 49
+        },
+        {
+          "name": "P_SHIP_FIRE_VERY_SMALL_EXPLOSION.ALO",
+          "bone": 50
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_2",
+          "bone": 54
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 55
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 56
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 57
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 58
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 59
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 60
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 61
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 62
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 63
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 64
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 65
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 66
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 67
+        },
+        {
+          "name": "P_BLINK_MEDIUM_RED_5_05",
+          "bone": 68
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 69
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 70
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_1",
+          "bone": 71
+        },
+        {
+          "name": "P_BLINK_MEDIUM_WHITE_5_0",
+          "bone": 72
+        },
+        {
+          "name": "PE_AF_MK2_L",
+          "bone": 75
+        },
+        {
+          "name": "PE_AF_MK2_S",
+          "bone": 77
+        },
+        {
+          "name": "PE_AF_MK2_S",
+          "bone": 78
+        }
+      ]
+    },
+    "AssaultFrigateMkIIPart00": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_01.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart01": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_02.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart02": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_03.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart03": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_04.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart04": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_05.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart05": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_06.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart06": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_07.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart07": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_08.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart08": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_09.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart09": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_10.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart10": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_11.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart11": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_12.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart12": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_13.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    },
+    "AssaultFrigateMkIIPart13": {
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Assault_Frigate_MK2_QLC_14.ALO",
+      "sha256": "ff259c81a9a4c12e0c299e983ec291ca1aed594670250a9d6f985419cd882d4a",
+      "meshes": [
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 434,
+              "triangleCount": 312,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Turret",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "Emissive": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "Diffuse": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Specular": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  0.0
+                ],
+                "Shininess": [
+                  32.0
+                ],
+                "Colorization": [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                "UVOffset": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+                "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+              },
+              "shader": "MeshBumpColorize.fx",
+              "vertexCount": 168,
+              "triangleCount": 128,
+              "materialName": "AssaultFrigateMkII_Material06"
+            }
+          ],
+          "name": "Barrel",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 370,
+              "triangleCount": 498,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Barrel_Shadow",
+          "hidden": false,
+          "collision": false
+        },
+        {
+          "materials": [
+            {
+              "properties": {
+                "DebugColor": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "shader": "MeshShadowVolume.fx",
+              "vertexCount": 857,
+              "triangleCount": 1189,
+              "materialName": "AssaultFrigateMkII_Material00"
+            }
+          ],
+          "name": "Turret_Shadow",
+          "hidden": false,
+          "collision": false
+        }
+      ],
+      "connections": [
+        {
+          "mesh": 0,
+          "bone": 1
+        },
+        {
+          "mesh": 1,
+          "bone": 2
+        },
+        {
+          "mesh": 2,
+          "bone": 4
+        },
+        {
+          "mesh": 3,
+          "bone": 5
+        }
+      ],
+      "proxies": []
+    }
+  },
+  "materials": [
+    {
+      "name": "AssaultFrigateMkII_Material00",
+      "shader": "MeshShadowVolume.fx",
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "AssaultFrigateMkII_Material01",
+      "shader": "MeshAdditive.fx",
+      "properties": {
+        "BaseTexture": "Hull_Lights_Grid_Sparse_Rebel.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      },
+      "base": "AssaultFrigateMkII_Hull_Lights_Grid_Sparse_Rebel_Albedo",
+      "normal": null
+    },
+    {
+      "name": "AssaultFrigateMkII_Material02",
+      "shader": "MeshShield.fx",
+      "properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          1.0
+        ],
+        "BaseUVScale": [
+          0.20999999344348907
+        ],
+        "WaveUVScale": [
+          0.36000001430511475
+        ],
+        "DistortUVScale": [
+          0.3199999928474426
+        ],
+        "BaseUVScrollRate": [
+          -0.029999999329447746
+        ],
+        "WaveUVScrollRate": [
+          0.019999999552965164
+        ],
+        "DistortUVScrollRate": [
+          0.07000000029802322
+        ],
+        "BaseTexture": "Nb_shieldbase_Blue.dds",
+        "WaveTexture": "NB_SHIELDWAVE.dds",
+        "DistortionTexture": "Nb_shieldripple.dds"
+      },
+      "base": "AssaultFrigateMkII_Nb_shieldbase_Blue_Albedo",
+      "normal": null
+    },
+    {
+      "name": "AssaultFrigateMkII_Material03",
+      "shader": "MeshShield.fx",
+      "properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          1.0
+        ],
+        "BaseUVScale": [
+          1.0
+        ],
+        "WaveUVScale": [
+          0.5
+        ],
+        "DistortUVScale": [
+          1.0
+        ],
+        "BaseUVScrollRate": [
+          0.0
+        ],
+        "WaveUVScrollRate": [
+          0.10000000149011612
+        ],
+        "DistortUVScrollRate": [
+          0.30000001192092896
+        ],
+        "BaseTexture": "Engine_Glow_Fancy_Blue.dds",
+        "WaveTexture": "Engine_Glow_Blue_wave.dds",
+        "DistortionTexture": "Engine_Glow_Blue_dist.dds"
+      },
+      "base": "AssaultFrigateMkII_Engine_Glow_Fancy_Blue_Albedo",
+      "normal": null
+    },
+    {
+      "name": "AssaultFrigateMkII_Material04",
+      "shader": "MeshAdditive.fx",
+      "properties": {
+        "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      },
+      "base": "AssaultFrigateMkII_Rebel_Assault_Frigate_MK2_Albedo",
+      "normal": null
+    },
+    {
+      "name": "AssaultFrigateMkII_Material05",
+      "shader": "MeshCollision.fx",
+      "properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "AssaultFrigateMkII_Material06",
+      "shader": "MeshBumpColorize.fx",
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "Rebel_Assault_Frigate_MK2.dds",
+        "NormalTexture": "Rebel_Assault_Frigate_MK2_B.dds"
+      },
+      "base": "AssaultFrigateMkII_Rebel_Assault_Frigate_MK2_Albedo",
+      "normal": "AssaultFrigateMkII_Rebel_Assault_Frigate_MK2_B_Normal"
+    }
+  ]
+}

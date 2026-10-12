@@ -129,6 +129,9 @@ MonoBehaviour:
     - key: 307
       value: {fileID: 484096460124362054, guid: d360139ffc7612e4198fd9f2f4765116,
         type: 3}
+    - key: 309
+      value: {fileID: 484096460124362054, guid: b2a23c8d1bcc8fc42a98fa3c746e664f,
+        type: 3}
     - key: 330
       value: {fileID: 484096460124362054, guid: 532a740159cffbd46a317fa64a34529e,
         type: 3}

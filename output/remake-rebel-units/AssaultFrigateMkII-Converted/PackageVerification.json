@@ -1,0 +1,29 @@
+{
+  "sourceHashesVerified": 28,
+  "editableSourceScenesVerified": 15,
+  "iconAlphaBounds": [
+    51,
+    144,
+    403,
+    383
+  ],
+  "palettes": {
+    "Team": {
+      "distinctRenders": 8,
+      "minimumChangedPixels": 30179
+    },
+    "WreckTeam": {
+      "distinctRenders": 8,
+      "minimumChangedPixels": 30075
+    }
+  },
+  "unity": {
+    "models": 15,
+    "meshes": 63,
+    "triangles": 61078,
+    "bones": 163,
+    "boneErrorUnits": 5.462856e-07
+  },
+  "automatedTestsRun": false,
+  "playModeRun": false
+}

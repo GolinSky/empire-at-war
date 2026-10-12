@@ -1,0 +1,70 @@
+{
+  "editorCompileFailed": false,
+  "unityGeometry": {
+    "models": 15,
+    "meshes": 63,
+    "triangles": 61078,
+    "bones": 163,
+    "boneErrorUnits": 5.462856E-07
+  },
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/AssaultFrigateMkII.prefab",
+      "size": [
+        69.5966949,
+        52.099926,
+        100.0
+      ],
+      "visibleMeshes": 32
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/AssaultFrigateMkIIShipView.prefab",
+      "size": [
+        69.5966949,
+        52.099926,
+        100.0
+      ],
+      "visibleMeshes": 32
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/AssaultFrigateMkIIReinforcementView.prefab",
+      "size": [
+        69.5966949,
+        52.099926,
+        100.0
+      ],
+      "visibleMeshes": 29
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/AssaultFrigateMkIIWreckView.prefab",
+      "size": [
+        69.5966949,
+        52.0999222,
+        99.99999
+      ],
+      "visibleMeshes": 29
+    }
+  ],
+  "gameplay": {
+    "hull": 3500,
+    "shields": 3000,
+    "speed": 31,
+    "price": 3200,
+    "buildSeconds": 40,
+    "targetableHardpoints": 14,
+    "weaponProfiles": [
+      4,
+      82,
+      28,
+      14
+    ],
+    "weaponCounts": [
+      4,
+      2,
+      4,
+      2
+    ],
+    "registrationsVerified": true,
+    "abilityVerified": true
+  }
+}
