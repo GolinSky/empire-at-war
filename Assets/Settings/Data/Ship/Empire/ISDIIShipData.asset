@@ -52,11 +52,11 @@ MonoBehaviour:
     reserve: 2
     maxActive: 1
   - squadronType: 204
-    reserve: 2
-    maxActive: 1
+    reserve: 0
+    maxActive: 0
   - squadronType: 205
-    reserve: 2
-    maxActive: 1
+    reserve: 0
+    maxActive: 0
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 30
   weaponLoadout:
