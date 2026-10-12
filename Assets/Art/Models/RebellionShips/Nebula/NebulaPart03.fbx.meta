@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: 90e9510de33ba014db9ffe62264f28d8
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart00_M003
+    second: {fileID: 2100000, guid: 8dbd298aac1b50046b8648cbde631abf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart00_M004
+    second: {fileID: 2100000, guid: a36bdab646e7fda4997d03d108822458, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart00_M005
+    second: {fileID: 2100000, guid: 8f2b4d745357be74c99c4d0805bcbba9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart00_M006
+    second: {fileID: 2100000, guid: 8526a0bd0db88df4ba8e3ea054b89efc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart01_M003
+    second: {fileID: 2100000, guid: 05a7e33a16385d74aae7f4dbba22b11a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart01_M004
+    second: {fileID: 2100000, guid: c606304bb0188c84ba415428f08ca54b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart01_M005
+    second: {fileID: 2100000, guid: 0956756196f88764caf51552e776aaf4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart01_M006
+    second: {fileID: 2100000, guid: 8dbb2e2a856b19941854745641b165ce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart02_M003
+    second: {fileID: 2100000, guid: 4b08025da60c68845b9888f964f5f3da, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart02_M004
+    second: {fileID: 2100000, guid: 02e7549f64686f24db76883e1a8da265, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart02_M005
+    second: {fileID: 2100000, guid: 5eb6a03165a5ddc44a56ba8f404c7b5e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart02_M006
+    second: {fileID: 2100000, guid: c2b9e54ffc181f04f9615362236648e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart03_M003
+    second: {fileID: 2100000, guid: eb7f6069dfcbdc8448929e6869df9b3f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart03_M004
+    second: {fileID: 2100000, guid: c8b07f46b304b034aaaf63c6addcc31a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart03_M005
+    second: {fileID: 2100000, guid: 8cb31ff7eae67fe489206257f9eff717, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart03_M006
+    second: {fileID: 2100000, guid: 8d0b0b22842168a4c882c1dd20f02da4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart04_M003
+    second: {fileID: 2100000, guid: 27906f76f6b0ca84ca376760d1269f83, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart04_M004
+    second: {fileID: 2100000, guid: 2bb083edb4d4e224e8f4e188101a5f40, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart04_M005
+    second: {fileID: 2100000, guid: c07333d6618b51f4fb94e9f59942d8f9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart04_M006
+    second: {fileID: 2100000, guid: 4da1b9bb5bfbcf94fbbd367340e5b76b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart05_M003
+    second: {fileID: 2100000, guid: db8ea30ff39814248a5daa42d7362112, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart05_M004
+    second: {fileID: 2100000, guid: 87ddd857d6d4fcf439578391294f0131, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart06_M003
+    second: {fileID: 2100000, guid: 873ae1f9464af074b8faa2c8af7b69fa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart06_M004
+    second: {fileID: 2100000, guid: f8eef9dc6b05efd4086ae6e7b1896443, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart07_M003
+    second: {fileID: 2100000, guid: 36184110e663e4c48bf4b6d3ea3684e4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart07_M004
+    second: {fileID: 2100000, guid: 618f671c52913284e92cc85ee998e4e1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart08_M003
+    second: {fileID: 2100000, guid: 08d51e0b6ad85be40b5e49df233212ce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart08_M004
+    second: {fileID: 2100000, guid: bf4f46299f6fd4c4ea75efd2d8fadf3d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart09_M003
+    second: {fileID: 2100000, guid: cbd606c44ca06384a9cf9f2e1297452b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart09_M004
+    second: {fileID: 2100000, guid: 434c5ce219ebd2545bada9bd54fe3856, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart10_M003
+    second: {fileID: 2100000, guid: b862a6399d63aeb42a921b86c2912a59, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart10_M004
+    second: {fileID: 2100000, guid: d334c702f4e70f746b3bb89a136af3a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart11_M003
+    second: {fileID: 2100000, guid: bfbce472d6890df44a15fe2681807eb3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart11_M004
+    second: {fileID: 2100000, guid: bdba7dae13318ce44aef544f4f000530, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart12_M003
+    second: {fileID: 2100000, guid: 04ea618547a0ec74bab70aa0e39cc732, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart12_M004
+    second: {fileID: 2100000, guid: b91d65c519427c646a99074303841ccc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart13_M003
+    second: {fileID: 2100000, guid: 2692523b48265c444b255cd2baa4380e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart13_M004
+    second: {fileID: 2100000, guid: a4d3bccd46f112f4ba9e11f2576fa22e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart14_M003
+    second: {fileID: 2100000, guid: daacc66c83562834c9acebc4504ba5be, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NebulaPart14_M004
+    second: {fileID: 2100000, guid: 5796a8dad4e1a9b4a8afc2ba28177f29, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M012
+    second: {fileID: 2100000, guid: 82714bf67f086964b9ad207dc75b55c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M013
+    second: {fileID: 2100000, guid: 3c6f6a4393963ad42a8496303b1ef308, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M014
+    second: {fileID: 2100000, guid: cd0fe63d340b74043a51a4af91e4718c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M015
+    second: {fileID: 2100000, guid: bf71431af45dbe8418a488e5f20f97dd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M016
+    second: {fileID: 2100000, guid: 4e2c8ab5dfea1aa44a6aba858f12197e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M017
+    second: {fileID: 2100000, guid: a7c738fbba69c6d409bce9d6c7282142, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M018
+    second: {fileID: 2100000, guid: b21d13f7b1e86b9498499cd43383f93e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M019
+    second: {fileID: 2100000, guid: 2bef48ad1ce045b4299fee033c79751d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M020
+    second: {fileID: 2100000, guid: c9c8a5a584273f64d879bb770786c9dd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M021
+    second: {fileID: 2100000, guid: cfa1aa305b888b145b338edaaf993411, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M022
+    second: {fileID: 2100000, guid: 5a44fbc85bc92664096b87ce6a4db867, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M023
+    second: {fileID: 2100000, guid: 787fde1d76263e346912f42844483b0b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M024
+    second: {fileID: 2100000, guid: 3528864f00d59364baca8db2286cafa6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M025
+    second: {fileID: 2100000, guid: 954e49d6e95e73343a709ffe57174100, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M026
+    second: {fileID: 2100000, guid: 851d3af6f25565c49a01333ffe30db1c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nebula_M027
+    second: {fileID: 2100000, guid: 6ff77520de2de7742a745d0067e708ab, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 1
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.0002
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

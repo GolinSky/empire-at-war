@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 549969f5bcce41644a1cabc6434f1d8b
+    m_Address: NebulaShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 54d09cd5e31fdef4690255567dcdbea9
     m_Address: XWingSquadronView
     m_ReadOnly: 0
