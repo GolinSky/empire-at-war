@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.Data.ShipsData
   shipsData:
     keyValue:
+    - key: 320
+      value:
+        m_AssetGUID: c518047910b28c04c9329ac0f24d7cbb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: 312
       value:
         m_AssetGUID: 28d2337875adca44ba1987aa35884aee

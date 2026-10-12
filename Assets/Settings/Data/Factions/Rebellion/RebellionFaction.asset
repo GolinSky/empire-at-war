@@ -15,6 +15,24 @@ MonoBehaviour:
   factionType: 2
   ships:
     keyValue:
+    - key: 320
+      value:
+        matchups: {fileID: 11400000, guid: fcb215fee41020c4490034316e324e2b, type: 2}
+        description: Light carrier with two light turbolasers and two point-defense
+          lasers. Carries one active and one reserve X-Wing and Y-Wing squadron each.
+          Fighter Reinforcements launches one available replacement from reserve;
+          cooldown 30 seconds. Requires escorts.
+        role: Light carrier / Squadron support
+        iconKey: 27b2ca6d030fce64fa71f572cb392d6d:21300000
+        isHero: 0
+        <Name>k__BackingField: Quasar Fire
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2400
+        <BuildTime>k__BackingField: 35
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d,
+          type: 3}
     - key: 312
       value:
         matchups: {fileID: 11400000, guid: 3b0a6ebe5bef68a47ae3adc0d8490257, type: 2}

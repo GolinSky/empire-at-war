@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         TectorBoostWeaponPower = 32,
         ExecutorLaserBeam = 33,
         CorellianBattlecruiserPowerToShields = 34,
+        FighterReinforcements = 50,
         LiberatorRapidDeployment = 51,
         MC50HitAndRun = 40,
         CD273PowerToEngines = 37,

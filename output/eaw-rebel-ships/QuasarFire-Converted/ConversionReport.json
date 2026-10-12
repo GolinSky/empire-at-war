@@ -1,0 +1,783 @@
+{
+  "variant": "QuasarFire",
+  "before": {
+    "meshes": {
+      "Quasar": {
+        "vertices": 2910,
+        "triangles": 2382,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M009"
+        ]
+      },
+      "HangerLights": {
+        "vertices": 288,
+        "triangles": 152,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M010"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 980,
+        "triangles": 1810,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M011"
+        ]
+      },
+      "Lights": {
+        "vertices": 218,
+        "triangles": 146,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M012"
+        ]
+      },
+      "Engine_Glo": {
+        "vertices": 1355,
+        "triangles": 1820,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M013"
+        ]
+      },
+      "Hanger_Shield": {
+        "vertices": 4,
+        "triangles": 2,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M014"
+        ]
+      },
+      "Shield": {
+        "vertices": 562,
+        "triangles": 840,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "QuasarFire_M015"
+        ]
+      },
+      "Shadow": {
+        "vertices": 1249,
+        "triangles": 2470,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "QuasarFire_M016"
+        ]
+      },
+      "Col": {
+        "vertices": 33,
+        "triangles": 62,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "QuasarFire_M017"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Quasar": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.2213170528411865,
+          0.9582762718200684
+        ]
+      },
+      "HangerLights": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.2213170528411865,
+          0.9582762718200684
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          4.587097279795671e-08,
+          36.45802307128906,
+          0.9582945704460144
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.2213170528411865,
+          0.9582762718200684
+        ]
+      },
+      "Pe_Quasar": {
+        "parent": "Root",
+        "head": [
+          0.0003399479319341481,
+          60.0977668762207,
+          0.9582719802856445
+        ]
+      },
+      "Pe_Quasar.001": {
+        "parent": "Root",
+        "head": [
+          -17.47736167907715,
+          60.0977668762207,
+          0.9582719802856445
+        ]
+      },
+      "Pe_Quasar.002": {
+        "parent": "Root",
+        "head": [
+          -31.041582107543945,
+          60.0977668762207,
+          0.9582719802856445
+        ]
+      },
+      "Pe_Quasar.003": {
+        "parent": "Root",
+        "head": [
+          17.478057861328125,
+          60.0977668762207,
+          0.9582719802856445
+        ]
+      },
+      "Pe_Quasar.004": {
+        "parent": "Root",
+        "head": [
+          31.042278289794922,
+          60.0977668762207,
+          0.9582719802856445
+        ]
+      },
+      "TL_01": {
+        "parent": "Root",
+        "head": [
+          -26.9075927734375,
+          -10.273947715759277,
+          5.081491947174072
+        ]
+      },
+      "CM_01": {
+        "parent": "Root",
+        "head": [
+          -4.718056678771973,
+          -60.28860092163086,
+          5.1279191970825195
+        ]
+      },
+      "CM_02": {
+        "parent": "Root",
+        "head": [
+          4.7179999351501465,
+          -60.28860092163086,
+          5.1279191970825195
+        ]
+      },
+      "Hanger_01": {
+        "parent": "Root",
+        "head": [
+          -26.53285026550293,
+          16.214984893798828,
+          -0.09618544578552246
+        ]
+      },
+      "Hanger_02": {
+        "parent": "Root",
+        "head": [
+          26.533000946044922,
+          16.214984893798828,
+          -0.09618544578552246
+        ]
+      },
+      "L_01": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          52.946170806884766,
+          -2.438599109649658
+        ]
+      },
+      "L_02": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          46.68069839477539,
+          -2.438601016998291
+        ]
+      },
+      "L_03": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          22.30080795288086,
+          -2.438599109649658
+        ]
+      },
+      "L_04": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          16.035335540771484,
+          -2.438601016998291
+        ]
+      },
+      "L_05": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          16.035335540771484,
+          -2.438600778579712
+        ]
+      },
+      "L_06": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          22.30080795288086,
+          -2.4386019706726074
+        ]
+      },
+      "L_07": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          46.68069839477539,
+          -2.438598155975342
+        ]
+      },
+      "L_08": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          52.946170806884766,
+          -2.4385993480682373
+        ]
+      },
+      "TL_02": {
+        "parent": "Root",
+        "head": [
+          26.908000946044922,
+          -10.273947715759277,
+          5.081491947174072
+        ]
+      },
+      "TL_03": {
+        "parent": "Root",
+        "head": [
+          18.03251838684082,
+          -31.76425552368164,
+          5.081491947174072
+        ]
+      },
+      "TL_04": {
+        "parent": "Root",
+        "head": [
+          -18.033002853393555,
+          -31.76425552368164,
+          5.081491947174072
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow01": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glo": {
+        "parent": "Root",
+        "head": [
+          4.587097279795671e-08,
+          36.45802307128906,
+          0.9582945704460144
+        ]
+      },
+      "Hanger_Shield": {
+        "parent": "Root",
+        "head": [
+          -0.008950683288276196,
+          33.798885345458984,
+          0.0721435546875
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          5.850059986114502,
+          3.2924511432647705
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.2213170528411865,
+          0.9582762718200684
+        ]
+      },
+      "Col": {
+        "parent": "Root",
+        "head": [
+          -0.030559539794921875,
+          34.092506408691406,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -41.18946838378906,
+      -60.063411712646484,
+      -6.39698600769043
+    ],
+    "bounds_max": [
+      41.18946838378906,
+      61.97898864746094,
+      9.784591674804688
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Quasar": {
+        "vertices": 2910,
+        "triangles": 2382,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M009.001"
+        ]
+      },
+      "HangerLights": {
+        "vertices": 288,
+        "triangles": 152,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M010.001"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 980,
+        "triangles": 1810,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M011.001"
+        ]
+      },
+      "Lights": {
+        "vertices": 218,
+        "triangles": 146,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M012.001"
+        ]
+      },
+      "Engine_Glo": {
+        "vertices": 1355,
+        "triangles": 1820,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M013.001"
+        ]
+      },
+      "Hanger_Shield": {
+        "vertices": 4,
+        "triangles": 2,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "QuasarFire_M014.001"
+        ]
+      },
+      "Shield": {
+        "vertices": 562,
+        "triangles": 840,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "QuasarFire_M015.001"
+        ]
+      },
+      "Shadow": {
+        "vertices": 1249,
+        "triangles": 2470,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "QuasarFire_M016.001"
+        ]
+      },
+      "Col": {
+        "vertices": 33,
+        "triangles": 62,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "QuasarFire_M017.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Quasar": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.221316933631897,
+          0.9582764506340027
+        ]
+      },
+      "HangerLights": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.221316933631897,
+          0.9582764506340027
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          4.587097279795671e-08,
+          36.45802307128906,
+          0.9582886099815369
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.221316933631897,
+          0.9582764506340027
+        ]
+      },
+      "Pe_Quasar": {
+        "parent": "Root",
+        "head": [
+          0.0003399479319341481,
+          60.0977668762207,
+          0.9582622051239014
+        ]
+      },
+      "Pe_Quasar.001": {
+        "parent": "Root",
+        "head": [
+          -17.47736167907715,
+          60.0977668762207,
+          0.9582622051239014
+        ]
+      },
+      "Pe_Quasar.002": {
+        "parent": "Root",
+        "head": [
+          -31.041582107543945,
+          60.0977668762207,
+          0.9582622051239014
+        ]
+      },
+      "Pe_Quasar.003": {
+        "parent": "Root",
+        "head": [
+          17.478057861328125,
+          60.0977668762207,
+          0.9582622051239014
+        ]
+      },
+      "Pe_Quasar.004": {
+        "parent": "Root",
+        "head": [
+          31.042278289794922,
+          60.0977668762207,
+          0.9582622051239014
+        ]
+      },
+      "TL_01": {
+        "parent": "Root",
+        "head": [
+          -26.9075927734375,
+          -10.273946762084961,
+          5.081493854522705
+        ]
+      },
+      "CM_01": {
+        "parent": "Root",
+        "head": [
+          -4.718056678771973,
+          -60.28860092163086,
+          5.127929210662842
+        ]
+      },
+      "CM_02": {
+        "parent": "Root",
+        "head": [
+          4.7179999351501465,
+          -60.28860092163086,
+          5.127929210662842
+        ]
+      },
+      "Hanger_01": {
+        "parent": "Root",
+        "head": [
+          -26.53285026550293,
+          16.214984893798828,
+          -0.09618809074163437
+        ]
+      },
+      "Hanger_02": {
+        "parent": "Root",
+        "head": [
+          26.533000946044922,
+          16.214984893798828,
+          -0.09618809074163437
+        ]
+      },
+      "L_01": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          52.946170806884766,
+          -2.438607692718506
+        ]
+      },
+      "L_02": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          46.68069839477539,
+          -2.4386086463928223
+        ]
+      },
+      "L_03": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          22.30080795288086,
+          -2.4386026859283447
+        ]
+      },
+      "L_04": {
+        "parent": "Root",
+        "head": [
+          -39.19317626953125,
+          16.035335540771484,
+          -2.438603639602661
+        ]
+      },
+      "L_05": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          16.035335540771484,
+          -2.438603401184082
+        ]
+      },
+      "L_06": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          22.30080795288086,
+          -2.438605546951294
+        ]
+      },
+      "L_07": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          46.68069839477539,
+          -2.438605785369873
+        ]
+      },
+      "L_08": {
+        "parent": "Root",
+        "head": [
+          39.19300079345703,
+          52.946170806884766,
+          -2.438607931137085
+        ]
+      },
+      "TL_02": {
+        "parent": "Root",
+        "head": [
+          26.908000946044922,
+          -10.273946762084961,
+          5.081493854522705
+        ]
+      },
+      "TL_03": {
+        "parent": "Root",
+        "head": [
+          18.03251838684082,
+          -31.76425552368164,
+          5.0814971923828125
+        ]
+      },
+      "TL_04": {
+        "parent": "Root",
+        "head": [
+          -18.033002853393555,
+          -31.76425552368164,
+          5.0814971923828125
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow01": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glo": {
+        "parent": "Root",
+        "head": [
+          4.587097279795671e-08,
+          36.45802307128906,
+          0.9582886099815369
+        ]
+      },
+      "Hanger_Shield": {
+        "parent": "Root",
+        "head": [
+          -0.008950683288276196,
+          33.798885345458984,
+          0.07213804870843887
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          5.85006046295166,
+          3.292450189590454
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          -8.614531310513485e-08,
+          -1.221316933631897,
+          0.9582764506340027
+        ]
+      },
+      "Col": {
+        "parent": "Root",
+        "head": [
+          -0.030559539794921875,
+          34.092506408691406,
+          -5.554374183702748e-06
+        ]
+      }
+    },
+    "bounds_min": [
+      -41.18946838378906,
+      -60.063411712646484,
+      -6.396991729736328
+    ],
+    "bounds_max": [
+      41.18946838378906,
+      61.97898864746094,
+      9.784589767456055
+    ]
+  },
+  "materials": [
+    {
+      "name": "QuasarFire_M012",
+      "shader": "MeshAdditive.fx",
+      "base": "QuasarFire_Hull_Lights_Grid",
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M009",
+      "shader": "MeshBumpColorize.fx",
+      "base": "QuasarFire_Rebel_Quasar",
+      "normal": "QuasarFire_Rebel_Quasar_B"
+    },
+    {
+      "name": "QuasarFire_M011",
+      "shader": "MeshAdditive.fx",
+      "base": "QuasarFire_Engine_Exhaust",
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M013",
+      "shader": "MeshShield.fx",
+      "base": "QuasarFire_Engine_Glow_Fancy_Blue",
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M016",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M010",
+      "shader": "MeshAdditive.fx",
+      "base": "QuasarFire_Rebel_Quasar",
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M014",
+      "shader": "MeshShield.fx",
+      "base": "QuasarFire_Nb_shieldbase_Blue",
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M017",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "QuasarFire_M015",
+      "shader": "MeshShield.fx",
+      "base": "QuasarFire_Nb_shieldbase_Blue",
+      "normal": null
+    }
+  ],
+  "bone_error": 1.0013580322265625e-05,
+  "geometry_error": 1.8596649169921875e-05
+}

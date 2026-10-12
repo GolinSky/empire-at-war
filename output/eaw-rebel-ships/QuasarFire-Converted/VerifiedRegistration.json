@@ -1,0 +1,12 @@
+{
+  "shipId": 320,
+  "abilityId": 50,
+  "sourceMeshes": 9,
+  "sourceTriangles": 9684,
+  "sourceBones": 33,
+  "unityBoneError": 2.63312415E-07,
+  "targetableHardpoints": 9,
+  "weapons": 4,
+  "savedReferencesVerified": true,
+  "runtimeVerified": false
+}

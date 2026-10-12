@@ -1,0 +1,65 @@
+[
+  {
+    "id": 0,
+    "name": "LightTurbolaserLeft",
+    "bone": "TL_01",
+    "targetable": true,
+    "derivedSystemSocket": false
+  },
+  {
+    "id": 1,
+    "name": "LightTurbolaserRight",
+    "bone": "TL_02",
+    "targetable": true,
+    "derivedSystemSocket": false
+  },
+  {
+    "id": 2,
+    "name": "PointDefenseLeft",
+    "bone": "L_03",
+    "targetable": true,
+    "derivedSystemSocket": false
+  },
+  {
+    "id": 3,
+    "name": "PointDefenseRight",
+    "bone": "L_06",
+    "targetable": true,
+    "derivedSystemSocket": false
+  },
+  {
+    "id": 4,
+    "name": "Engine",
+    "bone": "Pe_Quasar",
+    "targetable": true,
+    "derivedSystemSocket": true
+  },
+  {
+    "id": 5,
+    "name": "HangarLeft",
+    "bone": "Hanger_01",
+    "targetable": true,
+    "derivedSystemSocket": false
+  },
+  {
+    "id": 6,
+    "name": "HangarRight",
+    "bone": "Hanger_02",
+    "targetable": true,
+    "derivedSystemSocket": false
+  },
+  {
+    "id": 7,
+    "name": "TractorBeamLeft",
+    "bone": "CM_01",
+    "targetable": true,
+    "derivedSystemSocket": true
+  },
+  {
+    "id": 8,
+    "name": "TractorBeamRight",
+    "bone": "CM_02",
+    "targetable": true,
+    "derivedSystemSocket": true
+  }
+]

@@ -14,6 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Repository.Data.AssetMappingData
   assetMappings:
     keyValue:
+    - key: QuasarFireShipData
+      value:
+        m_AssetGUID: c518047910b28c04c9329ac0f24d7cbb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: QuasarFireShipView
+      value:
+        m_AssetGUID: d7c14c6e2e6a4f6449378312ad8c1c7b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: BothanAssaultCruiserShipView
       value:
         m_AssetGUID: 8c94249786d23114d98ed5599f73b143

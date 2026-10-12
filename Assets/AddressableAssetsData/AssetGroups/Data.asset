@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Data
   m_GUID: aa721ac4d24c6f84c8bc548a9397084b
   m_SerializeEntries:
+  - m_GUID: c518047910b28c04c9329ac0f24d7cbb
+    m_Address: QuasarFireShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 28d2337875adca44ba1987aa35884aee
     m_Address: BothanAssaultCruiserShipData
     m_ReadOnly: 0
