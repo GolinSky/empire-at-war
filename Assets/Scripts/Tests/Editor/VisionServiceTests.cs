@@ -70,6 +70,29 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Register_AfterQueryInSameFrame_IsSeen()
+        {
+            Assert.That(_vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.False);
+
+            _vision.Register(TestPlayers.Human, CreateSource(Vector3.zero), 100f);
+
+            Assert.That(_vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Enemy, Vector3.zero), Is.False);
+        }
+
+        [Test]
+        public void Unregister_AfterQueryInSameFrame_RemovesVision()
+        {
+            Transform source = CreateSource(Vector3.zero);
+            _vision.Register(TestPlayers.Human, source, 100f);
+            Assert.That(_vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.True);
+
+            _vision.Unregister(source);
+
+            Assert.That(_vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.False);
+        }
+
+        [Test]
         public void Unregister_RemovesVision()
         {
             Transform source = CreateSource(Vector3.zero);

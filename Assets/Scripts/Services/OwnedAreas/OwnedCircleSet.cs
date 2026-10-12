@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 
@@ -8,15 +8,18 @@ namespace EmpireAtWar.Services.OwnedAreas
     public sealed class OwnedCircleSet
     {
         private readonly List<OwnedCircle> _circles = new List<OwnedCircle>();
-        // XZ centres read once per frame: hundreds of queries per frame otherwise read every circle's transform.
-        private readonly List<Vector2> _centers = new List<Vector2>();
-        private int _centersFrame = -1;
+        // Per frame, each queried (team, allied) filter's circles as (x, z, radius): hundreds of queries per frame
+        // otherwise read every circle's transform and resolve its team relation.
+        private readonly Dictionary<(PlayerId Team, bool Allied), List<Vector3>> _snapshots =
+            new Dictionary<(PlayerId Team, bool Allied), List<Vector3>>();
+        private readonly HashSet<(PlayerId Team, bool Allied)> _builtSnapshots = new HashSet<(PlayerId Team, bool Allied)>();
+        private int _snapshotFrame = -1;
 
         public IReadOnlyList<OwnedCircle> Circles => _circles;
 
         public void Register(PlayerId owner, Transform source, float radius)
         {
-            _centersFrame = -1;
+            _snapshotFrame = -1;
             int index = IndexOf(source);
             if (index >= 0)
             {
@@ -30,7 +33,7 @@ namespace EmpireAtWar.Services.OwnedAreas
 
         public void Unregister(Transform source)
         {
-            _centersFrame = -1;
+            _snapshotFrame = -1;
             int index = IndexOf(source);
             if (index >= 0)
             {
@@ -42,30 +45,44 @@ namespace EmpireAtWar.Services.OwnedAreas
         /// allied with <paramref name="team"/> reaches within <paramref name="margin"/> of the position.</summary>
         public bool AnyContains(Vector3 position, float margin, IPlayerRelations relations, PlayerId team, bool allied)
         {
-            RefreshCenters();
-            for (int i = 0; i < _circles.Count; i++)
+            List<Vector3> circles = GetSnapshot(relations, team, allied);
+            for (int i = 0; i < circles.Count; i++)
             {
-                OwnedCircle circle = _circles[i];
-                if (relations.IsAllied(circle.Owner, team) != allied) continue;
-                float dx = position.x - _centers[i].x;
-                float dz = position.z - _centers[i].y;
-                float radius = circle.Radius + margin;
+                Vector3 circle = circles[i];
+                float dx = position.x - circle.x;
+                float dz = position.z - circle.y;
+                float radius = circle.z + margin;
                 if (dx * dx + dz * dz <= radius * radius) return true;
             }
 
             return false;
         }
 
-        private void RefreshCenters()
+        private List<Vector3> GetSnapshot(IPlayerRelations relations, PlayerId team, bool allied)
         {
-            if (_centersFrame == Time.frameCount) return;
-            _centersFrame = Time.frameCount;
-            _centers.Clear();
+            if (_snapshotFrame != Time.frameCount)
+            {
+                _snapshotFrame = Time.frameCount;
+                _builtSnapshots.Clear();
+            }
+
+            if (!_snapshots.TryGetValue((team, allied), out List<Vector3> circles))
+            {
+                circles = new List<Vector3>();
+                _snapshots.Add((team, allied), circles);
+            }
+
+            if (!_builtSnapshots.Add((team, allied))) return circles;
+            circles.Clear();
             for (int i = 0; i < _circles.Count; i++)
             {
-                Vector3 center = _circles[i].Transform.position;
-                _centers.Add(new Vector2(center.x, center.z));
+                OwnedCircle circle = _circles[i];
+                if (relations.IsAllied(circle.Owner, team) != allied) continue;
+                Vector3 center = circle.Transform.position;
+                circles.Add(new Vector3(center.x, center.z, circle.Radius));
             }
+
+            return circles;
         }
 
         private int IndexOf(Transform source)
