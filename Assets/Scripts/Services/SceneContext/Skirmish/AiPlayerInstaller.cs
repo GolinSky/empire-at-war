@@ -1,14 +1,12 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
-using EmpireAtWar.Entities.EnemyFaction.Data;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Economy;
@@ -39,7 +37,6 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<EnemyCounterProductionModel>().AsSingle();
             Container.Bind<UnitCombatProfileCatalog>().AsSingle();
             Container.Bind<ForceCompositionBuilder>().AsSingle();
-            Container.BindScriptableObject<ShipClassMatchupData>(AssetService);
             Container.BindInterfacesExt<HostileIntelGatherer>();
             Container.Bind<EnemyStrategicContextBuilder>().AsSingle();
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
@@ -51,12 +48,10 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<SuperWeaponModel>().AsSingle();
             Container.BindInterfacesExt<EnemySuperWeaponController>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
-            Container.BindScriptableObject<ReinforcementData>(AssetService);
 
             // Registers itself as this AI's pending-reinforcement source in the scene-wide player registry.
             Container.BindInterfacesExt<EnemyFactionController>();
 
-            Container.BindScriptableObject<EconomyData>(AssetService);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

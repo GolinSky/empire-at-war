@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.Squadrons;
 using UnityEditor;
 using UnityEngine;
 using ShipEntity = EmpireAtWar.Ship.Ship;
@@ -35,8 +34,7 @@ namespace EmpireAtWar.Editor.Rendering
             "Assets/Prefabs/Models/Ships",
             "Assets/Prefabs/Models/Stations",
             "Assets/Prefabs/Models/DefendStation",
-            "Assets/Prefabs/Models/MiningFacilities",
-            "Assets/Prefabs/Models/Squadrons"
+            "Assets/Prefabs/Models/MiningFacilities"
         };
 
         private static readonly int BUMP_MAP_ID = Shader.PropertyToID("_BumpMap");
@@ -242,10 +240,10 @@ namespace EmpireAtWar.Editor.Rendering
         }
 
         // Placement ghosts and other helper prefabs live in the same folders; only real units get colors.
+        // Squadrons are excluded: fighters use plain URP Unlit materials without team colors.
         private static bool IsUnitRoot(GameObject root)
         {
             return root.GetComponent<ShipEntity>() != null ||
-                   root.GetComponent<Squadron>() != null ||
                    root.GetComponent<SpaceStationEntity>() != null ||
                    root.GetComponent<DefendPlatform>() != null ||
                    root.GetComponent<MiningFacilityEntity>() != null;

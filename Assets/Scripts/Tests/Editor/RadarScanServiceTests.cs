@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -150,6 +153,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(scanner.ScanCount, Is.EqualTo(scans));
         }
 
+        [Test]
+        public void RadarComponent_ReleasedAfterDispose_DoesNotUnregisterTwice()
+        {
+            GameObject gameObject = new GameObject("Radar");
+            _gameObjects.Add(gameObject);
+            RadarComponent radar = gameObject.AddComponent<RadarComponent>();
+            RadarModel model = new RadarModel(new RadarData(), TestPlayers.Human, new CombatModifiers());
+            typeof(RadarComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(radar, new object[] { _service, null, null, model, null, gameObject.transform });
+            _service.Register(radar);
+
+            // Scene unload: Zenject disposes the radar, then the entity's LateDispose releases its components.
+            ((IDisposable)radar).Dispose();
+
+            Assert.DoesNotThrow(radar.Release);
+        }
+
         private FakeScanner Register(PlayerId owner, Vector3 center)
         {
             FakeScanner scanner = new FakeScanner(owner, center);
@@ -187,6 +207,12 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             return total;
+        }
+
+        private sealed class RadarData : IRadarData
+        {
+            public float Range => RANGE;
+            public float Delay => DELAY;
         }
 
         private sealed class FakeScanner : IRadarScanner

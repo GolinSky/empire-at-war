@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -48,6 +47,8 @@ namespace EmpireAtWar.Tests.Editor
                     AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(sharedPath + "DefendPlatformCatalog.asset"));
                 parent.Bind<SuperWeaponCatalog>().FromInstance(
                     AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(sharedPath + "SuperWeaponCatalog.asset"));
+                parent.Bind<ReinforcementData>().FromInstance(assets.ReinforcementData);
+                parent.Bind<EconomyData>().FromInstance(assets.EconomyData);
                 DiContainer container = parent.CreateSubContainer();
                 container.Bind<IAssetService>().FromInstance(assets);
                 container.Bind<Zenject.SceneContext>().FromInstance(root.AddComponent<Zenject.SceneContext>());
@@ -69,27 +70,21 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class TestAssetService : IAssetService, IDisposable
         {
             private readonly GameObject _unitPrefab = new GameObject("UnitPrefab");
-            private readonly Dictionary<Type, ScriptableObject> _data = new Dictionary<Type, ScriptableObject>
-            {
-                { typeof(ReinforcementData), ScriptableObject.CreateInstance<ReinforcementData>() },
-                { typeof(EconomyData), ScriptableObject.CreateInstance<EconomyData>() }
-            };
+
+            public ReinforcementData ReinforcementData { get; } = ScriptableObject.CreateInstance<ReinforcementData>();
+            public EconomyData EconomyData { get; } = ScriptableObject.CreateInstance<EconomyData>();
 
             public void Dispose()
             {
-                foreach (ScriptableObject data in _data.Values)
-                {
-                    Object.DestroyImmediate(data);
-                }
-
+                Object.DestroyImmediate(ReinforcementData);
+                Object.DestroyImmediate(EconomyData);
                 Object.DestroyImmediate(_unitPrefab);
             }
 
+            // Player data is shared from the scene container; the player installer loads only unit prefabs.
             public TSource Load<TSource>(string key) where TSource : Object
             {
-                return typeof(TSource) == typeof(GameObject)
-                    ? (TSource)(Object)_unitPrefab
-                    : (TSource)(Object)_data[typeof(TSource)];
+                return (TSource)(Object)_unitPrefab;
             }
 
             public TComponent LoadComponent<TComponent>(string key) where TComponent : Component

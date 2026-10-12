@@ -2757,7 +2757,6 @@ GameObject:
   - component: {fileID: 8918638238745710970}
   - component: {fileID: 4689691672548090288}
   - component: {fileID: 8733489121076520136}
-  - component: {fileID: 1148912080002431644}
   - component: {fileID: 2816669260077758331}
   m_Layer: 0
   m_Name: YWingBomberSquadronView
@@ -2987,43 +2986,6 @@ MonoBehaviour:
   - {fileID: 8877181696842177314}
   revealRadius: 0
   staysRevealedOnceSeen: 0
---- !u!114 &1148912080002431644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5546973215816189780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
-  meshRenderers:
-  - {fileID: 8599204436919665053}
-  - {fileID: 8492014152810596198}
-  - {fileID: 5367726288542497919}
-  - {fileID: 8840599085955209195}
-  - {fileID: 1237163377795828593}
-  - {fileID: 1415391111026199946}
-  - {fileID: 3170593274053408403}
-  - {fileID: 2075549547209891079}
-  - {fileID: 4729786838623292094}
-  - {fileID: 4840427520143084613}
-  - {fileID: 8973677690899085148}
-  - {fileID: 5495808581653109960}
-  - {fileID: 2984528735251699730}
-  - {fileID: 3162686014909931241}
-  - {fileID: 1459255696779978224}
-  - {fileID: 2633956842032598628}
-  - {fileID: 4789106621671863972}
-  - {fileID: 4681879011073863775}
-  - {fileID: 9177543670884092742}
-  - {fileID: 5733310756929626322}
-  - {fileID: 67175627511764582}
-  - {fileID: 171581944154673309}
-  - {fileID: 4451205294935092100}
-  - {fileID: 939065634462400528}
 --- !u!114 &2816669260077758331
 MonoBehaviour:
   m_ObjectHideFlags: 0

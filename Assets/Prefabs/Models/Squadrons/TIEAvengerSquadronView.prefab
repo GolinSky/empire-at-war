@@ -10607,7 +10607,6 @@ GameObject:
   - component: {fileID: 6375315895077221940}
   - component: {fileID: 3665250636818936741}
   - component: {fileID: 8777906816216936869}
-  - component: {fileID: 3072744643635940051}
   - component: {fileID: 5812155364052830478}
   m_Layer: 0
   m_Name: TIEAvengerSquadronView
@@ -10795,25 +10794,6 @@ MonoBehaviour:
   - {fileID: 1377331049354490950}
   revealRadius: 0
   staysRevealedOnceSeen: 0
---- !u!114 &3072744643635940051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1087133106372568804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
-  meshRenderers:
-  - {fileID: 6369047534478712606}
-  - {fileID: 1955323016399626734}
-  - {fileID: 6807504515457037743}
-  - {fileID: 8442077632158717229}
-  - {fileID: 3469605620046766812}
-  - {fileID: 8356994134634427483}
 --- !u!114 &5812155364052830478
 MonoBehaviour:
   m_ObjectHideFlags: 0
