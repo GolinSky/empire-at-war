@@ -5,7 +5,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.FogOfWar;
 
 namespace EmpireAtWar.Controllers.Game
 {

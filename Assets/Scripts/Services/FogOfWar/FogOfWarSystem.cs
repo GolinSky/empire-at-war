@@ -6,7 +6,7 @@ using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using Zenject;
 
-namespace ViewComponents
+namespace EmpireAtWar.Services.FogOfWar
 {
     public class FogOfWarSystem : MonoBehaviour, IFogOfWarSystem
     {

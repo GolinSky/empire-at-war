@@ -4,7 +4,7 @@ using EmpireAtWar.Services.Layer;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.FogOfWar;
 
 namespace EmpireAtWar.Tests.Editor
 {

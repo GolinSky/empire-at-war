@@ -52,7 +52,7 @@ using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.FogOfWar;
 using Zenject;
 
 public class SkirmishMainInstaller : MonoInstaller

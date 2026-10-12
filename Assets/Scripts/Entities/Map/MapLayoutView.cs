@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.FogOfWar;
 
 namespace EmpireAtWar.Entities.Map
 {
