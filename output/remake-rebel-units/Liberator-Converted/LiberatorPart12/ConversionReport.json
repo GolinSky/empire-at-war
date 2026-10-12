@@ -1,0 +1,367 @@
+{
+  "variant": "LiberatorPart12",
+  "before": {
+    "meshes": {
+      "Collision": {
+        "vertices": 12,
+        "triangles": 20,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M004"
+        ]
+      },
+      "Base": {
+        "vertices": 60,
+        "triangles": 28,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart12_M005"
+        ]
+      },
+      "Base_Shadow": {
+        "vertices": 20,
+        "triangles": 36,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M006"
+        ]
+      },
+      "Turret": {
+        "vertices": 556,
+        "triangles": 202,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart12_M007"
+        ]
+      },
+      "Barrel": {
+        "vertices": 276,
+        "triangles": 96,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart12_M008"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 16,
+        "triangles": 24,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M009"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 134,
+        "triangles": 236,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M010"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Base": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Base_Shadow": {
+        "parent": "Base",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -5.3002564527560025e-05,
+          1.577269196510315,
+          3.448634147644043
+        ]
+      },
+      "MuzzleA_01": {
+        "parent": "Barrel",
+        "head": [
+          -2.7588212490081787,
+          -4.278164386749268,
+          4.228519439697266
+        ]
+      },
+      "MuzzleA_00": {
+        "parent": "Barrel",
+        "head": [
+          2.7662606239318848,
+          -4.278164386749268,
+          4.228519439697266
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -5.3002564527560025e-05,
+          1.577269196510315,
+          3.448634147644043
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -3.7853927612304688,
+      -4.132553577423096,
+      0.010013580322265625
+    ],
+    "bounds_max": [
+      3.773670196533203,
+      3.7534713745117188,
+      5.070674896240234
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Collision": {
+        "vertices": 12,
+        "triangles": 20,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M004.001"
+        ]
+      },
+      "Base": {
+        "vertices": 60,
+        "triangles": 28,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart12_M005.001"
+        ]
+      },
+      "Base_Shadow": {
+        "vertices": 20,
+        "triangles": 36,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M006.001"
+        ]
+      },
+      "Turret": {
+        "vertices": 556,
+        "triangles": 202,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart12_M007.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 276,
+        "triangles": 96,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart12_M008.001"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 16,
+        "triangles": 24,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M009.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 134,
+        "triangles": 236,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart12_M010.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Base": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Base_Shadow": {
+        "parent": "Base",
+        "head": [
+          -8.922042788417982e-21,
+          2.842170943040401e-14,
+          -4.63048396375404e-21
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -5.312603389029391e-05,
+          1.5772699117660522,
+          3.448633909225464
+        ]
+      },
+      "MuzzleA_01": {
+        "parent": "Barrel",
+        "head": [
+          -2.7588210105895996,
+          -4.278164863586426,
+          4.228519916534424
+        ]
+      },
+      "MuzzleA_00": {
+        "parent": "Barrel",
+        "head": [
+          2.766260862350464,
+          -4.278163909912109,
+          4.228519916534424
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -5.312603389029391e-05,
+          1.5772696733474731,
+          3.448633909225464
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          -4.461021394208991e-21,
+          1.4210854715202004e-14,
+          -2.31524198187702e-21
+        ]
+      }
+    },
+    "bounds_min": [
+      -3.7853927612304688,
+      -4.132552146911621,
+      0.010012994520366192
+    ],
+    "bounds_max": [
+      3.773670196533203,
+      3.753472089767456,
+      5.070674419403076
+    ]
+  },
+  "materials": [
+    {
+      "name": "LiberatorPart12_M004",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart12_M008",
+      "shader": "MeshBumpColorize.fx",
+      "base": "LiberatorPart12_Empire_Lancer_Frigate_Detail",
+      "normal": "LiberatorPart12_Empire_Lancer_Frigate_Hull_B"
+    },
+    {
+      "name": "LiberatorPart12_M010",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart12_M009",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart12_M006",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart12_M007",
+      "shader": "MeshBumpColorize.fx",
+      "base": "LiberatorPart12_Empire_Lancer_Frigate_Detail",
+      "normal": "LiberatorPart12_Empire_Lancer_Frigate_Hull_B"
+    },
+    {
+      "name": "LiberatorPart12_M005",
+      "shader": "MeshBumpColorize.fx",
+      "base": "LiberatorPart12_Empire_Lancer_Frigate_Detail",
+      "normal": "LiberatorPart12_Empire_Lancer_Frigate_Hull_B"
+    }
+  ],
+  "bone_error": 7.639887907858298e-07,
+  "geometry_error": 1.5266237824995157e-06
+}

@@ -1,0 +1,343 @@
+{
+  "variant": "LiberatorPart05",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 844,
+        "triangles": 366,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart05_M005"
+        ]
+      },
+      "Barrel": {
+        "vertices": 352,
+        "triangles": 168,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart05_M006"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 102,
+        "triangles": 192,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart05_M007"
+        ]
+      },
+      "Turret_Kitbash_Lights": {
+        "vertices": 62,
+        "triangles": 40,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart05_M008"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 202,
+        "triangles": 396,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart05_M009"
+        ]
+      },
+      "Collision": {
+        "vertices": 24,
+        "triangles": 44,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart05_M010"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -1.4438547623285558e-05,
+          -5.725244522094727,
+          2.880439043045044
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -0.8613634705543518,
+          -10.87966251373291,
+          2.825160503387451
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          0.8613009452819824,
+          -10.879661560058594,
+          2.8251612186431885
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          6.636503258050652e-07,
+          -10.879661560058594,
+          2.825160503387451
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -1.4438547623285558e-05,
+          -5.725244998931885,
+          2.880439043045044
+        ]
+      },
+      "Turret_Kitbash_Lights": {
+        "parent": "Turret",
+        "head": [
+          125.17852020263672,
+          -224.36773681640625,
+          40.49152755737305
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -7.708933353424072,
+      -10.524659156799316,
+      -0.4424227476119995
+    ],
+    "bounds_max": [
+      7.714927673339844,
+      7.5182576179504395,
+      5.548246383666992
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 844,
+        "triangles": 366,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart05_M005.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 352,
+        "triangles": 168,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart05_M006.001"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 102,
+        "triangles": 192,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart05_M007.001"
+        ]
+      },
+      "Turret_Kitbash_Lights": {
+        "vertices": 62,
+        "triangles": 40,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart05_M008.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 202,
+        "triangles": 396,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart05_M009.001"
+        ]
+      },
+      "Collision": {
+        "vertices": 24,
+        "triangles": 44,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "LiberatorPart05_M010.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -1.3984585166326724e-05,
+          -5.725244045257568,
+          2.8804399967193604
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -0.861362636089325,
+          -10.879661560058594,
+          2.825161933898926
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          0.8613017797470093,
+          -10.879661560058594,
+          2.825162887573242
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          1.4709449942529318e-06,
+          -10.879661560058594,
+          2.825162172317505
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -1.3984584256832022e-05,
+          -5.725244522094727,
+          2.8804399967193604
+        ]
+      },
+      "Turret_Kitbash_Lights": {
+        "parent": "Turret",
+        "head": [
+          125.17854309082031,
+          -224.3677215576172,
+          40.4915657043457
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          -2.3991818309023292e-21,
+          7.642740166592926e-15,
+          -5.770107818891966e-22
+        ]
+      },
+      "Collision": {
+        "parent": "Turret",
+        "head": [
+          -2.3991818309023292e-21,
+          7.642740166592926e-15,
+          -5.770107818891966e-22
+        ]
+      }
+    },
+    "bounds_min": [
+      -7.708975315093994,
+      -10.524659156799316,
+      -0.44242337346076965
+    ],
+    "bounds_max": [
+      7.7148895263671875,
+      7.518258571624756,
+      5.54824686050415
+    ]
+  },
+  "materials": [
+    {
+      "name": "LiberatorPart05_M010",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart05_M006",
+      "shader": "MeshBumpColorize.fx",
+      "base": "LiberatorPart05_Hull_Kitbash_Pieces_ISD",
+      "normal": "LiberatorPart05_Hull_Kitbash_Pieces_ISD_B"
+    },
+    {
+      "name": "LiberatorPart05_M009",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart05_M008",
+      "shader": "MeshAdditive.fx",
+      "base": "LiberatorPart05_Hull_Kitbash_Pieces_ISD_Lights",
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart05_M007",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "LiberatorPart05_M005",
+      "shader": "MeshBumpColorize.fx",
+      "base": "LiberatorPart05_Hull_Kitbash_Pieces_ISD",
+      "normal": "LiberatorPart05_Hull_Kitbash_Pieces_ISD_B"
+    }
+  ],
+  "bone_error": 4.703074648261243e-05,
+  "geometry_error": 6.643113476885436e-05
+}

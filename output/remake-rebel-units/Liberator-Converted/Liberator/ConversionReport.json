@@ -1,0 +1,1543 @@
+{
+  "variant": "Liberator",
+  "before": {
+    "meshes": {
+      "rebel_armor_neutral_2": {
+        "vertices": 5082,
+        "triangles": 1694,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M022"
+        ]
+      },
+      "Kitbash_Pieces": {
+        "vertices": 34062,
+        "triangles": 13948,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M023"
+        ]
+      },
+      "Kitbash_Pieces_Lights": {
+        "vertices": 1476,
+        "triangles": 672,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M024"
+        ]
+      },
+      "Hull_1": {
+        "vertices": 1320,
+        "triangles": 696,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M025"
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm": {
+        "vertices": 1452,
+        "triangles": 484,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M026"
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm_Light": {
+        "vertices": 26,
+        "triangles": 14,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M027"
+        ]
+      },
+      "Empire_Vindicator": {
+        "vertices": 514,
+        "triangles": 208,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M028"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 280,
+        "triangles": 272,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M029"
+        ]
+      },
+      "Hull_Superstructure": {
+        "vertices": 1338,
+        "triangles": 446,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M030"
+        ]
+      },
+      "objHangar_Exterior": {
+        "vertices": 388,
+        "triangles": 132,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M031"
+        ]
+      },
+      "objHangar_2_Lights": {
+        "vertices": 420,
+        "triangles": 144,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M032"
+        ]
+      },
+      "objHangar_3_Lights": {
+        "vertices": 1722,
+        "triangles": 694,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M033"
+        ]
+      },
+      "objHangar_3_gloss": {
+        "vertices": 2692,
+        "triangles": 1292,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M034"
+        ]
+      },
+      "Hangar_Exterior_Lights": {
+        "vertices": 388,
+        "triangles": 132,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M035"
+        ]
+      },
+      "NV_Shadowclaw": {
+        "vertices": 1874,
+        "triangles": 926,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M036"
+        ]
+      },
+      "rv_ywing": {
+        "vertices": 11554,
+        "triangles": 6968,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M037"
+        ]
+      },
+      "rv_xwing": {
+        "vertices": 34908,
+        "triangles": 21818,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M038"
+        ]
+      },
+      "Fred": {
+        "vertices": 32,
+        "triangles": 16,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M039"
+        ]
+      },
+      "RI_R2": {
+        "vertices": 2984,
+        "triangles": 1952,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M040"
+        ]
+      },
+      "RI_R3": {
+        "vertices": 3730,
+        "triangles": 2440,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M041"
+        ]
+      },
+      "Shadow": {
+        "vertices": 5296,
+        "triangles": 9773,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "Liberator_M042"
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "vertices": 280,
+        "triangles": 272,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M043"
+        ]
+      },
+      "Collision": {
+        "vertices": 1297,
+        "triangles": 2124,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "Liberator_M044"
+        ]
+      },
+      "Shield": {
+        "vertices": 229,
+        "triangles": 360,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "Liberator_M045"
+        ]
+      },
+      "Hangar_Opening_Light": {
+        "vertices": 240,
+        "triangles": 80,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M046"
+        ]
+      },
+      "Hangar_Opening_Glow": {
+        "vertices": 480,
+        "triangles": 160,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M047"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rebel_armor_neutral_2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      },
+      "HP_TA_B_01": {
+        "parent": "Root",
+        "head": [
+          -33.76763153076172,
+          62.84986877441406,
+          8.693729400634766
+        ]
+      },
+      "HP_TA_S_01": {
+        "parent": "Root",
+        "head": [
+          -40.36354064941406,
+          32.11371612548828,
+          3.253812789916992
+        ]
+      },
+      "HP_TA_S_03": {
+        "parent": "Root",
+        "head": [
+          -40.36354064941406,
+          21.150012969970703,
+          2.2958126068115234
+        ]
+      },
+      "HP_TA_B_02": {
+        "parent": "Root",
+        "head": [
+          -23.942995071411133,
+          83.53923797607422,
+          13.739044189453125
+        ]
+      },
+      "Kitbash_Pieces": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      },
+      "Kitbash_Pieces_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      },
+      "Hull_1": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -8.778656005859375
+        ]
+      },
+      "HP_TA_SS_01": {
+        "parent": "Root",
+        "head": [
+          -29.258283615112305,
+          1.2774810791015625,
+          -23.78839111328125
+        ]
+      },
+      "HP_TA_SS_02": {
+        "parent": "Root",
+        "head": [
+          29.257999420166016,
+          1.2774810791015625,
+          -23.78839111328125
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm": {
+        "parent": "Root",
+        "head": [
+          1.0890108796957065e-06,
+          -7.647035598754883,
+          6.6254425048828125
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm_Light": {
+        "parent": "Root",
+        "head": [
+          1.0890108796957065e-06,
+          -7.951539993286133,
+          8.940689086914062
+        ]
+      },
+      "Empire_Vindicator": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002651214599609375,
+          -0.0001983642578125
+        ]
+      },
+      "HP_TA_S_07": {
+        "parent": "Root",
+        "head": [
+          -83.55126190185547,
+          -50.946632385253906,
+          -21.501819610595703
+        ]
+      },
+      "HP_TA_S_05": {
+        "parent": "Root",
+        "head": [
+          -90.28348541259766,
+          -26.326826095581055,
+          -22.43416976928711
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -8.778656005859375
+        ]
+      },
+      "Hull_Superstructure": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      },
+      "objHangar_Exterior": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "objHangar_2_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "objHangar_3_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "objHangar_3_gloss": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hangar_Exterior_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "NV_Shadowclaw": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rv_ywing": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rv_xwing": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Fred": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "RI_R2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "RI_R3": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "HP_TA_B_03": {
+        "parent": "Root",
+        "head": [
+          33.768001556396484,
+          62.84986877441406,
+          8.693729400634766
+        ]
+      },
+      "HP_TA_B_04": {
+        "parent": "Root",
+        "head": [
+          23.94300079345703,
+          83.53923797607422,
+          13.739044189453125
+        ]
+      },
+      "HP_TA_S_02": {
+        "parent": "Root",
+        "head": [
+          40.36399841308594,
+          32.11371612548828,
+          3.253812789916992
+        ]
+      },
+      "HP_TA_S_04": {
+        "parent": "Root",
+        "head": [
+          40.36399841308594,
+          21.150012969970703,
+          2.2958126068115234
+        ]
+      },
+      "HP_TA_S_06": {
+        "parent": "Root",
+        "head": [
+          90.28299713134766,
+          -26.326826095581055,
+          -22.43416976928711
+        ]
+      },
+      "HP_TA_S_08": {
+        "parent": "Root",
+        "head": [
+          83.5510025024414,
+          -50.946632385253906,
+          -21.501819610595703
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -8.778656005859375
+        ]
+      },
+      "Pe_Liberator_S": {
+        "parent": "Root",
+        "head": [
+          -22.155982971191406,
+          162.31773376464844,
+          -0.17770777642726898
+        ]
+      },
+      "Pe_Liberator_S.001": {
+        "parent": "Root",
+        "head": [
+          22.1560001373291,
+          162.31773376464844,
+          -0.17770777642726898
+        ]
+      },
+      "Pe_Liberator_L": {
+        "parent": "Root",
+        "head": [
+          8.814576148986816,
+          155.88279724121094,
+          -6.796799182891846
+        ]
+      },
+      "Pe_Liberator_L.001": {
+        "parent": "Root",
+        "head": [
+          -8.814199447631836,
+          155.88279724121094,
+          -6.796799182891846
+        ]
+      },
+      "HP_Spawn_00": {
+        "parent": "Root",
+        "head": [
+          -13.345732688903809,
+          -22.701984405517578,
+          -5.7721781730651855
+        ]
+      },
+      "HP_Spawn_01": {
+        "parent": "Root",
+        "head": [
+          13.345999717712402,
+          -22.701984405517578,
+          -5.7721781730651855
+        ]
+      },
+      "HP_Engines": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          146.5635986328125,
+          -4.216132640838623
+        ]
+      },
+      "HP_Facingboi": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "P_Blink_Medium_White_6_0": {
+        "parent": "Root",
+        "head": [
+          -3.8470845222473145,
+          125.11666107177734,
+          25.155635833740234
+        ]
+      },
+      "P_Blink_Medium_White_6_0.001": {
+        "parent": "Root",
+        "head": [
+          3.6505231857299805,
+          125.0438003540039,
+          25.159650802612305
+        ]
+      },
+      "Pte_Liberator_L": {
+        "parent": "Root",
+        "head": [
+          8.814576148986816,
+          155.88279724121094,
+          -6.796799182891846
+        ]
+      },
+      "Pte_Liberator_L.001": {
+        "parent": "Root",
+        "head": [
+          -8.814199447631836,
+          155.88279724121094,
+          -6.796799182891846
+        ]
+      },
+      "Pte_Liberator_S": {
+        "parent": "Root",
+        "head": [
+          -22.155982971191406,
+          162.31773376464844,
+          -0.17770777642726898
+        ]
+      },
+      "Pte_Liberator_S.001": {
+        "parent": "Root",
+        "head": [
+          22.1560001373291,
+          162.31773376464844,
+          -0.17770777642726898
+        ]
+      },
+      "Hangar_Opening_Light": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      },
+      "Hangar_Opening_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002689361572265625,
+          -0.0001983642578125
+        ]
+      }
+    },
+    "bounds_min": [
+      -121.72669982910156,
+      -174.0113525390625,
+      -32.917762756347656
+    ],
+    "bounds_max": [
+      121.72669982910156,
+      207.36578369140625,
+      25.435657501220703
+    ]
+  },
+  "after": {
+    "meshes": {
+      "rebel_armor_neutral_2": {
+        "vertices": 5082,
+        "triangles": 1694,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M022.001"
+        ]
+      },
+      "Kitbash_Pieces": {
+        "vertices": 34062,
+        "triangles": 13948,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M023.001"
+        ]
+      },
+      "Kitbash_Pieces_Lights": {
+        "vertices": 1476,
+        "triangles": 672,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M024.001"
+        ]
+      },
+      "Hull_1": {
+        "vertices": 1320,
+        "triangles": 696,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M025.001"
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm": {
+        "vertices": 1452,
+        "triangles": 484,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M026.001"
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm_Light": {
+        "vertices": 26,
+        "triangles": 14,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M027.001"
+        ]
+      },
+      "Empire_Vindicator": {
+        "vertices": 514,
+        "triangles": 208,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M028.001"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 280,
+        "triangles": 272,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M029.001"
+        ]
+      },
+      "Hull_Superstructure": {
+        "vertices": 1338,
+        "triangles": 446,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M030.001"
+        ]
+      },
+      "objHangar_Exterior": {
+        "vertices": 388,
+        "triangles": 132,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M031.001"
+        ]
+      },
+      "objHangar_2_Lights": {
+        "vertices": 420,
+        "triangles": 144,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M032.001"
+        ]
+      },
+      "objHangar_3_Lights": {
+        "vertices": 1722,
+        "triangles": 694,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M033.001"
+        ]
+      },
+      "objHangar_3_gloss": {
+        "vertices": 2692,
+        "triangles": 1292,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M034.001"
+        ]
+      },
+      "Hangar_Exterior_Lights": {
+        "vertices": 388,
+        "triangles": 132,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M035.001"
+        ]
+      },
+      "NV_Shadowclaw": {
+        "vertices": 1874,
+        "triangles": 926,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M036.001"
+        ]
+      },
+      "rv_ywing": {
+        "vertices": 11554,
+        "triangles": 6968,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M037.001"
+        ]
+      },
+      "rv_xwing": {
+        "vertices": 34908,
+        "triangles": 21818,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M038.001"
+        ]
+      },
+      "Fred": {
+        "vertices": 32,
+        "triangles": 16,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M039.001"
+        ]
+      },
+      "RI_R2": {
+        "vertices": 2984,
+        "triangles": 1952,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M040.001"
+        ]
+      },
+      "RI_R3": {
+        "vertices": 3730,
+        "triangles": 2440,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M041.001"
+        ]
+      },
+      "Shadow": {
+        "vertices": 5296,
+        "triangles": 9773,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "Liberator_M042.001"
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "vertices": 280,
+        "triangles": 272,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M043.001"
+        ]
+      },
+      "Collision": {
+        "vertices": 1297,
+        "triangles": 2124,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "Liberator_M044.001"
+        ]
+      },
+      "Shield": {
+        "vertices": 229,
+        "triangles": 360,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "Liberator_M045.001"
+        ]
+      },
+      "Hangar_Opening_Light": {
+        "vertices": 240,
+        "triangles": 80,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M046.001"
+        ]
+      },
+      "Hangar_Opening_Glow": {
+        "vertices": 480,
+        "triangles": 160,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "Liberator_M047.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rebel_armor_neutral_2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      },
+      "HP_TA_B_01": {
+        "parent": "Root",
+        "head": [
+          -33.76763153076172,
+          62.84986877441406,
+          8.693718910217285
+        ]
+      },
+      "HP_TA_S_01": {
+        "parent": "Root",
+        "head": [
+          -40.36354064941406,
+          32.11371612548828,
+          3.253807544708252
+        ]
+      },
+      "HP_TA_S_03": {
+        "parent": "Root",
+        "head": [
+          -40.36354064941406,
+          21.150012969970703,
+          2.295809268951416
+        ]
+      },
+      "HP_TA_B_02": {
+        "parent": "Root",
+        "head": [
+          -23.942995071411133,
+          83.53923797607422,
+          13.739030838012695
+        ]
+      },
+      "Kitbash_Pieces": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      },
+      "Kitbash_Pieces_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      },
+      "Hull_1": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002675059367902577,
+          -8.778656005859375
+        ]
+      },
+      "HP_TA_SS_01": {
+        "parent": "Root",
+        "head": [
+          -29.258283615112305,
+          1.2774771451950073,
+          -23.78839111328125
+        ]
+      },
+      "HP_TA_SS_02": {
+        "parent": "Root",
+        "head": [
+          29.257999420166016,
+          1.2774771451950073,
+          -23.78839111328125
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm": {
+        "parent": "Root",
+        "head": [
+          1.0890108796957065e-06,
+          -7.647034645080566,
+          6.625443935394287
+        ]
+      },
+      "Kitbash_Pieces_Nonsymm_Light": {
+        "parent": "Root",
+        "head": [
+          1.0890108796957065e-06,
+          -7.951538562774658,
+          8.940690040588379
+        ]
+      },
+      "Empire_Vindicator": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026512143085710704,
+          -0.00019836430146824569
+        ]
+      },
+      "HP_TA_S_07": {
+        "parent": "Root",
+        "head": [
+          -83.55126190185547,
+          -50.94663619995117,
+          -21.501811981201172
+        ]
+      },
+      "HP_TA_S_05": {
+        "parent": "Root",
+        "head": [
+          -90.28348541259766,
+          -26.32682991027832,
+          -22.434165954589844
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002675059367902577,
+          -8.778656005859375
+        ]
+      },
+      "Hull_Superstructure": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      },
+      "objHangar_Exterior": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "objHangar_2_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "objHangar_3_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "objHangar_3_gloss": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hangar_Exterior_Lights": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "NV_Shadowclaw": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rv_ywing": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rv_xwing": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Fred": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "RI_R2": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "RI_R3": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "HP_TA_B_03": {
+        "parent": "Root",
+        "head": [
+          33.768001556396484,
+          62.84986877441406,
+          8.693718910217285
+        ]
+      },
+      "HP_TA_B_04": {
+        "parent": "Root",
+        "head": [
+          23.94300079345703,
+          83.53923797607422,
+          13.739030838012695
+        ]
+      },
+      "HP_TA_S_02": {
+        "parent": "Root",
+        "head": [
+          40.36399841308594,
+          32.11371612548828,
+          3.253807544708252
+        ]
+      },
+      "HP_TA_S_04": {
+        "parent": "Root",
+        "head": [
+          40.36399841308594,
+          21.150012969970703,
+          2.295809268951416
+        ]
+      },
+      "HP_TA_S_06": {
+        "parent": "Root",
+        "head": [
+          90.28299713134766,
+          -26.32682991027832,
+          -22.434165954589844
+        ]
+      },
+      "HP_TA_S_08": {
+        "parent": "Root",
+        "head": [
+          83.5510025024414,
+          -50.94663619995117,
+          -21.501811981201172
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0002675059367902577,
+          -8.778656005859375
+        ]
+      },
+      "Pe_Liberator_S": {
+        "parent": "Root",
+        "head": [
+          -22.155982971191406,
+          162.31773376464844,
+          -0.17773422598838806
+        ]
+      },
+      "Pe_Liberator_S.001": {
+        "parent": "Root",
+        "head": [
+          22.1560001373291,
+          162.31773376464844,
+          -0.17773422598838806
+        ]
+      },
+      "Pe_Liberator_L": {
+        "parent": "Root",
+        "head": [
+          8.814576148986816,
+          155.88279724121094,
+          -6.7968244552612305
+        ]
+      },
+      "Pe_Liberator_L.001": {
+        "parent": "Root",
+        "head": [
+          -8.814199447631836,
+          155.88279724121094,
+          -6.7968244552612305
+        ]
+      },
+      "HP_Spawn_00": {
+        "parent": "Root",
+        "head": [
+          -13.345732688903809,
+          -22.701984405517578,
+          -5.77217435836792
+        ]
+      },
+      "HP_Spawn_01": {
+        "parent": "Root",
+        "head": [
+          13.345999717712402,
+          -22.701984405517578,
+          -5.77217435836792
+        ]
+      },
+      "HP_Engines": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          146.5635986328125,
+          -4.216156482696533
+        ]
+      },
+      "HP_Facingboi": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Collision": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "P_Blink_Medium_White_6_0": {
+        "parent": "Root",
+        "head": [
+          -3.8470845222473145,
+          125.11666870117188,
+          25.155614852905273
+        ]
+      },
+      "P_Blink_Medium_White_6_0.001": {
+        "parent": "Root",
+        "head": [
+          3.6505231857299805,
+          125.04380798339844,
+          25.159629821777344
+        ]
+      },
+      "Pte_Liberator_L": {
+        "parent": "Root",
+        "head": [
+          8.814576148986816,
+          155.88279724121094,
+          -6.7968244552612305
+        ]
+      },
+      "Pte_Liberator_L.001": {
+        "parent": "Root",
+        "head": [
+          -8.814199447631836,
+          155.88279724121094,
+          -6.7968244552612305
+        ]
+      },
+      "Pte_Liberator_S": {
+        "parent": "Root",
+        "head": [
+          -22.155982971191406,
+          162.31773376464844,
+          -0.17773422598838806
+        ]
+      },
+      "Pte_Liberator_S.001": {
+        "parent": "Root",
+        "head": [
+          22.1560001373291,
+          162.31773376464844,
+          -0.17773422598838806
+        ]
+      },
+      "Hangar_Opening_Light": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      },
+      "Hangar_Opening_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.00026893612812273204,
+          -0.00019836430146824569
+        ]
+      }
+    },
+    "bounds_min": [
+      -121.72669982910156,
+      -174.0113525390625,
+      -32.91777420043945
+    ],
+    "bounds_max": [
+      121.72669982910156,
+      207.36578369140625,
+      25.435636520385742
+    ]
+  },
+  "materials": [
+    {
+      "name": "Liberator_M026",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Hull_Kitbash_Pieces_ISD",
+      "normal": "Liberator_Hull_Kitbash_Pieces_ISD_B"
+    },
+    {
+      "name": "Liberator_M035",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Hangar_Imp_Yellow_Light_Dim",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M038",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Rv_xwing",
+      "normal": "Liberator_rv_xwing_bump"
+    },
+    {
+      "name": "Liberator_M036",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Nv_shadowclaw",
+      "normal": "Liberator_NV_SHADOWCLAW_BUMP"
+    },
+    {
+      "name": "Liberator_M032",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Hangar_2_Lights",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M024",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Hull_Kitbash_Pieces_ISD_Lights",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M043",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Engine_Exhaust",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M047",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Engine_Glow_Blue_Dark",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M034",
+      "shader": "MeshGloss.fx",
+      "base": "Liberator_Hangar_3_Yellow",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M041",
+      "shader": "MeshGloss.fx",
+      "base": "Liberator_RI_R2D3",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M030",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Hull_Superstructure",
+      "normal": "Liberator_Hull_Superstructure_B"
+    },
+    {
+      "name": "Liberator_M028",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_rebel_armor_neutral_2",
+      "normal": "Liberator_rebel_armor_neutral_2_n"
+    },
+    {
+      "name": "Liberator_M044",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "Liberator_M025",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Hull_1",
+      "normal": "Liberator_Hull_1_B"
+    },
+    {
+      "name": "Liberator_M040",
+      "shader": "MeshGloss.fx",
+      "base": "Liberator_RI_R2D2",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M042",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "Liberator_M039",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Fred",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M027",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Hull_Kitbash_Pieces_ISD_Lights",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M045",
+      "shader": "MeshShield.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "Liberator_M023",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Hull_Kitbash_Pieces_ISD",
+      "normal": "Liberator_Hull_Kitbash_Pieces_ISD_B"
+    },
+    {
+      "name": "Liberator_M029",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Engine_Exhaust",
+      "normal": "Liberator_Engine_Exhaust_B"
+    },
+    {
+      "name": "Liberator_M046",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Hangar_Imp_Yellow_Light_Dim",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M022",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_rebel_armor_neutral_2",
+      "normal": "Liberator_rebel_armor_neutral_2_n"
+    },
+    {
+      "name": "Liberator_M033",
+      "shader": "MeshAdditive.fx",
+      "base": "Liberator_Hangar_Imp_Light",
+      "normal": null
+    },
+    {
+      "name": "Liberator_M037",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Liberator_Rv_ywing",
+      "normal": "Liberator_Rv_ywing_N"
+    },
+    {
+      "name": "Liberator_M031",
+      "shader": "MeshGloss.fx",
+      "base": null,
+      "normal": null
+    }
+  ],
+  "bone_error": 2.644956111907959e-05,
+  "geometry_error": 3.4332275390625e-05
+}

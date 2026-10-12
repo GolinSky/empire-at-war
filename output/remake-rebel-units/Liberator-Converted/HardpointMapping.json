@@ -1,0 +1,200 @@
+[
+  {
+    "id": 0,
+    "name": "HP_Liberator_DLC_01",
+    "source": "LiberatorPart01/FP_01",
+    "position": [
+      12.2747955,
+      -8.878886,
+      7.229284
+    ],
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "HP_Liberator_DLC_02",
+    "source": "LiberatorPart02/FP_01",
+    "position": [
+      -12.2746744,
+      -8.878886,
+      7.229284
+    ],
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "HP_Liberator_DIC_01",
+    "source": "LiberatorPart03/FP_01",
+    "position": [
+      18.73098,
+      6.397537,
+      -19.2676239
+    ],
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "HP_Liberator_DIC_02",
+    "source": "LiberatorPart04/FP_01",
+    "position": [
+      14.6092281,
+      8.514209,
+      -27.9474754
+    ],
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "HP_Liberator_DIC_03",
+    "source": "LiberatorPart05/FP_01",
+    "position": [
+      -18.7311344,
+      6.397542,
+      -19.267622
+    ],
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "HP_Liberator_DIC_04",
+    "source": "LiberatorPart06/FP_01",
+    "position": [
+      -14.6092291,
+      8.514212,
+      -27.9474831
+    ],
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "HP_Liberator_DTL_01",
+    "source": "LiberatorPart07/MuzzleA_00",
+    "position": [
+      18.7286358,
+      4.60068464,
+      -5.16538239
+    ],
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "HP_Liberator_DTL_02",
+    "source": "LiberatorPart08/MuzzleA_00",
+    "position": [
+      -18.7288265,
+      4.80298,
+      -7.47762
+    ],
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "HP_Liberator_DTL_03",
+    "source": "LiberatorPart09/MuzzleA_00",
+    "position": [
+      18.7286358,
+      4.198774,
+      -0.5657549
+    ],
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "HP_Liberator_DTL_04",
+    "source": "LiberatorPart10/MuzzleA_00",
+    "position": [
+      -18.7288265,
+      4.40106726,
+      -2.87799549
+    ],
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "HP_Liberator_DTL_05",
+    "source": "LiberatorPart11/MuzzleA_00",
+    "position": [
+      39.0242653,
+      -10.2495155,
+      17.2642174
+    ],
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "HP_Liberator_DTL_06",
+    "source": "LiberatorPart12/MuzzleA_00",
+    "position": [
+      -38.4233246,
+      -10.1399975,
+      19.503521
+    ],
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "EnginePort",
+    "source": "HP_Engines + port offset",
+    "position": [
+      -15.3204851,
+      -0.1993047,
+      -54.4915276
+    ],
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "EngineStarboard",
+    "source": "HP_Engines + starboard offset",
+    "position": [
+      15.3204851,
+      -0.1993047,
+      -54.4915276
+    ],
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "ShieldGenerator",
+    "source": "Shield",
+    "position": [
+      0.0,
+      1.56950486,
+      6.996624
+    ],
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "HangarPort",
+    "source": "HP_Spawn_00",
+    "position": [
+      5.598966,
+      -0.852108836,
+      16.52084
+    ],
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "HangarStarboard",
+    "source": "HP_Spawn_01",
+    "position": [
+      -5.599077,
+      -0.852108836,
+      16.52084
+    ],
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "TractorBeam",
+    "source": "HP_Facingboi",
+    "position": [
+      0.0,
+      1.56950486,
+      6.996624
+    ],
+    "targetable": true
+  }
+]

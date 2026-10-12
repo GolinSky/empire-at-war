@@ -1,0 +1,95 @@
+{
+  "variant": "LiberatorPart00",
+  "before": {
+    "meshes": {
+      "Engine_Glow": {
+        "vertices": 948,
+        "triangles": 1456,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart00_M002"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -29.487285614013672,
+      3.296234130859375,
+      -12.350017547607422
+    ],
+    "bounds_max": [
+      29.487285614013672,
+      24.217880249023438,
+      11.372822761535645
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Engine_Glow": {
+        "vertices": 948,
+        "triangles": 1456,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "LiberatorPart00_M002.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Engine_Glow": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -29.487285614013672,
+      3.2962331771850586,
+      -12.350025177001953
+    ],
+    "bounds_max": [
+      29.487285614013672,
+      24.217884063720703,
+      11.37281322479248
+    ]
+  },
+  "materials": [
+    {
+      "name": "LiberatorPart00_M002",
+      "shader": "MeshShield.fx",
+      "base": "LiberatorPart00_Engine_Glow_Fancy_Blue",
+      "normal": null
+    }
+  ],
+  "bone_error": 0.0,
+  "geometry_error": 1.0271386732357986e-05
+}

@@ -1,0 +1,18 @@
+{
+  "models": 16,
+  "meshes": 115,
+  "triangles": 80101,
+  "sourceZeroAreaTrianglesRemovedByUnity": 16,
+  "maxUnityBoneError": 2.0124844E-06,
+  "visibleSize": [
+    102.136559,
+    24.4811516,
+    159.999985
+  ],
+  "hardpoints": 18,
+  "weapons": 12,
+  "activeXWings": 3,
+  "replacementXWings": 3,
+  "rapidDeploymentCooldownSeconds": 45,
+  "checksPassed": true
+}
