@@ -138,6 +138,15 @@ namespace EmpireAtWar.Tests.Editor
         {
             string path = TEST_FOLDER + "/Abilities.asset";
             AssetDatabase.CopyAsset("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset", path);
+            var fixture = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>(path);
+            using (SerializedObject serialized = new SerializedObject(fixture))
+            {
+                SerializedProperty entry = BalanceRegistration.Keyed(serialized, "definitions.keyValue").Single(row => row.FindPropertyRelative("key").intValue == 10);
+                entry.FindPropertyRelative("value.settings").managedReferenceValue = fixture.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.ProtonBeam).Settings;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+            }
+            EditorUtility.SetDirty(fixture);
+            AssetDatabase.SaveAssets();
             Func<BalanceRegistration> scan = () =>
             {
                 var catalog = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>(path);

@@ -48,14 +48,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ManagedReferenceAliases_ProduceOneSettingsTargetInEveryCompareCell()
+        public void LaserAndProtonBeamSettings_ProduceIndependentTargetsInEveryCompareCell()
         {
             BalanceRegistration inventory = BalanceInventory.Build();
             Assert.That(inventory.Errors, Is.Empty);
-            var aliases = inventory.Fields.Values.Where(field => field.AliasWarning.Contains("Laser Beam") && field.AliasWarning.Contains("Proton Beam")).ToList();
-            Assert.That(aliases, Is.Not.Empty);
-            Assert.That(aliases.Select(field => field.Stat).Distinct().Count(), Is.EqualTo(aliases.Count));
-            foreach (BalanceField field in aliases)
+            var beams = inventory.Fields.Values.Where(field => field.Stat == "settings/1/damage" || field.Stat == "settings/10/damage").ToList();
+            Assert.That(beams.Count, Is.EqualTo(2));
+            Assert.That(beams.Select(field => field.Key).Distinct().Count(), Is.EqualTo(2));
+            Assert.That(beams.All(field => field.AliasWarning.Length == 0), Is.True);
+            foreach (BalanceField field in beams)
                 foreach (BalanceUnit unit in field.Users) Assert.That(unit.Fields[field.Stat], Is.EqualTo(field.Key));
         }
 
