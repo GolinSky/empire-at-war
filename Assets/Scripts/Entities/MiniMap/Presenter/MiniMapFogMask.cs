@@ -16,8 +16,8 @@ namespace EmpireAtWar.Presenters.MiniMap
         IObserver<BattleMap>
     {
         private const int RESOLUTION = 128;
-        // Same pacing and feathering as the 3D fog so both layers reveal together.
-        private const float UPDATE_INTERVAL = 0.1f;
+        // Same feathering as the 3D fog; the small minimap only needs its targets once per second.
+        private const float UPDATE_INTERVAL = 1f;
         private const float FADE_SPEED = 3f;
         private const float EDGE_SOFTNESS = 0.25f;
 

@@ -76,6 +76,15 @@ namespace EmpireAtWar.Views.MiniMap
             if (_markerFade != null) _markerFade.Kill();
         }
 
+        // Markers only redraw when they change, so a resized minimap places them again.
+        private void OnRectTransformDimensionsChange()
+        {
+            foreach (MarkView view in _markerViews.Values)
+            {
+                view.Refresh();
+            }
+        }
+
         public void SetFog(Texture mask)
         {
             fogImage.texture = mask;

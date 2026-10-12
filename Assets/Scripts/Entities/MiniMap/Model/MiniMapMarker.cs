@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Models.MiniMap
@@ -12,6 +13,9 @@ namespace EmpireAtWar.Models.MiniMap
         public bool Visible { get; private set; }
         public float WorldDiameter { get; private set; }
 
+        /// <summary>Raised when anything the minimap draws for this marker changes.</summary>
+        public event Action Changed;
+
         public MiniMapMarker(MarkType markType, PlayerId owner)
         {
             MarkType = markType;
@@ -20,23 +24,31 @@ namespace EmpireAtWar.Models.MiniMap
 
         public void SetPosition(float x, float z)
         {
+            if (X == x && Z == z) return;
             X = x;
             Z = z;
+            Changed?.Invoke();
         }
 
         public void SetOwner(PlayerId owner)
         {
+            if (Owner.Equals(owner)) return;
             Owner = owner;
+            Changed?.Invoke();
         }
 
         public void SetVisible(bool visible)
         {
+            if (Visible == visible) return;
             Visible = visible;
+            Changed?.Invoke();
         }
 
         public void SetWorldDiameter(float worldDiameter)
         {
+            if (WorldDiameter == worldDiameter) return;
             WorldDiameter = worldDiameter;
+            Changed?.Invoke();
         }
     }
 }

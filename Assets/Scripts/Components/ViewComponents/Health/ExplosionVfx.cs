@@ -12,5 +12,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public bool IsPlaying => particles.IsAlive(true);
 
         public void Play() => particles.Play();
+
+        public void StopEmitting() => particles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 }

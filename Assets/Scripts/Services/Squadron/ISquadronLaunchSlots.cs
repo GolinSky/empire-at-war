@@ -1,8 +1,8 @@
 namespace EmpireAtWar.Services.Squadrons
 {
     /// <summary>
-    /// One reserve launch per frame across every hangar. A squadron spawn costs several milliseconds,
-    /// so hangars whose timers expire together launch on consecutive frames instead of one long frame.
+    /// One reserve launch at a time across every hangar, spaced by a short delay. A squadron spawn costs several
+    /// milliseconds, so hangars whose timers expire together launch one after another instead of in one long frame.
     /// </summary>
     public interface ISquadronLaunchSlots
     {

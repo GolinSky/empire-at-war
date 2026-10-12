@@ -58,6 +58,7 @@ using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Services.Timing;
 using Zenject;
 
 public class SkirmishMainInstaller : MonoInstaller
@@ -200,6 +201,8 @@ public class SkirmishMainInstaller : MonoInstaller
             .BindInterfacesExt<UnitRequestFactory>();
 
         Container.Bind<IVisionService>().To<VisionService>().AsSingle();
+        // Minimap markers and opponent fog visibility refresh once per second instead of every frame.
+        Container.BindInterfacesTo<SlowTickService>().AsSingle();
         Container.Bind<ISpawnBlockerService>().To<SpawnBlockerService>().AsSingle();
         Container.BindInterfacesAndSelfTo<FogOfWarSystem>().FromInstance(fogOfWarSystem).AsSingle();
         Container.BindInterfacesTo<SpawnAreaOverlay>().FromInstance(spawnAreaOverlay).AsSingle();

@@ -49,6 +49,7 @@ namespace EmpireAtWar.Views.MiniMap
             iconImage.sprite = sprite;
             iconImage.raycastTarget = true;
             _marker = marker;
+            _marker.Changed += Refresh;
             tooltipTrigger.SetKey(marker);
             rectTransform.sizeDelta = Vector2.one * (marker.MarkType switch
             {
@@ -63,7 +64,7 @@ namespace EmpireAtWar.Views.MiniMap
                 iconImage.canvasRenderer.SetAlpha(ZONE_ALPHA);
             }
 
-            RefreshMarker();
+            Refresh();
         }
 
         public void Release()
@@ -71,15 +72,16 @@ namespace EmpireAtWar.Views.MiniMap
             iconImage.DOKill();
         }
 
-        private void Update()
+        // Also covers scene teardown, which can destroy the view before its marker is removed.
+        private void OnDestroy()
         {
             if (_marker != null)
             {
-                RefreshMarker();
+                _marker.Changed -= Refresh;
             }
         }
 
-        private void RefreshMarker()
+        public void Refresh()
         {
             rectTransform.anchoredPosition = _miniMapPositionConvector.GetPosition(
                 new Vector3(_marker.X, 0f, _marker.Z));
