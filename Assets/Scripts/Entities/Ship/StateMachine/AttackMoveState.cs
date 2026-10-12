@@ -18,6 +18,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     /// </summary>
     public sealed class AttackMoveState : IBaseState
     {
+        // Seconds between target searches while the ship has no target, with a random first delay. A whole
+        // attack-move group otherwise searches, claims and arms its weapons on the order's frame (~28 ms for
+        // 178 ships) and again on the frame their shared targets die.
+        private const float SEARCH_INTERVAL = 0.25f;
+
         private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly IRadarComponent _radar;
@@ -31,8 +36,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 _destination;
 
         private int _member;
+        private float _nextSearchTime;
+        // A search found nothing since the last target was dropped; until then the order is not finished.
+        private bool _hasSearched;
 
-        public bool IsComplete => _engagementTarget == null && !_movement.IsMoving;
+        public bool IsComplete => _engagementTarget == null && _hasSearched && !_movement.IsMoving;
 
         public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory)
@@ -57,6 +65,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _engagementTarget = null;
             _member = _engagement.Join();
             _movement.MoveToPosition(_destination);
+            DelaySearch();
         }
 
         public void Tick(float deltaTime)
@@ -67,10 +76,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _weapon.ResetTarget();
                 _engagementTarget = null;
                 _movement.MoveToPosition(_destination);
+                DelaySearch();
             }
 
-            if (_engagementTarget == null)
+            if (_engagementTarget == null && Time.time >= _nextSearchTime)
             {
+                _nextSearchTime = Time.time + SEARCH_INTERVAL;
+                _hasSearched = true;
                 _engagementTarget = _engagement.SelectTarget(_member, _rangeTo);
                 if (_engagementTarget != null)
                 {
@@ -91,6 +103,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
                 else ShipEngagement.Pursue(_movement, _weapon, _engagementTarget);
             }
+        }
+
+        private void DelaySearch()
+        {
+            _hasSearched = false;
+            _nextSearchTime = Time.time + UnityEngine.Random.value * SEARCH_INTERVAL;
         }
 
         public void Exit()
