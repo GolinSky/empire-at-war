@@ -173,16 +173,16 @@
 
 ### Optimization
 
+- [ ] **Pool squadron contexts to remove launch spikes**
+  - **Plan**: [[TODOs/Optimization/Squadron_Pooling_Plan|Squadron Pooling]]
+  - **Status**: 2026-10-12 implemented (uncommitted): `SquadronPool : ISquadronSpawner`, `Squadron.Despawn/Respawn`, `IRespawnable`/`IDespawnable` reset paths; compiles. EditMode run blocked by stale Editor domain (`MissingMethodException`).
+  - **Next**: restart Editor → rerun EditMode → user checks launches/deaths/reinforcements in-game.
+
 - [ ] **Centralize UI canvas routing and replace custom capture-site screen UI**
   - **Plan**: [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan|UI Canvas Routing Optimization]]
   - **Research**: [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan - Research|Canvas inventory, view mapping and historical CPU attribution]]
   - **Status**: 2026-10-12 implementation complete; UiService owns explicit placement across Feedback/Default/Dynamic/Popup. Controllers no longer choose parents; EndGame and one reusable CaptureSiteBuildUi use normal registration.
   - **Decision**: UiService owns canvas/semantic-slot mapping; split low-change and frequent-update UI, preserve scroll/clip/layout/input order, and extract one reusable CaptureSiteBuildUi. Preserve CanvasGroups and world-space site status UI.
-- [ ] **Pool squadron contexts to remove launch spikes**
-  - **Plan**: [[TODOs/Optimization/Squadron_Pooling_Plan|Squadron Pooling]]
-  - **Status**: 2026-10-12 planned, not started. Editor spawn = 22.97 ms (Instantiate 10.6, Zenject 7.9, context construct 3.3). Launch slots (1/frame) and Zenject reflection baking already shipped; re-measure first.
-  - **Next**: baseline in Development Player → state/registration inventory → identity decision → pool keyed by (PlayerId, SquadronType).
-
   - **Verification**: compilation successful; 154 saved-asset/preview checks passed, no UI/import/serialization errors in the preview checks. CanvasGroups, registered mapping, popup order, repeated faction attachment/disposal and three resolutions checked. No NUnit or Play Mode run.
   - 2026-10-12 station-selection fix: faction grid **150×150 → 138×106 px**, matching `FactionUnit.prefab`. Two rows + 6 px gap use **218/220 px**; 30 populated cards fit vertically and retain horizontal scrolling at 1280×720, 1920×1080 and 2560×1440. Compilation and all 154 routing checks passed; no Play Mode run.
   - **Next**: Play Mode behavior and matched performance/Development Player acceptance. New performance analysis explicitly deferred by the user; no savings claimed.

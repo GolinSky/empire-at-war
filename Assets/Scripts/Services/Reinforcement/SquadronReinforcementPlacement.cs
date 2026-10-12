@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         private readonly ReinforcementPreviewFactory _previewFactory;
         private readonly ReinforcementModel _model;
-        private readonly SquadronFactory _squadronFactory;
+        private readonly ISquadronSpawner _squadronSpawner;
         private readonly UnitSpawnView _previewPrefab;
         private readonly PlayerId _owner;
         private readonly SquadronType _squadronType;
@@ -24,7 +25,7 @@ namespace EmpireAtWar.Services.Reinforcement
             IStationFacingService stationFacingService,
             ReinforcementPreviewFactory previewFactory,
             ReinforcementModel model,
-            SquadronFactory squadronFactory,
+            ISquadronSpawner squadronSpawner,
             UnitSpawnView previewPrefab,
             PlayerId owner,
             SquadronType squadronType)
@@ -33,7 +34,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _stationFacingService = stationFacingService;
             _previewFactory = previewFactory;
             _model = model;
-            _squadronFactory = squadronFactory;
+            _squadronSpawner = squadronSpawner;
             _previewPrefab = previewPrefab;
             _owner = owner;
             _squadronType = squadronType;
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void Spawn(Vector3 position)
         {
-            Squadron squadron = _squadronFactory.Create(_owner, _squadronType, position,
+            Squadron squadron = _squadronSpawner.Spawn(_owner, _squadronType, position,
                 _stationFacingService.GetRotation(_owner));
             squadron.Released += () => _model.RemoveUnitCapacity(_squadronType);
             _model.AddUnitCapacity(_squadronType);

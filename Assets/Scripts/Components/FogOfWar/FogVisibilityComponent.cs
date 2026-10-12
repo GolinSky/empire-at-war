@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Vision;
@@ -16,7 +17,7 @@ namespace EmpireAtWar.Components.FogOfWar
     /// Static buildings such as space stations stay drawn once discovered.
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable,
-        IFogVisibilityFacade
+        IFogVisibilityFacade, IRespawnable, IDespawnable
     {
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
@@ -49,6 +50,30 @@ namespace EmpireAtWar.Components.FogOfWar
         public void Initialize()
         {
             _renderers.AddRange(renderers);
+            SubscribeSpawnedEffects();
+            _isHidden = IsCoveredByFog();
+            ApplyVisibility();
+            // TEMP fog debug: stations lock visible on their first unhidden check.
+            if (staysRevealedOnceSeen)
+            {
+                Debug.Log($"[FogDebug] {name} Initialize at {transform.position} hidden={_isHidden}" +
+                          $" frame={Time.frameCount}{DescribeRevealingSources()}");
+            }
+        }
+
+        // Explosions and ion stun effects spawned in an earlier life stay tracked: they are reused, not spawned again.
+        public void Respawn()
+        {
+            _isReleased = false;
+            SubscribeSpawnedEffects();
+            _isHidden = IsCoveredByFog();
+            ApplyVisibility();
+        }
+
+        public void Despawn() => LateDispose();
+
+        private void SubscribeSpawnedEffects()
+        {
             foreach (HardPoint hardPoint in hardPoints)
             {
                 hardPoint.ExplosionSpawned += TrackExplosion;
@@ -57,15 +82,6 @@ namespace EmpireAtWar.Components.FogOfWar
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
-            }
-
-            _isHidden = IsCoveredByFog();
-            ApplyVisibility();
-            // TEMP fog debug: stations lock visible on their first unhidden check.
-            if (staysRevealedOnceSeen)
-            {
-                Debug.Log($"[FogDebug] {name} Initialize at {transform.position} hidden={_isHidden}" +
-                          $" frame={Time.frameCount}{DescribeRevealingSources()}");
             }
         }
 

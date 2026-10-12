@@ -33,7 +33,7 @@ namespace EmpireAtWar.Components.Hangar
         [SerializeField] private bool isDestroyable = true;
         private readonly List<(ISquadron Squadron, Action Handler)> _launched =
             new List<(ISquadron Squadron, Action Handler)>();
-        private SquadronFactory _squadronFactory;
+        private ISquadronSpawner _squadronSpawner;
         private ISquadronLaunchSlots _launchSlots;
         private LazyInject<IEntity> _carrier;
 
@@ -43,12 +43,12 @@ namespace EmpireAtWar.Components.Hangar
 
         [Inject]
         private void Construct(IHangarData data, IHealthModelObserver health, HangarModel model,
-            SquadronFactory squadronFactory, ISquadronLaunchSlots launchSlots, LazyInject<IEntity> carrier,
+            ISquadronSpawner squadronSpawner, ISquadronLaunchSlots launchSlots, LazyInject<IEntity> carrier,
             PlayerId owner)
         {
             SetModel(model);
             _data = data;
-            _squadronFactory = squadronFactory;
+            _squadronSpawner = squadronSpawner;
             _launchSlots = launchSlots;
             _owner = owner;
             _carrier = carrier;
@@ -140,7 +140,7 @@ namespace EmpireAtWar.Components.Hangar
 
         private ISquadron Launch(SquadronType squadronType, Transform point)
         {
-            ISquadron squadron = _squadronFactory.Create(_owner, squadronType,
+            ISquadron squadron = _squadronSpawner.Spawn(_owner, squadronType,
                 point.position, point.rotation);
             squadron.Guard(_carrier.Value, Vector3.zero);
             return squadron;

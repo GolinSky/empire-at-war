@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 {
-    public sealed class SquadronAbilityFacade : IShipAbilityFacade
+    public sealed class SquadronAbilityFacade : IShipAbilityFacade, IRespawnable
     {
         private readonly IEntityLocator _entities;
         private readonly ISquadronFlightComponent _flight;
@@ -37,6 +37,15 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
             _entityId = entityId;
             foreach (ShipAbilityId id in data.Abilities)
                 _slots.Add(new ShipAbilitySlot(id: id, definition: catalog.Get(id), owner: this));
+        }
+
+        // The pool reuses a squadron only once none of its abilities is active, so only recovery is left to clear.
+        public void Respawn()
+        {
+            foreach (ShipAbilitySlot slot in _slots)
+            {
+                if (slot.State == ShipAbilityState.Recovering) slot.Ready();
+            }
         }
     }
 }

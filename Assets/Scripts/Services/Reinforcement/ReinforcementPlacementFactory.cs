@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ReinforcementData _data;
         private readonly PlayerFactionModel _playerFactionModel;
         private readonly ShipFactory _shipFactory;
-        private readonly SquadronFactory _squadronFactory;
+        private readonly ISquadronSpawner _squadronSpawner;
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly ShipsData _shipsData;
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Services.Reinforcement
             ReinforcementData data,
             PlayerFactionModel playerFactionModel,
             ShipFactory shipFactory,
-            SquadronFactory squadronFactory,
+            ISquadronSpawner squadronSpawner,
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
             ShipsData shipsData,
@@ -54,7 +55,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _data = data;
             _playerFactionModel = playerFactionModel;
             _shipFactory = shipFactory;
-            _squadronFactory = squadronFactory;
+            _squadronSpawner = squadronSpawner;
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
             _shipsData = shipsData;
@@ -78,7 +79,7 @@ namespace EmpireAtWar.Services.Reinforcement
                     return true;
                 case SquadronUnitRequest squadronRequest:
                     placement = new SquadronReinforcementPlacement(_spawnRule, _stationFacingService,
-                        _previewFactory, _model, _squadronFactory, _data.GetSpawnPrefab(squadronRequest.Key),
+                        _previewFactory, _model, _squadronSpawner, _data.GetSpawnPrefab(squadronRequest.Key),
                         _owner.Id, squadronRequest.Key);
                     return true;
                 case MiningFacilityUnitRequest facilityRequest:

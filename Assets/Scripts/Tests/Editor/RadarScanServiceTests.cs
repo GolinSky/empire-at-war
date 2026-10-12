@@ -85,6 +85,36 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Scan_TargetRemovedAndReaddedBetweenSteps_StaysDetectedOnce()
+        {
+            FakeEntity pooled = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeEntity other = AddEntity(2, TestPlayers.Enemy, new Vector3(20f, 0f, 0f));
+            FakeScanner scanner = Register(TestPlayers.Human, Vector3.zero);
+            TickUntilScanned(scanner);
+
+            // A pooled unit despawns and respawns before the radar applies either change.
+            _locator.RemoveEntity(pooled);
+            _locator.AddEntity(pooled);
+            TickUntilScanned(scanner);
+
+            Assert.That(scanner.LastScan, Is.EquivalentTo(new IEntity[] { pooled, other }));
+        }
+
+        [Test]
+        public void Scan_TargetAddedAndRemovedBetweenSteps_IsNeverDetected()
+        {
+            FakeEntity kept = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeScanner scanner = Register(TestPlayers.Human, Vector3.zero);
+            TickUntilScanned(scanner);
+
+            FakeEntity transient = AddEntity(2, TestPlayers.Enemy, new Vector3(20f, 0f, 0f));
+            _locator.RemoveEntity(transient);
+            TickUntilScanned(scanner);
+
+            Assert.That(scanner.LastScan, Is.EquivalentTo(new IEntity[] { kept }));
+        }
+
+        [Test]
         public void FixedTick_StaggersRadarsAcrossSteps()
         {
             int intervalSteps = Mathf.FloorToInt(DELAY / Time.fixedDeltaTime) + 1;

@@ -17,6 +17,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void HasTemporaryEffects_TracksRemovableEffects_ButNotFleetCommand()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            CombatStatModifier boost = new CombatStatModifier(2f, 1f, 1f, 1f, 1f);
+            Assert.That(modifiers.HasTemporaryEffects, Is.False);
+
+            modifiers.SetFleetCommand(true);
+            Assert.That(modifiers.HasTemporaryEffects, Is.False);
+
+            modifiers.Add(boost);
+            modifiers.AddIonPulseDisable();
+            modifiers.SetCloaked(true);
+            Assert.That(modifiers.HasTemporaryEffects, Is.True);
+
+            modifiers.Remove(boost);
+            modifiers.RemoveIonPulseDisable();
+            Assert.That(modifiers.HasTemporaryEffects, Is.True);
+            modifiers.SetCloaked(false);
+            Assert.That(modifiers.HasTemporaryEffects, Is.False);
+        }
+
+        [Test]
         public void StackedModifiers_UseProducts_AndRemoveRestoresValues()
         {
             CombatModifiers modifiers = new CombatModifiers();

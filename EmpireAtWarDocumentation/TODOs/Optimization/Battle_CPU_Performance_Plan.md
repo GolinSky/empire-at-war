@@ -91,12 +91,18 @@ updated: 2026-10-11
 - [x] Zenject reflection baking: `Assets/Settings/Data/Zenject/ZenjectReflectionBakingSettings.asset` (builds + editor, all generated assemblies, namespace `^EmpireAtWar`). Assembly-CSharp 1.32 → 1.58 MB woven; EditMode 1451 pass / 26 legacy.
   - Plugin patches: `UnityAssemblyResolver` skips in-memory assemblies (empty `Location` → "Invalid path"); weaver writes `<Name>k__BackingField` for get-only `[Inject]` properties (23 in project; previously NRE).
   - Editor baking drops PDB line numbers in Assembly-CSharp stack traces; decide editor on/off after spawn re-measure.
+  - **Removed 2026-10-12** (settings asset deleted): weaver reflects on the *loaded* assembly → after code changes the woven DLL references itself ("Assembly-CSharp references itself"), Unity silently keeps the stale domain. Also wove `Zenject-ReflectionBaking-Editor`. Release builds at risk: `[Inject]` fields under `#if UNITY_EDITOR || DEVELOPMENT_BUILD`. Recovery: delete affected DLLs in `Library/ScriptAssemblies` + clean compile. Plugin patches remain, dormant.
 - Squadron pooling → [[TODOs/Optimization/Squadron_Pooling_Plan]].
 - Capture 4 (baked, all changes; editor, profiler on, 2000 frames): median 49.7 ms; TargetBatch 4.9 ms (Capture 3.8); nav plan max 5.7 ms.
   - Squadron spawns: 49 frames, median 13.8 ms, max 26 ms. Spawn frame 448: Instantiate 4.0, `GameObjectContext.Construct` 1.86 (was 3.3), HangarComponent self 7.16 (was 7.85) → baking saves ~1.5–2 ms/spawn.
   - Live counters (profiler off): ~68 requests/frame, 1.6 candidate rebuilds/frame (0.13 ms), post-capture batch 0.34 ms, **2060 slots refreshed/frame** of ~2.9k → used-slot filter barely helps; capture cost = hardpoint position reads (`HardPointAdapter.Position` → view transform).
   - One 1.6 s frame, all self time in `Battle.Attack.DueBatch.Impact`; same session logged "Stopping profiler … not able to send data fast enough" → possibly profiler artifact. Unconfirmed; re-check without profiler.
-- [ ] Next capture idea: read slot positions with `IJobParallelForTransform` over hardpoint transforms (verify `HardPointAdapter.Position` equals its transform position first).
+- [x] Slot positions via `TargetSlotPositionJob` (`IJobParallelForTransform`, `ScheduleReadOnly`, batch 64) over a slot-aligned `TransformAccessArray`. Verified all `IHardPointModel` positions = `Transform.position` (`HardPoint`, `HullTarget`, `FighterView`). Freed slots keep their transform; destroyed entries skipped via `isValid`. Tests pass (uncommitted, 2026-10-12).
+- Capture 5 (2026-10-12, no baking, slot position job + squadron pooling; editor, 1995 frames, ~169 squadrons): median 39.4 ms, p95 53.1, p99 62.7.
+  - TargetBatch **1.37 ms** (Capture 1.07, Apply 0.23); `CombatAttackCoordinator.LateTick` 1.88 ms (was 7.35). Nav plan max 2.9 ms.
+  - Hangar frames > 3 ms: **2** (was 49) → squadron pooling reuses contexts; `SquadronPool.Tick` 0.002 ms avg.
+  - Found during capture: `RadarScanService` applied all adds before removes → pooled squadron despawn+respawn within one radar step threw duplicate-key in `ApplyPendingTargets` every step. Fixed: one ordered `_pendingChanges` queue; 2 regression tests. Re-check in battle pending.
+  - Pool binding fixed: `SquadronPool` moved from `SkirmishMainInstaller` (scene, cannot see per-player `SquadronFactory`) to `GameUnitsInstaller` (per player).
 
 ### Radar acceptance and capture reliability
 - [ ] Obtain radar owner's implementation/test evidence; validate 1×/4× scheduling, detection delay, cloak/hostility, destruction, range modifiers and obstacle contacts.

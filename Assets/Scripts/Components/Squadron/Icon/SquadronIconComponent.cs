@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
@@ -16,7 +17,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     /// stay easy to find and click, and it is the squadron's click target for selection and attack orders.
     /// </summary>
     public sealed class SquadronIconComponent : MonoComponent<SelectionModel>, ISquadronIconCommand,
-        IInitializable, ILateTickable, ILateDisposable
+        IInitializable, ILateTickable, ILateDisposable, IRespawnable
     {
         private ICameraService _cameraService;
         private IVisionService _visionService;
@@ -68,6 +69,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         }
 
         public void LateDispose() => Release();
+
+        public void Respawn()
+        {
+            _isReleased = false;
+            Initialize();
+        }
 
         public void LateTick()
         {

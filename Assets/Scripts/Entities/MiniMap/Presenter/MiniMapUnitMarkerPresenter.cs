@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
@@ -10,7 +11,8 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
-    public sealed class MiniMapUnitMarkerPresenter : IInitializable, ILateTickable, ILateDisposable
+    public sealed class MiniMapUnitMarkerPresenter : IInitializable, ILateTickable, ILateDisposable, IRespawnable,
+        IDespawnable
     {
         private readonly IHealthModelObserver _healthModel;
         private readonly IVisionService _visionService;
@@ -63,6 +65,10 @@ namespace EmpireAtWar.Presenters.MiniMap
             _healthModel.OnDestroy -= RemoveMarker;
             RemoveMarker();
         }
+
+        public void Respawn() => Initialize();
+
+        public void Despawn() => LateDispose();
 
         public void LateTick()
         {

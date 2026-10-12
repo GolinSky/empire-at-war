@@ -25,6 +25,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private readonly List<IObserver<float>> _observers = new List<IObserver<float>>();
         private ExplosionVfx _explosionVfx;
+        // A restored hardpoint (e.g. a reused squadron's fighter) explodes again when it is destroyed again.
+        private bool _hasExploded;
 
         private float _healthPercentage = MAX_HEALTH;
 
@@ -92,12 +94,25 @@ namespace EmpireAtWar.ViewComponents.Health
 
         protected virtual void OnStateUpdated(float healthPercentage)
         {
-            if (_isInstalled && healthPercentage <= 0 && _explosionVfx == null && spawnDestroyedExplosion)
+            if (healthPercentage > 0)
             {
-                _explosionVfx = Instantiate(AssetService.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
+                _hasExploded = false;
+            }
+            else if (_isInstalled && !_hasExploded && spawnDestroyedExplosion)
+            {
+                _hasExploded = true;
+                bool isNew = _explosionVfx == null;
+                if (isNew)
+                {
+                    _explosionVfx = Instantiate(AssetService.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
+                }
+
                 _explosionVfx.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
                 _explosionVfx.Play();
-                ExplosionSpawned?.Invoke(_explosionVfx);
+                if (isNew)
+                {
+                    ExplosionSpawned?.Invoke(_explosionVfx);
+                }
             }
         }
     }
