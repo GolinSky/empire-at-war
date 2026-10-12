@@ -15,23 +15,8 @@ MonoBehaviour:
   m_GroupName: View
   m_GUID: c76d02dd69a34cb44abaf1b9048349ba
   m_SerializeEntries:
-  - m_GUID: d7c14c6e2e6a4f6449378312ad8c1c7b
-    m_Address: QuasarFireShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8c94249786d23114d98ed5599f73b143
-    m_Address: BothanAssaultCruiserShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 010561448aafee74bb1d92d47bb33f3b
     m_Address: TIEAvengerSquadronView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 13b95f5491d4d064cb67648cf70fa056
-    m_Address: CD273ShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -52,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c9100437434e874fbbc39ea7716be81
     m_Address: MunificentShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13b95f5491d4d064cb67648cf70fa056
+    m_Address: CD273ShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -205,8 +195,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 869c8abfc930a964892aef3ee3c9f4a6
+    m_Address: EnduranceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 870b0e4f67a6e994c8121130474d0fbb
     m_Address: HomeOneShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8888b5efaabc0404bb04e740e25c8372
+    m_Address: LiberatorShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -217,6 +217,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b70c9c30de88af48a0ad58a72d76f4b
     m_Address: AsteroidMiningFacilityView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c94249786d23114d98ed5599f73b143
+    m_Address: BothanAssaultCruiserShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -340,6 +345,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7c14c6e2e6a4f6449378312ad8c1c7b
+    m_Address: QuasarFireShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9d6eb346b0497649911724f20048daf
     m_Address: ResoluteShipView
     m_ReadOnly: 0
@@ -382,16 +392,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fcc3274cbaf8b934aad8621c60702a8f
     m_Address: RebellionSpaceStationView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 869c8abfc930a964892aef3ee3c9f4a6
-    m_Address: EnduranceShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8888b5efaabc0404bb04e740e25c8372
-    m_Address: LiberatorShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

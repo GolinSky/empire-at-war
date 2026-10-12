@@ -14,34 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Repository.Data.AssetMappingData
   assetMappings:
     keyValue:
-    - key: QuasarFireShipData
-      value:
-        m_AssetGUID: c518047910b28c04c9329ac0f24d7cbb
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: QuasarFireShipView
-      value:
-        m_AssetGUID: d7c14c6e2e6a4f6449378312ad8c1c7b
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: BothanAssaultCruiserShipView
-      value:
-        m_AssetGUID: 8c94249786d23114d98ed5599f73b143
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: BothanAssaultCruiserShipData
-      value:
-        m_AssetGUID: 28d2337875adca44ba1987aa35884aee
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: ExplosionVfx
       value:
         m_AssetGUID: 17a65e70ac12d8e4b839ac0bd03f953b
@@ -1190,9 +1162,30 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MC50ShipData
+    - key: CD273ShipView
       value:
-        m_AssetGUID: f90c2c253a724024e9e5aa025f5572d9
+        m_AssetGUID: 13b95f5491d4d064cb67648cf70fa056
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CD273ShipData
+      value:
+        m_AssetGUID: 63d3d356ed5d781469d8411e38fb3498
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: QuasarFireShipView
+      value:
+        m_AssetGUID: d7c14c6e2e6a4f6449378312ad8c1c7b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: QuasarFireShipData
+      value:
+        m_AssetGUID: c518047910b28c04c9329ac0f24d7cbb
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -1200,6 +1193,13 @@ MonoBehaviour:
     - key: MC50ShipView
       value:
         m_AssetGUID: d720a68f8d256d04886c0e72d81f05ff
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC50ShipData
+      value:
+        m_AssetGUID: f90c2c253a724024e9e5aa025f5572d9
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -1246,20 +1246,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: CD273ShipView
-      value:
-        m_AssetGUID: 13b95f5491d4d064cb67648cf70fa056
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: CD273ShipData
-      value:
-        m_AssetGUID: 63d3d356ed5d781469d8411e38fb3498
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: EnduranceShipView
       value:
         m_AssetGUID: 869c8abfc930a964892aef3ee3c9f4a6
@@ -1284,6 +1270,20 @@ MonoBehaviour:
     - key: LiberatorShipData
       value:
         m_AssetGUID: c64ff453529efa04892944c88f46d7b2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: BothanAssaultCruiserShipView
+      value:
+        m_AssetGUID: 8c94249786d23114d98ed5599f73b143
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: BothanAssaultCruiserShipData
+      value:
+        m_AssetGUID: 28d2337875adca44ba1987aa35884aee
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

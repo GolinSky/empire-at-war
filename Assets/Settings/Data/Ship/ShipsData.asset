@@ -14,20 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.Data.ShipsData
   shipsData:
     keyValue:
-    - key: 320
-      value:
-        m_AssetGUID: c518047910b28c04c9329ac0f24d7cbb
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: 312
-      value:
-        m_AssetGUID: 28d2337875adca44ba1987aa35884aee
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: 0
       value:
         m_AssetGUID: a5b5a5e33bc0650428444f9d2024ee89
@@ -301,6 +287,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 308
+      value:
+        m_AssetGUID: 63d3d356ed5d781469d8411e38fb3498
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 320
+      value:
+        m_AssetGUID: c518047910b28c04c9329ac0f24d7cbb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: 311
       value:
         m_AssetGUID: f90c2c253a724024e9e5aa025f5572d9
@@ -315,27 +315,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: 330
-      value:
-        m_AssetGUID: ac3cef40f42f6f441963970d79701570
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: 308
-      value:
-        m_AssetGUID: 63d3d356ed5d781469d8411e38fb3498
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: 322
-      value:
-        m_AssetGUID: fef3778c9889843489a563dd0efbf27b
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: 310
       value:
         m_AssetGUID: 3f83d7d16e8adf64fa05fc0b246694b4
@@ -346,6 +325,27 @@ MonoBehaviour:
     - key: 321
       value:
         m_AssetGUID: c64ff453529efa04892944c88f46d7b2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 330
+      value:
+        m_AssetGUID: ac3cef40f42f6f441963970d79701570
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 312
+      value:
+        m_AssetGUID: 28d2337875adca44ba1987aa35884aee
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 322
+      value:
+        m_AssetGUID: fef3778c9889843489a563dd0efbf27b
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

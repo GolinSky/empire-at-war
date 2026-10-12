@@ -14,53 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog
   definitions:
     keyValue:
-    - key: 50
-      value:
-        icon: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d, type: 3}
-        displayName: Fighter Reinforcements
-        description: 'Launch one replacement X-Wing or Y-Wing squadron from an operational
-          bay''s reserve. Requires a vacant active slot after a squadron is lost.
-          Cooldown: 30 seconds.'
-        duration: 0
-        recoveryDelay: 30
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 0
-        settings:
-          rid: 6801467062609510480
-    - key: 39
-      value:
-        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
-        displayName: Sensor Jamming
-        description: Reduce enemy accuracy by 20% within 500 game units for 8 seconds.
-          Sensor destruction ends the effect. Recovers in 40 seconds; overlapping
-          jammers do not stack.
-        duration: 8
-        recoveryDelay: 40
-        canCancel: 1
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 500
-        aiUse: 0
-        settings:
-          rid: 6801467062609510483
-    - key: 42
-      value:
-        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
-        displayName: Coordinated Assault
-        description: Torpedo firing rate +25% for 8 seconds. Recovers 40 seconds
-          after expiry.
-        duration: 8
-        recoveryDelay: 40
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        settings:
-          rid: 6801467062609510486
     - key: 8
       value:
         icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
@@ -227,6 +180,37 @@ MonoBehaviour:
         aiUse: 0
         settings:
           rid: 6801467062609510482
+    - key: 39
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Sensor Jamming
+        description: Reduce enemy accuracy by 20% within 500 game units for 8 seconds.
+          Sensor destruction ends the effect. Recovers in 40 seconds; overlapping
+          jammers do not stack.
+        duration: 8
+        recoveryDelay: 40
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 500
+        aiUse: 0
+        settings:
+          rid: 6801467062609510483
+    - key: 42
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Coordinated Assault
+        description: Torpedo firing rate +25% for 8 seconds. Recovers 40 seconds
+          after expiry.
+        duration: 8
+        recoveryDelay: 40
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801467062609510486
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
@@ -625,21 +609,22 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801467062609510478
-    - key: 52
+    - key: 50
       value:
-        icon: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
-        displayName: Fighter Coordination
-        description: 'Nearby allied squadrons gain +20% accuracy and +15% movement
-          speed for 10 seconds. Command radius: 750. Recovery: 45 seconds.'
-        duration: 10
-        recoveryDelay: 45
+        icon: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d, type: 3}
+        displayName: Fighter Reinforcements
+        description: 'Launch one replacement X-Wing or Y-Wing squadron from an operational
+          bay''s reserve. Requires a vacant active slot after a squadron is lost.
+          Cooldown: 30 seconds.'
+        duration: 0
+        recoveryDelay: 30
         canCancel: 0
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
+        aiUse: 0
         settings:
-          rid: 6801467062609510488
+          rid: 6801467062609510480
     - key: 51
       value:
         icon: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3, type: 3}
@@ -655,18 +640,24 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801467062609510485
+    - key: 52
+      value:
+        icon: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
+        displayName: Fighter Coordination
+        description: 'Nearby allied squadrons gain +20% accuracy and +15% movement
+          speed for 10 seconds. Command radius: 750. Recovery: 45 seconds.'
+        duration: 10
+        recoveryDelay: 45
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801467062609510488
   references:
     version: 2
     RefIds:
-    - rid: 6801467062609510480
-      type: {class: FighterReinforcementsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data: 
-    - rid: 6801467062609510486
-      type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        fireDelayMultiplier: 0.8
     - rid: 6801466862182334539
       type: {class: IonPulseSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -903,6 +894,20 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         fireDelayMultiplier: 0.6666667
+    - rid: 6801467062609510479
+      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 1.35
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+    - rid: 6801467062609510480
+      type: {class: FighterReinforcementsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data: 
     - rid: 6801467062609510481
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -923,6 +928,24 @@ MonoBehaviour:
           speedMultiplier: 0.8
           shieldRegenMultiplier: 1.6
           damageTakenMultiplier: 1
+    - rid: 6801467062609510483
+      type: {class: SensorJammingSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data: 
+    - rid: 6801467062609510485
+      type: {class: RapidDeploymentSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data: 
+    - rid: 6801467062609510486
+      type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        fireDelayMultiplier: 0.8
+    - rid: 6801467062609510488
+      type: {class: FighterCoordinationSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        commandRadius: 750
     - rid: 6801467062609510489
       type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -932,16 +955,6 @@ MonoBehaviour:
           fireDelayMultiplier: 0.8
           speedMultiplier: 1
           shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
-    - rid: 6801467062609510479
-      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 1
-          speedMultiplier: 1.35
-          shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -1017,16 +1030,3 @@ MonoBehaviour:
       data:
         damageType: 7
         damage: 12000
-    - rid: 6801467062609510488
-      type: {class: FighterCoordinationSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        commandRadius: 750
-    - rid: 6801467062609510483
-      type: {class: SensorJammingSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data: 
-    - rid: 6801467062609510485
-      type: {class: RapidDeploymentSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data: 

@@ -14,12 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnShipWrapper:
     keyValue:
-    - key: 320
-      value: {fileID: 484096460124362054, guid: 594f8542138301e4da495f689bc4a8cf,
-        type: 3}
-    - key: 312
-      value: {fileID: 484096460124362054, guid: b6ba67b098b3be441868dfeacab31dd7,
-        type: 3}
     - key: 0
       value: {fileID: 5422768365347329368, guid: 22aad1d1d6cecd043901814978cdaac2,
         type: 3}
@@ -135,26 +129,32 @@ MonoBehaviour:
     - key: 307
       value: {fileID: 484096460124362054, guid: d360139ffc7612e4198fd9f2f4765116,
         type: 3}
+    - key: 308
+      value: {fileID: 484096460124362054, guid: f3df4761073611f49a060f2219950bcf,
+        type: 3}
+    - key: 320
+      value: {fileID: 484096460124362054, guid: 594f8542138301e4da495f689bc4a8cf,
+        type: 3}
     - key: 311
       value: {fileID: 484096460124362054, guid: 0df0b5b98a9519c4c9ef112b2c4d2221,
         type: 3}
     - key: 309
       value: {fileID: 484096460124362054, guid: b2a23c8d1bcc8fc42a98fa3c746e664f,
         type: 3}
-    - key: 330
-      value: {fileID: 484096460124362054, guid: 532a740159cffbd46a317fa64a34529e,
-        type: 3}
-    - key: 308
-      value: {fileID: 484096460124362054, guid: f3df4761073611f49a060f2219950bcf,
-        type: 3}
-    - key: 322
-      value: {fileID: 484096460124362054, guid: 03937783f671e3344ab62c666dbc3c2b,
-        type: 3}
     - key: 310
       value: {fileID: 484096460124362054, guid: 146201b15b2d45247a07d88878115eb5,
         type: 3}
     - key: 321
       value: {fileID: 484096460124362054, guid: faba6bf59f4a70a40b4c9279df4347fa,
+        type: 3}
+    - key: 330
+      value: {fileID: 484096460124362054, guid: 532a740159cffbd46a317fa64a34529e,
+        type: 3}
+    - key: 312
+      value: {fileID: 484096460124362054, guid: b6ba67b098b3be441868dfeacab31dd7,
+        type: 3}
+    - key: 322
+      value: {fileID: 484096460124362054, guid: 03937783f671e3344ab62c666dbc3c2b,
         type: 3}
   spawnSquadronWrapper:
     keyValue:

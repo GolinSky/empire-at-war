@@ -59,7 +59,7 @@ updated: 2026-10-12
 - Residual risk: a holder that keeps a dead squadron's `IEntity` > 6 s without checking health would see it alive again at the new position.
 
 ### 4. Pool service
-- [x] `SquadronPool : ISquadronSpawner, ITickable` (`Services/Squadron`), bound in `SkirmishMainInstaller`; key (PlayerId, SquadronType); miss → `SquadronFactory`.
+- [x] `SquadronPool : ISquadronSpawner, ITickable` (`Services/Squadron`), bound per player in `GameUnitsInstaller` (scene container cannot see `SquadronFactory`); key (PlayerId, SquadronType); miss → `SquadronFactory`.
 - [x] Destroyed → despawn after `DEATH_PRESENTATION_SECONDS = 6` (replaces `Destroy(context, 6 s)`); `Squadron.Despawn` → `IDespawnable` parts + `SetActive(false)`.
 - [x] Reuse only when `Squadron.CanRespawn`: no `CombatModifiers.HasTemporaryEffects`, no active ability slot.
 - [x] `HangarComponent`, `SquadronReinforcementPlacement`, `ReinforcementPlacementFactory` use `ISquadronSpawner`.
@@ -74,6 +74,42 @@ updated: 2026-10-12
 - [x] Compiles (no errors; build output contains new types).
 - [ ] EditMode run blocked: Editor domain keeps stale `Assembly-CSharp` (MVID 319b…, not on disk) after recompiles, clean rebuild and `RequestScriptReload`; new tests fail with `MissingMethodException`. Needs Editor restart, then rerun EditMode (expect 26 legacy failures only).
 - In-game checks are done by the user, not agents (no agent Play Mode runs).
+- [x] Live battle 2026-10-12 (user-run): reuse in all 4 players' pools; contexts stay ~122 despite losses. Consistency over 106 alive + 13 despawned: all alive in `IEntityLocator`, radar registered, not `Dead` layer, not released; no despawned in locator/radar. No console errors.
+- Hangar frames > 3 ms: 19 / 2000 (8–17 ms) early in battle = pool misses (cold pools), not reuse cost.
+- [ ] User visual check of respawned squadrons: selection, minimap, fog, audio.
+
+### 7. Spawn cost on pool miss (2026-10-12)
+- Profile (hangar frames 506/1350/1493/1546): `HangarComponent.Tick` 12.9–21.2 ms = unmarked self 5.0–9.9 (Zenject container build/resolve) + `Instantiate` ×3 1.7–7.6 + `GameObjectContext.Construct` 1.4–2.9.
+- EditMode timings (20 runs): Addressables load data+view 0.01–0.04 ms; data SO clone 0.015–0.04 ms → moving data bindings to the parent container saves ≈0.
+- View `Instantiate` (inactive parent): TIE 3.24 / ARC170 2.87 / VWing 2.21 ms; without per-fighter `FighterExplosionVfx` 0.93 / 1.30 / 0.71 ms.
+- Prefab weight: ARC170 229 GOs / 422 comps; Vulture 233 / 438; TIE 135 / 298 (file 2.3 MB: 21 `ParticleSystem` × ~96 KB). Per fighter: 3 explosion ParticleSystems (max 1000, playOnAwake off), 2 `TrailRenderer` + `PPFXRendererLayer`, 2–4 `WeaponHardPoint` (no `[Inject]`), fbx empty nodes (`Collision`, `Shadow`, `*_Shadow`).
+- Candidates: shared pooled fighter explosion (−1.5–2.3 ms/miss); pool prewarm at battle start (moves Zenject cost to loading); hardpoint removal not worth it (no injection, drives per-muzzle shots).
+- Why per-fighter explosion: `SquadronViewPrefabBuilder` (`92b2db55`) bakes `FighterExplosionVfx` (3 ParticleSystems) under each fighter → fog hides it with the unit. Ships differ: `HardPoint` instantiates `ExplosionVfx` lazily on first death (not pooled).
+
+### 8. Prewarm, shared data, fighter assets (2026-10-12, uncommitted)
+- [x] Prewarm: `SquadronPool : IInitializable` builds `PREWARM_PER_TYPE = 4` per launchable type at scene init → `Squadron.Stow()` (= `Release(false)` + `Despawn`). Types = faction squadrons ∪ faction ships' `HangarBays` ∪ station bay. Republic 5, Separatist 3, Rebellion 4, Empire 6 types → ~60–100 squadrons over 4 players.
+- [x] Read-only data shared, not cloned: `BindScriptableObject`, `BindModel` (→ `ModelDependencyBuilder.BindShared`), `DynamicEntityInstaller` use `FromInstance`. Kept as copies (runtime state): `GameData`, `MiniMapData`.
+- [x] Per-player `ReinforcementData`, `EconomyData`, `ShipClassMatchupData` moved from `PlayerCoreInstaller`/`AiPlayerInstaller` to `SkirmishMainInstaller`.
+- [x] Empty fighter nodes stripped (prefab-instance removals): model prefabs (Muzzle*, Collision, Shadow, PE_* locators) + view leftovers. TIEInterceptor view 345 → 153 transforms, TIEBrute 303 → 123, TIEPunisher 229 → 105, ARC170 229 → 174.
+- [x] 65 squadron body materials `Ship Lit`/URP Lit → URP Unlit (albedo + color; untextured glows take emission color; glass stays transparent); unused saved properties removed. `TeamColorView` removed from 18 views; `ShipLitSetupTool` no longer targets squadrons.
+- [x] 54 fighter-only textures: max 256, `CompressedLQ`, no crunch (`smokeSheet03` shared → skipped).
+- [x] 18 fighter models + 5 XWing bone meshes: mesh compression High, not readable, tangents None. Normals kept: reinforcement hologram uses URP Simple Lit.
+- View `Instantiate` (EditMode): TIE 3.24 → 2.60, ARC170 2.87 → 2.18, VWing 2.21 → 1.76 ms. Remaining bulk = per-fighter explosion (0.65 / 0.77 / 0.48 ms without).
+- EditMode 1516: 1471 pass / 45 fail — all ship data/prefab (uncommitted ship imports), `PowerToMainBatteriesTests` (bare `WeaponProfile`), legacy. Radar 8/8, PlayerCoreInstaller 2/2 pass.
+- [x] Committed `a3df1bdf7` (2026-10-12).
+- Live capture 7 (prewarm 4/type + slim fighters; editor, profiler on, ~138 squadrons, 169 contexts): median 35.4 / p95 62.9 / p99 73.6 ms; 0 frames > 150 ms (2 excluded = profiler start + agent eval blocking main thread); hangar frames > 3 ms 8 (7 in first 700 frames) = drained busy types (TIEFighter, ARC170, YWing, VWing, AWing, Belbullab22, Vulture). 144 alive + 24 despawned consistent.
+- Agent note: never `Thread.Sleep`-poll inside Unity eval during a capture — eval runs on the main thread (25 s frame).
+
+### 9. Follow-ups (2026-10-12, committed `73093b17d`)
+- [x] Prewarm sized per type: `min(12, 2 if buildable + Σ MaxActive of every faction ship/station bay launching it)` → ~Republic 26, Separatist 15, Rebellion 28, Empire 32.
+- [x] Shared fighter explosion: `FighterExplosionPool : IFighterExplosionPool` (scene, prewarm 16, grows on demand); `FighterView` injects it and plays at death position; hidden when `IVisionService.IsAreaVisible(local, pos, 5)` is false. Prefab `FighterExplosionVfx` got `ExplosionVfx` (particles + 3 renderers); `SkirmishMainInstaller.fighterExplosion` set on `SceneContext.prefab`.
+- [x] Baked explosions removed from 18 views (incl. unpacked copies in TIE/Vulture/YWingBomber views) + their `FogVisibilityComponent.renderers` entries; 0 ParticleSystems, 0 null fog entries. `SquadronViewPrefabBuilder` no longer bakes it.
+- View `Instantiate` (EditMode): TIE 3.24 → 0.60, ARC170 2.87 → 1.00, VWing 2.21 → 0.60 ms.
+- Explosion now stays at the death point (was local-space under the fighter).
+- [x] Bug: `EnemyShipAbilityController.Tick` enumerated `IEntityLocator.Entities` while `TryActivate` could add units (fighter reinforcements; pooled respawn re-registers synchronously) → "Collection was modified". Casters collected first. Test `AbilityThatAddsUnits_DoesNotBreakTheCasterScan` fails on old code, passes on fix.
+- Tests: FighterExplosionPoolTests 3/3, EnemyShipAbilityControllerTests 2/2. Full EditMode 1475/1520; failures are ship data/balance from concurrent ship imports (`3230a90d0` Liberator duplicate X-wing bay identity, ISDII stats) + legacy.
+- Found, not fixed: `AWingSquadronView` has no `FogVisibilityComponent` → enemy A-wings never hidden by fog (`BindFogOfWarFeature` uses `FromComponentsInHierarchy`, so no error).
+- [ ] User in-game check: fighter look, explosions (size/fog), loading time with ~100 prewarmed squadrons, hangar spikes.
 
 ## Edge Cases
 - Squadron dies while pooled return pending → returned twice; guard with the existing `_isReleased` flow.
