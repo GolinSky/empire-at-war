@@ -9,25 +9,30 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     internal sealed class ShipNavigationCache : IDisposable
     {
+        // One grid per clearance and hull-height obstacle set in use; the least recently used is dropped past this.
+        private const int MAX_GRIDS = 8;
+
+        // Most recently used last. Map obstacles are static, so a grid stays valid until its obstacle set changes.
         private readonly List<ShipPathGrid> _grids = new List<ShipPathGrid>();
         private readonly Dictionary<IShipNavigationAgent, StationaryEntry> _stationary =
             new Dictionary<IShipNavigationAgent, StationaryEntry>();
-        private int _frame = -1;
 
         public ShipPathGrid GetGrid(IReadOnlyList<RadarContact> contacts, Vector2Range mapRange,
             Vector3 origin, float clearance)
         {
-            if (_frame != Time.frameCount)
-            {
-                ClearGrids();
-                _frame = Time.frameCount;
-            }
             for (int i = 0; i < _grids.Count; i++)
             {
                 ShipPathGrid grid = _grids[i];
                 if (!grid.Matches(contacts, mapRange, clearance)) continue;
+                _grids.RemoveAt(i);
+                _grids.Add(grid);
                 grid.SetOrigin(origin);
                 return grid;
+            }
+            if (_grids.Count == MAX_GRIDS)
+            {
+                _grids[0].Dispose();
+                _grids.RemoveAt(0);
             }
             ShipPathGrid created = new ShipPathGrid(contacts, mapRange, origin, clearance);
             _grids.Add(created);
@@ -76,15 +81,10 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void RemoveStationary(IShipNavigationAgent agent) => _stationary.Remove(agent);
 
-        public void ClearGrids()
+        public void Dispose()
         {
             for (int i = 0; i < _grids.Count; i++) _grids[i].Dispose();
             _grids.Clear();
-        }
-
-        public void Dispose()
-        {
-            ClearGrids();
             _stationary.Clear();
         }
 

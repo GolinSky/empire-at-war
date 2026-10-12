@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Components.Hangar
         private readonly List<(ISquadron Squadron, Action Handler)> _launched =
             new List<(ISquadron Squadron, Action Handler)>();
         private SquadronFactory _squadronFactory;
+        private ISquadronLaunchSlots _launchSlots;
         private LazyInject<IEntity> _carrier;
 
         private PlayerId _owner;
@@ -41,11 +43,13 @@ namespace EmpireAtWar.Components.Hangar
 
         [Inject]
         private void Construct(IHangarData data, IHealthModelObserver health, HangarModel model,
-            SquadronFactory squadronFactory, LazyInject<IEntity> carrier, PlayerId owner)
+            SquadronFactory squadronFactory, ISquadronLaunchSlots launchSlots, LazyInject<IEntity> carrier,
+            PlayerId owner)
         {
             SetModel(model);
             _data = data;
             _squadronFactory = squadronFactory;
+            _launchSlots = launchSlots;
             _owner = owner;
             _carrier = carrier;
             _health = health;
@@ -94,8 +98,15 @@ namespace EmpireAtWar.Components.Hangar
                 return;
             }
 
+            if (!_launchSlots.IsAvailable)
+            {
+                Model.AdvanceCooldown(Time.deltaTime);
+                return;
+            }
+
             if (Model.TryLaunch(Time.deltaTime, out int bay))
             {
+                _launchSlots.Take();
                 LaunchFromBay(bay);
             }
         }

@@ -23,6 +23,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AdvanceCooldown_RunsTimerWithoutLaunching()
+        {
+            HangarModel model = CreateModel(reserve: 3, maxActive: 2);
+
+            model.AdvanceCooldown(INITIAL_DELAY);
+
+            Assert.That(model.GetActive(0), Is.EqualTo(0));
+            Assert.That(model.TryLaunch(0f, out _), Is.True);
+        }
+
+        [Test]
         public void TryLaunch_StopsAtMaxActive()
         {
             HangarModel model = CreateModel(reserve: 5, maxActive: 2);

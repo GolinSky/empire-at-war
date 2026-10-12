@@ -116,6 +116,30 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(Run(8, Input(1), positions).RequiresSerialFallback, Is.EqualTo(1));
         }
 
+        [Test]
+        public void ScheduledJob_SkipsInvalidSlotsAndIneligibleGroups()
+        {
+            Vector3[] positions = { new Vector3(0f, 0f, 3f), new Vector3(0f, 0f, 4f), new Vector3(0f, 0f, 5f) };
+            byte[] flags = { TargetSelectionCapture.SLOT_VALID, 0, TargetSelectionCapture.SLOT_VALID };
+            WeaponTargetSelectionJob.Result result = Run(8, Input(positions.Length), positions, flags,
+                new[] { 0, 1, 1 }, new byte[] { 0, 1 });
+
+            Assert.That(result.CandidateIndex, Is.EqualTo(2));
+            Assert.That(result.Visited, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ScheduledJob_StrikecraftOnlySkipsCapitalSlots()
+        {
+            Vector3[] positions = { new Vector3(0f, 0f, 3f), new Vector3(0f, 0f, 4f) };
+            byte[] flags = { TargetSelectionCapture.SLOT_VALID,
+                TargetSelectionCapture.SLOT_VALID | TargetSelectionCapture.SLOT_STRIKECRAFT };
+            WeaponTargetSelectionJob.Input input = Input(positions.Length);
+            input.StrikecraftOnly = 1;
+
+            Assert.That(Run(8, input, positions, flags, null).CandidateIndex, Is.EqualTo(1));
+        }
+
         private static WeaponTargetSelectionJob.Input Input(int candidateCount) => new WeaponTargetSelectionJob.Input
         {
             Origin = float3.zero,
@@ -127,25 +151,42 @@ namespace EmpireAtWar.Tests.Weapon
         };
 
         private static WeaponTargetSelectionJob.Result Run(int requestCount,
-            WeaponTargetSelectionJob.Input input, Vector3[] positions)
+            WeaponTargetSelectionJob.Input input, Vector3[] positions) =>
+            Run(requestCount, input, positions, null, null);
+
+        // Candidate i aims at slot i of the target table; all candidates share one target group unless given.
+        private static WeaponTargetSelectionJob.Result Run(int requestCount, WeaponTargetSelectionJob.Input input,
+            Vector3[] positions, byte[] slotFlags, int[] groups, byte[] groupEligible = null)
         {
+            int length = positions.Length == 0 ? 1 : positions.Length;
             NativeArray<WeaponTargetSelectionJob.Input> inputs =
                 new NativeArray<WeaponTargetSelectionJob.Input>(requestCount, Allocator.TempJob);
-            NativeArray<float3> candidatePositions =
-                new NativeArray<float3>(positions.Length == 0 ? 1 : positions.Length, Allocator.TempJob);
+            NativeArray<float3> slotPositions = new NativeArray<float3>(length, Allocator.TempJob);
+            NativeArray<byte> flags = new NativeArray<byte>(length, Allocator.TempJob);
+            NativeArray<int> candidateSlots = new NativeArray<int>(length, Allocator.TempJob);
+            NativeArray<int> candidateGroups = new NativeArray<int>(length, Allocator.TempJob);
+            NativeArray<byte> eligible = new NativeArray<byte>(groupEligible ?? new byte[] { 1 }, Allocator.TempJob);
             NativeArray<WeaponTargetSelectionJob.Result> results =
                 new NativeArray<WeaponTargetSelectionJob.Result>(requestCount, Allocator.TempJob);
-            NativeArray<byte> candidateClasses = new NativeArray<byte>(candidatePositions.Length, Allocator.TempJob);
             try
             {
                 for (int i = 0; i < requestCount; i++) inputs[i] = input;
-                for (int i = 0; i < positions.Length; i++) candidatePositions[i] = positions[i];
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    slotPositions[i] = positions[i];
+                    flags[i] = slotFlags == null ? TargetSelectionCapture.SLOT_VALID : slotFlags[i];
+                    candidateSlots[i] = i;
+                    candidateGroups[i] = groups == null ? 0 : groups[i];
+                }
 
                 new WeaponTargetSelectionJob
                 {
                     Inputs = inputs,
-                    CandidatePositions = candidatePositions,
-                    CandidateIsStrikecraft = candidateClasses,
+                    CandidateSlots = candidateSlots,
+                    CandidateGroups = candidateGroups,
+                    GroupEligible = eligible,
+                    SlotPositions = slotPositions,
+                    SlotFlags = flags,
                     Results = results
                 }.Schedule(requestCount, 1).Complete();
                 return results[0];
@@ -153,9 +194,12 @@ namespace EmpireAtWar.Tests.Weapon
             finally
             {
                 inputs.Dispose();
-                candidatePositions.Dispose();
+                slotPositions.Dispose();
+                flags.Dispose();
+                candidateSlots.Dispose();
+                candidateGroups.Dispose();
+                eligible.Dispose();
                 results.Dispose();
-                candidateClasses.Dispose();
             }
         }
 

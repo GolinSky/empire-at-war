@@ -70,6 +70,34 @@ updated: 2026-10-11
 - [ ] Measure cold versus warm projectile pools: latest 462 creations / 78 frames, 1.325 ms/frame instantiate scope; preserve lease/drain and owner-death behavior.
 - Done gate: identify measured child costs, select bounded fixes, verify behavior and matched timings; do not call a broad marker a diagnosed bug.
 
+### Navigation, hangar and capture fixes — 2026-10-12 (uncommitted)
+- [x] Grids persist across frames (`ShipNavigationCache`, LRU `MAX_GRIDS = 8`, `Allocator.Persistent`); built once: block raster + `NavigationRegionJob` labels.
+- [x] Per-plan Dijkstra flood → goal-directed A* in `NavigationRouteJob`; different region → no search. `NavigationFloodJob` deleted.
+- [x] Nearest reachable → Burst ring search (`NavigationNearestReachableJob`, `NavigationGridCells.FindNearestCellInRegion`).
+- [x] Queued plans: max 4 and `PLAN_BUDGET_MILLISECONDS = 2` per frame. Marker `Battle.Navigation.Flood` → `Battle.Navigation.PathSearch`.
+- [x] Hangars: one reserve launch per frame across all hangars (`ISquadronLaunchSlots`, `HangarModel.AdvanceCooldown`).
+- [x] Target capture: eligibility/target-state lookups once per contiguous group run (behavior identical).
+- Editor capture before → after (larger second battle, not matched): nav plan worst frame 20.2 → 5.7 ms; frames >3 ms 42 → 12; NearestReachable 2–6 → 0.03 ms; hangar spike 50–95 → 16.7 ms.
+- EditMode: 1442 pass; 26 failures predate this change (asset/data tests and `ShipEngineHardpointTests` NRE from `bfc24d67`).
+- [x] Target selection rewrite: `TargetSelectionCapture` = stable ref-counted hardpoint slots; weapons keep `int[]` slot + group-index arrays (rebuilt only on target change); batch block-copies them; `WeaponTargetSelectionJob` reads slot positions/flags in Burst. Same candidate order and checks.
+- [x] Per-batch cache of cloak/fog per target entity; `Refresh` reads only slots marked by this batch's owners.
+- [x] Idle backoff: nearest candidate > `MaxWeaponRange` + hardpoint span → weapon waits `IDLE_RESELECT_INTERVAL = 0.25 s`; any target change resets it. Requests ~277 → ~74/frame.
+- [x] Turret turn delay (logic only): `WeaponFamilyRule.turnRate` × `WeaponCaliberRule.turnRateMultiplier`; Squadron platform → 0. Data: Laser 120, Turbolaser 60, Ion 60, MassDriver 40, Missile/Torpedo/IonTorpedo 90, PointDefense 240, Beam 20 °/s; caliber Light 1 / Medium 0.75 / Heavy 0.5. Mount yaw starts mid-arc; salvo waits |Δyaw| / rate, then re-checks target validity and range.
+- [x] `IsRouteClear` skips contacts outside the route bounds (exact).
+- Bug fixed: zero-candidate owner at a full buffer's end → `NativeArray.Copy` threw each LateTick (broke movement, 10 FPS).
+- Capture 3 (before used-slot/eligibility cache): TargetBatch 8.8 → 5.0 ms (Capture 3.9, Job 0.07); nav plan max 3.97 ms; hangar peak 23 ms. Re-measure after cache changes.
+- Squadron spawn (editor, frame 1747): 23 ms = Instantiate 10.6 (Copy 5.6) + Zenject self 7.9 + `GameObjectContext.Construct` 3.3. Pooling needs a reset path across ~20 squadron components/models → separate plan.
+- EditMode: all non-legacy tests pass; 26 pre-existing failures unchanged.
+- [x] Zenject reflection baking: `Assets/Settings/Data/Zenject/ZenjectReflectionBakingSettings.asset` (builds + editor, all generated assemblies, namespace `^EmpireAtWar`). Assembly-CSharp 1.32 → 1.58 MB woven; EditMode 1451 pass / 26 legacy.
+  - Plugin patches: `UnityAssemblyResolver` skips in-memory assemblies (empty `Location` → "Invalid path"); weaver writes `<Name>k__BackingField` for get-only `[Inject]` properties (23 in project; previously NRE).
+  - Editor baking drops PDB line numbers in Assembly-CSharp stack traces; decide editor on/off after spawn re-measure.
+- Squadron pooling → [[TODOs/Optimization/Squadron_Pooling_Plan]].
+- Capture 4 (baked, all changes; editor, profiler on, 2000 frames): median 49.7 ms; TargetBatch 4.9 ms (Capture 3.8); nav plan max 5.7 ms.
+  - Squadron spawns: 49 frames, median 13.8 ms, max 26 ms. Spawn frame 448: Instantiate 4.0, `GameObjectContext.Construct` 1.86 (was 3.3), HangarComponent self 7.16 (was 7.85) → baking saves ~1.5–2 ms/spawn.
+  - Live counters (profiler off): ~68 requests/frame, 1.6 candidate rebuilds/frame (0.13 ms), post-capture batch 0.34 ms, **2060 slots refreshed/frame** of ~2.9k → used-slot filter barely helps; capture cost = hardpoint position reads (`HardPointAdapter.Position` → view transform).
+  - One 1.6 s frame, all self time in `Battle.Attack.DueBatch.Impact`; same session logged "Stopping profiler … not able to send data fast enough" → possibly profiler artifact. Unconfirmed; re-check without profiler.
+- [ ] Next capture idea: read slot positions with `IJobParallelForTransform` over hardpoint transforms (verify `HardPointAdapter.Position` equals its transform position first).
+
 ### Radar acceptance and capture reliability
 - [ ] Obtain radar owner's implementation/test evidence; validate 1×/4× scheduling, detection delay, cloak/hostility, destruction, range modifiers and obstacle contacts.
 - [ ] Retain historical radar diagnosis in research; current stages average Snapshot 2.189 ms, Job 0.751 ms, Apply 5.392 ms.

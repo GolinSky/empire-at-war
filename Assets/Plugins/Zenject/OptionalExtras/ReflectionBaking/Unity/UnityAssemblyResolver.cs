@@ -28,6 +28,11 @@ namespace Zenject.ReflectionBaking
                     continue;
                 }
 #endif
+                // Assemblies loaded from memory have no file to resolve from.
+                if (string.IsNullOrEmpty(assemblies[i].Location))
+                {
+                    continue;
+                }
 
                 _appDomainAssemblyLocations[assemblies[i].FullName] = assemblies[i].Location;
 

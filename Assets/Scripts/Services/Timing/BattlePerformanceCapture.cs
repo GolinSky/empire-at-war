@@ -49,7 +49,7 @@ namespace EmpireAtWar.Services.Timing
         private const int NAVIGATION_PLAN = 32;
         private const int NAVIGATION_CANDIDATES = 33;
         private const int NAVIGATION_ROUTE_BUILD = 34;
-        private const int NAVIGATION_FLOOD = 35;
+        private const int NAVIGATION_PATH_SEARCH = 35;
         private const int NAVIGATION_NEAREST_REACHABLE = 36;
         private const int RADAR_SNAPSHOT = 37;
         private const int RADAR_JOB = 38;
@@ -140,7 +140,7 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.NAVIGATION_PLAN,
             BattleProfilerMarkers.NAVIGATION_CANDIDATES,
             BattleProfilerMarkers.NAVIGATION_ROUTE_BUILD,
-            BattleProfilerMarkers.NAVIGATION_FLOOD,
+            BattleProfilerMarkers.NAVIGATION_PATH_SEARCH,
             BattleProfilerMarkers.NAVIGATION_NEAREST_REACHABLE,
             BattleProfilerMarkers.RADAR_SNAPSHOT,
             BattleProfilerMarkers.RADAR_JOB,
@@ -399,7 +399,7 @@ namespace EmpireAtWar.Services.Timing
             StartMarkerRecorder(NAVIGATION_PLAN, BattleProfilerMarkers.NavigationPlan);
             StartMarkerRecorder(NAVIGATION_CANDIDATES, BattleProfilerMarkers.NavigationCandidates);
             StartMarkerRecorder(NAVIGATION_ROUTE_BUILD, BattleProfilerMarkers.NavigationRouteBuild);
-            StartMarkerRecorder(NAVIGATION_FLOOD, BattleProfilerMarkers.NavigationFlood);
+            StartMarkerRecorder(NAVIGATION_PATH_SEARCH, BattleProfilerMarkers.NavigationPathSearch);
             StartMarkerRecorder(NAVIGATION_NEAREST_REACHABLE, BattleProfilerMarkers.NavigationNearestReachable);
             StartMarkerRecorder(RADAR_SNAPSHOT, BattleProfilerMarkers.RadarSnapshot);
             StartMarkerRecorder(RADAR_JOB, BattleProfilerMarkers.RadarJob);

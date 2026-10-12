@@ -40,8 +40,19 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public int FindNearestWalkableCell(NativeArray<byte> blocked, float2 position)
         {
+            return FindNearestCell(new WalkableCells { Blocked = blocked }, position);
+        }
+
+        /// <summary>The node nearest to <paramref name="position"/> whose region label is <paramref name="label"/>.</summary>
+        public int FindNearestCellInRegion(NativeArray<int> regions, int label, float2 position)
+        {
+            return FindNearestCell(new RegionCells { Regions = regions, Label = label }, position);
+        }
+
+        private int FindNearestCell<TFilter>(TFilter filter, float2 position) where TFilter : struct, ICellFilter
+        {
             int index = GetCell(position);
-            if (blocked[index] == 0)
+            if (filter.Accepts(index))
             {
                 return index;
             }
@@ -79,7 +90,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         }
 
                         int cell = y * Width + x;
-                        if (blocked[cell] != 0)
+                        if (!filter.Accepts(cell))
                         {
                             continue;
                         }
@@ -95,6 +106,26 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             return best;
+        }
+
+        private interface ICellFilter
+        {
+            bool Accepts(int cell);
+        }
+
+        private struct WalkableCells : ICellFilter
+        {
+            public NativeArray<byte> Blocked;
+
+            public bool Accepts(int cell) => Blocked[cell] == 0;
+        }
+
+        private struct RegionCells : ICellFilter
+        {
+            public NativeArray<int> Regions;
+            public int Label;
+
+            public bool Accepts(int cell) => Regions[cell] == Label;
         }
     }
 }

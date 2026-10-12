@@ -139,6 +139,15 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             Vector3[] samples = route.Samples;
+            // A contact whose clearance circle misses the route's bounds cannot touch any segment.
+            Vector2 boundsMin = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            Vector2 boundsMax = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            for (int i = 0; i < samples.Length; i++)
+            {
+                boundsMin = Vector2.Min(boundsMin, new Vector2(samples[i].x, samples[i].z));
+                boundsMax = Vector2.Max(boundsMax, new Vector2(samples[i].x, samples[i].z));
+            }
+
             for (int contactIndex = 0;
                  contactIndex < contacts.Count;
                  contactIndex++)
@@ -153,6 +162,11 @@ namespace EmpireAtWar.Components.Ship.Movement
                     contact.Position.x,
                     contact.Position.z);
                 float safeRadius = contact.Radius + clearance;
+                if (center.x + safeRadius < boundsMin.x || center.x - safeRadius > boundsMax.x ||
+                    center.y + safeRadius < boundsMin.y || center.y - safeRadius > boundsMax.y)
+                {
+                    continue;
+                }
                 float safeRadiusSquared = safeRadius * safeRadius;
                 int firstSegment = 1;
                 if (allowEscape)

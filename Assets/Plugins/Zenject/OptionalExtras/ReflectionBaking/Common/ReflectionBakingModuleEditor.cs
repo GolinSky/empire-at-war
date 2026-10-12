@@ -369,7 +369,16 @@ namespace Zenject.ReflectionBaking
 
                 EmitCastOperation(processor, propertyInfo.PropertyType, typeDef.GenericParameters);
 
-                processor.Emit(OpCodes.Callvirt, FindLocalPropertySetMethod(genericTypeDef, propertyInfo.Name));
+                // Get-only auto-properties have no setter; Zenject's reflection path writes their backing field.
+                if (propertyInfo.GetSetMethod(true) == null)
+                {
+                    processor.Emit(OpCodes.Stfld,
+                        FindLocalField(genericTypeDef, "<" + propertyInfo.Name + ">k__BackingField"));
+                }
+                else
+                {
+                    processor.Emit(OpCodes.Callvirt, FindLocalPropertySetMethod(genericTypeDef, propertyInfo.Name));
+                }
             }
 
             processor.Emit(OpCodes.Ret);
