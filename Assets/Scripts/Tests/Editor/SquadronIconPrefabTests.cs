@@ -2,12 +2,14 @@ using EmpireAtWar.Components.Squadrons.Icon;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class SquadronIconPrefabTests
     {
         private const string SQUADRON_PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
+        private const string FRAME_SHADER = "EmpireAtWar/UI/Squadron Frame";
 
         [Test]
         public void SquadronViews_MarkerRootIsAssignedAndHasNoOwnCanvas()
@@ -26,6 +28,10 @@ namespace EmpireAtWar.Tests.Editor
                 // A canvas per marker rebuilds one batch per squadron every frame; the shared layer owns the canvas.
                 Assert.That(marker.GetComponentsInChildren<Canvas>(true), Is.Empty, path);
                 Assert.That(marker.gameObject.layer, Is.EqualTo(LayerMask.NameToLayer("WorldUi")), path);
+                // The frame shader reads centre offsets from UV1: batched into the shared canvas, vertices are screen positions.
+                Graphic frame = (Graphic)new SerializedObject(icon).FindProperty("frameImage").objectReferenceValue;
+                if (frame.material.shader.name == FRAME_SHADER)
+                    Assert.That(frame.GetComponent<SquadronFrameMeshEffect>(), Is.Not.Null, path);
                 checkedCount++;
             }
 

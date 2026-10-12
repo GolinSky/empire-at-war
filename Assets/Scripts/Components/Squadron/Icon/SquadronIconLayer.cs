@@ -24,6 +24,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             gameObject.layer = layerService.GetLayer(LayerKey.WorldUi);
             Canvas canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            // UV1: Squadron Frame centre offsets (SquadronFrameMeshEffect); UV1/UV2: MPUIKit shapes.
+            canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1 |
+                                              AdditionalCanvasShaderChannels.TexCoord2;
             canvas.worldCamera = cameraService.SceneCamera;
             canvas.planeDistance = cameraService.SceneCamera.nearClipPlane + PLANE_DISTANCE_PAST_NEAR_CLIP;
             _root = (RectTransform)transform;

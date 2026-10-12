@@ -126,10 +126,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 "Nothing is left to capture, so the fleet hunts the enemy.",
                 (s, p) => ResponseCurve.When(s.EnemyShipCount > 0) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.HuntAdvantage)),
+            // Both objectives need the base destroyed: destroy-all also waits for every station and building.
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.2f,
                 "No other target remains before the base objective.",
-                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
-                                             s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
+                (s, p) => ResponseCurve.When(s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
             new EnemyStrategicRule(EnemyStrategicState.Hold, 0.05f,
                 "No valid strategic target is currently available.",
                 (s, p) => 1f)
