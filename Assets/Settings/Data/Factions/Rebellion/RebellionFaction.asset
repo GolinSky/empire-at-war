@@ -210,6 +210,23 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 0884e62f660956f45a6dc8ef863d13cc,
           type: 3}
+    - key: 308
+      value:
+        matchups: {fileID: 11400000, guid: 3257543b722be21409dddfd419a7e941, type: 2}
+        description: 'CD-273 Corellian Destroyer: fast strike ship with four medium
+          laser cannons, two concussion missile launchers and two point-defense lasers.
+          Power to Engines increases speed by 35% for 20 seconds.'
+        role: Fast attack / Heavy corvette
+        iconKey: 2e88496bcd539524c9cf43ae79b88a88:21300000
+        isHero: 0
+        <Name>k__BackingField: CD-273 Corellian Destroyer
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2200
+        <BuildTime>k__BackingField: 32
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 2e88496bcd539524c9cf43ae79b88a88,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

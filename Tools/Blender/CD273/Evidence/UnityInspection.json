@@ -1,0 +1,42 @@
+{
+  "meshes": 15,
+  "bones": 107,
+  "triangles": 25512,
+  "boneErrorUnits": 7.260781E-07,
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/CD273.prefab",
+      "size": [
+        10.9375229,
+        8.690276,
+        60.0000038
+      ]
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/CD273ShipView.prefab",
+      "size": [
+        10.9375229,
+        8.690276,
+        60.0000038
+      ]
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/CD273ReinforcementView.prefab",
+      "size": [
+        10.9375229,
+        8.690276,
+        60.0000038
+      ]
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/CD273WreckView.prefab",
+      "size": [
+        10.9375229,
+        8.690277,
+        59.48125
+      ]
+    }
+  ],
+  "targetableHardpoints": 10,
+  "registrationsVerified": true
+}

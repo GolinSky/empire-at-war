@@ -17,7 +17,12 @@ MonoBehaviour:
   m_SerializeEntries:
   - m_GUID: 05364b3836516dc4ca3d774f9d4a230e
     m_Address: C9979ShipData
+    - m_GUID: 63d3d356ed5d781469d8411e38fb3498
+    m_Address: CD273ShipData
     m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0a0612c1ba13ed045b5aec4e9b1d0c52

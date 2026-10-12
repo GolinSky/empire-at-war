@@ -1,0 +1,4394 @@
+{
+  "unit": {
+    "inheritance": [
+      "Corellian_Destroyer",
+      "Frigate_Base",
+      "Vessel_Base",
+      "SFX_Base"
+    ],
+    "values": {
+      "SFXEvent_Attack_Hardpoint": [
+        "HARD_POINT_WEAPON_LASER, Unit_HP_Laser_Corellian_Destroyer",
+        "HARD_POINT_WEAPON_MISSILE, Unit_HP_Missile_Corellian_Destroyer",
+        "HARD_POINT_WEAPON_TORPEDO, Unit_HP_Torp_Corellian_Destroyer",
+        "HARD_POINT_WEAPON_ION_CANNON, Unit_HP_Ion_Corellian_Destroyer",
+        "HARD_POINT_WEAPON_MASS_DRIVER, Unit_Attack_Corellian_Destroyer",
+        "HARD_POINT_WEAPON_SPECIAL, Unit_Attack_Corellian_Destroyer",
+        "HARD_POINT_ENABLE_SPECIAL_ABILITY, Unit_Attack_Corellian_Destroyer",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_HP_Shields_Corellian_Destroyer",
+        "HARD_POINT_ENGINE, Unit_HP_Engines_Corellian_Destroyer",
+        "HARD_POINT_GRAVITY_WELL, Unit_HP_Grav_Corellian_Destroyer",
+        "HARD_POINT_FIGHTER_BAY, Unit_HP_Bay_Corellian_Destroyer",
+        "HARD_POINT_TRACTOR_BEAM, Unit_Attack_Corellian_Destroyer",
+        "HARD_POINT_DUMMY_ART, Unit_Attack_Corellian_Destroyer"
+      ],
+      "SFXEvent_Hardpoint_Destroyed": [
+        "HARD_POINT_WEAPON_LASER, SFX_NA",
+        "HARD_POINT_WEAPON_MISSILE, SFX_NA",
+        "HARD_POINT_WEAPON_TORPEDO, SFX_NA",
+        "HARD_POINT_WEAPON_ION_CANNON, SFX_NA",
+        "HARD_POINT_WEAPON_MASS_DRIVER, SFX_NA",
+        "HARD_POINT_WEAPON_SPECIAL, SFX_NA",
+        "HARD_POINT_ENABLE_SPECIAL_ABILITY, SFX_NA",
+        "HARD_POINT_SHIELD_GENERATOR, SFX_NA",
+        "HARD_POINT_ENGINE, SFX_NA",
+        "HARD_POINT_GRAVITY_WELL, SFX_NA",
+        "HARD_POINT_FIGHTER_BAY, SFX_NA",
+        "HARD_POINT_TRACTOR_BEAM, SFX_NA",
+        "HARD_POINT_DUMMY_ART, SFX_NA"
+      ],
+      "SFXEvent_Select": [
+        "Unit_Select_Corellian_Destroyer"
+      ],
+      "Required_Timeline": [
+        "0"
+      ],
+      "Select_Box_Scale": [
+        "1"
+      ],
+      "Squadron_Capacity": [
+        "50"
+      ],
+      "Space_Full_Stop_Command": [
+        "Yes"
+      ],
+      "Energy_Refresh_Rate": [
+        "9999"
+      ],
+      "GUI_Row": [
+        "1"
+      ],
+      "Layer_Z_Adjust": [
+        "0"
+      ],
+      "Energy_Capacity": [
+        "99999"
+      ],
+      "Idle_Chase_Range": [
+        "0.0"
+      ],
+      "Required_Star_Base_Level": [
+        "2"
+      ],
+      "Build_Initially_Locked": [
+        "No"
+      ],
+      "SFXEvent_Damaged_By_Asteroid": [
+        "SFX_Asteroid_Detonation"
+      ],
+      "Collidable_By_Projectile_Living": [
+        "Yes"
+      ],
+      "Mouse_Collide_Override_Sphere_Radius": [
+        "50.0"
+      ],
+      "Lua_Script": [
+        "ObjectScript_PowerToShields_Layer_Z"
+      ],
+      "Guard_Chase_Range": [
+        "1000.0"
+      ],
+      "OverrideAcceleration": [
+        "0.035"
+      ],
+      "Targeting_Stickiness_Time_Threshold": [
+        "5.0"
+      ],
+      "Size_Value": [
+        "30"
+      ],
+      "Score_Cost_Credits": [
+        "1"
+      ],
+      "Formation_Priority": [
+        "1"
+      ],
+      "Armor_Type": [
+        "Armor_Starship"
+      ],
+      "Victory_Relevant": [
+        "yes"
+      ],
+      "Behavior": [
+        "SELECTABLE, DUMMY_STARSHIP"
+      ],
+      "Surface_Bombardment_Capable": [
+        "yes"
+      ],
+      "Attack_Move_Response_Range": [
+        "400.0"
+      ],
+      "Build_Can_Be_Unlocked_By_Slicer": [
+        "No"
+      ],
+      "SpaceBehavior": [
+        "SIMPLE_SPACE_LOCOMOTOR, SPAWN_SQUADRON, ABILITY_COUNTDOWN, SELECTABLE, POWERED, SHIELDED, HIDE_WHEN_FOGGED, REVEAL, TARGETING, UNIT_AI, ASTEROID_FIELD_DAMAGE, DAMAGE_TRACKING, ION_STUN_EFFECT, NEBULA"
+      ],
+      "Damage": [
+        "40"
+      ],
+      "Select_Box_Z_Adjust": [
+        "1"
+      ],
+      "Has_Space_Evaluator": [
+        "True"
+      ],
+      "Exclude_From_Distance_Fade": [
+        "true"
+      ],
+      "Mass": [
+        "0.999"
+      ],
+      "Spawned_Squadron_Delay_Seconds": [
+        "0.5"
+      ],
+      "Shield_Armor_Type": [
+        "Shield_Starship"
+      ],
+      "Ranking_In_Category": [
+        "1"
+      ],
+      "Variant_Of_Existing_Type": [
+        "Frigate_Base"
+      ],
+      "Hyperspace_Speed": [
+        "0.4"
+      ],
+      "Required_Ground_Base_Level": [
+        "0"
+      ],
+      "MovementClass": [
+        "Space"
+      ],
+      "Tech_Level": [
+        "4"
+      ],
+      "GUI_Velocity": [
+        "45"
+      ],
+      "Multisample_FOW_Check": [
+        "Yes"
+      ],
+      "Hyperspace": [
+        "Yes"
+      ],
+      "Is_Visible_On_Radar": [
+        "Yes"
+      ],
+      "Build_Tab_Space_Units": [
+        "Yes"
+      ],
+      "Dense_FOW_Reveal_Range_Multiplier": [
+        "1"
+      ],
+      "GUI_Offset": [
+        "0 0 0"
+      ],
+      "Asteroid_Damage_Hit_Particles": [
+        "Large_Damage_Space"
+      ],
+      "Tactical_Production_Queue": [
+        "Tactical_Units"
+      ],
+      "OverrideDeceleration": [
+        "0.035"
+      ],
+      "Radar_Icon_Name": [
+        "I_Radar_Non-Fighters.tga"
+      ],
+      "Ship_Class": [
+        "Frigate"
+      ],
+      "Space_Layer": [
+        "Frigate"
+      ],
+      "Encyclopedia_Unit_Class": [
+        "TEXT_ENCYCLOPEDIA_CLASS_FRIGATE"
+      ],
+      "GUI_Bracket_Size": [
+        "2"
+      ],
+      "Text_ID": [
+        "TEXT_UNIT_CHG"
+      ],
+      "SFXEvent_Build_Complete": [
+        "Unit_Complete_Corellian_Destroyer"
+      ],
+      "Custom_Hard_XExtent": [
+        "182.0"
+      ],
+      "Max_Rate_Of_Roll": [
+        "0.15"
+      ],
+      "Tactical_Build_Cost_Multiplayer": [
+        "7500"
+      ],
+      "Tactical_Build_Time_Seconds": [
+        "35"
+      ],
+      "AI_Combat_Power": [
+        "750"
+      ],
+      "Remove_Upon_Death": [
+        "true"
+      ],
+      "SFXEvent_Enemy_Damaged_Health_Low_Warning": [
+        "Unit_Enemy_Health_Low_Corellian_Destroyer"
+      ],
+      "Custom_Hard_YExtent": [
+        "33.0"
+      ],
+      "HardPoints": [
+        "HP_Corellian_CD_273_Face,\n\t\tHP_Corellian_CD_273_Ability,\n\t\tHP_Corellian_CD_273_Engines,\n\t\tHP_Corellian_CD_273_ML_01,\n\t\tHP_Corellian_CD_273_ML_02,\n\t\tHP_Corellian_CD_273_TL_01,\n\t\tHP_Corellian_CD_273_TL_02,\n\t\tHP_Corellian_CD_273_TL_03"
+      ],
+      "SFXEvent_Health_Critical_Warning": [
+        "Unit_Health_Critical_Corellian_Destroyer"
+      ],
+      "SFXEvent_Guard": [
+        "Unit_Guard_Corellian_Destroyer"
+      ],
+      "Unit_Abilities_Data": [
+        "<Unit_Abilities_Data SubObjectList=\"Yes\">\n\t\t\t<Unit_Ability>\n\t\t\t\t<Type>CORRUPT_SYSTEMS</Type>\n\t\t\t\t<Recharge_Seconds>120.0</Recharge_Seconds>\n\t\t\t\t<Area_Effect_Decal_Distance>500.0</Area_Effect_Decal_Distance>\n\t\t\t\t<GUI_Activated_Ability_Name>CHG_Corrupt_Systems</GUI_Activated_Ability_Name>\n\t\t\t\t<SFXEvent_Target_Ability>Unit_Corrupt_Systems_Corellian_Destroyer</SFXEvent_Target_Ability>\n\t\t\t</Unit_Ability>\n\n\t\t\t<Unit_Ability>\n\t\t\t\t<Type>TURBO</Type>\n\t\t\t\t<Recharge_Seconds>60</Recharge_Seconds>\n\t\t\t\t<Expiration_Seconds>30</Expiration_Seconds>\n\t\t\t\t<Mod_Multiplier>WEAPON_DELAY_MULTIPLIER,\t3.0f</Mod_Multiplier>\n\t\t\t\t<Mod_Multiplier>SHIELD_REGEN_MULTIPLIER,\t0.0f</Mod_Multiplier>\n\t\t\t\t<Mod_Multiplier>ENERGY_REGEN_MULTIPLIER,\t1.0f</Mod_Multiplier>\n\t\t\t\t<Mod_Multiplier>SPEED_MULTIPLIER,\t\t\t2.0f</Mod_Multiplier>\n\t\t\t\t<SFXEvent_GUI_Unit_Ability_Activated>Unit_Turbo_Corellian_Destroyer</SFXEvent_GUI_Unit_Ability_Activated>\n\t\t\t\t<SFXEvent_GUI_Unit_Ability_Deactivated />\n\t\t\t</Unit_Ability>\n\t\t</Unit_Abilities_Data>\n\n\t\t"
+      ],
+      "SFXEvent_Stop": [
+        "Unit_Stop_Acclamator"
+      ],
+      "SFXEvent_Enemy_Damaged_Health_Critical_Warning": [
+        "Unit_Enemy_Health_Critical_Corellian_Destroyer"
+      ],
+      "Affiliation": [
+        "Rebel"
+      ],
+      "SFXEvent_Engine_Moving_Loop": [
+        "Unit_Acclamator_Moving_Engine_Loop"
+      ],
+      "SFXEvent_Build_Started": [
+        "RHD_Build_Vehicle"
+      ],
+      "SFXEvent_Health_Low_Warning": [
+        "Unit_Health_Low_Corellian_Destroyer"
+      ],
+      "Moniker": [
+        "Rebel_CHG.txt"
+      ],
+      "SFXEvent_Move": [
+        "Unit_Move_Corellian_Destroyer"
+      ],
+      "Bank_Turn_Angle": [
+        "25"
+      ],
+      "CategoryMask": [
+        "Frigate | AntiFrigate"
+      ],
+      "Targeting_Priority_Set": [
+        "Frigate"
+      ],
+      "Scale_Factor": [
+        "1"
+      ],
+      "Build_Time_Seconds": [
+        "35"
+      ],
+      "Shield_Refresh_Rate": [
+        "150"
+      ],
+      "SFXEvent_Attack": [
+        "Unit_Attack_Corellian_Destroyer"
+      ],
+      "Icon_Name": [
+        "I_BUTTON_UNIT_REBEL_CD-273.TGA"
+      ],
+      "Tactical_Health": [
+        "6000"
+      ],
+      "Build_Cost_Credits": [
+        "7500"
+      ],
+      "SFXEvent_Move_Into_Asteroid_Field": [
+        "Unit_Asteroids_Corellian_Destroyer"
+      ],
+      "Population_Value": [
+        "7"
+      ],
+      "SFXEvent_Build_Cancelled": [
+        "RHD_Unit_Canceled"
+      ],
+      "Space_FOW_Reveal_Range": [
+        "2500"
+      ],
+      "Shield_Points": [
+        "7500"
+      ],
+      "SFXEvent_Engine_Cinematic_Focus_Loop": [
+        "Unit_Acclamator_Cinematic_Engine_Loop"
+      ],
+      "Space_Model_Name": [
+        "Rebel_CD_273.ALO"
+      ],
+      "SFXEvent_Fleet_Move": [
+        "Unit_Fleet_Move_Corellian_Destroyer"
+      ],
+      "Abilities": [
+        "<Abilities SubObjectList=\"Yes\">\n\t\t\t<Corrupt_Systems_Ability Name=\"CHG_Corrupt_Systems\">\n\t\t\t\t<Activation_Style>User_Input</Activation_Style>\n\t\t\t\t<Activation_Min_Range>20.0</Activation_Min_Range>\n\t\t\t\t<Activation_Max_Range>1000.0</Activation_Max_Range>\n\t\t\t\t<Duration_In_Seconds>30</Duration_In_Seconds>\n\t\t\t\t<Shield_Drain_Per_Second>100</Shield_Drain_Per_Second>\n\t\t\t\t<Inaccuracy_Radius>100</Inaccuracy_Radius>\n\t\t\t\t<Target_Particle_Effect>Corrupt_Systems_Effect</Target_Particle_Effect>\n\t\t\t\t<Owner_Particle_Effect>Corrupt_Systems_Flare_Effect</Owner_Particle_Effect>\n\t\t\t\t<SFXEvent_Activate>Unit_IG88_Corrupt_Systems</SFXEvent_Activate>\n\t\t\t</Corrupt_Systems_Ability>\n\n\t\t\t<Redirect_Blaster_Ability Name=\"Reflector_Shield\">\n\t\t\t\t<Initially_Enabled>No</Initially_Enabled>\n\t\t\t\t<Activation_Style>Take_Damage</Activation_Style>\n\t\t\t\t<Redirect_Chance>0.0</Redirect_Chance>\n\t\t\t\t<Block_Chance>0.15</Block_Chance>\n\t\t\t\t<Reaction_Arc_In_Degrees>350.0</Reaction_Arc_In_Degrees>\n\t\t\t\t<Max_Projectile_Redirection_Angle_In_Degrees> 60.0 </Max_Projectile_Redirection_Angle_In_Degrees>\n\t\t\t\t<Turn_To_Face_Unblockable_Shots>No</Turn_To_Face_Unblockable_Shots>\n\t\t\t\t<Applicable_Unit_Categories>Fighter | Bomber | Gunship | Corvette | Frigate | Capital | Super | SpaceStructure</Applicable_Unit_Categories>\n\t\t\t\t<SFXEvent_Activate>Unit_Lightsaber_Projectile_Block</SFXEvent_Activate>\n\t\t\t</Redirect_Blaster_Ability>\n\n\t\t\t<Planet_Income_Bonus_Ability Name=\"CHG_Upkeep\">\n\t\t\t\t<Specific_Mod_Source_Text>TEXT_TOOLTIP_CHG_UPKEEP</Specific_Mod_Source_Text>\n\t\t\t\t<Absolute_Income_Modifier>-200</Absolute_Income_Modifier>\n\t\t\t</Planet_Income_Bonus_Ability>\n\t\t</Abilities>\n\t"
+      ],
+      "Max_Rate_Of_Turn": [
+        "0.3"
+      ],
+      "Tactical_Build_Prerequisites": [
+        "Frigate_Shipyard_Tech_Upgrade_Rebel, Join_The_Rebel_Fleet"
+      ],
+      "Death_SFXEvent_Start_Die": [
+        "Unit_Cruiser_Death_SFX"
+      ],
+      "Property_Flags": [
+        "ShieldPiercer"
+      ],
+      "SFXEvent_Engine_Idle_Loop": [
+        "Unit_Acclamator_Idle_Engine_Loop"
+      ],
+      "Passive_Missile_Shield_Radius": [
+        "300.0"
+      ],
+      "Required_Special_Structures": [
+        "R_Shipyard_2"
+      ],
+      "SFXEvent_Unit_Lost": [
+        "Unit_Death_Corellian_Destroyer"
+      ],
+      "Targeting_Max_Attack_Distance": [
+        "2000"
+      ],
+      "SFXEvent_Barrage": [
+        "Unit_Barrage_Acclamator"
+      ],
+      "SFXEvent_Move_Into_Nebula": [
+        "Unit_Nebula_Corellian_Destroyer"
+      ],
+      "Max_Speed": [
+        "4"
+      ],
+      "Encyclopedia_Text": [
+        "TEXT_TOOLTIP_CHG\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_CHG_STATS\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_UPKEEP_200"
+      ]
+    }
+  },
+  "death": {
+    "inheritance": [],
+    "values": {}
+  },
+  "hardpoints": [
+    {
+      "name": "HP_Corellian_CD_273_Face",
+      "inheritance": [
+        "HP_Corellian_CD_273_Face"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "No"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "2"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Cone_Height": [
+          "10.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Facing_Dummy"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "2"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Fire_SFXEvent": [
+          ""
+        ],
+        "Fire_Range_Distance": [
+          "5000.0"
+        ],
+        "Fire_Cone_Width": [
+          "10.0"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Bone_B": [
+          "HP_Ability"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_Ability"
+        ],
+        "Attachment_Bone": [
+          "HP_Ability"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "2"
+        ],
+        "Fire_Pulse_Count": [
+          "1"
+        ],
+        "Fire_Bone_A": [
+          "HP_Ability"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_Ability",
+      "inheritance": [
+        "HP_Corellian_CD_273_Ability"
+      ],
+      "values": {
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Attachment_Bone": [
+          "HP_Ability"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Is_Targetable": [
+          "No"
+        ],
+        "Type": [
+          "HARD_POINT_DUMMY_ART"
+        ],
+        "Damage_Particles": [
+          "HP_Ability_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_Ability"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_Engines",
+      "inheritance": [
+        "HP_Corellian_CD_273_Engines"
+      ],
+      "values": {
+        "Tooltip_Text": [
+          "TEXT_ENGINE_HARDPOINT"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "HP_Engines"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Health": [
+          "1500.0"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_ENGINE"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Engines_Death"
+        ],
+        "Damage_Particles": [
+          "HP_Engines_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_Engines"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_ML_01",
+      "inheritance": [
+        "HP_Corellian_CD_273_ML_01"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Cone_Height": [
+          "120.0"
+        ],
+        "Health": [
+          "750.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Concussion_Missile"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.15"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_CONCUSSIONMISSILE"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Missile_Fire_Ship_Concussion"
+        ],
+        "Fire_Range_Distance": [
+          "2750.0"
+        ],
+        "Fire_Cone_Width": [
+          "178"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_MISSILE"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Missile_Death"
+        ],
+        "Fire_Bone_B": [
+          "HP_ML_01_FP_02"
+        ],
+        "Damage_Particles": [
+          "HP_ML_01_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_ML_01"
+        ],
+        "Attachment_Bone": [
+          "HP_ML_01"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Fire_Pulse_Count": [
+          "10"
+        ],
+        "Fire_Bone_A": [
+          "HP_ML_01_FP_01"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_ML_02",
+      "inheritance": [
+        "HP_Corellian_CD_273_ML_02"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Cone_Height": [
+          "120.0"
+        ],
+        "Health": [
+          "750.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Concussion_Missile"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.15"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_CONCUSSIONMISSILE"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Missile_Fire_Ship_Concussion"
+        ],
+        "Fire_Range_Distance": [
+          "2750.0"
+        ],
+        "Fire_Cone_Width": [
+          "178"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_MISSILE"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Missile_Death"
+        ],
+        "Fire_Bone_B": [
+          "HP_ML_02_FP_02"
+        ],
+        "Damage_Particles": [
+          "HP_ML_02_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_ML_02"
+        ],
+        "Attachment_Bone": [
+          "HP_ML_02"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Fire_Pulse_Count": [
+          "10"
+        ],
+        "Fire_Bone_A": [
+          "HP_ML_02_FP_01"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_TL_01",
+      "inheritance": [
+        "HP_Corellian_CD_273_TL_01"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.25"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Health": [
+          "1000.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Red_Dual"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.5"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER_DUAL"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Rebel_Ship_1"
+        ],
+        "Fire_Range_Distance": [
+          "2000.0"
+        ],
+        "Fire_Cone_Width": [
+          "178"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Fire_Bone_B": [
+          "HP_TL_01_FP_02"
+        ],
+        "Damage_Particles": [
+          "HP_TL_01_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_TL_01"
+        ],
+        "Attachment_Bone": [
+          "HP_TL_01"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.5"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Bone_A": [
+          "HP_TL_01_FP_01"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_TL_02",
+      "inheritance": [
+        "HP_Corellian_CD_273_TL_02"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.25"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Health": [
+          "1000.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Red_Dual"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.5"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER_DUAL"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Rebel_Ship_1"
+        ],
+        "Fire_Range_Distance": [
+          "2000.0"
+        ],
+        "Fire_Cone_Width": [
+          "178"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Fire_Bone_B": [
+          "HP_TL_02_FP_02"
+        ],
+        "Damage_Particles": [
+          "HP_TL_02_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_TL_02"
+        ],
+        "Attachment_Bone": [
+          "HP_TL_02"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.5"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Bone_A": [
+          "HP_TL_02_FP_01"
+        ]
+      }
+    },
+    {
+      "name": "HP_Corellian_CD_273_TL_03",
+      "inheritance": [
+        "HP_Corellian_CD_273_TL_03"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.25"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Health": [
+          "1000.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Red_Quad"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.5"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER_QUAD"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Rebel_Ship_2"
+        ],
+        "Fire_Range_Distance": [
+          "2250.0"
+        ],
+        "Fire_Cone_Width": [
+          "178"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Fire_Bone_B": [
+          "HP_TL_03_FP_02"
+        ],
+        "Damage_Particles": [
+          "HP_TL_03_Fire"
+        ],
+        "Collision_Mesh": [
+          "HP_TL_03"
+        ],
+        "Attachment_Bone": [
+          "HP_TL_03"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.5"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Bone_A": [
+          "HP_TL_03_FP_01"
+        ]
+      }
+    }
+  ],
+  "attachments": [],
+  "variants": {
+    "CD273": {
+      "bones": [
+        {
+          "name": "Root",
+          "parent_index": 4294967295,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "pd_proton_rocket_600",
+          "parent_index": 0,
+          "visible": 0,
+          "matrix": [
+            1.0,
+            3.8851863948252685e-09,
+            -3.797221870627254e-05,
+            4.067860572831705e-07,
+            3.8910803468183985e-09,
+            -1.0,
+            1.5520630824994441e-07,
+            -0.26487159729003906,
+            -3.797221870627254e-05,
+            -1.5520645035849157e-07,
+            -1.0,
+            4.067860572831705e-07
+          ]
+        },
+        {
+          "name": "Invis_951",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            -1.1920928955078125e-07,
+            -1.0,
+            -1.5015722283351352e-06,
+            -1.0,
+            0.0,
+            1.1920928955078125e-07,
+            0.0,
+            0.0,
+            1.0,
+            -1.1920928955078125e-07,
+            5.684341886080802e-14
+          ]
+        },
+        {
+          "name": "Coll",
+          "parent_index": 2,
+          "visible": 1,
+          "matrix": [
+            1.7557687215230544e-07,
+            1.1920930376163597e-07,
+            -0.9999999403953552,
+            -2.1990922808873964e-13,
+            -9.34761175130916e-08,
+            -0.9999999403953552,
+            -1.1920930376163597e-07,
+            7.564863449202597e-14,
+            -1.0,
+            9.347615304022838e-08,
+            -1.7557685794145073e-07,
+            -1.5015722283351352e-06
+          ]
+        },
+        {
+          "name": "Shield",
+          "parent_index": 2,
+          "visible": 1,
+          "matrix": [
+            1.866826551122358e-07,
+            4.76837158203125e-07,
+            0.9999999403953552,
+            -2.1990922808873964e-13,
+            -9.222810604114784e-08,
+            0.9999999403953552,
+            -4.7683712978141557e-07,
+            7.564863449202597e-14,
+            -1.0,
+            -9.222799945973748e-08,
+            1.8668271195565467e-07,
+            -1.5015722283351352e-06
+          ]
+        },
+        {
+          "name": "HP_Ability",
+          "parent_index": 2,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -1.1920928955078125e-07,
+            1.6757756782226352e-07,
+            0.020719287917017937,
+            -1.6757761045482766e-07,
+            -1.2469365628930973e-07,
+            1.0,
+            1.1881986949902057e-07,
+            -1.1920926823449918e-07,
+            -1.0,
+            -1.2469367050016444e-07,
+            -1.6238695934589487e-06
+          ]
+        },
+        {
+          "name": "HP_Ability_Fire",
+          "parent_index": 2,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -1.1920928955078125e-07,
+            1.6757756782226352e-07,
+            0.02071930281817913,
+            -1.6757761045482766e-07,
+            -1.2469365628930973e-07,
+            1.0,
+            2.519287586212158,
+            -1.1920926823449918e-07,
+            -1.0,
+            -1.2469367050016444e-07,
+            -1.8074933905154467e-06
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 6,
+          "visible": 1,
+          "matrix": [
+            -0.16486938297748566,
+            -0.9816647171974182,
+            -0.09566842764616013,
+            23.14214515686035,
+            0.7564414143562317,
+            -0.06360375136137009,
+            -0.6509615778923035,
+            -4.280360698699951,
+            0.6329411864280701,
+            -0.17969119548797607,
+            0.7530581951141357,
+            6.884232997894287
+          ]
+        },
+        {
+          "name": "P_Ship_Fire",
+          "parent_index": 6,
+          "visible": 1,
+          "matrix": [
+            -0.6836670637130737,
+            0.5640919804573059,
+            -0.46303296089172363,
+            -12.272867202758789,
+            -0.31925272941589355,
+            -0.8017098903656006,
+            -0.5053107738494873,
+            -7.976799011230469,
+            -0.6562598943710327,
+            -0.19763979315757751,
+            0.7281906008720398,
+            3.4009742736816406
+          ]
+        },
+        {
+          "name": "Front",
+          "parent_index": 2,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            2.3841856489070778e-07,
+            5.960464477539063e-08,
+            111.30614471435547,
+            -1.7881393432617188e-07,
+            1.0,
+            0.0,
+            -2.0925338048982667e-06,
+            2.1316282072803006e-14,
+            -5.960467319710006e-08,
+            1.0,
+            -9.897157724481076e-06
+          ]
+        },
+        {
+          "name": "HP_TL_02_FP_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            1.0495134574739495e-06,
+            -67.17581176757812,
+            -1.357150409830865e-07,
+            -1.1014811889253906e-06,
+            1.0,
+            -0.3431626260280609,
+            0.9961947202682495,
+            -0.0871565118432045,
+            9.880200479983614e-08,
+            20.74301528930664
+          ]
+        },
+        {
+          "name": "HP_LC_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            -1.400441789201068e-07,
+            1.0,
+            1.079979767837358e-07,
+            8.559120178222656,
+            -2.6679919074013014e-07,
+            -1.6760263576998113e-07,
+            1.0,
+            1.521186113357544,
+            1.0,
+            8.043945598501523e-08,
+            3.264038639372302e-07,
+            14.655474662780762
+          ]
+        },
+        {
+          "name": "Radar",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.9999999403953552,
+            -4.172327408014098e-07,
+            2.9662948008990497e-07,
+            18.35883331298828,
+            -3.5623372696136357e-07,
+            9.886473435471999e-07,
+            1.0,
+            -2.7228816179558635e-07,
+            -4.7683712978141557e-07,
+            -0.9999999403953552,
+            1.0482516472620773e-06,
+            -1.0443303835927509e-05
+          ]
+        },
+        {
+          "name": "Radar_Shadow",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.9999999403953552,
+            -4.172327408014098e-07,
+            2.9662948008990497e-07,
+            18.35883331298828,
+            -3.5623372696136357e-07,
+            9.886473435471999e-07,
+            1.0,
+            -2.7228816179558635e-07,
+            -4.7683712978141557e-07,
+            -0.9999999403953552,
+            1.0482516472620773e-06,
+            -1.0443303835927509e-05
+          ]
+        },
+        {
+          "name": "HP_ML_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715561777353287,
+            -0.9961947202682495,
+            -9.124970574703184e-07,
+            29.52283477783203,
+            1.0389790361386986e-07,
+            -8.470603916066466e-07,
+            1.0,
+            2.102112293243408,
+            -0.9961947202682495,
+            -0.08715555816888809,
+            8.928118688800168e-08,
+            -13.627156257629395
+          ]
+        },
+        {
+          "name": "HP_ML_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            1.0128275107490481e-07,
+            29.52283477783203,
+            -1.7727440138060047e-07,
+            -1.459923311131206e-07,
+            1.0,
+            2.1021108627319336,
+            0.9961947202682495,
+            -0.0871565118432045,
+            2.2348032757690817e-07,
+            13.626986503601074
+          ]
+        },
+        {
+          "name": "HP_ML_02_FP_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            1.0128275107490481e-07,
+            23.232643127441406,
+            -1.7727440138060047e-07,
+            -1.459923311131206e-07,
+            1.0,
+            2.1021108627319336,
+            0.9961947202682495,
+            -0.0871565118432045,
+            2.2348032757690817e-07,
+            14.996665954589844
+          ]
+        },
+        {
+          "name": "HP_ML_02_FP_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            1.0128275107490481e-07,
+            35.639915466308594,
+            -1.7727440138060047e-07,
+            -1.459923311131206e-07,
+            1.0,
+            2.1021108627319336,
+            0.9961947202682495,
+            -0.0871565118432045,
+            2.2348032757690817e-07,
+            14.996663093566895
+          ]
+        },
+        {
+          "name": "HP_ML_01_FP_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715513348579407,
+            -0.9961947202682495,
+            -5.306017101247562e-07,
+            35.639915466308594,
+            7.061336759761616e-08,
+            -4.666183599510987e-07,
+            1.0,
+            2.102112293243408,
+            -0.9961947202682495,
+            -0.08715507388114929,
+            8.928117267714697e-08,
+            -14.997014999389648
+          ]
+        },
+        {
+          "name": "HP_ML_01_FP_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715513348579407,
+            -0.9961947202682495,
+            -5.306017101247562e-07,
+            23.232643127441406,
+            7.061336759761616e-08,
+            -4.666183599510987e-07,
+            1.0,
+            2.102112293243408,
+            -0.9961947202682495,
+            -0.08715507388114929,
+            8.928117267714697e-08,
+            -14.9970121383667
+          ]
+        },
+        {
+          "name": "HP_TL_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715561777353287,
+            -0.9961947202682495,
+            -9.124970574703184e-07,
+            -71.18826293945312,
+            1.0389790361386986e-07,
+            -8.470603916066466e-07,
+            1.0,
+            -0.3431643545627594,
+            -0.9961947202682495,
+            -0.08715555816888809,
+            8.928118688800168e-08,
+            -20.06769371032715
+          ]
+        },
+        {
+          "name": "HP_TL_01_FP_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715561777353287,
+            -0.9961947202682495,
+            -9.124970574703184e-07,
+            -77.68318176269531,
+            1.0389790361386986e-07,
+            -8.470603916066466e-07,
+            1.0,
+            -0.3431641757488251,
+            -0.9961947202682495,
+            -0.08715555816888809,
+            8.928118688800168e-08,
+            -21.659748077392578
+          ]
+        },
+        {
+          "name": "HP_TL_01_FP_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715561777353287,
+            -0.9961947202682495,
+            -9.124970574703184e-07,
+            -67.17582702636719,
+            1.0389790361386986e-07,
+            -8.470603916066466e-07,
+            1.0,
+            -0.3431643545627594,
+            -0.9961947202682495,
+            -0.08715555816888809,
+            8.928118688800168e-08,
+            -20.742633819580078
+          ]
+        },
+        {
+          "name": "HP_TL_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            4.0145977209249395e-07,
+            -71.18827819824219,
+            -1.6203550501359132e-07,
+            -4.4864930259791436e-07,
+            1.0,
+            -0.34316253662109375,
+            0.9961947202682495,
+            -0.0871565118432045,
+            1.8192088191426592e-07,
+            20.068017959594727
+          ]
+        },
+        {
+          "name": "HP_TL_02_FP_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            1.0495134574739495e-06,
+            -77.68318176269531,
+            -1.357150409830865e-07,
+            -1.1014811889253906e-06,
+            1.0,
+            -0.34316253662109375,
+            0.9961947202682495,
+            -0.0871565118432045,
+            9.880200479983614e-08,
+            21.660015106201172
+          ]
+        },
+        {
+          "name": "HP_TL_03",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.9999999403953552,
+            4.172325418494438e-07,
+            -2.3584445330016024e-07,
+            69.47602081298828,
+            1.7623983694647904e-07,
+            -1.3987251179514715e-07,
+            1.0,
+            3.2813103199005127,
+            3.5762786865234375e-07,
+            -0.9999999403953552,
+            -8.026792386317538e-08,
+            -2.7823572963825427e-05
+          ]
+        },
+        {
+          "name": "HP_TL_03_FP_01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.34202075004577637,
+            0.939692497253418,
+            -3.511844397507957e-07,
+            75.15091705322266,
+            2.3151173422775173e-07,
+            2.260292717437551e-07,
+            1.0,
+            3.185316801071167,
+            0.9396924376487732,
+            -0.34202080965042114,
+            -8.063842216188277e-08,
+            8.494476318359375
+          ]
+        },
+        {
+          "name": "HP_TL_03_FP_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.34202009439468384,
+            -0.9396926164627075,
+            -3.9351368741336046e-07,
+            75.15091705322266,
+            1.0035670072738867e-07,
+            -3.1881171480563353e-07,
+            1.0,
+            3.1853177547454834,
+            -0.9396926760673523,
+            -0.34202003479003906,
+            4.486912530410336e-08,
+            -8.495025634765625
+          ]
+        },
+        {
+          "name": "HP_LC_02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            1.4004413628754264e-07,
+            -1.0,
+            -4.299782574435085e-08,
+            8.559120178222656,
+            2.667992191618396e-07,
+            1.6606861663603922e-08,
+            1.0,
+            1.5211800336837769,
+            -1.0,
+            -8.043946309044259e-08,
+            3.2640389235893963e-07,
+            -14.655007362365723
+          ]
+        },
+        {
+          "name": "HP_LC_03",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            -1.400441789201068e-07,
+            1.0,
+            1.079979767837358e-07,
+            -9.814437866210938,
+            -2.6679919074013014e-07,
+            -1.6760263576998113e-07,
+            1.0,
+            2.4685206413269043,
+            1.0,
+            8.043945598501523e-08,
+            3.264038639372302e-07,
+            12.723858833312988
+          ]
+        },
+        {
+          "name": "HP_LC_04",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            1.4004413628754264e-07,
+            -1.0,
+            -4.299782574435085e-08,
+            -9.814437866210938,
+            2.667992191618396e-07,
+            1.6606861663603922e-08,
+            1.0,
+            2.468522071838379,
+            -1.0,
+            -8.043946309044259e-08,
+            3.2640389235893963e-07,
+            -12.72400188446045
+          ]
+        },
+        {
+          "name": "HP_LC_05",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.3420194983482361,
+            -0.9396928548812866,
+            -4.382259533031174e-08,
+            -51.59657669067383,
+            -1.9244652094130288e-08,
+            9.790440458345984e-09,
+            1.0,
+            2.1021173000335693,
+            -0.9396929144859314,
+            -0.3420194387435913,
+            4.486913951495808e-08,
+            -13.530987739562988
+          ]
+        },
+        {
+          "name": "HP_LC_06",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.34202122688293457,
+            0.9396922588348389,
+            -1.4758199995412724e-07,
+            -51.596561431884766,
+            8.622819791526126e-09,
+            9.048511628861888e-08,
+            1.0,
+            2.102116107940674,
+            0.9396921992301941,
+            -0.34202128648757935,
+            8.244971638760035e-08,
+            13.530801773071289
+          ]
+        },
+        {
+          "name": "HP_ML_01_Fire",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715561777353287,
+            -0.9961947202682495,
+            -9.124970574703184e-07,
+            29.52283477783203,
+            1.0389790361386986e-07,
+            -8.470603916066466e-07,
+            1.0,
+            2.102112054824829,
+            -0.9961947202682495,
+            -0.08715555816888809,
+            8.928118688800168e-08,
+            -10.518099784851074
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 33,
+          "visible": 1,
+          "matrix": [
+            0.0735492929816246,
+            0.09252708405256271,
+            0.9929900765419006,
+            4.408721923828125,
+            0.007916443981230259,
+            0.9956012964248657,
+            -0.09335674345493317,
+            0.6952972412109375,
+            -0.9972601532936096,
+            0.014727274887263775,
+            0.0724932849407196,
+            -0.9523618221282959
+          ]
+        },
+        {
+          "name": "HP_ML_02_Fire",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            1.0128275107490481e-07,
+            29.52283477783203,
+            -1.7727440138060047e-07,
+            -1.459923311131206e-07,
+            1.0,
+            2.1021111011505127,
+            0.9961947202682495,
+            -0.0871565118432045,
+            2.2348032757690817e-07,
+            10.238018035888672
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 35,
+          "visible": 1,
+          "matrix": [
+            0.481084942817688,
+            -0.22859954833984375,
+            0.8463446497917175,
+            4.794548034667969,
+            0.3073049783706665,
+            0.9481223225593567,
+            0.0814094990491867,
+            0.054290771484375,
+            -0.8210484981536865,
+            0.22092103958129883,
+            0.5263773798942566,
+            -0.952362060546875
+          ]
+        },
+        {
+          "name": "HP_TL_03_Fire",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.9999999403953552,
+            4.172325418494438e-07,
+            -2.3584445330016024e-07,
+            72.9488296508789,
+            1.7623983694647904e-07,
+            -1.3987251179514715e-07,
+            1.0,
+            3.2813103199005127,
+            3.5762786865234375e-07,
+            -0.9999999403953552,
+            -8.026792386317538e-08,
+            -2.9266599085531197e-05
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 37,
+          "visible": 1,
+          "matrix": [
+            0.20235367119312286,
+            -0.9711260199546814,
+            0.12636150419712067,
+            -2.0910491943359375,
+            0.848936140537262,
+            0.23827426135540009,
+            0.47173383831977844,
+            5.443366527557373,
+            -0.488221675157547,
+            0.011815770529210567,
+            0.8726396560668945,
+            2.229539394378662
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 37,
+          "visible": 1,
+          "matrix": [
+            -0.2780112624168396,
+            0.6815797090530396,
+            0.6768742799758911,
+            27.338455200195312,
+            0.7675566077232361,
+            -0.2660515606403351,
+            0.5831580758094788,
+            0.9711073040962219,
+            0.5775521993637085,
+            0.6816639304161072,
+            -0.44918572902679443,
+            -2.8809409141540527
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 37,
+          "visible": 1,
+          "matrix": [
+            0.46340546011924744,
+            -0.09028246998786926,
+            0.8815351724624634,
+            9.568557739257812,
+            0.2678645849227905,
+            -0.9339874386787415,
+            -0.23646531999111176,
+            -5.751814842224121,
+            0.8446915745735168,
+            0.3457113206386566,
+            -0.4086313247680664,
+            -0.09988689422607422
+          ]
+        },
+        {
+          "name": "HP_TL_02_Fire",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715645223855972,
+            0.9961947202682495,
+            4.0145977209249395e-07,
+            -71.18826293945312,
+            -1.6203550501359132e-07,
+            -4.4864930259791436e-07,
+            1.0,
+            -0.343162477016449,
+            0.9961947202682495,
+            -0.0871565118432045,
+            1.8192088191426592e-07,
+            18.420499801635742
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 41,
+          "visible": 1,
+          "matrix": [
+            -0.02425278164446354,
+            -0.5676966309547424,
+            0.8228805065155029,
+            2.406038284301758,
+            0.009747473523020744,
+            0.8229491710662842,
+            0.568031370639801,
+            3.697601318359375,
+            -0.9996583461761475,
+            0.021797310560941696,
+            -0.014425160363316536,
+            0.48837804794311523
+          ]
+        },
+        {
+          "name": "HP_TL_01_Fire",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.08715561777353287,
+            -0.9961947202682495,
+            -9.124970574703184e-07,
+            -71.18827819824219,
+            1.0389790361386986e-07,
+            -8.470603916066466e-07,
+            1.0,
+            -0.34316447377204895,
+            -0.9961947202682495,
+            -0.08715555816888809,
+            8.928118688800168e-08,
+            -17.459436416625977
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 43,
+          "visible": 1,
+          "matrix": [
+            -0.18853464722633362,
+            -0.07814954221248627,
+            0.9789522886276245,
+            4.0152740478515625,
+            -0.0021437290124595165,
+            0.9968591928482056,
+            0.07916619628667831,
+            3.276214599609375,
+            -0.9820642471313477,
+            0.01282696146517992,
+            -0.18810990452766418,
+            -0.33431747555732727
+          ]
+        },
+        {
+          "name": "Lights_Front",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            -3.409613569260728e-08,
+            -1.1920930376163597e-07,
+            -0.9999999403953552,
+            -111.30614471435547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            1.788139627478813e-07,
+            1.6508329281350598e-06,
+            -1.0,
+            -1.5719241730494105e-07,
+            9.370081244242101e-08,
+            2.8952761567779817e-05
+          ]
+        },
+        {
+          "name": "Shadow_Front",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            -3.409614990346199e-08,
+            7.152557373046875e-07,
+            -0.9999999403953552,
+            -111.30614471435547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -6.556510925292969e-07,
+            1.6508329281350598e-06,
+            -1.0,
+            -1.5719251678092405e-07,
+            9.370069875558329e-08,
+            2.8952761567779817e-05
+          ]
+        },
+        {
+          "name": "Hull_Front",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            -3.409614990346199e-08,
+            7.152557373046875e-07,
+            -0.9999999403953552,
+            -111.30614471435547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -6.556510925292969e-07,
+            1.6508329281350598e-06,
+            -1.0,
+            -1.5719251678092405e-07,
+            9.370069875558329e-08,
+            2.8952761567779817e-05
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Large",
+          "parent_index": 9,
+          "visible": 0,
+          "matrix": [
+            -2.7064803362009116e-05,
+            0.0015683174133300781,
+            -0.9999987483024597,
+            -103.5472412109375,
+            -2.697530908335466e-05,
+            -0.9999987483024597,
+            -0.0015682578086853027,
+            1.5357563825091347e-06,
+            -1.0,
+            2.6873130991589278e-05,
+            2.7166586733073927e-05,
+            2.6516165235079825e-05
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 9,
+          "visible": 0,
+          "matrix": [
+            0.06383555382490158,
+            -0.9648585319519043,
+            0.2548980712890625,
+            18.625099182128906,
+            -0.23552101850509644,
+            -0.2627696692943573,
+            -0.9356719255447388,
+            -8.077409744262695,
+            0.9697704315185547,
+            -0.0003046874771825969,
+            -0.2440185695886612,
+            -7.2378206823486835e-06
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 9,
+          "visible": 0,
+          "matrix": [
+            0.04168090596795082,
+            0.9855101704597473,
+            0.164415180683136,
+            18.62511444091797,
+            0.2404329776763916,
+            -0.1696159541606903,
+            0.9557313323020935,
+            10.967498779296875,
+            0.9697704315185547,
+            -0.00030498328851535916,
+            -0.24401886761188507,
+            -8.215714842663147e-06
+          ]
+        },
+        {
+          "name": "Rear",
+          "parent_index": 2,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            2.3841856489070778e-07,
+            5.960464477539063e-08,
+            -73.18993377685547,
+            -1.7881393432617188e-07,
+            1.0,
+            0.0,
+            1.3759567991655786e-06,
+            2.1316282072803006e-14,
+            -5.960467319710006e-08,
+            1.0,
+            4.018987965537235e-06
+          ]
+        },
+        {
+          "name": "Engine_Exhaust",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            73.18993377685547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -1.085513758880552e-06,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -1.9174363842466846e-05
+          ]
+        },
+        {
+          "name": "Engine_Exhaust_Glow",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958780841838234e-08,
+            -1.1920930376163597e-07,
+            -0.9999999403953552,
+            73.18993377685547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            1.788139627478813e-07,
+            -1.085513758880552e-06,
+            -1.0,
+            -1.5719241730494105e-07,
+            9.556345759165197e-08,
+            -1.9174363842466846e-05
+          ]
+        },
+        {
+          "name": "Engine_Glow",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            73.18993377685547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -1.085513758880552e-06,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -1.9174363842466846e-05
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            14.415903091430664,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            9.15637493133545
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            10.955849647521973,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            15.154050827026367
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            7.491074562072754,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            21.147024154663086
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -7.490998268127441,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            21.147018432617188
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -10.955994606018066,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            15.154051780700684
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -14.41600227355957,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            9.15637493133545
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -14.416000366210938,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -9.155980110168457
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            14.41590404510498,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -9.155980110168457
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -10.956008911132812,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -15.153980255126953
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            10.955851554870605,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -15.15398120880127
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -7.490996360778809,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -21.146982192993164
+          ]
+        },
+        {
+          "name": "pe_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            7.4910688400268555,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -21.1469783782959
+          ]
+        },
+        {
+          "name": "pe_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516632080078125,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            6.529426173074171e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -2.504544973373413
+          ]
+        },
+        {
+          "name": "pe_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516632080078125,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            9.024488463182934e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -7.457108497619629
+          ]
+        },
+        {
+          "name": "pe_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516632080078125,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            1.5108253137441352e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            7.457014560699463
+          ]
+        },
+        {
+          "name": "pe_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516624450683594,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            4.0056056604953483e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            2.5050151348114014
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -7.490996360778809,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -21.146982192993164
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            7.4910688400268555,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -21.1469783782959
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            14.415903091430664,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            9.15637493133545
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            10.955849647521973,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            15.154050827026367
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            7.491074562072754,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            21.147024154663086
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -7.490998268127441,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            21.147018432617188
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -10.955994606018066,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            15.154051780700684
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -14.41600227355957,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            9.15637493133545
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -14.416000366210938,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -9.155980110168457
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            14.41590404510498,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -9.155980110168457
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.98881530761719,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            -10.956008911132812,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -15.153980255126953
+          ]
+        },
+        {
+          "name": "pte_cd_273_l",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -50.988807678222656,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            10.955851554870605,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -15.15398120880127
+          ]
+        },
+        {
+          "name": "pte_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516632080078125,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            1.5108253137441352e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            7.457014560699463
+          ]
+        },
+        {
+          "name": "pte_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516632080078125,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            6.529426173074171e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -2.504544973373413
+          ]
+        },
+        {
+          "name": "pte_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516632080078125,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            9.024488463182934e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            -7.457108497619629
+          ]
+        },
+        {
+          "name": "pte_cd_273_s",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958802158120307e-08,
+            3.576278402306343e-07,
+            -0.9999999403953552,
+            -35.516624450683594,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            -2.980231954552437e-07,
+            4.0056056604953483e-07,
+            -1.0,
+            -1.571924741483599e-07,
+            9.556340074823311e-08,
+            2.5050151348114014
+          ]
+        },
+        {
+          "name": "HP_Engines",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -5.9604612800967516e-08,
+            -6.099895699662738e-08,
+            -18.7620849609375,
+            1.3942980103820446e-09,
+            -1.3987263969283958e-07,
+            1.0,
+            2.782662704703398e-07,
+            -1.1920928955078125e-07,
+            -1.0,
+            -8.026797360116689e-08,
+            8.934659490478225e-06
+          ]
+        },
+        {
+          "name": "HP_Engines_Fire",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -5.9604612800967516e-08,
+            -6.099895699662738e-08,
+            -6.900634765625,
+            1.3942980103820446e-09,
+            -1.3987263969283958e-07,
+            1.0,
+            1.0234543879050761e-07,
+            -1.1920928955078125e-07,
+            -1.0,
+            -8.026797360116689e-08,
+            5.308705112838652e-06
+          ]
+        },
+        {
+          "name": "P_Ship_Fire",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            -0.03122090734541416,
+            -0.05006103217601776,
+            -0.9982580542564392,
+            -43.49897766113281,
+            -0.5881710052490234,
+            0.8084334135055542,
+            -0.022146372124552727,
+            15.591203689575195,
+            0.8081338405609131,
+            0.5864549279212952,
+            -0.054684460163116455,
+            -10.642683029174805
+          ]
+        },
+        {
+          "name": "P_Ship_Fire",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            0.00016963231610134244,
+            0.4592457115650177,
+            -0.8883092999458313,
+            -42.41437530517578,
+            -0.5640389919281006,
+            -0.7334758043289185,
+            -0.37930625677108765,
+            -15.483451843261719,
+            -0.8257481455802917,
+            0.5011053681373596,
+            0.2589079737663269,
+            10.043264389038086
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            -0.02056751400232315,
+            -0.9965428113937378,
+            -0.0804944857954979,
+            -7.147529602050781,
+            -0.016129950061440468,
+            -0.08017028868198395,
+            0.9966506958007812,
+            20.725482940673828,
+            -0.9996583461761475,
+            0.021796999499201775,
+            -0.014425271190702915,
+            0.14521361887454987
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            -0.020567065104842186,
+            -0.9965429902076721,
+            -0.08049244433641434,
+            13.805221557617188,
+            -0.9697705507278442,
+            0.00030472796061076224,
+            0.24401865899562836,
+            19.37007713317871,
+            -0.24315056204795837,
+            0.08307793736457825,
+            -0.9664243459701538,
+            -13.57702350616455
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            0.18872323632240295,
+            -0.19523973762989044,
+            -0.9624266624450684,
+            -43.61328887939453,
+            -0.7431615591049194,
+            0.6122493743896484,
+            -0.269929438829422,
+            9.229400634765625,
+            0.6419459581375122,
+            0.7661803960800171,
+            -0.02954906038939953,
+            15.857584953308105
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            -0.18714021146297455,
+            -0.10750408470630646,
+            -0.9764329195022583,
+            -44.10498809814453,
+            -0.7628910541534424,
+            0.6421012282371521,
+            0.07551885396242142,
+            22.31648826599121,
+            0.6188502311706543,
+            0.7590447068214417,
+            -0.20217686891555786,
+            8.209263801574707
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            0.7666844129562378,
+            -0.6419186592102051,
+            0.011637992225587368,
+            -2.4004364013671875,
+            -0.12137152254581451,
+            -0.16271425783634186,
+            -0.9791797995567322,
+            -27.651691436767578,
+            0.6304474472999573,
+            0.7493093013763428,
+            -0.2026611715555191,
+            4.6052961349487305
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 88,
+          "visible": 1,
+          "matrix": [
+            0.7666846513748169,
+            -0.6419184803962708,
+            0.01163786556571722,
+            29.971336364746094,
+            -0.4203343391418457,
+            -0.515569269657135,
+            -0.7466641664505005,
+            -25.742259979248047,
+            0.48529765009880066,
+            0.5675641298294067,
+            -0.6650993824005127,
+            4.605291843414307
+          ]
+        },
+        {
+          "name": "Shadow_Rear",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958780841838234e-08,
+            -1.1920930376163597e-07,
+            -0.9999999403953552,
+            73.18993377685547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            1.788139627478813e-07,
+            -1.085513758880552e-06,
+            -1.0,
+            -1.5719241730494105e-07,
+            9.556345759165197e-08,
+            -1.9174363842466846e-05
+          ]
+        },
+        {
+          "name": "Hull_Rear",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958780841838234e-08,
+            -1.1920930376163597e-07,
+            -0.9999999403953552,
+            73.18993377685547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            1.788139627478813e-07,
+            -1.085513758880552e-06,
+            -1.0,
+            -1.5719241730494105e-07,
+            9.556345759165197e-08,
+            -1.9174363842466846e-05
+          ]
+        },
+        {
+          "name": "Lights_Rear",
+          "parent_index": 51,
+          "visible": 1,
+          "matrix": [
+            -3.5958780841838234e-08,
+            -1.1920930376163597e-07,
+            -0.9999999403953552,
+            73.18993377685547,
+            9.758777252955042e-08,
+            -0.9999999403953552,
+            1.788139627478813e-07,
+            -1.085513758880552e-06,
+            -1.0,
+            -1.5719241730494105e-07,
+            9.556345759165197e-08,
+            -1.9174363842466846e-05
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Large",
+          "parent_index": 51,
+          "visible": 0,
+          "matrix": [
+            -2.708491956582293e-05,
+            1.1920771214590786e-07,
+            0.9999999403953552,
+            64.13751220703125,
+            -2.6952746338793077e-05,
+            0.9999999403953552,
+            -1.7881718861190166e-07,
+            2.421074896119535e-09,
+            -1.0,
+            -2.6893147150985897e-05,
+            -2.714452421059832e-05,
+            -1.722116576274857e-05
+          ]
+        },
+        {
+          "name": "pd_medium_3_150",
+          "parent_index": 0,
+          "visible": 0,
+          "matrix": [
+            1.0,
+            2.6801033527590334e-05,
+            2.6878458811552264e-05,
+            3.0517578125e-05,
+            2.687847154447809e-05,
+            -4.76837158203125e-07,
+            -0.9999999403953552,
+            -111.41038513183594,
+            -2.6801017156685703e-05,
+            0.9999999403953552,
+            -4.76837158203125e-07,
+            0.9080768823623657
+          ]
+        },
+        {
+          "name": "pd_medium_3_150",
+          "parent_index": 0,
+          "visible": 0,
+          "matrix": [
+            1.0,
+            2.6801033527590334e-05,
+            2.6878458811552264e-05,
+            4.0531158447265625e-06,
+            2.687847154447809e-05,
+            -4.76837158203125e-07,
+            -0.9999999403953552,
+            69.53477478027344,
+            -2.6801017156685703e-05,
+            0.9999999403953552,
+            -4.76837158203125e-07,
+            0.9081205725669861
+          ]
+        },
+        {
+          "name": "Invis_301",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            -5.960464477539063e-08,
+            -0.9999999403953552,
+            6.6346985683196635e-09,
+            -0.9999999403953552,
+            1.1920928955078125e-07,
+            1.7881393432617188e-07,
+            0.0,
+            5.960464477539063e-08,
+            0.9999999403953552,
+            0.0,
+            13.180007934570312
+          ]
+        },
+        {
+          "name": "Shadow_302",
+          "parent_index": 103,
+          "visible": 1,
+          "matrix": [
+            1.1472828020941961e-07,
+            -1.1920928955078125e-07,
+            -1.0000001192092896,
+            -1.5711796095274622e-06,
+            -9.472404371990706e-08,
+            -1.0000001192092896,
+            5.960465188081798e-08,
+            -13.180009841918945,
+            -1.0000001192092896,
+            1.5432871691700711e-07,
+            -1.7433295340651966e-07,
+            7.922247391434212e-07
+          ]
+        },
+        {
+          "name": "Hull_302",
+          "parent_index": 103,
+          "visible": 1,
+          "matrix": [
+            1.1472828020941961e-07,
+            -1.1920928955078125e-07,
+            -1.0000001192092896,
+            -1.5711796095274622e-06,
+            -9.472404371990706e-08,
+            -1.0000001192092896,
+            5.960465188081798e-08,
+            -13.180009841918945,
+            -1.0000001192092896,
+            1.5432871691700711e-07,
+            -1.7433295340651966e-07,
+            7.922247391434212e-07
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "kind": "0x400",
+          "name": "Coll"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shield"
+        },
+        {
+          "kind": "0x400",
+          "name": "Radar"
+        },
+        {
+          "kind": "0x400",
+          "name": "Radar_Shadow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Lights_Front"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shadow_Front"
+        },
+        {
+          "kind": "0x400",
+          "name": "Hull_Front"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Exhaust"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Exhaust_Glow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Glow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shadow_Rear"
+        },
+        {
+          "kind": "0x400",
+          "name": "Hull_Rear"
+        },
+        {
+          "kind": "0x400",
+          "name": "Lights_Rear"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shadow_302"
+        },
+        {
+          "kind": "0x400",
+          "name": "Hull_302"
+        }
+      ],
+      "connections": [
+        {
+          "object_index": 0,
+          "bone_index": 3,
+          "bone": "Coll"
+        },
+        {
+          "object_index": 1,
+          "bone_index": 4,
+          "bone": "Shield"
+        },
+        {
+          "object_index": 2,
+          "bone_index": 12,
+          "bone": "Radar"
+        },
+        {
+          "object_index": 3,
+          "bone_index": 13,
+          "bone": "Radar_Shadow"
+        },
+        {
+          "object_index": 4,
+          "bone_index": 45,
+          "bone": "Lights_Front"
+        },
+        {
+          "object_index": 5,
+          "bone_index": 46,
+          "bone": "Shadow_Front"
+        },
+        {
+          "object_index": 6,
+          "bone_index": 47,
+          "bone": "Hull_Front"
+        },
+        {
+          "object_index": 7,
+          "bone_index": 52,
+          "bone": "Engine_Exhaust"
+        },
+        {
+          "object_index": 8,
+          "bone_index": 53,
+          "bone": "Engine_Exhaust_Glow"
+        },
+        {
+          "object_index": 9,
+          "bone_index": 54,
+          "bone": "Engine_Glow"
+        },
+        {
+          "object_index": 10,
+          "bone_index": 97,
+          "bone": "Shadow_Rear"
+        },
+        {
+          "object_index": 11,
+          "bone_index": 98,
+          "bone": "Hull_Rear"
+        },
+        {
+          "object_index": 12,
+          "bone_index": 99,
+          "bone": "Lights_Rear"
+        },
+        {
+          "object_index": 13,
+          "bone_index": 104,
+          "bone": "Shadow_302"
+        },
+        {
+          "object_index": 14,
+          "bone_index": 105,
+          "bone": "Hull_302"
+        }
+      ],
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_CD_273.ALO",
+      "material_audit": {
+        "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_CD_273.ALO",
+        "sha256": "fd98592cb7bde438e6b56bd5e41e460d6912cead440e9db96a9db1365e84d213",
+        "meshes": [
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.5
+                  ]
+                },
+                "shader": "MeshCollision.fx",
+                "vertexCount": 9782,
+                "triangleCount": 4274
+              }
+            ],
+            "name": "Coll",
+            "hidden": true,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "EdgeBrightness": [
+                    0.5
+                  ],
+                  "BaseUVScale": [
+                    20.0
+                  ],
+                  "WaveUVScale": [
+                    1.0
+                  ],
+                  "DistortUVScale": [
+                    1.0
+                  ],
+                  "BaseUVScrollRate": [
+                    1.0
+                  ],
+                  "WaveUVScrollRate": [
+                    1.0
+                  ],
+                  "DistortUVScrollRate": [
+                    1.0
+                  ],
+                  "BaseTexture": "None",
+                  "WaveTexture": "None",
+                  "DistortionTexture": "None"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 200,
+                "triangleCount": 288
+              }
+            ],
+            "name": "Shield",
+            "hidden": true,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Rebel_CD_273.dds",
+                  "NormalTexture": "Rebel_CD_273_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 1054,
+                "triangleCount": 724
+              }
+            ],
+            "name": "Radar",
+            "hidden": false,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 1834,
+                "triangleCount": 2582
+              }
+            ],
+            "name": "Radar_Shadow",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Lights_Grid_Orange_Desaturated_Dense.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 390,
+                "triangleCount": 130
+              }
+            ],
+            "name": "Lights_Front",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 7539,
+                "triangleCount": 10659
+              }
+            ],
+            "name": "Shadow_Front",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Rebel_CD_273.dds",
+                  "NormalTexture": "Rebel_CD_273_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 6646,
+                "triangleCount": 2748
+              }
+            ],
+            "name": "Hull_Front",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Engine_Exhaust.dds",
+                  "NormalTexture": "Engine_Exhaust_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 480,
+                "triangleCount": 160
+              }
+            ],
+            "name": "Engine_Exhaust",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Engine_Exhaust.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 480,
+                "triangleCount": 160
+              }
+            ],
+            "name": "Engine_Exhaust_Glow",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    0.7338129878044128,
+                    1.0
+                  ],
+                  "EdgeBrightness": [
+                    1.0
+                  ],
+                  "BaseUVScale": [
+                    1.0
+                  ],
+                  "WaveUVScale": [
+                    0.5
+                  ],
+                  "DistortUVScale": [
+                    1.0
+                  ],
+                  "BaseUVScrollRate": [
+                    0.0
+                  ],
+                  "WaveUVScrollRate": [
+                    0.10000000149011612
+                  ],
+                  "DistortUVScrollRate": [
+                    0.30000001192092896
+                  ],
+                  "BaseTexture": "Engine_Glow_Fancy_White.tga",
+                  "WaveTexture": "Engine_Glow_Blue_wave.tga",
+                  "DistortionTexture": "Engine_Glow_Blue_dist.tga"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 1568,
+                "triangleCount": 2240
+              }
+            ],
+            "name": "Engine_Glow",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 11732,
+                "triangleCount": 16437
+              }
+            ],
+            "name": "Shadow_Rear",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Rebel_CD_273.dds",
+                  "NormalTexture": "Rebel_CD_273_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 8410,
+                "triangleCount": 4002
+              }
+            ],
+            "name": "Hull_Rear",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Lights_Grid_Orange_Desaturated_Dense.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 152,
+                "triangleCount": 52
+              }
+            ],
+            "name": "Lights_Rear",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 2977,
+                "triangleCount": 4215
+              }
+            ],
+            "name": "Shadow_302",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Rebel_CD_273.dds",
+                  "NormalTexture": "Rebel_CD_273_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 1866,
+                "triangleCount": 950
+              }
+            ],
+            "name": "Hull_302",
+            "hidden": false,
+            "collision": false
+          }
+        ],
+        "connections": [
+          {
+            "mesh": 0,
+            "bone": 3
+          },
+          {
+            "mesh": 1,
+            "bone": 4
+          },
+          {
+            "mesh": 2,
+            "bone": 12
+          },
+          {
+            "mesh": 3,
+            "bone": 13
+          },
+          {
+            "mesh": 4,
+            "bone": 45
+          },
+          {
+            "mesh": 5,
+            "bone": 46
+          },
+          {
+            "mesh": 6,
+            "bone": 47
+          },
+          {
+            "mesh": 7,
+            "bone": 52
+          },
+          {
+            "mesh": 8,
+            "bone": 53
+          },
+          {
+            "mesh": 9,
+            "bone": 54
+          },
+          {
+            "mesh": 10,
+            "bone": 97
+          },
+          {
+            "mesh": 11,
+            "bone": 98
+          },
+          {
+            "mesh": 12,
+            "bone": 99
+          },
+          {
+            "mesh": 13,
+            "bone": 104
+          },
+          {
+            "mesh": 14,
+            "bone": 105
+          }
+        ],
+        "proxies": [
+          {
+            "name": "pd_proton_rocket_600",
+            "bone": 1
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 7
+          },
+          {
+            "name": "P_Ship_Fire",
+            "bone": 8
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 34
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 36
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 38
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 39
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 40
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 42
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 44
+          },
+          {
+            "name": "P_Ship_Fire_Very_Large",
+            "bone": 48
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 49
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 50
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 55
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 56
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 57
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 58
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 59
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 60
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 61
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 62
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 63
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 64
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 65
+          },
+          {
+            "name": "pe_cd_273_l",
+            "bone": 66
+          },
+          {
+            "name": "pe_cd_273_s",
+            "bone": 67
+          },
+          {
+            "name": "pe_cd_273_s",
+            "bone": 68
+          },
+          {
+            "name": "pe_cd_273_s",
+            "bone": 69
+          },
+          {
+            "name": "pe_cd_273_s",
+            "bone": 70
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 71
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 72
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 73
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 74
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 75
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 76
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 77
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 78
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 79
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 80
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 81
+          },
+          {
+            "name": "pte_cd_273_l",
+            "bone": 82
+          },
+          {
+            "name": "pte_cd_273_s",
+            "bone": 83
+          },
+          {
+            "name": "pte_cd_273_s",
+            "bone": 84
+          },
+          {
+            "name": "pte_cd_273_s",
+            "bone": 85
+          },
+          {
+            "name": "pte_cd_273_s",
+            "bone": 86
+          },
+          {
+            "name": "P_Ship_Fire",
+            "bone": 89
+          },
+          {
+            "name": "P_Ship_Fire",
+            "bone": 90
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 91
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 92
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 93
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 94
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 95
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 96
+          },
+          {
+            "name": "P_Ship_Fire_Very_Large",
+            "bone": 100
+          },
+          {
+            "name": "pd_medium_3_150",
+            "bone": 101
+          },
+          {
+            "name": "pd_medium_3_150",
+            "bone": 102
+          }
+        ]
+      },
+      "textures": {
+        "Engine_Exhaust.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust.dds",
+          "stem": "CD273_Engine_Exhaust",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Engine_Exhaust_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust_B.dds",
+          "stem": "CD273_Engine_Exhaust_B",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Engine_Glow_Blue_dist.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_dist.tga",
+          "stem": "CD273_Engine_Glow_Blue_dist",
+          "size": [
+            500,
+            500
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Engine_Glow_Blue_wave.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_wave.tga",
+          "stem": "CD273_Engine_Glow_Blue_wave",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Engine_Glow_Fancy_White.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_White.tga",
+          "stem": "CD273_Engine_Glow_Fancy_White",
+          "size": [
+            500,
+            250
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Lights_Grid_Orange_Desaturated_Dense.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Lights_Grid_Orange_Desaturated_Dense.dds",
+          "stem": "CD273_Lights_Grid_Orange_Desaturated_Dense",
+          "size": [
+            2048,
+            2048
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Rebel_CD_273.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_CD_273.dds",
+          "stem": "CD273_Rebel_CD_273",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            0,
+            22
+          ]
+        },
+        "Rebel_CD_273_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_CD_273_B.dds",
+          "stem": "CD273_Rebel_CD_273_B",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            0,
+            137
+          ]
+        }
+      }
+    }
+  },
+  "projectiles": {
+    "Proj_Facing_Dummy": {
+      "inheritance": [
+        "Proj_Facing_Dummy"
+      ],
+      "values": {
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          ""
+        ],
+        "Projectile_Damage": [
+          "1.0"
+        ],
+        "AI_Combat_Power": [
+          "5000"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "No"
+        ],
+        "Damage_Type": [
+          "Damage_Default"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_Max_Scan_Range": [
+          "0.0"
+        ],
+        "Scale_Factor": [
+          "1.0"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          ""
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Space_Model_Name": [
+          "W_LASER_INVISIBLE"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          ""
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "1.0"
+        ],
+        "Projectile_Category": [
+          "MISSILE"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "No"
+        ],
+        "Max_Speed": [
+          "0.01"
+        ]
+      }
+    },
+    "Proj_Concussion_Missile": {
+      "inheritance": [
+        "Proj_Concussion_Missile"
+      ],
+      "values": {
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Damage": [
+          "65.0"
+        ],
+        "Projectile_Blast_Area_Dropoff_Tiers": [
+          "2"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Combat_Mod_Effect": [
+          "MAL_Slow_Effect"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Combat_Mod_Category_Mask": [
+          "Fighter | Gunship | Bomber | Transport | Corvette"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "No"
+        ],
+        "Damage_Type": [
+          "Damage_Con_Missile"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Blast_Area_Dropoff": [
+          "True"
+        ],
+        "Explode_When_Reached_Target_Radius": [
+          "Yes"
+        ],
+        "Projectile_Combat_Mod": [
+          "COMBAT_MOD_SPEED"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_Max_Scan_Range": [
+          "0.0"
+        ],
+        "Scale_Factor": [
+          "0.15"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Concussion_Missile_Detonation"
+        ],
+        "Projectile_Blast_Area_Max_Victims": [
+          "4"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Space_Model_Name": [
+          "w_projectile_concussion_missile_b.alo"
+        ],
+        "SFXEvent_Fire": [
+          "Unit_MAL_Carbonite_Fire"
+        ],
+        "Projectile_Blast_Area_Damage": [
+          "65"
+        ],
+        "Projectile_Combat_Mod_Radius": [
+          "50"
+        ],
+        "Max_Rate_Of_Turn": [
+          "2.5"
+        ],
+        "Projectile_Combat_Mod_Duration": [
+          "5"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Combat_Mod_Value": [
+          "-0.25"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "5000.0"
+        ],
+        "Projectile_Blast_Area_Range": [
+          "25"
+        ],
+        "Projectile_Category": [
+          "MISSILE"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Max_Speed": [
+          "17.5"
+        ]
+      }
+    },
+    "Proj_Ship_Turbolaser_Red_Dual": {
+      "inheritance": [
+        "Proj_Ship_Turbolaser_Red_Dual"
+      ],
+      "values": {
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Damage": [
+          "60.0"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Turbo_Death_R_Medium"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Damage_Type": [
+          "Damage_Default"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Scale_Factor": [
+          "0.094"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Turbo_Death_R_Medium"
+        ],
+        "Projectile_SFXEvent_Detonate_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Space_Model_Name": [
+          "w_turbolaser_r2.ALO"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Turbo_Death_R_Medium"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          "Turbolaser_Hit_Shield"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "4000.0"
+        ],
+        "Projectile_SFXEvent_Shield_Detonate": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Max_Speed": [
+          "45.0"
+        ]
+      }
+    },
+    "Proj_Ship_Turbolaser_Red_Quad": {
+      "inheritance": [
+        "Proj_Ship_Turbolaser_Red_Quad"
+      ],
+      "values": {
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Damage": [
+          "120.0"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Turbo_Death_R_Large"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Damage_Type": [
+          "Damage_Default"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Scale_Factor": [
+          "0.094"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Turbo_Death_R_Large"
+        ],
+        "Projectile_SFXEvent_Detonate_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Space_Model_Name": [
+          "w_turbolaser_r4c.ALO"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Turbo_Death_R_Large"
+        ],
+        "Projectile_Length": [
+          "100"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          "Turbolaser_Hit_Shield"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "4000.0"
+        ],
+        "Projectile_SFXEvent_Shield_Detonate": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Max_Speed": [
+          "45.0"
+        ]
+      }
+    }
+  },
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_CD_273.ALO": "fd98592cb7bde438e6b56bd5e41e460d6912cead440e9db96a9db1365e84d213",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust.dds": "90f3c6deaaa426b40f127b749df5bb9e2a099e1b97d6c01ada01f68418b5ad19",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust_B.dds": "1284f64e5e418b8199092624cef533991c1dd620f8a3f3abb9a681cec54135c2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_dist.tga": "1350923773197367e0f33863e88adcbfc1e52d6e9c89ff3c347d9fe41b7d2c83",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_wave.tga": "6d8d9fb3d488cac71c38d30434ee7f98ea7e86491f460402a78963b38cb77513",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_White.tga": "c985b69fed5c007c76a9ea9f8f95cc8073a4ee15e6ebe223c3dacf40529de3f5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Lights_Grid_Orange_Desaturated_Dense.dds": "8e7ba5baa3033d36b463a13795bc4985102bb82676cc23b56daeeef2084eb445",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_CD_273.dds": "cfb0b197a4fc1c08d0400fe256eec0d2d713d8f679972e1588ecfa69d23c97a5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_CD_273_B.dds": "8760f152be764ad6c7869f261a3ddae2839495c901db52e76d6cadca925d5962",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Units_Space_Rebel_CHG.xml": "1877da22d385f83056507a33a6c6907e587c6c4878da908a506af9ba21dd34b1",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\_Default_Base.xml": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_CD-273.xml": "ad9c0ff50a95f130fec61dcfaf9e0e45e6afcf97842e8c7247be1d04e8b2218d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\PROJECTILES.XML": "4514777f4cfa04beb78e784f097e8a5b6ca982f9fb72057a10cf684c508c04f7"
+  }
+}

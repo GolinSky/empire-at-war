@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "command": "command list_open_scenes",
+  "data": {
+    "command": "list_open_scenes",
+    "parameters": {},
+    "result": {
+      "count": 1,
+      "scenes": [
+        {
+          "name": "MainMenuScene",
+          "path": "Assets/Scenes/MainMenuScene.unity",
+          "isLoaded": true,
+          "isDirty": false,
+          "isActive": true,
+          "rootCount": 6
+        }
+      ]
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}
