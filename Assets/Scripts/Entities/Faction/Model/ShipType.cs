@@ -48,6 +48,7 @@ namespace EmpireAtWar.Models.Factions
         MC75Profundity = 304,
         MC80Independence = 305,
         CorellianBattlecruiser = 306,
+        BothanAssaultCruiser = 312,
         CD273 = 308,
         MC30c = 307,
         Nebula = 330,

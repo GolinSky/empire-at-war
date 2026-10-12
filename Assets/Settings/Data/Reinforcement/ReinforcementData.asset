@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnShipWrapper:
     keyValue:
+    - key: 312
+      value: {fileID: 484096460124362054, guid: b6ba67b098b3be441868dfeacab31dd7,
+        type: 3}
     - key: 0
       value: {fileID: 5422768365347329368, guid: 22aad1d1d6cecd043901814978cdaac2,
         type: 3}

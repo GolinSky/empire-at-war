@@ -1,0 +1,855 @@
+{
+  "variant": "BothanAssaultCruiser",
+  "before": {
+    "meshes": {
+      "Hull": {
+        "vertices": 9578,
+        "triangles": 4872,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M007"
+        ]
+      },
+      "Lights": {
+        "vertices": 244,
+        "triangles": 110,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M008"
+        ]
+      },
+      "Shield": {
+        "vertices": 134,
+        "triangles": 192,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "BothanAssaultCruiser_M009"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 192,
+        "triangles": 176,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M010"
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "vertices": 192,
+        "triangles": 176,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M011"
+        ]
+      },
+      "Shadow": {
+        "vertices": 2872,
+        "triangles": 5420,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "BothanAssaultCruiser_M012"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.3952407836914062
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          -31.619230270385742,
+          -40.30353927612305
+        ]
+      },
+      "PE_Bothan_Cruiser_L": {
+        "parent": "Root",
+        "head": [
+          10.893717765808105,
+          117.27301788330078,
+          14.581786155700684
+        ]
+      },
+      "PE_Bothan_Cruiser_L.001": {
+        "parent": "Root",
+        "head": [
+          -10.888077735900879,
+          117.27301788330078,
+          14.581786155700684
+        ]
+      },
+      "HP_01": {
+        "parent": "Root",
+        "head": [
+          19.648714065551758,
+          -53.192508697509766,
+          -3.3553855419158936
+        ]
+      },
+      "HP_01_Fire": {
+        "parent": "HP_01",
+        "head": [
+          25.280681610107422,
+          -53.192508697509766,
+          -3.3553855419158936
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion": {
+        "parent": "HP_01_Fire",
+        "head": [
+          21.53274917602539,
+          -53.3953971862793,
+          -2.97123384475708
+        ]
+      },
+      "HP_Hangar": {
+        "parent": "Root",
+        "head": [
+          -0.0035195499658584595,
+          -81.9626693725586,
+          -2.2822065353393555
+        ]
+      },
+      "HP_Hangar_Fire": {
+        "parent": "HP_Hangar",
+        "head": [
+          -0.0035198538098484278,
+          -87.13841247558594,
+          -2.2822067737579346
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.001": {
+        "parent": "HP_Hangar_Fire",
+        "head": [
+          -10.704358100891113,
+          -76.47553253173828,
+          -7.892678737640381
+        ]
+      },
+      "pf_small_w": {
+        "parent": "HP_Hangar_Fire",
+        "head": [
+          12.043045043945312,
+          -88.2806167602539,
+          -7.8926801681518555
+        ]
+      },
+      "HP_02": {
+        "parent": "Root",
+        "head": [
+          -19.38545036315918,
+          -53.192508697509766,
+          -3.3553855419158936
+        ]
+      },
+      "HP_03": {
+        "parent": "Root",
+        "head": [
+          13.67752456665039,
+          -103.02827453613281,
+          -3.4704644680023193
+        ]
+      },
+      "HP_04": {
+        "parent": "Root",
+        "head": [
+          -13.49213981628418,
+          -103.02827453613281,
+          -3.4704644680023193
+        ]
+      },
+      "HP_04_Fire": {
+        "parent": "HP_04",
+        "head": [
+          -19.52459144592285,
+          -103.02827453613281,
+          -3.4704644680023193
+        ]
+      },
+      "pf_small_w.001": {
+        "parent": "HP_04_Fire",
+        "head": [
+          -14.953540802001953,
+          -102.85424041748047,
+          -3.3973536491394043
+        ]
+      },
+      "HP_05": {
+        "parent": "Root",
+        "head": [
+          8.828550338745117,
+          -145.5731201171875,
+          -3.2760260105133057
+        ]
+      },
+      "HP_05_Fire": {
+        "parent": "HP_05",
+        "head": [
+          13.87579345703125,
+          -145.5731201171875,
+          -3.2760260105133057
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion": {
+        "parent": "HP_05_Fire",
+        "head": [
+          10.301843643188477,
+          -145.42440795898438,
+          -2.971235990524292
+        ]
+      },
+      "HP_06": {
+        "parent": "Root",
+        "head": [
+          -8.812763214111328,
+          -145.5731201171875,
+          -3.2760260105133057
+        ]
+      },
+      "HP_07": {
+        "parent": "Root",
+        "head": [
+          9.371795654296875,
+          41.784461975097656,
+          18.37948226928711
+        ]
+      },
+      "HP_08": {
+        "parent": "Root",
+        "head": [
+          -9.274062156677246,
+          41.784461975097656,
+          18.37948226928711
+        ]
+      },
+      "HP_08_Fire": {
+        "parent": "HP_08",
+        "head": [
+          -14.499775886535645,
+          41.78446960449219,
+          18.37948226928711
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.002": {
+        "parent": "HP_08_Fire",
+        "head": [
+          -11.612869262695312,
+          42.0079231262207,
+          18.877605438232422
+        ]
+      },
+      "HP_Shield": {
+        "parent": "Root",
+        "head": [
+          -0.003519698977470398,
+          -19.527755737304688,
+          -2.9412972927093506
+        ]
+      },
+      "HP_Shield_Fire": {
+        "parent": "HP_Shield",
+        "head": [
+          -0.0035193911753594875,
+          -14.536690711975098,
+          -2.9412975311279297
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.001": {
+        "parent": "HP_Shield_Fire",
+        "head": [
+          -26.754987716674805,
+          -19.73406410217285,
+          -2.971236228942871
+        ]
+      },
+      "pf_small_w.002": {
+        "parent": "HP_Shield_Fire",
+        "head": [
+          24.721956253051758,
+          -19.849313735961914,
+          4.018435478210449
+        ]
+      },
+      "HP_Engine": {
+        "parent": "Root",
+        "head": [
+          -0.003519907593727112,
+          103.5870590209961,
+          13.442794799804688
+        ]
+      },
+      "HP_Engine_Fire": {
+        "parent": "HP_Engine",
+        "head": [
+          -0.003520629834383726,
+          98.46440124511719,
+          13.442794799804688
+        ]
+      },
+      "pf_small_w.003": {
+        "parent": "HP_Engine_Fire",
+        "head": [
+          7.844901084899902,
+          115.04927062988281,
+          11.512965202331543
+        ]
+      },
+      "PE_Bothan_Cruiser_S": {
+        "parent": "Root",
+        "head": [
+          7.488760471343994,
+          117.8221664428711,
+          -1.9590644836425781
+        ]
+      },
+      "PE_Bothan_Cruiser_S.001": {
+        "parent": "Root",
+        "head": [
+          -7.4957075119018555,
+          117.8221664428711,
+          -1.9590644836425781
+        ]
+      },
+      "PE_Bothan_Cruiser_S.002": {
+        "parent": "Root",
+        "head": [
+          -13.843720436096191,
+          117.8221664428711,
+          1.258075475692749
+        ]
+      },
+      "PE_Bothan_Cruiser_S.003": {
+        "parent": "Root",
+        "head": [
+          13.836793899536133,
+          117.8221664428711,
+          1.258075475692749
+        ]
+      },
+      "PE_Bothan_Cruiser_S.004": {
+        "parent": "Root",
+        "head": [
+          20.159467697143555,
+          117.8221664428711,
+          4.474057674407959
+        ]
+      },
+      "PE_Bothan_Cruiser_S.005": {
+        "parent": "Root",
+        "head": [
+          -20.166582107543945,
+          117.8221664428711,
+          4.474057674407959
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          -0.0035533607006073,
+          1.1169601678848267,
+          -3.1011886596679688
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.3952407836914062
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.3952407836914062
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.3952407836914062
+        ]
+      }
+    },
+    "bounds_min": [
+      -47.86251449584961,
+      -203.51803588867188,
+      -31.27655792236328
+    ],
+    "bounds_max": [
+      47.855472564697266,
+      118.34815216064453,
+      56.82254409790039
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Hull": {
+        "vertices": 9578,
+        "triangles": 4872,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M007.001"
+        ]
+      },
+      "Lights": {
+        "vertices": 244,
+        "triangles": 110,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M008.001"
+        ]
+      },
+      "Shield": {
+        "vertices": 134,
+        "triangles": 192,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "BothanAssaultCruiser_M009.001"
+        ]
+      },
+      "Engine_Exhaust": {
+        "vertices": 192,
+        "triangles": 176,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M010.001"
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "vertices": 192,
+        "triangles": 176,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "BothanAssaultCruiser_M011.001"
+        ]
+      },
+      "Shadow": {
+        "vertices": 2872,
+        "triangles": 5420,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "BothanAssaultCruiser_M012.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.395239233970642
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          -31.619237899780273,
+          -40.30353546142578
+        ]
+      },
+      "PE_Bothan_Cruiser_L": {
+        "parent": "Root",
+        "head": [
+          10.893717765808105,
+          117.27301788330078,
+          14.581767082214355
+        ]
+      },
+      "PE_Bothan_Cruiser_L.001": {
+        "parent": "Root",
+        "head": [
+          -10.888077735900879,
+          117.27301788330078,
+          14.581767082214355
+        ]
+      },
+      "HP_01": {
+        "parent": "Root",
+        "head": [
+          19.648714065551758,
+          -53.192508697509766,
+          -3.355376958847046
+        ]
+      },
+      "HP_01_Fire": {
+        "parent": "HP_01",
+        "head": [
+          25.280681610107422,
+          -53.192508697509766,
+          -3.355376958847046
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion": {
+        "parent": "HP_01_Fire",
+        "head": [
+          21.53274917602539,
+          -53.3953971862793,
+          -2.9712252616882324
+        ]
+      },
+      "HP_Hangar": {
+        "parent": "Root",
+        "head": [
+          -0.0035195499658584595,
+          -81.9626693725586,
+          -2.282193183898926
+        ]
+      },
+      "HP_Hangar_Fire": {
+        "parent": "HP_Hangar",
+        "head": [
+          -0.0035198538098484278,
+          -87.13841247558594,
+          -2.2821924686431885
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.001": {
+        "parent": "HP_Hangar_Fire",
+        "head": [
+          -10.70435905456543,
+          -76.47553253173828,
+          -7.892666816711426
+        ]
+      },
+      "pf_small_w": {
+        "parent": "HP_Hangar_Fire",
+        "head": [
+          12.043045997619629,
+          -88.2806167602539,
+          -7.892664432525635
+        ]
+      },
+      "HP_02": {
+        "parent": "Root",
+        "head": [
+          -19.38545036315918,
+          -53.192508697509766,
+          -3.355376958847046
+        ]
+      },
+      "HP_03": {
+        "parent": "Root",
+        "head": [
+          13.67752456665039,
+          -103.02827453613281,
+          -3.4704477787017822
+        ]
+      },
+      "HP_04": {
+        "parent": "Root",
+        "head": [
+          -13.49213981628418,
+          -103.02827453613281,
+          -3.4704477787017822
+        ]
+      },
+      "HP_04_Fire": {
+        "parent": "HP_04",
+        "head": [
+          -19.52459144592285,
+          -103.02827453613281,
+          -3.4704477787017822
+        ]
+      },
+      "pf_small_w.001": {
+        "parent": "HP_04_Fire",
+        "head": [
+          -14.953540802001953,
+          -102.85424041748047,
+          -3.397336959838867
+        ]
+      },
+      "HP_05": {
+        "parent": "Root",
+        "head": [
+          8.828550338745117,
+          -145.5731201171875,
+          -3.2760024070739746
+        ]
+      },
+      "HP_05_Fire": {
+        "parent": "HP_05",
+        "head": [
+          13.87579345703125,
+          -145.5731201171875,
+          -3.2760024070739746
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion": {
+        "parent": "HP_05_Fire",
+        "head": [
+          10.301843643188477,
+          -145.42440795898438,
+          -2.971212387084961
+        ]
+      },
+      "HP_06": {
+        "parent": "Root",
+        "head": [
+          -8.812763214111328,
+          -145.5731201171875,
+          -3.2760024070739746
+        ]
+      },
+      "HP_07": {
+        "parent": "Root",
+        "head": [
+          9.371795654296875,
+          41.78446578979492,
+          18.379474639892578
+        ]
+      },
+      "HP_08": {
+        "parent": "Root",
+        "head": [
+          -9.274062156677246,
+          41.78446578979492,
+          18.379474639892578
+        ]
+      },
+      "HP_08_Fire": {
+        "parent": "HP_08",
+        "head": [
+          -14.499775886535645,
+          41.78447341918945,
+          18.379474639892578
+        ]
+      },
+      "P_Ship_Fire_Small_Explosion.002": {
+        "parent": "HP_08_Fire",
+        "head": [
+          -11.612869262695312,
+          42.00792694091797,
+          18.87759780883789
+        ]
+      },
+      "HP_Shield": {
+        "parent": "Root",
+        "head": [
+          -0.003519698977470398,
+          -19.527755737304688,
+          -2.9412941932678223
+        ]
+      },
+      "HP_Shield_Fire": {
+        "parent": "HP_Shield",
+        "head": [
+          -0.003519390942528844,
+          -14.536691665649414,
+          -2.9412951469421387
+        ]
+      },
+      "P_Ship_Fire_Very_Small_Explosion.001": {
+        "parent": "HP_Shield_Fire",
+        "head": [
+          -26.754987716674805,
+          -19.734067916870117,
+          -2.971236228942871
+        ]
+      },
+      "pf_small_w.002": {
+        "parent": "HP_Shield_Fire",
+        "head": [
+          24.721956253051758,
+          -19.849313735961914,
+          4.018441677093506
+        ]
+      },
+      "HP_Engine": {
+        "parent": "Root",
+        "head": [
+          -0.003519907593727112,
+          103.5870590209961,
+          13.442777633666992
+        ]
+      },
+      "HP_Engine_Fire": {
+        "parent": "HP_Engine",
+        "head": [
+          -0.003520629834383726,
+          98.46440887451172,
+          13.442778587341309
+        ]
+      },
+      "pf_small_w.003": {
+        "parent": "HP_Engine_Fire",
+        "head": [
+          7.844901084899902,
+          115.04928588867188,
+          11.512947082519531
+        ]
+      },
+      "PE_Bothan_Cruiser_S": {
+        "parent": "Root",
+        "head": [
+          7.488760471343994,
+          117.8221664428711,
+          -1.9590836763381958
+        ]
+      },
+      "PE_Bothan_Cruiser_S.001": {
+        "parent": "Root",
+        "head": [
+          -7.4957075119018555,
+          117.8221664428711,
+          -1.9590836763381958
+        ]
+      },
+      "PE_Bothan_Cruiser_S.002": {
+        "parent": "Root",
+        "head": [
+          -13.843720436096191,
+          117.8221664428711,
+          1.2580562829971313
+        ]
+      },
+      "PE_Bothan_Cruiser_S.003": {
+        "parent": "Root",
+        "head": [
+          13.836793899536133,
+          117.8221664428711,
+          1.2580562829971313
+        ]
+      },
+      "PE_Bothan_Cruiser_S.004": {
+        "parent": "Root",
+        "head": [
+          20.159467697143555,
+          117.8221664428711,
+          4.474038600921631
+        ]
+      },
+      "PE_Bothan_Cruiser_S.005": {
+        "parent": "Root",
+        "head": [
+          -20.166582107543945,
+          117.8221664428711,
+          4.474038600921631
+        ]
+      },
+      "Shield": {
+        "parent": "Root",
+        "head": [
+          -0.0035533607006073,
+          1.1169596910476685,
+          -3.101188898086548
+        ]
+      },
+      "Engine_Exhaust": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.395239233970642
+        ]
+      },
+      "Engine_Exhaust_Glow": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.395239233970642
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          -0.0035215169191360474,
+          9.381669998168945,
+          1.395239233970642
+        ]
+      }
+    },
+    "bounds_min": [
+      -47.86251449584961,
+      -203.5180206298828,
+      -31.276552200317383
+    ],
+    "bounds_max": [
+      47.855472564697266,
+      118.34812927246094,
+      56.82252502441406
+    ]
+  },
+  "materials": [
+    {
+      "name": "BothanAssaultCruiser_M012",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "BothanAssaultCruiser_M011",
+      "shader": "MeshAdditive.fx",
+      "base": "BothanAssaultCruiser_Engine_Exhaust",
+      "normal": null
+    },
+    {
+      "name": "BothanAssaultCruiser_M009",
+      "shader": "MeshShield.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "BothanAssaultCruiser_M010",
+      "shader": "MeshBumpColorize.fx",
+      "base": "BothanAssaultCruiser_Engine_Exhaust",
+      "normal": "BothanAssaultCruiser_Engine_Exhaust_B"
+    },
+    {
+      "name": "BothanAssaultCruiser_M008",
+      "shader": "MeshAdditive.fx",
+      "base": "BothanAssaultCruiser_Neutral_Bothan_Cruiser_L",
+      "normal": null
+    },
+    {
+      "name": "BothanAssaultCruiser_M007",
+      "shader": "MeshBumpColorize.fx",
+      "base": "BothanAssaultCruiser_Neutral_Bothan_Cruiser",
+      "normal": "BothanAssaultCruiser_Neutral_Bothan_Cruiser_B"
+    }
+  ],
+  "bone_error": 2.368877858805508e-05,
+  "geometry_error": 4.418147806128884e-05
+}

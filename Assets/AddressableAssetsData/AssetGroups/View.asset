@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: View
   m_GUID: c76d02dd69a34cb44abaf1b9048349ba
   m_SerializeEntries:
+  - m_GUID: 8c94249786d23114d98ed5599f73b143
+    m_Address: BothanAssaultCruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 010561448aafee74bb1d92d47bb33f3b
     m_Address: TIEAvengerSquadronView
     - m_GUID: 13b95f5491d4d064cb67648cf70fa056

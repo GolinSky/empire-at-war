@@ -1,0 +1,60 @@
+{
+  "meshes": 6,
+  "triangles": 10946,
+  "bones": 42,
+  "boneErrorUnits": 5.553557E-07,
+  "targetableHardpoints": 22,
+  "weaponProfiles": [
+    3,
+    4,
+    32,
+    48,
+    14
+  ],
+  "weaponCounts": [
+    4,
+    4,
+    2,
+    4,
+    2
+  ],
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/BothanAssaultCruiser.prefab",
+      "size": [
+        47.5815048,
+        43.7941437,
+        159.999985
+      ],
+      "visibleMeshes": 4
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/BothanAssaultCruiserShipView.prefab",
+      "size": [
+        47.5815048,
+        43.7941437,
+        159.999985
+      ],
+      "visibleMeshes": 4
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/BothanAssaultCruiserReinforcementView.prefab",
+      "size": [
+        47.5815048,
+        43.7941437,
+        159.999985
+      ],
+      "visibleMeshes": 2
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/BothanAssaultCruiserWreckView.prefab",
+      "size": [
+        47.58151,
+        43.7941437,
+        159.999985
+      ],
+      "visibleMeshes": 2
+    }
+  ],
+  "registrationsVerified": true
+}

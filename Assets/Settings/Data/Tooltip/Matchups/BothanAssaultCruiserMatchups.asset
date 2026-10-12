@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621f037e9a796d149b93e6450fa8e471, type: 3}
+  m_Name: BothanAssaultCruiserMatchups
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
+  strongAgainst:
+  - iconKey: f71730a251297854b97875858cdb2249:21300000
+    label: Capital ships
+  - iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
+    label: Cruisers
+  weakAgainst:
+  - iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
+    label: Bomber strikes

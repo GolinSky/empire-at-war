@@ -14,6 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog
   definitions:
     keyValue:
+    - key: 42
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Coordinated Assault
+        description: Torpedo firing rate +25% for 8 seconds. Recovers 40 seconds
+          after expiry.
+        duration: 8
+        recoveryDelay: 40
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801467062609510486
     - key: 8
       value:
         icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
@@ -566,6 +581,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 6801467062609510486
+      type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        fireDelayMultiplier: 0.8
     - rid: 6801466862182334539
       type: {class: IonPulseSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

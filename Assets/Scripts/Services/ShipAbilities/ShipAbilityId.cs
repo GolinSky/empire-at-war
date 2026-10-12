@@ -36,6 +36,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         CorellianBattlecruiserPowerToShields = 34,
         CD273PowerToEngines = 37,
         ImperialVenatorIntensifyFirepower = 35,
+        BothanCoordinatedAssault = 42,
         MC30cTorpedoSalvo = 36,
         NebulaOverchargeWeapons = 38,
         AssaultFrigateMkIIPowerToShields = 45,

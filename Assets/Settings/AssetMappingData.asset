@@ -14,6 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Repository.Data.AssetMappingData
   assetMappings:
     keyValue:
+    - key: BothanAssaultCruiserShipView
+      value:
+        m_AssetGUID: 8c94249786d23114d98ed5599f73b143
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: BothanAssaultCruiserShipData
+      value:
+        m_AssetGUID: 28d2337875adca44ba1987aa35884aee
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: ExplosionVfx
       value:
         m_AssetGUID: 17a65e70ac12d8e4b839ac0bd03f953b

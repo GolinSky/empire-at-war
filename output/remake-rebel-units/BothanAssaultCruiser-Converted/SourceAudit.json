@@ -1,0 +1,2815 @@
+{
+  "unit": {
+    "inheritance": [
+      "Bothan_Assault_Cruiser_MP",
+      "Bothan_Upkeep",
+      "Bothan_Assault_Cruiser_Template",
+      "Frigate_Base",
+      "Vessel_Base",
+      "SFX_Base"
+    ],
+    "values": {
+      "SFXEvent_Hardpoint_Destroyed": [
+        "HARD_POINT_WEAPON_LASER, Unit_Lost_Laser_Assault_Frigate",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_Lost_Shields_Assault_Frigate",
+        "HARD_POINT_ENGINE, Unit_Lost_Engines_Assault_Frigate"
+      ],
+      "SFXEvent_Attack_Hardpoint": [
+        "HARD_POINT_WEAPON_LASER, Unit_HP_LASER_Assault_Frigate",
+        "HARD_POINT_WEAPON_MISSILE, Unit_HP_MISSILE_Assault_Frigate",
+        "HARD_POINT_WEAPON_TORPEDO, Unit_HP_TORP_Assault_Frigate",
+        "HARD_POINT_WEAPON_ION_CANNON, Unit_HP_ION_Assault_Frigate",
+        "HARD_POINT_WEAPON_MASS_DRIVER, Unit_Attack_Assault_Frigate",
+        "HARD_POINT_WEAPON_SPECIAL, Unit_Attack_Assault_Frigate",
+        "HARD_POINT_ENABLE_SPECIAL_ABILITY, Unit_Attack_Assault_Frigate",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_HP_SHIELDS_Assault_Frigate",
+        "HARD_POINT_ENGINE, Unit_HP_ENGINES_Assault_Frigate",
+        "HARD_POINT_GRAVITY_WELL, Unit_HP_GRAV_Assault_Frigate",
+        "HARD_POINT_FIGHTER_BAY, Unit_HP_Bay_Assault_Frigate",
+        "HARD_POINT_TRACTOR_BEAM, Unit_Attack_Assault_Frigate",
+        "HARD_POINT_DUMMY_ART, Unit_Attack_Assault_Frigate"
+      ],
+      "SFXEvent_Select": [
+        "Unit_Select_Assault_Frigate"
+      ],
+      "Hyperspace_Speed": [
+        "0.4"
+      ],
+      "Exclude_From_Distance_Fade": [
+        "true"
+      ],
+      "Layer_Z_Adjust": [
+        "0"
+      ],
+      "SFXEvent_Damaged_By_Asteroid": [
+        "SFX_Asteroid_Detonation"
+      ],
+      "Mouse_Collide_Override_Sphere_Radius": [
+        "50.0"
+      ],
+      "Space_Full_Stop_Command": [
+        "Yes"
+      ],
+      "Asteroid_Damage_Hit_Particles": [
+        "Large_Damage_Space"
+      ],
+      "Hyperspace": [
+        "Yes"
+      ],
+      "OverrideDeceleration": [
+        "0.035"
+      ],
+      "Build_Can_Be_Unlocked_By_Slicer": [
+        "No"
+      ],
+      "SpaceBehavior": [
+        "TURRET, SIMPLE_SPACE_LOCOMOTOR, SPAWN_SQUADRON, ABILITY_COUNTDOWN, SELECTABLE, POWERED, SHIELDED, HIDE_WHEN_FOGGED, REVEAL, TARGETING, UNIT_AI, ASTEROID_FIELD_DAMAGE, DAMAGE_TRACKING, ION_STUN_EFFECT, NEBULA"
+      ],
+      "Targeting_Stickiness_Time_Threshold": [
+        "5.0"
+      ],
+      "Select_Box_Z_Adjust": [
+        "1"
+      ],
+      "Build_Tab_Space_Units": [
+        "Yes"
+      ],
+      "Build_Initially_Locked": [
+        "No"
+      ],
+      "Squadron_Capacity": [
+        "50"
+      ],
+      "Size_Value": [
+        "30"
+      ],
+      "Has_Space_Evaluator": [
+        "True"
+      ],
+      "Idle_Chase_Range": [
+        "0.0"
+      ],
+      "Damage": [
+        "40"
+      ],
+      "Collidable_By_Projectile_Living": [
+        "Yes"
+      ],
+      "Shield_Armor_Type": [
+        "Shield_Starship"
+      ],
+      "Tech_Level": [
+        "99"
+      ],
+      "Multisample_FOW_Check": [
+        "Yes"
+      ],
+      "Dense_FOW_Reveal_Range_Multiplier": [
+        "1"
+      ],
+      "Formation_Priority": [
+        "1"
+      ],
+      "Attack_Move_Response_Range": [
+        "400.0"
+      ],
+      "Required_Timeline": [
+        "0"
+      ],
+      "Variant_Of_Existing_Type": [
+        "Bothan_Upkeep"
+      ],
+      "Surface_Bombardment_Capable": [
+        "yes"
+      ],
+      "GUI_Velocity": [
+        "45"
+      ],
+      "Energy_Capacity": [
+        "99999"
+      ],
+      "Mass": [
+        "0.999"
+      ],
+      "Armor_Type": [
+        "Armor_Starship"
+      ],
+      "Energy_Refresh_Rate": [
+        "9999"
+      ],
+      "Tactical_Production_Queue": [
+        "Tactical_Units"
+      ],
+      "Victory_Relevant": [
+        "yes"
+      ],
+      "OverrideAcceleration": [
+        "0.035"
+      ],
+      "Ranking_In_Category": [
+        "1"
+      ],
+      "GUI_Row": [
+        "0"
+      ],
+      "MovementClass": [
+        "Space"
+      ],
+      "Score_Cost_Credits": [
+        "1"
+      ],
+      "GUI_Offset": [
+        "0 0 0"
+      ],
+      "Select_Box_Scale": [
+        "1"
+      ],
+      "Lua_Script": [
+        "ObjectScript_PowerToShields_Layer_Z"
+      ],
+      "Spawned_Squadron_Delay_Seconds": [
+        "0.5"
+      ],
+      "Behavior": [
+        "SELECTABLE, DUMMY_STARSHIP"
+      ],
+      "Required_Star_Base_Level": [
+        "2"
+      ],
+      "Is_Visible_On_Radar": [
+        "Yes"
+      ],
+      "Guard_Chase_Range": [
+        "1000.0"
+      ],
+      "Required_Ground_Base_Level": [
+        "0"
+      ],
+      "Radar_Icon_Name": [
+        "I_Radar_Non-Fighters.tga"
+      ],
+      "Space_Layer": [
+        "Frigate"
+      ],
+      "GUI_Bracket_Size": [
+        "2"
+      ],
+      "Ship_Class": [
+        "Frigate"
+      ],
+      "Encyclopedia_Unit_Class": [
+        "TEXT_ENCYCLOPEDIA_CLASS_FRIGATE"
+      ],
+      "Tactical_Build_Prerequisites": [
+        "Frigate_Shipyard_Tech_Upgrade_Rebel, New_Class_Modernization_Program"
+      ],
+      "Bank_Turn_Angle": [
+        "35"
+      ],
+      "Turret_Bone_Name": [
+        "Horizontal"
+      ],
+      "SFXEvent_Health_Critical_Warning": [
+        "Unit_Alarm_Generic_2"
+      ],
+      "SFXEvent_Barrage": [
+        "Unit_Barrage_Assault_Frigate"
+      ],
+      "SFXEvent_Engine_Idle_Loop": [
+        "Unit_Nebulon_Idle_Engine_Loop"
+      ],
+      "SFXEvent_Move": [
+        "Unit_Move_Assault_Frigate"
+      ],
+      "Turret_Elevate_Extent_Degrees": [
+        "90"
+      ],
+      "HardPoints": [
+        "HP_Bothan_Cruiser_Engines,\n\t\tHP_Bothan_Cruiser_Hangar,\n\t\tHP_Bothan_Cruiser_Shield,\n\t\tHP_Bothan_Cruiser_Torpedoes_01,\n\t\tHP_Bothan_Cruiser_Torpedoes_02,\n\t\tHP_Bothan_Cruiser_IC_01,\n\t\tHP_Bothan_Cruiser_IC_02,\n\t\tHP_Bothan_Cruiser_TL_01,\n\t\tHP_Bothan_Cruiser_TL_02,\n\t\tHP_Bothan_Cruiser_ML_01,\n\t\tHP_Bothan_Cruiser_ML_02"
+      ],
+      "Barrel_Bone_Name": [
+        "vertical"
+      ],
+      "Encyclopedia_Text": [
+        "TEXT_TOOLTIP_BOTHAN_CRUISER\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_BOTHAN_CRUISER_STATS_P\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_UPKEEP_375"
+      ],
+      "SFXEvent_Move_Into_Asteroid_Field": [
+        "Unit_Asteroids_Assault_Frigate"
+      ],
+      "Tactical_Build_Time_Seconds": [
+        "45"
+      ],
+      "Shield_Refresh_Rate": [
+        "240"
+      ],
+      "Custom_Hard_XExtent": [
+        "164.0"
+      ],
+      "SFXEvent_Build_Complete": [
+        "Unit_Complete_Assault_Frigate"
+      ],
+      "SFXEvent_Guard": [
+        "Unit_Guard_Assault_Frigate"
+      ],
+      "Max_Rate_Of_Roll": [
+        "0.05"
+      ],
+      "SFXEvent_Attack": [
+        "Unit_Attack_Assault_Frigate"
+      ],
+      "Death_SFXEvent_Start_Die": [
+        "Unit_Cruiser_Death_SFX"
+      ],
+      "AI_Combat_Power": [
+        "1000"
+      ],
+      "Tactical_Build_Cost_Multiplayer": [
+        "10000"
+      ],
+      "SFXEvent_Build_Started": [
+        "RHD_Build_Vehicle"
+      ],
+      "Shield_Points": [
+        "12000"
+      ],
+      "Turret_Rotate_Extent_Degrees": [
+        "90"
+      ],
+      "CategoryMask": [
+        "Frigate | AntiFrigate"
+      ],
+      "SFXEvent_Build_Cancelled": [
+        "RHD_Unit_Canceled"
+      ],
+      "Space_FOW_Reveal_Range": [
+        "2500"
+      ],
+      "Population_Value": [
+        "8"
+      ],
+      "Remove_Upon_Death": [
+        "true"
+      ],
+      "Scale_Factor": [
+        "1"
+      ],
+      "Targeting_Priority_Set": [
+        "Frigate"
+      ],
+      "Build_Cost_Credits": [
+        "10000"
+      ],
+      "SFXEvent_Engine_Moving_Loop": [
+        "Unit_Nebulon_Moving_Engine_Loop"
+      ],
+      "Death_Explosions": [
+        "Large_Explosion_Space_Pd_Assault_400"
+      ],
+      "SFXEvent_Stop": [
+        "Unit_Stop_Assault_Frigate"
+      ],
+      "Text_ID": [
+        "TEXT_UNIT_BOTHAN_CRUISER"
+      ],
+      "Max_Speed": [
+        "3.5"
+      ],
+      "Build_Time_Seconds": [
+        "45"
+      ],
+      "SFXEvent_Move_Into_Nebula": [
+        "Unit_Nebula_Assault_Frigate"
+      ],
+      "Turret_Rotate_Speed": [
+        "0.06"
+      ],
+      "Max_Rate_Of_Turn": [
+        "0.25"
+      ],
+      "Property_Flags": [
+        "ShieldPiercer"
+      ],
+      "SFXEvent_Fleet_Move": [
+        "Unit_Retreat_Assault_Frigate"
+      ],
+      "SFXEvent_Engine_Cinematic_Focus_Loop": [
+        "Unit_Nebulon_Cinematic_Engine_Loop"
+      ],
+      "Moniker": [
+        "Rebel_CHG.txt"
+      ],
+      "Space_Model_Name": [
+        "Neutral_Bothan_Cruiser.ALO"
+      ],
+      "Custom_Hard_YExtent": [
+        "48.0"
+      ],
+      "Targeting_Max_Attack_Distance": [
+        "2400"
+      ],
+      "Icon_Name": [
+        "I_BUTTON_UNIT_NEUTRAL_BOTHAN_ASSAULT_CRUISER.TGA"
+      ],
+      "Tactical_Health": [
+        "7500"
+      ],
+      "Abilities": [
+        "<Abilities SubObjectList=\"Yes\">\n\t\t\t<Planet_Income_Bonus_Ability Name=\"Bothan_Cruiser_Upkeep\">\n\t\t\t\t<Specific_Mod_Source_Text>TEXT_TOOLTIP_BOTHAN_CRUISER_UPKEEP</Specific_Mod_Source_Text>\n\t\t\t\t<Absolute_Income_Modifier>-375</Absolute_Income_Modifier>\n\t\t\t</Planet_Income_Bonus_Ability>\n\t\t</Abilities>\n\t"
+      ],
+      "Affiliation": [
+        "Rebel"
+      ],
+      "Reserve_Spawned_Units_Tech_0": [
+        "X-Wing_Squadron, 1"
+      ],
+      "Starting_Spawned_Units_Tech_0": [
+        "X-Wing_Squadron, 1"
+      ],
+      "MP_Encyclopedia_Text": [
+        "TEXT_TOOLTIP_BOTHAN_CRUISER\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_BOTHAN_CRUISER_STATS_R"
+      ]
+    }
+  },
+  "death": {
+    "inheritance": [],
+    "values": {}
+  },
+  "hardpoints": [
+    {
+      "name": "HP_Bothan_Cruiser_Engines",
+      "inheritance": [
+        "HP_Bothan_Cruiser_Engines"
+      ],
+      "values": {
+        "Health": [
+          "700.0"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_Engine"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "HP_Engine"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Engines_Death"
+        ],
+        "Tooltip_Text": [
+          "TEXT_ENGINE_HARDPOINT"
+        ],
+        "Type": [
+          "HARD_POINT_ENGINE"
+        ],
+        "Damage_Particles": [
+          "HP_Engine_Fire"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_Hangar",
+      "inheritance": [
+        "HP_Bothan_Cruiser_Hangar"
+      ],
+      "values": {
+        "Health": [
+          "300.0"
+        ],
+        "Collision_Mesh": [
+          "HP_Hangar"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "HP_Hangar"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Bay_Death"
+        ],
+        "Tooltip_Text": [
+          "TEXT_FIGHTER_BAY_HARDPOINT"
+        ],
+        "Type": [
+          "HARD_POINT_FIGHTER_BAY"
+        ],
+        "Damage_Particles": [
+          "HP_Hangar_Fire"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_Shield",
+      "inheritance": [
+        "HP_Bothan_Cruiser_Shield"
+      ],
+      "values": {
+        "Health": [
+          "6.0"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_Shield"
+        ],
+        "Is_Targetable": [
+          "No"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Attachment_Bone": [
+          "HP_Shield"
+        ],
+        "Type": [
+          "HARD_POINT_SHIELD_GENERATOR"
+        ],
+        "Damage_Particles": [
+          "HP_Shield_Fire"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_Torpedoes_01",
+      "inheritance": [
+        "HP_Bothan_Cruiser_Torpedoes_01"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Cone_Width": [
+          "175.0"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Category_Restrictions": [
+          "Fighter, Bomber, Gunship, Transport"
+        ],
+        "Fire_Bone_B": [
+          "HP_05"
+        ],
+        "Fire_Bone_A": [
+          "HP_05"
+        ],
+        "Attachment_Bone": [
+          "HP_05"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TORPEDOES_HEAVY"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_TORPEDO"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "1.0"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Proton_Torpedo_Heavy"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120.0"
+        ],
+        "Damage_Particles": [
+          "HP_05_Fire"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_05"
+        ],
+        "Fire_Pulse_Count": [
+          "1"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Torpedo_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Torpedo_Fire_Ship_Proton_Heavy"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 25.0",
+          "Bomber, 25.0",
+          "Gunship, 25.0",
+          "Transport, 25.0",
+          "Corvette, 25.0",
+          "Frigate, 27.5",
+          "Capital, 30.0",
+          "SpaceStructure, 30.0",
+          "Super, 30.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_Torpedoes_02",
+      "inheritance": [
+        "HP_Bothan_Cruiser_Torpedoes_02"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Cone_Width": [
+          "175.0"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Category_Restrictions": [
+          "Fighter, Bomber, Gunship, Transport"
+        ],
+        "Fire_Bone_B": [
+          "HP_06"
+        ],
+        "Fire_Bone_A": [
+          "HP_06"
+        ],
+        "Attachment_Bone": [
+          "HP_06"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TORPEDOES_HEAVY"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_TORPEDO"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "1.0"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Proton_Torpedo_Heavy"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120.0"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_06"
+        ],
+        "Fire_Pulse_Count": [
+          "1"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Torpedo_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Torpedo_Fire_Ship_Proton_Heavy"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 25.0",
+          "Bomber, 25.0",
+          "Gunship, 25.0",
+          "Transport, 25.0",
+          "Corvette, 25.0",
+          "Frigate, 27.5",
+          "Capital, 30.0",
+          "SpaceStructure, 30.0",
+          "Super, 30.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_IC_01",
+      "inheritance": [
+        "HP_Bothan_Cruiser_IC_01"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "5"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Bone_B": [
+          "HP_03"
+        ],
+        "Fire_Bone_A": [
+          "HP_03"
+        ],
+        "Attachment_Bone": [
+          "HP_03"
+        ],
+        "Fire_Range_Distance": [
+          "2500.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_IONCANNON"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_ION_CANNON"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.3"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "3"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Ion_Cannon"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_03"
+        ],
+        "Fire_Pulse_Count": [
+          "5"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Ion_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Ion_Fire"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 25.0",
+          "Transport, 25.0",
+          "Corvette, 25.0",
+          "Frigate, 25.0",
+          "Capital, 25.0",
+          "SpaceStructure, 25.0",
+          "Super, 25.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_IC_02",
+      "inheritance": [
+        "HP_Bothan_Cruiser_IC_02"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "5"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Bone_B": [
+          "HP_04"
+        ],
+        "Fire_Bone_A": [
+          "HP_04"
+        ],
+        "Attachment_Bone": [
+          "HP_04"
+        ],
+        "Fire_Range_Distance": [
+          "2500.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_IONCANNON"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_ION_CANNON"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.3"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "3"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Ion_Cannon"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Damage_Particles": [
+          "HP_04_Fire"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_04"
+        ],
+        "Fire_Pulse_Count": [
+          "5"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Ion_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Ion_Fire"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 25.0",
+          "Transport, 25.0",
+          "Corvette, 25.0",
+          "Frigate, 25.0",
+          "Capital, 25.0",
+          "SpaceStructure, 25.0",
+          "Super, 25.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_TL_01",
+      "inheritance": [
+        "HP_Bothan_Cruiser_TL_01"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.0"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Fire_Bone_B": [
+          "HP_01"
+        ],
+        "Fire_Bone_A": [
+          "HP_01"
+        ],
+        "Attachment_Bone": [
+          "HP_01"
+        ],
+        "Fire_Range_Distance": [
+          "2000.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER_DUAL"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.25"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.25"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Yellow_Dual"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Damage_Particles": [
+          "HP_01_Fire"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_01"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Hapan_Ship_1"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_TL_02",
+      "inheritance": [
+        "HP_Bothan_Cruiser_TL_02"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.0"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Fire_Bone_B": [
+          "HP_02"
+        ],
+        "Fire_Bone_A": [
+          "HP_02"
+        ],
+        "Attachment_Bone": [
+          "HP_02"
+        ],
+        "Fire_Range_Distance": [
+          "2000.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER_DUAL"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.25"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.25"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Yellow_Dual"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_02"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Hapan_Ship_1"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_ML_01",
+      "inheritance": [
+        "HP_Bothan_Cruiser_ML_01"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Fire_Cone_Width": [
+          "160"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Bone_B": [
+          "HP_07"
+        ],
+        "Fire_Bone_A": [
+          "HP_07"
+        ],
+        "Attachment_Bone": [
+          "HP_07"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_CONCUSSIONMISSILE"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_MISSILE"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.9"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Concussion_Missile"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120.0"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_07"
+        ],
+        "Fire_Pulse_Count": [
+          "4"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Missile_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Missile_Fire_Ship_Concussion"
+        ]
+      }
+    },
+    {
+      "name": "HP_Bothan_Cruiser_ML_02",
+      "inheritance": [
+        "HP_Bothan_Cruiser_ML_02"
+      ],
+      "values": {
+        "Health": [
+          "500.0"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Fire_Cone_Width": [
+          "160"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Fire_Bone_B": [
+          "HP_08"
+        ],
+        "Fire_Bone_A": [
+          "HP_08"
+        ],
+        "Attachment_Bone": [
+          "HP_08"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_CONCUSSIONMISSILE"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_MISSILE"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.9"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "10.0"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Concussion_Missile"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_Cone_Height": [
+          "120.0"
+        ],
+        "Damage_Particles": [
+          "HP_08_Fire"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "HP_08"
+        ],
+        "Fire_Pulse_Count": [
+          "4"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Missile_Death"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Missile_Fire_Ship_Concussion"
+        ]
+      }
+    }
+  ],
+  "attachments": [],
+  "variants": {
+    "BothanAssaultCruiser": {
+      "bones": [
+        {
+          "name": "Root",
+          "parent_index": 4294967295,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Hull",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            -0.0035215169191360474,
+            -0.0,
+            0.0,
+            -1.0,
+            9.381669998168945,
+            0.0,
+            1.0,
+            0.0,
+            1.3952407836914062
+          ]
+        },
+        {
+          "name": "Lights",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            -0.0035215169191360474,
+            -0.0,
+            0.0,
+            -1.0,
+            -31.619230270385742,
+            0.0,
+            1.0,
+            0.0,
+            -40.30353927612305
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_L",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            10.893717765808105,
+            0.0,
+            0.0,
+            1.0,
+            117.27301788330078,
+            0.0,
+            -1.0,
+            0.0,
+            14.581786155700684
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_L",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -10.888077735900879,
+            0.0,
+            0.0,
+            1.0,
+            117.27301788330078,
+            0.0,
+            -1.0,
+            0.0,
+            14.581786155700684
+          ]
+        },
+        {
+          "name": "HP_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            19.648714065551758,
+            0.0,
+            1.0,
+            0.0,
+            -53.192508697509766,
+            0.0,
+            0.0,
+            1.0,
+            -3.3553855419158936
+          ]
+        },
+        {
+          "name": "HP_01_Fire",
+          "parent_index": 5,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            5.631967544555664,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 6,
+          "visible": 1,
+          "matrix": [
+            -0.06540143489837646,
+            0.16857776045799255,
+            0.9835162162780762,
+            -3.7479324340820312,
+            -0.07698020339012146,
+            0.98183673620224,
+            -0.1734088808298111,
+            -0.20288848876953125,
+            -0.9948852062225342,
+            -0.08705247938632965,
+            -0.05123639106750488,
+            0.3841516971588135
+          ]
+        },
+        {
+          "name": "HP_Hangar",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.0,
+            -2.1855694143368964e-08,
+            1.0,
+            -0.0035195499658584595,
+            -3.0908619663705394e-08,
+            1.0,
+            2.1855694143368964e-08,
+            -81.9626693725586,
+            -1.0,
+            -3.0908619663705394e-08,
+            0.0,
+            -2.2822065353393555
+          ]
+        },
+        {
+          "name": "HP_Hangar_Fire",
+          "parent_index": 8,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            2.384185791015625e-07,
+            0.0,
+            1.0,
+            0.0,
+            -5.175743103027344,
+            0.0,
+            2.087967930219466e-23,
+            1.0,
+            -4.172325134277344e-07
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            -0.5370004177093506,
+            -0.2750488221645355,
+            -0.7974827885627747,
+            5.610472202301025,
+            -0.08217126131057739,
+            0.9579123258590698,
+            -0.2750488221645355,
+            10.662879943847656,
+            0.8395704030990601,
+            -0.08217111974954605,
+            -0.5370004177093506,
+            -10.700838088989258
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            0.6625632047653198,
+            0.3213806748390198,
+            -0.6765534281730652,
+            5.610472679138184,
+            -0.1325518935918808,
+            0.9393221735954285,
+            0.31639182567596436,
+            -1.1422042846679688,
+            0.7371839284896851,
+            -0.11995109170675278,
+            0.6649599075317383,
+            12.046565055847168
+          ]
+        },
+        {
+          "name": "HP_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            1.5099581673894136e-07,
+            0.0,
+            -19.38545036315918,
+            -1.5099581673894136e-07,
+            -1.0,
+            0.0,
+            -53.192508697509766,
+            0.0,
+            0.0,
+            1.0,
+            -3.3553855419158936
+          ]
+        },
+        {
+          "name": "HP_03",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            13.67752456665039,
+            0.0,
+            1.0,
+            0.0,
+            -103.02827453613281,
+            0.0,
+            0.0,
+            1.0,
+            -3.4704644680023193
+          ]
+        },
+        {
+          "name": "HP_04",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            1.5099581673894136e-07,
+            0.0,
+            -13.49213981628418,
+            -1.5099581673894136e-07,
+            -1.0,
+            0.0,
+            -103.02827453613281,
+            0.0,
+            0.0,
+            1.0,
+            -3.4704644680023193
+          ]
+        },
+        {
+          "name": "HP_04_Fire",
+          "parent_index": 14,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            6.032451629638672,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 15,
+          "visible": 1,
+          "matrix": [
+            -0.11917638778686523,
+            0.39355939626693726,
+            0.9115415215492249,
+            -4.571050643920898,
+            0.39355936646461487,
+            -0.8241543769836426,
+            0.4072844088077545,
+            -0.17403411865234375,
+            0.9115415811538696,
+            0.40728437900543213,
+            -0.05666923522949219,
+            0.07311081886291504
+          ]
+        },
+        {
+          "name": "HP_05",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            8.828550338745117,
+            0.0,
+            1.0,
+            0.0,
+            -145.5731201171875,
+            0.0,
+            0.0,
+            1.0,
+            -3.2760260105133057
+          ]
+        },
+        {
+          "name": "HP_05_Fire",
+          "parent_index": 17,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            5.047243118286133,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 18,
+          "visible": 1,
+          "matrix": [
+            0.13713693618774414,
+            0.04930654168128967,
+            0.9893242120742798,
+            -3.5739498138427734,
+            0.049306534230709076,
+            0.9971824884414673,
+            -0.056532904505729675,
+            0.148712158203125,
+            -0.9893242120742798,
+            0.05653289705514908,
+            0.13431942462921143,
+            0.30479001998901367
+          ]
+        },
+        {
+          "name": "HP_06",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            1.5099581673894136e-07,
+            0.0,
+            -8.812763214111328,
+            -1.5099581673894136e-07,
+            -1.0,
+            0.0,
+            -145.5731201171875,
+            0.0,
+            0.0,
+            1.0,
+            -3.2760260105133057
+          ]
+        },
+        {
+          "name": "HP_07",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            9.371795654296875,
+            0.0,
+            1.0,
+            0.0,
+            41.784461975097656,
+            0.0,
+            0.0,
+            1.0,
+            18.37948226928711
+          ]
+        },
+        {
+          "name": "HP_08",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            1.5099581673894136e-07,
+            0.0,
+            -9.274062156677246,
+            -1.5099581673894136e-07,
+            -1.0,
+            0.0,
+            41.784461975097656,
+            0.0,
+            0.0,
+            1.0,
+            18.37948226928711
+          ]
+        },
+        {
+          "name": "HP_08_Fire",
+          "parent_index": 22,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            5.225713729858398,
+            0.0,
+            1.0,
+            0.0,
+            -7.62939453125e-06,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 23,
+          "visible": 1,
+          "matrix": [
+            -0.8191521167755127,
+            -1.5099581673894136e-07,
+            0.5735763311386108,
+            -2.886906623840332,
+            1.236885367461582e-07,
+            -1.0,
+            -8.660762773615716e-08,
+            -0.22345352172851562,
+            0.5735763311386108,
+            8.375594660744122e-16,
+            0.8191521167755127,
+            0.4981231689453125
+          ]
+        },
+        {
+          "name": "HP_Shield",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.0,
+            -2.1855694143368964e-08,
+            1.0,
+            -0.003519698977470398,
+            -3.0908619663705394e-08,
+            1.0,
+            2.1855694143368964e-08,
+            -19.527755737304688,
+            -1.0,
+            -3.0908619663705394e-08,
+            0.0,
+            -2.9412972927093506
+          ]
+        },
+        {
+          "name": "HP_Shield_Fire",
+          "parent_index": 25,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            2.384185791015625e-07,
+            0.0,
+            1.0,
+            0.0,
+            4.99106502532959,
+            0.0,
+            2.087967930219466e-23,
+            1.0,
+            4.169996827840805e-07
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 26,
+          "visible": 1,
+          "matrix": [
+            -0.9883458018302917,
+            -0.15219636261463165,
+            -0.00298427976667881,
+            0.029939889907836914,
+            -0.1491541564464569,
+            0.9721360802650452,
+            -0.18084388971328735,
+            -5.197373390197754,
+            0.03042488917708397,
+            -0.1782911866903305,
+            -0.9835073351860046,
+            -26.751468658447266
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 26,
+          "visible": 1,
+          "matrix": [
+            0.7660444378852844,
+            -2.5388153801486624e-08,
+            -0.6427876353263855,
+            -6.959733963012695,
+            1.1838692692833774e-08,
+            1.0,
+            -2.5388153801486624e-08,
+            -5.312624931335449,
+            0.6427876353263855,
+            1.1838687363763256e-08,
+            0.7660444378852844,
+            24.725475311279297
+          ]
+        },
+        {
+          "name": "HP_Engine",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.0,
+            -2.1855694143368964e-08,
+            1.0,
+            -0.003519907593727112,
+            -3.0908619663705394e-08,
+            1.0,
+            2.1855694143368964e-08,
+            103.5870590209961,
+            -1.0,
+            -3.0908619663705394e-08,
+            0.0,
+            13.442794799804688
+          ]
+        },
+        {
+          "name": "HP_Engine_Fire",
+          "parent_index": 29,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            -5.122657775878906,
+            0.0,
+            2.087967930219466e-23,
+            1.0,
+            -8.344650268554688e-07
+          ]
+        },
+        {
+          "name": "pf_small_w",
+          "parent_index": 30,
+          "visible": 1,
+          "matrix": [
+            0.22663827240467072,
+            0.9732114672660828,
+            -0.038660913705825806,
+            1.9298295974731445,
+            -0.21235689520835876,
+            0.08811388164758682,
+            0.9732114672660828,
+            16.584869384765625,
+            0.9505470395088196,
+            -0.2123570293188095,
+            0.22663813829421997,
+            7.848422050476074
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_S",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.105427357601002e-15,
+            1.7484555314695172e-07,
+            7.488760471343994,
+            -1.7484555314695172e-07,
+            0.0,
+            1.0,
+            117.8221664428711,
+            -7.105427357601002e-15,
+            -1.0,
+            0.0,
+            -1.9590644836425781
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_S",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.105427357601002e-15,
+            1.7484555314695172e-07,
+            -7.4957075119018555,
+            -1.7484555314695172e-07,
+            0.0,
+            1.0,
+            117.8221664428711,
+            -7.105427357601002e-15,
+            -1.0,
+            0.0,
+            -1.9590644836425781
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_S",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.105427357601002e-15,
+            1.7484555314695172e-07,
+            -13.843720436096191,
+            -1.7484555314695172e-07,
+            0.0,
+            1.0,
+            117.8221664428711,
+            -7.105427357601002e-15,
+            -1.0,
+            0.0,
+            1.258075475692749
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_S",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.105427357601002e-15,
+            1.7484555314695172e-07,
+            13.836793899536133,
+            -1.7484555314695172e-07,
+            0.0,
+            1.0,
+            117.8221664428711,
+            -7.105427357601002e-15,
+            -1.0,
+            0.0,
+            1.258075475692749
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_S",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.105427357601002e-15,
+            1.7484555314695172e-07,
+            20.159467697143555,
+            -1.7484555314695172e-07,
+            0.0,
+            1.0,
+            117.8221664428711,
+            -7.105427357601002e-15,
+            -1.0,
+            0.0,
+            4.474057674407959
+          ]
+        },
+        {
+          "name": "PE_Bothan_Cruiser_S",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.105427357601002e-15,
+            1.7484555314695172e-07,
+            -20.166582107543945,
+            -1.7484555314695172e-07,
+            0.0,
+            1.0,
+            117.8221664428711,
+            -7.105427357601002e-15,
+            -1.0,
+            0.0,
+            4.474057674407959
+          ]
+        },
+        {
+          "name": "Shield",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.742626451090473e-08,
+            4.520154561760137e-08,
+            -0.0035533607006073,
+            4.520154561760137e-08,
+            0.0,
+            -1.0,
+            1.1169601678848267,
+            7.742626451090473e-08,
+            1.0,
+            0.0,
+            -3.1011886596679688
+          ]
+        },
+        {
+          "name": "Engine_Exhaust",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            -0.0035215169191360474,
+            -0.0,
+            0.0,
+            -1.0,
+            9.381669998168945,
+            0.0,
+            1.0,
+            0.0,
+            1.3952407836914062
+          ]
+        },
+        {
+          "name": "Engine_Exhaust_Glow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            -0.0035215169191360474,
+            -0.0,
+            0.0,
+            -1.0,
+            9.381669998168945,
+            0.0,
+            1.0,
+            0.0,
+            1.3952407836914062
+          ]
+        },
+        {
+          "name": "Shadow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            -0.0035215169191360474,
+            -0.0,
+            0.0,
+            -1.0,
+            9.381669998168945,
+            0.0,
+            1.0,
+            0.0,
+            1.3952407836914062
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "kind": "0x400",
+          "name": "Hull"
+        },
+        {
+          "kind": "0x400",
+          "name": "Lights"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shield"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Exhaust"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Exhaust_Glow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shadow"
+        }
+      ],
+      "connections": [
+        {
+          "object_index": 0,
+          "bone_index": 1,
+          "bone": "Hull"
+        },
+        {
+          "object_index": 1,
+          "bone_index": 2,
+          "bone": "Lights"
+        },
+        {
+          "object_index": 2,
+          "bone_index": 38,
+          "bone": "Shield"
+        },
+        {
+          "object_index": 3,
+          "bone_index": 39,
+          "bone": "Engine_Exhaust"
+        },
+        {
+          "object_index": 4,
+          "bone_index": 40,
+          "bone": "Engine_Exhaust_Glow"
+        },
+        {
+          "object_index": 5,
+          "bone_index": 41,
+          "bone": "Shadow"
+        }
+      ],
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Neutral_Bothan_Cruiser.ALO",
+      "material_audit": {
+        "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Neutral_Bothan_Cruiser.ALO",
+        "sha256": "79a5aaef78f9bdb970a72bf2a0e20fd22460455027392304cbc1013fbce11519",
+        "meshes": [
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Neutral_Bothan_Cruiser.dds",
+                  "NormalTexture": "Neutral_Bothan_Cruiser_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 9578,
+                "triangleCount": 4872
+              }
+            ],
+            "name": "Hull",
+            "hidden": false,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Neutral_Bothan_Cruiser_L.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 244,
+                "triangleCount": 110
+              }
+            ],
+            "name": "Lights",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "EdgeBrightness": [
+                    0.5
+                  ],
+                  "BaseUVScale": [
+                    20.0
+                  ],
+                  "WaveUVScale": [
+                    1.0
+                  ],
+                  "DistortUVScale": [
+                    1.0
+                  ],
+                  "BaseUVScrollRate": [
+                    1.0
+                  ],
+                  "WaveUVScrollRate": [
+                    1.0
+                  ],
+                  "DistortUVScrollRate": [
+                    1.0
+                  ],
+                  "BaseTexture": "None",
+                  "WaveTexture": "None",
+                  "DistortionTexture": "None"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 134,
+                "triangleCount": 192
+              }
+            ],
+            "name": "Shield",
+            "hidden": true,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Engine_Exhaust.dds",
+                  "NormalTexture": "Engine_Exhaust_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 192,
+                "triangleCount": 176
+              }
+            ],
+            "name": "Engine_Exhaust",
+            "hidden": false,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Engine_Exhaust.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 192,
+                "triangleCount": 176
+              }
+            ],
+            "name": "Engine_Exhaust_Glow",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 13863,
+                "triangleCount": 19294
+              }
+            ],
+            "name": "Shadow",
+            "hidden": false,
+            "collision": false
+          }
+        ],
+        "connections": [
+          {
+            "mesh": 0,
+            "bone": 1
+          },
+          {
+            "mesh": 1,
+            "bone": 2
+          },
+          {
+            "mesh": 2,
+            "bone": 38
+          },
+          {
+            "mesh": 3,
+            "bone": 39
+          },
+          {
+            "mesh": 4,
+            "bone": 40
+          },
+          {
+            "mesh": 5,
+            "bone": 41
+          }
+        ],
+        "proxies": [
+          {
+            "name": "PE_Bothan_Cruiser_L",
+            "bone": 3
+          },
+          {
+            "name": "PE_Bothan_Cruiser_L",
+            "bone": 4
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 7
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 10
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 11
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 16
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 19
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 24
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 27
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 28
+          },
+          {
+            "name": "pf_small_w",
+            "bone": 31
+          },
+          {
+            "name": "PE_Bothan_Cruiser_S",
+            "bone": 32
+          },
+          {
+            "name": "PE_Bothan_Cruiser_S",
+            "bone": 33
+          },
+          {
+            "name": "PE_Bothan_Cruiser_S",
+            "bone": 34
+          },
+          {
+            "name": "PE_Bothan_Cruiser_S",
+            "bone": 35
+          },
+          {
+            "name": "PE_Bothan_Cruiser_S",
+            "bone": 36
+          },
+          {
+            "name": "PE_Bothan_Cruiser_S",
+            "bone": 37
+          }
+        ]
+      },
+      "textures": {
+        "Engine_Exhaust.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust.dds",
+          "stem": "BothanAssaultCruiser_Engine_Exhaust",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Engine_Exhaust_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust_B.dds",
+          "stem": "BothanAssaultCruiser_Engine_Exhaust_B",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Neutral_Bothan_Cruiser.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Neutral_Bothan_Cruiser.dds",
+          "stem": "BothanAssaultCruiser_Neutral_Bothan_Cruiser",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            0,
+            0
+          ]
+        },
+        "Neutral_Bothan_Cruiser_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Neutral_Bothan_Cruiser_B.dds",
+          "stem": "BothanAssaultCruiser_Neutral_Bothan_Cruiser_B",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Neutral_Bothan_Cruiser_L.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Neutral_Bothan_Cruiser_L.dds",
+          "stem": "BothanAssaultCruiser_Neutral_Bothan_Cruiser_L",
+          "size": [
+            256,
+            256
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        }
+      }
+    }
+  },
+  "projectiles": {
+    "Proj_Proton_Torpedo_Heavy": {
+      "inheritance": [
+        "Proj_Proton_Torpedo_Heavy"
+      ],
+      "values": {
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Explode_When_Reached_Target_Radius": [
+          "Yes"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "No"
+        ],
+        "Max_Lift": [
+          "0.5"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Proton_Torpedo_Detonation"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Max_Scan_Range": [
+          "0.0"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "2500.0"
+        ],
+        "Projectile_Damage": [
+          "1200.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Scale_Factor": [
+          "0.35"
+        ],
+        "Projectile_Category": [
+          "MISSILE"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          ""
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Max_Speed": [
+          "9"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.5"
+        ],
+        "Damage_Type": [
+          "Damage_Proton_Torp"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Space_Model_Name": [
+          "w_projectile_proton_torpedo_large_b.ALO"
+        ]
+      }
+    },
+    "Proj_Ship_Ion_Cannon": {
+      "inheritance": [
+        "Proj_Ship_Ion_Cannon"
+      ],
+      "values": {
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          "Ion_Death_Medium"
+        ],
+        "Projectile_Ion_Stun_Speed_Reduction_Percent": [
+          "0.2"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Ion_Detonation"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Ion_Death_Medium"
+        ],
+        "Projectile_Ion_Stun_On_Detonation": [
+          "Yes"
+        ],
+        "Projectile_Ion_Stun_Shot_Rate_Reduction_Percent": [
+          "0.2"
+        ],
+        "Projectile_Ion_Stun_Duration": [
+          "3.0"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Ion_Detonation"
+        ],
+        "Projectile_Ion_Stun_Stack_Duration": [
+          "No"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "10000.0"
+        ],
+        "Projectile_Damage": [
+          "120.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Ion_Death_Medium"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "No"
+        ],
+        "Projectile_Disables_Engines_When_Power_Drained": [
+          "No"
+        ],
+        "Scale_Factor": [
+          "0.085"
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          "Ion_Death_Medium_Shield"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Max_Speed": [
+          "40.0"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Damage_Type": [
+          "Damage_Default"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Space_Model_Name": [
+          "w_ioncannon_medium.alo"
+        ]
+      }
+    },
+    "Proj_Ship_Turbolaser_Yellow_Dual": {
+      "inheritance": [
+        "Proj_Ship_Turbolaser_Yellow_Dual"
+      ],
+      "values": {
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_SFXEvent_Shield_Detonate": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Turbo_Death_Y_Medium"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "4000.0"
+        ],
+        "Projectile_Damage": [
+          "60.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Turbo_Death_Y_Medium"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Scale_Factor": [
+          "0.094"
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          "Turbolaser_Hit_Shield"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Max_Speed": [
+          "45.0"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Damage_Type": [
+          "Damage_Default"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_SFXEvent_Detonate_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Turbo_Death_Y_Medium"
+        ],
+        "Space_Model_Name": [
+          "w_turbolaser_y2.ALO"
+        ]
+      }
+    },
+    "Proj_Concussion_Missile": {
+      "inheritance": [
+        "Proj_Concussion_Missile"
+      ],
+      "values": {
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Explode_When_Reached_Target_Radius": [
+          "Yes"
+        ],
+        "Projectile_Blast_Area_Range": [
+          "25"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "No"
+        ],
+        "Projectile_Blast_Area_Dropoff": [
+          "True"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Combat_Mod_Effect": [
+          "MAL_Slow_Effect"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Blast_Area_Max_Victims": [
+          "4"
+        ],
+        "Projectile_Combat_Mod_Value": [
+          "-0.25"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Concussion_Missile_Detonation"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Max_Scan_Range": [
+          "0.0"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "5000.0"
+        ],
+        "Projectile_Blast_Area_Damage": [
+          "65"
+        ],
+        "Projectile_Blast_Area_Dropoff_Tiers": [
+          "2"
+        ],
+        "Projectile_Damage": [
+          "65.0"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Scale_Factor": [
+          "0.15"
+        ],
+        "SFXEvent_Fire": [
+          "Unit_MAL_Carbonite_Fire"
+        ],
+        "Projectile_Category": [
+          "MISSILE"
+        ],
+        "Projectile_Combat_Mod_Category_Mask": [
+          "Fighter | Gunship | Bomber | Transport | Corvette"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_Combat_Mod_Duration": [
+          "5"
+        ],
+        "Max_Speed": [
+          "17.5"
+        ],
+        "Projectile_Combat_Mod_Radius": [
+          "50"
+        ],
+        "Max_Rate_Of_Turn": [
+          "2.5"
+        ],
+        "Damage_Type": [
+          "Damage_Con_Missile"
+        ],
+        "Projectile_Combat_Mod": [
+          "COMBAT_MOD_SPEED"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Space_Model_Name": [
+          "w_projectile_concussion_missile_b.alo"
+        ]
+      }
+    }
+  },
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Neutral_Bothan_Cruiser.ALO": "79a5aaef78f9bdb970a72bf2a0e20fd22460455027392304cbc1013fbce11519",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust.dds": "90f3c6deaaa426b40f127b749df5bb9e2a099e1b97d6c01ada01f68418b5ad19",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust_B.dds": "1284f64e5e418b8199092624cef533991c1dd620f8a3f3abb9a681cec54135c2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Neutral_Bothan_Cruiser.dds": "bc7a53fe027a708b390c7c6bef4a83b86157e313e87f4c85583b52171290e3f9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Neutral_Bothan_Cruiser_B.dds": "f5c041d5154951a03a90e4ebb312476b6cbdd2c9a9fd1dc880be733ef55c111b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Neutral_Bothan_Cruiser_L.dds": "e14731422bf75d0c4e0da0a2b3bb12137007918b7cbc51086e18058a3ca1e08f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Units_Space_Rebel_Bothan_Cruiser.xml": "a3e0a068a78a442122a3838084e973103cc51a67834f04b0de60b81238cbe4cd",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\_Default_Base.xml": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Bothan_Cruiser.xml": "ecd6af28695304feb6b09ab8c5e8ae7089ef9e36018a4a9f15a016d366239064",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\PROJECTILES.XML": "4514777f4cfa04beb78e784f097e8a5b6ca982f9fb72057a10cf684c508c04f7"
+  }
+}

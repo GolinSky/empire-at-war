@@ -1,0 +1,266 @@
+[
+  {
+    "id": 0,
+    "name": "DualHeavyTurbolaser_0_0",
+    "bone": "HP_01",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "MediumTurbolaser_0_0",
+    "bone": "HP_07",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "ProtonTorpedo_0_0",
+    "bone": "HP_05",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "profile": 48,
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "DualHeavyTurbolaser_0_1",
+    "bone": "HP_01",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "MediumTurbolaser_0_1",
+    "bone": "HP_07",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "ProtonTorpedo_0_1",
+    "bone": "HP_05",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "profile": 48,
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "MediumIonCannon_0",
+    "bone": "HP_03",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "profile": 32,
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "PointDefense_0",
+    "bone": "HP_07",
+    "offsetUnits": [
+      0.0,
+      3.0,
+      0.0
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "Engine_0",
+    "bone": "HP_Engine",
+    "offsetUnits": [
+      -6.0,
+      0.0,
+      0.0
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "Hangar_0",
+    "bone": "HP_Hangar",
+    "offsetUnits": [
+      -6.0,
+      0.0,
+      0.0
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "DualHeavyTurbolaser_1_0",
+    "bone": "HP_02",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "MediumTurbolaser_1_0",
+    "bone": "HP_08",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "ProtonTorpedo_1_0",
+    "bone": "HP_06",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "profile": 48,
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "DualHeavyTurbolaser_1_1",
+    "bone": "HP_02",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "profile": 3,
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "MediumTurbolaser_1_1",
+    "bone": "HP_08",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "profile": 4,
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "ProtonTorpedo_1_1",
+    "bone": "HP_06",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "profile": 48,
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "MediumIonCannon_1",
+    "bone": "HP_04",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "profile": 32,
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "PointDefense_1",
+    "bone": "HP_08",
+    "offsetUnits": [
+      0.0,
+      3.0,
+      0.0
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 18,
+    "name": "Engine_1",
+    "bone": "HP_Engine",
+    "offsetUnits": [
+      6.0,
+      0.0,
+      0.0
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 19,
+    "name": "Hangar_1",
+    "bone": "HP_Hangar",
+    "offsetUnits": [
+      6.0,
+      0.0,
+      0.0
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 20,
+    "name": "ShieldGenerator",
+    "bone": "HP_Shield",
+    "offsetUnits": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 21,
+    "name": "TractorBeam",
+    "bone": "HP_Shield",
+    "offsetUnits": [
+      0.0,
+      -3.0,
+      10.0
+    ],
+    "profile": 0,
+    "targetable": true
+  }
+]
