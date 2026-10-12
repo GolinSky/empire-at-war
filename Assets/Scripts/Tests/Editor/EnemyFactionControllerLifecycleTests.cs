@@ -402,6 +402,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class TrackingEconomyProvider : IEconomyProvider
         {
+            public void AddMoney(float amount) { }
+
             public int RemoveCount { get; private set; }
 
             public void AddProvider(IIncomeProvider incomeProvider)

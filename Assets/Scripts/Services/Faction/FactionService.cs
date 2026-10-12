@@ -17,6 +17,8 @@ namespace EmpireAtWar.Services.Factions
 {
     public interface IFactionService
     {
+        bool ForceUpgradeStation();
+
         void ChangeSelection();
 
         void CloseSelection();
@@ -200,6 +202,25 @@ namespace EmpireAtWar.Services.Factions
                 }
                 _wallet.Refund(unitRequest);
             }
+        }
+
+        public bool ForceUpgradeStation()
+        {
+            FactionData upgrade = _model.GetCurrentLevelFactionData();
+            if (upgrade == null || !_stationRegistry.HasProductionBase(_owner.Id)) return false;
+
+            // Refund queued upgrades so their later completion cannot exceed the level limit.
+            foreach (ProductionQueueSnapshot queued in _model.GetProductionQueueSnapshots())
+            {
+                if (queued.UnitRequest is LevelUnitRequest)
+                {
+                    for (int index = 0; index < queued.Count; index++)
+                        CancelBuilding(queued.UnitRequest.Id);
+                }
+            }
+
+            BuildUnit(new LevelUnitRequest(upgrade, _model.CurrentLevel));
+            return true;
         }
 
         public void Tick()

@@ -85,6 +85,11 @@ namespace EmpireAtWar.Services.Economy
             _model.AddMoney(unitRequest.FactionData.Price);
         }
 
+        public void AddMoney(float amount)
+        {
+            _model.AddMoney(amount);
+        }
+
         public void AddProvider(IIncomeProvider incomeProvider)
         {
             if (_incomeProviders.Contains(incomeProvider))

@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Factions;
+using System.Collections.Generic;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -10,6 +11,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
     public class DefendPlatformCatalog : Data
     {
         [SerializeField] private DictionaryWrapper<DefendPlatformType, FactionData> entries;
+
+        public IReadOnlyDictionary<DefendPlatformType, FactionData> Entries => entries.Dictionary;
 
         public FactionData Get(DefendPlatformType type) => entries.Dictionary[type];
     }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.DefendPlatform;
 using UnityEngine;
 
 namespace EmpireAtWar.Views.Cheats
@@ -10,15 +12,17 @@ namespace EmpireAtWar.Views.Cheats
     {
         private const int WINDOW_ID = 90421;
 
-        private const float WINDOW_WIDTH = 360f;
-        private const float WINDOW_HEIGHT = 430f;
+        private const float WINDOW_WIDTH = 480f;
+        private const float WINDOW_HEIGHT = 560f;
         private const float WINDOW_MARGIN = 16f;
         private const float WINDOW_ANIMATION_DURATION = 0.18f;
         private const float WINDOW_COLLAPSED_SCALE = 0.85f;
 
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
-        private static readonly string[] TAB_NAMES = { "Economy", "Ships", "Superweapons", "Debug" };
+        private static readonly string[] TAB_NAMES =
+            { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug" };
+        private IReadOnlyList<DefendPlatformType> _platforms = Array.Empty<DefendPlatformType>();
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
         private FactionType[] _factions = Array.Empty<FactionType>();
@@ -43,6 +47,15 @@ namespace EmpireAtWar.Views.Cheats
 
         private bool _isExpanded;
         private bool _showRanges;
+        private Vector2 _scrollPosition;
+        private IReadOnlyList<PlayerSlot> _enemies = Array.Empty<PlayerSlot>();
+
+        public event Action LevelUpStationRequested;
+        public event Action<FactionType> SpawnAllShipsRequested;
+        public event Action<DefendPlatformType> AddPlatformReinforcementRequested;
+        public event Action<DefendPlatformType> SpawnPlatformRequested;
+        public event Action<PlayerId, string> AddEnemyMoneyRequested;
+        public event Action<string> AddAllEnemiesMoneyRequested;
 
         public event Action<string> AddMoneyRequested;
 
@@ -94,6 +107,58 @@ namespace EmpireAtWar.Views.Cheats
         public void SetStatus(string status)
         {
             _status = status ?? string.Empty;
+        }
+
+        public void SetEnemies(IReadOnlyList<PlayerSlot> enemies)
+        {
+            _enemies = enemies;
+        }
+
+        public void SetPlatforms(IReadOnlyList<DefendPlatformType> platforms)
+        {
+            _platforms = platforms;
+        }
+
+        private void DrawStationTab()
+        {
+            GUILayout.Label("Upgrade your station instantly for free");
+            if (GUILayout.Button("Level Up Station", GUILayout.Height(36f)))
+                LevelUpStationRequested?.Invoke();
+        }
+
+        private void DrawDefendTab()
+        {
+            foreach (DefendPlatformType platform in _platforms)
+            {
+                GUILayout.Label(platform.ToString());
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Add to Reinforcement", GUILayout.Height(36f)))
+                    AddPlatformReinforcementRequested?.Invoke(platform);
+                if (GUILayout.Button("Spawn in Home Area", GUILayout.Height(36f)))
+                    SpawnPlatformRequested?.Invoke(platform);
+                GUILayout.EndHorizontal();
+                GUILayout.Space(8f);
+            }
+        }
+
+        private void DrawEnemyTab()
+        {
+            if (_enemies.Count == 0)
+            {
+                GUILayout.Label("No enemies in this match.");
+                return;
+            }
+
+            GUILayout.Label("Money amount per enemy");
+            _moneyAmount = GUILayout.TextField(_moneyAmount, 16);
+            foreach (PlayerSlot enemy in _enemies)
+            {
+                if (GUILayout.Button($"Add Money: {enemy.Id} ({enemy.Faction})", GUILayout.Height(36f)))
+                    AddEnemyMoneyRequested?.Invoke(enemy.Id, _moneyAmount);
+            }
+            GUILayout.Space(8f);
+            if (GUILayout.Button("Add Money to All Enemies", GUILayout.Height(36f)))
+                AddAllEnemiesMoneyRequested?.Invoke(_moneyAmount);
         }
 
         private void Update()
@@ -148,37 +213,30 @@ namespace EmpireAtWar.Views.Cheats
 
         private void DrawWindow(int windowId)
         {
-            _selectedTab = GUILayout.Toolbar(_selectedTab, TAB_NAMES);
+            int selectedTab = GUILayout.SelectionGrid(_selectedTab, TAB_NAMES, 4);
+            if (selectedTab != _selectedTab)
+            {
+                _selectedTab = selectedTab;
+                _scrollPosition = Vector2.zero;
+            }
             GUILayout.Space(8f);
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
-            if (_selectedTab == 0)
+            switch (_selectedTab)
             {
-                DrawEconomyTab();
-            }
-            else if (_selectedTab == 1)
-            {
-                DrawShipsTab();
-            }
-            else if (_selectedTab == 2)
-            {
-                DrawSuperWeaponsTab();
-            }
-            else
-            {
-                DrawDebugTab();
+                case 0: DrawEconomyTab(); break;
+                case 1: DrawShipsTab(); break;
+                case 2: DrawStationTab(); break;
+                case 3: DrawDefendTab(); break;
+                case 4: DrawEnemyTab(); break;
+                case 5: DrawSuperWeaponsTab(); break;
+                case 6: DrawDebugTab(); break;
             }
 
-            GUILayout.FlexibleSpace();
-            if (!string.IsNullOrEmpty(_status))
-            {
-                GUILayout.Label(_status);
-            }
+            GUILayout.EndScrollView();
+            if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
 
-            if (GUILayout.Button("Collapse"))
-            {
-                _isExpanded = false;
-            }
-
+            if (GUILayout.Button("Collapse")) _isExpanded = false;
             GUI.DragWindow();
         }
 
@@ -223,6 +281,14 @@ namespace EmpireAtWar.Views.Cheats
 
         private void DrawShipsTab()
         {
+            GUILayout.Label("Spawn one of every ship at your default zone");
+            foreach (FactionType faction in _factions)
+            {
+                if (GUILayout.Button($"Spawn All {faction} Ships", GUILayout.Height(36f)))
+                    SpawnAllShipsRequested?.Invoke(faction);
+            }
+            GUILayout.Space(8f);
+
             if (GUILayout.Button("Destroy All My Ships", GUILayout.Height(36f)))
             {
                 DestroyOwnShipsRequested?.Invoke();

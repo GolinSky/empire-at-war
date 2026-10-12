@@ -2,6 +2,8 @@
 {
     public interface IEconomyProvider
     {
+        void AddMoney(float amount);
+
         void AddProvider(IIncomeProvider incomeProvider);
 
         void RemoveProvider(IIncomeProvider incomeProvider);
