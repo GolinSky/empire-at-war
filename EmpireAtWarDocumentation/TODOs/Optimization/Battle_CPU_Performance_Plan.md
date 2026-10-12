@@ -145,6 +145,17 @@ updated: 2026-10-12
 - EditMode: 1542 total, 45 failures = same set as before these changes (asset/data, balance tool, `ShipEngineHardpointTests`).
 - [ ] User re-profile: TargetBatch sub-markers, `Battle.Squadron.Placement`, `Battle.Projectile.*`, AI tick spikes, enemy fog reveal delay acceptable (≤ 1 s).
 
+### Stress-audit fixes — 2026-10-12 (committed, awaiting battle re-capture)
+- [x] AI ability crash: `EnemyShipAbilityController` keeps `(IEntity, IShipAbilityFacade)`; skips caster when `TryGetEntity` fails or destroyed (was `ShipAbilityFacade.Entity` → `GetEntity` throw). Test `CasterRemovedBeforeItsTurn_IsSkipped`.
+- [x] Squadron markers: 244 world-space canvases moved/rotated/scaled each LateTick → ~294 `Canvas.BuildBatch`/frame. Now one `SquadronIconLayer` (ScreenSpaceCamera on `SceneCamera`, WorldUi layer → cinema mask still hides it); each squadron's `iconRoot` reparented at spawn, positioned in screen pixels, scale = zoom factor. Off-screen markers hidden before the vision query; `SetActive` only on change. 18 prefabs: `IconCanvas` Canvas removed. `ICameraService.SceneCamera` added. Test `SquadronIconPrefabTests`.
+- [x] Bolt tracking: shield clip (`ResolveAimPoint` → `Shield.GetSurfacePosition`, one Burst `Run` per bolt) every `SURFACE_REFRESH_INTERVAL = 0.1 s` (random phase) + exact on landing; offset follows target between clips. Pivot read only during `LEAD_SETTLE_TIME`.
+- [x] Fog: `FogVisibilityGridModel.QueueReveal` + `ApplyReveals` → one row-parallel `FogRevealJob` (`IJobParallelFor`, batch 16 rows) instead of one job per source. Used by `FogOfWarSystem` and `MiniMapFogMask`. Test `QueuedReveals_MatchSeparateReveals`.
+- [x] Markers: `Battle.Enemy.Build` around enemy production callback (attributes `TimerPoolTick` spikes); `Battle.Ship.State.<StateType>` per ship state Tick.
+- EditMode: 1562 total, 1515 pass, 47 fail — all asset/data/balance/weapon-rule/UI-prefab tests outside this change; new and touched tests pass.
+- [ ] User battle re-capture: `Canvas.BuildBatch` calls, UI batching, `TransformChangeSystem`, `Battle.Projectile.Track`, `FogOfWarSystem.Update`, `Battle.Enemy.Build` vs `TimerPoolTick` spikes, top `Battle.Ship.State.*`. Visual check: markers follow squadrons, click/selection, hidden in cinema camera, bolts land on shields.
+- [ ] If `Battle.Enemy.Build` ≈ timer spikes → enemy ship pooling plan (like [[TODOs/Optimization/Squadron_Pooling_Plan]]).
+- [ ] `com.script-utils.time` (git package, GolinSky/ScriptUtilities): `TimerPoolService.Update` removes finished coroutines inside a forward loop → next coroutine skipped one frame. Fix upstream (iterate backwards); cannot edit in PackageCache.
+
 ### Radar acceptance and capture reliability
 - [ ] Obtain radar owner's implementation/test evidence; validate 1×/4× scheduling, detection delay, cloak/hostility, destruction, range modifiers and obstacle contacts.
 - [ ] Retain historical radar diagnosis in research; current stages average Snapshot 2.189 ms, Job 0.751 ms, Apply 5.392 ms.
