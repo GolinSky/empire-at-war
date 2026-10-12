@@ -1,0 +1,81 @@
+{
+  "final": {
+    "core_data_hashes_unchanged": 579,
+    "core_components_unchanged": 46,
+    "hardpoints_unchanged": 31,
+    "source_files_unchanged": 31,
+    "lossless_texture_copies": 30,
+    "prefab_guids_unchanged": 4,
+    "turret_meshes_used": 0,
+    "icon_meta_preserved": true,
+    "palettes": {
+      "Team": [
+        [
+          91,
+          194,
+          577,
+          567
+        ],
+        [
+          91,
+          194,
+          577,
+          567
+        ],
+        [
+          91,
+          194,
+          577,
+          567
+        ],
+        [
+          91,
+          194,
+          577,
+          567
+        ],
+        [
+          91,
+          194,
+          577,
+          567
+        ],
+        [
+          91,
+          194,
+          577,
+          567
+        ],
+        [
+          91,
+          194,
+          577,
+          567
+        ]
+      ],
+      "WreckTeam": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "blender": {
+    "meshes": 31,
+    "bones": 142,
+    "geometry_max_error": 0.00012613784981612168,
+    "uv_max_error": 0,
+    "bone_max_error": 0.00006320296209058894
+  },
+  "unity": {
+    "sourceMeshes": 31,
+    "sourceBones": 142,
+    "objectReferencesChecked": 437
+  },
+  "source_sha256": "b7405cb48eb00c2d443763f653f7bd7d13f2cdee5bb64a2e1e1bf6703527bc76",
+  "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Empire_Imperial_SD_Tector.ALO"
+}

@@ -358,6 +358,13 @@
 
 ### Features
 
+- [x] **Replace existing Tector model with Remake artwork**
+  - **Plan**: [[Done/Features/Tector_Model_Replacement|Tector Model Replacement]]
+  - **Reference**: [[GameDesign/Tector Star Destroyer Import]]
+  - **Completed**: 2026-10-12; hull-only Remake source replaces living, placement, wreck and icon artwork in place. Turret assets remain imported and unused.
+  - **Preserved**: current hull/shields/speed `8,000/8,000/22`, 25 weapons/16 targets, all 31 IDs/transforms/arcs, 579 core-data files and original registrations/GUIDs.
+  - **Verification**: 31 source meshes/142 bones, exact UVs, 30 lossless textures and unchanged source hashes, 46 component configurations and 437 serialized references passed; Blender/Unity previews inspected. No automated Unity tests or combat Play Mode run by this replacement.
+
 - [x] **Integrate Imperial Venator into Empire**
   - **Plan**: [[Done/Features/ImperialVenator_Import|Imperial Venator Import]]
   - **Reference**: [[GameDesign/Imperial Venator Import]]
