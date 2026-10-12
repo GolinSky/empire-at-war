@@ -1135,9 +1135,9 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 39
-    displayName: Light Long-Range 2-Burst Turbolaser
+    displayName: Medium Long-Range 2-Burst Turbolaser
     family: 1
-    caliber: 0
+    caliber: 1
     mount: 1
     pattern: 1
     burstShots: 2

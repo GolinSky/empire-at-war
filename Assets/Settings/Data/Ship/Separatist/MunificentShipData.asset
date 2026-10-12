@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MunificentShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 54
+  <Speed>k__BackingField: 30
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5
   <HullBottom>k__BackingField: -19.005293
@@ -61,7 +61,7 @@ MonoBehaviour:
     count: 4
   - weaponType: 6
     count: 2
-  - weaponType: 8
+  - weaponType: 4
     count: 2
   - weaponType: 14
     count: 2
