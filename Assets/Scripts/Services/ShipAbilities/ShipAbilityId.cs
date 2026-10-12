@@ -35,5 +35,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         ExecutorLaserBeam = 33,
         CorellianBattlecruiserPowerToShields = 34,
         ImperialVenatorIntensifyFirepower = 35,
+        MC30cTorpedoSalvo = 36,
     }
 }

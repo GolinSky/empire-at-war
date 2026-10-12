@@ -48,6 +48,7 @@ namespace EmpireAtWar.ViewComponents.Health
         internal bool StrikecraftOnly => _profile.StrikecraftOnly;
         internal float DelayBetweenShots =>
             _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
+            _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
             _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);
 
         internal bool CanEngage(ShipClass targetClass) => !_profile.StrikecraftOnly || targetClass.IsStrikecraft();
@@ -136,6 +137,7 @@ namespace EmpireAtWar.ViewComponents.Health
             if (!_sequence.TryStart(out generation)) return false;
             _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier *
                 _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
+                _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
                 _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery)).StartTimer();
             return true;
         }

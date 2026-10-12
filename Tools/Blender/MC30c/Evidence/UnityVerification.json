@@ -1,0 +1,34 @@
+{
+  "checks": 1838,
+  "meshes": 6,
+  "triangles": 11860,
+  "bones": 44,
+  "boneErrorUnits": 6.992456E-05,
+  "weaponBoneErrorUnits": 3.556238E-07,
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/MC30c.prefab",
+      "visibleMeshes": 3
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/MC30cShipView.prefab",
+      "visibleMeshes": 3
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/MC30cReinforcementView.prefab",
+      "visibleMeshes": 1
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/MC30cWreckView.prefab",
+      "visibleMeshes": 1
+    }
+  ],
+  "size": [
+    11.6523571,
+    7.838146,
+    80.0
+  ],
+  "hardpoints": 16,
+  "weapons": 14,
+  "registrationsVerified": true
+}

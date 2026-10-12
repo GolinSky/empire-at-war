@@ -100,6 +100,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42819208abec00040b8eca095061bd3c
+    m_Address: MC30cShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f4e660fc02c98e47a1538f74fc39ef0
     m_Address: DroidBomberSquadronView
     m_ReadOnly: 0

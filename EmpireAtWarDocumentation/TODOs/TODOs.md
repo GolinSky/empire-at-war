@@ -358,6 +358,12 @@
 
 ### Features
 
+- [x] **Import MC30c Frigate**
+  - **Plan**: [[Done/Features/MC30c_Import|MC30c Frigate Import]]
+  - **Reference**: [[GameDesign/MC30c Frigate Import]]
+  - **Completed**: 2026-10-12; Rebellion ship `307`, requested `1,800/2,400/42`, cost/build `2,500/32 s`, 14 weapons/16 targetable hardpoints, Torpedo Salvo and approved burst cluster bombs.
+  - **Verification**: 1,851 saved-asset checks; 14 source hashes, nine lossless textures, source/Unity geometry/materials/bones, registrations, transparent icon and eight live/wreck palettes passed. Initial concurrent compilation errors are resolved. Hangar binding follow-up removed the unbound donor component and updated builder/verifier/regression source; 1,838 saved checks and compilation passed. No automated tests or Play Mode run. Runtime acceptance/balance deferred.
+
 - [x] **Replace existing Tector model with Remake artwork**
   - **Plan**: [[Done/Features/Tector_Model_Replacement|Tector Model Replacement]]
   - **Reference**: [[GameDesign/Tector Star Destroyer Import]]

@@ -1,0 +1,14 @@
+{
+  "sourceFiles": 14,
+  "losslessTextures": 9,
+  "iconAlphaBox": [
+    90,
+    163,
+    419,
+    341
+  ],
+  "palettes": [
+    "Team",
+    "WreckTeam"
+  ]
+}
