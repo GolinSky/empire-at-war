@@ -75,5 +75,8 @@
         MediumPointDefense = 80,
         MC30cClusterBombLauncher = 81,
         LightQuadTurbolaser = 82,
+        HeavyBurstTurbolaser = 83,
+        HeavyPointDefense = 84,
+        HeavyOctupleTurbolaser = 85,
     }
 }
