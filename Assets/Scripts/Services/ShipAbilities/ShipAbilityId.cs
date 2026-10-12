@@ -37,5 +37,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         ImperialVenatorIntensifyFirepower = 35,
         MC30cTorpedoSalvo = 36,
         NebulaOverchargeWeapons = 38,
+        AssaultFrigateMkIIPowerToShields = 45,
     }
 }

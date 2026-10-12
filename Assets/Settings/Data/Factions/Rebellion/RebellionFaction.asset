@@ -171,6 +171,26 @@ MonoBehaviour:
         <Icon>k__BackingField: {fileID: 21300000, guid: 469dd9f50be001b43938f09f7cdbcb4f,
           type: 3}
           type: 3}
+    - key: 309
+      value:
+        matchups: {fileID: 11400000, guid: 22624456adb3ee948b528edb11a07f6e, type: 2}
+        description: General-purpose combat frigate for fleet escort and medium-range
+          combat. Four medium turbolasers, two light quad turbolasers, four heavy
+          laser cannons and two point-defense lasers. Power to Shields increases
+          shield regeneration by 60%, reducing movement speed and weapon damage by
+          20% for 8 seconds; 35-second recovery. Strong against corvettes and frigates;
+          limited against heavy capitals.
+        role: Fleet escort / Medium-range combat
+        iconKey: ae063a7eec8a5af4696394f297681415:21300000
+        isHero: 0
+        <Name>k__BackingField: Assault Frigate Mk II
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 3200
+        <BuildTime>k__BackingField: 40
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: ae063a7eec8a5af4696394f297681415,
+          type: 3}
     - key: 330
       value:
         matchups: {fileID: 11400000, guid: a13432fff1b87cd4b8353d2823b041ea, type: 2}

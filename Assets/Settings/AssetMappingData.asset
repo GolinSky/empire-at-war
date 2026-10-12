@@ -1162,6 +1162,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: AssaultFrigateMkIIShipView
+      value:
+        m_AssetGUID: 89c4c6800d7ce9041bb471549c2379b9
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AssaultFrigateMkIIShipData
+      value:
+        m_AssetGUID: b9cd9fb343dcee144b7e5f1102053754
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: NebulaShipView
       value:
         m_AssetGUID: 549969f5bcce41644a1cabc6434f1d8b

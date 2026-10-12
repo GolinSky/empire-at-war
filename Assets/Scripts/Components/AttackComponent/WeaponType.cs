@@ -74,5 +74,6 @@
         StrikeFighterProtonTorpedo = 79,
         MediumPointDefense = 80,
         MC30cClusterBombLauncher = 81,
+        LightQuadTurbolaser = 82,
     }
 }
