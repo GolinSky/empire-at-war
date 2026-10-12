@@ -25,6 +25,9 @@ namespace EmpireAtWar.Services.CaptureSites
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
         ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection
     {
+        // Strength scans every ship and squadron per site; capture progress still ticks every frame.
+        private const float STRENGTH_REFRESH_INTERVAL = 0.25f;
+
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
         private IVisionService _visionService;
@@ -39,6 +42,8 @@ namespace EmpireAtWar.Services.CaptureSites
         private INotifier<BattleMap> _battleMap;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
+        private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
+        private float _strengthRefreshCountdown;
         private IReadOnlyList<CaptureSiteView> _siteViews;
         private CaptureSiteData _data;
         private CaptureStrengthBuilder _captureStrengthBuilder;
@@ -99,6 +104,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
                     tooltipService: _tooltipService);
                 _sites.Add(site);
+                _strengths.Add(default);
             }
         }
 
@@ -115,14 +121,28 @@ namespace EmpireAtWar.Services.CaptureSites
             }
 
             _sites.Clear();
+            _strengths.Clear();
         }
 
         public void Tick()
         {
             float deltaTime = Time.deltaTime;
-            foreach (CaptureSitePresenter site in _sites)
+            _strengthRefreshCountdown -= deltaTime;
+            bool refreshStrength = _strengthRefreshCountdown <= 0f;
+            if (refreshStrength)
             {
-                site.TickCapture(deltaTime, CalculateCaptureStrength(site));
+                _strengthRefreshCountdown = STRENGTH_REFRESH_INTERVAL;
+            }
+
+            for (int i = 0; i < _sites.Count; i++)
+            {
+                CaptureSitePresenter site = _sites[i];
+                if (refreshStrength)
+                {
+                    _strengths[i] = CalculateCaptureStrength(site);
+                }
+
+                site.TickCapture(deltaTime, _strengths[i]);
                 if (site.TickConstruction(deltaTime))
                 {
                     GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition, site.ReleaseFacility);
