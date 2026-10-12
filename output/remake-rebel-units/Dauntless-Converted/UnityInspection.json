@@ -1,0 +1,33 @@
+{
+  "checks": 3694,
+  "meshCount": 13,
+  "triangleCount": 29040,
+  "boneErrorUnits": 1.50789151E-06,
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/Dauntless.prefab",
+      "renderers": 9
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/DauntlessShipView.prefab",
+      "renderers": 9
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/DauntlessReinforcementView.prefab",
+      "renderers": 3
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/DauntlessWreckView.prefab",
+      "renderers": 3
+    }
+  ],
+  "targetableHardpoints": 23,
+  "weaponCounts": [
+    8,
+    4,
+    4,
+    2
+  ],
+  "shipId": 310,
+  "abilityId": 39
+}

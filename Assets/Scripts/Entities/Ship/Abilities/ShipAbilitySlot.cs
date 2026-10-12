@@ -18,6 +18,8 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.IsIonDisabled &&
             (Id != ShipAbilityId.TractorBeam ||
                 Owner.Health.GetShipUnits(HardPointType.TractorBeam).Any(point => !point.IsDestroyed)) &&
+            (Id != ShipAbilityId.DauntlessSensorJamming ||
+                Owner.Health.GetShipUnits(HardPointType.SensorArray).Any(point => !point.IsDestroyed)) &&
             (Id != ShipAbilityId.FighterCoordination ||
                 Owner.Health.GetShipUnits(HardPointType.CommandArray).Any(point => !point.IsDestroyed));
         public bool CanActivate => IsAvailable && State == ShipAbilityState.Ready;

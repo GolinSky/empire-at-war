@@ -44,5 +44,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         AssaultFrigateMkIIPowerToShields = 45,
         FighterCoordination = 52,
 
+        DauntlessSensorJamming = 39,
     }
 }

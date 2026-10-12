@@ -1204,6 +1204,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: DauntlessShipView
+      value:
+        m_AssetGUID: a5aba968bba177044a0a0be73f0751eb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: DauntlessShipData
+      value:
+        m_AssetGUID: 3f83d7d16e8adf64fa05fc0b246694b4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: NebulaShipView
       value:
         m_AssetGUID: 549969f5bcce41644a1cabc6434f1d8b
