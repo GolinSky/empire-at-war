@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.Profiling;
 
 namespace EmpireAtWar.Services.Timing
@@ -69,6 +71,13 @@ namespace EmpireAtWar.Services.Timing
         public const string NAVIGATION_ROUTE_BUILD = "Battle.Navigation.RouteBuild";
         public const string NAVIGATION_PATH_SEARCH = "Battle.Navigation.PathSearch";
         public const string NAVIGATION_NEAREST_REACHABLE = "Battle.Navigation.NearestReachable";
+        // One enemy production callback from the timer pool: the purchased unit's spawn.
+        public const string ENEMY_BUILD = "Battle.Enemy.Build";
+        // Followed by the state's type name, e.g. "Battle.Ship.State.ShipMoveState".
+        public const string SHIP_STATE_PREFIX = "Battle.Ship.State.";
+
+        private static readonly Dictionary<Type, ProfilerMarker> ShipStateMarkers =
+            new Dictionary<Type, ProfilerMarker>();
 
         public static readonly ProfilerMarker ShipTick = new ProfilerMarker(SHIP_TICK);
         public static readonly ProfilerMarker ShipOrderTick = new ProfilerMarker(SHIP_ORDER_TICK);
@@ -145,5 +154,18 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker NavigationPathSearch = new ProfilerMarker(NAVIGATION_PATH_SEARCH);
         public static readonly ProfilerMarker NavigationNearestReachable =
             new ProfilerMarker(NAVIGATION_NEAREST_REACHABLE);
+        public static readonly ProfilerMarker EnemyBuild = new ProfilerMarker(ENEMY_BUILD);
+
+        /// <summary>One marker per ship state type, created on first use.</summary>
+        public static ProfilerMarker ForShipState(Type stateType)
+        {
+            if (!ShipStateMarkers.TryGetValue(stateType, out ProfilerMarker marker))
+            {
+                marker = new ProfilerMarker(SHIP_STATE_PREFIX + stateType.Name);
+                ShipStateMarkers.Add(stateType, marker);
+            }
+
+            return marker;
+        }
     }
 }

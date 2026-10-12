@@ -811,7 +811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd501010a8109ea45b35bbf257e0f954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Squadrons.Icon.SquadronIconComponent
-  iconCanvas: {fileID: 601876821348390969}
+  iconRoot: {fileID: 7416136040843529413}
   frameImage: {fileID: 7631315397549230652}
   silhouetteImage: {fileID: 6692343194309098568}
   iconImage: {fileID: 946945692560324156}
@@ -850,31 +850,6 @@ MonoBehaviour:
   - {fileID: 2587257887070991615}
   - {fileID: 939250164889365032}
   - {fileID: 8356994134634427483}
-  hardPoints:
-  - {fileID: 1595684741445362609}
-  - {fileID: 5782245863809946086}
-  - {fileID: 3120993658260144640}
-  - {fileID: 4119805344432159646}
-  - {fileID: 7551044209769920897}
-  - {fileID: 5243313823473386799}
-  - {fileID: 5475255697294911995}
-  - {fileID: 54496325320247898}
-  - {fileID: 1327550172155127079}
-  - {fileID: 2504138362390265848}
-  - {fileID: 6832554148158155218}
-  - {fileID: 4823435744904967791}
-  - {fileID: 3942283229746904513}
-  - {fileID: 685937436059140462}
-  - {fileID: 9040343470620279861}
-  - {fileID: 3949152898004867166}
-  - {fileID: 5217291195635517119}
-  - {fileID: 2638479379674235412}
-  - {fileID: 4312738316047499433}
-  - {fileID: 7427971079109899021}
-  - {fileID: 7686434147073307847}
-  - {fileID: 5794499623749164171}
-  - {fileID: 7470154931346906132}
-  - {fileID: 1377331049354490950}
   revealRadius: 0
   staysRevealedOnceSeen: 0
 --- !u!114 &5812155364052830478
@@ -3132,7 +3107,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7416136040843529413}
-  - component: {fileID: 601876821348390969}
   m_Layer: 12
   m_Name: IconCanvas
   m_TagString: Untagged
@@ -3163,30 +3137,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 72, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &601876821348390969
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5409505262971170001}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 3
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1 &5464036907527928439
 GameObject:
   m_ObjectHideFlags: 0

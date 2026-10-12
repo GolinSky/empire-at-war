@@ -598,7 +598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd501010a8109ea45b35bbf257e0f954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Squadrons.Icon.SquadronIconComponent
-  iconCanvas: {fileID: 8325056799972518507}
+  iconRoot: {fileID: 3472105429108200897}
   frameImage: {fileID: 3949430079029371362}
   silhouetteImage: {fileID: 6128569966985311149}
   iconImage: {fileID: 2224829978045118417}
@@ -643,39 +643,6 @@ MonoBehaviour:
   - {fileID: 5462147253561199515}
   - {fileID: 5366584578806106708}
   - {fileID: 4101592171774474875}
-  hardPoints:
-  - {fileID: 6542406889911376271}
-  - {fileID: 5918078153835299786}
-  - {fileID: 4716875481683056899}
-  - {fileID: 7919613278746041769}
-  - {fileID: 3623196876312849293}
-  - {fileID: 6281831674968800198}
-  - {fileID: 7325850882431022831}
-  - {fileID: 668678387533219097}
-  - {fileID: 7536536504185092943}
-  - {fileID: 7352967311998970873}
-  - {fileID: 6334749625812885377}
-  - {fileID: 6494490038267595878}
-  - {fileID: 4807824069638924112}
-  - {fileID: 3993878731397982885}
-  - {fileID: 2424517668188053533}
-  - {fileID: 2189403442361971945}
-  - {fileID: 3274872796942103373}
-  - {fileID: 8735641048824711097}
-  - {fileID: 367713528990738658}
-  - {fileID: 1699897417640230776}
-  - {fileID: 7182787614110751922}
-  - {fileID: 7273739874768674021}
-  - {fileID: 5908263012747615751}
-  - {fileID: 1678301127645738830}
-  - {fileID: 1463772836337804690}
-  - {fileID: 6369601079094260517}
-  - {fileID: 7175524744288594227}
-  - {fileID: 2195301231065556265}
-  - {fileID: 1276299599434813257}
-  - {fileID: 3835363264896217598}
-  - {fileID: 3734079399829731316}
-  - {fileID: 5529132852431083920}
   revealRadius: 0
   staysRevealedOnceSeen: 0
 --- !u!114 &6619461309688173793
@@ -4338,7 +4305,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3472105429108200897}
-  - component: {fileID: 8325056799972518507}
   m_Layer: 12
   m_Name: IconCanvas
   m_TagString: Untagged
@@ -4369,30 +4335,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 72, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &8325056799972518507
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7773088114264900349}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 3
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1 &7774053795087595349
 GameObject:
   m_ObjectHideFlags: 0

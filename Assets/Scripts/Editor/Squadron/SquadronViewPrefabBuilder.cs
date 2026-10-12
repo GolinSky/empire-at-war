@@ -218,12 +218,11 @@ namespace EmpireAtWar.Editor.Squadrons
         public static void AddWorldIcon(GameObject root, Sprite unitIcon)
         {
             SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
+            // No canvas of its own: at spawn the marker moves onto the shared SquadronIconLayer canvas.
             GameObject canvasObject = new GameObject("IconCanvas", typeof(RectTransform));
             canvasObject.transform.SetParent(root.transform, false);
             RectTransform canvasRect = (RectTransform)canvasObject.transform;
             canvasRect.sizeDelta = Vector2.one * ICON_SIZE;
-            Canvas canvas = canvasObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.WorldSpace;
 
             MPImage background = CreateIconImage<MPImage>("Background", canvasObject.transform, 0f);
             background.DrawShape = DrawShape.Rectangle;
@@ -255,13 +254,13 @@ namespace EmpireAtWar.Editor.Squadrons
             iconImage.color = Color.white;
 
             SerializedObject iconObject = new SerializedObject(icon);
-            iconObject.FindProperty("iconCanvas").objectReferenceValue = canvas;
+            iconObject.FindProperty("iconRoot").objectReferenceValue = canvasRect;
             iconObject.FindProperty("frameImage").objectReferenceValue = frame;
             iconObject.FindProperty("silhouetteImage").objectReferenceValue = silhouetteImage;
             iconObject.FindProperty("iconImage").objectReferenceValue = iconImage;
             iconObject.ApplyModifiedPropertiesWithoutUndo();
 
-            // World UI renders only for the core game camera, not the cinema camera.
+            // The shared layer is WorldUi too: markers render only for the core game camera, not the cinema camera.
             int worldUiLayer = Mathf.RoundToInt(Mathf.Log(
                 AssetDatabase.LoadAssetAtPath<LayerData>(LAYER_DATA_PATH).WorldUiLayerMask.value, 2));
             foreach (Transform child in canvasObject.GetComponentsInChildren<Transform>(true))

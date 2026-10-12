@@ -24,7 +24,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly ShipAbilityService _shipAbilityService;
         private readonly List<IEntity> _targets = new List<IEntity>();
-        private readonly List<IShipAbilityFacade> _casters = new List<IShipAbilityFacade>();
+        // The caster's entity is kept beside its facade: the facade resolves its entity through the locator,
+        // which throws once the unit has left the battle.
+        private readonly List<(IEntity Entity, IShipAbilityFacade Caster)> _casters =
+            new List<(IEntity, IShipAbilityFacade)>();
         // Hostile units and where they were when the decision started; every caster searches this one list.
         private readonly List<(IEntity Entity, Vector3 Position)> _hostiles = new List<(IEntity, Vector3)>();
         private EnemyAiDifficultyProfile _profile;
@@ -72,7 +75,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (entity.HealthModel.IsDestroyed) continue;
                 if (entity.Owner == _owner.Id)
                 {
-                    if (entity.TryGetFacade(out IShipAbilityFacade caster)) _casters.Add(caster);
+                    if (entity.TryGetFacade(out IShipAbilityFacade caster)) _casters.Add((entity, caster));
                 }
                 else if (_relations.IsHostile(_owner.Id, entity.Owner))
                 {
@@ -86,8 +89,8 @@ namespace EmpireAtWar.Services.Enemy
             int end = Mathf.Min(_nextCaster + CASTERS_PER_TICK, _casters.Count);
             for (; _nextCaster < end; _nextCaster++)
             {
-                IShipAbilityFacade caster = _casters[_nextCaster];
-                if (caster.Entity.HealthModel.IsDestroyed) continue;
+                (IEntity entity, IShipAbilityFacade caster) = _casters[_nextCaster];
+                if (!_entities.TryGetEntity(entity.Id, out _) || entity.HealthModel.IsDestroyed) continue;
                 for (int i = 0; i < caster.Slots.Count; i++)
                 {
                     ShipAbilitySlot slot = caster.Slots[i];

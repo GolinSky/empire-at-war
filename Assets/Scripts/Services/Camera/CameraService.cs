@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.Camera
         Transform CameraTransform { get; }
         Vector3 CameraForward { get; }
         float FieldOfView { get; }
+        UnityEngine.Camera SceneCamera { get; }
 
         Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position);
 
@@ -69,6 +70,7 @@ namespace EmpireAtWar.Services.Camera
         public Transform CameraTransform => transform;
         public Vector3 CameraForward => transform.forward;
         public float FieldOfView => sceneCamera.fieldOfView;
+        public UnityEngine.Camera SceneCamera => sceneCamera;
 
         [Inject]
         public void Constructor(

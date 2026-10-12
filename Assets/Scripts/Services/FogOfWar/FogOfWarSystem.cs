@@ -144,8 +144,10 @@ namespace EmpireAtWar.Services.FogOfWar
                 if (!_localPlayer.IsFriendly(source.Owner)) continue;
                 Vector2Int pixel = PositionToPixel(ProjectOntoFog(source.Transform.position), out bool inside);
                 if (!inside) continue;
-                _grid.Reveal(pixel.x, pixel.y, RadiusToPixels(source.Radius), edgeSoftness, 1f);
+                _grid.QueueReveal(pixel.x, pixel.y, RadiusToPixels(source.Radius));
             }
+
+            _grid.ApplyReveals(edgeSoftness, 1f);
         }
 
         private int RadiusToPixels(float radius)
