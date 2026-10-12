@@ -96,14 +96,10 @@ namespace EmpireAtWar.Tests.Editor
 
             public UiServiceStub(HeroUi ui) => _ui = ui;
 
-            public Transform DefaultCanvasTransform => throw new NotSupportedException();
-            public Transform DynamicCanvasTransform => throw new NotSupportedException();
-            public Transform PopupCanvasTransform => throw new NotSupportedException();
-
             public BaseUi CreateUi(UiType uiType) => _ui;
 
-            public BaseUi CreateUi(UiType uiType, Transform parent) =>
-                throw new NotSupportedException();
+            public void SetContentLayout(bool isFaction, bool isGroup) { }
+            public void SetContentVisible(bool isVisible) { }
 
             public void SetHudVisible(bool isVisible) => throw new NotSupportedException();
         }

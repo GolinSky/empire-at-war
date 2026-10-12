@@ -125,11 +125,11 @@ namespace EmpireAtWar.Controllers.MiniMap
             }
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             if (_miniMapView == null)
             {
-                BaseUi ui = UiService.CreateUi(UiType.MiniMap, parentTransform);
+                BaseUi ui = UiService.CreateUi(UiType.MiniMap);
                 _miniMapView = ui as IMiniMapView
                     ?? throw new System.InvalidOperationException(
                         "The minimap prefab does not contain IMiniMapView.");
@@ -138,10 +138,6 @@ namespace EmpireAtWar.Controllers.MiniMap
                 _tooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_miniMapView).TooltipHover, HandleTooltipHover, _tooltips);
                 _miniMapView.SetFog(_fogMask.Mask);
-            }
-            else
-            {
-                _miniMapView.SetParent(parentTransform);
             }
 
             if (isActive)

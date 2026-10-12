@@ -22,8 +22,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField] private Image progressFill;
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TooltipHoverView tooltipHover;
-        [SerializeField] private GameObject buildOptions;
-        [SerializeField] private SiteFacilityOptionView[] facilityOptions = Array.Empty<SiteFacilityOptionView>();
         private MaterialPropertyBlock _propertyBlock;
         private Camera _camera;
         private RectTransform _canvasTransform;
@@ -45,8 +43,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
         private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
 
-        public event Action<SiteFacilityType> BuildPressed;
-
         public TooltipHoverView TooltipHover => tooltipHover;
 
         public Vector3 Center => transform.position;
@@ -61,21 +57,6 @@ namespace EmpireAtWar.Entities.CaptureSites
             _camera = Camera.main;
             _canvasTransform = (RectTransform)statusCanvas.transform;
             statusCanvas.worldCamera = _camera;
-            foreach (SiteFacilityOptionView option in facilityOptions)
-            {
-                option.Pressed += HandleOptionPressed;
-                tooltipHover.Register(option.TooltipTrigger);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            foreach (SiteFacilityOptionView option in facilityOptions)
-            {
-                option.Pressed -= HandleOptionPressed;
-            }
-
-            Destroy(buildOptions);
         }
 
         private void LateUpdate()
@@ -94,15 +75,11 @@ namespace EmpireAtWar.Entities.CaptureSites
             _canvasTransform.localScale = Vector3.one * (worldScale / transform.lossyScale.y);
         }
 
-        public void ConfigureOption(SiteFacilityType facilityType, string displayName, string costLabel)
-        {
-            GetOption(facilityType).Configure(displayName, costLabel);
-        }
-
         public void Render(
             OwnerRelation owner,
             CaptureSiteState state,
             SiteFacilityType facilityType,
+            string facilityName,
             OwnerRelation capturer,
             float captureProgress,
             float constructionProgress,
@@ -139,7 +116,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             progressColor.a = 0.95f;
             progressFill.color = progressColor;
 
-            statusText.text = GetStatus(owner, state, GetOption(facilityType).DisplayName, capturer,
+            statusText.text = GetStatus(owner, state, facilityName, capturer,
                 captureProgress, constructionProgress, isContested);
         }
 
@@ -147,61 +124,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         {
             ringRenderer.enabled = isVisible;
             statusCanvas.gameObject.SetActive(isVisible && showStatus);
-        }
-
-        public void InitializeBuildUi(Transform parent)
-        {
-            RectTransform optionsTransform = (RectTransform)buildOptions.transform;
-            optionsTransform.SetParent(parent, false);
-            optionsTransform.localRotation = Quaternion.identity;
-            optionsTransform.localScale = Vector3.one;
-            optionsTransform.anchorMin = ((RectTransform)parent).pivot;
-            optionsTransform.anchorMax = optionsTransform.anchorMin;
-            optionsTransform.pivot = new Vector2(0.5f, 0f);
-            optionsTransform.sizeDelta = new Vector2(560f, 228f);
-        }
-
-        public void SetBuildOptionsPosition(Vector2 screenPosition)
-        {
-            RectTransform optionsTransform = (RectTransform)buildOptions.transform;
-            RectTransform canvasTransform = (RectTransform)optionsTransform.parent;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, screenPosition, null,
-                out Vector2 localPosition);
-            Rect canvasRect = canvasTransform.rect;
-            Vector2 panelSize = optionsTransform.rect.size;
-            localPosition.x = Mathf.Clamp(localPosition.x, canvasRect.xMin + panelSize.x * 0.5f,
-                canvasRect.xMax - panelSize.x * 0.5f);
-            localPosition.y = Mathf.Clamp(localPosition.y + 24f, canvasRect.yMin, canvasRect.yMax - panelSize.y);
-            optionsTransform.anchoredPosition = localPosition;
-        }
-
-        public void SetBuildOptionsVisible(bool isVisible)
-        {
-            buildOptions.transform.localScale = Vector3.one * 0.5f;
-            buildOptions.SetActive(isVisible);
-        }
-
-        public void SetOptionInteractable(SiteFacilityType facilityType, bool isInteractable)
-        {
-            GetOption(facilityType).SetInteractable(isInteractable);
-        }
-
-        private SiteFacilityOptionView GetOption(SiteFacilityType facilityType)
-        {
-            foreach (SiteFacilityOptionView option in facilityOptions)
-            {
-                if (option.FacilityType == facilityType)
-                {
-                    return option;
-                }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(facilityType), facilityType, "No build option on the site.");
-        }
-
-        private void HandleOptionPressed(SiteFacilityType facilityType)
-        {
-            BuildPressed?.Invoke(facilityType);
         }
 
         private Color GetColor(OwnerRelation owner, bool isContested)

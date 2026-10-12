@@ -32,7 +32,7 @@ namespace EmpireAtWar.Entities.Tooltip
 
         private void Show()
         {
-            if (_ui == null) _ui = (ITooltipUi)_uiService.CreateUi(UiType.Tooltip, _uiService.PopupCanvasTransform);
+            if (_ui == null) _ui = (ITooltipUi)_uiService.CreateUi(UiType.Tooltip);
             Render();
             Place();
             _ui.Show();

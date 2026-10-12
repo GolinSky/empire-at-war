@@ -23,5 +23,7 @@ namespace EmpireAtWar.Ui.Base
         Tooltip = 15,
         Fade = 16,
         Hero = 17,
+        EndGame = 18,
+        CaptureSiteBuild = 19,
     }
 }

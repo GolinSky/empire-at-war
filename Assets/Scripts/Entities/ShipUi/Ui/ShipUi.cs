@@ -122,7 +122,8 @@ namespace EmpireAtWar.Views
         private void UpdateVisibility()
         {
             bool isVisible = _isRouteActive && _model.HasShips;
-            gameObject.SetActive(isVisible);
+            if (isVisible) base.Show();
+            else base.Hide();
             Sprite icon = null;
             if (isVisible)
             {

@@ -33,6 +33,8 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromInstance(captureSitesSystem)
                 .AsSingle();
             Container.BindInterfacesTo<PlanetSpawner>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<CaptureSiteBuildUiController>().AsSingle().NonLazy();
+            Container.BindLateDisposableExecutionOrder<CaptureSiteBuildUiController>(100);
             Container.BindInterfacesTo<AsteroidSpawnBlockers>().AsSingle().NonLazy();
         }
     }
