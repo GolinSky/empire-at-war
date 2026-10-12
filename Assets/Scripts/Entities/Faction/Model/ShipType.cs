@@ -55,6 +55,7 @@ namespace EmpireAtWar.Models.Factions
         Nebula = 330,
 
         AssaultFrigateMkII = 309,
+        Endurance = 322,
 
     }
 }

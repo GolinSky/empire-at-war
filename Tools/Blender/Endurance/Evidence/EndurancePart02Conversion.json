@@ -1,0 +1,231 @@
+{
+  "variant": "EndurancePart02",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 958,
+        "triangles": 466,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart02_M003"
+        ]
+      },
+      "Barrel": {
+        "vertices": 164,
+        "triangles": 96,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart02_M004"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 68,
+        "triangles": 108,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart02_M005"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 324,
+        "triangles": 572,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart02_M006"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          5.852235062775435e-06,
+          0.0,
+          -3.5237978863733588e-06
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          6.523992396978429e-06,
+          -4.459258079528809,
+          1.6950243711471558
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          -1.544198767078342e-06,
+          -10.325955390930176,
+          1.693084716796875
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          7.1300573836197145e-06,
+          4.76837158203125e-07,
+          -3.5762786865234375e-06
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          5.852235062775435e-06,
+          0.0,
+          -3.523797431626008e-06
+        ]
+      }
+    },
+    "bounds_min": [
+      -5.863667964935303,
+      -10.131828308105469,
+      -2.5707664489746094
+    ],
+    "bounds_max": [
+      5.8839898109436035,
+      5.872230529785156,
+      4.405918121337891
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 958,
+        "triangles": 466,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart02_M003.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 164,
+        "triangles": 96,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart02_M004.001"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 68,
+        "triangles": 108,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart02_M005.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 324,
+        "triangles": 572,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart02_M006.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          5.852235062775435e-06,
+          -5.740995244300773e-13,
+          -3.5237978863733588e-06
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          5.781380878033815e-06,
+          -4.45925760269165,
+          1.695025086402893
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          -3.2806572107801912e-06,
+          -10.325955390930176,
+          1.6930863857269287
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          7.103932603058638e-06,
+          4.7683647608209867e-07,
+          -3.5762786865234375e-06
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          5.852235062775435e-06,
+          -5.7409941600986e-13,
+          -3.523797431626008e-06
+        ]
+      }
+    },
+    "bounds_min": [
+      -5.863667964935303,
+      -10.131828308105469,
+      -2.570767402648926
+    ],
+    "bounds_max": [
+      5.8839898109436035,
+      5.872230052947998,
+      4.405917167663574
+    ]
+  },
+  "materials": [
+    {
+      "name": "EndurancePart02_M004",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main",
+      "normal": "EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main_B"
+    },
+    {
+      "name": "EndurancePart02_M003",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main",
+      "normal": "EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main_B"
+    },
+    {
+      "name": "EndurancePart02_M006",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "EndurancePart02_M005",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    }
+  ],
+  "bone_error": 2.408446680610873e-06,
+  "geometry_error": 3.0857998699859074e-06
+}

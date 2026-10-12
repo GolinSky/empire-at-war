@@ -22,12 +22,27 @@ namespace EmpireAtWar.Components.Combat
 
         private bool _superWeaponDisabled;
         private int _ionPulseDisables;
+        private int _fighterCoordinations;
+        public float AccuracyMultiplier => _fighterCoordinations > 0 ? 1.2f : 1f;
         public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
         /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
-        public bool HasTemporaryEffects => _active.Count > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
+        public bool HasTemporaryEffects => _active.Count > 0 || _fighterCoordinations > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
                                            _focusTarget != null || _projectileFireDelayMultiplier != 1f ||
                                            _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f;
         public bool IsCloaked { get; private set; }
+
+        public void AddFighterCoordination()
+        {
+            _fighterCoordinations++;
+            Recalculate();
+        }
+
+        public void RemoveFighterCoordination()
+        {
+            if (_fighterCoordinations == 0) throw new InvalidOperationException("No fighter coordination is active.");
+            _fighterCoordinations--;
+            Recalculate();
+        }
 
         public void SetCloaked(bool cloaked)
         {
@@ -139,7 +154,7 @@ namespace EmpireAtWar.Components.Combat
         {
             float damage = _fleetCommandActive ? 1.1f : 1f;
             float fireDelay = 1f;
-            float speed = _fleetCommandActive ? 1.1f : 1f;
+            float speed = (_fleetCommandActive ? 1.1f : 1f) * (_fighterCoordinations > 0 ? 1.15f : 1f);
             float shieldRegen = 1f;
             // Defense is represented by incoming damage reduction in this combat system.
             float damageTaken = _fleetCommandActive ? 0.65f : 1f;

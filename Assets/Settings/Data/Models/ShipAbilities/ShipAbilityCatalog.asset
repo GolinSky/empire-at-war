@@ -593,6 +593,21 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801467062609510478
+    - key: 52
+      value:
+        icon: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
+        displayName: Fighter Coordination
+        description: 'Nearby allied squadrons gain +20% accuracy and +15% movement
+          speed for 10 seconds. Command radius: 750. Recovery: 45 seconds.'
+        duration: 10
+        recoveryDelay: 45
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801467062609510488
   references:
     version: 2
     RefIds:
@@ -951,3 +966,8 @@ MonoBehaviour:
       data:
         damageType: 7
         damage: 12000
+    - rid: 6801467062609510488
+      type: {class: FighterCoordinationSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        commandRadius: 750

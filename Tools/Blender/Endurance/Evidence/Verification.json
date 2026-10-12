@@ -1,0 +1,16 @@
+{
+  "checks": 10197,
+  "models": 15,
+  "weapons": 12,
+  "targetableHardpoints": 22,
+  "bounds": [
+    93.46154,
+    43.4395523,
+    180.0
+  ],
+  "shipId": 322,
+  "abilityId": 52,
+  "status": "passed",
+  "runtimeAcceptance": "Not run",
+  "automatedTests": "Not run; ALO guide requires explicit request"
+}

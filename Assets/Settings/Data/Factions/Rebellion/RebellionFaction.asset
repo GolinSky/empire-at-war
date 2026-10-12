@@ -264,6 +264,23 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 2e88496bcd539524c9cf43ae79b88a88,
           type: 3}
+    - key: 322
+      value:
+        matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
+        description: Fleet carrier with six active and six replacement X-Wing squadrons,
+          four medium turbolasers, two medium ion cannons and six point-defense mounts.
+          Fighter Coordination boosts nearby allied squadron accuracy and speed.
+        role: Fleet carrier / Squadron support
+        iconKey: 937b502e2d2d8684ca9920ab2b5d9a0d:21300000
+        isHero: 0
+        <Name>k__BackingField: Endurance Fleet Carrier
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 65
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

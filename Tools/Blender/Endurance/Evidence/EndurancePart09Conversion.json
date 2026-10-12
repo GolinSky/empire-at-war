@@ -1,0 +1,151 @@
+{
+  "variant": "EndurancePart09",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 456,
+        "triangles": 230,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart09_M003"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 154,
+        "triangles": 272,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart09_M004"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          5.852235062775435e-06,
+          -7.148467062734198e-08,
+          1.6353751420974731
+        ]
+      },
+      "FP_01": {
+        "parent": "Turret",
+        "head": [
+          3.5386847230256535e-07,
+          -3.511328935623169,
+          1.2905564308166504
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          5.852235062775435e-06,
+          -7.148467062734198e-08,
+          1.635374903678894
+        ]
+      }
+    },
+    "bounds_min": [
+      -3.785386800765991,
+      -3.595947265625,
+      -1.7358168363571167
+    ],
+    "bounds_max": [
+      3.7736876010894775,
+      3.7534637451171875,
+      3.324848175048828
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 456,
+        "triangles": 230,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "EndurancePart09_M003.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 154,
+        "triangles": 272,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "EndurancePart09_M004.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          5.852235062775435e-06,
+          1.4722712649017922e-07,
+          1.6353751420974731
+        ]
+      },
+      "FP_01": {
+        "parent": "Turret",
+        "head": [
+          -2.0346038809293532e-07,
+          -3.511328935623169,
+          1.2905570268630981
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          5.852235062775435e-06,
+          1.4722709806846979e-07,
+          1.635374903678894
+        ]
+      }
+    },
+    "bounds_min": [
+      -3.7853870391845703,
+      -3.595947742462158,
+      -1.7358174324035645
+    ],
+    "bounds_max": [
+      3.7736873626708984,
+      3.7534635066986084,
+      3.324847936630249
+    ]
+  },
+  "materials": [
+    {
+      "name": "EndurancePart09_M004",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "EndurancePart09_M003",
+      "shader": "MeshBumpColorize.fx",
+      "base": "EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main",
+      "normal": "EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main_B"
+    }
+  ],
+  "bone_error": 8.160188928696454e-07,
+  "geometry_error": 1.4936881168057522e-06
+}

@@ -12,5 +12,7 @@
         TractorBeam = 7,
         PointDefense = 8,
         MissileDefense = 9,
+        CommandArray = 11,
+
     }
 }

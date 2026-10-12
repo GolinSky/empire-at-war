@@ -590,7 +590,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public bool RollHit(AttackData attackData, WeaponProfile profile) =>
             Model.RollHit(profile.DamageType, attackData.TargetClass,
-                profile.AccuracyMultiplier * profile.GetAccuracyBias(attackData.TargetClass), UnityEngine.Random.value);
+                profile.AccuracyMultiplier * profile.GetAccuracyBias(attackData.TargetClass) * _modifiers.AccuracyMultiplier, UnityEngine.Random.value);
 
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay,
             float damageDuration, IncomingMissile missile)
