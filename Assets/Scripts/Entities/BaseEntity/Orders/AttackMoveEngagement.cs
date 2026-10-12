@@ -8,10 +8,19 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
     /// engagement set and counts attackers per enemy so the group spreads across the enemy formation
     /// instead of focusing a single target.
     /// </summary>
+    /// <remarks>
+    /// Both counts are kept as members report and claim: every member queries the set every tick, and scanning
+    /// each member's contacts and claims made a 250-ship attack-move cost tens of ms per frame (seconds when the
+    /// whole group re-selected at once).
+    /// </remarks>
     public sealed class AttackMoveEngagement
     {
         private readonly Dictionary<int, List<IEntity>> _contacts = new Dictionary<int, List<IEntity>>();
         private readonly Dictionary<int, IEntity> _claims = new Dictionary<int, IEntity>();
+        // Enemy → how many members currently report it; the keys are the engagement set.
+        private readonly Dictionary<IEntity, int> _reporters = new Dictionary<IEntity, int>();
+        // Enemy → how many members claim it.
+        private readonly Dictionary<IEntity, int> _attackers = new Dictionary<IEntity, int>();
 
         private int _nextMemberId;
 
@@ -24,26 +33,26 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
         public void Leave(int member)
         {
+            ClearContacts(_contacts[member]);
             _contacts.Remove(member);
-            _claims.Remove(member);
+            DropClaim(member);
         }
 
         // IList, not IEnumerable: the radar's ObservableList boxes its enumerator.
         public void Report(int member, IList<IEntity> detected)
         {
             List<IEntity> contacts = _contacts[member];
-            contacts.Clear();
+            ClearContacts(contacts);
             for (int i = 0; i < detected.Count; i++)
-                if (IsAlive(detected[i])) contacts.Add(detected[i]);
+            {
+                IEntity enemy = detected[i];
+                if (!IsAlive(enemy)) continue;
+                contacts.Add(enemy);
+                Increment(_reporters, enemy);
+            }
         }
 
-        public bool Contains(IEntity enemy)
-        {
-            if (!IsAlive(enemy)) return false;
-            foreach (List<IEntity> contacts in _contacts.Values)
-                if (contacts.Contains(enemy)) return true;
-            return false;
-        }
+        public bool Contains(IEntity enemy) => IsAlive(enemy) && _reporters.ContainsKey(enemy);
 
         /// <summary>
         /// Claims the live enemy with the fewest other attackers, nearest first on ties.
@@ -51,35 +60,55 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         /// </summary>
         public IEntity SelectTarget(int member, Func<IEntity, float> distance)
         {
-            _claims.Remove(member);
+            DropClaim(member);
             IEntity best = null;
             int fewestAttackers = int.MaxValue;
             float nearest = float.PositiveInfinity;
-            foreach (List<IEntity> contacts in _contacts.Values)
+            foreach (IEntity enemy in _reporters.Keys)
             {
-                foreach (IEntity enemy in contacts)
-                {
-                    if (!IsAlive(enemy)) continue;
-                    int attackers = AttackersOf(enemy);
-                    if (attackers > fewestAttackers) continue;
-                    float range = distance(enemy);
-                    if (attackers == fewestAttackers && range >= nearest) continue;
-                    best = enemy;
-                    fewestAttackers = attackers;
-                    nearest = range;
-                }
+                if (!IsAlive(enemy)) continue;
+                _attackers.TryGetValue(enemy, out int attackers);
+                if (attackers > fewestAttackers) continue;
+                float range = distance(enemy);
+                if (attackers == fewestAttackers && range >= nearest) continue;
+                best = enemy;
+                fewestAttackers = attackers;
+                nearest = range;
             }
 
-            if (best != null) _claims[member] = best;
+            if (best != null)
+            {
+                _claims[member] = best;
+                Increment(_attackers, best);
+            }
+
             return best;
         }
 
-        private int AttackersOf(IEntity enemy)
+        private void ClearContacts(List<IEntity> contacts)
         {
-            int attackers = 0;
-            foreach (IEntity claimed in _claims.Values)
-                if (claimed == enemy) attackers++;
-            return attackers;
+            for (int i = 0; i < contacts.Count; i++) Decrement(_reporters, contacts[i]);
+            contacts.Clear();
+        }
+
+        private void DropClaim(int member)
+        {
+            if (!_claims.TryGetValue(member, out IEntity claimed)) return;
+            _claims.Remove(member);
+            Decrement(_attackers, claimed);
+        }
+
+        private static void Increment(Dictionary<IEntity, int> counts, IEntity enemy)
+        {
+            counts.TryGetValue(enemy, out int count);
+            counts[enemy] = count + 1;
+        }
+
+        private static void Decrement(Dictionary<IEntity, int> counts, IEntity enemy)
+        {
+            int count = counts[enemy] - 1;
+            if (count == 0) counts.Remove(enemy);
+            else counts[enemy] = count;
         }
 
         private static bool IsAlive(IEntity enemy) =>
