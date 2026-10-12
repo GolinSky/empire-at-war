@@ -26,6 +26,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private CombatModifiers _modifiers;
         private ImpactEffectPresenter _impactPresenter;
         private BoltFlightBatch _boltFlights;
+        private ShotPoolPrewarmer _poolPrewarmer;
         private IncomingMissileRegistry _missiles;
 
         private float _maxAttackDistance;
@@ -67,9 +68,11 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
             IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
-            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IncomingMissileRegistry missiles)
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IncomingMissileRegistry missiles,
+            ShotPoolPrewarmer poolPrewarmer)
         {
             _boltFlights = boltFlights;
+            _poolPrewarmer = poolPrewarmer;
             _profile = profile;
             _maxAttackDistance = maxAttackDistance;
             _missSpread = missSpread;
@@ -191,7 +194,16 @@ namespace EmpireAtWar.ViewComponents.Health
             _effectPool = new ShotEffectPool(profile: _profile, owner: transform, maxIdle: _profile.ShotsPerSalvo,
                 effectCompleted: OnTurretEffectCompleted, impactPresenter: _impactPresenter, boltFlights: _boltFlights);
             _effectPool.Prewarm(prewarmEffects);
+            _poolPrewarmer.Enqueue(_effectPool, ExpectedShotsInFlight(_profile));
             return _effectPool;
+        }
+
+        /// <summary>One salvo plus every further salvo fired while the slowest shot is still flying.</summary>
+        internal static int ExpectedShotsInFlight(WeaponProfile profile)
+        {
+            float flightSeconds = profile.ProjectileSpeed > 0f ? profile.Range / profile.ProjectileSpeed : 0f;
+            int salvos = 1 + Mathf.CeilToInt(flightSeconds / Mathf.Max(profile.CycleSeconds, 0.01f));
+            return profile.ShotsPerSalvo * salvos;
         }
 
         protected override void OnStateUpdated(float healthPercentage)

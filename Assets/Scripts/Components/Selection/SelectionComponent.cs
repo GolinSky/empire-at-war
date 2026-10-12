@@ -5,7 +5,6 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
@@ -25,8 +24,13 @@ namespace EmpireAtWar.Components.Ship.Selection
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
         IInitializable, ILateDisposable, IRespawnable
     {
-        [SerializeField] private Canvas selectedCanvas;
-        [SerializeField] private Image selectedImage;
+        // A sprite renderer, not a world canvas: a selected unit moves every frame, and a canvas under it
+        // would rebuild its batch every frame (one per selected unit).
+        [Tooltip("Flat anchor of the ring; the health overlay is placed from its position.")]
+        [SerializeField] private Transform selectionRoot;
+        [SerializeField] private SpriteRenderer selectedRenderer;
+        [Tooltip("Ring width and height in the ring's local units.")]
+        [SerializeField] private Vector2 ringSize;
         private SharedSelectionData _sharedSelectionData;
 
         [SerializeField] private SelectionType selectionType;
@@ -35,7 +39,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         [Inject] private PlayerId Owner { get; }
         [Inject] private ILocalPlayer LocalPlayer { get; }
-        public Vector3 WorldPosition => selectedCanvas.transform.position;
+        public Vector3 WorldPosition => selectionRoot.position;
 
         [Inject]
         private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
@@ -47,7 +51,11 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void Initialize()
         {
             Model.OnSelected += HandleSelection;
-            selectedImage.sprite = _sharedSelectionData.SelectionSprite;
+            Sprite sprite = _sharedSelectionData.SelectionSprite;
+            selectedRenderer.sprite = sprite;
+            Vector3 spriteSize = sprite.bounds.size;
+            selectedRenderer.transform.localScale =
+                new Vector3(ringSize.x / spriteSize.x, ringSize.y / spriteSize.y, 1f);
         }
 
         public void LateDispose()
@@ -99,7 +107,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void HandleSelection(bool isActive)
         {
-            selectedCanvas.enabled = isActive;
+            selectedRenderer.enabled = isActive;
         }
     }
 }

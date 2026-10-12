@@ -53,6 +53,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
             Container.Bind<ImpactEffectPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<BoltFlightBatch>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ShotPoolPrewarmer>().AsSingle();
             Container.BindInterfacesAndSelfTo<FighterPoseBatch>().AsSingle();
             // Fighter guns are children of the fighters: their poses land before the coordinator fires.
             Container.BindLateTickableExecutionOrder<FighterPoseBatch>(-2000);

@@ -11,19 +11,23 @@ namespace EmpireAtWar.Components.Weapon
         private const float SAMPLE_STEP = 360f / SAMPLE_COUNT;
 
         private readonly int[] _scores = new int[SAMPLE_COUNT];
+        // Coverage changes per sample; one extra slot takes the end of a range that reaches the last sample.
+        private readonly int[] _coverageDeltas = new int[SAMPLE_COUNT + 1];
 
         // Each arc (x = min, y = max) is the range of hull turns in degrees that keeps the
         // target inside one weapon's yaw limits. Returns the centre of the best-covered turn
         // range closest to the current heading, so symmetric ships keep their nearer side.
         public float FindTurn(IReadOnlyList<Vector2> turnArcs)
         {
+            // Each arc adds one to the run of samples it covers: arcs + samples work instead of arcs x samples,
+            // which a big ship with hundreds of hardpoints pays on every facing solve.
+            System.Array.Clear(_coverageDeltas, 0, _coverageDeltas.Length);
+            for (int a = 0; a < turnArcs.Count; a++) AddCoverage(turnArcs[a]);
             int best = 0;
+            int score = 0;
             for (int i = 0; i < SAMPLE_COUNT; i++)
             {
-                float turn = i * SAMPLE_STEP;
-                int score = 0;
-                for (int a = 0; a < turnArcs.Count; a++)
-                    if (Contains(turnArcs[a], turn)) score++;
+                score += _coverageDeltas[i];
                 _scores[i] = score;
                 if (score > best) best = score;
             }
@@ -59,10 +63,38 @@ namespace EmpireAtWar.Components.Weapon
             return bestTurn;
         }
 
-        private static bool Contains(Vector2 arc, float turn)
+        // Marks the samples whose turn t satisfies Repeat(t - arc.x, 360) <= arc width, wrapping past 360.
+        private void AddCoverage(Vector2 arc)
         {
             float width = arc.y - arc.x;
-            return width >= 360f || Mathf.Repeat(turn - arc.x, 360f) <= width;
+            if (width < 0f) return;
+            if (width >= 360f)
+            {
+                AddRange(0, SAMPLE_COUNT);
+                return;
+            }
+
+            float start = Mathf.Repeat(arc.x, 360f);
+            int first = Mathf.CeilToInt(start / SAMPLE_STEP);
+            float firstOffset = first * SAMPLE_STEP - start;
+            if (firstOffset > width) return;
+            int count = Mathf.Min(SAMPLE_COUNT, Mathf.FloorToInt((width - firstOffset) / SAMPLE_STEP) + 1);
+            first %= SAMPLE_COUNT;
+            int end = first + count;
+            if (end <= SAMPLE_COUNT)
+            {
+                AddRange(first, end);
+                return;
+            }
+
+            AddRange(first, SAMPLE_COUNT);
+            AddRange(0, end - SAMPLE_COUNT);
+        }
+
+        private void AddRange(int start, int end)
+        {
+            _coverageDeltas[start]++;
+            _coverageDeltas[end]--;
         }
 
         private static float DistanceFromZero(float start, float end)
