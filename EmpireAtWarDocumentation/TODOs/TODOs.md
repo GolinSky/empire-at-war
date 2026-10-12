@@ -173,6 +173,10 @@
 
 ### Optimization
 
+- [ ] **Pool ship contexts to remove spawn spikes**
+  - **Plan**: [[TODOs/Optimization/Ship_Pooling_Plan|Ship Pooling]]
+  - **Status**: 2026-10-12 scoped only: enemy builds 13.4–15.8 ms each; ship-only reset paths needed for health/hardpoints, movement, hangar, audio, abilities, orders, layers. Awaiting go-ahead; user verifies in-game per step.
+
 - [ ] **Pool squadron contexts to remove launch spikes**
   - **Plan**: [[TODOs/Optimization/Squadron_Pooling_Plan|Squadron Pooling]]
   - **Status**: 2026-10-12 implemented (uncommitted): `SquadronPool : ISquadronSpawner`, `Squadron.Despawn/Respawn`, `IRespawnable`/`IDespawnable` reset paths; compiles. EditMode run blocked by stale Editor domain (`MissingMethodException`).
