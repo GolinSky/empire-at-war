@@ -1,7 +1,9 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Squadrons
 {
@@ -15,9 +17,9 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         [SerializeField] private Collider hitCollider;
         [SerializeField] private WeaponHardPoint gun;
         [SerializeField] private WeaponHardPoint[] additionalGuns = System.Array.Empty<WeaponHardPoint>();
-        [SerializeField] private ParticleSystem deathExplosion;
         [SerializeField] private TrailRenderer[] engineTrails;
 
+        private IFighterExplosionPool _explosions;
         private Quaternion _bodyRestRotation;
 
         private float _healthPercentage = 1f;
@@ -32,6 +34,12 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         public WeaponHardPoint Gun => gun;
 
         public bool TryGetWeaponType(out WeaponType weaponType) => gun.TryGetWeaponType(out weaponType);
+
+        [Inject]
+        private void Construct(IFighterExplosionPool explosions)
+        {
+            _explosions = explosions;
+        }
 
         private void Awake()
         {
@@ -80,7 +88,7 @@ namespace EmpireAtWar.ViewComponents.Squadrons
                 trail.emitting = false;
             }
 
-            deathExplosion.Play(true);
+            _explosions.Play(transform.position);
         }
 
         // A reused squadron brings its destroyed fighters back.
@@ -97,19 +105,16 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             {
                 trail.emitting = true;
             }
-
-            deathExplosion.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
 #if UNITY_EDITOR
         public void SetEditorReferences(int fighterId, Transform bodyTransform, Collider collider,
-            WeaponHardPoint weaponHardPoint, ParticleSystem explosion, TrailRenderer[] trails)
+            WeaponHardPoint weaponHardPoint, TrailRenderer[] trails)
         {
             id = fighterId;
             body = bodyTransform;
             hitCollider = collider;
             gun = weaponHardPoint;
-            deathExplosion = explosion;
             engineTrails = trails;
         }
 #endif

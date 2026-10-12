@@ -56,21 +56,77 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void AbilityThatAddsUnits_DoesNotBreakTheCasterScan()
+        {
+            GameObject playerView = new GameObject("Player");
+            try
+            {
+                playerView.transform.position = Vector3.right * 5f;
+                ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                Type type = typeof(ShipAbilityDefinition);
+                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                type.GetField("duration", flags).SetValue(definition, 5f);
+                type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
+
+                FakeCommand caster = new FakeCommand(definition);
+                EntityLocator entities = new EntityLocator();
+                entities.AddEntity(caster.Entity);
+                entities.AddEntity(new FakeEntity(id: 2, owner: TestPlayers.Human,
+                    health: new FakeHealth(playerView.transform, 1f), command: null));
+                // Like fighter reinforcements: the ability registers a new unit while the AI scans its casters.
+                IEntity reinforcement = new FakeEntity(id: 3, owner: TestPlayers.Enemy,
+                    health: new FakeHealth(null, 1f), command: null);
+                RecordingFactory factory = new RecordingFactory(() => entities.AddEntity(reinforcement));
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                ShipAbilityService service = new ShipAbilityService(factory, roster);
+                EnemyShipAbilityController controller = new EnemyShipAbilityController(
+                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy));
+
+                Assert.DoesNotThrow(controller.Tick);
+                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+                service.LateDispose();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(playerView);
+            }
+        }
+
         private sealed class RecordingFactory : IShipAbilityFactory
         {
+            private readonly Action _onStart;
+
             public int CreatedCount { get; private set; }
+
+            public RecordingFactory() : this(() => { })
+            {
+            }
+
+            public RecordingFactory(Action onStart)
+            {
+                _onStart = onStart;
+            }
 
             public IShipAbility Create(ShipAbilityDefinition definition)
             {
                 CreatedCount++;
-                return new RecordingAbility();
+                return new RecordingAbility(_onStart);
             }
         }
 
         private sealed class RecordingAbility : IShipAbility
         {
+            private readonly Action _onStart;
+
+            public RecordingAbility(Action onStart)
+            {
+                _onStart = onStart;
+            }
+
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
-                IEntity target) { }
+                IEntity target) => _onStart();
 
             public void Stop() { }
         }

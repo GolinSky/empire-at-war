@@ -15,13 +15,16 @@ namespace EmpireAtWar.Services.Squadrons
     /// Reuses destroyed squadrons instead of building a new squadron context per launch, which costs several
     /// milliseconds. Owner and type change the installed bindings, so squadrons are pooled per owner and type.
     /// Despawned squadrons are destroyed with the battle scene. Every type the owner's faction can launch is
-    /// built while the battle loads, so early launches do not pay for a new context mid-battle.
+    /// built while the battle loads, so early launches do not pay for a new context mid-battle; types launched
+    /// by many hangars get more.
     /// </summary>
     public sealed class SquadronPool : ISquadronSpawner, IInitializable, ITickable
     {
         // How long a destroyed squadron's wrecks and explosions stay in the battle before it is despawned.
         private const float DEATH_PRESENTATION_SECONDS = 6f;
-        private const int PREWARM_PER_TYPE = 4;
+        // Buildable squadrons come from production rather than a hangar bay.
+        private const int BUILDABLE_PREWARM = 2;
+        private const int MAX_PREWARM_PER_TYPE = 12;
         // Far below the battle plane: prewarmed squadrons are stowed in the frame they are built.
         private static readonly Vector3 PREWARM_POSITION = new Vector3(0f, -10000f, 0f);
 
@@ -46,10 +49,12 @@ namespace EmpireAtWar.Services.Squadrons
 
         public void Initialize()
         {
-            foreach (SquadronType squadronType in CollectLaunchableTypes())
+            foreach (KeyValuePair<SquadronType, int> prewarm in CountPrewarm())
             {
-                List<Squadron> squadrons = new List<Squadron>(PREWARM_PER_TYPE);
-                for (int i = 0; i < PREWARM_PER_TYPE; i++)
+                SquadronType squadronType = prewarm.Key;
+                int count = Mathf.Min(prewarm.Value, MAX_PREWARM_PER_TYPE);
+                List<Squadron> squadrons = new List<Squadron>(count);
+                for (int i = 0; i < count; i++)
                 {
                     Squadron squadron = _factory.Create(_owner.Id, squadronType, PREWARM_POSITION, Quaternion.identity);
                     squadron.Stow();
@@ -108,19 +113,27 @@ namespace EmpireAtWar.Services.Squadrons
             });
         }
 
-        // Buildable squadrons plus every hangar bay of the faction's ships and space station.
-        private HashSet<SquadronType> CollectLaunchableTypes()
+        // Per type: a few for production when buildable, plus the active limit of every hangar bay of the faction's
+        // ships and space station that launches it.
+        private Dictionary<SquadronType, int> CountPrewarm()
         {
             FactionDefinition faction = _factions.Get(_owner.Faction);
-            HashSet<SquadronType> types = new HashSet<SquadronType>(faction.Squadrons.Keys);
+            Dictionary<SquadronType, int> counts = new Dictionary<SquadronType, int>();
+            foreach (SquadronType squadronType in faction.Squadrons.Keys) counts[squadronType] = BUILDABLE_PREWARM;
             foreach (var shipType in faction.Ships.Keys)
             {
                 ShipData ship = _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
-                foreach (HangarBay bay in ship.HangarBays) types.Add(bay.SquadronType);
+                foreach (HangarBay bay in ship.HangarBays) AddBay(counts, bay);
             }
 
-            types.Add(_assetService.Load<SpaceStationData>(nameof(SpaceStationData)).GetHangarBay(_owner.Faction).SquadronType);
-            return types;
+            AddBay(counts, _assetService.Load<SpaceStationData>(nameof(SpaceStationData)).GetHangarBay(_owner.Faction));
+            return counts;
+        }
+
+        private static void AddBay(Dictionary<SquadronType, int> counts, HangarBay bay)
+        {
+            counts.TryGetValue(bay.SquadronType, out int count);
+            counts[bay.SquadronType] = count + bay.MaxActive;
         }
 
         private bool TryTakeDespawned((PlayerId, SquadronType) key, out Squadron squadron)
