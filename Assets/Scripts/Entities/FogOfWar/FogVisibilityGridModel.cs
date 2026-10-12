@@ -11,10 +11,12 @@ namespace EmpireAtWar.Models.FogOfWar
     public sealed class FogVisibilityGridModel : IDisposable
     {
         private const float HISTORIC_VISIBILITY = 0.35f;
+        private const int REVEAL_ROWS_PER_BATCH = 16;
 
         private NativeArray<float> _current;
         private NativeArray<float> _target;
         private NativeArray<int> _changed;
+        private NativeList<FogRevealCircle> _reveals;
 
         public int Resolution { get; }
 
@@ -24,6 +26,7 @@ namespace EmpireAtWar.Models.FogOfWar
             _current = new NativeArray<float>(resolution * resolution, Allocator.Persistent);
             _target = new NativeArray<float>(resolution * resolution, Allocator.Persistent);
             _changed = new NativeArray<int>(1, Allocator.Persistent);
+            _reveals = new NativeList<FogRevealCircle>(Allocator.Persistent);
         }
 
         public void Dispose()
@@ -31,6 +34,7 @@ namespace EmpireAtWar.Models.FogOfWar
             _current.Dispose();
             _target.Dispose();
             _changed.Dispose();
+            _reveals.Dispose();
         }
 
         public float GetVisibility(int index) => _current[index];
@@ -54,18 +58,30 @@ namespace EmpireAtWar.Models.FogOfWar
 
         public void Reveal(int centerX, int centerY, int radius, float edgeSoftness, float intensity)
         {
+            QueueReveal(centerX, centerY, radius);
+            ApplyReveals(edgeSoftness, intensity);
+        }
+
+        /// <summary>Queues one vision circle; <see cref="ApplyReveals"/> raises all queued circles in one job.</summary>
+        public void QueueReveal(int centerX, int centerY, int radius)
+        {
             if (radius <= 0) throw new ArgumentOutOfRangeException(nameof(radius));
+            _reveals.Add(new FogRevealCircle { CenterX = centerX, CenterY = centerY, Radius = radius });
+        }
+
+        public void ApplyReveals(float edgeSoftness, float intensity)
+        {
             if (edgeSoftness < 0f || edgeSoftness > 1f) throw new ArgumentOutOfRangeException(nameof(edgeSoftness));
+            if (_reveals.Length == 0) return;
             new FogRevealJob
             {
                 Target = _target,
+                Circles = _reveals.AsArray(),
                 Resolution = Resolution,
-                CenterX = centerX,
-                CenterY = centerY,
-                Radius = radius,
                 EdgeSoftness = edgeSoftness,
                 Intensity = intensity
-            }.Run();
+            }.Schedule(Resolution, REVEAL_ROWS_PER_BATCH).Complete();
+            _reveals.Clear();
         }
 
         /// <summary>Moves current visibility toward the targets; returns true when any cell changed.</summary>

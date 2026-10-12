@@ -87,8 +87,10 @@ namespace EmpireAtWar.Presenters.MiniMap
                 int column = Mathf.RoundToInt((center.x - _mapMin.x) / _mapSize.x * RESOLUTION);
                 int row = Mathf.RoundToInt((center.z - _mapMin.y) / _mapSize.y * RESOLUTION);
                 int radius = Mathf.Max(1, Mathf.RoundToInt(source.Radius / Mathf.Max(_mapSize.x, _mapSize.y) * RESOLUTION));
-                _grid.Reveal(column, row, radius, EDGE_SOFTNESS, 1f);
+                _grid.QueueReveal(column, row, radius);
             }
+
+            _grid.ApplyReveals(EDGE_SOFTNESS, 1f);
         }
 
         private void WritePixels()

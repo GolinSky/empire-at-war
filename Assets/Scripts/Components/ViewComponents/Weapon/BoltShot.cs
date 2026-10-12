@@ -21,6 +21,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // Velocity is measured only this long after launch, then the lead is locked. A lead that keeps
         // updating multiplies every target manoeuvre by the remaining flight time and jerks the bolt.
         private const float LEAD_SETTLE_TIME = 0.15f;
+        // Seconds between shield-surface clips of a tracked aim point. In between, the clipped point moves with
+        // the target; the landing frame always clips again, so impacts sit exactly on the shield.
+        private const float SURFACE_REFRESH_INTERVAL = 0.1f;
 
         [SerializeField] private ParticleSystem vfx;
         private Transform _transform;
@@ -32,12 +35,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Vector3 _flightAimPoint;
         private Vector3 _lastPivotPosition;
         private Vector3 _targetVelocity;
+        // Resolved aim point minus the raw target point, from the last shield clip.
+        private Vector3 _surfaceOffset;
 
         [Tooltip("Multiplies the weapon profile size for the bolt particle only (not the muzzle flash).")]
         [SerializeField] private float sizeScale = 3f;
         private float _arrivalTime;
         private float _travelTime;
         private float _progress;
+        private float _nextSurfaceRefresh;
 
         private bool _isFlying;
 
@@ -51,7 +57,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _target = IsStrikecraftTarget ? null : target;
             _aimOffset = aimOffset;
             _start = start;
-            _lastAimPoint = ResolveAimPoint(start, target.position + aimOffset);
+            Vector3 targetPoint = target.position + aimOffset;
+            _lastAimPoint = ResolveAimPoint(start, targetPoint);
+            _surfaceOffset = _lastAimPoint - targetPoint;
+            // Random phase: a salvo's bolts do not all clip again on the same frame.
+            _nextSurfaceRefresh = Time.time + SURFACE_REFRESH_INTERVAL * Random.value;
             _flightAimPoint = _lastAimPoint;
             _lastPivotPosition = TargetPivot.position;
             _targetVelocity = Vector3.zero;
@@ -96,7 +106,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if (!_isFlying) return false;
             float remaining = Mathf.Max(_arrivalTime - now, 0f);
-            if (_target != null) TrackTarget(remaining, deltaTime);
+            if (_target != null) TrackTarget(now, remaining, deltaTime);
 
             if (remaining <= 0f)
             {
@@ -126,18 +136,26 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // Velocity comes from the ship pivot, not the hardpoint: a ship turning to face a new target swings
         // its hardpoints in an arc, and extrapolating that arc as straight-line motion throws the bolt off.
         // Hardpoint swing is still followed through the tracked aim point.
-        private void TrackTarget(float remaining, float deltaTime)
+        private void TrackTarget(float now, float remaining, float deltaTime)
         {
-            Vector3 pivotPosition = TargetPivot.position;
+            // The lead locks after the settle time, so the pivot is read only while it is measured.
             if (deltaTime > 0f && _travelTime - remaining < LEAD_SETTLE_TIME)
             {
+                Vector3 pivotPosition = TargetPivot.position;
                 Vector3 measuredVelocity = (pivotPosition - _lastPivotPosition) / deltaTime;
                 float blend = 1f - Mathf.Exp(-VELOCITY_SMOOTHING_RATE * deltaTime);
                 _targetVelocity = Vector3.Lerp(_targetVelocity, measuredVelocity, blend);
+                _lastPivotPosition = pivotPosition;
             }
 
-            _lastPivotPosition = pivotPosition;
-            _lastAimPoint = ResolveAimPoint(_start, _target.position + _aimOffset);
+            Vector3 targetPoint = _target.position + _aimOffset;
+            if (remaining <= 0f || now >= _nextSurfaceRefresh)
+            {
+                _surfaceOffset = ResolveAimPoint(_start, targetPoint) - targetPoint;
+                _nextSurfaceRefresh = now + SURFACE_REFRESH_INTERVAL;
+            }
+
+            _lastAimPoint = targetPoint + _surfaceOffset;
             _flightAimPoint = _lastAimPoint + _targetVelocity * remaining;
         }
 

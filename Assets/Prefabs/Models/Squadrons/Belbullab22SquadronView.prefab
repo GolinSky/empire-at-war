@@ -1587,7 +1587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd501010a8109ea45b35bbf257e0f954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Squadrons.Icon.SquadronIconComponent
-  iconCanvas: {fileID: 5860596933649829298}
+  iconRoot: {fileID: 402233826614057879}
   frameImage: {fileID: 570915671713195087}
   silhouetteImage: {fileID: 807223681717959096}
   iconImage: {fileID: 8561503495210255462}
@@ -1620,11 +1620,6 @@ MonoBehaviour:
   - {fileID: 2860613498069391094}
   - {fileID: 7577192800507599714}
   - {fileID: 1044777327534228928}
-  hardPoints:
-  - {fileID: 5991302601084963535}
-  - {fileID: 9220304312881968133}
-  - {fileID: 6691877565017890596}
-  - {fileID: 3753962729109616816}
   revealRadius: 0
   staysRevealedOnceSeen: 0
 --- !u!114 &4716127729803408635
@@ -2646,7 +2641,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 402233826614057879}
-  - component: {fileID: 5860596933649829298}
   m_Layer: 12
   m_Name: IconCanvas
   m_TagString: Untagged
@@ -2677,30 +2671,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 72, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &5860596933649829298
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9187950705674499682}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 3
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1001 &3263185592767068964
 PrefabInstance:
   m_ObjectHideFlags: 0

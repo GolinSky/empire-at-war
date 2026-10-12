@@ -94,6 +94,49 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void CasterRemovedBeforeItsTurn_IsSkipped()
+        {
+            GameObject playerView = new GameObject("Player");
+            try
+            {
+                playerView.transform.position = Vector3.right * 5f;
+                ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                Type type = typeof(ShipAbilityDefinition);
+                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                type.GetField("duration", flags).SetValue(definition, 5f);
+                type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
+
+                EntityLocator entities = new EntityLocator();
+                // Five casters: the first tick works through four, the fifth waits for the next tick.
+                List<LocatedCommand> casters = new List<LocatedCommand>();
+                for (int id = 1; id <= 5; id++)
+                {
+                    LocatedCommand caster = new LocatedCommand(definition, entities, id);
+                    casters.Add(caster);
+                    entities.AddEntity(caster.OwnEntity);
+                }
+                entities.AddEntity(new FakeEntity(id: 10, owner: TestPlayers.Human,
+                    health: new FakeHealth(playerView.transform, 1f), command: null));
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                ShipAbilityService service = new ShipAbilityService(new RecordingFactory(), roster);
+                EnemyShipAbilityController controller = new EnemyShipAbilityController(
+                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy));
+
+                controller.Tick();
+                entities.RemoveEntity(casters[4].OwnEntity);
+
+                Assert.DoesNotThrow(controller.Tick);
+                Assert.That(casters[4].Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+                service.LateDispose();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(playerView);
+            }
+        }
+
         private sealed class RecordingFactory : IShipAbilityFactory
         {
             private readonly Action _onStart;
@@ -150,6 +193,31 @@ namespace EmpireAtWar.Tests.Editor
             {
                 Health = new FakeHealth(null, 0f);
                 Entity = new FakeEntity(id: 1, owner: TestPlayers.Enemy, health: Health, command: this);
+                Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostShieldPower,
+                    definition: definition, owner: this) };
+            }
+        }
+
+        // Resolves its entity through the locator like ShipAbilityFacade, so it throws once the unit is removed.
+        private sealed class LocatedCommand : IShipAbilityFacade
+        {
+            private readonly IEntityLocator _entities;
+            private readonly long _id;
+
+            public IReadOnlyList<ShipAbilitySlot> Slots { get; }
+            public CombatModifiers Modifiers { get; } = new CombatModifiers();
+            public Vector3 WorldPosition => Vector3.zero;
+            public IEntity Entity => _entities.GetEntity(_id);
+            public IEntity OwnEntity { get; }
+            public IHealthModelObserver Health { get; }
+            public float RadarRange => 20f;
+
+            public LocatedCommand(ShipAbilityDefinition definition, IEntityLocator entities, long id)
+            {
+                _entities = entities;
+                _id = id;
+                Health = new FakeHealth(null, 0f);
+                OwnEntity = new FakeEntity(id: id, owner: TestPlayers.Enemy, health: Health, command: this);
                 Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostShieldPower,
                     definition: definition, owner: this) };
             }

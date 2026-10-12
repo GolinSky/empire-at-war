@@ -16,6 +16,9 @@ using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using EmpireAtWar.Services.Timing;
+#endif
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
@@ -300,7 +303,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             // Queued reinforcements still arrive after the station falls so the fleet victory can resolve.
             try
             {
-                buildAction();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.EnemyBuild.Auto())
+#endif
+                {
+                    buildAction();
+                }
             }
             catch (Exception exception)
             {

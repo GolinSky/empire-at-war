@@ -46,6 +46,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void QueuedReveals_MatchSeparateReveals()
+        {
+            using FogVisibilityGridModel separate = new FogVisibilityGridModel(32);
+            using FogVisibilityGridModel queued = new FogVisibilityGridModel(32);
+            separate.Reveal(5, 6, 4, 0.5f, 1f);
+            separate.Reveal(9, 8, 6, 0.5f, 1f);
+            separate.Reveal(31, 0, 3, 0.5f, 1f);
+            queued.QueueReveal(5, 6, 4);
+            queued.QueueReveal(9, 8, 6);
+            queued.QueueReveal(31, 0, 3);
+            queued.ApplyReveals(0.5f, 1f);
+            separate.Fade(1f);
+            queued.Fade(1f);
+
+            for (int i = 0; i < 32 * 32; i++)
+                Assert.That(queued.GetVisibility(i), Is.EqualTo(separate.GetVisibility(i)), $"cell {i}");
+            Assert.That(queued.GetVisibility(9, 8), Is.EqualTo(1f));
+        }
+
+        [Test]
         public void GetVisibility_OutsideGrid_SamplesClampedEdge()
         {
             using FogVisibilityGridModel grid = new FogVisibilityGridModel(8);

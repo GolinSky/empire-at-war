@@ -2579,7 +2579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd501010a8109ea45b35bbf257e0f954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Squadrons.Icon.SquadronIconComponent
-  iconCanvas: {fileID: 5860596933649829298}
+  iconRoot: {fileID: 402233826614057879}
   frameImage: {fileID: 7775465845011014696}
   silhouetteImage: {fileID: 807223681717959096}
   iconImage: {fileID: 5133055958357241684}
@@ -2649,35 +2649,6 @@ MonoBehaviour:
   - {fileID: 1915311465724823077}
   - {fileID: 6895230469723977487}
   - {fileID: 6458846009861477123}
-  hardPoints:
-  - {fileID: 5991302601084963535}
-  - {fileID: 3417951303617781552}
-  - {fileID: 5178837335556173175}
-  - {fileID: 3845789171079149680}
-  - {fileID: 9220304312881968133}
-  - {fileID: 1072817033829083472}
-  - {fileID: 2435502154817904635}
-  - {fileID: 3715145889754879495}
-  - {fileID: 6691877565017890596}
-  - {fileID: 898454051132060329}
-  - {fileID: 2966172925816752351}
-  - {fileID: 7392327294915935114}
-  - {fileID: 3753962729109616816}
-  - {fileID: 5874792191146249594}
-  - {fileID: 4432405508889836216}
-  - {fileID: 2662883162973229868}
-  - {fileID: 7736077606675541063}
-  - {fileID: 4099656126812526264}
-  - {fileID: 409101580553739379}
-  - {fileID: 7339178456225049125}
-  - {fileID: 2342173490265114671}
-  - {fileID: 8510806697458290370}
-  - {fileID: 252823851561466324}
-  - {fileID: 1765756879060039575}
-  - {fileID: 2886408256420107762}
-  - {fileID: 813395575856770130}
-  - {fileID: 7602637919148922884}
-  - {fileID: 974176132217386633}
   revealRadius: 0
   staysRevealedOnceSeen: 0
 --- !u!114 &5167168002462823808
@@ -5314,7 +5285,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 402233826614057879}
-  - component: {fileID: 5860596933649829298}
   m_Layer: 12
   m_Name: IconCanvas
   m_TagString: Untagged
@@ -5345,30 +5315,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 72, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!223 &5860596933649829298
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9187950705674499682}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 3
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!1001 &231465934572700863
 PrefabInstance:
   m_ObjectHideFlags: 0

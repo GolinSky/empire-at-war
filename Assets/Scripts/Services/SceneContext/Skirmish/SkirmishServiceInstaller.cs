@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.Health.Overlay;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -84,6 +85,11 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container
                 .BindInterfacesAndSelfTo<CameraService>()
                 .FromComponentInHierarchy()
+                .AsSingle();
+            Container
+                .Bind<ISquadronIconLayer>()
+                .To<SquadronIconLayer>()
+                .FromNewComponentOnNewGameObject()
                 .AsSingle();
             Container
                 .BindInterfacesExt<UiHitTest>()

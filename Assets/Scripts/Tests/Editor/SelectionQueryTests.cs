@@ -66,6 +66,7 @@ namespace EmpireAtWar.Tests.Editor
             public Transform CameraTransform => null;
             public Vector3 CameraForward => Vector3.forward;
             public float FieldOfView => 60f;
+            public UnityEngine.Camera SceneCamera => null;
 
             public Vector3 GetWorldPoint(Vector2 point, Vector3 origin) => default;
 
