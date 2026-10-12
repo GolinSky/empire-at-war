@@ -129,10 +129,15 @@ namespace EmpireAtWar.Models.Factions
                 _resoluteReserved = true;
             if (IsStructureRequest(unitRequest))
             {
-                var key = (unitRequest.GetType(), unitRequest.Id);
-                _structureCounts[key] = GetStructureCount(unitRequest.GetType(), unitRequest.Id) + 1;
+                ReserveStructure(unitRequest);
             }
             NotifyProductionChanged();
+        }
+
+        public void ReserveStructure(UnitRequest request)
+        {
+            var key = (request.GetType(), request.Id);
+            _structureCounts[key] = GetStructureCount(request.GetType(), request.Id) + 1;
         }
 
         public bool TryCancelCurrentUnit(string id, out UnitRequest unitRequest)

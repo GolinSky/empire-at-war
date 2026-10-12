@@ -2,11 +2,23 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.DefendPlatform;
 
 namespace EmpireAtWar.Views.Cheats
 {
     public interface ICheatView
     {
+        event Action LevelUpStationRequested;
+        event Action<FactionType> SpawnAllShipsRequested;
+        event Action<DefendPlatformType> AddPlatformReinforcementRequested;
+        event Action<DefendPlatformType> SpawnPlatformRequested;
+        event Action<PlayerId, string> AddEnemyMoneyRequested;
+        event Action<string> AddAllEnemiesMoneyRequested;
+
+        void SetEnemies(IReadOnlyList<PlayerSlot> enemies);
+        void SetPlatforms(IReadOnlyList<DefendPlatformType> platforms);
+
         event Action<string> AddMoneyRequested;
 
         event Action<FactionType> FactionSelected;

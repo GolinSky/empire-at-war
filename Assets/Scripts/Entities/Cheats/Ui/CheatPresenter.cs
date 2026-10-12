@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Views.Cheats;
@@ -14,6 +17,13 @@ namespace EmpireAtWar.Presenters.Cheats
     {
         private readonly ICheatView _view;
         private readonly ICheatService _cheatService;
+        private readonly CheatWorldService _worldCheats;
+        private readonly IFactionService _factionService;
+        private readonly DefendPlatformCatalog _platformCatalog;
+        private readonly IPlayerRoster _players;
+        private readonly IPlayerRelations _relations;
+        private readonly PlayerSlot _owner;
+        private readonly List<PlayerSlot> _enemies = new();
 
         private readonly FactionCatalog _factionCatalog;
         private readonly Dictionary<ShipType, FactionData> _shipData = new();
@@ -21,15 +31,37 @@ namespace EmpireAtWar.Presenters.Cheats
         public CheatPresenter(
             ICheatView view,
             ICheatService cheatService,
-            FactionCatalog factionCatalog)
+            FactionCatalog factionCatalog,
+            CheatWorldService worldCheats,
+            IFactionService factionService,
+            DefendPlatformCatalog platformCatalog,
+            IPlayerRoster players,
+            IPlayerRelations relations,
+            PlayerSlot owner)
         {
             _view = view;
             _factionCatalog = factionCatalog;
             _cheatService = cheatService;
+            _worldCheats = worldCheats;
+            _factionService = factionService;
+            _platformCatalog = platformCatalog;
+            _players = players;
+            _relations = relations;
+            _owner = owner;
         }
 
         public void Initialize()
         {
+            _enemies.Clear();
+            foreach (PlayerSlot player in _players.Players)
+            {
+                if (_relations.IsHostile(_owner.Id, player.Id)) _enemies.Add(player);
+            }
+            _view.SetEnemies(_enemies);
+            List<DefendPlatformType> platforms = new List<DefendPlatformType>(_platformCatalog.Entries.Keys);
+            platforms.Sort((left, right) => ((int)left).CompareTo((int)right));
+            _view.SetPlatforms(platforms);
+
             List<FactionType> factions = BuildShipCatalog();
             _view.SetFactions(factions);
             if (factions.Count > 0)
@@ -49,6 +81,12 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantAllSuperWeaponsRequested += GrantAllSuperWeapons;
             _view.RangeDebugToggled += SetRangeDebug;
             _view.DestroyOwnShipsRequested += DestroyOwnShips;
+            _view.LevelUpStationRequested += LevelUpStation;
+            _view.SpawnAllShipsRequested += SpawnAllShips;
+            _view.AddPlatformReinforcementRequested += AddPlatformReinforcement;
+            _view.SpawnPlatformRequested += SpawnPlatform;
+            _view.AddEnemyMoneyRequested += AddEnemyMoney;
+            _view.AddAllEnemiesMoneyRequested += AddAllEnemiesMoney;
         }
 
         public void LateDispose()
@@ -61,6 +99,12 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantAllSuperWeaponsRequested -= GrantAllSuperWeapons;
             _view.RangeDebugToggled -= SetRangeDebug;
             _view.DestroyOwnShipsRequested -= DestroyOwnShips;
+            _view.LevelUpStationRequested -= LevelUpStation;
+            _view.SpawnAllShipsRequested -= SpawnAllShips;
+            _view.AddPlatformReinforcementRequested -= AddPlatformReinforcement;
+            _view.SpawnPlatformRequested -= SpawnPlatform;
+            _view.AddEnemyMoneyRequested -= AddEnemyMoney;
+            _view.AddAllEnemiesMoneyRequested -= AddAllEnemiesMoney;
         }
 
         private List<FactionType> BuildShipCatalog()
@@ -94,17 +138,7 @@ namespace EmpireAtWar.Presenters.Cheats
 
         private void AddMoney(string value)
         {
-            bool parsed = float.TryParse(
-                value,
-                NumberStyles.Float,
-                CultureInfo.InvariantCulture,
-                out float amount);
-            if (!parsed || amount <= 0f)
-            {
-                _view.SetStatus("Enter a positive money amount.");
-                return;
-            }
-
+            if (!TryParseMoney(value, out float amount)) return;
             _cheatService.AddMoney(amount);
             _view.SetStatus($"Added {amount:0.##} money.");
         }
@@ -158,6 +192,61 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus(destroyed > 0
                 ? $"Destroyed {destroyed} of your ships."
                 : "You have no ships to destroy.");
+        }
+
+        private void LevelUpStation()
+        {
+            _view.SetStatus(_factionService.ForceUpgradeStation()
+                ? "Station upgraded by one level. Queued upgrades were refunded."
+                : "Station is at maximum level or no production base is available.");
+        }
+
+        private void SpawnAllShips(FactionType faction)
+        {
+            int spawned = 0;
+            Dictionary<ShipType, FactionData> ships = _factionCatalog.Get(faction).Ships;
+            foreach (ShipType type in ships.Keys)
+            {
+                if (_cheatService.ForceSpawnShipAtDefaultZone(CreateRequest(type))) spawned++;
+            }
+            _view.SetStatus($"Spawned {spawned} of {ships.Count} {faction} ships; others had no valid spawn position.");
+        }
+
+        private void AddPlatformReinforcement(DefendPlatformType type)
+        {
+            _worldCheats.AddPlatformReinforcement(new DefendPlatformUnitRequest(_platformCatalog.Get(type), type));
+            _view.SetStatus($"Added {type} to reinforcement.");
+        }
+
+        private void SpawnPlatform(DefendPlatformType type)
+        {
+            bool spawned = _worldCheats.ForceSpawnPlatform(
+                new DefendPlatformUnitRequest(_platformCatalog.Get(type), type));
+            _view.SetStatus(spawned ? $"Spawned {type} in the home area."
+                : "No valid defense platform position is available in the home area.");
+        }
+
+        private bool TryParseMoney(string value, out float amount)
+        {
+            if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out amount)
+                && amount > 0f && !float.IsNaN(amount) && !float.IsInfinity(amount)) return true;
+
+            _view.SetStatus("Enter a positive, finite money amount.");
+            return false;
+        }
+
+        private void AddEnemyMoney(PlayerId enemy, string value)
+        {
+            if (!TryParseMoney(value, out float amount)) return;
+            _worldCheats.AddEnemyMoney(enemy, amount);
+            _view.SetStatus($"Added {amount:0.##} money to {enemy}.");
+        }
+
+        private void AddAllEnemiesMoney(string value)
+        {
+            if (!TryParseMoney(value, out float amount)) return;
+            foreach (PlayerSlot enemy in _enemies) _worldCheats.AddEnemyMoney(enemy.Id, amount);
+            _view.SetStatus($"Added {amount:0.##} money to each of {_enemies.Count} enemies.");
         }
 
         private ShipUnitRequest CreateRequest(ShipType shipType)

@@ -70,6 +70,7 @@ namespace EmpireAtWar
             Container.BindInterfacesTo<SiteFacilityBuilder>().AsSingle().NonLazy();
 
             Container.BindInterfacesExt<CheatService>();
+            Container.Bind<CheatWorldService>().AsSingle();
             Container
                 .BindInterfacesAndSelfTo<CheatView>()
                 .FromNewComponentOnNewGameObject()
