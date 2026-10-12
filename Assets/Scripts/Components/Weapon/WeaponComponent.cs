@@ -12,6 +12,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Utils;
@@ -33,6 +34,10 @@ namespace EmpireAtWar.Components.Weapon
         // With every candidate beyond reach of all hardpoints the weapon waits this long before selecting again.
         // Target changes (orders, new contacts) cancel the wait.
         private const float IDLE_RESELECT_INTERVAL = 0.25f;
+        // A hardpoint that found nothing to fire at waits a random time in this range before selecting again,
+        // so retries spread across frames. Target changes cancel the wait.
+        private const float MIN_RETRY_INTERVAL = 0.25f;
+        private const float MAX_RETRY_INTERVAL = 0.5f;
 
         private ISelectionModelObserver _selection;
         private ILocalPlayer _localPlayer;
@@ -48,6 +53,7 @@ namespace EmpireAtWar.Components.Weapon
         private IncomingMissileRegistry _missiles;
         private DebugRangeCircleFactory _rangeCircleFactory;
         [Inject] private ImpactEffectPresenter _impactPresenter;
+        [Inject] private BoltFlightBatch _boltFlights;
         private List<AttackData> _attackDataList = new List<AttackData>();
         // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
         // _candidateGroups. A group's candidates are contiguous; groups without candidates are not listed.
@@ -75,6 +81,10 @@ namespace EmpireAtWar.Components.Weapon
         // Target changes only mark candidates stale; the next reader rebuilds once for all of them.
         private bool _candidatesDirty;
         private float _idleUntil;
+        // Index = hardpoint: when it may select a target again.
+        private float[] _retryAt = Array.Empty<float>();
+        // Destroyed targets fail every candidate check already, so their candidates are dropped in bulk.
+        private int _destroyedGroups;
         // Salvos waiting for their mount to finish turning.
         private readonly List<PendingSalvo> _turningSalvos = new List<PendingSalvo>();
         // Largest distance between two hardpoints: a candidate farther than range + span from one hardpoint
@@ -112,6 +122,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             _isInitialized = true;
             _respectsLocalFog = _localPlayer.IsFriendly(_owner);
+            _retryAt = new float[hardPoints.Count];
             _attackCoordinator.Register(this);
 
             // Every hardpoint fires to its own weapon's range; nebulae and other vision effects scale it.
@@ -122,7 +133,7 @@ namespace EmpireAtWar.Components.Weapon
                 WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction);
                 profiles.Add(profile);
                 hardPoint.SetData(profile, profile.Range * _modifiers.VisionMultiplier, _damageMatrix.MissSpread,
-                    this, _attackCoordinator, _modifiers, _impactPresenter, _missiles);
+                    this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
 
@@ -184,7 +195,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (AttackData group in _subscribedGroups)
             {
                 group.UnitsChanged -= InvalidateCandidates;
-                group.Destroyed -= InvalidateCandidates;
+                group.Destroyed -= OnGroupDestroyed;
             }
             _subscribedGroups.Clear();
             _liveGroupsAtRebuild.Clear();
@@ -217,7 +228,7 @@ namespace EmpireAtWar.Components.Weapon
 
                     _attackDataList.Add(attackData);
                     Subscribe(attackData);
-                    InvalidateCandidates();
+                    AddGroupCandidates(attackData);
                     break;
                 }
                 case AttackType.MainTarget:
@@ -292,7 +303,7 @@ namespace EmpireAtWar.Components.Weapon
                 return;
 
             WeaponHardPoint weapon = hardPoints[_currentWeaponIndex];
-            if (!weapon.IsDestroyed && !weapon.IsBusy)
+            if (!weapon.IsDestroyed && !weapon.IsBusy && Time.time >= _retryAt[_currentWeaponIndex])
             {
                 _attackCoordinator.QueueTargetSelection(this, weapon);
             }
@@ -408,6 +419,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 if (result.NearestDistance > Model.MaxWeaponRange + _hardPointSpan)
                     _idleUntil = Time.time + IDLE_RESELECT_INTERVAL;
+                DelayRetry(weapon);
                 return;
             }
 
@@ -460,14 +472,20 @@ namespace EmpireAtWar.Components.Weapon
         internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)
         {
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
-            TryFireWeapon(weapon);
+            if (!TryFireWeapon(weapon)) DelayRetry(weapon);
+        }
+
+        private void DelayRetry(WeaponHardPoint weapon)
+        {
+            _retryAt[hardPoints.IndexOf(weapon)] =
+                Time.time + UnityEngine.Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL);
         }
 
         private void Subscribe(AttackData group)
         {
             if (!_subscribedGroups.Add(group)) return;
             group.UnitsChanged += InvalidateCandidates;
-            group.Destroyed += InvalidateCandidates;
+            group.Destroyed += OnGroupDestroyed;
         }
 
         private void UnsubscribeIfUnused(AttackData group)
@@ -475,7 +493,7 @@ namespace EmpireAtWar.Components.Weapon
             if (group == null || ReferenceEquals(group, _mainAttackData) || _attackDataList.Contains(group)) return;
             if (!_subscribedGroups.Remove(group)) return;
             group.UnitsChanged -= InvalidateCandidates;
-            group.Destroyed -= InvalidateCandidates;
+            group.Destroyed -= OnGroupDestroyed;
         }
 
         // The version changes immediately so selections captured before the change fall back at commit.
@@ -483,7 +501,53 @@ namespace EmpireAtWar.Components.Weapon
         {
             _targetVersion++;
             _candidatesDirty = true;
+            CancelWaits();
+        }
+
+        private void CancelWaits()
+        {
             _idleUntil = 0f;
+            Array.Clear(_retryAt, 0, _retryAt.Length);
+        }
+
+        private void OnGroupDestroyed()
+        {
+            _destroyedGroups++;
+            if (_destroyedGroups * 2 >= _candidateGroups.Count) InvalidateCandidates();
+        }
+
+        /// <summary>
+        /// A new contact joins the candidates without rebuilding the others. It ranks right after the main target,
+        /// where a rebuild would place the newest group.
+        /// </summary>
+        private void AddGroupCandidates(AttackData group)
+        {
+            _targetVersion++;
+            CancelWaits();
+            if (_candidatesDirty) return;
+
+            int insertGroup = _candidateGroups.Count > 0 && ReferenceEquals(_candidateGroups[0], _mainAttackData) ? 1 : 0;
+            int insertAt = 0;
+            while (insertAt < _candidateCount && _candidateGroupIndices[insertAt] < insertGroup) insertAt++;
+            int first = _candidateCount;
+            AddCandidates(group);
+            if (_candidateCount == first) return;
+
+            for (int i = 0; i < first; i++)
+                if (_candidateGroupIndices[i] >= insertGroup) _candidateGroupIndices[i]++;
+            for (int i = first; i < _candidateCount; i++) _candidateGroupIndices[i] = insertGroup;
+            _candidateGroups.RemoveAt(_candidateGroups.Count - 1);
+            _candidateGroups.Insert(insertGroup, group);
+            MoveBlockToStart(_candidateSlots, insertAt, first, _candidateCount);
+            MoveBlockToStart(_candidateGroupIndices, insertAt, first, _candidateCount);
+        }
+
+        // Moves values[middle..end) in front of values[start..middle).
+        private static void MoveBlockToStart(int[] values, int start, int middle, int end)
+        {
+            Array.Reverse(values, start, middle - start);
+            Array.Reverse(values, middle, end - middle);
+            Array.Reverse(values, start, end - start);
         }
 
         private void EnsureCandidates()
@@ -495,10 +559,13 @@ namespace EmpireAtWar.Components.Weapon
 
         private void RebuildCandidates()
         {
-            _targetVersion++;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.WeaponRebuildCandidates.Auto())
+            {
             long rebuildStart = Stopwatch.GetTimestamp();
 #endif
+            _targetVersion++;
+            _destroyedGroups = 0;
             _liveGroupsAtRebuild.Clear();
             ReleaseCandidates();
             if (_mainAttackData != null)
@@ -530,6 +597,7 @@ namespace EmpireAtWar.Components.Weapon
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             AttackSequenceDiagnostics.RecordCandidateRebuildTime(rebuildStart);
+            }
 #endif
         }
 

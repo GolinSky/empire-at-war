@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Weapon
                 SetBound(arc, "Min", -90f);
                 SetBound(arc, "Max", 90f);
                 weapon.SetData(arc);
-                weapon.SetData(Profile(turnRate: 45f), 100f, 0f, null, null, new CombatModifiers(), null, null);
+                weapon.SetData(Profile(turnRate: 45f), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
 
                 float firstTurn = weapon.TurnTowards(new Vector3(10f, 0f, 0f));
 
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Tests.Weapon
             try
             {
                 WeaponHardPoint weapon = mount.AddComponent<WeaponHardPoint>();
-                weapon.SetData(Profile(turnRate: 0f), 100f, 0f, null, null, new CombatModifiers(), null, null);
+                weapon.SetData(Profile(turnRate: 0f), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
 
                 Assert.That(weapon.TurnTowards(new Vector3(-10f, 0f, 0f)), Is.Zero);
             }

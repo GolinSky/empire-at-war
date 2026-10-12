@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
 using Zenject;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Tests.Editor
             container.Bind<IEntityLocator>().FromInstance(new EntityLocator());
             container.Bind<IPlayerRelations>().FromInstance(TestPlayers.CreateDuel());
             container.Bind<ImpactEffectPresenter>().FromInstance(new ImpactEffectPresenter(null, null));
+            container.Bind<BoltFlightBatch>().FromInstance(new BoltFlightBatch());
             container.Bind<WeaponsData>().FromInstance(
                 AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"));
 

@@ -10,6 +10,8 @@ namespace EmpireAtWar.Services.Timing
         public const string SQUADRON_ORDER = "Battle.Squadron.UpdateOrder";
         public const string SQUADRON_PILOT = "Battle.Squadron.Pilot";
         public const string SQUADRON_FLIGHT = "Battle.Squadron.Flight";
+        // Every fighter's pose written in one batch per frame.
+        public const string SQUADRON_PLACEMENT = "Battle.Squadron.Placement";
         public const string DUE_SORT = "Battle.Attack.DueBatch.Sort";
         public const string DUE_LOOKUP = "Battle.Attack.DueBatch.Lookup";
         public const string DUE_EMISSION = "Battle.Attack.DueBatch.Emission";
@@ -33,6 +35,11 @@ namespace EmpireAtWar.Services.Timing
         public const string TARGET_BATCH = "Battle.Attack.TargetBatch";
         public const string TARGET_BATCH_JOB = "Battle.Attack.TargetBatch.Job";
         public const string TARGET_BATCH_CAPTURE = "Battle.Attack.TargetBatch.Capture";
+        // Capture parts: owners rebuild/prepare candidates, copy them into the batch, then wait for slot positions.
+        public const string TARGET_BATCH_CAPTURE_OWNERS = "Battle.Attack.TargetBatch.Capture.Owners";
+        public const string TARGET_BATCH_CAPTURE_COPY = "Battle.Attack.TargetBatch.Capture.Copy";
+        public const string TARGET_BATCH_CAPTURE_POSITIONS = "Battle.Attack.TargetBatch.Capture.Positions";
+        public const string WEAPON_REBUILD_CANDIDATES = "Battle.Weapon.RebuildCandidates";
         public const string TARGET_BATCH_PREPARE = "Battle.Attack.TargetBatch.Prepare";
         public const string TARGET_BATCH_SERIAL = "Battle.Attack.TargetBatch.Serial";
         public const string TARGET_BATCH_SCHEDULE = "Battle.Attack.TargetBatch.Schedule";
@@ -51,7 +58,6 @@ namespace EmpireAtWar.Services.Timing
         public const string PROJECTILE_LASER_UPDATE = "Battle.Projectile.LaserUpdate";
         public const string PROJECTILE_TRACK = "Battle.Projectile.Track";
         public const string PROJECTILE_MOVE = "Battle.Projectile.Move";
-        public const string PROJECTILE_EFFECT = "Battle.Projectile.Effect";
         public const string SHIP_FACING_SOLVE = "Battle.Ship.FacingSolve";
         public const string RADAR_SCAN = "Battle.Radar.Scan";
         public const string RADAR_SNAPSHOT = "Battle.Radar.Snapshot";
@@ -70,6 +76,7 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker SquadronOrder = new ProfilerMarker(SQUADRON_ORDER);
         public static readonly ProfilerMarker SquadronPilot = new ProfilerMarker(SQUADRON_PILOT);
         public static readonly ProfilerMarker SquadronFlight = new ProfilerMarker(SQUADRON_FLIGHT);
+        public static readonly ProfilerMarker SquadronPlacement = new ProfilerMarker(SQUADRON_PLACEMENT);
         public static readonly ProfilerMarker DueSort = new ProfilerMarker(DUE_SORT);
         public static readonly ProfilerMarker DueLookup = new ProfilerMarker(DUE_LOOKUP);
         public static readonly ProfilerMarker DueEmission = new ProfilerMarker(DUE_EMISSION);
@@ -104,6 +111,11 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker TargetBatch = new ProfilerMarker(TARGET_BATCH);
         public static readonly ProfilerMarker TargetBatchJob = new ProfilerMarker(TARGET_BATCH_JOB);
         public static readonly ProfilerMarker TargetBatchCapture = new ProfilerMarker(TARGET_BATCH_CAPTURE);
+        public static readonly ProfilerMarker TargetBatchCaptureOwners = new ProfilerMarker(TARGET_BATCH_CAPTURE_OWNERS);
+        public static readonly ProfilerMarker TargetBatchCaptureCopy = new ProfilerMarker(TARGET_BATCH_CAPTURE_COPY);
+        public static readonly ProfilerMarker TargetBatchCapturePositions =
+            new ProfilerMarker(TARGET_BATCH_CAPTURE_POSITIONS);
+        public static readonly ProfilerMarker WeaponRebuildCandidates = new ProfilerMarker(WEAPON_REBUILD_CANDIDATES);
         public static readonly ProfilerMarker TargetBatchPrepare = new ProfilerMarker(TARGET_BATCH_PREPARE);
         public static readonly ProfilerMarker TargetBatchSerial = new ProfilerMarker(TARGET_BATCH_SERIAL);
         public static readonly ProfilerMarker TargetBatchSchedule = new ProfilerMarker(TARGET_BATCH_SCHEDULE);
@@ -122,7 +134,6 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker ProjectileLaserUpdate = new ProfilerMarker(PROJECTILE_LASER_UPDATE);
         public static readonly ProfilerMarker ProjectileTrack = new ProfilerMarker(PROJECTILE_TRACK);
         public static readonly ProfilerMarker ProjectileMove = new ProfilerMarker(PROJECTILE_MOVE);
-        public static readonly ProfilerMarker ProjectileEffect = new ProfilerMarker(PROJECTILE_EFFECT);
         public static readonly ProfilerMarker ShipFacingSolve = new ProfilerMarker(SHIP_FACING_SOLVE);
         public static readonly ProfilerMarker RadarScan = new ProfilerMarker(RADAR_SCAN);
         public static readonly ProfilerMarker RadarSnapshot = new ProfilerMarker(RADAR_SNAPSHOT);

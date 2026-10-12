@@ -56,6 +56,8 @@ namespace EmpireAtWar.Components.Weapon
         // Index = slot. A freed slot keeps its old transform until reused; nothing reads it meanwhile.
         // Every IHardPointModel's Position is its Transform's position.
         private TransformAccessArray _transforms;
+        private JobHandle _positionRead;
+        private bool _isReadingPositions;
 
         public NativeArray<float3> Positions => _positions;
         public NativeArray<byte> Flags => _flags;
@@ -125,30 +127,37 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         /// <summary>
+        /// Starts this batch's ship position read on worker threads so main-thread work overlaps it;
+        /// <see cref="Refresh"/> completes it. No slot may be acquired in between.
+        /// </summary>
+        public void BeginPositionRead()
+        {
+            EnsureBuffers();
+            NativeArray<byte>.Copy(_transformSlots, _transformSlotMask, _units.Count);
+            _positionRead = new TargetSlotPositionJob
+            {
+                Positions = _positions,
+                TransformSlots = _transformSlotMask,
+                Stripe = _readAllSlots ? 0 : _stripe,
+                StripeCount = _readAllSlots ? 1 : SHIP_POSITION_STRIPES
+            }.ScheduleReadOnly(_transforms, POSITION_JOB_BATCH_SIZE);
+            _isReadingPositions = true;
+            _readAllSlots = false;
+            _stripe = (_stripe + 1) % SHIP_POSITION_STRIPES;
+        }
+
+        /// <summary>
         /// Reads every marked hardpoint once for this selection batch; slots no owner of the batch uses keep stale
         /// data. Target states are shared with <see cref="IsWreck"/> until <see cref="ClearTargets"/> ends the batch.
         /// </summary>
         public void Refresh()
         {
-            int count = _units.Count;
-            int positionCapacity = PositionCapacity;
-            NativeArrayBuffer.EnsureCapacity(ref _positions, count);
-            NativeArrayBuffer.EnsureCapacity(ref _flags, count);
-            NativeArrayBuffer.EnsureCapacity(ref _transformSlotMask, count);
-            if (_generations.Length < _positions.Length) Array.Resize(ref _generations, _positions.Length);
-            if (PositionCapacity != positionCapacity) _readAllSlots = true;
-            if (_usedSlots.Count > 0)
+            EnsureBuffers();
+            if (!_isReadingPositions && _usedSlots.Count > 0) BeginPositionRead();
+            if (_isReadingPositions)
             {
-                NativeArray<byte>.Copy(_transformSlots, _transformSlotMask, count);
-                new TargetSlotPositionJob
-                {
-                    Positions = _positions,
-                    TransformSlots = _transformSlotMask,
-                    Stripe = _readAllSlots ? 0 : _stripe,
-                    StripeCount = _readAllSlots ? 1 : SHIP_POSITION_STRIPES
-                }.ScheduleReadOnly(_transforms, POSITION_JOB_BATCH_SIZE).Complete();
-                _readAllSlots = false;
-                _stripe = (_stripe + 1) % SHIP_POSITION_STRIPES;
+                _positionRead.Complete();
+                _isReadingPositions = false;
 
                 for (int i = 0; i < _unreadSlots.Count; i++)
                 {
@@ -177,6 +186,17 @@ namespace EmpireAtWar.Components.Weapon
                 _flags[slot] = (byte)(SLOT_VALID | (state.IsStrikecraft ? SLOT_STRIKECRAFT : 0));
                 AttackSequenceDiagnostics.RecordTargetSnapshot();
             }
+        }
+
+        private void EnsureBuffers()
+        {
+            int count = _units.Count;
+            int positionCapacity = PositionCapacity;
+            NativeArrayBuffer.EnsureCapacity(ref _positions, count);
+            NativeArrayBuffer.EnsureCapacity(ref _flags, count);
+            NativeArrayBuffer.EnsureCapacity(ref _transformSlotMask, count);
+            if (_generations.Length < _positions.Length) Array.Resize(ref _generations, _positions.Length);
+            if (PositionCapacity != positionCapacity) _readAllSlots = true;
         }
 
         /// <summary>Matches WeaponComponent's live check: not cloaked, and not hidden by fog for local-team weapons.</summary>
@@ -216,6 +236,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public void Dispose()
         {
+            _positionRead.Complete();
             ClearTargets();
             if (_positions.IsCreated) _positions.Dispose();
             if (_flags.IsCreated) _flags.Dispose();

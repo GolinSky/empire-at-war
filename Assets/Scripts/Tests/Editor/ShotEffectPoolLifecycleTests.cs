@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Weapon
             WeaponProfile profile = new WeaponProfile();
             typeof(WeaponProfile).GetField("shotPrefab", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(profile, source);
-            ShotEffectPool pool = new ShotEffectPool(profile, null, _ => { }, null, 1);
+            ShotEffectPool pool = new ShotEffectPool(profile, null, _ => { }, null, null, 1);
             ShotEffect effect = null;
             try
             {

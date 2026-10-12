@@ -148,6 +148,7 @@ namespace EmpireAtWar.Tests.Editor
             var shot = UnityEngine.Object.Instantiate(profile.ShotPrefab);
             var muzzle = new GameObject("Test muzzle");
             var target = new GameObject("Test target");
+            var flights = new EmpireAtWar.ViewComponents.Weapon.BoltFlightBatch();
             try
             {
                 target.transform.position = Vector3.forward * 133f;
@@ -157,7 +158,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     // Exercise the runtime setup without a damage target, then advance particle simulation.
                     if (reuse == 0)
-                        shot.Fire(muzzle.transform, target.transform, target.transform, Vector3.zero, profile);
+                        shot.Fire(muzzle.transform, target.transform, target.transform, Vector3.zero, profile, flights);
                     else
                         typeof(EmpireAtWar.ViewComponents.Weapon.BoltShot).GetMethod("Play",
                             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
@@ -183,6 +184,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
+                flights.Dispose();
                 UnityEngine.Object.DestroyImmediate(shot.gameObject);
                 UnityEngine.Object.DestroyImmediate(muzzle);
                 UnityEngine.Object.DestroyImmediate(target);

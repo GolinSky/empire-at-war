@@ -95,6 +95,7 @@ namespace EmpireAtWar.Services.Enemy
             _entityLocator.EntityAdded += HandleEntityChanged;
             _entityLocator.EntityRemoved += HandleEntityChanged;
             EvaluateAndExecute();
+            _decisionTimer += EnemyAiStagger.Offset(_owner.Id, _decisionTimer);
         }
 
         public void LateDispose()
@@ -150,8 +151,8 @@ namespace EmpireAtWar.Services.Enemy
         private void HandleWorldChanged()
         {
             // Removal events also arrive during teardown, after zone views may be destroyed.
-            // Defer world queries to the next gameplay tick.
-            _decisionTimer = 0f;
+            // Defer world queries to a later gameplay tick, on a frame of this player's own.
+            _decisionTimer = Mathf.Min(_decisionTimer, EnemyAiStagger.WorldChangeDelay(_owner.Id));
         }
 
         private void EvaluateAndExecute()

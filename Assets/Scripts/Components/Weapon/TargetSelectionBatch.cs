@@ -169,60 +169,75 @@ namespace EmpireAtWar.Components.Weapon
                 // Owners first: a stale owner rebuilds its candidates (acquiring slots) before slots are read.
                 int candidateCount = 0;
                 int groupCount = 0;
-                for (int i = 0; i < _targetSelectionRequests.Count; i++)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.TargetBatchCaptureOwners.Auto())
+#endif
                 {
-                    TargetSelectionRequest request = _targetSelectionRequests[i];
-                    if (!_isRegistered(request.Owner, request.OwnerGeneration)) continue;
-                    if (_capturedOwners.ContainsKey(request.Weapon)) continue;
-                    WeaponComponent weapon = request.Weapon;
-                    weapon.PrepareTargetSelection(_capture);
-                    _capturedOwners.Add(weapon, new TargetSelectionRequest
+                    for (int i = 0; i < _targetSelectionRequests.Count; i++)
                     {
-                        CandidateStart = candidateCount,
-                        CandidateCount = weapon.CandidateCount,
-                        GroupStart = groupCount,
-                        TargetVersion = weapon.TargetVersion
-                    });
-                    _capturedWeapons.Add(weapon);
-                    candidateCount += weapon.CandidateCount;
-                    groupCount += weapon.CandidateGroupCount;
+                        TargetSelectionRequest request = _targetSelectionRequests[i];
+                        if (!_isRegistered(request.Owner, request.OwnerGeneration)) continue;
+                        if (_capturedOwners.ContainsKey(request.Weapon)) continue;
+                        WeaponComponent weapon = request.Weapon;
+                        weapon.PrepareTargetSelection(_capture);
+                        _capturedOwners.Add(weapon, new TargetSelectionRequest
+                        {
+                            CandidateStart = candidateCount,
+                            CandidateCount = weapon.CandidateCount,
+                            GroupStart = groupCount,
+                            TargetVersion = weapon.TargetVersion
+                        });
+                        _capturedWeapons.Add(weapon);
+                        candidateCount += weapon.CandidateCount;
+                        groupCount += weapon.CandidateGroupCount;
+                    }
                 }
 
-                for (int i = 0; i < _capturedWeapons.Count; i++)
-                    _capture.MarkUsed(_capturedWeapons[i].CandidateSlots, _capturedWeapons[i].CandidateCount);
-                _capture.Refresh();
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _candidateSlots, candidateCount);
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _candidateGroups, candidateCount);
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _groupEligible, groupCount);
-                for (int i = 0; i < _capturedWeapons.Count; i++)
+                // Slots are all acquired now, so ship positions are read on workers while the copies below run.
+                if (candidateCount > 0) _capture.BeginPositionRead();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.TargetBatchCaptureCopy.Auto())
+#endif
                 {
-                    WeaponComponent weapon = _capturedWeapons[i];
-                    // An owner without candidates may start exactly at a full buffer's end, which Copy rejects.
-                    if (weapon.CandidateCount == 0) continue;
-                    TargetSelectionRequest captured = _capturedOwners[weapon];
-                    NativeArray<int>.Copy(weapon.CandidateSlots, 0, _candidateSlots, captured.CandidateStart,
-                        captured.CandidateCount);
-                    NativeArray<int>.Copy(weapon.CandidateGroupIndices, 0, _candidateGroups, captured.CandidateStart,
-                        captured.CandidateCount);
-                    NativeArray<byte>.Copy(weapon.GroupEligibility, 0, _groupEligible, captured.GroupStart,
-                        weapon.CandidateGroupCount);
+                    for (int i = 0; i < _capturedWeapons.Count; i++)
+                        _capture.MarkUsed(_capturedWeapons[i].CandidateSlots, _capturedWeapons[i].CandidateCount);
+                    EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _candidateSlots, candidateCount);
+                    EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _candidateGroups, candidateCount);
+                    EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _groupEligible, groupCount);
+                    for (int i = 0; i < _capturedWeapons.Count; i++)
+                    {
+                        WeaponComponent weapon = _capturedWeapons[i];
+                        // An owner without candidates may start exactly at a full buffer's end, which Copy rejects.
+                        if (weapon.CandidateCount == 0) continue;
+                        TargetSelectionRequest captured = _capturedOwners[weapon];
+                        NativeArray<int>.Copy(weapon.CandidateSlots, 0, _candidateSlots, captured.CandidateStart,
+                            captured.CandidateCount);
+                        NativeArray<int>.Copy(weapon.CandidateGroupIndices, 0, _candidateGroups, captured.CandidateStart,
+                            captured.CandidateCount);
+                        NativeArray<byte>.Copy(weapon.GroupEligibility, 0, _groupEligible, captured.GroupStart,
+                            weapon.CandidateGroupCount);
+                    }
+
+                    for (int i = 0; i < _targetSelectionRequests.Count; i++)
+                    {
+                        TargetSelectionRequest request = _targetSelectionRequests[i];
+                        if (!_capturedOwners.TryGetValue(request.Weapon, out TargetSelectionRequest captured)) continue;
+                        request.CandidateStart = captured.CandidateStart;
+                        request.CandidateCount = captured.CandidateCount;
+                        request.GroupStart = captured.GroupStart;
+                        request.TargetVersion = captured.TargetVersion;
+                        Transform weaponTransform = request.HardPoint.transform;
+                        request.Origin = weaponTransform.position;
+                        request.ParentRotation = weaponTransform.parent == null
+                            ? Quaternion.identity : weaponTransform.parent.rotation;
+                        _targetSelectionRequests[i] = request;
+                    }
                 }
 
-                for (int i = 0; i < _targetSelectionRequests.Count; i++)
-                {
-                    TargetSelectionRequest request = _targetSelectionRequests[i];
-                    if (!_capturedOwners.TryGetValue(request.Weapon, out TargetSelectionRequest captured)) continue;
-                    request.CandidateStart = captured.CandidateStart;
-                    request.CandidateCount = captured.CandidateCount;
-                    request.GroupStart = captured.GroupStart;
-                    request.TargetVersion = captured.TargetVersion;
-                    Transform weaponTransform = request.HardPoint.transform;
-                    request.Origin = weaponTransform.position;
-                    request.ParentRotation = weaponTransform.parent == null
-                        ? Quaternion.identity : weaponTransform.parent.rotation;
-                    _targetSelectionRequests[i] = request;
-                }
-
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.TargetBatchCapturePositions.Auto())
+#endif
+                    _capture.Refresh();
                 LastCandidateCount = candidateCount;
             }
         }

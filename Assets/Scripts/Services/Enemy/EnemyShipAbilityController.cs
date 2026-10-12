@@ -14,6 +14,9 @@ namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyShipAbilityController : ITickable
     {
+        // Casters are worked through a few per frame, so one decision never lands in a single frame.
+        private const int CASTERS_PER_TICK = 4;
+
         private readonly IEntityLocator _entities;
         private readonly IEnemyAiStateProvider _state;
         private readonly IPlayerRelations _relations;
@@ -22,8 +25,13 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ShipAbilityService _shipAbilityService;
         private readonly List<IEntity> _targets = new List<IEntity>();
         private readonly List<IShipAbilityFacade> _casters = new List<IShipAbilityFacade>();
+        // Hostile units and where they were when the decision started; every caster searches this one list.
+        private readonly List<(IEntity Entity, Vector3 Position)> _hostiles = new List<(IEntity, Vector3)>();
+        private EnemyAiDifficultyProfile _profile;
+        private int _nextCaster;
 
         private float _timeLeft;
+        private bool _hasDecided;
 
         public EnemyShipAbilityController(IEntityLocator entities,
             IEnemyAiStateProvider state, IPlayerRelations relations,
@@ -40,27 +48,52 @@ namespace EmpireAtWar.Services.Enemy
         public void Tick()
         {
             _timeLeft -= Time.deltaTime;
-            if (_timeLeft > 0f) return;
-            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(_owner.Difficulty);
-            _timeLeft = profile.AbilityDecisionInterval;
-            // Abilities can bring units into the battle (fighter reinforcements), which changes the entity
-            // collection, so casters are collected before any ability is used.
-            _casters.Clear();
-            foreach (IEntity entity in _entities.Entities)
+            if (_timeLeft <= 0f) StartDecision();
+            UseNextCasters();
+        }
+
+        private void StartDecision()
+        {
+            _profile = EnemyAiDifficultyProfile.Get(_owner.Difficulty);
+            _timeLeft = _profile.AbilityDecisionInterval;
+            if (!_hasDecided)
             {
-                if (entity.Owner != _owner.Id || entity.HealthModel.IsDestroyed ||
-                    !entity.TryGetFacade(out IShipAbilityFacade caster)) continue;
-                _casters.Add(caster);
+                _hasDecided = true;
+                _timeLeft += EnemyAiStagger.Offset(_owner.Id, _timeLeft);
             }
 
-            foreach (IShipAbilityFacade caster in _casters)
+            // Abilities can bring units into the battle (fighter reinforcements), which changes the entity
+            // collection, so casters and hostiles are collected before any ability is used.
+            _casters.Clear();
+            _hostiles.Clear();
+            _nextCaster = 0;
+            foreach (IEntity entity in _entities.Entities)
             {
+                if (entity.HealthModel.IsDestroyed) continue;
+                if (entity.Owner == _owner.Id)
+                {
+                    if (entity.TryGetFacade(out IShipAbilityFacade caster)) _casters.Add(caster);
+                }
+                else if (_relations.IsHostile(_owner.Id, entity.Owner))
+                {
+                    _hostiles.Add((entity, entity.GetFacade<IEntityTransformFacade>().Transform.position));
+                }
+            }
+        }
+
+        private void UseNextCasters()
+        {
+            int end = Mathf.Min(_nextCaster + CASTERS_PER_TICK, _casters.Count);
+            for (; _nextCaster < end; _nextCaster++)
+            {
+                IShipAbilityFacade caster = _casters[_nextCaster];
+                if (caster.Entity.HealthModel.IsDestroyed) continue;
                 for (int i = 0; i < caster.Slots.Count; i++)
                 {
                     ShipAbilitySlot slot = caster.Slots[i];
                     if (slot.State != ShipAbilityState.Ready ||
-                        Random.value >= profile.AbilityUseChance) continue;
-                    TryUse(caster, slot, profile);
+                        Random.value >= _profile.AbilityUseChance) continue;
+                    TryUse(caster, slot, _profile);
                 }
             }
         }
@@ -94,10 +127,10 @@ namespace EmpireAtWar.Services.Enemy
         private void CollectTargets(IShipAbilityFacade caster, float range)
         {
             _targets.Clear();
-            foreach (IEntity entity in _entities.Entities)
+            foreach ((IEntity entity, Vector3 position) in _hostiles)
             {
-                if (!_relations.IsHostile(caster.Entity.Owner, entity.Owner) || entity.HealthModel.IsDestroyed || entity.IsCloaked() ||
-                    PlanarGeometry.Distance(caster.WorldPosition, entity.GetFacade<IEntityTransformFacade>().Transform.position) > range)
+                if (entity.HealthModel.IsDestroyed || entity.IsCloaked() ||
+                    PlanarGeometry.Distance(caster.WorldPosition, position) > range)
                     continue;
                 _targets.Add(entity);
             }

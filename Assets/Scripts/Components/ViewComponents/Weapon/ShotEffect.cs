@@ -42,6 +42,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Moves the whole target unit; read it for the unit's travel, free of its turning.</summary>
         protected Transform TargetPivot { get; private set; }
         protected bool HasArmorImpact => _impactCaptured && _impactSurface == ImpactSurface.Armor;
+        /// <summary>Flies bolts for the whole battle; only bolts use it.</summary>
+        protected BoltFlightBatch BoltFlights { get; private set; }
 
         public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
             DamageType damageType, float damage, float size, bool isHit)
@@ -104,9 +106,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
         public float Fire(Transform muzzle, Transform target, Transform targetPivot, Vector3 aimOffset,
-            WeaponProfile profile)
+            WeaponProfile profile, BoltFlightBatch boltFlights)
         {
             TargetPivot = targetPivot;
+            BoltFlights = boltFlights;
             muzzleFlash.Play(muzzle, ResolveAimPoint(muzzle.position, target.position + aimOffset),
                 profile.Color, profile.Size.x);
             float travelTime = Play(muzzle, target, aimOffset, profile);

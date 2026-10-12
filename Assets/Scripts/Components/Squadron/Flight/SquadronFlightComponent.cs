@@ -21,9 +21,12 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private IVisionService _visionService;
         private IFogVisionData _visionData;
         private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
+        private FighterPoseBatch _poseBatch;
 
         [SerializeField] private List<FighterView> fighters;
         private readonly List<NumericsVector3> _spawnPositions = new List<NumericsVector3>();
+        // Index = fighter: its slot in the pose batch.
+        private int[] _poseSlots;
 
         private Vector3 _startPosition;
         private Quaternion _startRotation;
@@ -39,8 +42,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         [Inject]
         private void Construct(IVisionService visionService, IFogVisionData visionData,
             SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner,
-            EmpireAtWar.Components.Combat.CombatModifiers modifiers)
+            EmpireAtWar.Components.Combat.CombatModifiers modifiers, FighterPoseBatch poseBatch)
         {
+            _poseBatch = poseBatch;
             SetModel(model);
             _startPosition = startPosition;
             _startRotation = startRotation;
@@ -72,6 +76,13 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 fighter.ClearTrails();
             }
 
+            _poseSlots = new int[fighters.Count];
+            for (int i = 0; i < fighters.Count; i++)
+            {
+                FighterView fighter = fighters[i];
+                _poseSlots[i] = _poseBatch.Register(fighter.transform, fighter.Body, fighter.BodyRestRotation);
+            }
+
             _modifiers.Changed += RefreshVision;
             _visionService.Register(_owner, transform, VisionRange);
         }
@@ -95,6 +106,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             }
 
             _isReleased = true;
+            foreach (int slot in _poseSlots) _poseBatch.Unregister(slot);
             _modifiers.Changed -= RefreshVision;
             _visionService.Unregister(transform);
         }
@@ -123,7 +135,20 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             }
 
             Model.Step(deltaTime);
-            ApplyPoses();
+            QueuePoses();
+        }
+
+        // The root moves now so selection, radar and icons see it this frame; fighters move in the pose batch.
+        private void QueuePoses()
+        {
+            transform.position = Model.GetCentroid().ToUnity();
+            for (int i = 0; i < fighters.Count; i++)
+            {
+                FighterKinematics fighter = Model.Get(i);
+                Vector3 position = fighter.Position.ToUnity();
+                fighters[i].RecordPosition(position);
+                _poseBatch.Set(_poseSlots[i], position, fighter.Forward.ToUnity(), fighter.Bank);
+            }
         }
 
         private void ApplyPoses()

@@ -34,6 +34,8 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         public Transform Transform => transform;
         public bool IsDestroyed => _healthPercentage <= 0f;
         public WeaponHardPoint Gun => gun;
+        public Transform Body => body;
+        public Quaternion BodyRestRotation => _bodyRestRotation;
 
         public bool TryGetWeaponType(out WeaponType weaponType) => gun.TryGetWeaponType(out weaponType);
 
@@ -48,6 +50,10 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             _bodyRestRotation = body.localRotation;
         }
 
+        /// <summary>Records the pose's position for targeting; <see cref="FighterPoseBatch"/> moves the transform.</summary>
+        public void RecordPosition(Vector3 position) => _position = position;
+
+        /// <summary>Moves the fighter at once, e.g. when it spawns and its trails are cleared right after.</summary>
         public void ApplyPose(Vector3 position, Vector3 forward, float bank)
         {
             _position = position;
