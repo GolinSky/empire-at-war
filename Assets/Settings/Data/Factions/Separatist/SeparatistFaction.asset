@@ -132,7 +132,7 @@ MonoBehaviour:
     - key: 107
       value:
         matchups: {fileID: 11400000, guid: 5253bdace10ccf24b9253110f4869c48, type: 2}
-        description: CIS transport with 500 hull, 600 shields and four medium laser
+        description: CIS transport with 500 hull, 600 shields and four light laser
           cannon hardpoints. Avoid sustained combat with warships.
         role: "Transport \xB7 Light support"
         iconKey: 69c29902694322d4aacf1446e4b7f487:21300000

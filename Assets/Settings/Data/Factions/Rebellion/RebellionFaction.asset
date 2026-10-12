@@ -174,7 +174,7 @@ MonoBehaviour:
     - key: 308
       value:
         matchups: {fileID: 11400000, guid: 3257543b722be21409dddfd419a7e941, type: 2}
-        description: 'CD-273 Corellian Destroyer: fast strike ship with four medium
+        description: 'CD-273 Corellian Destroyer: fast strike ship with four light
           laser cannons, two concussion missile launchers and two point-defense lasers.
           Power to Engines increases speed by 35% for 20 seconds.'
         role: Fast attack / Heavy corvette

@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 2704095773136311598}
   - component: {fileID: 933765677890278598}
   m_Layer: 0
-  m_Name: MediumLaser_DirectFire
+  m_Name: LightLaser_DirectFire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -184,7 +184,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 8
 --- !u!1 &6228160540196347573
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 2519026405189925560}
   - component: {fileID: 7897874318848634473}
   m_Layer: 0
-  m_Name: MediumLaser_HardPoint_3
+  m_Name: LightLaser_HardPoint_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -238,7 +238,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 8
 --- !u!1 &6672146617763140784
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,7 +577,7 @@ GameObject:
   - component: {fileID: 4990588274893826613}
   - component: {fileID: 724733529721709995}
   m_Layer: 0
-  m_Name: MediumLaser_HardPoint_1
+  m_Name: LightLaser_HardPoint_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -619,7 +619,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 8
 --- !u!1 &7290964567724939097
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +680,7 @@ GameObject:
   - component: {fileID: 8016837172109421392}
   - component: {fileID: 7967663468167514532}
   m_Layer: 0
-  m_Name: MediumLaser_HardPoint_2
+  m_Name: LightLaser_HardPoint_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -722,7 +722,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 8
 --- !u!1 &8327578505235340560
 GameObject:
   m_ObjectHideFlags: 0
