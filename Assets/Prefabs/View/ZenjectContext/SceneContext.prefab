@@ -679,6 +679,8 @@ MonoBehaviour:
   reinforcementZoneData: {fileID: 0}
   unitOrderSettings: {fileID: 11400000, guid: afce51dcd754fd0469faa3093790d821, type: 2}
   teamColorPalette: {fileID: 11400000, guid: e126eded0451c624bbeb3e2c6170e260, type: 2}
+  fighterExplosion: {fileID: 6075391245261940467, guid: 54f8def27abde8249aeb5df35d3462d9,
+    type: 3}
 --- !u!1001 &5873742713520836447
 PrefabInstance:
   m_ObjectHideFlags: 0

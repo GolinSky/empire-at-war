@@ -21,6 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly ShipAbilityService _shipAbilityService;
         private readonly List<IEntity> _targets = new List<IEntity>();
+        private readonly List<IShipAbilityFacade> _casters = new List<IShipAbilityFacade>();
 
         private float _timeLeft;
 
@@ -42,10 +43,18 @@ namespace EmpireAtWar.Services.Enemy
             if (_timeLeft > 0f) return;
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(_owner.Difficulty);
             _timeLeft = profile.AbilityDecisionInterval;
+            // Abilities can bring units into the battle (fighter reinforcements), which changes the entity
+            // collection, so casters are collected before any ability is used.
+            _casters.Clear();
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.Owner != _owner.Id || entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IShipAbilityFacade caster)) continue;
+                _casters.Add(caster);
+            }
+
+            foreach (IShipAbilityFacade caster in _casters)
+            {
                 for (int i = 0; i < caster.Slots.Count; i++)
                 {
                     ShipAbilitySlot slot = caster.Slots[i];

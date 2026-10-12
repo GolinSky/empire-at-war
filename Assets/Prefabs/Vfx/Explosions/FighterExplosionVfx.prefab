@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 679264288381096544}
   - component: {fileID: 4512357853715943265}
   - component: {fileID: 8945311068636919721}
+  - component: {fileID: 6075391245261940467}
   m_Layer: 0
   m_Name: FighterExplosionVfx
   m_TagString: Untagged
@@ -4924,6 +4925,23 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &6075391245261940467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992365165172597046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1f77739b775a0d40a2024d0bc51040d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.ExplosionVfx
+  particles: {fileID: 4512357853715943265}
+  renderers:
+  - {fileID: 8945311068636919721}
+  - {fileID: 1580344407696899342}
+  - {fileID: 6319131072980782351}
 --- !u!1 &4359382391685289382
 GameObject:
   m_ObjectHideFlags: 0

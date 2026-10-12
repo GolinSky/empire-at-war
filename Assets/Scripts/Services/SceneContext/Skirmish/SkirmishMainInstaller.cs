@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Entities.Fps;
 using EmpireAtWar.SceneContext;
 using EmpireAtWar.Services.Enemy;
@@ -65,6 +66,7 @@ public class SkirmishMainInstaller : MonoInstaller
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [SerializeField] private UnitOrderSettings unitOrderSettings;
     [SerializeField] private TeamColorPalette teamColorPalette;
+    [SerializeField] private ExplosionVfx fighterExplosion;
 
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IAssetService AssetService { get; }
@@ -185,6 +187,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<LayerService>().AsSingle();
 
         Container.BindScriptableObject<ShipsData>(AssetService);
+        Container.BindInterfacesTo<FighterExplosionPool>().AsSingle().WithArguments(fighterExplosion);
         // Shared by every player's container.
         Container.BindScriptableObject<ReinforcementData>(AssetService);
         Container.BindScriptableObject<EconomyData>(AssetService);

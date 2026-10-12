@@ -27,7 +27,6 @@ namespace EmpireAtWar.Editor.Squadrons
     public static class SquadronViewPrefabBuilder
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
-        private const string EXPLOSION_PATH = "Assets/Prefabs/Vfx/Explosions/FighterExplosionVfx.prefab";
         private const string TRAIL_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Engines.mat";
         private const string SELECTION_SOURCE_PATH = "Assets/Prefabs/Models/Ships/ArquitensShipView.prefab";
         private const string LAYER_DATA_PATH = "Assets/Settings/Data/Models/Layer/LayerData.asset";
@@ -108,13 +107,12 @@ namespace EmpireAtWar.Editor.Squadrons
             WeaponComponent weaponComponent = weapons.AddComponent<WeaponComponent>();
 
             GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(spec.ModelPath);
-            GameObject explosion = AssetDatabase.LoadAssetAtPath<GameObject>(EXPLOSION_PATH);
             Material trailMaterial = AssetDatabase.LoadAssetAtPath<Material>(TRAIL_MATERIAL_PATH);
             List<FighterView> fighters = new List<FighterView>();
             List<WeaponHardPoint> guns = new List<WeaponHardPoint>();
             for (int i = 0; i < spec.MemberCount; i++)
             {
-                FighterView fighter = CreateFighter(root.transform, i, spec, model, explosion, trailMaterial);
+                FighterView fighter = CreateFighter(root.transform, i, spec, model, trailMaterial);
                 fighters.Add(fighter);
                 guns.Add(fighter.Gun);
             }
@@ -129,7 +127,7 @@ namespace EmpireAtWar.Editor.Squadrons
         }
 
         private static FighterView CreateFighter(Transform parent, int index, SquadronViewSpec spec,
-            GameObject model, GameObject explosion, Material trailMaterial)
+            GameObject model, Material trailMaterial)
         {
             GameObject fighter = new GameObject($"Fighter{index}");
             fighter.transform.SetParent(parent, false);
@@ -163,9 +161,6 @@ namespace EmpireAtWar.Editor.Squadrons
             gunObjectData.FindProperty("prewarmEffects").intValue = 2;
             gunObjectData.ApplyModifiedPropertiesWithoutUndo();
 
-            GameObject explosionInstance = (GameObject)PrefabUtility.InstantiatePrefab(explosion, fighter.transform);
-            explosionInstance.transform.localPosition = Vector3.zero;
-
             TrailRenderer[] trails = new TrailRenderer[spec.TrailOffsets.Length];
             for (int i = 0; i < trails.Length; i++)
             {
@@ -173,8 +168,7 @@ namespace EmpireAtWar.Editor.Squadrons
             }
 
             FighterView view = fighter.AddComponent<FighterView>();
-            view.SetEditorReferences(index, body.transform, collider, gun,
-                explosionInstance.GetComponent<ParticleSystem>(), trails);
+            view.SetEditorReferences(index, body.transform, collider, gun, trails);
             return view;
         }
 

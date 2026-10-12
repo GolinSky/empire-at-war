@@ -9,6 +9,7 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private Renderer[] renderers;
 
         public IReadOnlyList<Renderer> Renderers => renderers;
+        public bool IsPlaying => particles.IsAlive(true);
 
         public void Play() => particles.Play();
     }
