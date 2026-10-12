@@ -37,13 +37,16 @@ Shader "EmpireAtWar/UI/Squadron Frame"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
-            struct appdata { float4 vertex : POSITION; fixed4 color : COLOR; };
+            // UV1 = vertex position relative to the frame centre (SquadronFrameMeshEffect): markers share one canvas,
+            // so the canvas-space vertex is not centred on the marker.
+            struct appdata { float4 vertex : POSITION; fixed4 color : COLOR; float2 local : TEXCOORD1; };
             struct v2f
             {
                 float4 vertex : SV_POSITION;
                 fixed4 color : COLOR;
                 float4 position : TEXCOORD0;
                 float2 halfSize : TEXCOORD1;
+                float2 local : TEXCOORD2;
             };
             float _CornerRadius;
             float _BorderWidth;
@@ -54,13 +57,14 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.position = v.vertex;
-                o.halfSize = abs(v.vertex.xy);
+                o.local = v.local;
+                o.halfSize = abs(v.local);
                 o.color = v.color;
                 return o;
             }
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 q = abs(i.position.xy) - i.halfSize + _CornerRadius;
+                float2 q = abs(i.local) - i.halfSize + _CornerRadius;
                 float distance = length(max(q,0)) + min(max(q.x,q.y),0) - _CornerRadius;
                 float fill = saturate(-distance) * _BackgroundAlpha;
                 float halfStrip = (_BorderWidth + 1) * 0.5;

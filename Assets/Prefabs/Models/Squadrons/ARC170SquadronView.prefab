@@ -1510,6 +1510,7 @@ GameObject:
   - component: {fileID: 1388863309955470714}
   - component: {fileID: 7988807585895212125}
   - component: {fileID: 1171213495657578398}
+  - component: {fileID: 3213121238894845242}
   m_Layer: 12
   m_Name: Frame
   m_TagString: Untagged
@@ -1574,6 +1575,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3213121238894845242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3501328251192476392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b990d29fe12536b4d81be9edc01de3b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Squadrons.Icon.SquadronFrameMeshEffect
 --- !u!1 &3677394438313383543
 GameObject:
   m_ObjectHideFlags: 0

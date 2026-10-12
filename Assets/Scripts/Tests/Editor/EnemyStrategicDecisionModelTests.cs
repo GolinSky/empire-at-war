@@ -40,6 +40,18 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.AssaultBase));
         }
 
+        [TestCase(BattleVictoryCondition.DestroyEnemyFleet)]
+        [TestCase(BattleVictoryCondition.DestroyOpponentBase)]
+        public void NoEnemyShipsAndNothingToCapture_AssaultsBase(BattleVictoryCondition victoryCondition)
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(victoryCondition, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 18, enemyShipCount: 0, ownedCapturableZoneCount: 1,
+                    fleetAdvantage: 7.67f, hasCaptureTarget: false));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+        }
+
         [Test]
         public void EasyDifficulty_CapturesZoneUntilSaferBaseThresholdIsMet()
         {
