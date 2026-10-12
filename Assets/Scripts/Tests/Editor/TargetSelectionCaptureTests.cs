@@ -6,6 +6,8 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using NUnit.Framework;
+using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
@@ -54,7 +56,7 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
-        public void NextBatch_RefreshesPositionGenerationAndWreckState()
+        public void NextBatch_RefreshesGenerationAndWreckState()
         {
             TargetSelectionCapture capture = new TargetSelectionCapture();
             try
@@ -69,7 +71,6 @@ namespace EmpireAtWar.Tests.Weapon
 
                 unit.IsDestroyed = true;
                 unit.Generation = 7;
-                unit.Transform.position = Vector3.right;
                 health.Live = false;
 
                 Assert.That(capture.IsWreck(group), Is.True);
@@ -77,7 +78,6 @@ namespace EmpireAtWar.Tests.Weapon
                 capture.Refresh();
                 Assert.That(capture.Flags[slot] & TargetSelectionCapture.SLOT_VALID, Is.Not.Zero);
                 Assert.That(capture.GetGeneration(slot), Is.EqualTo(7));
-                Assert.That((Vector3)capture.Positions[slot], Is.EqualTo(Vector3.right));
                 Assert.That(health.LiveReads, Is.EqualTo(2));
             }
             finally
@@ -197,6 +197,93 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
+        [Test]
+        public void ShipSlot_ReadsTransformOncePerStripeCycle()
+        {
+            TargetSelectionCapture capture = new TargetSelectionCapture();
+            try
+            {
+                HealthStub health = new HealthStub();
+                HardPointStub unit = Unit(Vector3.zero);
+                int slot = capture.Acquire(unit, health);
+                capture.MarkUsed(new[] { slot }, 1);
+                capture.Refresh();
+                Assert.That((Vector3)capture.Positions[slot], Is.EqualTo(Vector3.zero));
+
+                unit.Transform.position = Vector3.right;
+                int reads = 0;
+                for (int i = 0; i < TargetSelectionCapture.SHIP_POSITION_STRIPES; i++)
+                {
+                    capture.ClearTargets();
+                    capture.MarkUsed(new[] { slot }, 1);
+                    capture.Refresh();
+                    if ((Vector3)capture.Positions[slot] == Vector3.right) reads++;
+                    NativeArray<float3> positions = capture.Positions;
+                    positions[slot] = float3.zero;
+                }
+
+                Assert.That(reads, Is.EqualTo(1));
+            }
+            finally
+            {
+                capture.Dispose();
+            }
+        }
+
+        [Test]
+        public void NewShipSlot_IsReadOnItsFirstBatch()
+        {
+            TargetSelectionCapture capture = new TargetSelectionCapture();
+            try
+            {
+                HealthStub health = new HealthStub();
+                int first = capture.Acquire(Unit(Vector3.zero), health);
+                for (int i = 0; i < 2; i++)
+                {
+                    capture.MarkUsed(new[] { first }, 1);
+                    capture.Refresh();
+                    capture.ClearTargets();
+                }
+
+                // The next stripe is 2, so the job skips slot 1; only the first-read pass sets it.
+                int slot = capture.Acquire(Unit(Vector3.up), health);
+                capture.MarkUsed(new[] { slot }, 1);
+                capture.Refresh();
+
+                Assert.That((Vector3)capture.Positions[slot], Is.EqualTo(Vector3.up));
+            }
+            finally
+            {
+                capture.Dispose();
+            }
+        }
+
+        [Test]
+        public void FighterSlot_ReadsFlightPoseEveryBatch()
+        {
+            TargetSelectionCapture capture = new TargetSelectionCapture();
+            try
+            {
+                HealthStub health = new HealthStub { ShipClass = ShipClass.Fighter };
+                HardPointStub unit = Unit(Vector3.zero);
+                unit.FlightPose = Vector3.left;
+                int slot = capture.Acquire(unit, health);
+
+                for (int i = 0; i < TargetSelectionCapture.SHIP_POSITION_STRIPES; i++)
+                {
+                    unit.FlightPose = Vector3.left * (i + 1);
+                    capture.ClearTargets();
+                    capture.MarkUsed(new[] { slot }, 1);
+                    capture.Refresh();
+                    Assert.That((Vector3)capture.Positions[slot], Is.EqualTo(Vector3.left * (i + 1)));
+                }
+            }
+            finally
+            {
+                capture.Dispose();
+            }
+        }
+
         private HardPointStub Unit(Vector3 position)
         {
             GameObject unitObject = new GameObject("Unit");
@@ -223,7 +310,9 @@ namespace EmpireAtWar.Tests.Weapon
                 set => _generation = value;
             }
             public bool IsDestroyed { get; set; }
-            public Vector3 Position => Transform.position;
+            /// <summary>Set for a fighter: its flight-model pose, which differs from the transform here.</summary>
+            public Vector3? FlightPose { get; set; }
+            public Vector3 Position => FlightPose ?? Transform.position;
             public Transform Transform { get; }
             public Transform Pivot => Transform;
         }
@@ -232,7 +321,7 @@ namespace EmpireAtWar.Tests.Weapon
         {
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 100f;
             public float HullPercentage => 1f;

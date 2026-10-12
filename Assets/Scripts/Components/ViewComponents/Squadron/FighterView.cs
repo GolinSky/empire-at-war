@@ -23,12 +23,14 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         private Quaternion _bodyRestRotation;
 
         private float _healthPercentage = 1f;
+        // The flight model's pose, so targeting reads no transform.
+        private Vector3 _position;
 
         [SerializeField] private int id;
 
         public int Id => id;
         public HardPointType HardPointType => HardPointType.Any;
-        public Vector3 Position => transform.position;
+        public Vector3 Position => _position;
         public Transform Transform => transform;
         public bool IsDestroyed => _healthPercentage <= 0f;
         public WeaponHardPoint Gun => gun;
@@ -48,6 +50,7 @@ namespace EmpireAtWar.ViewComponents.Squadrons
 
         public void ApplyPose(Vector3 position, Vector3 forward, float bank)
         {
+            _position = position;
             transform.SetPositionAndRotation(position, Quaternion.LookRotation(forward, Vector3.up));
             body.localRotation = Quaternion.AngleAxis(bank, Vector3.forward) * _bodyRestRotation;
         }
