@@ -4,10 +4,13 @@ namespace EmpireAtWar.Services.Squadrons
 {
     public sealed class SquadronLaunchSlots : ISquadronLaunchSlots
     {
-        private int _takenFrame = -1;
+        // At most ten reserve launches per second across the whole battle.
+        private const float LAUNCH_INTERVAL = 0.1f;
 
-        public bool IsAvailable => _takenFrame != Time.frameCount;
+        private float _nextLaunchTime = float.NegativeInfinity;
 
-        public void Take() => _takenFrame = Time.frameCount;
+        public bool IsAvailable => Time.time >= _nextLaunchTime;
+
+        public void Take() => _nextLaunchTime = Time.time + LAUNCH_INTERVAL;
     }
 }

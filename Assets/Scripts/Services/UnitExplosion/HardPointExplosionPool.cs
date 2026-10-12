@@ -9,7 +9,8 @@ namespace EmpireAtWar.Services.UnitExplosion
     /// <summary>
     /// One set of hardpoint destruction explosions shared by every unit, prewarmed so a destroyed hardpoint never
     /// instantiates one. A playing explosion follows its hardpoint and is hidden while the owning unit is hidden by
-    /// fog; once the unit is destroyed it finishes where the unit was last seen.
+    /// fog; once the unit is destroyed it stops emitting (looping fire included) and finishes where the unit was last
+    /// seen before returning to the pool.
     /// </summary>
     public sealed class HardPointExplosionPool : IHardPointExplosionPool, IInitializable, ITickable
     {
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Services.UnitExplosion
         private readonly ExplosionVfx _prefab;
         private readonly List<ExplosionVfx> _idle = new List<ExplosionVfx>();
         private readonly List<ActiveExplosion> _active = new List<ActiveExplosion>();
+        private readonly List<ExplosionVfx> _fading = new List<ExplosionVfx>();
 
         private Transform _root;
 
@@ -49,6 +51,14 @@ namespace EmpireAtWar.Services.UnitExplosion
             for (int i = _active.Count - 1; i >= 0; i--)
             {
                 ActiveExplosion active = _active[i];
+                if (active.IsAnchorDestroyed)
+                {
+                    active.Explosion.StopEmitting();
+                    _fading.Add(active.Explosion);
+                    _active.RemoveAt(i);
+                    continue;
+                }
+
                 if (!active.Explosion.IsPlaying)
                 {
                     _idle.Add(active.Explosion);
@@ -57,6 +67,15 @@ namespace EmpireAtWar.Services.UnitExplosion
                 }
 
                 active.Follow();
+            }
+
+            for (int i = _fading.Count - 1; i >= 0; i--)
+            {
+                if (!_fading[i].IsPlaying)
+                {
+                    _idle.Add(_fading[i]);
+                    _fading.RemoveAt(i);
+                }
             }
         }
 
@@ -87,19 +106,17 @@ namespace EmpireAtWar.Services.UnitExplosion
                 _fogVisibility = fogVisibility;
             }
 
+            // The unit is destroyed shortly after its death; the explosion then stays where it last was.
+            public bool IsAnchorDestroyed => _anchor == null;
+
             public void Follow()
             {
-                // The unit is destroyed shortly after its death; the explosion stays where it last was.
-                if (_anchor == null)
-                {
-                    return;
-                }
-
                 Explosion.transform.position = _anchor.position;
                 bool isHidden = _fogVisibility != null && _fogVisibility.IsHiddenByFog;
-                foreach (Renderer explosionRenderer in Explosion.Renderers)
+                IReadOnlyList<Renderer> renderers = Explosion.Renderers;
+                for (int i = 0; i < renderers.Count; i++)
                 {
-                    explosionRenderer.forceRenderingOff = isHidden;
+                    renderers[i].forceRenderingOff = isHidden;
                 }
             }
         }

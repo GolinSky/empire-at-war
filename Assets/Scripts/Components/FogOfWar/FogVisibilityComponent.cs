@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using Zenject;
@@ -13,13 +14,14 @@ namespace EmpireAtWar.Components.FogOfWar
     /// Stops drawing an opponent unit while its position is covered by the player's fog of war.
     /// Uses <see cref="Renderer.forceRenderingOff"/> so it never fights code that toggles <see cref="Renderer.enabled"/>.
     /// The ion stun effect spawned at runtime is hidden with the unit. Bound only for opponent entities.
-    /// Static buildings such as space stations stay drawn once discovered.
+    /// Static buildings such as space stations stay drawn once discovered. Rechecked about once per second.
     /// </summary>
-    public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable,
+    public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ISlowTickable, ILateDisposable,
         IFogVisibilityFacade, IRespawnable, IDespawnable
     {
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
+        private ISlowTickService _slowTick;
         private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         [SerializeField] private Renderer[] renderers;
@@ -37,8 +39,10 @@ namespace EmpireAtWar.Components.FogOfWar
 
         [Inject]
         private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
-            List<IIonStunViewSource> ionStunSources, EmpireAtWar.Components.Combat.CombatModifiers modifiers)
+            List<IIonStunViewSource> ionStunSources, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
+            ISlowTickService slowTick)
         {
+            _slowTick = slowTick;
             _visionService = visionService;
             _localPlayer = localPlayer;
             _modifiers = modifiers;
@@ -76,6 +80,8 @@ namespace EmpireAtWar.Components.FogOfWar
             {
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
             }
+
+            _slowTick.Add(this);
         }
 
         public void LateDispose()
@@ -86,13 +92,14 @@ namespace EmpireAtWar.Components.FogOfWar
             }
 
             _isReleased = true;
+            _slowTick.Remove(this);
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned -= TrackIonStun;
             }
         }
 
-        public void LateTick()
+        public void SlowTick()
         {
             if (_isReleased || staysRevealedOnceSeen && !_isHidden)
             {

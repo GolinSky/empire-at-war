@@ -5,18 +5,20 @@ using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
-    public sealed class MiniMapUnitMarkerPresenter : IInitializable, ILateTickable, ILateDisposable, IRespawnable,
+    public sealed class MiniMapUnitMarkerPresenter : IInitializable, ISlowTickable, ILateDisposable, IRespawnable,
         IDespawnable
     {
         private readonly IHealthModelObserver _healthModel;
         private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
+        private readonly ISlowTickService _slowTick;
         private readonly EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         private readonly MiniMapData _miniMapData;
@@ -33,8 +35,10 @@ namespace EmpireAtWar.Presenters.MiniMap
             MiniMapData miniMapData,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner,
-            SelectionType selectionType, EmpireAtWar.Components.Combat.CombatModifiers modifiers)
+            SelectionType selectionType, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
+            ISlowTickService slowTick)
         {
+            _slowTick = slowTick;
             _localPlayer = localPlayer;
             _miniMapData = miniMapData;
             _viewTransform = viewTransform;
@@ -58,6 +62,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(_localPlayer.IsFriendly(_owner));
             _miniMapData.AddMarker(_marker);
+            _slowTick.Add(this);
         }
 
         public void LateDispose()
@@ -70,7 +75,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void Despawn() => LateDispose();
 
-        public void LateTick()
+        public void SlowTick()
         {
             if (_marker == null)
             {
@@ -113,6 +118,7 @@ namespace EmpireAtWar.Presenters.MiniMap
                 return;
             }
 
+            _slowTick.Remove(this);
             _marker.SetVisible(false);
             _miniMapData.RemoveMarker(_marker);
             _marker = null;

@@ -95,11 +95,35 @@ namespace EmpireAtWar.Tests.Editor
         {
             _anchor.position = Vector3.right * 5f;
             _pool.Play(_anchor, null);
+            ExplosionVfx explosion = PlayingExplosions()[0];
             Object.DestroyImmediate(_anchor.gameObject);
 
             _pool.Tick();
 
-            Assert.That(PlayingExplosions()[0].transform.position, Is.EqualTo(Vector3.right * 5f));
+            Assert.That(explosion.transform.position, Is.EqualTo(Vector3.right * 5f));
+        }
+
+        [Test]
+        public void Tick_AfterAnchorDestroyed_StopsLoopingExplosionAndReusesIt()
+        {
+            _pool.Play(_anchor, null);
+            ExplosionVfx looping = PlayingExplosions()[0];
+            ParticleSystem particles = looping.GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule main = particles.main;
+            main.loop = true;
+            Object.DestroyImmediate(_anchor.gameObject);
+
+            _pool.Tick();
+
+            Assert.That(particles.isEmitting, Is.False);
+
+            _pool.Tick();
+            for (int i = 0; i < PREWARM_COUNT; i++)
+            {
+                _pool.Play(Track(new GameObject("HardPoint")).transform, null);
+            }
+
+            Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT));
         }
 
         [Test]
