@@ -136,6 +136,22 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(_movement.MoveCount, Is.EqualTo(2));
         }
 
+        [Test]
+        public void AttackMove_ArrivedShip_DoesNotFinishBeforeItsFirstTargetSearch()
+        {
+            // Seeded so the random first delay is above zero; edit-mode time does not advance between ticks.
+            UnityEngine.Random.InitState(7);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, new Radar(), null);
+            state.SetData(Vector3.zero, new EmpireAtWar.Entities.BaseEntity.Orders.AttackMoveEngagement());
+            state.Enter();
+            _movement.FinishLeg();
+
+            state.Tick(0.1f);
+
+            Assert.That(state.IsComplete, Is.False);
+            state.Exit();
+        }
+
         private sealed class Movement : IShipMovement
         {
             public Vector3 CurrentPosition { get; set; }
