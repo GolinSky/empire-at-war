@@ -46,16 +46,30 @@ namespace EmpireAtWar.Services.UnitExplosion
             _active.Add(active);
         }
 
+        public void Stop(Transform anchor)
+        {
+            for (int i = _active.Count - 1; i >= 0; i--)
+            {
+                if (_active[i].Anchor == anchor) FadeAt(i);
+            }
+        }
+
+        private void FadeAt(int index)
+        {
+            ExplosionVfx explosion = _active[index].Explosion;
+            explosion.StopEmitting();
+            _fading.Add(explosion);
+            _active.RemoveAt(index);
+        }
+
         public void Tick()
         {
             for (int i = _active.Count - 1; i >= 0; i--)
             {
                 ActiveExplosion active = _active[i];
-                if (active.IsAnchorDestroyed)
+                if (active.Anchor == null || !active.Anchor.gameObject.activeInHierarchy)
                 {
-                    active.Explosion.StopEmitting();
-                    _fading.Add(active.Explosion);
-                    _active.RemoveAt(i);
+                    FadeAt(i);
                     continue;
                 }
 
@@ -106,8 +120,7 @@ namespace EmpireAtWar.Services.UnitExplosion
                 _fogVisibility = fogVisibility;
             }
 
-            // The unit is destroyed shortly after its death; the explosion then stays where it last was.
-            public bool IsAnchorDestroyed => _anchor == null;
+            public Transform Anchor => _anchor;
 
             public void Follow()
             {

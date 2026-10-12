@@ -39,14 +39,16 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             IEntity best = null;
             float bestScore = radius * radius;
+            float radiusSquared = radius * radius;
             for (int i = 0; i < candidates.Count; i++)
             {
                 IEntity candidate = candidates[i];
                 if (!IsValidEnemy(candidate)) continue;
                 float distance = (candidate.GetFacade<IEntityTransformFacade>().Transform.position - center).sqrMagnitude;
-                if (distance > radius * radius) continue;
+                if (distance > radiusSquared) continue;
                 float score = Score(candidate, distance);
                 if (score >= bestScore && best != null) continue;
+                if (candidate.IsCloaked()) continue;
                 best = candidate;
                 bestScore = score;
             }
@@ -61,16 +63,18 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             IEntity best = null;
             float bestScore = float.PositiveInfinity;
+            float radiusSquared = radius * radius;
             foreach (IEntity candidate in _entityLocator.Entities)
             {
                 if (!IsValidEnemy(candidate)) continue;
                 Vector3 position = candidate.GetFacade<IEntityTransformFacade>().Transform.position;
                 float distance = (position - center).sqrMagnitude;
-                if (distance > radius * radius) continue;
-                if (_respectsFog &&
-                    !_visionService.IsVisible(_side, position)) continue;
+                if (distance > radiusSquared) continue;
                 float score = Score(candidate, distance);
                 if (score >= bestScore) continue;
+                if (candidate.IsCloaked()) continue;
+                if (_respectsFog &&
+                    !_visionService.IsVisible(_side, position)) continue;
                 best = candidate;
                 bestScore = score;
             }
@@ -81,7 +85,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public static bool IsAlive(IEntity entity) =>
             entity != null && !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
 
-        private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity) && !entity.IsCloaked();
+        private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity);
 
         private float Score(IEntity entity, float sqrDistance)
         {

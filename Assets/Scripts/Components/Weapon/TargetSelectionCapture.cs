@@ -200,14 +200,15 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         /// <summary>Matches WeaponComponent's live check: not cloaked, and not hidden by fog for local-team weapons.</summary>
-        public bool CanAcquire(AttackData group, bool respectsLocalFog)
+        public bool CanAcquire(AttackData group, bool respectsLocalFog, out bool isWreck)
         {
             IEntity entity = group.TargetEntity;
             if (!_entities.TryGetValue(entity, out EntityState state))
             {
-                state = new EntityState { IsCloaked = entity.IsCloaked() };
+                state = new EntityState { IsCloaked = entity.IsCloaked(), IsWreck = IsWreck(group) };
                 _entities.Add(entity, state);
             }
+            isWreck = state.IsWreck;
             if (state.IsCloaked) return false;
             if (!respectsLocalFog) return true;
             if (state.FogRead == 0)
@@ -265,6 +266,7 @@ namespace EmpireAtWar.Components.Weapon
         private struct EntityState
         {
             public bool IsCloaked;
+            public bool IsWreck;
             public bool IsHiddenByFog;
             public byte FogRead;
         }

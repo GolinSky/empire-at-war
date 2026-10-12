@@ -92,10 +92,18 @@ namespace EmpireAtWar.ViewComponents.Health
 
         protected virtual void OnRelease(){}
 
+        protected virtual void OnDisable()
+        {
+            if (!_hasExploded) return;
+            ExplosionPool.Stop(transform);
+            _hasExploded = false;
+        }
+
         protected virtual void OnStateUpdated(float healthPercentage)
         {
             if (healthPercentage > 0)
             {
+                if (_hasExploded) ExplosionPool.Stop(transform);
                 _hasExploded = false;
             }
             else if (_isInstalled && !_hasExploded && spawnDestroyedExplosion)
