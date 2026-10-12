@@ -19,6 +19,7 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private TextMeshProUGUI stateText;
         [SerializeField] private GameObject queuedHighlight;
         private UnitRequest _unitRequest;
+        private (bool unlocked, bool affordable, bool queued, bool ended, bool atLimit)? _availability;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
         public string RequestId => _unitRequest.Id;
@@ -30,6 +31,9 @@ namespace EmpireAtWar.Views.Factions
         public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded,
             bool atLimit = false)
         {
+            var availability = (unlocked, affordable, queued, battleEnded, atLimit);
+            if (_availability == availability) return;
+            _availability = availability;
             purchaseButton.interactable = unlocked && affordable && !battleEnded && !atLimit;
             unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
             unitPriceText.color = affordable ? new Color32(215, 236, 247, 255) : new Color32(239, 107, 92, 255);

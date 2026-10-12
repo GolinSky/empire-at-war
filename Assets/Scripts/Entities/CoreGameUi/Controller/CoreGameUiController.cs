@@ -86,7 +86,7 @@ namespace EmpireAtWar.Presenters.Game
                 ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             _endGamePresenter = new EndGamePresenter(
                 battleVictoryNotifier: _battleVictoryNotifier,
-                view: _ui.PrepareEndGameView(UiService.PopupCanvasTransform),
+                view: (IEndGameView)UiService.CreateUi(UiType.EndGame),
                 returnToMenu: _skirmishFlow.ExitSkirmish, tooltipService: _tooltipService);
             _selectionService.AddObserver(this);
 
@@ -238,12 +238,16 @@ namespace EmpireAtWar.Presenters.Game
                 context.SelectionType == SelectionType.Base,
                 context != null && context.HasSelectable &&
                 context.SelectionType == SelectionType.Ship && context.Count > 1);
+            UiService.SetContentLayout(
+                context != null && context.HasSelectable && context.SelectionType == SelectionType.Base,
+                context != null && context.HasSelectable && context.SelectionType == SelectionType.Ship && context.Count > 1);
 
             bool isVisible = IsRouteActive(SkirmishUiRoutePosition.Content) &&
                              context != null && context.HasSelectable &&
                              (context.SelectionType == SelectionType.Base ||
                               context.SelectionType == SelectionType.Ship && HasMovableSelection(context));
             _ui.SetContentVisible(isVisible);
+            UiService.SetContentVisible(isVisible);
         }
 
         private static bool HasMovableSelection(ISelectionContext context)
@@ -310,7 +314,7 @@ namespace EmpireAtWar.Presenters.Game
             ISkirmishUiRoute route,
             bool isActive)
         {
-            route.Activate(isActive, _ui.GetRouteParent(position));
+            route.Activate(isActive);
         }
 
         private bool IsRouteActive(SkirmishUiRoutePosition position)

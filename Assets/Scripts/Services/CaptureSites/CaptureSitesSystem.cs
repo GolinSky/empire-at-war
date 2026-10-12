@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.CaptureSites
     /// through each side's <see cref="ISiteFacilityBuilder"/>, and reset when the facility dies.
     /// </summary>
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
-        ILateDisposable, IUiCancelHandler, IObserver<BattleMap>
+        ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection
     {
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
@@ -36,7 +36,6 @@ namespace EmpireAtWar.Services.CaptureSites
         private IPlayerRoster _playerRoster;
         private ILocalPlayer _localPlayer;
         private ITooltipService _tooltipService;
-        private IUiService _uiService;
         private INotifier<BattleMap> _battleMap;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
@@ -44,9 +43,12 @@ namespace EmpireAtWar.Services.CaptureSites
         private CaptureSiteData _data;
         private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
-        private Predicate<float> _canPlayerAfford;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
+        public event Action SelectionChanged = delegate { };
+        public CaptureSitePresenter SelectedSite => _selectedSite;
+        public Vector2 SelectionScreenPosition { get; private set; }
+        public bool CanAfford(float price) => GetBuilder(_localPlayer.Id).CanAfford(price);
 
         [Inject]
         private void Construct(
@@ -61,13 +63,11 @@ namespace EmpireAtWar.Services.CaptureSites
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             ITooltipService tooltipService,
-            IUiService uiService,
             INotifier<BattleMap> battleMap,
             CaptureSiteData data)
         {
             _battleMap = battleMap;
             _tooltipService = tooltipService;
-            _uiService = uiService;
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
@@ -84,7 +84,6 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public void Initialize()
         {
-            _canPlayerAfford = price => GetBuilder(_localPlayer.Id).CanAfford(price);
             _gestures.WorldPressed += HandleWorldPressed;
             _gestures.WorldCommanded += HandleWorldPressed;
             _battleMap.AddObserver(this);
@@ -95,25 +94,23 @@ namespace EmpireAtWar.Services.CaptureSites
             _siteViews = battleMap.SiteViews;
             foreach (CaptureSiteView view in _siteViews)
             {
-                view.InitializeBuildUi(_uiService.DynamicCanvasTransform);
                 CaptureSiteModel model = new CaptureSiteModel(
                     captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster);
                 CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
-                    tooltipService: _tooltipService, canAfford: price => GetBuilder(_localPlayer.Id).CanAfford(price));
-                site.BuildRequested += HandleBuildRequested;
+                    tooltipService: _tooltipService);
                 _sites.Add(site);
             }
         }
 
         public void LateDispose()
         {
+            ClearSelection();
             _battleMap.RemoveObserver(this);
             _gestures.WorldPressed -= HandleWorldPressed;
             _gestures.WorldCommanded -= HandleWorldPressed;
             _cancelRouter.Unfocus(this);
             foreach (CaptureSitePresenter site in _sites)
             {
-                site.BuildRequested -= HandleBuildRequested;
                 site.Dispose();
             }
 
@@ -123,11 +120,6 @@ namespace EmpireAtWar.Services.CaptureSites
         public void Tick()
         {
             float deltaTime = Time.deltaTime;
-            if (_selectedSite != null && !_selectedSite.CanPlayerBuild)
-            {
-                ClearSelection();
-            }
-
             foreach (CaptureSitePresenter site in _sites)
             {
                 site.TickCapture(deltaTime, CalculateCaptureStrength(site));
@@ -145,8 +137,10 @@ namespace EmpireAtWar.Services.CaptureSites
 
                 bool isHovered = isVisible &&
                     site.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, site.Center));
-                site.SetVisibility(isVisible, isHovered, _canPlayerAfford);
+                site.SetVisibility(isVisible, isHovered);
             }
+            if (_selectedSite != null && (!_selectedSite.CanPlayerBuild || !_selectedSite.IsRevealed))
+                ClearSelection();
         }
 
         public bool IsPositionInAnySite(Vector3 position, float clearance = 0f)
@@ -268,11 +262,12 @@ namespace EmpireAtWar.Services.CaptureSites
             ClearSelection();
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (site.CanPlayerBuild &&
+                if (site.CanPlayerBuild && site.IsRevealed &&
                     site.Contains(_cameraService.GetWorldPoint(screenPosition, site.Center)))
                 {
                     _selectedSite = site;
-                    site.Select(screenPosition);
+                    SelectionScreenPosition = screenPosition;
+                    SelectionChanged.Invoke();
                     _cancelRouter.Focus(this);
                     return;
                 }
@@ -286,16 +281,16 @@ namespace EmpireAtWar.Services.CaptureSites
                 return;
             }
 
-            _selectedSite.Deselect();
             _selectedSite = null;
             _cancelRouter.Unfocus(this);
+            SelectionChanged.Invoke();
         }
 
-        private void HandleBuildRequested(CaptureSitePresenter site, SiteFacilityType facilityType)
+        public void BuildSelected(SiteFacilityType facilityType)
         {
-            if (site.CanPlayerBuild)
+            if (_selectedSite != null && _selectedSite.CanPlayerBuild && _selectedSite.IsRevealed)
             {
-                TryStartConstruction(site, facilityType, _localPlayer.Id);
+                TryStartConstruction(_selectedSite, facilityType, _localPlayer.Id);
             }
         }
 
@@ -333,8 +328,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
             if (site == _selectedSite)
             {
-                _selectedSite = null;
-                _cancelRouter.Unfocus(this);
+                ClearSelection();
             }
 
             site.StartConstruction(facilityType);

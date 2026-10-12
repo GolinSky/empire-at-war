@@ -2,8 +2,6 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Presenters.Game;
-using EmpireAtWar.Services.UiRouting;
-using UnityEngine;
 
 namespace EmpireAtWar.Views.Game
 {
@@ -26,8 +24,5 @@ namespace EmpireAtWar.Views.Game
 
         void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded);
 
-        Transform GetRouteParent(SkirmishUiRoutePosition position);
-
-        IEndGameView PrepareEndGameView(Transform parent);
     }
 }

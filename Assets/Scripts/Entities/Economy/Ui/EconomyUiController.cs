@@ -6,7 +6,6 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.Economy;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Presenters.Economy
@@ -64,15 +63,14 @@ namespace EmpireAtWar.Presenters.Economy
             }
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
                 BaseUi ui = UiService.CreateUi(
-                    UiType.Economy,
-                    parentTransform);
+                    UiType.Economy);
                 _ui = ui as IEconomyUi
                     ?? throw new InvalidOperationException(
                         "The economy prefab does not implement IEconomyUi.");
@@ -82,10 +80,6 @@ namespace EmpireAtWar.Presenters.Economy
                 _tooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_ui).TooltipHover,
                     HandleTooltipHover, _tooltips);
-            }
-            else
-            {
-                _ui.SetParent(parentTransform);
             }
 
             if (isActive)

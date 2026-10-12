@@ -8,7 +8,6 @@ using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.Factions;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Presenters.Factions
@@ -62,13 +61,13 @@ namespace EmpireAtWar.Presenters.Factions
             }
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
-                BaseUi ui = UiService.CreateUi(UiType.ShipBuild, parentTransform);
+                BaseUi ui = UiService.CreateUi(UiType.ShipBuild);
                 _ui = ui as IShipBuildUi
                     ?? throw new InvalidOperationException(
                         "The ship build prefab does not implement IShipBuildUi.");
@@ -77,10 +76,6 @@ namespace EmpireAtWar.Presenters.Factions
                 _tooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_ui).TooltipHover,
                     HandleTooltipHover, _tooltips);
-            }
-            else
-            {
-                _ui.SetParent(parentTransform);
             }
 
             _ui.RenderPipelines(_model.GetProductionQueueSnapshots());

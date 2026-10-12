@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace EmpireAtWar.Services.UiRouting
 {
     public enum SkirmishUiRoutePosition
@@ -14,7 +12,7 @@ namespace EmpireAtWar.Services.UiRouting
 
     public interface ISkirmishUiRoute
     {
-        void Activate(bool isActive, Transform parentTransform);
+        void Activate(bool isActive);
     }
 
     public interface ISkirmishRouteNavigation

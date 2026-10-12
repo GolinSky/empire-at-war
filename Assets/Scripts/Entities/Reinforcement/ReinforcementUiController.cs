@@ -85,15 +85,14 @@ namespace EmpireAtWar.Presenters.Reinforcement
                 false);
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
                 BaseUi ui = UiService.CreateUi(
-                    UiType.Reinforcement,
-                    parentTransform);
+                    UiType.Reinforcement);
                 _ui = ui as IReinforcementUi
                     ?? throw new InvalidOperationException(
                         "The reinforcement prefab does not implement IReinforcementUi.");
@@ -105,10 +104,6 @@ namespace EmpireAtWar.Presenters.Reinforcement
                 _tooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_ui).TooltipHover,
                     HandleTooltipHover, _tooltips);
-            }
-            else
-            {
-                _ui.SetParent(parentTransform);
             }
 
             if (isActive)

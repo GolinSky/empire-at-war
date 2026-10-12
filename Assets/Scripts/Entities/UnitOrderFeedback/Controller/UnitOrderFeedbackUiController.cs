@@ -57,7 +57,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         public void Initialize()
         {
             _ui = (IUnitOrderFeedbackUi)UiService.CreateUi(
-                UiType.UnitOrderFeedback, UiService.DefaultCanvasTransform);
+                UiType.UnitOrderFeedback);
             _ui.SetPresenter(this);
             _ui.Initialize();
             _unitOrderService.OrderIssued += HandleOrder;

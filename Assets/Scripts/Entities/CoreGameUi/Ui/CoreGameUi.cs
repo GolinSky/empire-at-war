@@ -1,10 +1,8 @@
 using EmpireAtWar.Components.Ui.Tooltip;
-using System;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Presenters.Game;
-using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using MPUIKIT;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -28,16 +26,9 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private MPImage panelImage;
         [SerializeField] private DictionaryWrapper<bool, Sprite> timeSprites;
         [SerializeField] private DictionaryWrapper<GameSpeed, Sprite> speedUpSprites;
-        [SerializeField] private Transform miniMapRouteParent;
-        [SerializeField] private Transform contentRouteParent;
-        [SerializeField] private GridLayoutGroup contentGrid;
-        [SerializeField] private ContentSizeFitter contentSizeFitter;
-        [SerializeField] private ScrollRect contentScroll;
-        [SerializeField] private Transform buildPipelineRouteParent;
-        [SerializeField] private EndGameUi endGameUi;
         [SerializeField] private UnitActionsView unitActionsView;
         [SerializeField] private SuperWeaponsView superWeaponsView;
-        [SerializeField] private Transform economyRouteParent;
+        [SerializeField] private GameObject contextualPopup;
         [SerializeField] private TMP_Text factionText;
         [SerializeField] private TMP_Text contentTitle;
         [SerializeField] private GameObject productionLabel;
@@ -45,18 +36,17 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Button clearFleetButton;
         [SerializeField] private CanvasGroup battleControls;
 
-        [SerializeField] private Vector2 factionCellSize = new Vector2(150f, 150f);
-        [SerializeField] private Vector2 shipCellSize = new Vector2(80f, 198f);
-
         private bool _isInitialized;
         private bool _hasContentLayout;
         private bool _isFactionLayout;
         private bool _isShipGroupLayout;
+        private (string faction, bool ended, bool factionLayout, bool visible)? _lastHudStatus;
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
         public IUnitActionsView UnitActionsView => unitActionsView;
         public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
+        public Transform ContextualPopup => contextualPopup.transform;
 
         public void Initialize()
         {
@@ -85,6 +75,9 @@ namespace EmpireAtWar.Views.Game
 
         public void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded)
         {
+            var status = (faction, battleEnded, _isFactionLayout, IsVisible);
+            if (_lastHudStatus == status) return;
+            _lastHudStatus = status;
             factionText.text = faction.ToUpperInvariant();
             contentTitle.text = _isFactionLayout ? $"{faction.ToUpperInvariant()} STARBASE" : "FLEET SELECTION";
             timeButton.interactable = !battleEnded;
@@ -107,15 +100,10 @@ namespace EmpireAtWar.Views.Game
             _presenter = presenter;
         }
 
-        public IEndGameView PrepareEndGameView(Transform parent)
-        {
-            endGameUi.SetParent(parent);
-            return endGameUi;
-        }
-
         private void OnDestroy()
         {
             Dispose();
+            Destroy(contextualPopup);
         }
 
         public void SetContentVisible(bool isVisible)
@@ -137,49 +125,6 @@ namespace EmpireAtWar.Views.Game
             productionLabel.SetActive(isFactionSelection);
             selectionSlots.SetActive(!hasHeader);
             clearFleetButton.gameObject.SetActive(isShipGroupSelection);
-            contentScroll.viewport.offsetMin = new Vector2(14f, 12f);
-            contentScroll.viewport.offsetMax = new Vector2(-14f, hasHeader ? -42f : -12f);
-            RectTransform content = (RectTransform)contentRouteParent;
-            contentGrid.enabled = !isShipGroupSelection;
-            contentGrid.cellSize = isFactionSelection ? factionCellSize : shipCellSize;
-            contentGrid.spacing = new Vector2(8f, 6f);
-            contentGrid.padding = new RectOffset();
-            contentGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
-            contentGrid.startAxis = GridLayoutGroup.Axis.Vertical;
-            contentGrid.childAlignment = TextAnchor.UpperLeft;
-            contentGrid.constraint = GridLayoutGroup.Constraint.FixedRowCount;
-            contentGrid.constraintCount = isFactionSelection ? 2 : 1;
-            contentSizeFitter.horizontalFit = isShipGroupSelection
-                ? ContentSizeFitter.FitMode.Unconstrained : ContentSizeFitter.FitMode.PreferredSize;
-            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-            content.anchorMin = new Vector2(0f, 0f);
-            content.anchorMax = new Vector2(isShipGroupSelection ? 1f : 0f, 1f);
-            content.pivot = new Vector2(0f, 1f);
-            content.anchoredPosition = Vector2.zero;
-            content.sizeDelta = Vector2.zero;
-            contentScroll.horizontal = true;
-            contentScroll.vertical = false;
-            contentScroll.horizontalNormalizedPosition = 0f;
-        }
-
-        public Transform GetRouteParent(SkirmishUiRoutePosition position)
-        {
-            switch (position)
-            {
-                case SkirmishUiRoutePosition.MiniMap:
-                    return miniMapRouteParent;
-                case SkirmishUiRoutePosition.Content:
-                    return contentRouteParent;
-                case SkirmishUiRoutePosition.BuildPipeline:
-                    return buildPipelineRouteParent;
-                case SkirmishUiRoutePosition.Economy:
-                    return economyRouteParent;
-                case SkirmishUiRoutePosition.Reinforcement:
-                case SkirmishUiRoutePosition.SuperWeapon:
-                    return transform;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(position), position, null);
-            }
         }
 
     }

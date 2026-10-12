@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.Heroes
 
         private IHeroPresenter _presenter;
         private long _entityId;
+        private bool? _canFocus;
 
         public void Initialize(long entityId, Sprite icon, IHeroPresenter presenter, bool canFocus)
         {
@@ -23,6 +24,8 @@ namespace EmpireAtWar.Entities.Heroes
 
         public void SetFocusable(bool canFocus)
         {
+            if (_canFocus == canFocus) return;
+            _canFocus = canFocus;
             focusButton.interactable = canFocus;
             canvasGroup.alpha = canFocus ? 1f : 0.35f;
         }

@@ -87,7 +87,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _isBattleEnded = state == BattleState.Ended;
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             if (isActive) Bind();
             else Unbind();

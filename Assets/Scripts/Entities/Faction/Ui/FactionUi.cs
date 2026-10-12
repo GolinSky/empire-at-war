@@ -50,6 +50,8 @@ namespace EmpireAtWar.Views.Factions
 
         [SerializeField] private FactionUnitUi factionUnitPrefab;
         [SerializeField] private TooltipHoverView tooltipHover;
+        [SerializeField] private UnityEngine.UI.GridLayoutGroup layoutGrid;
+        [SerializeField] private UnityEngine.UI.ContentSizeFitter layoutFitter;
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
@@ -57,11 +59,18 @@ namespace EmpireAtWar.Views.Factions
         private FactionUnitUi _levelFactionUnitUi;
         private FactionRoster _roster;
         private Transform _unitParent;
+        private UiContentLayout _contentLayout;
 
         private bool _isInitialized;
         private bool _isRouteActive = true;
 
         public TooltipHoverView TooltipHover => tooltipHover;
+
+        public void SetContentLayout(UiContentLayout layout)
+        {
+            _contentLayout = layout;
+            layout.AttachContent((RectTransform)transform, layoutGrid, layoutFitter);
+        }
 
         public void Initialize()
         {
@@ -142,6 +151,7 @@ namespace EmpireAtWar.Views.Factions
             _model.OnSelectionTypeChanged -= HandleSelectionChanged;
             _model.OnLevelUpgraded -= UpdateUnits;
             _research.OnResearchCompleted -= UpdateResearchUnit;
+            _contentLayout.DetachContent();
             _isInitialized = false;
         }
 
@@ -173,11 +183,11 @@ namespace EmpireAtWar.Views.Factions
         public override void SetParent(Transform parent)
         {
             base.SetParent(parent);
-            _unitParent = parent;
+            _unitParent = transform;
 
             for (int i = 0; i < _factionUnitsUi.Count; i++)
             {
-                _factionUnitsUi[i].transform.SetParent(parent, false);
+                _factionUnitsUi[i].transform.SetParent(transform, false);
             }
         }
 

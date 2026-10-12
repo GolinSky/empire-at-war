@@ -9,7 +9,6 @@ using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.Factions;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Presenters.Factions
@@ -107,18 +106,16 @@ namespace EmpireAtWar.Presenters.Factions
             if (_ui != null) _ui.RefreshAvailability(_economy.Money, _isBattleEnded);
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
-                BaseUi ui = UiService.CreateUi(UiType.Faction, parentTransform);
+                BaseUi ui = UiService.CreateUi(UiType.Faction);
                 _ui = ui as IFactionUi
                     ?? throw new InvalidOperationException(
                         "The faction prefab does not implement IFactionUi.");
-
-                _ui.SetParent(parentTransform);
                 _ui.SetModel(_model);
                 _ui.SetResearch(_research);
                 _ui.SetPresenter(this);
@@ -128,10 +125,6 @@ namespace EmpireAtWar.Presenters.Factions
                 _tooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_ui).TooltipHover,
                     HandleTooltipHover, _tooltips);
-            }
-            else
-            {
-                _ui.SetParent(parentTransform);
             }
 
             if (isActive)

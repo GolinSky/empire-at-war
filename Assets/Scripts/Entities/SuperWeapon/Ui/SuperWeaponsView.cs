@@ -72,7 +72,11 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         private void HandleClose() => CloseRequested();
 
-        public void SetOpen(bool open) => popup.SetActive(open);
+        public void SetOpen(bool open)
+        {
+            if (open) popup.transform.SetAsLastSibling();
+            popup.SetActive(open);
+        }
 
         public void SetBattleAvailable(bool available) => orbitalButton.interactable = available;
 

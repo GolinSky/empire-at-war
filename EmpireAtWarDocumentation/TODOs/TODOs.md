@@ -173,6 +173,14 @@
 
 ### Optimization
 
+- [ ] **Centralize UI canvas routing and replace custom capture-site screen UI**
+  - **Plan**: [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan|UI Canvas Routing Optimization]]
+  - **Research**: [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan - Research|Canvas inventory, view mapping and historical CPU attribution]]
+  - **Status**: 2026-10-12 implementation complete; UiService owns explicit placement across Feedback/Default/Dynamic/Popup. Controllers no longer choose parents; EndGame and one reusable CaptureSiteBuildUi use normal registration.
+  - **Decision**: UiService owns canvas/semantic-slot mapping; split low-change and frequent-update UI, preserve scroll/clip/layout/input order, and extract one reusable CaptureSiteBuildUi. Preserve CanvasGroups and world-space site status UI.
+  - **Verification**: compilation successful; 154 saved-asset/preview checks passed, no UI/import/serialization errors in the preview checks. CanvasGroups, registered mapping, popup order, repeated faction attachment/disposal and three resolutions checked. No NUnit or Play Mode run.
+  - **Next**: Play Mode behavior and matched performance/Development Player acceptance. New performance analysis explicitly deferred by the user; no savings claimed.
+
 - [ ] **Optimize projectile VFX for PC without logic changes**
   - **Plan**: [[TODOs/Optimization/Projectile_VFX_PC_Optimization_Plan|Projectile VFX PC Optimization]]
   - **Research**: [[TODOs/Optimization/Projectile_VFX_PC_Optimization_Plan - Research|Prefab, material and runtime variation audit]]

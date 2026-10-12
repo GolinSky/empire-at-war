@@ -226,13 +226,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeUiService : IUiService
         {
-            public Transform DefaultCanvasTransform => throw new NotSupportedException();
-            public Transform DynamicCanvasTransform => throw new NotSupportedException();
-            public Transform PopupCanvasTransform => throw new NotSupportedException();
 
             public BaseUi CreateUi(UiType uiType) => throw new NotSupportedException();
 
-            public BaseUi CreateUi(UiType uiType, Transform parent) => throw new NotSupportedException();
+            public void SetContentLayout(bool isFaction, bool isGroup) { }
+            public void SetContentVisible(bool isVisible) { }
 
             public void SetHudVisible(bool isVisible) => throw new NotSupportedException();
         }

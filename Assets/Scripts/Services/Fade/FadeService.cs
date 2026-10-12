@@ -36,7 +36,7 @@ namespace EmpireAtWar.Services.Fade
         {
             if (_fadeUi == null)
             {
-                _fadeUi = (IFadeUi)_uiService.CreateUi(UiType.Fade, _uiService.PopupCanvasTransform);
+                _fadeUi = (IFadeUi)_uiService.CreateUi(UiType.Fade);
             }
 
             return _fadeUi;

@@ -128,11 +128,15 @@ namespace EmpireAtWar.Views
             UpdateVisibility();
         }
 
-        private void UpdateVisibility() =>
-            gameObject.SetActive(_isRouteActive && _model.HasShips);
+        private void UpdateVisibility()
+        {
+            if (_isRouteActive && _model.HasShips) base.Show();
+            else base.Hide();
+        }
 
         private void LateUpdate()
         {
+            if (!IsVisible) return;
             Vector2 size = _viewport.rect.size;
             if (!_layoutDirty && size == _lastSize) return;
             _lastSize = size;

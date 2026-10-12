@@ -1134,3 +1134,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CaptureSiteBuildUi
+      value:
+        m_AssetGUID: 44fb6f1e898f63f4eb5759675c8a4b8c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: EndGameUi
+      value:
+        m_AssetGUID: 6ccbb0763acf6447887051f041450705
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

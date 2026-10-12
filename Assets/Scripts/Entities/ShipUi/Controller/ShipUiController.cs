@@ -18,7 +18,6 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
@@ -90,12 +89,12 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
         }
 
-        public void Activate(bool isActive, Transform parentTransform)
+        public void Activate(bool isActive)
         {
             if (_shipUi == null)
             {
-                _shipUi = (IShipUi)UiService.CreateUi(UiType.Ship, parentTransform);
-                _shipGroupUi = (IShipGroupUi)UiService.CreateUi(UiType.ShipGroup, parentTransform);
+                _shipUi = (IShipUi)UiService.CreateUi(UiType.Ship);
+                _shipGroupUi = (IShipGroupUi)UiService.CreateUi(UiType.ShipGroup);
 
                 _shipUi.SetModel(_model);
                 _shipUi.SetPresenter(this);
@@ -108,11 +107,6 @@ namespace EmpireAtWar.Controllers.ShipUi
                     ((ITooltipHoverView)_shipUi).TooltipHover, HandleTooltipHover, _tooltips);
                 _groupTooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_shipGroupUi).TooltipHover, HandleTooltipHover, _tooltips);
-            }
-            else
-            {
-                _shipUi.SetParent(parentTransform);
-                _shipGroupUi.SetParent(parentTransform);
             }
 
             _isRouteActive = isActive;

@@ -31,13 +31,8 @@ namespace EmpireAtWar.Editor.CaptureSites
 
         private static readonly Color PANEL_COLOR = new Color32(0x08, 0x0C, 0x14, 0xF5);
         private static readonly Color PANEL_OUTLINE_COLOR = new Color32(0x1F, 0x87, 0xE6, 0xD9);
-        private static readonly Color CARD_COLOR = new Color32(0x0F, 0x17, 0x2A, 0xFF);
-        private static readonly Color CARD_OUTLINE_COLOR = new Color32(0x60, 0xA5, 0xFA, 0xFF);
-        private static readonly Color CARD_DISABLED_COLOR = new Color32(0x80, 0x80, 0x80, 0x80);
         private static readonly Color TRACK_COLOR = new Color32(0x18, 0x22, 0x32, 0xF2);
         private static readonly Color TEXT_COLOR = new Color32(0xF8, 0xFA, 0xFC, 0xFF);
-        private static readonly Color LABEL_COLOR = new Color32(0x94, 0xA3, 0xB8, 0xFF);
-        private static readonly Color VALUE_COLOR = new Color32(0x38, 0xBD, 0xF8, 0xFF);
 
         [MenuItem("Tools/Empire At War/World/Capture Sites/Build Sites")]
         public static void Build()
@@ -173,8 +168,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             Transform battleFramework = BuildFramework(root.transform, "BattleAsteroidFramework",
                 parent => BattleAsteroidAssetBuilder.InstantiateFacility(parent, "Facility"));
             MeshRenderer ring = BuildRing(root.transform);
-            Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status,
-                out GameObject buildOptions, out SiteFacilityOptionView[] options);
+            Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status);
 
             CaptureSiteView view = root.AddComponent<CaptureSiteView>();
             SerializedObject serializedView = new SerializedObject(view);
@@ -188,14 +182,6 @@ namespace EmpireAtWar.Editor.CaptureSites
             serializedView.FindProperty("statusCanvas").objectReferenceValue = canvas;
             serializedView.FindProperty("progressFill").objectReferenceValue = progress;
             serializedView.FindProperty("statusText").objectReferenceValue = status;
-            serializedView.FindProperty("buildOptions").objectReferenceValue = buildOptions;
-            SerializedProperty optionsProperty = serializedView.FindProperty("facilityOptions");
-            optionsProperty.arraySize = options.Length;
-            for (int i = 0; i < options.Length; i++)
-            {
-                optionsProperty.GetArrayElementAtIndex(i).objectReferenceValue = options[i];
-            }
-
             serializedView.ApplyModifiedPropertiesWithoutUndo();
             AddRockObstacles(view, rocks.transform);
 
@@ -254,8 +240,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             return renderer;
         }
 
-        private static Canvas BuildCanvas(Transform parent, out Image progress, out TMP_Text status,
-            out GameObject buildOptions, out SiteFacilityOptionView[] options)
+        private static Canvas BuildCanvas(Transform parent, out Image progress, out TMP_Text status)
         {
             GameObject canvasObject = new GameObject("StatusCanvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -284,51 +269,8 @@ namespace EmpireAtWar.Editor.CaptureSites
             progress = CreateImage("ProgressFill", track.rectTransform, TEXT_COLOR, 1f);
             SetRect(progress.rectTransform, Vector2.zero, Vector2.one);
 
-            MPImage optionsPanel = CreatePanel("BuildOptions", canvasTransform, PANEL_COLOR, PANEL_OUTLINE_COLOR, 16f);
-            SetRect(optionsPanel.rectTransform, Vector2.zero, new Vector2(1f, 0.69f));
-            options = new[]
-            {
-                BuildOptionCard(optionsPanel.rectTransform, SiteFacilityType.Mining, "+ CREDIT INCOME",
-                    new Vector2(0.03f, 0.05f), new Vector2(0.485f, 0.95f)),
-                BuildOptionCard(optionsPanel.rectTransform, SiteFacilityType.BattleAsteroid, "DEFENSE PLATFORM",
-                    new Vector2(0.515f, 0.05f), new Vector2(0.97f, 0.95f)),
-            };
-            buildOptions = optionsPanel.gameObject;
-            buildOptions.SetActive(false);
-
             canvasObject.SetActive(false);
             return canvas;
-        }
-
-        private static SiteFacilityOptionView BuildOptionCard(Transform parent, SiteFacilityType facilityType,
-            string role, Vector2 anchorMin, Vector2 anchorMax)
-        {
-            MPImage card = CreatePanel($"{facilityType}Option", parent, CARD_COLOR, CARD_OUTLINE_COLOR, 10f);
-            SetRect(card.rectTransform, anchorMin, anchorMax);
-            card.raycastTarget = true;
-            Button button = card.gameObject.AddComponent<Button>();
-            button.transition = Selectable.Transition.ColorTint;
-            button.targetGraphic = card;
-            ColorBlock colors = button.colors;
-            colors.disabledColor = CARD_DISABLED_COLOR;
-            button.colors = colors;
-
-            TMP_Text nameText = CreateText("Name", card.rectTransform, new Vector2(0.06f, 0.6f),
-                new Vector2(0.94f, 0.94f), 34f, TEXT_COLOR);
-            TMP_Text roleText = CreateText("Role", card.rectTransform, new Vector2(0.06f, 0.38f),
-                new Vector2(0.94f, 0.58f), 24f, LABEL_COLOR);
-            roleText.text = role;
-            TMP_Text costText = CreateText("Cost", card.rectTransform, new Vector2(0.06f, 0.08f),
-                new Vector2(0.94f, 0.36f), 30f, VALUE_COLOR);
-
-            SiteFacilityOptionView option = card.gameObject.AddComponent<SiteFacilityOptionView>();
-            SerializedObject serializedOption = new SerializedObject(option);
-            serializedOption.FindProperty("facilityType").enumValueIndex = (int)facilityType;
-            serializedOption.FindProperty("button").objectReferenceValue = button;
-            serializedOption.FindProperty("nameText").objectReferenceValue = nameText;
-            serializedOption.FindProperty("costText").objectReferenceValue = costText;
-            serializedOption.ApplyModifiedPropertiesWithoutUndo();
-            return option;
         }
 
         private static MPImage CreatePanel(string name, Transform parent, Color color, Color outlineColor,
