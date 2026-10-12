@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.MiniMap;
-using EmpireAtWar.Mvc;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using Zenject;
 
@@ -19,12 +20,9 @@ namespace EmpireAtWar.ViewComponents.Health
     }
     public class HardPoint : MonoBehaviour, IHardPoint, INotifier<float>, IHardPointProvider
     {
-        private const string EXPLOSION_VFX_PATH = "ExplosionVfx";
-
         private const float MAX_HEALTH = 1f;
 
         private readonly List<IObserver<float>> _observers = new List<IObserver<float>>();
-        private ExplosionVfx _explosionVfx;
         // A restored hardpoint (e.g. a reused squadron's fighter) explodes again when it is destroyed again.
         private bool _hasExploded;
 
@@ -36,8 +34,6 @@ namespace EmpireAtWar.ViewComponents.Health
         [Tooltip("Upgrade level of the owner that installs this hardpoint; 1 = installed from the start.")]
         [SerializeField, Min(1)] private int unlockLevel = 1;
 
-        public event System.Action<ExplosionVfx> ExplosionSpawned;
-
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
         public GameObject GameObject => gameObject;
@@ -48,7 +44,11 @@ namespace EmpireAtWar.ViewComponents.Health
         public bool IsDestroyed => _healthPercentage <= 0f;
 
         [Inject]
-        protected IAssetService AssetService { get; }
+        private IHardPointExplosionPool ExplosionPool { get; }
+
+        // Bound only for units outside the local team; the local team's explosions are never hidden by fog.
+        [InjectOptional]
+        private IFogVisibilityFacade FogVisibility { get; }
 
         public void UpdateData(float healthPercentage)
         {
@@ -101,18 +101,7 @@ namespace EmpireAtWar.ViewComponents.Health
             else if (_isInstalled && !_hasExploded && spawnDestroyedExplosion)
             {
                 _hasExploded = true;
-                bool isNew = _explosionVfx == null;
-                if (isNew)
-                {
-                    _explosionVfx = Instantiate(AssetService.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
-                }
-
-                _explosionVfx.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
-                _explosionVfx.Play();
-                if (isNew)
-                {
-                    ExplosionSpawned?.Invoke(_explosionVfx);
-                }
+                ExplosionPool.Play(transform, FogVisibility);
             }
         }
     }

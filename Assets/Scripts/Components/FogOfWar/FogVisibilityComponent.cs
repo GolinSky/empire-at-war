@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -13,7 +12,7 @@ namespace EmpireAtWar.Components.FogOfWar
     /// <summary>
     /// Stops drawing an opponent unit while its position is covered by the player's fog of war.
     /// Uses <see cref="Renderer.forceRenderingOff"/> so it never fights code that toggles <see cref="Renderer.enabled"/>.
-    /// Hardpoint explosion VFX and the ion stun effect spawned at runtime are hidden with the unit. Bound only for opponent entities.
+    /// The ion stun effect spawned at runtime is hidden with the unit. Bound only for opponent entities.
     /// Static buildings such as space stations stay drawn once discovered.
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable,
@@ -24,7 +23,6 @@ namespace EmpireAtWar.Components.FogOfWar
         private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         [SerializeField] private Renderer[] renderers;
-        [SerializeField] private HardPoint[] hardPoints;
         [Tooltip("XZ footprint radius: the unit is revealed when vision reaches any part of it.")]
         [SerializeField, Min(0f)] private float revealRadius;
         [Tooltip("Once seen, stay drawn for the rest of the battle (static buildings).")]
@@ -61,7 +59,7 @@ namespace EmpireAtWar.Components.FogOfWar
             }
         }
 
-        // Explosions and ion stun effects spawned in an earlier life stay tracked: they are reused, not spawned again.
+        // Ion stun effects spawned in an earlier life stay tracked: they are reused, not spawned again.
         public void Respawn()
         {
             _isReleased = false;
@@ -74,11 +72,6 @@ namespace EmpireAtWar.Components.FogOfWar
 
         private void SubscribeSpawnedEffects()
         {
-            foreach (HardPoint hardPoint in hardPoints)
-            {
-                hardPoint.ExplosionSpawned += TrackExplosion;
-            }
-
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
@@ -93,11 +86,6 @@ namespace EmpireAtWar.Components.FogOfWar
             }
 
             _isReleased = true;
-            foreach (HardPoint hardPoint in hardPoints)
-            {
-                hardPoint.ExplosionSpawned -= TrackExplosion;
-            }
-
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned -= TrackIonStun;
@@ -147,11 +135,6 @@ namespace EmpireAtWar.Components.FogOfWar
 
         private bool IsCoveredByFog() =>
             _modifiers.IsCloaked || !_visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius);
-
-        private void TrackExplosion(ExplosionVfx explosion)
-        {
-            TrackRenderers(explosion.Renderers);
-        }
 
         private void TrackIonStun(IIonStunRenderers ionStun)
         {
