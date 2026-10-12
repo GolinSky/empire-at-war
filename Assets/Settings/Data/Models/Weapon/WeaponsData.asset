@@ -659,7 +659,7 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 1
+    damageMultiplier: 0.5
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 
