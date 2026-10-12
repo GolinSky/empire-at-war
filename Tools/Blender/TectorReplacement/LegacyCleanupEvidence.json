@@ -1,0 +1,362 @@
+{
+  "removed": true,
+  "removedAssets": [
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize.mat",
+      "guid": "b51b33bcd38ba984a9b51697bbdc476e"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k_MeshAdditive.mat",
+      "guid": "b5fe542de72a5a64a9941f290167031e"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k_MeshGloss.mat",
+      "guid": "e6c5534badfeb52409e41ca93564ecb4"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Helper_MeshCollision.mat",
+      "guid": "2d57a90a0e59c4a4697709f461da150e"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Helper_MeshShadowVolume.mat",
+      "guid": "7c7521ff1bf6bda42b5c52445d57d314"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+      "guid": "46e21ae6eaf109843a0148d36874c4ad"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+      "guid": "6f51952df540d4545988901e7e1eb88f"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Lights_Grid_MeshAdditive.mat",
+      "guid": "8fed54da33845e94989637082d7abd70"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base_MeshBumpColorize.mat",
+      "guid": "99288eb06c46bf44a9c8024c9cb45e84"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+      "guid": "31029dbb6e56aea4f9706a0c182db474"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_AOTR_P_ISD_ENG_MeshAdditive.mat",
+      "guid": "47e6ee463ff22994cadb036fb4ae1a73"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize.mat",
+      "guid": "2e73751dfa077d145a39f838b47a43a2"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Helper_MeshCollision.mat",
+      "guid": "6d385ec6f47abaf4c98a61b0df830b53"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Helper_MeshShadowVolume.mat",
+      "guid": "ffef56ac64b62e24093d445fcc1d034e"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Hull_Armor_Thick_MeshBumpColorize.mat",
+      "guid": "2547ca1ad204dcf458193af2f961ed91"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Hull_Kitbash_Pieces_ISD_Lights_MeshAdditive.mat",
+      "guid": "a7e97662275374b48800778338d9bf3c"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Hull_Kitbash_Pieces_ISD_MeshBumpColorize.mat",
+      "guid": "1dcfb8d561d32ba46afab920a6210a6f"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Hull_Superstructure_Base_MeshBumpColorize.mat",
+      "guid": "d6dc1657633d8c54789276328eddc59f"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Hullplates_ISD_diffuse_MeshBumpColorize.mat",
+      "guid": "f085b418a0fe238409e4c1947ab25142"
+    },
+    {
+      "path": "Assets/Art/Materials/Models/EmpireShips/Tector/Tector_Neutral_Republic_Venator_Star_Destroyer_Hull_MeshBumpColorize.mat",
+      "guid": "008c6b4ad25128b43992ed87906dc4f9"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/ISDI_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck.mat",
+      "guid": "58d158f0d66ff5a409fa27fa0c71ff95"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/ISDI_Hangar_Imp_1k_MeshGloss_Wreck.mat",
+      "guid": "0b413adc706d60e4a82c3e452674ecab"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/ISDI_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat",
+      "guid": "765f242a38f7851479dd6533955c4fb3"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/ISDI_Hull_Superstructure_Base_MeshBumpColorize_Wreck.mat",
+      "guid": "6ca2a22fd02131b4aacab82ed65304c2"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat",
+      "guid": "69c481e9775d9be449f7e8ccdc39e1fa"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/Tector_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck.mat",
+      "guid": "358edc322bcd6a34aaf1e28a96bd3e13"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/Tector_Hull_Armor_Thick_MeshBumpColorize_Wreck.mat",
+      "guid": "c21a0dae6c535b54b830051d40bf376c"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/Tector_Hull_Kitbash_Pieces_ISD_MeshBumpColorize_Wreck.mat",
+      "guid": "43d6b37fdd7ee9c478eaa29daf4dde1d"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/Tector_Hull_Superstructure_Base_MeshBumpColorize_Wreck.mat",
+      "guid": "21888c89ab8636b4cae8474bebb1295a"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/Tector_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat",
+      "guid": "6f9227f85485c524481ef30d4d2844d1"
+    },
+    {
+      "path": "Assets/Art/Materials/Wrecks/Tector/Tector_Neutral_Republic_Venator_Star_Destroyer_Hull_MeshBumpColorize_Wreck.mat",
+      "guid": "42f89194b5202224bb43f45e13fafdb4"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTR.fbx",
+      "guid": "a0a0fcff0f9960c44973e57ca83f3c34"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRParts.fbx",
+      "guid": "43126d3ef40ebf94a8fc340bb21046ed"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD01.fbx",
+      "guid": "c4caf3582617cef4b8c0b7e03e197374"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD02.fbx",
+      "guid": "15acd39c81e50f54896fb7bd61898c22"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD03.fbx",
+      "guid": "34c1e4368299af04a92067de14d7b81d"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD04.fbx",
+      "guid": "1b42789da8433f945a26c19a5efd06aa"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD05.fbx",
+      "guid": "31a9ab079d8b6a040aabc305c294390e"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLD06.fbx",
+      "guid": "909f63b516ebf294caaa615575145cf5"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLT01.fbx",
+      "guid": "d02c1be7c85f2a7468ccce3d95424701"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLT02.fbx",
+      "guid": "297d26a59d2cf6f488ce0a9c0463695f"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/Tector_AOTRTLT03.fbx",
+      "guid": "4bf16a4773080cc43928298268dadd40"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret07.fbx",
+      "guid": "ddb03e305e582e94cb31cc785d8a8de4"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret08.fbx",
+      "guid": "c7436565127d2d641b20efc49495ebbf"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret12.fbx",
+      "guid": "b14152ba99bd04643874d7accdc4d394"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret13.fbx",
+      "guid": "396609e5d7c0c46429377466709fd573"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret14.fbx",
+      "guid": "d06a1bb105524ad438f1b2de759b84b5"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret15.fbx",
+      "guid": "9c5435bd8999e254eb9d0dec1042eee8"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret16.fbx",
+      "guid": "9295daf7a5aac034e8a4cf2c596bb384"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret17.fbx",
+      "guid": "6d783585065eb4e48ade202e1c763fd3"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret18.fbx",
+      "guid": "411fb2377bcadcf45bd0bf4d93dd800d"
+    },
+    {
+      "path": "Assets/Art/Models/EmpireShips/Tector/TectorTurret20.fbx",
+      "guid": "a6b5cb95c8704084fafbf861fc663049"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor.png",
+      "guid": "242b2f845a3be7c4d9f1d0d4549a0c27"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor_B.png",
+      "guid": "df7a6ef0c818dfa43ac58a6bed31e936"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Empire_Imperial_Star_Destroyer_Armor_TeamMask.png",
+      "guid": "d14b90473ddc90644ba3ebe629652207"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k.png",
+      "guid": "a249d3a5729840245a8fa0284221b6ee"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hangar_Imp_1k_Additive.png",
+      "guid": "f2840bdeb1edc2d4faa9cb21c709bfe0"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD.png",
+      "guid": "0e3c431705d9bdc478dc18ab80493a00"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_B.png",
+      "guid": "5fff27645580e5545bd2c06836aa876e"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_Lights_Additive.png",
+      "guid": "5ce41ae12480a504390c0ca9a8c6151a"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+      "guid": "ca326f65b4664c845a88cc77208945d5"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Lights_Grid_Additive.png",
+      "guid": "1251b56cb971a6f419b5ee32f19c068a"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base.png",
+      "guid": "37cbc21824b632d458b045b4b341ee99"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base_B.png",
+      "guid": "2fc773d68b2fd8e47802c71afce2f0e7"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hull_Superstructure_Base_TeamMask.png",
+      "guid": "0087aa3d921ccec4c85f88aef4b48d10"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_ISD_diffuse.png",
+      "guid": "f4608f9542b48664ab8a8a3064ae18b2"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_ISD_diffuse_TeamMask.png",
+      "guid": "9616acc9a0f3f754db3702076fae65c4"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_Hullplates_normal_specular.png",
+      "guid": "e526a571a8bf2b949acd469a466e715c"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_AOTR_P_ISD_ENG_Additive.png",
+      "guid": "c264e877576f7c048a0c9f3e2e33de97"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Empire_Imperial_Star_Destroyer_Armor.png",
+      "guid": "1c05a52e6894796479d50f47ef796b41"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Empire_Imperial_Star_Destroyer_Armor_B.png",
+      "guid": "fde39e2f8ef23b448a6ad6d23e477c33"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Empire_Imperial_Star_Destroyer_Armor_TeamMask.png",
+      "guid": "2d9bf485f4fa3da4ead2ecf6590b0611"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Armor_B.png",
+      "guid": "f94240b85281d0245bafcb92b4b82b5b"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Armor_Thick.png",
+      "guid": "2aab13ee4d280b74e8f8558008131e6c"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Armor_Thick_TeamMask.png",
+      "guid": "ccc38acf582b222498b6aa9f40493801"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Kitbash_Pieces_ISD.png",
+      "guid": "3de8f371ba921bb489d701496ac81017"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Kitbash_Pieces_ISD_B.png",
+      "guid": "042937620641ab34b9fbffe7a64d72de"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Kitbash_Pieces_ISD_Lights.png",
+      "guid": "c8f3fff7b647fae48b4a0d42f6404c9b"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+      "guid": "987e8018d549e44489d57ccaa8f26296"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Superstructure_Base.png",
+      "guid": "b4de4257dd44f3542a2d5b29f3c7111e"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Superstructure_Base_B.png",
+      "guid": "baf733b21d31f1446acc75824d3ed583"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hull_Superstructure_Base_TeamMask.png",
+      "guid": "92d599553594d3149be6033b06e4eca8"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hullplates_ISD_diffuse.png",
+      "guid": "9a104589efbfc7944811cf5ac0d982f4"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hullplates_ISD_diffuse_TeamMask.png",
+      "guid": "0f32d6f527a44f54494a1a2e00ff3867"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Hullplates_normal_specular.png",
+      "guid": "72f2d6cc980f15c44890434e2b952dbb"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Neutral_Republic_Venator_Star_Destroyer_Hull.png",
+      "guid": "f127bbe5a0b02374283dd68c499cf624"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Neutral_Republic_Venator_Star_Destroyer_Hull_B.png",
+      "guid": "c553b962363481b4d87ba6c8e1c5d0cd"
+    },
+    {
+      "path": "Assets/Art/Textures/Models/EmpireShips/Tector/Tector_Neutral_Republic_Venator_Star_Destroyer_Hull_TeamMask.png",
+      "guid": "7fa13860eebb925448c31772b4dfb116"
+    }
+  ],
+  "bytes": 52999673,
+  "retainedFilesUnchanged": 666,
+  "retainedConsumers": [],
+  "remainingGuidReferences": 0,
+  "serializedReferencesVerified": 437
+}

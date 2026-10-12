@@ -1,5 +1,7 @@
 # Tector Star Destroyer
 
+- Historical AOTR integration tooling. The old project FBXs/materials/textures were removed after the Remake visual replacement; current implementation and cleanup are in `Tools/Blender/TectorReplacement/README.md`.
+
 - Empire `ShipType.Tector = 210`; `TectorBoostWeaponPower = 32`.
 - Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE.md`, read before implementation.
 - `Temp/ALO_MODEL_MAP.txt` was absent. `output/aotr-empire-units/unit-list.txt` maps `E_Tector_Star_Destroyer` to `Empire_Imperial_SD.ALO`; installed AOTR XML confirms it.
