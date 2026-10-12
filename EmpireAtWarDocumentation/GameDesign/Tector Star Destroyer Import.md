@@ -12,7 +12,8 @@ tags:
 ## Decision
 
 - 2026-10-12: Remake `1770851727` hull `Empire_Imperial_SD_Tector.ALO` replaces the existing visual, gameplay, placement, wreck and icon artwork in place.
-- User decision: turret meshes are omitted; previously imported turret assets remain unused. Existing 25 weapons/16 targets, all IDs/transforms/arcs, abilities and registrations stay unchanged.
+- User decision: turret meshes are omitted. Follow-up cleanup removes unused legacy hull/turret assets; existing 25 weapons/16 targets, all IDs/transforms/arcs, abilities and registrations stay unchanged.
+- Legacy cleanup: 21 FBXs, 31 materials and 36 textures removed with metadata after a zero-consumer audit; 52,999,673 bytes removed. All 666 retained file hashes and 437 serialized references passed; removed GUIDs absent from remaining Assets files.
 - Current hull/shields/speed: `8,000/8,000/22`. Historical initial AOTR values were `22,000/16,000/22`; later balance changes predate this visual replacement.
 - Current hull bounds: `100.997742 × 47.93703 × 180.000031`; existing conservative collision, ion, navigation, height and selection values retained. Renderer lists and shield artwork rebuilt; existing engine effects fitted to source anchors.
 - Passed: 579 core-data hashes, 46 component configurations, 31 hardpoint transforms, 437 serialized references, all prefab/icon GUIDs, source hashes and 30 lossless PNG copies. Blender/FBX preserves 31 meshes/142 bones and exact UVs; four Blender and Unity/placement/wreck/icon previews inspected.

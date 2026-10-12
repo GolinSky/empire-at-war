@@ -2,7 +2,7 @@
 
 - Completed: 2026-10-12. Read vault `Architecture/ALO_MODEL_IMPORT_GUIDE.md` before implementation.
 - Source: `D:/SteamLibrary/steamapps/workshop/content/32470/1770851727/Data/Art/Models/Empire_Imperial_SD_Tector.ALO`; textures from the adjacent `Textures/` directory.
-- User decision: use the new hull without turret meshes. Previously imported turret assets remain unused; no Remake loadout or balance is copied.
+- User decision: use the new hull without turret meshes; no Remake loadout or balance is copied. Follow-up cleanup removed unused legacy hull/turret assets from the project.
 - Existing visual/gameplay/placement/wreck prefab GUIDs and icon/silhouette metadata are preserved. No data or Addressables changes.
 - Live hull/shields/speed remain `8,000/8,000/22`. All 25 weapons, 16 targetable hardpoints, 31 mount IDs/transforms, firing arcs, abilities and core component configuration remain unchanged.
 - Visible hull: `100.997742 × 47.93703 × 180.000031` project units; root scale 1, bow +Z, up +Y. Existing conservative collision, ion, navigation, selection and height values remain unchanged.
@@ -14,6 +14,7 @@
 - Opaque materials use Ship Lit; source normals use linear normal-map import with the established Remake green flip. Additive hull lights use URP particle materials. Animated EaW shader effects are not reproduced.
 - Living hull retains the existing 0.6 ownership rim; eight live palettes differ. Neutral source wreck has no recolorable paint/mask; all eight wreck previews intentionally share its neutral appearance.
 - Verification: 579 core-data hashes, 46 component configurations, 31 hardpoint transforms, four prefab GUIDs, icon metadata, 30 lossless texture copies and 437 serialized references passed. Blender/Unity mesh, UV, hierarchy and material remaps passed.
+- Legacy cleanup: 21 FBXs, 31 materials and 36 textures removed with metadata after a zero-consumer dependency audit. Freed 52,999,673 bytes; 666 retained file hashes and 437 saved references verified; removed GUIDs absent from all remaining Assets files.
 - No automated Unity tests or combat Play Mode were run by this replacement. The user's existing Battle session was allowed to finish before applying prefabs.
 
 ## Files
@@ -31,3 +32,5 @@
 3. In Edit Mode run `ImportTectorReplacementArt.Main`, then `ReplaceTectorVisuals.Main` with official `unity command run_script --file Tools/Blender/TectorReplacement/<Class>.cs --entry <Class>.Main --json`.
 4. Run `RenderTectorReplacement.Main`, `InspectTectorReplacement.Verify`, `VerifyTectorReplacementAssets.Main`, then `uv run --with pillow python Tools/Blender/TectorReplacement/Verify.py`.
 5. Inspect rendered PNGs and import diagnostics; keep baseline/backups separate from new captures.
+
+- `CleanupTectorLegacyArt.Main(false)` audits legacy art; `Main(true)` deletes only unreferenced old Tector assets through Unity and verifies retained hashes. Full report: `F:/CodexArtifacts/tector-preview/UnityReplacement/LegacyCleanup.json`.
