@@ -281,6 +281,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d,
           type: 3}
+    - key: 321
+      value:
+        matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}
+        description: Battlecarrier with 4,800 hull and 4,200 shields. Four heavy
+          turbolasers, two medium dual turbolasers, four medium ion cannons and two
+          point defense lasers. Deploys three active X-Wing squadrons with three
+          replacements. Rapid Deployment launches up to two available reserve squadrons;
+          45 second cooldown.
+        role: Battlecarrier / Fleet support
+        iconKey: 1583a68acc7d9f9488c947c5470db384:21300000
+        isHero: 0
+        <Name>k__BackingField: Liberator Cruiser
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 4200
+        <BuildTime>k__BackingField: 48
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 1583a68acc7d9f9488c947c5470db384,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

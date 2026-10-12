@@ -191,6 +191,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                         Stop(slot);
                         continue;
                     }
+                    if (slot.Definition.Duration == 0f) continue;
                 }
 
                 if (slot.State == ShipAbilityState.Active && slot.Definition.IsToggle) continue;

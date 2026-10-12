@@ -138,6 +138,16 @@ namespace EmpireAtWar.Components.Hangar
 
         public ISquadron Launch(SquadronType squadronType) => Launch(squadronType, launchPoint);
 
+        public bool CanLaunchImmediately => !_isReleased && Model.CanLaunchImmediately;
+
+        public bool TryLaunchImmediately()
+        {
+            if (!CanLaunchImmediately || !_launchSlots.IsAvailable || !Model.TryLaunchImmediately(out int bay)) return false;
+            _launchSlots.Take();
+            LaunchFromBay(bay);
+            return true;
+        }
+
         private ISquadron Launch(SquadronType squadronType, Transform point)
         {
             ISquadron squadron = _squadronSpawner.Spawn(_owner, squadronType,

@@ -7,5 +7,8 @@ namespace EmpireAtWar.Components.Hangar
     {
         /// <summary>Launches a squadron outside the bay reserve, e.g. one bought at the space station.</summary>
         ISquadron Launch(SquadronType squadronType);
+
+        bool CanLaunchImmediately { get; }
+        bool TryLaunchImmediately();
     }
 }

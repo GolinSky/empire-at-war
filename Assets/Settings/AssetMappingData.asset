@@ -1246,3 +1246,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: LiberatorShipView
+      value:
+        m_AssetGUID: 8888b5efaabc0404bb04e740e25c8372
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: LiberatorShipData
+      value:
+        m_AssetGUID: c64ff453529efa04892944c88f46d7b2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -52,21 +52,28 @@ namespace EmpireAtWar.Components.Hangar
                 return false;
             }
 
+            return TryLaunchImmediately(out bay);
+        }
+
+        public bool CanLaunchImmediately => FindImmediateLaunchBay() >= 0;
+
+        public bool TryLaunchImmediately(out int bay)
+        {
+            bay = FindImmediateLaunchBay();
+            if (bay < 0) return false;
+            _reserve[bay]--;
+            _active[bay]++;
+            _cooldown = _data.HangarLaunchInterval;
+            return true;
+        }
+
+        private int FindImmediateLaunchBay()
+        {
+            if (!IsOperational) return -1;
             for (int i = 0; i < _reserve.Length; i++)
-            {
-                if (_disabled[i] || _reserve[i] <= 0 || _active[i] >= _data.HangarBays[i].MaxActive)
-                {
-                    continue;
-                }
-
-                _reserve[i]--;
-                _active[i]++;
-                _cooldown = _data.HangarLaunchInterval;
-                bay = i;
-                return true;
-            }
-
-            return false;
+                if (!_disabled[i] && _reserve[i] > 0 && _active[i] < _data.HangarBays[i].MaxActive)
+                    return i;
+            return -1;
         }
 
         /// <summary>Runs the launch timer without launching, for a frame whose launch slot is already taken.</summary>
