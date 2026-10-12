@@ -179,6 +179,7 @@
   - **Status**: 2026-10-12 implementation complete; UiService owns explicit placement across Feedback/Default/Dynamic/Popup. Controllers no longer choose parents; EndGame and one reusable CaptureSiteBuildUi use normal registration.
   - **Decision**: UiService owns canvas/semantic-slot mapping; split low-change and frequent-update UI, preserve scroll/clip/layout/input order, and extract one reusable CaptureSiteBuildUi. Preserve CanvasGroups and world-space site status UI.
   - **Verification**: compilation successful; 154 saved-asset/preview checks passed, no UI/import/serialization errors in the preview checks. CanvasGroups, registered mapping, popup order, repeated faction attachment/disposal and three resolutions checked. No NUnit or Play Mode run.
+  - 2026-10-12 station-selection fix: faction grid **150×150 → 138×106 px**, matching `FactionUnit.prefab`. Two rows + 6 px gap use **218/220 px**; 30 populated cards fit vertically and retain horizontal scrolling at 1280×720, 1920×1080 and 2560×1440. Compilation and all 154 routing checks passed; no Play Mode run.
   - **Next**: Play Mode behavior and matched performance/Development Player acceptance. New performance analysis explicitly deferred by the user; no savings claimed.
 
 - [ ] **Optimize projectile VFX for PC without logic changes**

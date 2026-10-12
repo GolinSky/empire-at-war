@@ -8,12 +8,14 @@
 - Popup `20`: Contextual (CaptureSiteBuild), EndGame, Modal (PauseMenu/Settings), Tooltip, Fade; sibling slots fix stacking independently of creation order.
 - CoreGame chrome draws first; its orbital popup also uses Contextual. HUD hide covers contextual panels while keeping other Popup slots available.
 - Faction and Ship content have separate scroll/viewport/mask hierarchies. Faction owns its cards and restores the service scroll binding on disposal.
+- Station cards retain their authored 138×106 px size; two rows plus 6 px spacing occupy 218 px of the 220 px viewport.
 - `CaptureSitesSystem` retains selection/build authority. `CaptureSiteBuildUiController` owns one reusable screen view; world-site prefabs retain status UI, rings, rocks and construction visuals.
 
 ## Verification
 
 ```powershell
 unity command eval_file --file Tools/UiCanvasRouting/Verify.cs --json
+unity command eval_file --file Tools/UiCanvasRouting/VerifyFactionLayout.cs --json
 ```
 
 - Uses prefab preview scenes; never enters Play Mode or writes production assets.
