@@ -28,6 +28,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         private readonly SuperWeaponData _data;
         private readonly ImpactEffectPresenter _impactPresenter;
+        private readonly BoltFlightBatch _boltFlights;
         private readonly IAudioService _audioService;
         private readonly SfxProfile _hypervelocitySfx;
         private readonly AudioSource _hypervelocitySource;
@@ -37,9 +38,10 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
             IPlayerRelations relations, SuperWeaponData data,
-            ImpactEffectPresenter impactPresenter, IAudioService audioService, ShipSfxData sfxData,
-            ShipSfxSources sfxSources)
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IAudioService audioService,
+            ShipSfxData sfxData, ShipSfxSources sfxSources)
         {
+            _boltFlights = boltFlights;
             _relations = relations;
             _data = data;
             _impactPresenter = impactPresenter;
@@ -146,7 +148,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
                 profile.Weapon.Damage, profile.ImpactSize, true);
             Transform target = salvo.Target.GetFacade<IEntityTransformFacade>().Transform;
-            float travelTime = shot.Fire(salvo.Origin, target, target, Vector3.zero, profile.Weapon);
+            float travelTime = shot.Fire(salvo.Origin, target, target, Vector3.zero, profile.Weapon, _boltFlights);
             shot.RetireAfterCompletion();
             salvo.ImpactTimes.Add(travelTime);
             salvo.ShotsFired++;

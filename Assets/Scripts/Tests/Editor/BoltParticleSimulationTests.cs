@@ -25,6 +25,7 @@ namespace EmpireAtWar.Tests.Weapon
             GameObject cameraObject = new GameObject("Test camera", typeof(UnityEngine.Camera));
             Mesh actualMesh = new Mesh();
             Mesh referenceMesh = new Mesh();
+            BoltFlightBatch flights = new BoltFlightBatch();
             try
             {
                 target.transform.position = Vector3.forward * 100f;
@@ -34,8 +35,8 @@ namespace EmpireAtWar.Tests.Weapon
                 camera.enabled = false;
                 WeaponProfile profile = new WeaponProfile();
                 JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
-                ParticleSystem actualParticles = Fire(actual, muzzle.transform, target.transform, profile);
-                ParticleSystem referenceParticles = Fire(reference, muzzle.transform, target.transform, profile);
+                ParticleSystem actualParticles = Fire(actual, muzzle.transform, target.transform, profile, flights);
+                ParticleSystem referenceParticles = Fire(reference, muzzle.transform, target.transform, profile, flights);
 
                 Assert.That(actualParticles.isPaused, Is.True);
                 Assert.That(actualParticles.particleCount, Is.EqualTo(count));
@@ -78,6 +79,7 @@ namespace EmpireAtWar.Tests.Weapon
             }
             finally
             {
+                flights.Dispose();
                 Object.DestroyImmediate(actual);
                 Object.DestroyImmediate(reference);
                 Object.DestroyImmediate(muzzle);
@@ -88,14 +90,51 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
-        private static ParticleSystem Fire(GameObject root, Transform muzzle, Transform target, WeaponProfile profile)
+        [Test]
+        public void FlightBatch_PlacesBoltOnItsPathThenDropsItOnArrival()
+        {
+            GameObject bolt = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab"));
+            GameObject muzzle = new GameObject("Test muzzle");
+            GameObject target = new GameObject("Test target");
+            BoltFlightBatch flights = new BoltFlightBatch();
+            try
+            {
+                target.transform.position = Vector3.forward * 100f;
+                WeaponProfile profile = new WeaponProfile();
+                JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
+                Fire(bolt, muzzle.transform, target.transform, profile, flights);
+                float launch = Time.time;
+
+                flights.Advance(launch + 0.5f, 0f);
+
+                Assert.That(flights.Count, Is.EqualTo(1));
+                Assert.That(Vector3.Distance(bolt.transform.position, Vector3.forward * 50f), Is.LessThan(0.01f));
+                Assert.That(Vector3.Angle(bolt.transform.forward, Vector3.forward), Is.LessThan(0.01f));
+
+                flights.Advance(launch + 2f, 0f);
+
+                Assert.That(flights.Count, Is.Zero);
+                Assert.That(bolt.transform.position, Is.EqualTo(target.transform.position));
+            }
+            finally
+            {
+                flights.Dispose();
+                Object.DestroyImmediate(bolt);
+                Object.DestroyImmediate(muzzle);
+                Object.DestroyImmediate(target);
+            }
+        }
+
+        private static ParticleSystem Fire(GameObject root, Transform muzzle, Transform target, WeaponProfile profile,
+            BoltFlightBatch flights)
         {
             BoltShot shot = root.GetComponent<BoltShot>();
             ParticleSystem particles = (ParticleSystem)typeof(BoltShot)
                 .GetField("vfx", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(shot);
             particles.useAutoRandomSeed = false;
             particles.randomSeed = 12345;
-            shot.Fire(muzzle, target, target, Vector3.zero, profile);
+            shot.Fire(muzzle, target, target, Vector3.zero, profile, flights);
             return particles;
         }
     }

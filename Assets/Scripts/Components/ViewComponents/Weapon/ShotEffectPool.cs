@@ -18,6 +18,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly Transform _owner;
         private readonly WeaponProfile _profile;
         private readonly ImpactEffectPresenter _impactPresenter;
+        private readonly BoltFlightBatch _boltFlights;
         private readonly Stack<ShotEffect> _available = new Stack<ShotEffect>();
         private readonly HashSet<ShotEffect> _availableMembers = new HashSet<ShotEffect>();
         private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
@@ -28,8 +29,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private bool _released;
 
         public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted, ImpactEffectPresenter impactPresenter,
-            int maxIdle)
+            BoltFlightBatch boltFlights, int maxIdle)
         {
+            _boltFlights = boltFlights;
             _prefab = profile.ShotPrefab;
             _owner = owner;
             _profile = profile;
@@ -51,7 +53,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType, _profile.Damage,
                 GetImpactSize(attackData.TargetClass), isHit);
-            float duration = effect.Fire(_owner, targetTransform, target.Pivot, aimOffset, _profile);
+            float duration = effect.Fire(_owner, targetTransform, target.Pivot, aimOffset, _profile, _boltFlights);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;

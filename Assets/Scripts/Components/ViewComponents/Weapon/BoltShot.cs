@@ -1,5 +1,4 @@
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Services.Timing;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Weapon
@@ -8,7 +7,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// Laser / turbolaser bolt: tracks ships but keeps its launch aim against strikecraft,
     /// arriving exactly when the scheduled damage lands. The particle stays at the transform origin.
     /// The bolt always sits on the line from the muzzle to the predicted impact point, so steering
-    /// is spread over the whole flight instead of swinging at the end.
+    /// is spread over the whole flight instead of swinging at the end. <see cref="BoltFlightBatch"/> flies it.
     /// </summary>
     public class BoltShot : ShotEffect
     {
@@ -38,8 +37,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private float sizeScale = 3f;
         private float _arrivalTime;
         private float _travelTime;
+        private float _progress;
 
         private bool _isFlying;
+
+        /// <summary>Set by <see cref="BoltFlightBatch"/> while it lists this bolt.</summary>
+        internal bool IsInFlightBatch { get; set; }
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
         {
@@ -80,44 +83,21 @@ namespace EmpireAtWar.ViewComponents.Weapon
             // Bolt prefabs contain one static burst. Fly moves the local-space particles;
             // simulate just the initial emission, then leave simulation paused until impact.
             vfx.Simulate(PARTICLE_BURST_TIME, true, true, false);
+            _progress = 0f;
+            if (!IsInFlightBatch) BoltFlights.Add(this);
             return travelTime;
         }
 
-        protected override void Update()
+        /// <summary>
+        /// Called by <see cref="BoltFlightBatch"/> each frame: tracks the target and lands the bolt on arrival.
+        /// </summary>
+        /// <returns>False once the bolt no longer flies (landed or returned to its pool).</returns>
+        internal bool Advance(float now, float deltaTime)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileTurretUpdate.Auto())
-            {
-#endif
-            if (_isFlying)
-            {
-                Fly();
-            }
+            if (!_isFlying) return false;
+            float remaining = Mathf.Max(_arrivalTime - now, 0f);
+            if (_target != null) TrackTarget(remaining, deltaTime);
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileEffect.Auto())
-#endif
-            base.Update();
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
-        }
-
-        private void Fly()
-        {
-            float remaining = Mathf.Max(_arrivalTime - Time.time, 0f);
-            if (_target != null)
-            {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.ProjectileTrack.Auto())
-#endif
-                TrackTarget(remaining);
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileMove.Auto())
-            {
-#endif
             if (remaining <= 0f)
             {
                 Vector3 impactDirection = _lastAimPoint - _start;
@@ -126,30 +106,29 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _target = null;
                 vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 CompleteImpact(_lastAimPoint, impactDirection.sqrMagnitude > 0f ? impactDirection : _transform.forward);
-                return;
+                return false;
             }
 
             // Anchored to the muzzle: any aim correction moves the bolt by correction * progress,
             // so the path bends gently over the whole flight and the heading never snaps.
-            float progress = 1f - remaining / _travelTime;
-            Vector3 path = _flightAimPoint - _start;
-            Vector3 position = _start + path * progress;
-            // One transform write per frame: each write notifies the bolt's particle system.
-            if (path.sqrMagnitude > 0f) _transform.SetPositionAndRotation(position, Quaternion.LookRotation(path));
-            else _transform.position = position;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
+            _progress = 1f - remaining / _travelTime;
+            return true;
         }
+
+        internal BoltPose Pose => new BoltPose
+        {
+            Start = _start,
+            Path = _flightAimPoint - _start,
+            Progress = _progress
+        };
 
         // Leads the target by the ship's travel velocity measured at launch over the remaining flight time.
         // Velocity comes from the ship pivot, not the hardpoint: a ship turning to face a new target swings
         // its hardpoints in an arc, and extrapolating that arc as straight-line motion throws the bolt off.
         // Hardpoint swing is still followed through the tracked aim point.
-        private void TrackTarget(float remaining)
+        private void TrackTarget(float remaining, float deltaTime)
         {
             Vector3 pivotPosition = TargetPivot.position;
-            float deltaTime = Time.deltaTime;
             if (deltaTime > 0f && _travelTime - remaining < LEAD_SETTLE_TIME)
             {
                 Vector3 measuredVelocity = (pivotPosition - _lastPivotPosition) / deltaTime;
@@ -162,8 +141,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _flightAimPoint = _lastAimPoint + _targetVelocity * remaining;
         }
 
-        protected override void ResetVisuals() =>
+        // A bolt returned to its pool mid-flight stops; the flight batch drops it on its next pass.
+        protected override void ResetVisuals()
+        {
+            _isFlying = false;
             vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
 
         protected override bool IsVisualComplete() => !_isFlying;
     }

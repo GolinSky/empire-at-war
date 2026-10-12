@@ -134,6 +134,17 @@ updated: 2026-10-12
 - EditMode: `TargetSelectionCaptureTests` 12/12 (new: stripe cycle, first read, fighter pose). Weapon filter 106/117, Squadron 20/21; all failures are ship-data asset tests (Liberator hangar id, ISD-II hull, loadout bake, CD273 radar, Endurance PD, MC30c variant), unrelated.
 - [ ] In-game check by user: TargetBatch Capture time, fighters still hit, no out-of-range shots.
 
+### Profile 2026-10-12 16:15 + follow-up fixes
+- Capture (editor, profiler on, 120 frames): median 50.2 ms; GPU 2.5 ms. Main-thread avg: TargetBatch.Capture 2.05, HardPointExplosionPool.Tick 1.87 (regression), ParticleSystem.Update 1.66, Squadron.UpdateOrder 1.49, FogOfWarSystem.Update 1.40, Projectile.Track 1.34, Squadron.Flight 1.23. AI ticks 2–6 ms on decision frames; HangarComponent.Tick 9 ms in one frame.
+- [x] `e76b2857e`: hardpoint explosions — 2 looping child emitters never let `IsAlive(true)` end → 1008 live explosions, pool always instantiated. Anchor destroyed → `StopEmitting` → fades → idle.
+- [x] `e76b2857e`: `SlowTickService` (1 s, spread across frames) for `MiniMapUnitMarkerPresenter` + `FogVisibilityComponent`; `MarkView` redraws on `MiniMapMarker.Changed`; minimap fog mask 1 s; `SquadronLaunchSlots` 1 launch / 0.1 s.
+- [x] Target selection: markers `Capture.Owners` / `Capture.Copy` / `Capture.Positions` + `Battle.Weapon.RebuildCandidates`; per-hardpoint retry 0.25–0.5 s random after a failed selection (target change clears); new Base contact spliced after main target (same order as rebuild); destroyed groups dropped in bulk at ≥ half dead; position job starts after owner prep, completes after copies.
+- [x] AI: `EnemyAiStagger` — first decision unchanged, then timer + golden-ratio fraction × interval per player (commander, production, abilities); world change → per-player delay 0.1–0.2 s instead of next frame; abilities: hostiles snapshot once per decision, 4 casters/frame.
+- [x] Squadron order upkeep every 0.15 s, random phase, elapsed time passed to hunt/search timers; pilot + flight every frame.
+- [x] Burst: `BoltFlightBatch` (tracking/landing main thread, `BoltPlacementJob` places bolts); `FighterPoseBatch` (`FighterPlacementJob` + `FighterBankJob`, LateTick order −2000 before coordinator −1000). Fighter kinematics math stays managed; spawn still places poses directly (trail clear).
+- EditMode: 1542 total, 45 failures = same set as before these changes (asset/data, balance tool, `ShipEngineHardpointTests`).
+- [ ] User re-profile: TargetBatch sub-markers, `Battle.Squadron.Placement`, `Battle.Projectile.*`, AI tick spikes, enemy fog reveal delay acceptable (≤ 1 s).
+
 ### Radar acceptance and capture reliability
 - [ ] Obtain radar owner's implementation/test evidence; validate 1×/4× scheduling, detection delay, cloak/hostility, destruction, range modifiers and obstacle contacts.
 - [ ] Retain historical radar diagnosis in research; current stages average Snapshot 2.189 ms, Job 0.751 ms, Apply 5.392 ms.

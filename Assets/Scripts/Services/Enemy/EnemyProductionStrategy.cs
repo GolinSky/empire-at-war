@@ -50,6 +50,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<FactionData> _candidateData = new List<FactionData>();
 
         private float _decisionTimer;
+        private bool _hasDecided;
 
         private int _observedReleaseVersion;
 
@@ -94,6 +95,7 @@ namespace EmpireAtWar.Services.Enemy
         public void Start()
         {
             _decisionTimer = 0f;
+            _hasDecided = false;
             _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
         }
 
@@ -121,6 +123,11 @@ namespace EmpireAtWar.Services.Enemy
             _decisionTimer = Mathf.Max(
                 MINIMUM_PRODUCTION_INTERVAL,
                 profile.DecisionInterval * 2f);
+            if (!_hasDecided)
+            {
+                _hasDecided = true;
+                _decisionTimer += EnemyAiStagger.Offset(_owner.Id, _decisionTimer);
+            }
             EvaluateProduction(profile);
         }
 

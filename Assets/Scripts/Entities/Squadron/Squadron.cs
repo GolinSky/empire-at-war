@@ -42,6 +42,9 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         // Idle and guarding squadrons scan every enemy in range; spacing those scans keeps large air battles cheap.
         private const float TARGET_SEARCH_INTERVAL = 0.25f;
+        // Order upkeep (target checks, arrivals, searches) runs about seven times a second, each squadron on its own
+        // phase; the pilot and flight model still step every frame.
+        private const float ORDER_UPDATE_INTERVAL = 0.15f;
 
         private ISquadronFlightComponent _flight;
         private ISquadronHealthComponent _health;
@@ -76,6 +79,8 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private float _huntRetargetTimer;
         private float _targetSearchTimer;
+        private float _orderTimer;
+        private float _orderElapsed;
         private float _pendingAbilityRange;
         private float _guardedRadius;
 
@@ -161,6 +166,8 @@ namespace EmpireAtWar.Entities.Squadrons
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
             // Staggered so squadrons launched together do not all search in the same frame.
             _targetSearchTimer = UnityEngine.Random.Range(0f, TARGET_SEARCH_INTERVAL);
+            _orderTimer = UnityEngine.Random.Range(0f, ORDER_UPDATE_INTERVAL);
+            _orderElapsed = 0f;
         }
 
         public void LateDispose() => Release(false);
@@ -201,10 +208,18 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
+            _orderElapsed += Time.deltaTime;
+            _orderTimer -= Time.deltaTime;
+            if (_orderTimer <= 0f)
+            {
+                _orderTimer = ORDER_UPDATE_INTERVAL;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.SquadronOrder.Auto())
+                using (BattleProfilerMarkers.SquadronOrder.Auto())
 #endif
-            UpdateOrder();
+                UpdateOrder(_orderElapsed);
+                _orderElapsed = 0f;
+            }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
@@ -328,7 +343,7 @@ namespace EmpireAtWar.Entities.Squadrons
             if (_audioDialog != null) _audioDialog.HandleEnemyDetected();
         }
 
-        private void UpdateOrder()
+        private void UpdateOrder(float elapsed)
         {
             switch (_orders.Current)
             {
@@ -336,7 +351,7 @@ namespace EmpireAtWar.Entities.Squadrons
                     if (!SquadronTargetSelector.IsAlive(_orders.Target) || _orders.Target.IsCloaked()) Stop();
                     break;
                 case UnitOrderType.Hunt:
-                    UpdateHunt();
+                    UpdateHunt(elapsed);
                     break;
                 case UnitOrderType.UseAbility:
                     UpdateAbilityCast();
@@ -345,12 +360,12 @@ namespace EmpireAtWar.Entities.Squadrons
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
                     // Fighters orbit one side of the guarded unit, so the whole guard area is
                     // searched in what the team sees rather than in the squadron's own radar.
-                    else if (ShouldSearchTargets()) DefendArea(_targetSelector.SelectSeen(
+                    else if (ShouldSearchTargets(elapsed)) DefendArea(_targetSelector.SelectSeen(
                         _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
                         _guardedRadius + Data.GuardRadius));
                     break;
                 case UnitOrderType.AttackMove:
-                    if (ShouldSearchTargets())
+                    if (ShouldSearchTargets(elapsed))
                         DefendArea(_targetSelector.SelectNear(_radar.Enemies, _flight.Centroid, Data.GuardRadius));
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();
                     break;
@@ -364,7 +379,7 @@ namespace EmpireAtWar.Entities.Squadrons
                     else _orders.Clear();
                     break;
                 default:
-                    if (ShouldSearchTargets())
+                    if (ShouldSearchTargets(elapsed))
                         DefendArea(_targetSelector.SelectNear(_radar.Enemies, _pilot.LoiterCenter, Data.GuardRadius));
                     break;
             }
@@ -386,9 +401,9 @@ namespace EmpireAtWar.Entities.Squadrons
             _abilities.TryActivate(_abilityCaster, _pendingAbilityId, target);
         }
 
-        private void UpdateHunt()
+        private void UpdateHunt(float elapsed)
         {
-            _huntRetargetTimer -= Time.deltaTime;
+            _huntRetargetTimer -= elapsed;
             if (SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked() && _huntRetargetTimer > 0f) return;
             _huntRetargetTimer = _orderSettings.HuntRetargetInterval;
             IEntity target = _targetSelector.SelectAnywhere(_flight.Centroid);
@@ -399,9 +414,9 @@ namespace EmpireAtWar.Entities.Squadrons
         private bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();
 
         /// <summary>A lost target is replaced at once; with no target the search runs on an interval.</summary>
-        private bool ShouldSearchTargets()
+        private bool ShouldSearchTargets(float elapsed)
         {
-            _targetSearchTimer -= Time.deltaTime;
+            _targetSearchTimer -= elapsed;
             if (IsEngaging) return false;
             if (_engaged == null && _targetSearchTimer > 0f) return false;
             // Jittered: squadrons that lost one shared target search in the same frame and would otherwise stay in step.

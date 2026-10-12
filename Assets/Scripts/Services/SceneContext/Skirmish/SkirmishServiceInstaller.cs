@@ -19,6 +19,7 @@ using EmpireAtWar.ViewComponents.Health;
 using Zenject;
 using UnityEngine;
 using EmpireAtWar.ViewComponents.Weapon;
+using EmpireAtWar.ViewComponents.Squadrons;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Services.Ships;
 
@@ -50,6 +51,10 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.Bind<IImpactEffectView>().To<ImpactEffectView>()
                 .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
             Container.Bind<ImpactEffectPresenter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BoltFlightBatch>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FighterPoseBatch>().AsSingle();
+            // Fighter guns are children of the fighters: their poses land before the coordinator fires.
+            Container.BindLateTickableExecutionOrder<FighterPoseBatch>(-2000);
             Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
             Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
             Container.BindInterfacesAndSelfTo<IncomingMissileRegistry>().AsSingle();

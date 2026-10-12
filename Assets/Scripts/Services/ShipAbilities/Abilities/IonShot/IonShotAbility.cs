@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     public sealed class IonShotAbility : IPhasedShipAbility
     {
         private readonly IonShotSettings _settings;
+        private readonly BoltFlightBatch _boltFlights;
         private readonly CombatStatModifier _disable = new CombatStatModifier(1f, 1f, 0f, 1f, 1f);
         private IEntity _target;
         private CombatModifiers _targetModifiers;
@@ -23,7 +24,11 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool IsComplete => _complete;
         public bool SurvivesCasterDeath => true;
 
-        public IonShotAbility(IonShotSettings settings) => _settings = settings;
+        public IonShotAbility(IonShotSettings settings, BoltFlightBatch boltFlights)
+        {
+            _settings = settings;
+            _boltFlights = boltFlights;
+        }
 
         public bool CanStart(IShipAbilityFacade caster, IEntity target)
         {
@@ -43,7 +48,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 if (member.IsDestroyed) continue;
                 ShotEffect shot = Object.Instantiate(_settings.Projectile.ShotPrefab);
                 float travelTime = shot.Fire(member.Transform, targetUnit.Transform, targetUnit.Pivot,
-                    Vector3.zero, _settings.Projectile);
+                    Vector3.zero, _settings.Projectile, _boltFlights);
                 shot.RetireAfterCompletion();
                 _remaining = Mathf.Max(_remaining, travelTime);
             }

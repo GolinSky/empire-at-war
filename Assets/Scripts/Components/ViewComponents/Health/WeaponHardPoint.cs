@@ -25,6 +25,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private ImpactEffectPresenter _impactPresenter;
+        private BoltFlightBatch _boltFlights;
         private IncomingMissileRegistry _missiles;
 
         private float _maxAttackDistance;
@@ -66,8 +67,9 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
             IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
-            ImpactEffectPresenter impactPresenter, IncomingMissileRegistry missiles)
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IncomingMissileRegistry missiles)
         {
+            _boltFlights = boltFlights;
             _profile = profile;
             _maxAttackDistance = maxAttackDistance;
             _missSpread = missSpread;
@@ -187,7 +189,7 @@ namespace EmpireAtWar.ViewComponents.Health
             }
 
             _effectPool = new ShotEffectPool(profile: _profile, owner: transform, maxIdle: _profile.ShotsPerSalvo,
-                effectCompleted: OnTurretEffectCompleted, impactPresenter: _impactPresenter);
+                effectCompleted: OnTurretEffectCompleted, impactPresenter: _impactPresenter, boltFlights: _boltFlights);
             _effectPool.Prewarm(prewarmEffects);
             return _effectPool;
         }
