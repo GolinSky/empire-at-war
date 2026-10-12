@@ -13,8 +13,8 @@ public static class InspectQuasarFire
 {
     const string NAME="QuasarFire";
     const string TASK="Temp/QuasarFireImport/";
-    const string VIEW="Assets/Prefabs/Models/Ships/QuasarFireShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/QuasarFireShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/QuasarFireShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/QuasarFireShipData.asset";
     public static string Main()
     {
         var conversion=JObject.Parse(File.ReadAllText(TASK+"ConversionReport.json"));
@@ -39,7 +39,7 @@ public static class InspectQuasarFire
             triangles+=mesh.triangles.Length/3;
         }
         Check(boneError<.00001f,"Attachment tolerance");
-        foreach(string path in new[]{VIEW,"Assets/Prefabs/Models/Ships/QuasarFire.prefab","Assets/Prefabs/Ui/Reinforcement/QuasarFireReinforcementView.prefab","Assets/Prefabs/Models/Wrecks/QuasarFireWreckView.prefab"})
+        foreach(string path in new[]{VIEW,"Assets/Prefabs/Models/Ships/Rebellion/QuasarFire.prefab","Assets/Prefabs/Ui/Reinforcement/QuasarFireReinforcementView.prefab","Assets/Prefabs/Models/Wrecks/QuasarFireWreckView.prefab"})
         {
             var root=AssetDatabase.LoadAssetAtPath<GameObject>(path);
             Check(root.transform.localScale==Vector3.one,"Root scale: "+path);

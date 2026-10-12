@@ -14,8 +14,8 @@ public static class VerifyISDIII
 {
     public static string Main()
     {
-        const string VIEW="Assets/Prefabs/Models/Ships/ISDIIIShipView.prefab";
-        const string DATA="Assets/Settings/Data/Ship/ISDIIIShipData.asset";
+        const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIIIShipView.prefab";
+        const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIIShipData.asset";
         var root=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
         var health=Config(root,"HealthComponent");var targets=References(health.FindProperty("<ShipUnits>k__BackingField")).Cast<HardPoint>().ToArray();
         Check(targets.Length==19 && targets.Select(p=>p.Id).OrderBy(i=>i).SequenceEqual(Enumerable.Range(0,19)),"Nineteen ordered target IDs");
@@ -33,7 +33,7 @@ public static class VerifyISDIII
         var bays=data.FindProperty("hangarBays");Check(bays.arraySize==2,"Two complement types");
         for(int i=0;i<2;i++){var bay=bays.GetArrayElementAtIndex(i);Check(bay.FindPropertyRelative("squadronType").intValue==(i==0?202:205) && bay.FindPropertyRelative("reserve").intValue==(i==0?3:2) && bay.FindPropertyRelative("maxActive").intValue==1,"Avenger/Punisher complement");}
         Check(Enumerable.Range(0,data.FindProperty("abilities").arraySize).Select(i=>data.FindProperty("abilities").GetArrayElementAtIndex(i).intValue).SequenceEqual(new[]{25,22}),"Composite/Tractor abilities");
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset","shipsData.keyValue",206).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registry");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset","shipsData.keyValue",206).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registry");
         foreach(var path in new[]{VIEW,DATA})
         {
             var guid=AssetDatabase.AssetPathToGUID(path);var key=Path.GetFileNameWithoutExtension(path);
@@ -68,11 +68,11 @@ public static class VerifyISDIII
         var damage=Enumerable.Range(0,damageArray.arraySize).Select(i=>damageArray.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("damageType").intValue==12);
         Check(damage.FindPropertyRelative("vsShield").floatValue==.1f && damage.FindPropertyRelative("damage.capital").floatValue==1,"Composite armor/shield modifiers");
         Check(unit.FindPropertyRelative("<Name>k__BackingField").stringValue=="ISD III","Display name");
-        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIII.prefab");
+        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDIII.prefab");
         var bounds=BoundsOf(visual);Check(bounds.size.z>190 && bounds.size.z<194,"Hull with mounted turret bounds");
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(spawn));
         Check((BoundsOf(preview).size-BoundsOf(visual,true).size).magnitude<.01f,"Placement geometry");
-        foreach(var p in new[]{root,visual,preview,AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Wrecks/ISDIIIWreckView.prefab"),AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIIIHeavyDualTurret.prefab"),AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIIIIonTurret.prefab")})
+        foreach(var p in new[]{root,visual,preview,AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Wrecks/ISDIIIWreckView.prefab"),AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Cannons/Empire/ISDIIIHeavyDualTurret.prefab"),AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Cannons/Empire/ISDIIIIonTurret.prefab")})
         {
             Check(p!=null,"Prefab exists");
             foreach(var t in p.GetComponentsInChildren<Transform>(true))Check(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject)==0,"Missing script "+t.name);

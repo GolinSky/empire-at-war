@@ -10,11 +10,11 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildISDIRemakeShip
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIShipData.asset";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/ImperatorShipView.prefab",VIEW);
+        Copy("Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab",VIEW);
         var root=PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;float hullBottom=0,hullTop=0;
         try
@@ -38,7 +38,7 @@ public static class BuildISDIRemakeShip
                 if(renderer==null)continue;
                 var old=renderer.transform;while(old.parent!=root.transform)old=old.parent;UnityEngine.Object.DestroyImmediate(old.gameObject);
             }
-            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDI.prefab"),body);
+            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDI.prefab"),body);
             var weapons=new List<WeaponHardPoint>();var targets=new List<HardPoint>();
             AddWeapon("HP_ISD_1_New_HICT_01","ISDIPart01/FP_01",31,true);
             AddWeapon("HP_ISD_1_New_HICT_02","ISDIPart02/FP_01",31,true);
@@ -126,7 +126,7 @@ public static class BuildISDIRemakeShip
         var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(DATA));
         SetFloat(data,"HullBottom",hullBottom);SetFloat(data,"HullTop",hullTop);
         var wreck=ShipWreckBuilder.Build("Assets/Prefabs/Models/Wrecks/Source/ISDIShipView.prefab");
-        var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/Wreck/ISDIWreckData.asset"));
+        var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Models/Wrecks/Empire/ISDIWreckData.asset"));
         wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=wreck;Save(wd);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue=wd.targetObject;
         var saved=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);

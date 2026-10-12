@@ -10,8 +10,8 @@ public static class RegisterImperialVenator
 {
     const int SHIP_ID = 211;
     const int ABILITY_ID = 35;
-    const string VIEW = "Assets/Prefabs/Models/Ships/ImperialVenatorShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/ImperialVenatorShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ImperialVenatorShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/ImperialVenatorShipData.asset";
     public static string Main()
     {
         var catalog = Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
@@ -43,12 +43,12 @@ public static class RegisterImperialVenator
         {
             string guid = AssetDatabase.AssetPathToGUID(path);
             Entry(mapping.FindProperty("assetMappings.keyValue"), Path.GetFileNameWithoutExtension(path)).FindPropertyRelative("m_AssetGUID").stringValue = guid;
-            string donor = path == VIEW ? "Assets/Prefabs/Models/Ships/VenatorShipView.prefab" : "Assets/Settings/Data/Ship/VenatorShipData.asset";
+            string donor = path == VIEW ? "Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab" : "Assets/Settings/Data/Ship/Republic/VenatorShipData.asset";
             var entry = settings.CreateOrMoveEntry(guid, settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(donor)).parentGroup);
             entry.address = Path.GetFileNameWithoutExtension(path); EditorUtility.SetDirty(entry.parentGroup);
         }
         Save(mapping); EditorUtility.SetDirty(settings);
-        var ships = Load("Assets/Settings/Data/Ship/ShipsData.asset"); Entry(ships.FindProperty("shipsData.keyValue"), SHIP_ID).FindPropertyRelative("m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(DATA); Save(ships);
+        var ships = Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset"); Entry(ships.FindProperty("shipsData.keyValue"), SHIP_ID).FindPropertyRelative("m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(DATA); Save(ships);
         var ui = Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset"); Entry(ui.FindProperty("shipIconWrapper.keyValue"), SHIP_ID).objectReferenceValue = icon; Save(ui);
         var tooltip = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset"); var icons = tooltip.FindProperty("icons");
         int index = Enumerable.Range(0, icons.arraySize).Where(i => icons.GetArrayElementAtIndex(i).FindPropertyRelative("key").stringValue == iconKey).DefaultIfEmpty(-1).First();

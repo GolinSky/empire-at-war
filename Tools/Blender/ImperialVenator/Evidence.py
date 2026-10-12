@@ -23,7 +23,7 @@ def Record(asset, field, key):
 
 
 records = [
-    ('Assets/Settings/Data/Ship/ShipsData.asset', 'shipsData.keyValue', 0),
+    ('Assets/Settings/Data/Ship/Shared/ShipsData.asset', 'shipsData.keyValue', 0),
     ('Assets/Settings/AssetMappingData.asset', 'assetMappings.keyValue', 'VenatorShipView'),
     ('Assets/Settings/AssetMappingData.asset', 'assetMappings.keyValue', 'VenatorShipData'),
     ('Assets/Settings/Data/Models/ShipUi/ShipUiData.asset', 'shipIconWrapper.keyValue', 0),
@@ -34,8 +34,8 @@ for filename, field, key in records:
     baseline = subprocess.check_output(['git', 'show', 'HEAD:' + filename], text=True)
     assert Record(ReadAsset(baseline), field, key) == Record(ReadAsset(Path(filename).read_text()), field, key), filename
 
-donors = ['Assets/Prefabs/Models/Ships/VenatorShipView.prefab', 'Assets/Settings/Data/Ship/VenatorShipData.asset',
-          'Assets/Prefabs/Ui/Reinforcement/VenatorReinforcementView.prefab', 'Assets/Settings/Data/Ship/Wreck/VenatorWreckData.asset',
+donors = ['Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab', 'Assets/Settings/Data/Ship/Republic/VenatorShipData.asset',
+          'Assets/Prefabs/Ui/Reinforcement/VenatorReinforcementView.prefab', 'Assets/Settings/Data/Models/Wrecks/Republic/VenatorWreckData.asset',
           'Assets/Prefabs/Models/Wrecks/VenatorWreckView.prefab']
 for filename in donors:
     baseline = subprocess.check_output(['git', 'show', 'HEAD:' + filename])

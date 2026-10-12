@@ -16,7 +16,7 @@ public static class RenderVictoryII
         var previousAmbient=RenderSettings.ambientLight;
         var previousMode=RenderSettings.ambientMode;
         var oldActive=RenderTexture.active;
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/VictoryII.prefab"),scene);
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/VictoryII.prefab"),scene);
         foreach(var transform in root.GetComponentsInChildren<Transform>(true)) transform.gameObject.layer=30;
         var cameraObject=new GameObject("VictoryIIPreviewCamera"); UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject,scene);
         var camera=cameraObject.AddComponent<Camera>(); camera.scene=scene; camera.enabled=false;

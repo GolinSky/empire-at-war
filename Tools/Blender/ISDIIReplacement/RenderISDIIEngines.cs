@@ -11,7 +11,7 @@ public static class RenderISDIIEngines
     public static string Main()
     {
         var scene=EditorSceneManager.NewPreviewScene();
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDII.prefab"),scene);
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDII.prefab"),scene);
         foreach(var transform in root.GetComponentsInChildren<Transform>(true))transform.gameObject.layer=30;
         var cameraObject=new GameObject("EngineCamera");UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject,scene);
         var camera=cameraObject.AddComponent<Camera>();camera.scene=scene;camera.enabled=false;camera.orthographic=true;camera.orthographicSize=36;

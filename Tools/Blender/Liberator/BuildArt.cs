@@ -94,7 +94,7 @@ public static class BuildLiberatorArt
             scale = 160f / bounds.size.z;
             offset = -bounds.center * scale;
             geometry.transform.localScale = Vector3.one * scale; geometry.transform.localPosition = offset;
-            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/Liberator.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/Rebellion/Liberator.prefab");
             var size = BoundsOf(root).size;
             File.WriteAllText(TASK + "ArtBounds.json", new JObject { ["size"] = new JArray(size.x,size.y,size.z), ["scale"] = scale, ["offset"] = new JArray(offset.x,offset.y,offset.z) }.ToString());
         }

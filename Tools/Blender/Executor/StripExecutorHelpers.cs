@@ -9,11 +9,11 @@ public static class StripExecutorHelpers
     public static string Main()
     {
         var paths = Enumerable.Range(1, 10)
-            .Select(i => $"Assets/Prefabs/Models/Ships/ExecutorTurret{i:00}.prefab")
+            .Select(i => $"Assets/Prefabs/Models/Cannons/Empire/ExecutorTurret{i:00}.prefab")
             .Concat(new[]
             {
-                "Assets/Prefabs/Models/Ships/Executor.prefab",
-                "Assets/Prefabs/Models/Ships/ExecutorShipView.prefab",
+                "Assets/Prefabs/Models/Ships/Empire/Executor.prefab",
+                "Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab",
                 "Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab",
                 "Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab"
             }).ToArray();

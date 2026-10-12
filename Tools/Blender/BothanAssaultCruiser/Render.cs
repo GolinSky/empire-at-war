@@ -18,7 +18,7 @@ public static class RenderBothanAssaultCruiser
         var previousAmbient=RenderSettings.ambientLight;
         var previousMode=RenderSettings.ambientMode;
         var oldActive=RenderTexture.active;
-        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/BothanAssaultCruiser.prefab"),scene);
+        var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/BothanAssaultCruiser.prefab"),scene);
         foreach(var transform in root.GetComponentsInChildren<Transform>(true))transform.gameObject.layer=30;
         var cameraObject=new GameObject("BothanPreviewCamera");UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject,scene);
         var camera=cameraObject.AddComponent<Camera>();camera.scene=scene;camera.enabled=false;

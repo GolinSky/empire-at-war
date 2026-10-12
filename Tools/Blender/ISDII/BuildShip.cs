@@ -10,11 +10,11 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildISDIIShip
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/ImperatorShipView.prefab",VIEW);
+        Copy("Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab",VIEW);
         var root=PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;float hullBottom=0,hullTop=0;
         try
@@ -37,7 +37,7 @@ public static class BuildISDIIShip
                 if(renderer==null)continue;
                 var old=renderer.transform;while(old.parent!=root.transform)old=old.parent;UnityEngine.Object.DestroyImmediate(old.gameObject);
             }
-            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDII.prefab"),body);
+            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDII.prefab"),body);
             var weapons=new List<WeaponHardPoint>();var targets=new List<HardPoint>();
             for(int i=1;i<=8;i++)AddWeapon("RapidDualTurbolaser"+i,"ISDIITLO"+i.ToString("00")+"/FP_02",41,true,100,true);
             for(int i=1;i<=2;i++)AddWeapon("LongRangeTurboIon"+i,"ISDIIICQ"+i.ToString("00")+"/FP_01",42,true,80,false);
@@ -100,7 +100,7 @@ public static class BuildISDIIShip
             void AddSystem(string name,string bone,int type){var hp=Mount(name,bone).AddComponent<HardPoint>();Configure(hp,type,targets.Count,true);}
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
-        Copy("Assets/Settings/Data/Ship/ImperatorShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Ship/Republic/ImperatorShipData.asset",DATA);
         var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(DATA));data.targetObject.name="ISDIIShipData";
         SetFloat(data,"Hull",21000);SetFloat(data,"Shields",18000);SetFloat(data,"Speed",25);SetFloat(data,"Range",525);SetFloat(data,"ShieldRegenerateValue",20);
         SetFloat(data,"NavigationRadius",105);SetFloat(data,"HullBottom",hullBottom);SetFloat(data,"HullTop",hullTop);
@@ -130,8 +130,8 @@ public static class BuildISDIIShip
             PrefabUtility.SaveAsPrefabAsset(wreckRoot,"Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab");
         }
         finally{PrefabUtility.UnloadPrefabContents(wreckRoot);}
-        const string wreckPath="Assets/Settings/Data/Ship/Wreck/ISDIIWreckData.asset";
-        Copy("Assets/Settings/Data/Ship/Wreck/ImperatorWreckData.asset",wreckPath);var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(wreckPath));wd.targetObject.name="ISDIIWreckData";wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=wreck;Save(wd);
+        const string wreckPath="Assets/Settings/Data/Models/Wrecks/Empire/ISDIIWreckData.asset";
+        Copy("Assets/Settings/Data/Models/Wrecks/Republic/ImperatorWreckData.asset",wreckPath);var wd=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(wreckPath));wd.targetObject.name="ISDIIWreckData";wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=wreck;Save(wd);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue=wd.targetObject;Save(data);AssetDatabase.SaveAssets();
         return "ISD II: 17 targetable hardpoints, 23 weapons, two hangar launches of each squadron, shield shell and own wreck. Bounds "+bounds;
     }

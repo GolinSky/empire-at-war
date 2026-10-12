@@ -15,17 +15,17 @@ using EmpireAtWar.Editor;
 
 public static class BuildTectorShip
 {
-    const string VISUAL="Assets/Prefabs/Models/Ships/Tector.prefab";
-    const string GAMEPLAY="Assets/Prefabs/Models/Ships/TectorShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/TectorShipData.asset";
-    const string WRECK_DATA="Assets/Settings/Data/Ship/Wreck/TectorWreckData.asset";
+    const string VISUAL="Assets/Prefabs/Models/Ships/Empire/Tector.prefab";
+    const string GAMEPLAY="Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/TectorShipData.asset";
+    const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Empire/TectorWreckData.asset";
     const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab";
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Tector construction requires Edit Mode.");
-        Copy("Assets/Prefabs/Models/Ships/ISDIIShipView.prefab",GAMEPLAY);
-        Copy("Assets/Settings/Data/Ship/ISDIIShipData.asset",DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/ISDIIWreckData.asset",WRECK_DATA);
+        Copy("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab",GAMEPLAY);
+        Copy("Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Empire/ISDIIWreckData.asset",WRECK_DATA);
         var audit=JObject.Parse(File.ReadAllText("Temp/TectorImport/SourceAudit.json"));
         var root=PrefabUtility.LoadPrefabContents(GAMEPLAY);
         Bounds bounds;float bottom,top,radius;

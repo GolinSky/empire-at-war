@@ -45,7 +45,7 @@ public static class VerifyTectorReplacementAssets
             if (bone.parent.name != names[parent]) throw new InvalidOperationException("Bone parent differs: " + names[i]);
         }
         int references = 0;
-        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab" })
+        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab" })
         {
             var root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             foreach (var component in root.GetComponentsInChildren<MonoBehaviour>(true))

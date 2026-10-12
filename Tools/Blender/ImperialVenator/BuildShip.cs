@@ -11,12 +11,12 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildImperialVenatorShip
 {
-    const string VIEW = "Assets/Prefabs/Models/Ships/ImperialVenatorShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/ImperialVenatorShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ImperialVenatorShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/ImperialVenatorShipData.asset";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/VenatorShipView.prefab", VIEW);
-        var root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/VenatorShipView.prefab");
+        Copy("Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab", VIEW);
+        var root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab");
         Bounds bounds; float bottom, top;
         var mappings = new List<object>();
         try
@@ -36,7 +36,7 @@ public static class BuildImperialVenatorShip
             foreach (var renderer in root.GetComponentsInChildren<Renderer>(true).Where(r => r != shieldRenderer && (r is MeshRenderer || r is SkinnedMeshRenderer)).ToArray())
                 UnityEngine.Object.DestroyImmediate(renderer.gameObject);
             body.localPosition = Vector3.zero; body.localRotation = Quaternion.identity; body.localScale = Vector3.one;
-            var visual = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ImperialVenator.prefab"), body);
+            var visual = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ImperialVenator.prefab"), body);
             var map = new Dictionary<string, string>
             {
                 { "DualProjectileL1", "ImperialVenator_Heavy_TL_08/FP_01" },
@@ -106,7 +106,7 @@ public static class BuildImperialVenatorShip
             }
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }
-        Copy("Assets/Settings/Data/Ship/VenatorShipData.asset", DATA);
+        Copy("Assets/Settings/Data/Ship/Republic/VenatorShipData.asset", DATA);
         var data = new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>(DATA)); data.targetObject.name = "ImperialVenatorShipData";
         Float(data, "Hull", 15000); Float(data, "Shields", 15000); Float(data, "HullBottom", bottom); Float(data, "HullTop", top);
         var abilities = data.FindProperty("abilities"); abilities.arraySize = 1; abilities.GetArrayElementAtIndex(0).intValue = 35;
@@ -115,8 +115,8 @@ public static class BuildImperialVenatorShip
         var loadout = data.FindProperty("weaponLoadout");
         for (int i = 0; i < loadout.arraySize; i++) if (loadout.GetArrayElementAtIndex(i).FindPropertyRelative("weaponType").intValue == 9) loadout.GetArrayElementAtIndex(i).FindPropertyRelative("weaponType").intValue = 43;
         var wreck = ShipWreckBuilder.Build(VIEW);
-        const string WRECK_DATA = "Assets/Settings/Data/Ship/Wreck/ImperialVenatorWreckData.asset";
-        Copy("Assets/Settings/Data/Ship/Wreck/VenatorWreckData.asset", WRECK_DATA);
+        const string WRECK_DATA = "Assets/Settings/Data/Models/Wrecks/Empire/ImperialVenatorWreckData.asset";
+        Copy("Assets/Settings/Data/Models/Wrecks/Republic/VenatorWreckData.asset", WRECK_DATA);
         var wd = new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>(WRECK_DATA)); wd.targetObject.name = "ImperialVenatorWreckData";
         wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue = wreck; Save(wd);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wd.targetObject; Save(data);

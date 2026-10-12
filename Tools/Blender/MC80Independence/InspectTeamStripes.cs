@@ -30,7 +30,7 @@ public static class InspectMC80TeamStripes
             if (wreck.GetTexture("_TeamMaskMap") != material.GetTexture("_TeamMaskMap") || wreck.GetFloat("_TeamMaskStrength") != 1)
                 throw new InvalidOperationException("Wreck stripe material differs: " + path);
         }
-        var view = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab");
+        var view = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab");
         var binding = view.GetComponentsInChildren<MonoBehaviour>(true).Single(c => c.GetType().Name == "TeamColorView");
         var array = new SerializedObject(binding).FindProperty("meshRenderers");
         if (array.arraySize != 8) throw new InvalidOperationException("Ownership requires all eight opaque hull renderers.");

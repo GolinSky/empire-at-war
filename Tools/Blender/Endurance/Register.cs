@@ -8,8 +8,8 @@ public static class RegisterEndurance
 {
     const int SHIP_ID=322;
     const int ABILITY_ID=52;
-    const string DATA="Assets/Settings/Data/Ship/EnduranceShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/EnduranceShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/EnduranceMatchups.asset";
 
@@ -38,7 +38,7 @@ public static class RegisterEndurance
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=65;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=8;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");

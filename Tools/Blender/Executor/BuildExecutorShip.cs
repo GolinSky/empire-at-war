@@ -14,17 +14,17 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildExecutorShip
 {
-    const string VISUAL="Assets/Prefabs/Models/Ships/Executor.prefab";
-    const string GAMEPLAY="Assets/Prefabs/Models/Ships/ExecutorShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ExecutorShipData.asset";
-    const string WRECK_DATA="Assets/Settings/Data/Ship/Wreck/ExecutorWreckData.asset";
+    const string VISUAL="Assets/Prefabs/Models/Ships/Empire/Executor.prefab";
+    const string GAMEPLAY="Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ExecutorShipData.asset";
+    const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Empire/ExecutorWreckData.asset";
     const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab";
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Executor construction requires Edit Mode.");
-        Copy("Assets/Prefabs/Models/Ships/ISDIShipView.prefab",GAMEPLAY);
-        Copy("Assets/Settings/Data/Ship/ISDIShipData.asset",DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/ISDIWreckData.asset",WRECK_DATA);
+        Copy("Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab",GAMEPLAY);
+        Copy("Assets/Settings/Data/Ship/Empire/ISDIShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Empire/ISDIWreckData.asset",WRECK_DATA);
         var audit=JObject.Parse(File.ReadAllText("Temp/ExecutorImport/SourceAudit.json"));
         var root=PrefabUtility.LoadPrefabContents(GAMEPLAY);
         Bounds bounds;float bottom,top,radius;

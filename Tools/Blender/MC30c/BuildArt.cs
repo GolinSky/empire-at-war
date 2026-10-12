@@ -11,7 +11,7 @@ public static class BuildMC30cArt
     const string MODELS = "Assets/Art/Models/RebellionShips/MC30c/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/MC30c/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/MC30c/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC30c.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC30c.prefab";
     const float LENGTH = 80;
 
     public static string Main()

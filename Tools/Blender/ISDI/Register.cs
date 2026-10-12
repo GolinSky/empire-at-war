@@ -20,7 +20,7 @@ public static class RegisterImperialAdvanced
         var faction=Load("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset");var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");var tooltips=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset");var reinforcement=Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset");var mapping=Load("Assets/Settings/AssetMappingData.asset");
         for(int i=0;i<names.Length;i++)
         {
-            bool ship=i==0;string name=names[i],type=ship?"Ship":"Squadron",view="Assets/Prefabs/Models/"+(ship?"Ships":"Squadrons")+"/"+name+type+"View.prefab",data="Assets/Settings/Data/"+type+"/"+name+type+"Data.asset";
+            bool ship=i==0;string name=names[i],type=ship?"Ship":"Squadron",view="Assets/Prefabs/Models/"+(ship?"Ships/Empire":"Squadrons")+"/"+name+type+"View.prefab",data="Assets/Settings/Data/"+(ship?"Ship/Empire":"Squadron")+"/"+name+type+"Data.asset";
             var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/"+(ship?"ShipIcon":"SquadronIcon")+"/"+name+"Icon.png");string key=IconKey(icon);
             string matchupsPath="Assets/Settings/Data/Tooltip/Matchups/"+name+type+"Matchups.asset";
             if(!File.Exists(matchupsPath))AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/"+(ship?"ImperatorMatchups":i==3?"TIEBomberSquadronMatchups":"TIEFighterSquadronMatchups")+".asset",matchupsPath);
@@ -38,7 +38,7 @@ public static class RegisterImperialAdvanced
                 Upsert(mapping.FindProperty("assetMappings.keyValue"),"key",assetName).FindPropertyRelative("value.m_AssetGUID").stringValue=guid;
                 var settings=AddressableAssetSettingsDefaultObject.Settings;var addressable=settings.CreateOrMoveEntry(guid,settings.FindGroup(path==view?"View":"Data"));addressable.address=assetName;EditorUtility.SetDirty(settings);
             }
-            if(ship){var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");Upsert(ships.FindProperty("shipsData.keyValue"),"key",ids[i]).FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(data);Save(ships);}
+            if(ship){var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");Upsert(ships.FindProperty("shipsData.keyValue"),"key",ids[i]).FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(data);Save(ships);}
             else
             {
                 var root=PrefabUtility.LoadPrefabContents(view);

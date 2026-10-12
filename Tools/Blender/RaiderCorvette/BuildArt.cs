@@ -8,7 +8,7 @@ using UnityEngine;
 public static class BuildRaiderCorvetteArt
 {
     const string TASK = "Temp/RaiderCorvetteImport/";
-    const string PREFABS = "Assets/Prefabs/Models/Ships/";
+    const string PREFABS = "Assets/Prefabs/Models/Ships/Empire/";
 
     public static string Main()
     {
@@ -101,7 +101,7 @@ public static class BuildRaiderCorvetteArt
             }
             finally { UnityEngine.Object.DestroyImmediate(visual); }
         }
-        var hull = PrefabUtility.LoadPrefabContents(PREFABS + "RaiderCorvette.prefab");
+        var hull = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/Empire/RaiderCorvette.prefab");
         try
         {
             var bounds = BoundsOf(hull);

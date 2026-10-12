@@ -20,7 +20,7 @@ public static class ArchiveISDIVisuals
             foreach (string guid in AssetDatabase.FindAssets("", new[] {newPath})) Mark(AssetDatabase.GUIDToAssetPath(guid));
             Mark(newPath);
         }
-        foreach (string path in new[] {"Assets/Prefabs/Models/Ships/ISDI.prefab", "Assets/Prefabs/Models/Ships/ISDIShipView.prefab", "Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView.prefab", "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png", "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette.png", "Assets/Art/Models/Shields/ISDIShipViewShield.asset"})
+        foreach (string path in new[] {"Assets/Prefabs/Models/Ships/Empire/ISDI.prefab", "Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab", "Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/ISDIReinforcementView.prefab", "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png", "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette.png", "Assets/Art/Models/Shields/ISDIShipViewShield.asset"})
         {
             string copy = Path.GetDirectoryName(path).Replace('\\','/') + "/" + Path.GetFileNameWithoutExtension(path) + "_ObsoleteAOTR" + Path.GetExtension(path);
             if (!File.Exists(copy) && !AssetDatabase.CopyAsset(path, copy)) throw new InvalidOperationException("Cannot archive " + path);

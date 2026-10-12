@@ -8,8 +8,8 @@ public static class RegisterDauntless
 {
     const int SHIP_ID=310;
     const int ABILITY_ID=39;
-    const string DATA="Assets/Settings/Data/Ship/DauntlessShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/DauntlessShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/DauntlessShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/DauntlessShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/DauntlessIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/DauntlessMatchups.asset";
 
@@ -39,7 +39,7 @@ public static class RegisterDauntless
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=60;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=3;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");
@@ -78,7 +78,7 @@ public static class RegisterDauntless
         value.FindPropertyRelative("aiUse").intValue=0;
         value.FindPropertyRelative("settings").managedReferenceValue=new SensorJammingSettings();
         Save(catalog);
-        var overlay=Load("Assets/Settings/Data/Ship/HardPointOverlayData.asset");
+        var overlay=Load("Assets/Settings/Data/Models/Components/HardPointOverlayData.asset");
         var entries=overlay.FindProperty("entries");
         var sensor=Enumerable.Range(0,entries.arraySize).Select(i=>entries.GetArrayElementAtIndex(i)).SingleOrDefault(p=>p.FindPropertyRelative("hardPointType").intValue==10)??Append(entries);
         sensor.FindPropertyRelative("hardPointType").intValue=10;

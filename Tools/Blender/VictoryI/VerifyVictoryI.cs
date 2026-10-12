@@ -14,8 +14,8 @@ public static class VerifyVictoryI
 {
     public static string Main()
     {
-        const string VIEW="Assets/Prefabs/Models/Ships/VictoryIShipView.prefab";
-        const string DATA="Assets/Settings/Data/Ship/VictoryIShipData.asset";
+        const string VIEW="Assets/Prefabs/Models/Ships/Empire/VictoryIShipView.prefab";
+        const string DATA="Assets/Settings/Data/Ship/Empire/VictoryIShipData.asset";
         var root=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
         var health=Config(root,"HealthComponent");var targets=References(health.FindProperty("<ShipUnits>k__BackingField")).Cast<HardPoint>().ToArray();
         Check(targets.Length==10 && targets.Select(p=>p.Id).OrderBy(i=>i).SequenceEqual(Enumerable.Range(0,10)),"Ten ordered target IDs");
@@ -32,7 +32,7 @@ public static class VerifyVictoryI
         Check(exit.localPosition.y<Number(data,"HullBottom"),"Hangar exit below banked hull");
         var bay=data.FindProperty("hangarBays").GetArrayElementAtIndex(0);
         Check(bay.FindPropertyRelative("squadronType").intValue==203 && bay.FindPropertyRelative("reserve").intValue==2 && bay.FindPropertyRelative("maxActive").intValue==1,"Interceptor complement");
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset","shipsData.keyValue",202).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registry");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset","shipsData.keyValue",202).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registry");
         foreach(var path in new[]{VIEW,DATA})
         {
             var guid=AssetDatabase.AssetPathToGUID(path);var key=Path.GetFileNameWithoutExtension(path);
@@ -61,7 +61,7 @@ public static class VerifyVictoryI
         Check(catalog.Get((ShipAbilityId)19).Settings is FullSalvoSettings,"Full Salvo");
         var tractor=(TractorBeamSettings)catalog.Get((ShipAbilityId)22).Settings;
         Check(tractor.SpeedMultiplier>0 && tractor.SpeedMultiplier<1 && tractor.Beam.ShotPrefab is EmpireAtWar.ViewComponents.Weapon.BeamShot,"Tractor Beam");
-        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/VictoryI.prefab");
+        var visual=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/VictoryI.prefab");
         var bounds=BoundsOf(visual);Check(Mathf.Abs(bounds.size.z-110)<.01f,"Hull scale");
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(spawn));
         Check((BoundsOf(preview).size-bounds.size).magnitude<.01f,"Placement geometry");

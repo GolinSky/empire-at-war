@@ -10,9 +10,9 @@ using EmpireAtWar.ViewComponents.Health;
 public static class InspectMC75
 {
     const string DIRECTORY = "Temp/MC75ProfundityImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC75Profundity.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/MC75ProfundityShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/MC75ProfundityShipData.asset";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC75Profundity.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/MC75ProfundityShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/MC75ProfundityShipData.asset";
 
     public static string Main()
     {

@@ -14,8 +14,8 @@ public static class VerifyMC30c
 {
     const string NAME = "MC30c";
     const string TASK = "Temp/MC30cImport/";
-    const string VIEW = "Assets/Prefabs/Models/Ships/MC30cShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/MC30cShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Rebellion/MC30cShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/MC30cShipData.asset";
     static int _checks;
 
     public static string Main()
@@ -63,7 +63,7 @@ public static class VerifyMC30c
             triangles+=mesh.triangles.Length/3;
         }
         var prefabReports=new JArray();
-        foreach(string path in new[]{"Assets/Prefabs/Models/Ships/MC30c.prefab",VIEW,"Assets/Prefabs/Ui/Reinforcement/MC30cReinforcementView.prefab","Assets/Prefabs/Models/Wrecks/MC30cWreckView.prefab"})
+        foreach(string path in new[]{"Assets/Prefabs/Models/Ships/Rebellion/MC30c.prefab",VIEW,"Assets/Prefabs/Ui/Reinforcement/MC30cReinforcementView.prefab","Assets/Prefabs/Models/Wrecks/MC30cWreckView.prefab"})
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
             Check(prefab!=null && prefab.transform.localScale==Vector3.one,"Saved prefab and unit root: "+path);
@@ -116,7 +116,7 @@ public static class VerifyMC30c
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,tooltip.arraySize).Select(i=>tooltip.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==iconKey).FindPropertyRelative("sprite").objectReferenceValue==icon,"Tooltip icon");
         Check(Row(Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset").FindProperty("spawnShipWrapper.keyValue"),307).objectReferenceValue==spawn,"Preview registration");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),307).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Data registration");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),307).FindPropertyRelative("m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Data registration");
         foreach(string path in new[]{VIEW,DATA})
         {
             string key=Path.GetFileNameWithoutExtension(path),guid=AssetDatabase.AssetPathToGUID(path);

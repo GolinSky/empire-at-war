@@ -8,8 +8,8 @@ public static class RegisterCorellianBattlecruiser
 {
     const int SHIP_ID=306;
     const int ABILITY_ID=34;
-    const string DATA="Assets/Settings/Data/Ship/CorellianBattlecruiserShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/CorellianBattlecruiserShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/CorellianBattlecruiserShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/CorellianBattlecruiserShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianBattlecruiserIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/CorellianBattlecruiserMatchups.asset";
 
@@ -39,7 +39,7 @@ public static class RegisterCorellianBattlecruiser
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=81;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=3;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");

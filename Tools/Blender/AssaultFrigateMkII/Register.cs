@@ -10,8 +10,8 @@ public static class RegisterAssaultFrigateMkII
     const int SHIP_ID = 309;
     const int ABILITY_ID = 45;
     const string NAME = "AssaultFrigateMkII";
-    const string DATA = "Assets/Settings/Data/Ship/AssaultFrigateMkIIShipData.asset";
-    const string VIEW = "Assets/Prefabs/Models/Ships/AssaultFrigateMkIIShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/AssaultFrigateMkIIShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkIIShipView.prefab";
     const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/AssaultFrigateMkIIIcon.png";
     const string MATCHUPS = "Assets/Settings/Data/Tooltip/Matchups/AssaultFrigateMkIIMatchups.asset";
 
@@ -42,7 +42,7 @@ public static class RegisterAssaultFrigateMkII
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue = 40;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue = 3;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue = icon; Save(faction);
-        var ships = Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships = Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Upsert(ships.FindProperty("shipsData.keyValue"), SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(DATA); Save(ships);
         var ui = Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");
         Upsert(ui.FindProperty("shipIconWrapper.keyValue"), SHIP_ID).FindPropertyRelative("value").objectReferenceValue = icon; Save(ui);

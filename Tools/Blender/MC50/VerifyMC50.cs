@@ -10,11 +10,11 @@ using EmpireAtWar.ViewComponents.Health;
 public static class VerifyMC50
 {
     private const string TASK = "Temp/MC50Import/";
-    private const string VISUAL = "Assets/Prefabs/Models/Ships/MC50.prefab";
-    private const string GAMEPLAY = "Assets/Prefabs/Models/Ships/MC50ShipView.prefab";
+    private const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC50.prefab";
+    private const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab";
     private const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/MC50ReinforcementView.prefab";
     private const string WRECK = "Assets/Prefabs/Models/Wrecks/MC50WreckView.prefab";
-    private const string DATA = "Assets/Settings/Data/Ship/MC50ShipData.asset";
+    private const string DATA = "Assets/Settings/Data/Ship/Rebellion/MC50ShipData.asset";
     private static int _checks;
 
     public static string Main()
@@ -98,7 +98,7 @@ public static class VerifyMC50
         var tooltip = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,tooltip.arraySize).Select(i=>tooltip.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==iconKey).FindPropertyRelative("sprite").objectReferenceValue==icon,"Tooltip icon");
         Check(Row(Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset").FindProperty("spawnShipWrapper.keyValue"),311).FindPropertyRelative("value").objectReferenceValue==spawn,"Preview registration");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),311).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Data registration");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),311).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Data registration");
         foreach(var path in new[]{GAMEPLAY,DATA})
         {
             string key = Path.GetFileNameWithoutExtension(path), guid = AssetDatabase.AssetPathToGUID(path);

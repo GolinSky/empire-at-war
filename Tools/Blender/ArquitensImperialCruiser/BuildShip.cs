@@ -14,18 +14,18 @@ using EmpireAtWar.Editor;
 public static class BuildArquitensImperialCruiserShip
 {
     const string TASK = "Temp/ArquitensImperialCruiserImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/ArquitensImperialCruiser.prefab";
-    const string VIEW = "Assets/Prefabs/Models/Ships/ArquitensImperialCruiserShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/ArquitensImperialCruiserShipData.asset";
-    const string WRECK = "Assets/Settings/Data/Ship/Wreck/ArquitensImperialCruiserWreckData.asset";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiser.prefab";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiserShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/ArquitensImperialCruiserShipData.asset";
+    const string WRECK = "Assets/Settings/Data/Models/Wrecks/Empire/ArquitensImperialCruiserWreckData.asset";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/ArquitensImperialCruiserReinforcementView.prefab";
 
     public static string Main()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Arquitens prefab construction requires Edit Mode.");
-        Copy("Assets/Prefabs/Models/Ships/C9979ShipView.prefab", VIEW);
-        Copy("Assets/Settings/Data/Ship/ArquitensShipData.asset", DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/CorellianCorvetteWreckData.asset", WRECK);
+        Copy("Assets/Prefabs/Models/Ships/Separatist/C9979ShipView.prefab", VIEW);
+        Copy("Assets/Settings/Data/Ship/Republic/ArquitensShipData.asset", DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Rebellion/CorellianCorvetteWreckData.asset", WRECK);
         var root = PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;
         float bottom = float.MaxValue, top = float.MinValue, radius;

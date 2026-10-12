@@ -14,18 +14,18 @@ using EmpireAtWar.Editor;
 public static class BuildRaiderCorvetteShip
 {
     const string TASK = "Temp/RaiderCorvetteImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/RaiderCorvette.prefab";
-    const string VIEW = "Assets/Prefabs/Models/Ships/RaiderCorvetteShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/RaiderCorvetteShipData.asset";
-    const string WRECK = "Assets/Settings/Data/Ship/Wreck/RaiderCorvetteWreckData.asset";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Empire/RaiderCorvette.prefab";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
+    const string WRECK = "Assets/Settings/Data/Models/Wrecks/Empire/RaiderCorvetteWreckData.asset";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/RaiderCorvetteReinforcementView.prefab";
 
     public static string Main()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Raider prefab construction requires Edit Mode.");
-        Copy("Assets/Prefabs/Models/Ships/C9979ShipView.prefab", VIEW);
-        Copy("Assets/Settings/Data/Ship/CorellianCorvetteShipData.asset", DATA);
-        Copy("Assets/Settings/Data/Ship/Wreck/CorellianCorvetteWreckData.asset", WRECK);
+        Copy("Assets/Prefabs/Models/Ships/Separatist/C9979ShipView.prefab", VIEW);
+        Copy("Assets/Settings/Data/Ship/Rebellion/CorellianCorvetteShipData.asset", DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Rebellion/CorellianCorvetteWreckData.asset", WRECK);
         var root = PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;
         float bottom = float.MaxValue, top = float.MinValue, radius;

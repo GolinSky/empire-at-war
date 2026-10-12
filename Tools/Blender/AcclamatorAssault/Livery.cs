@@ -13,7 +13,7 @@ public static class ApplyAcclamatorAssaultLivery
 
     public static string Main()
     {
-        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab");
+        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/AcclamatorAssault.prefab");
         var pixels = Enumerable.Repeat(new Color32(0, 0, 0, 255), RESOLUTION * RESOLUTION).ToArray();
         foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled))
         {

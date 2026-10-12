@@ -10,7 +10,7 @@ public static class PaintMC80TeamStripes
 {
     const int SIZE = 2048;
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/MC80Independence/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC80Independence.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab";
 
     public static string Main()
     {

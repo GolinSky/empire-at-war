@@ -10,11 +10,11 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class BuildEnduranceShip
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/EnduranceShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/EnduranceShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset";
     public static string Main()
     {
-        Copy("Assets/Prefabs/Models/Ships/HomeOneShipView.prefab",VIEW);
+        Copy("Assets/Prefabs/Models/Ships/Rebellion/HomeOneShipView.prefab",VIEW);
         var root=PrefabUtility.LoadPrefabContents(VIEW);
         Bounds bounds;float hullBottom=0,hullTop=0;
         try
@@ -38,7 +38,7 @@ public static class BuildEnduranceShip
                 if(renderer==null)continue;
                 var old=renderer.transform;while(old.parent!=root.transform)old=old.parent;UnityEngine.Object.DestroyImmediate(old.gameObject);
             }
-            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Endurance.prefab"),body);
+            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab"),body);
             var weapons=new List<WeaponHardPoint>();var targets=new List<HardPoint>();
             for(int i=0;i<4;i++) AddWeapon("MediumTurbolaser"+(i+1),"EndurancePart"+(i+2).ToString("00")+"/FP_01",4,true);
             AddWeapon("MediumIonCannon1","EndurancePart06/FP_01",32,true);
@@ -120,14 +120,14 @@ public static class BuildEnduranceShip
         finally{PrefabUtility.UnloadPrefabContents(root);}
         const string WRECK="Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab";
         const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab";
-        const string WRECK_DATA="Assets/Settings/Data/Ship/Wreck/EnduranceWreckData.asset";
+        const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Rebellion/EnduranceWreckData.asset";
         Directory.CreateDirectory("Assets/Art/Materials/Wrecks/Endurance");AssetDatabase.Refresh();
         BuildVariant(PREVIEW,"Assets/Prefabs/Ui/Reinforcement/HomeOneReinforcementView.prefab",false,bounds);
         BuildVariant(WRECK,"Assets/Prefabs/Models/Wrecks/HomeOneWreckView.prefab",true,bounds);
-        Copy("Assets/Settings/Data/Ship/Wreck/HomeOneWreckData.asset",WRECK_DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Rebellion/HomeOneWreckData.asset",WRECK_DATA);
         var wd=Load(WRECK_DATA);wd.targetObject.name="EnduranceWreckData";
         wd.FindProperty("<Prefab>k__BackingField").objectReferenceValue=Component(AssetDatabase.LoadAssetAtPath<GameObject>(WRECK),"UnitWreckView");Save(wd);
-        Copy("Assets/Settings/Data/Ship/HomeOneShipData.asset",DATA);
+        Copy("Assets/Settings/Data/Ship/Rebellion/HomeOneShipData.asset",DATA);
         var data=Load(DATA);data.targetObject.name="EnduranceShipData";
         SetFloat(data,"Hull",9000);SetFloat(data,"Shields",7000);SetFloat(data,"Speed",18);
         SetFloat(data,"ShieldRegenerateValue",7000f/600f);SetFloat(data,"NavigationRadius",105);
@@ -163,7 +163,7 @@ public static class BuildEnduranceShip
         {
             root.name=System.IO.Path.GetFileNameWithoutExtension(path);
             foreach(var child in root.transform.Cast<Transform>().ToArray())UnityEngine.Object.DestroyImmediate(child.gameObject);
-            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Endurance.prefab"),root.transform);
+            var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab"),root.transform);
             PrefabUtility.UnpackPrefabInstance(visual,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
             var renderers=visual.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             if(wreck)

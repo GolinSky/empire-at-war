@@ -72,7 +72,7 @@ public static class CleanupISDIObsoleteVisuals
         AssetDatabase.SaveAssets();
         foreach (string path in originals) Check(!File.Exists(path) && !Directory.Exists(path) && !File.Exists(path + ".meta"), "No old ISD I asset " + path);
         foreach (var pair in consumers) Check(pair.Value == ContentHash(pair.Key), "Unchanged Tector consumer " + pair.Key);
-        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/Tector.prefab", "Assets/Prefabs/Models/Ships/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab" })
+        foreach (string path in new[] { "Assets/Prefabs/Models/Ships/Empire/Tector.prefab", "Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab" })
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             foreach (var component in prefab.GetComponentsInChildren<Component>(true))

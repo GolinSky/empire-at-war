@@ -10,8 +10,8 @@ public static class RepairMC80UnitySurfaces
     const string MODEL = "Assets/Art/Models/RebellionShips/MC80Independence/MC80Independence.fbx";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/MC80Independence/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/MC80Independence/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/MC80Independence.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/MC80Independence.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/MC80IndependenceReinforcementView.prefab";
 
     public static string Main()

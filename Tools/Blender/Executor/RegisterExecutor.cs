@@ -7,8 +7,8 @@ using UnityEngine;
 
 public static class RegisterExecutor
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ExecutorShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ExecutorShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ExecutorShipData.asset";
     public static string Main()
     {
         var weapons=Load("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
@@ -32,12 +32,12 @@ public static class RegisterExecutor
         {
             string guid=AssetDatabase.AssetPathToGUID(path);
             Entry(mapping.FindProperty("assetMappings.keyValue"),Path.GetFileNameWithoutExtension(path)).FindPropertyRelative("m_AssetGUID").stringValue=guid;
-            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/VictoryShipView.prefab":"Assets/Settings/Data/Ship/VictoryShipData.asset";
+            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab":"Assets/Settings/Data/Ship/Empire/VictoryShipData.asset";
             var entry=settings.CreateOrMoveEntry(guid,settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(donor)).parentGroup);
             entry.address=Path.GetFileNameWithoutExtension(path);EditorUtility.SetDirty(entry.parentGroup);
         }
         Save(mapping);EditorUtility.SetDirty(settings);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Entry(ships.FindProperty("shipsData.keyValue"),207).FindPropertyRelative("m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");Entry(ui.FindProperty("shipIconWrapper.keyValue"),207).objectReferenceValue=icon;Save(ui);
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset");var icons=tooltip.FindProperty("icons");

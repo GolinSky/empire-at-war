@@ -8,8 +8,8 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 
 public static class RegisterISDII
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
     const int SHIP_ID=205;
     public static string Main()
     {
@@ -44,12 +44,12 @@ public static class RegisterISDII
         {
             string guid=AssetDatabase.AssetPathToGUID(path);
             Entry(mapping.FindProperty("assetMappings.keyValue"),Path.GetFileNameWithoutExtension(path)).FindPropertyRelative("m_AssetGUID").stringValue=guid;
-            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/ImperatorShipView.prefab":"Assets/Settings/Data/Ship/ImperatorShipData.asset";
+            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab":"Assets/Settings/Data/Ship/Republic/ImperatorShipData.asset";
             var addressable=settings.CreateOrMoveEntry(guid,settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(donor)).parentGroup);
             addressable.address=Path.GetFileNameWithoutExtension(path);EditorUtility.SetDirty(addressable.parentGroup);
         }
         Save(mapping);EditorUtility.SetDirty(settings);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Entry(ships.FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");Entry(ui.FindProperty("shipIconWrapper.keyValue"),SHIP_ID).objectReferenceValue=icon;Save(ui);
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset");

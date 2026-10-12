@@ -22,8 +22,8 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class RaiderCorvetteTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/RaiderCorvetteShipView.prefab";
-        private const string DATA = "Assets/Settings/Data/Ship/RaiderCorvetteShipData.asset";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab";
+        private const string DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
 
         [Test]
         public void SavedUnit_HasRequestedStatsNonTargetableLoadoutAndNoHangar()
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck()
         {
-            Assert.That(AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/ShipsData.asset").GetShipDataPath(ShipType.RaiderCorvette), Is.EqualTo(AssetDatabase.AssetPathToGUID(DATA)));
+            Assert.That(AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/Shared/ShipsData.asset").GetShipDataPath(ShipType.RaiderCorvette), Is.EqualTo(AssetDatabase.AssetPathToGUID(DATA)));
             foreach (string path in new[] { VIEW, DATA })
                 Assert.That(AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(path)).address, Is.EqualTo(System.IO.Path.GetFileNameWithoutExtension(path)));
             Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/RaiderCorvetteIcon.png");
@@ -114,7 +114,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(AssetDatabase.GetAssetPath(wreck.FindProperty("<Prefab>k__BackingField").objectReferenceValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab"));
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/RaiderCorvette.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/RaiderCorvette.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/RaiderCorvetteReinforcementView.prefab")]

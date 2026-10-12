@@ -8,8 +8,8 @@ public static class RegisterCD273
 {
     const int SHIP_ID=308;
     const int ABILITY_ID=37;
-    const string DATA="Assets/Settings/Data/Ship/CD273ShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/CD273ShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/CD273ShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/CD273ShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/CD273Icon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/CD273Matchups.asset";
 
@@ -39,7 +39,7 @@ public static class RegisterCD273
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=32;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=2;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");

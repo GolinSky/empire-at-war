@@ -8,8 +8,8 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 
 public static class RegisterISDIII
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/ISDIIIShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/ISDIIIShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/ISDIIIShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/ISDIIIShipData.asset";
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("ISD III registration requires Edit Mode.");
@@ -52,12 +52,12 @@ public static class RegisterISDIII
         {
             string guid=AssetDatabase.AssetPathToGUID(path);
             Entry(mapping.FindProperty("assetMappings.keyValue"),Path.GetFileNameWithoutExtension(path)).FindPropertyRelative("m_AssetGUID").stringValue=guid;
-            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/VictoryShipView.prefab":"Assets/Settings/Data/Ship/VictoryShipData.asset";
+            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab":"Assets/Settings/Data/Ship/Empire/VictoryShipData.asset";
             var entry=settings.CreateOrMoveEntry(guid,settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(donor)).parentGroup);
             entry.address=Path.GetFileNameWithoutExtension(path);EditorUtility.SetDirty(entry.parentGroup);
         }
         Save(mapping);EditorUtility.SetDirty(settings);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Entry(ships.FindProperty("shipsData.keyValue"),206).FindPropertyRelative("m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");Entry(ui.FindProperty("shipIconWrapper.keyValue"),206).objectReferenceValue=icon;Save(ui);
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset");var icons=tooltip.FindProperty("icons");

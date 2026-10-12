@@ -45,7 +45,8 @@ namespace EmpireAtWar.Editor
         private static GameObject LoadView(ShipData data)
         {
             string viewName = data.name.Substring(0, data.name.Length - DATA_SUFFIX.Length) + VIEW_SUFFIX;
-            string viewPath = $"{SHIP_VIEW_FOLDER}/{viewName}.prefab";
+            string factionFolder = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(data)));
+            string viewPath = $"{SHIP_VIEW_FOLDER}/{factionFolder}/{viewName}.prefab";
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
             if (view == null)
                 throw new MissingReferenceException($"{data.name} has no ship view at {viewPath}.");

@@ -11,11 +11,11 @@ public static class InspectCorellianBattlecruiser
 {
     const string NAME = "CorellianBattlecruiser";
     const string TASK = "Temp/CorellianBattlecruiserImport/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/CorellianBattlecruiser.prefab";
-    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/CorellianBattlecruiserShipView.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/CorellianBattlecruiser.prefab";
+    const string GAMEPLAY = "Assets/Prefabs/Models/Ships/Rebellion/CorellianBattlecruiserShipView.prefab";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/CorellianBattlecruiserReinforcementView.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/CorellianBattlecruiserWreckView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/CorellianBattlecruiserShipData.asset";
+    const string DATA = "Assets/Settings/Data/Ship/Rebellion/CorellianBattlecruiserShipData.asset";
 
     public static string Main()
     {
@@ -107,7 +107,7 @@ public static class InspectCorellianBattlecruiser
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,tooltip.arraySize).Select(i=>tooltip.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==iconKey).FindPropertyRelative("sprite").objectReferenceValue==icon,"Tooltip icon");
         Check(Row(Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset").FindProperty("spawnShipWrapper.keyValue"),306).FindPropertyRelative("value").objectReferenceValue==spawn,"Placement registration");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),306).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registration");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),306).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registration");
         foreach(string path in new[]{GAMEPLAY,DATA})
         {
             string key=Path.GetFileNameWithoutExtension(path),guid=AssetDatabase.AssetPathToGUID(path);

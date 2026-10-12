@@ -97,7 +97,7 @@ public static class BuildISDIIReplacementArt
             }
             finally{UnityEngine.Object.DestroyImmediate(deathRoot);}
             StripHidden(root);
-            PrefabUtility.SaveAsPrefabAsset(root,"Assets/Prefabs/Models/Ships/ISDII.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root,"Assets/Prefabs/Models/Ships/Empire/ISDII.prefab");
         }
         finally{UnityEngine.Object.DestroyImmediate(root);}
         AssetDatabase.SaveAssets();

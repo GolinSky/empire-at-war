@@ -14,8 +14,8 @@ using EmpireAtWar.Editor.Rendering;
 
 public static class VerifyImperialVenator
 {
-    const string VIEW = "Assets/Prefabs/Models/Ships/ImperialVenatorShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/ImperialVenatorShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ImperialVenatorShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/ImperialVenatorShipData.asset";
     static int _checks;
     public static string Main()
     {
@@ -23,7 +23,7 @@ public static class VerifyImperialVenator
         Check(!EditorUtility.scriptCompilationFailed, "Unity compilation succeeded");
         Check(Enum.GetName(typeof(EmpireAtWar.Models.Factions.ShipType), 211) == "ImperialVenator" && Enum.GetName(typeof(ShipAbilityId), 35) == "ImperialVenatorIntensifyFirepower", "Compiled identifiers");
         var root = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-        var donor = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/VenatorShipView.prefab");
+        var donor = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab");
         var targets = Objects(Config(root, "HealthComponent").FindProperty("<ShipUnits>k__BackingField")).Cast<HardPoint>().ToArray();
         var guns = Objects(Config(root, "WeaponComponent").FindProperty("hardPoints")).Cast<WeaponHardPoint>().ToArray();
         Check(targets.Length == 18 && targets.Select(p => p.Id).OrderBy(i => i).SequenceEqual(Enumerable.Range(0, 18)), "18 unique targets");
@@ -51,7 +51,7 @@ public static class VerifyImperialVenator
         var loadout = data.FindProperty("weaponLoadout");
         foreach (var group in guns.GroupBy(g => (int)g.WeaponType))
             Check(Enumerable.Range(0, loadout.arraySize).Any(i => loadout.GetArrayElementAtIndex(i).FindPropertyRelative("weaponType").intValue == group.Key && loadout.GetArrayElementAtIndex(i).FindPropertyRelative("count").intValue == group.Count()), "Loadout matches actual guns " + group.Key);
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset", "shipsData.keyValue", 211).FindPropertyRelative("m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(DATA), "Ship registry");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset", "shipsData.keyValue", 211).FindPropertyRelative("m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(DATA), "Ship registry");
         foreach (var path in new[] { VIEW, DATA })
         {
             var guid = AssetDatabase.AssetPathToGUID(path); var key = Path.GetFileNameWithoutExtension(path);
@@ -134,10 +134,10 @@ public static class VerifyImperialVenator
         Check(Objects(spawnConfig.FindProperty("meshRenderers")).Length == solid.Length && Objects(spawnConfig.FindProperty("meshRenderers")).Cast<Renderer>().All(r => r.sharedMaterials.All(m => m == hologram)), "Hologram bindings");
         Check(preview.GetComponents<BoxCollider>().Single().isTrigger && preview.GetComponents<Rigidbody>().Single().isKinematic, "Placement trigger");
         var wreckData = data.FindProperty("<Wreck>k__BackingField").objectReferenceValue;
-        Check(AssetDatabase.GetAssetPath(wreckData) == "Assets/Settings/Data/Ship/Wreck/ImperialVenatorWreckData.asset", "Own wreck data");
+        Check(AssetDatabase.GetAssetPath(wreckData) == "Assets/Settings/Data/Models/Wrecks/Empire/ImperialVenatorWreckData.asset", "Own wreck data");
         var wreckPath = AssetDatabase.GetAssetPath(new SerializedObject(wreckData).FindProperty("<Prefab>k__BackingField").objectReferenceValue);
         Check(wreckPath == "Assets/Prefabs/Models/Wrecks/ImperialVenatorWreckView.prefab", "Own wreck prefab");
-        string[] paths = { VIEW, "Assets/Prefabs/Models/Ships/ImperialVenator.prefab", "Assets/Prefabs/Models/Ships/ImperialVenatorDeath.prefab", previewPath, wreckPath };
+        string[] paths = { VIEW, "Assets/Prefabs/Models/Ships/Empire/ImperialVenator.prefab", "Assets/Prefabs/Models/Wrecks/ImperialVenatorDeath.prefab", previewPath, wreckPath };
         foreach (var path in paths)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path); Check(prefab.transform.localScale == Vector3.one && prefab.transform.localRotation == Quaternion.identity, "Identity root " + path);

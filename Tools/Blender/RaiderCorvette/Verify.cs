@@ -31,8 +31,8 @@ public static class VerifyRaiderCorvette
                 Check(transform.parent.name == (string)bone.Value["parent"], "Bone parent: " + bone.Name);
         }
         Check(error < .00001f, "Unity bone error: " + error);
-        var visual = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/RaiderCorvette.prefab");
-        var view = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/RaiderCorvetteShipView.prefab");
+        var visual = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/RaiderCorvette.prefab");
+        var view = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab");
         var allMeshes = view.GetComponentsInChildren<MeshRenderer>(true);
         var team = Config(view, "TeamColorView").FindProperty("meshRenderers");
         Check(team.arraySize == allMeshes.Length, "Team renderer count");

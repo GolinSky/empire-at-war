@@ -11,8 +11,8 @@ using EmpireAtWar.Components.AttackComponent;
 
 public static class VerifyArquitensImperialCruiser
 {
-    const string VIEW = "Assets/Prefabs/Models/Ships/ArquitensImperialCruiserShipView.prefab";
-    const string DATA = "Assets/Settings/Data/Ship/ArquitensImperialCruiserShipData.asset";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiserShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Empire/ArquitensImperialCruiserShipData.asset";
     public static string Main()
     {
         var root = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
@@ -30,7 +30,7 @@ public static class VerifyArquitensImperialCruiser
         Check(Number(data, "ShieldRegenerateValue") == 4, "Shield regeneration");
         Check(data.FindProperty("hardPointHealth").arraySize == 0 && data.FindProperty("hangarBays").arraySize == 0, "No targetable systems or fighters");
         Check(data.FindProperty("abilities").arraySize == 1 && data.FindProperty("abilities").GetArrayElementAtIndex(0).intValue == 23, "Own Boost Weapon Power");
-        Check(Entry("Assets/Settings/Data/Ship/ShipsData.asset", "shipsData.keyValue", 204).FindPropertyRelative("m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(DATA), "Ship registry");
+        Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset", "shipsData.keyValue", 204).FindPropertyRelative("m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(DATA), "Ship registry");
         foreach (var path in new[] {VIEW, DATA})
         {
             var guid = AssetDatabase.AssetPathToGUID(path); var key = Path.GetFileNameWithoutExtension(path);
@@ -66,7 +66,7 @@ public static class VerifyArquitensImperialCruiser
         Check(ability.FindPropertyRelative("settings").managedReferenceId != Entry("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset", "definitions.keyValue", 5).FindPropertyRelative("settings").managedReferenceId, "Independent ability settings");
         var abilityAudio = new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Models/Audio/ShipSfxData.asset")).FindProperty("abilities");
         Check(Enumerable.Range(0, abilityAudio.arraySize).Count(i => abilityAudio.GetArrayElementAtIndex(i).FindPropertyRelative("abilityId").intValue == 23) == 1, "Ability audio");
-        var visual = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ArquitensImperialCruiser.prefab");
+        var visual = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiser.prefab");
         var bounds = BoundsOf(visual); Check(Mathf.Abs(bounds.size.z - 40) < .01f && bounds.center.magnitude < .01f, "Centered hull scale");
         var preview = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(spawn));
         var opaque = visual.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();

@@ -8,8 +8,8 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 
 public static class RegisterTector
 {
-    const string VIEW="Assets/Prefabs/Models/Ships/TectorShipView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/TectorShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Empire/TectorShipData.asset";
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Tector registration requires Edit Mode.");
@@ -39,12 +39,12 @@ public static class RegisterTector
         {
             string guid=AssetDatabase.AssetPathToGUID(path);
             Entry(mapping.FindProperty("assetMappings.keyValue"),Path.GetFileNameWithoutExtension(path)).FindPropertyRelative("m_AssetGUID").stringValue=guid;
-            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/VictoryShipView.prefab":"Assets/Settings/Data/Ship/VictoryShipData.asset";
+            var donor=path==VIEW?"Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab":"Assets/Settings/Data/Ship/Empire/VictoryShipData.asset";
             var entry=settings.CreateOrMoveEntry(guid,settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(donor)).parentGroup);
             entry.address=Path.GetFileNameWithoutExtension(path);EditorUtility.SetDirty(entry.parentGroup);
         }
         Save(mapping);EditorUtility.SetDirty(settings);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         Entry(ships.FindProperty("shipsData.keyValue"),210).FindPropertyRelative("m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");Entry(ui.FindProperty("shipIconWrapper.keyValue"),210).objectReferenceValue=icon;Save(ui);
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset");var icons=tooltip.FindProperty("icons");

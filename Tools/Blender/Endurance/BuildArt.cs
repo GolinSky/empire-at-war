@@ -96,7 +96,7 @@ public static class BuildEnduranceArt
             scale = 180f / bounds.size.z;
             offset = -bounds.center * scale;
             geometry.transform.localScale = Vector3.one * scale; geometry.transform.localPosition = offset;
-            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/Endurance.prefab");
+            PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab");
             var size = BoundsOf(root).size;
             File.WriteAllText(TASK + "ArtBounds.json", new JObject { ["size"] = new JArray(size.x,size.y,size.z), ["scale"] = scale, ["offset"] = new JArray(offset.x,offset.y,offset.z) }.ToString());
         }

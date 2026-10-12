@@ -8,7 +8,7 @@ using UnityEngine;
 public static class BuildISDIIIArt
 {
     const string TASK = "Temp/ISDIIIImport/";
-    const string PREFABS = "Assets/Prefabs/Models/Ships/";
+    const string PREFABS = "Assets/Prefabs/Models/Ships/Empire/";
 
     public static string Main()
     {
@@ -95,11 +95,11 @@ public static class BuildISDIIIArt
                     model.transform.localScale *= scale;
                     model.transform.localPosition = -bounds.center * scale;
                 }
-                PrefabUtility.SaveAsPrefabAsset(visual, PREFABS + name + ".prefab");
+                PrefabUtility.SaveAsPrefabAsset(visual, (name.Contains("Turret") ? "Assets/Prefabs/Models/Cannons/Empire/" : PREFABS) + name + ".prefab");
             }
             finally { UnityEngine.Object.DestroyImmediate(visual); }
         }
-        var hull = PrefabUtility.LoadPrefabContents(PREFABS + "ISDIII.prefab");
+        var hull = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Ships/Empire/ISDIII.prefab");
         try
         {
             var audit = JObject.Parse(File.ReadAllText(TASK + "SourceAudit.json"));
@@ -109,13 +109,13 @@ public static class BuildISDIIIArt
                 var bone = hull.GetComponentsInChildren<Transform>(true).Single(t => t.name == name);
                 string source = (string)hp["Model_To_Attach"];
                 string turretName = "ISDIII" + (source.StartsWith("EV_ISD3_TURRET_") ? "HeavyDualTurret" : source.StartsWith("EV_ISD1_Triple_") ? "MediumTripleTurret" : source.StartsWith("Empire_Imperial_SD_ICQ_") ? "IonTurret" : "CompositeTurret");
-                var turret = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + turretName + ".prefab"), bone);
+                var turret = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Cannons/Empire/" + turretName + ".prefab"), bone);
                 turret.name = name + "_Turret";
                 turret.transform.localPosition = Vector3.zero;
                 turret.transform.localRotation = Quaternion.Inverse(turret.transform.GetChild(0).localRotation);
                 turret.transform.localScale = Vector3.one / turret.transform.GetChild(0).localScale.x;
             }
-            PrefabUtility.SaveAsPrefabAsset(hull, PREFABS + "ISDIII.prefab");
+            PrefabUtility.SaveAsPrefabAsset(hull, "Assets/Prefabs/Models/Ships/Empire/ISDIII.prefab");
             var bounds = BoundsOf(hull);
             File.WriteAllText(TASK + "ArtBounds.json", new JObject {
                 ["size"] = new JArray(bounds.size.x, bounds.size.y, bounds.size.z),

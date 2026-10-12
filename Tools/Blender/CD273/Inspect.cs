@@ -12,11 +12,11 @@ public static class InspectCD273
     const int SHIP_ID=308;
     const int ABILITY_ID=37;
     const string TASK="Temp/CD273Import/";
-    const string VISUAL="Assets/Prefabs/Models/Ships/CD273.prefab";
-    const string GAMEPLAY="Assets/Prefabs/Models/Ships/CD273ShipView.prefab";
+    const string VISUAL="Assets/Prefabs/Models/Ships/Rebellion/CD273.prefab";
+    const string GAMEPLAY="Assets/Prefabs/Models/Ships/Rebellion/CD273ShipView.prefab";
     const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/CD273ReinforcementView.prefab";
     const string WRECK="Assets/Prefabs/Models/Wrecks/CD273WreckView.prefab";
-    const string DATA="Assets/Settings/Data/Ship/CD273ShipData.asset";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/CD273ShipData.asset";
 
     public static string Main()
     {
@@ -111,7 +111,7 @@ public static class InspectCD273
         var tooltip=Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Check(Enumerable.Range(0,tooltip.arraySize).Select(i=>tooltip.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==iconKey).FindPropertyRelative("sprite").objectReferenceValue==icon,"Tooltip icon");
         Check(Row(Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset").FindProperty("spawnShipWrapper.keyValue"),SHIP_ID).FindPropertyRelative("value").objectReferenceValue==spawn,"Placement registration");
-        Check(Row(Load("Assets/Settings/Data/Ship/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registration");
+        Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"Ship-data registration");
         foreach(string path in new[]{GAMEPLAY,DATA})
         {
             string key=Path.GetFileNameWithoutExtension(path),guid=AssetDatabase.AssetPathToGUID(path);

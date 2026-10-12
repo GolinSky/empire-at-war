@@ -35,11 +35,11 @@ public static class InspectImperialAdvanced
         string[] names={"ISDI","TIEInterceptor","TIEBrute","TIEPunisher"};
         foreach(string name in names)
         {
-            bool ship=name==names[0];string type=ship?"Ship":"Squadron",kind=ship?"Ships":"Squadrons";
+            bool ship=name==names[0];string type=ship?"Ship":"Squadron",kind=ship?"Ships/Empire":"Squadrons";
             foreach(string path in new[]{"Assets/Prefabs/Models/"+kind+"/"+name+".prefab","Assets/Prefabs/Models/"+kind+"/"+name+type+"View.prefab","Assets/Prefabs/Ui/Reinforcement/"+name+"ReinforcementView.prefab"})InspectPrefab(path);
         }
         InspectPrefab("Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab");result["prefabs"]=prefabs;
-        var shipRoot=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/ISDIShipView.prefab");
+        var shipRoot=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab");
         var health=new SerializedObject(Component(shipRoot,"HealthComponent"));var targets=health.FindProperty("<ShipUnits>k__BackingField");var weapons=shipRoot.GetComponentsInChildren<WeaponHardPoint>(true);
         var box=shipRoot.GetComponents<BoxCollider>().Single();var hangar=new SerializedObject(Component(shipRoot,"HangarComponent"));var launch=(Transform)hangar.FindProperty("launchPoint").objectReferenceValue;
         result["ship"]=new JObject{{"health_count",targets.arraySize},{"weapon_count",weapons.Length},{"all_hardpoint_ids",new JArray(shipRoot.GetComponentsInChildren<HardPoint>(true).Select(h=>h.Id).OrderBy(i=>i))},{"weapon_counts",JObject.FromObject(weapons.GroupBy(w=>(int)w.WeaponType).ToDictionary(g=>g.Key.ToString(),g=>g.Count()))},{"collider_size",box.size.ToString()},{"hangar_launch",launch.position.ToString()},{"hangar_outside_collider",!new Bounds(box.center,box.size).Contains(launch.position)},{"engines_behind_center",shipRoot.GetComponentsInChildren<Transform>(true).Where(t=>t.name=="EngineLeft"||t.name=="EngineRight").All(t=>t.position.z<0)}};
@@ -48,7 +48,7 @@ public static class InspectImperialAdvanced
         for(int i=0;i<4;i++)
         {
             bool ship=i==0;string name=names[i],type=ship?"Ship":"Squadron";int id=ship?201:202+i;
-            foreach(string path in new[]{"Assets/Prefabs/Models/"+(ship?"Ships":"Squadrons")+"/"+name+type+"View.prefab","Assets/Settings/Data/"+type+"/"+name+type+"Data.asset"})
+            foreach(string path in new[]{"Assets/Prefabs/Models/"+(ship?"Ships/Empire":"Squadrons")+"/"+name+type+"View.prefab","Assets/Settings/Data/"+(ship?"Ship/Empire":"Squadron")+"/"+name+type+"Data.asset"})
             {
                 string guid=AssetDatabase.AssetPathToGUID(path);var addressable=AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid);registrations.Add(new JObject{{"path",path},{"guid",guid},{"address",addressable.address},{"group",addressable.parentGroup.Name}});
             }

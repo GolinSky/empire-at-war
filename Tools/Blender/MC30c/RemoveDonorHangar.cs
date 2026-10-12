@@ -6,7 +6,7 @@ using EmpireAtWar.Components.Hangar;
 
 public static class RemoveMC30cDonorHangar
 {
-    const string PREFAB_PATH = "Assets/Prefabs/Models/Ships/MC30cShipView.prefab";
+    const string PREFAB_PATH = "Assets/Prefabs/Models/Ships/Rebellion/MC30cShipView.prefab";
 
     public static string Main()
     {

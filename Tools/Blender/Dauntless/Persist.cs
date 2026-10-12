@@ -8,8 +8,8 @@ public static class PersistDauntless
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Battlecruiser persistence requires Edit Mode.");
-        var ship=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/DauntlessShipView.prefab");
-        var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/DauntlessShipData.asset"));
+        var ship=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/DauntlessShipView.prefab");
+        var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/Rebellion/DauntlessShipData.asset"));
         float angle=data.FindProperty("<BodyRotationMaxAngle>k__BackingField").floatValue;
         float bottom=float.PositiveInfinity, top=float.NegativeInfinity;
         var rotations=new[]{Quaternion.Euler(0,0,-angle),Quaternion.identity,Quaternion.Euler(0,0,angle)};

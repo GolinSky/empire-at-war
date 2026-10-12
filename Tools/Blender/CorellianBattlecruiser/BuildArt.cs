@@ -11,7 +11,7 @@ public static class BuildCorellianBattlecruiserArt
     const string MODELS = "Assets/Art/Models/RebellionShips/CorellianBattlecruiser/";
     const string TEXTURES = "Assets/Art/Textures/Models/RebellionShips/CorellianBattlecruiser/";
     const string MATERIALS = "Assets/Art/Materials/Models/RebellionShips/CorellianBattlecruiser/";
-    const string VISUAL = "Assets/Prefabs/Models/Ships/CorellianBattlecruiser.prefab";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Rebellion/CorellianBattlecruiser.prefab";
     const float LENGTH = 140;
 
     public static string Main()

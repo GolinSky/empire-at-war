@@ -8,8 +8,8 @@ public static class PersistMC50
     public static string Main()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Battlecruiser persistence requires Edit Mode.");
-        var ship=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/MC50ShipView.prefab");
-        var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/MC50ShipData.asset"));
+        var ship=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab");
+        var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Ship/Rebellion/MC50ShipData.asset"));
         data.FindProperty("<ShipClass>k__BackingField").intValue=8;
         float angle=data.FindProperty("<BodyRotationMaxAngle>k__BackingField").floatValue;
         float bottom=float.PositiveInfinity, top=float.NegativeInfinity;

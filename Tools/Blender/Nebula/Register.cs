@@ -8,8 +8,8 @@ public static class RegisterNebula
 {
     const int SHIP_ID=330;
     const int ABILITY_ID=38;
-    const string DATA="Assets/Settings/Data/Ship/NebulaShipData.asset";
-    const string VIEW="Assets/Prefabs/Models/Ships/NebulaShipView.prefab";
+    const string DATA="Assets/Settings/Data/Ship/Rebellion/NebulaShipData.asset";
+    const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/NebulaShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/NebulaIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/NebulaMatchups.asset";
 
@@ -39,7 +39,7 @@ public static class RegisterNebula
         value.FindPropertyRelative("<BuildTime>k__BackingField").intValue=72;
         value.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue=8;
         value.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue=icon;Save(faction);
-        var ships=Load("Assets/Settings/Data/Ship/ShipsData.asset");
+        var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         row=Upsert(ships.FindProperty("shipsData.keyValue"),SHIP_ID);
         row.FindPropertyRelative("value.m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(DATA);Save(ships);
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");
