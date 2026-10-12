@@ -271,6 +271,21 @@ MonoBehaviour:
         aiUse: 1
         settings:
           rid: 6801466921437888596
+    - key: 40
+      value:
+        icon: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696, type: 3}
+        displayName: Hit and Run
+        description: 'Movement speed increases by 25% for 8 seconds. Cooldown: 35
+          seconds.'
+        duration: 8
+        recoveryDelay: 35
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 1
+        settings:
+          rid: 6801467062609510481
     - key: 4
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
@@ -822,6 +837,16 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         fireDelayMultiplier: 0.6666667
+    - rid: 6801467062609510481
+      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 1.25
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
     - rid: 6801467062609510482
       type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

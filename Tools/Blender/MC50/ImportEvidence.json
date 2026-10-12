@@ -1,0 +1,84 @@
+{
+  "sourceHashesVerified": 16,
+  "losslessTextureReferences": 11,
+  "iconAlphaBounds": [
+    69,
+    128,
+    438,
+    354
+  ],
+  "allEightLiveAndWreckPalettesDistinct": true,
+  "assetMetadataVerified": 50,
+  "paletteHashes": {
+    "Team": [
+      "038782a3d395d53a246b667a9a20143eac588ee55d787168b375c6470f7f3bdf",
+      "b8bf361c95c435c1f83c28411d61ef0d198f51bef7fe9df1a4fd934be9d4bda9",
+      "f96eb69701c316a616f9160a6352722797ccc1282314657c2136e837272786cf",
+      "4d22fd59a7312015848abcdba2783897f2032f353bd62d09a2011e88179e813c",
+      "81da4630c93040e42803590e353fed2bf2fb3813f1addd1303341d78567c5b4c",
+      "bd3b35340ef237c7538f79bdef212c2208ed56f2270c3f43b21cb7c3e8229ad2",
+      "62d27b6a6f308ed2240c112f8adf9385b5e73fcd6aa2ebc2c773f4f2ab0edaa1",
+      "fe377ee0b323fbfa6049349ff169ab243bf45d1e44b119c95a6093439b0c79ad"
+    ],
+    "WreckTeam": [
+      "15df0a95e5975f23d0058473f3be69f12fea9812ccbcd279a5fdbfef2d5e27e0",
+      "a23096de773c3c0adeaef34f2dee1fd72710fbebb2d40f28cf1cda0c018a056d",
+      "f406c144fcab12d070ec66fd4c6a60882472f2f17acf47aa20f43d984c27bc4a",
+      "51b6e7e785ee6d28099181aa71f1feb4d85bcb2993ee41991d0cad9baf50c093",
+      "9655c7e3c13cd4e01275d329aa8197f2c9be1c8949dc03f601f8cafbef797984",
+      "367af3d754e7230bfce1572f26abdbca1d2d884c06705e18bb80319e74572dcc",
+      "04167903a6f2630bd0c3395ce318f84ad246fc16d75aa87681320e2d4992d476",
+      "385ba3970c671020db85346d203c279efc8459c8747852bfd2fa7af2910d312d"
+    ]
+  },
+  "unity": {
+    "checks": 2296,
+    "meshes": 10,
+    "triangles": 35592,
+    "bones": 51,
+    "boneErrorUnits": 5.623091e-07,
+    "prefabs": [
+      {
+        "path": "Assets/Prefabs/Models/Ships/MC50.prefab",
+        "size": [
+          41.46968,
+          19.9653778,
+          110.0
+        ]
+      },
+      {
+        "path": "Assets/Prefabs/Models/Ships/MC50ShipView.prefab",
+        "size": [
+          41.46968,
+          19.9653778,
+          110.0
+        ]
+      },
+      {
+        "path": "Assets/Prefabs/Ui/Reinforcement/MC50ReinforcementView.prefab",
+        "size": [
+          41.46968,
+          19.9653778,
+          109.348282
+        ]
+      },
+      {
+        "path": "Assets/Prefabs/Models/Wrecks/MC50WreckView.prefab",
+        "size": [
+          41.46968,
+          19.9653778,
+          109.348289
+        ]
+      }
+    ],
+    "targetableHardpoints": 16,
+    "weaponCounts": [
+      2,
+      4,
+      2,
+      4,
+      2
+    ],
+    "registrationsVerified": true
+  }
+}

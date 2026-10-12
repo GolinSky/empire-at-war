@@ -172,6 +172,7 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 81
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: fe1f61f0ff4f03a47a7a2a16340c510d,
+          type: 3}
     - key: 307
       value:
         matchups: {fileID: 11400000, guid: 30b6133074989dd4bbd5a7f24777def0, type: 2}
@@ -190,6 +191,22 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 469dd9f50be001b43938f09f7cdbcb4f,
           type: 3}
+    - key: 311
+      value:
+        matchups: {fileID: 11400000, guid: aab75532e06aee940b3c4562d0ec7ccb, type: 2}
+        description: General-purpose medium cruiser with two heavy turbolasers, four
+          medium dual turbolasers, two medium ion cannons, four laser cannons and
+          two point-defense lasers. Hit and Run increases speed by 25% for 8 seconds.
+        role: General-purpose combat ship
+        iconKey: db3ba52ed373c8242844c936a9497696:21300000
+        isHero: 0
+        <Name>k__BackingField: MC50 Medium Cruiser
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 3400
+        <BuildTime>k__BackingField: 42
+        <UnitCapacity>k__BackingField: 4
+        <Icon>k__BackingField: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696,
           type: 3}
     - key: 309
       value:
