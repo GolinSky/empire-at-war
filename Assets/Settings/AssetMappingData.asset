@@ -1148,3 +1148,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC30cShipView
+      value:
+        m_AssetGUID: 42819208abec00040b8eca095061bd3c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC30cShipData
+      value:
+        m_AssetGUID: 0af1b3067c3a4cb4a978a79520979e4a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

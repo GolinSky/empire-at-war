@@ -73,5 +73,6 @@
         MandatorPointDefense = 78,
         StrikeFighterProtonTorpedo = 79,
         MediumPointDefense = 80,
+        MC30cClusterBombLauncher = 81,
     }
 }

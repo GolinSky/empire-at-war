@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0af1b3067c3a4cb4a978a79520979e4a
+    m_Address: MC30cShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c379a49e2b12644b963e47657c852bf
     m_Address: ISDIShipData
     m_ReadOnly: 0

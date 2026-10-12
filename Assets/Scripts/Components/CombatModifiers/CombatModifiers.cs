@@ -14,6 +14,7 @@ namespace EmpireAtWar.Components.Combat
         private float _focusDamageMultiplier = 1f;
         private float _projectileFireDelayMultiplier = 1f;
         private float _otherFireDelayMultiplier = 1f;
+        private float _torpedoFireDelayMultiplier = 1f;
         private bool _mainBatteriesActive;
         private float _mainBatteryFireDelayMultiplier = 1f;
 
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Components.Combat
         /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
         public bool HasTemporaryEffects => _active.Count > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
                                            _focusTarget != null || _projectileFireDelayMultiplier != 1f ||
-                                           _otherFireDelayMultiplier != 1f;
+                                           _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f;
         public bool IsCloaked { get; private set; }
 
         public void SetCloaked(bool cloaked)
@@ -45,6 +46,15 @@ namespace EmpireAtWar.Components.Combat
 
         public float GetFullSalvoFireDelayMultiplier(bool interceptable) =>
             interceptable ? _projectileFireDelayMultiplier : _otherFireDelayMultiplier;
+
+        public float GetTorpedoFireDelayMultiplier(bool torpedo) =>
+            torpedo ? _torpedoFireDelayMultiplier : 1f;
+
+        public void SetTorpedoSalvo(float fireDelayMultiplier)
+        {
+            _torpedoFireDelayMultiplier = fireDelayMultiplier;
+            if (Changed != null) Changed.Invoke();
+        }
 
         public bool CanFireWeapon(bool mainBattery) => !_mainBatteriesActive || mainBattery;
 

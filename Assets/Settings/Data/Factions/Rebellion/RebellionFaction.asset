@@ -152,6 +152,24 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 81
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: fe1f61f0ff4f03a47a7a2a16340c510d,
+    - key: 307
+      value:
+        matchups: {fileID: 11400000, guid: 30b6133074989dd4bbd5a7f24777def0, type: 2}
+        description: 'Fast torpedo frigate: 1,800 hull, 2,400 shields. Two heavy
+          proton torpedoes, four medium turbolasers, four dual lasers, two point
+          defense lasers and two burst cluster-bomb launchers. Torpedo Salvo increases
+          torpedo firing rate by 50% for 6 seconds.'
+        role: Anti-capital strike ship
+        iconKey: 469dd9f50be001b43938f09f7cdbcb4f:21300000
+        isHero: 0
+        <Name>k__BackingField: MC30c Frigate
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2500
+        <BuildTime>k__BackingField: 32
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 469dd9f50be001b43938f09f7cdbcb4f,
+          type: 3}
           type: 3}
   squadrons:
     keyValue:

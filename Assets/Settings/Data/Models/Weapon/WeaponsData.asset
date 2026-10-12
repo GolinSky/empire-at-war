@@ -1006,6 +1006,28 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 81
+    displayName: Cluster Bomb Launcher
+    family: 4
+    caliber: 0
+    mount: 1
+    pattern: 1
+    burstShots: 6
+    rangeClass: 0
+    scope: 2
+    faction: 0
+    unit: MC30c
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 90
+    size: {x: 1.2, y: 1.2, z: 1.2}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 35
     displayName: Light 6-Burst Missile Launcher
     family: 4

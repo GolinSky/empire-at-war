@@ -1,0 +1,178 @@
+[
+  {
+    "id": 0,
+    "name": "HeavyProtonTorpedo_HP_TORP01_FP01",
+    "bone": "HP_TORP01_FP01",
+    "position": [
+      -2.100604,
+      -0.9498571,
+      36.2291756
+    ],
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "HeavyProtonTorpedo_HP_TORP02_FP01",
+    "bone": "HP_TORP02_FP01",
+    "position": [
+      2.03132534,
+      -0.9498571,
+      36.120533
+    ],
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "MediumTurbolaser_HP_TBL_01_FP01",
+    "bone": "HP_TBL_01_FP01",
+    "position": [
+      5.14934254,
+      -0.7610066,
+      2.00844383
+    ],
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "MediumTurbolaser_HP_TBL_01_FP02",
+    "bone": "HP_TBL_01_FP02",
+    "position": [
+      5.1444726,
+      -0.761006236,
+      4.70154953
+    ],
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "MediumTurbolaser_HP_TBL_02_FP01",
+    "bone": "HP_TBL_02_FP01",
+    "position": [
+      -5.038263,
+      -0.7610061,
+      5.13115072
+    ],
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "MediumTurbolaser_HP_TBL_02_FP02",
+    "bone": "HP_TBL_02_FP02",
+    "position": [
+      -5.033117,
+      -0.7610065,
+      2.2839756
+    ],
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "DualLaser_HP_L_01_FP1",
+    "bone": "HP_L_01_FP1",
+    "position": [
+      -4.48270559,
+      0.309857965,
+      21.8865185
+    ],
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "DualLaser_HP_L_01_FP2",
+    "bone": "HP_L_01_FP2",
+    "position": [
+      -4.476099,
+      0.309857041,
+      18.2320747
+    ],
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "DualLaser_HP_L_02_FP1",
+    "bone": "HP_L_02_FP1",
+    "position": [
+      4.375489,
+      0.309857965,
+      21.9025364
+    ],
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "DualLaser_HP_L_02_FP2",
+    "bone": "HP_L_02_FP2",
+    "position": [
+      4.38209152,
+      0.309857965,
+      18.2480869
+    ],
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "ClusterBomb_HP_TORP03_FP01",
+    "bone": "HP_TORP03_FP01",
+    "position": [
+      -5.013169,
+      -0.9584043,
+      14.1430092
+    ],
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "ClusterBomb_HP_TORP04_FP01",
+    "bone": "HP_TORP04_FP01",
+    "position": [
+      4.62467432,
+      -0.9584043,
+      11.2394361
+    ],
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "PointDefense_HP_TORP03_FP02",
+    "bone": "HP_TORP03_FP02",
+    "position": [
+      -5.008006,
+      -0.9584043,
+      11.287735
+    ],
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "PointDefense_HP_TORP04_FP02",
+    "bone": "HP_TORP04_FP02",
+    "position": [
+      4.6203723,
+      -0.958405256,
+      13.6181908
+    ],
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "Engine",
+    "bone": null,
+    "position": [
+      0.0,
+      2.38418579E-07,
+      -35.2
+    ],
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "ShieldGenerator",
+    "bone": "Shield",
+    "position": [
+      0.007262206,
+      0.165778309,
+      -0.821594238
+    ],
+    "targetable": true
+  }
+]

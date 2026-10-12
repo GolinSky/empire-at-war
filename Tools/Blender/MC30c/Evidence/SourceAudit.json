@@ -1,0 +1,2219 @@
+{
+  "unit": {
+    "inheritance": [
+      "MC-30_Frigate",
+      "Frigate_Base",
+      "Vessel_Base",
+      "SFX_Base"
+    ],
+    "values": {
+      "SFXEvent_Hardpoint_Destroyed": [
+        "HARD_POINT_WEAPON_LASER, Unit_Lost_Laser_MC30_Frigate",
+        "HARD_POINT_WEAPON_ION_CANNON, Unit_Lost_Ion_MC30_Frigate",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_Lost_Shields_MC30_Frigate",
+        "HARD_POINT_ENGINE, Unit_Lost_Engines_MC30_Frigate"
+      ],
+      "SFXEvent_Select": [
+        "Unit_Select_MC30_Frigate"
+      ],
+      "SFXEvent_Attack_Hardpoint": [
+        "HARD_POINT_WEAPON_LASER, Unit_HP_LASER_MC30_Frigate",
+        "HARD_POINT_WEAPON_MISSILE, Unit_HP_MISSILE_MC30_Frigate",
+        "HARD_POINT_WEAPON_TORPEDO, Unit_HP_TORP_MC30_Frigate",
+        "HARD_POINT_WEAPON_ION_CANNON, Unit_HP_ION_MC30_Frigate",
+        "HARD_POINT_WEAPON_MASS_DRIVER, Unit_Attack_MC30_Frigate",
+        "HARD_POINT_WEAPON_SPECIAL, Unit_Attack_MC30_Frigate",
+        "HARD_POINT_ENABLE_SPECIAL_ABILITY, Unit_Attack_MC30_Frigate",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_HP_SHIELDS_MC30_Frigate",
+        "HARD_POINT_ENGINE, Unit_HP_ENGINES_MC30_Frigate",
+        "HARD_POINT_GRAVITY_WELL, Unit_HP_GRAV_MC30_Frigate",
+        "HARD_POINT_FIGHTER_BAY, Unit_HP_Bay_MC30_Frigate",
+        "HARD_POINT_TRACTOR_BEAM, Unit_Attack_MC30_Frigate",
+        "HARD_POINT_DUMMY_ART, Unit_Attack_MC30_Frigate"
+      ],
+      "Behavior": [
+        "SELECTABLE, DUMMY_STARSHIP"
+      ],
+      "Asteroid_Damage_Hit_Particles": [
+        "Large_Damage_Space"
+      ],
+      "Size_Value": [
+        "30"
+      ],
+      "Dense_FOW_Reveal_Range_Multiplier": [
+        "1"
+      ],
+      "Required_Timeline": [
+        "0"
+      ],
+      "Mass": [
+        "0.999"
+      ],
+      "Squadron_Capacity": [
+        "50"
+      ],
+      "Tech_Level": [
+        "3"
+      ],
+      "Hyperspace": [
+        "Yes"
+      ],
+      "OverrideDeceleration": [
+        "0.05"
+      ],
+      "Is_Visible_On_Radar": [
+        "Yes"
+      ],
+      "Idle_Chase_Range": [
+        "0.0"
+      ],
+      "Energy_Capacity": [
+        "99999"
+      ],
+      "Guard_Chase_Range": [
+        "1000.0"
+      ],
+      "Required_Star_Base_Level": [
+        "2"
+      ],
+      "GUI_Offset": [
+        "0 0 0"
+      ],
+      "Mouse_Collide_Override_Sphere_Radius": [
+        "50.0"
+      ],
+      "MovementClass": [
+        "Space"
+      ],
+      "Layer_Z_Adjust": [
+        "0"
+      ],
+      "Has_Space_Evaluator": [
+        "True"
+      ],
+      "Select_Box_Z_Adjust": [
+        "1"
+      ],
+      "OverrideAcceleration": [
+        "0.05"
+      ],
+      "Armor_Type": [
+        "Armor_Starship"
+      ],
+      "Shield_Armor_Type": [
+        "Shield_Starship"
+      ],
+      "Required_Ground_Base_Level": [
+        "0"
+      ],
+      "Spawned_Squadron_Delay_Seconds": [
+        "0.5"
+      ],
+      "Lua_Script": [
+        "ObjectScript_PowerToShields_Layer_Z"
+      ],
+      "Multisample_FOW_Check": [
+        "Yes"
+      ],
+      "GUI_Row": [
+        "1"
+      ],
+      "Ranking_In_Category": [
+        "1"
+      ],
+      "Exclude_From_Distance_Fade": [
+        "true"
+      ],
+      "Score_Cost_Credits": [
+        "1"
+      ],
+      "Targeting_Stickiness_Time_Threshold": [
+        "5.0"
+      ],
+      "Energy_Refresh_Rate": [
+        "9999"
+      ],
+      "Victory_Relevant": [
+        "yes"
+      ],
+      "Surface_Bombardment_Capable": [
+        "yes"
+      ],
+      "Formation_Priority": [
+        "1"
+      ],
+      "Collidable_By_Projectile_Living": [
+        "Yes"
+      ],
+      "Build_Tab_Space_Units": [
+        "Yes"
+      ],
+      "SFXEvent_Damaged_By_Asteroid": [
+        "SFX_Asteroid_Detonation"
+      ],
+      "Space_Full_Stop_Command": [
+        "Yes"
+      ],
+      "SpaceBehavior": [
+        "SIMPLE_SPACE_LOCOMOTOR, SPAWN_SQUADRON, ABILITY_COUNTDOWN, SELECTABLE, POWERED, SHIELDED, HIDE_WHEN_FOGGED, REVEAL, TARGETING, UNIT_AI, ASTEROID_FIELD_DAMAGE, DAMAGE_TRACKING, ION_STUN_EFFECT, NEBULA"
+      ],
+      "Variant_Of_Existing_Type": [
+        "Frigate_Base"
+      ],
+      "Build_Initially_Locked": [
+        "No"
+      ],
+      "Tactical_Production_Queue": [
+        "Tactical_Units"
+      ],
+      "Build_Can_Be_Unlocked_By_Slicer": [
+        "No"
+      ],
+      "Select_Box_Scale": [
+        "1"
+      ],
+      "Attack_Move_Response_Range": [
+        "400.0"
+      ],
+      "Damage": [
+        "40"
+      ],
+      "Hyperspace_Speed": [
+        "0.4"
+      ],
+      "GUI_Velocity": [
+        "45"
+      ],
+      "Encyclopedia_Unit_Class": [
+        "TEXT_ENCYCLOPEDIA_CLASS_FRIGATE"
+      ],
+      "Ship_Class": [
+        "Frigate"
+      ],
+      "Radar_Icon_Name": [
+        "I_Radar_Non-Fighters.tga"
+      ],
+      "GUI_Bracket_Size": [
+        "2"
+      ],
+      "Space_Layer": [
+        "Frigate"
+      ],
+      "Tactical_Build_Time_Seconds": [
+        "30"
+      ],
+      "Tactical_Build_Prerequisites": [
+        "Join_The_Rebel_Fleet, Frigate_Shipyard_Tech_Upgrade_Rebel"
+      ],
+      "SFXEvent_Move": [
+        "Unit_Move_MC30_Frigate"
+      ],
+      "Death_Clone": [
+        "Damage_Normal, Death_Clone_MC30_Frigate"
+      ],
+      "Space_Model_Name": [
+        "Rebel_Mon_Calamari_MC_30.ALO"
+      ],
+      "Bank_Turn_Angle": [
+        "35"
+      ],
+      "SFXEvent_Barrage": [
+        "Unit_Barrage_MC30_Frigate"
+      ],
+      "Build_Cost_Credits": [
+        "6000"
+      ],
+      "Abilities": [
+        "<Abilities SubObjectList=\"Yes\">\n\t\t\t<Redirect_Blaster_Ability Name=\"Reflector_Shield\">\n\t\t\t\t<Initially_Enabled>No</Initially_Enabled>\n\t\t\t\t<Activation_Style>Take_Damage</Activation_Style>\n\t\t\t\t<Redirect_Chance>0.0</Redirect_Chance>\n\t\t\t\t<Block_Chance>0.15</Block_Chance>\n\t\t\t\t<Reaction_Arc_In_Degrees>350.0</Reaction_Arc_In_Degrees>\n\t\t\t\t<Max_Projectile_Redirection_Angle_In_Degrees>60.0</Max_Projectile_Redirection_Angle_In_Degrees>\n\t\t\t\t<Turn_To_Face_Unblockable_Shots>No</Turn_To_Face_Unblockable_Shots>\n\t\t\t\t<Applicable_Unit_Categories>Fighter | Bomber | Gunship | Corvette | Frigate | Capital | Super | SpaceStructure</Applicable_Unit_Categories>\n\t\t\t\t<SFXEvent_Activate>Unit_Lightsaber_Projectile_Block</SFXEvent_Activate>\n\t\t\t</Redirect_Blaster_Ability>\n\t\t</Abilities>\n\t"
+      ],
+      "Population_Value": [
+        "6"
+      ],
+      "CategoryMask": [
+        "Frigate | AntiCapital"
+      ],
+      "SFXEvent_Guard": [
+        "Unit_Guard_MC30_Frigate"
+      ],
+      "SFXEvent_Engine_Idle_Loop": [
+        "Unit_Nebulon_Idle_Engine_Loop"
+      ],
+      "Tactical_Health": [
+        "5000"
+      ],
+      "Shield_Refresh_Rate": [
+        "150"
+      ],
+      "SFXEvent_Engine_Cinematic_Focus_Loop": [
+        "Unit_Nebulon_Cinematic_Engine_Loop"
+      ],
+      "AI_Combat_Power": [
+        "400"
+      ],
+      "Space_FOW_Reveal_Range": [
+        "2500"
+      ],
+      "Moniker": [
+        "Alliance_Assault_Frigate.txt"
+      ],
+      "Property_Flags": [
+        "ShieldPiercer"
+      ],
+      "Encyclopedia_Text": [
+        "TEXT_TOOLTIP_MC30_FRIGATE\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_MC30_FRIGATE_STATS"
+      ],
+      "Required_Special_Structures": [
+        "R_Shipyard_2"
+      ],
+      "SFXEvent_Move_Into_Asteroid_Field": [
+        "Unit_Asteroids_MC30_Frigate"
+      ],
+      "Targeting_Priority_Set": [
+        "Frigate"
+      ],
+      "Build_Time_Seconds": [
+        "30"
+      ],
+      "SFXEvent_Stop": [
+        ""
+      ],
+      "Death_SFXEvent_Start_Die": [
+        "Unit_Cruiser_Death_SFX"
+      ],
+      "SFXEvent_Health_Critical_Warning": [
+        "Unit_Alarm_Rebel_2"
+      ],
+      "HardPoints": [
+        "HP_MC30_LASER_01,\n\t\tHP_MC30_LASER_02,\n\t\tHP_MC30_TORP_LEFT_FRONT,\n\t\tHP_MC30_TORP_RIGHT_FRONT,\n\t\tHP_MC30_ENGINES"
+      ],
+      "Max_Rate_Of_Turn": [
+        "0.3"
+      ],
+      "Tactical_Build_Cost_Multiplayer": [
+        "6000"
+      ],
+      "SFXEvent_Build_Cancelled": [
+        "RHD_Unit_Canceled"
+      ],
+      "SFXEvent_Attack": [
+        "Unit_Attack_MC30_Frigate"
+      ],
+      "Unit_Abilities_Data": [
+        "<Unit_Abilities_Data SubObjectList=\"Yes\">\n\t\t\t<Unit_Ability>\n\t\t\t\t<Type>TURBO</Type>\n\t\t\t\t<Recharge_Seconds>60</Recharge_Seconds>\n\t\t\t\t<Expiration_Seconds>30</Expiration_Seconds>\n\t\t\t\t<Mod_Multiplier>WEAPON_DELAY_MULTIPLIER,\t3.0f</Mod_Multiplier>\n\t\t\t\t<Mod_Multiplier>SHIELD_REGEN_MULTIPLIER,\t0.0f</Mod_Multiplier>\n\t\t\t\t<Mod_Multiplier>SPEED_MULTIPLIER,\t\t\t2.0f</Mod_Multiplier>\n\t\t\t\t<SFXEvent_GUI_Unit_Ability_Activated>Unit_Power_Engines_MC30_Frigate</SFXEvent_GUI_Unit_Ability_Activated>\n\t\t\t\t<SFXEvent_GUI_Unit_Ability_Deactivated />\n\t\t\t</Unit_Ability>\n\t\t</Unit_Abilities_Data>\n\n\t\t"
+      ],
+      "Max_Speed": [
+        "4"
+      ],
+      "Max_Rate_Of_Roll": [
+        "0.125"
+      ],
+      "Targeting_Max_Attack_Distance": [
+        "1750"
+      ],
+      "Text_ID": [
+        "TEXT_UNIT_MC30_FRIGATE"
+      ],
+      "SFXEvent_Build_Complete": [
+        "Unit_Complete_MC30_Frigate"
+      ],
+      "Custom_Hard_YExtent": [
+        "18.0"
+      ],
+      "Affiliation": [
+        "Rebel"
+      ],
+      "SFXEvent_Fleet_Move": [
+        "Unit_Retreat_MC30_Frigate"
+      ],
+      "SFXEvent_Health_Low_Warning": [
+        "Ships_Rebel_Lost_2"
+      ],
+      "Icon_Name": [
+        "I_BUTTON_UNIT_REBEL_MC_30.TGA"
+      ],
+      "Scale_Factor": [
+        "1"
+      ],
+      "SFXEvent_Build_Started": [
+        "RHD_Build_Vehicle"
+      ],
+      "SFXEvent_Move_Into_Nebula": [
+        "Unit_Nebula_MC30_Frigate"
+      ],
+      "SFXEvent_Engine_Moving_Loop": [
+        "Unit_Nebulon_Moving_Engine_Loop"
+      ],
+      "Custom_Hard_XExtent": [
+        "130.0"
+      ],
+      "Shield_Points": [
+        "7500"
+      ]
+    }
+  },
+  "death": {
+    "inheritance": [
+      "Death_Clone_MC30_Frigate"
+    ],
+    "values": {
+      "Max_Speed": [
+        "1.2"
+      ],
+      "Max_Rate_Of_Roll": [
+        "0.1"
+      ],
+      "Death_SFXEvent_Start_Die": [
+        "Unit_Calamari_Death_SFX"
+      ],
+      "Remove_Upon_Death": [
+        "true"
+      ],
+      "Layer_Z_Adjust": [
+        "-90.0"
+      ],
+      "Space_Model_Name": [
+        "RV_MC30CMONCAL_D.ALO"
+      ],
+      "Scale_Factor": [
+        "0.7"
+      ],
+      "Max_Thrust": [
+        "1"
+      ],
+      "Bank_Turn_Angle": [
+        "0"
+      ],
+      "Max_Rate_Of_Turn": [
+        "0.03"
+      ]
+    }
+  },
+  "hardpoints": [
+    {
+      "name": "HP_MC30_LASER_01",
+      "inheritance": [
+        "HP_MC30_LASER_01"
+      ],
+      "values": {
+        "Fire_Max_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Laser_Medium_R"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 2.0",
+          "Bomber, 2.0",
+          "Gunship, 2.0",
+          "Transport, 2.0",
+          "Corvette, 2.0",
+          "Frigate, 2.0",
+          "Capital, 2.0",
+          "SpaceStructure, 2.0",
+          "Super, 2.0"
+        ],
+        "Fire_Pulse_Count": [
+          "6"
+        ],
+        "Fire_Bone_B": [
+          "HP_TORP04_FP02"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.3"
+        ],
+        "Fire_Cone_Width": [
+          "175.0"
+        ],
+        "Collision_Mesh": [
+          "HP_TORP04"
+        ],
+        "Fire_Range_Distance": [
+          "1500.0"
+        ],
+        "Is_Targetable": [
+          "No"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Laser_Fire_Rebel_Ship_1"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Attachment_Bone": [
+          "HP_TORP04"
+        ],
+        "Fire_Cone_Height": [
+          "150.0"
+        ],
+        "Fire_Bone_A": [
+          "HP_TORP04_FP01"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "6"
+        ],
+        "Health": [
+          "1.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_MC30_LASER_02",
+      "inheritance": [
+        "HP_MC30_LASER_02"
+      ],
+      "values": {
+        "Fire_Max_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Laser_Medium_R"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 2.0",
+          "Bomber, 2.0",
+          "Gunship, 2.0",
+          "Transport, 2.0",
+          "Corvette, 2.0",
+          "Frigate, 2.0",
+          "Capital, 2.0",
+          "SpaceStructure, 2.0",
+          "Super, 2.0"
+        ],
+        "Fire_Pulse_Count": [
+          "6"
+        ],
+        "Fire_Bone_B": [
+          "HP_TORP03_FP02"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.3"
+        ],
+        "Fire_Cone_Width": [
+          "150.0"
+        ],
+        "Collision_Mesh": [
+          "HP_TORP03"
+        ],
+        "Fire_Range_Distance": [
+          "1500.0"
+        ],
+        "Is_Targetable": [
+          "No"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Laser_Fire_Rebel_Ship_1"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Attachment_Bone": [
+          "HP_TORP03"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Fire_Bone_A": [
+          "HP_TORP03_FP01"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "6"
+        ],
+        "Health": [
+          "1.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_MC30_TORP_LEFT_FRONT",
+      "inheritance": [
+        "HP_MC30_TORP_LEFT_FRONT"
+      ],
+      "values": {
+        "Fire_Max_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Proton_Torpedo_Heavy"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 25.0",
+          "Bomber, 25.0",
+          "Gunship, 25.0",
+          "Transport, 25.0",
+          "Corvette, 25.0",
+          "Frigate, 27.5",
+          "Capital, 30.0",
+          "SpaceStructure, 30.0",
+          "Super, 30.0"
+        ],
+        "Fire_Pulse_Count": [
+          "3"
+        ],
+        "Fire_Bone_B": [
+          "HP_TORP01_FP02"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "1.75"
+        ],
+        "Fire_Cone_Width": [
+          "200.0"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Collision_Mesh": [
+          "HP_TORP01_COLL"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TORPEDOES_HEAVY"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Torpedo_Fire_Ship_Proton_Heavy"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_TORPEDO"
+        ],
+        "Attachment_Bone": [
+          "HP_TORP01"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Fire_Bone_A": [
+          "HP_TORP01_FP01"
+        ],
+        "Fire_Category_Restrictions": [
+          "Fighter, Bomber, Gunship, Transport, Corvette"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "8"
+        ],
+        "Health": [
+          "1500.0"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Torpedo_Death"
+        ]
+      }
+    },
+    {
+      "name": "HP_MC30_TORP_RIGHT_FRONT",
+      "inheritance": [
+        "HP_MC30_TORP_RIGHT_FRONT"
+      ],
+      "values": {
+        "Fire_Max_Recharge_Seconds": [
+          "8"
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Proton_Torpedo_Heavy"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 25.0",
+          "Bomber, 25.0",
+          "Gunship, 25.0",
+          "Transport, 25.0",
+          "Corvette, 25.0",
+          "Frigate, 27.5",
+          "Capital, 30.0",
+          "SpaceStructure, 30.0",
+          "Super, 30.0"
+        ],
+        "Fire_Pulse_Count": [
+          "3"
+        ],
+        "Fire_Bone_B": [
+          "HP_TORP02_FP02"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "1.75"
+        ],
+        "Fire_Cone_Width": [
+          "200.0"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Collision_Mesh": [
+          "HP_TORP02_COLL"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TORPEDOES_HEAVY"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Torpedo_Fire_Ship_Proton_Heavy"
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_TORPEDO"
+        ],
+        "Attachment_Bone": [
+          "HP_TORP02"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Fire_Bone_A": [
+          "HP_TORP02_FP01"
+        ],
+        "Fire_Category_Restrictions": [
+          "Fighter, Bomber, Gunship, Transport, Corvette"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "8"
+        ],
+        "Health": [
+          "1500.0"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Torpedo_Death"
+        ]
+      }
+    },
+    {
+      "name": "HP_MC30_ENGINES",
+      "inheritance": [
+        "HP_MC30_ENGINES"
+      ],
+      "values": {
+        "Attachment_Bone": [
+          "SHIELD"
+        ],
+        "Death_Explosion_Particles": [
+          "Large_Explosion_Space"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Tooltip_Text": [
+          "TEXT_ENGINE_HARDPOINT"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Health": [
+          "2000.0"
+        ],
+        "Engine_Particles": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "SHIELD_COLL"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_ENGINE"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Engines_Death"
+        ]
+      }
+    }
+  ],
+  "attachments": [],
+  "variants": {
+    "MC30c": {
+      "bones": [
+        {
+          "name": "Root",
+          "parent_index": 4294967295,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Hull",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            0.0018078405410051346,
+            0.0,
+            0.0,
+            -0.0018078405410051346,
+            -0.9999984502792358,
+            0.0,
+            9.225458145141602,
+            0.0,
+            0.0,
+            1.0,
+            -1.9603739976882935
+          ]
+        },
+        {
+          "name": "Lights",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -6.984919309616089e-10,
+            0.0,
+            5.256956825405723e-08,
+            6.984919309616089e-10,
+            1.0,
+            0.0,
+            2.860934728232678e-06,
+            0.0,
+            0.0,
+            1.0,
+            -0.0002796649932861328
+          ]
+        },
+        {
+          "name": "HP_TORP01",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            -0.9396906495094299,
+            -0.34202083945274353,
+            0.0,
+            -5.587481498718262,
+            0.3420213758945465,
+            -0.9396921992301941,
+            0.0,
+            93.41307830810547,
+            0.0,
+            0.0,
+            1.0,
+            3.569572925567627
+          ]
+        },
+        {
+          "name": "HP_TORP01_FP01",
+          "parent_index": 3,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            9.238719940185547e-07,
+            0.0,
+            8.460260391235352,
+            -9.238719940185547e-07,
+            1.0000001192092896,
+            0.0,
+            -20.272558212280273,
+            0.0,
+            0.0,
+            1.0,
+            -4.071277141571045
+          ]
+        },
+        {
+          "name": "HP_TORP01_FP02",
+          "parent_index": 3,
+          "visible": 1,
+          "matrix": [
+            0.9848078489303589,
+            -0.17364820837974548,
+            0.0,
+            6.7355756759643555,
+            0.17364822328090668,
+            0.9848077893257141,
+            0.0,
+            -8.599601745605469,
+            0.0,
+            0.0,
+            1.0,
+            -4.071277141571045
+          ]
+        },
+        {
+          "name": "HP_TORP02",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            0.9396905899047852,
+            -0.34202051162719727,
+            0.0,
+            5.443120956420898,
+            0.34202104806900024,
+            0.9396922588348389,
+            0.0,
+            93.41309356689453,
+            0.0,
+            0.0,
+            1.0,
+            3.569572925567627
+          ]
+        },
+        {
+          "name": "HP_TORP02_FP01",
+          "parent_index": 6,
+          "visible": 1,
+          "matrix": [
+            1.0000009536743164,
+            -4.470348358154297e-07,
+            0.0,
+            8.604310989379883,
+            1.1920928955078125e-07,
+            1.0,
+            0.0,
+            19.820751190185547,
+            0.0,
+            0.0,
+            1.0,
+            -4.071277141571045
+          ]
+        },
+        {
+          "name": "HP_TORP02_FP02",
+          "parent_index": 6,
+          "visible": 1,
+          "matrix": [
+            0.9962009191513062,
+            0.08715526759624481,
+            0.0,
+            7.061826705932617,
+            -0.08715745806694031,
+            0.9961948990821838,
+            0.0,
+            8.898645401000977,
+            0.0,
+            0.0,
+            1.0,
+            -4.071277141571045
+          ]
+        },
+        {
+          "name": "HP_TORP03",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            -0.9999984502792358,
+            3.266613930463791e-07,
+            0.0,
+            -5.587493896484375,
+            -3.2957177609205246e-07,
+            -1.0,
+            0.0,
+            39.118751525878906,
+            0.0,
+            0.0,
+            1.0,
+            3.569572925567627
+          ]
+        },
+        {
+          "name": "HP_TORP03_FP01",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            3.4924596548080444e-09,
+            0.0,
+            10.558521270751953,
+            -3.4924596548080444e-09,
+            1.0,
+            0.0,
+            -4.874740123748779,
+            0.0,
+            0.0,
+            1.0,
+            -4.098891258239746
+          ]
+        },
+        {
+          "name": "HP_TORP03_FP02",
+          "parent_index": 9,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            10.558523178100586,
+            0.0,
+            1.0,
+            0.0,
+            4.353227615356445,
+            0.0,
+            0.0,
+            1.0,
+            -4.098891258239746
+          ]
+        },
+        {
+          "name": "HP_TORP04",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            1.501757651567459e-07,
+            0.0,
+            5.443111896514893,
+            -1.501757651567459e-07,
+            1.0,
+            0.0,
+            39.118743896484375,
+            0.0,
+            0.0,
+            1.0,
+            3.569572925567627
+          ]
+        },
+        {
+          "name": "HP_TORP04_FP02",
+          "parent_index": 12,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            4.80329617857933e-07,
+            0.0,
+            9.542381286621094,
+            -4.80329617857933e-07,
+            1.0,
+            0.0,
+            3.1223065853118896,
+            0.0,
+            0.0,
+            1.0,
+            -4.098893642425537
+          ]
+        },
+        {
+          "name": "HP_TORP04_FP01",
+          "parent_index": 12,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            4.76837158203125e-07,
+            0.0,
+            9.542387962341309,
+            -4.76837158203125e-07,
+            1.0,
+            0.0,
+            -4.565601825714111,
+            0.0,
+            0.0,
+            1.0,
+            -4.098891258239746
+          ]
+        },
+        {
+          "name": "HP_L_01",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            -0.996192991733551,
+            -0.08715682476758957,
+            0.0,
+            -8.667308807373047,
+            0.08715695887804031,
+            -0.9961945414543152,
+            0.0,
+            66.61656951904297,
+            0.0,
+            0.0,
+            1.0,
+            3.569572925567627
+          ]
+        },
+        {
+          "name": "HP_L_01_FP1",
+          "parent_index": 15,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            9.462237358093262e-07,
+            0.0,
+            5.906480312347412,
+            -9.5367431640625e-07,
+            1.0000001192092896,
+            0.0,
+            -1.8924318552017212,
+            0.0,
+            0.0,
+            1.0,
+            -1.1920928955078125e-07
+          ]
+        },
+        {
+          "name": "HP_L_01_FP2",
+          "parent_index": 15,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            9.462237358093262e-07,
+            0.0,
+            4.877092361450195,
+            -9.5367431640625e-07,
+            1.0000001192092896,
+            0.0,
+            9.873442649841309,
+            0.0,
+            0.0,
+            1.0,
+            -1.1920928955078125e-07
+          ]
+        },
+        {
+          "name": "HP_L_02",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            0.9961757659912109,
+            -0.087155781686306,
+            0.0,
+            8.522172927856445,
+            0.08715594559907913,
+            0.99619460105896,
+            0.0,
+            66.6165771484375,
+            0.0,
+            0.0,
+            1.0,
+            3.569572925567627
+          ]
+        },
+        {
+          "name": "HP_L_02_FP1",
+          "parent_index": 18,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.450580596923828e-09,
+            0.0,
+            5.907607078552246,
+            0.0,
+            1.0,
+            0.0,
+            1.8923490047454834,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "HP_L_02_FP2",
+          "parent_index": 18,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -7.450580596923828e-09,
+            0.0,
+            4.878222942352295,
+            0.0,
+            1.0,
+            0.0,
+            -9.873537063598633,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "HP_TBL_01",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -8.754432201385498e-08,
+            0.0,
+            3.776731252670288,
+            8.754432201385498e-08,
+            1.0,
+            0.0,
+            8.88288402557373,
+            0.0,
+            0.0,
+            1.0,
+            3.6693174839019775
+          ]
+        },
+        {
+          "name": "HP_TBL_01_FP01",
+          "parent_index": 21,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -2.3818574845790863e-07,
+            0.0,
+            12.850502967834473,
+            2.3818574845790863e-07,
+            1.0,
+            0.0,
+            -4.166391372680664,
+            0.0,
+            0.0,
+            1.0,
+            -3.5606627464294434
+          ]
+        },
+        {
+          "name": "HP_TBL_01_FP02",
+          "parent_index": 21,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            -2.3818574845790863e-07,
+            0.0,
+            12.850500106811523,
+            2.3818574845790863e-07,
+            1.0,
+            0.0,
+            4.537471294403076,
+            0.0,
+            0.0,
+            1.0,
+            -3.5606627464294434
+          ]
+        },
+        {
+          "name": "HP_TBL_02",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            -0.9999984502792358,
+            8.731149137020111e-08,
+            0.0,
+            -3.9172189235687256,
+            -9.022187441587448e-08,
+            -1.0,
+            0.0,
+            8.88288402557373,
+            0.0,
+            0.0,
+            1.0,
+            3.6693174839019775
+          ]
+        },
+        {
+          "name": "HP_TBL_02_FP02",
+          "parent_index": 24,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            1.6689300537109375e-06,
+            0.0,
+            12.362554550170898,
+            -1.6689300537109375e-06,
+            1.0,
+            0.0,
+            3.216405153274536,
+            0.0,
+            0.0,
+            1.0,
+            -3.5606627464294434
+          ]
+        },
+        {
+          "name": "HP_TBL_02_FP01",
+          "parent_index": 24,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            1.6689300537109375e-06,
+            0.0,
+            12.362554550170898,
+            -1.6689300537109375e-06,
+            1.0,
+            0.0,
+            -5.985391139984131,
+            0.0,
+            0.0,
+            1.0,
+            -3.5606627464294434
+          ]
+        },
+        {
+          "name": "Shield",
+          "parent_index": 1,
+          "visible": 1,
+          "matrix": [
+            -0.9999967813491821,
+            3.262076643295586e-05,
+            0.0018075909465551376,
+            -0.007954330183565617,
+            0.0018078852444887161,
+            0.01799294538795948,
+            0.9998364448547363,
+            -4.399843215942383,
+            9.154589974968985e-08,
+            0.99983811378479,
+            -0.01799297332763672,
+            3.1039302349090576
+          ]
+        },
+        {
+          "name": "Particle View 01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -10965.0625,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Particle View 02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            253.3604736328125,
+            0.0,
+            1.0,
+            0.0,
+            17452.23046875,
+            0.0,
+            0.0,
+            1.0,
+            -18307.609375
+          ]
+        },
+        {
+          "name": "Particle View 03",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -3586.78515625,
+            0.0,
+            1.0,
+            0.0,
+            23389.728515625,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Particle View 04",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            7631.63671875,
+            0.0,
+            1.0,
+            0.0,
+            40841.9609375,
+            0.0,
+            0.0,
+            1.0,
+            -18307.609375
+          ]
+        },
+        {
+          "name": "Engine_Glow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            0.0,
+            1.5099580252808664e-07,
+            -1354.1470947265625,
+            1.5099580252808664e-07,
+            0.0,
+            1.0,
+            3397.8759765625,
+            0.0,
+            1.0,
+            0.0,
+            -16.1414737701416
+          ]
+        },
+        {
+          "name": "Lights01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -1356.2777099609375,
+            0.0,
+            0.0,
+            -1.0,
+            3397.87646484375,
+            0.0,
+            1.0,
+            0.0,
+            4.787076250067912e-05
+          ]
+        },
+        {
+          "name": "Hull01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -1356.2777099609375,
+            0.0,
+            0.0,
+            -1.0,
+            3397.87646484375,
+            0.0,
+            1.0,
+            0.0,
+            4.787076250067912e-05
+          ]
+        },
+        {
+          "name": "Shield01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            2105.240234375,
+            0.0,
+            0.0,
+            -1.0,
+            322.20855712890625,
+            0.0,
+            1.0,
+            0.0,
+            699.0888061523438
+          ]
+        },
+        {
+          "name": "GeoSphere01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.0,
+            -0.9999999403953552,
+            0.0,
+            -3046.812255859375,
+            -4.371138828673793e-08,
+            0.0,
+            -1.0,
+            -1.8682494555832818e-05,
+            1.0,
+            0.0,
+            -4.371138828673793e-08,
+            626.6705322265625
+          ]
+        },
+        {
+          "name": "Box01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -3046.812255859375,
+            0.0,
+            1.0,
+            0.0,
+            -2.739264164119959e-05,
+            0.0,
+            0.0,
+            1.0,
+            626.6705322265625
+          ]
+        },
+        {
+          "name": "Box03",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -3046.812255859375,
+            0.0,
+            0.0,
+            -1.0,
+            -3.3999029255937785e-05,
+            0.0,
+            1.0,
+            0.0,
+            626.6705322265625
+          ]
+        },
+        {
+          "name": "Sphere01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -3046.812255859375,
+            0.0,
+            1.0,
+            0.0,
+            -2.739264164119959e-05,
+            0.0,
+            0.0,
+            1.0,
+            626.6705322265625
+          ]
+        },
+        {
+          "name": "Sphere02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -3046.812255859375,
+            0.0,
+            1.0,
+            0.0,
+            -2.739264164119959e-05,
+            0.0,
+            0.0,
+            1.0,
+            626.6705322265625
+          ]
+        },
+        {
+          "name": "Sphere03",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9506365060806274,
+            -0.310306578874588,
+            2.870539901778102e-05,
+            -3103.798095703125,
+            -0.006096256896853447,
+            -0.018768541514873505,
+            -0.9998052716255188,
+            -143.5070037841797,
+            0.31024667620658875,
+            0.9504513144493103,
+            -0.01973377913236618,
+            781.2333374023438
+          ]
+        },
+        {
+          "name": "Shadow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            0.0018078405410051346,
+            0.0,
+            0.0,
+            -0.0018078405410051346,
+            -0.9999984502792358,
+            0.0,
+            9.225458145141602,
+            0.0,
+            0.0,
+            1.0,
+            -1.9603739976882935
+          ]
+        },
+        {
+          "name": "Engine_Glow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.0,
+            0.0018078400753438473,
+            0.0,
+            0.0,
+            -0.0018078400753438473,
+            -0.9999984502792358,
+            0.0,
+            -1.9258632164564915e-06,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "kind": "0x400",
+          "name": "Hull"
+        },
+        {
+          "kind": "0x400",
+          "name": "Lights"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shield"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shadow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Glow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Collision"
+        }
+      ],
+      "connections": [
+        {
+          "object_index": 0,
+          "bone_index": 1,
+          "bone": "Hull"
+        },
+        {
+          "object_index": 1,
+          "bone_index": 2,
+          "bone": "Lights"
+        },
+        {
+          "object_index": 2,
+          "bone_index": 27,
+          "bone": "Shield"
+        },
+        {
+          "object_index": 3,
+          "bone_index": 42,
+          "bone": "Shadow"
+        },
+        {
+          "object_index": 4,
+          "bone_index": 43,
+          "bone": "Engine_Glow"
+        },
+        {
+          "object_index": 5,
+          "bone_index": 1,
+          "bone": "Hull"
+        }
+      ],
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Mon_Calamari_MC_30.ALO",
+      "material_audit": {
+        "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Mon_Calamari_MC_30.ALO",
+        "sha256": "ac250f7b214983a2e639559768897826642e2d75cda21677ce7282a9bae1df4b",
+        "meshes": [
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    0.43137258291244507,
+                    0.43137258291244507,
+                    0.43137258291244507,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "CRUISER_ALLMC30C_CL.dds",
+                  "NormalTexture": "CRUISER_ALLMC30C_CL_BC.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 13884,
+                "triangleCount": 4628
+              },
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Ship_Hull_Decal.dds",
+                  "NormalTexture": "Hull_11_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 126,
+                "triangleCount": 42
+              }
+            ],
+            "name": "Hull",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Hull_Lights_Grid_Sparse_Rebel.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 470,
+                "triangleCount": 158
+              }
+            ],
+            "name": "Lights",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "EdgeBrightness": [
+                    1.0
+                  ],
+                  "BaseUVScale": [
+                    0.20999999344348907
+                  ],
+                  "WaveUVScale": [
+                    0.36000001430511475
+                  ],
+                  "DistortUVScale": [
+                    0.3199999928474426
+                  ],
+                  "BaseUVScrollRate": [
+                    -0.029999999329447746
+                  ],
+                  "WaveUVScrollRate": [
+                    0.019999999552965164
+                  ],
+                  "DistortUVScrollRate": [
+                    0.07000000029802322
+                  ],
+                  "BaseTexture": "Nb_shieldbase_Blue.dds",
+                  "WaveTexture": "NB_SHIELDWAVE.dds",
+                  "DistortionTexture": "Nb_shieldripple.dds"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 508,
+                "triangleCount": 840
+              }
+            ],
+            "name": "Shield",
+            "hidden": true,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 15510,
+                "triangleCount": 20680
+              }
+            ],
+            "name": "Shadow",
+            "hidden": false,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Engine_Glow_Blue.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 870,
+                "triangleCount": 290
+              }
+            ],
+            "name": "Engine_Glow",
+            "hidden": false,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshCollision.fx",
+                "vertexCount": 2196,
+                "triangleCount": 732
+              }
+            ],
+            "name": "Collision",
+            "hidden": true,
+            "collision": true
+          }
+        ],
+        "connections": [
+          {
+            "mesh": 0,
+            "bone": 1
+          },
+          {
+            "mesh": 1,
+            "bone": 2
+          },
+          {
+            "mesh": 2,
+            "bone": 27
+          },
+          {
+            "mesh": 3,
+            "bone": 42
+          },
+          {
+            "mesh": 4,
+            "bone": 43
+          },
+          {
+            "mesh": 5,
+            "bone": 1
+          }
+        ],
+        "proxies": []
+      },
+      "textures": {
+        "CRUISER_ALLMC30C_CL.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Cruiser_AllMC30C_CL.dds",
+          "stem": "MC30c_Cruiser_AllMC30C_CL",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "CRUISER_ALLMC30C_CL_BC.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Cruiser_AllMC30C_CL_BC.dds",
+          "stem": "MC30c_Cruiser_AllMC30C_CL_BC",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            0,
+            187
+          ]
+        },
+        "Engine_Glow_Blue.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue.dds",
+          "stem": "MC30c_Engine_Glow_Blue",
+          "size": [
+            248,
+            248
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Hull_11_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_11_B.dds",
+          "stem": "MC30c_Hull_11_B",
+          "size": [
+            2048,
+            2048
+          ],
+          "alpha": [
+            0,
+            224
+          ]
+        },
+        "Hull_Lights_Grid_Sparse_Rebel.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_Lights_Grid_Sparse_Rebel.dds",
+          "stem": "MC30c_Hull_Lights_Grid_Sparse_Rebel",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "NB_SHIELDWAVE.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldwave.dds",
+          "stem": "MC30c_Nb_shieldwave",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Nb_shieldbase_Blue.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldbase_Blue.dds",
+          "stem": "MC30c_Nb_shieldbase_Blue",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Nb_shieldripple.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldripple.dds",
+          "stem": "MC30c_Nb_shieldripple",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Ship_Hull_Decal.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Ship_Hull_Decal.dds",
+          "stem": "MC30c_Ship_Hull_Decal",
+          "size": [
+            2048,
+            2048
+          ],
+          "alpha": [
+            141,
+            146
+          ]
+        }
+      }
+    }
+  },
+  "projectiles": {
+    "Proj_Ship_Laser_Medium_R": {
+      "inheritance": [
+        "Proj_Ship_Laser_Medium_R",
+        "Proj_Ship_Laser_Light_G"
+      ],
+      "values": {
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Space_Model_Name": [
+          "w_laser_medium_r.alo"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          ""
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          ""
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "2000.0"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Damage": [
+          "12"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Damage_Type": [
+          "Damage_Medium_Laser"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          ""
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          ""
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          ""
+        ],
+        "Max_Speed": [
+          "35.0"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          ""
+        ],
+        "Scale_Factor": [
+          "1.0"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Variant_Of_Existing_Type": [
+          "Proj_Ship_Laser_Light_G"
+        ]
+      }
+    },
+    "Proj_Proton_Torpedo_Heavy": {
+      "inheritance": [
+        "Proj_Proton_Torpedo_Heavy"
+      ],
+      "values": {
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Space_Model_Name": [
+          "w_projectile_proton_torpedo_large_b.ALO"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Proton_Torpedo_Detonation"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Explode_When_Reached_Target_Radius": [
+          "Yes"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Projectile_Max_Scan_Range": [
+          "0.0"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "2500.0"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Damage": [
+          "1200.0"
+        ],
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Damage_Type": [
+          "Damage_Proton_Torp"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.5"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          ""
+        ],
+        "Max_Lift": [
+          "0.5"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Max_Speed": [
+          "9"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Projectile_Category": [
+          "MISSILE"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Damage_proton_torpedo_heavy"
+        ],
+        "Scale_Factor": [
+          "0.35"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "No"
+        ]
+      }
+    }
+  },
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Mon_Calamari_MC_30.ALO": "ac250f7b214983a2e639559768897826642e2d75cda21677ce7282a9bae1df4b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Cruiser_AllMC30C_CL.dds": "7300363891cf4cf75707d61ca0f813ff77a45a794efb93c104683d1b9c7a48ef",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Cruiser_AllMC30C_CL_BC.dds": "73e339564b6f8595982e5f3c47e55a6e9673ea18aa8ef2005c62b0247c99500c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue.dds": "547f21ede12df89cfe9b757b97bb19edd47b058dcd1f7aa93933bd4e8a794266",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_11_B.dds": "742aa376029cb311d2d1d8f60ae2fce116b9f4d2529d643d9b56e8e12ff0529f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_Lights_Grid_Sparse_Rebel.dds": "73e8d0b01f5b4b01fa205b95d641e6fe2bee9a6a36c65f816fd0c6ef20e9e11c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldwave.dds": "0c792d8c9fe76662a66ac3e9b7b9112ed6429e8745ebd8e6fbd55ddc83ab5c03",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldbase_Blue.dds": "1ae7d7b5ead7b370739fac6f710aa65bb22050db0f55c89a7c83257144002392",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldripple.dds": "8f9e6463e174ff56d0b6d45cb43deb4aff54249ee40b8980ca7b427f0d6693f8",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Ship_Hull_Decal.dds": "8cee6be485f01cafa651a1f845d8e667104790048c83f80e9a350d530718dd6b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Units_Space_Rebel_MC30.xml": "be572318fb52e6be3ba5e5a936b37f7d03941de9c4ef46bbf90e6d194a3f7bfe",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\_Default_Base.xml": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Mon_Calamari_MC_30.xml": "290124e92dc6061230925f6ed2e3f28f9fb5d4f660507cfd2140cb0b842afb14",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\PROJECTILES.XML": "4514777f4cfa04beb78e784f097e8a5b6ca982f9fb72057a10cf684c508c04f7"
+  }
+}
