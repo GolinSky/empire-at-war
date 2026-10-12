@@ -2,7 +2,7 @@
 category: Optimization
 status: in-progress
 created: 2026-10-11
-updated: 2026-10-11
+updated: 2026-10-12
 ---
 # Battle CPU fixes — implementation plan
 
@@ -137,6 +137,7 @@ updated: 2026-10-11
 - [x] Fresh 90-frame Profiler (1158–1247) + 40-frame GC stacks (1250–1289): activation **0.065 self ms/frame** (previous 5.54), particles **0.768 self** (previous 2.41); target capture **7.360 self**. Runtime: 2,824 idle effect components disabled on active GameObjects; 1,093/1,093 flying bolts paused. GC recording restored to `None` at 17:34:40 UTC; Play Mode uninterrupted; zero retained console warnings/errors.
 - [x] Allocation attribution: **3,063,858 B / 40 frames**, all 45,927 main-thread samples resolved. Selection refresh stacks total 94,554 B; no captured `ShipGroupUi` clone/material-constructor stack. Natural entity-removal refreshes support reuse; controlled warmed selection remains unverified.
 - [ ] Remove unused `StringBuilder` and vertex/UV formatting in `MPImageHelper.AddQuad` (`Assets/ThirdParty/MPUIKit/Runtime/Scripts/Utility/MPImageHelper.cs:240`): **656,712 B / 40 frames**, 16.4 KB/frame (21.4% of captured allocation). Inspect material-update strings and subscription churn afterward; no fix in this audit.
+- [ ] UI canvas routing follow-up (2026-10-12): [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan|dedicated plan]] + [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan - Research|investigation]]. Historical selected UI self samples total **7.695 ms/frame**, including **3.490 ms/frame** Canvas update/batching/clipping; no per-Canvas attribution or measured gain. Service-owned placement, route/layout migration and capture-site UI extraction are pending; keep MPImage allocation cleanup owned here.
 - [ ] Reduce navigation fallback after normal candidate planning fails: **223 plans/90 frames**, 219 preserve-course, 174 nearest-reachable searches; Plan **8.89 inclusive ms/frame**, flood **4.315 self**, `TryFindNearestReachableCell` full-grid scan **3.892 self**. ≤4 plans/frame holds. Attribute originating queued order before changing pursuit behavior; this is separate from the fixed nearest-walkable ring search.
 - [ ] Reproduce Profiler frame 1202 asset-loading hitch: **629.74 ms raw main thread**, **499.79 ms File.Read** mainly below GPU Resident Drawer `InstanceCullingBatcher.BuildBatch`; outside CSV window. Identify assets/renderer introduction and verify preload/warm-up in Player.
 - [ ] Matched target/effect/particle recaptures and controlled warm-selection repeats remain open. CSV pool misses: **160 projectile creations / 10 s**, 0.527 inclusive ms/frame; inspect per-weapon capacity/retirement before resizing. Exact 11.3 ms CSV ship-order spike and combat visual acceptance remain unverified.
