@@ -392,8 +392,10 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
 
+            // Ship positions in the selection batch may be a few batches old, so the pick is re-aimed live.
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
-                (!CanAcquire(group) || !IsTargetValid(group, unit) || unit.Generation != generation))
+                (!CanAcquire(group) || !IsTargetValid(group, unit) || unit.Generation != generation ||
+                 !HasFiringSolution(weapon, unit.Position)))
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback(_targetVersion != targetVersion
                     ? WeaponTargetSelectionJob.FALLBACK_TARGET_VERSION
@@ -441,15 +443,18 @@ namespace EmpireAtWar.Components.Weapon
                 _turningSalvos.RemoveAt(i);
                 WeaponHardPoint weapon = salvo.HardPoint;
                 if (weapon.IsDestroyed || _modifiers.IsCloaked || !CanAcquire(salvo.Group) ||
-                    !IsTargetValid(salvo.Group, salvo.Unit)) continue;
-
-                Transform weaponTransform = weapon.transform;
-                Quaternion parentRotation = weaponTransform.parent == null
-                    ? Quaternion.identity : weaponTransform.parent.rotation;
-                if (!WeaponTargetSelector.TryCalculateAim(salvo.Unit.Position, weaponTransform.position,
-                        parentRotation, weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw, out _, out _)) continue;
+                    !IsTargetValid(salvo.Group, salvo.Unit) || !HasFiringSolution(weapon, salvo.Unit.Position)) continue;
                 weapon.Attack(salvo.Group, salvo.Unit);
             }
+        }
+
+        private static bool HasFiringSolution(WeaponHardPoint weapon, Vector3 target)
+        {
+            Transform weaponTransform = weapon.transform;
+            Quaternion parentRotation = weaponTransform.parent == null
+                ? Quaternion.identity : weaponTransform.parent.rotation;
+            return WeaponTargetSelector.TryCalculateAim(target, weaponTransform.position, parentRotation,
+                weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw, out _, out _);
         }
 
         internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)

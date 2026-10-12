@@ -14,13 +14,15 @@ namespace EmpireAtWar.Components.Weapon
 {
     /// <summary>
     /// Stable slots for every hardpoint some weapon may target. Weapons keep slot indices; each selection batch
-    /// refreshes the used slots once (health state once per target; positions from every slot's transform in one
-    /// parallel job) and the selection job reads the slot arrays. Commits still validate live targets.
+    /// refreshes the used slots once (health state once per target) and the selection job reads the slot arrays.
+    /// Positions: fighters read their flight-model pose every batch; ship hardpoints are read from transforms in
+    /// one parallel job, a quarter of them per batch, so they may be a few batches old. Commits re-check live targets.
     /// </summary>
     internal sealed class TargetSelectionCapture : IDisposable
     {
         public const byte SLOT_VALID = 1;
         public const byte SLOT_STRIKECRAFT = 2;
+        internal const int SHIP_POSITION_STRIPES = 4;
         private const int POSITION_JOB_BATCH_SIZE = 64;
         private const int INITIAL_TRANSFORM_CAPACITY = 256;
 
@@ -37,12 +39,20 @@ namespace EmpireAtWar.Components.Weapon
         private int[] _usedStamps = Array.Empty<int>();
         private int _batchStamp = 1;
         private int[] _generations = Array.Empty<int>();
+        // 1 = ship hardpoint read from its transform by stripe; 0 = fighter, whose Position is its flight-model pose.
+        private byte[] _transformSlots = Array.Empty<byte>();
+        // Ship slots acquired since the last Refresh; read once directly so no stripe leaves them unset.
+        private readonly List<int> _unreadSlots = new List<int>();
+        private int _stripe;
+        // A regrown position buffer starts empty, so the next job reads every ship slot.
+        private bool _readAllSlots;
         // Slots arrive in runs of one target, so the last lookup usually answers the next.
         private IHealthModelObserver _lastHealth;
         private TargetState _lastState;
 
         private NativeArray<float3> _positions;
         private NativeArray<byte> _flags;
+        private NativeArray<byte> _transformSlotMask;
         // Index = slot. A freed slot keeps its old transform until reused; nothing reads it meanwhile.
         // Every IHardPointModel's Position is its Transform's position.
         private TransformAccessArray _transforms;
@@ -61,6 +71,7 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             if (!_transforms.isCreated) _transforms = new TransformAccessArray(INITIAL_TRANSFORM_CAPACITY);
+            byte transformSlot = health.ShipClass.IsStrikecraft() ? (byte)0 : (byte)1;
             if (_freeSlots.Count > 0)
             {
                 slot = _freeSlots.Pop();
@@ -68,6 +79,7 @@ namespace EmpireAtWar.Components.Weapon
                 _healths[slot] = health;
                 _references[slot] = 1;
                 _transforms[slot] = unit.Transform;
+                _transformSlots[slot] = transformSlot;
             }
             else
             {
@@ -76,8 +88,11 @@ namespace EmpireAtWar.Components.Weapon
                 _healths.Add(health);
                 _references.Add(1);
                 _transforms.Add(unit.Transform);
+                if (_transformSlots.Length <= slot) Array.Resize(ref _transformSlots, Math.Max(slot + 1, _transformSlots.Length * 2));
+                _transformSlots[slot] = transformSlot;
             }
 
+            if (transformSlot == 1) _unreadSlots.Add(slot);
             _slotsByUnit.Add(unit, slot);
             return slot;
         }
@@ -116,13 +131,32 @@ namespace EmpireAtWar.Components.Weapon
         public void Refresh()
         {
             int count = _units.Count;
+            int positionCapacity = PositionCapacity;
             NativeArrayBuffer.EnsureCapacity(ref _positions, count);
             NativeArrayBuffer.EnsureCapacity(ref _flags, count);
+            NativeArrayBuffer.EnsureCapacity(ref _transformSlotMask, count);
             if (_generations.Length < _positions.Length) Array.Resize(ref _generations, _positions.Length);
+            if (PositionCapacity != positionCapacity) _readAllSlots = true;
             if (_usedSlots.Count > 0)
             {
-                new TargetSlotPositionJob { Positions = _positions }
-                    .ScheduleReadOnly(_transforms, POSITION_JOB_BATCH_SIZE).Complete();
+                NativeArray<byte>.Copy(_transformSlots, _transformSlotMask, count);
+                new TargetSlotPositionJob
+                {
+                    Positions = _positions,
+                    TransformSlots = _transformSlotMask,
+                    Stripe = _readAllSlots ? 0 : _stripe,
+                    StripeCount = _readAllSlots ? 1 : SHIP_POSITION_STRIPES
+                }.ScheduleReadOnly(_transforms, POSITION_JOB_BATCH_SIZE).Complete();
+                _readAllSlots = false;
+                _stripe = (_stripe + 1) % SHIP_POSITION_STRIPES;
+
+                for (int i = 0; i < _unreadSlots.Count; i++)
+                {
+                    int slot = _unreadSlots[i];
+                    // Released before its first read; a fighter reusing the slot is read below.
+                    if (_units[slot] != null && _transformSlots[slot] == 1) _positions[slot] = _units[slot].Position;
+                }
+                _unreadSlots.Clear();
             }
 
             for (int i = 0; i < _usedSlots.Count; i++)
@@ -138,6 +172,7 @@ namespace EmpireAtWar.Components.Weapon
                     continue;
                 }
 
+                if (_transformSlots[slot] == 0) _positions[slot] = unit.Position;
                 _generations[slot] = unit.Generation;
                 _flags[slot] = (byte)(SLOT_VALID | (state.IsStrikecraft ? SLOT_STRIKECRAFT : 0));
                 AttackSequenceDiagnostics.RecordTargetSnapshot();
@@ -184,6 +219,7 @@ namespace EmpireAtWar.Components.Weapon
             ClearTargets();
             if (_positions.IsCreated) _positions.Dispose();
             if (_flags.IsCreated) _flags.Dispose();
+            if (_transformSlotMask.IsCreated) _transformSlotMask.Dispose();
             if (_transforms.isCreated) _transforms.Dispose();
         }
 
