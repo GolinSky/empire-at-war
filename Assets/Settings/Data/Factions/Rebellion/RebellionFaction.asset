@@ -176,7 +176,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 3257543b722be21409dddfd419a7e941, type: 2}
         description: 'CD-273 Corellian Destroyer: fast strike ship with four light
           laser cannons, two concussion missile launchers and two point-defense lasers.
-          Power to Engines increases speed by 35% for 20 seconds.'
+          Boost Weapon Power doubles weapon damage and reduces reload time by 70%
+          for 7 seconds; 50 seconds recovery.'
         role: Fast attack / Heavy corvette
         iconKey: 2e88496bcd539524c9cf43ae79b88a88:21300000
         isHero: 0
@@ -193,8 +194,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: fcb215fee41020c4490034316e324e2b, type: 2}
         description: Light carrier with two light turbolasers and two point-defense
           lasers. Carries one active and one reserve X-Wing and Y-Wing squadron each.
-          Fighter Reinforcements launches one available replacement from reserve;
-          cooldown 30 seconds. Requires escorts.
+          Boost Weapon Power doubles weapon damage and reduces reload time by 70%
+          for 7 seconds; 50 seconds recovery. Requires escorts.
         role: Light carrier / Squadron support
         iconKey: 27b2ca6d030fce64fa71f572cb392d6d:21300000
         isHero: 0
@@ -267,8 +268,8 @@ MonoBehaviour:
         description: Battlecarrier with 4,800 hull and 4,200 shields. Four heavy
           turbolasers, two medium dual turbolasers, four medium ion cannons and two
           point defense lasers. Deploys three active X-Wing squadrons with three
-          replacements. Rapid Deployment launches up to two available reserve squadrons;
-          45 second cooldown.
+          replacements. Boost Weapon Power doubles weapon damage and reduces reload
+          time by 70% for 7 seconds; 50 seconds recovery.
         role: Battlecarrier / Fleet support
         iconKey: 1583a68acc7d9f9488c947c5470db384:21300000
         isHero: 0
@@ -324,8 +325,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
         description: Fleet carrier with six active and six replacement X-Wing squadrons,
           four heavy octuple turbolasers, two heavy ion cannons and six heavy point-defense
-          mounts. Fighter Coordination boosts nearby allied squadron accuracy and
-          speed.
+          mounts. Boost Shield Power doubles shield regeneration and reduces weapon
+          damage and speed by 25% for 15 seconds; 40 seconds recovery. Boost Weapon
+          Power doubles weapon damage and reduces reload time by 70% for 7 seconds;
+          50 seconds recovery.
         role: Fleet carrier / Squadron support
         iconKey: 937b502e2d2d8684ca9920ab2b5d9a0d:21300000
         isHero: 0
