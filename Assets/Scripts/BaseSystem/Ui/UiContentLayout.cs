@@ -52,7 +52,7 @@ namespace EmpireAtWar.Ui.Base
             scroll.viewport.offsetMin = new Vector2(14f, 12f);
             scroll.viewport.offsetMax = new Vector2(-14f, isFaction ? -42f : -12f);
             grid.enabled = !isGroup;
-            grid.cellSize = isFaction ? new Vector2(150f, 150f) : new Vector2(80f, 198f);
+            grid.cellSize = isFaction ? new Vector2(138f, 106f) : new Vector2(80f, 198f);
             grid.spacing = new Vector2(8f, 6f);
             grid.padding = new RectOffset();
             grid.startCorner = GridLayoutGroup.Corner.UpperLeft;

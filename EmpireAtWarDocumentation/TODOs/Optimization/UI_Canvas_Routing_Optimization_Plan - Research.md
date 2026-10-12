@@ -129,3 +129,5 @@ updated: 2026-10-12
 - CoreGame/FactionUnitUi/HeroIconUi guard unchanged output. Site facility display names are cached when the facility type changes.
 - Verification: Unity compilation successful; 154 saved-asset/preview checks passed; no UI/import/serialization errors in the preview checks. Evidence: `Tools/UiCanvasRouting/Verify.cs`, `Logs/UiCanvasRouting/verification.json`.
 - User explicitly deferred new performance analysis. No NUnit runner, Play Mode, CSV capture or Development Player acceptance; historical attribution above remains historical.
+
+- 2026-10-12 station-selection fix: faction grid **150×150 → 138×106 px**, matching `FactionUnit.prefab`. Two rows + 6 px gap use **218/220 px**; 30 populated cards fit vertically and retain horizontal scrolling at 1280×720, 1920×1080 and 2560×1440. Compilation and all 154 routing checks passed; no Play Mode run.

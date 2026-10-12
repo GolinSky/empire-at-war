@@ -85,3 +85,5 @@ updated: 2026-10-12
 
 - Final stacking: CoreGame chrome draws first; its existing orbital popup uses the service Contextual slot. HUD hiding covers Contextual while modal/tooltip/EndGame/Fade slots remain available.
 - Shared Editor observation: radar-unregister `KeyNotFoundException` errors during battle teardown (RadarScanService / RadarComponent / MiningFacility / squadrons). These are outside the changed UI files; no runtime acceptance claimed.
+
+- 2026-10-12 station-selection fix: faction grid **150×150 → 138×106 px**, matching `FactionUnit.prefab`. Two rows + 6 px gap use **218/220 px**; 30 populated cards fit vertically and retain horizontal scrolling at 1280×720, 1920×1080 and 2560×1440. Compilation and all 154 routing checks passed; no Play Mode run.
