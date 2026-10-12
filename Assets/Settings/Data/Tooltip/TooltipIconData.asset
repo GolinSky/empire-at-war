@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: TooltipIconData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.TooltipIconData
   icons:
+  - sprite: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d, type: 3}
+    key: 27b2ca6d030fce64fa71f572cb392d6d:21300000
   - sprite: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81, type: 3}
     key: 60f458712418dd74393a49293c347c81:21300000
   - sprite: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa, type: 3}

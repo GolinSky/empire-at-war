@@ -38,6 +38,28 @@ namespace EmpireAtWar.Components.Hangar
 
         public int GetActive(int bay) => _active[bay];
 
+        public bool CanLaunchReplacement => FindReplacementBay() >= 0;
+
+        public bool TryLaunchReplacement(out int bay)
+        {
+            bay = FindReplacementBay();
+            if (bay < 0) return false;
+            _reserve[bay]--;
+            _active[bay]++;
+            _cooldown = _data.HangarLaunchInterval;
+            return true;
+        }
+
+        private int FindReplacementBay()
+        {
+            if (!IsOperational) return -1;
+            for (int i = 0; i < _reserve.Length; i++)
+                if (!_disabled[i] && _reserve[i] > 0 && _reserve[i] < _data.HangarBays[i].Reserve &&
+                    _data.HangarBays[i].MaxActive > 0 && _active[i] == 0)
+                    return i;
+            return -1;
+        }
+
         public bool TryLaunch(float deltaTime, out int bay)
         {
             bay = -1;

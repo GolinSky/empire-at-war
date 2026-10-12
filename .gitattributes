@@ -9,3 +9,4 @@ output/ISDIIReplacement/Blender/*.blend filter=lfs diff=lfs merge=lfs -text
 output/remake-empire-units/ISDI-Converted/**/*.blend filter=lfs diff=lfs merge=lfs -text
 output/remake-rebel-units/Liberator-Converted/**/*.blend filter=lfs diff=lfs merge=lfs -text
 output/remake-rebel-units/Dauntless-Converted/*.blend filter=lfs diff=lfs merge=lfs -text
+output/eaw-rebel-ships/QuasarFire-Converted/*.blend filter=lfs diff=lfs merge=lfs -text
