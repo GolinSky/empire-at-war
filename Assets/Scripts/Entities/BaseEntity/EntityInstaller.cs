@@ -23,7 +23,11 @@ namespace EmpireAtWar.Entities.BaseEntity
             Container.BindInterfacesNonLazyExt<Entity>();
             Container.BindInterfacesExt<EntityTransformFacade>();
             Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_entity.gameObject).AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<MiniMapUnitMarkerPresenter>().AsSingle().NonLazy();
+            // Temporarily disable squadron minimap markers to measure their performance impact.
+            if (_entity is not EmpireAtWar.Entities.Squadrons.Squadron)
+            {
+                Container.BindInterfacesAndSelfTo<MiniMapUnitMarkerPresenter>().AsSingle().NonLazy();
+            }
 
             Container.BindEntityExt(_uniqueIdGenerator.GenerateUniqueId());
         }
