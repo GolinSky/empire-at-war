@@ -48,17 +48,16 @@ namespace EmpireAtWar.Models.Factions
         MC75Profundity = 304,
         MC80Independence = 305,
         CorellianBattlecruiser = 306,
-        QuasarFire = 320,
-        Liberator = 321,
         MC50 = 311,
         BothanAssaultCruiser = 312,
+        Dauntless = 310,
         CD273 = 308,
+        QuasarFire = 320,
+        Liberator = 321,
         MC30c = 307,
         Nebula = 330,
-
-        AssaultFrigateMkII = 309,
         Endurance = 322,
+        AssaultFrigateMkII = 309,
 
-        Dauntless = 310,
     }
 }

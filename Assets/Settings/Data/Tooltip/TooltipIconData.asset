@@ -13,10 +13,6 @@ MonoBehaviour:
   m_Name: TooltipIconData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.TooltipIconData
   icons:
-  - sprite: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d, type: 3}
-    key: 27b2ca6d030fce64fa71f572cb392d6d:21300000
-  - sprite: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81, type: 3}
-    key: 60f458712418dd74393a49293c347c81:21300000
   - sprite: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa, type: 3}
     key: d899a22bd6d129e46a5aed14df2b81fa:21300000
   - sprite: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767, type: 3}
@@ -161,6 +157,10 @@ MonoBehaviour:
     key: d612310c959d0bb4d93c64dba1f5b3f4:21300000
   - sprite: {fileID: 21300000, guid: 469dd9f50be001b43938f09f7cdbcb4f, type: 3}
     key: 469dd9f50be001b43938f09f7cdbcb4f:21300000
+  - sprite: {fileID: 21300000, guid: 2e88496bcd539524c9cf43ae79b88a88, type: 3}
+    key: 2e88496bcd539524c9cf43ae79b88a88:21300000
+  - sprite: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d, type: 3}
+    key: 27b2ca6d030fce64fa71f572cb392d6d:21300000
   - sprite: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696, type: 3}
     key: db3ba52ed373c8242844c936a9497696:21300000
   - sprite: {fileID: 21300000, guid: ae063a7eec8a5af4696394f297681415, type: 3}
@@ -169,9 +169,9 @@ MonoBehaviour:
     key: 66c1ea9cf4e49774d99aff299b8237ca:21300000
   - sprite: {fileID: 21300000, guid: 0884e62f660956f45a6dc8ef863d13cc, type: 3}
     key: 0884e62f660956f45a6dc8ef863d13cc:21300000
-  - sprite: {fileID: 21300000, guid: 2e88496bcd539524c9cf43ae79b88a88, type: 3}
-    key: 2e88496bcd539524c9cf43ae79b88a88:21300000
   - sprite: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
     key: 937b502e2d2d8684ca9920ab2b5d9a0d:21300000
   - sprite: {fileID: 21300000, guid: 1583a68acc7d9f9488c947c5470db384, type: 3}
     key: 1583a68acc7d9f9488c947c5470db384:21300000
+  - sprite: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81, type: 3}
+    key: 60f458712418dd74393a49293c347c81:21300000

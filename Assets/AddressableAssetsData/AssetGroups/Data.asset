@@ -15,23 +15,8 @@ MonoBehaviour:
   m_GroupName: Data
   m_GUID: aa721ac4d24c6f84c8bc548a9397084b
   m_SerializeEntries:
-  - m_GUID: c518047910b28c04c9329ac0f24d7cbb
-    m_Address: QuasarFireShipData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 28d2337875adca44ba1987aa35884aee
-    m_Address: BothanAssaultCruiserShipData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 05364b3836516dc4ca3d774f9d4a230e
     m_Address: C9979ShipData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63d3d356ed5d781469d8411e38fb3498
-    m_Address: CD273ShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -77,6 +62,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 251202eef97355e48b97bd3a9f486718
     m_Address: HardPointOverlayData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28d2337875adca44ba1987aa35884aee
+    m_Address: BothanAssaultCruiserShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -167,6 +157,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5ce2c057b641be14fb1ec8cb5304b8ef
     m_Address: ThrantaShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63d3d356ed5d781469d8411e38fb3498
+    m_Address: CD273ShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -285,8 +280,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c518047910b28c04c9329ac0f24d7cbb
+    m_Address: QuasarFireShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c58688ab024a13b4b8952191db292c09
     m_Address: RothanaShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c64ff453529efa04892944c88f46d7b2
+    m_Address: LiberatorShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -367,11 +372,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fef3778c9889843489a563dd0efbf27b
     m_Address: EnduranceShipData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c64ff453529efa04892944c88f46d7b2
-    m_Address: LiberatorShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

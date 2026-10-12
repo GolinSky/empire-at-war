@@ -34,17 +34,16 @@ namespace EmpireAtWar.Services.ShipAbilities
         TectorBoostWeaponPower = 32,
         ExecutorLaserBeam = 33,
         CorellianBattlecruiserPowerToShields = 34,
+        DauntlessSensorJamming = 39,
+        ImperialVenatorIntensifyFirepower = 35,
+        MC50HitAndRun = 40,
+        BothanCoordinatedAssault = 42,
         FighterReinforcements = 50,
         LiberatorRapidDeployment = 51,
-        MC50HitAndRun = 40,
-        CD273PowerToEngines = 37,
-        ImperialVenatorIntensifyFirepower = 35,
-        BothanCoordinatedAssault = 42,
         MC30cTorpedoSalvo = 36,
+        CD273PowerToEngines = 37,
         NebulaOverchargeWeapons = 38,
         AssaultFrigateMkIIPowerToShields = 45,
         FighterCoordination = 52,
-
-        DauntlessSensorJamming = 39,
     }
 }

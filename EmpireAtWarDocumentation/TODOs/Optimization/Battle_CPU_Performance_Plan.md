@@ -2,7 +2,7 @@
 category: Optimization
 status: in-progress
 created: 2026-10-11
-updated: 2026-10-11
+updated: 2026-10-12
 ---
 # Battle CPU performance follow-up
 
@@ -103,6 +103,36 @@ updated: 2026-10-11
   - Hangar frames > 3 ms: **2** (was 49) → squadron pooling reuses contexts; `SquadronPool.Tick` 0.002 ms avg.
   - Found during capture: `RadarScanService` applied all adds before removes → pooled squadron despawn+respawn within one radar step threw duplicate-key in `ApplyPendingTargets` every step. Fixed: one ordered `_pendingChanges` queue; 2 regression tests. Re-check in battle pending.
   - Pool binding fixed: `SquadronPool` moved from `SkirmishMainInstaller` (scene, cannot see per-player `SquadronFactory`) to `GameUnitsInstaller` (per player).
+
+### Live verification of `89abf347` + `d520a2a8` — 2026-10-12
+- Domain current (`TargetSlotPositionJob`, `SquadronPool` loaded). Capture 6: editor, profiler on, 2000 frames, t≈120–200 s, ~114 squadrons (not matched to capture 5's ~169).
+- Frame median **37.1 ms** (was 39.4); p95 80.3 / p99 271.8 inflated by 41 frames > 150 ms = editor-wide stalls (`File.Open` 63 ms, `UnsafeUtility.Free` 65 ms, PhysX 65 ms, UGUI 60–130 ms, ~34 ms per projectile `Instantiate`).
+- TargetBatch 1.73 ms (Capture 1.17); `CombatAttackCoordinator.LateTick` 3.47 ms avg, inflated by stalled frame 917 (344 ms projectile `Instantiate` inside DueBatch.Emission).
+- Nav plan max 4.7 ms (one plan; budget checked between plans), avg 0.09 ms.
+- Squadron.Tick 2.7 ms; FogVisibility LateTick 1.6 + MiniMapUnitMarker LateTick 1.6 ms; CaptureSitesSystem.Tick 1.2 ms; UGUI UpdateBatches 1.75 ms self.
+- [x] Old 1.6 s `DueBatch.Impact` frame: same pattern recurred only inside stalled frames (frame 779: 70.8 ms Impact `Instantiate`) → environment/profiler stall, not combat code.
+- [x] Radar duplicate-key error: absent; no errors/warnings during battle.
+- First-use stall: `Battle.Radar.Apply` → `SoundManager.LoadFMODSound` sync clip load (frame 780, 75 ms under stall). Audio clip not preloaded → candidate follow-up.
+- [x] Bug fixed (pre-existing since `8be9b0b7c`): scene unload → Zenject `Dispose` releases `RadarComponent`, then `Ship`/`Squadron`/`DefendPlatform.LateDispose` releases again → `KeyNotFoundException` in `RadarScanService.Unregister` per unit. `RadarComponent.Release` now idempotent; test `RadarComponent_ReleasedAfterDispose_DoesNotUnregisterTwice`. RadarScanServiceTests 8/8 pass.
+- Unrelated teardown error not fixed: `CaptureSiteBuildUiController.LateDispose` → destroyed `CanvasGroup`.
+
+### Fog visibility + minimap marker queries — 2026-10-12 (uncommitted)
+- Cause (source review): both systems' per-unit cost was the vision query rather than the tick. `OwnedCircleSet.AnyContains` scanned every source (~ships + squadrons + stations + zones) and called `PlayerRoster.IsAllied` (2 dictionary lookups) per source per query.
+- [x] `OwnedCircleSet` builds one snapshot per frame for each queried `(team, allied)`: `List<Vector3>` = (x, z, radius) of matching circles. Each query is now a plain distance loop over that team's circles only. `Register`/`Unregister` invalidate it. Shared by `VisionService` and `SpawnBlockerService`, so squadron icons, SFX and AI vision checks get faster too.
+- Rejected: updating only units that moved. Visibility also changes when vision sources move. Per-unit batching left as a follow-up if the next capture still shows tick overhead.
+- Tests: `VisionServiceTests` 8/8 (+2 same-frame invalidation), SpawnBlocker 5/5, FighterExplosionPool 3/3, ReinforcementSpawnRule 10/10, EnemyStructurePlacement 10/10, AuditSharedOperations 6/6. Full EditMode failures are the existing asset/data set.
+- [ ] Re-capture: `FogVisibility LateTick` and `MiniMapUnitMarker LateTick` (were 1.6 ms each in capture 6).
+- [x] `CaptureSitesSystem.Tick` (1.2 ms): per-site strength scan (all ships + squadrons) cached, refreshed every `STRENGTH_REFRESH_INTERVAL = 0.25 s`; capture/construction progress, vision and hover still tick every frame with `deltaTime`. Compiles; in-game re-measure pending.
+
+### Target selection position reads — 2026-10-12 (uncommitted)
+- Reported cost: target selection 2–3 ms/frame, mostly hardpoint position reads.
+- [x] Fighter slots (target health `ShipClass.IsStrikecraft()`): `FighterView.Position` = pose cached in `ApplyPose` from `SquadronFlightModel` → capture reads it on the main thread for used slots; transform job skips them.
+- [x] Ship slots: `TargetSlotPositionJob` reads stripe `slot % SHIP_POSITION_STRIPES (4)` per batch → ¼ of ship transforms/batch; positions ≤ 4 batches old.
+- [x] Newly acquired ship slots read once directly (`_unreadSlots`); regrown position buffer → next job reads all ship slots (`_readAllSlots`).
+- [x] Stale-position guard: `WeaponComponent.CommitTargetSelection` re-checks `HasFiringSolution(weapon, unit.Position)` live → else serial fallback (`FALLBACK_INVALID_CANDIDATE`). Same helper used by `FireTurnedSalvos`.
+- Data: ship speed 14–48 u/s, rotation ≤ 60°/s → staleness affects only the choice, never fire legality.
+- EditMode: `TargetSelectionCaptureTests` 12/12 (new: stripe cycle, first read, fighter pose). Weapon filter 106/117, Squadron 20/21; all failures are ship-data asset tests (Liberator hangar id, ISD-II hull, loadout bake, CD273 radar, Endurance PD, MC30c variant), unrelated.
+- [ ] In-game check by user: TargetBatch Capture time, fighters still hit, no out-of-range shots.
 
 ### Radar acceptance and capture reliability
 - [ ] Obtain radar owner's implementation/test evidence; validate 1×/4× scheduling, detection delay, cloak/hostility, destruction, range modifiers and obstacle contacts.
