@@ -56,7 +56,7 @@ MonoBehaviour:
     - key: 302
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
-        description: Heavy Rebel capital ship with 8,500 hull, 2,500 shields and
+        description: Heavy Rebel capital ship with 8,500 hull, 10,000 shields and
           70/s shield regeneration. Four enhanced turbolaser, four dual heavy turbolaser,
           two turbolaser and two ion cannon batteries and targetable engines. No
           targetable shield generator. Power to Shields boosts regeneration tenfold
@@ -76,7 +76,7 @@ MonoBehaviour:
     - key: 303
       value:
         matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}
-        description: 'Admiral Ackbar''s hero command cruiser: 15,000 hull, 12,000
+        description: 'Admiral Ackbar''s hero command cruiser: 30,000 hull, 40,000
           shields, four turbolaser, four dual heavy turbolaser, four dual medium
           turbolaser and four ion cannon batteries. Shield generator, engines and
           fighter bay can be destroyed. Concentrate Fire grants Home One +50% damage
@@ -323,8 +323,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
         description: Fleet carrier with six active and six replacement X-Wing squadrons,
-          four medium turbolasers, two medium ion cannons and six point-defense mounts.
-          Fighter Coordination boosts nearby allied squadron accuracy and speed.
+          four heavy octuple turbolasers, two heavy ion cannons and six heavy point-defense
+          mounts. Fighter Coordination boosts nearby allied squadron accuracy and
+          speed.
         role: Fleet carrier / Squadron support
         iconKey: 937b502e2d2d8684ca9920ab2b5d9a0d:21300000
         isHero: 0
