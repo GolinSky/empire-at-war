@@ -7,14 +7,15 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public static void Apply(SimImpact impact, double time, BattleResult result, bool detailed)
         {
             SimUnit target = impact.Target;
-            if (target.IsDestroyed || (target.Definition.IsSquadron && target.HardPoints[impact.HardPointId].IsDestroyed))
+            var point = target.HardPoints.Length == 0 ? null : target.HardPoints[impact.HardPointId];
+            // Runtime AttackData.CanTarget drops impacts on a point destroyed in flight while other points live.
+            if (target.IsDestroyed || (point != null && point.IsDestroyed && target.HasLiveHardPoints))
             {
                 impact.Source.Stats.Overkill += impact.Damage;
                 return;
             }
             float hull = target.Hull;
             float shields = target.Shields;
-            var point = target.HardPoints.Length == 0 ? null : target.HardPoints[impact.HardPointId];
             float pointHealth = point == null ? 0 : point.Health;
             bool lostGenerator = target.LostGenerator;
             target.ApplyDamage(impact.Damage, impact.DamageType, impact.HardPointId);

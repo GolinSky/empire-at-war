@@ -694,7 +694,17 @@ MonoBehaviour:
   ionFieldBounds:
     m_Center: {x: 0, y: 0.015020321, z: 0}
     m_Extent: {x: 3.1639159, y: 1.592609, z: 7.874892}
-  <ShipUnits>k__BackingField: []
+  <ShipUnits>k__BackingField:
+  - {fileID: 799748280139748860}
+  - {fileID: 7509513073224241009}
+  - {fileID: 7447020473882645092}
+  - {fileID: 1948043466741868983}
+  - {fileID: 2663613947304664643}
+  - {fileID: 5769462499119409173}
+  - {fileID: 8854486010385254361}
+  - {fileID: 972827571811281494}
+  - {fileID: 7849173806909718312}
+  - {fileID: 5508820478850277608}
 --- !u!114 &4150898646505647277
 MonoBehaviour:
   m_ObjectHideFlags: 0
