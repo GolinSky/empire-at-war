@@ -246,7 +246,7 @@
   - **Scope**: explicit project/scene/player/entity scopes, typed factories, lifecycle/pooling parity; no DI Resolve, hierarchy discovery, lazy or optional injection.
   - **Status**: 2026-10-13 VContainer cutover implemented; Zenject removed. Full EditMode 1,182/1,229, same 47 baseline failures, zero new failures; 11 migration regressions pass. Standalone Windows build succeeded (3.29 GB); unchanged planet shader reports a DOTS MotionVectors error.
   - **Gameplay acceptance**: 2026-10-13 user confirmed direct Battle entry and two menu/loading/battle/menu cycles; multiple AI, production, reinforcement, capture builds, abilities, pooled squadrons, settings and audio passed.
-  - **Remaining**: matched startup/spawn/teardown/frame measurements.
+  - **Remaining**: matched startup/spawn/teardown/frame measurements. `9c072d3c5` facade-lookup allocation fix confirmed (GC median 89 → 27 KB/frame) and per-tickable markers restored. [Capture](<F:/Private/empire-at-war/Logs/BattleAudit/20261013T1854Z-vcontainer/analysis.md>)
 
 - [ ] **Weapon taxonomy and balance system**
   - **Plan**: [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]]

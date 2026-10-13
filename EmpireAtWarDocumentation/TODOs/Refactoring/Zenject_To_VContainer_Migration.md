@@ -139,6 +139,8 @@ updated: 2026-10-13
 - [x] Static audit: zero Resolve, hierarchy discovery, lazy/optional injection, container instantiation, hidden container dependencies.
 - [x] Every modified prefab/scene persisted and imported; no manual save.
 - [ ] Compare spawn/startup/teardown and frame timings with baseline; measure spawn bursts (reinforcements, mass squadron launch) for per-entity scope build cost. No performance claims from library change alone.
+- [x] Regression (2026-10-13 capture): `Entity._facades` `IEntityFacade[]` → `IReadOnlyList<>` → `TryGetFacade` `foreach` boxed a 32 B enumerator per call → ~2.7k allocs / ~100 KB per frame. Fixed `9c072d3c5` (indexed loop). Recapture 19:18 UTC confirmed: GC median 89 → 27 KB/frame; per-tickable markers visible.
+- [x] Profiler attribution: `OrderedLifecycleCoordinator` wraps each Tick/LateTick/FixedTick in a cached `ProfilerMarker` `"<Type.FullName>.Tick()"` (Zenject naming) — `9c072d3c5`. Compile clean; EditMode 1,193/1,240, same 47 baseline failures.
 - [ ] Mark done only after acceptance; move plan/research to Done and repair links.
 
 ## Files
@@ -161,6 +163,7 @@ updated: 2026-10-13
   - Test isolation: `VContainerCompositionTests` / `EntityFactoryLifecycleTests.CreateParent` built parentless scopes; with `VContainerSettings.Instance` set (after a Play session) VContainer instantiated the production root → `DontDestroyOnLoad` throw in EditMode, root prefab left inactive in memory. Both now use `LifetimeScope.EnqueueParent(null)`; `PopulatedVContainerSettings` test helper forces the populated case and asserts the root is untouched.
   - Regression: `FighterViewTests` (non-identity rest) and `RealEntityCompositionTests` (first spawn + pool round trip banking, no duplicate pose slots) both failed on the old code. Targeted EditMode: FighterView 1/1, FighterPoseBatch 2/2, VContainerComposition 4/4, EntityFactoryLifecycle 3/3, RealEntityComposition 1/1. Full suite not rerun; no Play Mode.
 - Matched performance capture remains pending. Baseline frame/spawn timings were not captured for this migration; no performance improvement is claimed.
+- Unmatched post-cutover capture 2026-10-13 18:54 UTC (Editor, t=305 s, 90 ships / 70 squadrons / 190 weapons): CSV frame median/p95 **16.86/22.37 ms** (59.3 FPS), main 14.83 ms, GPU 1.90 ms; no order/navigation spikes; console clean. Found facade-lookup allocation regression and lost tick markers (TODO above). [Evidence](<F:/Private/empire-at-war/Logs/BattleAudit/20261013T1854Z-vcontainer/analysis.md>)
 - Recoverable pre-cutover checkpoint: `8f1fa454a` plus pre-existing working-tree patch `Temp/pre-vcontainer-worktree.patch`. Migration committed as `0b9e10463`; unrelated changes excluded.
 - VContainer `1.19.0` pinned; five scope script moves and context prefab moves preserved GUIDs. Seven legacy Addressable entity wrappers remain inert scopes; Addressables structure unchanged.
 - Asset audit: runtime scenes/prefabs have zero missing scripts, legacy context components or Zenject dependencies. `Assets/Plugins/Zenject` removed through Unity.
