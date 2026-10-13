@@ -206,6 +206,9 @@
 
 - [ ] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)**
   - **Plan**: [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]
+  - **Stress follow-up 2026-10-12 21:20 Kyiv**: sustained **53.42 ms** median; UI, projectile tracking and transform work grow with the heavier battle. Timer **20.42 ms** and ship orders **11.16 ms** need attribution; removed-caster AI exception recorded. No game changes; matched acceptance stays open. [Stress capture report](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T181937Z-stress/analysis.md>)
+  - **Recapture 2026-10-12 21:09 Kyiv, minimap squads disabled**: CSV **20.1 FPS**, later **37.9 FPS** without changing settings; projectile creations **341 vs prior 98 / 10 s**, one **72.4 MB / 779 ms** unattributed hitch. 120-frame CPU **31.14 ms**, GPU **2.33 ms**; no order synchronization or stale fires. Pool/impact attribution and matched acceptance remain open. [Evidence](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T180933Z-minimap-disabled/analysis.md>)
+  - **Follow-up 2026-10-12 20:37 Kyiv**: 120 frames; order peak 10.19 → 1.43 ms, owner preparation 1.23 → 0.67 ms/frame, no healthy/inactive fires in either live snapshot. Different camera/workload; matched acceptance remains open. [Capture report](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T173609Z-followup/analysis.md>).
   - **Navigation route commitment 2026-10-11**: fixed pursuit/follow legs, firing-range targets for attack-move/guard/hunt, all completion plans queued, one arrival correction and failed-request suppression. Unity compile clean; 71/71 focused tests. Matched performance and gameplay acceptance remain open.
   - **Status**: 2026-10-11 17:31 UTC observational audit complete: 187 frames / 10.008 s at 1×; frame median/p95 51.99/71.40 ms, mean allocations 67,367 B/frame. Original/previous medians 104.98/49.28 ms; changed target/projectile workload prevents matched speedup claims.
   - **Evidence**: [Latest battle audit](<F:/Private/empire-at-war/Logs/BattleAudit/20261011T1730Z/analysis.md>); [[TODOs/Optimization/Battle_CPU_Fixes_Plan - Research|Phase 8 acceptance checklist]]. Fresh 90-frame Profiler + 40-frame allocation stacks; GC recording restored off, battle uninterrupted, zero console warnings/errors.
@@ -215,11 +218,14 @@
 
 - [ ] **Attribute and reduce remaining battle CPU cost**
   - **Plan**: [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]
+  - **Stress audit 2026-10-12 21:20 Kyiv**: 212 ships /244 squadrons /480 weapons initially; **18.7 FPS**, CPU/GPU **47.6/2.6 ms**. UI batching **5.69 ms**, projectile tracking **3.63 ms**, transforms **2.52 ms**; timer peaks **20.42 ms**. New removed-caster AI exception; no stale fires or permanent order sync. Selected 120-frame scopes recovered after disk-full export failure; complete CSV saved. [Stress capture report](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T181937Z-stress/analysis.md>)
   - **Fixes 2026-10-12 (committed)**: AI removed-caster crash; one shared squadron marker canvas (was 244 world canvases); bolt shield clip every 0.1 s; fog reveals in one parallel job; `Battle.Enemy.Build` + per-ship-state markers. Awaiting user battle re-capture.
+  - **Latest 2026-10-12 21:09 Kyiv**: minimap-disabled capture still CPU-bound; ShotEffect updates **2,040 vs 948/frame**, target preparation **0.419 vs 0.668 ms**. Initial CSV **49.76 ms** median, later **26.36 ms** as combat load fell; no isolated minimap effect established. [Evidence](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T180933Z-minimap-disabled/analysis.md>)
   - **Research**: [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
-  - **Status**: 15:25 battle median 8.1 FPS at 4×; radar 8.581 ms/frame after centralized source changes versus historical 656.729 ms. Fresh 15:31 median CPU/GPU 96.584/2.965 ms; observational comparisons, not matched benchmarks.
-  - **Analysis**: 2026-10-11 saved-data/live-source review complete at `74368d81`; user skipped another battle run. Confirmed repeated target snapshots, due-ID scanning, squadron order/steering/pose work, stationary route retries and repeated mixing of 20 audio voices; retained prior optimizations.
-  - **Next**: attribute snapshot/fallback and due-commit costs, allocation callers (3.727 MB/frame), squadron children, navigation requesters and audio mix; runtime/matched acceptance remains pending. Profiler summaries omit allocation metadata; incomplete Frame Debugger export needs bounded retries/checkpoints.
+  - **Status**: 2026-10-12 17:03 capture: 120 frames, 129 squadrons, t=461 s; median/p90/worst 36.2/47/141 ms, GPU 3.7 ms. Previous median 50.2 ms; draws 886 → 2335 and triangles 1.7 → 5.4 M prevent a matched speedup claim.
+  - **Implemented 2026-10-12**: phase-preserving squadron order timer, fire retirement on repair/disable, shared weapon acquisition/wreck lookup, cheaper squadron search rejection. **92/92 focused EditMode tests passed**; compile/Console clean. Details and evidence in the plan.
+  - **Recapture 2026-10-12 20:37 Kyiv**: 120 frames, 147–148 squadrons; orders avg/peak **0.604/1.434 ms** (was 1.675/10.188), >5 ms frames **27 → 0**; owner preparation **1.226 → 0.668 ms**. Both fire snapshots: **0 healthy/inactive fires** (was 83); pool ≈0.372 → 0.280 ms. [Evidence](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T173609Z-followup/analysis.md>).
+  - **Next**: fixed-camera matched workload + Development Player acceptance and longer repair/respawn coverage. Current frame median **33.76 ms** vs 36.10, with more squadrons and different rendering workload; no isolated speedup claim. Broader attribution remains open.
   - **Ownership**: attack code in attack plan; effects/indicators in rendering plan. Read current source and coordinate shared files/Unity captures.
 
 - [ ] **Optimize battle attacks and projectile reuse**
@@ -239,14 +245,10 @@
 
 ### Refactoring
 
-- [ ] **Migrate Zenject to VContainer**
-  - **Plan**: [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration]]
-  - **Research**: [[TODOs/Refactoring/Zenject_To_VContainer_Migration - Research|Injection audit, scopes, factories and lifecycle mapping]]
-  - **Order**: Phase 2 Zenject-side cleanup first (remove lazy/optional injection, IInstantiator, Resolve, hierarchy/hidden searches, aliases); VContainer phases need [[Done/Refactoring/UI_Service_Refactoring|UI rework]] complete and verified.
-  - **Scope**: explicit project/scene/player/entity scopes, typed factories, lifecycle/pooling parity; no DI Resolve, hierarchy discovery, lazy or optional injection.
-  - **Status**: 2026-10-13 VContainer cutover implemented; Zenject removed. Full EditMode 1,182/1,229, same 47 baseline failures, zero new failures; 11 migration regressions pass. Standalone Windows build succeeded (3.29 GB); unchanged planet shader reports a DOTS MotionVectors error.
-  - **Gameplay acceptance**: 2026-10-13 user confirmed direct Battle entry and two menu/loading/battle/menu cycles; multiple AI, production, reinforcement, capture builds, abilities, pooled squadrons, settings and audio passed.
-  - **Remaining**: matched startup/spawn/teardown/frame measurements. `9c072d3c5` facade-lookup allocation fix confirmed (GC median 89 → 27 KB/frame) and per-tickable markers restored. [Capture](<F:/Private/empire-at-war/Logs/BattleAudit/20261013T1854Z-vcontainer/analysis.md>)
+- [ ] **Project organization follow-up**
+  - **Plan**: [[TODOs/Refactoring/Project_Organization_Followup|Project Organization Follow-up]]
+  - **Status**: 2026-10-13 static audit complete; proposed policy alignment, 20 misplaced assets, separate cleanup/retention review. No asset moves or tests.
+  - **Coordination**: UI colocation and type splitting stay in their existing plans.
 
 - [ ] **Weapon taxonomy and balance system**
   - **Plan**: [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]]
@@ -257,6 +259,15 @@
   - **Verification**: full EditMode 1,383/1,405; 22 failures outside this work (height tiers, wrecks, team colors, helper meshes, ISD II hull, engine NRE, AI production). No Play Mode.
   - **Class caliber rules (2026-10-11)**: 186 mounts upgraded on 14 capital/heavy-capital ships + Recusant; every family minimum Medium. Corvettes have no turbolasers; frigates have no heavy turbolasers. Shared smaller-ship weapons preserved; new MediumPointDefense (80). All 38 ships audited; zero rule violations. Weapon taxonomy 25/26 pass; existing StrikeFighterProtonTorpedo Shared/multiplier failure remains. No Play Mode.
   - **Remaining**: user playtest; balance tuning (stations outranged, ISD II +200 %, missile reach vs radar); resolve existing StrikeFighterProtonTorpedo variant metadata.
+
+- [ ] **Migrate Zenject to VContainer**
+  - **Plan**: [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration]]
+  - **Research**: [[TODOs/Refactoring/Zenject_To_VContainer_Migration - Research|Injection audit, scopes, factories and lifecycle mapping]]
+  - **Order**: Phase 2 Zenject-side cleanup first (remove lazy/optional injection, IInstantiator, Resolve, hierarchy/hidden searches, aliases); VContainer phases need [[Done/Refactoring/UI_Service_Refactoring|UI rework]] complete and verified.
+  - **Scope**: explicit project/scene/player/entity scopes, typed factories, lifecycle/pooling parity; no DI Resolve, hierarchy discovery, lazy or optional injection.
+  - **Status**: 2026-10-13 VContainer cutover implemented; Zenject removed. Full EditMode 1,182/1,229, same 47 baseline failures, zero new failures; 11 migration regressions pass. Standalone Windows build succeeded (3.29 GB); unchanged planet shader reports a DOTS MotionVectors error.
+  - **Gameplay acceptance**: 2026-10-13 user confirmed direct Battle entry and two menu/loading/battle/menu cycles; multiple AI, production, reinforcement, capture builds, abilities, pooled squadrons, settings and audio passed.
+  - **Remaining**: matched startup/spawn/teardown/frame measurements. `9c072d3c5` facade-lookup allocation fix confirmed (GC median 89 → 27 KB/frame) and per-tickable markers restored. [Capture](<F:/Private/empire-at-war/Logs/BattleAudit/20261013T1854Z-vcontainer/analysis.md>)
 
 - [ ] **Finish ship movement simplification verification and remaining phases**
   - **Plan**: [[TODOs/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]
@@ -324,6 +335,7 @@
   - **Remaining**: Phase 1 playtest; Phases 2–5.
 
 ### Tooling
+
 
 
 - [ ] **Add Jenkins GitHub draft releases**
@@ -442,6 +454,7 @@
   - **Scope**: concrete typed views, no screen enum/screen interfaces, `UiPlacement` type → parent map, presenter-only view intents, `*RouteUiController` routes, Fade/Loading via `UiController`; colocated folders + normalized namespaces; preserved UI behavior.
   - **Status**: 2026-10-13 implemented under Zenject; 33 GUID-preserving moves, 19 saved/verified screen prefabs, compile clean. Selected UI regressions 76/76 across full run + fade rerun; 47 full-suite failures outside scope.
   - **Completed**: 2026-10-13; user confirmed two menu/loading/battle cycles, HUD/minimap and drag/cancel acceptance. Migration prerequisite open.
+
 
 - [x] **Resolve codebase audit 2026-09-27**
   - **Plan**: [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|Codebase audit overview]]
