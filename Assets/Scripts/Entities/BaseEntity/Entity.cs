@@ -93,9 +93,10 @@ namespace EmpireAtWar.Entities.BaseEntity
         public bool TryGetFacade<TFacade>(out TFacade destinationFacade) where TFacade : IEntityFacade
         {
             destinationFacade = default;
-            foreach (IEntityFacade entityFacade in _facades)
+            // Indexed: foreach over IReadOnlyList boxes an enumerator on every lookup.
+            for (int i = 0; i < _facades.Count; i++)
             {
-                if (entityFacade is TFacade foundFacade)
+                if (_facades[i] is TFacade foundFacade)
                 {
                     destinationFacade = foundFacade;
                     return true;
