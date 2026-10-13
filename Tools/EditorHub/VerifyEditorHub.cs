@@ -13,7 +13,10 @@ public static class VerifyEditorHub
     public static async Task<object> Run()
     {
         var tools = EditorToolCatalog.Discover();
-        Require(tools.Count >= 34, "Expected the complete project tool catalog.");
+        Require(tools.Count >= 36, "Expected the complete project tool catalog, including Battle Simulator.");
+        var simulator = tools.Single(tool => tool.MenuPath == "Tools/Empire At War/Game Design/Battle Simulator");
+        Require(simulator.Category == "Game Design" && simulator.WindowType == typeof(EmpireAtWar.Editor.BattleSimulator.BattleSimulatorWindow),
+            "Battle Simulator must embed under Game Design.");
         Require(tools.Select(tool => tool.MenuPath).Distinct().Count() == tools.Count, "Duplicate tool paths.");
         Require(tools.Count(tool => tool.IsLegacy) == 5, "Expected five preserved legacy actions.");
         string[] oldRoots = { "Custom/", "CUSTOM/", "Tools/AI/", "Tools/Ships/", "Tools/Squadrons/",
@@ -47,7 +50,10 @@ public static class VerifyEditorHub
             legacyTab.SendEvent(submit);
         }
         Require(hub.rootVisualElement.Q<Button>("tab-Legacy").ClassListContains("hub-selected"), "Category tab navigation failed.");
-        var embedded = tools.FirstOrDefault(tool => tool.Category == "Game Design");
+        EditorHubWindow.OpenTool(simulator.MenuPath);
+        await Task.Delay(300);
+        Require(hub.rootVisualElement.Q<Button>("sim-run") != null, "Battle Simulator UI was not embedded.");
+        var embedded = tools.FirstOrDefault(tool => tool.MenuPath == "Tools/Empire At War/Game Design/Balance Editor");
         if (embedded != null)
         {
             EditorHubWindow.OpenTool(embedded.MenuPath);

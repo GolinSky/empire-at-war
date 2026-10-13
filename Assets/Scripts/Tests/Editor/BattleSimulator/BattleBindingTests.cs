@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Globalization;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Editor.BattleSimulator;
 using NUnit.Framework;
@@ -54,6 +56,25 @@ namespace EmpireAtWar.Tests.Editor
             var draft = new BalanceDraft(); draft.Set(field.Snapshot(), "12345");
             using (var factory = new SimUnitFactory(registry, draft)) Assert.That(factory.Build(unit).Hull, Is.EqualTo(12345));
             Assert.That(field.Read(), Is.EqualTo(before));
+        }
+
+        [Test]
+        public void DraftWeaponProfile_ChangesSimulationDamageWithoutWritingSource()
+        {
+            var registry = BalanceInventory.BuildCombat();
+            var unit = registry.Units.First(u => u.Kind == BalanceUnitKind.Ship);
+            using (var live = new SimUnitFactory(registry, new BalanceDraft()))
+            {
+                var original = live.Build(unit).Mounts[0].Profile;
+                var field = registry.FieldsFor(BalanceRegistration.One<WeaponsData>()).Single(f =>
+                    f.Stat == "weapon/" + (int)original.WeaponType + "/damageMultiplier");
+                string before = field.Read();
+                var draft = new BalanceDraft();
+                draft.Set(field.Snapshot(), (double.Parse(before, CultureInfo.InvariantCulture) * 2).ToString(CultureInfo.InvariantCulture));
+                using (var changed = new SimUnitFactory(registry, draft))
+                    Assert.That(changed.Build(unit).Mounts[0].Profile.Damage, Is.EqualTo(original.Damage * 2).Within(0.001));
+                Assert.That(field.Read(), Is.EqualTo(before));
+            }
         }
     }
 }

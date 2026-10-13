@@ -1,0 +1,29 @@
+.sim-root { flex-grow: 1; }
+.sim-root > ScrollView { flex-grow: 1; }
+#sim-title { font-size: 22px; -unity-font-style: bold; margin: 14px 16px; color: var(--balance-accent); }
+.sim-root HelpBox { margin: 6px 12px; }
+#sim-status { margin: 8px 16px; color: var(--balance-candidate); }
+.sim-sides { flex-direction: row; }
+.sim-side { flex-grow: 1; flex-basis: 0; min-width: 310px; padding: 12px; margin: 6px; background-color: var(--balance-panel); border-radius: 6px; }
+#sim-side-a, #sim-side-b { font-size: 18px; -unity-font-style: bold; margin-bottom: 10px; }
+#sim-side-a { color: var(--balance-accent); }
+#sim-side-b { color: var(--balance-candidate); }
+.sim-unit { border-top-width: 1px; border-top-color: var(--balance-line); margin-top: 12px; padding-top: 8px; }
+.sim-settings { flex-direction: row; flex-wrap: wrap; margin: 10px; }
+.sim-settings > * { width: 280px; margin-right: 16px; margin-bottom: 6px; }
+.sim-side .unity-base-field__label { min-width: 120px; }
+.sim-actions, .sim-presets { flex-direction: row; flex-wrap: wrap; padding: 6px 12px; }
+.sim-actions Button, .sim-presets Button { min-width: 120px; height: 28px; margin-right: 6px; }
+#sim-run { background-color: var(--balance-active); color: var(--balance-accent); }
+.sim-results { padding: 14px; }
+.sim-results Label { margin-bottom: 6px; }
+#sim-summary { font-size: 18px; -unity-font-style: bold; }
+.sim-chart { height: 200px; margin: 12px 4px; background-color: var(--balance-panel); }
+.sim-results ScrollView Label { white-space: nowrap; }
+.sim-result-row { flex-direction: row; border-bottom-width: 1px; border-bottom-color: var(--balance-line); padding-top: 6px; }
+.sim-result-cell { width: 140px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; margin-right: 12px; }
+.sim-result-cell.sim-result-wide { width: 260px; }
+.sim-faction-republic { color: #ce877f; }
+.sim-faction-separatist { color: #7daaff; }
+.sim-faction-rebellion { color: #e9ae7c; }
+.sim-faction-empire { color: #bca6df; }
