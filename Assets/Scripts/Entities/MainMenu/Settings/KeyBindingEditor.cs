@@ -38,9 +38,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void StartRebind(int row)
         {
             BindingSlot slot = _bindings.RebindableSlots[row];
+            _model.SetStatus(string.Empty);
             _model.SetPrompt(new SettingsPrompt(
                 kind: SettingsPromptKind.ListeningForKey,
-                message: $"Press a key or mouse button for {slot.Label}.\nEsc cancels.",
+                message: $"{CaptureInstruction(slot)} for {slot.Label}.\nEsc cancels.",
                 actions: new SettingsPromptAction[0]));
             _bindings.StartRebind(slot, result => HandleRebindCompleted(slot, result));
         }
@@ -81,10 +82,24 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     Refresh();
                     _model.SetPrompt(CreateConflictPrompt(slot));
                     break;
+                case RebindResult.WrongModifierCount:
+                    _model.SetPrompt(SettingsPrompt.None);
+                    _model.SetStatus($"{slot.Label} unchanged: {CaptureInstruction(slot)}.");
+                    break;
                 default:
                     _model.SetPrompt(SettingsPrompt.None);
                     break;
             }
+        }
+
+        private static string CaptureInstruction(BindingSlot slot)
+        {
+            return slot.ModifierCount switch
+            {
+                0 => "Press a key or mouse button",
+                1 => "Hold one of Ctrl, Shift or Alt and press a key",
+                _ => $"Hold {slot.ModifierCount} of Ctrl, Shift and Alt and press a key",
+            };
         }
 
         private SettingsPrompt CreateConflictPrompt(BindingSlot slot)
