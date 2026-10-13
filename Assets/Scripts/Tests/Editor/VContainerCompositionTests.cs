@@ -95,6 +95,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ChildScopes_InjectExplicitReferencesAndKeysWithoutSharingEntityStateOrLifecycle()
         {
+            using PopulatedVContainerSettings settings = new PopulatedVContainerSettings();
             GameObject rootObject = new GameObject("VContainer fixture parent");
             rootObject.SetActive(false);
             ProbeScope parent = rootObject.AddComponent<ProbeScope>();
@@ -104,6 +105,7 @@ namespace EmpireAtWar.Tests.Editor
             FixtureHandle parentHandle = new FixtureHandle();
             try
             {
+                using (LifetimeScope.EnqueueParent(null))
                 using (LifetimeScope.Enqueue(builder =>
                 {
                     builder.RegisterLifecycle();
@@ -122,6 +124,10 @@ namespace EmpireAtWar.Tests.Editor
                 scopes.Add(first);
                 ProbeScope second = CreateChild(parent, secondView, secondHandle, 20, components);
                 scopes.Add(second);
+                Assert.That(parent.Parent, Is.Null);
+                Assert.That(first.Parent, Is.SameAs(parent));
+                Assert.That(second.Parent, Is.SameAs(parent));
+                settings.AssertProductionRootUntouched();
 
                 Assert.That(firstView.InitializationCount, Is.EqualTo(1));
                 Assert.That(secondView.InitializationCount, Is.EqualTo(1));
