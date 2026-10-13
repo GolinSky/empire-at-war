@@ -7,18 +7,17 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Presenters.Reinforcement
+namespace EmpireAtWar.Entities.Reinforcement
 {
     public class ReinforcementUiController : UiController, IReinforcementPresenter,
         IInitializable, ILateDisposable, ISkirmishUiRoute
     {
         private readonly IReinforcementService _reinforcementService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private IReinforcementUi _ui;
+        private ReinforcementUi _ui;
 
         private readonly ReinforcementModel _model;
         private readonly ReinforcementData _data;
@@ -26,6 +25,8 @@ namespace EmpireAtWar.Presenters.Reinforcement
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
+
+        private bool _isDisposed;
 
         public ReinforcementUiController(
             IUiService uiService,
@@ -55,13 +56,16 @@ namespace EmpireAtWar.Presenters.Reinforcement
 
         public void LateDispose()
         {
+            if (_isDisposed) return;
+            _isDisposed = true;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.Reinforcement,
                 this);
 
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
-                _tooltipHover.Dispose();
+                _ui.Hide();
                 _ui.Dispose();
             }
         }
@@ -87,22 +91,19 @@ namespace EmpireAtWar.Presenters.Reinforcement
 
         public void Activate(bool isActive)
         {
+            if (_isDisposed) return;
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
-                BaseUi ui = UiService.CreateUi(
-                    UiType.Reinforcement);
-                _ui = ui as IReinforcementUi
-                    ?? throw new InvalidOperationException(
-                        "The reinforcement prefab does not implement IReinforcementUi.");
+                _ui = CreateUi<ReinforcementUi>();
 
                 _ui.SetModel(_model);
-                _ui.SetPresenter(this);
+                _ui.AssignPresenter(this);
                 _ui.SetData(_data);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
-                    ((ITooltipHoverView)_ui).TooltipHover,
+                    _ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
             }
 

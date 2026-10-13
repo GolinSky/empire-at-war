@@ -1,4 +1,4 @@
-using EmpireAtWar.Views.Reinforcement;
+using EmpireAtWar.Entities.Reinforcement;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;

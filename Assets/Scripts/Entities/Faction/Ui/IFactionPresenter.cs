@@ -1,6 +1,6 @@
 using EmpireAtWar.Controllers.Factions;
 
-namespace EmpireAtWar.Presenters.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
     public interface IFactionPresenter
     {

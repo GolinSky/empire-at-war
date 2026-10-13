@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;

@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Players;
 using System.Threading;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Controllers.Game;
-using EmpireAtWar.Controllers.Menu;
+using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;

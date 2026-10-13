@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace EmpireAtWar.Views.Reinforcement
+namespace EmpireAtWar.Entities.Reinforcement
 {
     public class UnitSpawnView : MonoBehaviour
     {

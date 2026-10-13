@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Reinforcement;
 using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
@@ -6,7 +7,6 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
-using EmpireAtWar.Views.Reinforcement;
 using EmpireAtWar.Views.SpawnArea;
 using UnityEngine;
 using Zenject;

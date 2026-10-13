@@ -1,7 +1,8 @@
+using EmpireAtWar.Entities.CoreGameUi;
 using System;
 using System.Threading;
 using EmpireAtWar.Commands.Game;
-using EmpireAtWar.Controllers.Menu;
+using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Utils;

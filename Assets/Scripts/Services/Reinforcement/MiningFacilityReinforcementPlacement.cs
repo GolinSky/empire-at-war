@@ -1,8 +1,8 @@
+using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 

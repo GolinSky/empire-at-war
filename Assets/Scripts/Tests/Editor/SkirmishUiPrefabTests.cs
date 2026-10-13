@@ -69,9 +69,10 @@ namespace EmpireAtWar.Tests.Editor
                 SkirmishUi popup = root.GetComponent<SkirmishUi>();
                 SkirmishModel model = new SkirmishModel();
                 popup.SetModel(model);
-                popup.SetNavigation(new SkirmishRouteNavigationStub(model));
+                popup.AssignPresenter(new SkirmishPresenterStub(model));
                 popup.SetData(AssetDatabase.LoadAssetAtPath<TeamColorPalette>(PALETTE_PATH));
                 popup.Initialize();
+                model.Changed += popup.Render;
 
                 SerializedObject serializedPopup = new SerializedObject(popup);
                 SerializedProperty rows = serializedPopup.FindProperty("slotRows");
@@ -98,6 +99,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.Slots[1].ColorIndex, Is.EqualTo(0));
                 Assert.That(enemyColor.value, Is.EqualTo(0));
 
+                model.Changed -= popup.Render;
                 popup.Dispose();
             }
             finally
@@ -112,11 +114,11 @@ namespace EmpireAtWar.Tests.Editor
             return (TMP_Dropdown)new SerializedObject(row).FindProperty(field).objectReferenceValue;
         }
 
-        private sealed class SkirmishRouteNavigationStub : ISkirmishRouteNavigation
+        private sealed class SkirmishPresenterStub : ISkirmishPresenter
         {
             private readonly SkirmishModel _model;
 
-            public SkirmishRouteNavigationStub(SkirmishModel model)
+            public SkirmishPresenterStub(SkirmishModel model)
             {
                 _model = model;
             }

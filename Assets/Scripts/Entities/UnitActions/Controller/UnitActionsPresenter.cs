@@ -60,9 +60,8 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         {
             _view = _coreUi.UnitActionsView;
             _view.Initialize();
-            if (_view is ITooltipHoverView hover)
-                _tooltipHover = new TooltipHoverSubscription(
-                    hover.TooltipHover, HandleTooltipHover, _tooltips);
+            _tooltipHover = new TooltipHoverSubscription(
+                _view.TooltipHover, HandleTooltipHover, _tooltips);
             _view.ActionPressed += HandleAction;
             _selectionService.AddObserver(this);
             _abilities.TargetingChanged += HandleAbilityTargeting;

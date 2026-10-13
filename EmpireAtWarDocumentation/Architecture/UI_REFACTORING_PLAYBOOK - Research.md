@@ -44,13 +44,13 @@ flowchart LR
     Data --> Model
     Data --> Service
     Model --> Service
-    Presenter --> UiService["IUiService.CreateUi"]
+    Presenter --> UiService["IUiService.CreateUi&lt;TUi&gt;"]
     UiService --> View["FeatureUi : BaseUi"]
-    Presenter -->|"SetModel / SetPresenter / SetData"| View
+    Presenter -->|"AssignPresenter / explicit data setup"| View
     View -->|"user intent"| Presenter
     Presenter -->|"request"| Service
     Service -->|"state changes"| Model
-    Model -->|"C# events"| View
+    Model -->|"C# events"| Presenter
 ```
 
 - Parent UI factory creates the prefab.
@@ -64,7 +64,7 @@ flowchart LR
 ### 1. Reproduce and map the current feature
 
 1. Record the exact exception or incorrect behavior.
-2. Find the UI prefab, its `UiType`, the UI factory, and the installer that owns the feature.
+2. Find the concrete UI type/prefab, its `typeof(TUi).Name` key, placement entry and owning installer.
 3. List every model field and classify it using the table below.
 4. List every controller dependency and mark it as UI, gameplay, configuration, or infrastructure.
 5. Record the current asset path, GUID, Addressables entry, and repository mapping when applicable.
@@ -111,7 +111,7 @@ public class FeatureData : Data
 
 ### 3. Migrate the asset through Unity-aware tooling
 
-- Use Unity MCP or the Unity Editor to preserve metadata and references.
+- Use the official `unity` CLI and Unity asset APIs to preserve metadata and references.
 
 1. Create the new `<Feature>Data` asset.
 2. Read the old model asset properties.
@@ -194,18 +194,10 @@ public interface IFeaturePresenter
 - The view receives feature dependencies through explicit setup methods:
 
 ```csharp
-public interface IFeatureUi
+public class FeatureUi : BaseUi
 {
-    void SetModel(IFeatureModelObserver model);
-    void SetPresenter(IFeaturePresenter presenter);
-    void SetData(FeatureData data);
-    void Initialize();
-    void Dispose();
-}
-
-public class FeatureUi : BaseUi, IFeatureUi
-{
-    // Serialized fields are Inspector-owned view references only.
+    // Inspector-owned widgets; explicit AssignPresenter / SetData methods.
+    // Initialize control listeners only after setup; remove them in Dispose.
 }
 ```
 
@@ -215,7 +207,7 @@ public class FeatureUi : BaseUi, IFeatureUi
 - Do not use Zenject property injection for feature model, presenter, or data dependencies.
 - Provide dependencies through methods before `Initialize()`.
 - Test that the controller supplies dependencies before `Initialize()` and that required prefab references are assigned.
-- Subscribe to model events and Unity controls only in `Initialize()`.
+- The controller owns model subscriptions; views own Unity control listeners initialized after setup.
 - Unsubscribe symmetrically in `Dispose()`.
 - Make `Dispose()` safe when called more than once.
 - Call `Dispose()` from `OnDestroy()` as a lifecycle safety net.
@@ -224,7 +216,7 @@ public class FeatureUi : BaseUi, IFeatureUi
 - Setup order:
 
 ```text
-Create UI -> SetModel -> SetPresenter -> SetData (if needed) -> Initialize
+CreateUi<TUi> -> AssignPresenter -> explicit data setup -> Initialize -> Show
 ```
 
 - Do not call `Initialize()` from `Awake` or `Start` when dependencies are supplied after prefab creation.
@@ -234,28 +226,34 @@ Create UI -> SetModel -> SetPresenter -> SetData (if needed) -> Initialize
 - The UI controller is the presenter and owns the dynamically created UI lifecycle:
 
 ```csharp
-public class FeatureUiController : IFeaturePresenter, IInitializable, ILateDisposable
+public class FeatureUiController : UiController, IFeaturePresenter, IInitializable, ILateDisposable
 {
+    private FeatureUi _ui;
+
+    public FeatureUiController(IUiService uiService, IUiCancelRouter cancelRouter)
+        : base(uiService, cancelRouter) { }
+
     public void Initialize()
     {
-        _ui = (IFeatureUi)_uiService.CreateUi(UiType.Feature);
-
-        _ui.SetModel(_model);
-        _ui.SetPresenter(this);
-        _ui.SetData(_data);
+        _ui = CreateUi<FeatureUi>();
+        _ui.AssignPresenter(this);
+        // Pass feature data explicitly and subscribe to model state here.
         _ui.Initialize();
+        _ui.Show();
     }
 
     public void LateDispose()
     {
-        _ui?.Dispose();
+        // Unsubscribe from model state even when the scene has destroyed the view.
+        if (_ui != null) _ui.Dispose();
     }
 }
 ```
 
-- `IUiService.CreateUi` must return the created `BaseUi` so the controller can configure it.
-- Cast to the feature UI interface.
-  - Verify the prefab component type in an EditMode test.
+- `IUiService.CreateUi<TUi>()` returns the requested concrete `BaseUi` subclass; no screen-interface cast.
+- `UiPlacement` owns all type-to-parent entries; controllers never choose slots.
+- Verify concrete prefab type, placement parity, setup order and Inspector references in EditMode tests.
+- Colocate view, presenter intent interface and controller in the feature folder/namespace; passive screens omit presenter contracts.
 - The controller forwards UI requests to the service.
 - The controller does not reimplement gameplay rules.
 - Only one owner creates and initializes this feature UI.
@@ -287,7 +285,7 @@ Container.BindInterfacesNonLazyExt<FeatureUiController>();
 | `IReinforcementCommand : ICommand` | `IReinforcementPresenter` without `ICommand` |
 | Generic injected `ReinforcementUi` | `ReinforcementUi : BaseUi` with explicit setup methods |
 | UI created from gameplay controller/service | `ReinforcementUiController` creates, configures, initializes, and disposes it |
-| `IUiService.CreateUi` returned nothing | It returns the created `BaseUi` |
+| Enum-based UI creation and screen casts | `CreateUi<ReinforcementUi>()` returns the concrete view |
 
 - Reinforcement dependency flow:
 
@@ -297,11 +295,12 @@ PlayerCoreInstaller
   -> ReinforcementModel(data)
   -> ReinforcementService(model, data, gameplay dependencies)
   -> ReinforcementUiController(uiService, service, model, data)
-       -> CreateUi(UiType.Reinforcement)
+       -> CreateUi<ReinforcementUi>()
        -> SetModel(model)
-       -> SetPresenter(controller)
+       -> AssignPresenter(controller)
        -> SetData(data)
        -> Initialize()
+       -> Show()
 ```
 
 - Failure: generic UI base resolves feature dependencies during construction in the wrong container.
@@ -321,7 +320,7 @@ PlayerCoreInstaller
 - [ ] `<Feature>Ui` inherits non-generic `BaseUi`.
 - [ ] All required view dependencies are passed through methods before `Initialize()`.
 - [ ] Every subscription added in `Initialize()` is removed in `Dispose()`.
-- [ ] The UI prefab implements `I<Feature>Ui`.
+- [ ] The UI prefab carries concrete `<Feature>Ui`; its key is `typeof(TUi).Name` and its placement is registered.
 - [ ] The feature installer resolves data, model, service, and UI controller.
 - [ ] A focused test can create/inject the UI prefab without resolving feature dependencies from the prefab container.
 - [ ] Scripts compile and Unity console contains no new related errors.
@@ -355,7 +354,7 @@ PlayerCoreInstaller
 Feature/UI:
 Observed exception or bug:
 Reproduction steps:
-UI prefab and UiType:
+UI prefab, concrete type and key:
 UI creation path/container:
 Owning installer and scope:
 Current model asset path/GUID:

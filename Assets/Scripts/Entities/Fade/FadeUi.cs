@@ -7,11 +7,13 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Entities.Fade
 {
     /// <summary>Full-screen overlay that hides the scene while it loads or changes.</summary>
-    public sealed class FadeUi : BaseUi, IFadeUi
+    public sealed class FadeUi : BaseUi
     {
         [SerializeField] private Image fadeImage;
 
         private Tween _fadeTween;
+        private AwaitableCompletionSource _fadeCompletion;
+        private CancellationTokenRegistration _fadeCancellation;
 
         public void Cover()
         {
@@ -22,15 +24,11 @@ namespace EmpireAtWar.Entities.Fade
 
         public Awaitable FadeInAsync(float duration, CancellationToken cancellationToken)
         {
-            ShowOnTop();
-            SetAlpha(0f);
             return FadeAsync(1f, duration, false, cancellationToken);
         }
 
         public Awaitable FadeOutAsync(float duration, CancellationToken cancellationToken)
         {
-            ShowOnTop();
-            SetAlpha(1f);
             return FadeAsync(0f, duration, true, cancellationToken);
         }
 
@@ -39,23 +37,46 @@ namespace EmpireAtWar.Entities.Fade
         {
             KillTween();
             AwaitableCompletionSource completion = new AwaitableCompletionSource();
-            CancellationTokenRegistration registration = cancellationToken.Register(() =>
+            if (cancellationToken.IsCancellationRequested)
             {
-                KillTween();
                 completion.TrySetCanceled();
-            });
+                return completion.Awaitable;
+            }
+
+            ShowOnTop();
+            SetAlpha(1f - alpha);
+            _fadeCompletion = completion;
             // Unscaled, so the fade plays at the same speed whatever the battle time scale is.
-            _fadeTween = fadeImage.DOFade(alpha, duration).SetUpdate(true).OnComplete(() =>
+            Tween tween = fadeImage.DOFade(alpha, duration).SetUpdate(true).OnComplete(() =>
             {
+                if (_fadeCompletion != completion) return;
                 _fadeTween = null;
-                registration.Dispose();
+                _fadeCompletion = null;
+                _fadeCancellation.Dispose();
+                _fadeCancellation = default;
                 if (hideOnComplete)
                 {
                     Hide();
                 }
 
                 completion.TrySetResult();
+            }).OnKill(() =>
+            {
+                if (_fadeCompletion == completion)
+                {
+                    _fadeTween = null;
+                    _fadeCompletion = null;
+                    _fadeCancellation.Dispose();
+                    _fadeCancellation = default;
+                }
+                completion.TrySetCanceled();
             });
+            _fadeTween = tween;
+            _fadeCancellation = cancellationToken.Register(() =>
+            {
+                if (_fadeCompletion == completion) KillTween();
+            });
+            if (cancellationToken.IsCancellationRequested) _fadeCancellation.Dispose();
             return completion.Awaitable;
         }
 
@@ -75,16 +96,19 @@ namespace EmpireAtWar.Entities.Fade
 
         private void KillTween()
         {
-            if (_fadeTween != null)
-            {
-                _fadeTween.Kill();
-                _fadeTween = null;
-            }
+            Tween tween = _fadeTween;
+            AwaitableCompletionSource completion = _fadeCompletion;
+            _fadeTween = null;
+            _fadeCompletion = null;
+            _fadeCancellation.Dispose();
+            _fadeCancellation = default;
+            if (tween != null) tween.Kill();
+            // DOTween can defer OnKill until its next update; lifecycle completion is immediate.
+            if (completion != null) completion.TrySetCanceled();
         }
 
-        private void OnDestroy()
-        {
-            KillTween();
-        }
+        public void Dispose() => KillTween();
+
+        private void OnDestroy() => Dispose();
     }
 }

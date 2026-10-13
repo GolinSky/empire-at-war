@@ -5,11 +5,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace EmpireAtWar.Views.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class FactionUnitUi : MonoBehaviour
     {
-        private IFactionView _factionView;
+        private FactionUi _factionView;
 
         [SerializeField] private TooltipTrigger tooltipTrigger;
         [SerializeField] private TextMeshProUGUI unitPriceText;
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Views.Factions
             queuedHighlight.SetActive(queued);
         }
 
-        public void SetData(FactionData factionData, IFactionView factionView, UnitRequest unitRequest)
+        public void SetData(FactionData factionData, FactionUi factionView, UnitRequest unitRequest)
         {
             FactionData = factionData;
             unitIconImage.sprite = factionData.Icon;

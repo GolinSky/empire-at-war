@@ -6,10 +6,9 @@ using EmpireAtWar.Components.Ui.Tooltip;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
 {
-    public class MainMenuUi : BaseUi, IMainMenuUi, ITooltipHoverView
+    public class MainMenuUi : BaseUi
     {
-        private IMainMenuModel _model;
-        private IMainRouteNavigation _navigation;
+        private IMainMenuPresenter _presenter;
 
         [SerializeField] private Button startDemoButton;
         [SerializeField] private Button optionsButton;
@@ -20,16 +19,25 @@ namespace EmpireAtWar.Entities.MainMenu.Main
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
+        public void AssignPresenter(IMainMenuPresenter presenter)
+        {
+            if (_presenter != null)
+            {
+                throw new InvalidOperationException("MainMenuUi presenter is already assigned.");
+            }
+            _presenter = presenter;
+        }
+
         public void Initialize()
         {
-            if (_navigation == null)
+            if (_isInitialized)
             {
-                throw new InvalidOperationException("MainMenuUi dependencies must be set before initialization.");
+                return;
             }
 
-            startDemoButton.onClick.AddListener(_navigation.OpenSkirmish);
-            optionsButton.onClick.AddListener(_navigation.OpenSettings);
-            quitApplicationButton.onClick.AddListener(_navigation.ExitApplication);
+            startDemoButton.onClick.AddListener(_presenter.OpenSkirmish);
+            optionsButton.onClick.AddListener(_presenter.OpenSettings);
+            quitApplicationButton.onClick.AddListener(_presenter.ExitApplication);
             _isInitialized = true;
         }
 
@@ -40,20 +48,10 @@ namespace EmpireAtWar.Entities.MainMenu.Main
                 return;
             }
 
-            startDemoButton.onClick.RemoveListener(_navigation.OpenSkirmish);
-            optionsButton.onClick.RemoveListener(_navigation.OpenSettings);
-            quitApplicationButton.onClick.RemoveListener(_navigation.ExitApplication);
+            startDemoButton.onClick.RemoveListener(_presenter.OpenSkirmish);
+            optionsButton.onClick.RemoveListener(_presenter.OpenSettings);
+            quitApplicationButton.onClick.RemoveListener(_presenter.ExitApplication);
             _isInitialized = false;
-        }
-
-        public void SetModel(IMainMenuModel model)
-        {
-            _model = model;
-        }
-
-        public void SetNavigation(IMainRouteNavigation navigation)
-        {
-            _navigation = navigation;
         }
 
         private void OnDestroy()

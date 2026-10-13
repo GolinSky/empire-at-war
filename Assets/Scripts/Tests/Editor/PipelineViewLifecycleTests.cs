@@ -1,5 +1,5 @@
+using EmpireAtWar.Entities.Faction.Ui;
 using System.Reflection;
-using EmpireAtWar.Views.Factions;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +11,9 @@ namespace EmpireAtWar.Tests.Editor
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
 
-        [Test]
-        public void Destroy_RemovesSkipListener()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Teardown_RemovesSkipListener(bool disposeExplicitly)
         {
             GameObject gameObject = new GameObject(nameof(PipelineView));
             gameObject.SetActive(false);
@@ -31,7 +32,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(cancelCallCount, Is.EqualTo(1));
 
-                InvokeLifecycle(view, "OnDestroy");
+                if (disposeExplicitly) view.Dispose();
+                else InvokeLifecycle(view, "OnDestroy");
                 skipButton.onClick.Invoke();
 
                 Assert.That(cancelCallCount, Is.EqualTo(1));

@@ -4,9 +4,9 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Fps
 {
-    public sealed class FpsUiController : UiController, IFpsPresenter, IInitializable, ITickable, ILateDisposable
+    public sealed class FpsUiController : UiController, IInitializable, ITickable, ILateDisposable
     {
-        private IFpsUi _ui;
+        private FpsUi _ui;
 
         private readonly FpsModel _model;
 
@@ -18,14 +18,15 @@ namespace EmpireAtWar.Entities.Fps
 
         public void Initialize()
         {
-            _ui = (IFpsUi)UiService.CreateUi(UiType.Fps);
+            _ui = CreateUi<FpsUi>();
             _ui.SetModel(_model);
             _ui.Initialize();
+            _ui.Show();
         }
 
         public void LateDispose()
         {
-            _ui.Dispose();
+            if (!ReferenceEquals(_ui, null)) _ui.Dispose();
         }
 
         public void Tick()

@@ -1,47 +1,17 @@
+using System;
 using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
-namespace EmpireAtWar.Views.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
-    public interface IFactionView
-    {
-        void BuyUnit(UnitRequest unitRequest);
-    }
-
-    public interface IFactionUi
-    {
-        void Initialize();
-
-        void Dispose();
-
-        void SetModel(IPlayerFactionModelObserver model);
-
-        void SetResearch(IFactionResearchModelObserver research);
-
-        void SetPresenter(IFactionPresenter presenter);
-
-        void SetData(FactionRoster roster);
-
-        void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
-
-        void SetParent(Transform parent);
-
-        void Show();
-
-        void Hide();
-
-        void RefreshAvailability(float credits, bool battleEnded);
-    }
-
-    public class FactionUi : BaseUi, IFactionUi, IFactionView, ITooltipHoverView
+    public class FactionUi : BaseUi
     {
         private IPlayerFactionModelObserver _model;
         private IFactionResearchModelObserver _research;
@@ -68,6 +38,7 @@ namespace EmpireAtWar.Views.Factions
 
         public void SetContentLayout(UiContentLayout layout)
         {
+            _unitParent = transform;
             _contentLayout = layout;
             layout.AttachContent((RectTransform)transform, layoutGrid, layoutFitter);
         }
@@ -151,7 +122,7 @@ namespace EmpireAtWar.Views.Factions
             _model.OnSelectionTypeChanged -= HandleSelectionChanged;
             _model.OnLevelUpgraded -= UpdateUnits;
             _research.OnResearchCompleted -= UpdateResearchUnit;
-            _contentLayout.DetachContent();
+            if (_contentLayout != null) _contentLayout.DetachContent();
             _isInitialized = false;
         }
 
@@ -165,8 +136,10 @@ namespace EmpireAtWar.Views.Factions
             _research = research;
         }
 
-        public void SetPresenter(IFactionPresenter presenter)
+        public void AssignPresenter(IFactionPresenter presenter)
         {
+            if (_presenter != null)
+                throw new InvalidOperationException("FactionUi presenter can only be assigned once.");
             _presenter = presenter;
         }
 
@@ -178,17 +151,6 @@ namespace EmpireAtWar.Views.Factions
         public void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory)
         {
             _unitRequestFactory = unitRequestFactory;
-        }
-
-        public override void SetParent(Transform parent)
-        {
-            base.SetParent(parent);
-            _unitParent = transform;
-
-            for (int i = 0; i < _factionUnitsUi.Count; i++)
-            {
-                _factionUnitsUi[i].transform.SetParent(transform, false);
-            }
         }
 
         public void BuyUnit(UnitRequest unitRequest)

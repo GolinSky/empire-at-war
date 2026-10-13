@@ -1,0 +1,86 @@
+using System;
+using EmpireAtWar.Entities.MainMenu.Settings;
+using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Ui.Base;
+using UnityEngine;
+using Zenject;
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
+
+namespace EmpireAtWar.Entities.MainMenu.Main
+{
+    public class MainMenuUiController : UiController, IMainMenuPresenter, ILateDisposable
+    {
+        private readonly ISkirmishRoute _skirmishRoute;
+        private readonly ISettingsRoute _settingsRoute;
+        private MainMenuUi _ui;
+
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
+
+        public MainMenuUiController(
+            IUiService uiService,
+            IUiCancelRouter cancelRouter,
+            ISkirmishRoute skirmishRoute,
+            ISettingsRoute settingsRoute,
+            ITooltipService tooltipService) : base(uiService, cancelRouter)
+        {
+            _skirmishRoute = skirmishRoute;
+            _settingsRoute = settingsRoute;
+            _tooltips = new TooltipRequests(tooltipService);
+        }
+
+        public void LateDispose()
+        {
+            if (_tooltipHover != null) _tooltipHover.Dispose();
+            if (_ui != null) _ui.Dispose();
+            _ui = null;
+            _tooltipHover = null;
+        }
+
+        public void Open()
+        {
+            if (_ui == null)
+            {
+                _ui = CreateUi<MainMenuUi>();
+                _ui.AssignPresenter(this);
+                _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover,
+                    HandleTooltipHover, _tooltips);
+            }
+            _ui.Show();
+        }
+
+        public void OpenSkirmish()
+        {
+            _tooltips.HideAll();
+            _skirmishRoute.Open();
+        }
+
+        public void OpenSettings()
+        {
+            _tooltips.HideAll();
+            _settingsRoute.Open();
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _ui != null, () => new TooltipContent(title: (string)key,
+                description: (string)key switch
+                {
+                    "Skirmish" => "Set up a battle with factions, teams and AI opponents.",
+                    "Settings" => "Edit display, camera and key-binding settings.",
+                    "Quit" => "Exit the application.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
+
+        public void ExitApplication()
+        {
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #else
+            Application.Quit();
+            #endif
+        }
+    }
+}

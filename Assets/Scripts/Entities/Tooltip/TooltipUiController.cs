@@ -4,14 +4,17 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Tooltip
 {
-    public sealed class TooltipUiController : IInitializable, ILateDisposable
+    public sealed class TooltipUiController : UiController, IInitializable, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly ITooltipModelObserver _model;
-        private ITooltipUi _ui;
+        private readonly TooltipIconData _icons;
+        private readonly TooltipSettings _settings;
+        private TooltipUi _ui;
 
-        public TooltipUiController(IUiService uiService, ITooltipModelObserver model)
-        { _uiService = uiService; _model = model; }
+        public TooltipUiController(IUiService uiService, IUiCancelRouter cancelRouter,
+            ITooltipModelObserver model, TooltipIconData icons, TooltipSettings settings)
+            : base(uiService, cancelRouter)
+        { _model = model; _icons = icons; _settings = settings; }
 
         public void Initialize()
         {
@@ -32,7 +35,11 @@ namespace EmpireAtWar.Entities.Tooltip
 
         private void Show()
         {
-            if (_ui == null) _ui = (ITooltipUi)_uiService.CreateUi(UiType.Tooltip);
+            if (_ui == null)
+            {
+                _ui = CreateUi<TooltipUi>();
+                _ui.SetData(_icons, _settings);
+            }
             Render();
             Place();
             _ui.Show();
@@ -45,7 +52,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private void Hide()
         {
             // The scene may destroy the Unity view before Zenject disposes the service.
-            if (_ui is BaseUi view && view != null) _ui.Hide();
+            if (_ui != null) _ui.Hide();
         }
     }
 }

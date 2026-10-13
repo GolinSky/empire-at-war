@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Fps
 {
-    public sealed class FpsUi : BaseUi, IFpsUi
+    public sealed class FpsUi : BaseUi
     {
         [SerializeField] private TextMeshProUGUI fpsText;
         private FpsModel _model;

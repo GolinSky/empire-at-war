@@ -96,7 +96,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public UiServiceStub(HeroUi ui) => _ui = ui;
 
-            public BaseUi CreateUi(UiType uiType) => _ui;
+            public TUi CreateUi<TUi>() where TUi : BaseUi => (TUi)(BaseUi)_ui;
 
             public void SetContentLayout(bool isFaction, bool isGroup) { }
             public void SetContentVisible(bool isVisible) { }

@@ -1,9 +1,9 @@
+using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.StationFacing;
-using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Reinforcement

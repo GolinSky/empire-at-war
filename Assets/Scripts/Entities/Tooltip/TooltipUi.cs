@@ -4,11 +4,10 @@ using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Entities.Tooltip
 {
-    public sealed class TooltipUi : BaseUi, ITooltipUi
+    public sealed class TooltipUi : BaseUi
     {
         [SerializeField] private RectTransform panel;
         [SerializeField] private TooltipHeaderView header;
@@ -30,8 +29,7 @@ namespace EmpireAtWar.Entities.Tooltip
 
         private TooltipAnchor _anchor;
 
-        [Inject]
-        public void Construct(TooltipIconData icons, TooltipSettings settings)
+        public void SetData(TooltipIconData icons, TooltipSettings settings)
         { _icons = icons; _settings = settings; }
 
         public void Render(TooltipContent content)

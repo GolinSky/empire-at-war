@@ -14,11 +14,11 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Services.Fade;
-using EmpireAtWar.Controllers.Menu;
-using EmpireAtWar.Controllers.MiniMap;
+using EmpireAtWar.Entities.Menu;
+using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
-using EmpireAtWar.Presenters.Game;
-using EmpireAtWar.Controllers.ShipUi;
+using EmpireAtWar.Entities.CoreGameUi;
+using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.CinematicCamera.Model;
@@ -76,10 +76,10 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        Container.BindScriptableObject<TooltipSettings>(AssetService);
+        TooltipSettings tooltipSettings = AssetService.Load<TooltipSettings>(nameof(TooltipSettings));
+        Container.BindInterfacesAndSelfTo<TooltipSettings>().FromInstance(tooltipSettings).AsSingle();
         Container.BindScriptableObject<TooltipIconData>(AssetService);
-        Container.Bind<TooltipTiming>().FromMethod(context =>
-            context.Container.Resolve<TooltipSettings>().Timing).AsSingle();
+        Container.Bind<TooltipTiming>().FromInstance(tooltipSettings.Timing).AsSingle();
         Container.Bind<ITooltipClock>()
             .To<TooltipClock>().AsSingle();
         Container.BindInterfacesAndSelfTo<TooltipModel>().AsSingle();
@@ -102,17 +102,13 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<BattleVictoryModel>().AsSingle();
         Container.BindInterfacesExt<BattleVictoryService>();
 
-        Container
-            .BindInterfacesAndSelfTo<UiService>()
-            .FromComponentInNewPrefab(AssetService.LoadPrefab(nameof(UiService)))
-            .AsSingle()
-            .NonLazy();
-        Container
-            .BindFactory<UiType, Transform, BaseUi, UiFactory>()
-            .FromSubContainerResolve()
-            .ByNewGameObjectInstaller<UiInstaller>();
+        UiService uiService = Object.Instantiate(AssetService.LoadComponent<UiService>(nameof(UiService)));
+        Container.BindInterfacesAndSelfTo<UiService>().FromInstance(uiService).AsSingle();
+        Container.QueueForInject(uiService);
+        Container.Bind<IUiPlacement>().FromInstance(uiService.Placement).AsSingle();
         Container.BindInterfacesExt<UiCancelRouter>();
         Container.BindInterfacesTo<FadeService>().AsSingle();
+        Container.BindInterfacesAndSelfTo<EmpireAtWar.Entities.Fade.FadeUiController>().AsSingle();
         Container.Bind<FpsModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<FpsUiController>();
 
@@ -129,8 +125,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<SettingsModel>().AsSingle();
         Container.Bind<SettingsDraftEditor>().AsSingle();
         Container.Bind<KeyBindingEditor>().AsSingle();
-        Container.BindInterfacesTo<SettingsRouteController>().AsSingle();
-        Container.BindInterfacesNonLazyExt<PauseMenuRouteController>();
+        Container.BindInterfacesTo<SettingsRouteUiController>().AsSingle();
+        Container.BindInterfacesNonLazyExt<PauseMenuRouteUiController>();
         
         Container.BindScriptableObject<ShipUiData>(AssetService);
         Container.BindScriptableObject<ShipAbilityCatalog>(AssetService);
@@ -157,7 +153,7 @@ public class SkirmishMainInstaller : MonoInstaller
             });
         // Holds the battle's markers, so each battle gets its own copy.
         ModelDependencyBuilder.ConstructBuilder(Container).BindFromNewScriptable<MiniMapData>(AssetService);
-        Container.BindInterfacesNonLazyExt<MiniMapController>();
+        Container.BindInterfacesNonLazyExt<MiniMapUiController>();
         Container.BindInterfacesAndSelfTo<ReinforcementZoneMiniMapPresenter>()
             .AsSingle()
             .NonLazy();

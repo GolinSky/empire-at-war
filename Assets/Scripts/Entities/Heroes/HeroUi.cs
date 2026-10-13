@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Heroes
 {
-    public sealed class HeroUi : BaseUi, IHeroUi
+    public sealed class HeroUi : BaseUi
     {
         [SerializeField] private RectTransform friendlyHeroes;
         [SerializeField] private RectTransform enemyHeroes;
@@ -15,9 +15,12 @@ namespace EmpireAtWar.Entities.Heroes
         private IHeroPresenter _presenter;
         private bool _isDisposed;
 
-        public event Action Disposed;
-
-        public void SetPresenter(IHeroPresenter presenter) => _presenter = presenter;
+        public void AssignPresenter(IHeroPresenter presenter)
+        {
+            if (_presenter != null)
+                throw new InvalidOperationException("HeroUi presenter can only be assigned once.");
+            _presenter = presenter;
+        }
 
         public void Initialize()
         {
@@ -58,7 +61,6 @@ namespace EmpireAtWar.Entities.Heroes
             foreach (HeroIconUi icon in _icons.Values)
                 icon.Dispose();
             _icons.Clear();
-            Disposed?.Invoke();
         }
 
         private void OnDestroy() => Dispose();

@@ -13,6 +13,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Views.MiniMap;
+using EmpireAtWar.Entities.MiniMap;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;

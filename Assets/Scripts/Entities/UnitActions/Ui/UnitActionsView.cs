@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.UnitActions.Ui
 {
-    public sealed class UnitActionsView : MonoBehaviour, IUnitActionsView, ITooltipHoverView
+    public sealed class UnitActionsView : MonoBehaviour, IUnitActionsView
     {
         [SerializeField] private List<UnitActionButton> buttons;
         [SerializeField] private TooltipHoverView tooltipHover;

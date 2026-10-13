@@ -1,4 +1,3 @@
-﻿using EmpireAtWar.Controllers.MiniMap;
 
 namespace EmpireAtWar
 {

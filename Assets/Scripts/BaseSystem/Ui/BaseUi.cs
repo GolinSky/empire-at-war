@@ -1,7 +1,5 @@
 using System;
-using EmpireAtWar.Mvc;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Ui.Base
 {
@@ -41,10 +39,4 @@ namespace EmpireAtWar.Ui.Base
         }
     }
 
-    public abstract class BaseUi<TModel> : BaseUi
-        where TModel : IModelObserver
-    {
-        [Inject]
-        public TModel Model { get; }
-    }
 }

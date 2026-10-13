@@ -35,10 +35,10 @@ namespace EmpireAtWar.Ui.Base
 
         public void DetachContent()
         {
-            scroll.content = _originalContent;
+            if (scroll != null) scroll.content = _originalContent;
             grid = _originalGrid;
             fitter = _originalFitter;
-            _originalContent.gameObject.SetActive(true);
+            if (_originalContent != null) _originalContent.gameObject.SetActive(true);
             _hasLayout = false;
         }
 

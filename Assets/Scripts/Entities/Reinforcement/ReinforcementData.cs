@@ -1,10 +1,10 @@
+using EmpireAtWar.Entities.Reinforcement;
 using System.Linq;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 

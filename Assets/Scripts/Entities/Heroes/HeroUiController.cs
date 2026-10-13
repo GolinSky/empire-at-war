@@ -13,10 +13,9 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Heroes
 {
-    public sealed class HeroUiController : IHeroPresenter, IInitializable, ITickable,
+    public sealed class HeroUiController : UiController, IHeroPresenter, IInitializable, ITickable,
         IDisposable, IObserver<BattleState>
     {
-        private readonly IUiService _uiService;
         private readonly IEntityLocator _entities;
         private readonly FactionCatalog _factions;
         private readonly ILocalPlayer _localPlayer;
@@ -25,15 +24,14 @@ namespace EmpireAtWar.Entities.Heroes
         private readonly INotifier<BattleState> _battleState;
         private readonly List<IEntity> _heroes = new List<IEntity>();
 
-        private IHeroUi _ui;
+        private HeroUi _ui;
         private bool _isBattleActive;
         private bool _isDisposed;
 
         public HeroUiController(IUiService uiService, IEntityLocator entities, FactionCatalog factions,
             ILocalPlayer localPlayer, IVisionService vision, ICameraService camera,
-            INotifier<BattleState> battleState)
+            INotifier<BattleState> battleState) : base(uiService)
         {
-            _uiService = uiService;
             _entities = entities;
             _factions = factions;
             _localPlayer = localPlayer;
@@ -44,9 +42,8 @@ namespace EmpireAtWar.Entities.Heroes
 
         public void Initialize()
         {
-            _ui = (IHeroUi)_uiService.CreateUi(UiType.Hero);
-            _ui.Disposed += Dispose;
-            _ui.SetPresenter(this);
+            _ui = CreateUi<HeroUi>();
+            _ui.AssignPresenter(this);
             _ui.Initialize();
             _entities.EntityAdded += AddHero;
             _entities.EntityRemoved += RemoveHero;
@@ -63,6 +60,7 @@ namespace EmpireAtWar.Entities.Heroes
 
         public void Tick()
         {
+            if (_isDisposed || _ui == null) return;
             for (int i = _heroes.Count - 1; i >= 0; i--)
             {
                 IEntity hero = _heroes[i];
@@ -75,7 +73,7 @@ namespace EmpireAtWar.Entities.Heroes
 
         public void FocusHero(long entityId)
         {
-            if (!_isBattleActive || !_entities.TryGetEntity(entityId, out IEntity hero) ||
+            if (_isDisposed || !_isBattleActive || !_entities.TryGetEntity(entityId, out IEntity hero) ||
                 !_heroes.Contains(hero) || hero.HealthModel.IsDestroyed || !CanFocus(hero))
                 return;
 
@@ -84,6 +82,7 @@ namespace EmpireAtWar.Entities.Heroes
 
         private void AddHero(IEntity entity)
         {
+            if (_isDisposed || _ui == null) return;
             if (!entity.TryGetFacade(out IUnitTypeFacade unit) || entity.HealthModel.IsDestroyed ||
                 (!_localPlayer.IsFriendly(entity.Owner) && !_localPlayer.IsHostile(entity.Owner)))
                 return;
@@ -105,7 +104,7 @@ namespace EmpireAtWar.Entities.Heroes
             if (!_heroes.Remove(entity))
                 return;
 
-            _ui.RemoveHero(entity.Id);
+            if (_ui != null) _ui.RemoveHero(entity.Id);
             RefreshVisibility();
         }
 
@@ -114,6 +113,7 @@ namespace EmpireAtWar.Entities.Heroes
 
         private void RefreshVisibility()
         {
+            if (_ui == null) return;
             if (_isBattleActive && _heroes.Count > 0)
                 _ui.Show();
             else
@@ -126,12 +126,15 @@ namespace EmpireAtWar.Entities.Heroes
                 return;
 
             _isDisposed = true;
-            _ui.Disposed -= Dispose;
             _entities.EntityAdded -= AddHero;
             _entities.EntityRemoved -= RemoveHero;
             _battleState.RemoveObserver(this);
             _heroes.Clear();
-            _ui.Dispose();
+            if (_ui != null)
+            {
+                _ui.Hide();
+                _ui.Dispose();
+            }
         }
     }
 }

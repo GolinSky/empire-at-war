@@ -1,45 +1,21 @@
 using System.Threading;
 using EmpireAtWar.Entities.Fade;
-using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Fade
 {
     public sealed class FadeService : IFadeService
     {
-        private readonly IUiService _uiService;
+        private readonly FadeUiController _controller;
 
-        private IFadeUi _fadeUi;
+        public FadeService(FadeUiController controller) { _controller = controller; }
 
-        public FadeService(IUiService uiService)
-        {
-            _uiService = uiService;
-        }
-
-        public void Cover()
-        {
-            GetFadeUi().Cover();
-        }
+        public void Cover() => _controller.Cover();
 
         public Awaitable FadeInAsync(float duration, CancellationToken cancellationToken)
-        {
-            return GetFadeUi().FadeInAsync(duration, cancellationToken);
-        }
+            => _controller.FadeInAsync(duration, cancellationToken);
 
         public Awaitable FadeOutAsync(float duration, CancellationToken cancellationToken)
-        {
-            return GetFadeUi().FadeOutAsync(duration, cancellationToken);
-        }
-
-        // Created on first use: the first request can come from another system's Initialize.
-        private IFadeUi GetFadeUi()
-        {
-            if (_fadeUi == null)
-            {
-                _fadeUi = (IFadeUi)_uiService.CreateUi(UiType.Fade);
-            }
-
-            return _fadeUi;
-        }
+            => _controller.FadeOutAsync(duration, cancellationToken);
     }
 }

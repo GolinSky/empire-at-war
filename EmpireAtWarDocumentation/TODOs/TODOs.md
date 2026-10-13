@@ -249,10 +249,13 @@
   - **Class caliber rules (2026-10-11)**: 186 mounts upgraded on 14 capital/heavy-capital ships + Recusant; every family minimum Medium. Corvettes have no turbolasers; frigates have no heavy turbolasers. Shared smaller-ship weapons preserved; new MediumPointDefense (80). All 38 ships audited; zero rule violations. Weapon taxonomy 25/26 pass; existing StrikeFighterProtonTorpedo Shared/multiplier failure remains. No Play Mode.
   - **Remaining**: user playtest; balance tuning (stations outranged, ISD II +200 %, missile reach vs radar); resolve existing StrikeFighterProtonTorpedo variant metadata.
 
-- [ ] **Fix UI Service (Decouple Gameplay Services from UI)**
-  - **Task**: Move UI creation, UI prefab instantiation, and `IUiService` dependencies out of gameplay services into UI prefabs / `<Feature>UiController` presenters.
-  - **Details**: See [[TODOs/Refactoring/UI_Service_Refactoring|UI Service Refactoring]]
-  - **Reference**: [[UI_REFACTORING_PLAYBOOK|UI_REFACTORING_PLAYBOOK.md]]
+- [ ] **Rework UI before VContainer migration**
+  - **Plan**: [[TODOs/Refactoring/UI_Service_Refactoring|UI Rework Before VContainer]]
+  - **Research**: [[TODOs/Refactoring/UI_Service_Refactoring - Research|UI inventory, placement and SoulsLikeTemplate comparison]]
+  - **Order**: do this first under Zenject; migration starts only after its completion gate.
+  - **Scope**: concrete typed views, no screen enum/screen interfaces, `UiPlacement` type → parent map, presenter-only view intents, `*RouteUiController` routes, Fade/Loading via `UiController`; colocated folders + normalized namespaces; preserved UI behavior.
+  - **Status**: 2026-10-13 implemented under Zenject; 33 GUID-preserving moves, 19 saved/verified screen prefabs, compile clean. Selected UI regressions 76/76 across full run + fade rerun; 47 full-suite failures outside scope.
+  - **Remaining**: user in-game route/HUD/lifecycle smoke test, including a second battle. Plan stays active; VContainer migration gate remains closed.
 
 - [ ] **Finish ship movement simplification verification and remaining phases**
   - **Plan**: [[TODOs/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]

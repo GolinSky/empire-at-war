@@ -1,8 +1,9 @@
+using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Services.ShipAbilities;
 
-namespace EmpireAtWar.Presenters.ShipUi
+namespace EmpireAtWar.Entities.ShipUi
 {
     public interface IShipUiPresenter
     {

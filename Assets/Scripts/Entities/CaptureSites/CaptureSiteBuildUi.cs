@@ -1,10 +1,11 @@
+using System;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public sealed class CaptureSiteBuildUi : BaseUi, ICaptureSiteBuildUi
+    public sealed class CaptureSiteBuildUi : BaseUi
     {
         [SerializeField] private RectTransform panel;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -18,7 +19,12 @@ namespace EmpireAtWar.Entities.CaptureSites
         public TooltipHoverView TooltipHover => tooltipHover;
 
         public void SetData(CaptureSiteData data) => _data = data;
-        public void SetPresenter(ICaptureSiteBuildPresenter presenter) => _presenter = presenter;
+        public void AssignPresenter(ICaptureSiteBuildPresenter presenter)
+        {
+            if (_presenter != null)
+                throw new InvalidOperationException("CaptureSiteBuildUi presenter can only be assigned once.");
+            _presenter = presenter;
+        }
 
         public override void Show()
         {
