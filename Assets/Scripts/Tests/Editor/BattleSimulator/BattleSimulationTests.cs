@@ -147,6 +147,23 @@ namespace EmpireAtWar.Tests.Editor
             return simulation.Result;
         }
 
+        [Test]
+        public void Beam_SplitsDamageUsingRuntimeTickGranularity()
+        {
+            var a = Unit("A", 100, 20);
+            a.Mounts[0].IsBeam = true; a.Mounts[0].BeamDelay = 0.3f; a.Mounts[0].DamageDuration = 0.25f;
+            var result = Run(Setup(), a, Unit("B", 19, 0));
+            Assert.That(result.Duration, Is.EqualTo(0.5).Within(0.0001));
+            Assert.That(result.Units[0].Shots, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ZeroBearingMounts_DealNoDamage()
+        {
+            var setup = Setup(); setup.TimeLimit = 1; setup.SideA[0].ArcFactor = 0;
+            Assert.That(Run(setup, Unit("A", 100, 20), Unit("B", 100, 0)).Units[0].Shots, Is.Zero);
+        }
+
         public static BattleSetup Setup() => new BattleSetup { AlphaStrike = true, Distance = 0,
             SideA = new List<BattleFleetEntry> { new BattleFleetEntry { UnitId = "A" } },
             SideB = new List<BattleFleetEntry> { new BattleFleetEntry { UnitId = "B" } } };

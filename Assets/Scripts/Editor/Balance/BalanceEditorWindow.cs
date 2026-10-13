@@ -23,12 +23,20 @@ namespace EmpireAtWar.Editor.Balance
         private string _message = "";
         private VisualElement _details;
         private bool _refreshPending;
+        private static BalanceEditorWindow _current;
+
+        public static BalanceDraft CaptureCurrentDraft()
+        {
+            if (_current == null) throw new InvalidOperationException("Open the Balance Editor before simulating its current draft.");
+            return JsonUtility.FromJson<BalanceDraft>(JsonUtility.ToJson(_current.state.Draft));
+        }
 
         [MenuItem(MENU_PATH)]
         public static void Open() => EditorHubWindow.OpenTool(MENU_PATH);
 
         private void OnEnable()
         {
+            _current = this;
             if (state.Draft.Changes.Count == 0 && File.Exists(RECOVERY_PATH))
                 state = JsonUtility.FromJson<BalanceWindowState>(File.ReadAllText(RECOVERY_PATH));
             _controller = new BalanceEditorController(state, Refresh);
@@ -38,6 +46,7 @@ namespace EmpireAtWar.Editor.Balance
 
         private void OnDisable()
         {
+            if (_current == this) _current = null;
             RememberScroll();
             Persist();
             EditorApplication.playModeStateChanged -= PlayModeChanged;

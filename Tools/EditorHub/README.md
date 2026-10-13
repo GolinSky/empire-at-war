@@ -12,7 +12,7 @@ The inventory below covers project-owned tools in `Assets/Scripts/Editor`, plus 
 - **Maintenance** means an occasional builder, migration or repair for current content. These remain in their functional category, because infrequent use does not make them obsolete.
 - **Legacy / Outdated** means a verified stale path or superseded workflow. All implementations remain available, with the reason shown in the hub.
 - Balance Editor is existing, separate uncommitted work. Only its local menu/open routing was adapted; the feature is excluded from the hub commit. The hub discovers it when present and compiles without it.
-- Current local catalog: **35 entries**, including Balance Editor; **34** without it. Five entries are Legacy. The hub itself is a separate menu command.
+- Current local catalog: **36 entries**, including Balance Editor and Battle Simulator. Five entries are Legacy. The hub itself is a separate menu command.
 
 ## Full project menu inventory
 
@@ -21,6 +21,7 @@ Every path below is relative to `Tools/Empire At War/`.
 | Category / group | Tool or command | Status | Implementation / evidence |
 |---|---|---|---|
 | Game Design | Balance Editor | Current, separate work | `Balance/BalanceEditorWindow.cs`; data inventory, draft, compare, combat, review/apply views. Embedded UI Toolkit editor. |
+| Game Design | Battle Simulator | Current | `BattleSimulator/BattleSimulatorWindow.cs`; live/draft combat snapshots, seeded fleet battles, batch statistics, timeline and export. See `Tools/BattleSimulator/README.md`. |
 | Units / AI | Bake Weapon Loadouts | Current | `AI/WeaponLoadoutBaker.cs`; current ship/squadron data and prefabs; `WeaponLoadoutBakeTests`. |
 | Units / Ships | Bake Hull Heights | Current | `Ship/ShipHullHeightBaker.cs`; current ship data and views. |
 | Units / Ships | Bake Shield Hulls | Current | `Ship/ShieldHullBaker.cs`; current unit prefabs and shield meshes. |
@@ -106,6 +107,6 @@ unity command run_script --file Tools/EditorHub/VerifyEditorHub.cs --entry Verif
 ```
 
 - Unity 6000.4.7f1 compilation passed with no compilation errors.
-- Navigation smoke check passed for all 35 local entries, seven categories, five Legacy actions, search, existing validator states, both embedded windows and Balance UI preservation across navigation.
+- Navigation smoke check passed for all 36 local entries, seven categories, five Legacy actions, search, existing validator states, three embedded windows and Balance UI preservation across navigation. Battle Simulator's embedded Run-button check completed 10 seeds and rendered its results/chart.
 - No builder, repair, capture, noise-generation or app-launch command was executed during verification.
 - The smoke check leaves the hub open. It does not run the full EditMode/PlayMode suite.
