@@ -18,7 +18,8 @@ updated: 2026-10-13
 - Final EditMode: 1,182/1,229 passed; same 47 baseline failed test names, zero new failures; 11 migration fixtures pass.
 - StandaloneWindows64: BuildResult Succeeded; 3,291,193,252 B; 708.005 s; 4 warnings and one reported error in unchanged planet shader (`MotionVectors`, `DOTS_INSTANCING_ON`, `ObjectSpaceNormal`).
 - Final imported asset audit: MissingScripts / LegacyComponents / ZenjectDependencies all empty. Nine GUID-preserving file moves and 1,561 retained asset GUIDs verified.
-- Remaining acceptance: user post-cutover smoke test + matched startup/spawn/teardown/frame timing capture. No runtime performance claim.
+- User post-cutover smoke test passed 2026-10-13: direct Battle entry, two menu/battle cycles, multiple AI, production, reinforcement, capture builds, abilities, pooled squadrons, settings and audio.
+- Remaining acceptance: matched startup/spawn/teardown/frame timing capture. No runtime performance claim.
 
 ### Baseline inventory
 

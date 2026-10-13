@@ -4,7 +4,7 @@
 
 - [[TODOs/TODOs|Project Backlog & Active Tasks]]
 - [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Battle Attack & Projectile Optimization Plan]]
-- [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration — acceptance pending]]
+- [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration — performance verification pending]]
 
 ## Done
 

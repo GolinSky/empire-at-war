@@ -65,7 +65,7 @@ updated: 2026-10-13
 - [x] **Hidden searches.** `FromComponentInNewPrefab` (MainMenu, SkirmishMain, SkirmishService ×2, `ViewDependencyBuilder`) → typed component prefab. `FromComponentOn` re-lookups (`ViewComponentsInstaller`, `ModelDependencyInstaller`) → `FromInstance`. `InstallerExtensions` descendant inject scan → explicit references plus defined activation order.
 - [x] **Aliases and exports.** `FromResolve` aliases → one registration exposed as self/interfaces. `FromResolveGetter` transform → bind held entity transform directly with `ViewTransform`. Remove `PlayerCoreInstaller` upward `IReinforcementService` export after confirming only `ReinforcementUiController` consumes it. Replace consumer-less `IEnemyService.WithId(slot.Id)` NonLazy export with explicit per-AI-slot composition.
 - [x] **Container-injected classes.** `PlanetSpawner` `DiContainer.InstantiatePrefab` → typed factory; inspect `SpaceStationFactory` `DiContainer` legacy code.
-- [ ] Verify per step: compile, existing EditMode tests, user in-game check of affected units; static scan shows the pattern count at zero.
+- [x] Verify cleanup: compile, existing EditMode tests, user in-game check of affected units; static scan shows the pattern count at zero. Post-cutover gameplay accepted 2026-10-13.
 
 ### 3. Prove minimal VContainer infrastructure
 
@@ -135,7 +135,7 @@ updated: 2026-10-13
 ### 9. Completion gate
 
 - [x] Focused composition/entity/pool/UI lifecycle regressions and standalone build. EditMode 1,182/1,229; same 47 baseline failures; 11 migration tests pass. Play Mode/in-game checks remain user-owned.
-- [ ] Smoke test (user, in-game): direct scene entry and MainMenu → Loading → Battle → MainMenu twice; local + multiple AI players, production, reinforcement, capture-site builds, ship abilities, pooled squadrons, settings, audio.
+- [x] Smoke test (user, in-game): direct Battle entry and MainMenu → Loading → Battle → MainMenu twice; local + multiple AI players, production, reinforcement, capture-site builds, ship abilities, pooled squadrons, settings, audio. User reported passed on 2026-10-13.
 - [x] Static audit: zero Resolve, hierarchy discovery, lazy/optional injection, container instantiation, hidden container dependencies.
 - [x] Every modified prefab/scene persisted and imported; no manual save.
 - [ ] Compare spawn/startup/teardown and frame timings with baseline; measure spawn bursts (reinforcements, mass squadron launch) for per-entity scope build cost. No performance claims from library change alone.
@@ -155,8 +155,9 @@ updated: 2026-10-13
 - StandaloneWindows64 build succeeded: 3,291,193,252 B, 708.005 s, 4 warnings. Release-only WeaponComponent debug-field assignment corrected; Editor behavior unchanged. Evidence: `Temp/vcontainer-build-report.json`, `Temp/VContainerMigrationBuild/EmpireAtWar.exe`.
 - Build diagnostic: unchanged `Assets/Art/Shaders/PlanetAutodeskInteractiveNoShadows.shadergraph`, MotionVectors + DOTS_INSTANCING_ON, invalid `ObjectSpaceNormal`. BuildResult is Succeeded with this reported shader error; shader fixes are outside migration scope.
 - Final Unity asset audit: zero missing scripts, legacy components or Zenject dependencies; no import/serialization errors. Generated font/content-state/settings changes from the build were restored.
-- Post-cutover gameplay acceptance and matched performance capture remain pending. Baseline frame/spawn timings were not captured for this migration; no performance improvement is claimed.
-- Recoverable pre-cutover checkpoint: `8f1fa454a` plus pre-existing working-tree patch `Temp/pre-vcontainer-worktree.patch`; migration commit will exclude unrelated changes.
+- Post-cutover gameplay accepted by the user on 2026-10-13: direct Battle entry and two menu/loading/battle/menu cycles, multiple AI, production, reinforcement, capture builds, abilities, pooled squadrons, settings and audio passed.
+- Matched performance capture remains pending. Baseline frame/spawn timings were not captured for this migration; no performance improvement is claimed.
+- Recoverable pre-cutover checkpoint: `8f1fa454a` plus pre-existing working-tree patch `Temp/pre-vcontainer-worktree.patch`. Migration committed as `0b9e10463`; unrelated changes excluded.
 - VContainer `1.19.0` pinned; five scope script moves and context prefab moves preserved GUIDs. Seven legacy Addressable entity wrappers remain inert scopes; Addressables structure unchanged.
 - Asset audit: runtime scenes/prefabs have zero missing scripts, legacy context components or Zenject dependencies. `Assets/Plugins/Zenject` removed through Unity.
 - Real graph regression passed: root/battle + local/AI players, 14 entities through all seven factories, planet scope, keyed transform/base health, mutable state isolation, local-only voice, pool scope/identity reuse, owner teardown before battle buffers.

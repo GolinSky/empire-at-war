@@ -245,7 +245,8 @@
   - **Order**: Phase 2 Zenject-side cleanup first (remove lazy/optional injection, IInstantiator, Resolve, hierarchy/hidden searches, aliases); VContainer phases need [[Done/Refactoring/UI_Service_Refactoring|UI rework]] complete and verified.
   - **Scope**: explicit project/scene/player/entity scopes, typed factories, lifecycle/pooling parity; no DI Resolve, hierarchy discovery, lazy or optional injection.
   - **Status**: 2026-10-13 VContainer cutover implemented; Zenject removed. Full EditMode 1,182/1,229, same 47 baseline failures, zero new failures; 11 migration regressions pass. Standalone Windows build succeeded (3.29 GB); unchanged planet shader reports a DOTS MotionVectors error.
-  - **Remaining**: post-cutover user smoke test (two battle/menu cycles, multiple AI, factories/abilities/pooling/settings/audio) and matched startup/spawn/teardown/frame measurements.
+  - **Gameplay acceptance**: 2026-10-13 user confirmed direct Battle entry and two menu/loading/battle/menu cycles; multiple AI, production, reinforcement, capture builds, abilities, pooled squadrons, settings and audio passed.
+  - **Remaining**: matched startup/spawn/teardown/frame measurements.
 
 - [ ] **Weapon taxonomy and balance system**
   - **Plan**: [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]]
