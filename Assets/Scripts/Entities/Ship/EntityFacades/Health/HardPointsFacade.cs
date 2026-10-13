@@ -9,7 +9,6 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades.Health
         private readonly IHardPointsSource _source;
 
         public IReadOnlyList<IHardPointStatus> HardPoints => _source.HardPoints;
-        public float MaxShields => _source.MaxShields;
 
         public HardPointsFacade(IHardPointsSource source)
         {

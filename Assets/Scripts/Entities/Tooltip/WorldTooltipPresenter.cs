@@ -128,8 +128,7 @@ namespace EmpireAtWar.Entities.Tooltip
             IHardPointsFacade facade = entity.GetFacade<IHardPointsFacade>();
             IHardPointStatus hardPoint = facade.HardPoints[id];
             HardPointOverlayEntry entry = _hardPointData.Get(hardPoint.HardPointType);
-            var stats = new List<TooltipStat> { new TooltipStat(label: "Component health", current: hardPoint.Health, max: hardPoint.MaxHealth) };
-            if (facade.MaxShields > 0f) stats.Add(new TooltipStat(label: "Shared ship shields", current: entity.HealthModel.Shields, max: facade.MaxShields));
+            var stats = new List<TooltipStat>();
             string status = hardPoint.IsDestroyed ? "Destroyed" : "Operational";
             if (!hardPoint.TryGetWeaponType(out WeaponType weaponType))
                 return new TooltipContent(title: entry.DisplayName, description: entry.Description, stats: stats, status: status);
