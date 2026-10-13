@@ -82,7 +82,8 @@ graph TD
 ### 4. Scripts (`Assets/Scripts`)
 
 - **Components/**: MonoBehaviours driving view rendering and user input (MVP View).
-- **Entities/**: Pure C# domain models, states, and business rules (MVP Model).
+- **Entities/**: Domain models, states, and business rules; feature UI triplets colocate under `Entities/<Feature>/` or its UI feature folder.
+  - `<Feature>Ui`, `I<Feature>Presenter`, `<Feature>UiController` share the feature namespace. Models and shared components remain separate; passive screens omit the presenter.
 - **Services/**: Application and game services, presenters, and Zenject installers (MVP Presenter).
 - **Editor/**: Editor tools, builders, windows, and custom inspectors.
 - **Tests/**: EditMode and PlayMode automated test suites.

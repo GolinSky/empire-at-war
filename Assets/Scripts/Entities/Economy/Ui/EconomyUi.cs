@@ -6,24 +6,9 @@ using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 
-namespace EmpireAtWar.Views.Economy
+namespace EmpireAtWar.Entities.Economy.Ui
 {
-    public interface IEconomyUi
-    {
-        void Initialize();
-
-        void Dispose();
-
-        void SetModel(IEconomyModelObserver model);
-
-        void SetParent(Transform parent);
-
-        void Show();
-
-        void Hide();
-    }
-
-    public class EconomyUi : BaseUi, IEconomyUi, ITooltipHoverView
+    public class EconomyUi : BaseUi
     {
         private IEconomyModelObserver _model;
 

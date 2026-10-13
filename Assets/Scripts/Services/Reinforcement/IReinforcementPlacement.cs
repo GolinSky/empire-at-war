@@ -1,4 +1,4 @@
-using EmpireAtWar.Views.Reinforcement;
+using EmpireAtWar.Entities.Reinforcement;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Reinforcement

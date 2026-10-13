@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
@@ -8,10 +9,9 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Views.Factions;
 using Zenject;
 
-namespace EmpireAtWar.Presenters.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class FactionUiController : UiController, IFactionPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute, ITickable, IObserver<BattleState>
@@ -21,9 +21,10 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly IFactionResearchModelObserver _research;
         private readonly IUnitRequestFactory _unitRequestFactory;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private IFactionUi _ui;
+        private FactionUi _ui;
+        private readonly IUiPlacement _placement;
         private readonly EmpireAtWar.Models.Economy.IEconomyModelObserver _economy;
-        private readonly EmpireAtWar.Views.Game.ICoreGameHudStatus _hud;
+        private readonly EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus _hud;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly FactionRoster _roster;
@@ -34,8 +35,11 @@ namespace EmpireAtWar.Presenters.Factions
         private bool _isTooltipActive;
         private bool _isBattleEnded;
 
+        private bool _isDisposed;
+
         public FactionUiController(
             IUiService uiService,
+            IUiPlacement placement,
             IUiCancelRouter cancelRouter,
             IFactionService factionService,
             IPlayerFactionModelObserver model,
@@ -44,11 +48,12 @@ namespace EmpireAtWar.Presenters.Factions
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltipService,
             EmpireAtWar.Models.Economy.IEconomyModelObserver economy,
-            EmpireAtWar.Views.Game.ICoreGameHudStatus hud,
+            EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus hud,
             INotifier<BattleState> battleState,
             FactionRoster roster,
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
+            _placement = placement;
             _factionService = factionService;
             _model = model;
             _research = research;
@@ -72,14 +77,17 @@ namespace EmpireAtWar.Presenters.Factions
 
         public void LateDispose()
         {
+            if (_isDisposed) return;
+            _isDisposed = true;
             _battleState.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.Content,
                 this);
 
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
-                _tooltipHover.Dispose();
+                _ui.Hide();
                 _ui.Dispose();
             }
         }
@@ -108,22 +116,21 @@ namespace EmpireAtWar.Presenters.Factions
 
         public void Activate(bool isActive)
         {
+            if (_isDisposed) return;
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
-                BaseUi ui = UiService.CreateUi(UiType.Faction);
-                _ui = ui as IFactionUi
-                    ?? throw new InvalidOperationException(
-                        "The faction prefab does not implement IFactionUi.");
+                _ui = CreateUi<FactionUi>();
+                _ui.SetContentLayout(_placement.FactionLayout);
                 _ui.SetModel(_model);
                 _ui.SetResearch(_research);
-                _ui.SetPresenter(this);
+                _ui.AssignPresenter(this);
                 _ui.SetData(_roster);
                 _ui.SetUnitRequestFactory(_unitRequestFactory);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
-                    ((ITooltipHoverView)_ui).TooltipHover,
+                    _ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
             }
 

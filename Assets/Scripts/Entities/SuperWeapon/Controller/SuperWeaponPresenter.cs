@@ -99,7 +99,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _view = _viewProvider.SuperWeaponsView;
             _view.Initialize();
             _tooltipHover = new TooltipHoverSubscription(
-                ((ITooltipHoverView)_view).TooltipHover,
+                _view.TooltipHover,
                 HandleTooltipHover, _tooltips);
             _view.Pressed += HandlePressed;
             _view.ToggleRequested += TogglePopup;

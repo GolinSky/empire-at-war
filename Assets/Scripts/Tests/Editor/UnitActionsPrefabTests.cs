@@ -1,8 +1,8 @@
+using EmpireAtWar.Entities.CoreGameUi;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Ui;
-using EmpireAtWar.Views.Game;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;

@@ -26,8 +26,12 @@
 
 ## Rules
 
-- Setup order: `CreateUi` → `SetModel` / `SetPresenter` / `SetData` → `Initialize`.
-- No feature property injection during UI prefab construction.
+- Setup order: `CreateUi<TUi>` → `AssignPresenter` / explicit model/data setup → `Initialize` → `Show`.
+- Concrete `<Feature>Ui`, intent-only `I<Feature>Presenter`, and owning `<Feature>UiController` colocate in the feature folder; normalize their namespaces.
+- `UiPlacement` owns the type-to-parent map; `UiService` uses `typeof(TUi).Name` with the existing asset mapping.
+- No screen interfaces/casts, screen subcontainers or feature property injection during UI prefab construction.
+- Controllers own model subscriptions and explicit view lifecycle. View teardown removes control listeners; account for scene destruction before controller disposal.
+- Passive screens have no presenter; route controllers use `IUiRoute` and `<Feature>RouteUiController`.
 - Subscribe in `Initialize`; unsubscribe symmetrically in `Dispose`; call `Dispose` from `OnDestroy`.
 - Disposal must be safe more than once; do not initialize in `Awake`/`Start`.
 - Keep dictionary wrappers private; expose focused configuration lookups.

@@ -5,17 +5,16 @@ using System;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Views.Economy;
 using Zenject;
 
-namespace EmpireAtWar.Presenters.Economy
+namespace EmpireAtWar.Entities.Economy.Ui
 {
     public class EconomyUiController : UiController, IInitializable, ILateDisposable,
         ISkirmishUiRoute
     {
         private readonly IEconomyModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private IEconomyUi _ui;
+        private EconomyUi _ui;
 
         private readonly TooltipRequests _tooltips;
         private readonly EmpireAtWar.Services.Economy.EconomyService _economy;
@@ -24,6 +23,8 @@ namespace EmpireAtWar.Presenters.Economy
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
+
+        private bool _isDisposed;
 
         public EconomyUiController(
             IUiService uiService,
@@ -52,33 +53,33 @@ namespace EmpireAtWar.Presenters.Economy
 
         public void LateDispose()
         {
+            if (_isDisposed) return;
+            _isDisposed = true;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.Economy,
                 this);
 
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
-                _tooltipHover.Dispose();
+                _ui.Hide();
                 _ui.Dispose();
             }
         }
 
         public void Activate(bool isActive)
         {
+            if (_isDisposed) return;
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
-                BaseUi ui = UiService.CreateUi(
-                    UiType.Economy);
-                _ui = ui as IEconomyUi
-                    ?? throw new InvalidOperationException(
-                        "The economy prefab does not implement IEconomyUi.");
+                _ui = CreateUi<EconomyUi>();
 
                 _ui.SetModel(_model);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
-                    ((ITooltipHoverView)_ui).TooltipHover,
+                    _ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
             }
 

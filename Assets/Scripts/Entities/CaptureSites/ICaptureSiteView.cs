@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 {
     public interface ICaptureSiteView
     {
+        TooltipHoverView TooltipHover { get; }
 
         Vector3 Center { get; }
         float Radius { get; }

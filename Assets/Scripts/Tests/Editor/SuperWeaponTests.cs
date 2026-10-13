@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.CoreGameUi;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -13,7 +14,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Vision;
-using EmpireAtWar.Views.Game;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;

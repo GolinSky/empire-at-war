@@ -1,9 +1,11 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Ui
 {
     public interface ISuperWeaponsView
     {
+        TooltipHoverView TooltipHover { get; }
         event Action<SuperWeaponType> Pressed;
 
         event Action ToggleRequested;

@@ -47,7 +47,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             _data = data;
             _tooltips = new TooltipRequests(tooltipService);
             _tooltipHover = new TooltipHoverSubscription(
-                ((ITooltipHoverView)view).TooltipHover, HandleTooltipHover, _tooltips);
+                view.TooltipHover, HandleTooltipHover, _tooltips);
             Render();
             SetVisibility(false, false);
         }

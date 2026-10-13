@@ -27,11 +27,11 @@
 
 ## 2. Wire the view lifecycle
 
-1. Define the presenter intent interface and the view interface needed by the controller.
+1. Define `I<Feature>Presenter` only when the screen has user intents. Controllers use concrete screen views; world-space and shared widget interfaces remain where useful.
 2. Create the view with `BaseUi` and a serialized `CanvasGroup` assigned in the Inspector.
    - Keep the view limited to rendering and input forwarding.
-3. In the controller, call `IUiService.CreateUi(UiType.<Feature>)` or its parent overload and cast the returned `BaseUi` to the expected view interface.
-   - Verify the prefab component type in an EditMode test rather than adding a production guard.
+3. In `<Feature>UiController`, call `CreateUi<FeatureUi>()`; `IUiService` loads `typeof(TUi).Name` and instantiates the component under `IUiPlacement.GetParent<TUi>()`.
+   - `UiPlacement` owns the single type-to-parent map; controllers never choose slots.
 4. Supply the model, presenter, and data through explicit methods before `Initialize()`.
    - Test the setup order and required prefab references.
    - Subscribe to controls and model events in `Initialize()`; remove the same subscriptions in `Dispose()`.
@@ -40,12 +40,14 @@
    - Do not make a prefab resolve feature-specific dependencies from a different container.
 
 ```text
-CreateUi -> SetModel -> SetPresenter -> SetData (if needed) -> Initialize
+CreateUi<TUi> -> AssignPresenter -> explicit model/data setup -> Initialize -> Show
 ```
 
-- UI identifier: `UiType`.
-- `UiInstaller` loads `<UiType>Ui` through `IAssetService`.
-- Asset key must match `<UiType>Ui`.
+- Screen identity and prefab key: concrete view type and `typeof(TUi).Name`.
+- No screen subcontainers, screen-interface casts or `[Inject]` on screen views.
+- Colocate `<Feature>Ui`, `I<Feature>Presenter` and `<Feature>UiController` under `Assets/Scripts/Entities/<Feature>/` (nested feature folders allowed); normalize their namespaces. Keep models, shared components, Services, Editor and Tests separate.
+- Route controllers use `<Feature>RouteUiController` and `IUiRoute`; passive screens need no presenter interface.
+- Scene-placed `LoadingUi` is owned by its local controller and does not depend on scene-bound menu/battle UI services.
 
 ## 3. Create the prefab
 
@@ -61,10 +63,10 @@ CreateUi -> SetModel -> SetPresenter -> SetData (if needed) -> Initialize
 ## 4. Register the Addressable
 
 - Add the UI prefab to the existing `Ui` Addressables group without changing `Assets/AddressableAssetsData` folder structure.
-- Ensure the requested key `<UiType>Ui` resolves.
+- Ensure the requested key `<Feature>Ui` resolves.
   - Use that direct Addressable address or the existing `Assets/Settings/AssetMappingData.asset` mapping from the key to the prefab's `AssetReference`.
 - This project has one `assetMappings` dictionary in `AssetMappingData`; it does not have the source guide's `uiMappings` dictionary.
-- Verify the prefab resolves through `IAssetService` and the view component matches the controller's expected interface.
+- Verify the prefab resolves through `IAssetService` and the view component matches the requested concrete view type.
 
 ## 5. Verify the completed UI
 

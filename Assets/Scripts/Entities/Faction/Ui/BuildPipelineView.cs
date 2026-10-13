@@ -6,7 +6,7 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
 
-namespace EmpireAtWar.Views.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
     [Serializable]
     public class BuildPipelineView
@@ -33,6 +33,18 @@ namespace EmpireAtWar.Views.Factions
                 pipelineView.Init(cancelBuilding);
                 pipelineView.Activate(false);
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (PipelineView view in pipelineViews)
+            {
+                if (view == null) continue;
+                _tooltipHover.Unregister(view.TooltipTrigger);
+                view.Dispose();
+            }
+            _workingPipelines.Clear();
+            _cancelBuilding = null;
         }
 
         public void Render(IReadOnlyList<ProductionQueueSnapshot> snapshots)

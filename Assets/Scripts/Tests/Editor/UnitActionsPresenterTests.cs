@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
@@ -42,7 +43,9 @@ namespace EmpireAtWar.Tests.Editor
         [SetUp]
         public void SetUp()
         {
-            _view = new FakeView();
+            GameObject hoverObject = new GameObject("Unit actions hover");
+            _objects.Add(hoverObject);
+            _view = new FakeView { TooltipHover = hoverObject.AddComponent<TooltipHoverView>() };
             _selection = new FakeSelection();
             _input = new FakeCancelInput();
             _cancelRouter = new UiCancelRouter(_input);
@@ -160,6 +163,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeView : IUnitActionsView
         {
+            public TooltipHoverView TooltipHover { get; set; }
             public event Action<UnitActionId> ActionPressed;
 
             public Dictionary<UnitActionId, bool> Available { get; } =
@@ -227,7 +231,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeUiService : IUiService
         {
 
-            public BaseUi CreateUi(UiType uiType) => throw new NotSupportedException();
+            public TUi CreateUi<TUi>() where TUi : BaseUi => throw new NotSupportedException();
 
             public void SetContentLayout(bool isFaction, bool isGroup) { }
             public void SetContentVisible(bool isVisible) { }

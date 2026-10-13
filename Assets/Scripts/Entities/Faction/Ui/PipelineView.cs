@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace EmpireAtWar.Views.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class PipelineView : MonoBehaviour
     {
@@ -28,10 +28,13 @@ namespace EmpireAtWar.Views.Factions
             skipButton.onClick.AddListener(SkipSequence);
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             skipButton.onClick.RemoveListener(SkipSequence);
+            _cancelBuilding = null;
         }
+
+        private void OnDestroy() => Dispose();
 
         private void SkipSequence()
         {
@@ -64,6 +67,8 @@ namespace EmpireAtWar.Views.Factions
 
         public void Init(Action<string> cancelBuilding)
         {
+            skipButton.onClick.RemoveListener(SkipSequence);
+            skipButton.onClick.AddListener(SkipSequence);
             _cancelBuilding = cancelBuilding ??
                 throw new ArgumentNullException(nameof(cancelBuilding));
         }

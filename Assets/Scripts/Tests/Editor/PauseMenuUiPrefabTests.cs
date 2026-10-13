@@ -1,4 +1,4 @@
-using EmpireAtWar.Views.Menu;
+using EmpireAtWar.Entities.Menu;
 using MPUIKIT;
 using NUnit.Framework;
 using UnityEditor;
@@ -51,6 +51,28 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(button, Is.Not.Null);
             Assert.That(button.sizeDelta, Is.EqualTo(new Vector2(400f, 62f)));
             Assert.That(button.GetComponent<MPImage>(), Is.Not.Null);
+        }
+
+        [Test]
+        public void SetMenuVisible_HidesCanvasAndReleasesRaycasts()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            try
+            {
+                PauseMenuUi menuUi = root.GetComponent<PauseMenuUi>();
+                CanvasGroup canvasGroup = (CanvasGroup)new SerializedObject(menuUi)
+                    .FindProperty("canvasGroup").objectReferenceValue;
+                menuUi.SetMenuVisible(true);
+                Assert.That(menuUi.IsVisible, Is.True);
+                Assert.That(canvasGroup.blocksRaycasts, Is.True);
+                menuUi.SetMenuVisible(false);
+                Assert.That(menuUi.IsVisible, Is.False);
+                Assert.That(canvasGroup.blocksRaycasts, Is.False);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
         }
     }
 }

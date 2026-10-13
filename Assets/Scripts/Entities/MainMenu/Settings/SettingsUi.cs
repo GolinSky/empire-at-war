@@ -7,13 +7,13 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.MainMenu.Settings
 {
-    public class SettingsUi : BaseUi, ISettingsUi, ITooltipHoverView
+    public class SettingsUi : BaseUi
     {
         private const string UNSAVED_CHANGES_MESSAGE = "Unsaved changes";
         private const string SETTINGS_SCOPE_MESSAGE = "Changes apply across all categories.";
 
         private ISettingsModelObserver _model;
-        private ISettingsRouteNavigation _navigation;
+        private ISettingsPresenter _presenter;
 
         [SerializeField] private Button closeButton;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -51,15 +51,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 return;
             }
 
-            closeButton.onClick.AddListener(_navigation.Close);
-            applyButton.onClick.AddListener(_navigation.ApplySettings);
-            discardButton.onClick.AddListener(_navigation.DiscardChanges);
-            resetDefaultsButton.onClick.AddListener(_navigation.ResetToDefaults);
+            closeButton.onClick.AddListener(_presenter.Close);
+            applyButton.onClick.AddListener(_presenter.ApplySettings);
+            discardButton.onClick.AddListener(_presenter.DiscardChanges);
+            resetDefaultsButton.onClick.AddListener(_presenter.ResetToDefaults);
 
             InitializeRows();
             promptView.Initialize();
-            promptView.ActionChosen += _navigation.ChoosePromptAction;
-            _model.Changed += Render;
+            promptView.ActionChosen += _presenter.ChoosePromptAction;
             _isInitialized = true;
             Render();
         }
@@ -71,15 +70,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 return;
             }
 
-            closeButton.onClick.RemoveListener(_navigation.Close);
-            applyButton.onClick.RemoveListener(_navigation.ApplySettings);
-            discardButton.onClick.RemoveListener(_navigation.DiscardChanges);
-            resetDefaultsButton.onClick.RemoveListener(_navigation.ResetToDefaults);
+            closeButton.onClick.RemoveListener(_presenter.Close);
+            applyButton.onClick.RemoveListener(_presenter.ApplySettings);
+            discardButton.onClick.RemoveListener(_presenter.DiscardChanges);
+            resetDefaultsButton.onClick.RemoveListener(_presenter.ResetToDefaults);
 
             DisposeRows();
-            promptView.ActionChosen -= _navigation.ChoosePromptAction;
+            promptView.ActionChosen -= _presenter.ChoosePromptAction;
             promptView.Dispose();
-            _model.Changed -= Render;
             _isInitialized = false;
         }
 
@@ -88,9 +86,13 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _model = model;
         }
 
-        public void SetNavigation(ISettingsRouteNavigation navigation)
+        public void AssignPresenter(ISettingsPresenter presenter)
         {
-            _navigation = navigation;
+            if (_presenter != null)
+            {
+                throw new System.InvalidOperationException("Presenter is already assigned.");
+            }
+            _presenter = presenter;
         }
 
         public void Render()
@@ -126,68 +128,68 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private void InitializeRows()
         {
             windowModeRow.Initialize();
-            windowModeRow.ValueChanged += _navigation.SelectWindowMode;
+            windowModeRow.ValueChanged += _presenter.SelectWindowMode;
             resolutionRow.Initialize();
-            resolutionRow.ValueChanged += _navigation.SelectResolution;
+            resolutionRow.ValueChanged += _presenter.SelectResolution;
             qualityRow.Initialize();
-            qualityRow.ValueChanged += _navigation.SelectQualityPreset;
+            qualityRow.ValueChanged += _presenter.SelectQualityPreset;
             frameRateLimitRow.Initialize();
-            frameRateLimitRow.ValueChanged += _navigation.SelectFrameRateLimit;
+            frameRateLimitRow.ValueChanged += _presenter.SelectFrameRateLimit;
             vSyncRow.Initialize();
-            vSyncRow.ValueChanged += _navigation.SetVSync;
+            vSyncRow.ValueChanged += _presenter.SetVSync;
 
             masterVolumeRow.Initialize();
-            masterVolumeRow.ValueChanged += _navigation.SetMasterVolume;
+            masterVolumeRow.ValueChanged += _presenter.SetMasterVolume;
             musicVolumeRow.Initialize();
-            musicVolumeRow.ValueChanged += _navigation.SetMusicVolume;
+            musicVolumeRow.ValueChanged += _presenter.SetMusicVolume;
             voiceVolumeRow.Initialize();
-            voiceVolumeRow.ValueChanged += _navigation.SetVoiceVolume;
+            voiceVolumeRow.ValueChanged += _presenter.SetVoiceVolume;
             sfxVolumeRow.Initialize();
-            sfxVolumeRow.ValueChanged += _navigation.SetSfxVolume;
+            sfxVolumeRow.ValueChanged += _presenter.SetSfxVolume;
             muteWhenUnfocusedRow.Initialize();
-            muteWhenUnfocusedRow.ValueChanged += _navigation.SetMuteWhenUnfocused;
+            muteWhenUnfocusedRow.ValueChanged += _presenter.SetMuteWhenUnfocused;
 
             panSpeedRow.Initialize();
-            panSpeedRow.ValueChanged += _navigation.SetPanSpeed;
+            panSpeedRow.ValueChanged += _presenter.SetPanSpeed;
             zoomSpeedRow.Initialize();
-            zoomSpeedRow.ValueChanged += _navigation.SetZoomSpeed;
+            zoomSpeedRow.ValueChanged += _presenter.SetZoomSpeed;
             edgeScrollingRow.Initialize();
-            edgeScrollingRow.ValueChanged += _navigation.SetEdgeScrolling;
+            edgeScrollingRow.ValueChanged += _presenter.SetEdgeScrolling;
             invertZoomRow.Initialize();
-            invertZoomRow.ValueChanged += _navigation.SetInvertZoom;
+            invertZoomRow.ValueChanged += _presenter.SetInvertZoom;
         }
 
         private void DisposeRows()
         {
-            windowModeRow.ValueChanged -= _navigation.SelectWindowMode;
+            windowModeRow.ValueChanged -= _presenter.SelectWindowMode;
             windowModeRow.Dispose();
-            resolutionRow.ValueChanged -= _navigation.SelectResolution;
+            resolutionRow.ValueChanged -= _presenter.SelectResolution;
             resolutionRow.Dispose();
-            qualityRow.ValueChanged -= _navigation.SelectQualityPreset;
+            qualityRow.ValueChanged -= _presenter.SelectQualityPreset;
             qualityRow.Dispose();
-            frameRateLimitRow.ValueChanged -= _navigation.SelectFrameRateLimit;
+            frameRateLimitRow.ValueChanged -= _presenter.SelectFrameRateLimit;
             frameRateLimitRow.Dispose();
-            vSyncRow.ValueChanged -= _navigation.SetVSync;
+            vSyncRow.ValueChanged -= _presenter.SetVSync;
             vSyncRow.Dispose();
 
-            masterVolumeRow.ValueChanged -= _navigation.SetMasterVolume;
+            masterVolumeRow.ValueChanged -= _presenter.SetMasterVolume;
             masterVolumeRow.Dispose();
-            musicVolumeRow.ValueChanged -= _navigation.SetMusicVolume;
+            musicVolumeRow.ValueChanged -= _presenter.SetMusicVolume;
             musicVolumeRow.Dispose();
-            voiceVolumeRow.ValueChanged -= _navigation.SetVoiceVolume;
+            voiceVolumeRow.ValueChanged -= _presenter.SetVoiceVolume;
             voiceVolumeRow.Dispose();
-            sfxVolumeRow.ValueChanged -= _navigation.SetSfxVolume;
+            sfxVolumeRow.ValueChanged -= _presenter.SetSfxVolume;
             sfxVolumeRow.Dispose();
-            muteWhenUnfocusedRow.ValueChanged -= _navigation.SetMuteWhenUnfocused;
+            muteWhenUnfocusedRow.ValueChanged -= _presenter.SetMuteWhenUnfocused;
             muteWhenUnfocusedRow.Dispose();
 
-            panSpeedRow.ValueChanged -= _navigation.SetPanSpeed;
+            panSpeedRow.ValueChanged -= _presenter.SetPanSpeed;
             panSpeedRow.Dispose();
-            zoomSpeedRow.ValueChanged -= _navigation.SetZoomSpeed;
+            zoomSpeedRow.ValueChanged -= _presenter.SetZoomSpeed;
             zoomSpeedRow.Dispose();
-            edgeScrollingRow.ValueChanged -= _navigation.SetEdgeScrolling;
+            edgeScrollingRow.ValueChanged -= _presenter.SetEdgeScrolling;
             edgeScrollingRow.Dispose();
-            invertZoomRow.ValueChanged -= _navigation.SetInvertZoom;
+            invertZoomRow.ValueChanged -= _presenter.SetInvertZoom;
             invertZoomRow.Dispose();
 
             foreach (KeyBindingRow row in _keyBindingRows)
@@ -203,7 +205,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             {
                 KeyBindingRow row = Instantiate(keyBindingRowTemplate, keyBindingRowTemplate.transform.parent);
                 row.gameObject.SetActive(true);
-                row.Initialize(_keyBindingRows.Count, _navigation.StartRebind, _navigation.ResetBinding);
+                row.Initialize(_keyBindingRows.Count, _presenter.StartRebind, _presenter.ResetBinding);
                 row.RegisterTooltips(tooltipHover);
                 _keyBindingRows.Add(row);
             }

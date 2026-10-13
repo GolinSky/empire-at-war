@@ -1,3 +1,8 @@
+using EmpireAtWar.Entities.Reinforcement;
+using EmpireAtWar.Entities.Faction.Ui;
+using EmpireAtWar.Entities.Economy.Ui;
+using EmpireAtWar.Entities.EndGameUi;
+using EmpireAtWar.Entities.CoreGameUi;
 using System;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Components.Radar;
@@ -9,12 +14,9 @@ using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
-using EmpireAtWar.Views.Economy;
-using EmpireAtWar.Views.Factions;
-using EmpireAtWar.Views.Game;
-using EmpireAtWar.Views.Menu;
+using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Views.MiniMap;
-using EmpireAtWar.Views.Reinforcement;
+using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEditor;
@@ -36,9 +38,10 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SelectionComponent), "selectionRoot"),
             new SerializedReference(typeof(SelectionComponent), "selectedRenderer"),
             new SerializedReference(typeof(BaseUi), "canvasGroup"),
-            new SerializedReference(typeof(UiService), "defaultCanvas"),
-            new SerializedReference(typeof(UiService), "dynamicCanvas"),
-            new SerializedReference(typeof(UiService), "popupCanvas"),
+            new SerializedReference(typeof(UiService), "placement"),
+            new SerializedReference(typeof(UiPlacement), "defaultCanvas"),
+            new SerializedReference(typeof(UiPlacement), "dynamicCanvas"),
+            new SerializedReference(typeof(UiPlacement), "popupCanvas"),
             new SerializedReference(typeof(SkirmishUi), "startingMoneySlider"),
             new SerializedReference(typeof(SkirmishUi), "mapSizeDropdown"),
             new SerializedReference(typeof(MapLayoutView), "zonePrefab"),
@@ -60,11 +63,8 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SettingsUi), "closeButton"),
             new SerializedReference(typeof(SettingsUi), "qualityRow"),
             new SerializedReference(typeof(CoreGameUi), "reinforcementButton"),
-            new SerializedReference(typeof(CoreGameUi), "miniMapRouteParent"),
-            new SerializedReference(typeof(CoreGameUi), "contentRouteParent"),
-            new SerializedReference(typeof(CoreGameUi), "buildPipelineRouteParent"),
+            new SerializedReference(typeof(CoreGameUi), "contextualPopup"),
             new SerializedReference(typeof(CoreGameUi), "panelImage"),
-            new SerializedReference(typeof(CoreGameUi), "endGameUi"),
             new SerializedReference(typeof(EndGameUi), "outcomeText"),
             new SerializedReference(typeof(EndGameUi), "reasonText"),
             new SerializedReference(typeof(EndGameUi), "battlefieldText"),

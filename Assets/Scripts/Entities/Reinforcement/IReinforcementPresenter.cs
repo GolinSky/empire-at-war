@@ -1,6 +1,6 @@
 using EmpireAtWar.Controllers.Factions;
 
-namespace EmpireAtWar.Presenters.Reinforcement
+namespace EmpireAtWar.Entities.Reinforcement
 {
     public interface IReinforcementPresenter
     {

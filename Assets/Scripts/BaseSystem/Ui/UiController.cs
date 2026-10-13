@@ -12,10 +12,24 @@ namespace EmpireAtWar.Ui.Base
 
         public bool IsFocused { get; private set; }
 
+        protected UiController()
+        {
+        }
+
+        protected UiController(IUiService uiService)
+        {
+            UiService = uiService;
+        }
+
         protected UiController(IUiService uiService, IUiCancelRouter cancelRouter)
         {
             UiService = uiService;
             _cancelRouter = cancelRouter;
+        }
+
+        protected TUi CreateUi<TUi>() where TUi : BaseUi
+        {
+            return UiService.CreateUi<TUi>();
         }
 
         public bool TryCancel()

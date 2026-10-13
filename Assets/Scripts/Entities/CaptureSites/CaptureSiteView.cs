@@ -11,7 +11,7 @@ using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView, ITooltipHoverView
+    public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView
     {
         private const float MINIMUM_FRAMEWORK_HEIGHT = 0.05f;
 

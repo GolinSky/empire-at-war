@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 276480683}
   - component: {fileID: 276480687}
   - component: {fileID: 276480688}
+  - component: {fileID: 276480692}
   - component: {fileID: 276480689}
   - component: {fileID: 276480691}
   - component: {fileID: 276480690}
@@ -368,8 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f52b876cde17417e811df6db625f7708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewComponents: []
-  <ModelDependencies>k__BackingField: []
+  canvasGroup: {fileID: 276480692}
 --- !u!114 &276480689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,8 +410,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 276480688}
-  bindViewComponents: 0
-  bindMonoComponent: 0
 --- !u!114 &276480691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430,6 +428,18 @@ MonoBehaviour:
   _installerPrefabs: []
   _autoRun: 1
   _kernel: {fileID: 0}
+--- !u!225 &276480692
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276480681}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &993515743
 GameObject:
   m_ObjectHideFlags: 0

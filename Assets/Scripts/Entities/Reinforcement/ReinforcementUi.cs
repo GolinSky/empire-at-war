@@ -4,39 +4,14 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.Visitor;
-using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace EmpireAtWar.Views.Reinforcement
+namespace EmpireAtWar.Entities.Reinforcement
 {
-    public interface IReinforcementVisitor : IVisitor<ISpawnShipUi>
-    {
-        void OnRelease(ISpawnShipUi spawnShipUi);
-    }
-
-    public interface IReinforcementUi
-    {
-        void Initialize();
-
-        void Dispose();
-
-        void SetModel(IReinforcementModelObserver model);
-
-        void SetPresenter(IReinforcementPresenter presenter);
-
-        void SetData(ReinforcementData data);
-
-        void SetParent(Transform parent);
-
-        void Show();
-
-        void Hide();
-    }
-
-    public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor, ITooltipHoverView
+    public class ReinforcementUi : BaseUi, IReinforcementVisitor
     {
         private IReinforcementModelObserver _model;
         private IReinforcementPresenter _presenter;
@@ -93,8 +68,10 @@ namespace EmpireAtWar.Views.Reinforcement
             _model = model;
         }
 
-        public void SetPresenter(IReinforcementPresenter presenter)
+        public void AssignPresenter(IReinforcementPresenter presenter)
         {
+            if (_presenter != null)
+                throw new InvalidOperationException("ReinforcementUi presenter can only be assigned once.");
             _presenter = presenter;
         }
 

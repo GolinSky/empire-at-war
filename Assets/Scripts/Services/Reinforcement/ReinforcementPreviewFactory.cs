@@ -1,6 +1,6 @@
+using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.StationFacing;
-using EmpireAtWar.Views.Reinforcement;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.Reinforcement

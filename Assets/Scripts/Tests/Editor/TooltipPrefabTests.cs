@@ -12,11 +12,11 @@ namespace EmpireAtWar.Tests.Editor
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab";
 
         [Test]
-        public void PrefabImplementsTooltipContractAndHasCanvasGroup()
+        public void PrefabHasConcreteTooltipViewAndCanvasGroup()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH);
             Assert.That(prefab, Is.Not.Null);
-            Assert.That(prefab.GetComponent<BaseUi>(), Is.InstanceOf<ITooltipUi>());
+            Assert.That(prefab.GetComponent<BaseUi>(), Is.InstanceOf<TooltipUi>());
             Assert.That(prefab.GetComponent<CanvasGroup>(), Is.Not.Null);
         }
 

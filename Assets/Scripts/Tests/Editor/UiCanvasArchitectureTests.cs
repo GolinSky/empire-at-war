@@ -2,13 +2,11 @@ using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Fade;
 using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Presenters.Game;
-using EmpireAtWar.Presenters.Economy;
-using EmpireAtWar.Presenters.Reinforcement;
+using EmpireAtWar.Entities.Economy.Ui;
 using EmpireAtWar.Services.UiRouting;
-using EmpireAtWar.Views.Factions;
-using EmpireAtWar.Views.Game;
-using EmpireAtWar.Views.Reinforcement;
+using EmpireAtWar.Entities.Faction.Ui;
+using EmpireAtWar.Entities.CoreGameUi;
+using EmpireAtWar.Entities.Reinforcement;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -127,6 +125,13 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 UiService uiService = root.GetComponent<UiService>();
+                UiPlacement placement = root.GetComponent<UiPlacement>();
+                Assert.That(uiService.Placement, Is.SameAs(placement));
+                SerializedObject serializedPlacement = new SerializedObject(placement);
+                foreach (string field in new[] { "defaultCanvas", "dynamicCanvas", "popupCanvas", "feedbackCanvas",
+                    "miniMapSlot", "buildPipelineSlot", "economySlot", "factionLayout", "shipLayout",
+                    "contextualSlot", "endGameSlot", "modalSlot", "tooltipSlot", "fadeSlot" })
+                    Assert.That(serializedPlacement.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
 
                 Assert.That(root.GetComponent<Canvas>(), Is.Null);
                 AssertCanvas(root.transform, root.transform.Find("DefaultCanvas"), "DefaultCanvas", 0);
@@ -142,6 +147,44 @@ namespace EmpireAtWar.Tests.Editor
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        [TestCase("CoreGameUi", "defaultCanvas")]
+        [TestCase("MainMenuUi", "defaultCanvas")]
+        [TestCase("SkirmishUi", "defaultCanvas")]
+        [TestCase("ReinforcementUi", "defaultCanvas")]
+        [TestCase("HeroUi", "defaultCanvas")]
+        [TestCase("EconomyUi", "economySlot")]
+        [TestCase("FactionUi", "factionLayout")]
+        [TestCase("ShipUi", "shipLayout")]
+        [TestCase("ShipGroupUi", "shipLayout")]
+        [TestCase("MiniMapUi", "miniMapSlot")]
+        [TestCase("ShipBuildUi", "buildPipelineSlot")]
+        [TestCase("FpsUi", "dynamicCanvas")]
+        [TestCase("UnitOrderFeedbackUi", "feedbackCanvas")]
+        [TestCase("CaptureSiteBuildUi", "contextualSlot")]
+        [TestCase("EndGameUi", "endGameSlot")]
+        [TestCase("PauseMenuUi", "modalSlot")]
+        [TestCase("SettingsUi", "modalSlot")]
+        [TestCase("TooltipUi", "tooltipSlot")]
+        [TestCase("FadeUi", "fadeSlot")]
+        public void UiPlacement_PreservesEveryScreenParent(string screenName, string field)
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(UI_SERVICE_PREFAB_PATH);
+            try
+            {
+                UiPlacement placement = root.GetComponent<UiPlacement>();
+                Object reference = new SerializedObject(placement).FindProperty(field).objectReferenceValue;
+                Transform expected = reference is UiContentLayout layout
+                    ? screenName == "FactionUi" ? layout.Viewport : layout.Content
+                    : ((Component)reference).transform;
+                System.Type screenType = System.Array.Find(typeof(BaseUi).Assembly.GetTypes(),
+                    type => type.Name == screenName && typeof(BaseUi).IsAssignableFrom(type));
+                object actual = typeof(UiPlacement).GetMethod("GetParent").MakeGenericMethod(screenType)
+                    .Invoke(placement, null);
+                Assert.That(actual, Is.SameAs(expected));
+            }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
         }
 
         [Test]
@@ -197,7 +240,6 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(ISkirmishRouteNavigation).IsAssignableFrom(typeof(SkirmishOrchestrator)),
                 Is.False);
             Assert.That(typeof(CoreGameUi).BaseType, Is.EqualTo(typeof(BaseUi)));
-            Assert.That(typeof(ICoreGameUi).IsAssignableFrom(typeof(CoreGameUi)), Is.True);
         }
 
         [Test]
@@ -235,7 +277,6 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 FadeUi ui = root.GetComponent<FadeUi>();
-                Assert.That(ui, Is.InstanceOf<IFadeUi>());
                 SerializedObject serializedUi = new SerializedObject(ui);
                 Image fadeImage = (Image)serializedUi.FindProperty("fadeImage").objectReferenceValue;
                 Assert.That(fadeImage, Is.Not.Null, "FadeUi.fadeImage must be assigned in the prefab.");
@@ -262,7 +303,6 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 CoreGameUi ui = root.GetComponent<CoreGameUi>();
-                Assert.That(ui, Is.InstanceOf<ICoreGameUi>());
                 SerializedObject serializedUi = new SerializedObject(ui);
                 string[] requiredReferences =
                 {
@@ -276,7 +316,7 @@ namespace EmpireAtWar.Tests.Editor
                 }
 
                 CoreGamePresenterStub presenter = new CoreGamePresenterStub();
-                ui.SetPresenter(presenter);
+                ui.AssignPresenter(presenter);
                 ui.Initialize();
                 ui.SetTimeControls(true, GameSpeed.Fast);
                 ui.SetTimeControls(false, GameSpeed.Normal);

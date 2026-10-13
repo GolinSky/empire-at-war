@@ -5,9 +5,9 @@ namespace EmpireAtWar.Entities.MainMenu
 {
     public class MainMenuOrchestrator : IInitializable
     {
-        private readonly MainRouteController _mainRoute;
+        private readonly MainMenuUiController _mainRoute;
 
-        public MainMenuOrchestrator(MainRouteController mainRoute)
+        public MainMenuOrchestrator(MainMenuUiController mainRoute)
         {
             _mainRoute = mainRoute;
         }

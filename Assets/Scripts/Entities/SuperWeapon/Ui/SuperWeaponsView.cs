@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Ui
 {
-    public sealed class SuperWeaponsView : MonoBehaviour, ISuperWeaponsView, ITooltipHoverView
+    public sealed class SuperWeaponsView : MonoBehaviour, ISuperWeaponsView
     {
         [SerializeField] private List<SuperWeaponButton> buttons;
         [SerializeField] private TooltipHoverView tooltipHover;

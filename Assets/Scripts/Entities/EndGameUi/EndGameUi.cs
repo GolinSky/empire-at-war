@@ -1,0 +1,90 @@
+using System;
+using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Ui.Base;
+using TMPro;
+using UnityEngine;
+using EmpireAtWar.Components.Ui.Tooltip;
+
+namespace EmpireAtWar.Entities.EndGameUi
+{
+    public sealed class EndGameUi : BaseUi
+    {
+        [SerializeField] private TMP_Text outcomeText;
+        [SerializeField] private TMP_Text reasonText;
+        [SerializeField] private TMP_Text battlefieldText;
+        [SerializeField] private TMP_Text objectiveText;
+        [SerializeField] private TMP_Text playerFactionText;
+        [SerializeField] private TMP_Text enemyFactionText;
+        [SerializeField] private TMP_Text playerFleetText;
+        [SerializeField] private TMP_Text enemyFleetText;
+        [SerializeField] private TMP_Text playerBaseText;
+        [SerializeField] private TMP_Text enemyBaseText;
+        [SerializeField] private UnityEngine.UI.Button returnToMenuButton;
+        [SerializeField] private TooltipHoverView tooltipHover;
+
+        private IEndGamePresenter _presenter;
+        private bool _isInitialized;
+
+        public void AssignPresenter(IEndGamePresenter presenter)
+        {
+            if (_presenter != null)
+                throw new InvalidOperationException("EndGameUi presenter can only be assigned once.");
+            _presenter = presenter;
+        }
+
+        public TooltipHoverView TooltipHover => tooltipHover;
+
+        public void Initialize()
+        {
+            returnToMenuButton.onClick.AddListener(ReturnToMenu);
+            _isInitialized = true;
+        }
+
+        public void Dispose()
+        {
+            if (!_isInitialized) return;
+            returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
+            _isInitialized = false;
+        }
+
+        private void OnDestroy() => Dispose();
+
+        public void ShowResult(BattleResult result)
+        {
+            outcomeText.text = result.Outcome switch
+            {
+                BattleOutcome.PlayerVictory => "VICTORY",
+                BattleOutcome.EnemyVictory => "DEFEAT",
+                BattleOutcome.Draw => "DRAW",
+                _ => throw new ArgumentOutOfRangeException(nameof(result.Outcome))
+            };
+
+            bool fleetObjective = result.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet;
+            reasonText.text = result.Outcome switch
+            {
+                BattleOutcome.PlayerVictory => fleetObjective
+                    ? "The enemy fleet has been destroyed." : "The enemy base has been destroyed.",
+                BattleOutcome.EnemyVictory => fleetObjective
+                    ? "Your fleet has been destroyed." : "Your base has been destroyed.",
+                _ => fleetObjective ? "Both fleets have been destroyed." : "Both bases have been destroyed."
+            };
+
+            battlefieldText.text = result.Planet.ToString().ToUpperInvariant();
+            objectiveText.text = fleetObjective ? "Destroy enemy fleet" : "Destroy opponent base";
+            playerFactionText.text = result.PlayerFaction.ToString().ToUpperInvariant();
+            enemyFactionText.text = string.Join(" / ", result.EnemyFactions).ToUpperInvariant();
+            playerFleetText.text = result.PlayerShipCount.ToString();
+            enemyFleetText.text = result.EnemyShipCount.ToString();
+            playerBaseText.text = result.IsPlayerBaseAlive ? "Operational" : "Destroyed";
+            enemyBaseText.text = result.IsEnemyBaseAlive ? "Operational" : "Destroyed";
+            transform.SetAsLastSibling();
+            Show();
+            returnToMenuButton.Select();
+        }
+
+        private void ReturnToMenu()
+        {
+            _presenter.ReturnToMenu();
+        }
+    }
+}

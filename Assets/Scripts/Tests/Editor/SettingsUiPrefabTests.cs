@@ -17,11 +17,11 @@ namespace EmpireAtWar.Tests.Editor
             { "masterVolumeRow", "musicVolumeRow", "voiceVolumeRow", "sfxVolumeRow" };
 
         [Test]
-        public void PrefabImplementsSettingsContract()
+        public void PrefabContainsConcreteSettingsUi()
         {
             GameObject prefab = LoadPrefab();
 
-            Assert.That(prefab.GetComponent<BaseUi>(), Is.InstanceOf<ISettingsUi>());
+            Assert.That(prefab.GetComponent<BaseUi>(), Is.InstanceOf<SettingsUi>());
             Assert.That(prefab.GetComponent<CanvasGroup>(), Is.Not.Null);
         }
 

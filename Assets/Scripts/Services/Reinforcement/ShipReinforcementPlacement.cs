@@ -1,8 +1,8 @@
+using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 

@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
@@ -5,31 +6,9 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
-namespace EmpireAtWar.Views.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
-    public interface IShipBuildPresenter
-    {
-        void CancelBuilding(string id);
-    }
-
-    public interface IShipBuildUi
-    {
-        void Initialize();
-
-        void Dispose();
-
-        void SetPresenter(IShipBuildPresenter presenter);
-
-        void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots);
-
-        void SetParent(Transform parent);
-
-        void Show();
-
-        void Hide();
-    }
-
-    public class ShipBuildUi : BaseUi, IShipBuildUi, ITooltipHoverView
+    public class ShipBuildUi : BaseUi
     {
         private IShipBuildPresenter _presenter;
 
@@ -66,11 +45,16 @@ namespace EmpireAtWar.Views.Factions
                 return;
             }
 
+            pipelineView.Dispose();
             _isInitialized = false;
         }
 
-        public void SetPresenter(IShipBuildPresenter presenter)
+        private void OnDestroy() => Dispose();
+
+        public void AssignPresenter(IShipBuildPresenter presenter)
         {
+            if (_presenter != null)
+                throw new InvalidOperationException("ShipBuildUi presenter can only be assigned once.");
             _presenter = presenter ??
                 throw new ArgumentNullException(nameof(presenter));
         }

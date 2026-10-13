@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.ShipUi;
 using System;
 using System.Linq;
 using System.Reflection;

@@ -69,7 +69,8 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void Release()
         {
-            iconImage.DOKill();
+            if (iconImage != null) iconImage.DOKill();
+            if (_marker != null) _marker.Changed -= Refresh;
         }
 
         // Also covers scene teardown, which can destroy the view before its marker is removed.

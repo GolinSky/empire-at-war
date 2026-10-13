@@ -17,8 +17,8 @@ namespace EmpireAtWar
             Container.Bind<SettingsModel>().AsSingle();
             Container.Bind<SettingsDraftEditor>().AsSingle();
             Container.Bind<KeyBindingEditor>().AsSingle();
-            Container.BindInterfacesTo<SkirmishRouteController>().AsSingle();
-            Container.BindInterfacesTo<SettingsRouteController>().AsSingle();
+            Container.BindInterfacesTo<SkirmishRouteUiController>().AsSingle();
+            Container.BindInterfacesTo<SettingsRouteUiController>().AsSingle();
         }
     }
 }

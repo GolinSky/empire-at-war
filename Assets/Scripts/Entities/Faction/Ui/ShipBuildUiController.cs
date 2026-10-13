@@ -7,10 +7,9 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Views.Factions;
 using Zenject;
 
-namespace EmpireAtWar.Presenters.Factions
+namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class ShipBuildUiController : UiController, IShipBuildPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute
@@ -18,12 +17,14 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private IShipBuildUi _ui;
+        private ShipBuildUi _ui;
 
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
+
+        private bool _isDisposed;
 
         public ShipBuildUiController(
             IUiService uiService,
@@ -49,32 +50,33 @@ namespace EmpireAtWar.Presenters.Factions
 
         public void LateDispose()
         {
+            if (_isDisposed) return;
+            _isDisposed = true;
             _model.OnProductionChanged -= RenderPipelines;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.BuildPipeline,
                 this);
 
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
-                _tooltipHover.Dispose();
+                _ui.Hide();
                 _ui.Dispose();
             }
         }
 
         public void Activate(bool isActive)
         {
+            if (_isDisposed) return;
             _isTooltipActive = isActive;
             if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
-                BaseUi ui = UiService.CreateUi(UiType.ShipBuild);
-                _ui = ui as IShipBuildUi
-                    ?? throw new InvalidOperationException(
-                        "The ship build prefab does not implement IShipBuildUi.");
-                _ui.SetPresenter(this);
+                _ui = CreateUi<ShipBuildUi>();
+                _ui.AssignPresenter(this);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
-                    ((ITooltipHoverView)_ui).TooltipHover,
+                    _ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
             }
 
@@ -118,7 +120,7 @@ namespace EmpireAtWar.Presenters.Factions
 
         private void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
-            _ui?.RenderPipelines(snapshots);
+            if (_ui != null) _ui.RenderPipelines(snapshots);
         }
     }
 }
