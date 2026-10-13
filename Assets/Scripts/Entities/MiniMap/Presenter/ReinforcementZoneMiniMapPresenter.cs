@@ -3,10 +3,12 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = 100)]
     public sealed class ReinforcementZoneMiniMapPresenter :
         IInitializable, ILateTickable, ILateDisposable, IObserver<BattleState>
     {

@@ -2734,6 +2734,7 @@ GameObject:
   - component: {fileID: 4689691672548090288}
   - component: {fileID: 8733489121076520136}
   - component: {fileID: 2816669260077758331}
+  - component: {fileID: 7969653127798654612}
   m_Layer: 0
   m_Name: YWingBomberSquadronView
   m_TagString: Untagged
@@ -2777,6 +2778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f8ddea8dd0bf24fb96e762aaf5f160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
+  bindings: {fileID: 7969653127798654612}
 --- !u!114 &7211045017478570124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2950,6 +2952,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+--- !u!114 &7969653127798654612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5546973215816189780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 8918638238745710970}
+  <Health>k__BackingField: []
+  <Radar>k__BackingField:
+  - {fileID: 2416335027529507354}
+  <Weapons>k__BackingField:
+  - {fileID: 5525555455294179115}
+  <FogVisibility>k__BackingField:
+  - {fileID: 8733489121076520136}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 2816669260077758331}
+  <SquadronHealth>k__BackingField: {fileID: 5544275792349990278}
+  <SquadronFlight>k__BackingField: {fileID: 7211045017478570124}
+  <SquadronIcon>k__BackingField: {fileID: 4689691672548090288}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 1217749357461356946}
+  - {fileID: 6858141915100385190}
+  - {fileID: 334601188927284971}
+  - {fileID: 8060827598493920834}
+  - {fileID: 887530610187216557}
+  - {fileID: 8652919681242420516}
+  - {fileID: 6543313656690720569}
+  - {fileID: 7276003317077592644}
+  - {fileID: 6520207444174571685}
+  - {fileID: 5280262768468748012}
+  - {fileID: 75074323432649650}
+  - {fileID: 6084712655510303652}
+  - {fileID: 113622313784795620}
+  - {fileID: 1126632489895850729}
+  - {fileID: 8145830693310132871}
+  - {fileID: 5309953477731265824}
+  - {fileID: 942311588883996843}
+  - {fileID: 7440387557652665184}
+  - {fileID: 8714210300829652175}
+  - {fileID: 7693120256440604119}
+  - {fileID: 4230280524515858892}
+  - {fileID: 2138394923406633249}
+  - {fileID: 4506535668471922877}
+  - {fileID: 4097222253147589848}
+  - {fileID: 1699118594275898898}
+  - {fileID: 5900161702858673674}
+  - {fileID: 4955706011164133169}
+  - {fileID: 537713333500888662}
+  - {fileID: 8370031964532121242}
+  - {fileID: 8877181696842177314}
 --- !u!1 &5586630001082476480
 GameObject:
   m_ObjectHideFlags: 0

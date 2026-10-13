@@ -3,7 +3,8 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.SpawnBlocking
 {

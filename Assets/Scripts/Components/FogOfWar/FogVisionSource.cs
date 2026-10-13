@@ -2,7 +2,8 @@ using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.FogOfWar
 {
@@ -15,7 +16,7 @@ namespace EmpireAtWar.Components.FogOfWar
         private readonly PlayerId _owner;
 
         public FogVisionSource(IVisionService visionService, IFogVisionData data,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform, PlayerId owner)
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform, PlayerId owner)
         {
             _visionService = visionService;
             _data = data;

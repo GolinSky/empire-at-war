@@ -1,7 +1,8 @@
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Extensions;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
@@ -9,7 +10,7 @@ namespace EmpireAtWar.Entities.BaseEntity
     {
         public Transform Transform { get; }
 
-        public EntityTransformFacade([Inject(Id = EntityBindType.ViewTransform)] Transform transform)
+        public EntityTransformFacade([Key(EntityBindType.ViewTransform)] Transform transform)
         {
             Transform = transform;
         }

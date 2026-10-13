@@ -1590,33 +1590,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3751971395273243981, guid: 4891e5365cf083442bc4acb5d9990585,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 691363156}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4891e5365cf083442bc4acb5d9990585, type: 3}
---- !u!1 &691363155 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3751971395273243981, guid: 4891e5365cf083442bc4acb5d9990585,
-    type: 3}
-  m_PrefabInstance: {fileID: 691363154}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &691363156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 691363155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e79ba0f2f5fb94e14bd837334f0ef5b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.MapBoundaryView
-  mapModel: {fileID: 11400000, guid: 3e84814326b95ad439662fee97464b33, type: 2}
-  borderColor: {r: 0, g: 0.8, b: 1, a: 0.9}
-  height: 0
 --- !u!1001 &776479469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8143,7 +8118,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5825448358213500568}
   - component: {fileID: 8797581386183861239}
-  - component: {fileID: 8797581386183861241}
   - component: {fileID: 8797581386183861240}
   - component: {fileID: 8797581386183861242}
   m_Layer: 0
@@ -8797,27 +8771,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024adba5d3fa4a298fb448c7c923382f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects: []
   view: {fileID: 8797581386183861239}
-  bindViewComponents: 0
-  bindMonoComponent: 0
---- !u!114 &8797581386183861241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2573306495493427844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 8797581386183861240}
-  _installerPrefabs: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
+  superWeaponOrigin: {fileID: 8797581386183861242}
 --- !u!114 &8797581386183861242
 MonoBehaviour:
   m_ObjectHideFlags: 0

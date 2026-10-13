@@ -7,7 +7,6 @@ using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -37,7 +36,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ISpawnBlockerService _blockers;
 
         private readonly PlayerSlot _owner;
-        private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly IMapModelObserver _mapModel;
         private readonly List<Bounds> _capturedZoneBounds = new List<Bounds>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
@@ -49,7 +48,7 @@ namespace EmpireAtWar.Services.Enemy
             IStructureSpawnClearance structureClearance,
             IVisionService vision,
             ISpawnBlockerService blockers,
-            LazyInject<IMapModelObserver> mapModel,
+            IMapModelObserver mapModel,
             PlayerSlot owner,
             BoxCollider stationPrefab)
         {
@@ -107,7 +106,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private Vector3 GetStationCenter() =>
-            _mapModel.Value.GetStationPosition(_owner.Id) + _stationBounds.center;
+            _mapModel.GetStationPosition(_owner.Id) + _stationBounds.center;
 
         private float GetStationRadius() =>
             new Vector2(_stationBounds.extents.x, _stationBounds.extents.z).magnitude;
@@ -139,8 +138,8 @@ namespace EmpireAtWar.Services.Enemy
         private bool TrySearchMap(Vector3 origin, float originRadius, Func<Vector3, bool> accept,
             out Vector3 position)
         {
-            Vector2 min = _mapModel.Value.SizeRange.Min;
-            Vector2 max = _mapModel.Value.SizeRange.Max;
+            Vector2 min = _mapModel.SizeRange.Min;
+            Vector2 max = _mapModel.SizeRange.Max;
             float maxRadius = Vector2.Distance(min, max);
             for (float radius = GetFirstRingRadius(originRadius); radius <= maxRadius; radius += WIDE_SEARCH_SPACING)
             {
@@ -159,7 +158,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool TryGetPositionOnRing(Vector3 anchor, float radius, int count, Func<Vector3, bool> accept,
             out Vector3 position)
         {
-            var bounds = _mapModel.Value.SizeRange;
+            var bounds = _mapModel.SizeRange;
             float clearance = _structureClearance.Radius;
             for (int index = 0; index < count; index++)
             {

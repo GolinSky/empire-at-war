@@ -1,5 +1,7 @@
+using EmpireAtWar.Mvc;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Ui.Base
 {

@@ -1,13 +1,12 @@
 using System;
+using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
-using Zenject;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -16,22 +15,24 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void EverySettingsType_CreatesANewAbilityEachTime()
         {
-            DiContainer container = new DiContainer();
-            container.Bind<IEntityLocator>().FromInstance(new EntityLocator());
-            container.Bind<IPlayerRelations>().FromInstance(TestPlayers.CreateDuel());
-            container.Bind<ImpactEffectPresenter>().FromInstance(new ImpactEffectPresenter(null, null));
-            container.Bind<BoltFlightBatch>().FromInstance(new BoltFlightBatch());
-            container.Bind<WeaponsData>().FromInstance(
-                AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"));
+            ShipAbilityDependencies dependencies = new ShipAbilityDependencies(
+                new EntityLocator(), TestPlayers.CreateDuel(), new ImpactEffectPresenter(null, null),
+                AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"),
+                new BoltFlightBatch());
+            IShipAbilityFactory factory = new ShipAbilityFactory(dependencies);
 
             foreach (Type settingsType in TypeCache.GetTypesDerivedFrom<ShipAbilitySettings>())
             {
                 if (settingsType.IsAbstract) continue;
                 ShipAbilitySettings settings = (ShipAbilitySettings)Activator.CreateInstance(settingsType);
-                IShipAbility first = settings.CreateAbility(container);
-                IShipAbility second = settings.CreateAbility(container);
-                Assert.That(first, Is.Not.Null, settingsType.Name);
-                Assert.That(second, Is.TypeOf(first.GetType()), settingsType.Name);
+                ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                typeof(ShipAbilityDefinition).GetField("settings", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(definition, settings);
+                IShipAbility first = factory.Create(definition);
+                IShipAbility second = factory.Create(definition);
+                Type abilityType = settingsType.Assembly.GetType(settingsType.FullName.Replace("Settings", "Ability"));
+                Assert.That(first, Is.TypeOf(abilityType), settingsType.Name);
+                Assert.That(second, Is.TypeOf(abilityType), settingsType.Name);
                 Assert.That(second, Is.Not.SameAs(first), settingsType.Name);
             }
         }

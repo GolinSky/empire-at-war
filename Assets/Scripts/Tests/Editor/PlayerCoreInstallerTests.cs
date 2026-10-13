@@ -7,11 +7,13 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Mvc;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Services.VContainer;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
@@ -20,51 +22,34 @@ namespace EmpireAtWar.Tests.Editor
     {
         [TestCase(FactionType.Republic)]
         [TestCase(FactionType.Separatist)]
-        public void InstallBindings_ResolvesPlayerModelWithSelectedFaction(FactionType factionType)
+        public void RegisterPlayerServices_ResolvesPlayerModelWithSelectedFaction(FactionType factionType)
         {
-            GameObject root = new GameObject(nameof(PlayerCoreInstallerTests));
-            root.SetActive(false);
             using TestAssetService assets = new TestAssetService();
-
-            try
+            PlayerSlot owner = new PlayerSlot(TestPlayers.Human, new TeamId(0), factionType,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            PlayerRoster roster = new PlayerRoster(new[] { owner });
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance<ILocalPlayer>(TestPlayers.CreateLocalPlayer(roster));
+            const string SHARED_PATH = "Assets/Settings/Data/Factions/Shared/";
+            FactionCatalog factions = AssetDatabase.LoadAssetAtPath<FactionCatalog>(SHARED_PATH + "FactionCatalog.asset");
+            builder.RegisterInstance(factions);
+            builder.RegisterInstance(AssetDatabase.LoadAssetAtPath<StationLevelData>(SHARED_PATH + "StationLevelData.asset"));
+            builder.RegisterInstance(AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(SHARED_PATH + "MiningFacilityCatalog.asset"));
+            builder.RegisterInstance(AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(SHARED_PATH + "DefendPlatformCatalog.asset"));
+            builder.RegisterInstance(AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(SHARED_PATH + "SuperWeaponCatalog.asset"));
+            builder.RegisterInstance(assets.ReinforcementData);
+            builder.RegisterInstance(assets.EconomyData);
+            using IObjectResolver parent = builder.Build();
+            using IScopedObjectResolver container = parent.CreateScope(childBuilder =>
             {
-                DiContainer parent = new DiContainer();
-                parent.Bind<FactionType>().WithId(TestPlayers.Human).FromInstance(factionType);
-                PlayerRoster roster = new PlayerRoster(new[]
-                {
-                    new PlayerSlot(TestPlayers.Human, new TeamId(0), factionType, PlayerController.Human,
-                        EnemyAiDifficulty.Medium, 0)
-                });
-                parent.Bind<ILocalPlayer>().FromInstance(TestPlayers.CreateLocalPlayer(roster));
-                const string sharedPath = "Assets/Settings/Data/Factions/Shared/";
-                parent.Bind<FactionCatalog>().FromInstance(
-                    AssetDatabase.LoadAssetAtPath<FactionCatalog>(sharedPath + "FactionCatalog.asset"));
-                parent.Bind<StationLevelData>().FromInstance(
-                    AssetDatabase.LoadAssetAtPath<StationLevelData>(sharedPath + "StationLevelData.asset"));
-                parent.Bind<MiningFacilityCatalog>().FromInstance(
-                    AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(sharedPath + "MiningFacilityCatalog.asset"));
-                parent.Bind<DefendPlatformCatalog>().FromInstance(
-                    AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(sharedPath + "DefendPlatformCatalog.asset"));
-                parent.Bind<SuperWeaponCatalog>().FromInstance(
-                    AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(sharedPath + "SuperWeaponCatalog.asset"));
-                parent.Bind<ReinforcementData>().FromInstance(assets.ReinforcementData);
-                parent.Bind<EconomyData>().FromInstance(assets.EconomyData);
-                DiContainer container = parent.CreateSubContainer();
-                container.Bind<IAssetService>().FromInstance(assets);
-                container.Bind<Zenject.SceneContext>().FromInstance(root.AddComponent<Zenject.SceneContext>());
-                PlayerCoreInstaller installer = root.AddComponent<PlayerCoreInstaller>();
-                container.Inject(installer);
-
-                installer.InstallBindings();
-                PlayerFactionModel model = container.Resolve<PlayerFactionModel>();
-
-                Assert.That(model.FactionType, Is.EqualTo(factionType));
-                Assert.That(container.Resolve<IPlayerFactionModelObserver>(), Is.SameAs(model));
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                childBuilder.RegisterInstance<IAssetService>(assets);
+                LocalPlayerScope.RegisterPlayerServices(childBuilder, owner, factions.Get(factionType));
+                Assert.That(childBuilder.Exists(typeof(IReinforcementService), includeInterfaceTypes: true, findParentScopes: false), Is.True);
+            });
+            PlayerFactionModel model = container.Resolve<PlayerFactionModel>();
+            Assert.That(model.FactionType, Is.EqualTo(factionType));
+            Assert.That(container.Resolve<IPlayerFactionModelObserver>(), Is.SameAs(model));
+            Assert.That(parent.TryGetRegistration(typeof(IReinforcementService), out _), Is.False);
         }
 
         private sealed class TestAssetService : IAssetService, IDisposable
@@ -81,7 +66,7 @@ namespace EmpireAtWar.Tests.Editor
                 Object.DestroyImmediate(_unitPrefab);
             }
 
-            // Player data is shared from the scene container; the player installer loads only unit prefabs.
+            // Shared scene data remains available to the child player registrations.
             public TSource Load<TSource>(string key) where TSource : Object
             {
                 return (TSource)(Object)_unitPrefab;

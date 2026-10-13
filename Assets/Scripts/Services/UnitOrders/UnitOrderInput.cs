@@ -1,11 +1,12 @@
 using System;
 using EmpireAtWar.Services.Input;
 using UnityEngine.InputSystem;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.UnitOrders
 {
-    public sealed class UnitOrderInput : IUnitOrderInput, IInitializable, IDisposable
+    public sealed class UnitOrderInput : IUnitOrderInput, IInitializable, IOrderedDisposable
     {
         private readonly GameInputActions.BattleActions _battle;
 

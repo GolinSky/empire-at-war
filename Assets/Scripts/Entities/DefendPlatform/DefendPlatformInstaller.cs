@@ -1,68 +1,41 @@
-﻿using EmpireAtWar.Entities.BaseEntity;
+﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.FogOfWar;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Selection;
-using Zenject;
+using EmpireAtWar.Services.SpawnBlocking;
+using UnityEngine;
+using VContainer;
 
 namespace EmpireAtWar
 {
     public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformData>
     {
-        private PlayerId _owner;
-        private DefendPlatformType _defendPlatformType;
+        private readonly DefendPlatformType _type;
 
-        private bool _isHiddenByLocalFog;
+        public DefendPlatformInstaller(DefendPlatform view, DefendPlatformData data, ILocalPlayer localPlayer,
+            PlayerId owner, long entityId, Vector3 position, DefendPlatformType type)
+            : base(view, data, localPlayer, owner, entityId, position) => _type = type;
 
-        protected override string DataPath => _defendPlatformType switch
+        protected override void InstallFeatures(IContainerBuilder builder)
         {
-            DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformData",
-            DefendPlatformType.Empress => "AotrEmpressDefensePlatformData",
-            _ => base.DataPath,
-        };
-        protected override string PrefabPath => _defendPlatformType switch
-        {
-            DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformView",
-            DefendPlatformType.Empress => "AotrEmpressDefensePlatformView",
-            _ => base.PrefabPath,
-        };
-
-        // Golan III and Empress act as a station for production: they keep buying open and open the faction UI.
-        private bool IsProductionBase =>
-            _defendPlatformType == DefendPlatformType.GolanIII || _defendPlatformType == DefendPlatformType.Empress;
-
-        [Inject]
-        public void Construct(ILocalPlayer localPlayer, DefendPlatformType defendPlatformType, PlayerId owner)
-        {
-            _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
-            _defendPlatformType = defendPlatformType;
-            _owner = owner;
-        }
-
-        protected override void InstallFeatures(DefendPlatformData data)
-        {
-            Container.BindEntityExt(_owner);
-            Container.BindEntityExt(_defendPlatformType);
-            Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
-            Container.BindInterfacesExt<DefendPlatformTooltipFacade>();
-            if (IsProductionBase)
-            {
-                Container.BindInterfacesExt<ProductionBaseFacade>();
-            }
-
-            Container
-                .BindSelectionFeature(
-                    SelectionType.DefendPlatform,
-                    IsProductionBase ? SelectionType.Base : SelectionType.DefendPlatform)
-                .BindHealthFeature()
-                .BindRadarFeature()
-                .BindWeaponFeature()
-                .BindCombatModifiersFeature()
-                .BindStationaryCombatFeature()
-                .BindFogOfWarFeature(_isHiddenByLocalFog)
-                .BindFogVisionFeature()
-                .BindSpawnBlockerFeature();
+            bool isProductionBase = _type == DefendPlatformType.GolanIII || _type == DefendPlatformType.Empress;
+            builder.RegisterInstance(Data);
+            builder.RegisterInstance(_type);
+            builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
+            builder.Register<DefendPlatformTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            if (isProductionBase) builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.DefendPlatform,
+                isProductionBase ? SelectionType.Base : SelectionType.DefendPlatform);
+            EntityFeatureBindings.RegisterCombatModifiers(builder);
+            EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
+            EntityFeatureBindings.RegisterRadar(builder, Bindings);
+            EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            EntityFeatureBindings.RegisterStationaryCombat(builder);
+            EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
+            EntityFeatureBindings.RegisterStructureVision(builder);
         }
     }
 }

@@ -9,7 +9,8 @@ using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Timing;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
@@ -85,7 +86,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             bool reserveAsPending = false);
     }
 
-    public sealed class ShipNavigationService : Service, IShipNavigationService, ILateTickable, IDisposable
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = 2000)]
+    public sealed class ShipNavigationService : Service, IShipNavigationService, ILateTickable, IOrderedDisposable
     {
         // An order searches two rings around its point; past that the ship heads for the nearest reachable spot.
         private const int DESTINATION_CANDIDATE_RING_COUNT = 2;

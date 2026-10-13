@@ -1,9 +1,44 @@
-﻿using EmpireAtWar.Models.Factions;
-using UnityEngine;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Players;
-using Zenject;
+using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.IdGeneration;
+using UnityEngine;
+using VContainer.Unity;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
-    public class DefendPlatformFactory:PlaceholderFactory<PlayerId,DefendPlatformType,Vector3,DefendPlatform>{}
+    public class DefendPlatformFactory : BaseFactory
+    {
+        private readonly ILocalPlayer _localPlayer;
+        private readonly IUniqueIdGenerator _ids;
+        protected virtual string AssetPrefix => "";
+
+        public DefendPlatformFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership, ILocalPlayer localPlayer,
+            IUniqueIdGenerator ids) : base(assets, scope, ownership)
+        {
+            _localPlayer = localPlayer;
+            _ids = ids;
+        }
+
+        public virtual DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position)
+        {
+            string dataPath = type switch
+            {
+                DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformData",
+                DefendPlatformType.Empress => "AotrEmpressDefensePlatformData",
+                _ => nameof(DefendPlatformData),
+            };
+            string prefabPath = type switch
+            {
+                DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformView",
+                DefendPlatformType.Empress => "AotrEmpressDefensePlatformView",
+                _ => "DefendPlatformView",
+            };
+            DefendPlatformData data = Assets.Load<DefendPlatformData>(AssetPrefix + dataPath);
+            long entityId = _ids.GenerateUniqueId();
+            return Spawn(Assets.LoadComponent<DefendPlatform>(AssetPrefix + prefabPath), position, Quaternion.identity,
+                (builder, view) => new DefendPlatformInstaller(view, data, _localPlayer, owner, entityId, position, type).Install(builder));
+        }
+    }
 }

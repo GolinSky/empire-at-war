@@ -1,5 +1,4 @@
 using System;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {
@@ -12,6 +11,6 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         public virtual float GetEffectDuration(float activeDuration) => activeDuration;
 
-        public abstract IShipAbility CreateAbility(IInstantiator instantiator);
+        public abstract IShipAbility CreateAbility(ShipAbilityDependencies dependencies);
     }
 }

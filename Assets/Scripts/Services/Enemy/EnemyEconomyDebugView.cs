@@ -3,7 +3,8 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Services.Economy;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Enemy
 {

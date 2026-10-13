@@ -10,7 +10,7 @@
 graph TD
     A["Assets/"] --> Art["Art/ - Visual assets"]
     A --> Audio["Audio/ - Sound effects and music"]
-    A --> Plugins["Plugins/ - Core external plugins (Zenject, Demigiant)"]
+    A --> Plugins["Plugins/ - Core external plugins (Demigiant)"]
     A --> Prefabs["Prefabs/ - Reusable GameObject prefabs"]
     A --> Scripts["Scripts/ - C# source code"]
     A --> Settings["Settings/ - Configuration assets, URP & Lighting"]
@@ -31,13 +31,13 @@ graph TD
 
     Prefabs --> P1["Models/ - Entity prefabs (Ships, Stations, Platforms)"]
     Prefabs --> P2["Ui/ - Canvases, HUDs, menus, and widgets"]
-    Prefabs --> P3["View/ - Zenject context and orchestration"]
+    Prefabs --> P3["View/ - LifetimeScope and orchestration"]
     Prefabs --> P4["Vfx/ - Visual effect prefabs"]
     Prefabs --> P5["Light/ - Light setup prefabs"]
 
     Scripts --> S1["Components/ - Logic and presentation components"]
     Scripts --> S2["Entities/ - Pure C# state models and business rules"]
-    Scripts --> S3["Services/ - Global systems and Zenject installers"]
+    Scripts --> S3["Services/ - Global systems and VContainer scopes"]
     Scripts --> S4["Editor/ - Editor tooling and maintenance scripts"]
     Scripts --> S5["Tests/ - Automated unit and integration tests"]
 
@@ -75,7 +75,7 @@ graph TD
 
 - **Models/**: Entity prefabs representing physical game objects (Ships, Defense Platforms, Stations).
 - **Ui/**: Canvases, menus, HUD elements, and modal dialogs.
-- **View/**: Non-physical orchestration prefabs (e.g. `ZenjectContext/SceneContext.prefab`).
+- **View/**: Non-physical orchestration prefabs (e.g. `LifetimeScopes/SceneContext.prefab`).
 - **Vfx/**: Reusable visual effect prefabs.
 - **Light/**: Reusable lighting configuration prefabs.
 
@@ -84,7 +84,10 @@ graph TD
 - **Components/**: MonoBehaviours driving view rendering and user input (MVP View).
 - **Entities/**: Domain models, states, and business rules; feature UI triplets colocate under `Entities/<Feature>/` or its UI feature folder.
   - `<Feature>Ui`, `I<Feature>Presenter`, `<Feature>UiController` share the feature namespace. Models and shared components remain separate; passive screens omit the presenter.
-- **Services/**: Application and game services, presenters, and Zenject installers (MVP Presenter).
+- **Services/**: Application and game services, presenters, and VContainer composition scopes (MVP Presenter).
+  - `VContainer/`: project → scene → player → entity scopes and ordered lifecycle dispatch.
+  - `Factory/`: shared typed entity creation; no container resolution.
+- VContainer `1.19.0` is a pinned UPM dependency in `Packages/manifest.json`; settings live in `Assets/Settings/VContainerSettings.asset`.
 - **Editor/**: Editor tools, builders, windows, and custom inspectors.
 - **Tests/**: EditMode and PlayMode automated test suites.
 
@@ -98,7 +101,6 @@ graph TD
 ### 6. Plugins (`Assets/Plugins`)
 
 - Core third-party plugins integrated into the project architecture.
-- **Zenject**: Dependency injection framework.
 - **Demigiant**: DOTween animation engine.
 
 ### 7. ThirdParty (`Assets/ThirdParty`)
@@ -108,7 +110,7 @@ graph TD
 ### 8. Resources (`Assets/Resources`)
 
 - Minimal bootstrap assets only.
-- Allowed bootstrap exceptions: `ProjectContext.prefab`, `SceneContext.prefab`, `DOTweenSettings.asset`.
+- Allowed bootstrap exceptions: `ProjectContext.prefab`, `DOTweenSettings.asset`.
 
 ### 9. Sandbox (`Assets/Sandbox`)
 

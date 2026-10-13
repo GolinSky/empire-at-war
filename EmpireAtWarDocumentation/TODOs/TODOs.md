@@ -239,6 +239,14 @@
 
 ### Refactoring
 
+- [ ] **Migrate Zenject to VContainer**
+  - **Plan**: [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration]]
+  - **Research**: [[TODOs/Refactoring/Zenject_To_VContainer_Migration - Research|Injection audit, scopes, factories and lifecycle mapping]]
+  - **Order**: Phase 2 Zenject-side cleanup first (remove lazy/optional injection, IInstantiator, Resolve, hierarchy/hidden searches, aliases); VContainer phases need [[Done/Refactoring/UI_Service_Refactoring|UI rework]] complete and verified.
+  - **Scope**: explicit project/scene/player/entity scopes, typed factories, lifecycle/pooling parity; no DI Resolve, hierarchy discovery, lazy or optional injection.
+  - **Status**: 2026-10-13 VContainer cutover implemented; Zenject removed. Full EditMode 1,182/1,229, same 47 baseline failures, zero new failures; 11 migration regressions pass. Standalone Windows build succeeded (3.29 GB); unchanged planet shader reports a DOTS MotionVectors error.
+  - **Remaining**: post-cutover user smoke test (two battle/menu cycles, multiple AI, factories/abilities/pooling/settings/audio) and matched startup/spawn/teardown/frame measurements.
+
 - [ ] **Weapon taxonomy and balance system**
   - **Plan**: [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]]
   - **Status**: 2026-10-10 decisions recorded (two families laser/turbolaser, turbo-ion = ion caliber, mount = barrels, burst = rapid fire, squadron tree, faction/ship variants). Quick fixes `c9fdcf9a` + Executor SFX `3845d442`; weapon EditMode tests pass except two failures in untouched ISD II hull / Corellian loadout-order data.
@@ -248,14 +256,6 @@
   - **Verification**: full EditMode 1,383/1,405; 22 failures outside this work (height tiers, wrecks, team colors, helper meshes, ISD II hull, engine NRE, AI production). No Play Mode.
   - **Class caliber rules (2026-10-11)**: 186 mounts upgraded on 14 capital/heavy-capital ships + Recusant; every family minimum Medium. Corvettes have no turbolasers; frigates have no heavy turbolasers. Shared smaller-ship weapons preserved; new MediumPointDefense (80). All 38 ships audited; zero rule violations. Weapon taxonomy 25/26 pass; existing StrikeFighterProtonTorpedo Shared/multiplier failure remains. No Play Mode.
   - **Remaining**: user playtest; balance tuning (stations outranged, ISD II +200 %, missile reach vs radar); resolve existing StrikeFighterProtonTorpedo variant metadata.
-
-- [ ] **Rework UI before VContainer migration**
-  - **Plan**: [[TODOs/Refactoring/UI_Service_Refactoring|UI Rework Before VContainer]]
-  - **Research**: [[TODOs/Refactoring/UI_Service_Refactoring - Research|UI inventory, placement and SoulsLikeTemplate comparison]]
-  - **Order**: do this first under Zenject; migration starts only after its completion gate.
-  - **Scope**: concrete typed views, no screen enum/screen interfaces, `UiPlacement` type → parent map, presenter-only view intents, `*RouteUiController` routes, Fade/Loading via `UiController`; colocated folders + normalized namespaces; preserved UI behavior.
-  - **Status**: 2026-10-13 implemented under Zenject; 33 GUID-preserving moves, 19 saved/verified screen prefabs, compile clean. Selected UI regressions 76/76 across full run + fade rerun; 47 full-suite failures outside scope.
-  - **Remaining**: user in-game route/HUD/lifecycle smoke test, including a second battle. Plan stays active; VContainer migration gate remains closed.
 
 - [ ] **Finish ship movement simplification verification and remaining phases**
   - **Plan**: [[TODOs/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]
@@ -433,6 +433,14 @@
   - **Verification**: live order APIs, action-prefab bindings, and acceptance-test sources checked; no tests or Play Mode run in this review.
 
 ### Refactoring
+
+- [x] **Rework UI before VContainer migration**
+  - **Plan**: [[Done/Refactoring/UI_Service_Refactoring|UI Rework Before VContainer]]
+  - **Research**: [[Done/Refactoring/UI_Service_Refactoring - Research|UI inventory, placement and SoulsLikeTemplate comparison]]
+  - **Order**: do this first under Zenject; migration starts only after its completion gate.
+  - **Scope**: concrete typed views, no screen enum/screen interfaces, `UiPlacement` type → parent map, presenter-only view intents, `*RouteUiController` routes, Fade/Loading via `UiController`; colocated folders + normalized namespaces; preserved UI behavior.
+  - **Status**: 2026-10-13 implemented under Zenject; 33 GUID-preserving moves, 19 saved/verified screen prefabs, compile clean. Selected UI regressions 76/76 across full run + fade rerun; 47 full-suite failures outside scope.
+  - **Completed**: 2026-10-13; user confirmed two menu/loading/battle cycles, HUD/minimap and drag/cancel acceptance. Migration prerequisite open.
 
 - [x] **Resolve codebase audit 2026-09-27**
   - **Plan**: [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|Codebase audit overview]]

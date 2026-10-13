@@ -1,7 +1,8 @@
 using System;
 using EmpireAtWar.Utils;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Input
 {

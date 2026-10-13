@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Utils;
 

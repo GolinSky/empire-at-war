@@ -559,6 +559,7 @@ GameObject:
   - component: {fileID: 557763283270932298}
   - component: {fileID: 7034581761447063345}
   - component: {fileID: 3584545534577125526}
+  - component: {fileID: 4490677965028390318}
   m_Layer: 0
   m_Name: MalevolenceShipView
   m_TagString: Untagged
@@ -596,6 +597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e11f9a6878dc040ba9c051837b41b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 4490677965028390318}
   explosionHullRenderers:
   - {fileID: 3852646483817380734}
   - {fileID: 9020371963155235074}
@@ -922,6 +924,111 @@ MonoBehaviour:
   - {fileID: 8966055567429775672}
   - {fileID: 5902860854342756707}
   - {fileID: 8566454390230716935}
+--- !u!114 &4490677965028390318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335263148668547494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 1681708906036330908}
+  <Health>k__BackingField:
+  - {fileID: 557763283270932298}
+  <Radar>k__BackingField:
+  - {fileID: 6687772860175598374}
+  <Weapons>k__BackingField:
+  - {fileID: 6458538032505468424}
+  <FogVisibility>k__BackingField:
+  - {fileID: 7034581761447063345}
+  <ShipMove>k__BackingField: {fileID: 1115363127470534868}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 9045835049403888357}
+  <AudioDialog>k__BackingField: {fileID: 8638736922506691649}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 3584545534577125526}
+  - {fileID: 8511492017789620542}
+  - {fileID: 3551816574972395025}
+  - {fileID: 1724095237055279971}
+  - {fileID: 7958866371373291744}
+  - {fileID: 2509772988282294188}
+  - {fileID: 485155819284316503}
+  - {fileID: 8440459335886120214}
+  - {fileID: 1588659087975894983}
+  - {fileID: 7188227749229942932}
+  - {fileID: 4949367937848461777}
+  - {fileID: 505029716106366461}
+  - {fileID: 2175419464583199829}
+  - {fileID: 274635751449268202}
+  - {fileID: 2863939849821159739}
+  - {fileID: 5396059954437964663}
+  - {fileID: 5013835742528169629}
+  - {fileID: 5419252072178959101}
+  - {fileID: 7058112622667992848}
+  - {fileID: 2478028209686178169}
+  - {fileID: 8304090451761683694}
+  - {fileID: 328414196253150649}
+  - {fileID: 874021234325218493}
+  - {fileID: 313201031065568094}
+  - {fileID: 7787960667986695366}
+  - {fileID: 1331403669686246376}
+  - {fileID: 2200442742461481875}
+  - {fileID: 8184862400912141319}
+  - {fileID: 1674708209704929629}
+  - {fileID: 4371160632961683571}
+  - {fileID: 4162619626158019220}
+  - {fileID: 3073143515081282565}
+  - {fileID: 5927192234390321862}
+  - {fileID: 8572615844507135499}
+  - {fileID: 8899740781439913099}
+  - {fileID: 7261698190345904252}
+  - {fileID: 1829765284782555138}
+  - {fileID: 1675563147511140431}
+  - {fileID: 8702304557108651310}
+  - {fileID: 3632892956316384161}
+  - {fileID: 7035340503310114114}
+  - {fileID: 5323100395659296605}
+  - {fileID: 7986338086162468459}
+  - {fileID: 7393936076959803506}
+  - {fileID: 83354355270290557}
+  - {fileID: 3057905180447402117}
+  - {fileID: 6069783683027234586}
+  - {fileID: 2292617843792042148}
+  - {fileID: 9048673223220746477}
+  - {fileID: 816324951073378453}
+  - {fileID: 1206886637994691152}
+  - {fileID: 710851538928241645}
+  - {fileID: 52537330559574464}
+  - {fileID: 9168313233438334973}
+  - {fileID: 8183741321828110358}
+  - {fileID: 929809022632434421}
+  - {fileID: 6939867770720814382}
+  - {fileID: 8157058132967139948}
+  - {fileID: 6221171784791809860}
+  - {fileID: 2687201104962764459}
+  - {fileID: 7908740891829582335}
+  - {fileID: 4212765539418395593}
+  - {fileID: 7278190469483898777}
+  - {fileID: 8065164932917806493}
+  - {fileID: 6556090006877973273}
+  - {fileID: 6697008911628831710}
+  - {fileID: 7345058068446091722}
+  - {fileID: 4426882049132129396}
+  - {fileID: 559617292708956367}
+  - {fileID: 7153576878085413346}
+  - {fileID: 3496933960954967930}
+  - {fileID: 4703472814532491777}
+  - {fileID: 2844445098785279374}
+  - {fileID: 4880128746935975292}
 --- !u!1 &1358500386073421041
 GameObject:
   m_ObjectHideFlags: 0
@@ -5957,3 +6064,27 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5404469584727630521}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8638736922506691649 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4387206434606540536, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 5404469584727630521}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+--- !u!114 &9045835049403888357 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3929895870231269468, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 5404469584727630521}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc88d67b11ac4163aa0ea4cd65296dce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioShipComponent

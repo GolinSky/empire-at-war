@@ -10,7 +10,8 @@ using EmpireAtWar.ViewComponents;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Ship.Health
 {
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Components.Ship.Health
         bool Equal(IHealthModelObserver modelObserver);
     }
 
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -100)]
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
         IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
         IHealthUpgrade, IIonFieldShape
@@ -85,7 +87,7 @@ namespace EmpireAtWar.Components.Ship.Health
         private void Construct(
             HealthModel model,
             CombatModifiers modifiers,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner)
         {
             SetModel(model);

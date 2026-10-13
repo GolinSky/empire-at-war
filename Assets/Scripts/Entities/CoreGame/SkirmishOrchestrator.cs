@@ -5,9 +5,9 @@ using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Input;
-using EmpireAtWar.Utils;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Controllers.Game
 {
@@ -15,7 +15,6 @@ namespace EmpireAtWar.Controllers.Game
     /// Runs the battle startup and owns <see cref="BattleState"/>, <see cref="GameSpeed"/> and the time scale.
     /// </summary>
     public class SkirmishOrchestrator : ISkirmishFlow, IInitializable, ILateDisposable,
-        INotifier<BattleState>, INotifier<GameSpeed>,
         IObserver<UserNotifierState>, IObserver<BattleResult>
     {
         private const float FAST_TIME_SCALE = 4f;
@@ -25,11 +24,8 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IGameCommand _gameCommand;
         private readonly IBattleStartupSequence _startupSequence;
         private readonly IInputLock _inputLock;
-        private readonly LazyInject<INotifier<BattleResult>> _battleVictoryNotifier;
-        private readonly LazyInject<IUserStateNotifier> _userStateNotifier;
 
-        private readonly ReplayNotifier<BattleState> _state = new ReplayNotifier<BattleState>(BattleState.NotInitialized);
-        private readonly ReplayNotifier<GameSpeed> _speed = new ReplayNotifier<GameSpeed>(GameSpeed.Normal);
+        private readonly SkirmishStateModel _stateModel;
         private readonly CancellationTokenSource _startupCancellation = new CancellationTokenSource();
 
         private IDisposable _loadingInputLock;
@@ -40,20 +36,16 @@ namespace EmpireAtWar.Controllers.Game
             IGameCommand gameCommand,
             IBattleStartupSequence startupSequence,
             IInputLock inputLock,
-            LazyInject<INotifier<BattleResult>> battleVictoryNotifier,
-            LazyInject<IUserStateNotifier> userStateNotifier)
+            SkirmishStateModel stateModel)
         {
             _gameCommand = gameCommand;
             _startupSequence = startupSequence;
             _inputLock = inputLock;
-            _battleVictoryNotifier = battleVictoryNotifier;
-            _userStateNotifier = userStateNotifier;
+            _stateModel = stateModel;
         }
 
         public void Initialize()
         {
-            _userStateNotifier.Value.AddObserver(this);
-            _battleVictoryNotifier.Value.AddObserver(this);
             _ = RunStartupAsync(_startupCancellation.Token);
         }
 
@@ -65,18 +57,7 @@ namespace EmpireAtWar.Controllers.Game
             {
                 _loadingInputLock.Dispose();
             }
-
-            _userStateNotifier.Value.RemoveObserver(this);
-            _battleVictoryNotifier.Value.RemoveObserver(this);
         }
-
-        public void AddObserver(IObserver<BattleState> observer) => _state.AddObserver(observer);
-
-        public void RemoveObserver(IObserver<BattleState> observer) => _state.RemoveObserver(observer);
-
-        public void AddObserver(IObserver<GameSpeed> observer) => _speed.AddObserver(observer);
-
-        public void RemoveObserver(IObserver<GameSpeed> observer) => _speed.RemoveObserver(observer);
 
         public void TogglePause()
         {
@@ -85,11 +66,11 @@ namespace EmpireAtWar.Controllers.Game
                 return;
             }
 
-            if (_state.Value == BattleState.Running)
+            if (_stateModel.State == BattleState.Running)
             {
                 SetState(BattleState.Paused);
             }
-            else if (_state.Value == BattleState.Paused)
+            else if (_stateModel.State == BattleState.Paused)
             {
                 SetState(BattleState.Running);
             }
@@ -102,7 +83,7 @@ namespace EmpireAtWar.Controllers.Game
                 return;
             }
 
-            _speed.Set(_speed.Value == GameSpeed.Normal ? GameSpeed.Fast : GameSpeed.Normal);
+            _stateModel.SetSpeed(_stateModel.Speed == GameSpeed.Normal ? GameSpeed.Fast : GameSpeed.Normal);
             ApplyTimeScale();
         }
 
@@ -124,7 +105,7 @@ namespace EmpireAtWar.Controllers.Game
             _isMenuOpen = isMenuOpen;
             if (isMenuOpen)
             {
-                _isPausedBeforeMenu = _state.Value == BattleState.Paused;
+                _isPausedBeforeMenu = _stateModel.State == BattleState.Paused;
             }
 
             SetState(isMenuOpen || _isPausedBeforeMenu ? BattleState.Paused : BattleState.Running);
@@ -166,27 +147,27 @@ namespace EmpireAtWar.Controllers.Game
 
         private bool IsPlaying()
         {
-            return _state.Value == BattleState.Running || _state.Value == BattleState.Paused;
+            return _stateModel.State == BattleState.Running || _stateModel.State == BattleState.Paused;
         }
 
         private void SetState(BattleState state)
         {
             // The battle stays ended even if the startup finishes afterwards.
-            if (_state.Value == BattleState.Ended)
+            if (_stateModel.State == BattleState.Ended)
             {
                 return;
             }
 
-            _state.Set(state);
+            _stateModel.SetState(state);
             ApplyTimeScale();
         }
 
         private void ApplyTimeScale()
         {
-            switch (_state.Value)
+            switch (_stateModel.State)
             {
                 case BattleState.Running:
-                    Time.timeScale = _speed.Value == GameSpeed.Fast ? FAST_TIME_SCALE : NORMAL_TIME_SCALE;
+                    Time.timeScale = _stateModel.Speed == GameSpeed.Fast ? FAST_TIME_SCALE : NORMAL_TIME_SCALE;
                     break;
                 case BattleState.Paused:
                 case BattleState.Ended:

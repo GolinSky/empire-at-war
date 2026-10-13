@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Mvc
 {
@@ -13,12 +12,6 @@ namespace EmpireAtWar.Mvc
     {
         public string Id { get; }// remove this
         protected TModel Model { get; private set; }
-
-        [Inject]
-        private void InjectDependencies([InjectOptional] TModel model)
-        {
-            Model = model;
-        }
 
         protected void SetModel(TModel model)
         {

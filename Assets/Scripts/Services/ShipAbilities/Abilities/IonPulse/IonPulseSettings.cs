@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -30,7 +29,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public override float GetEffectDuration(float activeDuration) => disableDuration;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<IonPulseAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new IonPulseAbility(this, dependencies.Entities, dependencies.Relations);
     }
 }

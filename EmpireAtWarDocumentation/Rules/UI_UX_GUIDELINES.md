@@ -86,7 +86,7 @@
 ## 6. Class Inheritance & Serialized Image Binding Safety
 
 - **BaseUi Inheritance**: Only top-level MVP view containers (such as `CoreGameUi`, `EconomyUi`, `FactionUi`, `MenuUi`, `MiniMapUi`, `ReinforcementUi`, `ShipUi`, `SkirmishPopupUi`) inherit from `BaseUi<TModel, TCommand>` or `BaseUi`.
-  - Sub-item components (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) MUST inherit directly from `MonoBehaviour` to avoid Zenject DI binding failures.
+  - Sub-item components (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) MUST inherit directly from `MonoBehaviour` to keep feature dependency setup owned by the top-level view controller.
 - **Serialized Image & DOTween Safety**: Do NOT replace standard `UnityEngine.UI.Image` components with `MPImage` on GameObjects where C# scripts have serialized `[SerializeField] private Image ...` fields (e.g. `ReinforcementUi.signalImage`, `CoreGameUi.timeImage`, `ShipUi.shipIconImage`) or DOTween animation calls (`signalImage.DOColor(...)`).
   - Replacing serialized `Image` components breaks script inspector references and causes `NullReferenceException` at runtime.
 - **Root GameObject & Icon Preservation**: NEVER add an `Image` or `MPImage` background component directly to the ROOT GameObject of a UI view prefab (`FpsUi`, `ShipSystemUi`, `FactionUi`, `MiniMapUi`).

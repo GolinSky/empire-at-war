@@ -6,7 +6,8 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Squadrons
 {

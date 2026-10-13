@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using System.Threading;
 using EmpireAtWar.Commands.Game;
@@ -11,44 +12,48 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Input;
 using NUnit.Framework;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class SkirmishOrchestratorTests
     {
         private SkirmishOrchestrator _orchestrator;
+        private SkirmishStateModel _stateModel;
         private GameCommandStub _gameCommand;
         private InputLockStub _inputLock;
         private StateRecorder _state;
         private SpeedRecorder _speed;
+        private SkirmishFlowSubscriptions _subscriptions;
+        private UserStateNotifierStub _userStateNotifier;
+        private NotifierStub<BattleResult> _battleVictoryNotifier;
 
         [SetUp]
         public void SetUp()
         {
             _gameCommand = new GameCommandStub();
             _inputLock = new InputLockStub();
-            DiContainer container = new DiContainer();
-            container.Bind<IUserStateNotifier>().FromInstance(new UserStateNotifierStub());
-            container.Bind<INotifier<BattleResult>>().FromInstance(new NotifierStub<BattleResult>());
+            _stateModel = new SkirmishStateModel();
             _orchestrator = new SkirmishOrchestrator(
                 gameCommand: _gameCommand,
                 startupSequence: new CompletedStartupStub(),
                 inputLock: _inputLock,
-                battleVictoryNotifier: new LazyInject<INotifier<BattleResult>>(container,
-                    new InjectContext(container, typeof(INotifier<BattleResult>))),
-                userStateNotifier: new LazyInject<IUserStateNotifier>(container,
-                    new InjectContext(container, typeof(IUserStateNotifier))));
+                stateModel: _stateModel);
+            _userStateNotifier = new UserStateNotifierStub();
+            _battleVictoryNotifier = new NotifierStub<BattleResult>();
+            _subscriptions = new SkirmishFlowSubscriptions(
+                _orchestrator, _battleVictoryNotifier, _userStateNotifier);
             _state = new StateRecorder();
             _speed = new SpeedRecorder();
-            _orchestrator.AddObserver(_state);
-            _orchestrator.AddObserver(_speed);
+            _stateModel.AddObserver(_state);
+            _stateModel.AddObserver(_speed);
+            _subscriptions.Initialize();
             _orchestrator.Initialize();
         }
 
         [TearDown]
         public void TearDown()
         {
+            _subscriptions.LateDispose();
             _orchestrator.LateDispose();
             Time.timeScale = 1f;
         }
@@ -68,8 +73,8 @@ namespace EmpireAtWar.Tests.Editor
             StateRecorder lateState = new StateRecorder();
             SpeedRecorder lateSpeed = new SpeedRecorder();
 
-            _orchestrator.AddObserver(lateState);
-            _orchestrator.AddObserver(lateSpeed);
+            _stateModel.AddObserver(lateState);
+            _stateModel.AddObserver(lateSpeed);
 
             Assert.That(lateState.Value, Is.EqualTo(BattleState.Running));
             Assert.That(lateSpeed.Value, Is.EqualTo(GameSpeed.Normal));
@@ -163,6 +168,49 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_gameCommand.ExitCount, Is.EqualTo(1));
         }
 
+        [Test]
+        public void UserStateSubscription_PausesBattleAndStopsAfterDisposal()
+        {
+            _userStateNotifier.Publish(UserNotifierState.InMenu);
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Paused));
+
+            _subscriptions.LateDispose();
+            _userStateNotifier.Publish(UserNotifierState.InGame);
+
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Paused));
+        }
+
+        [Test]
+        public void BattleResultSubscription_EndsBattleAndStopsAfterDisposal()
+        {
+            BattleResult result = new BattleResult(
+                outcome: default, victoryCondition: default, planet: default, playerFaction: default,
+                enemyFactions: default, playerShipCount: 0, enemyShipCount: 0,
+                isPlayerBaseAlive: false, isEnemyBaseAlive: false);
+            _subscriptions.LateDispose();
+            _battleVictoryNotifier.Publish(result);
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Running));
+
+            _subscriptions.Initialize();
+            _battleVictoryNotifier.Publish(result);
+
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Ended));
+        }
+
+        [Test]
+        public void StateModel_ReplaysInitialStateBeforeStartup()
+        {
+            SkirmishStateModel model = new SkirmishStateModel();
+            StateRecorder state = new StateRecorder();
+            SpeedRecorder speed = new SpeedRecorder();
+
+            model.AddObserver(state);
+            model.AddObserver(speed);
+
+            Assert.That(state.Value, Is.EqualTo(BattleState.NotInitialized));
+            Assert.That(speed.Value, Is.EqualTo(GameSpeed.Normal));
+        }
+
         private sealed class CompletedStartupStub : IBattleStartupSequence
         {
             public Awaitable RunAsync(CancellationToken cancellationToken)
@@ -216,9 +264,19 @@ namespace EmpireAtWar.Tests.Editor
 
         private class NotifierStub<T> : INotifier<T>
         {
-            public void AddObserver(IObserver<T> observer) { }
+            private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
 
-            public void RemoveObserver(IObserver<T> observer) { }
+            public void AddObserver(IObserver<T> observer) => _observers.Add(observer);
+
+            public void RemoveObserver(IObserver<T> observer) => _observers.Remove(observer);
+
+            public void Publish(T value)
+            {
+                foreach (IObserver<T> observer in _observers)
+                {
+                    observer.UpdateState(value);
+                }
+            }
         }
 
         private sealed class UserStateNotifierStub : NotifierStub<UserNotifierState>, IUserStateNotifier

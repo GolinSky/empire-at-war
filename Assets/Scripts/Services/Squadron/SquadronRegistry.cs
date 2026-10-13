@@ -1,3 +1,4 @@
+using EmpireAtWar.Lifecycle;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
@@ -10,7 +11,7 @@ using EmpireAtWar.Entities.Units;
 namespace EmpireAtWar.Services.Squadrons
 {
     /// <summary>Tracks squadrons registered in the <see cref="IEntityLocator"/>.</summary>
-    public sealed class SquadronRegistry : Service, ISquadronRegistry, IDisposable
+    public sealed class SquadronRegistry : Service, ISquadronRegistry, IOrderedDisposable
     {
         private readonly IEntityLocator _entityLocator;
 

@@ -3,7 +3,8 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Weapon
 {

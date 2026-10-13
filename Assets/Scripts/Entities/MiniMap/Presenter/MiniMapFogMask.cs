@@ -4,7 +4,8 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
@@ -52,7 +53,8 @@ namespace EmpireAtWar.Presenters.MiniMap
         public void LateDispose()
         {
             _battleMap.RemoveObserver(this);
-            Object.Destroy(_texture);
+            if (Application.isPlaying) Object.Destroy(_texture);
+            else Object.DestroyImmediate(_texture);
             _grid.Dispose();
         }
 

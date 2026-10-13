@@ -15,7 +15,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.MiniMap
 {

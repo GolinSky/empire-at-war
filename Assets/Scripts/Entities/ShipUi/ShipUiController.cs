@@ -17,7 +17,8 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.ShipUi
 {

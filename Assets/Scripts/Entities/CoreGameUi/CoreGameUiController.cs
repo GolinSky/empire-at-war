@@ -14,10 +14,12 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.CoreGameUi
 {
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -200)]
     public class CoreGameUiController : UiController, ICoreGamePresenter, ISkirmishRouteNavigation,
         IUnitActionsViewProvider, ISuperWeaponsViewProvider, ICoreGameHudStatus,
         IObserver<ISelectionSubject>, IObserver<BattleState>, IObserver<GameSpeed>,

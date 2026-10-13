@@ -4,10 +4,12 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateDispose = 100)]
     public sealed class CaptureSiteBuildUiController : UiController, ICaptureSiteBuildPresenter, IInitializable, ITickable, ILateDisposable
     {
         private readonly ICaptureSiteBuildSelection _selection;

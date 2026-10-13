@@ -6,7 +6,8 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using NumericsVector3 = System.Numerics.Vector3;
 
 namespace EmpireAtWar.Components.Squadrons.Flight
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
     /// Moves every fighter along its simulated flight path. The squadron root is kept on the centroid of
     /// the live fighters so selection, radar, minimap and targeting treat the squadron as one unit.
     /// </summary>
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -90)]
     public sealed class SquadronFlightComponent : MonoComponent<SquadronFlightModel>, ISquadronFlightComponent,
         IInitializable, ILateDisposable
     {

@@ -1,5 +1,6 @@
 using EmpireAtWar.Services.SceneService;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Loading
 {

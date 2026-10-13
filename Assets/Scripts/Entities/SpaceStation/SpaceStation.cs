@@ -10,11 +10,14 @@ using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.ViewComponents.Station;
 using UnityEngine;
-using Zenject;
+using EmpireAtWar.Lifecycle;
+using VContainer;
+using LifetimeScope = VContainer.Unity.LifetimeScope;
+using VContainer.Internal;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
-    public class SpaceStation : MonoBehaviour, IController, IInitializable, ILateDisposable
+    public class SpaceStation : EntityView, IController, IInitializable, ILateDisposable
     {
         private IVisionService _visionService;
         private ISpawnBlockerService _spawnBlockerService;
@@ -29,15 +32,15 @@ namespace EmpireAtWar.Entities.SpaceStation
         [Tooltip("Optional for factions that use a distinct model at each station level.")]
         [SerializeField] private StationLevelView levelView;
         private EntityComponentLifecycle _componentLifecycle;
-        private GameObjectContext _context;
+        private LifetimeScope _scope;
 
         private PlayerId _owner;
         private Vector3 _startPosition;
         private FactionType _factionType;
 
-        [Inject] private SpaceStationData Data { get; }
+        private SpaceStationData Data { get; set; }
 
-        public string Id => GetType().Name;
+        public override string Id => GetType().Name;
 
         [Inject]
         private void Construct(
@@ -49,11 +52,11 @@ namespace EmpireAtWar.Entities.SpaceStation
             IFactionLevelObserver factionLevel,
             IUnitWreckService unitWreckService,
             IUnitExplosionService unitExplosionService,
-            List<IMonoComponent> monoComponents,
-            GameObjectContext context,
+            ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
+            LifetimeScope scope,
             PlayerId owner,
             Vector3 startPosition,
-            FactionType factionType)
+            FactionType factionType, SpaceStationData data)
         {
             _visionService = visionService;
             _spawnBlockerService = spawnBlockerService;
@@ -63,11 +66,12 @@ namespace EmpireAtWar.Entities.SpaceStation
             _ionField = ionField;
             _factionLevel = factionLevel;
             _startPosition = startPosition;
-            _componentLifecycle = new EntityComponentLifecycle(monoComponents);
+            _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
             _unitWreckService = unitWreckService;
             _unitExplosionService = unitExplosionService;
-            _context = context;
+            _scope = scope;
             _factionType = factionType;
+            Data = data;
         }
 
         public void Initialize()
@@ -121,7 +125,7 @@ namespace EmpireAtWar.Entities.SpaceStation
                     _unitWreckService.Spawn(wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
-                Destroy(_context.gameObject, componentData.DestroyDelay);
+                Destroy(_scope.gameObject, componentData.DestroyDelay);
             }
         }
     }

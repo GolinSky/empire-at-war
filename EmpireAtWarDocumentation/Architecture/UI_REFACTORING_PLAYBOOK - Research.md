@@ -17,14 +17,14 @@
 | --- | --- | --- |
 | `<Feature>Data : Data` | Serialized configuration, prefab mappings, read-only lookup API | Runtime state, event subscriptions, gameplay flow |
 | `<Feature>Model : PureModel` | Runtime state, rules, and C# events | `UnityEngine`, `[SerializeField]`, `ScriptableObject`, prefab creation |
-| `<Feature>Ui : BaseUi` | Render state and forward user input | Gameplay rules, service orchestration, implicit Zenject feature dependencies |
+| `<Feature>Ui : BaseUi` | Render state and forward user input | Gameplay rules, service orchestration, implicit container feature dependencies |
 | `I<Feature>Presenter` | UI intent API | `ICommand` unless it is a real command object |
 | `<Feature>UiController` | Create the UI, pass all dependencies through methods, initialize and dispose it | Gameplay implementation |
 | `<Feature>Service : Service` | Gameplay/application flow and interaction with non-UI systems | `UiService`, `BaseUi`, UI prefab creation, UI event rendering |
 
 ## Apply This Refactor When
 
-- Zenject throws `Unable to resolve ...` while a UI prefab is being created in a different container or subcontainer.
+- Dependency injection fails to resolve a required dependency while a UI prefab is being created in a different scope.
 - A UI inherits `BaseUi<TModel>` or `BaseUi<TModel, TCommand>` and depends on feature bindings that are not visible to the UI factory.
 - A model is a `ScriptableObject` that mixes serialized configuration with mutable runtime state and events.
 - A controller creates or updates UI and also performs gameplay work.
@@ -37,7 +37,7 @@
 
 ```mermaid
 flowchart LR
-    Installer["Feature installer"] --> Data["FeatureData asset"]
+    Installer["Owning VContainer scope"] --> Data["FeatureData asset"]
     Installer --> Model["FeatureModel : PureModel"]
     Installer --> Service["FeatureService"]
     Installer --> Presenter["FeatureUiController / Presenter"]
@@ -204,7 +204,7 @@ public class FeatureUi : BaseUi
 - Rules:
 
 - Inherit `BaseUi`, not `BaseUi<TModel>` or `BaseUi<TModel, TCommand>`.
-- Do not use Zenject property injection for feature model, presenter, or data dependencies.
+- Do not use container property injection for feature model, presenter, or data dependencies.
 - Provide dependencies through methods before `Initialize()`.
 - Test that the controller supplies dependencies before `Initialize()` and that required prefab references are assigned.
 - The controller owns model subscriptions; views own Unity control listeners initialized after setup.
@@ -260,19 +260,21 @@ public class FeatureUiController : UiController, IFeaturePresenter, IInitializab
 
 ### 9. Bind the final object graph
 
-- Bind all feature objects in the installer that owns their gameplay lifetime:
+- Register all feature objects in the scope that owns their gameplay lifetime:
 
 ```csharp
-Container.BindScriptableObject<FeatureData>(Repository);
-Container.BindInterfacesAndSelfTo<FeatureModel>().AsSingle();
-Container.BindInterfacesNonLazyExt<FeatureService>();
-Container.BindInterfacesNonLazyExt<FeatureUiController>();
+AssetRegistrations.RegisterShared<FeatureData>(builder, Assets);
+builder.Register<FeatureModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+builder.Register<FeatureService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+builder.Register<FeatureUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+// Owning scope calls RegisterLifecycle() once.
 ```
 
 - Use the project binding extensions that match the type.
 - A `PureModel` may not satisfy a helper constrained to the old Unity `Model` base, so bind it directly when required.
 
-- Feature installer resolves data, model, service, and UI controller in one scope.
+- The owning VContainer scope registers data, model, service, and UI controller.
+- `IInitializable` / `ILateDisposable` come from `EmpireAtWar.Lifecycle`; ordered lifecycle dispatch owns callbacks.
 - UI prefab receives feature bindings explicitly from the controller.
 
 ## Reinforcement Reference Implementation
@@ -290,7 +292,7 @@ Container.BindInterfacesNonLazyExt<FeatureUiController>();
 - Reinforcement dependency flow:
 
 ```text
-PlayerCoreInstaller
+LocalPlayerScope
   -> ReinforcementData
   -> ReinforcementModel(data)
   -> ReinforcementService(model, data, gameplay dependencies)
@@ -321,7 +323,7 @@ PlayerCoreInstaller
 - [ ] All required view dependencies are passed through methods before `Initialize()`.
 - [ ] Every subscription added in `Initialize()` is removed in `Dispose()`.
 - [ ] The UI prefab carries concrete `<Feature>Ui`; its key is `typeof(TUi).Name` and its placement is registered.
-- [ ] The feature installer resolves data, model, service, and UI controller.
+- [ ] The owning scope registers data, model, service, and UI controller.
 - [ ] A focused test can create/inject the UI prefab without resolving feature dependencies from the prefab container.
 - [ ] Scripts compile and Unity console contains no new related errors.
 - [ ] Play Mode verifies creation, input forwarding, model events, rendering, and disposal.
@@ -334,7 +336,7 @@ PlayerCoreInstaller
 
 - **Deleting the model asset first:** serialized values or references become unrecoverable.
   - Create, copy, compare, remap, then delete.
-- **Keeping the generic `BaseUi` inheritance:** Zenject still tries to inject feature dependencies during prefab construction.
+- **Keeping the generic `BaseUi` inheritance:** The generic view base still tries to inject feature dependencies during prefab construction.
 - **Calling `Initialize()` too early:** setup methods have not supplied the required dependencies.
 - **Leaving UI creation in the service:** the gameplay layer remains coupled to UI lifetime and factory scope.
 - **Moving mutable state into `Data`:** the shared ScriptableObject becomes runtime session state.

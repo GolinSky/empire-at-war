@@ -5,7 +5,8 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
@@ -37,13 +38,16 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private bool _canBeSelected = true;
 
-        [Inject] private PlayerId Owner { get; }
-        [Inject] private ILocalPlayer LocalPlayer { get; }
+        private PlayerId Owner { get; set; }
+        private ILocalPlayer LocalPlayer { get; set; }
         public Vector3 WorldPosition => selectionRoot.position;
 
         [Inject]
-        private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
+        private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData,
+            PlayerId owner, ILocalPlayer localPlayer)
         {
+            Owner = owner;
+            LocalPlayer = localPlayer;
             _sharedSelectionData = sharedSelectionData;
             SetModel(model);
         }

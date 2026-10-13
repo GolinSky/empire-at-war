@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Ui;
+using EmpireAtWar.Services.VContainer;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -48,13 +49,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SceneInstaller_HasUnitOrderSettingsAssigned()
+        public void SkirmishScope_HasUnitOrderSettingsAssigned()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/Prefabs/View/ZenjectContext/SceneContext.prefab");
-            SkirmishMainInstaller installer =
-                prefab.GetComponentInChildren<SkirmishMainInstaller>(true);
-            SerializedObject data = new SerializedObject(installer);
+                "Assets/Prefabs/View/LifetimeScopes/SceneContext.prefab");
+            SkirmishScope scope = prefab.GetComponentInChildren<SkirmishScope>(true);
+            Assert.That(scope, Is.Not.Null);
+            SerializedObject data = new SerializedObject(scope);
             Assert.That(data.FindProperty("unitOrderSettings").objectReferenceValue,
                 Is.Not.Null);
         }

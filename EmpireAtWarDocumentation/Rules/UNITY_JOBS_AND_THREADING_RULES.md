@@ -5,7 +5,7 @@
 - Rules verified against the repository and adapted to its conventions.
 
 - **Installed baseline (verify before relying on version-specific API):** Unity `6000.4.7f1`, Burst `1.8.29`, Collections `6.4.0`, Mathematics `1.3.3`.
-- DI is **Zenject** (not VContainer).
+- DI is **VContainer** (`1.19.0`); project callbacks use `EmpireAtWar.Lifecycle`.
 - No Entities/ECS.
 
 > Prefer clear ownership, independent data and explicit dependencies. Jobs are a tool, not a goal: the target is a simpler, correct, measurable implementation.
@@ -32,7 +32,7 @@ Main thread: gather snapshot (+ stable ids / generation)
   -> main thread: validate id/generation, then apply
 ```
 
-- One **feature-level owner** (a Zenject service, e.g. `CombatAttackCoordinator`, `ShipNavigationService`) owns buffers, scheduling, completion, result publication and disposal.
+- One **feature-level owner** (a scoped service, e.g. `CombatAttackCoordinator`, `ShipNavigationService`) owns buffers, scheduling, completion, result publication and disposal.
   - No global job manager / scheduler framework / EventBus.
 - Jobs never receive presenters, components, ScriptableObjects, the DI container or live models.
   - Copy values into structs (`float3`, `int`, blittable structs) first.
@@ -51,7 +51,7 @@ Main thread: gather snapshot (+ stable ids / generation)
 | JOB-06 | `IJobParallelFor` iterations must be independent (iteration `i` writes output `i`), order is not guaranteed. `NativeList.ParallelWriter` cannot grow and append order is non-deterministic — reserve capacity first or use per-index output slots. |
 | JOB-07 | `NativeDisableParallelForRestriction`, `NativeDisableContainerSafetyRestriction`, unsafe pointers: forbidden unless a written invariant + test justifies them. Never add them to silence a safety error. |
 | JOB-08 | Allocators: `Temp` = scope-local, never passed to scheduled jobs; `TempJob` must be freed within 4 frames; `Persistent` for owner-lifetime buffers (preferred for recurring work, grow-by-reallocation only while no job is in flight). One disposer per allocation. |
-| JOB-09 | Scheduled jobs cannot be cancelled. Shutdown order: stop accepting requests → stop scheduling → `Complete()` outstanding handles → drop stale results → `Dispose` buffers. Scene unload / Zenject dispose / pooling are **not** completion boundaries by themselves — wire them into this order (`IDisposable`/`ILateDisposable`). |
+| JOB-09 | Scheduled jobs cannot be cancelled. Shutdown order: stop accepting requests → stop scheduling → `Complete()` outstanding handles → drop stale results → `Dispose` buffers. Scene unload / scope teardown / pooling are **not** completion boundaries by themselves — wire them into this order (`IOrderedDisposable`/`ILateDisposable`). |
 | JOB-10 | Race-free ≠ deterministic. Define tie-breaking explicitly (e.g. lowest index wins) when ordering matters. |
 | JOB-11 | Validate numeric inputs (`math.isfinite`) inside kernels where bad data is possible; provide a serial fallback/flag rather than propagating NaN (see `WeaponTargetSelectionJob.RequiresSerialFallback`). |
 
@@ -76,7 +76,7 @@ Main thread: gather snapshot (+ stable ids / generation)
 
 - The pack's example code uses constructor `ArgumentNullException` guards — **not allowed here** (see [[Rules/AGENTS]]: no constructor null guards).
   - Assign injected dependencies directly.
-- The pack mentions VContainer — this project uses **Zenject**; the owner service is bound in the scene installer and disposes buffers via `IDisposable`/`ILateDisposable`.
+- The owner service is registered in its VContainer scope; ordered project cleanup uses `EmpireAtWar.Lifecycle.IOrderedDisposable` / `ILateDisposable`.
 - Collections here is `6.4.0` (Unity 6 versioning), not `2.5`; allocator semantics referenced above are unchanged, but check the package docs for API details.
 - Keep job structs `internal`, one type per file, named after the file; `const` fields in `UPPER_SNAKE_CASE`.
 - Tests that exercise jobs run through the Unity Test Framework only when the user explicitly asks (see Unity Test Safety in [[Rules/AGENTS]]).

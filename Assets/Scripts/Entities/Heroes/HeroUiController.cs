@@ -9,12 +9,13 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Heroes
 {
     public sealed class HeroUiController : UiController, IHeroPresenter, IInitializable, ITickable,
-        IDisposable, IObserver<BattleState>
+        IOrderedDisposable, IObserver<BattleState>
     {
         private readonly IEntityLocator _entities;
         private readonly FactionCatalog _factions;

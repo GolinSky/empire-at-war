@@ -12,7 +12,8 @@ using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
@@ -43,17 +44,19 @@ namespace EmpireAtWar.Tests.Editor
                     null, null, battleState);
                 Entity hero = new Entity(new LivingHealth(), entities,
                     new IEntityFacade[] { new UnitTypeFacade(UnitTypeId.Ship(heroType)) },
-                    TestPlayers.Human, 42);
-                DiContainer container = new DiContainer();
-                container.BindInterfacesTo<HeroUiController>().FromInstance(controller);
-                container.Bind<DisposableManager>().AsSingle();
-                DisposableManager disposables = container.Resolve<DisposableManager>();
-                DiContainer entityContainer = new DiContainer(container);
-                entityContainer.BindInterfacesTo<Entity>().FromInstance(hero);
-                entityContainer.Bind<DisposableManager>().AsSingle();
-                DisposableManager entityDisposables = entityContainer.Resolve<DisposableManager>();
-                controller.Initialize();
-                hero.Initialize();
+                    TestPlayers.Human, 42, System.Array.Empty<IPooledEntityEvents>(),
+                    System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                ContainerBuilder builder = new ContainerBuilder();
+                builder.RegisterInstance(controller).AsImplementedInterfaces();
+                builder.RegisterLifecycle();
+                using IObjectResolver container = builder.Build();
+                using IScopedObjectResolver entityContainer = container.CreateScope(childBuilder =>
+                {
+                    childBuilder.RegisterInstance(hero).AsImplementedInterfaces();
+                    childBuilder.RegisterLifecycle();
+                });
+                OrderedLifecycleCoordinator disposables = container.Resolve<OrderedLifecycleCoordinator>();
+                OrderedLifecycleCoordinator entityDisposables = entityContainer.Resolve<OrderedLifecycleCoordinator>();
                 Assert.That(ui.IsVisible, Is.True);
                 controller.Tick();
 
@@ -68,10 +71,8 @@ namespace EmpireAtWar.Tests.Editor
                     if (!destroyViewFirst)
                         disposables.Dispose();
                     entityDisposables.Dispose();
-                    entityDisposables.LateDispose();
                     if (destroyViewFirst)
                         disposables.Dispose();
-                    disposables.LateDispose();
                 });
                 Assert.That(entities.Entities, Is.Empty);
                 Assert.That(battleState.ObserverCount, Is.Zero);

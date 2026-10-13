@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Components.Combat;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         [SerializeField] private CombatStatModifier statModifier;
         public CombatStatModifier StatModifier => statModifier;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<LockSFoilsAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new LockSFoilsAbility(this);
     }
 }

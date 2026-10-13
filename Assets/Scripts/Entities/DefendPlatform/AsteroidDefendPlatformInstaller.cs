@@ -1,11 +1,13 @@
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Models.Players;
+using UnityEngine;
+
 namespace EmpireAtWar
 {
-    /// <summary>Battle asteroid built on a captured site; loads the Asteroid-prefixed view and data.</summary>
-    public class AsteroidDefendPlatformInstaller : DefendPlatformInstaller
+    public sealed class AsteroidDefendPlatformInstaller : DefendPlatformInstaller
     {
-        private const string ASTEROID_PREFIX = "Asteroid";
-
-        protected override string DataPath => ASTEROID_PREFIX + base.DataPath;
-        protected override string PrefabPath => ASTEROID_PREFIX + base.PrefabPath;
+        public AsteroidDefendPlatformInstaller(DefendPlatform view, DefendPlatformData data,
+            ILocalPlayer localPlayer, PlayerId owner, long entityId, Vector3 position, DefendPlatformType type)
+            : base(view, data, localPlayer, owner, entityId, position, type) { }
     }
 }

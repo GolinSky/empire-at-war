@@ -1,21 +1,33 @@
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.IdGeneration;
 using UnityEngine;
-using Zenject;
+using VContainer.Unity;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
-    public class SpaceStationFactory:PlaceholderFactory<PlayerId, FactionType, Vector3, SpaceStation>
+    public class SpaceStationFactory : BaseFactory
     {
-        private readonly IAssetService _assetService;
+        private readonly ILocalPlayer _localPlayer;
+        private readonly IUniqueIdGenerator _ids;
 
-        private readonly DiContainer _container;
-
-        public SpaceStationFactory(IAssetService assetService, DiContainer container)
+        public SpaceStationFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership, ILocalPlayer localPlayer,
+            IUniqueIdGenerator ids) : base(assets, scope, ownership)
         {
-            _container = container;
-            _assetService = assetService;
+            _localPlayer = localPlayer;
+            _ids = ids;
+        }
+
+        public virtual SpaceStation Create(PlayerId owner, FactionType factionType, Vector3 position)
+        {
+            SpaceStationData data = Assets.Load<SpaceStationData>(nameof(SpaceStationData));
+            long entityId = _ids.GenerateUniqueId();
+            return Spawn(Assets.LoadComponent<SpaceStation>(factionType + "SpaceStationView"), position, Quaternion.identity,
+                (builder, view) => new EmpireAtWar.SpaceStation.SpaceStationInstaller(view, data, _localPlayer,
+                    owner, entityId, position, factionType).Install(builder));
         }
     }
 }

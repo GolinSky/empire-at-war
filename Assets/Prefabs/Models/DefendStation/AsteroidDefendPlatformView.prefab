@@ -575,6 +575,7 @@ GameObject:
   - component: {fileID: 4068811108492124294}
   - component: {fileID: 3350890140303717934}
   - component: {fileID: 1741931594841422934}
+  - component: {fileID: 3175288273375849023}
   m_Layer: 0
   m_Name: AsteroidDefendPlatformView
   m_TagString: Untagged
@@ -613,6 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a23e226c574f5abd72536086457094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 3175288273375849023}
   explosionHullRenderers:
   - {fileID: 5673947201695010152}
   - {fileID: 7558920667177418561}
@@ -1130,6 +1132,45 @@ MonoBehaviour:
   - {fileID: 995712850437518843}
   - {fileID: 5046627553508722518}
   - {fileID: 8393265745385271566}
+--- !u!114 &3175288273375849023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 2610921033299271252}
+  <Health>k__BackingField:
+  - {fileID: 4068811108492124294}
+  <Radar>k__BackingField:
+  - {fileID: 2557233241895815559}
+  <Weapons>k__BackingField:
+  - {fileID: 4545628569554571522}
+  <FogVisibility>k__BackingField:
+  - {fileID: 3350890140303717934}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 0}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 1741931594841422934}
+  - {fileID: 4857334380463656886}
+  - {fileID: 2159636519144197231}
+  - {fileID: 8644830824659767434}
+  - {fileID: 3224702364876874753}
+  - {fileID: 3904722521049085063}
+  - {fileID: 4187391721111521243}
+  - {fileID: 3007545869417895737}
 --- !u!1 &455957250292079656
 GameObject:
   m_ObjectHideFlags: 0

@@ -1437,6 +1437,7 @@ GameObject:
   - component: {fileID: 8884538507175374387}
   - component: {fileID: 3489274481667719342}
   - component: {fileID: 5707242086892688144}
+  - component: {fileID: 4536909829714971549}
   m_Layer: 0
   m_Name: RepublicSpaceStationView
   m_TagString: Untagged
@@ -1481,6 +1482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617baef4c9215ff46811c5b18a2d67ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 4536909829714971549}
   explosionHullRenderers:
   - {fileID: 4099892707522176503}
   levelView: {fileID: 5707242086892688144}
@@ -1699,6 +1701,55 @@ MonoBehaviour:
   selectionMarker: {fileID: 8000202830491400828}
   shield: {fileID: 7442863198398755758}
   shieldMesh: {fileID: 3439370593060855890}
+--- !u!114 &4536909829714971549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430518895033861752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 8450382512840613885}
+  <Health>k__BackingField:
+  - {fileID: 8636846628301652099}
+  <Radar>k__BackingField:
+  - {fileID: 1280977221910138847}
+  <Weapons>k__BackingField:
+  - {fileID: 1833136585006799205}
+  <FogVisibility>k__BackingField:
+  - {fileID: 3489274481667719342}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 4922508454177302544}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 0}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 8884538507175374387}
+  - {fileID: 2124114673325768231}
+  - {fileID: 8177678813357081521}
+  - {fileID: 3338842454457253282}
+  - {fileID: 8636718447074006593}
+  - {fileID: 5541572143087454584}
+  - {fileID: 5815424670973702410}
+  - {fileID: 7944783967518754487}
+  - {fileID: 7567556860422496307}
+  - {fileID: 5747464592025652541}
+  - {fileID: 7161018705896444829}
+  - {fileID: 5781722779553142075}
+  - {fileID: 2252433830453111801}
+  - {fileID: 7466611236617004935}
+  - {fileID: 774076073732919523}
+  - {fileID: 8576188791618883331}
+  - {fileID: 337064068512335514}
+  - {fileID: 7178114026213147903}
 --- !u!1001 &285227600534946168
 PrefabInstance:
   m_ObjectHideFlags: 0

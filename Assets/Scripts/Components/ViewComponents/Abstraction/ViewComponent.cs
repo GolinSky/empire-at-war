@@ -1,12 +1,15 @@
 using EmpireAtWar.Mvc;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents
 {
     public abstract class ViewComponent: EmpireAtWar.Mvc.ViewComponent
     {
+        private IModelObserver InjectedModelObserver { get; set; }
+
         [Inject]
-        private IModelObserver InjectedModelObserver { get; }
+        private void Construct(IModelObserver modelObserver) => InjectedModelObserver = modelObserver;
 
         public override IModelObserver ModelObserver => InjectedModelObserver;
     }

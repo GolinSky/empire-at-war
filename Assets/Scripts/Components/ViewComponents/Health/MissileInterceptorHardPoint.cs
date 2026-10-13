@@ -3,7 +3,8 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Health
 {

@@ -1,7 +1,8 @@
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Layer;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Squadrons.Icon
 {

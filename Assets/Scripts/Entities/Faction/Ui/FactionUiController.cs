@@ -9,7 +9,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Faction.Ui
 {

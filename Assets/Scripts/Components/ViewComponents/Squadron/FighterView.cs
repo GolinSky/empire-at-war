@@ -3,7 +3,8 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Squadrons
 {

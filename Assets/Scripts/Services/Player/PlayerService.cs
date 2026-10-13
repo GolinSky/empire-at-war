@@ -2,7 +2,8 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Player
 {

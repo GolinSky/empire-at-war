@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6886580038708785473}
   - component: {fileID: 1756759378646151882}
-  - component: {fileID: 3402364762356112999}
   - component: {fileID: 172039131412482633}
   - component: {fileID: 2445040021234851149}
   m_Layer: 0
@@ -58,24 +57,6 @@ MonoBehaviour:
   cloudRenderers:
   - {fileID: 2952695499940404821}
   - {fileID: 6682912406075438017}
---- !u!114 &3402364762356112999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 255825743812757999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 172039131412482633}
-  _installerPrefabs: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
 --- !u!114 &172039131412482633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,9 +69,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024adba5d3fa4a298fb448c7c923382f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects: []
   view: {fileID: 1756759378646151882}
-  bindViewComponents: 0
-  bindMonoComponent: 0
+  superWeaponOrigin: {fileID: 2445040021234851149}
 --- !u!114 &2445040021234851149
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1791,6 +1791,7 @@ GameObject:
   - component: {fileID: 8364790595329249932}
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
+  - component: {fileID: 4852155512248874141}
   m_Layer: 0
   m_Name: BothanAssaultCruiserShipView
   m_TagString: Untagged
@@ -1832,6 +1833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e11f9a6878dc040ba9c051837b41b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 4852155512248874141}
   explosionHullRenderers:
   - {fileID: 4187573871560591119}
   - {fileID: 4012647797703516625}
@@ -2088,6 +2090,60 @@ MonoBehaviour:
   meshRenderers:
   - {fileID: 4187573871560591119}
   - {fileID: 4012647797703516625}
+--- !u!114 &4852155512248874141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 3689196778523213402}
+  <Health>k__BackingField:
+  - {fileID: 8364790595329249932}
+  <Radar>k__BackingField:
+  - {fileID: 905498400102155206}
+  <Weapons>k__BackingField:
+  - {fileID: 1861644053665841973}
+  <FogVisibility>k__BackingField:
+  - {fileID: 6698126527802799869}
+  <ShipMove>k__BackingField: {fileID: 725234866686407512}
+  <Hangar>k__BackingField: {fileID: 7672579169363179303}
+  <AudioShip>k__BackingField: {fileID: 2592584285315298879}
+  <AudioDialog>k__BackingField: {fileID: 2995179423731630235}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 7469138526702055200}
+  - {fileID: 7356436041059484247}
+  - {fileID: 2438951833257296604}
+  - {fileID: 4113316865601099573}
+  - {fileID: 2551768718272537840}
+  - {fileID: 4620145641467528246}
+  - {fileID: 9146337940255856664}
+  - {fileID: 1405023825140089522}
+  - {fileID: 5380093970133379201}
+  - {fileID: 567432187980319016}
+  - {fileID: 7523434277085596499}
+  - {fileID: 1877550420799754964}
+  - {fileID: 2180719480698952387}
+  - {fileID: 3576893893681816168}
+  - {fileID: 7830660717946553849}
+  - {fileID: 1212506682192918046}
+  - {fileID: 2835601293086400964}
+  - {fileID: 2388424827055455308}
+  - {fileID: 3895779385000638677}
+  - {fileID: 2116026322231167030}
+  - {fileID: 7254297738751734715}
+  - {fileID: 1227762101597926684}
+  - {fileID: 2113077598343636932}
 --- !u!1 &4819944402458760041
 GameObject:
   m_ObjectHideFlags: 0
@@ -3077,6 +3133,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41d73a8198e6a0248a72f9f830bd9ec8, type: 3}
+--- !u!114 &2592584285315298879 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3929895870231269468, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1545718542174955107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc88d67b11ac4163aa0ea4cd65296dce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioShipComponent
+--- !u!114 &2995179423731630235 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4387206434606540536, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1545718542174955107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!4 &3209686314290215958 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,

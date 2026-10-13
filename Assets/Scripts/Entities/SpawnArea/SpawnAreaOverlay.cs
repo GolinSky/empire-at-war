@@ -6,7 +6,8 @@ using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using Unity.Collections;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Views.SpawnArea
 {

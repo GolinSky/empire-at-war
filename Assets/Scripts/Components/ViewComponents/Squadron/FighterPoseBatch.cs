@@ -5,7 +5,8 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Jobs;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Squadrons
 {
@@ -13,7 +14,8 @@ namespace EmpireAtWar.ViewComponents.Squadrons
     /// Writes every fighter's flight pose in Burst jobs once per frame instead of two transform writes per fighter.
     /// Its LateTick runs before the attack coordinator's, so fighter guns fire from this frame's pose.
     /// </summary>
-    public sealed class FighterPoseBatch : ILateTickable, IDisposable
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = -2000)]
+    public sealed class FighterPoseBatch : ILateTickable, IOrderedDisposable
     {
         private const int INITIAL_CAPACITY = 256;
 

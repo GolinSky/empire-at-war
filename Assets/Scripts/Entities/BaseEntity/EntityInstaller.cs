@@ -1,35 +1,19 @@
-﻿using EmpireAtWar.Extensions;
-using EmpireAtWar.Services.IdGeneration;
-using EmpireAtWar.Presenters.MiniMap;
-using UnityEngine;
-using Zenject;
+﻿using EmpireAtWar.Presenters.MiniMap;
+using VContainer;
+using VContainer.Unity;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
-    public class EntityInstaller: Installer
+    public static class EntityInstaller
     {
-        private readonly IUniqueIdGenerator _uniqueIdGenerator;
-
-        private readonly Component _entity;
-
-        public EntityInstaller(IUniqueIdGenerator uniqueIdGenerator, Component entity)
+        public static void Register(IContainerBuilder builder, EntityView view)
         {
-            _entity = entity;
-            _uniqueIdGenerator = uniqueIdGenerator;
-        }
-
-        public override void InstallBindings()
-        {
-            Container.BindInterfacesNonLazyExt<Entity>();
-            Container.BindInterfacesExt<EntityTransformFacade>();
-            Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_entity.gameObject).AsSingle().NonLazy();
-            // Temporarily disable squadron minimap markers to measure their performance impact.
-            if (_entity is not EmpireAtWar.Entities.Squadrons.Squadron)
-            {
-                Container.BindInterfacesAndSelfTo<MiniMapUnitMarkerPresenter>().AsSingle().NonLazy();
-            }
-
-            Container.BindEntityExt(_uniqueIdGenerator.GenerateUniqueId());
+            builder.Register<Entity>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<EntityTransformFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.RegisterComponent(view.gameObject.AddComponent<ViewEntity>()).AsImplementedInterfaces().AsSelf();
+            // Squadron markers are disabled in the existing performance baseline.
+            if (view is not EmpireAtWar.Entities.Squadrons.Squadron)
+                builder.Register<MiniMapUnitMarkerPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }
 }

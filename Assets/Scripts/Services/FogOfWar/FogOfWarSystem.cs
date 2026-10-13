@@ -4,7 +4,8 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.FogOfWar
 {

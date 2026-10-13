@@ -296,7 +296,9 @@ namespace EmpireAtWar.Tests.Weapon
             CombatModifiers modifiers = new CombatModifiers();
             FogStub fog = new FogStub { Hidden = true };
             Entity entity = new Entity(health, null,
-                new IEntityFacade[] { new CombatModifiersFacade(modifiers), fog }, default, 1);
+                new IEntityFacade[] { new CombatModifiersFacade(modifiers), fog }, default, 1,
+                System.Array.Empty<IPooledEntityEvents>(),
+                System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
             HardPointStub unit = Unit(Vector3.zero);
             AttackData first = new AttackData(health, null, unit, entity);
             AttackData second = new AttackData(health, null, unit, entity);

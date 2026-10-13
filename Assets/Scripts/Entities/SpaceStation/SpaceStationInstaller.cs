@@ -1,55 +1,45 @@
 ﻿using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.SpaceStation;
-using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;
-using Zenject;
+using EmpireAtWar.Services.SpawnBlocking;
+using UnityEngine;
+using VContainer;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.SpaceStation
 {
-    public class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationData>
+    public sealed class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationData>
     {
-        private FactionType _factionType;
-        private PlayerId _owner;
-        private bool _isHiddenByLocalFog;
+        private readonly FactionType _factionType;
 
-        protected override string PrefabPath => _factionType + base.PrefabPath;
+        public SpaceStationInstaller(SpaceStationEntity view, SpaceStationData data, ILocalPlayer localPlayer,
+            PlayerId owner, long entityId, Vector3 position, FactionType factionType)
+            : base(view, data, localPlayer, owner, entityId, position) => _factionType = factionType;
 
-        [Inject]
-        public void Construct(FactionType factionType, PlayerId owner, ILocalPlayer localPlayer)
+        protected override void InstallFeatures(IContainerBuilder builder)
         {
-            _factionType = factionType;
-            _owner = owner;
-            _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
-        }
-
-        protected override void InstallFeatures(SpaceStationData data)
-        {
-            Container.BindEntityExt(_owner);
-            Container.BindEntityExt(_factionType);
-            Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
-            Container.BindInterfacesExt<SpaceStationTooltipFacade>();
-            Container.BindInterfacesExt<PlayerBaseFacade>();
-            Container.BindInterfacesExt<ProductionBaseFacade>();
-            Container.BindInterfacesExt<StationFootprintFacade>();
-
-            Container
-                .BindSelectionFeature(SelectionType.Base)
-                .BindHealthFeature()
-                .BindRadarFeature()
-                .BindWeaponFeature()
-                .BindCombatModifiersFeature()
-                .BindStationaryCombatFeature()
-                .BindFogOfWarFeature(_isHiddenByLocalFog);
-
-            Container.Bind<IHangarData>().To<StationHangarData>().AsSingle();
-            Container.Bind<HangarModel>().AsSingle();
-            Container.BindInterfacesAndSelfTo<HangarComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
+            builder.RegisterInstance(Data);
+            builder.RegisterInstance(_factionType);
+            builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
+            builder.Register<SpaceStationTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<PlayerBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StationFootprintFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Base, SelectionType.Base);
+            EntityFeatureBindings.RegisterCombatModifiers(builder);
+            EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
+            EntityFeatureBindings.RegisterRadar(builder, Bindings);
+            EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            EntityFeatureBindings.RegisterStationaryCombat(builder);
+            EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
+            builder.Register<StationHangarData>(Lifetime.Singleton).As<IHangarData>();
+            builder.Register<HangarModel>(Lifetime.Singleton);
+            EntityFeatureBindings.RegisterComponent(builder, Bindings.Hangar);
         }
     }
 }

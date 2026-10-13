@@ -21292,6 +21292,7 @@ GameObject:
   - component: {fileID: 8364790595329249932}
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
+  - component: {fileID: 847620812274506484}
   m_Layer: 0
   m_Name: HomeOneShipView
   m_TagString: Untagged
@@ -21331,6 +21332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e11f9a6878dc040ba9c051837b41b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 847620812274506484}
   explosionHullRenderers:
   - {fileID: 85903643033099335}
   - {fileID: 2307319189243727299}
@@ -21649,6 +21651,57 @@ MonoBehaviour:
   - {fileID: 6108758941181876188}
   - {fileID: 752330470065181724}
   - {fileID: 2333006515950907512}
+--- !u!114 &847620812274506484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 3689196778523213402}
+  <Health>k__BackingField:
+  - {fileID: 8364790595329249932}
+  <Radar>k__BackingField:
+  - {fileID: 905498400102155206}
+  <Weapons>k__BackingField:
+  - {fileID: 1861644053665841973}
+  <FogVisibility>k__BackingField:
+  - {fileID: 6698126527802799869}
+  <ShipMove>k__BackingField: {fileID: 725234866686407512}
+  <Hangar>k__BackingField: {fileID: 7672579169363179303}
+  <AudioShip>k__BackingField: {fileID: 2592584285315298879}
+  <AudioDialog>k__BackingField: {fileID: 2995179423731630235}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 7469138526702055200}
+  - {fileID: 6404002212570965013}
+  - {fileID: 6061503537117153814}
+  - {fileID: 2483028719165850560}
+  - {fileID: 7671586239985071766}
+  - {fileID: 8463303989687003075}
+  - {fileID: 4992460950296817719}
+  - {fileID: 1401287766833991391}
+  - {fileID: 6989444986084252180}
+  - {fileID: 1980100672327754606}
+  - {fileID: 4426627456839476748}
+  - {fileID: 4231168486632681749}
+  - {fileID: 3077854009156632130}
+  - {fileID: 8960433305818249261}
+  - {fileID: 5037674661801758170}
+  - {fileID: 957658272424672217}
+  - {fileID: 993030392793113810}
+  - {fileID: 6797372097520209611}
+  - {fileID: 5950561255148630559}
+  - {fileID: 2920063887486183568}
 --- !u!1 &4577471718077149114
 GameObject:
   m_ObjectHideFlags: 0
@@ -47583,6 +47636,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41d73a8198e6a0248a72f9f830bd9ec8, type: 3}
+--- !u!114 &2592584285315298879 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3929895870231269468, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1545718542174955107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc88d67b11ac4163aa0ea4cd65296dce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioShipComponent
+--- !u!114 &2995179423731630235 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4387206434606540536, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1545718542174955107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!4 &3209686314290215958 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,

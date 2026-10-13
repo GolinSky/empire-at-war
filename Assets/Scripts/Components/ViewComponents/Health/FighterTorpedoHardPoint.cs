@@ -2,7 +2,8 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Health
 {

@@ -1,9 +1,11 @@
 using System;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Input
 {
-    public sealed class InputLockService : IInputLock, IInitializable, IDisposable
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -400, LateDispose = -2000)]
+    public sealed class InputLockService : IInputLock, IInitializable, ILateDisposable
     {
         private readonly GameInputActions _actions;
 
@@ -32,6 +34,8 @@ namespace EmpireAtWar.Services.Input
             _actions.Camera.Disable();
             _actions.Battle.Disable();
         }
+
+        void ILateDisposable.LateDispose() => Dispose();
 
         public IDisposable Acquire()
         {

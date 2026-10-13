@@ -18,6 +18,11 @@ namespace EmpireAtWar.Components.Weapon
             _accuracy = accuracy;
         }
 
+        [VContainer.Inject]
+        public WeaponModel(DamageMatrixData damageMatrix) : this(damageMatrix.CopyAccuracy())
+        {
+        }
+
         public bool RollHit(DamageType damageType, ShipClass targetClass, float accuracyMultiplier, float roll) =>
             roll < _accuracy[(damageType, targetClass)] * accuracyMultiplier;
 

@@ -4,7 +4,8 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using UnityEngine.Rendering;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Weapon
 {

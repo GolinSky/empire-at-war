@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Services.Settings;
 using UnityEngine;
 using UnityEngine.Audio;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Audio
 {
@@ -11,7 +12,7 @@ namespace EmpireAtWar.Services.Audio
     /// Drives the exposed group volumes of the game <see cref="AudioMixer"/>. Player gain is added to each
     /// authored level, so full volume keeps the authored mix. <c>SfxDuckVolume</c> stays owned by ship SFX.
     /// </summary>
-    public sealed class AudioSettingsApplier : ISettingsApplier, IAudioSettingsPreview, IInitializable, IDisposable
+    public sealed class AudioSettingsApplier : ISettingsApplier, IAudioSettingsPreview, IInitializable, IOrderedDisposable
     {
         private const string MASTER_VOLUME_PARAMETER = "MasterVolume";
         private const string MUSIC_VOLUME_PARAMETER = "MusicVolume";

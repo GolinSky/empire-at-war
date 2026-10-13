@@ -4021,6 +4021,7 @@ GameObject:
   - component: {fileID: 3390042486601539979}
   - component: {fileID: 4949378780131669032}
   - component: {fileID: 8122547812603076977}
+  - component: {fileID: 7392709377472106082}
   m_Layer: 0
   m_Name: AsteroidMiningFacilityView
   m_TagString: Untagged
@@ -4059,6 +4060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7736a4b6e18a4f55a05515a6e56b92cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 7392709377472106082}
   explosionHullRenderers:
   - {fileID: 2017052827535815179}
   - {fileID: 4442031904108412962}
@@ -4246,3 +4248,35 @@ MonoBehaviour:
   - {fileID: 30541847785515116}
   - {fileID: 316462958882684173}
   - {fileID: 7585486297845372129}
+--- !u!114 &7392709377472106082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 2562994139316657033}
+  <Health>k__BackingField:
+  - {fileID: 3390042486601539979}
+  <Radar>k__BackingField:
+  - {fileID: 6175106514994132088}
+  <Weapons>k__BackingField: []
+  <FogVisibility>k__BackingField:
+  - {fileID: 4949378780131669032}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 0}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 8122547812603076977}
+  - {fileID: 1754627770004611748}
