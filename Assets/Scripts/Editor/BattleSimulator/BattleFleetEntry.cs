@@ -7,7 +7,6 @@ namespace EmpireAtWar.Editor.BattleSimulator
     {
         public string UnitId;
         public int Quantity = 1;
-        public int Level = 1;
         public float ArcFactor = 1;
     }
 }

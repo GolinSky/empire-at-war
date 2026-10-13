@@ -8,7 +8,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
 {
     public static class BattleExport
     {
-        public const string LIMITATIONS = "Stationary, all in range; no abilities, hangar launches, missile interception or attack-run restrictions. Level unlocks only; no research multipliers. Arc factor rounds the number of bearing mounts. TTK excludes timeouts. Detailed results show the first seed.";
+        public const string LIMITATIONS = "Stationary, all in range; no abilities, hangar launches, missile interception or attack-run restrictions. Level 1 hardpoints only; no research multipliers. Arc factor rounds the number of bearing mounts, chosen per seed; out-of-arc mounts replace destroyed ones. TTK excludes timeouts. Detailed results show the first seed.";
         private static string N(double number) => double.IsNaN(number) ? "n/a" : number.ToString("0.###", CultureInfo.InvariantCulture);
         private static string Cell(string value) => "\"" + value.Replace("\"", "\"\"") + "\"";
         private static string Md(string value) => value.Replace("|", "\\|").Replace("\r", " ").Replace("\n", " ");
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
             text.AppendLine($"\nLimit {N(setup.TimeLimit)} s; distance {N(setup.Distance)} (-1 = shooter range); alpha strike {setup.AlphaStrike}; targets {setup.PolicyA}/{setup.PolicyB}; subsystem {setup.HardPointFocus}.");
             foreach (var side in new[] { ("A", setup.SideA), ("B", setup.SideB) })
                 foreach (BattleFleetEntry entry in side.Item2)
-                    text.AppendLine($"- {side.Item1}: {Md(entry.UnitId)} × {entry.Quantity}; level {entry.Level}; bearing {N(entry.ArcFactor * 100)}%.");
+                    text.AppendLine($"- {side.Item1}: {Md(entry.UnitId)} × {entry.Quantity}; bearing {N(entry.ArcFactor * 100)}%.");
             text.AppendLine("\n" + LIMITATIONS);
             if (summary.FirstResult == null) return text.ToString();
             BattleResult result = summary.FirstResult;
@@ -31,7 +31,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
             text.AppendLine("\n| Side / unit | Hull | Shields | Destroyed (s) | Dealt | Taken shield / hull / subsystem | Hits / shots | Realized / base DPS | Wasted raw damage |\n|---|---:|---:|---:|---:|---|---:|---:|---:|");
             foreach (UnitCombatStats unit in result.Units)
                 text.AppendLine($"| {(unit.Side == 0 ? "A" : "B")} #{unit.Index + 1} {Md(unit.Name)} | {N(unit.Hull)} / {N(unit.MaxHull)} | {N(unit.Shields)} / {N(unit.MaxShields)} | {(unit.DestroyedAt < 0 ? "survived" : N(unit.DestroyedAt))} | {N(unit.DamageDealt)} | {N(unit.ShieldDamage)} / {N(unit.HullDamage)} / {N(unit.HardPointDamage)} | {unit.Hits} / {unit.Shots} | {N(RealizedDps(unit, result))} / {N(unit.BaseDps)} | {N(unit.Overkill)} |");
-            text.AppendLine("\nWasted raw damage counts queued impacts on already destroyed targets/members. Subsystem damage overlaps hull damage; do not sum all three taken columns. Realized DPS uses total battle duration.");
+            text.AppendLine("\nWasted raw damage counts queued impacts on already destroyed targets, or on subsystems destroyed in flight while others live. Subsystem damage overlaps hull damage; do not sum all three taken columns. Realized DPS uses total battle duration.");
             text.AppendLine("\n## Events");
             foreach (BattleEvent entry in result.Events)
                 text.AppendLine($"- {N(entry.Time)} s · #{entry.UnitIndex + 1} · {entry.Kind} · {Md(entry.Detail)}");

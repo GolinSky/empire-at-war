@@ -8,7 +8,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public int HardPointId;
         public int UnlockLevel = 1;
         public float DamageDuration;
-        public float BeamDelay;
-        public bool IsBeam;
+        // Beams and ion pulses reach the target after a fixed time; other shots fly distance / projectile speed.
+        public bool HasFixedFlight;
+        public float FixedFlightSeconds;
     }
 }

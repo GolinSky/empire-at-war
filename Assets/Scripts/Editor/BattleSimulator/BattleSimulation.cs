@@ -43,8 +43,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
             if (entries.Count == 0) throw new InvalidOperationException("Both sides need at least one unit.");
             foreach (BattleFleetEntry entry in entries)
             {
-                if (entry.Quantity < 1 || entry.Quantity > 100 || entry.Level < 1 || !float.IsFinite(entry.ArcFactor) || entry.ArcFactor < 0 || entry.ArcFactor > 1)
-                    throw new InvalidOperationException("Quantity must be 1–100, level positive, and arc factor 0–1.");
+                if (entry.Quantity < 1 || entry.Quantity > 100 || !float.IsFinite(entry.ArcFactor) || entry.ArcFactor < 0 || entry.ArcFactor > 1)
+                    throw new InvalidOperationException("Quantity must be 1–100 and arc factor 0–1.");
                 for (int i = 0; i < entry.Quantity; i++)
                 {
                     var unit = new SimUnit(definitions[entry.UnitId], entry, side, _units.Count, matrix, _random, _setup.AlphaStrike);
@@ -59,14 +59,21 @@ namespace EmpireAtWar.Editor.BattleSimulator
             if (IsComplete) return;
             double time = _tick * STEP_SECONDS;
             foreach (SimUnit unit in _units)
-                if (!unit.IsDestroyed && !unit.Modifiers.IsIonDisabled)
-                    foreach (SimMount mount in unit.Mounts)
-                        if (!unit.HardPoints[mount.Definition.HardPointId].IsDestroyed)
-                            while (mount.NextShot <= time + 0.000001)
-                            {
-                                Fire(unit, mount, time);
-                                mount.Advance();
-                            }
+            {
+                if (unit.IsDestroyed || unit.Modifiers.IsIonDisabled) continue;
+                int bearing = 0;
+                foreach (SimMount mount in unit.Mounts)
+                {
+                    if (unit.HardPoints[mount.Definition.HardPointId].IsDestroyed) continue;
+                    // Out-of-arc mounts keep their cycle without firing, so they take over a destroyed mount's place in step.
+                    bool fires = bearing++ < unit.Bearing;
+                    while (mount.NextShot <= time + 0.000001)
+                    {
+                        if (fires) Fire(unit, mount, time);
+                        mount.Advance();
+                    }
+                }
+            }
             if (_impacts.TryGetValue(_tick, out List<SimImpact> impacts))
             {
                 foreach (SimImpact impact in impacts) BattleDamageResolver.Apply(impact, time, Result, _detailed);
@@ -106,7 +113,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     (float)_random.NextDouble())) return;
             source.Stats.Hits++;
             float distance = _setup.Distance < 0 ? source.Definition.Range : _setup.Distance;
-            double delay = mount.Definition.IsBeam ? mount.Definition.BeamDelay : distance / profile.ProjectileSpeed;
+            double delay = mount.Definition.HasFixedFlight ? mount.Definition.FixedFlightSeconds : distance / profile.ProjectileSpeed;
             int ticks = Math.Max(1, (int)Math.Ceiling(mount.Definition.DamageDuration / WeaponComponent.DAMAGE_TICK_INTERVAL));
             for (int i = 0; i < ticks; i++)
             {

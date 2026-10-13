@@ -25,7 +25,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
             sides.Add(Side("Side A", setup.SideA, setup.PolicyA, value => setup.PolicyA = value));
             sides.Add(Side("Side B", setup.SideB, setup.PolicyB, value => setup.PolicyB = value));
             var settings = new VisualElement(); settings.AddToClassList("sim-settings"); Add(settings);
-            var source = new Toggle("Balance draft") { value = setup.UseDraft, tooltip = "Off: live assets. On: snapshot of the open Balance Editor draft." };
+            var source = new Toggle("Balance draft") { value = setup.UseDraft, tooltip = "Off: live assets. On: snapshot of the saved Balance Editor draft." };
             source.RegisterValueChangedCallback(e => { setup.UseDraft = e.newValue; changed(); }); settings.Add(source);
             Int(settings, "Seed", setup.Seed, value => setup.Seed = value);
             Int(settings, "Runs", setup.Runs, value => setup.Runs = value);
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                 if (setup.SideA.Count == 0) return;
                 var selected = setup.SideA[0]; selected.Quantity = 1;
                 setup.SideA.RemoveRange(1, setup.SideA.Count - 1);
-                setup.SideB.Clear(); setup.SideB.Add(new BattleFleetEntry { UnitId = selected.UnitId, Level = selected.Level, ArcFactor = selected.ArcFactor });
+                setup.SideB.Clear(); setup.SideB.Add(new BattleFleetEntry { UnitId = selected.UnitId, ArcFactor = selected.ArcFactor });
                 changed(); RebuildSides(sides);
             }) { text = "1v1 mirror" });
             presets.Add(new Button(() =>
@@ -94,7 +94,6 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     var caption = new Label(unit == null ? "Missing unit: " + entry.UnitId : unit.Caption);
                     caption.AddToClassList("sim-faction-" + (unit == null ? "unknown" : unit.Faction.ToLowerInvariant())); row.Add(caption);
                     Int(row, "Quantity", entry.Quantity, value => entry.Quantity = value);
-                    Int(row, "Level (unlock only)", entry.Level, value => entry.Level = value);
                     var arc = new Slider("Guns bearing", 0, 1) { value = entry.ArcFactor, showInputField = true };
                     arc.RegisterValueChangedCallback(e => { entry.ArcFactor = e.newValue; _changed(); }); row.Add(arc);
                     if (_errors.TryGetValue(entry.UnitId, out string error)) row.Add(new HelpBox(error, HelpBoxMessageType.Error));

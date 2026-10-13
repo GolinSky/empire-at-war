@@ -163,3 +163,12 @@ completed: 2026-10-13
 - **Completed v1:** roster adapter, runtime-model simulation, deterministic timing, targeting, batch summaries/cancel, persisted UI, live/draft snapshots, timeline/log, CSV/Markdown exports. Usage and exact rules: `Tools/BattleSimulator/README.md`.
 - **Data limitations (reported, not repaired):** missing explicit health bindings on MC75 Profundity, MC80 Independence, Victory I Advanced Loadout, Victory II Advanced Loadout, ISD III, Executor, Raider, AcclamatorAssault and Tector. Those 9 rows block Run; 56 other roster entries validated.
 - **Additional explicit v1 assumptions:** no missile interception or fighter attack-run restrictions; upgrade level unlocks only (stat multipliers remain 1); arc factor rounds mount count in binding order; detailed results retained for first seed only. TTK excludes timeouts. Wasted-damage statistic counts already-destroyed targets/members.
+
+### Review follow-up — 2026-10-13
+
+- **Decision:** non-targetable weapons removed from the game (user request; suspected battle issue). Weapons outside `HealthComponent.ShipUnits` were never damaged and fired all battle.
+- Gameplay data: **237** weapons added to health lists, `spawnDestroyedExplosion` on — Acclamator Assault 4, Executor 123, ISD III 19, Raider 10, Tector 15, Victory II 12, Victory I 10, MC75 Profundity 22, MC80 Independence 22. Raider `hardPointHealth` was empty → `Weapon: 160 × 1` (CR90/Thranta value).
+- Simulator: in-flight impacts on a subsystem destroyed meanwhile are dropped while others live (runtime `AttackData.CanTarget`); ion pulses use prefab `flightDuration`; bearing mounts chosen by seeded shuffle, out-of-arc mounts replace destroyed ones; Level removed (ships/squadrons never upgrade; only stations); draft read from `Library/BalanceEditor/draft.json` (no open window needed); window one statement per line.
+- Roster test now requires every unit to build: 65/65 (`RosterAudit_BuildsEveryUnit_WithEveryWeaponTargetable` passed).
+- Tests: `Battle` 50/51 — only failure was the new fixed-flight test's expectation (0.9 → 0.85 s, exact tick); corrected, rerun blocked by an unrelated in-progress compile error in `FactionUnitUi.cs`. `Balance` 13 failures = existing Liberator hangar ambiguity. Full EditMode failures (18) are unrelated (AI production, wrecks, team colors, taxonomy, UI scale, height tiers, loadout order).
+- Balance impact: affected ships now lose weapons under fire → expect lower sustained DPS for Executor/ISD III/Tector/Victory/MC75/MC80/Raider. Re-check matchups with the simulator.

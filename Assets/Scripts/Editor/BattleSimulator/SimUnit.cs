@@ -9,6 +9,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
 {
     public sealed class SimUnit
     {
+        // Ships and squadrons never upgrade at runtime (only stations do), so higher-level hardpoints stay uninstalled.
+        private const int UNIT_LEVEL = 1;
         private readonly HealthModel _ship;
         private readonly SquadronHealthModel _squadron;
         private double _nextRegen;
@@ -16,6 +18,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public CombatModifiers Modifiers { get; } = new CombatModifiers();
         public HardPointModel[] HardPoints { get; }
         public readonly List<SimMount> Mounts = new List<SimMount>();
+        // Live mounts beyond this count are out of arc; they take over when bearing mounts are destroyed.
+        public int Bearing { get; }
         public UnitCombatStats Stats { get; }
         public int TargetCursor;
         public bool IsDestroyed => Definition.IsSquadron ? _squadron.IsDestroyed : _ship.IsDestroyed;
@@ -39,23 +43,27 @@ namespace EmpireAtWar.Editor.BattleSimulator
             {
                 _ship = new HealthModel(definition, matrix, Modifiers);
                 _ship.InitializeHardPoints(HardPoints);
-                _ship.Upgrade(entry.Level, 1, 1, 1);
             }
             Stats = new UnitCombatStats { Name = definition.Name, UnitId = definition.Id, Side = side,
                 Index = index, MaxHull = Hull, MaxShields = Shields };
-            int available = 0;
-            foreach (SimMountDefinition mount in definition.Mounts)
-                if (mount.UnlockLevel <= entry.Level && HardPoints[mount.HardPointId].IsInstalled) available++;
-            int bearing = (int)Math.Round(available * entry.ArcFactor, MidpointRounding.AwayFromZero);
             foreach (SimMountDefinition mount in definition.Mounts)
             {
-                if (mount.UnlockLevel > entry.Level || !HardPoints[mount.HardPointId].IsInstalled) continue;
+                if (mount.UnlockLevel > UNIT_LEVEL || !HardPoints[mount.HardPointId].IsInstalled) continue;
                 Stats.BaseDps += mount.Profile.DamagePerSecond;
-                if (Mounts.Count >= bearing) continue;
                 Mounts.Add(new SimMount { Definition = mount, SalvoStart = alphaStrike ? 0 : random.NextDouble() * mount.Profile.Reload });
             }
+            Bearing = (int)Math.Round(Mounts.Count * entry.ArcFactor, MidpointRounding.AwayFromZero);
+            // A seeded shuffle picks which mounts bear, so a partial arc does not depend on prefab order.
+            if (Bearing < Mounts.Count)
+                for (int i = Mounts.Count - 1; i > 0; i--)
+                {
+                    int j = random.Next(i + 1);
+                    (Mounts[i], Mounts[j]) = (Mounts[j], Mounts[i]);
+                }
             UpdateStats();
         }
+
+        public bool HasLiveHardPoints => Definition.IsSquadron ? _squadron.HasLiveHardPoints : _ship.HasLiveHardPoints;
 
         public void ApplyDamage(float damage, DamageType type, int point)
         {

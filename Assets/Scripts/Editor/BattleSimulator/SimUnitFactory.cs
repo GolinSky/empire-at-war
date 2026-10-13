@@ -104,17 +104,17 @@ namespace EmpireAtWar.Editor.BattleSimulator
                         profile.ShotInterval < 0 || !float.IsFinite(profile.Damage) || profile.Damage < 0)
                         throw new InvalidOperationException($"{unit.Caption}: invalid weapon cycle/damage for {type}.");
                     if (profile.ShotPrefab == null) throw new InvalidOperationException($"{unit.Caption}: missing shot prefab for {type}.");
-                    bool beam = profile.ShotPrefab is BeamShot;
-                    float delay = 0;
-                    if (beam)
+                    string fixedFlight = FixedFlightProperty(profile.ShotPrefab);
+                    float flight = 0;
+                    if (fixedFlight != null)
                     {
                         using (var serialized = new SerializedObject(profile.ShotPrefab))
-                            delay = serialized.FindProperty("growthDuration").floatValue;
+                            flight = serialized.FindProperty(fixedFlight).floatValue;
                     }
                     else if (!(profile.ProjectileSpeed > 0)) throw new InvalidOperationException($"{unit.Caption}: invalid projectile speed for {type}.");
                     definition.Mounts.Add(new SimMountDefinition { Profile = profile, HardPointId = id,
-                        UnlockLevel = Integer(mount, "unlockLevel"), IsBeam = beam, BeamDelay = delay,
-                        DamageDuration = profile.ShotPrefab.DamageDuration });
+                        UnlockLevel = Integer(mount, "unlockLevel"), HasFixedFlight = fixedFlight != null,
+                        FixedFlightSeconds = flight, DamageDuration = profile.ShotPrefab.DamageDuration });
                 }
                 float hull = definition.IsSquadron ? definition.MemberHull : definition.Hull;
                 if (!(hull > 0) || !float.IsFinite(hull) || !(definition.ShieldRegenerateDelay > 0))
@@ -123,6 +123,14 @@ namespace EmpireAtWar.Editor.BattleSimulator
             }
             finally { Object.DestroyImmediate(copy); }
         }
+
+        // Serialized time each shot type returns from ShotEffect.Play; null when it flies distance / projectile speed.
+        private static string FixedFlightProperty(ShotEffect shot) => shot switch
+        {
+            BeamShot _ => "growthDuration",
+            IonPulseShot _ => "flightDuration",
+            _ => null
+        };
 
         private int Integer(Object target, string stat) => int.Parse(_registry.FieldsFor(target)
             .Single(field => field.Stat == stat && !field.SharedMountSource).DraftValue(_draft), CultureInfo.InvariantCulture);

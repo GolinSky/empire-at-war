@@ -23,12 +23,12 @@ namespace EmpireAtWar.Editor.Balance
         private string _message = "";
         private VisualElement _details;
         private bool _refreshPending;
-        private static BalanceEditorWindow _current;
 
-        public static BalanceDraft CaptureCurrentDraft()
+        // Every refresh persists the draft, so the recovery file matches an open window and survives domain reloads.
+        public static BalanceDraft LoadSavedDraft()
         {
-            if (_current == null) throw new InvalidOperationException("Open the Balance Editor before simulating its current draft.");
-            return JsonUtility.FromJson<BalanceDraft>(JsonUtility.ToJson(_current.state.Draft));
+            if (!File.Exists(RECOVERY_PATH)) throw new InvalidOperationException("No Balance Editor draft is saved. Edit a value in the Balance Editor first.");
+            return JsonUtility.FromJson<BalanceWindowState>(File.ReadAllText(RECOVERY_PATH)).Draft;
         }
 
         [MenuItem(MENU_PATH)]
@@ -36,7 +36,6 @@ namespace EmpireAtWar.Editor.Balance
 
         private void OnEnable()
         {
-            _current = this;
             if (state.Draft.Changes.Count == 0 && File.Exists(RECOVERY_PATH))
                 state = JsonUtility.FromJson<BalanceWindowState>(File.ReadAllText(RECOVERY_PATH));
             _controller = new BalanceEditorController(state, Refresh);
@@ -46,7 +45,6 @@ namespace EmpireAtWar.Editor.Balance
 
         private void OnDisable()
         {
-            if (_current == this) _current = null;
             RememberScroll();
             Persist();
             EditorApplication.playModeStateChanged -= PlayModeChanged;

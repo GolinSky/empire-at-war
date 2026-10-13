@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Globalization;
 using EmpireAtWar.Components.AttackComponent;
@@ -14,34 +12,24 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class BattleBindingTests
     {
         [Test]
-        public void RosterAudit_ReportsEveryShip_AndBuildsThreeShipsAndOneSquadron()
+        public void RosterAudit_BuildsEveryUnit_WithEveryWeaponTargetable()
         {
             BalanceRegistration registry = BalanceInventory.BuildCombat();
             int ships = 0, squadrons = 0;
-            var errors = new List<string>();
             using (var factory = new SimUnitFactory(registry, new BalanceDraft()))
                 foreach (BalanceUnit unit in registry.Units)
                 {
-                    try
+                    // Throws when a weapon mount is missing from its health bindings (non-targetable weapon).
+                    SimUnitDefinition definition = factory.Build(unit);
+                    Assert.That(definition.HardPoints.Count, Is.GreaterThan(0), unit.Caption);
+                    foreach (SimMountDefinition mount in definition.Mounts)
                     {
-                        SimUnitDefinition definition = factory.Build(unit);
-                        Assert.That(definition.HardPoints.Count, Is.GreaterThan(0), unit.Caption);
-                        foreach (SimMountDefinition mount in definition.Mounts)
-                        {
-                            Assert.That(mount.Profile, Is.Not.Null, unit.Caption);
-                            Assert.That(mount.HardPointId, Is.InRange(0, definition.HardPoints.Count - 1), unit.Caption);
-                        }
-                        if (definition.IsSquadron) squadrons++; else ships++;
+                        Assert.That(mount.Profile, Is.Not.Null, unit.Caption);
+                        Assert.That(mount.HardPointId, Is.InRange(0, definition.HardPoints.Count - 1), unit.Caption);
                     }
-                    catch (InvalidOperationException exception)
-                    {
-                        Assert.That(exception.Message, Does.Contain("no explicit health binding"), unit.Caption);
-                        errors.Add(unit.Caption + ": " + exception.Message);
-                    }
+                    if (definition.IsSquadron) squadrons++; else ships++;
                 }
-            Directory.CreateDirectory("Library/BattleSimulator");
-            File.WriteAllLines("Library/BattleSimulator/binding-errors.txt", errors);
-            TestContext.WriteLine($"Roster {registry.Units.Count}; valid ships {ships}; valid squadrons {squadrons}; blocked {errors.Count}");
+            TestContext.WriteLine($"Roster {registry.Units.Count}; ships {ships}; squadrons {squadrons}");
             Assert.That(ships, Is.GreaterThanOrEqualTo(3)); Assert.That(squadrons, Is.GreaterThanOrEqualTo(1));
             Assert.That(registry.Units.Select(u => u.Faction).Distinct().Count(), Is.EqualTo(4));
         }

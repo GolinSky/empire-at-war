@@ -113,13 +113,49 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void LockedMount_OnlyFiresAtItsUnlockLevel()
+        public void LockedMount_NeverFiresBecauseUnitsStayAtLevelOne()
         {
             var a = Unit("A", 100, 10); a.HardPoints[0].UnlockLevel = 2; a.Mounts[0].UnlockLevel = 2;
             var setup = Setup(); setup.TimeLimit = 1;
             Assert.That(Run(setup, a, Unit("B", 100, 0)).Units[0].Shots, Is.Zero);
-            setup.SideA[0].Level = 2;
-            Assert.That(Run(setup, a, Unit("B", 100, 0)).Units[0].Shots, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void ImpactOnSubsystemDestroyedInFlight_IsWastedWhileOtherSubsystemsLive()
+        {
+            var a = Unit("A", 1000, 0); a.Mounts.Add(new SimMountDefinition { HardPointId = 0, Profile = Profile(10, shots: 2) });
+            var b = Unit("B", 1000, 0);
+            b.HardPoints.Insert(0, new SimHardPointDefinition { Name = "Generator", Type = HardPointType.ShieldGenerator });
+            b.HardPointHealth = new[] { Health(HardPointType.ShieldGenerator, 10, 1), Health(HardPointType.Weapon, 10000, 1) };
+            var setup = Setup(); setup.Distance = 10; setup.TimeLimit = 1; setup.HardPointFocus = HardPointType.ShieldGenerator;
+            BattleResult result = Run(setup, a, b);
+            // Both shots leave at 0 s for the generator; the first destroys it on arrival, the second is dropped.
+            Assert.That(result.Units[1].Hull, Is.EqualTo(990));
+            Assert.That(result.Units[0].Overkill, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void FixedFlightShot_IgnoresDistance()
+        {
+            var a = Unit("A", 100, 10); a.Mounts[0].HasFixedFlight = true; a.Mounts[0].FixedFlightSeconds = 0.85f;
+            var setup = Setup(); setup.Distance = 1000;
+            Assert.That(Run(setup, a, Unit("B", 10, 0)).Duration, Is.EqualTo(0.85).Within(0.0001));
+        }
+
+        [Test]
+        public void OutOfArcMount_TakesOverWhenBearingMountIsDestroyed()
+        {
+            var a = Unit("A", 1000, 1);
+            a.HardPoints.Add(new SimHardPointDefinition { Name = "Weapon 2", Type = HardPointType.Weapon });
+            a.Mounts.Add(new SimMountDefinition { HardPointId = 1, Profile = Profile(1) });
+            a.HardPointHealth = new[] { Health(HardPointType.Weapon, 10, 1) };
+            var setup = Setup(); setup.TimeLimit = 1.5f; setup.SideA[0].ArcFactor = 0.5f;
+            // B destroys one of A's two mounts at 0 s; the surviving mount must fire at 1 s whichever one bore first.
+            for (int seed = 1; seed <= 10; seed++)
+            {
+                setup.Seed = seed;
+                Assert.That(Run(setup, a, Unit("B", 1000, 10)).Units[0].Shots, Is.EqualTo(2), "seed " + seed);
+            }
         }
 
         [Test]
@@ -151,7 +187,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Beam_SplitsDamageUsingRuntimeTickGranularity()
         {
             var a = Unit("A", 100, 20);
-            a.Mounts[0].IsBeam = true; a.Mounts[0].BeamDelay = 0.3f; a.Mounts[0].DamageDuration = 0.25f;
+            a.Mounts[0].HasFixedFlight = true; a.Mounts[0].FixedFlightSeconds = 0.3f; a.Mounts[0].DamageDuration = 0.25f;
             var result = Run(Setup(), a, Unit("B", 19, 0));
             Assert.That(result.Duration, Is.EqualTo(0.5).Within(0.0001));
             Assert.That(result.Units[0].Shots, Is.EqualTo(1));
