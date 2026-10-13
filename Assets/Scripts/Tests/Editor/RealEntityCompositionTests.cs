@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Health.Overlay;
@@ -30,6 +31,7 @@ using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Ship;
+using EmpireAtWar.ViewComponents.Squadrons;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -163,7 +165,10 @@ namespace EmpireAtWar.Tests.Editor
                     slot.Id, squadronType, origin + Vector3.right * 100f, Quaternion.identity);
                 EntityLifetimeScope squadronScope = AssertEntity(squadron, player, slot);
                 AssertVoiceCapability(squadronScope, slot);
+                int[] poseSlots = AssertFightersBank(squadron);
                 AssertPoolRoundTrip(squadron, squadronScope, origin + Vector3.right * 150f);
+                Assert.That(AssertFightersBank(squadron), Is.EquivalentTo(poseSlots),
+                    "Respawn reuses the released pose slots instead of registering fighters twice.");
                 EntityLifetimeScope station = AssertEntity(player.Container.Resolve<SpaceStationFactory>()
                     .Create(slot.Id, slot.Faction, origin + Vector3.forward * 150f), player, slot);
                 AssertDecoratedHealth(station, station.Container.Resolve<SpaceStationData>().ComponentData);
@@ -289,6 +294,33 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(entity.HealthModel.HardPointModels.All(unit => !unit.IsDestroyed), Is.True);
             Assert.That(callbacks.Count, Is.EqualTo(callbackCount));
             Assert.That(entity.GetFacade<IShipAbilityFacade>().Entity, Is.SameAs(entity));
+        }
+
+        // A fresh squadron initializes while inactive; its pose batch slots must already hold the authored rest.
+        private int[] AssertFightersBank(Squadron squadron)
+        {
+            const float BANK = 30f;
+            SquadronFlightComponent flight = squadron.Bindings.SquadronFlight;
+            List<FighterView> fighters = (List<FighterView>)typeof(SquadronFlightComponent)
+                .GetField("fighters", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .GetValue(flight);
+            int[] slots = (int[])typeof(SquadronFlightComponent)
+                .GetField("_poseSlots", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .GetValue(flight);
+            FighterPoseBatch poses = _battle.Container.Resolve<FighterPoseBatch>();
+            Assert.That(slots.Length, Is.EqualTo(fighters.Count));
+            Assert.That(slots.Distinct().Count(), Is.EqualTo(slots.Length));
+            for (int i = 0; i < fighters.Count; i++)
+            {
+                Quaternion rest = fighters[i].BodyRestRotation;
+                Assert.That(Quaternion.Dot(rest, rest), Is.EqualTo(1f).Within(0.001f), fighters[i].name);
+                poses.Set(slots[i], fighters[i].Position, Vector3.forward, BANK);
+            }
+            poses.LateTick();
+            foreach (FighterView fighter in fighters)
+                Assert.That(Quaternion.Angle(fighter.Body.localRotation,
+                    Quaternion.AngleAxis(BANK, Vector3.forward) * fighter.BodyRestRotation), Is.LessThan(0.01f), fighter.name);
+            return slots;
         }
 
         [LifecycleOrder(Initialize = -1000)]

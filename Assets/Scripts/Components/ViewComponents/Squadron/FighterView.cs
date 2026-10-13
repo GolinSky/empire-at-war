@@ -40,14 +40,11 @@ namespace EmpireAtWar.ViewComponents.Squadrons
 
         public bool TryGetWeaponType(out WeaponType weaponType) => gun.TryGetWeaponType(out weaponType);
 
+        // Injection runs before the inactive entity initializes and poses its fighters, so Awake would be too late.
         [Inject]
         private void Construct(IFighterExplosionPool explosions)
         {
             _explosions = explosions;
-        }
-
-        private void Awake()
-        {
             _bodyRestRotation = body.localRotation;
         }
 

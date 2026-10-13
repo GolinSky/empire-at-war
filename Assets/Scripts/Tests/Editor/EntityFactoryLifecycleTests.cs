@@ -19,13 +19,24 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class EntityFactoryLifecycleTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();
+        private PopulatedVContainerSettings _settings;
+
+        [SetUp]
+        public void SetUp() => _settings = new PopulatedVContainerSettings();
 
         [TearDown]
         public void TearDown()
         {
-            for (int i = _objects.Count - 1; i >= 0; i--)
-                if (_objects[i] != null) Object.DestroyImmediate(_objects[i]);
-            _objects.Clear();
+            try
+            {
+                for (int i = _objects.Count - 1; i >= 0; i--)
+                    if (_objects[i] != null) Object.DestroyImmediate(_objects[i]);
+                _objects.Clear();
+            }
+            finally
+            {
+                _settings.Dispose();
+            }
         }
 
         [Test]
@@ -125,8 +136,10 @@ namespace EmpireAtWar.Tests.Editor
             _objects.Add(root);
             TestScope parent = root.AddComponent<TestScope>();
             parent.autoRun = false;
-            parent.Build();
+            using (LifetimeScope.EnqueueParent(null)) parent.Build();
             root.SetActive(true);
+            Assert.That(parent.Parent, Is.Null);
+            _settings.AssertProductionRootUntouched();
             return parent;
         }
 
