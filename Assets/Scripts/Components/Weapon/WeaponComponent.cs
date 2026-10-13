@@ -30,7 +30,7 @@ namespace EmpireAtWar.Components.Weapon
         // A hull too large for its range stops near hull contact, give or take navigation slack.
         private const float CONTACT_ENGAGE_FACTOR = 1.15f;
         // Continuous weapons such as beams land their damage in ticks this far apart.
-        private const float DAMAGE_TICK_INTERVAL = 0.1f;
+        public const float DAMAGE_TICK_INTERVAL = 0.1f;
         // With every candidate beyond reach of all hardpoints the weapon waits this long before selecting again.
         // Target changes (orders, new contacts) cancel the wait.
         private const float IDLE_RESELECT_INTERVAL = 0.25f;

@@ -34,7 +34,7 @@ namespace EmpireAtWar.Editor.Balance
             foreach (FactionDefinition faction in BalanceRegistration.One<FactionCatalog>().Factions) Research(registry, faction);
         }
 
-        private static void Matrix(BalanceRegistration registry)
+        public static void Matrix(BalanceRegistration registry)
         {
             DamageMatrixData matrix = BalanceRegistration.One<DamageMatrixData>();
             registry.Add(matrix, "missSpread", "missSpread", BalanceFieldGroup.GlobalData, "Damage matrix", BalanceFieldOwner.SharedProfile, true, registry.Units);
