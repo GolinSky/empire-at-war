@@ -37,6 +37,13 @@ namespace EmpireAtWar.Editor.Balance
             return true;
         }
 
+        public IReadOnlyDictionary<WeaponType, WeaponProfile> CaptureProfiles(BalanceDraft draft)
+        {
+            WeaponsData data = Apply(draft);
+            return data.Weapons.ToDictionary(definition => definition.WeaponType,
+                definition => data.GetProfile(definition.WeaponType));
+        }
+
         public void Dispose()
         {
             if (_copy != null) Object.DestroyImmediate(_copy);

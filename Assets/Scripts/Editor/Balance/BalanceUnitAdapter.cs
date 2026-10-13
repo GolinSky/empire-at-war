@@ -15,7 +15,7 @@ namespace EmpireAtWar.Editor.Balance
 {
     public static class BalanceUnitAdapter
     {
-        public static void Register(BalanceRegistration registry)
+        public static void Register(BalanceRegistration registry, bool combatOnly = false)
         {
             FactionCatalog catalog = BalanceRegistration.One<FactionCatalog>();
             ShipsData ships = BalanceRegistration.One<ShipsData>();
@@ -25,15 +25,15 @@ namespace EmpireAtWar.Editor.Balance
                 using (SerializedObject serialized = new SerializedObject(faction))
                 {
                     RegisterRoster(registry, faction, serialized, "ships", typeof(ShipType), id =>
-                        AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(ships.GetShipDataPath((ShipType)id))), mapping);
+                        AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(ships.GetShipDataPath((ShipType)id))), mapping, combatOnly);
                     RegisterRoster(registry, faction, serialized, "squadrons", typeof(SquadronType), id =>
-                        BalanceAssetResolver.Load<SquadronData>(mapping.GetAssetKey(((SquadronType)id) + "SquadronData")), mapping);
+                        BalanceAssetResolver.Load<SquadronData>(mapping.GetAssetKey(((SquadronType)id) + "SquadronData")), mapping, combatOnly);
                 }
             }
         }
 
         private static void RegisterRoster(BalanceRegistration registry, FactionDefinition faction, SerializedObject serialized,
-            string roster, Type idType, Func<int, Object> resolve, AssetMappingData mapping)
+            string roster, Type idType, Func<int, Object> resolve, AssetMappingData mapping, bool combatOnly)
         {
             foreach (SerializedProperty entry in BalanceRegistration.Keyed(serialized, roster + ".keyValue"))
             {
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Editor.Balance
                 };
                 registry.Units.Add(unit);
                 Economy(registry, faction, value.propertyPath + ".", roster + "/" + id + "/", unit, false);
-                RegisterData(registry, unit);
+                RegisterData(registry, unit, combatOnly);
                 string topology = BalancePrefabBindings.Register(registry, unit);
                 foreach (BalanceField field in registry.FieldsFor(data))
                     field.Dependency = topology;
@@ -74,7 +74,7 @@ namespace EmpireAtWar.Editor.Balance
             }
         }
 
-        private static void RegisterData(BalanceRegistration registry, BalanceUnit unit)
+        private static void RegisterData(BalanceRegistration registry, BalanceUnit unit, bool combatOnly)
         {
             Object data = unit.Data;
             bool ship = data is ShipData;
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Editor.Balance
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
                     Health(registry, data, serialized.FindProperty("hardPointHealth"), "hardPointHealth", unit);
-                    Hangar(registry, data, serialized.FindProperty("hangarBays"), "hangarBays", unit);
+                    if (!combatOnly) Hangar(registry, data, serialized.FindProperty("hangarBays"), "hangarBays", unit);
                 }
             }
             foreach (BalanceField field in registry.FieldsFor(data)) unit.Fields[field.Stat] = field.Key;
