@@ -51,8 +51,6 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public ShipClass ShipClass => Model.ShipClass;
         public HardPointModel[] HardPointModels => Model.Members;
         public float Hull => Model.Hull;
-        public float MaxHull => Model.MaxHull;
-        public float MaxShields => Model.MaxShields;
         public float ShieldRegeneration => Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier * Model.AliveCount;
         public float ShieldRegenerationInterval => Model.ShieldRegenerateDelay;
         public float HullPercentage => Model.HullPercentage;

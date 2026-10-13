@@ -67,7 +67,6 @@ namespace EmpireAtWar.Components.Ship.Health
         public ShipClass ShipClass => Model.ShipClass;
         public HardPointModel[] HardPointModels => Model.HardPointModels;
         public float Hull => Model.Hull;
-        public float MaxHull => Model.MaxHull;
         public float ShieldRegeneration => Model.IsLostShieldGenerator ? 0f
             : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier;
         public float ShieldRegenerationInterval => Model.ShieldRegenerateDelay;
@@ -81,7 +80,6 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool HasShields => Model.HasShields;
         public PlayerId Owner => _owner;
         public IReadOnlyList<IHardPointStatus> HardPoints => _hardPointAdapters;
-        public float MaxShields => Model.MaxShields;
 
         [Inject]
         private void Construct(

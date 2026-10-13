@@ -6,6 +6,5 @@ namespace EmpireAtWar.Models.Health
     public interface IHardPointsSource
     {
         IReadOnlyList<IHardPointStatus> HardPoints { get; }
-        float MaxShields { get; }
     }
 }
