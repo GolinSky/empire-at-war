@@ -6,7 +6,8 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Editor.CaptureSites
 {
@@ -220,13 +221,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private static void BuildInstaller()
         {
             GameObject root = new GameObject("AsteroidDefendPlatformInstaller");
-            GameObjectContext context = root.AddComponent<GameObjectContext>();
-            AsteroidDefendPlatformInstaller installer = root.AddComponent<AsteroidDefendPlatformInstaller>();
-            SerializedObject serializedContext = new SerializedObject(context);
-            SerializedProperty installers = serializedContext.FindProperty("_monoInstallers");
-            installers.arraySize = 1;
-            installers.GetArrayElementAtIndex(0).objectReferenceValue = installer;
-            serializedContext.ApplyModifiedPropertiesWithoutUndo();
+            root.AddComponent<EmpireAtWar.Services.VContainer.EntityLifetimeScope>().autoRun = false;
             PrefabUtility.SaveAsPrefabAsset(root, INSTALLER_PATH);
             Object.DestroyImmediate(root);
         }

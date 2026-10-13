@@ -16,7 +16,8 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -81,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
             var caster = new SelfCaster();
             var existing = new CombatStatModifier(1.5f, .8f, 1.2f, 2, .75f);
             caster.Modifiers.Add(existing);
-            IShipAbility ability = definition.Settings.CreateAbility(new DiContainer());
+            IShipAbility ability = definition.Settings.CreateAbility(null);
             for (int activation = 0; activation < 2; activation++)
             {
                 ability.Start(caster, definition, null);

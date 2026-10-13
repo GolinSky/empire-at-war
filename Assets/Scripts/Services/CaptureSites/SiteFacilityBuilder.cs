@@ -1,5 +1,6 @@
 using System;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.CaptureSites;

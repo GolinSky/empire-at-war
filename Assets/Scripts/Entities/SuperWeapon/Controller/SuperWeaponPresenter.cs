@@ -12,7 +12,8 @@ using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Controller
 {

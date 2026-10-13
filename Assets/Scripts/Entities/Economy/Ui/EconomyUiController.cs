@@ -5,7 +5,8 @@ using System;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Economy.Ui
 {

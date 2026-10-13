@@ -133,7 +133,8 @@ namespace EmpireAtWar.Entities.MiniMap
             // Scene teardown can destroy the view before the marker presenter is disposed.
             if (view != null)
             {
-                Destroy(view.gameObject);
+                if (Application.isPlaying) Destroy(view.gameObject);
+                else DestroyImmediate(view.gameObject);
             }
         }
 

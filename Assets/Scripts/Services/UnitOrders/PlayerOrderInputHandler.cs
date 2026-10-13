@@ -14,10 +14,12 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.UnitOrders
 {
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -100)]
     public sealed class PlayerOrderInputHandler : IInitializable, ILateDisposable,
         IPlayerOrderInputHandler
     {

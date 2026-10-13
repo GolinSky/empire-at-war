@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Components.AttackComponent;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -15,7 +14,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float Damage => damage;
         public DamageType DamageType => damageType;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<ProtonBeamAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new ProtonBeamAbility(this, dependencies.ImpactPresenter, dependencies.WeaponsData);
     }
 }

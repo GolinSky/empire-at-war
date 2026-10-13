@@ -4,7 +4,8 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
@@ -42,12 +43,16 @@ namespace EmpireAtWar.ViewComponents.Health
         public Transform Transform => transform;
         public bool IsDestroyed => _healthPercentage <= 0f;
 
-        [Inject]
-        private IHardPointExplosionPool ExplosionPool { get; }
+        private IHardPointExplosionPool ExplosionPool { get; set; }
 
-        // Bound only for units outside the local team; the local team's explosions are never hidden by fog.
-        [InjectOptional]
-        private IFogVisibilityFacade FogVisibility { get; }
+        private IFogVisibilityFacade FogVisibility { get; set; }
+
+        [Inject]
+        private void Construct(IHardPointExplosionPool explosionPool, IFogVisibilityFacade fogVisibility)
+        {
+            ExplosionPool = explosionPool;
+            FogVisibility = fogVisibility;
+        }
 
         public void UpdateData(float healthPercentage)
         {

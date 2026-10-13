@@ -4,11 +4,12 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Pooling;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.UnitExplosion
 {
-    public sealed class UnitExplosionService : Service, IUnitExplosionService, ITickable, IDisposable
+    public sealed class UnitExplosionService : Service, IUnitExplosionService, ITickable, IOrderedDisposable
     {
         private const float COVERAGE_PADDING = 1.2f;
 

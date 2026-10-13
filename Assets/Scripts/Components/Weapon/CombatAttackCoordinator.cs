@@ -7,11 +7,13 @@ using EmpireAtWar.ViewComponents.Health;
 using Unity.Collections;
 using UnityEngine;
 using Unity.Jobs;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public sealed class CombatAttackCoordinator : ILateTickable, IDisposable
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = -1000)]
+    public sealed class CombatAttackCoordinator : ILateTickable, IOrderedDisposable
     {
         internal const int JOB_SELECTION_THRESHOLD = TargetSelectionBatch.JOB_SELECTION_THRESHOLD;
         internal const int JOB_PROGRESSION_THRESHOLD = 64;

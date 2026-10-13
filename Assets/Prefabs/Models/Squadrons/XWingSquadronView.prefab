@@ -1355,6 +1355,7 @@ GameObject:
   - component: {fileID: 2438442675913171415}
   - component: {fileID: 4125252901682534135}
   - component: {fileID: 3635918387614992477}
+  - component: {fileID: 1777391324887390971}
   m_Layer: 0
   m_Name: XWingSquadronView
   m_TagString: Untagged
@@ -1397,6 +1398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f8ddea8dd0bf24fb96e762aaf5f160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
+  bindings: {fileID: 1777391324887390971}
 --- !u!114 &6690140857762700653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1573,6 +1575,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+--- !u!114 &1777391324887390971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 2249065435612880045}
+  <Health>k__BackingField: []
+  <Radar>k__BackingField:
+  - {fileID: 466052942780943288}
+  <Weapons>k__BackingField:
+  - {fileID: 9214297702768187326}
+  <FogVisibility>k__BackingField:
+  - {fileID: 2438442675913171415}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 3635918387614992477}
+  <SquadronHealth>k__BackingField: {fileID: 4300964992805454082}
+  <SquadronFlight>k__BackingField: {fileID: 6690140857762700653}
+  <SquadronIcon>k__BackingField: {fileID: 2830691518358750855}
+  <SFoils>k__BackingField: {fileID: 4125252901682534135}
+  <Injectables>k__BackingField:
+  - {fileID: 7252515518634781708}
+  - {fileID: 2442399315258713804}
+  - {fileID: 430017224026315591}
+  - {fileID: 1311555072952392677}
+  - {fileID: 5274519771211358823}
+  - {fileID: 7759131437688775246}
+  - {fileID: 8274008040225297148}
+  - {fileID: 7001295422902196374}
+  - {fileID: 8129116384497323108}
+  - {fileID: 3013203396740444680}
+  - {fileID: 1330398672233465508}
+  - {fileID: 8330721924570538322}
+  - {fileID: 783278415968771051}
+  - {fileID: 7317681428928554252}
+  - {fileID: 4090106106805930528}
+  - {fileID: 8109948076401822217}
+  - {fileID: 8293892463212359624}
+  - {fileID: 6214386693927165168}
+  - {fileID: 7533005178045838720}
+  - {fileID: 8947375316135778706}
+  - {fileID: 91984531427041501}
+  - {fileID: 9079646933002093974}
+  - {fileID: 1247213820370218001}
+  - {fileID: 7574031787567205406}
+  - {fileID: 7835581175894561937}
 --- !u!1 &1816910562666282389
 GameObject:
   m_ObjectHideFlags: 0

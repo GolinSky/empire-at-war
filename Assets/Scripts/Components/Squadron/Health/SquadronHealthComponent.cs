@@ -9,13 +9,15 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Squadrons.Health
 {
     /// <summary>
     /// Exposes each fighter as a hardpoint so existing weapons can target and destroy them individually.
     /// </summary>
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -100)]
     public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, ISquadronHealthComponent,
         IHealthModelObserver, IHealthTooltipObserver, IInitializable, ITickable, ILateDisposable
     {
@@ -42,7 +44,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             remove => Model.OnDestroy -= value;
         }
 
-        [Inject] private EmpireAtWar.Entities.Squadrons.Data.SquadronData Data { get; }
+        private EmpireAtWar.Entities.Squadrons.Data.SquadronData Data { get; set; }
 
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
@@ -65,8 +67,9 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         [Inject]
         private void Construct(SquadronHealthModel model, CombatModifiers modifiers,
-            PlayerId owner)
+            PlayerId owner, EmpireAtWar.Entities.Squadrons.Data.SquadronData data)
         {
+            Data = data;
             SetModel(model);
             _modifiers = modifiers;
             _owner = owner;

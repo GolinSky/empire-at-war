@@ -340,6 +340,7 @@ GameObject:
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
   - component: {fileID: 2707941217064763360}
+  - component: {fileID: 8707679847332584610}
   m_Layer: 0
   m_Name: Delta7SquadronView
   m_TagString: Untagged
@@ -382,6 +383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f8ddea8dd0bf24fb96e762aaf5f160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
+  bindings: {fileID: 8707679847332584610}
 --- !u!114 &6690140857762700653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,6 +510,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+--- !u!114 &8707679847332584610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 2249065435612880045}
+  <Health>k__BackingField: []
+  <Radar>k__BackingField:
+  - {fileID: 466052942780943288}
+  <Weapons>k__BackingField:
+  - {fileID: 9214297702768187326}
+  <FogVisibility>k__BackingField:
+  - {fileID: 2438442675913171415}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 2707941217064763360}
+  <SquadronHealth>k__BackingField: {fileID: 4300964992805454082}
+  <SquadronFlight>k__BackingField: {fileID: 6690140857762700653}
+  <SquadronIcon>k__BackingField: {fileID: 2830691518358750855}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 7252515518634781708}
+  - {fileID: 201109220880786781}
+  - {fileID: 7759131437688775246}
+  - {fileID: 7704824913167511506}
+  - {fileID: 1330398672233465508}
+  - {fileID: 6248682979103973531}
+  - {fileID: 8109948076401822217}
+  - {fileID: 2438295677250294922}
+  - {fileID: 91984531427041501}
+  - {fileID: 1256288030112164449}
 --- !u!1 &2382013464077537138
 GameObject:
   m_ObjectHideFlags: 0

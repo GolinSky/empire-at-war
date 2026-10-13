@@ -3,13 +3,15 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
     /// <summary>
     /// Marks every capture site with its last seen owner; a facility seen built shows its own unit marker instead.
     /// </summary>
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = 100)]
     public sealed class CaptureSiteMiniMapPresenter : IInitializable, ILateTickable, ILateDisposable,
         IObserver<BattleState>
     {

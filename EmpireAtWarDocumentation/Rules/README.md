@@ -7,7 +7,7 @@
 ## Technology Stack
 
 - **Game Engine:** **Unity 6** (Editor Version `6000.4.7f1`)
-- **Dependency Injection:** **Zenject** (Extenject) for clean binding lifecycles, project/scene contexts, and factory patterns.
+- **Dependency Injection:** **VContainer** (`1.19.0`) with project/scene/player/entity scopes, explicit typed factories and `EmpireAtWar.Lifecycle` dispatch.
 - **Rendering:** **Universal Render Pipeline (URP)** (`17.4.0`) for optimized visual performance.
 - **Asset & Data Management:** **Addressables** (`2.9.1`) for dynamic loading of prefabs, visual assets, and databases via the `AddressableRepository`.
 - **Input System:** Unity's **New Input System** (`1.19.0`) for scalable cross-platform controls.
@@ -22,7 +22,7 @@
 
 ```mermaid
 flowchart LR
-    Installer["Feature Installer"] --> Data["FeatureData (ScriptableObject)"]
+    Installer["Owning VContainer Scope"] --> Data["FeatureData (ScriptableObject)"]
     Installer --> Model["FeatureModel (Pure C#)"]
     Installer --> Service["FeatureService"]
     Installer --> Presenter["FeatureUiController / Presenter"]

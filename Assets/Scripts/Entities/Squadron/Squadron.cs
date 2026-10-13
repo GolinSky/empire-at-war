@@ -26,7 +26,10 @@ using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Zenject;
+using EmpireAtWar.Lifecycle;
+using VContainer;
+using LifetimeScope = VContainer.Unity.LifetimeScope;
+using VContainer.Internal;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 
@@ -37,8 +40,8 @@ namespace EmpireAtWar.Entities.Squadrons
     /// through <see cref="SquadronPilot"/>, and weapons fire whenever a nose lines up with an enemy.
     /// A destroyed squadron is not destroyed as a GameObject: the squadron pool despawns and later respawns it.
     /// </summary>
-    public sealed class Squadron : MonoBehaviour, IController, ISquadron, IInitializable, ITickable,
-        ILateDisposable
+    public sealed class Squadron : EntityView, IController, ISquadron, IInitializable, ITickable,
+        ILateDisposable, IPooledEntityEvents
     {
         // Idle and guarding squadrons scan every enemy in range; spacing those scans keeps large air battles cheap.
         private const float TARGET_SEARCH_INTERVAL = 0.25f;
@@ -53,7 +56,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private IWeaponFireEvents _weaponFireEvents;
         private IShipSfxService _shipSfxService;
         private ISelectionModelObserver _selectionModel;
-        private IAudioDialogShipComponent _audioDialog;
+        private IReadOnlyList<IAudioDialogShipComponent> _audioDialogs;
         private IAttackDataFactory _attackDataFactory;
         private ICameraService _cameraService;
         private ILayerService _layerService;
@@ -66,14 +69,14 @@ namespace EmpireAtWar.Entities.Squadrons
         private SquadronPilot _pilot;
         private SquadronTargetSelector _targetSelector;
         private UnitOrderSettings _orderSettings;
-        private GameObjectContext _context;
-        private LazyInject<IEntity> _entity;
+        private LifetimeScope _scope;
+        private LifecycleTickGate _tickGate;
+        private ShipSfxHandle _audioHandle;
         private EntityComponentLifecycle _componentLifecycle;
-        // Lazy: the entity among them resolves facades that depend on this squadron.
-        private LazyInject<List<IRespawnable>> _respawnables;
-        private LazyInject<List<IDespawnable>> _despawnables;
+        private IReadOnlyList<IRespawnable> _respawnables;
+        private IReadOnlyList<IDespawnable> _despawnables;
         private SFoilsModel _sFoils;
-        private List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> _sFoilsViews;
+        private IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> _sFoilsViews;
 
         private ShipAbilityId _pendingAbilityId;
 
@@ -87,10 +90,12 @@ namespace EmpireAtWar.Entities.Squadrons
         private bool _isReleased;
 
         public event Action Released;
+        public event Action Respawned;
+        public event Action Despawned;
 
-        [Inject] private SquadronData Data { get; }
+        private SquadronData Data { get; set; }
 
-        public string Id => GetType().Name;
+        public override string Id => GetType().Name;
         public Vector3 WorldPosition => _flight.Centroid;
         public float NavigationRadius => Data.NavigationRadius;
         public UnitOrderType CurrentOrder => _orders.Current;
@@ -119,12 +124,13 @@ namespace EmpireAtWar.Entities.Squadrons
             IWeaponComponent weapon, IAttackDataFactory attackDataFactory, ICameraService cameraService,
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
-            GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents,
+            LifetimeScope scope, ShipSfxHandle audioHandle, ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
-            SFoilsModel sFoils, List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> sFoilsViews,
+            SFoilsModel sFoils, ContainerLocal<IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView>> sFoilsViews,
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
-            CombatModifiers modifiers, LazyInject<List<IRespawnable>> respawnables,
-            LazyInject<List<IDespawnable>> despawnables, [InjectOptional] IAudioDialogShipComponent audioDialog)
+            CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
+            ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
+            ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate)
         {
             _flight = flight;
             _health = health;
@@ -133,9 +139,9 @@ namespace EmpireAtWar.Entities.Squadrons
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
             _selectionModel = selectionModel;
-            _audioDialog = audioDialog;
+            _audioDialogs = audioDialogs.Value;
             _sFoils = sFoils;
-            _sFoilsViews = sFoilsViews;
+            _sFoilsViews = sFoilsViews.Value;
             _orders = orders;
             _pilot = pilot;
             _targetSelector = targetSelector;
@@ -145,12 +151,14 @@ namespace EmpireAtWar.Entities.Squadrons
             _abilities = abilities;
             _abilityCaster = abilityCaster;
             _modifiers = modifiers;
-            _respawnables = respawnables;
-            _despawnables = despawnables;
+            _respawnables = respawnables.Value;
+            _despawnables = despawnables.Value;
             _orderSettings = orderSettings;
-            _context = context;
-            _entity = entity;
-            _componentLifecycle = new EntityComponentLifecycle(monoComponents);
+            _scope = scope;
+            _tickGate = tickGate;
+            Data = data;
+            _audioHandle = audioHandle;
+            _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
         }
 
         public void Initialize()
@@ -160,7 +168,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _weaponFireEvents.ShotEmitted += HandleShotEmitted;
             _sFoils.Changed += HandleSFoilsChanged;
             foreach (var view in _sFoilsViews) view.SetClosed(_sFoils.IsClosed, true);
-            if (_audioDialog != null) _selectionModel.OnSelected += _audioDialog.HandleSelection;
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs)
+                _selectionModel.OnSelected += audioDialog.HandleSelection;
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
@@ -182,23 +191,27 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Takes the dead squadron out of the battle once its death presentation has ended.</summary>
         public void Despawn()
         {
-            foreach (IDespawnable part in _despawnables.Value) part.Despawn();
-            _context.gameObject.SetActive(false);
+            _tickGate.SetTicking(false);
+            Despawned?.Invoke();
+            foreach (IDespawnable part in _despawnables) part.Despawn();
+            _scope.gameObject.SetActive(false);
         }
 
         /// <summary>Brings a despawned squadron back as a fresh one; listeners of the previous life are dropped.</summary>
         public void Respawn(Vector3 position, Quaternion rotation)
         {
-            _context.gameObject.SetActive(true);
+            _scope.gameObject.SetActive(true);
             // Health first: restoring the fighters' views must precede the formation and trail reset.
             _health.Respawn();
             _flight.Respawn(position, rotation);
-            foreach (IRespawnable part in _respawnables.Value) part.Respawn();
+            Respawned?.Invoke();
+            foreach (IRespawnable part in _respawnables) part.Respawn();
             Released = null;
             _isReleased = false;
             _componentLifecycle.Restart();
             _sFoils.SetClosed(false);
             Initialize();
+            _tickGate.SetTicking(true);
         }
 
         public void Tick()
@@ -244,7 +257,7 @@ namespace EmpireAtWar.Entities.Squadrons
         }
 
         private void HandleShotEmitted(WeaponProfile profile, Transform muzzle) =>
-            _shipSfxService.TryPlayWeaponShot(_entity.Value, profile, muzzle);
+            _shipSfxService.TryPlayWeaponShot(_audioHandle, profile, muzzle);
 
         public void MoveTo(Vector2 screenPosition) =>
             MoveTo(_cameraService.GetWorldPoint(screenPosition, _flight.Centroid));
@@ -264,8 +277,8 @@ namespace EmpireAtWar.Entities.Squadrons
             if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked() ||
                 _orders.Matches(UnitOrderType.Attack, target: target)) return;
             _orders.Replace(UnitOrderType.Attack, target: target);
-            if (_audioDialog != null)
-                _audioDialog.HandleAttack(target.GetFacade<IEntityTransformFacade>().Transform.position);
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs)
+                audioDialog.HandleAttack(target.GetFacade<IEntityTransformFacade>().Transform.position);
             Engage(target);
         }
 
@@ -328,12 +341,12 @@ namespace EmpireAtWar.Entities.Squadrons
             _orders.Clear();
             Disengage();
             _pilot.Loiter(_flight.Centroid);
-            if (_audioDialog != null) _audioDialog.HandleStopped();
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs) audioDialog.HandleStopped();
         }
 
         private void PlayMoveVoice(Vector3 destination)
         {
-            if (_audioDialog != null) _audioDialog.HandleMove(destination);
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs) audioDialog.HandleMove(destination);
         }
 
         private void HandleEnemyAdded(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> args)
@@ -346,7 +359,7 @@ namespace EmpireAtWar.Entities.Squadrons
                     AttackType.Base);
             }
 
-            if (_audioDialog != null) _audioDialog.HandleEnemyDetected();
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs) audioDialog.HandleEnemyDetected();
         }
 
         private void UpdateOrder(float elapsed)
@@ -496,8 +509,9 @@ namespace EmpireAtWar.Entities.Squadrons
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;
             _weaponFireEvents.ShotEmitted -= HandleShotEmitted;
             _sFoils.Changed -= HandleSFoilsChanged;
-            if (_audioDialog != null) _selectionModel.OnSelected -= _audioDialog.HandleSelection;
-            _shipSfxService.ReleaseShip(_entity.Value);
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs)
+                _selectionModel.OnSelected -= audioDialog.HandleSelection;
+            _shipSfxService.ReleaseShip(_audioHandle);
             _orders.Clear();
             _engaged = null;
             _componentLifecycle.Release();

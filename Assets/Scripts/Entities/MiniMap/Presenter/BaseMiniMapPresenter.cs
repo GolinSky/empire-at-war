@@ -7,7 +7,8 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {

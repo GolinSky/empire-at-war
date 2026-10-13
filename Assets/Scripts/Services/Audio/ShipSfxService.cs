@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using UnityEngine.Audio;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Audio
 {
-    public sealed class ShipSfxService : IShipSfxService, ITickable, ILateTickable, IDisposable
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Tick = 1000, LateTick = 1000, Dispose = -1000)]
+    public sealed class ShipSfxService : IShipSfxService, ITickable, ILateTickable, IOrderedDisposable
     {
         private const float MIN_AUDIBLE_GAIN = 0.01f;
         private const float FADE_TIME = 0.04f;
@@ -68,13 +69,13 @@ namespace EmpireAtWar.Services.Audio
             _audioService.SetGamePaused(false);
         }
 
-        public bool TryPlayOneShot(IEntity ship, SfxProfile sfx, Vector3 position) =>
+        public bool TryPlayOneShot(ShipSfxHandle ship, SfxProfile sfx, Vector3 position) =>
             Request(ship, sfx, position, null, false, 1f, 1f, 0f);
 
-        public bool TryHoldLoop(IEntity ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) =>
+        public bool TryHoldLoop(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) =>
             Request(ship, loop, position, null, true, volumeScale, pitch, LOOP_LEASE);
 
-        public bool TryPlayWeaponShot(IEntity ship, WeaponProfile weapon, Transform muzzle)
+        public bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle)
         {
             if (_disposed || Time.timeScale == 0f || muzzle == null) return false;
             SfxProfile sound = _data.GetWeapon(weapon.WeaponType, weapon.Family);
@@ -85,10 +86,10 @@ namespace EmpireAtWar.Services.Audio
                 Mathf.Max(0.08f, interval) + FADE_TIME * 2f);
         }
 
-        private bool Request(IEntity ship, SfxProfile sound, Vector3 position, Transform emitter,
+        private bool Request(ShipSfxHandle ship, SfxProfile sound, Vector3 position, Transform emitter,
             bool loop, float scale, float pitch, float lease)
         {
-            if (_disposed || ship.HealthModel.IsDestroyed) return false;
+            if (_disposed || ship.IsDestroyed) return false;
             UpdateTime();
             float gain = GetGain(ship, position, out float pan);
             for (int i = 0; loop && i < _slots.Length; i++)
@@ -128,7 +129,7 @@ namespace EmpireAtWar.Services.Audio
             return true;
         }
 
-        private int FindSlot(IEntity ship, SfxProfile sound, float gain)
+        private int FindSlot(ShipSfxHandle ship, SfxProfile sound, float gain)
         {
             int ownerCount = 0, soundCount = 0, engineCount = 0, free = -1;
             for (int i = 0; i < _slots.Length; i++)
@@ -231,12 +232,12 @@ namespace EmpireAtWar.Services.Audio
         private float GetVolume(VoiceSlot slot) => slot.Sound.Volume * slot.VolumeScale * slot.Gain *
             Mathf.Clamp01((slot.EndsAt - _time) / FADE_TIME);
 
-        private float GetGain(IEntity ship, Vector3 position, out float pan)
+        private float GetGain(ShipSfxHandle ship, Vector3 position, out float pan)
         {
             Vector3 viewport = _cameraService.WorldToViewportPoint(position);
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
             if (viewport.z <= 0f || !_localPlayer.IsFriendly(ship.Owner) &&
-                (ship.IsCloaked() || !_visionService.IsVisible(_localPlayer.Id, position))) return 0f;
+                (ship.IsCloaked || !_visionService.IsVisible(_localPlayer.Id, position))) return 0f;
             // Two-argument Max: the params overload allocates an array on every call.
             float outside = Mathf.Max(Mathf.Max(0f, Mathf.Max(-viewport.x, viewport.x - 1f)),
                 Mathf.Max(-viewport.y, viewport.y - 1f));
@@ -249,7 +250,7 @@ namespace EmpireAtWar.Services.Audio
             return gain * Mathf.Lerp(1f, _data.MinZoomGain, zoom);
         }
 
-        public void ReleaseShip(IEntity ship)
+        public void ReleaseShip(ShipSfxHandle ship)
         {
             if (_disposed) return;
             for (int i = 0; i < _slots.Length; i++)
@@ -271,7 +272,7 @@ namespace EmpireAtWar.Services.Audio
 
         private struct VoiceSlot
         {
-            public IEntity Owner;
+            public ShipSfxHandle Owner;
 
             public SfxProfile Sound;
             public Transform Emitter;

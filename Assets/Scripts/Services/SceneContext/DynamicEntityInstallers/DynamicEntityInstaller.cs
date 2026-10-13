@@ -1,55 +1,51 @@
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extensions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Lifecycle;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace EmpireAtWar
 {
-    public abstract class DynamicEntityInstaller<TEntity, TData> : MonoInstaller
-        where TEntity : MonoBehaviour, IController
+    public abstract class DynamicEntityInstaller<TEntity, TData> : IInstaller
+        where TEntity : EntityView
         where TData : Data
     {
-        private const string VIEW_POSTFIX = "View";
+        protected TEntity View { get; }
+        protected TData Data { get; }
+        protected EntityBindings Bindings => View.Bindings;
+        protected ILocalPlayer LocalPlayer { get; }
+        protected PlayerId Owner { get; }
+        private readonly long _entityId;
+        private readonly Vector3 _startPosition;
 
-        private GameObjectContext _context;
-
-        private Vector3 _startPosition;
-
-        protected IAssetService AssetService { get; private set; }
-
-        protected virtual string DataPath => typeof(TData).Name;
-        protected virtual string PrefabPath => typeof(TEntity).Name + VIEW_POSTFIX;
-
-        [Inject]
-        public void Constructor(IAssetService assetService, GameObjectContext context, Vector3 startPosition)
+        protected DynamicEntityInstaller(TEntity view, TData data, ILocalPlayer localPlayer,
+            PlayerId owner, long entityId, Vector3 startPosition)
         {
-            AssetService = assetService;
+            View = view;
+            Data = data;
+            LocalPlayer = localPlayer;
+            Owner = owner;
+            _entityId = entityId;
             _startPosition = startPosition;
-            _context = context;
         }
 
-        public sealed override void InstallBindings()
+        public void Install(IContainerBuilder builder)
         {
-            Container.BindEntityExt(_startPosition);
-
-            TData data = AssetService.Load<TData>(DataPath);
-            // Read-only: every entity of this type shares the loaded asset.
-            Container.BindInterfacesAndSelfTo<TData>().FromInstance(data).AsSingle();
-
-            InstallFeatures(data);
-
-            TEntity entity = Container.InstantiatePrefabForInstall(
-                AssetService.LoadComponent<TEntity>(PrefabPath), transform, _context);
-            Container.BindInterfacesAndSelfTo<TEntity>().FromInstance(entity).AsSingle();
-            Container.Bind<Transform>()
-                .WithId(EntityBindType.ViewTransform)
-                .FromResolveGetter<TEntity>(view => view.transform)
-                .AsCached();
-
-            Container.Install<EntityInstaller>(new object[] { entity });
+            builder.RegisterInstance(Owner);
+            builder.RegisterInstance(_entityId);
+            builder.RegisterInstance(_startPosition);
+            builder.RegisterInstance(View.transform).Keyed(EntityBindType.ViewTransform);
+            builder.RegisterComponent(View).AsSelf().AsImplementedInterfaces();
+            InstallFeatures(builder);
+            EntityInstaller.Register(builder, View);
+            foreach (MonoBehaviour injectable in Bindings.Injectables)
+                builder.RegisterComponent(injectable).Keyed(injectable);
+            builder.RegisterLifecycle();
         }
 
-        protected abstract void InstallFeatures(TData data);
+        protected abstract void InstallFeatures(IContainerBuilder builder);
     }
 }

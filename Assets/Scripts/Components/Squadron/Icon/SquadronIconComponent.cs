@@ -7,7 +7,8 @@ using EmpireAtWar.Services.Player;
 using UnityEngine;
 using UnityEngine.UI;
 using EmpireAtWar.Services.Vision;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Squadrons.Icon
 {

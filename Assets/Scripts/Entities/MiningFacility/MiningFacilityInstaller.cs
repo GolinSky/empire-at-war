@@ -1,44 +1,38 @@
-﻿using EmpireAtWar.Entities.BaseEntity;
+﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.FogOfWar;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Extensions;
 using EmpireAtWar.Services.Selection;
-using Zenject;
+using EmpireAtWar.Services.SpawnBlocking;
+using UnityEngine;
+using VContainer;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.MiningFacility
 {
     public class MiningFacilityInstaller : DynamicEntityInstaller<MiningFacilityEntity, MiningFacilityData>
     {
-        private PlayerId _owner;
-        private MiningFacilityType _miningFacilityType;
+        private readonly MiningFacilityType _type;
 
-        private bool _isHiddenByLocalFog;
+        public MiningFacilityInstaller(MiningFacilityEntity view, MiningFacilityData data, ILocalPlayer localPlayer,
+            PlayerId owner, long entityId, Vector3 position, MiningFacilityType type)
+            : base(view, data, localPlayer, owner, entityId, position) => _type = type;
 
-        [Inject]
-        public void Construct(ILocalPlayer localPlayer, PlayerId owner, MiningFacilityType miningFacilityType)
+        protected override void InstallFeatures(IContainerBuilder builder)
         {
-            _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
-            _owner = owner;
-            _miningFacilityType = miningFacilityType;
-        }
-
-        protected override void InstallFeatures(MiningFacilityData data)
-        {
-            Container.BindEntityExt(_owner);
-            Container.BindEntityExt(_miningFacilityType);
-            Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
-            Container.BindInterfacesAndSelfTo<MiningFacilityModel>().AsSingle().WithArguments(data.Income);
-            Container.BindInterfacesExt<MiningFacilityTooltipFacade>();
-
-            Container
-                .BindSelectionFeature(SelectionType.MiningFacility)
-                .BindHealthFeature()
-                .BindRadarFeature()
-                .BindCombatModifiersFeature()
-                .BindFogOfWarFeature(_isHiddenByLocalFog)
-                .BindFogVisionFeature()
-                .BindSpawnBlockerFeature();
+            builder.RegisterInstance(Data);
+            builder.RegisterInstance(_type);
+            builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
+            builder.Register<MiningFacilityModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
+                .WithParameter("baseIncome", Data.Income);
+            builder.Register<MiningFacilityTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.MiningFacility, SelectionType.MiningFacility);
+            EntityFeatureBindings.RegisterCombatModifiers(builder);
+            EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
+            EntityFeatureBindings.RegisterRadar(builder, Bindings);
+            EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
+            EntityFeatureBindings.RegisterStructureVision(builder);
         }
     }
 }

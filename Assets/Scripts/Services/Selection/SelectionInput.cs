@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Services.Input;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Battle
 {

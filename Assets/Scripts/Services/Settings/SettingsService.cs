@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Settings
 {
@@ -15,7 +16,7 @@ namespace EmpireAtWar.Services.Settings
 
         private readonly ISettingsRepository _repository;
 
-        private readonly List<ISettingsApplier> _appliers;
+        private readonly IReadOnlyList<ISettingsApplier> _appliers;
 
         public SettingsData Saved { get; private set; }
         public SettingsData Draft { get; private set; }
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Services.Settings
         public bool InvertZoom => Saved.Camera.InvertZoom;
 
         /// <param name="appliers">Applied in binding order, so display changes run before quality and input.</param>
-        public SettingsService(ISettingsRepository repository, List<ISettingsApplier> appliers)
+        public SettingsService(ISettingsRepository repository, IReadOnlyList<ISettingsApplier> appliers)
         {
             _repository = repository;
             _appliers = appliers;

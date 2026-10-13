@@ -2,7 +2,8 @@ using System;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Settings;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Camera
 {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {

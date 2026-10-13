@@ -7,7 +7,8 @@ using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Ship.Abilities
 {
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public ShipAbilityFacade(IHealthModelObserver health, IEntityLocator entities,
             IRadarModelObserver radar, ShipData data,
             ShipAbilityCatalog catalog,
-            CombatModifiers modifiers, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform, long entityId)
+            CombatModifiers modifiers, [Key(EntityBindType.ViewTransform)] Transform viewTransform, long entityId)
         {
             Modifiers = modifiers;
             Health = health;

@@ -1,106 +1,98 @@
-using EmpireAtWar.Components.AttackComponent;
+using System;
+using System.Linq;
+using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
-using EmpireAtWar.Extensions;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Selection;
-using Zenject;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
-    /// <summary>Binding groups shared by dynamic entity installers; plain static calls, no installer allocation.</summary>
     public static class EntityFeatureBindings
     {
-        private const int HEALTH_INITIALIZE_ORDER = -100;
-
-        public static DiContainer BindSelectionFeature(this DiContainer container, SelectionType selectionType) =>
-            container.BindSelectionFeature(selectionType, selectionType);
-
-        /// <param name="selectedAs">What selecting the entity opens; a production platform opens the faction UI like a station.</param>
-        public static DiContainer BindSelectionFeature(this DiContainer container, SelectionType selectionType,
-            SelectionType selectedAs)
+        public static void RegisterSelection(IContainerBuilder builder, EntityBindings bindings,
+            SelectionType selectionType, SelectionType selectedAs)
         {
-            container.BindEntityExt(selectionType);
-            container.Bind<SelectionModel>().AsSingle();
-            container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
-            container.BindInterfacesAndSelfTo<SelectionComponent>().FromComponentsInHierarchy().AsCached();
-            container.BindInterfacesAndSelfTo<SelectionFacade>().AsSingle().WithArguments(selectedAs);
-            return container;
+            builder.RegisterInstance(selectionType);
+            builder.Register<SelectionModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            RegisterComponents(builder, bindings.Selection);
+            builder.Register<SelectionFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter("selectionType", selectedAs);
         }
 
-        public static DiContainer BindHealthFeature(this DiContainer container)
+        public static void RegisterHealth(IContainerBuilder builder, EntityBindings bindings, IHealthData baseData)
         {
-            container.BindInitializableExecutionOrder<HealthComponent>(HEALTH_INITIALIZE_ORDER);
-            container.Bind<HealthModel>().AsSingle();
-            container.BindInterfacesAndSelfTo<HealthComponent>().FromComponentsInHierarchy().AsCached();
-            container
-                .BindInterfacesExt<HealthFacade>()
-                .BindInterfacesExt<HardPointsFacade>();
-            return container;
+            builder.RegisterInstance<IHealthData>(baseData).Keyed(EntityBindType.HealthData);
+            builder.Register<ResearchHealthData>(Lifetime.Singleton).As<IHealthData>();
+            builder.Register<HealthModel>(Lifetime.Singleton);
+            RegisterComponents(builder, bindings.Health);
+            builder.Register<HealthFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<HardPointsFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
-        public static DiContainer BindRadarFeature(this DiContainer container)
+        public static void RegisterRadar(IContainerBuilder builder, EntityBindings bindings)
         {
-            container.Bind<RadarModel>().AsSingle();
-            container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
-            container.BindInterfacesAndSelfTo<RadarComponent>().FromComponentsInHierarchy().AsCached();
-            return container;
+            builder.Register<RadarModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            RegisterComponents(builder, bindings.Radar);
         }
 
-        public static DiContainer BindWeaponFeature(this DiContainer container)
+        public static void RegisterWeapons(IContainerBuilder builder, EntityBindings bindings)
         {
-            container.Bind<WeaponModel>()
-                .FromMethod(context => new WeaponModel(context.Container.Resolve<DamageMatrixData>().CopyAccuracy()))
-                .AsSingle();
-            container.BindInterfacesAndSelfTo<WeaponComponent>().FromComponentsInHierarchy().AsCached();
-            return container;
+            builder.Register<WeaponModel>(Lifetime.Singleton);
+            RegisterComponents(builder, bindings.Weapons);
         }
 
-        public static DiContainer BindCombatModifiersFeature(this DiContainer container)
+        public static void RegisterCombatModifiers(IContainerBuilder builder)
         {
-            container.Bind<CombatModifiers>().AsSingle();
-            container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
-            container.Decorate<IHealthData>().With<ResearchHealthData>();
-            container.BindInterfacesExt<CombatModifiersFacade>();
-            return container;
+            builder.Register<CombatModifiers>(Lifetime.Singleton);
+            builder.Register<ResearchCombatModifier>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CombatModifiersFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
-        public static DiContainer BindStationaryCombatFeature(this DiContainer container)
+        public static void RegisterStationaryCombat(IContainerBuilder builder)
         {
-            container.BindInterfacesAndSelfTo<StationCombatPresenter>().AsSingle();
-            container.BindInterfacesExt<StationaryAttackFacade>();
-            return container;
+            builder.Register<StationCombatPresenter>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<StationaryAttackFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
-        /// <param name="isHiddenByLocalFog">True for units outside the local team; they disappear under the local fog of war.</param>
-        public static DiContainer BindFogOfWarFeature(this DiContainer container, bool isHiddenByLocalFog)
+        public static void RegisterFog(IContainerBuilder builder, EntityBindings bindings, bool isHiddenByLocalFog)
         {
-            if (isHiddenByLocalFog)
-                container.BindInterfacesAndSelfTo<FogVisibilityComponent>().FromComponentsInHierarchy().AsCached();
-            return container;
+            if (isHiddenByLocalFog) RegisterComponents(builder, bindings.FogVisibility);
+            else builder.Register<VisibleFogFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
-        /// <summary>Every structure gives its owner's team vision around it.</summary>
-        public static DiContainer BindFogVisionFeature(this DiContainer container)
+        public static void RegisterStructureVision(IContainerBuilder builder)
         {
-            container.BindInterfacesTo<FogVisionSource>().AsSingle();
-            return container;
+            builder.Register<FogVisionSource>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<SpawnBlockerSource>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
-        /// <summary>Every structure keeps hostile reinforcements out of its spawn-block radius.</summary>
-        public static DiContainer BindSpawnBlockerFeature(this DiContainer container)
+        public static void RegisterComponents<T>(IContainerBuilder builder, T[] components) where T : MonoBehaviour
         {
-            container.BindInterfacesTo<SpawnBlockerSource>().AsSingle();
-            return container;
+            foreach (T component in components) RegisterComponent(builder, component);
+        }
+
+        public static void RegisterComponent<T>(IContainerBuilder builder, T component) where T : MonoBehaviour
+        {
+            Type[] contracts = component.GetType().GetInterfaces();
+            if (component is IMonoComponent)
+                contracts = contracts.Where(contract => contract != typeof(IOrderedDisposable) &&
+                    contract != typeof(ILateDisposable) && contract != typeof(IDisposable)).ToArray();
+            builder.RegisterComponent(component).AsSelf().As(contracts);
         }
     }
 }

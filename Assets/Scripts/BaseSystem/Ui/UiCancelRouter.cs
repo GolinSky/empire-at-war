@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Services.Input;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Ui.Base
 {
     /// <summary>
     /// Sends each cancel request to the focused UIs, most recently focused first, until one consumes it.
     /// </summary>
-    public sealed class UiCancelRouter : IUiCancelRouter, IInitializable, IDisposable
+    public sealed class UiCancelRouter : IUiCancelRouter, IInitializable, IOrderedDisposable
     {
         private readonly ICancelInput _cancelInput;
 

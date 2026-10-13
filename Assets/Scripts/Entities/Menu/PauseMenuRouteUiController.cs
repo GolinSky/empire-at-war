@@ -9,7 +9,8 @@ using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Menu
 {

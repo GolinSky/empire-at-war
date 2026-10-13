@@ -58,7 +58,8 @@ namespace EmpireAtWar.Utils
 
         public void Destroy()
         {
-            Object.Destroy(_gameObject);
+            if (Application.isPlaying) Object.Destroy(_gameObject);
+            else Object.DestroyImmediate(_gameObject);
         }
     }
 }

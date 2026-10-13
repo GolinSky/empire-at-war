@@ -19,7 +19,7 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(data.HangarBays, Is.Empty);
             Assert.That(prefab.GetComponentsInChildren<HangarComponent>(true), Is.Empty,
-                "ShipInstaller skips HangarModel for ships without bays; Zenject still injects every prefab component.");
+                "Ships without bays must omit the hangar component and its required model dependency.");
         }
     }
 }

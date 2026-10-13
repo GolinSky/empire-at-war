@@ -1,10 +1,11 @@
 using System;
 using UnityEngine.InputSystem;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Input
 {
-    public sealed class CancelInput : ICancelInput, IInitializable, IDisposable
+    public sealed class CancelInput : ICancelInput, IInitializable, IOrderedDisposable
     {
         private readonly GameInputActions.UiActions _ui;
 

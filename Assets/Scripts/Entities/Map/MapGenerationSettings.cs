@@ -1,4 +1,5 @@
 using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -12,7 +13,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private DictionaryWrapper<MapSize, MapSizeSettings> sizes;
         [SerializeField, Tooltip("XZ footprint radius about each station's pivot, including its model offset.")]
         private DictionaryWrapper<FactionType, float> stationRadii;
-        [SerializeField] private DictionaryWrapper<PlanetType, GameObject> planetPrefabs;
+        [SerializeField] private DictionaryWrapper<PlanetType, PlanetScope> planetPrefabs;
         [SerializeField, Tooltip("Visual rock layers; shares are relative weights of the rock count.")]
         private DictionaryWrapper<AsteroidSize, RockLayerSettings> rockLayers;
 
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Entities.Map
             return stationRadii.Dictionary[factionType];
         }
 
-        public GameObject GetPlanetPrefab(PlanetType planetType)
+        public PlanetScope GetPlanetPrefab(PlanetType planetType)
         {
             return planetPrefabs.Dictionary[planetType];
         }

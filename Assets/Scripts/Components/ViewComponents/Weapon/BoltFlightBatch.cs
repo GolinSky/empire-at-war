@@ -5,7 +5,8 @@ using EmpireAtWar.Utils;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Jobs;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
@@ -13,7 +14,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// Flies every bolt in one pass instead of one Update per bolt. Tracking and landing run on the main thread,
     /// since impact points and impact effects need managed state; one Burst job then places all flying bolts.
     /// </summary>
-    public sealed class BoltFlightBatch : ITickable, IDisposable
+    public sealed class BoltFlightBatch : ITickable, IOrderedDisposable
     {
         private const int INITIAL_CAPACITY = 256;
 

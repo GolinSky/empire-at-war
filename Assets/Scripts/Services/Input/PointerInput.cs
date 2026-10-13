@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Input
 {
-    public sealed class PointerInput : IPointerInput, IInitializable, IDisposable
+    public sealed class PointerInput : IPointerInput, IInitializable, IOrderedDisposable
     {
         private readonly GameInputActions.PointerActions _pointer;
 

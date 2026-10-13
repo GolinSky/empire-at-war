@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.UnitExplosion
 {

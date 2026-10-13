@@ -14,7 +14,8 @@ using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using UnityEngine.Serialization;
 using EmpireAtWar.Services.Vision;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.ReinforcementZones

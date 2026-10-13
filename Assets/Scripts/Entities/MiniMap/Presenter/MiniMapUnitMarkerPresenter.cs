@@ -8,7 +8,8 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using EmpireAtWar.Services.Vision;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
@@ -33,7 +34,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             IVisionService visionService,
             ILocalPlayer localPlayer,
             MiniMapData miniMapData,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner,
             SelectionType selectionType, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
             ISlowTickService slowTick)

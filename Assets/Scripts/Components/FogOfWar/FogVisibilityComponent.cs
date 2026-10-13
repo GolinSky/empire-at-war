@@ -6,7 +6,8 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.FogOfWar
 {
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Components.FogOfWar
         [Tooltip("Once seen, stay drawn for the rest of the battle (static buildings).")]
         [SerializeField] private bool staysRevealedOnceSeen;
         private readonly List<Renderer> _renderers = new List<Renderer>();
-        private List<IIonStunViewSource> _ionStunSources;
+        private IReadOnlyList<IIonStunViewSource> _ionStunSources;
 
         private bool _isHidden;
         private bool _isReleased;
@@ -39,7 +40,7 @@ namespace EmpireAtWar.Components.FogOfWar
 
         [Inject]
         private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
-            List<IIonStunViewSource> ionStunSources, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
+            IReadOnlyList<IIonStunViewSource> ionStunSources, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
             ISlowTickService slowTick)
         {
             _slowTick = slowTick;

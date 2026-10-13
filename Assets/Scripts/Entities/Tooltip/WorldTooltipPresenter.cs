@@ -16,7 +16,8 @@ using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using EmpireAtWar.Services.Vision;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Tooltip
 {

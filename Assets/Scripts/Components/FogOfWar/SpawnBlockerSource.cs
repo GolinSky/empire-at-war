@@ -2,7 +2,8 @@ using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.FogOfWar
 {
@@ -15,7 +16,7 @@ namespace EmpireAtWar.Components.FogOfWar
         private readonly PlayerId _owner;
 
         public SpawnBlockerSource(ISpawnBlockerService spawnBlockerService, ISpawnBlockerData data,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform, PlayerId owner)
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform, PlayerId owner)
         {
             _spawnBlockerService = spawnBlockerService;
             _data = data;

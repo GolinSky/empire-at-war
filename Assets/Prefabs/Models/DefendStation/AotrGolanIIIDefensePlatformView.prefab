@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 4068811108492124294}
   - component: {fileID: 3350890140303717934}
   - component: {fileID: 4738334751003922498}
+  - component: {fileID: 2270364830419150575}
   m_Layer: 0
   m_Name: AotrGolanIIIDefensePlatformView
   m_TagString: Untagged
@@ -201,6 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a23e226c574f5abd72536086457094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 2270364830419150575}
   explosionHullRenderers:
   - {fileID: 4465071157729757742}
   - {fileID: 4725276315940919800}
@@ -788,6 +790,77 @@ MonoBehaviour:
   - {fileID: 2610669317389447899}
   - {fileID: 5127250339459121610}
   - {fileID: 3291800770654672724}
+--- !u!114 &2270364830419150575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 2610921033299271252}
+  <Health>k__BackingField:
+  - {fileID: 4068811108492124294}
+  <Radar>k__BackingField:
+  - {fileID: 2557233241895815559}
+  <Weapons>k__BackingField:
+  - {fileID: 4545628569554571522}
+  <FogVisibility>k__BackingField:
+  - {fileID: 3350890140303717934}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 0}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 4738334751003922498}
+  - {fileID: 8655591698918302514}
+  - {fileID: 1430274502407032525}
+  - {fileID: 4467616745152403668}
+  - {fileID: 1312658504025448939}
+  - {fileID: 6862314314272102540}
+  - {fileID: 2673303841099307043}
+  - {fileID: 8296830789489284803}
+  - {fileID: 6432233897893965467}
+  - {fileID: 7610060108451237276}
+  - {fileID: 5655874638320308362}
+  - {fileID: 3122958376115690327}
+  - {fileID: 7318707737131564240}
+  - {fileID: 2556902091141510928}
+  - {fileID: 7491713370100001575}
+  - {fileID: 3802729093079032514}
+  - {fileID: 3217878631689675185}
+  - {fileID: 2784915475437551860}
+  - {fileID: 2692639868969811093}
+  - {fileID: 9181254093620793813}
+  - {fileID: 7912790124896238825}
+  - {fileID: 8109380410899032264}
+  - {fileID: 3248503533788604900}
+  - {fileID: 4955947294025773303}
+  - {fileID: 6421773880908288550}
+  - {fileID: 6718504667431108324}
+  - {fileID: 7885268406433784778}
+  - {fileID: 3824302179571240274}
+  - {fileID: 6236992155290432590}
+  - {fileID: 3006860838623819110}
+  - {fileID: 2378673909102362665}
+  - {fileID: 4274477348414315797}
+  - {fileID: 8658828336552192859}
+  - {fileID: 3749679756931161758}
+  - {fileID: 8576389402838053260}
+  - {fileID: 1877661034661855228}
+  - {fileID: 7572245820032570381}
+  - {fileID: 7546449825226215183}
+  - {fileID: 1435147252630222444}
+  - {fileID: 2780444916229418831}
 --- !u!1 &545916768248630424
 GameObject:
   m_ObjectHideFlags: 0

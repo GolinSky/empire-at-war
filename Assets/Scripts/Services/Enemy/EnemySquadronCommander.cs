@@ -13,7 +13,8 @@ using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using static EmpireAtWar.Utils.FormationConversion;
 
 namespace EmpireAtWar.Services.Enemy

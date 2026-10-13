@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public float FireDelayMultiplier => fireDelayMultiplier;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<TorpedoSalvoAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new TorpedoSalvoAbility(this);
     }
 }

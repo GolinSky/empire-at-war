@@ -17,7 +17,6 @@ using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -46,8 +45,6 @@ namespace EmpireAtWar.Tests.Editor
 
         private EnemyStructurePlacementService CreateService()
         {
-            DiContainer container = new DiContainer();
-            container.Bind<IMapModelObserver>().FromInstance(_map);
             PlayerRoster roster = TestPlayers.CreateDuel();
             // The enemy sees the whole test map, so only clearance, relays and bounds decide placement.
             VisionService vision = new VisionService(roster);
@@ -58,8 +55,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, blockers,
                 new OpenShipClearance(), structureClearance, _zones, new NoCaptureSites(), _map);
             return new EnemyStructurePlacementService(
-                mapModel: new LazyInject<IMapModelObserver>(container,
-                    new InjectContext(container, typeof(IMapModelObserver))),
+                mapModel: _map,
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
                 vision: vision, blockers: blockers,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab);

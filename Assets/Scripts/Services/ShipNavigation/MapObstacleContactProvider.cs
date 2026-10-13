@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {

@@ -11,7 +11,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Units;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Factions
 {

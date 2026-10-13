@@ -2,14 +2,15 @@ using System;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Combat
 {
     /// <summary>
     /// Keeps one entity's combat modifiers in sync with its faction's completed research.
     /// </summary>
-    public sealed class ResearchCombatModifier : IInitializable, IDisposable
+    public sealed class ResearchCombatModifier : IInitializable, IOrderedDisposable
     {
         private const float NEUTRAL_MULTIPLIER = 1f;
 

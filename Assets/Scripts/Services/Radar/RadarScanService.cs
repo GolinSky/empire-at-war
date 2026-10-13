@@ -10,7 +10,8 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Radar
 {
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Services.Radar
     /// Radars are staggered across fixed steps so they never all scan in the same step.
     /// Detected = hostile, not destroyed, has units, not cloaked, planar centre within range.
     /// </summary>
-    public sealed class RadarScanService : Service, IRadarScanService, IInitializable, IFixedTickable, IDisposable
+    public sealed class RadarScanService : Service, IRadarScanService, IInitializable, IFixedTickable, IOrderedDisposable
     {
         private const int INITIAL_CAPACITY = 256;
         private const int BITS_PER_WORD = 64;

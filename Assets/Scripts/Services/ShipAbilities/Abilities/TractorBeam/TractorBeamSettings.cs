@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -18,7 +17,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool CanTarget(ShipClass shipClass) => Array.IndexOf(targetClasses, shipClass) >= 0;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<TractorBeamAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new TractorBeamAbility(this);
     }
 }

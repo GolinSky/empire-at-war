@@ -2,14 +2,14 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Hangar
 {
@@ -19,7 +19,7 @@ namespace EmpireAtWar.Components.Hangar
     /// <see cref="Launch"/> launches extra squadrons outside the reserve.
     /// </summary>
     public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, IInitializable, ITickable,
-        ILateDisposable
+        ILateDisposable, IHangarLaunchEvents
     {
         private IHangarData _data;
         private IHealthModelObserver _health;
@@ -35,7 +35,8 @@ namespace EmpireAtWar.Components.Hangar
             new List<(ISquadron Squadron, Action Handler)>();
         private ISquadronSpawner _squadronSpawner;
         private ISquadronLaunchSlots _launchSlots;
-        private LazyInject<IEntity> _carrier;
+
+        public event Action<ISquadron> SquadronLaunched;
 
         private PlayerId _owner;
 
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Components.Hangar
 
         [Inject]
         private void Construct(IHangarData data, IHealthModelObserver health, HangarModel model,
-            ISquadronSpawner squadronSpawner, ISquadronLaunchSlots launchSlots, LazyInject<IEntity> carrier,
+            ISquadronSpawner squadronSpawner, ISquadronLaunchSlots launchSlots,
             PlayerId owner)
         {
             SetModel(model);
@@ -51,7 +52,6 @@ namespace EmpireAtWar.Components.Hangar
             _squadronSpawner = squadronSpawner;
             _launchSlots = launchSlots;
             _owner = owner;
-            _carrier = carrier;
             _health = health;
         }
 
@@ -162,7 +162,7 @@ namespace EmpireAtWar.Components.Hangar
         {
             ISquadron squadron = _squadronSpawner.Spawn(_owner, squadronType,
                 point.position, point.rotation);
-            squadron.Guard(_carrier.Value, Vector3.zero);
+            SquadronLaunched?.Invoke(squadron);
             return squadron;
         }
 

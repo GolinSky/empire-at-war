@@ -691,6 +691,7 @@ GameObject:
   - component: {fileID: 3665250636818936741}
   - component: {fileID: 8777906816216936869}
   - component: {fileID: 5812155364052830478}
+  - component: {fileID: 5479537658906912697}
   m_Layer: 0
   m_Name: TIEAvengerSquadronView
   m_TagString: Untagged
@@ -734,6 +735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f8ddea8dd0bf24fb96e762aaf5f160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
+  bindings: {fileID: 5479537658906912697}
 --- !u!114 &6732701316635372338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -865,6 +867,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+--- !u!114 &5479537658906912697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087133106372568804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 6375315895077221940}
+  <Health>k__BackingField: []
+  <Radar>k__BackingField:
+  - {fileID: 1170740487966975435}
+  <Weapons>k__BackingField:
+  - {fileID: 1778256951009287917}
+  <FogVisibility>k__BackingField:
+  - {fileID: 8777906816216936869}
+  <ShipMove>k__BackingField: {fileID: 0}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 0}
+  <AudioDialog>k__BackingField: {fileID: 5812155364052830478}
+  <SquadronHealth>k__BackingField: {fileID: 5222397299750527662}
+  <SquadronFlight>k__BackingField: {fileID: 6732701316635372338}
+  <SquadronIcon>k__BackingField: {fileID: 3665250636818936741}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 1740570583881849042}
+  - {fileID: 1595684741445362609}
+  - {fileID: 5782245863809946086}
+  - {fileID: 3120993658260144640}
+  - {fileID: 4119805344432159646}
+  - {fileID: 4800391138912118813}
+  - {fileID: 7551044209769920897}
+  - {fileID: 5243313823473386799}
+  - {fileID: 5475255697294911995}
+  - {fileID: 54496325320247898}
+  - {fileID: 2916809766440362979}
+  - {fileID: 1327550172155127079}
+  - {fileID: 2504138362390265848}
+  - {fileID: 6832554148158155218}
+  - {fileID: 4823435744904967791}
+  - {fileID: 885172884295699473}
+  - {fileID: 3942283229746904513}
+  - {fileID: 685937436059140462}
+  - {fileID: 9040343470620279861}
+  - {fileID: 3949152898004867166}
+  - {fileID: 2960911524440841136}
+  - {fileID: 5217291195635517119}
+  - {fileID: 2638479379674235412}
+  - {fileID: 4312738316047499433}
+  - {fileID: 7427971079109899021}
+  - {fileID: 2845907615687734353}
+  - {fileID: 7686434147073307847}
+  - {fileID: 5794499623749164171}
+  - {fileID: 7470154931346906132}
+  - {fileID: 1377331049354490950}
 --- !u!1 &1286828195817932667
 GameObject:
   m_ObjectHideFlags: 0

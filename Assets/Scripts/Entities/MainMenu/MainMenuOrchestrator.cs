@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.MainMenu.Main;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.MainMenu
 {

@@ -1,4 +1,5 @@
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Tooltip
 {

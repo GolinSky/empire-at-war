@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Extensions;
+using VContainer;
 
 namespace EmpireAtWar.Models.Health
 {
@@ -20,7 +22,8 @@ namespace EmpireAtWar.Models.Health
         public float ShieldRegenerateDelay => _healthData.ShieldRegenerateDelay;
         public IReadOnlyList<HardPointHealth> HardPointHealth => _healthData.HardPointHealth;
 
-        public ResearchHealthData(IHealthData healthData, IFactionResearchModelObserver research)
+        public ResearchHealthData([Key(EntityBindType.HealthData)] IHealthData healthData,
+            IFactionResearchModelObserver research)
         {
             _healthData = healthData;
             _research = research;

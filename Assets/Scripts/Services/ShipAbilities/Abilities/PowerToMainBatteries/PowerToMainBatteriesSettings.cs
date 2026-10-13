@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Components.Combat;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -14,7 +13,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float FireDelayMultiplier => fireDelayMultiplier;
         public CombatStatModifier StatModifier => statModifier;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<PowerToMainBatteriesAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new PowerToMainBatteriesAbility(this);
     }
 }

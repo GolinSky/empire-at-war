@@ -6,7 +6,8 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Audio
 {
@@ -41,7 +42,7 @@ namespace EmpireAtWar.Services.Audio
             _audioSource.ignoreListenerPause = true;
             _audioSource.priority = 16;
             _volume = _audioSource.volume;
-            Object.DontDestroyOnLoad(_audioSource.gameObject);
+            if (Application.isPlaying) Object.DontDestroyOnLoad(_audioSource.gameObject);
         }
 
         public void Initialize()
@@ -55,6 +56,7 @@ namespace EmpireAtWar.Services.Audio
             // The project context only disposes on quit or Play Mode exit, when Unity also destroys the
             // DontDestroyOnLoad source in no guaranteed order; touching it here can hit a destroyed object.
             _sceneService.OnSceneActivation -= OnSceneLoad;
+            if (!Application.isPlaying) Object.DestroyImmediate(_audioSource.gameObject);
         }
 
         private void OnSceneLoad(SceneType scene)

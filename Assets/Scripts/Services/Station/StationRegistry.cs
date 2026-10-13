@@ -1,3 +1,4 @@
+using EmpireAtWar.Lifecycle;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
@@ -9,7 +10,7 @@ using EmpireAtWar.Entities.Units;
 namespace EmpireAtWar.Services.Stations
 {
     /// <summary>Tracks space stations and production bases registered in the <see cref="IEntityLocator"/>.</summary>
-    public sealed class StationRegistry : Service, IStationRegistry, IDisposable
+    public sealed class StationRegistry : Service, IStationRegistry, IOrderedDisposable
     {
         private readonly IEntityLocator _entityLocator;
 

@@ -11,11 +11,14 @@ using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
-using Zenject;
+using EmpireAtWar.Lifecycle;
+using VContainer;
+using LifetimeScope = VContainer.Unity.LifetimeScope;
+using VContainer.Internal;
 
 namespace EmpireAtWar.Entities.MiningFacility
 {
-    public class MiningFacility : MonoBehaviour, IController, IIncomeProvider,
+    public class MiningFacility : EntityView, IController, IIncomeProvider,
         IInitializable, ILateDisposable
     {
         private IPlayerRoster _playerRoster;
@@ -30,17 +33,17 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         private EntityComponentLifecycle _componentLifecycle;
-        private GameObjectContext _context;
+        private LifetimeScope _scope;
 
         private Vector3 _startPosition;
         private PlayerId _owner;
 
         public event Action OnRelease;
 
-        [Inject] private MiningFacilityData Data { get; }
-        [Inject] private MiningFacilityModel RootModel { get; }
+        private MiningFacilityData Data { get; set; }
+        private MiningFacilityModel RootModel { get; set; }
 
-        public string Id => GetType().Name;
+        public override string Id => GetType().Name;
         public float Income => RootModel.BaseIncome * _research.IncomeMultiplier;
 
         [Inject]
@@ -52,22 +55,24 @@ namespace EmpireAtWar.Entities.MiningFacility
             IUnitExplosionService unitExplosionService,
             ILayerService layerService,
             IFactionResearchModelObserver research,
-            List<IMonoComponent> monoComponents,
-            GameObjectContext context,
+            ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
+            LifetimeScope scope,
             Vector3 startPosition,
-            PlayerId owner)
+            PlayerId owner, MiningFacilityData data, MiningFacilityModel rootModel)
         {
             _playerRoster = playerRoster;
             _playerRegistry = playerRegistry;
             _healthComponent = healthComponent;
             _startPosition = startPosition;
-            _componentLifecycle = new EntityComponentLifecycle(monoComponents);
+            _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
             _unitWreckService = unitWreckService;
             _unitExplosionService = unitExplosionService;
-            _context = context;
+            _scope = scope;
             _owner = owner;
             _layerService = layerService;
             _research = research;
+            Data = data;
+            RootModel = rootModel;
         }
 
         public void Initialize()
@@ -122,7 +127,7 @@ namespace EmpireAtWar.Entities.MiningFacility
                     _unitWreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
-                Destroy(_context.gameObject, componentData.DestroyDelay);
+                Destroy(_scope.gameObject, componentData.DestroyDelay);
             }
         }
 

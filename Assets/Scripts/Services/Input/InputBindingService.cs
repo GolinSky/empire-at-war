@@ -1,3 +1,4 @@
+using EmpireAtWar.Lifecycle;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Services.Settings;
@@ -8,7 +9,7 @@ namespace EmpireAtWar.Services.Input
     /// <summary>
     /// Rebinds actions of the shared <see cref="GameInputActions"/> and applies saved overrides from settings.
     /// </summary>
-    public sealed class InputBindingService : IInputBindings, ISettingsApplier, IDisposable
+    public sealed class InputBindingService : IInputBindings, ISettingsApplier, IOrderedDisposable
     {
         private const string UNBOUND_LABEL = "Unbound";
         private const string CANCEL_REBIND_PATH = "<Keyboard>/escape";

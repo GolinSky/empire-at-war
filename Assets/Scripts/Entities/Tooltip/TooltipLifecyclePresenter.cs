@@ -1,6 +1,7 @@
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Tooltip
 {

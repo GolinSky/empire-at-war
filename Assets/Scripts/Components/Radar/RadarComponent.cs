@@ -8,7 +8,8 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Radar;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Extensions;
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Components.Radar
     {
         ObservableList<IEntity> Enemies { get; }
     }
-    public class RadarComponent : MonoComponent<RadarModel>, IInitializable, ITickable, IDisposable, IRadarComponent, IRadarScanner,
+    public class RadarComponent : MonoComponent<RadarModel>, IInitializable, ITickable, IOrderedDisposable, IRadarComponent, IRadarScanner,
         IRespawnable
     {
         private IRadarScanService _scanService;
@@ -47,7 +48,7 @@ namespace EmpireAtWar.Components.Radar
         [Inject]
         private void Construct(IRadarScanService scanService, ILayerService layerService, ISelectionModelObserver selection,
             RadarModel model, DebugRangeCircleFactory rangeCircleFactory,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);
             _scanService = scanService;
@@ -136,7 +137,7 @@ namespace EmpireAtWar.Components.Radar
         }
 
         // Covers entities destroyed without dying (scene unload, despawn): the scan service must drop them.
-        void IDisposable.Dispose()
+        void IOrderedDisposable.Dispose()
         {
             if (!_isReleased)
             {

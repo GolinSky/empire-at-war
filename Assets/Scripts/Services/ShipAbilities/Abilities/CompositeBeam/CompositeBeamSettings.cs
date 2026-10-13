@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public float Damage => damage;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<CompositeBeamAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new CompositeBeamAbility(this, dependencies.ImpactPresenter, dependencies.WeaponsData);
     }
 }

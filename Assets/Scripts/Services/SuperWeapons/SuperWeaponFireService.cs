@@ -11,7 +11,8 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.SuperWeapons
@@ -68,7 +69,11 @@ namespace EmpireAtWar.Services.SuperWeapons
                 stun.Modifiers.SetIonDisabled(false);
             }
             _stuns.Clear();
-            if (_hypervelocitySource != null) Object.Destroy(_hypervelocitySource.gameObject);
+            if (_hypervelocitySource != null)
+            {
+                if (Application.isPlaying) Object.Destroy(_hypervelocitySource.gameObject);
+                else Object.DestroyImmediate(_hypervelocitySource.gameObject);
+            }
         }
 
         public bool CanTarget(PlayerId owner, IEntity target)

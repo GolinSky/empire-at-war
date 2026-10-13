@@ -4,9 +4,11 @@
 
 - [[TODOs/TODOs|Project Backlog & Active Tasks]]
 - [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Battle Attack & Projectile Optimization Plan]]
-- [[TODOs/Refactoring/UI_Service_Refactoring|Fix UI Service Architecture (Move to UI Prefabs)]]
+- [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration — acceptance pending]]
 
 ## Done
+
+- [[Done/Refactoring/UI_Service_Refactoring|UI Rework Before VContainer]]
 
 - [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders)]]
 - [[Done/Refactoring/Project_Organization_Remediation_Plan|Project Organization & Asset Naming]]

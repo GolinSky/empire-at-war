@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public float CommandRadius => commandRadius;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<FighterCoordinationAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new FighterCoordinationAbility(dependencies.Entities, this);
     }
 }

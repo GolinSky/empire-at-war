@@ -1,7 +1,8 @@
 using System;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Mvc;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Models.Economy
 {

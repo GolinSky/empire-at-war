@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.Input
 {
@@ -11,7 +12,8 @@ namespace EmpireAtWar.Services.Input
 
         public void Dispose()
         {
-            Actions.Dispose();
+            if (Application.isPlaying) Actions.Dispose();
+            else UnityEngine.Object.DestroyImmediate(Actions.asset);
         }
     }
 }

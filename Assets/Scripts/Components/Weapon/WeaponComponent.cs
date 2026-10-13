@@ -18,7 +18,8 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -52,9 +53,9 @@ namespace EmpireAtWar.Components.Weapon
         private DamageMatrixData _damageMatrix;
         private IncomingMissileRegistry _missiles;
         private DebugRangeCircleFactory _rangeCircleFactory;
-        [Inject] private ImpactEffectPresenter _impactPresenter;
-        [Inject] private BoltFlightBatch _boltFlights;
-        [Inject] private ShotPoolPrewarmer _poolPrewarmer;
+        private ImpactEffectPresenter _impactPresenter;
+        private BoltFlightBatch _boltFlights;
+        private ShotPoolPrewarmer _poolPrewarmer;
         private List<AttackData> _attackDataList = new List<AttackData>();
         // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
         // _candidateGroups. A group's candidates are contiguous; groups without candidates are not listed.
@@ -72,7 +73,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        [Inject(Id = EntityBindType.ViewTransform)] private Transform _viewTransform;
+        private Transform _viewTransform;
         private DebugRangeCircle _attackRangeCircle;
 #endif
 
@@ -103,11 +104,20 @@ namespace EmpireAtWar.Components.Weapon
         public float AttackDistance => Model.MaxWeaponRange;
 
         [Inject]
-        private void Construct(ISelectionModelObserver selection,
+        private void Construct(WeaponModel model, ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
-            ILocalPlayer localPlayer, IPlayerRoster playerRoster, PlayerId owner)
+            ILocalPlayer localPlayer, IPlayerRoster playerRoster, PlayerId owner,
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform)
         {
+            _impactPresenter = impactPresenter;
+            _boltFlights = boltFlights;
+            _poolPrewarmer = poolPrewarmer;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _viewTransform = viewTransform;
+#endif
+            SetModel(model);
             _localPlayer = localPlayer;
             _playerRoster = playerRoster;
             _owner = owner;

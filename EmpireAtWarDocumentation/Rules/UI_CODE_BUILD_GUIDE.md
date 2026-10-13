@@ -23,7 +23,7 @@
 
 - One top-level C# type per file.
 - Type-first `Assets/Scripts` layout: `Entities`, `Components`, `Services`.
-- Do not import SoulsLike namespaces, `Assets/Scripts/Ui`, `CustomButton`, or VContainer patterns.
+- Do not import SoulsLike namespaces, `Assets/Scripts/Ui`, `CustomButton`, or unreviewed source-template patterns.
 
 ## 2. Wire the view lifecycle
 
@@ -36,13 +36,14 @@
    - Test the setup order and required prefab references.
    - Subscribe to controls and model events in `Initialize()`; remove the same subscriptions in `Dispose()`.
    - Have `OnDestroy()` call `Dispose()` as a safety net.
-5. Register the model, controller, service, and data in the owning **Zenject installer** with the lifetime the feature requires.
+5. Register the model, controller, service, and data in the owning **VContainer scope** with the lifetime the feature requires.
    - Do not make a prefab resolve feature-specific dependencies from a different container.
 
 ```text
 CreateUi<TUi> -> AssignPresenter -> explicit model/data setup -> Initialize -> Show
 ```
 
+- Controllers use `EmpireAtWar.Lifecycle.IInitializable` / `ILateDisposable`; the owning scope calls `RegisterLifecycle()` once.
 - Screen identity and prefab key: concrete view type and `typeof(TUi).Name`.
 - No screen subcontainers, screen-interface casts or `[Inject]` on screen views.
 - Colocate `<Feature>Ui`, `I<Feature>Presenter` and `<Feature>UiController` under `Assets/Scripts/Entities/<Feature>/` (nested feature folders allowed); normalize their namespaces. Keep models, shared components, Services, Editor and Tests separate.
@@ -70,7 +71,7 @@ CreateUi<TUi> -> AssignPresenter -> explicit model/data setup -> Initialize -> S
 
 ## 5. Verify the completed UI
 
-- Verify Inspector references, Addressable key/mapping, Zenject bindings.
+- Verify Inspector references, Addressable key/mapping, VContainer registrations.
 - Verify initialization/disposal, input forwarding, model-to-view updates.
 - Verify Unity import and Console state.
 - Run automated tests only on explicit user request.

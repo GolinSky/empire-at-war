@@ -6,7 +6,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Pooling;
 using EmpireAtWar.ViewComponents.Wreck;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.UnitWreck
 {
@@ -16,7 +17,7 @@ namespace EmpireAtWar.Services.UnitWreck
     /// Time is <see cref="Time.time"/>, the clock the shader's _Time.y follows in Play Mode.
     /// Not timeSinceLevelLoad: that resets when the battle loads, _Time.y does not.
     /// </summary>
-    public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IDisposable
+    public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IOrderedDisposable
     {
         private readonly IPlayerRoster _playerRoster;
 

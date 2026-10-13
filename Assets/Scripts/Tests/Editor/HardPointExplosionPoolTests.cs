@@ -6,7 +6,8 @@ using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -160,9 +161,11 @@ namespace EmpireAtWar.Tests.Editor
         public void HardPoint_RestoredOrReenabledBeforeTick_RetiresOldFire(bool disable)
         {
             HardPoint hardPoint = _anchor.gameObject.AddComponent<HardPoint>();
-            DiContainer container = new DiContainer();
-            container.Bind<IHardPointExplosionPool>().FromInstance(_pool);
-            container.Inject(hardPoint);
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance<IHardPointExplosionPool>(_pool);
+            builder.RegisterInstance<IFogVisibilityFacade>(new VisibleFogFacade());
+            builder.RegisterComponent(hardPoint);
+            using IObjectResolver container = builder.Build();
             hardPoint.UpdateData(0f);
             ExplosionVfx oldFire = PlayingExplosions()[0];
 

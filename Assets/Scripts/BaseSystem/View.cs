@@ -1,7 +1,8 @@
 using EmpireAtWar.ViewComponents;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using ViewComponent = EmpireAtWar.Mvc.ViewComponent;
 
 namespace EmpireAtWar.Views.ViewImpl
@@ -62,8 +63,10 @@ namespace EmpireAtWar.Views.ViewImpl
     public abstract class View<TModel> : View
         where TModel : IModelObserver
     {
+        public TModel Model { get; private set; }
+
         [Inject]
-        public TModel Model { get; }
+        private void Construct(TModel model) => Model = model;
 
         public override IModelObserver ModelObserver => Model;
 

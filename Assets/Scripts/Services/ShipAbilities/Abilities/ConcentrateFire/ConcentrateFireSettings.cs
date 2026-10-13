@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Components.Combat;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -17,7 +16,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float CommandRadius => commandRadius;
         public float TargetDamageMultiplier => targetDamageMultiplier;
 
-        public override IShipAbility CreateAbility(IInstantiator instantiator) =>
-            instantiator.Instantiate<ConcentrateFireAbility>(new object[] { this });
+        public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
+            new ConcentrateFireAbility(dependencies.Entities, this);
     }
 }

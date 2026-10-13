@@ -38,7 +38,8 @@ namespace EmpireAtWar.Tests.Editor
                 EntityLocator entities = new EntityLocator();
                 StationTarget health = new StationTarget(stationView.transform);
                 Entity station = new Entity(health, entities, new IEntityFacade[] { health },
-                    TestPlayers.Human, 1);
+                    TestPlayers.Human, 1, System.Array.Empty<IPooledEntityEvents>(),
+                    System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
                 entities.AddEntity(station);
                 RecordingSuperWeaponFireService fireService = new RecordingSuperWeaponFireService();
                 SuperWeaponModel model = new SuperWeaponModel();

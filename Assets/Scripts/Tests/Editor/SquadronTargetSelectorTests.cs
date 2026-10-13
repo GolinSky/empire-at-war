@@ -118,7 +118,8 @@ namespace EmpireAtWar.Tests.Editor
             item.transform.position = Vector3.forward * distance;
             Entity entity = new Entity(new HealthStub { ShipClass = shipClass }, _locator,
                 new IEntityFacade[] { new EntityTransformFacade(item.transform), new CombatSpy() },
-                owner ?? TestPlayers.Enemy, _candidates.Count + 1);
+                owner ?? TestPlayers.Enemy, _candidates.Count + 1, System.Array.Empty<IPooledEntityEvents>(),
+                System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
             _locator.AddEntity(entity);
             _candidates.Add(entity);
             return entity;

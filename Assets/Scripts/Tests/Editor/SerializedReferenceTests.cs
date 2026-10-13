@@ -10,7 +10,7 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
-using EmpireAtWar.SceneContext.Skirmish;
+using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -55,10 +55,10 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(MapLayoutView), "fieldRoot"),
             new SerializedReference(typeof(MapLayoutView), "borderLine"),
             new SerializedReference(typeof(MapLayoutView), "fogOfWarSystem"),
-            new SerializedReference(typeof(MapInstaller), "settings"),
-            new SerializedReference(typeof(MapInstaller), "mapLayoutView"),
-            new SerializedReference(typeof(MapInstaller), "reinforcementZonesSystem"),
-            new SerializedReference(typeof(MapInstaller), "captureSitesSystem"),
+            new SerializedReference(typeof(SkirmishScope), "settings"),
+            new SerializedReference(typeof(SkirmishScope), "mapLayoutView"),
+            new SerializedReference(typeof(SkirmishScope), "reinforcementZonesSystem"),
+            new SerializedReference(typeof(SkirmishScope), "captureSitesSystem"),
             new SerializedReference(typeof(SkirmishUi), "closeButton"),
             new SerializedReference(typeof(SettingsUi), "closeButton"),
             new SerializedReference(typeof(SettingsUi), "qualityRow"),
@@ -83,9 +83,9 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(PauseMenuUi), "exitButton"),
             new SerializedReference(typeof(PauseMenuUi), "menuPanel"),
             new SerializedReference(typeof(ReinforcementZoneView), "captureCanvasScaler"),
-            new SerializedReference(typeof(SkirmishServiceInstaller), "rangeDebugLineMaterial"),
+            new SerializedReference(typeof(SkirmishScope), "rangeDebugLineMaterial"),
             new SerializedReference(typeof(DrawCircle), "lineRenderer"),
-            new SerializedReference(typeof(PlanetInstaller), "view")
+            new SerializedReference(typeof(PlanetScope), "view")
         };
 
         [Test]

@@ -21,7 +21,8 @@ using EmpireAtWar.Services.Timing;
 #endif
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 using ShipEntity = EmpireAtWar.Ship.Ship;

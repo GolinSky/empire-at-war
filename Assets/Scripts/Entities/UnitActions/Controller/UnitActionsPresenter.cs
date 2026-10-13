@@ -12,10 +12,12 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.UnitActions.Controller
 {
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = 100)]
     public sealed class UnitActionsPresenter : UiController, IInitializable, ILateDisposable,
         IObserver<ISelectionSubject>, IObserver<BattleState>
     {

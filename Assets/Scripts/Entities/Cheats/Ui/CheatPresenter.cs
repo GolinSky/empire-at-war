@@ -9,7 +9,8 @@ using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Views.Cheats;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.Cheats
 {

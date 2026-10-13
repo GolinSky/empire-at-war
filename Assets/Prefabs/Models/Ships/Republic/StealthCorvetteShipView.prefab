@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 4150898646505647277}
   - component: {fileID: 170039148551410930}
   - component: {fileID: 676046630702335276}
+  - component: {fileID: 5203513215443546060}
   m_Layer: 0
   m_Name: StealthCorvetteShipView
   m_TagString: Untagged
@@ -387,6 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e11f9a6878dc040ba9c051837b41b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindings: {fileID: 5203513215443546060}
   explosionHullRenderers:
   - {fileID: 4588241525439216885}
   compositeBeamMuzzle: {fileID: 0}
@@ -635,6 +637,43 @@ MonoBehaviour:
   hullRenderer: {fileID: 4588241525439216885}
   shieldRenderer: {fileID: 6896194605718455207}
   cloakMaterial: {fileID: 2100000, guid: b6a8cebde2734bf47b874459c3ee60d7, type: 2}
+--- !u!114 &5203513215443546060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6736715092492826216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9590097526c33479a76badf34d18b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.BaseEntity.EntityBindings
+  <Selection>k__BackingField:
+  - {fileID: 5643752215355111784}
+  <Health>k__BackingField:
+  - {fileID: 1545162757958215016}
+  <Radar>k__BackingField:
+  - {fileID: 4561946798057163108}
+  <Weapons>k__BackingField:
+  - {fileID: 7336477667313937133}
+  <FogVisibility>k__BackingField:
+  - {fileID: 4150898646505647277}
+  <ShipMove>k__BackingField: {fileID: 782266143030960123}
+  <Hangar>k__BackingField: {fileID: 0}
+  <AudioShip>k__BackingField: {fileID: 4631934501575507660}
+  <AudioDialog>k__BackingField: {fileID: 5344745374318299240}
+  <SquadronHealth>k__BackingField: {fileID: 0}
+  <SquadronFlight>k__BackingField: {fileID: 0}
+  <SquadronIcon>k__BackingField: {fileID: 0}
+  <SFoils>k__BackingField: {fileID: 0}
+  <Injectables>k__BackingField:
+  - {fileID: 170039148551410930}
+  - {fileID: 676046630702335276}
+  - {fileID: 5697200022859796242}
+  - {fileID: 9150785772394284087}
+  - {fileID: 486078332435444740}
+  - {fileID: 3399428037646888758}
 --- !u!1 &7290964567724939097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,6 +2078,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41d73a8198e6a0248a72f9f830bd9ec8, type: 3}
+--- !u!114 &4631934501575507660 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3929895870231269468, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8560820192637120144}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc88d67b11ac4163aa0ea4cd65296dce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioShipComponent
+--- !u!114 &5344745374318299240 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4387206434606540536, guid: 41d73a8198e6a0248a72f9f830bd9ec8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8560820192637120144}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
 --- !u!4 &5707823222578328805 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4177201223040096885, guid: 41d73a8198e6a0248a72f9f830bd9ec8,

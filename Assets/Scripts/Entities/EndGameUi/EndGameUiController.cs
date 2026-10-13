@@ -1,3 +1,4 @@
+using EmpireAtWar.Lifecycle;
 using System;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.Game;
@@ -7,7 +8,7 @@ using EmpireAtWar.Services.Tooltip;
 
 namespace EmpireAtWar.Entities.EndGameUi
 {
-    public sealed class EndGameUiController : UiController, IEndGamePresenter, IObserver<BattleResult>, IDisposable
+    public sealed class EndGameUiController : UiController, IEndGamePresenter, IObserver<BattleResult>, IOrderedDisposable
     {
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly EndGameUi _view;

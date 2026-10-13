@@ -99,10 +99,10 @@ MonoBehaviour:
   planetPrefabs:
     keyValue:
     - key: 0
-      value: {fileID: 255825743812757999, guid: df07939821b7f8c42aefe5813035a036,
+      value: {fileID: 172039131412482633, guid: df07939821b7f8c42aefe5813035a036,
         type: 3}
     - key: 1
-      value: {fileID: 1663774606934864102, guid: 6c2aaf5fee18f854f89fae6033b89f3f,
+      value: {fileID: 2065494624978339013, guid: 6c2aaf5fee18f854f89fae6033b89f3f,
         type: 3}
   rockLayers:
     keyValue:

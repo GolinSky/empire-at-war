@@ -7,7 +7,8 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Editor.CaptureSites
 {
@@ -159,13 +160,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private static void BuildInstaller()
         {
             GameObject root = new GameObject("AsteroidMiningFacilityInstaller");
-            GameObjectContext context = root.AddComponent<GameObjectContext>();
-            AsteroidMiningFacilityInstaller installer = root.AddComponent<AsteroidMiningFacilityInstaller>();
-            SerializedObject serializedContext = new SerializedObject(context);
-            SerializedProperty installers = serializedContext.FindProperty("_monoInstallers");
-            installers.arraySize = 1;
-            installers.GetArrayElementAtIndex(0).objectReferenceValue = installer;
-            serializedContext.ApplyModifiedPropertiesWithoutUndo();
+            root.AddComponent<EmpireAtWar.Services.VContainer.EntityLifetimeScope>().autoRun = false;
             PrefabUtility.SaveAsPrefabAsset(root, INSTALLER_PATH);
             Object.DestroyImmediate(root);
         }

@@ -164,8 +164,8 @@ namespace EmpireAtWar.Tests.Editor
                 .Invoke(radar, new object[] { _service, null, null, model, null, gameObject.transform });
             _service.Register(radar);
 
-            // Scene unload: Zenject disposes the radar, then the entity's LateDispose releases its components.
-            ((IDisposable)radar).Dispose();
+            // The entity owns component release; repeated cleanup remains safe.
+            ((EmpireAtWar.Lifecycle.IOrderedDisposable)radar).Dispose();
 
             Assert.DoesNotThrow(radar.Release);
         }

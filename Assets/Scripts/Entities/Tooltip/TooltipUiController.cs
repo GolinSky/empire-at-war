@@ -1,6 +1,7 @@
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Tooltip
 {
@@ -51,7 +52,7 @@ namespace EmpireAtWar.Entities.Tooltip
 
         private void Hide()
         {
-            // The scene may destroy the Unity view before Zenject disposes the service.
+            // The scene may destroy the Unity view before its scope disposes the service.
             if (_ui != null) _ui.Hide();
         }
     }

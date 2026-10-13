@@ -1,109 +1,77 @@
-using EmpireAtWar.Entities.Units;
 using System.Linq;
-using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Components.Hangar;
-using EmpireAtWar.Models.Players;
-using EmpireAtWar.Components.Ship.Audio;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
-using EmpireAtWar.Extensions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
-using Zenject;
-using EmpireAtWar.Entities.BaseEntity.Orders;
+using VContainer;
 
 namespace EmpireAtWar.Ship
 {
     public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipData>
     {
-        private ILocalPlayer _localPlayer;
+        private readonly ShipType _shipType;
 
-        private string _shipDataPath;
+        public ShipInstaller(Ship view, ShipData data, ILocalPlayer localPlayer, PlayerId owner,
+            long entityId, Vector3 position, ShipType shipType)
+            : base(view, data, localPlayer, owner, entityId, position) => _shipType = shipType;
 
-        private ShipType _shipType;
-        private PlayerId _owner;
-
-        protected override string DataPath => _shipDataPath;
-        protected override string PrefabPath => _shipType + base.PrefabPath;
-
-        [Inject]
-        public void Construct(ILocalPlayer localPlayer, ShipsData shipsData, ShipType shipType, PlayerId owner)
+        protected override void InstallFeatures(IContainerBuilder builder)
         {
-            _localPlayer = localPlayer;
-            _shipType = shipType;
-            _owner = owner;
-            _shipDataPath = shipsData.GetShipDataPath(shipType);
-        }
-
-        protected override void InstallFeatures(ShipData data)
-        {
-            Container.BindEntityExt(_owner);
-            Container.BindEntityExt(_shipType);
-
-            Container
-                .BindSelectionFeature(SelectionType.Ship)
-                .BindHealthFeature()
-                .BindRadarFeature()
-                .BindWeaponFeature()
-                .BindCombatModifiersFeature()
-                .BindFogOfWarFeature(!_localPlayer.IsFriendly(_owner));
-
-            Container.Bind<ShipMoveModel>().AsSingle();
-            Container.BindInterfacesAndSelfTo<ShipMoveComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-
-            if (data.HangarBays.Count > 0)
+            builder.RegisterInstance(_shipType);
+            builder.RegisterInstance(Data).AsSelf().As<IShipData, IShipMoveData, IRadarData, IHangarData>();
+            EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
+            EntityFeatureBindings.RegisterCombatModifiers(builder);
+            EntityFeatureBindings.RegisterHealth(builder, Bindings, Data);
+            EntityFeatureBindings.RegisterRadar(builder, Bindings);
+            EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
+            builder.Register<ShipMoveModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            EntityFeatureBindings.RegisterComponent(builder, Bindings.ShipMove);
+            if (Data.HangarBays.Count > 0)
             {
-                Container.Bind<HangarModel>().AsSingle();
-                Container.BindInterfacesAndSelfTo<HangarComponent>()
-                    .FromComponentInHierarchy()
-                    .AsCached();
+                builder.Register<HangarModel>(Lifetime.Singleton);
+                EntityFeatureBindings.RegisterComponent(builder, Bindings.Hangar);
             }
-
-            BindAudio();
-            BindOrders();
-
-            Container.BindInterfacesExt<ShipAbilityFacade>();
-            if (data.Abilities.Contains(ShipAbilityId.CompositeBeam))
-                Container.BindInterfacesExt<CompositeBeamFacade>();
-            Container.BindInterfacesExt<ShipOrderFacade>();
-            Container.BindInterfacesExt<ShipDestroyFacade>();
-            Container.BindInterfacesExt<ShipTooltipFacade>();
-            Container.BindInterfacesAndSelfTo<UnitTypeFacade>().AsSingle().WithArguments(UnitTypeId.Ship(_shipType));
+            builder.Register<ShipSfxHandle>(Lifetime.Singleton);
+            EntityFeatureBindings.RegisterComponent(builder, Bindings.AudioShip);
+            if (LocalPlayer.IsLocal(Owner)) EntityFeatureBindings.RegisterComponent(builder, Bindings.AudioDialog);
+            RegisterOrders(builder);
+            builder.Register<ShipAbilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            if (Data.Abilities.Contains(ShipAbilityId.CompositeBeam))
+                builder.Register<CompositeBeamFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ShipOrderFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ShipDestroyFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ShipTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<UnitTypeFacade>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter("unitTypeId", UnitTypeId.Ship(_shipType));
         }
 
-        private void BindAudio()
+        private static void RegisterOrders(IContainerBuilder builder)
         {
-            Container.Bind<IShipEngineAudioObserver>().To<ShipMoveModel>().FromResolve();
-            Container.BindInterfacesAndSelfTo<AudioShipComponent>()
-                .FromComponentsInHierarchy().AsCached();
-
-            // Voice lines only play for the local player's own ships.
-            if (!_localPlayer.IsLocal(_owner)) return;
-            Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>()
-                .FromComponentsInHierarchy().AsCached();
-        }
-
-        private void BindOrders()
-        {
-            Container.Bind<ShipStateMachine>().AsSingle();
-            Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<IdleState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<NavigateState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<AttackMoveState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GuardState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<HuntState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<AbilityApproachState>().AsSingle();
-            Container.Bind<UnitOrderModel>().AsSingle();
-            Container.Bind<ShipOrderRunner>().AsSingle();
+            builder.Register<ShipStateMachine>(Lifetime.Singleton);
+            builder.Register<AttackTargetState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<IdleState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<NavigateState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<AttackMoveState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<GuardState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<HuntState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<AbilityApproachState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<UnitOrderModel>(Lifetime.Singleton);
+            builder.Register<ShipOrderRunner>(Lifetime.Singleton);
         }
     }
 }

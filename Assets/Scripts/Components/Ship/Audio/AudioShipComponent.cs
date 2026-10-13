@@ -8,7 +8,8 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
@@ -17,7 +18,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         private IShipSfxService _shipSfxService;
         private IShipEngineAudioObserver _shipEngineAudioObserver;
         private ILocalPlayer _localPlayer;
-        private IEntity _ship;
+        private ShipSfxHandle _ship;
         private IReadOnlyList<ShipAbilitySlot> _abilities;
 
         private ShipSfxData _data;
@@ -36,18 +37,18 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         [Inject]
         private void Construct(IShipSfxService shipSfxService, IShipEngineAudioObserver shipEngineAudioObserver, ILocalPlayer localPlayer,
-            ShipSfxData data, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
+            ShipSfxData data, ShipSfxHandle ship, [Key(EntityBindType.ViewTransform)] Transform viewTransform)
         {
             _shipSfxService = shipSfxService;
             _data = data;
             _shipEngineAudioObserver = shipEngineAudioObserver;
             _localPlayer = localPlayer;
             _viewTransform = viewTransform;
+            _ship = ship;
         }
 
-        public void InitializeAudio(IEntity ship, IReadOnlyList<ShipAbilitySlot> abilities)
+        public void InitializeAudio(IReadOnlyList<ShipAbilitySlot> abilities)
         {
-            _ship = ship;
             _abilities = abilities;
             _states = new ShipAbilityState[abilities.Count];
             _sounds = new ShipAbilityAudioProfile[abilities.Count];
