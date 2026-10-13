@@ -340,6 +340,13 @@
 
 ### Tooling
 
+- [x] **Battle logic simulator (Editor Hub)**
+  - **Plan**: [[Done/Tooling/Battle_Logic_Simulator|Battle Logic Simulator]]
+  - **Completed**: 2026-10-13; all agreed v1 phases. Runtime combat models, live/draft snapshots, fleet setup, deterministic/Monte Carlo runs, timeline/log and CSV/Markdown exports.
+  - **Verification**: 48/48 Battle EditMode tests; compile clean; 1000 Thranta mirror seeds in 2.275 s; Hub and embedded Run-button checks passed. Commits `1047f74d0`, `df09b6b80`.
+  - **Data audit**: 65 roster entries; 56 valid, 9 blocked by missing explicit weapon/health bindings. Exact list and limitations in the plan and `Tools/BattleSimulator/README.md`.
+  - **Deferred v2**: hangar launches, abilities, movement/range-closing, research modifiers and class matrix require separate approval.
+
 - [x] **Implement Game Design Balance Editor**
   - **Completed**: 2026-10-09; installed staged UI Toolkit workbench and allowlisted adapters.
   - **Plan**: [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]
