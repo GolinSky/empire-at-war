@@ -1,0 +1,30 @@
+[
+  {
+    "ship": "ISDI",
+    "blueGreenChangedPixels": 6246
+  },
+  {
+    "ship": "ISDII",
+    "blueGreenChangedPixels": 14169
+  },
+  {
+    "ship": "VictoryI",
+    "blueGreenChangedPixels": 12225
+  },
+  {
+    "ship": "VictoryII",
+    "blueGreenChangedPixels": 12099
+  },
+  {
+    "ship": "Victory",
+    "blueGreenChangedPixels": 13302
+  },
+  {
+    "ship": "Imperator",
+    "blueGreenChangedPixels": 17602
+  },
+  {
+    "ship": "AcclamatorAssault",
+    "blueGreenChangedPixels": 15154
+  }
+]
