@@ -22,6 +22,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         void SetOpen(bool open);
 
+        void SetAvailable(bool available);
+
         void SetBattleAvailable(bool available);
 
         void SetRemaining(SuperWeaponType type, float seconds);

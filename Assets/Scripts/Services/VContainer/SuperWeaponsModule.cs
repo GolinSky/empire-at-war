@@ -5,9 +5,12 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.SuperWeapons;
 using global::VContainer;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
+    /// <summary>Super weapon firing and controls. Charge state, targeting and the catalog stay registered by the
+    /// battle and player scopes; with this module off the roster offers no super weapons, so they stay empty.</summary>
     public sealed class SuperWeaponsModule : IBattleModule
     {
         private readonly IAssetService _assets;
@@ -18,18 +21,16 @@ namespace EmpireAtWar.Services.VContainer
         public void ConfigureBattle(IContainerBuilder builder)
         {
             AssetRegistrations.RegisterShared<SuperWeaponData>(builder, _assets);
-            AssetRegistrations.RegisterShared<SuperWeaponCatalog>(builder, _assets);
-            builder.Register<SuperWeaponTargetingModel>(Lifetime.Singleton);
-            builder.Register<SuperWeaponOriginRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponFireService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player)
+        public void ConfigureDisabled(IContainerBuilder builder) { }
+
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
-            builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            if (player.Role == PlayerRole.Human)
+            if (!player.Slot.IsAi)
                 builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            else if ((player.Features & BattleFeatures.Economy) != 0)
+            else if (player.Has(BattleFeatures.Economy))
                 builder.Register<EnemySuperWeaponController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }

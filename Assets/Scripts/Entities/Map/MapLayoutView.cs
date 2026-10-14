@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using EmpireAtWar.Services.FogOfWar;
+using VContainer;
 
 namespace EmpireAtWar.Entities.Map
 {
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private Transform siteRoot;
         [SerializeField] private Transform fieldRoot;
         [SerializeField] private LineRenderer borderLine;
-        [SerializeField] private FogOfWarSystem fogOfWarSystem;
+        private IFogOfWarSystem _fog;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
         private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
 
@@ -43,11 +44,14 @@ namespace EmpireAtWar.Entities.Map
         public CaptureSiteView[] SiteViews { get; private set; }
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
+        [Inject]
+        private void Construct(IFogOfWarSystem fog) => _fog = fog;
+
         /// <summary>Spawns the layout over several frames, at most <see cref="FRAME_SLICE_SECONDS"/> per frame.</summary>
         public async Awaitable BuildAsync(MapLayout layout, CancellationToken cancellationToken)
         {
             // Fog first: spawned colliders are hover-tested against the fog from their first frame.
-            if (fogOfWarSystem.gameObject.activeSelf) fogOfWarSystem.InitializeArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
+            _fog.InitializeArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
             DrawBorder(layout);
             float sliceStart = Time.realtimeSinceStartup;
 

@@ -86,15 +86,26 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(BattleFeatures.None, 0)]
         [TestCase(BattleFeatures.SuperWeapons, 1)]
         [TestCase(BattleFeatures.Economy | BattleFeatures.Fog, 2)]
-        [TestCase(BattleFeatures.All, 5)]
+        [TestCase(BattleFeatures.All, 4)]
         public void Modules_SelectOnlyEnabledFeatures(BattleFeatures features, int count)
         {
             var preset = SkirmishPreset.Default();
             var definition = new BattleDefinition(preset.Mode, preset.Map, preset.Players, features,
                 preset.Outcome, preset.VictoryCondition, preset.StartingMoney);
             var modules = new BattleModules(definition, new SuperWeaponsModule(null), new EconomyModule(null),
-                new MiningSitesModule(null), new CaptureSitesModule(null, null), new FogModule(null));
+                new CaptureSitesModule(null, null), new FogModule(null));
             Assert.That(modules.Enabled.Count, Is.EqualTo(count));
+        }
+
+        [Test]
+        public void Definition_LimitsPlayerFeaturesToBattleFeatures()
+        {
+            var preset = SkirmishPreset.Default();
+            var definition = new BattleDefinition(preset.Mode, preset.Map, preset.Players, BattleFeatures.Fog,
+                preset.Outcome, preset.VictoryCondition, preset.StartingMoney);
+            Assert.That(definition.Players.Select(player => player.Features),
+                Is.All.EqualTo(BattleFeatures.Fog));
+            Assert.That(definition.Players[0].Has(BattleFeatures.SuperWeapons), Is.False);
         }
 
         [Test]

@@ -29,7 +29,7 @@ namespace EmpireAtWar.Entities.MiniMap
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
         private readonly INotifier<BattleMap> _battleMap;
-        private readonly IReadOnlyList<IMiniMapFogMask> _fogMasks;
+        private readonly IMiniMapFogMask _fogMask;
         private MiniMapUi _miniMapView;
         private readonly IPlayerColors _playerColors;
 
@@ -50,13 +50,13 @@ namespace EmpireAtWar.Entities.MiniMap
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
             ITooltipService tooltipService,
-            IReadOnlyList<IMiniMapFogMask> fogMasks,
+            IMiniMapFogMask fogMask,
             MiniMapData model,
             IPlayerColors playerColors,
             TimerPoolService timerPoolService) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
-            _fogMasks = fogMasks;
+            _fogMask = fogMask;
             _cameraService = cameraService;
             _tooltips = new TooltipRequests(tooltipService);
             _model = model;
@@ -141,8 +141,7 @@ namespace EmpireAtWar.Entities.MiniMap
                 _miniMapView.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
                     _miniMapView.TooltipHover, HandleTooltipHover, _tooltips);
-                _miniMapView.SetFogEnabled(_fogMasks.Count > 0);
-                foreach (IMiniMapFogMask fog in _fogMasks) _miniMapView.SetFog(fog.Mask);
+                _miniMapView.SetFog(_fogMask.Mask);
             }
 
             if (isActive)

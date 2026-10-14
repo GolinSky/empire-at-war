@@ -50,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             _orders = new FakeOrders();
             _camera = new FakeCamera();
             _handler = new PlayerOrderInputHandler(gestures: _input, orderInput: _input, selectionService: _selection, query: _query,
-                cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, unitOrderService: _orders, superWeapons: new[] { new SuperWeaponTargetingModel() },
+                cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, unitOrderService: _orders, superWeapons: new SuperWeaponTargetingModel(),
                 hardPointHover: new HardPointOverlayModel(),
                 localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             _handler.Initialize();

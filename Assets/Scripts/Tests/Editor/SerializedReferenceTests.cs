@@ -54,7 +54,6 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(MapLayoutView), "siteRoot"),
             new SerializedReference(typeof(MapLayoutView), "fieldRoot"),
             new SerializedReference(typeof(MapLayoutView), "borderLine"),
-            new SerializedReference(typeof(MapLayoutView), "fogOfWarSystem"),
             new SerializedReference(typeof(SkirmishScope), "settings"),
             new SerializedReference(typeof(SkirmishScope), "mapLayoutView"),
             new SerializedReference(typeof(SkirmishScope), "reinforcementZonesSystem"),

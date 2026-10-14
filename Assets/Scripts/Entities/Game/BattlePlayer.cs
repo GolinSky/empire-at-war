@@ -11,6 +11,8 @@ namespace EmpireAtWar.Entities.Game
         public bool CanProduce => Role != PlayerRole.WaveAttacker && Role != PlayerRole.SimulationSide;
         public bool CanResearch => CanProduce;
 
+        public bool Has(BattleFeatures feature) => (Features & feature) == feature;
+
         public BattlePlayer(PlayerSlot slot, PlayerRole role, BattleFeatures features)
         {
             Slot = slot;

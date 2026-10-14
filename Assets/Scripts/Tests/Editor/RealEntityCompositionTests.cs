@@ -27,6 +27,9 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
+using EmpireAtWar.Presenters.MiniMap;
+using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Settings;
@@ -164,6 +167,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(planetScope.Assets, Is.SameAs(_project.Assets));
             Assert.That(planetScope.View, Is.SameAs(planet));
             Assert.That(planetScope.Container.Resolve<PlanetData>(), Is.Not.Null);
+            bool fog = (features & BattleFeatures.Fog) != 0;
+            Assert.That(_battle.Container.Resolve<ICaptureSitesSystem>() is NoCaptureSites,
+                Is.EqualTo((features & BattleFeatures.CaptureSites) == 0));
+            Assert.That(_battle.Container.Resolve<IFogOfWarSystem>() is NoFogOfWar, Is.EqualTo(!fog));
+            Assert.That(_battle.Container.Resolve<IMiniMapFogMask>() is RevealedMiniMapFogMask, Is.EqualTo(!fog));
             if (features != BattleFeatures.All && features != (BattleFeatures.All & ~BattleFeatures.SuperWeapons))
             {
                 foreach (AssetLifetimeScope player in players)
@@ -186,10 +194,11 @@ namespace EmpireAtWar.Tests.Editor
             ShipData sharedShipData = null;
             foreach (AssetLifetimeScope player in players)
             {
-                Assert.That(player.Container.TryGetRegistration(typeof(EmpireAtWar.Entities.SuperWeapons.SuperWeaponModel), out _), Is.EqualTo(superWeapons));
                 Assert.That(player.Container.Resolve<FactionRoster>().SuperWeapons.Count == 0, Is.EqualTo(!superWeapons));
-                if (player is AiPlayerScope)
-                    Assert.That(player.Container.TryGetRegistration(typeof(EmpireAtWar.Services.Enemy.EnemySuperWeaponController), out _), Is.EqualTo(superWeapons));
+                Type superWeaponDriver = player is AiPlayerScope
+                    ? typeof(EmpireAtWar.Services.Enemy.EnemySuperWeaponController)
+                    : typeof(EmpireAtWar.Entities.SuperWeapons.Controller.SuperWeaponPresenter);
+                Assert.That(player.Container.TryGetRegistration(superWeaponDriver, out _), Is.EqualTo(superWeapons));
                 PlayerSlot slot = player.Container.Resolve<PlayerSlot>();
                 Vector3 origin = map.GetStationPosition(slot.Id);
                 ShipEntity ship = player.Container.Resolve<ShipFactory>().Create(slot.Id, ShipType.Acclamator, origin);

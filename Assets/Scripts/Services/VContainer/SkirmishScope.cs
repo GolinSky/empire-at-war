@@ -99,13 +99,9 @@ namespace EmpireAtWar.Services.VContainer
             base.Configure(builder);
             Battle = ((ProjectScope)Parent).GameData.Battle;
             builder.RegisterInstance(Battle);
-            Modules = new BattleModules(Battle, new SuperWeaponsModule(Assets),
-                new EconomyModule(Assets), new MiningSitesModule(Assets),
+            Modules = new BattleModules(Battle, new SuperWeaponsModule(Assets), new EconomyModule(Assets),
                 new CaptureSitesModule(Assets, captureSitesSystem), new FogModule(fogOfWarSystem));
             Modules.ConfigureBattle(builder);
-            builder.Register<BattleCaptureSites>(Lifetime.Singleton).As<ICaptureSitesSystem>();
-            fogOfWarSystem.gameObject.SetActive(Battle.HasFeature(BattleFeatures.Fog));
-            captureSitesSystem.gameObject.SetActive(Battle.HasFeature(BattleFeatures.CaptureSites));
             builder.Register<SkirmishStateModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             PlayerRoster roster = new PlayerRoster(((ProjectScope)Parent).GameData.Players);
             builder.RegisterInstance(roster).AsImplementedInterfaces().AsSelf();
@@ -168,6 +164,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SuperWeaponTargetingModel>(Lifetime.Singleton);
+            builder.Register<SuperWeaponOriginRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitOrderFeedbackUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -191,11 +189,12 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleStartupSequence>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishFlowSubscriptions>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
-                .WithParameter("superWeaponsEnabled", Battle.HasFeature(BattleFeatures.SuperWeapons));
+            builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitActionsPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<StationLevelData>(builder, Assets);
+            AssetRegistrations.RegisterShared<MiningFacilityCatalog>(builder, Assets);
             AssetRegistrations.RegisterShared<DefendPlatformCatalog>(builder, Assets);
+            AssetRegistrations.RegisterShared<SuperWeaponCatalog>(builder, Assets);
             AssetRegistrations.RegisterShared<WeaponsData>(builder, Assets);
             AssetRegistrations.RegisterShared<DamageMatrixData>(builder, Assets);
             AssetRegistrations.RegisterShared<LayerData>(builder, Assets);
@@ -207,8 +206,6 @@ namespace EmpireAtWar.Services.VContainer
                 .WithParameter(hardPointExplosion);
             AssetRegistrations.RegisterShared<ReinforcementData>(builder, Assets);
             AssetRegistrations.RegisterShared<ShipClassMatchupData>(builder, Assets);
-            builder.Register<VisionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
-                .WithParameter("fogEnabled", Battle.HasFeature(BattleFeatures.Fog));
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SpawnBlockerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
