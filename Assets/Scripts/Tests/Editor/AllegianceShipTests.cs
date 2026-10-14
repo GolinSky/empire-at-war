@@ -7,6 +7,8 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Editor.BattleSimulator;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ShipAbilities;
@@ -15,6 +17,8 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -22,6 +26,23 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/AllegianceShipData.asset";
+
+        [Test]
+        public void SpawnInjection_RegistersEveryCurrentHardpointWithoutNullDonorReferences()
+        {
+            var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
+            var bindings = view.GetComponent<EntityBindings>();
+            var points = view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits;
+            var team = view.GetComponentsInChildren<TeamColorView>(true).Single();
+            Assert.That(bindings.Injectables, Is.All.Not.Null);
+            Assert.That(bindings.Injectables, Is.EquivalentTo(points.Cast<MonoBehaviour>().Append(team)));
+            var builder = new ContainerBuilder();
+            Assert.DoesNotThrow(() =>
+            {
+                foreach (var injectable in bindings.Injectables)
+                    builder.RegisterComponent(injectable).Keyed(injectable);
+            });
+        }
 
         [Test]
         public void SavedShip_HasRequestedBalanceAndNoSquadrons()

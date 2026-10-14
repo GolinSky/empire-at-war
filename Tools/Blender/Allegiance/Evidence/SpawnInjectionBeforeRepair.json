@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "command": "command test_status",
+  "data": {
+    "command": "test_status",
+    "parameters": {},
+    "result": "{\r\n  \"status\": \"completed\",\r\n  \"duration\": 0.39,\r\n  \"summary\": {\r\n    \"total\": 1,\r\n    \"passed\": 0,\r\n    \"failed\": 1,\r\n    \"skipped\": 0,\r\n    \"inconclusive\": 0\r\n  },\r\n  \"results\": [\r\n    {\r\n      \"FullName\": \"EmpireAtWar.Tests.Editor.AllegianceShipTests.SpawnInjection_RegistersEveryCurrentHardpointWithoutNullDonorReferences\",\r\n      \"Status\": \"Failed\",\r\n      \"Duration\": 0.0557888,\r\n      \"Message\": \"  Expected: all items not null\\r\\n  But was:  < <AllegianceShipView (EmpireAtWar.Components.TeamColor.TeamColorView)>, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null >\\r\\n\",\r\n      \"StackTrace\": \"at EmpireAtWar.Tests.Editor.AllegianceShipTests.SpawnInjection_RegistersEveryCurrentHardpointWithoutNullDonorReferences () [0x0003d] in F:\\\\Private\\\\empire-at-war\\\\Assets\\\\Scripts\\\\Tests\\\\Editor\\\\AllegianceShipTests.cs:37\\r\\n\"\r\n    }\r\n  ]\r\n}",
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -37,7 +37,8 @@ tags:
 - Blender `3.6.23` / ALAMO / MCP protocol `13`; Unity `6000.4.7f1`.
 - `54` ALO→FBX models: mesh/triangle/UV-layer counts, bone hierarchy and bounds checked. Direct vertex/UV-corner comparison: position error `<0.0002` source units; UV error `0`.
 - `95` helper renderers / `53,669` triangles stripped from unit-prefab representations; FBX/blend source fidelity retained.
-- Allegiance EditMode tests `11/11` passed; saved assets, economy/registrations, disabled squadrons, destruction, main batteries, scale/collision and muzzle origins verified.
+- Allegiance EditMode tests `12/12` passed; saved assets, economy/registrations, disabled squadrons, destruction, main batteries, scale/collision, muzzle origins and VContainer injectable registration verified.
+- Spawn repair (2026-10-14): donor injection list retained `30` null hardpoint references after geometry replacement → rebuilt with `28` current hardpoints + `TeamColorView`. Regression reproduced the failure before repair; all entity prefabs now contain no null injectables. Builder and generator retain this binding.
 - Deterministic half-bearing simulations at distance `200` units: Allegiance won vs Venator / Victory II / MC80 in `21.75 / 25.55 / 57.55 s`.
 - No Play Mode navigation, visual turret tracking or player UI acceptance run. Source death ALA is not converted by this static import.
 

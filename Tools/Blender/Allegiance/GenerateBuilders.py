@@ -66,6 +66,7 @@ s=s.replace('point.transform.rotation=body.rotation;', 'point.transform.rotation
 s=s.replace('Mathf.Max(-180,side-width*.5f)', '-width*.5f').replace('Mathf.Min(180,side+width*.5f)', 'width*.5f')
 s='\n'.join(line for line in s.splitlines() if 'Assign(Component(root,"FogVisibilityComponent"),"hardPoints"' not in line)+'\n'
 s=s.replace('        float side=point.transform.localPosition.x<0?-90:90;','')
+s=s.replace('Assign(health,"<ShipUnits>k__BackingField",targets.ToArray());', 'Assign(health,"<ShipUnits>k__BackingField",targets.ToArray());\n            Assign(Component(root,"EntityBindings"),"<Injectables>k__BackingField",targets.Cast<UnityEngine.Object>().Concat(new[]{Component(root,"TeamColorView")}).ToArray());')
 folder.joinpath('BuildShip.cs').write_text(s)
 
 s=Path('Tools/Blender/Executor/RegisterExecutor.cs').read_text().replace('Executor','Allegiance').replace('207','213')

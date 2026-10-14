@@ -86,6 +86,7 @@ public static class BuildAllegianceShip
             foreach(var spec in new[]{new{name="TractorBeam",bone="Spawn_01",type=7},new{name="CommandArray",bone="objBridge",type=11}})
             {var point=CreateSystem(body,visual,spec.name,spec.bone,spec.type,id++);point.gameObject.layer=weaponLayer;targets.Add(point);}
             Assign(health,"<ShipUnits>k__BackingField",targets.ToArray());
+            Assign(Component(root,"EntityBindings"),"<Injectables>k__BackingField",targets.Cast<UnityEngine.Object>().Concat(new[]{Component(root,"TeamColorView")}).ToArray());
             weaponComponent.transform.SetParent(body,false);
             Assign(weaponComponent,"hardPoints",weapons.ToArray());
             shieldTransform.SetParent(body,true);shieldTransform.localPosition=bounds.center;

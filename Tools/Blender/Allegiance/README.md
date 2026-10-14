@@ -19,3 +19,5 @@
 - IDs: `ShipType.Allegiance = 213`. Dedicated view/data, Empire roster, existing Addressables groups, icon consumers, placement mapping and matchups.
 - `Package.py`: verify original hashes and retain packed blends/FBXs/textures/previews at `output/remake-empire-units/Allegiance-Converted`; evidence is checked in beside these tools.
 - Automated checks: `AllegianceShipTests` covers balance, disabled squadrons, targeting/destruction, main batteries, registrations/economy, saved references, hull/collision/muzzle positions and three deterministic capital-ship simulations. Simulator runs do not verify Play Mode movement, visual turret tracking or player UI interaction.
+
+- Spawn repair (2026-10-14): `RepairInjection.cs` replaces the donor injection list with 28 current hardpoints + team-color view. Builder/generator now rebuild this list; the new VContainer registration regression failed before repair and the Allegiance suite passed 12/12 afterward.
