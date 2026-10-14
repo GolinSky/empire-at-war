@@ -26,6 +26,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         IInitializable, ILateDisposable, ITickable
     {
         private readonly ISelectionService _selectionService;
+        private readonly bool _superWeaponsEnabled;
         private readonly INotifier<BattleState> _battleState;
         private readonly INotifier<GameSpeed> _gameSpeed;
         private readonly ISkirmishFlow _skirmishFlow;
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             INotifier<BattleResult> battleVictoryNotifier,
             ICinematicCameraController cinematicCamera,
             ITooltipService tooltipService,
-            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
+            EmpireAtWar.Services.Input.IInputBindings bindings, bool superWeaponsEnabled = true) : base(uiService, cancelRouter)
         {
             _placement = placement;
             _cancelRouter = cancelRouter;
@@ -80,6 +81,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _tooltips = new TooltipRequests(tooltipService);
             _tooltipService = tooltipService;
             _bindings = bindings;
+            _superWeaponsEnabled = superWeaponsEnabled;
         }
 
         public void Initialize()
@@ -89,6 +91,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _ui.ContextualPopup.SetParent(_placement.ContextualSlot, false);
             _ui.AssignPresenter(this);
             _ui.Initialize();
+            _ui.SetSuperWeaponsEnabled(_superWeaponsEnabled);
             _battleState.AddObserver(this);
             _gameSpeed.AddObserver(this);
             _tooltipHover = new TooltipHoverSubscription(

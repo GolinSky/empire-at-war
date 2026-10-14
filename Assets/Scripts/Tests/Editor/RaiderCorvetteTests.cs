@@ -27,20 +27,22 @@ namespace EmpireAtWar.Tests.Editor
         private const string DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
 
         [Test]
-        public void SavedUnit_HasRequestedStatsNonTargetableLoadoutAndNoHangar()
+        public void SavedUnit_HasCurrentStatsTargetableWeaponsAndNoHangar()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.Hull, Is.EqualTo(600));
             Assert.That(data.Shields, Is.EqualTo(800));
-            Assert.That(data.Speed, Is.EqualTo(35));
+            Assert.That(data.Speed, Is.EqualTo(17.5f));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.Pursuit }));
             Assert.That(data.HangarBays, Is.Empty);
-            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth").arraySize, Is.Zero);
+            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth").arraySize, Is.EqualTo(1));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits, Is.Empty);
+
             Assert.That(view.GetComponentsInChildren<MonoBehaviour>(true).Any(m => m.GetType().Name == "HangarComponent"), Is.False);
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             Assert.That(weapons.Length, Is.EqualTo(10));
+            Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits,
+                Is.EquivalentTo(weapons));
             Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(10));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             foreach (var expected in new[] { (WeaponType.BurstLaserCannon, 4, 2), (WeaponType.DualRepeatingPointDefense, 2, 6),

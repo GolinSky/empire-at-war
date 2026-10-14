@@ -47,7 +47,7 @@ namespace EmpireAtWar.Entities.Map
         public async Awaitable BuildAsync(MapLayout layout, CancellationToken cancellationToken)
         {
             // Fog first: spawned colliders are hover-tested against the fog from their first frame.
-            fogOfWarSystem.InitializeArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
+            if (fogOfWarSystem.gameObject.activeSelf) fogOfWarSystem.InitializeArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
             DrawBorder(layout);
             float sliceStart = Time.realtimeSinceStartup;
 

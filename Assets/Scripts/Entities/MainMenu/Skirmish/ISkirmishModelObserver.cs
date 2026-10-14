@@ -21,5 +21,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         float MaxStartingMoney { get; }
         float StartingMoney { get; }
         bool CanStart { get; }
+        bool SuperWeapons { get; }
     }
 }

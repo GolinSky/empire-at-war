@@ -27,7 +27,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IPlayerRegistry _playerRegistry;
         private readonly INotifier<BattleState> _battleState;
 
-        private readonly BattleVictoryModel _victoryModel;
+        private readonly IBattleOutcomeRule _victoryModel;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
         private readonly int[] _shipCounts = new int[MatchRules.MAX_PLAYERS];
         private readonly int[] _unitCounts = new int[MatchRules.MAX_PLAYERS];
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Services.Battle
             ILocalPlayer localPlayer,
             IPlayerRegistry playerRegistry,
             INotifier<BattleState> battleState,
-            BattleVictoryModel victoryModel)
+            IBattleOutcomeRule victoryModel)
         {
             _gameModel = gameModel;
             _shipService = shipService;
@@ -192,7 +192,7 @@ namespace EmpireAtWar.Services.Battle
                 playerShipCount: playerShipCount,
                 enemyShipCount: enemyShipCount,
                 isPlayerBaseAlive: isPlayerBaseAlive,
-                isEnemyBaseAlive: isEnemyBaseAlive);
+                isEnemyBaseAlive: isEnemyBaseAlive, mode: _gameModel.GameMode);
         }
     }
 }

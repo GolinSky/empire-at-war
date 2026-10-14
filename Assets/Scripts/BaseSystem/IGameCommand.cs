@@ -8,12 +8,7 @@ namespace EmpireAtWar.Commands.Game
 {
     public interface IGameCommand
     {
-        void StartGame(
-            IReadOnlyList<PlayerSlot> players,
-            PlanetType planetType,
-            MapSize mapSize,
-            BattleVictoryCondition victoryCondition,
-            float startingMoney);
+        void StartBattle(BattleDefinition definition);
 
         void ExitGame();
     }

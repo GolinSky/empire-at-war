@@ -32,8 +32,8 @@ namespace EmpireAtWar.Tests.Editor
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             HardPoint[] points = view.GetComponentsInChildren<HardPoint>(true);
             Assert.That(points.Select(p => p.Id).Distinct().Count(), Is.EqualTo(182));
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(59));
-            Assert.That(health.ShipUnits.Select(p => p.Id), Is.EqualTo(Enumerable.Range(0, 59)));
+            Assert.That(health.ShipUnits.Count, Is.EqualTo(182));
+            Assert.That(health.ShipUnits.Select(p => p.Id), Is.EqualTo(Enumerable.Range(0, 182)));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(4));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Engines), Is.EqualTo(2));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Hangar), Is.EqualTo(2));
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 WeaponHardPoint[] group = weapons.Where(w => (int)w.WeaponType == expected.Item1).ToArray();
                 Assert.That(group.Length, Is.EqualTo(expected.Item2));
-                Assert.That(group.All(health.ShipUnits.Contains), Is.EqualTo(expected.Item1 is >= 49 and <= 51 or 34));
+                Assert.That(group.All(health.ShipUnits.Contains), Is.True);
                 foreach (WeaponHardPoint weapon in group)
                     Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.InRange(179f, 180f), weapon.name);
             }
@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedHangars_HaveSeparateSystemsExitsAndIndependentReserves()
+        public void SavedHangars_KeepSeparateExitsButDoNotLaunchSquadrons()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 201 }));
@@ -79,10 +79,10 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(exit.localPosition.y, Is.LessThan(data.HullBottom));
             }
             HangarModel model = new HangarModel(data);
+            Assert.That(model.GetReserve(0), Is.Zero);
+            Assert.That(model.GetReserve(1), Is.Zero);
+            Assert.That(model.TryLaunch(data.HangarInitialDelay, out _), Is.False);
             model.DisableBay(0);
-            Assert.That(model.TryLaunch(data.HangarInitialDelay, out int bay), Is.True);
-            Assert.That(bay, Is.EqualTo(1));
-            Assert.That(model.GetReserve(0), Is.EqualTo(6));
             model.DisableBay(1);
             Assert.That(model.IsOperational, Is.False);
             Assert.That(model.TryLaunch(100, out _), Is.False);

@@ -656,6 +656,8 @@ namespace EmpireAtWar.Tests.Editor
                 ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition =
                 CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
+            SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.BuildTime), 20);
+            SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.BuildTime), 30);
 
             try
             {
@@ -892,9 +894,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             return new FactionRoster(
                 definition,
-                LoadSharedData<MiningFacilityCatalog>(),
+                new[] { LoadSharedData<MiningFacilityCatalog>() },
                 LoadSharedData<DefendPlatformCatalog>(),
-                LoadSharedData<SuperWeaponCatalog>());
+                new[] { LoadSharedData<SuperWeaponCatalog>() });
         }
 
         private static T LoadSharedData<T>() where T : ScriptableObject

@@ -289,12 +289,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public void ExitGame() => ExitCount++;
 
-            public void StartGame(
-                System.Collections.Generic.IReadOnlyList<PlayerSlot> players,
-                PlanetType planetType,
-                MapSize mapSize,
-                BattleVictoryCondition victoryCondition,
-                float startingMoney) { }
+            public void StartBattle(BattleDefinition definition) { }
         }
     }
 }

@@ -39,7 +39,7 @@ namespace EmpireAtWar.Services.Cheats
         private readonly PlayerSlot _owner;
         private readonly ReinforcementModel _reinforcementModel;
         private readonly ShipFactory _shipFactory;
-        private readonly SuperWeaponModel _superWeaponModel;
+        private readonly System.Collections.Generic.IReadOnlyList<SuperWeaponModel> _superWeaponModel;
         private readonly RangeDebugModel _rangeDebugModel;
         private readonly List<IEntity> _ownEntities = new List<IEntity>();
 
@@ -49,7 +49,7 @@ namespace EmpireAtWar.Services.Cheats
             EconomyModel economyModel,
             ReinforcementModel reinforcementModel,
             ShipFactory shipFactory,
-            SuperWeaponModel superWeaponModel,
+            System.Collections.Generic.IReadOnlyList<SuperWeaponModel> superWeaponModel,
             RangeDebugModel rangeDebugModel,
             PlayerSlot owner)
         {
@@ -114,13 +114,13 @@ namespace EmpireAtWar.Services.Cheats
         /// <summary>Makes the weapon ready to fire for free. A weapon already charging or ready is left alone.</summary>
         public bool GrantSuperWeapon(SuperWeaponType type)
         {
-            if (!_superWeaponModel.CanPurchase(type))
+            if (_superWeaponModel.Count == 0 || !_superWeaponModel[0].CanPurchase(type))
             {
                 return false;
             }
 
-            _superWeaponModel.StartCharging(type);
-            _superWeaponModel.CompleteCharging(type);
+            _superWeaponModel[0].StartCharging(type);
+            _superWeaponModel[0].CompleteCharging(type);
             return true;
         }
 

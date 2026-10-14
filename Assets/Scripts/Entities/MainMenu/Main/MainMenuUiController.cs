@@ -14,6 +14,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
     public class MainMenuUiController : UiController, IMainMenuPresenter, ILateDisposable
     {
         private readonly ISkirmishRoute _skirmishRoute;
+        private readonly EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute _survivalRoute;
         private readonly ISettingsRoute _settingsRoute;
         private MainMenuUi _ui;
 
@@ -25,9 +26,11 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             IUiCancelRouter cancelRouter,
             ISkirmishRoute skirmishRoute,
             ISettingsRoute settingsRoute,
-            ITooltipService tooltipService) : base(uiService, cancelRouter)
+            ITooltipService tooltipService,
+            EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute survivalRoute) : base(uiService, cancelRouter)
         {
             _skirmishRoute = skirmishRoute;
+            _survivalRoute = survivalRoute;
             _settingsRoute = settingsRoute;
             _tooltips = new TooltipRequests(tooltipService);
         }
@@ -63,6 +66,12 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         {
             _tooltips.HideAll();
             _settingsRoute.Open();
+        }
+
+        public void OpenSurvival()
+        {
+            _tooltips.HideAll();
+            _survivalRoute.Open();
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>

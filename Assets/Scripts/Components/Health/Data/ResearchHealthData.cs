@@ -13,17 +13,26 @@ namespace EmpireAtWar.Models.Health
     public sealed class ResearchHealthData : IHealthData
     {
         private readonly IHealthData _healthData;
-        private readonly IFactionResearchModelObserver _research;
+        private readonly IReadOnlyList<IFactionResearchModelObserver> _research;
 
         public ShipClass ShipClass => _healthData.ShipClass;
         public float Hull => _healthData.Hull;
-        public float Shields => _healthData.Shields * _research.GetMultiplier(ResearchStat.ShieldCapacity, ShipClass);
+        public float Shields
+        {
+            get
+            {
+                float shields = _healthData.Shields;
+                foreach (IFactionResearchModelObserver research in _research)
+                    shields *= research.GetMultiplier(ResearchStat.ShieldCapacity, ShipClass);
+                return shields;
+            }
+        }
         public float ShieldRegenerateValue => _healthData.ShieldRegenerateValue;
         public float ShieldRegenerateDelay => _healthData.ShieldRegenerateDelay;
         public IReadOnlyList<HardPointHealth> HardPointHealth => _healthData.HardPointHealth;
 
         public ResearchHealthData([Key(EntityBindType.HealthData)] IHealthData healthData,
-            IFactionResearchModelObserver research)
+            IReadOnlyList<IFactionResearchModelObserver> research)
         {
             _healthData = healthData;
             _research = research;

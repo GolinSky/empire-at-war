@@ -6268,6 +6268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
+  - {fileID: 2561499397476259715}
   - {fileID: 7330573485845825101}
   - {fileID: 1729628299686522484}
   - {fileID: 4467387579050478115}
@@ -6284,10 +6285,13 @@ MonoBehaviour:
   - {fileID: 7508635943923632643}
   - {fileID: 5911259458793889202}
   - {fileID: 7330025532064319669}
+  - {fileID: 3882218593219305485}
   - {fileID: 4098051390409782904}
   - {fileID: 5284031561953209929}
+  - {fileID: 677421219464749459}
   - {fileID: 442322784435427984}
   - {fileID: 8387875748870682114}
+  - {fileID: 4839367224502572541}
   - {fileID: 2796547807480487760}
   - {fileID: 1005638487440697414}
   - {fileID: 1193842489383300756}
@@ -6340,7 +6344,6 @@ MonoBehaviour:
   - {fileID: 6712359240592052756}
   - {fileID: 5325440768582069703}
   - {fileID: 3132005421507073818}
-  - {fileID: 2561499397476259715}
 --- !u!114 &7256685330956268558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18995,6 +18998,12 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 1717299877922169061}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &677421219464749459 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2212318693530878326, guid: 5b4c10e57642ba742a6b6a9f32dc181c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1717299877922169061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &847562772637223858 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2023865530183347031, guid: 5b4c10e57642ba742a6b6a9f32dc181c,
@@ -19145,6 +19154,12 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 1717299877922169061}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &3882218593219305485 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2465010641146970344, guid: 5b4c10e57642ba742a6b6a9f32dc181c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1717299877922169061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &3892954152487806953 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2437465610158180108, guid: 5b4c10e57642ba742a6b6a9f32dc181c,
@@ -19184,6 +19199,12 @@ MeshRenderer:
 --- !u!23 &4836119972021265270 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6109214662973227923, guid: 5b4c10e57642ba742a6b6a9f32dc181c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1717299877922169061}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4839367224502572541 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6124317125117719832, guid: 5b4c10e57642ba742a6b6a9f32dc181c,
     type: 3}
   m_PrefabInstance: {fileID: 1717299877922169061}
   m_PrefabAsset: {fileID: 0}

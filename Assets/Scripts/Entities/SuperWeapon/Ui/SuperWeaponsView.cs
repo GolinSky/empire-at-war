@@ -24,6 +24,16 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         public event Action CloseRequested;
 
         public TooltipHoverView TooltipHover => tooltipHover;
+        public void SetAvailable(bool available)
+        {
+            orbitalButton.gameObject.SetActive(available);
+            if (!available)
+            {
+                SetOpen(false);
+                readyIndicator.SetActive(false);
+                targetingIndicator.SetActive(false);
+            }
+        }
 
         public void Initialize()
         {

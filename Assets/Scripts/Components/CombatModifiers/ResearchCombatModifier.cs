@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -14,7 +14,7 @@ namespace EmpireAtWar.Components.Combat
     {
         private const float NEUTRAL_MULTIPLIER = 1f;
 
-        private readonly IFactionResearchModelObserver _research;
+        private readonly IReadOnlyList<IFactionResearchModelObserver> _research;
 
         private readonly CombatModifiers _modifiers;
 
@@ -22,7 +22,7 @@ namespace EmpireAtWar.Components.Combat
         private CombatStatModifier _applied;
 
         public ResearchCombatModifier(
-            IFactionResearchModelObserver research,
+            IReadOnlyList<IFactionResearchModelObserver> research,
             IHealthData healthData,
             CombatModifiers modifiers)
         {
@@ -35,12 +35,14 @@ namespace EmpireAtWar.Components.Combat
         {
             _applied = CreateModifier();
             _modifiers.Add(_applied);
-            _research.OnResearchCompleted += HandleResearchCompleted;
+            foreach (IFactionResearchModelObserver research in _research)
+                research.OnResearchCompleted += HandleResearchCompleted;
         }
 
         public void Dispose()
         {
-            _research.OnResearchCompleted -= HandleResearchCompleted;
+            foreach (IFactionResearchModelObserver research in _research)
+                research.OnResearchCompleted -= HandleResearchCompleted;
         }
 
         private void HandleResearchCompleted(ResearchType researchType)
@@ -52,12 +54,16 @@ namespace EmpireAtWar.Components.Combat
 
         private CombatStatModifier CreateModifier()
         {
-            return new CombatStatModifier(
-                _research.GetMultiplier(ResearchStat.WeaponDamage, _shipClass),
-                NEUTRAL_MULTIPLIER,
-                _research.GetMultiplier(ResearchStat.Speed, _shipClass),
-                NEUTRAL_MULTIPLIER,
-                _research.GetMultiplier(ResearchStat.DamageTaken, _shipClass));
+            float damage = NEUTRAL_MULTIPLIER;
+            float speed = NEUTRAL_MULTIPLIER;
+            float damageTaken = NEUTRAL_MULTIPLIER;
+            foreach (IFactionResearchModelObserver research in _research)
+            {
+                damage *= research.GetMultiplier(ResearchStat.WeaponDamage, _shipClass);
+                speed *= research.GetMultiplier(ResearchStat.Speed, _shipClass);
+                damageTaken *= research.GetMultiplier(ResearchStat.DamageTaken, _shipClass);
+            }
+            return new CombatStatModifier(damage, NEUTRAL_MULTIPLIER, speed, NEUTRAL_MULTIPLIER, damageTaken);
         }
     }
 }

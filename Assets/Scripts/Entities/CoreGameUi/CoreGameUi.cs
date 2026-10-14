@@ -47,6 +47,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         public IUnitActionsView UnitActionsView => unitActionsView;
         public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
         public Transform ContextualPopup => contextualPopup.transform;
+        public void SetSuperWeaponsEnabled(bool enabled) => superWeaponsView.SetAvailable(enabled);
 
         public void Initialize()
         {

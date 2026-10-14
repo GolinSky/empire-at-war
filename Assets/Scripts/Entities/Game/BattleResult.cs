@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.Game
     public sealed class BattleResult
     {
         public BattleOutcome Outcome { get; }
+        public GameMode Mode { get; }
         public BattleVictoryCondition VictoryCondition { get; }
         public PlanetType Planet { get; }
         public FactionType PlayerFaction { get; }
@@ -27,9 +28,10 @@ namespace EmpireAtWar.Entities.Game
             int playerShipCount,
             int enemyShipCount,
             bool isPlayerBaseAlive,
-            bool isEnemyBaseAlive)
+            bool isEnemyBaseAlive, GameMode mode = GameMode.Skirmish)
         {
             Outcome = outcome;
+            Mode = mode;
             VictoryCondition = victoryCondition;
             Planet = planet;
             PlayerFaction = playerFaction;

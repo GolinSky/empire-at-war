@@ -117,14 +117,15 @@ namespace EmpireAtWar.Editor.Balance
 
         public static void Hangar(BalanceRegistration registry, Object data, SerializedProperty entries, string key, BalanceUnit unit)
         {
-            HashSet<int> ids = new HashSet<int>();
+            int bayIndex = 0;
             foreach (SerializedProperty entry in BalanceRegistration.Elements(entries))
             {
-                int id = entry.FindPropertyRelative("squadronType").intValue;
-                if (!ids.Add(id)) throw new InvalidOperationException($"Ambiguous hangar bay identity: {data.name}/{id}");
+                int squadronType = entry.FindPropertyRelative("squadronType").intValue;
                 foreach (string name in new[] { "reserve", "maxActive" })
-                    registry.Add(data, key + "/" + id + "/" + name, entry.propertyPath + "." + name,
-                        BalanceFieldGroup.Hangar, unit.Name + " / " + ((SquadronType)id), BalanceFieldOwner.UnitData, unit.Kind == BalanceUnitKind.Structure, new[] { unit });
+                    registry.Add(data, key + "/bay/" + bayIndex + "/" + name, entry.propertyPath + "." + name,
+                        BalanceFieldGroup.Hangar, unit.Name + " / Bay " + (bayIndex + 1) + " / " + ((SquadronType)squadronType),
+                        BalanceFieldOwner.UnitData, unit.Kind == BalanceUnitKind.Structure, new[] { unit });
+                bayIndex++;
             }
         }
     }

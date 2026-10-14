@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Game modes: Survival and Battle Simulation**
+  - **Plan**: [[TODOs/Features/Game_Modes_Survival_And_Simulation|Game Modes Survival And Simulation]]
+  - **Status**: 2026-10-14 Phase 0 implemented: battle definitions/roles, optional feature modules, Skirmish super-weapons toggle, Survival setup with launch disabled, and mode-aware results. Baseline regression repairs included. Phase 0 checks and 8 real-scope cases pass.
+  - **Verification**: full EditMode 1,288/1,308; 18 concurrent fleet-import failures and 2 concurrent Editor timeout-log failures. Full-suite green gate remains open.
+  - **Remaining**: stable full-suite rerun; Phase 1 hosted production; Phase 2 Survival gameplay; Phase 3 Battle Simulation.
+
 - [ ] **AI composition analysis and counter measures**
   - **Plan**: [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]
   - **Status**: 2026-10-07 implemented: baked weapon loadouts, damage-matrix force ratings, utility strategic rules, counter production and squadron escorts. AI/new tests 119/119; full EditMode 1151/1155 (4 unrelated). Commit `e5daa9ab`.

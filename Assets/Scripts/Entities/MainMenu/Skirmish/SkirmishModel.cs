@@ -41,6 +41,21 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public float MaxStartingMoney => MAX_STARTING_MONEY;
         public float StartingMoney { get; private set; } = DEFAULT_STARTING_MONEY;
         public bool CanStart => ActiveTeamCount >= 2;
+        public bool SuperWeapons { get; private set; } = true;
+
+        public void SelectSuperWeapons(bool enabled)
+        {
+            SuperWeapons = enabled;
+            Changed?.Invoke();
+        }
+
+        public BattleDefinition CreateBattle()
+        {
+            BattleDefinitionBuilder builder = SkirmishPreset.Create(CreatePlayers(), Planet, MapSize,
+                VictoryCondition, StartingMoney);
+            if (!SuperWeapons) builder.Features &= ~BattleFeatures.SuperWeapons;
+            return builder.Build();
+        }
 
         /// <param name="occupant">Row 0 always stays the human; other rows pick Closed or an AI level.</param>
         public void SelectSlotOccupant(int slotIndex, SkirmishSlotOccupant occupant)

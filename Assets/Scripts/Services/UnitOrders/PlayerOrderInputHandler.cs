@@ -35,7 +35,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IHardPointHoverObserver _hardPointHover;
 
         private readonly UnitActionTargetingModel _targeting;
-        private readonly SuperWeaponTargetingModel _superWeapons;
+        private readonly System.Collections.Generic.IReadOnlyList<SuperWeaponTargetingModel> _superWeapons;
 
         public PlayerOrderInputHandler(IPointerGestures gestures, IUnitOrderInput orderInput,
             ISelectionService selectionService,
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Services.UnitOrders
             IShipAbilityTargeting abilities, IUnitOrderService unitOrderService,
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
-            SuperWeaponTargetingModel superWeapons)
+            System.Collections.Generic.IReadOnlyList<SuperWeaponTargetingModel> superWeapons)
         {
             _localPlayer = localPlayer;
             _gestures = gestures;
@@ -109,10 +109,10 @@ namespace EmpireAtWar.Services.UnitOrders
             SelectionEntry hit = default;
             bool hasUnit = hasHardPoint || _query.TryFindAt(screen, out hit);
             IEntity target = hasHardPoint ? hardPointOwner : hasUnit ? hit.Entity : null;
-            if (_superWeapons.Pending != null)
+            if (_superWeapons.Count > 0 && _superWeapons[0].Pending != null)
             {
-                if (target != null) _superWeapons.Submit(target);
-                else _superWeapons.Cancel();
+                if (target != null) _superWeapons[0].Submit(target);
+                else _superWeapons[0].Cancel();
                 return;
             }
 

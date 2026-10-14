@@ -91,10 +91,21 @@ namespace EmpireAtWar.Services.VContainer
         private MiniMapData _miniMapData;
 
         public FactionCatalog Factions { get; private set; }
+        public BattleDefinition Battle { get; private set; }
+        public BattleModules Modules { get; private set; }
 
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
+            Battle = ((ProjectScope)Parent).GameData.Battle;
+            builder.RegisterInstance(Battle);
+            Modules = new BattleModules(Battle, new SuperWeaponsModule(Assets),
+                new EconomyModule(Assets), new MiningSitesModule(Assets),
+                new CaptureSitesModule(Assets, captureSitesSystem), new FogModule(fogOfWarSystem));
+            Modules.ConfigureBattle(builder);
+            builder.Register<BattleCaptureSites>(Lifetime.Singleton).As<ICaptureSitesSystem>();
+            fogOfWarSystem.gameObject.SetActive(Battle.HasFeature(BattleFeatures.Fog));
+            captureSitesSystem.gameObject.SetActive(Battle.HasFeature(BattleFeatures.CaptureSites));
             builder.Register<SkirmishStateModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             PlayerRoster roster = new PlayerRoster(((ProjectScope)Parent).GameData.Players);
             builder.RegisterInstance(roster).AsImplementedInterfaces().AsSelf();
@@ -118,7 +129,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<TooltipLifecyclePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<WorldTooltipPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(reinforcementZoneData);
-            AssetRegistrations.RegisterShared<CaptureSiteData>(builder, Assets);
             builder.RegisterInstance(unitOrderSettings);
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitActionTargetingModel>(Lifetime.Singleton);
@@ -131,7 +141,7 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<HardPointOverlayPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AttackDataFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<BattleVictoryModel>(Lifetime.Singleton);
+            builder.Register<BattleVictoryModel>(Lifetime.Singleton).As<IBattleOutcomeRule>().AsSelf();
             builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             UiService uiService = Object.Instantiate(Assets.LoadComponent<UiService>(nameof(UiService)), transform);
             builder.RegisterComponent(uiService).AsImplementedInterfaces().AsSelf();
@@ -158,10 +168,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            AssetRegistrations.RegisterShared<SuperWeaponData>(builder, Assets);
-            builder.Register<SuperWeaponTargetingModel>(Lifetime.Singleton);
-            builder.Register<SuperWeaponOriginRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<SuperWeaponFireService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitOrderFeedbackUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -179,20 +185,17 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(_miniMapData).AsImplementedInterfaces().AsSelf();
             builder.Register<MiniMapUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementZoneMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<CaptureSiteMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BaseMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<MiniMapFogMask>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleStartupSequence>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishFlowSubscriptions>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter("superWeaponsEnabled", Battle.HasFeature(BattleFeatures.SuperWeapons));
             builder.Register<UnitActionsPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<StationLevelData>(builder, Assets);
-            AssetRegistrations.RegisterShared<MiningFacilityCatalog>(builder, Assets);
             AssetRegistrations.RegisterShared<DefendPlatformCatalog>(builder, Assets);
-            AssetRegistrations.RegisterShared<SuperWeaponCatalog>(builder, Assets);
             AssetRegistrations.RegisterShared<WeaponsData>(builder, Assets);
             AssetRegistrations.RegisterShared<DamageMatrixData>(builder, Assets);
             AssetRegistrations.RegisterShared<LayerData>(builder, Assets);
@@ -203,17 +206,15 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HardPointExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(hardPointExplosion);
             AssetRegistrations.RegisterShared<ReinforcementData>(builder, Assets);
-            AssetRegistrations.RegisterShared<EconomyData>(builder, Assets);
             AssetRegistrations.RegisterShared<ShipClassMatchupData>(builder, Assets);
-            builder.Register<UnitRequestFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<VisionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<VisionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter("fogEnabled", Battle.HasFeature(BattleFeatures.Fog));
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SpawnBlockerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.RegisterComponent(fogOfWarSystem).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
                 unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, shipSfxSourcesPrefab, cameraService);
-            MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem, captureSitesSystem);
+            MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem);
             builder.RegisterLifecycle();
         }
 
