@@ -390,6 +390,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4383e14607b20346b0b482906dbd074
+    m_Address: TartanShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fcc3274cbaf8b934aad8621c60702a8f
     m_Address: RebellionSpaceStationView
     m_ReadOnly: 0

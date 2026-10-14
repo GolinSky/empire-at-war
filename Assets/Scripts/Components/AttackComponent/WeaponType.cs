@@ -78,5 +78,6 @@
         HeavyBurstTurbolaser = 83,
         HeavyPointDefense = 84,
         HeavyOctupleTurbolaser = 85,
+        TartanLargeRepeatingLaser = 90,
     }
 }
