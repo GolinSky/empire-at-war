@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (string field in new[]
                          {
                              "closeButton", "startGameButton", "planetsDropdown", "mapSizeDropdown",
-                             "victoryConditionDropdown", "startingMoneySlider", "startingMoneyText"
+                             "victoryConditionDropdown", "startingMoneySlider", "startingMoneyText", "superWeaponsToggle"
                          })
                 {
                     Assert.That(serializedPopup.FindProperty(field).objectReferenceValue, Is.Not.Null,
@@ -99,6 +99,9 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.Slots[1].ColorIndex, Is.EqualTo(0));
                 Assert.That(enemyColor.value, Is.EqualTo(0));
 
+                Toggle superWeapons = (Toggle)serializedPopup.FindProperty("superWeaponsToggle").objectReferenceValue;
+                superWeapons.isOn = false;
+                Assert.That(model.CreateBattle().HasFeature(EmpireAtWar.Entities.Game.BattleFeatures.SuperWeapons), Is.False);
                 model.Changed -= popup.Render;
                 popup.Dispose();
             }
@@ -126,6 +129,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Close() { }
 
             public void StartGame() { }
+            public void SelectSuperWeapons(bool enabled) => _model.SelectSuperWeapons(enabled);
 
             public void SelectSlotOccupant(int slotIndex, int occupantIndex) =>
                 _model.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);

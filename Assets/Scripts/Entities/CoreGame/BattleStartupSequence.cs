@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using EmpireAtWar.Entities.Game;
 using System.Threading;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
@@ -20,8 +22,9 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IPlayerRoster _playerRoster;
         private readonly ILocalPlayer _localPlayer;
         private readonly ICameraService _cameraService;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IReadOnlyList<IFogOfWarSystem> _fogOfWarSystems;
         private readonly IFadeService _fadeService;
+        private readonly BattleDefinition _battle;
 
         public BattleStartupSequence(
             IBattleMapLoader mapLoader,
@@ -30,8 +33,8 @@ namespace EmpireAtWar.Controllers.Game
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             ICameraService cameraService,
-            IFogOfWarSystem fogOfWarSystem,
-            IFadeService fadeService)
+            IReadOnlyList<IFogOfWarSystem> fogOfWarSystems,
+            IFadeService fadeService, BattleDefinition battle)
         {
             _mapLoader = mapLoader;
             _mapModel = mapModel;
@@ -39,8 +42,9 @@ namespace EmpireAtWar.Controllers.Game
             _playerRoster = playerRoster;
             _localPlayer = localPlayer;
             _cameraService = cameraService;
-            _fogOfWarSystem = fogOfWarSystem;
+            _fogOfWarSystems = fogOfWarSystems;
             _fadeService = fadeService;
+            _battle = battle;
         }
 
         public async Awaitable RunAsync(CancellationToken cancellationToken)
@@ -52,14 +56,15 @@ namespace EmpireAtWar.Controllers.Game
             await _mapLoader.LoadAsync(cancellationToken);
             foreach (PlayerSlot player in _playerRoster.Players)
             {
-                _playerRegistry.GetStationSpawner(player.Id).Spawn();
+                if (_battle.GetPlayer(player.Id).OwnsStation)
+                    _playerRegistry.GetStationSpawner(player.Id).Spawn();
             }
 
             _cameraService.MoveTo(_mapModel.GetStationPosition(_localPlayer.Id));
             // Spawned stations register their fog vision in their contexts' Start.
             await Awaitable.NextFrameAsync(cancellationToken);
             await Awaitable.NextFrameAsync(cancellationToken);
-            _fogOfWarSystem.RevealImmediately();
+            foreach (var fog in _fogOfWarSystems) fog.RevealImmediately();
             await _fadeService.FadeOutAsync(FADE_OUT_DURATION, cancellationToken);
         }
     }

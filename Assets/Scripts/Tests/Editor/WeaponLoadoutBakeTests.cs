@@ -79,6 +79,6 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static string Describe(IEnumerable<WeaponLoadoutEntry> loadout) =>
-            string.Join(", ", loadout.Select(entry => $"{entry.WeaponType}×{entry.Count}"));
+            string.Join(", ", loadout.OrderBy(entry => entry.WeaponType).Select(entry => $"{entry.WeaponType}×{entry.Count}"));
     }
 }

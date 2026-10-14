@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -25,6 +25,10 @@ namespace EmpireAtWar.Controllers.Factions
 
     public class UnitRequestFactory : IUnitRequestFactory
     {
+        private readonly bool _superWeaponsEnabled;
+
+        public UnitRequestFactory(bool superWeaponsEnabled = true) => _superWeaponsEnabled = superWeaponsEnabled;
+
         public ShipUnitRequest ConstructUnitRequest(FactionData factionData, ShipType shipType)
         {
             return new ShipUnitRequest(factionData, shipType);
@@ -57,6 +61,7 @@ namespace EmpireAtWar.Controllers.Factions
 
         public SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType)
         {
+            if (!_superWeaponsEnabled) throw new System.InvalidOperationException("Super weapons are disabled for this player.");
             return new SuperWeaponUnitRequest(factionData, superWeaponType);
         }
     }

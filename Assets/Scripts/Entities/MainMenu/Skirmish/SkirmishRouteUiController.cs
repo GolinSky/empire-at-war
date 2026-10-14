@@ -88,17 +88,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void StartGame()
         {
-            if (!_model.CanStart)
-            {
-                return;
-            }
-
-            _gameCommand.StartGame(
-                _model.CreatePlayers(),
-                _model.Planet,
-                _model.MapSize,
-                _model.VictoryCondition,
-                _model.StartingMoney);
+            if (_model.CanStart) _gameCommand.StartBattle(_model.CreateBattle());
         }
 
         public void SelectSlotOccupant(int slotIndex, int occupantIndex)
@@ -140,6 +130,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             _model.SelectStartingMoney(amount);
         }
+
+        public void SelectSuperWeapons(bool enabled) => _model.SelectSuperWeapons(enabled);
 
         private void Render()
         {

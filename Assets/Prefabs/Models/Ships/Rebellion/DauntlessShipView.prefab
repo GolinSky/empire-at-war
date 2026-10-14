@@ -2090,8 +2090,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
   - {fileID: 6604166672927488390}
+  - {fileID: 3851158795644845416}
+  - {fileID: 4196800904956539836}
+  - {fileID: 45914345012706223}
   - {fileID: 5683363581800525153}
+  - {fileID: 1406327992037200282}
+  - {fileID: 6108165762982478928}
   - {fileID: 8221571852037017925}
+  - {fileID: 728384128393263734}
+  - {fileID: 676955951209049671}
 --- !u!114 &678189760869516238
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,5 +21,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         void SelectVictoryCondition(int index);
 
         void SelectStartingMoney(float amount);
+        void SelectSuperWeapons(bool enabled);
     }
 }

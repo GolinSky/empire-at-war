@@ -40,6 +40,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<MainMenuOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(teamColorPalette);
             builder.Register<SkirmishModel>(Lifetime.Singleton);
+            builder.Register<EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel>(Lifetime.Singleton);
+            builder.Register<EmpireAtWar.Entities.MainMenu.Survival.SurvivalRouteUiController>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             builder.Register<SettingsModel>(Lifetime.Singleton);
             builder.Register<SettingsDraftEditor>(Lifetime.Singleton);
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);

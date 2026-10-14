@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.Game;
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Entities.Map
         private readonly MapLayoutView _mapLayoutView;
         private readonly IGameModelObserver _gameModel;
         private readonly MapModel _mapModel;
+        private readonly BattleDefinition _battle;
         private readonly List<IObserver<BattleMap>> _observers = new List<IObserver<BattleMap>>();
 
         private BattleMap _battleMap;
@@ -24,12 +26,13 @@ namespace EmpireAtWar.Entities.Map
             MapGenerationSettings settings,
             MapLayoutView mapLayoutView,
             IGameModelObserver gameModel,
-            MapModel mapModel)
+            MapModel mapModel, BattleDefinition battle)
         {
             _settings = settings;
             _mapLayoutView = mapLayoutView;
             _gameModel = gameModel;
             _mapModel = mapModel;
+            _battle = battle;
         }
 
         public async Awaitable LoadAsync(CancellationToken cancellationToken)
@@ -45,6 +48,11 @@ namespace EmpireAtWar.Entities.Map
 
             await Awaitable.BackgroundThreadAsync();
             MapLayout layout = generator.Generate(mapSize, players, new Random());
+            layout = new MapLayout(players.ToDictionary(player => player.Id, player => layout.GetStationPosition(player.Id)),
+                layout.Zones, layout.Sites.Where(site => _battle.HasFeature(BattleFeatures.CaptureSites) &&
+                    (site.FacilityType != EmpireAtWar.Entities.CaptureSites.SiteFacilityType.Mining ||
+                     _battle.HasFeature(BattleFeatures.MiningSites))).ToArray(),
+                layout.Lanes, layout.Fields, layout.SizeRange, layout.PlanetPosition);
             await Awaitable.MainThreadAsync();
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -91,6 +99,7 @@ namespace EmpireAtWar.Entities.Map
             List<StationObstacle> obstacles = new List<StationObstacle>(players.Count);
             foreach (PlayerSlot player in players)
             {
+                if (!_battle.GetPlayer(player.Id).OwnsStation) continue;
                 obstacles.Add(new StationObstacle(
                     layout.GetStationPosition(player.Id),
                     _settings.GetStationRadius(player.Faction)));

@@ -99,6 +99,8 @@ namespace EmpireAtWar.Entities.MiniMap
             }
         }
 
+        public void SetFogEnabled(bool enabled) => fogImage.gameObject.SetActive(enabled);
+
         public void SetFog(Texture mask)
         {
             fogImage.texture = mask;

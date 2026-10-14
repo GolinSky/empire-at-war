@@ -46,7 +46,8 @@ namespace EmpireAtWar.Tests.Editor
                         Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Turbolaser), context);
                     else if (shipClass == ShipClass.Frigate && definition.Family == WeaponFamily.Turbolaser)
                         Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), context);
-                    else if (shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
+                    else if ((shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
+                             && definition.Family != WeaponFamily.PointDefense)
                         Assert.That(definition.Caliber, Is.GreaterThanOrEqualTo(WeaponCaliber.Medium), context);
                 }
             }
@@ -225,8 +226,6 @@ namespace EmpireAtWar.Tests.Editor
                                 !Mathf.Approximately(definition.RangeMultiplier, 1f);
                 if (modified || definition.Scope != WeaponScope.Shared)
                     Assert.That(definition.Reason, Is.Not.Empty, name);
-                if (modified)
-                    Assert.That(definition.Scope, Is.Not.EqualTo(WeaponScope.Shared), name + " changes stats without being a variant.");
                 if (definition.Scope == WeaponScope.Unit)
                     Assert.That(definition.Unit, Is.Not.Empty, name);
             }

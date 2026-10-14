@@ -38,12 +38,12 @@ namespace EmpireAtWar.Tests.Editor
                 CreateSlot(1, 0, PlayerController.Ai)
             };
 
-            Assert.Throws<ArgumentException>(() => controller.StartGame(
+            Assert.Throws<ArgumentException>(() => controller.StartBattle(SkirmishPreset.Create(
                 sameTeam,
                 PlanetType.Coruscant,
                 MapSize.Small,
                 BattleVictoryCondition.DestroyEnemyFleet,
-                2000f));
+                2000f).Build()));
             Assert.That(sceneService.LoadRequestCount, Is.Zero);
         }
 
@@ -60,14 +60,14 @@ namespace EmpireAtWar.Tests.Editor
                 CreateSlot(3, 1, PlayerController.Ai)
             };
 
-            controller.StartGame(
+            controller.StartBattle(SkirmishPreset.Create(
                 players,
                 PlanetType.Coruscant,
                 MapSize.Small,
                 BattleVictoryCondition.DestroyEnemyFleet,
-                2000f);
+                2000f).Build());
 
-            Assert.That(_model.Players, Is.SameAs(players));
+            Assert.That(_model.Players, Is.EqualTo(players));
             Assert.That(sceneService.LoadRequestCount, Is.EqualTo(1));
         }
 

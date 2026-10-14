@@ -28,6 +28,9 @@ namespace EmpireAtWar.Tests.Editor
                 var ship = root.AddComponent<EmpireAtWar.Ship.Ship>();
                 var movement = root.AddComponent<ShipMoveComponent>();
                 var model = new ShipMoveModel(data, new CombatModifiers());
+                var motion = new ShipMovementTweenPlayer(root.transform, root.transform,
+                    root.AddComponent<LineRenderer>(), DG.Tweening.Ease.Linear);
+                typeof(ShipMoveComponent).GetField("_motion", PRIVATE_INSTANCE).SetValue(movement, motion);
                 typeof(MonoComponent<ShipMoveModel>).GetMethod("SetModel", PRIVATE_INSTANCE)
                     .Invoke(movement, new object[] { model });
                 typeof(EmpireAtWar.Ship.Ship).GetField("_shipMoveComponent", PRIVATE_INSTANCE).SetValue(ship, movement);

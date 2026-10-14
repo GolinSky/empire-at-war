@@ -32,6 +32,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private TMP_Dropdown mapSizeDropdown;
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
         [SerializeField] private Slider startingMoneySlider;
+        [SerializeField] private Toggle superWeaponsToggle;
         [SerializeField] private TMP_Text startingMoneyText;
         [SerializeField] private TMP_Text activeSlotsText;
         [SerializeField] private TMP_Text readinessText;
@@ -84,6 +85,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             mapSizeDropdown.onValueChanged.AddListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.AddListener(_presenter.SelectVictoryCondition);
             startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
+            superWeaponsToggle.onValueChanged.AddListener(_presenter.SelectSuperWeapons);
             _isInitialized = true;
         }
 
@@ -108,6 +110,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             mapSizeDropdown.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);
             startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
+            superWeaponsToggle.onValueChanged.RemoveListener(_presenter.SelectSuperWeapons);
             _isInitialized = false;
         }
 
@@ -196,6 +199,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
+            superWeaponsToggle.SetIsOnWithoutNotify(_model.SuperWeapons);
             startingMoneyText.text = $"${(int)_model.StartingMoney:N0}";
             activeSlotsText.text = $"{_model.ActivePlayerCount} / {slotRows.Length} SLOTS ACTIVE";
             readinessText.text = _model.CanStart ? "READY TO DEPLOY" : "OPPOSING TEAM REQUIRED";

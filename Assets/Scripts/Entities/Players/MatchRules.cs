@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Game;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,34 @@ namespace EmpireAtWar.Models.Players
     /// <summary>Limits of a skirmish line-up: one station per map corner and exactly one human.</summary>
     public static class MatchRules
     {
+        public static void Validate(BattleDefinition definition)
+        {
+            var players = definition.Players;
+            if (definition.Outcome != OutcomeRule.Simulation)
+                Validate(definition.Slots);
+            else if (players.Count != 2 || players[0].Slot.Team == players[1].Slot.Team)
+                throw new ArgumentException("Simulation requires two opposing sides.", nameof(definition));
+
+            if (float.IsNaN(definition.StartingMoney) || float.IsInfinity(definition.StartingMoney) ||
+                definition.StartingMoney < 0f ||
+                definition.HasFeature(BattleFeatures.Economy) && definition.StartingMoney <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(definition), "An economy requires positive starting money.");
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                var player = players[i];
+                if (player.Slot.Id != new PlayerId(i) ||
+                    (player.Role == PlayerRole.Human) == player.Slot.IsAi)
+                    throw new ArgumentException("Player role must match its slot and controller.", nameof(definition));
+                if (definition.Outcome == OutcomeRule.Simulation &&
+                    player.Role != PlayerRole.SimulationSide)
+                    throw new ArgumentException("Simulation requires SimulationSide roles.", nameof(definition));
+                if (player.Role == PlayerRole.AiAlly &&
+                    player.Slot.Team != FindHuman(definition.Slots).Team)
+                    throw new ArgumentException("An AI ally must belong to the human's team.", nameof(definition));
+            }
+        }
+
         public const int MIN_PLAYERS = 2;
         public const int MAX_PLAYERS = 4;
         /// <summary>Size of the team color palette; must match MAX_TEAM_COLORS in ShipLitInput.hlsl.</summary>

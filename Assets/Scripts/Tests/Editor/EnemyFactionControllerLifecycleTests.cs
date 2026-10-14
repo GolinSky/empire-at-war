@@ -181,9 +181,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             FactionResearchModel research = new FactionResearchModel(new FactionRoster(
                 LoadSharedData<FactionCatalog>().Get(FactionType.Empire),
-                LoadSharedData<MiningFacilityCatalog>(),
+                new[] { LoadSharedData<MiningFacilityCatalog>() },
                 LoadSharedData<DefendPlatformCatalog>(),
-                LoadSharedData<SuperWeaponCatalog>()));
+                new[] { LoadSharedData<SuperWeaponCatalog>() }));
             Assert.That(research.TryGetNextTier(ResearchType.IncreasedProduction, out ResearchTierData tier), Is.True);
             ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
 

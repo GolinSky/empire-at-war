@@ -20,17 +20,22 @@ namespace EmpireAtWar.Models.Factions
 
         public FactionRoster(
             FactionDefinition definition,
-            MiningFacilityCatalog miningFacilities,
+            IReadOnlyList<MiningFacilityCatalog> miningFacilities,
             DefendPlatformCatalog defendPlatforms,
-            SuperWeaponCatalog superWeapons)
+            IReadOnlyList<SuperWeaponCatalog> superWeapons,
+            EmpireAtWar.Entities.Game.BattleFeatures features = EmpireAtWar.Entities.Game.BattleFeatures.All)
         {
             Definition = definition;
-            foreach (MiningFacilityType type in definition.MiningFacilities)
-                MiningFacilities.Add(type, miningFacilities.Get(type));
+            if ((features & EmpireAtWar.Entities.Game.BattleFeatures.MiningSites) != 0)
+                foreach (MiningFacilityCatalog catalog in miningFacilities)
+                    foreach (MiningFacilityType type in definition.MiningFacilities)
+                        MiningFacilities.Add(type, catalog.Get(type));
             foreach (DefendPlatformType type in definition.DefendPlatforms)
                 DefendPlatforms.Add(type, defendPlatforms.Get(type));
-            foreach (SuperWeaponType type in definition.SuperWeapons)
-                SuperWeapons.Add(type, superWeapons.Get(type));
+            if ((features & EmpireAtWar.Entities.Game.BattleFeatures.SuperWeapons) != 0)
+            foreach (SuperWeaponCatalog catalog in superWeapons)
+                foreach (SuperWeaponType type in definition.SuperWeapons)
+                    SuperWeapons.Add(type, catalog.Get(type));
         }
     }
 }

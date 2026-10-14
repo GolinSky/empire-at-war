@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
+  - {fileID: 8393265745385271566}
   - {fileID: 4225004989859197926}
   - {fileID: 2442534932993954252}
   - {fileID: 7240090868511604183}

@@ -71,6 +71,21 @@ namespace EmpireAtWar.Entities.EndGameUi
 
             battlefieldText.text = result.Planet.ToString().ToUpperInvariant();
             objectiveText.text = fleetObjective ? "Destroy enemy fleet" : "Destroy opponent base";
+            if (result.Mode == GameMode.Survival)
+            {
+                objectiveText.text = "Survive all five waves";
+                reasonText.text = result.Outcome == BattleOutcome.PlayerVictory
+                    ? "All five waves have been defeated." : "Your station has been destroyed.";
+            }
+            else if (result.Mode == GameMode.BattleSimulation)
+            {
+                objectiveText.text = "Battle simulation";
+                outcomeText.text = result.Outcome == BattleOutcome.Draw ? "DRAW"
+                    : result.Outcome == BattleOutcome.PlayerVictory ? "SIDE A WINS" : "SIDE B WINS";
+                reasonText.text = "Simulation complete.";
+            }
+            playerBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
+            enemyBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
             playerFactionText.text = result.PlayerFaction.ToString().ToUpperInvariant();
             enemyFactionText.text = string.Join(" / ", result.EnemyFactions).ToUpperInvariant();
             playerFleetText.text = result.PlayerShipCount.ToString();

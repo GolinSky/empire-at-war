@@ -92,8 +92,15 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [Test]
-        public void ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding()
+        [TestCase(BattleFeatures.All, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.All & ~BattleFeatures.SuperWeapons, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.All & ~BattleFeatures.CaptureSites, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.All & ~BattleFeatures.MiningSites, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.All & ~BattleFeatures.Economy, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.All & ~BattleFeatures.Fog, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.None, PlayerRole.AiOpponent)]
+        [TestCase(BattleFeatures.None, PlayerRole.WaveAttacker)]
+        public void ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(BattleFeatures features, PlayerRole opponentRole)
         {
             Assert.That(Application.isPlaying, Is.False);
             MemorySettings repository = new MemorySettings();
@@ -109,9 +116,21 @@ namespace EmpireAtWar.Tests.Editor
                     builder.RegisterInstance<ISettingsRepository>(repository);
             }))
                 _project.Build();
-            _project.GameData.GameMode = GameMode.Skirmish;
-            _project.GameData.MapSize = MapSize.Small;
-            _project.GameData.Players = TestPlayers.CreateDuel().Players;
+            _project.GameData.Battle = SkirmishPreset.Create(TestPlayers.CreateDuel().Players,
+                _project.GameData.PlanetType, MapSize.Small, _project.GameData.VictoryCondition, 1000f).Build();
+            bool superWeapons = (features & BattleFeatures.SuperWeapons) != 0;
+            if (features != BattleFeatures.All)
+            {
+                var current = _project.GameData.Battle;
+                _project.GameData.Battle = new BattleDefinition(current.Mode, current.Map, current.Players,
+                    features, current.Outcome, current.VictoryCondition, current.StartingMoney);
+                if (opponentRole == PlayerRole.WaveAttacker)
+                {
+                    var wavePlayers = new[] { current.Players[0], new BattlePlayer(current.Slots[1], opponentRole, BattleFeatures.None) };
+                    _project.GameData.Battle = new BattleDefinition(current.Mode, current.Map, wavePlayers,
+                        features, current.Outcome, current.VictoryCondition, current.StartingMoney);
+                }
+            }
             SerializedObject authored = new SerializedObject(_battle);
             // Battle's scene instance supplies this override; the standalone scope prefab leaves it unassigned.
             ReinforcementZoneData reinforcementZoneData = AssetDatabase.GetDependencies(BATTLE_SCENE_PATH)
@@ -145,10 +164,32 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(planetScope.Assets, Is.SameAs(_project.Assets));
             Assert.That(planetScope.View, Is.SameAs(planet));
             Assert.That(planetScope.Container.Resolve<PlanetData>(), Is.Not.Null);
+            if (features != BattleFeatures.All && features != (BattleFeatures.All & ~BattleFeatures.SuperWeapons))
+            {
+                foreach (AssetLifetimeScope player in players)
+                {
+                    PlayerSlot slot = player.Container.Resolve<PlayerSlot>();
+                    if (_project.GameData.Battle.GetPlayer(slot.Id).OwnsStation)
+                        Assert.That(_battle.Container.Resolve<EmpireAtWar.Services.Player.IPlayerRegistry>().GetStationSpawner(slot.Id), Is.Not.Null);
+                    if (opponentRole == PlayerRole.WaveAttacker && slot.IsAi)
+                    {
+                        Assert.That(player.Container.TryGetRegistration(typeof(FactionResearchModel), out _), Is.False);
+                        Assert.That(player.Container.TryGetRegistration(typeof(EmpireAtWar.Models.Economy.EconomyModel), out _), Is.False);
+                    }
+                    ShipEntity ship = player.Container.Resolve<ShipFactory>().Create(slot.Id, ShipType.Arquitens,
+                        layout.GetStationPosition(slot.Id));
+                    AssertEntity(ship, player, slot);
+                }
+                return;
+            }
             List<EntityLifetimeScope> shipScopes = new List<EntityLifetimeScope>();
             ShipData sharedShipData = null;
             foreach (AssetLifetimeScope player in players)
             {
+                Assert.That(player.Container.TryGetRegistration(typeof(EmpireAtWar.Entities.SuperWeapons.SuperWeaponModel), out _), Is.EqualTo(superWeapons));
+                Assert.That(player.Container.Resolve<FactionRoster>().SuperWeapons.Count == 0, Is.EqualTo(!superWeapons));
+                if (player is AiPlayerScope)
+                    Assert.That(player.Container.TryGetRegistration(typeof(EmpireAtWar.Services.Enemy.EnemySuperWeaponController), out _), Is.EqualTo(superWeapons));
                 PlayerSlot slot = player.Container.Resolve<PlayerSlot>();
                 Vector3 origin = map.GetStationPosition(slot.Id);
                 ShipEntity ship = player.Container.Resolve<ShipFactory>().Create(slot.Id, ShipType.Acclamator, origin);

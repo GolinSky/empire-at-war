@@ -26,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
                 UiServiceStub uiService = new UiServiceStub(view);
                 RouteStub routes = new RouteStub();
                 controller = new MainMenuUiController(uiService, new CancelRouterStub(),
-                    routes, routes, new TooltipServiceStub());
+                    routes, routes, new TooltipServiceStub(), routes);
                 controller.Open();
                 controller.Open();
                 Button start = (Button)new SerializedObject(view)
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH));
             MainMenuUiController controller = new MainMenuUiController(
                 new UiServiceStub(root.GetComponent<MainMenuUi>()), new CancelRouterStub(),
-                new RouteStub(), new RouteStub(), new TooltipServiceStub());
+                new RouteStub(), new RouteStub(), new TooltipServiceStub(), new RouteStub());
             try
             {
                 controller.Open();
@@ -85,7 +85,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SetContentVisible(bool isVisible) { }
         }
 
-        private sealed class RouteStub : ISkirmishRoute, ISettingsRoute
+        private sealed class RouteStub : ISkirmishRoute, ISettingsRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute
         {
             public int OpenCount { get; private set; }
             public void Open() => OpenCount++;
