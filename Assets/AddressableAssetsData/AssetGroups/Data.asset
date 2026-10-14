@@ -320,6 +320,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db773d31e48dd3242a6191e36f0ba20c
+    m_Address: ProcursatorShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dfcebba1024335948a6439c9e7539ed0
     m_Address: ARC170SquadronData
     m_ReadOnly: 0

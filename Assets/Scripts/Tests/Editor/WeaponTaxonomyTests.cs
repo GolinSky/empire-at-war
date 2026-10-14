@@ -42,6 +42,13 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     WeaponDefinition definition = weapons.GetDefinition(entry.WeaponType);
                     string context = $"{data.name} mounts {definition.DisplayName}";
+                    // The approved Procursator loadout explicitly includes light triple support batteries.
+                    if (data.name == "ProcursatorShipData" && entry.WeaponType == WeaponType.ProcursatorLightTripleTurbolaser)
+                    {
+                        Assert.That(definition.Caliber, Is.EqualTo(WeaponCaliber.Light), context);
+                        Assert.That(definition.Mount, Is.EqualTo(WeaponMount.Triple), context);
+                        continue;
+                    }
                     if (shipClass == ShipClass.Corvette)
                         Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Turbolaser), context);
                     else if (shipClass == ShipClass.Frigate && definition.Family == WeaponFamily.Turbolaser)

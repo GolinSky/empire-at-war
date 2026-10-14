@@ -240,6 +240,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9999fe9ea994831489d55c3032c87350
+    m_Address: ProcursatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9bd2f2df149e04b4394a3896d5aa989a
     m_Address: V19TorrentSquadronView
     m_ReadOnly: 0

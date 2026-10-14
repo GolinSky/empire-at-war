@@ -1,0 +1,34 @@
+{
+  "checks": 7395,
+  "meshes": 53,
+  "triangles": 38984,
+  "bones": 152,
+  "boneErrorUnits": 1.5679534E-06,
+  "muzzleErrorUnits": 0.0,
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/Empire/Procursator.prefab",
+      "visibleMeshes": 27
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab",
+      "visibleMeshes": 27
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/ProcursatorReinforcementView.prefab",
+      "visibleMeshes": 25
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/ProcursatorWreckView.prefab",
+      "visibleMeshes": 25
+    }
+  ],
+  "size": [
+    80.10595,
+    38.138073,
+    126.54641
+  ],
+  "hardpoints": 17,
+  "weapons": 15,
+  "registrationsVerified": true
+}

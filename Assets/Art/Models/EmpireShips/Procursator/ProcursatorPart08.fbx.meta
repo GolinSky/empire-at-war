@@ -1,0 +1,375 @@
+fileFormatVersion: 2
+guid: 99d984f48ca4cfc4abf3351e99c355b6
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart00_M003
+    second: {fileID: 2100000, guid: ea2e2567925841943a0e5f2f44ff4e76, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart00_M004
+    second: {fileID: 2100000, guid: abe01a42122783b46ba3c4b9d467df1e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart00_M005
+    second: {fileID: 2100000, guid: ac60703c12297cc44b3e46d1df647f5d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart00_M006
+    second: {fileID: 2100000, guid: 90e30be9dbca2144abc08b6ae5a5c4c0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart01_M003
+    second: {fileID: 2100000, guid: cdf0519ab5c217748b00541f5a7137bf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart01_M004
+    second: {fileID: 2100000, guid: 431ad5b67376f0d4ba99819fcfa1dfab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart01_M005
+    second: {fileID: 2100000, guid: 4ca7e1683c35fe240a8ac793309deecf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart01_M006
+    second: {fileID: 2100000, guid: e7510d4d62f39bb49a395490f31a0cda, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart02_M003
+    second: {fileID: 2100000, guid: 65fd073d73d0aa244bf7ca82716564e2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart02_M004
+    second: {fileID: 2100000, guid: 0d3f75a3bc94130468a025c0ccce9492, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart02_M005
+    second: {fileID: 2100000, guid: e2da0e05382f7bc43b8b9fec7bb80997, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart02_M006
+    second: {fileID: 2100000, guid: 6a42241441041f94b9fca3ea5b14f716, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart03_M003
+    second: {fileID: 2100000, guid: 7fb3637b77f45d6479e51a238c3feaca, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart03_M004
+    second: {fileID: 2100000, guid: 5431e94b3a1ebb94aa422d3b6b79ed1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart03_M005
+    second: {fileID: 2100000, guid: 9db14a03aac191d44a9f2e01f883472f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart03_M006
+    second: {fileID: 2100000, guid: 99a2b032dcb8e054d8d446bd2b2fb757, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart04_M003
+    second: {fileID: 2100000, guid: 9f11bb22bbe2b6b469fe84f6c8dcd595, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart04_M004
+    second: {fileID: 2100000, guid: 4a83f70e2b9b609479619287ea999b12, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart04_M005
+    second: {fileID: 2100000, guid: a2a80a033fe10ba4482f3b3a28118f1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart04_M006
+    second: {fileID: 2100000, guid: 8aa885189c0bd3347bbfdb298f5cb713, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart05_M003
+    second: {fileID: 2100000, guid: 1858cd8e189e5d243b522ef8540134da, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart05_M004
+    second: {fileID: 2100000, guid: 70b5323902dd51a40aeb326e86d94c52, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart05_M005
+    second: {fileID: 2100000, guid: c876a1a0125772142b53e828cb6c9531, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart05_M006
+    second: {fileID: 2100000, guid: 746a046d957bfe049b6f9ebf9a3a5933, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart06_M003
+    second: {fileID: 2100000, guid: e61249bbdb815a946a08c05ccf817143, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart06_M004
+    second: {fileID: 2100000, guid: 07e5f093eeae4e444860615d8475f04d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart06_M005
+    second: {fileID: 2100000, guid: add1959534c2a1046a3e773b47f0d9d7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart06_M006
+    second: {fileID: 2100000, guid: 4b560f223f04b584a890ac1f5dc26045, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart07_M003
+    second: {fileID: 2100000, guid: b94722de5fc7c1e448a989561d93b8fa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart07_M004
+    second: {fileID: 2100000, guid: d0a560f7888903644b66ced7e25364af, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart07_M005
+    second: {fileID: 2100000, guid: 4e4c9406122342f418dfcde38e85ee4f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart07_M006
+    second: {fileID: 2100000, guid: 548c15dd3aab40b488f0242dccaa195d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart08_M003
+    second: {fileID: 2100000, guid: a7f6da2612507c4429e96af91ce3a462, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart08_M004
+    second: {fileID: 2100000, guid: 98f15a8e595e3a443ae0a2bdc7304291, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart08_M005
+    second: {fileID: 2100000, guid: f17dac50092c4a14eb23ccc79e61b842, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart08_M006
+    second: {fileID: 2100000, guid: 3b7f96e821c977644a2b0371ae492e79, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart09_M003
+    second: {fileID: 2100000, guid: d113d4133ec8c1e41bd5067f301b93e2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart09_M004
+    second: {fileID: 2100000, guid: 1d031a658ccaa4546a9e25291804dbe9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart09_M005
+    second: {fileID: 2100000, guid: 346b3239a30a3b34a9aa98614caf7671, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart09_M006
+    second: {fileID: 2100000, guid: 20520517b29a79745bd30124a8b79a0b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart10_M003
+    second: {fileID: 2100000, guid: 74749e4916d247746b48827166b87d5d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart10_M004
+    second: {fileID: 2100000, guid: f0404afabf897284594ba35c228c15ba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart10_M005
+    second: {fileID: 2100000, guid: 57f45ea30fab5904b959bd30be90f77a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ProcursatorPart10_M006
+    second: {fileID: 2100000, guid: 9586ee40969a44a4386868d28d31290f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M009
+    second: {fileID: 2100000, guid: e58c18ca510eb3d4e9fc491221e083ef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M010
+    second: {fileID: 2100000, guid: dc97cb2465da72a4494fd487ce1c0809, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M011
+    second: {fileID: 2100000, guid: 65f541304425feb43bab5cebdb0e45fe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M012
+    second: {fileID: 2100000, guid: 6725d1a74efdb1a4488d30332299f946, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M013
+    second: {fileID: 2100000, guid: 2d70d380dc35ecd4fb803509625daab4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M014
+    second: {fileID: 2100000, guid: 92cc247150285814bbed1350584b8ccd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M015
+    second: {fileID: 2100000, guid: ccac1f402b8469847af559defcaf27ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M016
+    second: {fileID: 2100000, guid: e8e08d5d6838b3449accb69fe76904f9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Procursator_M017
+    second: {fileID: 2100000, guid: 27a1eaccbb7d9d14eb219cbb7b037d9f, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 1
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.0002
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

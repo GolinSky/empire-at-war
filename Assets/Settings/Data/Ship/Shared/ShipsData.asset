@@ -350,6 +350,13 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 212
+      value:
+        m_AssetGUID: db773d31e48dd3242a6191e36f0ba20c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: 215
       value:
         m_AssetGUID: b4b5c1e8333cb8445972218f6cf35da9

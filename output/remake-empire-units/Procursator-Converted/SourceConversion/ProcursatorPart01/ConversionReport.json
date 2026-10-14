@@ -1,0 +1,263 @@
+{
+  "variant": "ProcursatorPart01",
+  "before": {
+    "meshes": {
+      "Turret": {
+        "vertices": 728,
+        "triangles": 312,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ProcursatorPart01_M003"
+        ]
+      },
+      "Barrel": {
+        "vertices": 334,
+        "triangles": 180,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ProcursatorPart01_M004"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 147,
+        "triangles": 203,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ProcursatorPart01_M005"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 394,
+        "triangles": 452,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ProcursatorPart01_M006"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -2.82851090105396e-07,
+          -6.470878601074219,
+          6.866418838500977
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          1.9668906927108765,
+          -14.392871856689453,
+          6.8618669509887695
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -1.9914908409118652,
+          -14.39287281036377,
+          6.8618669509887695
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          9.493607535659976e-07,
+          -14.392871856689453,
+          6.8618669509887695
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -2.82851090105396e-07,
+          -6.470878601074219,
+          6.866418838500977
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -9.560129165649414,
+      -14.200528144836426,
+      -0.0004282433947082609
+    ],
+    "bounds_max": [
+      9.560171127319336,
+      9.559545516967773,
+      10.93865966796875
+    ]
+  },
+  "after": {
+    "meshes": {
+      "Turret": {
+        "vertices": 728,
+        "triangles": 312,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ProcursatorPart01_M003.001"
+        ]
+      },
+      "Barrel": {
+        "vertices": 334,
+        "triangles": 180,
+        "uv_layers": 1,
+        "hidden": false,
+        "materials": [
+          "ProcursatorPart01_M004.001"
+        ]
+      },
+      "Barrel_Shadow": {
+        "vertices": 147,
+        "triangles": 203,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ProcursatorPart01_M005.001"
+        ]
+      },
+      "Turret_Shadow": {
+        "vertices": 394,
+        "triangles": 452,
+        "uv_layers": 1,
+        "hidden": true,
+        "materials": [
+          "ProcursatorPart01_M006.001"
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Turret": {
+        "parent": "Root",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Barrel": {
+        "parent": "Turret",
+        "head": [
+          -1.2926585668537882e-06,
+          -6.470877647399902,
+          6.866419792175293
+        ]
+      },
+      "FP_01": {
+        "parent": "Barrel",
+        "head": [
+          1.9668883085250854,
+          -14.392870903015137,
+          6.8618693351745605
+        ]
+      },
+      "FP_02": {
+        "parent": "Barrel",
+        "head": [
+          -1.9914932250976562,
+          -14.392871856689453,
+          6.8618693351745605
+        ]
+      },
+      "FP_03": {
+        "parent": "Barrel",
+        "head": [
+          -1.3912222129874863e-06,
+          -14.392870903015137,
+          6.8618693351745605
+        ]
+      },
+      "Barrel_Shadow": {
+        "parent": "Barrel",
+        "head": [
+          -1.3522632116291788e-06,
+          -6.470877647399902,
+          6.866419792175293
+        ]
+      },
+      "Turret_Shadow": {
+        "parent": "Turret",
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "bounds_min": [
+      -9.560129165649414,
+      -14.20052719116211,
+      -0.00042776373447850347
+    ],
+    "bounds_max": [
+      9.560171127319336,
+      9.559545516967773,
+      10.938658714294434
+    ]
+  },
+  "materials": [
+    {
+      "name": "ProcursatorPart01_M003",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ProcursatorPart01_Empire_Procursator_Super_Structure",
+      "normal": "ProcursatorPart01_Empire_Procursator_Super_Structure_B"
+    },
+    {
+      "name": "ProcursatorPart01_M005",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "ProcursatorPart01_M006",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "ProcursatorPart01_M004",
+      "shader": "MeshBumpColorize.fx",
+      "base": "ProcursatorPart01_Empire_Procursator_Super_Structure",
+      "normal": "ProcursatorPart01_Empire_Procursator_Super_Structure_B"
+    }
+  ],
+  "bone_error": 3.504023183989303e-06,
+  "geometry_error": 4.0249688663802466e-06
+}

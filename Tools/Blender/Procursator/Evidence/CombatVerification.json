@@ -1,0 +1,32 @@
+{
+  "Scenarios": [
+    {
+      "Opponent": "Venator",
+      "Runs": 10,
+      "WinsA": 10,
+      "WinsB": 0,
+      "Draws": 0,
+      "Mean": 24.76,
+      "Median": 24.875
+    },
+    {
+      "Opponent": "VictoryII",
+      "Runs": 10,
+      "WinsA": 10,
+      "WinsB": 0,
+      "Draws": 0,
+      "Mean": 25.525,
+      "Median": 25.475
+    },
+    {
+      "Opponent": "MonCalCruiser",
+      "Runs": 10,
+      "WinsA": 4,
+      "WinsB": 6,
+      "Draws": 0,
+      "Mean": 50.95,
+      "Median": 50.7
+    }
+  ],
+  "Limits": "Read-only stationary battle simulator; no movement, arcs, abilities or hangar launches."
+}
