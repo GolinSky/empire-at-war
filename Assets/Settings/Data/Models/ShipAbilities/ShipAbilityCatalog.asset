@@ -56,7 +56,7 @@ MonoBehaviour:
         canCancel: 0
         isToggle: 0
         requiresEnemyTarget: 1
-        range: 500
+        range: 1500
         aiUse: 2
         settings:
           rid: 7607833764655792233
