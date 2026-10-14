@@ -39,10 +39,10 @@ namespace EmpireAtWar.Models.Factions
         AcclamatorAssault = 209,
         Tector = 210,
         ImperialVenator = 211,
+        Tartan = 215,
         Titan = 214,
         Procursator = 212,
         Allegiance = 213,
-        Tartan = 215,
 
         //rebellion
         NebulonB = 300,

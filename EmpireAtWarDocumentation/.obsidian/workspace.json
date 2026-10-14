@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Architecture/PROJECT_ORGANIZATION.md",
+                "file": "GameDesign/Empire Fleet Import.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PROJECT_ORGANIZATION"
+              "title": "Empire Fleet Import"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "project organi",
+                "query": "alo # Galactic Empire Fleet — Ship Balance & ALO Mapping",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -188,6 +188,13 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "GameDesign/Allegiance Import.md",
+    "GameDesign/Titan Import.md",
+    "Architecture/ALO_MODEL_IMPORT_GUIDE.md",
+    "TODOs/Features/Empire_Fleet_Import.md",
+    "GameDesign/Empire Fleet Import.md",
+    "Architecture/PROJECT_ORGANIZATION.md",
+    "TODOs/Features/Game_Modes_Survival_And_Simulation.md",
     "Done/Refactoring/UI_Service_Refactoring - Research.md",
     "Done/Refactoring/UI_Service_Refactoring.md",
     "TODOs/Refactoring/Project_Organization_Followup.md",
@@ -207,13 +214,6 @@
     "GameDesign/Dauntless Import.md",
     "GameDesign/CD-273 Corellian Destroyer Import.md",
     "GameDesign/Quasar Fire Import.md",
-    "Done/Features/MC30c_Import.md",
-    "TODOs/Features/MC30c_Import.md",
-    "GameDesign/MC30c Frigate Import.md",
-    "Done/Features/Tector_Model_Replacement.md",
-    "Architecture/ALO_MODEL_IMPORT_GUIDE.md",
-    "TODOs/Features/Tector_Model_Replacement.md",
-    "TODOs/Optimization/Squadron_Pooling_Plan.md",
     "Done/Tooling",
     "GameDesign/Corellian Corvette Import.md.tmp.58056.bc89b044b557",
     "GameDesign/Nebulon-B Import.md.tmp.58056.534006750f7c",

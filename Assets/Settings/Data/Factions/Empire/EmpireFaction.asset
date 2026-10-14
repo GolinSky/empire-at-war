@@ -253,6 +253,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 480ea67ea8c1d1444b4eae17e11f53e8,
           type: 3}
+    - key: 214
+      value:
+        matchups: {fileID: 11400000, guid: ac8c0500ff4d2bd43a6e524f62694c7a, type: 2}
+        description: Heavy Imperial battlecruiser with twelve quad heavy turbolasers,
+          six medium dual turbolasers, four heavy ion cannons and two point defense
+          lasers. No squadrons. Uses existing Power to Weapons and Tractor Beam abilities;
+          requires escorts against bomber swarms.
+        role: Heavy frontline combat
+        iconKey: d92e0b25eb3e0d94ab8f1713e2ec1b84:21300000
+        isHero: 0
+        <Name>k__BackingField: Titan-class Battlecruiser
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 13000
+        <BuildTime>k__BackingField: 100
+        <UnitCapacity>k__BackingField: 12
+        <Icon>k__BackingField: {fileID: 21300000, guid: d92e0b25eb3e0d94ab8f1713e2ec1b84,
+          type: 3}
     - key: 213
       value:
         matchups: {fileID: 11400000, guid: 1e8d5f8644602a54aa8e45330d780674, type: 2}
@@ -290,24 +308,6 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 28
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: a18de04525e87254ebd6a359e39a58ba,
-          type: 3}
-    - key: 214
-      value:
-        matchups: {fileID: 11400000, guid: ac8c0500ff4d2bd43a6e524f62694c7a, type: 2}
-        description: Heavy Imperial battlecruiser with twelve quad heavy turbolasers,
-          six medium dual turbolasers, four heavy ion cannons and two point defense
-          lasers. No squadrons. Uses existing Power to Weapons and Tractor Beam abilities;
-          requires escorts against bomber swarms.
-        role: Heavy frontline combat
-        iconKey: d92e0b25eb3e0d94ab8f1713e2ec1b84:21300000
-        isHero: 0
-        <Name>k__BackingField: Titan-class Battlecruiser
-        <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 13000
-        <BuildTime>k__BackingField: 100
-        <UnitCapacity>k__BackingField: 12
-        <Icon>k__BackingField: {fileID: 21300000, guid: d92e0b25eb3e0d94ab8f1713e2ec1b84,
           type: 3}
   squadrons:
     keyValue:

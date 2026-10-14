@@ -79,8 +79,8 @@
         HeavyPointDefense = 84,
         HeavyOctupleTurbolaser = 85,
         TitanQuadHeavyTurbolaser = 88,
+        TartanLargeRepeatingLaser = 90,
         ProcursatorLightTripleTurbolaser = 86,
         ProcursatorQuadHeavyTurbolaser = 87,
-        TartanLargeRepeatingLaser = 90,
     }
 }

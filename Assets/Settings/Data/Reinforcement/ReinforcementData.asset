@@ -159,14 +159,14 @@ MonoBehaviour:
     - key: 212
       value: {fileID: 484096460124362054, guid: 4eb26463e615c41438db9dc147f24e46,
         type: 3}
+    - key: 214
+      value: {fileID: 484096460124362054, guid: 3cfd8751f2bd7cb498be770139212eda,
+        type: 3}
     - key: 213
       value: {fileID: 484096460124362054, guid: 4c69bd973395e5f42b3f05ad23653ca9,
         type: 3}
     - key: 215
       value: {fileID: 484096460124362054, guid: 06e2a4dcc11428545b8a89cf9eeb8b9a,
-        type: 3}
-    - key: 214
-      value: {fileID: 484096460124362054, guid: 3cfd8751f2bd7cb498be770139212eda,
         type: 3}
   spawnSquadronWrapper:
     keyValue:
