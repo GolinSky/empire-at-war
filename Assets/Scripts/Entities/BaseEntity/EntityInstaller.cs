@@ -11,9 +11,7 @@ namespace EmpireAtWar.Entities.BaseEntity
             builder.Register<Entity>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<EntityTransformFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterComponent(view.gameObject.AddComponent<ViewEntity>()).AsImplementedInterfaces().AsSelf();
-            // Squadron markers are disabled in the existing performance baseline.
-            if (view is not EmpireAtWar.Entities.Squadrons.Squadron)
-                builder.Register<MiniMapUnitMarkerPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<MiniMapUnitMarkerPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }
 }
