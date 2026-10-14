@@ -1281,6 +1281,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ProcursatorShipView
+      value:
+        m_AssetGUID: 9999fe9ea994831489d55c3032c87350
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ProcursatorShipData
+      value:
+        m_AssetGUID: db773d31e48dd3242a6191e36f0ba20c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: TartanShipView
       value:
         m_AssetGUID: f4383e14607b20346b0b482906dbd074

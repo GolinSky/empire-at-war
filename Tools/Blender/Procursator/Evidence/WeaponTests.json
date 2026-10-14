@@ -1,0 +1,979 @@
+{
+  "status": "completed",
+  "duration": 19.79,
+  "summary": {
+    "total": 138,
+    "passed": 128,
+    "failed": 10,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDpsEstimatorTests.Estimate_UsesDraftWeaponRules",
+      "Status": "Failed",
+      "Duration": 2.0696545,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDpsEstimatorTests.Estimate_UsesDraftWeaponRules () [0x00012] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDpsEstimatorTests.cs:32\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(16)",
+      "Status": "Failed",
+      "Duration": 1.611325,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices (System.Int32 id) [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:67\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(17)",
+      "Status": "Failed",
+      "Duration": 1.5769173,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices (System.Int32 id) [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:67\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(18)",
+      "Status": "Failed",
+      "Duration": 1.1905564,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices (System.Int32 id) [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:67\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.WeaponDraft_UpdatesConsumersAndCompareFieldsThenUndoRestoresThem",
+      "Status": "Failed",
+      "Duration": 1.2831842,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.WeaponDraft_UpdatesConsumersAndCompareFieldsThenUndoRestoresThem () [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:15\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.WeaponConsumers_IncludeEveryBoundShipSquadronAndStructure",
+      "Status": "Failed",
+      "Duration": 1.6214406,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.WeaponConsumers_IncludeEveryBoundShipSquadronAndStructure () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:55\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceSharedMountTests.SharedSourceDraft_PreviewsWeaponCompositionWithoutChangingAssets",
+      "Status": "Passed",
+      "Duration": 0.45943,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleBindingTests.DraftWeaponProfile_ChangesSimulationDamageWithoutWritingSource",
+      "Status": "Passed",
+      "Duration": 1.2087871,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleBindingTests.RosterAudit_BuildsEveryUnit_WithEveryWeaponTargetable",
+      "Status": "Passed",
+      "Duration": 1.0844002,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleDefinitionTests.DisabledSuperWeapons_FactoryRejectsRequests",
+      "Status": "Passed",
+      "Duration": 0.0001163,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleDefinitionTests.Modules_SelectOnlyEnabledFeatures(SuperWeapons,1)",
+      "Status": "Passed",
+      "Duration": 0.0001851,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleDefinitionTests.StationlessCombatRoles_CannotEnableProductionEconomyOrSuperWeapons(WaveAttacker)",
+      "Status": "Passed",
+      "Duration": 0.0002198,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleDefinitionTests.StationlessCombatRoles_CannotEnableProductionEconomyOrSuperWeapons(SimulationSide)",
+      "Status": "Passed",
+      "Duration": 9.68E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleSimulationTests.SquadronMemberLoss_DisablesOnlyThatMembersWeapons",
+      "Status": "Passed",
+      "Duration": 0.0006666,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.CheatServiceTests.GrantSuperWeapon_MakesWeaponReady",
+      "Status": "Passed",
+      "Duration": 0.0003338,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.CheatServiceTests.GrantSuperWeapon_WhileCharging_LeavesChargeAlone",
+      "Status": "Passed",
+      "Duration": 0.0001563,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.CombatMatchupTests.PiercingWeapons_IgnoreShields",
+      "Status": "Passed",
+      "Duration": 0.0002185,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.CombatMatchupTests.ShieldsAbsorbFirst_ThenEveryWeaponHitsHull",
+      "Status": "Passed",
+      "Duration": 4.86E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedWeaponProfiles_HaveRequiredBurstsAndDoNotChangeOtherShips",
+      "Status": "Passed",
+      "Duration": 0.0010424,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ISDIIShipTests.SavedShip_HasRequestedStatsWeaponsAndTargetableSystems",
+      "Status": "Passed",
+      "Duration": 0.0015166,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.PowerToMainBatteriesTests.Ability_RestrictsWeaponsAndRestoresOtherModifiersOnStop",
+      "Status": "Passed",
+      "Duration": 0.0001931,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.AllWeaponsAndSystems_AreUniqueTargetableAndHaveHealth",
+      "Status": "Passed",
+      "Duration": 0.0005592,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, MiningSites, Economy, Fog)",
+      "Status": "Passed",
+      "Duration": 1.6824021,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, Economy, Fog)",
+      "Status": "Passed",
+      "Duration": 0.4078283,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, MiningSites, Fog)",
+      "Status": "Passed",
+      "Duration": 0.3759603,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, MiningSites, Economy)",
+      "Status": "Passed",
+      "Duration": 0.5376322,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.StatAbility_StartThenStop_RestoresCasterModifiers(BoostWeaponPower)",
+      "Status": "Passed",
+      "Duration": 0.0002419,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.CoreGamePrefab_HasOneWiredButtonPerSuperWeapon",
+      "Status": "Passed",
+      "Duration": 0.0005364,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Data_DefinesPurchaseAndProfileForEverySuperWeapon",
+      "Status": "Passed",
+      "Duration": 0.0001902,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Enemy_OnlyFiresAtStationWhileTeamCanSeeIt(IonCannon)",
+      "Status": "Passed",
+      "Duration": 0.0010688,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Enemy_OnlyFiresAtStationWhileTeamCanSeeIt(HypervelocityGun)",
+      "Status": "Passed",
+      "Duration": 0.0007158,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Enemy_OnlyFiresAtStationWhileTeamCanSeeIt(PlasmaCannon)",
+      "Status": "Passed",
+      "Duration": 0.0005377,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Model_CooldownBlocksFiringButNotRebuilding",
+      "Status": "Passed",
+      "Duration": 0.0001308,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Model_OnePurchaseIsOneShot",
+      "Status": "Passed",
+      "Duration": 8.89E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.SuperWeaponTests.Model_RejectsFiringAWeaponThatIsNotReady",
+      "Status": "Passed",
+      "Duration": 5.47E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.SavedPrefab_AllWeaponsAreTargetableAndHaveMatchingHealth",
+      "Status": "Passed",
+      "Duration": 0.0010038,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponFacingSolverTests.FindTurn_ArcsCentredAhead_KeepsHeading",
+      "Status": "Passed",
+      "Duration": 8.04E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponFacingSolverTests.FindTurn_MatchesPerSampleReference",
+      "Status": "Passed",
+      "Duration": 0.705568,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponFacingSolverTests.FindTurn_NoArcs_KeepsHeading",
+      "Status": "Passed",
+      "Duration": 7.08E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.EveryArmedUnit_GetsACombatRating",
+      "Status": "Passed",
+      "Duration": 0.0064413,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.ShipLoadouts_MatchViewPrefabs",
+      "Status": "Passed",
+      "Duration": 0.0076375,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.SquadronLoadouts_MatchViewPrefabs",
+      "Status": "Passed",
+      "Duration": 0.0036666,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponRangeTests.Tick_DrawsAttackRangeAtEntityRootWhenWeaponComponentIsOffset",
+      "Status": "Passed",
+      "Duration": 0.0003325,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.BiggerCalibers_DealMoreDamageAndReachFarther",
+      "Status": "Passed",
+      "Duration": 8.22E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Burst_KeepsDamagePerSecond_AndFiresFastShots",
+      "Status": "Passed",
+      "Duration": 9.17E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EngagementRange_HoldsHeavyGunsBackFromCapitals_AndClosesLasersOnCorvettes",
+      "Status": "Passed",
+      "Duration": 5.09E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryBurstWeapon_FinishesItsBurstBeforeReloading",
+      "Status": "Passed",
+      "Duration": 8.21E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryFamily_HasExactlyOneRule_AndEveryCaliberAndRangeClassHasOne",
+      "Status": "Passed",
+      "Duration": 0.0001283,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryHardpointWeapon_HasOneDefinitionAndBuildsAProfile",
+      "Status": "Passed",
+      "Duration": 0.0005212,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryUnitRadar_ReachesItsLongestGun",
+      "Status": "Failed",
+      "Duration": 0.001688,
+      "Message": "  AllegianceShipData\r\n  Expected: greater than or equal to 877.499939f\r\n  But was:  750.0f\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryUnitRadar_ReachesItsLongestGun () [0x00021] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:280\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryWeapon_HasASound",
+      "Status": "Passed",
+      "Duration": 0.0003012,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.MountProjectiles_EmitDistinctBoltsInCompactRows(Single,1,\"Projectile\")",
+      "Status": "Passed",
+      "Duration": 0.0008801,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.MountProjectiles_EmitDistinctBoltsInCompactRows(Dual,2,\"DualProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0004998,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.MountProjectiles_EmitDistinctBoltsInCompactRows(Quad,4,\"QuadProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0005798,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.MountProjectiles_EmitDistinctBoltsInCompactRows(Octuple,8,\"OctupleProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0005597,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Mounts_MultiplyShotDamageByBarrels_AndKeepShots(Dual,2)",
+      "Status": "Passed",
+      "Duration": 0.0001083,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Mounts_MultiplyShotDamageByBarrels_AndKeepShots(Triple,3)",
+      "Status": "Passed",
+      "Duration": 6.32E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Mounts_MultiplyShotDamageByBarrels_AndKeepShots(Quad,4)",
+      "Status": "Passed",
+      "Duration": 5.44E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Mounts_MultiplyShotDamageByBarrels_AndKeepShots(Octuple,8)",
+      "Status": "Passed",
+      "Duration": 4.87E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.PointDefenseOnly_ApproachesShipsToItsReach",
+      "Status": "Passed",
+      "Duration": 0.00011,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.RangeClasses_TradeReachForDamage",
+      "Status": "Passed",
+      "Duration": 4.32E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.SavedShipLoadouts_MatchTheirFiringHardpoints",
+      "Status": "Passed",
+      "Duration": 0.0089723,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.SavedShipWeapons_RespectClassCaliberRules(Corvette)",
+      "Status": "Passed",
+      "Duration": 0.0031633,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.SavedShipWeapons_RespectClassCaliberRules(Frigate)",
+      "Status": "Passed",
+      "Duration": 0.0024257,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.SavedShipWeapons_RespectClassCaliberRules(Capital)",
+      "Status": "Failed",
+      "Duration": 0.0021454,
+      "Message": "  ProcursatorShipData mounts Light Triple Turbolaser\r\n  Expected: greater than or equal to Medium\r\n  But was:  Light\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.SavedShipWeapons_RespectClassCaliberRules (EmpireAtWar.Components.Ship.Health.ShipClass shipClass) [0x00145] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:51\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.SavedShipWeapons_RespectClassCaliberRules(HeavyCapital)",
+      "Status": "Passed",
+      "Duration": 0.0028609,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.ScopedWeapons_AreMountedOnlyByTheirOwners",
+      "Status": "Failed",
+      "Duration": 0.0023259,
+      "Message": "  Allegiance mounts QuadTurboLaser\r\n  Expected string length 8 but was 10. Strings differ at index 0.\r\n  Expected: \"Mandator\"\r\n  But was:  \"Allegiance\"\r\n  -----------^\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.ScopedWeapons_AreMountedOnlyByTheirOwners () [0x00084] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:246\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.ShipsMountShipWeapons_AndSquadronsMountSquadronWeapons",
+      "Status": "Passed",
+      "Duration": 0.0030302,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Variants_ExplainTheirMultipliers_AndNameTheirOwner",
+      "Status": "Failed",
+      "Duration": 0.0001525,
+      "Message": "  ProcursatorLightTripleTurbolaser\r\n  Expected: not <empty>\r\n  But was:  <string.Empty>\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Variants_ExplainTheirMultipliers_AndNameTheirOwner () [0x00085] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:228\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(1)",
+      "Status": "Passed",
+      "Duration": 9.99E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(31)",
+      "Status": "Passed",
+      "Duration": 7.8E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(32)",
+      "Status": "Passed",
+      "Duration": 6.98E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(33)",
+      "Status": "Passed",
+      "Duration": 7.46E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(63)",
+      "Status": "Passed",
+      "Duration": 0.0001099,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(64)",
+      "Status": "Passed",
+      "Duration": 0.0001104,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.AttackDueJobTests.ScheduledJob_MatchesSerialDueCheckAcrossBatchSizes(65)",
+      "Status": "Passed",
+      "Duration": 0.0001257,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.BoltParticleSimulationTests.Fire_PausesStaticBurstAndPreservesRenderedMesh(\"Projectile\",1)",
+      "Status": "Passed",
+      "Duration": 0.0009342,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.BoltParticleSimulationTests.Fire_PausesStaticBurstAndPreservesRenderedMesh(\"DualProjectile\",2)",
+      "Status": "Passed",
+      "Duration": 0.000712,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.BoltParticleSimulationTests.Fire_PausesStaticBurstAndPreservesRenderedMesh(\"QuadProjectile\",4)",
+      "Status": "Passed",
+      "Duration": 0.000744,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.BoltParticleSimulationTests.Fire_PausesStaticBurstAndPreservesRenderedMesh(\"OctupleProjectile\",8)",
+      "Status": "Passed",
+      "Duration": 0.0008142,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.BoltParticleSimulationTests.Fire_PausesStaticBurstAndPreservesRenderedMesh(\"HypervelocitySlugShot\",1)",
+      "Status": "Passed",
+      "Duration": 0.0006199,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.BoltParticleSimulationTests.FlightBatch_PlacesBoltOnItsPathThenDropsItOnArrival",
+      "Status": "Passed",
+      "Duration": 0.0003724,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorDueTests.LateTick_CancelledImpactDoesNotCommitAfterEarlierCallback",
+      "Status": "Passed",
+      "Duration": 0.000312,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorDueTests.LateTick_CommitsEqualTimeImpactsInSequenceOrder(63)",
+      "Status": "Passed",
+      "Duration": 0.0003518,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorDueTests.LateTick_CommitsEqualTimeImpactsInSequenceOrder(64)",
+      "Status": "Passed",
+      "Duration": 0.0003483,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorDueTests.LateTick_CommitsEqualTimeImpactsInSequenceOrder(65)",
+      "Status": "Passed",
+      "Duration": 0.0003222,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorSelectionTests.CaptureTargetSelections_ReadsTransformsAfterQueueAtEveryThreshold(7)",
+      "Status": "Passed",
+      "Duration": 0.0005944,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorSelectionTests.CaptureTargetSelections_ReadsTransformsAfterQueueAtEveryThreshold(8)",
+      "Status": "Passed",
+      "Duration": 0.0005206,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorSelectionTests.CaptureTargetSelections_ReadsTransformsAfterQueueAtEveryThreshold(9)",
+      "Status": "Passed",
+      "Duration": 0.000574,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.CombatAttackCoordinatorSelectionTests.LateTick_IgnoresQueuedRequestAfterOwnerRelease",
+      "Status": "Passed",
+      "Duration": 0.0001537,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"Projectile\")",
+      "Status": "Passed",
+      "Duration": 0.0003407,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"DualProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0002716,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"QuadProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0003303,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"OctupleProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0003008,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"LaserProjectile\")",
+      "Status": "Passed",
+      "Duration": 0.0007986,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"IonShot\")",
+      "Status": "Passed",
+      "Duration": 0.0006669,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"IonPulseShot\")",
+      "Status": "Passed",
+      "Duration": 0.0002994,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"HypervelocitySlugShot\")",
+      "Status": "Passed",
+      "Duration": 0.0002677,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"ProtonTorpedoShot\")",
+      "Status": "Passed",
+      "Duration": 0.0006181,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.ShotEffectPoolLifecycleTests.WarmPool_ReusesActiveHierarchyAndStopsAllIdleVisuals(\"ConcussionMissileShot\")",
+      "Status": "Passed",
+      "Duration": 0.000704,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.CanAcquire_SharedTarget_SeparatesFogPolicyAndRefreshesEachBatch",
+      "Status": "Passed",
+      "Duration": 0.0001613,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Eligibility_MatchesLiveAttackData(False,True,True,False)",
+      "Status": "Passed",
+      "Duration": 0.000331,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Eligibility_MatchesLiveAttackData(False,False,True,True)",
+      "Status": "Passed",
+      "Duration": 0.0001085,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Eligibility_MatchesLiveAttackData(True,False,False,False)",
+      "Status": "Passed",
+      "Duration": 0.0001779,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Eligibility_MatchesLiveAttackData(False,True,False,True)",
+      "Status": "Passed",
+      "Duration": 0.0001032,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.FighterSlot_ReadsFlightPoseEveryBatch",
+      "Status": "Passed",
+      "Duration": 0.0001268,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.NewShipSlot_IsReadOnItsFirstBatch",
+      "Status": "Passed",
+      "Duration": 0.0001053,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.NextBatch_RefreshesGenerationAndWreckState",
+      "Status": "Passed",
+      "Duration": 9.82E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Refresh_ReadsOnlySlotsMarkedThisBatch",
+      "Status": "Passed",
+      "Duration": 8.6E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Refresh_SkipsDestroyedTransformOfFreedSlot",
+      "Status": "Passed",
+      "Duration": 0.0001054,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.Release_FreesSlotOnlyAfterLastReferenceAndReusesIt",
+      "Status": "Passed",
+      "Duration": 0.000115,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.SharedUnit_UsesOneSlotAndReadsHealthOnce",
+      "Status": "Passed",
+      "Duration": 0.0001251,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.ShipSlot_ReadsTransformOncePerStripeCycle",
+      "Status": "Passed",
+      "Duration": 0.0001266,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponCandidateTests.AddBaseTarget_SplicesNewestContactAfterMainLikeARebuild",
+      "Status": "Passed",
+      "Duration": 0.0004219,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponCandidateTests.MainTargetSwitches_KeepRebuildOrderWithoutRebuilding",
+      "Status": "Passed",
+      "Duration": 0.0004078,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponCandidateTests.TargetDestroyed_RebuildsOnlyOnceHalfTheGroupsAreDead",
+      "Status": "Passed",
+      "Duration": 0.0001408,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_MatchesSerialAimForOrdinaryGeometry(3.0f,2.0f,5.0f,0.0f)",
+      "Status": "Passed",
+      "Duration": 0.0001602,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_MatchesSerialAimForOrdinaryGeometry(-3.0f,1.0f,4.0f,45.0f)",
+      "Status": "Passed",
+      "Duration": 0.000118,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_MatchesSerialAimForOrdinaryGeometry(1.0f,-4.0f,5.0f,-30.0f)",
+      "Status": "Passed",
+      "Duration": 0.0001253,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_MatchesSerialAimForTiltedParent",
+      "Status": "Passed",
+      "Duration": 0.0001523,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_PreservesLastInRangeAimWhenNoCandidatePassesArc",
+      "Status": "Passed",
+      "Duration": 0.0001088,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_ReportsNoAimForEmptyCandidateList",
+      "Status": "Passed",
+      "Duration": 9.66E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_RequestsSerialFallbackAtInclusiveRangeBoundary",
+      "Status": "Passed",
+      "Duration": 0.0001248,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_RequestsSerialFallbackAtYawWrap",
+      "Status": "Passed",
+      "Duration": 6.96E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_RequestsSerialFallbackForDegenerateDirection(0.0f,10.0f,0.0f)",
+      "Status": "Passed",
+      "Duration": 0.0001509,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_RequestsSerialFallbackForDegenerateDirection(0.0f,-10.0f,0.0f)",
+      "Status": "Passed",
+      "Duration": 0.000117,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_RequestsSerialFallbackForDegenerateDirection(0.0f,0.0f,0.0f)",
+      "Status": "Passed",
+      "Duration": 0.0002126,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_RequestsSerialFallbackForDegenerateDirection(1E-05.0f,10.0f,0.0f)",
+      "Status": "Passed",
+      "Duration": 0.0001005,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_SelectsFirstEligibleCandidate(1)",
+      "Status": "Passed",
+      "Duration": 0.0001944,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_SelectsFirstEligibleCandidate(7)",
+      "Status": "Passed",
+      "Duration": 8.23E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_SelectsFirstEligibleCandidate(8)",
+      "Status": "Passed",
+      "Duration": 0.0001789,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_SelectsFirstEligibleCandidate(9)",
+      "Status": "Passed",
+      "Duration": 8.18E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_SkipsInvalidSlotsAndIneligibleGroups",
+      "Status": "Passed",
+      "Duration": 0.0001174,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTargetSelectionJobTests.ScheduledJob_StrikecraftOnlySkipsCapitalSlots",
+      "Status": "Passed",
+      "Duration": 6.9E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTurnRateTests.SavedCalibers_HeavierGunsTurnSlower",
+      "Status": "Passed",
+      "Duration": 8.39E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTurnRateTests.SavedWeapons_ShipWeaponsTurnAndSquadronWeaponsDoNot",
+      "Status": "Passed",
+      "Duration": 0.0001978,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTurnRateTests.TurnTowards_TakesYawOverRateAndKeepsMountAimed",
+      "Status": "Passed",
+      "Duration": 0.0001587,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.WeaponTurnRateTests.TurnTowards_WithoutTurnRateFiresAtOnce",
+      "Status": "Passed",
+      "Duration": 6.92E-05,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

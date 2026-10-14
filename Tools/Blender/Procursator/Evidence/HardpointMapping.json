@@ -1,0 +1,189 @@
+[
+  {
+    "id": 0,
+    "name": "HP_Procursator_Shield",
+    "bone": "Shield_Generator",
+    "position": [
+      3.37203369E-06,
+      10.5919971,
+      -36.67625
+    ],
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "HP_Procursator_Engine",
+    "bone": "Engines",
+    "position": [
+      3.39250528E-06,
+      -7.849897,
+      -57.42824
+    ],
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "HP_Procursator_IC_01",
+    "bone": "TL_01",
+    "position": [
+      -12.9845972,
+      -7.86477375,
+      25.0878277
+    ],
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "HP_Procursator_IC_02",
+    "bone": "TL_02",
+    "position": [
+      12.99096,
+      -7.86477375,
+      25.087822
+    ],
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "HP_Procursator_TL_01",
+    "bone": "TL_03",
+    "position": [
+      -25.013319,
+      -8.769616,
+      -9.669285
+    ],
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "HP_Procursator_TL_02",
+    "bone": "TL_04",
+    "position": [
+      25.0132847,
+      -8.769617,
+      -9.669289
+    ],
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "HP_Procursator_QTL_01",
+    "bone": "TLT_01",
+    "position": [
+      3.44919545E-06,
+      3.672151,
+      4.246547
+    ],
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "HP_Procursator_QTL_02",
+    "bone": "TLT_02",
+    "position": [
+      3.932046E-06,
+      0.8248248,
+      15.292881
+    ],
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "HP_Procursator_QTL_03",
+    "bone": "TLT_03",
+    "position": [
+      4.414847E-06,
+      -2.021675,
+      26.3380775
+    ],
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "HP_Procursator_TLTL_01",
+    "bone": "QLC_01",
+    "position": [
+      19.3429832,
+      -2.721311,
+      -8.911774
+    ],
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "HP_Procursator_TLTL_02",
+    "bone": "QLC_02",
+    "position": [
+      19.3429832,
+      -1.99752092,
+      -18.6906376
+    ],
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "HP_Procursator_TLTL_03",
+    "bone": "QLC_03",
+    "position": [
+      19.3429813,
+      0.9042859,
+      -42.84134
+    ],
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "HP_Procursator_TLTL_04",
+    "bone": "QLC_04",
+    "position": [
+      19.3429813,
+      1.35729361,
+      -49.00953
+    ],
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "HP_Procursator_TLTL_05",
+    "bone": "QLC_05",
+    "position": [
+      -19.3423977,
+      1.32156515,
+      -48.5371475
+    ],
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "HP_Procursator_TLTL_06",
+    "bone": "QLC_06",
+    "position": [
+      -19.3423977,
+      0.8394551,
+      -41.88218
+    ],
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "HP_Procursator_TLTL_07",
+    "bone": "QLC_07",
+    "position": [
+      -19.3423958,
+      -2.06235075,
+      -17.7314816
+    ],
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "HP_Procursator_TLTL_08",
+    "bone": "QLC_08",
+    "position": [
+      -19.3423958,
+      -2.74947453,
+      -8.438885
+    ],
+    "targetable": true
+  }
+]

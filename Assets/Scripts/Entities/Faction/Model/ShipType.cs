@@ -39,6 +39,7 @@ namespace EmpireAtWar.Models.Factions
         AcclamatorAssault = 209,
         Tector = 210,
         ImperialVenator = 211,
+        Procursator = 212,
         Tartan = 215,
 
         //rebellion
