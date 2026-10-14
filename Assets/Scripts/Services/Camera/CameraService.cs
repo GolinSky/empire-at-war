@@ -314,17 +314,12 @@ namespace EmpireAtWar.Services.Camera
 
         private Vector3 ClampPosition(Vector3 position)
         {
-            float heightPercentage = Mathf.InverseLerp(
-                _cameraData.ZoomRange.Min,
-                _cameraData.ZoomRange.Max,
-                position.y);
-            Vector2 min = _mapModel.SizeRange.Min + Vector2.Lerp(
-                _cameraData.MinZoomPadding.Min, _cameraData.MaxZoomPadding.Min, heightPercentage);
-            Vector2 max = _mapModel.SizeRange.Max + Vector2.Lerp(
-                _cameraData.MinZoomPadding.Max, _cameraData.MaxZoomPadding.Max, heightPercentage);
-
-            position.x = Mathf.Clamp(position.x, min.x, max.x);
-            position.z = Mathf.Clamp(position.z, min.y, max.y);
+            // Bound the point under the screen centre, not the elevated camera transform.
+            Vector3 groundOffset = CameraForward * (position.y / PitchSine);
+            Vector2 groundPoint = new Vector2(position.x + groundOffset.x, position.z + groundOffset.z);
+            Vector2 clampedPoint = _mapModel.SizeRange.Clamp(groundPoint);
+            position.x += clampedPoint.x - groundPoint.x;
+            position.z += clampedPoint.y - groundPoint.y;
             return position;
         }
 
