@@ -34,7 +34,8 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         {
             if (!_draft.CanStart) return;
             SimulationSetup setup = _draft.Build();
-            _ui.Hide(); Unfocus(); _launcher.Launch(setup);
+            if (_launcher.Current != null) _ui.Hide();
+            Unfocus(); _launcher.Launch(setup);
         }
         public void SelectFaction(int side, int index)
         {

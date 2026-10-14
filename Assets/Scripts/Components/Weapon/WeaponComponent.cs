@@ -103,6 +103,8 @@ namespace EmpireAtWar.Components.Weapon
 
         public float AttackDistance => Model.MaxWeaponRange;
 
+        public TargetPreference PreferredTarget { get; private set; }
+
         [Inject]
         private void Construct(WeaponModel model, ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
@@ -157,6 +159,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (WeaponProfile profile in profiles)
                 maxRange = Mathf.Max(maxRange, profile.Range * _modifiers.VisionMultiplier);
             Model.SetRanges(maxRange, engagementRanges);
+            PreferredTarget = GetLoadoutPreference(profiles);
             for (int i = 0; i < hardPoints.Count; i++)
                 for (int j = i + 1; j < hardPoints.Count; j++)
                     _hardPointSpan = Mathf.Max(_hardPointSpan,
@@ -263,6 +266,21 @@ namespace EmpireAtWar.Components.Weapon
 
         private bool CanAcquire(AttackData group) =>
             group.CanAcquireTarget && !(_respectsLocalFog && group.TargetEntity.IsHiddenByFog());
+
+        // Strikecraft only when anti-strikecraft weapons carry most of the firepower, e.g. a laser corvette.
+        private static TargetPreference GetLoadoutPreference(List<WeaponProfile> profiles)
+        {
+            float strikecraftDps = 0f;
+            float shipsDps = 0f;
+            foreach (WeaponProfile profile in profiles)
+            {
+                if (profile.StrikecraftOnly || profile.PreferredTarget == TargetPreference.Strikecraft)
+                    strikecraftDps += profile.DamagePerSecond;
+                else if (profile.PreferredTarget == TargetPreference.Ships) shipsDps += profile.DamagePerSecond;
+            }
+
+            return strikecraftDps > shipsDps ? TargetPreference.Strikecraft : TargetPreference.Ships;
+        }
 
         public float GetEngagementRange(ShipClass targetClass) => Model.GetEngagementRange(targetClass);
 
@@ -424,9 +442,14 @@ namespace EmpireAtWar.Components.Weapon
             _targetPositions.Clear();
             TargetSelectionCapture targets = _attackCoordinator.TargetUnits;
 
+            // Preferred targets first, the main target first among them; the rest only when none is in reach.
+            TargetPreference preference = weapon.PreferredTarget;
+            int passes = preference == TargetPreference.Any ? 1 : 2;
+            for (int pass = 0; pass < passes; pass++)
             for (int i = 0; i < _candidateCount; i++)
             {
                 AttackData group = _candidateGroups[_candidateGroupIndices[i]];
+                if (preference.Prefers(group.TargetClass) != (pass == 0)) continue;
                 IHardPointModel unit = targets.GetUnit(_candidateSlots[i]);
                 if (!CanAcquire(group)) continue;
                 if (!group.CanTarget(unit)) continue;

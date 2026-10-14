@@ -44,6 +44,7 @@ namespace EmpireAtWar.Components.AttackComponent
         [NonSerialized] private ShipClassValues _accuracyBias;
         [NonSerialized] private float _accuracyMultiplier = 1f;
         [NonSerialized] private float _turnRate;
+        [NonSerialized] private TargetPreference _preferredTarget;
 
         public WeaponProfile()
         {
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Components.AttackComponent
             float damage, int shotsPerSalvo, float shotInterval, float reload, float range, bool strikecraftOnly,
             bool interceptable, ShotEffect shotPrefab, float projectileSpeed, Color color, Vector3 size,
             bool usesFactionColor, bool hasTargetSizeBias, ShipClassValues damageBias, ShipClassValues accuracyBias,
-            float accuracyMultiplier, float turnRate)
+            float accuracyMultiplier, float turnRate, TargetPreference preferredTarget = TargetPreference.Any)
         {
             this.weaponType = weaponType;
             this.displayName = displayName;
@@ -76,6 +77,7 @@ namespace EmpireAtWar.Components.AttackComponent
             _accuracyBias = accuracyBias;
             _accuracyMultiplier = accuracyMultiplier;
             _turnRate = turnRate;
+            _preferredTarget = preferredTarget;
         }
 
         public WeaponType WeaponType => weaponType;
@@ -99,11 +101,12 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool UsesFactionColor => _usesFactionColor;
         /// <summary>Degrees per second the mount turns before a salvo; 0 fires without turning.</summary>
         public float TurnRate => _turnRate;
+        public TargetPreference PreferredTarget => _preferredTarget;
 
         public WeaponProfile WithColor(Color boltColor) => new WeaponProfile(weaponType, displayName, Family, damageType,
             damage, shotsPerSalvo, shotInterval, reload, range, strikecraftOnly, interceptable, shotPrefab,
             projectileSpeed, boltColor, size, false, _hasTargetSizeBias, _damageBias, _accuracyBias, _accuracyMultiplier,
-            _turnRate);
+            _turnRate, _preferredTarget);
 
         public float GetDamageBias(ShipClass targetClass) => _hasTargetSizeBias ? _damageBias[targetClass] : 1f;
 

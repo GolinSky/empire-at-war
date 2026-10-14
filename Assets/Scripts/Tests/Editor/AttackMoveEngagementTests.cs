@@ -14,6 +14,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class AttackMoveEngagementTests
     {
         private static readonly Func<IEntity, float> BY_ID = enemy => enemy.Id;
+        private static readonly Func<IEntity, bool> ANY = enemy => true;
 
         [Test]
         public void SelectTarget_SpreadsMembersAcrossEnemyGroup()
@@ -25,10 +26,27 @@ namespace EmpireAtWar.Tests.Editor
             {
                 int member = engagement.Join();
                 engagement.Report(member, enemies);
-                picked.Add(engagement.SelectTarget(member, BY_ID));
+                picked.Add(engagement.SelectTarget(member, BY_ID, ANY));
             }
 
             Assert.That(picked, Is.EquivalentTo(enemies));
+        }
+
+        [Test]
+        public void SelectTarget_PreferredEnemyOutranksNearerAndLessAttackedOnes()
+        {
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            FakeEntity near = new FakeEntity(1);
+            FakeEntity preferred = new FakeEntity(2);
+            int first = engagement.Join();
+            int second = engagement.Join();
+            engagement.Report(first, new IEntity[] { near, preferred });
+            Func<IEntity, bool> isPreferred = enemy => enemy == preferred;
+
+            Assert.That(engagement.HasPreferred(isPreferred), Is.True);
+            Assert.That(engagement.SelectTarget(first, BY_ID, isPreferred), Is.SameAs(preferred));
+            Assert.That(engagement.SelectTarget(second, BY_ID, isPreferred), Is.SameAs(preferred));
+            Assert.That(engagement.HasPreferred(enemy => false), Is.False);
         }
 
         [Test]
@@ -41,7 +59,7 @@ namespace EmpireAtWar.Tests.Editor
             engagement.Report(spotter, new IEntity[] { enemy });
             engagement.Report(blind, Array.Empty<IEntity>());
 
-            Assert.That(engagement.SelectTarget(blind, BY_ID), Is.SameAs(enemy));
+            Assert.That(engagement.SelectTarget(blind, BY_ID, ANY), Is.SameAs(enemy));
         }
 
         [Test]
@@ -57,7 +75,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(engagement.Contains(destroyed), Is.False);
             engagement.Report(member, Array.Empty<IEntity>());
             Assert.That(engagement.Contains(lost), Is.False);
-            Assert.That(engagement.SelectTarget(member, BY_ID), Is.Null);
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY), Is.Null);
         }
 
         [Test]
@@ -70,11 +88,11 @@ namespace EmpireAtWar.Tests.Editor
             int stayer = engagement.Join();
             engagement.Report(leaver, new IEntity[] { near, far });
             engagement.Report(stayer, new IEntity[] { near, far });
-            Assert.That(engagement.SelectTarget(leaver, BY_ID), Is.SameAs(near));
+            Assert.That(engagement.SelectTarget(leaver, BY_ID, ANY), Is.SameAs(near));
 
             engagement.Leave(leaver);
 
-            Assert.That(engagement.SelectTarget(stayer, BY_ID), Is.SameAs(near));
+            Assert.That(engagement.SelectTarget(stayer, BY_ID, ANY), Is.SameAs(near));
         }
 
         [Test]
@@ -103,10 +121,10 @@ namespace EmpireAtWar.Tests.Editor
             int other = engagement.Join();
             engagement.Report(member, new IEntity[] { near, far });
 
-            Assert.That(engagement.SelectTarget(member, BY_ID), Is.SameAs(near));
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY), Is.SameAs(near));
             // Re-selecting drops the member's own claim, so it does not count against the nearest enemy.
-            Assert.That(engagement.SelectTarget(member, BY_ID), Is.SameAs(near));
-            Assert.That(engagement.SelectTarget(other, BY_ID), Is.SameAs(far));
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY), Is.SameAs(near));
+            Assert.That(engagement.SelectTarget(other, BY_ID, ANY), Is.SameAs(far));
         }
 
         private sealed class FakeEntity : IEntity

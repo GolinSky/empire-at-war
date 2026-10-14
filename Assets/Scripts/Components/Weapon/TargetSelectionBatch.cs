@@ -110,7 +110,8 @@ namespace EmpireAtWar.Components.Weapon
                         CandidateStart = request.CandidateStart,
                         CandidateCount = request.CandidateCount,
                         GroupStart = request.GroupStart,
-                        StrikecraftOnly = request.CandidateCount > 0 && request.HardPoint.StrikecraftOnly ? 1 : 0
+                        StrikecraftOnly = request.CandidateCount > 0 && request.HardPoint.StrikecraftOnly ? 1 : 0,
+                        Preference = (int)request.HardPoint.PreferredTarget
                     };
                 }
             }
@@ -251,6 +252,9 @@ namespace EmpireAtWar.Components.Weapon
             };
             NativeArray<byte> flags = _capture.Flags;
             NativeArray<float3> positions = _capture.Positions;
+            int preference = (int)request.HardPoint.PreferredTarget;
+            int passes = preference == (int)TargetPreference.Any ? 1 : 2;
+            for (int pass = 0; pass < passes && result.CandidateIndex < 0; pass++)
             for (int i = request.CandidateStart; i < request.CandidateStart + request.CandidateCount; i++)
             {
                 if (_groupEligible[request.GroupStart + _candidateGroups[i]] == 0) continue;
@@ -258,6 +262,7 @@ namespace EmpireAtWar.Components.Weapon
                 byte slotFlags = flags[slot];
                 if ((slotFlags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (request.HardPoint.StrikecraftOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
+                if (WeaponTargetSelectionJob.IsPreferred(preference, slotFlags) != (pass == 0)) continue;
                 result.Visited++;
                 float3 position = positions[slot];
                 result.NearestDistance = Mathf.Min(result.NearestDistance,

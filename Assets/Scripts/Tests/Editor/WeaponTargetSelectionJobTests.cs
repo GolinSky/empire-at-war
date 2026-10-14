@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using NUnit.Framework;
 using Unity.Collections;
@@ -138,6 +139,37 @@ namespace EmpireAtWar.Tests.Weapon
             input.StrikecraftOnly = 1;
 
             Assert.That(Run(8, input, positions, flags, null).CandidateIndex, Is.EqualTo(1));
+        }
+
+        // Slot 0 is a capital ship, slot 1 a squadron, slot 2 out of range; the first candidate ranks highest.
+        [TestCase(TargetPreference.Any, 0)]
+        [TestCase(TargetPreference.Ships, 0)]
+        [TestCase(TargetPreference.Strikecraft, 1)]
+        public void ScheduledJob_PrefersMatchingTargetsOverEarlierCandidates(TargetPreference preference, int expected)
+        {
+            Vector3[] positions = { new Vector3(0f, 0f, 3f), new Vector3(0f, 0f, 4f), new Vector3(0f, 0f, 50f) };
+            byte[] flags = { TargetSelectionCapture.SLOT_VALID,
+                TargetSelectionCapture.SLOT_VALID | TargetSelectionCapture.SLOT_STRIKECRAFT,
+                TargetSelectionCapture.SLOT_VALID };
+            WeaponTargetSelectionJob.Input input = Input(positions.Length);
+            input.Preference = (int)preference;
+
+            Assert.That(Run(8, input, positions, flags, null).CandidateIndex, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ScheduledJob_FallsBackToOtherTargetsWhenNoPreferredIsInReach()
+        {
+            // The preferred ship is out of range, so the squadron is attacked instead.
+            Vector3[] positions = { new Vector3(0f, 0f, 50f), new Vector3(0f, 0f, 4f) };
+            byte[] flags = { TargetSelectionCapture.SLOT_VALID,
+                TargetSelectionCapture.SLOT_VALID | TargetSelectionCapture.SLOT_STRIKECRAFT };
+            WeaponTargetSelectionJob.Input input = Input(positions.Length);
+            input.Preference = (int)TargetPreference.Ships;
+
+            WeaponTargetSelectionJob.Result result = Run(8, input, positions, flags, null);
+            Assert.That(result.CandidateIndex, Is.EqualTo(1));
+            Assert.That(result.Visited, Is.EqualTo(2));
         }
 
         private static WeaponTargetSelectionJob.Input Input(int candidateCount) => new WeaponTargetSelectionJob.Input

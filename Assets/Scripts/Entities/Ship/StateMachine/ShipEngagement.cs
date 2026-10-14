@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -18,6 +19,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                        enemy.GetFacade<IEntityTransformFacade>().Transform.position),
                        ContactDistance(movement, enemy), enemy.HealthModel.ShipClass);
         }
+
+        /// <summary>An enemy the ship's loadout is built for; AI target searches take these before the others.</summary>
+        public static bool IsPreferred(IEntity enemy, IWeaponComponent weapon) =>
+            weapon.PreferredTarget.Prefers(enemy.HealthModel.ShipClass);
 
         /// <summary>
         /// Closest centre distance navigation allows between the ship and the target.

@@ -54,24 +54,36 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
         public bool Contains(IEntity enemy) => IsAlive(enemy) && _reporters.ContainsKey(enemy);
 
+        public bool HasPreferred(Func<IEntity, bool> isPreferred)
+        {
+            foreach (IEntity enemy in _reporters.Keys)
+                if (IsAlive(enemy) && isPreferred(enemy)) return true;
+            return false;
+        }
+
         /// <summary>
-        /// Claims the live enemy with the fewest other attackers, nearest first on ties.
+        /// Claims a live enemy: preferred enemies first, then the fewest other attackers, nearest first on ties.
         /// Returns null and drops the member's claim when the engagement set is empty.
         /// </summary>
-        public IEntity SelectTarget(int member, Func<IEntity, float> distance)
+        public IEntity SelectTarget(int member, Func<IEntity, float> distance, Func<IEntity, bool> isPreferred)
         {
             DropClaim(member);
             IEntity best = null;
+            bool bestPreferred = false;
             int fewestAttackers = int.MaxValue;
             float nearest = float.PositiveInfinity;
             foreach (IEntity enemy in _reporters.Keys)
             {
                 if (!IsAlive(enemy)) continue;
+                bool preferred = isPreferred(enemy);
+                if (bestPreferred && !preferred) continue;
                 _attackers.TryGetValue(enemy, out int attackers);
-                if (attackers > fewestAttackers) continue;
+                bool outranks = preferred && !bestPreferred;
+                if (!outranks && attackers > fewestAttackers) continue;
                 float range = distance(enemy);
-                if (attackers == fewestAttackers && range >= nearest) continue;
+                if (!outranks && attackers == fewestAttackers && range >= nearest) continue;
                 best = enemy;
+                bestPreferred = preferred;
                 fewestAttackers = attackers;
                 nearest = range;
             }

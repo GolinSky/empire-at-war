@@ -75,20 +75,18 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_isReturning && PlanarGeometry.Distance(_movement.CurrentPosition, home) <=
                 _settings.GuardFollowRadius) _isReturning = false;
 
-            if (_engagementTarget == null && !_isReturning)
+            // A held target the loadout is not built for gives way to a preferred enemy.
+            if (!_isReturning &&
+                (_engagementTarget == null || !ShipEngagement.IsPreferred(_engagementTarget, _weapon)))
             {
-                // Indexed: ObservableList boxes its enumerator.
-                for (int i = 0; i < _radar.Enemies.Count; i++)
+                IEntity enemy = FindTarget(home);
+                if (enemy != null && enemy != _engagementTarget &&
+                    (_engagementTarget == null || ShipEngagement.IsPreferred(enemy, _weapon)))
                 {
-                    IEntity enemy = _radar.Enemies[i];
-                    if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits || enemy.IsCloaked() ||
-                        PlanarGeometry.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
-                        _settings.GuardChaseDistance) continue;
                     _engagementTarget = enemy;
                     _weapon.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
                     if (!ShipEngagement.CanEngage(enemy, _movement, _weapon))
                         ShipEngagement.Pursue(_movement, _weapon, enemy, newTarget: true);
-                    break;
                 }
             }
 
@@ -113,6 +111,24 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _engagementTarget = null;
             _isReturning = false;
             _weapon.ResetTarget();
+        }
+
+        // The first preferred enemy near home, otherwise the first other one.
+        private IEntity FindTarget(Vector3 home)
+        {
+            IEntity fallback = null;
+            // Indexed: ObservableList boxes its enumerator.
+            for (int i = 0; i < _radar.Enemies.Count; i++)
+            {
+                IEntity enemy = _radar.Enemies[i];
+                if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits || enemy.IsCloaked() ||
+                    PlanarGeometry.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
+                    _settings.GuardChaseDistance) continue;
+                if (ShipEngagement.IsPreferred(enemy, _weapon)) return enemy;
+                if (fallback == null) fallback = enemy;
+            }
+
+            return fallback;
         }
 
         // Finish the current follow leg before considering the friendly's new position.

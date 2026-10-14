@@ -52,9 +52,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _engagementTarget = null;
             }
 
-            if (_engagementTarget == null && Time.time >= _nextSearchTime)
+            // A held target the loadout is not built for gives way once a preferred enemy comes into range.
+            bool isSearching = _engagementTarget == null ||
+                               !ShipEngagement.IsPreferred(_engagementTarget, _weaponComponent);
+            if (isSearching && Time.time >= _nextSearchTime)
             {
                 _nextSearchTime = Time.time + SEARCH_INTERVAL;
+                bool hasPreferred = false;
                 float nearestDistance = float.PositiveInfinity;
                 // Indexed: ObservableList boxes its enumerator.
                 for (int i = 0; i < _radarComponent.Enemies.Count; i++)
@@ -65,9 +69,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                         continue;
                     }
 
+                    // Nearest preferred enemy; the nearest other one only while no preferred enemy is in range.
+                    bool isPreferred = ShipEngagement.IsPreferred(enemy, _weaponComponent);
+                    if (hasPreferred && !isPreferred) continue;
                     float distance = _shipMoveComponent.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
-                    if (distance < nearestDistance)
+                    if (distance < nearestDistance || isPreferred && !hasPreferred)
                     {
+                        hasPreferred = isPreferred;
                         nearestDistance = distance;
                         _engagementTarget = enemy;
                     }

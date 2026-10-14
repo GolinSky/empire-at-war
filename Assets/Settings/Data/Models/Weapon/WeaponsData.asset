@@ -23,6 +23,7 @@ MonoBehaviour:
     reload: 1.5
     range: 300
     strikecraftOnly: 0
+    preferredTarget: 1
     interceptable: 0
     targetSizeBias: 1
     turnRate: 120
@@ -48,6 +49,7 @@ MonoBehaviour:
     reload: 4
     range: 450
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 0
     targetSizeBias: 1
     turnRate: 60
@@ -73,6 +75,7 @@ MonoBehaviour:
     reload: 6
     range: 500
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 0
     targetSizeBias: 1
     turnRate: 60
@@ -98,6 +101,7 @@ MonoBehaviour:
     reload: 5
     range: 450
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 0
     targetSizeBias: 1
     turnRate: 40
@@ -120,6 +124,7 @@ MonoBehaviour:
     reload: 10
     range: 550
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 1
     targetSizeBias: 1
     turnRate: 90
@@ -142,6 +147,7 @@ MonoBehaviour:
     reload: 12
     range: 350
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 1
     targetSizeBias: 1
     turnRate: 90
@@ -164,6 +170,7 @@ MonoBehaviour:
     reload: 15
     range: 350
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 1
     targetSizeBias: 1
     turnRate: 90
@@ -186,6 +193,7 @@ MonoBehaviour:
     reload: 2
     range: 200
     strikecraftOnly: 1
+    preferredTarget: 1
     interceptable: 0
     targetSizeBias: 1
     turnRate: 240
@@ -211,6 +219,7 @@ MonoBehaviour:
     reload: 30
     range: 460
     strikecraftOnly: 0
+    preferredTarget: 2
     interceptable: 0
     targetSizeBias: 1
     turnRate: 20
@@ -233,6 +242,7 @@ MonoBehaviour:
     reload: 0.9
     range: 70
     strikecraftOnly: 0
+    preferredTarget: 0
     interceptable: 0
     targetSizeBias: 0
     turnRate: 0
@@ -258,6 +268,7 @@ MonoBehaviour:
     reload: 4.91
     range: 70
     strikecraftOnly: 0
+    preferredTarget: 0
     interceptable: 0
     targetSizeBias: 0
     turnRate: 0
@@ -283,6 +294,7 @@ MonoBehaviour:
     reload: 15
     range: 80
     strikecraftOnly: 0
+    preferredTarget: 0
     interceptable: 1
     targetSizeBias: 0
     turnRate: 0
@@ -305,6 +317,7 @@ MonoBehaviour:
     reload: 8
     range: 60
     strikecraftOnly: 0
+    preferredTarget: 0
     interceptable: 1
     targetSizeBias: 0
     turnRate: 0

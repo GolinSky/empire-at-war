@@ -172,6 +172,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             public string Id => nameof(Weapon);
             public float AttackDistance => 100f;
+            public TargetPreference PreferredTarget => TargetPreference.Ships;
             public float GetEngagementRange(ShipClass targetClass) => 100f;
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
