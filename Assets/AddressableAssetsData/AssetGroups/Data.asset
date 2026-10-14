@@ -315,6 +315,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4e912f15a793bf4b8e8decd4f6d02c9
+    m_Address: TitanShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9c6ceb036f3c4e41801f2d75dcc4a44
     m_Address: DroidBomberSquadronData
     m_ReadOnly: 0
@@ -387,11 +392,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fef3778c9889843489a563dd0efbf27b
     m_Address: EnduranceShipData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d4e912f15a793bf4b8e8decd4f6d02c9
-    m_Address: TitanShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

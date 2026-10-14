@@ -4,6 +4,15 @@
 
 ### Features
 
+- [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan**
+  - **Plan**: [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
+  - **Tartan completed**: 2026-10-14; Empire `215`, requested stats/economy, 9 targetable lasers, no squadrons, existing Power to Weapons. EditMode `9/9`, geometry/references/eight live-wreck palettes and 30 simulations passed. Commit `58bb0d846`; fleet plan remains active.
+  - **Allegiance completed (2026-10-14)**: Empire `213`; `20,000/16,000/12`, 21 weapons + 7 systems, no squadrons, Power to Main Batteries + Tractor Beam. Geometry/UV verified; EditMode `12/12`, including repaired spawn-injection bindings. [[GameDesign/Allegiance Import]].
+  - **Titan completed**: 2026-10-14; Empire `214`, requested stats/economy, 24 weapons/33 targets, zero squadrons, existing Power to Weapons + Tractor Beam. Saved checks `52,482`, Titan EditMode `12/12`, three capital simulations and actual local/AI composition passed. [[GameDesign/Titan Import]]; commit `c80046172`.
+  - **Fleet livery corrected (2026-10-14)**: all four hulls neutral; small chipped stripes use Acclamator hue `0.968`. Live/wreck/placement/icons and team/fog bindings saved; `39/39` ship tests and `91,968` saved checks passed. Current evidence: `Tools/Blender/EmpireFleetLivery/`; commit `42bef84ca`.
+  - **Reference**: [[GameDesign/Empire Fleet Import|Ship balance and ALO mapping]]
+  - **Status**: 2026-10-14 Procursator imported with 15 weapons/17 targetable systems, requested stats, no hangar and existing Power to Weapons. Spawn injection repaired after reproducing 30 empty donor slots; saved verification 7,385 checks; Procursator EditMode 6/6 and actual local/AI factory composition passed. Thirty stationary combat simulations completed; import commit `e55f4ac8c`, spawn fix `1f3afe058`. Other fleet imports and combat Play Mode/balance acceptance remain active; see plan.
+
 - [ ] **Game modes: Survival and Battle Simulation**
   - **Plan**: [[TODOs/Features/Game_Modes_Survival_And_Simulation|Game Modes Survival And Simulation]]
   - **Status**: 2026-10-14 Phase 0 implemented: battle definitions/roles, optional feature modules, Skirmish super-weapons toggle, Survival setup with launch disabled, and mode-aware results. Baseline regression repairs included. Phase 0 checks and 8 real-scope cases pass.

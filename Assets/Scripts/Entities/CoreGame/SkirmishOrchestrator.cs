@@ -6,7 +6,6 @@ using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Input;
 using UnityEngine;
-using VContainer;
 using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Controllers.Game
