@@ -24,12 +24,19 @@
 ## Verification
 
 - `53` source meshes, `38,984` triangles, `152` total bones; twelve round trips passed. Maximum Unity source bone error `0.000001568` project units.
-- Final saved-asset verifier: `7,395` checks passed, including exact source muzzle positions, all external materials, prefab references and registrations.
+- Final saved-asset verifier: `7,385` checks passed, including exact source muzzle positions, all external materials, prefab references and registrations.
 - `28` original file hashes unchanged; `34` texture references pixel-identical. Icon `512×512`, transparent crop `(22,140)..(422,366)`; eight distinct live/wreck palettes.
-- Procursator EditMode regressions: `5/5` passed, including runtime HealthModel shield-generator destruction, all targetable systems, firing arcs, hull/bank bounds, no hangar and registrations.
+- Procursator EditMode regressions: `6/6` passed, including runtime HealthModel shield-generator destruction, all targetable systems, firing arcs, hull/bank bounds, no hangar and registrations.
 - Thirty stationary battle-simulator runs completed: 10/10 wins vs Venator; 10/10 vs Victory II; 4/10 vs MC80. Mean encounter durations 24.760 / 25.525 / 50.950 s. Simulator v1 excludes movement, arcs, abilities and hangar launches; these results are a data smoke check, not balance acceptance.
 - Initial broad Weapon run 128/138 passed; Procursator profile ownership/reason and caliber-rule failures corrected. Unrelated failures concerned Balance Editor SensorJammingSettings and Allegiance.
 - Unity compile/import clean at final saved verification. Combat Play Mode and full fleet balance acceptance not run.
+
+## Spawn binding fix — 2026-10-14
+
+- Reproduced empty donor injection slots: one live team view + 30 null references. `DynamicEntityInstaller.Install` attempted `RegisterComponent(null)`.
+- Saved the injection list as 17 current hardpoints + team-color view. Builder creates this explicit list; verifier rejects null, duplicate or missing target bindings.
+- Regression failed before repair, then all six Procursator EditMode tests passed. Actual project/battle/local/AI factory spawning, health, voice, independent state and teardown passed; no new Console errors.
+- Reproduce factory check: `python Tools/Blender/Procursator/VerifyFactory.py`, then `unity command run_script --file Temp/ProcursatorCompositionCheck.cs --entry ProcursatorCompositionRunner.Main --timeout_ms 60000 --json` after confirming clean scene state.
 
 ## Files
 

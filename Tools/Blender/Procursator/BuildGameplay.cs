@@ -89,6 +89,7 @@ public static class BuildProcursatorGameplay
             Assign(weaponComponent,"hardPoints",weapons.ToArray());
             Assign(Component(root,"FogVisibilityComponent"),"renderers",visible.Cast<Renderer>().Concat(new Renderer[]{shield.GetComponent<MeshRenderer>(),root.GetComponent<LineRenderer>()}).ToArray());
             Assign(Component(root,"TeamColorView"),"meshRenderers",opaque);
+            Assign(Component(root,"EntityBindings"),"<Injectables>k__BackingField",targetable.Cast<UnityEngine.Object>().Concat(new[]{Component(root,"TeamColorView")}).ToArray());
             var so = new SerializedObject(health);
             so.FindProperty("ionFieldBounds.m_Center").vector3Value = bounds.center;
             so.FindProperty("ionFieldBounds.m_Extent").vector3Value = bounds.extents*1.05f;

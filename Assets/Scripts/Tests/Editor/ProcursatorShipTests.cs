@@ -105,6 +105,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Injectables_RegisterOnlyCurrentHardpointsAndTeamColorView()
+        {
+            var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
+            var ship = view.GetComponent<EmpireAtWar.Ship.Ship>();
+            var health = view.GetComponentsInChildren<HealthComponent>(true).Single();
+            var teamColor = view.GetComponentsInChildren<EmpireAtWar.Components.TeamColor.TeamColorView>(true).Single();
+            Assert.That(ship.Bindings.Injectables, Is.All.Not.Null, "Deleted donor components must not remain in injection slots.");
+            Assert.That(ship.Bindings.Injectables, Is.EquivalentTo(health.ShipUnits.Cast<MonoBehaviour>().Append(teamColor)));
+        }
+
+        [Test]
         public void RegisteredDataAndViews_ResolveProcursatorAssets()
         {
             var ships = AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/Shared/ShipsData.asset");

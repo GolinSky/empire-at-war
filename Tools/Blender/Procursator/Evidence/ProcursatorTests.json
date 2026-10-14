@@ -1,9 +1,9 @@
 {
   "status": "completed",
-  "duration": 0.39,
+  "duration": 0.44,
   "summary": {
-    "total": 5,
-    "passed": 5,
+    "total": 6,
+    "passed": 6,
     "failed": 0,
     "skipped": 0,
     "inconclusive": 0
@@ -12,35 +12,42 @@
     {
       "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.AllWeaponsAndSystems_AreUniqueTargetableAndHaveHealth",
       "Status": "Passed",
-      "Duration": 0.0283953,
+      "Duration": 0.0262924,
       "Message": null,
       "StackTrace": null
     },
     {
       "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.FrontalAndBroadsideArcs_MatchActualHullSide",
       "Status": "Passed",
-      "Duration": 0.0036955,
+      "Duration": 0.0016872,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.Injectables_RegisterOnlyCurrentHardpointsAndTeamColorView",
+      "Status": "Passed",
+      "Duration": 0.000989,
       "Message": null,
       "StackTrace": null
     },
     {
       "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.RegisteredDataAndViews_ResolveProcursatorAssets",
       "Status": "Passed",
-      "Duration": 0.0037376,
+      "Duration": 0.0031522,
       "Message": null,
       "StackTrace": null
     },
     {
       "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.SavedShip_HasRequestedStatsAndNoInjectableHangar",
       "Status": "Passed",
-      "Duration": 0.0156348,
+      "Duration": 0.0131193,
       "Message": null,
       "StackTrace": null
     },
     {
       "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.VisualsAndCollision_AreVenatorRelativeAndFitBankEnvelope",
       "Status": "Passed",
-      "Duration": 0.0788082,
+      "Duration": 0.068707,
       "Message": null,
       "StackTrace": null
     }

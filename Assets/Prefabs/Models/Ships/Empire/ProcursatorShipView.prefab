@@ -5619,37 +5619,24 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
+  - {fileID: 3617175627996167748}
+  - {fileID: 721906565965653795}
+  - {fileID: 2703715022175512124}
+  - {fileID: 1056850620197049620}
+  - {fileID: 3078877100275604392}
+  - {fileID: 2131384454392108123}
+  - {fileID: 3609966350565753662}
+  - {fileID: 5419410912772131717}
+  - {fileID: 6512730041290572919}
+  - {fileID: 76493488808175215}
+  - {fileID: 7920855832546819238}
+  - {fileID: 1389940236641749716}
+  - {fileID: 7428218300961419688}
+  - {fileID: 6944967329945064192}
+  - {fileID: 3101166644179242471}
+  - {fileID: 2578106849943097459}
+  - {fileID: 8469826739575496066}
   - {fileID: 7532020912885601778}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0

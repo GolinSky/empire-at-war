@@ -83,6 +83,10 @@ public static class VerifyProcursator
         var weapons=References(Component(ship,"WeaponComponent"),"hardPoints").Cast<WeaponHardPoint>().ToArray();
         Check(hardpoints.Length==17 && hardpoints.Select(h=>h.Id).SequenceEqual(Enumerable.Range(0,17)),"17 ordered targetable hardpoints");
         Check(weapons.Length==15 && weapons.All(w=>hardpoints.Contains(w)),"15 targetable weapons");
+        var injectables=References(Component(ship,"EntityBindings"),"<Injectables>k__BackingField");
+        Check(injectables.All(c=>c!=null),"Injection list contains no emptied donor slots");
+        Check(injectables.Length==18 && injectables.Distinct().Count()==18,"18 unique injectable components");
+        Check(hardpoints.All(h=>injectables.Contains(h)) && injectables.Contains(Component(ship,"TeamColorView")),"Every current hardpoint/team view is injected");
         int[] types={87,5,86,32};int[] counts={3,2,8,2};
         for(int i=0;i<types.Length;i++)Check(weapons.Count(w=>(int)w.WeaponType==types[i])==counts[i],"Weapon composition");
         Check(hardpoints.Count(h=>(int)h.HardPointType==1)==1 && hardpoints.Count(h=>(int)h.HardPointType==2)==1,"Engine/shield targets");
