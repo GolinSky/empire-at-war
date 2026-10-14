@@ -54,6 +54,7 @@ namespace EmpireAtWar.Ui.Base
                 {
                     { typeof(CoreGameUi), defaultCanvas.transform },
                     { typeof(MainMenuUi), defaultCanvas.transform },
+                    { typeof(EmpireAtWar.Entities.MainMenu.Play.PlayUi), defaultCanvas.transform },
                     { typeof(SkirmishUi), defaultCanvas.transform },
                     { typeof(EmpireAtWar.Entities.MainMenu.Survival.SurvivalUi), defaultCanvas.transform },
                     { typeof(ReinforcementUi), defaultCanvas.transform },

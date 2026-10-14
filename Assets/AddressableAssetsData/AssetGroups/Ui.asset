@@ -110,6 +110,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf4cbf04e2c031b4db0d9f547d696066
+    m_Address: PlayUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f343dde1580f9c449aa91a6c5d650dff
     m_Address: MainMenuUi
     m_ReadOnly: 0

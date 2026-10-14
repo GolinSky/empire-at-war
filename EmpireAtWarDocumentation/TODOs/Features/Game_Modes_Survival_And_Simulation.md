@@ -36,6 +36,8 @@ created: 2026-10-14
 - `Assets/Scripts/Editor/BattleSimulator/`: `BattleSimulation`, `BattleSetup`, `BattleFleetEntry` (`Quantity` 1–100). `SimUnitFactory` uses `UnityEditor` → not shippable.
 
 ## Decisions
+- 2026-10-14 menu navigation: Main Menu → Play → Skirmish / Survival / Battle Simulation. `IPlayRoute` isolates Main Menu from mode routes; existing cancel focus stack returns setup → Play → Main Menu. Simulation remains disabled; Survival setup remains available.
+- Play navigation verification: 3/3 focused menu lifecycle tests passed; Main Menu and Play prefabs imported/saved and visually inspected.
 ### Modular battle builder
 - `BattleDefinition` (pure C#, on `GameData`) replaces the loose skirmish fields:
   - `MapSpec` → `Full` (skirmish), `Survival` (center station, clear edges), `Empty` (simulation).

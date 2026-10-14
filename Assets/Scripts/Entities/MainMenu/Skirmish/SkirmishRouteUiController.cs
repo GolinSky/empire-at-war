@@ -79,7 +79,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             Unfocus();
         }
 
-        // Escape closes the open menu screen and returns to the main menu.
+        // Escape closes the open menu screen and returns to mode selection.
         protected override bool HandleCancel()
         {
             Close();
@@ -143,7 +143,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 description: (string)key switch
                 {
                     "Start battle" => _model.CanStart ? "Start the battle with the current setup." : "Choose at least two opposing teams to start a battle.",
-                    "Close" => "Return to the main menu.",
+                    "Close" => "Return to mode selection.",
                     "Planet" => $"Choose the battlefield. Current: {_model.Planet}.",
                     "Map size" => $"Choose the generated battlefield size. Current: {_model.MapSize}.",
                     "Victory condition" => $"Choose the battle objective. Current: {_model.VictoryCondition}.",

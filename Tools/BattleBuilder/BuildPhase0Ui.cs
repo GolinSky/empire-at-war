@@ -6,7 +6,6 @@ using UnityEditor;
 using TMPro;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.MainMenu.Survival;
-using EmpireAtWar.Entities.MainMenu.Main;
 using UnityEditor.AddressableAssets;
 
 public static class BuildPhase0Ui
@@ -15,7 +14,6 @@ public static class BuildPhase0Ui
     {
         const string SKIRMISH = "Assets/Prefabs/Ui/MainMenu/SkirmishUi.prefab";
         const string SURVIVAL = "Assets/Prefabs/Ui/MainMenu/SurvivalUi.prefab";
-        const string MAIN = "Assets/Prefabs/Ui/MainMenu/MainMenuUi.prefab";
 
         void Bind(Component view, string field, UnityEngine.Object value)
         {
@@ -132,48 +130,13 @@ public static class BuildPhase0Ui
         }
         finally { PrefabUtility.UnloadPrefabContents(survival); }
 
-        var main = PrefabUtility.LoadPrefabContents(MAIN);
-        try
-        {
-            var view = main.GetComponent<MainMenuUi>();
-            var so = new SerializedObject(view);
-            var start = (Button)so.FindProperty("startDemoButton").objectReferenceValue;
-            var options = (Button)so.FindProperty("optionsButton").objectReferenceValue;
-            var quit = (Button)so.FindProperty("quitApplicationButton").objectReferenceValue;
-            foreach (string name in new[] { "SurvivalButton", "SimulationButton" })
-            {
-                var old = start.transform.parent.Find(name);
-                if (old != null) UnityEngine.Object.DestroyImmediate(old.gameObject);
-            }
-            var survivalButton = UnityEngine.Object.Instantiate(start, start.transform.parent);
-            survivalButton.name = "SurvivalButton";
-            survivalButton.GetComponentInChildren<TMP_Text>(true).text = "SURVIVAL";
-            var simulation = UnityEngine.Object.Instantiate(start, start.transform.parent);
-            simulation.name = "SimulationButton";
-            simulation.GetComponentInChildren<TMP_Text>(true).text = "SIMULATION — COMING SOON";
-            simulation.interactable = false;
-            Button[] buttons = { start, survivalButton, simulation, options, quit };
-            for (int i = 0; i < buttons.Length; i++)
-            {
-                var rect = (RectTransform)buttons[i].transform;
-                rect.anchoredPosition = new Vector2(0, 170 - i * 75);
-                rect.sizeDelta = new Vector2(420, 68);
-                buttons[i].transition = Selectable.Transition.ColorTint;
-                buttons[i].spriteState = default;
-            }
-            Bind(view, "survivalButton", survivalButton);
-            Bind(view, "simulationButton", simulation);
-            PrefabUtility.SaveAsPrefabAsset(main, MAIN);
-        }
-        finally { PrefabUtility.UnloadPrefabContents(main); }
-
         var addressables = AddressableAssetSettingsDefaultObject.Settings;
         var entry = addressables.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(SURVIVAL),
             addressables.FindAssetEntry(AssetDatabase.AssetPathToGUID(SKIRMISH)).parentGroup);
         entry.address = "SurvivalUi";
         EditorUtility.SetDirty(addressables);
         AssetDatabase.SaveAssets();
-        return "Saved Skirmish toggle, Survival setup and main menu buttons; registered SurvivalUi.";
+        return "Saved Skirmish toggle and Survival setup; registered SurvivalUi. Run BuildPlayMenu for menu navigation.";
 
     }
 }
