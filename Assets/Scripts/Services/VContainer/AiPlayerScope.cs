@@ -27,11 +27,14 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(_owner);
             SkirmishScope battleScope = (SkirmishScope)Parent;
             BattlePlayer player = battleScope.Battle.GetPlayer(_owner.Id);
+            ProductionAccessRegistrations.Register(builder, battleScope.Battle, player);
             battleScope.Modules.ConfigurePlayer(builder, player, transform);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
             UnitFactoryRegistrations.Register(builder);
             builder.Register<SquadronPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            if (player.IsHosted)
+                builder.Register<HostedSquadronLauncher>(Lifetime.Singleton).As<ISquadronLauncher>();
             builder.Register<EnemyStrategicDecisionModel>(Lifetime.Singleton);
             builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
             builder.Register<ForceCompositionBuilder>(Lifetime.Singleton);
@@ -39,8 +42,12 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<EnemyStrategicContextBuilder>(Lifetime.Singleton);
             builder.Register<EnemyTaskForceExecutor>(Lifetime.Singleton);
             builder.Register<EnemyStructurePlacementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
-                .WithParameter(Assets.LoadComponent<BoxCollider>(_owner.Faction + "SpaceStationView"));
-            builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                .WithParameter(Assets.LoadComponent<BoxCollider>(
+                    battleScope.Battle.GetProductionHost(player).Slot.Faction + "SpaceStationView"));
+            if (player.HasDirectCombatAi)
+                builder.Register<DirectCombatAiState>(Lifetime.Singleton).AsImplementedInterfaces();
+            else
+                builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyShipAbilityController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyUnitLimitModel>(Lifetime.Singleton);

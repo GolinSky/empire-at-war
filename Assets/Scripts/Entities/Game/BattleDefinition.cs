@@ -15,10 +15,13 @@ namespace EmpireAtWar.Entities.Game
         public BattleVictoryCondition VictoryCondition { get; }
         public float StartingMoney { get; }
         public SurvivalSettings Survival { get; }
+        public SimulationSetup Simulation { get; }
+        public int InitialStationLevel { get; }
+        public BattlePlayer Human => Players.Single(player => player.Role == PlayerRole.Human);
 
         public BattleDefinition(GameMode mode, MapSpec map, IReadOnlyList<BattlePlayer> players,
             BattleFeatures features, OutcomeRule outcome, BattleVictoryCondition victoryCondition, float startingMoney,
-            SurvivalSettings survival = null)
+            SurvivalSettings survival = null, SimulationSetup simulation = null, int initialStationLevel = 1)
         {
             Mode = mode;
             Map = map;
@@ -31,9 +34,13 @@ namespace EmpireAtWar.Entities.Game
             VictoryCondition = victoryCondition;
             StartingMoney = startingMoney;
             Survival = survival;
+            Simulation = simulation;
+            InitialStationLevel = initialStationLevel;
         }
 
         public BattlePlayer GetPlayer(PlayerId id) => Players[id.Index];
+        /// <summary>The player whose production bases <paramref name="player"/> buys from.</summary>
+        public BattlePlayer GetProductionHost(BattlePlayer player) => player.IsHosted ? Human : player;
         public bool HasFeature(BattleFeatures feature) => (Features & feature) == feature;
     }
 }

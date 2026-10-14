@@ -13,6 +13,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private ParticleSystem armorFlash;
         [SerializeField] private ParticleSystem armorSparks;
         private readonly System.Random _random = new System.Random();
+        public void Clear()
+        {
+            shieldFlash.Clear(true); shieldRing.Clear(true); armorFlash.Clear(true); armorSparks.Clear(true);
+        }
 
         public void Emit(ImpactSurface surface, Vector3 position, Vector3 direction, float size)
         {

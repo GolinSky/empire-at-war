@@ -1720,7 +1720,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: NOT YET AVAILABLE
+  m_text: START SURVIVAL
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 556998c8ebb46bc40be3c7d0e7d94ba1, type: 2}
   m_sharedMaterial: {fileID: -2697744041012372576, guid: 556998c8ebb46bc40be3c7d0e7d94ba1,
@@ -3234,7 +3234,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Setup preview \u2014 Survival gameplay is not yet available."
+  m_text: 120 seconds to prepare. Clear five waves to win.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f9193e97902a74542bb3bb8ea0a4ef8d, type: 2}
   m_sharedMaterial: {fileID: 7231912859836816641, guid: f9193e97902a74542bb3bb8ea0a4ef8d,
@@ -5479,8 +5479,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Configure your defense. Starting a Survival battle will be enabled with
-    the wave system.
+  m_text: Your station starts at level 5. The optional ally shares your production
+    base.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f9193e97902a74542bb3bb8ea0a4ef8d, type: 2}
   m_sharedMaterial: {fileID: 7231912859836816641, guid: f9193e97902a74542bb3bb8ea0a4ef8d,
@@ -8083,7 +8083,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: COMING SOON
+  m_text: READY TO DEFEND
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 556998c8ebb46bc40be3c7d0e7d94ba1, type: 2}
   m_sharedMaterial: {fileID: -2697744041012372576, guid: 556998c8ebb46bc40be3c7d0e7d94ba1,
@@ -8733,7 +8733,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 6338882421851935929}
   m_OnClick:
     m_PersistentCalls:

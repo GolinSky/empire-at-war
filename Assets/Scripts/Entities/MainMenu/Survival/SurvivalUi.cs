@@ -37,7 +37,8 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             Fill(allyFaction, allies);
             Fill(mapSize, Enum.GetNames(typeof(MapSize)));
             Fill(difficulty, Enum.GetNames(typeof(EnemyAiDifficulty)));
-            startButton.interactable = false;
+            startButton.interactable = true;
+            startButton.onClick.AddListener(_presenter.StartBattle);
             closeButton.onClick.AddListener(_presenter.Close);
             playerFaction.onValueChanged.AddListener(_presenter.SelectPlayer);
             allyFaction.onValueChanged.AddListener(_presenter.SelectAlly);
@@ -63,6 +64,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         public void Dispose()
         {
             if (!_initialized) return;
+            startButton.onClick.RemoveListener(_presenter.StartBattle);
             closeButton.onClick.RemoveListener(_presenter.Close);
             playerFaction.onValueChanged.RemoveListener(_presenter.SelectPlayer);
             allyFaction.onValueChanged.RemoveListener(_presenter.SelectAlly);

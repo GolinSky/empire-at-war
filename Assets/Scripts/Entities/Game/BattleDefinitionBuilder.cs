@@ -15,11 +15,13 @@ namespace EmpireAtWar.Entities.Game
         public BattleVictoryCondition VictoryCondition { get; set; }
         public float StartingMoney { get; set; } = 1000f;
         public SurvivalSettings Survival { get; set; }
+        public SimulationSetup Simulation { get; set; }
+        public int InitialStationLevel { get; set; } = 1;
 
         public BattleDefinition Build()
         {
             BattleDefinition definition = new BattleDefinition(Mode, Map, Players, Features,
-                Outcome, VictoryCondition, StartingMoney, Survival);
+                Outcome, VictoryCondition, StartingMoney, Survival, Simulation, InitialStationLevel);
             MatchRules.Validate(definition);
             return definition;
         }

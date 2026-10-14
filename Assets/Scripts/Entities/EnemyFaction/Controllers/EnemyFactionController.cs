@@ -39,7 +39,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IWallet _wallet;
         private readonly IShipSpawnPoints _shipSpawnPoints;
         private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
-        private readonly IStationRegistry _stationRegistry;
+        private readonly IProductionAccess _productionAccess;
         private readonly ISquadronLauncher _squadronLauncher;
         private readonly IEnemySquadronCommander _squadronCommander;
         private readonly IPlayerRegistry _playerRegistry;
@@ -65,7 +65,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             IWallet wallet,
             IShipSpawnPoints shipSpawnPoints,
             IEnemyStructurePlacementService enemyStructurePlacementService,
-            IStationRegistry stationRegistry,
+            IProductionAccess productionAccess,
             ISquadronLauncher squadronLauncher,
             IEnemySquadronCommander squadronCommander,
             IPlayerRegistry playerRegistry,
@@ -92,7 +92,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
             _enemyStructurePlacementService = enemyStructurePlacementService;
-            _stationRegistry = stationRegistry;
+            _productionAccess = productionAccess;
             _squadronLauncher = squadronLauncher;
             _squadronCommander = squadronCommander;
         }
@@ -107,6 +107,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _unitLimitModel.Reset();
             _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
+            Model.OnLevelUpgraded += RecalculateIncome;
             _playerRegistry.RegisterAiReinforcement(Owner, this);
             _playerRegistry.RegisterAiStationCheat(Owner, this);
             _isInitialized = true;
@@ -122,6 +123,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             _economyProvider.RemoveProvider(this);
+            Model.OnLevelUpgraded -= RecalculateIncome;
             _playerRegistry.UnregisterAiReinforcement(Owner);
             _playerRegistry.UnregisterAiStationCheat(Owner);
             _isInitialized = false;
@@ -129,16 +131,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public bool ForceUpgradeStation()
         {
-            if (Model.GetCurrentLevelFactionData() == null || !_stationRegistry.HasProductionBase(Owner)) return false;
+            if (_productionAccess.ProductionHost != Owner ||
+                Model.GetCurrentLevelFactionData() == null || !_productionAccess.CanProduce) return false;
 
             Model.CurrentLevel++;
-            _economyProvider.RecalculateIncome(this);
             return true;
         }
 
         public void Purchase(UnitRequest unitRequest)
         {
-            if (!_stationRegistry.HasProductionBase(Owner))
+            if (!_productionAccess.CanProduce ||
+                unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != Owner)
             {
                 return;
             }
@@ -153,7 +156,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     }
 
                     Model.CurrentLevel++;
-                    _economyProvider.RecalculateIncome(this);
                   //  Debug.Log($"Upgrade level {Model.CurrentLevel}");
                     break;
                 case ResearchUnitRequest researchUnitRequest:
@@ -294,6 +296,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             return false;
         }
 
+        private void RecalculateIncome(int level) => _economyProvider.RecalculateIncome(this);
+
         private void ReleaseUnit(UnitRequest unitRequest)
         {
             _unitLimitModel.Release(
@@ -312,6 +316,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest, Action buildAction)
         {
+            if (_productionAccess.ProductionHost != Owner && !_productionAccess.CanProduce)
+            {
+                if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
+                ReleaseUnit(unitRequest);
+                _wallet.Refund(unitRequest);
+                return;
+            }
             // Queued reinforcements still arrive after the station falls so the fleet victory can resolve.
             try
             {
@@ -363,7 +374,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private Vector3 GenerateShipCoordinates(ShipType shipType)
         {
             if (_shipSpawnPoints.TryGetRandomSpawnPosition(
-                    Owner,
+                    _productionAccess.ProductionHost,
                     shipType,
                     out Vector3 position))
             {

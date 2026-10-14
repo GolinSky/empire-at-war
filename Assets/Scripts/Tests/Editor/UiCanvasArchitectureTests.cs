@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string FADE_PREFAB_PATH =
             "Assets/Prefabs/Ui/Fade/FadeUi.prefab";
 
-        private const int EXPECTED_SCREEN_PREFAB_COUNT = 21;
+        private const int EXPECTED_SCREEN_PREFAB_COUNT = 25;
 
         [TestCase("Assets/Prefabs/View/CaptureSites/CaptureSite.prefab")]
         [TestCase("Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab")]

@@ -9,6 +9,8 @@ namespace EmpireAtWar.Services.Stations
         /// <summary>True while the owner keeps a living station, Golan III or Empress to buy units from.</summary>
         bool HasProductionBase(PlayerId owner);
 
+        bool TryGetProductionBase(PlayerId owner, out IEntity productionBase);
+
         bool TryGetLivingStation(PlayerId owner, out IEntity station);
     }
 }

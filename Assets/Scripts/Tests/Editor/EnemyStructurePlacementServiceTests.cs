@@ -15,6 +15,8 @@ using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Entities.BaseEntity;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -58,7 +60,8 @@ namespace EmpireAtWar.Tests.Editor
                 mapModel: _map,
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
                 vision: vision, blockers: blockers,
-                owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab);
+                owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
+                productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator())));
         }
 
         private BoxCollider CreatePrefab(Vector3 size)

@@ -1,4 +1,5 @@
 using System;
+using SurvivalModel = EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;

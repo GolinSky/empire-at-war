@@ -78,5 +78,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (_transforms.isCreated) _transforms.Dispose();
             if (_poses.IsCreated) _poses.Dispose();
         }
+
+        public void Clear()
+        {
+            foreach (BoltShot bolt in _bolts)
+                if (bolt != null) bolt.IsInFlightBatch = false;
+            _bolts.Clear();
+            if (_transforms.isCreated)
+                while (_transforms.length > 0) _transforms.RemoveAtSwapBack(_transforms.length - 1);
+        }
     }
 }

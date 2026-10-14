@@ -58,8 +58,8 @@ Material:
     - _TeamLiveryHue: 0
     - _TeamLiveryHueRange: 0.07
     - _TeamLiveryMinSaturation: 0.4
-    - _TeamLiveryStrength: 0
-    - _TeamMaskStrength: 0.2
+    - _TeamLiveryStrength: 1
+    - _TeamMaskStrength: 0
     - _TeamRimPower: 3
     - _TeamRimStrength: 0.6
     m_Colors:

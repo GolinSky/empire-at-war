@@ -7,10 +7,16 @@ namespace EmpireAtWar.Models.Players
     {
         private readonly Dictionary<PlayerId, PlayerSlot> _slots = new Dictionary<PlayerId, PlayerSlot>();
 
-        public IReadOnlyList<PlayerSlot> Players { get; }
+        public IReadOnlyList<PlayerSlot> Players { get; private set; }
 
         public PlayerRoster(IReadOnlyList<PlayerSlot> players)
         {
+            Replace(players);
+        }
+
+        public void Replace(IReadOnlyList<PlayerSlot> players)
+        {
+            _slots.Clear();
             Players = players;
             foreach (PlayerSlot slot in players)
             {

@@ -32,6 +32,11 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public void LateDispose()
         {
+            Clear();
+        }
+
+        public void Clear()
+        {
             CancelTargeting();
             for (int i = _running.Count - 1; i >= 0; i--)
             {

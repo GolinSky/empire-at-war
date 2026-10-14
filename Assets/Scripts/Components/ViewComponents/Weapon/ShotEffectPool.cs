@@ -30,6 +30,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private int _peakActive;
 
         private bool _released;
+        public event Action<ShotEffectPool> Retired;
 
         public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted, ImpactEffectPresenter impactPresenter,
             BoltFlightBatch boltFlights, int maxIdle)
@@ -152,6 +153,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 effect.RetireAfterCompletion();
             }
+            if (_active.Count == 0) Retired?.Invoke(this);
+        }
+
+        public void DestroyAll()
+        {
+            Release();
+            foreach (ShotEffect effect in new List<ShotEffect>(_active.Keys))
+                if (effect != null) effect.CancelAndDestroy();
         }
 
         private void OnEffectCompleted(ShotEffect effect, int leaseId)
@@ -188,6 +197,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 _effectCompleted(sequenceGeneration);
             }
+            else if (_active.Count == 0) Retired?.Invoke(this);
         }
 
         private void OnEffectDestroyed(ShotEffect effect, int leaseId)
@@ -216,6 +226,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 _effectCompleted(sequenceGeneration);
             }
+            else if (_active.Count == 0) Retired?.Invoke(this);
         }
 
         /// <summary>Adds one idle shot while the pool holds fewer than <paramref name="target"/> shots.</summary>

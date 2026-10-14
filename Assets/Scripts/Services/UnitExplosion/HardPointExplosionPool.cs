@@ -107,6 +107,15 @@ namespace EmpireAtWar.Services.UnitExplosion
             return explosion;
         }
 
+        public void Clear()
+        {
+            foreach (ActiveExplosion active in _active) _idle.Add(active.Explosion);
+            _idle.AddRange(_fading);
+            _active.Clear();
+            _fading.Clear();
+            foreach (ExplosionVfx explosion in _idle) explosion.Clear();
+        }
+
         private readonly struct ActiveExplosion
         {
             private readonly Transform _anchor;

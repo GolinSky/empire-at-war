@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Lifecycle;
@@ -10,9 +11,16 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
     public sealed class SurvivalRouteUiController : UiController, ISurvivalRoute, ISurvivalPresenter, ILateDisposable
     {
         private readonly SurvivalModel _model;
+        private readonly IGameCommand _gameCommand;
         private SurvivalUi _ui;
-        public SurvivalRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter, SurvivalModel model)
-            : base(uiService, cancelRouter) => _model = model;
+        public SurvivalRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter, SurvivalModel model,
+            IGameCommand gameCommand) : base(uiService, cancelRouter)
+        {
+            _model = model;
+            _gameCommand = gameCommand;
+        }
+
+        public void StartBattle() => _gameCommand.StartBattle(_model.CreateBattle());
 
         public void Open()
         {

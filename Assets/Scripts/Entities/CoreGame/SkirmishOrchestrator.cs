@@ -25,6 +25,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IInputLock _inputLock;
 
         private readonly SkirmishStateModel _stateModel;
+        private readonly BattleDefinition _battle;
         private readonly CancellationTokenSource _startupCancellation = new CancellationTokenSource();
 
         private IDisposable _loadingInputLock;
@@ -35,12 +36,13 @@ namespace EmpireAtWar.Controllers.Game
             IGameCommand gameCommand,
             IBattleStartupSequence startupSequence,
             IInputLock inputLock,
-            SkirmishStateModel stateModel)
+            SkirmishStateModel stateModel, BattleDefinition battle)
         {
             _gameCommand = gameCommand;
             _startupSequence = startupSequence;
             _inputLock = inputLock;
             _stateModel = stateModel;
+            _battle = battle;
         }
 
         public void Initialize()
@@ -120,6 +122,23 @@ namespace EmpireAtWar.Controllers.Game
             Time.timeScale = NORMAL_TIME_SCALE;
             _startupCancellation.Cancel();
             _gameCommand.ExitGame();
+        }
+
+        public void BeginSimulationRestart()
+        {
+            if (_battle.Outcome != OutcomeRule.Simulation)
+                throw new InvalidOperationException("Only simulations can restart inside the battle scene.");
+            _isMenuOpen = false;
+            _stateModel.SetState(BattleState.Loading);
+            ApplyTimeScale();
+        }
+
+        public void CompleteSimulationRestart(bool fastSpeed)
+        {
+            if (_battle.Outcome != OutcomeRule.Simulation || _stateModel.State != BattleState.Loading)
+                throw new InvalidOperationException("No simulation restart is loading.");
+            _stateModel.SetSpeed(fastSpeed ? GameSpeed.Fast : GameSpeed.Normal);
+            SetState(BattleState.Running);
         }
 
         private async Awaitable RunStartupAsync(CancellationToken cancellationToken)

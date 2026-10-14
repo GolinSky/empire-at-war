@@ -37,6 +37,7 @@ namespace EmpireAtWar.Services.Battle
         private bool _isRunning;
 
         public string Id => nameof(BattleVictoryService);
+        public void Reset() => _finalResult = null;
 
         public BattleVictoryService(
             IGameModelObserver gameModel,

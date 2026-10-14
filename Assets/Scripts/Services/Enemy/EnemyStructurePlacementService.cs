@@ -6,6 +6,7 @@ using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.Stations;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Enemy
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly PlayerSlot _owner;
         private readonly IMapModelObserver _mapModel;
+        private readonly IProductionAccess _productionAccess;
         private readonly List<Bounds> _capturedZoneBounds = new List<Bounds>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
@@ -50,9 +52,11 @@ namespace EmpireAtWar.Services.Enemy
             ISpawnBlockerService blockers,
             IMapModelObserver mapModel,
             PlayerSlot owner,
-            BoxCollider stationPrefab)
+            BoxCollider stationPrefab,
+            IProductionAccess productionAccess)
         {
             _owner = owner;
+            _productionAccess = productionAccess;
             _mapModel = mapModel;
             _zones = zones;
             _spawnRule = spawnRule;
@@ -106,7 +110,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private Vector3 GetStationCenter() =>
-            _mapModel.GetStationPosition(_owner.Id) + _stationBounds.center;
+            _mapModel.GetStationPosition(_productionAccess.ProductionHost) + _stationBounds.center;
 
         private float GetStationRadius() =>
             new Vector2(_stationBounds.extents.x, _stationBounds.extents.z).magnitude;

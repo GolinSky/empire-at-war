@@ -35,18 +35,22 @@ namespace EmpireAtWar.Services.Stations
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
         }
 
-        public bool HasProductionBase(PlayerId owner)
+        public bool HasProductionBase(PlayerId owner) => TryGetProductionBase(owner, out _);
+
+        public bool TryGetProductionBase(PlayerId owner, out IEntity productionBase)
         {
-            foreach (IEntity productionBase in _productionBases)
+            foreach (IEntity candidate in _productionBases)
             {
-                if (productionBase.Owner == owner &&
-                    !productionBase.HealthModel.IsDestroyed &&
-                    productionBase.HealthModel.HasUnits)
+                if (candidate.Owner == owner &&
+                    !candidate.HealthModel.IsDestroyed &&
+                    candidate.HealthModel.HasUnits)
                 {
+                    productionBase = candidate;
                     return true;
                 }
             }
 
+            productionBase = null;
             return false;
         }
 

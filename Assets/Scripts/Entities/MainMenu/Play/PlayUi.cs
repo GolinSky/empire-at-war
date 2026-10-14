@@ -21,13 +21,15 @@ namespace EmpireAtWar.Entities.MainMenu.Play
             skirmishButton.onClick.AddListener(_presenter.OpenSkirmish);
             survivalButton.onClick.AddListener(_presenter.OpenSurvival);
             backButton.onClick.AddListener(_presenter.Close);
-            simulationButton.interactable = false;
+            simulationButton.interactable = true;
+            simulationButton.onClick.AddListener(_presenter.OpenSimulation);
             _isInitialized = true;
         }
 
         public void Dispose()
         {
             if (!_isInitialized) return;
+            simulationButton.onClick.RemoveListener(_presenter.OpenSimulation);
             skirmishButton.onClick.RemoveListener(_presenter.OpenSkirmish);
             survivalButton.onClick.RemoveListener(_presenter.OpenSurvival);
             backButton.onClick.RemoveListener(_presenter.Close);

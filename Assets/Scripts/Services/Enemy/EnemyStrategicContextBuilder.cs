@@ -17,6 +17,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.Stations;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -81,6 +82,7 @@ namespace EmpireAtWar.Services.Enemy
         private GameEntity _raidTarget;
 
         private readonly PlayerSlot _owner;
+        private readonly IProductionAccess _productionAccess;
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _ownTeamForce = new ForceComposition();
         private readonly ForceComposition _focusTeamForce = new ForceComposition();
@@ -97,7 +99,8 @@ namespace EmpireAtWar.Services.Enemy
             ForceCompositionBuilder forceBuilder,
             TeamIntelRegistry intelRegistry,
             IVisionService vision,
-            PlayerSlot owner)
+            PlayerSlot owner,
+            IProductionAccess productionAccess)
         {
             _vision = vision;
             _intel = intelRegistry.Get(owner.Team);
@@ -108,6 +111,7 @@ namespace EmpireAtWar.Services.Enemy
             _entityLocator = entityLocator;
             _gameModel = gameModel;
             _owner = owner;
+            _productionAccess = productionAccess;
             _playerRoster = playerRoster;
         }
 
@@ -122,7 +126,8 @@ namespace EmpireAtWar.Services.Enemy
             bool hasCaptureTarget = hasThreatenedSite ||
                 TryGetClosestCaptureTarget(origin, out captureTarget) ||
                 _captureSites.TryGetRaidTarget(self, origin, out captureTarget);
-            GameEntity ownBase = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == self, origin);
+            PlayerId productionHost = _productionAccess.ProductionHost;
+            GameEntity ownBase = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == productionHost, origin);
             Vector3 home = ownBase != null ? ownBase.GetFacade<IEntityTransformFacade>().Transform.position : origin;
 
             // With several enemies the AI commits to one of them so it does not split its fleet.

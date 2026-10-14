@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly IEntityLocator _entities;
         private readonly IVisionService _vision;
-        private readonly IStationRegistry _stationRegistry;
+        private readonly IProductionAccess _productionAccess;
 
         private readonly SuperWeaponModel _model;
         private readonly PlayerSlot _owner;
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemySuperWeaponController(ISuperWeaponFireService superWeaponFireService, IEntityLocator entities,
             IVisionService vision,
-            IStationRegistry stationRegistry, SuperWeaponModel model, EnemyFactionModel factionModel,
+            IProductionAccess productionAccess, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
             PlayerSlot owner)
         {
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Services.Enemy
             _superWeaponFireService = superWeaponFireService;
             _entities = entities;
             _vision = vision;
-            _stationRegistry = stationRegistry;
+            _productionAccess = productionAccess;
         }
 
         public void Tick()
@@ -94,7 +94,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 _chargeTimeLeft.Remove(type);
-                if (_stationRegistry.HasProductionBase(_owner.Id))
+                if (_productionAccess.CanProduce)
                 {
                     _model.CompleteCharging(type);
                     continue;
@@ -108,7 +108,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
-            if (!_stationRegistry.HasProductionBase(_owner.Id) ||
+            if (!_productionAccess.CanProduce ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||
                 !_economyModel.TrySpend(data.Price))

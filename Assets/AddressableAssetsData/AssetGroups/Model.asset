@@ -140,6 +140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db24ad0f0caa9754ea773ee82300d46d
+    m_Address: SurvivalWaveData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dce26a8d996febd4a8ad15563ab38472
     m_Address: LayerData
     m_ReadOnly: 0

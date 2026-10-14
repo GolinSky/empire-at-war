@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
                 gameCommand: _gameCommand,
                 startupSequence: new CompletedStartupStub(),
                 inputLock: _inputLock,
-                stateModel: _stateModel);
+                stateModel: _stateModel, battle: SkirmishPreset.Default());
             _userStateNotifier = new UserStateNotifierStub();
             _battleVictoryNotifier = new NotifierStub<BattleResult>();
             _subscriptions = new SkirmishFlowSubscriptions(
@@ -48,6 +48,34 @@ namespace EmpireAtWar.Tests.Editor
             _stateModel.AddObserver(_speed);
             _subscriptions.Initialize();
             _orchestrator.Initialize();
+        }
+
+        [Test]
+        public void Skirmish_CannotRestartInsideTheScene()
+        {
+            Assert.Throws<InvalidOperationException>(() => _orchestrator.BeginSimulationRestart());
+        }
+
+        [Test]
+        public void Simulation_RestartsEndedThroughLoadingAndRestoresRequestedSpeed()
+        {
+            var entry = new SimulationFleetEntry(EmpireAtWar.Entities.Units.UnitTypeId.Ship(ShipType.Venator), 1);
+            var setup = new SimulationSetup(FactionType.Republic, FactionType.Separatist,
+                new[] { entry }, new[] { entry }, 1000, 30, true);
+            var state = new SkirmishStateModel();
+            var flow = new SkirmishOrchestrator(_gameCommand, new CompletedStartupStub(), _inputLock,
+                state, SimulationPreset.Create(setup).Build());
+            try
+            {
+                state.SetState(BattleState.Ended);
+                flow.BeginSimulationRestart();
+                Assert.That(state.State, Is.EqualTo(BattleState.Loading));
+                flow.CompleteSimulationRestart(true);
+                Assert.That(state.State, Is.EqualTo(BattleState.Running));
+                Assert.That(state.Speed, Is.EqualTo(GameSpeed.Fast));
+                Assert.That(Time.timeScale, Is.EqualTo(4));
+            }
+            finally { flow.LateDispose(); }
         }
 
         [TearDown]

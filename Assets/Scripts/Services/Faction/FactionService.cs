@@ -38,7 +38,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly IWallet _wallet;
         private readonly IReinforcementPool _reinforcementPool;
         private readonly IEconomyProvider _economyProvider;
-        private readonly IStationRegistry _stationRegistry;
+        private readonly IProductionAccess _productionAccess;
         private readonly IEntityLocator _entities;
         private ISelectionContext _selectionContext;
 
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Services.Factions
             IWallet wallet,
             IReinforcementPool reinforcementPool,
             IEconomyProvider economyProvider,
-            IStationRegistry stationRegistry,
+            IProductionAccess productionAccess,
             PlayerFactionModel model,
             FactionResearchModel research,
             SuperWeaponModel superWeapons,
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Services.Factions
             _wallet = wallet;
             _reinforcementPool = reinforcementPool;
             _economyProvider = economyProvider;
-            _stationRegistry = stationRegistry;
+            _productionAccess = productionAccess;
             _entities = entities;
         }
 
@@ -84,6 +84,7 @@ namespace EmpireAtWar.Services.Factions
             }
 
             _selectionService.AddObserver(this);
+            Income = DEFAULT_INCOME * _model.CurrentLevel;
             _economyProvider.AddProvider(this);
             _model.OnUnitCompleted += BuildUnit;
             _entities.EntityAdded += HandleEntityAdded;
@@ -122,7 +123,7 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            if (!_stationRegistry.HasProductionBase(_owner.Id))
+            if (!_productionAccess.CanProduce)
             {
                 if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
                     _model.SetResoluteReserved(false);
@@ -159,7 +160,8 @@ namespace EmpireAtWar.Services.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            if (!_stationRegistry.HasProductionBase(_owner.Id) ||
+            if (!_productionAccess.CanProduce ||
+                unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != _owner.Id ||
                 !_model.CanQueueUnit(unitRequest) ||
                 unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {
@@ -208,7 +210,8 @@ namespace EmpireAtWar.Services.Factions
         public bool ForceUpgradeStation()
         {
             FactionData upgrade = _model.GetCurrentLevelFactionData();
-            if (upgrade == null || !_stationRegistry.HasProductionBase(_owner.Id)) return false;
+            if (_productionAccess.ProductionHost != _owner.Id ||
+                upgrade == null || !_productionAccess.CanProduce) return false;
 
             // Refund queued upgrades so their later completion cannot exceed the level limit.
             foreach (ProductionQueueSnapshot queued in _model.GetProductionQueueSnapshots())
