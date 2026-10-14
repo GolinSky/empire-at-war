@@ -39,3 +39,14 @@ Unity command: `unity command run_script --file Tools/Blender/EmpireFleetLivery/
 
 - Shared ISDI/ISDII wear: “Create a production grayscale texture mask for chipped old starship hull paint. 1024x1024 square, seamless tile, flat unlit 2D mask only. White/light gray means remaining paint, black means chipped exposed metal. About 20% irregular tiny black chips, about 15% gray faded wear, remaining 65% near white paint. Very fine multi-scale erosion and scratches, aged shabby military spacecraft finish like worn Republic Acclamator paint. Dense fine detail distributed evenly over entire image with no large empty areas, no objects, no symbols, no text, no border, no lighting or shadows. Opaque grayscale RGB.”
 - Layout edits use the original mask as image 1 and shared wear as image 2: preserve aspect ratio and stripe positions, sizes, angles and cutouts; apply approximately 20% fine black chips, scratches and gray fading only within white shapes; slight inward edge erosion; flat opaque grayscale, no text/shadows. Victory I: square; Victory and Imperator: portrait 1:2; AcclamatorAssault: square. Victory II reuses the Victory I result.
+
+## Small markings: Arquitens, Procursator, Executor — 2026-10-14
+
+- Empire Arquitens and Executor: three narrow foredeck bands per side, width `0.005 × length` (Arquitens `0.20`, Executor `9.50` Unity units). Source triangle clipping preserves hull UVs and normals. Arquitens adds two mesh surfaces / 154 triangles; Executor adds one / 140 triangles.
+- Procursator already had three narrow bands per side. Its two existing stripe materials now use neutral source albedos plus the worn mask instead of faint hue-selected paint; geometry is unchanged.
+- All three reuse the generated wear texture `Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_TeamStripes_TeamMask.png`. No additional image generation or source texture edits.
+- New stripe meshes/materials live in each ship's existing `Assets/Art/Models/EmpireShips/<ship>/` and `Assets/Art/Materials/Models/EmpireShips/<ship>/` directories. Wreck materials live in `Assets/Art/Materials/Wrecks/<ship>/`.
+- Build: `unity command run_script --file Tools/Blender/EmpireFleetLivery/BuildSmallTeamMasks.cs --args '["Executor"]' --json`; supported names: `ArquitensImperialCruiser`, `Procursator`, `Executor`.
+- New live stripes are bound to team color and fog; wreck stripes are bound to `UnitWreckView`. Existing wreck geometry remains intact.
+- `RenderWornMasks.cs` accepts optional second argument `true` for saved wreck previews. Twenty-four live/wreck neutral/blue/red/green images are in `Previews/WornMasks/<ship>/` and its `Wreck/` subfolder.
+- Verification: six saved live/wreck reference checks passed; all six live/wreck blue-green comparisons differ; Executor tests `8/8`, Procursator tests `6/6`. Evidence: `SmallMaskReferenceVerification.json`, `SmallMaskRenderVerification.json`, `ExecutorSmallMaskTests.json`, `ProcursatorSmallMaskTests.json`.

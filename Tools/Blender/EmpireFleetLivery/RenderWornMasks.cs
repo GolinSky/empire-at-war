@@ -8,23 +8,40 @@ using UnityEngine.Rendering;
 
 public static class RenderWornMasks
 {
-    public static string Main(string ship)
+    public static string Main(string ship, bool wreck = false)
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Render in Edit Mode.");
         string faction = ship == "Imperator" ? "Republic" : "Empire";
-        string folder = "Tools/Blender/EmpireFleetLivery/Previews/WornMasks/" + ship;
+        string folder = "Tools/Blender/EmpireFleetLivery/Previews/WornMasks/" + ship + (wreck ? "/Wreck" : "");
         Directory.CreateDirectory(folder);
         var scene = EditorSceneManager.NewPreviewScene();
         var palette = Shader.GetGlobalVectorArray("_TeamColors");
         var ambient = RenderSettings.ambientLight;
         var mode = RenderSettings.ambientMode;
         var active = RenderTexture.active;
-        var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/" + faction + "/" + ship + ".prefab"), scene);
+        string prefabPath = wreck ? "Assets/Prefabs/Models/Wrecks/" + ship + "WreckView.prefab" : "Assets/Prefabs/Models/Ships/" + faction + "/" + ship + ".prefab";
+        var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath), scene);
         foreach (var transform in root.GetComponentsInChildren<Transform>(true)) transform.gameObject.layer = 30;
         var renderers = root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled).ToArray();
         var bounds = renderers[0].bounds;
         foreach (var renderer in renderers.Skip(1)) bounds.Encapsulate(renderer.bounds);
         float size = Mathf.Max(bounds.size.x, bounds.size.z);
+        var copies = new System.Collections.Generic.List<Material>();
+        if (wreck)
+        {
+            foreach (var renderer in renderers)
+                renderer.sharedMaterials = renderer.sharedMaterials.Select(original =>
+                {
+                    var copy = new Material(original); copies.Add(copy);
+                    copy.SetVector("_WreckAxis", Vector3.forward); copy.SetVector("_WreckCenter", bounds.center);
+                    copy.SetVector("_WreckCuts", new Vector4(-size * .1f, size * .14f, 1000000, 1000000));
+                    copy.SetVector("_WreckAxisRange", new Vector4(-size, size, 0, 0));
+                    copy.SetFloat("_WreckStartTime", 0); copy.SetFloat("_WreckLifetime", 1000000000);
+                    copy.SetFloat("_WreckGlowDuration", 1000000000); copy.SetFloat("_WreckSeparationSpeed", 0);
+                    copy.SetFloat("_WreckTiltSpeed", 0); copy.SetFloat("_WreckSinkSpeed", 0);
+                    return copy;
+                }).ToArray();
+        }
         var cameraObject = new GameObject("MaskPreviewCamera");
         UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraObject, scene);
         var camera = cameraObject.AddComponent<Camera>();
@@ -61,6 +78,7 @@ public static class RenderWornMasks
             RenderTexture.active = active; camera.targetTexture = null;
             RenderTexture.ReleaseTemporary(target); UnityEngine.Object.DestroyImmediate(texture);
             EditorSceneManager.ClosePreviewScene(scene);
+            foreach (var copy in copies) UnityEngine.Object.DestroyImmediate(copy);
             RenderSettings.ambientLight = ambient; RenderSettings.ambientMode = mode;
             Shader.SetGlobalVectorArray("_TeamColors", palette.Length > 0 ? palette : new Vector4[8]);
         }

@@ -1,0 +1,38 @@
+[
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiserShipView.prefab",
+    "stripeRenderers": 2,
+    "bindingsValid": true,
+    "materialsSaved": true
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/ArquitensImperialCruiserWreckView.prefab",
+    "stripeRenderers": 2,
+    "bindingsValid": true,
+    "materialsSaved": true
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab",
+    "stripeRenderers": 2,
+    "bindingsValid": true,
+    "materialsSaved": true
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/ProcursatorWreckView.prefab",
+    "stripeRenderers": 2,
+    "bindingsValid": true,
+    "materialsSaved": true
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab",
+    "stripeRenderers": 1,
+    "bindingsValid": true,
+    "materialsSaved": true
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab",
+    "stripeRenderers": 1,
+    "bindingsValid": true,
+    "materialsSaved": true
+  }
+]

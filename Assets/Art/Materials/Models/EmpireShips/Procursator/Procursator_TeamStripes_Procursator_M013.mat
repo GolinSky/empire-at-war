@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 9fc2f0e7fb502d846829bdd867325248, type: 3}
+        m_Texture: {fileID: 2800000, guid: cd02c2294833b2144b57560af3c92995, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: a369f1ed056db9c4395dd2bcb47cc078, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -59,8 +59,8 @@ Material:
     - _TeamLiveryHue: 0.968
     - _TeamLiveryHueRange: 0.07
     - _TeamLiveryMinSaturation: 0.4
-    - _TeamLiveryStrength: 1
-    - _TeamMaskStrength: 0
+    - _TeamLiveryStrength: 0
+    - _TeamMaskStrength: 1
     - _TeamRimPower: 3
     - _TeamRimStrength: 0
     m_Colors:
