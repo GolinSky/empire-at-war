@@ -1,0 +1,30 @@
+[
+  {
+    "ship": "ArquitensImperialCruiser",
+    "path": "Assets/Art/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_TeamStripes_ArquitensImperialCruiser_Hull_Kitbash_Pieces_ISD_Material.asset",
+    "triangles": 34,
+    "liveAndWreck": true,
+    "saved": true
+  },
+  {
+    "ship": "ArquitensImperialCruiser",
+    "path": "Assets/Art/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_TeamStripes_ArquitensImperialCruiser_Hull_Superstructure_Base_Material.asset",
+    "triangles": 124,
+    "liveAndWreck": true,
+    "saved": true
+  },
+  {
+    "ship": "Tartan",
+    "path": "Assets/Art/Models/EmpireShips/Tartan/Tartan_TeamStripes_Tartan_Tartan_Hull_1_002.asset",
+    "triangles": 92,
+    "liveAndWreck": true,
+    "saved": true
+  },
+  {
+    "ship": "Tartan",
+    "path": "Assets/Art/Models/EmpireShips/Tartan/Tartan_TeamStripes_Tartan_Tartan_Hull_ISD_Kitbash_002.asset",
+    "triangles": 14,
+    "liveAndWreck": true,
+    "saved": true
+  }
+]

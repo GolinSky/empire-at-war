@@ -36,7 +36,7 @@ public static class BuildFleetLivery
         }
         var all=source.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled && !r.name.StartsWith("TeamStripes")).ToArray();
         var bounds=all[0].bounds;foreach(var renderer in all.Skip(1))bounds.Encapsulate(renderer.bounds);
-        float length=bounds.size.z,stripeWidth=length*.009f;
+        float length=bounds.size.z,stripeWidth=length*(ship=="Tartan" ? .018f : .009f);
         var renderers=all.Where(r=>(r.name.ToLowerInvariant().Contains("hull") || r.name.ToLowerInvariant().Contains("super")) && r.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit")).ToArray();
         var materials = renderers.SelectMany(r => r.sharedMaterials).Distinct().ToArray();
         var stripes = new List<(Mesh Mesh, Material Material)>();

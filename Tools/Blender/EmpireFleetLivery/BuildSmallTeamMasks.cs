@@ -37,6 +37,7 @@ public static class BuildSmallTeamMasks
         var bounds = renderers[0].bounds;
         foreach (var renderer in renderers.Skip(1)) bounds.Encapsulate(renderer.bounds);
         float length = bounds.size.z;
+        float stripeWidth = length * (ship == "ArquitensImperialCruiser" ? .0125f : WIDTH_FRACTION);
         foreach (var material in renderers.SelectMany(r => r.sharedMaterials).Distinct())
         {
             var positions = new List<Vector3>(); var normals = new List<Vector3>(); var uvs = new List<Vector2>(); var triangles = new List<int>();
@@ -59,7 +60,7 @@ public static class BuildSmallTeamMasks
                             var polygon = Clip(face, v => side * v.Position.x - length * .06f);
                             polygon = Clip(polygon, v => length * .14f - side * v.Position.x);
                             polygon = Clip(polygon, v => v.Position.z - length * start - .32f * side * v.Position.x);
-                            polygon = Clip(polygon, v => length * (start + WIDTH_FRACTION) + .32f * side * v.Position.x - v.Position.z);
+                            polygon = Clip(polygon, v => length * start + stripeWidth + .32f * side * v.Position.x - v.Position.z);
                             if (polygon.Count < 3) continue;
                             int offset = positions.Count;
                             foreach (var vertex in polygon) { positions.Add(vertex.Position + vertex.Normal * length * .00005f); normals.Add(vertex.Normal); uvs.Add(vertex.Uv); }
@@ -102,7 +103,7 @@ public static class BuildSmallTeamMasks
         AssetDatabase.SaveAssets();
         UpdateWreck(ship, viewPath);
         AssetDatabase.SaveAssets();
-        string result = ship + ": " + stripes.Count + " stripe surfaces, " + stripes.Sum(s => s.Mesh.triangles.Length / 3) + " triangles; width=" + length * WIDTH_FRACTION + " (0.5% of length).";
+        string result = ship + ": " + stripes.Count + " stripe surfaces, " + stripes.Sum(s => s.Mesh.triangles.Length / 3) + " triangles; width=" + stripeWidth + ".";
         System.IO.File.WriteAllText("Tools/Blender/EmpireFleetLivery/Evidence/" + ship + "SmallMasks.txt", result);
         return result;
     }

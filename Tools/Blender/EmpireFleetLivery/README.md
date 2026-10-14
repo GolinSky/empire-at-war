@@ -50,3 +50,10 @@ Unity command: `unity command run_script --file Tools/Blender/EmpireFleetLivery/
 - New live stripes are bound to team color and fog; wreck stripes are bound to `UnitWreckView`. Existing wreck geometry remains intact.
 - `RenderWornMasks.cs` accepts optional second argument `true` for saved wreck previews. Twenty-four live/wreck neutral/blue/red/green images are in `Previews/WornMasks/<ship>/` and its `Wreck/` subfolder.
 - Verification: six saved live/wreck reference checks passed; all six live/wreck blue-green comparisons differ; Executor tests `8/8`, Procursator tests `6/6`. Evidence: `SmallMaskReferenceVerification.json`, `SmallMaskRenderVerification.json`, `ExecutorSmallMaskTests.json`, `ProcursatorSmallMaskTests.json`.
+
+## Wider Arquitens and Tartan stripes — 2026-10-14
+
+- Empire Arquitens width: `0.005 → 0.0125 × length` (2.5×, approximately `0.20 → 0.50` Unity units). Tartan width: `0.009 → 0.018 × length` (2×).
+- Updated four existing stripe mesh assets in place; live/wreck references, band positions, lengths, UVs, materials and weathering are preserved. Rebuild scripts retain the new widths.
+- Refreshed 16 neutral/blue/red/green live/wreck previews under `Previews/WornMasks/ArquitensImperialCruiser/` and `Previews/WornMasks/Tartan/`.
+- `Evidence/WiderStripeVerification.json`: all four meshes are saved, nonempty and referenced by both live and wreck prefabs. Visual checks passed; no gameplay tests rerun for this mesh-width-only adjustment.
