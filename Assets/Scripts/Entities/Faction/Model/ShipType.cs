@@ -41,6 +41,7 @@ namespace EmpireAtWar.Models.Factions
         ImperialVenator = 211,
         Titan = 214,
         Procursator = 212,
+        Allegiance = 213,
         Tartan = 215,
 
         //rebellion

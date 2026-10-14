@@ -1,0 +1,21 @@
+# Allegiance-class Battlecruiser
+
+- Source: Remake 4.0 workshop `1770851727`, `Allegiance_Star_Destroyer_MP`, selected `Empire_Allegiance_Star_Destroyer_Hangar.ALO` plus 53 XML-referenced turret ALOs.
+- Read vault `Architecture/ALO_MODEL_IMPORT_GUIDE` and `GameDesign/Empire Fleet Import` before rebuilding. Use a fresh isolated Blender 3.6.23 session with ALAMO and MCP protocol 13; never run `Convert.py` in another import's session.
+- `AuditSource.py`: XML inheritance, binary bones/materials, texture resolution and original SHA-256 hashes → `Temp/AllegianceImport/SourceAudit.json`.
+- `Convert.py`: source-specific embedded audit, restored identity Roots, binary-restored material slots, packed blends, FBXs and round trips. Execute through the existing Blender MCP connection and capture `CONVERSION_JSON` as `ConversionReport.json`.
+- `Stage.py`: shared original-pixel PNGs and 54 FBXs under dedicated `EmpireShips/Allegiance` folders. Run with `uv run --with pillow python Tools/Blender/Allegiance/Stage.py`.
+- `VerifyGeometry.py`: run portable Blender 3.6.23 with `--background --python-exit-code 1 --python Tools/Blender/Allegiance/VerifyGeometry.py`; checks actual ALO/FBX vertex positions and UV corners in a separate process.
+- Unity order: `BuildArt.cs` → `BuildShip.cs` → `StripHelpers.cs` → `Render.cs` → `Register.cs`. `GenerateBuilders.py` records how gameplay/registration builders were adapted from Executor; rerunning it rewrites only this task's builder files.
+- Unity invocation: `unity command run_script --file <path> --entry <Class>.Main --timeout_ms 60000 --timeout 90 --json`; inspect nested `data.result.success`. Art import can exceed the CLI default timeout.
+- `BuildArt.cs`: `.02` FBX scale, no welding/compression, source shader/helper classification, 53 mounted turrets, bow `+Z`, up `+Y`; length fitted to live Venator × `2200/1137`.
+- `BuildShip.cs`: requested hull/shields/speed `20000/16000/12`, 21 targetable weapons + 7 systems, fitted own shield/collision/banked height/selection bounds, opaque explosion geometry, complete fog/team bindings, own wreck and hologram.
+- Existing abilities: Power to Main Batteries `24` (nine heavy mounts marked `mainBattery`) and Tractor Beam `22`. Concentrate Fire exists but its fleet-command behavior differs from the requested class-restricted buff; the user authorized an existing power-to-weapons substitution.
+- No hangar targets/component; no squadron bays, reserves or active slots. Source hangar geometry remains visual-only.
+- Weapons: 3 heavy dual `3`, 6 heavy quad `20`, 6 medium dual `5`, 6 medium ion `32`. Existing family profiles/audio reused; exact source sockets and muzzle positions are in `Evidence/HardpointMapping.json`.
+- Placement adapts proposed dorsal/axial/trench groups to this model's verified sockets; heavy dual mounts use `TL_01..03`. Extra authored turret art is preserved without adding extra gameplay weapons.
+- Project choices: weapon health `600`; engine/generator health `1200`; tractor/command health `800`; regeneration `80/s`; bank `±5°`; rotation/acceleration `1.5`; level `4`, cap `3`, population `12`. Requested price/time `9200/85 s`.
+- Source alpha masks are effectively empty; hull paint stays neutral and uses the shared palette rim. Eight live/wreck team palettes, placement, top/stern and transparent 512px icon renders are retained. Source shadow-volume degenerates are removed by the upstream importer; visible geometry/UVs remain verified.
+- IDs: `ShipType.Allegiance = 213`. Dedicated view/data, Empire roster, existing Addressables groups, icon consumers, placement mapping and matchups.
+- `Package.py`: verify original hashes and retain packed blends/FBXs/textures/previews at `output/remake-empire-units/Allegiance-Converted`; evidence is checked in beside these tools.
+- Automated checks: `AllegianceShipTests` covers balance, disabled squadrons, targeting/destruction, main batteries, registrations/economy, saved references, hull/collision/muzzle positions and three deterministic capital-ship simulations. Simulator runs do not verify Play Mode movement, visual turret tracking or player UI interaction.
