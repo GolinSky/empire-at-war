@@ -1,0 +1,1387 @@
+[
+  {
+    "name": "NB_APBASE_HP_HB",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_HB_bone": {
+          "triangles": 24,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_HBSlot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_HB_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_HBSlot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -24.968902587890625,
+        -45.983642578125,
+        -17.655685424804688
+      ],
+      "bounds_max": [
+        24.968902587890625,
+        45.983646392822266,
+        17.65570068359375
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_HB_bone": {
+          "triangles": 24,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_HBSlot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_HB_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_HBSlot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -24.968902587890625,
+        -45.983638763427734,
+        -17.65569305419922
+      ],
+      "bounds_max": [
+        24.968902587890625,
+        45.983642578125,
+        17.655696868896484
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_HBSlot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 42,
+        "triangleCount": 24
+      },
+      {
+        "name": "NB_APBASE_HP_HBSlot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 8.529922399520072e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_SHG",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_SHG_bone": {
+          "triangles": 72,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_SHGSlot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_SHG_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_SHGSlot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -18.496543884277344,
+        -42.971595764160156,
+        -6.711151123046875
+      ],
+      "bounds_max": [
+        18.496549606323242,
+        42.97159957885742,
+        6.711151123046875
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_SHG_bone": {
+          "triangles": 72,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_SHGSlot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_SHG_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_SHGSlot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -18.496543884277344,
+        -42.971595764160156,
+        -6.7111496925354
+      ],
+      "bounds_max": [
+        18.496549606323242,
+        42.97159957885742,
+        6.71115255355835
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_SHGSlot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 128,
+        "triangleCount": 72
+      },
+      {
+        "name": "NB_APBASE_HP_SHGSlot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 1.0789593218788873e-05,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_HT1",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_HT1_bone": {
+          "triangles": 42,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_HT1Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_HT1Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -16.581451416015625,
+        -16.497467041015625,
+        -22.219482421875
+      ],
+      "bounds_max": [
+        16.581436157226562,
+        16.497451782226562,
+        22.219497680664062
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_HT1_bone": {
+          "triangles": 42,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_HT1Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_HT1Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -16.581451416015625,
+        -16.497467041015625,
+        -22.219482421875
+      ],
+      "bounds_max": [
+        16.581436157226562,
+        16.497447967529297,
+        22.219497680664062
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_HT1Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 69,
+        "triangleCount": 42
+      },
+      {
+        "name": "NB_APBASE_HP_HT1Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 6.877043295791605e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_HT2",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_HT2_bone": {
+          "triangles": 42,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_HT2Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_HT2Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -14.27545166015625,
+        -15.083473205566406,
+        -22.219497680664062
+      ],
+      "bounds_max": [
+        14.275413513183594,
+        15.083473205566406,
+        22.219497680664062
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_HT2_bone": {
+          "triangles": 42,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_HT2Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_HT2Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -14.27545166015625,
+        -15.083473205566406,
+        -22.21949577331543
+      ],
+      "bounds_max": [
+        14.275413513183594,
+        15.08346939086914,
+        22.219497680664062
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_HT2Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 69,
+        "triangleCount": 42
+      },
+      {
+        "name": "NB_APBASE_HP_HT2Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 5.135693366178993e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_TL1",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_TL1_bone": {
+          "triangles": 130,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL1Slot00"
+          ],
+          "parent": "HP_TL1_bone"
+        },
+        "HP_TL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL1Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "HP_TL1_bone": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -14.331472396850586,
+        -14.6986665725708,
+        -11.001280784606934
+      ],
+      "bounds_max": [
+        14.3314790725708,
+        14.698657035827637,
+        11.001282691955566
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_TL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL1Slot01"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL1_bone": {
+          "triangles": 130,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL1Slot00"
+          ],
+          "parent": "HP_TL1_bone"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "HP_TL1_bone": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -14.331472396850586,
+        -14.6986665725708,
+        -11.00128173828125
+      ],
+      "bounds_max": [
+        14.3314790725708,
+        14.698657035827637,
+        11.001283645629883
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root",
+      "HP_TL1_bone": "HP_TL1_bone"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_TL1Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 231,
+        "triangleCount": 130
+      },
+      {
+        "name": "NB_APBASE_HP_TL1Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 4.264961199760036e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_TL2",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_TL2_bone": {
+          "triangles": 86,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL2Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL2Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -18.594070434570312,
+        -24.92436981201172,
+        -8.381256103515625
+      ],
+      "bounds_max": [
+        18.59406852722168,
+        24.92436981201172,
+        8.381256103515625
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_TL2_bone": {
+          "triangles": 86,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL2Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL2Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -18.594070434570312,
+        -24.92437171936035,
+        -8.38125228881836
+      ],
+      "bounds_max": [
+        18.59406852722168,
+        24.92436981201172,
+        8.38125991821289
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_TL2Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 156,
+        "triangleCount": 86
+      },
+      {
+        "name": "NB_APBASE_HP_TL2Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 4.696301365755131e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_TL3",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_TL3_bone": {
+          "triangles": 100,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL3Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL3_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL3Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -18.50958251953125,
+        -22.108062744140625,
+        -11.2283935546875
+      ],
+      "bounds_max": [
+        18.50958251953125,
+        22.108078002929688,
+        11.2283935546875
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_TL3_bone": {
+          "triangles": 100,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL3Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL3_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL3Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -18.50958251953125,
+        -22.108064651489258,
+        -11.228392601013184
+      ],
+      "bounds_max": [
+        18.50958251953125,
+        22.108078002929688,
+        11.228394508361816
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_TL3Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 188,
+        "triangleCount": 100
+      },
+      {
+        "name": "NB_APBASE_HP_TL3Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 4.264961199760036e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_TL4",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_TL4_bone": {
+          "triangles": 94,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL4Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL4_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL4Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -16.15533447265625,
+        -24.03734588623047,
+        -10.84527587890625
+      ],
+      "bounds_max": [
+        16.155349731445312,
+        24.03734588623047,
+        10.845245361328125
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_TL4_bone": {
+          "triangles": 94,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_TL4Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL4_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_TL4Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -16.15533447265625,
+        -24.03734588623047,
+        -10.845274925231934
+      ],
+      "bounds_max": [
+        16.155349731445312,
+        24.037343978881836,
+        10.845242500305176
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_TL4Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 169,
+        "triangleCount": 94
+      },
+      {
+        "name": "NB_APBASE_HP_TL4Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 6.877043295791605e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "NB_APBASE_HP_LL1",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "HP_LL1_bone": {
+          "triangles": 72,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_LL1Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_LL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_LL1Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -9.522880554199219,
+        -9.347503662109375,
+        -6.605316162109375
+      ],
+      "bounds_max": [
+        9.522880554199219,
+        9.347496032714844,
+        6.6053466796875
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "HP_LL1_bone": {
+          "triangles": 72,
+          "hidden": false,
+          "materials": [
+            "NB_APBASE_HP_LL1Slot00"
+          ],
+          "parent": "Root"
+        },
+        "HP_LL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "NB_APBASE_HP_LL1Slot01"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -9.522880554199219,
+        -9.347504615783691,
+        -6.605316162109375
+      ],
+      "bounds_max": [
+        9.522880554199219,
+        9.347495079040527,
+        6.605345726013184
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root"
+    },
+    "materials": [
+      {
+        "name": "NB_APBASE_HP_LL1Slot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 116,
+        "triangleCount": 72
+      },
+      {
+        "name": "NB_APBASE_HP_LL1Slot01",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.0,
+    "geometry_error": 2.132480599880018e-06,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  }
+]

@@ -174,6 +174,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             SerializedObject serializedView = new SerializedObject(view);
             serializedView.FindProperty("radius").floatValue = SITE_RADIUS;
             serializedView.FindProperty("ringRenderer").objectReferenceValue = ring;
+            serializedView.FindProperty("asteroidRocks").objectReferenceValue = rocks.transform;
             SerializedProperty frameworks = serializedView.FindProperty("constructionFrameworks")
                 .FindPropertyRelative("keyValue");
             frameworks.arraySize = 2;
