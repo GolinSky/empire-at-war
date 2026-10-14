@@ -15,10 +15,10 @@
 
 - [ ] **Game modes: Survival and Battle Simulation**
   - **Plan**: [[TODOs/Features/Game_Modes_Survival_And_Simulation|Game Modes Survival And Simulation]]
-  - **Status**: 2026-10-14 Phase 0 implemented: battle definitions/roles, optional feature modules, Skirmish super-weapons toggle, Survival setup with launch disabled, and mode-aware results. Baseline regression repairs included. Phase 0 checks and 8 real-scope cases pass.
-  - **Verification**: full EditMode 1,288/1,308; 18 concurrent fleet-import failures and 2 concurrent Editor timeout-log failures. Full-suite green gate remains open.
-  - **Menu**: Main Menu → Play → three mode buttons via `IPlayRoute`; 3/3 focused menu lifecycle tests pass. Survival setup only; Simulation disabled.
-  - **Remaining**: stable full-suite rerun; Phase 1 hosted production; Phase 2 Survival gameplay; Phase 3 Battle Simulation.
+  - **Status**: 2026-10-14 Phases 1–3 implemented: hosted production, level-5 Survival with five authored waves per faction, runtime fleet Simulation, setup/HUD and restart cleanup. Both modes launch through Play.
+  - **Verification**: full EditMode **1,317/1,333 passed**; all mode tests pass. Survival five-wave progression/win and station-loss checks passed; scripted destruction verifies progression, not difficulty balance. Simulation ships/squadrons, pause, 4×, New/cancel, same-scene replacement and Ended restart passed with zero console errors. AI vs AI UI polish, backdrop fix and six compact dropdowns saved through Unity; 1920 × 1080 render and setup/HUD binding checks passed. No new automated test run.
+  - **Remaining**: Phase 0 full-suite green gate: 13 SensorJamming allowlist failures, Allegiance radar/weapon-scope checks, and stale entity-prefab count. Plan stays active for these pre-existing failures.
+  - **Evidence**: `output/BattleBuilderPhase1/final-tests.json`, `survival-runtime.txt`, `simulation-runtime.txt`.
 
 - [ ] **AI composition analysis and counter measures**
   - **Plan**: [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]

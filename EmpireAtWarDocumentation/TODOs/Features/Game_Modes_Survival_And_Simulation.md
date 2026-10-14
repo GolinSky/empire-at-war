@@ -102,13 +102,27 @@ created: 2026-10-14
 - Verification: full EditMode 1,295/1,313 passed; all touched suites green (BattleDefinition 14, RealEntityComposition 8, others 84). 18 failures unrelated: 13 balance `SensorJammingSettings`, 4 fleet import (Allegiance/Procursator), 1 `UiCanvasArchitectureTests` screen count 22 vs 21.
 
 ## Phase 1 — Shop Abstraction
-- [ ] `IProductionAccess` + `SelfProductionAccess` + `HostedProductionAccess`; registered per player scope from `BattlePlayer`.
-- [ ] Replace direct `HasProductionBase(Owner)` gates in `FactionService` (purchase + `BuildUnit` refund) and `EnemyFactionController` (`Purchase`, `ForceUpgradeStation`).
-- [ ] Hosted spawns: ships/squadrons at host production base / reinforcement zones; platforms and mining use host placement areas. Verify `ReinforcementService`, `IReinforcementPlacement` impls, `ReinforcementZonesSystem` ownership.
-- [ ] Hosted tech level: ally `PlayerFactionModel` level mirrors host `OnLevelUpgraded`; `LevelUnitRequest` hidden/rejected.
-- [ ] Hosted super weapons: origin/targeting from host base (`SuperWeaponOriginRegistry`); verify ally AI `EnemySuperWeaponController` works without own station.
-- [ ] AI ally home position: `EnemyProductionStrategy` / `EnemyStrategicContextBuilder` use host base position.
-- [ ] Tests: skirmish unchanged; hosted buy while host base lives; refund when all host bases die; level mirrors host; ally cannot buy level.
+### Execution (2026-10-14)
+- Baseline rerun: 1,297/1,314 EditMode tests passed; 17 pre-existing failures (13 SensorJamming allowlist, UI screen count, two Allegiance assertions, fleet count).
+- Implemented: per-player production access, hosted purchase/refund gates, host ship spawn anchors, ally squadron ownership, host tech-level synchronization, and AI home/structure placement.
+- Focused verification: production access 3/3; Survival tests 6/6; real Survival host/ally/wave composition 1/1.
+- Survival Play Mode: level-5 start, hosted ally production, early start, all five authored waves and victory passed. Station destruction during preparation ends in loss. Five-wave verification uses scripted enemy destruction; difficulty balance is not validated.
+- Simulation Play Mode: ships and squadrons fight, pause freezes elapsed time, restart and faction replacement create fresh entity IDs without scene reload. Timed results verified. Final lifecycle smoke passed: pause/resume, 4× speed, combat replacement, New/cancel, result, and Ended restart. Same scene handle, fresh entity IDs, zero console errors; setup/HUD visually verified.
+- 2026-10-14 AI vs AI UI polish: setup buttons, six dropdowns, fonts and popup rows aligned with Skirmish; simulation controls reduced to a 700 × 108 top bar, expanding to 204 px for results. Follow-up fixed the missing backdrop: copied panel `MPImage` was disabled. Added full-screen starfield/dark layers and enabled framed fleet/settings cards. Saved through Unity; offscreen 1920 × 1080 render inspected, all serialized references bound. Follow-up: six setup dropdowns reduced from 800 × 48 to 640 × 44, option rows 48 → 40, type 20 → 18, arrows aligned to the right edge; 6/6 saved controls and clean scene verified. No new automated test run.
+- Final EditMode regression: **1,317/1,333 passed**. All mode/hosted-production tests passed. Remaining 16 pre-existing failures: 13 `SensorJammingSettings` allowlist checks, Allegiance radar and scoped-weapon checks, entity prefab count 76 vs 80. UI count updated to 25; no new failing tests.
+- Live-source correction: ordinary AI queued builds intentionally survive base loss; preserve Skirmish behavior and refund hosted ally builds when all host production bases die.
+- Live-source correction: super weapons use the shared planet origin, not a station-owned origin; hosted purchase eligibility uses the host's production bases.
+- User approved initial escalating Survival wave rosters authored from each faction's available units.
+- Survival layout has no asteroid fields; edge clearance also checks hull footprint and minimum spacing. Initial human income is 25 at level 5.
+- Evidence: `output/BattleBuilderPhase1/`; full-suite green gate from Phase 0 remains open.
+
+- [x] `IProductionAccess` + `SelfProductionAccess` + `HostedProductionAccess`; registered per player scope from `BattlePlayer`.
+- [x] Replace direct `HasProductionBase(Owner)` gates in `FactionService` (purchase + `BuildUnit` refund) and `EnemyFactionController` (`Purchase`, `ForceUpgradeStation`).
+- [x] Hosted spawns: ships/squadrons at host production base / reinforcement zones; platforms and mining use host placement areas. Verify `ReinforcementService`, `IReinforcementPlacement` impls, `ReinforcementZonesSystem` ownership.
+- [x] Hosted tech level: ally `EnemyFactionModel` level mirrors host `PlayerFactionModel.OnLevelUpgraded`; `LevelUnitRequest` hidden/rejected.
+- [x] Hosted super weapons: production eligibility from host base; retain shared planet origin (`SuperWeaponOriginRegistry`). Ally AI controller does not require its own station.
+- [x] AI ally home position: `EnemyProductionStrategy` / `EnemyStrategicContextBuilder` use host base position.
+- [x] Tests: skirmish unchanged; hosted buy while host base lives; refund when all host bases die; level mirrors host; ally cannot buy level.
 
 ## Phase 2 — Survival Mode
 ### Rules
@@ -119,20 +133,20 @@ created: 2026-10-14
 
 ### Implementation
 - [x] `SurvivalPreset` + `SurvivalSettings` (factions, map size, difficulty, super weapons toggle); delivered in Phase 0.
-- [ ] `SurvivalModel` (pure C#): `WaveIndex`, `Phase` (`Preparation`, `WaveActive`, `Won`, `Lost`), `PreparationTimeLeft`; events.
-- [ ] `SurvivalWaveData` ScriptableObject (`Assets/Settings`):
+- [x] `SurvivalModel` (pure C#): `WaveIndex`, `Phase` (`Preparation`, `WaveActive`, `Won`, `Lost`), `PreparationTimeLeft`; events.
+- [x] `SurvivalWaveData` ScriptableObject (`Assets/Settings`):
   - `preparationSeconds` (`120` first, `60` after).
   - Per enemy faction → 5 waves → entries `{unit id, quantity}` + spawn group count.
   - Validated in EditMode tests: every faction has 5 waves, unit ids exist in its `FactionCatalog` roster.
-- [ ] Difficulty → existing `EnemyAiDifficultyProfile` for wave AI behavior only.
-- [ ] `SurvivalLayoutGenerator`: station at center; edge ring kept clear of asteroid fields; mining sites around center.
-- [ ] `EdgeSpawnPointProvider`: random edge points per wave with min spacing; validate hull footprint (`IShipSpawnClearance`) + asteroid fields; retry other points.
-- [ ] `SurvivalWaveDirector` (`ITickable`): timers, frame-staggered wave spawn, alive tracking via `IEntityLocator`.
-- [ ] Wave AI: attack-move to player station; engage defenders on contact.
-- [ ] `SurvivalOutcomeRule`.
-- [ ] HUD: `Wave N/5`, countdown, "Start wave now", minimap direction pings.
-- [x] `SurvivalUi` setup in main menu; delivered in Phase 0. Launch remains disabled until wave gameplay is implemented.
-- [ ] Tests: `SurvivalModel` transitions; lose during preparation; win after wave 5; edge spawn avoids fields; wave enemy has no super weapon/research; UI prefab reference tests.
+- [x] Difficulty → existing `EnemyAiDifficultyProfile` for wave AI behavior only.
+- [x] `SurvivalLayoutGenerator`: station at center; edge ring kept clear of asteroid fields; mining sites around center.
+- [x] `EdgeSpawnPointProvider`: random edge points per wave with min spacing; validate hull footprint (`IShipSpawnClearance`) + asteroid fields; retry other points.
+- [x] `SurvivalWaveDirector` (`ITickable`): timers, frame-staggered wave spawn, alive tracking via `IEntityLocator`.
+- [x] Wave AI: attack-move to player station; engage defenders on contact.
+- [x] `SurvivalOutcomeRule`.
+- [x] HUD: `Wave N/5`, countdown, "Start wave now", minimap direction pings.
+- [x] `SurvivalUi` setup in main menu; delivered in Phase 0. Launch enabled with wave gameplay.
+- [x] Tests: `SurvivalModel` transitions; lose during preparation; win after wave 5; edge spawn avoids fields; wave enemy has no super weapon/research; UI prefab reference tests.
 
 ## Phase 3 — Battle Simulation Mode
 ### Rules
@@ -143,14 +157,23 @@ created: 2026-10-14
 - Result: winner, elapsed time, survivors/HP per side.
 
 ### Implementation
-- [ ] `SimulationPreset` + `SimulationSetup` (runtime assembly; mirrors Editor `BattleSetup`/`BattleFleetEntry`; no `EmpireAtWar.Editor.*` refs).
-- [ ] Unit picker from runtime `FactionCatalog`.
-- [ ] `EmptyLayoutGenerator`: bounds + two spawn lines `Distance` apart.
-- [ ] `SimulationDirector`: spawn via normal ship/squadron spawning, issue orders, track counts/time, publish `SimulationResult`.
-- [ ] Restart/New: despawn-all API (pooling, `IEntityLocator`, projectiles, VFX, wrecks, in-flight squadrons), then respawn.
-- [ ] `SkirmishOrchestrator`: explicit restart `Ended → Loading → Running` only for simulation outcome rule.
-- [ ] HUD: Pause/Resume, Restart, New, speed 1×/4×, timer, per-side counts, result panel.
-- [ ] Tests: setup validation (1–100, both sides non-empty), director spawn/end/restart with fakes, orchestrator restart.
+- [x] `SimulationPreset` + `SimulationSetup` (runtime assembly; mirrors Editor `BattleSetup`/`BattleFleetEntry`; no `EmpireAtWar.Editor.*` refs).
+- [x] Unit picker from runtime `FactionCatalog`.
+- [x] `EmptyLayoutGenerator`: bounds + two spawn lines `Distance` apart.
+- [x] `SimulationDirector`: spawn via normal ship/squadron spawning, issue orders, track counts/time, publish `SimulationResult`.
+- [x] Restart/New: despawn-all API (pooling, `IEntityLocator`, projectiles, VFX, wrecks, in-flight squadrons), then respawn.
+- [x] `SkirmishOrchestrator`: explicit restart `Ended → Loading → Running` only for simulation outcome rule.
+- [x] HUD: Pause/Resume, Restart, New, speed 1×/4×, timer, per-side counts, result panel.
+- [x] Tests: setup validation (1–100, both sides non-empty), model spawn barrier/end/reset and orchestrator restart; real-entity director lifecycle verified in Play Mode.
+
+## Review fixes (2026-10-14)
+- Mode registrations → `IBattleMode` (`SkirmishMode`, `SurvivalMode`, `SimulationMode`), picked once by `BattleModes.Create(battle, assets)` from `OutcomeRule`. `SkirmishScope` has no mode branches. Each mode owns local player, outcome rule, station facing, director/HUD.
+- Human/host single source: `BattleDefinition.Human`, `GetProductionHost(player)`; role capabilities `BattlePlayer.IsHosted`, `HasDirectCombatAi`. Survival station level = `BattleDefinition.InitialStationLevel` (`SurvivalPreset.STATION_LEVEL = 5`).
+- `SelfProductionAccess` / `HostedProductionAccess` → `IStationRegistry.TryGetProductionBase` (no entity scan).
+- Wave soft-lock: `EdgeSpawnPointProvider.TryGet` clears the wave's spacing reservations and retries once; hull clearance still applies.
+- Simulation targeting → `SimulationTargeting`: every unassigned unit gets `IssueAttack` on its nearest living enemy; group attack-move to a stale position removed.
+- Not changed: `SkirmishOrchestrator` simulation-restart guards; `BattleMapLoader` dispatch on `MapType`; timeout result = Draw.
+- Verification: full EditMode 1,321/1,339 passed. 18 failures unrelated: 13 `SensorJammingSettings`, Allegiance radar/scoped weapon, entity prefab count 76 vs 80, Allegiance team-color renderers, Titan composition (concurrent fleet import). New tests: `EdgeSpawns_ReuseEdgeOnceWaveReservationsFillIt`, `Targeting_AttacksNearestEnemy_AndRetargetsOnlyWhenItDies`. No Play Mode run.
 
 ## Risks / Edge Cases
 - Module refactor of `SkirmishScope` must keep skirmish identical — run full EditMode suite before/after Phase 0.
