@@ -46,6 +46,19 @@ namespace EmpireAtWar.Components.AttackComponent
                 size = definition.Size;
             }
 
+            if (family.Family is WeaponFamily.Laser or WeaponFamily.Turbolaser or WeaponFamily.Ion
+                or WeaponFamily.FighterLaser or WeaponFamily.FighterIon)
+            {
+                // Stretched billboards use Y for length; caliber never changes bolt width.
+                size.y *= caliber.Caliber switch
+                {
+                    WeaponCaliber.Light => 0.3f,
+                    WeaponCaliber.Medium => 0.5f,
+                    WeaponCaliber.Heavy => 0.8f,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(caliber))
+                };
+            }
+
             Color color = definition.OverrideColor ? definition.Color : family.Color;
             bool usesFactionColor = family.FactionColored && !definition.OverrideColor;
 

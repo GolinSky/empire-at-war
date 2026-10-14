@@ -37,7 +37,7 @@ MonoBehaviour:
     projectileSpeed: 133
     factionColored: 1
     color: {r: 1, g: 0.31, b: 0, a: 1}
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.35, y: 1, z: 1}
   - family: 1
     platform: 0
     damageType: 2
@@ -87,7 +87,7 @@ MonoBehaviour:
     projectileSpeed: 55
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.35, y: 1, z: 1}
   - family: 3
     platform: 0
     damageType: 11
@@ -153,7 +153,7 @@ MonoBehaviour:
     projectileSpeed: 25
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
+    size: {x: 1.8, y: 1.8, z: 1.8}
   - family: 6
     platform: 0
     damageType: 4
@@ -175,7 +175,7 @@ MonoBehaviour:
     projectileSpeed: 25
     factionColored: 0
     color: {r: 0.3, g: 0.7, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
+    size: {x: 1.8, y: 1.8, z: 1.8}
   - family: 7
     platform: 0
     damageType: 1
@@ -247,7 +247,7 @@ MonoBehaviour:
     projectileSpeed: 140
     factionColored: 1
     color: {r: 1, g: 0.25, b: 0.1, a: 1}
-    size: {x: 0.45, y: 0.45, z: 0.6}
+    size: {x: 0.2, y: 0.6, z: 0.6}
   - family: 21
     platform: 1
     damageType: 4
@@ -272,7 +272,7 @@ MonoBehaviour:
     projectileSpeed: 55
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.2, y: 0.6, z: 0.6}
   - family: 22
     platform: 1
     damageType: 5
@@ -316,7 +316,7 @@ MonoBehaviour:
     projectileSpeed: 25
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
+    size: {x: 1.8, y: 1.8, z: 1.8}
   calibers:
   - caliber: 0
     damageMultiplier: 1
@@ -1347,7 +1347,7 @@ MonoBehaviour:
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 40
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.35, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 45
@@ -1498,7 +1498,7 @@ MonoBehaviour:
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 45
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.35, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 53
@@ -1606,7 +1606,7 @@ MonoBehaviour:
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.35, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 62
@@ -1736,7 +1736,7 @@ MonoBehaviour:
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 40
-    size: {x: 1, y: 1, z: 1}
+    size: {x: 0.35, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 69

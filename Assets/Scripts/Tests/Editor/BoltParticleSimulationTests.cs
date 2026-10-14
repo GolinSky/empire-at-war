@@ -193,6 +193,8 @@ namespace EmpireAtWar.Tests.Weapon
                 float lightLength = 0f;
                 foreach (WeaponCaliber caliber in new[] { WeaponCaliber.Light, WeaponCaliber.Medium, WeaponCaliber.Heavy })
                 {
+                    Object.DestroyImmediate(bolt);
+                    bolt = Object.Instantiate(rule.ShotPrefab.gameObject);
                     var profile = WeaponProfileFactory.Create(new WeaponDefinition(), rule,
                         weapons.GetCaliber(caliber), weapons.GetRangeClass(WeaponRangeClass.Standard));
                     var particles = Fire(bolt, muzzle.transform, target.transform, profile, flights);
@@ -205,7 +207,7 @@ namespace EmpireAtWar.Tests.Weapon
                         width = mesh.bounds.size.y;
                         lightLength = mesh.bounds.size.z;
                         Assert.That(width, Is.GreaterThan(0f));
-                        Assert.That(lightLength, Is.GreaterThan(width));
+                        Assert.That(lightLength, Is.GreaterThan(0f));
                     }
                     else
                     {
@@ -218,6 +220,7 @@ namespace EmpireAtWar.Tests.Weapon
                 float expectedWidth = family == WeaponFamily.Turbolaser ? 3f :
                     family == WeaponFamily.FighterLaser || family == WeaponFamily.FighterIon ? 0.6f : 1.05f;
                 Assert.That(width, Is.EqualTo(expectedWidth).Within(0.001f));
+                Assert.That(lightLength, Is.EqualTo(rule.Size.y * 0.3f * 3f * 2f).Within(0.001f));
             }
             finally
             {
