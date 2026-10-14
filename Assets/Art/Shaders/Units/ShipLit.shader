@@ -36,8 +36,6 @@ Shader "EmpireAtWar/Ship Lit"
         [Header(Team Color)]
         [NoScaleOffset] _TeamMaskMap("Team Mask (R)", 2D) = "black" {}
         _TeamMaskStrength("Mask Strength", Range(0.0, 1.0)) = 1.0
-        _TeamRimStrength("Rim Strength", Range(0.0, 4.0)) = 0.6
-        _TeamRimPower("Rim Sharpness", Range(0.5, 8.0)) = 3.0
         _TeamEmissionTint("Emission Tint", Range(0.0, 1.0)) = 0.5
 
         // Painted livery recolored to the team color. Filled in by Tools/Rendering/Detect Team Livery Colors.

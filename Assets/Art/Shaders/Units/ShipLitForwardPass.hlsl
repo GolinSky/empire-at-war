@@ -158,9 +158,6 @@ half4 ShipLitPassFragment(Varyings input) : SV_Target
     SurfaceData surface = CreateSurfaceData(input);
     InputData inputData = CreateInputData(input, surface.normalTS);
 
-    // The rim is added as emission so it glows the same in light and in shadow.
-    surface.emission += GetTeamRim(inputData.normalWS, inputData.viewDirectionWS, input.teamColor);
-
     half4 color = UniversalFragmentPBR(inputData, surface);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = 1.0h;
