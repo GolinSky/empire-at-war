@@ -1,0 +1,3 @@
+Assets/Prefabs/Models/Ships/Empire/Tector.prefab: circle material and bindings valid
+Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab: circle material and bindings valid
+Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab: circle material and bindings valid

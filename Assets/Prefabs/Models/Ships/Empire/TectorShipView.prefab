@@ -6048,6 +6048,7 @@ MonoBehaviour:
   - {fileID: 5095880159834295279}
   - {fileID: 4898886685836583023}
   - {fileID: 5173552939462120207}
+  - {fileID: 7811714009825102710}
   - {fileID: 7413230647160101176}
   - {fileID: 1947354296347925025}
   - {fileID: 2724415228439531562}
@@ -6090,6 +6091,7 @@ MonoBehaviour:
   - {fileID: 5095880159834295279}
   - {fileID: 4898886685836583023}
   - {fileID: 5173552939462120207}
+  - {fileID: 7811714009825102710}
   - {fileID: 2561499397476259715}
 --- !u!114 &4169579407326434858
 MonoBehaviour:
@@ -18632,6 +18634,12 @@ MeshRenderer:
 --- !u!23 &7668360782644086946 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2307698779809865563, guid: 4b5a46fe6f24c6745bd3b9dfb528dc16,
+    type: 3}
+  m_PrefabInstance: {fileID: 5363200362870396921}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7811714009825102710 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2739634227131948175, guid: 4b5a46fe6f24c6745bd3b9dfb528dc16,
     type: 3}
   m_PrefabInstance: {fileID: 5363200362870396921}
   m_PrefabAsset: {fileID: 0}
