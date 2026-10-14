@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 0.39,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.Injectables_RegisterOnlyCurrentHardpointsAndTeamColorView",
+      "Status": "Failed",
+      "Duration": 0.0406881,
+      "Message": "  Deleted donor components must not remain in injection slots.\r\n  Expected: all items not null\r\n  But was:  < <ProcursatorShipView (EmpireAtWar.Components.TeamColor.TeamColorView)>, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.ProcursatorShipTests.Injectables_RegisterOnlyCurrentHardpointsAndTeamColorView () [0x0002d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\ProcursatorShipTests.cs:114\r\n"
+    }
+  ]
+}
