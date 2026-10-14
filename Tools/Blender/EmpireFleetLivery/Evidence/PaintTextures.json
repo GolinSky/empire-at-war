@@ -1,0 +1,114 @@
+[
+  {
+    "material": "Procursator_M013",
+    "sourceSha256": "3a1931beb69b6e4ee595135858ce16cd837700fff677efd42aef3a6be3358877",
+    "hue": 0.968,
+    "unpaintedFraction": 0.23487377166748047,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Procursator/Procursator_WornPaint_Procursator_M013.png"
+  },
+  {
+    "material": "Procursator_M014",
+    "sourceSha256": "2d93d19ac02073f7accde232366825a938a81fec5420cd61fc80f5462a4632c9",
+    "hue": 0.968,
+    "unpaintedFraction": 0.22594761848449707,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Procursator/Procursator_WornPaint_Procursator_M014.png"
+  },
+  {
+    "material": "Allegiance_Allegiance_Hull_LowContrast_0",
+    "sourceSha256": "e3ce280faac6248fcb15d7d93fd9a0b5aadf3a25d4392b193b73d24d7a47c814",
+    "hue": 0.968,
+    "unpaintedFraction": 0.22748661041259766,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_Hull_LowContrast_0.png"
+  },
+  {
+    "material": "Allegiance_Allegiance_objHull_0",
+    "sourceSha256": "5d3f6d41e0d6ec2d130eec843b91fe353e507dda42f0efbac40343bb86b4bf5b",
+    "hue": 0.968,
+    "unpaintedFraction": 0.23387861251831055,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_objHull_0.png"
+  },
+  {
+    "material": "Allegiance_Allegiance_objImpSuperstructure_0",
+    "sourceSha256": "99c07faeeffc15ae3100e7ece0f19a25f2f14458c21b525738d15c20d43c5c32",
+    "hue": 0.968,
+    "unpaintedFraction": 0.23388338088989258,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_objImpSuperstructure_0.png"
+  },
+  {
+    "material": "Allegiance_Allegiance_objSuperstructure_0",
+    "sourceSha256": "e10d752f09428f37cbd6047d7cf99434147553d2e46113bb2e1a409808043733",
+    "hue": 0.968,
+    "unpaintedFraction": 0.24135851860046387,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_objSuperstructure_0.png"
+  },
+  {
+    "material": "Titan_M013",
+    "sourceSha256": "cd732de37f86b412ba65091ea2b028247a75bb8619bd836fd2ee808f5f061d6b",
+    "hue": 0.968,
+    "unpaintedFraction": 0.2347559928894043,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M013.png"
+  },
+  {
+    "material": "Titan_M015",
+    "sourceSha256": "eef06298476862c663f50f89679ec9e2e732d826c15bbf11f4286a08dabdd9b3",
+    "hue": 0.968,
+    "unpaintedFraction": 0.22015380859375,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M015.png"
+  },
+  {
+    "material": "Titan_M014",
+    "sourceSha256": "66ff3b1a97a6db5a74e7fb2d890a619aadf7346e403ee19e8e77cddb51e519b4",
+    "hue": 0.968,
+    "unpaintedFraction": 0.2343595027923584,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M014.png"
+  },
+  {
+    "material": "Titan_M024",
+    "sourceSha256": "66ff3b1a97a6db5a74e7fb2d890a619aadf7346e403ee19e8e77cddb51e519b4",
+    "hue": 0.968,
+    "unpaintedFraction": 0.2297203540802002,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M024.png"
+  },
+  {
+    "material": "Titan_M016",
+    "sourceSha256": "caf761f83077438a941416af370c83d64a6322fcebc59bd99cb5bbe81bee3eaa",
+    "hue": 0.968,
+    "unpaintedFraction": 0.22366070747375488,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M016.png"
+  },
+  {
+    "material": "Tartan_Tartan_Hull_1_002",
+    "sourceSha256": "0645a579a882b5cc5c90ef9aac7d61168b0a38de4954392a8f0161b9653acaa9",
+    "hue": 0.968,
+    "unpaintedFraction": 0.23679542541503906,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_1_002.png"
+  },
+  {
+    "material": "Tartan_Tartan_Hull_2_002",
+    "sourceSha256": "98c095fdadf633a71aaecf0defe61aa23e3bd386c868b0944671f3078bbb8937",
+    "hue": 0.968,
+    "unpaintedFraction": 0.23734593391418457,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_2_002.png"
+  },
+  {
+    "material": "Tartan_Tartan_Hull_ISD_Kitbash_002",
+    "sourceSha256": "5ec424ccea40eafc02aac29db2290527d635452a1ae8ac6c9c57759bd479e01f",
+    "hue": 0.968,
+    "unpaintedFraction": 0.2411355972290039,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_ISD_Kitbash_002.png"
+  },
+  {
+    "material": "Tartan_Tartan_Hull_ISD_Kitbash_Unsymm_002",
+    "sourceSha256": "5ec424ccea40eafc02aac29db2290527d635452a1ae8ac6c9c57759bd479e01f",
+    "hue": 0.968,
+    "unpaintedFraction": 0.23841357231140137,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_ISD_Kitbash_Unsymm_002.png"
+  },
+  {
+    "material": "Tartan_Tartan_Hull_Superstructure_002",
+    "sourceSha256": "ef55d60985a8af2c26d3febafae496cc6b6870763f0d190004cf6967d61c51b7",
+    "hue": 0.968,
+    "unpaintedFraction": 0.24686598777770996,
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_Superstructure_002.png"
+  }
+]

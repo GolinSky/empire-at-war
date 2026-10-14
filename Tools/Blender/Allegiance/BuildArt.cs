@@ -65,7 +65,7 @@ public static class BuildAllegianceArt
                 }
                 // Empty source alpha would recolor the whole hull; use an owned-color rim instead.
                 if (material.HasProperty("_TeamMaskStrength")) material.SetFloat("_TeamMaskStrength", row["maskMap"] != null && (float)row["maskCoverage"] > .0001f && (float)row["maskCoverage"] < .5f ? 1 : 0);
-                if (material.HasProperty("_TeamRimStrength")) material.SetFloat("_TeamRimStrength", .3f);
+                if (material.HasProperty("_TeamRimStrength")) material.SetFloat("_TeamRimStrength", 0);
                 if (material.HasProperty("_TeamLiveryStrength")) material.SetFloat("_TeamLiveryStrength", 0);
                 if (material.HasProperty("_Metallic")) material.SetFloat("_Metallic", .15f);
                 if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", .25f);

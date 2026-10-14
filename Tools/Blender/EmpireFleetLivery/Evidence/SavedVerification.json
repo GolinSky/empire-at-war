@@ -1,0 +1,21 @@
+{
+  "checks": 91968,
+  "ships": [
+    {
+      "ship": "Procursator",
+      "paintRenderers": 2
+    },
+    {
+      "ship": "Allegiance",
+      "paintRenderers": 2
+    },
+    {
+      "ship": "Titan",
+      "paintRenderers": 3
+    },
+    {
+      "ship": "Tartan",
+      "paintRenderers": 2
+    }
+  ]
+}

@@ -49,3 +49,9 @@
 4. Run `BuildArt.cs`, `BuildStripes.cs`, `BuildGameplay.cs`, `Persist.cs`, `Finalize.cs`, `FixIntegration.cs`, `Render.cs`, `Register.cs`, `Verify.cs` using `unity command run_script --file Tools/Blender/Titan/<file> --timeout_ms 120000 --timeout 150 --json`; inspect nested `result.success`.
 5. Preserve Blender shader metadata with `PreserveBlendMetadata.py` and its generated MCP request through `ISDIRemake/Call.py`. Run `uv run --with pillow python Tools/Blender/Titan/Preserve.py` before Unity clears temporary files.
 6. Inspect open scenes; run asynchronous `TitanShipTests` and poll `test_status` to completion.
+
+## Worn livery correction — 2026-10-14
+
+- After rebuilding art/gameplay, run the shared [Empire fleet livery workflow](../EmpireFleetLivery/README.md). It supersedes the earlier team-mask/rim and stripe rendering steps.
+- Neutral hull, small chipped hue-based stripes like Acclamator; live/wreck materials, ownership bindings, hologram and icons updated.
+- Canonical current renders and verification: `Tools/Blender/EmpireFleetLivery/`. All four ship test suites passed (`39/39` total).

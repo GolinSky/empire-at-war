@@ -1,0 +1,97 @@
+{
+  "status": "completed",
+  "duration": 4.42,
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Republic/Venator\")",
+      "Status": "Passed",
+      "Duration": 1.5993237,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Empire/VictoryII\")",
+      "Status": "Passed",
+      "Duration": 1.1415701,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Rebellion/MonCalCruiser\")",
+      "Status": "Passed",
+      "Duration": 1.1480209,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.EverySubsystem_InitializesAndCanBeDestroyedIndependently",
+      "Status": "Passed",
+      "Duration": 0.000465,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.HullSizeAndWeaponOrigins_MatchTheImportedGeometry",
+      "Status": "Passed",
+      "Duration": 0.0101924,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.Registrations_ResolveOwnAssetsAndRequestedEconomy",
+      "Status": "Passed",
+      "Duration": 0.0008164,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Ships/Empire/Allegiance.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.06599,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0405951,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Wrecks/AllegianceWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0211408,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Ui/Reinforcement/AllegianceReinforcementView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0345155,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedShip_HasRequestedBalanceAndNoSquadrons",
+      "Status": "Passed",
+      "Duration": 0.000543,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SpawnInjection_RegistersEveryCurrentHardpointWithoutNullDonorReferences",
+      "Status": "Passed",
+      "Duration": 0.0003069,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

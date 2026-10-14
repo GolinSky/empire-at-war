@@ -48,7 +48,7 @@ public static class BuildTitanArt
                 // Original alpha masks are empty. Recolor authored red hull markings instead.
                 bool hullPaint = texture != null && texture.Contains("Empire_Titan_Star_Destroyer");
                 material.SetTexture("_TeamMaskMap",AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+texture+"_TeamMask.png")); material.SetFloat("_TeamMaskStrength",0); material.SetFloat("_TeamLiveryHue",0); material.SetFloat("_TeamLiveryHueRange",.07f);
-                material.SetFloat("_TeamLiveryMinSaturation",.3f); material.SetFloat("_TeamLiveryStrength",0); material.SetFloat("_TeamRimStrength",.6f);
+                material.SetFloat("_TeamLiveryMinSaturation",.3f); material.SetFloat("_TeamLiveryStrength",0); material.SetFloat("_TeamRimStrength",0);
             }
             EditorUtility.SetDirty(material);
         }
