@@ -1,0 +1,97 @@
+{
+  "status": "completed",
+  "duration": 5.69,
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Republic/Venator\")",
+      "Status": "Passed",
+      "Duration": 1.9870814,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Empire/VictoryII\")",
+      "Status": "Passed",
+      "Duration": 1.4123997,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Rebellion/MonCalCruiser\")",
+      "Status": "Passed",
+      "Duration": 1.7926775,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.EveryHardpoint_InitializesAndCanBeDestroyedIndependently",
+      "Status": "Passed",
+      "Duration": 0.0075944,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(0)",
+      "Status": "Passed",
+      "Duration": 0.0091519,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(1)",
+      "Status": "Passed",
+      "Duration": 0.0005441,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(2)",
+      "Status": "Passed",
+      "Duration": 0.0002516,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(3)",
+      "Status": "Passed",
+      "Duration": 0.0002285,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.SavedComposition_BindsAllTargetsAndRenderers",
+      "Status": "Passed",
+      "Duration": 0.0075115,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.SavedHangar_HasNoSquadronsOrDestroyableBayBindings",
+      "Status": "Passed",
+      "Duration": 0.0009725,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.SavedPrefab_AllWeaponsAreTargetableAndHaveMatchingHealth",
+      "Status": "Passed",
+      "Duration": 0.0026721,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.WeaponOwnershipAndRadar_MatchEveryMountedProfile",
+      "Status": "Passed",
+      "Duration": 0.0007972,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

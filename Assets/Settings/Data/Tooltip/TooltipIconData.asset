@@ -179,3 +179,5 @@ MonoBehaviour:
     key: 480ea67ea8c1d1444b4eae17e11f53e8:21300000
   - sprite: {fileID: 21300000, guid: a18de04525e87254ebd6a359e39a58ba, type: 3}
     key: a18de04525e87254ebd6a359e39a58ba:21300000
+  - sprite: {fileID: 21300000, guid: d92e0b25eb3e0d94ab8f1713e2ec1b84, type: 3}
+    key: d92e0b25eb3e0d94ab8f1713e2ec1b84:21300000
