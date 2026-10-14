@@ -1,0 +1,398 @@
+[
+  {
+    "id": 0,
+    "name": "QuadHeavyTurbolaser_1",
+    "source": "HP_Allegiance_QTLT_01",
+    "position": [
+      64.4482346,
+      -1.19102287,
+      -191.083527
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "QuadHeavyTurbolaser_2",
+    "source": "HP_Allegiance_QTLT_02",
+    "position": [
+      61.0221176,
+      -0.7702179,
+      -184.6703
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "QuadHeavyTurbolaser_3",
+    "source": "HP_Allegiance_QTLT_03",
+    "position": [
+      57.53567,
+      -0.475667953,
+      -175.397018
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "QuadHeavyTurbolaser_4",
+    "source": "HP_Allegiance_QTLT_04",
+    "position": [
+      54.1095543,
+      -0.05487442,
+      -168.983917
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "QuadHeavyTurbolaser_5",
+    "source": "HP_Allegiance_QTLT_05",
+    "position": [
+      50.6290359,
+      0.2342701,
+      -159.71051
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "QuadHeavyTurbolaser_6",
+    "source": "HP_Allegiance_QTLT_06",
+    "position": [
+      47.2029152,
+      0.6550636,
+      -153.297272
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "QuadHeavyTurbolaser_7",
+    "source": "HP_Allegiance_QTLT_07",
+    "position": [
+      -47.2027359,
+      0.6549339,
+      -153.384735
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "QuadHeavyTurbolaser_8",
+    "source": "HP_Allegiance_QTLT_08",
+    "position": [
+      -50.62884,
+      0.2341423,
+      -159.797974
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "QuadHeavyTurbolaser_9",
+    "source": "HP_Allegiance_QTLT_09",
+    "position": [
+      -54.10941,
+      -0.05500412,
+      -169.071442
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "QuadHeavyTurbolaser_10",
+    "source": "HP_Allegiance_QTLT_10",
+    "position": [
+      -57.5355072,
+      -0.475797653,
+      -175.48465
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "QuadHeavyTurbolaser_11",
+    "source": "HP_Allegiance_QTLT_11",
+    "position": [
+      -61.02196,
+      -0.7703457,
+      -184.7579
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "QuadHeavyTurbolaser_12",
+    "source": "HP_Allegiance_QTLT_12",
+    "position": [
+      -64.4480743,
+      -1.19115067,
+      -191.171051
+    ],
+    "profile": 88,
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "MediumDualTurbolaser_1",
+    "source": "HP_Allegiance_Small_Quad_Turret_01",
+    "position": [
+      45.17927,
+      3.906311,
+      -193.470169
+    ],
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "MediumDualTurbolaser_2",
+    "source": "HP_Allegiance_Small_Quad_Turret_02",
+    "position": [
+      45.17927,
+      3.70153618,
+      -189.736115
+    ],
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "MediumDualTurbolaser_3",
+    "source": "HP_Allegiance_Small_Quad_Turret_03",
+    "position": [
+      45.17927,
+      3.07609558,
+      -177.077148
+    ],
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "MediumDualTurbolaser_4",
+    "source": "HP_Allegiance_Small_Quad_Turret_04",
+    "position": [
+      45.17927,
+      2.87130737,
+      -173.343018
+    ],
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "MediumDualTurbolaser_5",
+    "source": "HP_Allegiance_Small_Quad_Turret_05",
+    "position": [
+      36.6583939,
+      9.665581,
+      -185.408157
+    ],
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "MediumDualTurbolaser_6",
+    "source": "HP_Allegiance_Small_Quad_Turret_06",
+    "position": [
+      36.6583939,
+      9.460815,
+      -181.674042
+    ],
+    "profile": 5,
+    "targetable": true
+  },
+  {
+    "id": 18,
+    "name": "HeavyIon_1",
+    "source": "HP_Titan_TIC_01",
+    "position": [
+      0.00367164961,
+      -2.83164215,
+      26.3819523
+    ],
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 19,
+    "name": "HeavyIon_2",
+    "source": "HP_Titan_TIC_02",
+    "position": [
+      0.00367029221,
+      0.9160309,
+      -4.670731
+    ],
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 20,
+    "name": "HeavyIon_3",
+    "source": "HP_Titan_TIC_03",
+    "position": [
+      0.00366918766,
+      4.66554832,
+      -29.9447975
+    ],
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 21,
+    "name": "HeavyIon_4",
+    "source": "HP_Titan_TIC_04",
+    "position": [
+      0.00367205264,
+      -6.71334934,
+      54.48201
+    ],
+    "profile": 11,
+    "targetable": true
+  },
+  {
+    "id": 22,
+    "name": "PointDefense_7",
+    "source": "HP_Allegiance_Small_Quad_Turret_07",
+    "position": [
+      31.97968,
+      7.353506,
+      -131.3156
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 23,
+    "name": "PointDefense_8",
+    "source": "HP_Allegiance_Small_Quad_Turret_08",
+    "position": [
+      31.97968,
+      7.064232,
+      -124.683388
+    ],
+    "profile": 14,
+    "targetable": true
+  },
+  {
+    "id": 24,
+    "name": "Engine_0",
+    "source": "Derived from stern engine geometry bounds",
+    "position": [
+      -23.2935753,
+      0.0,
+      -217.347046
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 25,
+    "name": "Engine_1",
+    "source": "Derived from stern engine geometry bounds",
+    "position": [
+      -7.76452541,
+      0.0,
+      -217.347046
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 26,
+    "name": "Engine_2",
+    "source": "Derived from stern engine geometry bounds",
+    "position": [
+      7.76452541,
+      0.0,
+      -217.347046
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 27,
+    "name": "Engine_3",
+    "source": "Derived from stern engine geometry bounds",
+    "position": [
+      23.2935753,
+      0.0,
+      -217.347046
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 28,
+    "name": "ShieldGenerator_0",
+    "source": "Shield_Generator with derived lateral offsets",
+    "position": [
+      -7.24689,
+      31.9614868,
+      -181.903931
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 29,
+    "name": "ShieldGenerator_1",
+    "source": "Shield_Generator with derived lateral offsets",
+    "position": [
+      0.0,
+      31.9614868,
+      -181.903931
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 30,
+    "name": "ShieldGenerator_2",
+    "source": "Shield_Generator with derived lateral offsets",
+    "position": [
+      7.24689,
+      31.9614868,
+      -181.903931
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 31,
+    "name": "TractorBeam",
+    "source": "HP_Trac_Bone",
+    "position": [
+      -2.40164218e-06,
+      10.8550987,
+      -58.2337532
+    ],
+    "profile": 0,
+    "targetable": true
+  },
+  {
+    "id": 32,
+    "name": "SensorArray",
+    "source": "Superstructure_Top",
+    "position": [
+      0.0,
+      -19.8627052,
+      -3.36898875
+    ],
+    "profile": 0,
+    "targetable": true
+  }
+]

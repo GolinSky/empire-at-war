@@ -1,0 +1,152 @@
+{
+  "phase": "Before targeted integration repairs",
+  "summary": {
+    "total": 1308,
+    "passed": 1288,
+    "failed": 20,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "failures": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.HullSizeAndWeaponOrigins_MatchTheImportedGeometry",
+      "Status": "Failed",
+      "Duration": 0.007396,
+      "Message": "  Battery_ICT_01\r\n  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.AllegianceShipTests.HullSizeAndWeaponOrigins_MatchTheImportedGeometry () [0x00150] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\AllegianceShipTests.cs:111\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDpsEstimatorTests.Estimate_UsesDraftWeaponRules",
+      "Status": "Failed",
+      "Duration": 2.2780615,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDpsEstimatorTests.Estimate_UsesDraftWeaponRules () [0x00012] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDpsEstimatorTests.cs:32\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.AbilityDraft_UpdatesAliasedSettingsAndDefinitionConsumers",
+      "Status": "Failed",
+      "Duration": 2.7232547,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.AbilityDraft_UpdatesAliasedSettingsAndDefinitionConsumers () [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:42\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(16)",
+      "Status": "Failed",
+      "Duration": 1.6592756,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices (System.Int32 id) [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:67\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(17)",
+      "Status": "Failed",
+      "Duration": 1.5813844,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices (System.Int32 id) [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:67\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(18)",
+      "Status": "Failed",
+      "Duration": 2.0766031,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices (System.Int32 id) [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:67\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.WeaponDraft_UpdatesConsumersAndCompareFieldsThenUndoRestoresThem",
+      "Status": "Failed",
+      "Duration": 1.7160692,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.WeaponDraft_UpdatesConsumersAndCompareFieldsThenUndoRestoresThem () [0x0000d] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceDraftUsageTests.cs:15\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceHardpointsPopupTests.Popup_ShowsAllHardpointsAndKeepsDraftEditingOpen",
+      "Status": "Failed",
+      "Duration": 1.6643232,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceHardpointsPopupTests+<Popup_ShowsAllHardpointsAndKeepsDraftEditingOpen>d__0.MoveNext () [0x00075] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceHardpointsPopupTests.cs:19\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\\Library\\PackageCache\\com.unity.test-framework@76560ee600cb\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.CurrentRoster_AllEntriesResolveToDataPrefabsAndApprovedFields",
+      "Status": "Failed",
+      "Duration": 1.6181361,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.CurrentRoster_AllEntriesResolveToDataPrefabsAndApprovedFields () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:15\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.FullRegisteredPreset_CanCaptureCurrentSchemaWithoutRuntimeWrites",
+      "Status": "Failed",
+      "Duration": 2.079496,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.FullRegisteredPreset_CanCaptureCurrentSchemaWithoutRuntimeWrites () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:96\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.LaserAndProtonBeamSettings_ProduceIndependentTargetsInEveryCompareCell",
+      "Status": "Failed",
+      "Duration": 1.6362558,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.LaserAndProtonBeamSettings_ProduceIndependentTargetsInEveryCompareCell () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:68\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.TargetLookup_PreservesAllRegisteredFieldsWithoutDuplicates",
+      "Status": "Failed",
+      "Duration": 2.0743319,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.TargetLookup_PreservesAllRegisteredFieldsWithoutDuplicates () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:42\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.UnitAndFactionEdits_UseDistinctOwnersWhileSharedFieldsLink",
+      "Status": "Failed",
+      "Duration": 1.5260254,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.UnitAndFactionEdits_UseDistinctOwnersWhileSharedFieldsLink () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:81\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.WeaponConsumers_IncludeEveryBoundShipSquadronAndStructure",
+      "Status": "Failed",
+      "Duration": 1.6064817,
+      "Message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.BalanceInventoryTests.WeaponConsumers_IncludeEveryBoundShipSquadronAndStructure () [0x00007] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\Balance\\BalanceInventoryTests.cs:55\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.MapLayoutGeneratorTests.Fields_StayOutOfStationFootprints",
+      "Status": "Failed",
+      "Duration": 13.9275648,
+      "Message": "Unhandled log message: '[Error] Failed to handle /api/exec request: Main thread operation timed out after 5000ms'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "Unity.Pipeline.BasePipelineServer/<HandleExecRequest>d__115:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2071)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteGated>d__105:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:1404)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<>c__DisplayClass115_1/<<HandleExecRequest>b__0>d:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2033)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<object>:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteCommandByName>d__133:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2478)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<object>:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteCommand>d__134:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2517)\r\nSystem.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()\r\n\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.MapLayoutGeneratorTests.Generate_EverySizeAndDifficulty_KeepsFeaturesInsideBounds",
+      "Status": "Failed",
+      "Duration": 9.2681311,
+      "Message": "Unhandled log message: '[Error] Failed to handle /api/exec request: Main thread operation timed out after 5000ms'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "Unity.Pipeline.BasePipelineServer/<HandleExecRequest>d__115:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2071)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteGated>d__105:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:1404)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<>c__DisplayClass115_1/<<HandleExecRequest>b__0>d:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2033)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<object>:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteCommandByName>d__133:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2478)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<object>:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteCommand>d__134:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Common/BasePipelineServer.cs:2517)\r\nSystem.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()\r\n\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries",
+      "Status": "Failed",
+      "Duration": 0.0776986,
+      "Message": "  Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 28\r\n  But was:  25\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries () [0x000b5] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TeamColorViewPrefabTests.cs:46\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryUnitRadar_ReachesItsLongestGun",
+      "Status": "Failed",
+      "Duration": 0.0048568,
+      "Message": "  AllegianceShipData\r\n  Expected: greater than or equal to 877.499939f\r\n  But was:  750.0f\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryUnitRadar_ReachesItsLongestGun () [0x00021] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:287\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.ScopedWeapons_AreMountedOnlyByTheirOwners",
+      "Status": "Failed",
+      "Duration": 0.005052,
+      "Message": "  Allegiance mounts QuadTurboLaser\r\n  Expected string length 8 but was 10. Strings differ at index 0.\r\n  Expected: \"Mandator\"\r\n  But was:  \"Allegiance\"\r\n  -----------^\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.ScopedWeapons_AreMountedOnlyByTheirOwners () [0x00084] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:253\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Entities.EntityBindingsTests.EntityPrefabs_HaveExplicitRequiredAndUniqueInjectionReferences",
+      "Status": "Failed",
+      "Duration": 0.1909207,
+      "Message": "  Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab\r\n  Expected: all items not null\r\n  But was:  < <AllegianceShipView (EmpireAtWar.Components.TeamColor.TeamColorView)>, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Entities.EntityBindingsTests.EntityPrefabs_HaveExplicitRequiredAndUniqueInjectionReferences () [0x000de] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\EntityBindingsTests.cs:27\r\n"
+    }
+  ]
+}
