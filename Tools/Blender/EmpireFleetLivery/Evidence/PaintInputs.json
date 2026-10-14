@@ -1,0 +1,98 @@
+[
+  {
+    "ship": "Procursator",
+    "material": "Procursator_M013",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Procursator/Procursator_Empire_Procursator_Hull.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Procursator/Procursator_WornPaint_Procursator_M013.png"
+  },
+  {
+    "ship": "Procursator",
+    "material": "Procursator_M014",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Procursator/Procursator_Empire_Procursator_Super_Structure.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Procursator/Procursator_WornPaint_Procursator_M014.png"
+  },
+  {
+    "ship": "Allegiance",
+    "material": "Allegiance_Allegiance_Hull_LowContrast_0",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_hull_material_lowcontrast_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_Hull_LowContrast_0.png"
+  },
+  {
+    "ship": "Allegiance",
+    "material": "Allegiance_Allegiance_objHull_0",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_Empire_Allegiance_Star_Destroyer_Hull_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_objHull_0.png"
+  },
+  {
+    "ship": "Allegiance",
+    "material": "Allegiance_Allegiance_objImpSuperstructure_0",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_Empire_Imperial_Star_Destroyer_Super_Structure_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_objImpSuperstructure_0.png"
+  },
+  {
+    "ship": "Allegiance",
+    "material": "Allegiance_Allegiance_objSuperstructure_0",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_Empire_Allegiance_Star_Destroyer_Super_Structure_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_WornPaint_Allegiance_Allegiance_objSuperstructure_0.png"
+  },
+  {
+    "ship": "Titan",
+    "material": "Titan_M013",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_Empire_Titan_Star_Destroyer_Hull.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M013.png"
+  },
+  {
+    "ship": "Titan",
+    "material": "Titan_M015",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_Empire_Titan_Star_Destroyer_Hull_Front.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M015.png"
+  },
+  {
+    "ship": "Titan",
+    "material": "Titan_M014",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_Empire_Titan_Star_Destroyer_SS.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M014.png"
+  },
+  {
+    "ship": "Titan",
+    "material": "Titan_M024",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_Empire_Titan_Star_Destroyer_SS.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M024.png"
+  },
+  {
+    "ship": "Titan",
+    "material": "Titan_M016",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_Empire_Titan_Star_Destroyer_SS_Top.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Titan/Titan_WornPaint_Titan_M016.png"
+  },
+  {
+    "ship": "Tartan",
+    "material": "Tartan_Tartan_Hull_1_002",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_1_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_1_002.png"
+  },
+  {
+    "ship": "Tartan",
+    "material": "Tartan_Tartan_Hull_2_002",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_2_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_2_002.png"
+  },
+  {
+    "ship": "Tartan",
+    "material": "Tartan_Tartan_Hull_ISD_Kitbash_002",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_Kitbash_Pieces_ISD_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_ISD_Kitbash_002.png"
+  },
+  {
+    "ship": "Tartan",
+    "material": "Tartan_Tartan_Hull_ISD_Kitbash_Unsymm_002",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_Kitbash_Pieces_ISD_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_ISD_Kitbash_Unsymm_002.png"
+  },
+  {
+    "ship": "Tartan",
+    "material": "Tartan_Tartan_Hull_Superstructure_002",
+    "source": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_Superstructure_Albedo.png",
+    "derived": "Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_WornPaint_Tartan_Tartan_Hull_Superstructure_002.png"
+  }
+]

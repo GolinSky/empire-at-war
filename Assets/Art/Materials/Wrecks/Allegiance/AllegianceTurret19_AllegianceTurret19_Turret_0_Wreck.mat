@@ -55,14 +55,14 @@ Material:
     - _Metallic: 0.15
     - _OcclusionStrength: 1
     - _Smoothness: 0.25
-    - _TeamEmissionTint: 0.5
+    - _TeamEmissionTint: 0
     - _TeamLiveryHue: 0
     - _TeamLiveryHueRange: 0.07
     - _TeamLiveryMinSaturation: 0.4
     - _TeamLiveryStrength: 0
     - _TeamMaskStrength: 0
     - _TeamRimPower: 3
-    - _TeamRimStrength: 0.3
+    - _TeamRimStrength: 0
     - _WreckDissolveDuration: 8
     - _WreckDissolveEdgeWidth: 0.08
     - _WreckDissolveNoiseScale: 0.05

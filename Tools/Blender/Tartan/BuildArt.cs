@@ -65,6 +65,7 @@ public static class BuildTartanArt
                     material.SetFloat("_TeamMaskStrength", 1);
                 }
                 if (material.HasProperty("_TeamLiveryStrength")) material.SetFloat("_TeamLiveryStrength", 0);
+                if (material.HasProperty("_TeamRimStrength")) material.SetFloat("_TeamRimStrength", 0);
                 // Neutral source atlas has no authored paint. Recolor only the
                 // small superstructure so living ships and wrecks show ownership.
                 if (sourceName.Contains("Hull_Superstructure"))

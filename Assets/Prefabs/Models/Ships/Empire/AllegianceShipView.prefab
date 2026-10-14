@@ -5866,6 +5866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
   renderers:
+  - {fileID: 576903172496899927}
   - {fileID: 2966670269817279378}
   - {fileID: 3542388238243625225}
   - {fileID: 6321933908160489938}
@@ -5981,8 +5982,11 @@ MonoBehaviour:
   - {fileID: 6636751605712061686}
   - {fileID: 1889273245453753524}
   - {fileID: 8276556274966811794}
-  - {fileID: 2561499397476259715}
-  - {fileID: 576903172496899927}
+  - {fileID: 7227304579622848413}
+  - {fileID: 650268875053814790}
+  - {fileID: 7413230647160101176}
+  - {fileID: 1947354296347925025}
+  - {fileID: 2724415228439531562}
   revealRadius: 105
   staysRevealedOnceSeen: 0
 --- !u!114 &7532020912885601778
@@ -6134,6 +6138,8 @@ MonoBehaviour:
   - {fileID: 2131090745105940665}
   - {fileID: 8276556274966811794}
   - {fileID: 8464260037742643359}
+  - {fileID: 7227304579622848413}
+  - {fileID: 650268875053814790}
   - {fileID: 2561499397476259715}
 --- !u!114 &7256685330956268558
 MonoBehaviour:
@@ -18391,6 +18397,12 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 7438108210059673022}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &650268875053814790 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7944138750929840568, guid: 23c479da004caf944bd19cb4e2db8a62,
+    type: 3}
+  m_PrefabInstance: {fileID: 7438108210059673022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &679177707005969784 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7950424014817687750, guid: 23c479da004caf944bd19cb4e2db8a62,
@@ -18952,6 +18964,12 @@ MeshRenderer:
 --- !u!23 &7207420103343305432 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 233235448674946918, guid: 23c479da004caf944bd19cb4e2db8a62,
+    type: 3}
+  m_PrefabInstance: {fileID: 7438108210059673022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7227304579622848413 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 249372790098803235, guid: 23c479da004caf944bd19cb4e2db8a62,
     type: 3}
   m_PrefabInstance: {fileID: 7438108210059673022}
   m_PrefabAsset: {fileID: 0}

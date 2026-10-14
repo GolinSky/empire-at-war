@@ -45,3 +45,9 @@
 - Blender 3.6.23, dedicated port `9891`, `Start.py` / `Call.py` pin that listener. Start a separate hidden Blender process; do not point the converter at a user's working scene.
 - Converter repairs material slots using `ISDIRemake/Convert.py` workflow; exporter `export_isd_i.py`. Preparation uses the established binary material/source audit helpers.
 - Evidence: `Tools/Blender/Procursator/Evidence/`; editable source archive and previews `output/remake-empire-units/Procursator-Converted/`.
+
+## Worn livery correction — 2026-10-14
+
+- After rebuilding art/gameplay, run the shared [Empire fleet livery workflow](../EmpireFleetLivery/README.md). It supersedes the earlier team-mask/rim and stripe rendering steps.
+- Neutral hull, small chipped hue-based stripes like Acclamator; live/wreck materials, ownership bindings, hologram and icons updated.
+- Canonical current renders and verification: `Tools/Blender/EmpireFleetLivery/`. All four ship test suites passed (`39/39` total).

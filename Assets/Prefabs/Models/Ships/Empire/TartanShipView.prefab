@@ -779,6 +779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
   renderers:
+  - {fileID: 6476203660060066556}
   - {fileID: 8421262712604636252}
   - {fileID: 515130395421139223}
   - {fileID: 4296139139831831436}
@@ -789,8 +790,8 @@ MonoBehaviour:
   - {fileID: 9023095413822241664}
   - {fileID: 2046154917491969538}
   - {fileID: 3398651674523461359}
-  - {fileID: 6896194605718455207}
-  - {fileID: 6476203660060066556}
+  - {fileID: 5545493737600967402}
+  - {fileID: 5592946189531581440}
   revealRadius: 0
   staysRevealedOnceSeen: 0
 --- !u!114 &170039148551410930
@@ -816,6 +817,8 @@ MonoBehaviour:
   - {fileID: 9023095413822241664}
   - {fileID: 2046154917491969538}
   - {fileID: 3398651674523461359}
+  - {fileID: 5545493737600967402}
+  - {fileID: 5592946189531581440}
   - {fileID: 6896194605718455207}
 --- !u!114 &7314606914873174213
 MonoBehaviour:
@@ -2307,6 +2310,18 @@ MeshRenderer:
 --- !u!23 &4296139139831831436 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5358435278928859701, guid: 6b4a1003653c007409f6da37232d56cf,
+    type: 3}
+  m_PrefabInstance: {fileID: 8197131554165475769}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5545493737600967402 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4411137964729838419, guid: 6b4a1003653c007409f6da37232d56cf,
+    type: 3}
+  m_PrefabInstance: {fileID: 8197131554165475769}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5592946189531581440 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4349401208558601657, guid: 6b4a1003653c007409f6da37232d56cf,
     type: 3}
   m_PrefabInstance: {fileID: 8197131554165475769}
   m_PrefabAsset: {fileID: 0}

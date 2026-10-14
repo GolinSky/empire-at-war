@@ -125,7 +125,7 @@ public static class VerifyTitan
         Check(abilities.arraySize==2 && abilities.GetArrayElementAtIndex(0).intValue==5 && abilities.GetArrayElementAtIndex(1).intValue==22,"Approved existing Power to Weapons and Tractor Beam");
         foreach(int id in new[]{5,22})Check(Row(Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").FindProperty("definitions.keyValue"),id).FindPropertyRelative("value.settings").managedReferenceValue!=null,"Existing ability settings "+id);
         var paint=visual.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("TeamStripes")).ToArray();
-        Check(paint.Length>0 && paint.All(r=>r.sharedMaterial.GetFloat("_TeamMaskStrength")==1),"Derived team stripes");
+        Check(paint.Length>0 && paint.All(r=>r.sharedMaterial.GetFloat("_TeamLiveryStrength")==1 && r.sharedMaterial.GetFloat("_TeamMaskStrength")==0),"Derived worn team stripes");
         var gamePaint=root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("TeamStripes")).ToArray();
         Check(gamePaint.Length==paint.Length && gamePaint.All(r=>References(Config(root,"TeamColorView").FindProperty("meshRenderers")).Contains(r)),"Gameplay team stripe ownership");
         Check(!EditorUtility.scriptCompilationFailed,"Unity compilation succeeded");

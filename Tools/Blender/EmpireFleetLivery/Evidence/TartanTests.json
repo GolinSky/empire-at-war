@@ -1,0 +1,76 @@
+{
+  "status": "completed",
+  "duration": 0.7,
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.Geometry_MatchesVenatorRatioAndFitsCollision",
+      "Status": "Passed",
+      "Duration": 0.0320199,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.PowerToWeapons_UsesExistingSelfActivatedAbility",
+      "Status": "Passed",
+      "Duration": 0.0104076,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Ships/Empire/Tartan.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0013267,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Ships/Empire/TartanShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0040034,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Wrecks/TartanWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0019767,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Ui/Reinforcement/TartanReinforcementView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0011041,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck",
+      "Status": "Passed",
+      "Duration": 0.3128747,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedUnit_HasRequestedStatsAndNoHangar",
+      "Status": "Passed",
+      "Duration": 0.0007512,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.Weapons_AreTargetableAndBoundToTheirSourceMuzzles",
+      "Status": "Passed",
+      "Duration": 0.007287,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

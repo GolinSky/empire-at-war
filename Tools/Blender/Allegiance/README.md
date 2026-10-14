@@ -21,3 +21,9 @@
 - Automated checks: `AllegianceShipTests` covers balance, disabled squadrons, targeting/destruction, main batteries, registrations/economy, saved references, hull/collision/muzzle positions and three deterministic capital-ship simulations. Simulator runs do not verify Play Mode movement, visual turret tracking or player UI interaction.
 
 - Spawn repair (2026-10-14): `RepairInjection.cs` replaces the donor injection list with 28 current hardpoints + team-color view. Builder/generator now rebuild this list; the new VContainer registration regression failed before repair and the Allegiance suite passed 12/12 afterward.
+
+## Worn livery correction — 2026-10-14
+
+- After rebuilding art/gameplay, run the shared [Empire fleet livery workflow](../EmpireFleetLivery/README.md). It supersedes the earlier team-mask/rim and stripe rendering steps.
+- Neutral hull, small chipped hue-based stripes like Acclamator; live/wreck materials, ownership bindings, hologram and icons updated.
+- Canonical current renders and verification: `Tools/Blender/EmpireFleetLivery/`. All four ship test suites passed (`39/39` total).

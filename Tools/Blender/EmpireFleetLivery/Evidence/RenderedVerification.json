@@ -1,0 +1,26 @@
+{
+  "allEightPalettesDistinct": true,
+  "originalAlbedosUnchanged": true,
+  "reports": [
+    {
+      "ship": "Procursator",
+      "TeamChangedSurfaceFraction": 0.004637417594907933,
+      "WreckTeamChangedSurfaceFraction": 0.0069605568445475635
+    },
+    {
+      "ship": "Allegiance",
+      "TeamChangedSurfaceFraction": 0.00461226558540294,
+      "WreckTeamChangedSurfaceFraction": 0.005466568699485672
+    },
+    {
+      "ship": "Titan",
+      "TeamChangedSurfaceFraction": 0.0032614534571406644,
+      "WreckTeamChangedSurfaceFraction": 0.0041055164928507385
+    },
+    {
+      "ship": "Tartan",
+      "TeamChangedSurfaceFraction": 0.004964641362389955,
+      "WreckTeamChangedSurfaceFraction": 0.002110379228752318
+    }
+  ]
+}

@@ -23,3 +23,9 @@
 6. Run `BuildArt.cs`, `BuildShip.cs`, `Render.cs`, `Register.cs`, `Verify.cs`, `BattleChecks.cs` sequentially using `unity command run_script --file Tools/Blender/Tartan/<file> --entry <Class>.Main --timeout_ms 60000 --json`. Inspect nested `result.success` before continuing.
 7. Inspect clean scenes, run `unity command run_tests --mode editor --filter TartanTests --async_tests true --json`, then poll `test_status`. Run relevant shared regressions when requested.
 8. `uv run --with pillow python Tools/Blender/Tartan/Package.py` checks source hashes, live/wreck palettes and icon alpha bounds, then retains the editable output.
+
+## Worn livery correction — 2026-10-14
+
+- After rebuilding art/gameplay, run the shared [Empire fleet livery workflow](../EmpireFleetLivery/README.md). It supersedes the earlier team-mask/rim and stripe rendering steps.
+- Neutral hull, small chipped hue-based stripes like Acclamator; live/wreck materials, ownership bindings, hologram and icons updated.
+- Canonical current renders and verification: `Tools/Blender/EmpireFleetLivery/`. All four ship test suites passed (`39/39` total).
