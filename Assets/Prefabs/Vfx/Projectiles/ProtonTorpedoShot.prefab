@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView
   flash: {fileID: 2907477477502452610}
   duration: 0.1
+  sizeScale: 0.13333334
 --- !u!1 &1181565046492711094
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +336,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.18
+      scalar: 0.54
       minScalar: 5
       maxCurve:
         serializedVersion: 2

@@ -16,6 +16,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Color _color;
 
         [SerializeField, Range(0.05f, 0.15f)] private float duration = 0.1f;
+        [Tooltip("Scales the launch flash independently of the projectile visual.")]
+        [SerializeField, Min(0f)] private float sizeScale = 1f;
         private float _width;
         private float _length;
         private float _startedAt;
@@ -28,8 +30,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _origin = muzzle.position;
             _direction = (aimPoint - _origin).normalized;
             _color = Color.Lerp(color, Color.white, 0.35f);
-            _width = size * WIDTH_MULTIPLIER;
-            _length = size * LENGTH_MULTIPLIER;
+            _width = size * sizeScale * WIDTH_MULTIPLIER;
+            _length = size * sizeScale * LENGTH_MULTIPLIER;
             _startedAt = Time.time;
             flash.enabled = true;
             Tick();

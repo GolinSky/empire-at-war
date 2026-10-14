@@ -10,6 +10,45 @@ namespace EmpireAtWar.Tests.Weapon
 {
     public sealed class ShotEffectPoolLifecycleTests
     {
+        [TestCase(WeaponFamily.Torpedo)]
+        [TestCase(WeaponFamily.IonTorpedo)]
+        [TestCase(WeaponFamily.FighterTorpedo)]
+        public void LargeTorpedo_KeepsCompactLaunchFlashAndLongTrail(WeaponFamily family)
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(family),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetRangeClass(WeaponRangeClass.Standard));
+            var shot = Object.Instantiate(profile.ShotPrefab);
+            var muzzle = new GameObject("Test muzzle");
+            var target = new GameObject("Test target");
+            var flights = new BoltFlightBatch();
+            try
+            {
+                target.transform.position = Vector3.forward * 100f;
+                shot.Fire(muzzle.transform, target.transform, target.transform, Vector3.zero, profile, flights);
+                var serialized = new SerializedObject(shot);
+                var flash = new SerializedObject(serialized.FindProperty("muzzleFlash").objectReferenceValue);
+                var line = (LineRenderer)flash.FindProperty("flash").objectReferenceValue;
+                var head = (ParticleSystem)serialized.FindProperty("head").objectReferenceValue;
+                var trail = (ParticleSystem)serialized.FindProperty("trail").objectReferenceValue;
+
+                Assert.That(head.main.startSize.constant, Is.EqualTo(9f).Within(0.001f));
+                Assert.That(trail.main.startSize.constant, Is.EqualTo(5.4f).Within(0.001f));
+                Assert.That(trail.main.startLifetime.constant, Is.EqualTo(0.54f).Within(0.001f));
+                Assert.That(line.widthMultiplier, Is.EqualTo(3.6f).Within(0.001f));
+                Assert.That(Vector3.Distance(line.GetPosition(0), line.GetPosition(1)),
+                    Is.EqualTo(7.2f).Within(0.001f));
+            }
+            finally
+            {
+                flights.Dispose();
+                Object.DestroyImmediate(shot.gameObject);
+                Object.DestroyImmediate(muzzle);
+                Object.DestroyImmediate(target);
+            }
+        }
+
         [TestCase("Projectile")]
         [TestCase("DualProjectile")]
         [TestCase("QuadProjectile")]
