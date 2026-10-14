@@ -6,8 +6,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// <summary>
     /// Laser / turbolaser bolt: tracks ships but keeps its launch aim against strikecraft,
     /// arriving exactly when the scheduled damage lands. The particle stays at the transform origin.
-    /// The bolt always sits on the line from the muzzle to the predicted impact point, so steering
-    /// is spread over the whole flight instead of swinging at the end. <see cref="BoltFlightBatch"/> flies it.
+    /// The bolt sits on the line from its anchor (the muzzle, then its position at each shield clip) to the
+    /// predicted impact point, so steering is spread over the flight instead of swinging at the end. <see cref="BoltFlightBatch"/> flies it.
     /// </summary>
     public class BoltShot : ShotEffect
     {
@@ -31,6 +31,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private Vector3 _aimOffset;
         private Vector3 _start;
+        // Where the drawn flight line starts: the muzzle, then the bolt's position at each shield clip.
+        private Vector3 _anchor;
         private Vector3 _lastAimPoint;
         private Vector3 _flightAimPoint;
         private Vector3 _lastPivotPosition;
@@ -42,6 +44,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private float sizeScale = 3f;
         private float _arrivalTime;
         private float _travelTime;
+        // Flight time left when the bolt was last anchored.
+        private float _anchorDuration;
         private float _progress;
         private float _nextSurfaceRefresh;
 
@@ -67,6 +71,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _targetVelocity = Vector3.zero;
             float travelTime = GetTravelTime(start, _lastAimPoint, profile.ProjectileSpeed);
             _travelTime = travelTime;
+            _anchor = start;
+            _anchorDuration = travelTime;
             _arrivalTime = Time.time + travelTime;
             _isFlying = true;
             Vector3 direction = _lastAimPoint - start;
@@ -119,16 +125,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 return false;
             }
 
-            // Anchored to the muzzle: any aim correction moves the bolt by correction * progress,
-            // so the path bends gently over the whole flight and the heading never snaps.
-            _progress = 1f - remaining / _travelTime;
+            // Between shield clips any aim correction moves the bolt by correction * progress,
+            // so the path bends gently instead of the heading snapping.
+            _progress = 1f - remaining / _anchorDuration;
             return true;
         }
 
         internal BoltPose Pose => new BoltPose
         {
-            Start = _start,
-            Path = _flightAimPoint - _start,
+            Start = _anchor,
+            Path = _flightAimPoint - _anchor,
             Progress = _progress
         };
 
@@ -151,6 +157,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             Vector3 targetPoint = _target.position + _aimOffset;
             if (remaining <= 0f || now >= _nextSurfaceRefresh)
             {
+                // A clip can jump the aim point by metres (shield collapsing mid-flight). Re-anchor at the bolt's
+                // current position first, so the jump bends the rest of the flight instead of teleporting the bolt.
+                if (remaining > 0f)
+                {
+                    _anchor += (_flightAimPoint - _anchor) * (1f - remaining / _anchorDuration);
+                    _anchorDuration = remaining;
+                }
                 _surfaceOffset = ResolveAimPoint(_start, targetPoint) - targetPoint;
                 _nextSurfaceRefresh = now + SURFACE_REFRESH_INTERVAL;
             }
