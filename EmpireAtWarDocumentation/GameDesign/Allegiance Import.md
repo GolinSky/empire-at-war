@@ -31,6 +31,7 @@ tags:
 - Own fitted shield, collision/banked height/selection bounds, wreck, hologram, transparent model icon and silhouette. Complete fog, explosion and team renderer bindings.
 - Existing View/Data Addressables groups retained; ship registry, asset mapping, Empire roster, icon consumers, reinforcement mapping and regeneration mapping registered.
 - Source alpha has no useful livery mask; neutral hull panels retain shared team rim coloring. Eight live/wreck palettes rendered and compared.
+- Engine visual repair (2026-10-14): imported `MeshShield.fx` glow meshes produced detached rings or faint exhaust. They are disabled in the visual prefab; three blue main and four amber secondary additive discs light the original mechanical nozzles. Rebuild with `Tools/Blender/EmpireEngineGlow/FixEmpireEngineGlow.cs` after `BuildArt.cs`.
 
 ## Verification
 
