@@ -64,5 +64,11 @@
     "status": "Passed",
     "Message": null,
     "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SpawnInjection_RegistersEveryCurrentHardpointWithoutNullDonorReferences",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
   }
 ]
