@@ -1,0 +1,380 @@
+[
+  {
+    "name": "Allegiance",
+    "mesh_count": 28,
+    "triangle_corners": 97890,
+    "position_error": 0.0001850128173828125,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret01",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret02",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret03",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret04",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret05",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret06",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret07",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret08",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret09",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret10",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret11",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret12",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret13",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret14",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret15",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret16",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret17",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret18",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret19",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret20",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret21",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret22",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret23",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret24",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret25",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret26",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret27",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret28",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret29",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret30",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret31",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret32",
+    "mesh_count": 4,
+    "triangle_corners": 748,
+    "position_error": 1.6689300537109375e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret33",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret34",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret35",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret36",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret37",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret38",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret39",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret40",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret41",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret42",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret43",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret44",
+    "mesh_count": 4,
+    "triangle_corners": 2226,
+    "position_error": 1.9073486328125e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret45",
+    "mesh_count": 3,
+    "triangle_corners": 459,
+    "position_error": 2.1904706954956055e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret46",
+    "mesh_count": 3,
+    "triangle_corners": 459,
+    "position_error": 2.1904706954956055e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret47",
+    "mesh_count": 3,
+    "triangle_corners": 459,
+    "position_error": 2.1904706954956055e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret48",
+    "mesh_count": 3,
+    "triangle_corners": 459,
+    "position_error": 2.1904706954956055e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret49",
+    "mesh_count": 3,
+    "triangle_corners": 459,
+    "position_error": 2.1904706954956055e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret50",
+    "mesh_count": 3,
+    "triangle_corners": 459,
+    "position_error": 2.1904706954956055e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret51",
+    "mesh_count": 3,
+    "triangle_corners": 477,
+    "position_error": 2.5331974029541016e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret52",
+    "mesh_count": 3,
+    "triangle_corners": 477,
+    "position_error": 2.5331974029541016e-06,
+    "uv_error": 0
+  },
+  {
+    "name": "AllegianceTurret53",
+    "mesh_count": 3,
+    "triangle_corners": 477,
+    "position_error": 2.5331974029541016e-06,
+    "uv_error": 0
+  }
+]

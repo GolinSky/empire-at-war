@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Temp/AllegianceImport/RunVerification.cs",
+      "entry": "EmpireAtWar.Tests.Editor.AllegianceImportVerification.Main",
+      "timeout_ms": 60000
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 1577,
+      "executeMs": 4643,
+      "assemblyName": "PipelineRunScript_RunVerification_579f79b780c54e3daedf730bda588800",
+      "success": true,
+      "result": "Ten Allegiance saved-asset, hardpoint destruction and combat checks passed."
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

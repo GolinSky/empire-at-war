@@ -1,0 +1,254 @@
+[
+  {
+    "name": "Battery_TL_01",
+    "attachment": "TL_01",
+    "fireBone": "TL_01_FP_01",
+    "weaponType": 3,
+    "id": 0,
+    "position": [
+      -31.620924,
+      -11.2622814,
+      29.1620026
+    ]
+  },
+  {
+    "name": "Battery_TL_02",
+    "attachment": "TL_02",
+    "fireBone": "TL_02_FP_01",
+    "weaponType": 3,
+    "id": 1,
+    "position": [
+      31.6191063,
+      -11.2622814,
+      29.161665
+    ]
+  },
+  {
+    "name": "Battery_TL_03",
+    "attachment": "TL_03",
+    "fireBone": "TL_03_FP_01",
+    "weaponType": 3,
+    "id": 2,
+    "position": [
+      -42.2303658,
+      -11.4576807,
+      -4.48708868
+    ]
+  },
+  {
+    "name": "Battery_QTL_01",
+    "attachment": "QTL_01",
+    "fireBone": "FP_01",
+    "weaponType": 20,
+    "id": 3,
+    "position": [
+      58.69915,
+      -5.984951,
+      -80.2269745
+    ]
+  },
+  {
+    "name": "Battery_QTL_03",
+    "attachment": "QTL_03",
+    "fireBone": "FP_01",
+    "weaponType": 20,
+    "id": 4,
+    "position": [
+      52.40322,
+      -5.33340454,
+      -65.93978
+    ]
+  },
+  {
+    "name": "Battery_QTL_05",
+    "attachment": "QTL_05",
+    "fireBone": "FP_01",
+    "weaponType": 20,
+    "id": 5,
+    "position": [
+      46.11269,
+      -4.686798,
+      -51.65257
+    ]
+  },
+  {
+    "name": "Battery_QTL_07",
+    "attachment": "QTL_07",
+    "fireBone": "FP_01",
+    "weaponType": 20,
+    "id": 6,
+    "position": [
+      -42.9920235,
+      -4.30363464,
+      -45.89097
+    ]
+  },
+  {
+    "name": "Battery_QTL_09",
+    "attachment": "QTL_09",
+    "fireBone": "FP_01",
+    "weaponType": 20,
+    "id": 7,
+    "position": [
+      -49.28259,
+      -4.950245,
+      -60.1783943
+    ]
+  },
+  {
+    "name": "Battery_QTL_11",
+    "attachment": "QTL_11",
+    "fireBone": "FP_01",
+    "weaponType": 20,
+    "id": 8,
+    "position": [
+      -55.5785065,
+      -5.60178,
+      -74.46553
+    ]
+  },
+  {
+    "name": "Battery_QL_01",
+    "attachment": "QL_01",
+    "fireBone": "FP_01",
+    "weaponType": 5,
+    "id": 9,
+    "position": [
+      41.1490669,
+      -1.43003464,
+      -81.120285
+    ]
+  },
+  {
+    "name": "Battery_QL_07",
+    "attachment": "QL_07",
+    "fireBone": "FP_01",
+    "weaponType": 5,
+    "id": 10,
+    "position": [
+      29.1269436,
+      0.8426771,
+      -24.4687347
+    ]
+  },
+  {
+    "name": "Battery_QL_15",
+    "attachment": "QL_15",
+    "fireBone": "FP_01",
+    "weaponType": 5,
+    "id": 11,
+    "position": [
+      18.2783985,
+      12.6285439,
+      -87.4204254
+    ]
+  },
+  {
+    "name": "Battery_QL_18",
+    "attachment": "QL_18",
+    "fireBone": "FP_01",
+    "weaponType": 5,
+    "id": 12,
+    "position": [
+      -18.2783451,
+      12.9685478,
+      -92.69227
+    ]
+  },
+  {
+    "name": "Battery_QL_24",
+    "attachment": "QL_24",
+    "fireBone": "FP_01",
+    "weaponType": 5,
+    "id": 13,
+    "position": [
+      -33.38834,
+      3.65460968,
+      -72.93734
+    ]
+  },
+  {
+    "name": "Battery_QL_30",
+    "attachment": "QL_30",
+    "fireBone": "FP_01",
+    "weaponType": 5,
+    "id": 14,
+    "position": [
+      -40.9791336,
+      -2.46253586,
+      -65.442276
+    ]
+  },
+  {
+    "name": "Battery_IC_01",
+    "attachment": "IC_01",
+    "fireBone": "IC_01_FP_01",
+    "weaponType": 32,
+    "id": 15,
+    "position": [
+      -10.4274635,
+      -10.1558495,
+      96.60734
+    ]
+  },
+  {
+    "name": "Battery_IC_02",
+    "attachment": "IC_02",
+    "fireBone": "IC_02_FP_01",
+    "weaponType": 32,
+    "id": 16,
+    "position": [
+      10.4355764,
+      -10.1558495,
+      96.6107
+    ]
+  },
+  {
+    "name": "Battery_IC_05",
+    "attachment": "IC_05",
+    "fireBone": "IC_05_FP_01",
+    "weaponType": 32,
+    "id": 17,
+    "position": [
+      -67.87818,
+      -10.1935158,
+      -84.727
+    ]
+  },
+  {
+    "name": "Battery_IC_06",
+    "attachment": "IC_06",
+    "fireBone": "IC_06_FP_01",
+    "weaponType": 32,
+    "id": 18,
+    "position": [
+      67.86219,
+      -10.1934624,
+      -84.73115
+    ]
+  },
+  {
+    "name": "Battery_ICT_01",
+    "attachment": "ICT_01",
+    "fireBone": "FB_01",
+    "weaponType": 32,
+    "id": 19,
+    "position": [
+      22.0237484,
+      -10.7388649,
+      63.7636566
+    ]
+  },
+  {
+    "name": "Battery_ICT_04",
+    "attachment": "ICT_04",
+    "fireBone": "FB_01",
+    "weaponType": 32,
+    "id": 20,
+    "position": [
+      -22.0161533,
+      -10.7388649,
+      63.7877121
+    ]
+  }
+]

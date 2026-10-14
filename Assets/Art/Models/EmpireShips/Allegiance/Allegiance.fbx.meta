@@ -1,0 +1,250 @@
+fileFormatVersion: 2
+guid: 68c545043a4f8fb47a47e1773babc81b
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Col_0
+    second: {fileID: 2100000, guid: d780b6e9d271cce4d8b796176fa10e3e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Engine_Exhaust_0
+    second: {fileID: 2100000, guid: b6126423e10841d44bd7395a3b25bf20, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Engine_Glow_0
+    second: {fileID: 2100000, guid: 160cdaef4ed146b4193235f613b2f029, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Engine_Glow_3_0
+    second: {fileID: 2100000, guid: 4e11f266f5a33f247b47944a655de0a2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Engine_Glow_Push_sm_0
+    second: {fileID: 2100000, guid: 98a7f80f574249943aec66b6993f93a1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Engine_Glow_push_0
+    second: {fileID: 2100000, guid: 150e6b3311cc0e74fb505bbe5254ea1e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hangar_2_Lights_0
+    second: {fileID: 2100000, guid: f9eaadd99d401cd409f0fea478876344, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hangar_3_0
+    second: {fileID: 2100000, guid: e490d9d898c93cb468bc4285e622c4ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hangar_3_Lights_0
+    second: {fileID: 2100000, guid: dd01df3e55e9707419b2912903e3f95f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hangar_3_Yellow_0
+    second: {fileID: 2100000, guid: b148f1f08e749674f989ebcf634ff686, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hangar_3_Yellow_LightDim_0
+    second: {fileID: 2100000, guid: 417c67503d012eb48a4a87ebd0f1f608, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hangar_block_0
+    second: {fileID: 2100000, guid: 9d6e45ede370ef64289f4eff23921a76, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Hull_LowContrast_0
+    second: {fileID: 2100000, guid: 2cfe98758b2fe5c4fabd59f781f775ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Lights01_0
+    second: {fileID: 2100000, guid: 1a586fbfb1113a2478c57b2fdb42c296, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Lights_Bridge01_0
+    second: {fileID: 2100000, guid: e3c3eaeafa4966045a5c8697db062d6f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow01_0
+    second: {fileID: 2100000, guid: 42605972e2f2d284a9dc0d250660aad6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow02_0
+    second: {fileID: 2100000, guid: c3a28bd7e178adf49af6c628d18b4800, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow03_0
+    second: {fileID: 2100000, guid: 148e45763123dd54aa421fc7a7a05270, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow04_0
+    second: {fileID: 2100000, guid: f7fb18a66995a9a449561098ee273a69, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow05_0
+    second: {fileID: 2100000, guid: 2891da4e95c1fae408683fbd6294a507, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow06_0
+    second: {fileID: 2100000, guid: cb55c487dafa7804c92f73549d8e7819, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow07_0
+    second: {fileID: 2100000, guid: 19863ac1b27962346b7bcf394b6be48e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shadow08_0
+    second: {fileID: 2100000, guid: 8e77dd448221304479b2c086536895ea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_Shield_0
+    second: {fileID: 2100000, guid: 6c39190235df01246848c0d2897dafa9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_objBridge_0
+    second: {fileID: 2100000, guid: 1d474a1ea4a5388428505fe0eb77b985, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_objHull_0
+    second: {fileID: 2100000, guid: 7b7e4e0f561d94849bddeac08880e799, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_objImpSuperstructure_0
+    second: {fileID: 2100000, guid: fa4e1e7a1824668439b5a65d1930c9b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Allegiance_objSuperstructure_0
+    second: {fileID: 2100000, guid: 7d4c9a8346fbe174b95466298dfeaffe, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.0002
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

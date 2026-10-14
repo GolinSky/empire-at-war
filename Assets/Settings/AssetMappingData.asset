@@ -1295,6 +1295,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: AllegianceShipView
+      value:
+        m_AssetGUID: b31bfbf5f42265c4e912a5b25ed4ca6a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AllegianceShipData
+      value:
+        m_AssetGUID: dc5964e620c429e4bb031161caed2cbf
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: TartanShipView
       value:
         m_AssetGUID: f4383e14607b20346b0b482906dbd074

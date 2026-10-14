@@ -325,6 +325,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc5964e620c429e4bb031161caed2cbf
+    m_Address: AllegianceShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dfcebba1024335948a6439c9e7539ed0
     m_Address: ARC170SquadronData
     m_ReadOnly: 0

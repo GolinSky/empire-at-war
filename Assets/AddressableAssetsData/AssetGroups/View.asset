@@ -300,6 +300,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b31bfbf5f42265c4e912a5b25ed4ca6a
+    m_Address: AllegianceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b4d889903f7d4224198e7a03e31d86af
     m_Address: PatrolFrigateShipView
     m_ReadOnly: 0

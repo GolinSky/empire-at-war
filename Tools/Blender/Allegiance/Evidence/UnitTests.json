@@ -1,0 +1,68 @@
+[
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Republic/Venator\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Empire/VictoryII\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.CombatSimulation_FiresAndReceivesDamageAgainstExistingCapitals(\"Rebellion/MonCalCruiser\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.EverySubsystem_InitializesAndCanBeDestroyedIndependently",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.HullSizeAndWeaponOrigins_MatchTheImportedGeometry",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.Registrations_ResolveOwnAssetsAndRequestedEconomy",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Ships/Empire/Allegiance.prefab\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Wrecks/AllegianceWreckView.prefab\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Ui/Reinforcement/AllegianceReinforcementView.prefab\")",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  },
+  {
+    "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedShip_HasRequestedBalanceAndNoSquadrons",
+    "status": "Passed",
+    "Message": null,
+    "StackTrace": null
+  }
+]
