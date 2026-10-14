@@ -1,0 +1,104 @@
+{
+  "focused": {
+    "status": "completed",
+    "duration": 0.8,
+    "summary": {
+      "total": 9,
+      "passed": 9,
+      "failed": 0
+    },
+    "includes": "collision, source muzzles/arcs, explicit hardpoint injection, stats, ability, registrations and four prefab cases"
+  },
+  "observedBroaderRun": {
+    "summary": {
+      "total": 1308,
+      "passed": 1288,
+      "failed": 20,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "duration": 116.41,
+    "failures": [
+      {
+        "name": "EmpireAtWar.Tests.Editor.AllegianceShipTests.HullSizeAndWeaponOrigins_MatchTheImportedGeometry",
+        "message": "  Battery_ICT_01\r\n  Expected: True\r\n  But was:  False\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceDpsEstimatorTests.Estimate_UsesDraftWeaponRules",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.AbilityDraft_UpdatesAliasedSettingsAndDefinitionConsumers",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(16)",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(17)",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.MissingWeaponProfile_ShowsErrorAndOffersOnlyRegisteredChoices(18)",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceDraftUsageTests.WeaponDraft_UpdatesConsumersAndCompareFieldsThenUndoRestoresThem",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceHardpointsPopupTests.Popup_ShowsAllHardpointsAndKeepsDraftEditingOpen",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.CurrentRoster_AllEntriesResolveToDataPrefabsAndApprovedFields",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.FullRegisteredPreset_CanCaptureCurrentSchemaWithoutRuntimeWrites",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.LaserAndProtonBeamSettings_ProduceIndependentTargetsInEveryCompareCell",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.TargetLookup_PreservesAllRegisteredFieldsWithoutDuplicates",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.UnitAndFactionEdits_UseDistinctOwnersWhileSharedFieldsLink",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.BalanceInventoryTests.WeaponConsumers_IncludeEveryBoundShipSquadronAndStructure",
+        "message": "  Expected: <empty>\r\n  But was:  < \"Unapproved ability subtype: SensorJammingSettings\" >\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.MapLayoutGeneratorTests.Fields_StayOutOfStationFootprints",
+        "message": "Unhandled log message: '[Error] Failed to handle /api/exec request: Main thread operation timed out after 5000ms'. Use UnityEngine.TestTools.LogAssert.Expect"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.MapLayoutGeneratorTests.Generate_EverySizeAndDifficulty_KeepsFeaturesInsideBounds",
+        "message": "Unhandled log message: '[Error] Failed to handle /api/exec request: Main thread operation timed out after 5000ms'. Use UnityEngine.TestTools.LogAssert.Expect"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries",
+        "message": "  Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 28\r\n  But was:  25\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.EveryUnitRadar_ReachesItsLongestGun",
+        "message": "  AllegianceShipData\r\n  Expected: greater than or equal to 877.499939f\r\n  But was:  750.0f\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.ScopedWeapons_AreMountedOnlyByTheirOwners",
+        "message": "  Allegiance mounts QuadTurboLaser\r\n  Expected string length 8 but was 10. Strings differ at index 0.\r\n  Expected: \"Mandator\"\r\n  But was:  \"Allegiance\"\r\n  -----------^\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Entities.EntityBindingsTests.EntityPrefabs_HaveExplicitRequiredAndUniqueInjectionReferences",
+        "message": "  Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab\r\n  Expected: all items not null\r\n  But was:  < <AllegianceShipView (EmpireAtWar.Components.TeamColor.TeamColorView)>, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null >\r\n"
+      }
+    ]
+  }
+}

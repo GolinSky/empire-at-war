@@ -901,6 +901,27 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 90
+    displayName: Large Repeating Laser Cannon
+    family: 0
+    caliber: 2
+    mount: 1
+    pattern: 1
+    burstShots: 6
+    rangeClass: 0
+    scope: 0
+    faction: 3
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Tartan anti-squadron battery; project balance, six-shot source burst.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 28
     displayName: Heavy Laser Cannon
     family: 0
