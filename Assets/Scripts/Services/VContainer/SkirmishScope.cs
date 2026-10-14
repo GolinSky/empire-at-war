@@ -50,7 +50,6 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
-using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Timing;
@@ -105,7 +104,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SkirmishStateModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             PlayerRoster roster = new PlayerRoster(((ProjectScope)Parent).GameData.Players);
             builder.RegisterInstance(roster).AsImplementedInterfaces().AsSelf();
-            builder.Register<LocalPlayer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(teamColorPalette);
             builder.Register<TeamColorService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -114,6 +112,7 @@ namespace EmpireAtWar.Services.VContainer
             Factions = Assets.Load<FactionCatalog>(nameof(FactionCatalog));
             builder.RegisterInstance(Factions).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerScopeBootstrap>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleUnitSpawner>(Lifetime.Singleton);
             TooltipSettings tooltipSettings = Assets.Load<TooltipSettings>(nameof(TooltipSettings));
             builder.RegisterInstance(tooltipSettings).AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<TooltipIconData>(builder, Assets);
@@ -137,7 +136,8 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<HardPointOverlayPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AttackDataFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<BattleVictoryModel>(Lifetime.Singleton).As<IBattleOutcomeRule>().AsSelf();
+            // Mode services keep their entry-point order: after the player scopes, before the battle UI.
+            BattleModes.Create(Battle, Assets).ConfigureBattle(builder);
             builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             UiService uiService = Object.Instantiate(Assets.LoadComponent<UiService>(nameof(UiService)), transform);
             builder.RegisterComponent(uiService).AsImplementedInterfaces().AsSelf();
@@ -169,7 +169,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipUiModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitOrderFeedbackUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<StationFacingService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnClearance>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnPoints>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementSpawnRule>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

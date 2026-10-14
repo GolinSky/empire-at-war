@@ -1,4 +1,7 @@
 using EmpireAtWar.Entities.MainMenu;
+using EmpireAtWar.Entities.MainMenu.Simulation;
+using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -42,6 +45,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<MainMenuOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(teamColorPalette);
             builder.Register<SkirmishModel>(Lifetime.Singleton);
+            builder.RegisterInstance(Assets.Load<FactionCatalog>(nameof(FactionCatalog)));
+            builder.Register<SimulationDraft>(Lifetime.Singleton);
+            builder.Register<SimulationMenuLauncher>(Lifetime.Singleton).As<ISimulationLauncher>();
+            builder.Register<SimulationSetupUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel>(Lifetime.Singleton);
             builder.Register<EmpireAtWar.Entities.MainMenu.Survival.SurvivalRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();

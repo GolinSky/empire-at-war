@@ -12,6 +12,7 @@ namespace EmpireAtWar.Components.Weapon
     public sealed class IncomingMissileRegistry : ITickable
     {
         private readonly List<IncomingMissile> _missiles = new List<IncomingMissile>();
+        public void Clear() => _missiles.Clear();
 
         public IncomingMissile Launch(IHealthModelObserver targetHealth, Vector3 origin, float travelTime,
             DamageType damageType = DamageType.ConcussionMissile)

@@ -67,7 +67,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
-                    stationRegistry: new OperationalStationRegistry(),
+                    productionAccess: new OperationalProductionAccess(),
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -131,7 +131,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
-                    stationRegistry: new OperationalStationRegistry(),
+                    productionAccess: new OperationalProductionAccess(),
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -205,7 +205,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
-                    stationRegistry: new OperationalStationRegistry(),
+                    productionAccess: new OperationalProductionAccess(),
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -251,7 +251,7 @@ namespace EmpireAtWar.Tests.Editor
                 unitLimitModel: new EnemyUnitLimitModel(),
                 reinforcementData: null,
                 enemyStructurePlacementService: structurePlacement,
-                stationRegistry: new OperationalStationRegistry(),
+                productionAccess: new OperationalProductionAccess(),
                 squadronLauncher: null,
                 squadronCommander: null,
                 owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -271,6 +271,41 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Factions/Shared/" + typeof(T).Name + ".asset");
             Assert.That(data, Is.Not.Null, typeof(T).Name);
             return data;
+        }
+
+        [Test]
+        public void HostedPurchase_RejectsUpgradesAndRefundsQueuedShipAfterHostLoss()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                var access = new OperationalProductionAccess { ProductionHost = TestPlayers.Human };
+                var timers = new TimerPoolService(); var wallet = new TrackingWallet();
+                var limits = new EnemyUnitLimitModel(); var model = new EnemyFactionModel(null, null);
+                var controller = new EnemyFactionController(model: model, shipFactory: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, timerPoolService: timers, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
+                    unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: access, squadronLauncher: null, squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
+                controller.Purchase(new LevelUnitRequest(faction, 1));
+                Assert.That(wallet.SpendCount, Is.Zero);
+                Assert.That(controller.ForceUpgradeStation(), Is.False);
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
+                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                access.CanProduce = false;
+                GetOnlyActiveTimer(timers).Release(true);
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                Assert.That(limits.CurrentUnitCapacity, Is.Zero);
+                Assert.That(limits.ShipOrdersCount, Is.Zero);
+                controller.LateDispose();
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
         }
 
         private static void SetBackingField<T>(
@@ -390,13 +425,13 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class OperationalStationRegistry : IStationRegistry
+        private sealed class OperationalProductionAccess : IProductionAccess
         {
-            public string Id => nameof(OperationalStationRegistry);
+            public PlayerId ProductionHost { get; set; } = TestPlayers.Enemy;
 
-            public bool HasProductionBase(PlayerId owner) => true;
+            public bool CanProduce { get; set; } = true;
 
-            public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
+            public bool TryGetProductionBase(out IEntity station) =>
                 throw new NotImplementedException();
         }
 
@@ -423,10 +458,12 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class TrackingWallet : IWallet
         {
             public int RefundCount { get; private set; }
+            public int SpendCount { get; private set; }
             public UnitRequest LastRefunded { get; private set; }
 
             public bool TrySpend(UnitRequest unitRequest)
             {
+                SpendCount++;
                 return true;
             }
 

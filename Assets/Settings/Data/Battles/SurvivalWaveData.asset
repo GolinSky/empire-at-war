@@ -1,0 +1,245 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03c8fe5574104914cb0d6391610697d9, type: 3}
+  m_Name: SurvivalWaveData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Game.SurvivalWaveData
+  firstPreparationSeconds: 120
+  preparationSeconds: 60
+  factions:
+  - faction: 0
+    waves:
+    - entries:
+      - isSquadron: 0
+        unitId: 6
+        quantity: 2
+      - isSquadron: 0
+        unitId: 1
+        quantity: 1
+      - isSquadron: 1
+        unitId: 2
+        quantity: 2
+      spawnGroupCount: 1
+    - entries:
+      - isSquadron: 0
+        unitId: 1
+        quantity: 3
+      - isSquadron: 0
+        unitId: 5
+        quantity: 1
+      - isSquadron: 1
+        unitId: 5
+        quantity: 3
+      spawnGroupCount: 2
+    - entries:
+      - isSquadron: 0
+        unitId: 5
+        quantity: 4
+      - isSquadron: 0
+        unitId: 0
+        quantity: 2
+      - isSquadron: 1
+        unitId: 3
+        quantity: 4
+      spawnGroupCount: 3
+    - entries:
+      - isSquadron: 0
+        unitId: 0
+        quantity: 5
+      - isSquadron: 0
+        unitId: 7
+        quantity: 2
+      - isSquadron: 1
+        unitId: 4
+        quantity: 5
+      spawnGroupCount: 4
+    - entries:
+      - isSquadron: 0
+        unitId: 7
+        quantity: 6
+      - isSquadron: 0
+        unitId: 9
+        quantity: 3
+      - isSquadron: 1
+        unitId: 6
+        quantity: 6
+      spawnGroupCount: 4
+  - faction: 1
+    waves:
+    - entries:
+      - isSquadron: 0
+        unitId: 107
+        quantity: 2
+      - isSquadron: 0
+        unitId: 106
+        quantity: 1
+      - isSquadron: 1
+        unitId: 102
+        quantity: 2
+      spawnGroupCount: 1
+    - entries:
+      - isSquadron: 0
+        unitId: 106
+        quantity: 3
+      - isSquadron: 0
+        unitId: 108
+        quantity: 1
+      - isSquadron: 1
+        unitId: 101
+        quantity: 3
+      spawnGroupCount: 2
+    - entries:
+      - isSquadron: 0
+        unitId: 108
+        quantity: 4
+      - isSquadron: 0
+        unitId: 105
+        quantity: 2
+      - isSquadron: 1
+        unitId: 100
+        quantity: 4
+      spawnGroupCount: 3
+    - entries:
+      - isSquadron: 0
+        unitId: 105
+        quantity: 5
+      - isSquadron: 0
+        unitId: 103
+        quantity: 2
+      - isSquadron: 1
+        unitId: 102
+        quantity: 5
+      spawnGroupCount: 4
+    - entries:
+      - isSquadron: 0
+        unitId: 103
+        quantity: 6
+      - isSquadron: 0
+        unitId: 104
+        quantity: 3
+      - isSquadron: 1
+        unitId: 101
+        quantity: 6
+      spawnGroupCount: 4
+  - faction: 2
+    waves:
+    - entries:
+      - isSquadron: 0
+        unitId: 301
+        quantity: 2
+      - isSquadron: 0
+        unitId: 308
+        quantity: 1
+      - isSquadron: 1
+        unitId: 300
+        quantity: 2
+      spawnGroupCount: 1
+    - entries:
+      - isSquadron: 0
+        unitId: 308
+        quantity: 3
+      - isSquadron: 0
+        unitId: 309
+        quantity: 1
+      - isSquadron: 1
+        unitId: 301
+        quantity: 3
+      spawnGroupCount: 2
+    - entries:
+      - isSquadron: 0
+        unitId: 309
+        quantity: 4
+      - isSquadron: 0
+        unitId: 312
+        quantity: 2
+      - isSquadron: 1
+        unitId: 1
+        quantity: 4
+      spawnGroupCount: 3
+    - entries:
+      - isSquadron: 0
+        unitId: 312
+        quantity: 5
+      - isSquadron: 0
+        unitId: 322
+        quantity: 2
+      - isSquadron: 1
+        unitId: 300
+        quantity: 5
+      spawnGroupCount: 4
+    - entries:
+      - isSquadron: 0
+        unitId: 322
+        quantity: 6
+      - isSquadron: 0
+        unitId: 330
+        quantity: 3
+      - isSquadron: 1
+        unitId: 301
+        quantity: 6
+      spawnGroupCount: 4
+  - faction: 3
+    waves:
+    - entries:
+      - isSquadron: 0
+        unitId: 215
+        quantity: 2
+      - isSquadron: 0
+        unitId: 204
+        quantity: 1
+      - isSquadron: 1
+        unitId: 200
+        quantity: 2
+      spawnGroupCount: 1
+    - entries:
+      - isSquadron: 0
+        unitId: 204
+        quantity: 3
+      - isSquadron: 0
+        unitId: 201
+        quantity: 1
+      - isSquadron: 1
+        unitId: 203
+        quantity: 3
+      spawnGroupCount: 2
+    - entries:
+      - isSquadron: 0
+        unitId: 201
+        quantity: 4
+      - isSquadron: 0
+        unitId: 205
+        quantity: 2
+      - isSquadron: 1
+        unitId: 201
+        quantity: 4
+      spawnGroupCount: 3
+    - entries:
+      - isSquadron: 0
+        unitId: 205
+        quantity: 5
+      - isSquadron: 0
+        unitId: 213
+        quantity: 2
+      - isSquadron: 1
+        unitId: 204
+        quantity: 5
+      spawnGroupCount: 4
+    - entries:
+      - isSquadron: 0
+        unitId: 213
+        quantity: 6
+      - isSquadron: 0
+        unitId: 207
+        quantity: 3
+      - isSquadron: 1
+        unitId: 202
+        quantity: 6
+      spawnGroupCount: 4

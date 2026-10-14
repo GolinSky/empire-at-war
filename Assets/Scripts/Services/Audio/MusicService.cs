@@ -63,7 +63,8 @@ namespace EmpireAtWar.Services.Audio
         {
             if (scene == SceneType.Loading) return;
             FactionType faction = scene == SceneType.MainMenu
-                ? default : MatchRules.FindHuman(_gameModelObserver.Players).Faction;
+                ? default : _gameModelObserver.GameMode == GameMode.BattleSimulation
+                    ? _gameModelObserver.Players[0].Faction : MatchRules.FindHuman(_gameModelObserver.Players).Faction;
             _clips = _musicAudioData.GetMusicList(scene, faction);
             if (_playing) _fadingOut = true;
             else PlayNext();

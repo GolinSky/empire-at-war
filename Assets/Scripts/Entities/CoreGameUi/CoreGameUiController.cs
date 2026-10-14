@@ -55,6 +55,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
         public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
+        public void SetMode(string label, bool spectator) => _ui.SetMode(label, spectator);
 
         public CoreGameUiController(
             IUiService uiService,

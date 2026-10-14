@@ -167,6 +167,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
         }
 
+        public void CancelAndDestroy()
+        {
+            _impactPending = false;
+            _leaseActive = false;
+            ReleaseMissile();
+            ResetForPool();
+            Destroy(gameObject);
+        }
+
         private void BeginLease(float duration)
         {
             if (_leaseActive)

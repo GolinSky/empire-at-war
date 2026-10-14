@@ -5,6 +5,8 @@ namespace EmpireAtWar.Entities.Game
 {
     public static class SurvivalPreset
     {
+        public const int STATION_LEVEL = 5;
+
         public static BattleDefinitionBuilder Create(SurvivalSettings settings)
         {
             BattleDefinitionBuilder builder = new BattleDefinitionBuilder
@@ -13,6 +15,7 @@ namespace EmpireAtWar.Entities.Game
                 Map = new MapSpec(MapType.Survival, PlanetType.Coruscant, settings.MapSize),
                 Outcome = OutcomeRule.Survival,
                 Survival = settings,
+                InitialStationLevel = STATION_LEVEL,
                 Features = settings.SuperWeapons ? BattleFeatures.All : BattleFeatures.All & ~BattleFeatures.SuperWeapons
             };
             builder.Players.Add(new BattlePlayer(new PlayerSlot(new PlayerId(0), new TeamId(0),

@@ -35,6 +35,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         [SerializeField] private GameObject selectionSlots;
         [SerializeField] private Button clearFleetButton;
         [SerializeField] private CanvasGroup battleControls;
+        [SerializeField] private TMP_Text modeLabel;
 
         private bool _isInitialized;
         private bool _hasContentLayout;
@@ -95,6 +96,13 @@ namespace EmpireAtWar.Entities.CoreGameUi
         {
             timeImage.sprite = timeSprites.Dictionary[isPaused];
             speedUpImage.sprite = speedUpSprites.Dictionary[speed];
+        }
+
+        public void SetMode(string label, bool spectator)
+        {
+            modeLabel.text = label;
+            reinforcementButton.gameObject.SetActive(!spectator);
+            unitActionsView.SetAvailable(!spectator);
         }
 
         public void AssignPresenter(ICoreGamePresenter presenter)

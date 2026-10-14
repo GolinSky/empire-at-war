@@ -14,8 +14,25 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const double BUDGET_MILLISECONDS = 0.5;
 
         private readonly Queue<(ShotEffectPool Pool, int Target)> _pending = new Queue<(ShotEffectPool, int)>();
+        private readonly HashSet<ShotEffectPool> _pools = new HashSet<ShotEffectPool>();
 
-        public void Enqueue(ShotEffectPool pool, int target) => _pending.Enqueue((pool, target));
+        public void Enqueue(ShotEffectPool pool, int target)
+        {
+            if (_pools.Add(pool)) pool.Retired += OnRetired;
+            _pending.Enqueue((pool, target));
+        }
+
+        private void OnRetired(ShotEffectPool pool)
+        {
+            pool.Retired -= OnRetired;
+            _pools.Remove(pool);
+        }
+
+        public void Clear()
+        {
+            _pending.Clear();
+            foreach (ShotEffectPool pool in new List<ShotEffectPool>(_pools)) pool.DestroyAll();
+        }
 
         public void Tick()
         {

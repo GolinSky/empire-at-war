@@ -28,13 +28,18 @@ namespace EmpireAtWar.Services.UnitExplosion
 
         public void Dispose()
         {
+            Clear();
+            _pool.Dispose();
+        }
+
+        public void Clear()
+        {
             foreach (UnitExplosionView view in _active)
             {
                 _pool.Release(view);
             }
 
             _active.Clear();
-            _pool.Dispose();
         }
 
         public void Spawn(IReadOnlyList<Renderer> hullRenderers)

@@ -14,5 +14,6 @@ namespace EmpireAtWar.ViewComponents.Health
         public void Play() => particles.Play();
 
         public void StopEmitting() => particles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        public void Clear() => particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 }

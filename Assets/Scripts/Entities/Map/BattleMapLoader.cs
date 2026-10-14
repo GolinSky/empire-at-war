@@ -44,6 +44,7 @@ namespace EmpireAtWar.Entities.Map
             IReadOnlyList<PlayerSlot> players = _gameModel.Players;
             // Prefab radii are read through the Unity API, so they are taken on the main thread.
             MapLayoutGenerator generator = new MapLayoutGenerator(_settings, _mapLayoutView.FeatureRadii);
+            SurvivalLayoutGenerator survivalGenerator = new SurvivalLayoutGenerator(_settings, _mapLayoutView.FeatureRadii);
             // DictionaryWrapper builds its dictionaries on first read; build them here so the worker only reads.
             _settings.GetSize(mapSize);
             _settings.GetStationRadius(players[0].Faction);
@@ -55,7 +56,9 @@ namespace EmpireAtWar.Entities.Map
                 : null;
 
             await Awaitable.BackgroundThreadAsync();
-            MapLayout layout = _battle.Map.Type == MapType.Empty ? simulationLayout
+            MapLayout layout = _battle.Map.Type == MapType.Survival
+                ? survivalGenerator.Generate(_battle)
+                : _battle.Map.Type == MapType.Empty ? simulationLayout
                 : generator.Generate(mapSize, players, new Random());
             layout = new MapLayout(players.ToDictionary(player => player.Id, player => layout.GetStationPosition(player.Id)),
                 layout.Zones, layout.Sites.Where(site => _battle.HasFeature(BattleFeatures.CaptureSites) &&

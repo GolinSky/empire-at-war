@@ -10,6 +10,8 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
         [SerializeField] private List<UnitActionButton> buttons;
         [SerializeField] private TooltipHoverView tooltipHover;
 
+        private bool _isAvailable = true;
+
         public event Action<UnitActionId> ActionPressed;
 
         public TooltipHoverView TooltipHover => tooltipHover;
@@ -33,7 +35,13 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
             }
         }
 
-        public void SetVisible(bool visible) => gameObject.SetActive(visible);
+        public void SetVisible(bool visible) => gameObject.SetActive(visible && _isAvailable);
+
+        public void SetAvailable(bool available)
+        {
+            _isAvailable = available;
+            if (!available) SetVisible(false);
+        }
 
         public void SetAvailable(UnitActionId action, bool available)
         {

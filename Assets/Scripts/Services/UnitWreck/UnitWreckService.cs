@@ -33,10 +33,7 @@ namespace EmpireAtWar.Services.UnitWreck
 
         public void Dispose()
         {
-            for (int i = _activeWrecks.Count - 1; i >= 0; i--)
-            {
-                Release(i);
-            }
+            Clear();
 
             foreach (ViewPool<UnitWreckView> pool in _pools.Values)
             {
@@ -44,6 +41,11 @@ namespace EmpireAtWar.Services.UnitWreck
             }
 
             _pools.Clear();
+        }
+
+        public void Clear()
+        {
+            for (int i = _activeWrecks.Count - 1; i >= 0; i--) Release(i);
         }
 
         public void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay)

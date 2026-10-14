@@ -54,6 +54,11 @@ namespace EmpireAtWar.Services.Squadrons
             explosion.Play();
         }
 
+        public void Clear()
+        {
+            foreach (ExplosionVfx explosion in _explosions) explosion.Clear();
+        }
+
         private ExplosionVfx TakeIdle()
         {
             foreach (ExplosionVfx explosion in _explosions)

@@ -7050,6 +7050,7 @@ MonoBehaviour:
   selectionSlots: {fileID: 7628906838453872659}
   clearFleetButton: {fileID: 3482232525385387345}
   battleControls: {fileID: 8287887705338463486}
+  modeLabel: {fileID: 5658945288400522137}
 --- !u!225 &8287887705338463486
 CanvasGroup:
   m_ObjectHideFlags: 0

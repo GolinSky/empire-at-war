@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEconomyModelObserver _economyModel;
         private readonly IEnemyAiStateProvider _stateProvider;
         private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
-        private readonly IStationRegistry _stationRegistry;
+        private readonly IProductionAccess _productionAccess;
 
         private readonly EnemyFactionModel _factionModel;
         private readonly IFactionResearchModelObserver _research;
@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.Enemy
             IEconomyModelObserver economyModel,
             IEnemyAiStateProvider stateProvider,
             IEnemyStructurePlacementService enemyStructurePlacementService,
-            IStationRegistry stationRegistry,
+            IProductionAccess productionAccess,
             EnemyFactionModel factionModel,
             IFactionResearchModelObserver research,
             EnemyProductionDecisionModel decisionModel,
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Services.Enemy
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
             _enemyStructurePlacementService = enemyStructurePlacementService;
-            _stationRegistry = stationRegistry;
+            _productionAccess = productionAccess;
         }
 
         public void Start()
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick(float deltaTime)
         {
-            if (!_stationRegistry.HasProductionBase(_owner.Id))
+            if (!_productionAccess.CanProduce)
             {
                 return;
             }
@@ -167,7 +167,8 @@ namespace EmpireAtWar.Services.Enemy
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
-            FactionData levelData = _factionModel.GetCurrentLevelFactionData();
+            FactionData levelData = _productionAccess.ProductionHost == _owner.Id
+                ? _factionModel.GetCurrentLevelFactionData() : null;
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
             bool canResearchIncome = TrySelectResearch(true, out ResearchType incomeResearch,

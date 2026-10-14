@@ -48,6 +48,7 @@ namespace EmpireAtWar.Entities.EndGameUi
 
         public void UpdateState(BattleResult result)
         {
+            if (result.Mode == GameMode.BattleSimulation) return;
             _result = result;
             _isShown = true;
             _view.ShowResult(result);

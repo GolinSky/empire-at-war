@@ -95,6 +95,50 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void SurvivalComposition_BuildsHostAllyAndWaveScopes()
+        {
+            _project = InstantiateScope<ProjectScope>(PROJECT_PREFAB_PATH);
+            _battle = InstantiateScope<SkirmishScope>(SKIRMISH_PREFAB_PATH);
+            _battle.parentReference.Object = _project;
+            _root.SetActive(true);
+            using (LifetimeScope.EnqueueParent(null))
+            using (LifetimeScope.Enqueue(builder =>
+            {
+                if (ReferenceEquals(builder.ApplicationOrigin, _project))
+                    builder.RegisterInstance<ISettingsRepository>(new MemorySettings());
+            })) _project.Build();
+            _project.GameData.Battle = SurvivalPreset.Create(new SurvivalSettings(FactionType.Republic,
+                FactionType.Republic, FactionType.Separatist, MapSize.Small,
+                EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium, true)).Build();
+            var authored = new SerializedObject(_battle);
+            authored.FindProperty("reinforcementZoneData").objectReferenceValue = AssetDatabase.GetDependencies(BATTLE_SCENE_PATH)
+                .Select(AssetDatabase.LoadAssetAtPath<ReinforcementZoneData>).Single(data => data != null);
+            authored.ApplyModifiedPropertiesWithoutUndo();
+            var settings = (MapGenerationSettings)authored.FindProperty("settings").objectReferenceValue;
+            var mapView = (MapLayoutView)authored.FindProperty("mapLayoutView").objectReferenceValue;
+            var layout = new SurvivalLayoutGenerator(settings, mapView.FeatureRadii).Generate(_project.GameData.Battle);
+            using (LifetimeScope.Enqueue(builder =>
+            {
+                if (!ReferenceEquals(builder.ApplicationOrigin, _battle)) return;
+                builder.Register<MapSetup>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(layout);
+                builder.RegisterInstance<IBattleStartupSequence>(new CompletedStartup());
+            })) _battle.Build();
+            var players = _battle.GetComponentsInChildren<AssetLifetimeScope>(true)
+                .Where(scope => scope is LocalPlayerScope || scope is AiPlayerScope).ToArray();
+            Assert.That(players.Length, Is.EqualTo(3));
+            var human = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(0));
+            var ally = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(1));
+            var wave = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(2));
+            Assert.That(human.Container.Resolve<PlayerFactionModel>().CurrentLevel, Is.EqualTo(5));
+            Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(25));
+            Assert.That(ally.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Models.EnemyFactionModel>().CurrentLevel, Is.EqualTo(5));
+            Assert.That(ally.Container.Resolve<EmpireAtWar.Services.Stations.IProductionAccess>().ProductionHost, Is.EqualTo(new PlayerId(0)));
+            Assert.That(wave.Container.TryGetRegistration(typeof(FactionResearchModel), out _), Is.False);
+            Assert.That(wave.Container.TryGetRegistration(typeof(EmpireAtWar.Models.Economy.EconomyModel), out _), Is.False);
+            Assert.That(_battle.Container.Resolve<IBattleOutcomeRule>(), Is.TypeOf<SurvivalOutcomeRule>());
+        }
+
         [TestCase(BattleFeatures.All, PlayerRole.AiOpponent)]
         [TestCase(BattleFeatures.All & ~BattleFeatures.SuperWeapons, PlayerRole.AiOpponent)]
         [TestCase(BattleFeatures.All & ~BattleFeatures.CaptureSites, PlayerRole.AiOpponent)]

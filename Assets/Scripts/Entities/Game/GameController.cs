@@ -1,4 +1,3 @@
-using System;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.SceneService;
@@ -18,8 +17,6 @@ namespace EmpireAtWar.Entities.Game
         public void StartBattle(BattleDefinition definition)
         {
             MatchRules.Validate(definition);
-            if (definition.Outcome != OutcomeRule.Skirmish)
-                throw new NotSupportedException("This battle's gameplay is not available yet.");
             Model.Battle = definition;
             _sceneService.LoadScene(SceneType.Battle);
         }

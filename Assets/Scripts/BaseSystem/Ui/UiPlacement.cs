@@ -53,6 +53,9 @@ namespace EmpireAtWar.Ui.Base
                 _parents = new Dictionary<Type, Transform>
                 {
                     { typeof(CoreGameUi), defaultCanvas.transform },
+                    { typeof(EmpireAtWar.Entities.Game.SurvivalHudUi), dynamicCanvas.transform },
+                    { typeof(EmpireAtWar.Entities.Game.SimulationHudUi), dynamicCanvas.transform },
+                    { typeof(EmpireAtWar.Entities.MainMenu.Simulation.SimulationSetupUi), modalSlot },
                     { typeof(MainMenuUi), defaultCanvas.transform },
                     { typeof(EmpireAtWar.Entities.MainMenu.Play.PlayUi), defaultCanvas.transform },
                     { typeof(SkirmishUi), defaultCanvas.transform },

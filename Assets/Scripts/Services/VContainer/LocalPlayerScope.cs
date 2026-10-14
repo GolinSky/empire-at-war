@@ -26,7 +26,9 @@ namespace EmpireAtWar.Services.VContainer
             base.Configure(builder);
             SkirmishScope battleScope = (SkirmishScope)Parent;
             BattlePlayer player = battleScope.Battle.GetPlayer(_owner.Id);
-            RegisterPlayerServices(builder, _owner, battleScope.Factions.Get(_owner.Faction), player.Features);
+            ProductionAccessRegistrations.Register(builder, battleScope.Battle, player);
+            RegisterPlayerServices(builder, _owner, battleScope.Factions.Get(_owner.Faction), player.Features,
+                battleScope.Battle.InitialStationLevel);
             battleScope.Modules.ConfigurePlayer(builder, player, transform);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
@@ -34,7 +36,7 @@ namespace EmpireAtWar.Services.VContainer
         }
 
         public static void RegisterPlayerServices(IContainerBuilder builder, PlayerSlot owner, FactionDefinition faction,
-            BattleFeatures features = BattleFeatures.All)
+            BattleFeatures features = BattleFeatures.All, int initialStationLevel = 1)
         {
             builder.RegisterInstance(owner);
             UnitFactoryRegistrations.Register(builder);
@@ -46,7 +48,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ReinforcementUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionRoster>(Lifetime.Singleton)
                 .WithParameter(faction).WithParameter(features);
-            builder.Register<PlayerFactionModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register(resolver => new PlayerFactionModel(resolver.Resolve<StationLevelData>(), resolver.Resolve<FactionRoster>())
+                { CurrentLevel = System.Math.Min(initialStationLevel, resolver.Resolve<StationLevelData>().MaxLevel) },
+                Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionResearchModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

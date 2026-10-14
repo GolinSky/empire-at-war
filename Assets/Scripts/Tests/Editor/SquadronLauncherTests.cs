@@ -26,6 +26,12 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool HasProductionBase(PlayerId owner) => false;
 
+            public bool TryGetProductionBase(PlayerId owner, out IEntity productionBase)
+            {
+                productionBase = null;
+                return false;
+            }
+
             public bool TryGetLivingStation(PlayerId owner, out IEntity station)
             {
                 station = null;

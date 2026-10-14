@@ -618,7 +618,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
-                    stationRegistry: new OperationalStationRegistry(),
+                    productionAccess: new OperationalProductionAccess(),
                     playerRoster: TestPlayers.CreateDuel(difficulty),
                     // No hostile units exist, so the size-based selection runs and no profile is ever rated.
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
@@ -696,7 +696,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
-                    stationRegistry: new OperationalStationRegistry(),
+                    productionAccess: new OperationalProductionAccess(),
                     playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
                     // No hostile units exist, so the size-based selection runs and no profile is ever rated.
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
@@ -775,7 +775,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
-                    stationRegistry: new OperationalStationRegistry(),
+                    productionAccess: new OperationalProductionAccess(),
                     playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.Medium),
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
@@ -965,13 +965,13 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class OperationalStationRegistry : IStationRegistry
+        private sealed class OperationalProductionAccess : IProductionAccess
         {
-            public string Id => nameof(OperationalStationRegistry);
+            public PlayerId ProductionHost => TestPlayers.Enemy;
 
-            public bool HasProductionBase(PlayerId owner) => true;
+            public bool CanProduce => true;
 
-            public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
+            public bool TryGetProductionBase(out IEntity station) =>
                 throw new NotImplementedException();
         }
 

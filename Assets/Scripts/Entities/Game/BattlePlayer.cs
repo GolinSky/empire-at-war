@@ -10,6 +10,8 @@ namespace EmpireAtWar.Entities.Game
         public bool OwnsStation => Role == PlayerRole.Human || Role == PlayerRole.AiOpponent;
         public bool CanProduce => Role != PlayerRole.WaveAttacker && Role != PlayerRole.SimulationSide;
         public bool CanResearch => CanProduce;
+        public bool IsHosted => Role == PlayerRole.AiAlly;
+        public bool HasDirectCombatAi => Role == PlayerRole.WaveAttacker || Role == PlayerRole.SimulationSide;
 
         public bool Has(BattleFeatures feature) => (Features & feature) == feature;
 
