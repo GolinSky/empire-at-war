@@ -1,0 +1,55 @@
+{
+  "status": "completed",
+  "duration": 0.38,
+  "summary": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.AllWeaponsAndSystems_AreUniqueTargetableAndHaveHealth",
+      "Status": "Passed",
+      "Duration": 0.0025195,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.FrontalAndBroadsideArcs_MatchActualHullSide",
+      "Status": "Passed",
+      "Duration": 0.0009545,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.Injectables_RegisterOnlyCurrentHardpointsAndTeamColorView",
+      "Status": "Passed",
+      "Duration": 0.0033433,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.RegisteredDataAndViews_ResolveProcursatorAssets",
+      "Status": "Passed",
+      "Duration": 0.0002359,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.SavedShip_HasRequestedStatsAndNoInjectableHangar",
+      "Status": "Passed",
+      "Duration": 0.0017843,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.VisualsAndCollision_AreVenatorRelativeAndFitBankEnvelope",
+      "Status": "Passed",
+      "Duration": 0.0657393,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

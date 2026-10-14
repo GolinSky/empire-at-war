@@ -1,0 +1,32 @@
+[
+  {
+    "ship": "ArquitensImperialCruiser",
+    "kind": "Live",
+    "blueGreenChangedPixels": 14424
+  },
+  {
+    "ship": "ArquitensImperialCruiser",
+    "kind": "Wreck",
+    "blueGreenChangedPixels": 13532
+  },
+  {
+    "ship": "Procursator",
+    "kind": "Live",
+    "blueGreenChangedPixels": 1937
+  },
+  {
+    "ship": "Procursator",
+    "kind": "Wreck",
+    "blueGreenChangedPixels": 2044
+  },
+  {
+    "ship": "Executor",
+    "kind": "Live",
+    "blueGreenChangedPixels": 656
+  },
+  {
+    "ship": "Executor",
+    "kind": "Wreck",
+    "blueGreenChangedPixels": 1534
+  }
+]

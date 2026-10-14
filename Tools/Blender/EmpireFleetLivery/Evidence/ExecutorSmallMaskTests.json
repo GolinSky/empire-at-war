@@ -1,0 +1,69 @@
+{
+  "status": "completed",
+  "duration": 0.45,
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedHangars_KeepSeparateExitsButDoNotLaunchSquadrons",
+      "Status": "Passed",
+      "Duration": 0.0325952,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Ships/Empire/Executor.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0123083,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0046727,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0024727,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0037857,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedRegistrations_ResolveOwnAssetsAndIcons",
+      "Status": "Passed",
+      "Duration": 0.0026749,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedShip_MatchesRequestedStatsAndTargetability",
+      "Status": "Passed",
+      "Duration": 0.0046176,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedWeaponProfiles_HaveRequiredBurstsAndDoNotChangeOtherShips",
+      "Status": "Passed",
+      "Duration": 0.0008885,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

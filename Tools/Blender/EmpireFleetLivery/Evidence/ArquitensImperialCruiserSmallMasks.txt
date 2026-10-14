@@ -1,0 +1,1 @@
+ArquitensImperialCruiser: 2 stripe surfaces, 154 triangles; width=0,1999874 (0.5% of length).
