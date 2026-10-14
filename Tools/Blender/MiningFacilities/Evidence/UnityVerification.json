@@ -1,0 +1,48 @@
+{
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/MiningFacilities/AsteroidMiningFacilityView.prefab",
+      "guid": "8b70c9c30de88af48a0ad58a72d76f4b",
+      "components": 94,
+      "renderers": 14,
+      "missingReferences": 0
+    },
+    {
+      "path": "Assets/Prefabs/Models/DefendStation/AsteroidDefendPlatformView.prefab",
+      "guid": "abaede0c24b88f34f8ba60f5017d8a59",
+      "components": 208,
+      "renderers": 15,
+      "missingReferences": 0
+    },
+    {
+      "path": "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab",
+      "guid": "0f332f34959cd7a4888c408770bff249",
+      "components": 231,
+      "renderers": 8,
+      "missingReferences": 0
+    },
+    {
+      "path": "Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab",
+      "guid": "069e7efc0ad60934d87d3b1c4b8dfb91",
+      "components": 233,
+      "renderers": 8,
+      "missingReferences": 0
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/AsteroidMiningFacilityWreckView.prefab",
+      "guid": "f384087bd6f0cfe4fa25942a1544d22c",
+      "components": 32,
+      "renderers": 10,
+      "missingReferences": 0
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/AsteroidDefendPlatformWreckView.prefab",
+      "guid": "d4560da7232ad344b89334583087a3dc",
+      "components": 38,
+      "renderers": 12,
+      "missingReferences": 0
+    }
+  ],
+  "automatedTests": "Not run: ALO guide requires explicit request",
+  "verification": "Saved prefab reference, material, mesh, required binding, six weapon and capture radius checks passed"
+}

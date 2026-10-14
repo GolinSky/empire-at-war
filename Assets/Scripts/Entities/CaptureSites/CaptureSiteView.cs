@@ -16,6 +16,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         private const float MINIMUM_FRAMEWORK_HEIGHT = 0.05f;
 
         [SerializeField] private MeshRenderer ringRenderer;
+        [SerializeField] private Transform asteroidRocks;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private DictionaryWrapper<SiteFacilityType, Transform> constructionFrameworks;
         [SerializeField] private Canvas statusCanvas;
@@ -92,6 +93,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             ringRenderer.SetPropertyBlock(_propertyBlock);
 
             bool isConstructing = state == CaptureSiteState.Constructing;
+            asteroidRocks.gameObject.SetActive(state != CaptureSiteState.Operational);
             foreach (KeyValuePair<SiteFacilityType, Transform> framework in constructionFrameworks.Dictionary)
             {
                 framework.Value.gameObject.SetActive(isConstructing && framework.Key == facilityType);

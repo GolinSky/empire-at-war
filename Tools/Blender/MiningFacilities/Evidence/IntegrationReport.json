@@ -1,0 +1,26 @@
+[
+  {
+    "path": "Assets/Prefabs/Models/MiningFacilities/AsteroidMiningFacilityView.prefab",
+    "size": "(103.30, 107.34, 120.00)",
+    "rootScale": "(1.00, 1.00, 1.00)",
+    "hullRenderers": 13
+  },
+  {
+    "path": "Assets/Prefabs/Models/DefendStation/AsteroidDefendPlatformView.prefab",
+    "size": "(88.48, 99.91, 120.00)",
+    "rootScale": "(1.00, 1.00, 1.00)",
+    "hullRenderers": 14
+  },
+  {
+    "path": "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab",
+    "captureRadius": 80,
+    "ringDiameter": 160,
+    "constructionTypes": 2
+  },
+  {
+    "path": "Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab",
+    "captureRadius": 80,
+    "ringDiameter": 160,
+    "constructionTypes": 2
+  }
+]

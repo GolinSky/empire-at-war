@@ -1,0 +1,4756 @@
+[
+  {
+    "name": "MiningFacility",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "Asteroid_shell": {
+          "triangles": 1188,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot00"
+          ],
+          "parent": "Asteroid_shell"
+        },
+        "Asteroid": {
+          "triangles": 1188,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot01"
+          ],
+          "parent": "Root"
+        },
+        "Collision": {
+          "triangles": 56,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot02"
+          ],
+          "parent": "Root"
+        },
+        "girder1x3": {
+          "triangles": 24,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot03"
+          ],
+          "parent": "girder1x3"
+        },
+        "girder1x2": {
+          "triangles": 72,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot03"
+          ],
+          "parent": "girder1x2"
+        },
+        "girder1x1": {
+          "triangles": 24,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot03"
+          ],
+          "parent": "girder1x1"
+        },
+        "Bottom_Antenae": {
+          "triangles": 40,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot04"
+          ],
+          "parent": "B_Building_bottom"
+        },
+        "mining_base": {
+          "triangles": 690,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "mining_base"
+        },
+        "GlowWindows": {
+          "triangles": 8,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot06"
+          ],
+          "parent": "mining_base"
+        },
+        "Collision01": {
+          "triangles": 88,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot02"
+          ],
+          "parent": "Collision01"
+        },
+        "mining_shadows": {
+          "triangles": 188,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot07"
+          ],
+          "parent": "mining_shadows"
+        },
+        "downhandle": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot08"
+          ],
+          "parent": "downhandle"
+        },
+        "Main_ALT03": {
+          "triangles": 626,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT03"
+        },
+        "Driller_ALT03": {
+          "triangles": 84,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT03"
+        },
+        "Main_ALT01": {
+          "triangles": 1266,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT01"
+        },
+        "Driller_ALT01": {
+          "triangles": 144,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT01"
+        },
+        "Main_ALT02": {
+          "triangles": 624,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT02"
+        },
+        "Driller_ALT02": {
+          "triangles": 84,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT02"
+        },
+        "Main_ALT04": {
+          "triangles": 624,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT04"
+        },
+        "Driller_ALT04": {
+          "triangles": 84,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT04"
+        },
+        "glowies": {
+          "triangles": 24,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot09"
+          ],
+          "parent": "glowies"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Camera01": {
+          "parent": "Root",
+          "head": [
+            445.0976257324219,
+            -715.6573486328125,
+            251.91175842285156
+          ]
+        },
+        "Camera01.Target": {
+          "parent": "Root",
+          "head": [
+            9.378427505493164,
+            32.096343994140625,
+            75.83560180664062
+          ]
+        },
+        "P_pixiedust": {
+          "parent": "Root",
+          "head": [
+            -40.5482177734375,
+            -33.98954772949219,
+            115.92669677734375
+          ]
+        },
+        "Asteroid_shell": {
+          "parent": "Root",
+          "head": [
+            -1.5676449537277222,
+            -5.370098114013672,
+            0.013886451721191406
+          ]
+        },
+        "p_girder_dust_large00": {
+          "parent": "Root",
+          "head": [
+            -3.5317535400390625,
+            138.77464294433594,
+            101.80805969238281
+          ]
+        },
+        "girder1x3": {
+          "parent": "Root",
+          "head": [
+            -41.93806457519531,
+            96.5369873046875,
+            -30.731895446777344
+          ]
+        },
+        "p_girder_sparks00": {
+          "parent": "girder1x3",
+          "head": [
+            -5.3194427490234375,
+            7.136894226074219,
+            -30.731895446777344
+          ]
+        },
+        "girder1x2": {
+          "parent": "Root",
+          "head": [
+            -87.50448608398438,
+            -115.71017456054688,
+            -21.618812561035156
+          ]
+        },
+        "p_girder_sparks00.001": {
+          "parent": "girder1x2",
+          "head": [
+            11.270462036132812,
+            -59.58111572265625,
+            -21.618812561035156
+          ]
+        },
+        "girder1x1": {
+          "parent": "Root",
+          "head": [
+            100.28025817871094,
+            95.22276306152344,
+            -18.047809600830078
+          ]
+        },
+        "p_girder_sparks00.002": {
+          "parent": "girder1x1",
+          "head": [
+            99.56007385253906,
+            95.28531646728516,
+            -18.275165557861328
+          ]
+        },
+        "p_girder_dust_large00.001": {
+          "parent": "Root",
+          "head": [
+            55.056861877441406,
+            11.469657897949219,
+            87.650634765625
+          ]
+        },
+        "B_Building_bottom": {
+          "parent": "Root",
+          "head": [
+            25.076356887817383,
+            43.2202033996582,
+            58.7236328125
+          ]
+        },
+        "mining_base": {
+          "parent": "Root",
+          "head": [
+            34.57486343383789,
+            98.3140869140625,
+            -23.000164031982422
+          ]
+        },
+        "Collision01": {
+          "parent": "Root",
+          "head": [
+            53.33061218261719,
+            2.142120361328125,
+            85.7218017578125
+          ]
+        },
+        "mining_shadows": {
+          "parent": "Root",
+          "head": [
+            34.57486343383789,
+            98.3140869140625,
+            -23.000164031982422
+          ]
+        },
+        "downhandle": {
+          "parent": "Root",
+          "head": [
+            6.099829192862671e-07,
+            -13.954785346984863,
+            65.79830169677734
+          ]
+        },
+        "Main_ALT03": {
+          "parent": "downhandle",
+          "head": [
+            135.44407653808594,
+            77.7394027709961,
+            87.64815521240234
+          ]
+        },
+        "Driller_ALT03": {
+          "parent": "Main_ALT03",
+          "head": [
+            135.5467071533203,
+            34.2971076965332,
+            63.39585876464844
+          ]
+        },
+        "Main_ALT01": {
+          "parent": "downhandle",
+          "head": [
+            -38.1152458190918,
+            23.686059951782227,
+            171.6973876953125
+          ]
+        },
+        "Driller_ALT01": {
+          "parent": "Main_ALT01",
+          "head": [
+            -68.66961669921875,
+            -34.87858963012695,
+            141.64537048339844
+          ]
+        },
+        "Main_ALT02": {
+          "parent": "Root",
+          "head": [
+            108.21815490722656,
+            -47.983924865722656,
+            85.01687622070312
+          ]
+        },
+        "Driller_ALT02": {
+          "parent": "Main_ALT02",
+          "head": [
+            117.14275360107422,
+            -81.169677734375,
+            53.12810516357422
+          ]
+        },
+        "Main_ALT04": {
+          "parent": "Root",
+          "head": [
+            90.54953002929688,
+            -145.54844665527344,
+            65.32521057128906
+          ]
+        },
+        "Driller_ALT04": {
+          "parent": "Main_ALT04",
+          "head": [
+            60.22116470336914,
+            -155.55599975585938,
+            27.17481231689453
+          ]
+        },
+        "glowies": {
+          "parent": "Root",
+          "head": [
+            108.21815490722656,
+            -47.983924865722656,
+            85.01687622070312
+          ]
+        }
+      },
+      "bounds_min": [
+        -189.01219177246094,
+        -249.30174255371094,
+        -179.42678833007812
+      ],
+      "bounds_max": [
+        210.3458251953125,
+        233.36878967285156,
+        252.31405639648438
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Asteroid": {
+          "triangles": 1188,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot01"
+          ],
+          "parent": "Root"
+        },
+        "Collision": {
+          "triangles": 56,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot02"
+          ],
+          "parent": "Root"
+        },
+        "Asteroid_shell": {
+          "triangles": 1188,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot00"
+          ],
+          "parent": "Asteroid_shell"
+        },
+        "girder1x3": {
+          "triangles": 24,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot03"
+          ],
+          "parent": "girder1x3"
+        },
+        "girder1x2": {
+          "triangles": 72,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot03"
+          ],
+          "parent": "girder1x2"
+        },
+        "girder1x1": {
+          "triangles": 24,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot03"
+          ],
+          "parent": "girder1x1"
+        },
+        "Bottom_Antenae": {
+          "triangles": 40,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot04"
+          ],
+          "parent": "B_Building_bottom"
+        },
+        "mining_base": {
+          "triangles": 690,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "mining_base"
+        },
+        "GlowWindows": {
+          "triangles": 8,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot06"
+          ],
+          "parent": "mining_base"
+        },
+        "Collision01": {
+          "triangles": 88,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot02"
+          ],
+          "parent": "Collision01"
+        },
+        "mining_shadows": {
+          "triangles": 188,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot07"
+          ],
+          "parent": "mining_shadows"
+        },
+        "downhandle": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "MiningFacilitySlot08"
+          ],
+          "parent": "downhandle"
+        },
+        "Main_ALT03": {
+          "triangles": 626,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT03"
+        },
+        "Driller_ALT03": {
+          "triangles": 84,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT03"
+        },
+        "Main_ALT01": {
+          "triangles": 1266,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT01"
+        },
+        "Driller_ALT01": {
+          "triangles": 144,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT01"
+        },
+        "Main_ALT02": {
+          "triangles": 624,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT02"
+        },
+        "Driller_ALT02": {
+          "triangles": 84,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT02"
+        },
+        "Main_ALT04": {
+          "triangles": 624,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Main_ALT04"
+        },
+        "Driller_ALT04": {
+          "triangles": 84,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot05"
+          ],
+          "parent": "Driller_ALT04"
+        },
+        "glowies": {
+          "triangles": 24,
+          "hidden": false,
+          "materials": [
+            "MiningFacilitySlot09"
+          ],
+          "parent": "glowies"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Camera01": {
+          "parent": "Root",
+          "head": [
+            445.0976257324219,
+            -715.6572875976562,
+            251.91188049316406
+          ]
+        },
+        "Camera01.Target": {
+          "parent": "Root",
+          "head": [
+            9.378427505493164,
+            32.09635543823242,
+            75.8355941772461
+          ]
+        },
+        "P_pixiedust": {
+          "parent": "Root",
+          "head": [
+            -40.5482177734375,
+            -33.98952865600586,
+            115.92670440673828
+          ]
+        },
+        "Asteroid_shell": {
+          "parent": "Root",
+          "head": [
+            -1.5676449537277222,
+            -5.370098114013672,
+            0.01388732623308897
+          ]
+        },
+        "p_girder_dust_large00": {
+          "parent": "Root",
+          "head": [
+            -3.5317535400390625,
+            138.774658203125,
+            101.80803680419922
+          ]
+        },
+        "girder1x3": {
+          "parent": "Root",
+          "head": [
+            -41.93806457519531,
+            96.53697967529297,
+            -30.731910705566406
+          ]
+        },
+        "p_girder_sparks00": {
+          "parent": "girder1x3",
+          "head": [
+            -5.3194427490234375,
+            7.1368889808654785,
+            -30.731897354125977
+          ]
+        },
+        "girder1x2": {
+          "parent": "Root",
+          "head": [
+            -87.50448608398438,
+            -115.71017456054688,
+            -21.618793487548828
+          ]
+        },
+        "p_girder_sparks00.001": {
+          "parent": "girder1x2",
+          "head": [
+            11.270462036132812,
+            -59.581119537353516,
+            -21.618803024291992
+          ]
+        },
+        "girder1x1": {
+          "parent": "Root",
+          "head": [
+            100.28025817871094,
+            95.22276306152344,
+            -18.04782485961914
+          ]
+        },
+        "p_girder_sparks00.002": {
+          "parent": "girder1x1",
+          "head": [
+            99.56007385253906,
+            95.28531646728516,
+            -18.27518081665039
+          ]
+        },
+        "p_girder_dust_large00.001": {
+          "parent": "Root",
+          "head": [
+            55.056861877441406,
+            11.469672203063965,
+            87.650634765625
+          ]
+        },
+        "B_Building_bottom": {
+          "parent": "Root",
+          "head": [
+            25.076356887817383,
+            43.22021484375,
+            58.72362518310547
+          ]
+        },
+        "mining_base": {
+          "parent": "Root",
+          "head": [
+            34.57486343383789,
+            98.3140869140625,
+            -23.000179290771484
+          ]
+        },
+        "Collision01": {
+          "parent": "Root",
+          "head": [
+            53.33061218261719,
+            2.142134428024292,
+            85.7218017578125
+          ]
+        },
+        "mining_shadows": {
+          "parent": "Root",
+          "head": [
+            34.57486343383789,
+            98.3140869140625,
+            -23.000179290771484
+          ]
+        },
+        "downhandle": {
+          "parent": "Root",
+          "head": [
+            6.099829192862671e-07,
+            -13.954774856567383,
+            65.79830169677734
+          ]
+        },
+        "Main_ALT03": {
+          "parent": "downhandle",
+          "head": [
+            135.44407653808594,
+            77.73941802978516,
+            87.64813232421875
+          ]
+        },
+        "Driller_ALT03": {
+          "parent": "Main_ALT03",
+          "head": [
+            135.54672241210938,
+            34.29711151123047,
+            63.395843505859375
+          ]
+        },
+        "Main_ALT01": {
+          "parent": "downhandle",
+          "head": [
+            -38.11524200439453,
+            23.68608856201172,
+            171.69740295410156
+          ]
+        },
+        "Driller_ALT01": {
+          "parent": "Main_ALT01",
+          "head": [
+            -68.66960906982422,
+            -34.878578186035156,
+            141.6453857421875
+          ]
+        },
+        "Main_ALT02": {
+          "parent": "Root",
+          "head": [
+            108.21815490722656,
+            -47.983909606933594,
+            85.01688385009766
+          ]
+        },
+        "Driller_ALT02": {
+          "parent": "Main_ALT02",
+          "head": [
+            117.14274597167969,
+            -81.16966247558594,
+            53.12810134887695
+          ]
+        },
+        "Main_ALT04": {
+          "parent": "Root",
+          "head": [
+            90.54953002929688,
+            -145.54843139648438,
+            65.32523345947266
+          ]
+        },
+        "Driller_ALT04": {
+          "parent": "Main_ALT04",
+          "head": [
+            60.22115707397461,
+            -155.55599975585938,
+            27.174833297729492
+          ]
+        },
+        "glowies": {
+          "parent": "Root",
+          "head": [
+            108.21815490722656,
+            -47.983909606933594,
+            85.01688385009766
+          ]
+        }
+      },
+      "bounds_min": [
+        -189.01219177246094,
+        -249.30174255371094,
+        -179.42678833007812
+      ],
+      "bounds_max": [
+        210.3458251953125,
+        233.3688201904297,
+        252.31407165527344
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root",
+      "Camera01": "Camera01",
+      "Camera01.Target": "Camera01.Target",
+      "P_pixiedust": "P_pixiedust",
+      "Asteroid_shell": "Asteroid_shell",
+      "p_girder_dust_large00": "p_girder_dust_large00",
+      "girder1x3": "girder1x3",
+      "p_girder_sparks00": "p_girder_sparks00",
+      "girder1x2": "girder1x2",
+      "p_girder_sparks00.001": "p_girder_sparks00",
+      "girder1x1": "girder1x1",
+      "p_girder_sparks00.002": "p_girder_sparks00",
+      "p_girder_dust_large00.001": "p_girder_dust_large00",
+      "B_Building_bottom": "B_Building_bottom",
+      "mining_base": "mining_base",
+      "Collision01": "Collision01",
+      "mining_shadows": "mining_shadows",
+      "downhandle": "downhandle",
+      "Main_ALT03": "Main_ALT03",
+      "Driller_ALT03": "Driller_ALT03",
+      "Main_ALT01": "Main_ALT01",
+      "Driller_ALT01": "Driller_ALT01",
+      "Main_ALT02": "Main_ALT02",
+      "Driller_ALT02": "Driller_ALT02",
+      "Main_ALT04": "Main_ALT04",
+      "Driller_ALT04": "Driller_ALT04",
+      "glowies": "glowies"
+    },
+    "materials": [
+      {
+        "name": "MiningFacilitySlot00",
+        "properties": {
+          "Emissive": [
+            0.9921569228172302,
+            0.9921569228172302,
+            0.9921569228172302,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "BaseTexture": "NB_AMining_Rock.tga",
+          "GlossTexture": "NB_AMining_Rock_Gloss.tga"
+        },
+        "shader": "MeshAlphaGloss.fx",
+        "vertexCount": 1021,
+        "triangleCount": 1188
+      },
+      {
+        "name": "MiningFacilitySlot01",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "w_asteroid00.tga",
+          "NormalTexture": "w_asteroid00_bc.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 726,
+        "triangleCount": 1188
+      },
+      {
+        "name": "MiningFacilitySlot02",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 69,
+        "triangleCount": 56
+      },
+      {
+        "name": "MiningFacilitySlot03",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "BaseTexture": "NB_Girder2.tga"
+        },
+        "shader": "MeshAlpha.fx",
+        "vertexCount": 64,
+        "triangleCount": 24
+      },
+      {
+        "name": "MiningFacilitySlot04",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_CMC22Mining.TGA",
+          "NormalTexture": "NB_CMC22Mining_BC.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 74,
+        "triangleCount": 40
+      },
+      {
+        "name": "MiningFacilitySlot05",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.7799999713897705,
+            0.4099999964237213,
+            0.23000000417232513,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_CMC22Mining.TGA",
+          "NormalTexture": "NB_CMC22Mining_BC.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 980,
+        "triangleCount": 690
+      },
+      {
+        "name": "MiningFacilitySlot06",
+        "properties": {
+          "BaseTexture": "RI_Pilot_goggles.tga",
+          "UVScrollRate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Color": [
+            0.8784314393997192,
+            0.6352941393852234,
+            0.2666666805744171,
+            0.0
+          ]
+        },
+        "shader": "MeshAdditive.fx",
+        "vertexCount": 12,
+        "triangleCount": 8
+      },
+      {
+        "name": "MiningFacilitySlot07",
+        "properties": {
+          "DebugColor": [
+            0.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "shader": "MeshShadowVolume.fx",
+        "vertexCount": 497,
+        "triangleCount": 685
+      },
+      {
+        "name": "MiningFacilitySlot08",
+        "properties": {},
+        "shader": "alDefault.fx",
+        "vertexCount": 24,
+        "triangleCount": 12
+      },
+      {
+        "name": "MiningFacilitySlot09",
+        "properties": {
+          "BaseTexture": "W_GlowRange.tga",
+          "UVScrollRate": [
+            0.9215686917304993,
+            0.9215686917304993,
+            0.9215686917304993,
+            0.0
+          ],
+          "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ]
+        },
+        "shader": "MeshAdditive.fx",
+        "vertexCount": 48,
+        "triangleCount": 24
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.00013647875839232116,
+    "geometry_error": 0.00010735509704185706,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "BattleMiningFacility",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "Asteroid": {
+          "triangles": 1209,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot00"
+          ],
+          "parent": "Root"
+        },
+        "Pirate_base": {
+          "triangles": 1710,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot01"
+          ],
+          "parent": "Root"
+        },
+        "GlowWindows": {
+          "triangles": 46,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot02"
+          ],
+          "parent": "Root"
+        },
+        "shadowmesh": {
+          "triangles": 1902,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot03"
+          ],
+          "parent": "Root"
+        },
+        "collision": {
+          "triangles": 304,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT1_blast": {
+          "triangles": 82,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_HT1_EmitDamage"
+        },
+        "HP_HT2_blast": {
+          "triangles": 94,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_HT2_EmitDamage"
+        },
+        "HP_TL1_blast": {
+          "triangles": 56,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL1_EmitDamage"
+        },
+        "HP_TL4_blast": {
+          "triangles": 78,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL4_EmitDamage"
+        },
+        "HP_TL3_blast": {
+          "triangles": 88,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL3_EmitDamage"
+        },
+        "HP_TL2_blast": {
+          "triangles": 57,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL2_EmitDamage"
+        },
+        "HP_LL1_blast": {
+          "triangles": 26,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_LL1_EmitDamage"
+        },
+        "HP_SHG_blast": {
+          "triangles": 28,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_SHG_EmitDamage"
+        },
+        "HP_HB_blast": {
+          "triangles": 69,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_HB_EmitDamage"
+        },
+        "HP_LL2_blast": {
+          "triangles": 23,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_LL2_EmitDamage"
+        },
+        "HP_TL4_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL3_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_SHG_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_LL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_LL2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HB_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "grates": {
+          "triangles": 48,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot06"
+          ],
+          "parent": "Root"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "blinkeys": {
+          "parent": "Root",
+          "head": [
+            -27.131793975830078,
+            71.44664001464844,
+            -23.36998748779297
+          ]
+        },
+        "P_Blink_caution": {
+          "parent": "blinkeys",
+          "head": [
+            -111.36048889160156,
+            -69.76356506347656,
+            158.37811279296875
+          ]
+        },
+        "P_Blink_caution.001": {
+          "parent": "blinkeys",
+          "head": [
+            -18.13650894165039,
+            53.382469177246094,
+            202.57754516601562
+          ]
+        },
+        "P_Blink_caution.002": {
+          "parent": "blinkeys",
+          "head": [
+            -8.449390411376953,
+            258.8558654785156,
+            115.78351593017578
+          ]
+        },
+        "P_Blink_caution.003": {
+          "parent": "blinkeys",
+          "head": [
+            57.21181869506836,
+            258.8558654785156,
+            115.78351593017578
+          ]
+        },
+        "P_Blink_caution.004": {
+          "parent": "blinkeys",
+          "head": [
+            53.18540573120117,
+            -115.79826354980469,
+            -230.44332885742188
+          ]
+        },
+        "P_Blink_caution.005": {
+          "parent": "blinkeys",
+          "head": [
+            -111.36048889160156,
+            -22.076377868652344,
+            158.37811279296875
+          ]
+        },
+        "P_Blink_ryellow": {
+          "parent": "blinkeys",
+          "head": [
+            53.428340911865234,
+            -103.40805053710938,
+            -262.8275146484375
+          ]
+        },
+        "P_Blink_ryellow.001": {
+          "parent": "blinkeys",
+          "head": [
+            22.801597595214844,
+            97.9752197265625,
+            -244.84866333007812
+          ]
+        },
+        "P_Blink_white": {
+          "parent": "blinkeys",
+          "head": [
+            -27.851511001586914,
+            53.997901916503906,
+            216.0550537109375
+          ]
+        },
+        "P_Blink_white.001": {
+          "parent": "blinkeys",
+          "head": [
+            24.155254364013672,
+            40.995262145996094,
+            -191.008544921875
+          ]
+        },
+        "P_Blink_caution.006": {
+          "parent": "blinkeys",
+          "head": [
+            131.3804931640625,
+            134.2717742919922,
+            114.16014862060547
+          ]
+        },
+        "P_Blink_caution.007": {
+          "parent": "blinkeys",
+          "head": [
+            131.3804931640625,
+            163.624755859375,
+            114.16014862060547
+          ]
+        },
+        "P_Blink_caution.008": {
+          "parent": "blinkeys",
+          "head": [
+            57.21181869506836,
+            258.8558654785156,
+            101.85173034667969
+          ]
+        },
+        "P_Blink_caution.009": {
+          "parent": "blinkeys",
+          "head": [
+            -8.408342361450195,
+            258.8558654785156,
+            101.85172271728516
+          ]
+        },
+        "HP_HT1_bone": {
+          "parent": "Root",
+          "head": [
+            149.16552734375,
+            -160.52305603027344,
+            79.53895568847656
+          ]
+        },
+        "HP_HT1_EmitDamage": {
+          "parent": "HP_HT1_bone",
+          "head": [
+            151.69100952148438,
+            -162.8530731201172,
+            76.67457580566406
+          ]
+        },
+        "p_hp_stardestroyer_damage": {
+          "parent": "HP_HT1_EmitDamage",
+          "head": [
+            149.3052978515625,
+            -151.72811889648438,
+            74.13873291015625
+          ]
+        },
+        "p_hp_stardestroyer_damage.001": {
+          "parent": "HP_HT1_EmitDamage",
+          "head": [
+            139.79124450683594,
+            -159.7594451904297,
+            74.13873291015625
+          ]
+        },
+        "MuzzleA_07": {
+          "parent": "HP_HT1_EmitDamage",
+          "head": [
+            160.71617126464844,
+            -170.8670654296875,
+            88.82943725585938
+          ]
+        },
+        "HP_HT2_bone": {
+          "parent": "Root",
+          "head": [
+            191.81398010253906,
+            -22.886207580566406,
+            79.69027709960938
+          ]
+        },
+        "HP_HT2_EmitDamage": {
+          "parent": "HP_HT2_bone",
+          "head": [
+            194.0515899658203,
+            -23.258380889892578,
+            78.15416717529297
+          ]
+        },
+        "p_hp_stardestroyer_damage.002": {
+          "parent": "HP_HT2_EmitDamage",
+          "head": [
+            186.42869567871094,
+            -33.354007720947266,
+            74.13872528076172
+          ]
+        },
+        "p_hp_stardestroyer_damage.003": {
+          "parent": "HP_HT2_EmitDamage",
+          "head": [
+            185.828125,
+            -13.212944984436035,
+            81.42513275146484
+          ]
+        },
+        "MuzzleA_06": {
+          "parent": "HP_HT2_EmitDamage",
+          "head": [
+            204.12615966796875,
+            -24.621196746826172,
+            88.57393646240234
+          ]
+        },
+        "HP_TL1_bone": {
+          "parent": "Root",
+          "head": [
+            119.51972961425781,
+            151.34727478027344,
+            116.33869934082031
+          ]
+        },
+        "HP_TL1_EmitDamage": {
+          "parent": "HP_TL1_bone",
+          "head": [
+            118.99590301513672,
+            144.727294921875,
+            116.32963562011719
+          ]
+        },
+        "p_hp_stardestroyer_damage.004": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            120.29606628417969,
+            145.10018920898438,
+            115.5467529296875
+          ]
+        },
+        "p_hp_stardestroyer_damage.005": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            129.41519165039062,
+            147.90414428710938,
+            114.53081512451172
+          ]
+        },
+        "MuzzleA_01": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            114.57298278808594,
+            161.67123413085938,
+            130.81463623046875
+          ]
+        },
+        "MuzzleA_01.001": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            119.41358947753906,
+            161.67123413085938,
+            130.81463623046875
+          ]
+        },
+        "HP_TL4_bone": {
+          "parent": "Root",
+          "head": [
+            -110.08268737792969,
+            143.1610870361328,
+            122.84150695800781
+          ]
+        },
+        "HP_TL4_EmitDamage": {
+          "parent": "HP_TL4_bone",
+          "head": [
+            -107.79066467285156,
+            149.31101989746094,
+            112.71957397460938
+          ]
+        },
+        "p_hp_stardestroyer_damage.006": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -106.93180084228516,
+            157.6929473876953,
+            114.74928283691406
+          ]
+        },
+        "p_hp_stardestroyer_damage.007": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -115.95633697509766,
+            146.3074493408203,
+            114.17173767089844
+          ]
+        },
+        "MuzzleA_02": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -117.27997589111328,
+            162.7722625732422,
+            133.0194091796875
+          ]
+        },
+        "MuzzleA_02.001": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -120.91041564941406,
+            159.5704803466797,
+            133.0194091796875
+          ]
+        },
+        "HP_TL3_bone": {
+          "parent": "Root",
+          "head": [
+            -110.26625061035156,
+            -51.99125671386719,
+            160.2038116455078
+          ]
+        },
+        "HP_TL3_EmitDamage": {
+          "parent": "HP_TL3_bone",
+          "head": [
+            -113.23245239257812,
+            -49.20184326171875,
+            153.41053771972656
+          ]
+        },
+        "MuzzleA_03": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -115.96907806396484,
+            -58.68288803100586,
+            170.6819305419922
+          ]
+        },
+        "MuzzleA_03.001": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -120.16849517822266,
+            -56.275306701660156,
+            170.6819305419922
+          ]
+        },
+        "p_hp_stardestroyer_damage.008": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -111.25932312011719,
+            -58.464256286621094,
+            151.96522521972656
+          ]
+        },
+        "p_hp_stardestroyer_damage.009": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -115.67655944824219,
+            -47.078765869140625,
+            151.8814239501953
+          ]
+        },
+        "HP_TL2_bone": {
+          "parent": "Root",
+          "head": [
+            34.884071350097656,
+            -32.194236755371094,
+            156.9320526123047
+          ]
+        },
+        "HP_TL2_EmitDamage": {
+          "parent": "HP_TL2_bone",
+          "head": [
+            37.987510681152344,
+            -43.856658935546875,
+            152.73402404785156
+          ]
+        },
+        "MuzzleA_04": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            44.12017822265625,
+            -56.17624282836914,
+            164.5678253173828
+          ]
+        },
+        "MuzzleA_04.001": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            48.285037994384766,
+            -53.70940399169922,
+            164.5678253173828
+          ]
+        },
+        "p_hp_stardestroyer_damage.010": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            31.83934211730957,
+            -49.693294525146484,
+            149.1797332763672
+          ]
+        },
+        "p_hp_stardestroyer_damage.011": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            43.08942794799805,
+            -21.842330932617188,
+            149.09593200683594
+          ]
+        },
+        "HP_LL1_bone": {
+          "parent": "Root",
+          "head": [
+            -27.330902099609375,
+            -8.973342895507812,
+            173.90443420410156
+          ]
+        },
+        "HP_LL1_EmitDamage": {
+          "parent": "HP_LL1_bone",
+          "head": [
+            -28.21605682373047,
+            -6.971000671386719,
+            165.96461486816406
+          ]
+        },
+        "p_hp_stardestroyer_damage.012": {
+          "parent": "HP_LL1_EmitDamage",
+          "head": [
+            -25.355485916137695,
+            -7.732960224151611,
+            169.3393096923828
+          ]
+        },
+        "MuzzleA_00": {
+          "parent": "HP_LL1_EmitDamage",
+          "head": [
+            -27.862110137939453,
+            -17.904052734375,
+            178.19154357910156
+          ]
+        },
+        "HP_SHG_bone": {
+          "parent": "Root",
+          "head": [
+            91.21841430664062,
+            63.61151123046875,
+            114.20265197753906
+          ]
+        },
+        "HP_SHG_EmitDamage": {
+          "parent": "HP_SHG_bone",
+          "head": [
+            91.81793212890625,
+            92.97073364257812,
+            108.23910522460938
+          ]
+        },
+        "p_hp_stardestroyer_damage.013": {
+          "parent": "HP_SHG_EmitDamage",
+          "head": [
+            98.71283721923828,
+            92.61882781982422,
+            113.29508972167969
+          ]
+        },
+        "p_hp_stardestroyer_damage.014": {
+          "parent": "HP_SHG_EmitDamage",
+          "head": [
+            84.68009185791016,
+            96.90015411376953,
+            113.29508972167969
+          ]
+        },
+        "HP_HB_bone": {
+          "parent": "Root",
+          "head": [
+            47.053653717041016,
+            79.12590026855469,
+            134.32237243652344
+          ]
+        },
+        "HP_HB_EmitDamage": {
+          "parent": "HP_HB_bone",
+          "head": [
+            52.5676155090332,
+            100.24275207519531,
+            131.64132690429688
+          ]
+        },
+        "p_hp_stardestroyer_damage.015": {
+          "parent": "HP_HB_EmitDamage",
+          "head": [
+            65.3638687133789,
+            108.11747741699219,
+            124.49091339111328
+          ]
+        },
+        "HP_LL2_bone": {
+          "parent": "Root",
+          "head": [
+            23.459640502929688,
+            91.55707550048828,
+            154.42091369628906
+          ]
+        },
+        "HP_LL2_EmitDamage": {
+          "parent": "HP_LL2_bone",
+          "head": [
+            23.043750762939453,
+            96.51954650878906,
+            145.45716857910156
+          ]
+        },
+        "MuzzleA_05": {
+          "parent": "HP_LL2_EmitDamage",
+          "head": [
+            29.944124221801758,
+            105.0922622680664,
+            159.71998596191406
+          ]
+        },
+        "p_hp_stardestroyer_damage.016": {
+          "parent": "HP_LL2_EmitDamage",
+          "head": [
+            23.839468002319336,
+            89.45812225341797,
+            148.72901916503906
+          ]
+        },
+        "Camera01": {
+          "parent": "Root",
+          "head": [
+            601.4495849609375,
+            337.41107177734375,
+            705.1265869140625
+          ]
+        },
+        "Camera01.Target": {
+          "parent": "Root",
+          "head": [
+            1.506927490234375,
+            15.326774597167969,
+            0.0
+          ]
+        },
+        "spawn_00": {
+          "parent": "Root",
+          "head": [
+            29.12506103515625,
+            102.44424438476562,
+            119.53459167480469
+          ]
+        }
+      },
+      "bounds_min": [
+        -205.4298858642578,
+        -296.7026062011719,
+        -262.07196044921875
+      ],
+      "bounds_max": [
+        218.01905822753906,
+        277.5797119140625,
+        216.07164001464844
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Asteroid": {
+          "triangles": 1209,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot00"
+          ],
+          "parent": "Root"
+        },
+        "Pirate_base": {
+          "triangles": 1710,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot01"
+          ],
+          "parent": "Root"
+        },
+        "GlowWindows": {
+          "triangles": 46,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot02"
+          ],
+          "parent": "Root"
+        },
+        "shadowmesh": {
+          "triangles": 1902,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot03"
+          ],
+          "parent": "Root"
+        },
+        "collision": {
+          "triangles": 304,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL4_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL3_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_SHG_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_TL2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_LL1_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_LL2_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "HP_HB_COLL": {
+          "triangles": 12,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot04"
+          ],
+          "parent": "Root"
+        },
+        "grates": {
+          "triangles": 48,
+          "hidden": false,
+          "materials": [
+            "BattleMiningFacilitySlot06"
+          ],
+          "parent": "Root"
+        },
+        "HP_HT1_blast": {
+          "triangles": 82,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_HT1_EmitDamage"
+        },
+        "HP_HT2_blast": {
+          "triangles": 94,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_HT2_EmitDamage"
+        },
+        "HP_TL1_blast": {
+          "triangles": 56,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL1_EmitDamage"
+        },
+        "HP_TL4_blast": {
+          "triangles": 78,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL4_EmitDamage"
+        },
+        "HP_TL3_blast": {
+          "triangles": 88,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL3_EmitDamage"
+        },
+        "HP_TL2_blast": {
+          "triangles": 57,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_TL2_EmitDamage"
+        },
+        "HP_LL1_blast": {
+          "triangles": 26,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_LL1_EmitDamage"
+        },
+        "HP_SHG_blast": {
+          "triangles": 28,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_SHG_EmitDamage"
+        },
+        "HP_HB_blast": {
+          "triangles": 69,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_HB_EmitDamage"
+        },
+        "HP_LL2_blast": {
+          "triangles": 23,
+          "hidden": true,
+          "materials": [
+            "BattleMiningFacilitySlot05"
+          ],
+          "parent": "HP_LL2_EmitDamage"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "blinkeys": {
+          "parent": "Root",
+          "head": [
+            -27.131793975830078,
+            71.44664001464844,
+            -23.369998931884766
+          ]
+        },
+        "P_Blink_caution": {
+          "parent": "blinkeys",
+          "head": [
+            -111.36048889160156,
+            -69.76354217529297,
+            158.3781280517578
+          ]
+        },
+        "P_Blink_caution.001": {
+          "parent": "blinkeys",
+          "head": [
+            -18.13650894165039,
+            53.382503509521484,
+            202.57752990722656
+          ]
+        },
+        "P_Blink_caution.002": {
+          "parent": "blinkeys",
+          "head": [
+            -8.449390411376953,
+            258.85589599609375,
+            115.7834701538086
+          ]
+        },
+        "P_Blink_caution.003": {
+          "parent": "blinkeys",
+          "head": [
+            57.21181869506836,
+            258.85589599609375,
+            115.7834701538086
+          ]
+        },
+        "P_Blink_caution.004": {
+          "parent": "blinkeys",
+          "head": [
+            53.18540573120117,
+            -115.79830169677734,
+            -230.4433135986328
+          ]
+        },
+        "P_Blink_caution.005": {
+          "parent": "blinkeys",
+          "head": [
+            -111.36048889160156,
+            -22.076351165771484,
+            158.37811279296875
+          ]
+        },
+        "P_Blink_ryellow": {
+          "parent": "blinkeys",
+          "head": [
+            53.428340911865234,
+            -103.40809631347656,
+            -262.8274841308594
+          ]
+        },
+        "P_Blink_ryellow.001": {
+          "parent": "blinkeys",
+          "head": [
+            22.801597595214844,
+            97.97518157958984,
+            -244.8486785888672
+          ]
+        },
+        "P_Blink_white": {
+          "parent": "blinkeys",
+          "head": [
+            -27.851511001586914,
+            53.9979362487793,
+            216.05503845214844
+          ]
+        },
+        "P_Blink_white.001": {
+          "parent": "blinkeys",
+          "head": [
+            24.155254364013672,
+            40.99523162841797,
+            -191.008544921875
+          ]
+        },
+        "P_Blink_caution.006": {
+          "parent": "blinkeys",
+          "head": [
+            131.3804931640625,
+            134.27178955078125,
+            114.16012573242188
+          ]
+        },
+        "P_Blink_caution.007": {
+          "parent": "blinkeys",
+          "head": [
+            131.3804931640625,
+            163.62477111816406,
+            114.16012573242188
+          ]
+        },
+        "P_Blink_caution.008": {
+          "parent": "blinkeys",
+          "head": [
+            57.21181869506836,
+            258.85589599609375,
+            101.8516845703125
+          ]
+        },
+        "P_Blink_caution.009": {
+          "parent": "blinkeys",
+          "head": [
+            -8.408342361450195,
+            258.85589599609375,
+            101.85167694091797
+          ]
+        },
+        "HP_HT1_bone": {
+          "parent": "Root",
+          "head": [
+            149.16552734375,
+            -160.52304077148438,
+            79.53897857666016
+          ]
+        },
+        "HP_HT1_EmitDamage": {
+          "parent": "HP_HT1_bone",
+          "head": [
+            151.69100952148438,
+            -162.85305786132812,
+            76.67459869384766
+          ]
+        },
+        "p_hp_stardestroyer_damage": {
+          "parent": "HP_HT1_EmitDamage",
+          "head": [
+            149.3052978515625,
+            -151.7281036376953,
+            74.13875579833984
+          ]
+        },
+        "p_hp_stardestroyer_damage.001": {
+          "parent": "HP_HT1_EmitDamage",
+          "head": [
+            139.791259765625,
+            -159.75941467285156,
+            74.13875579833984
+          ]
+        },
+        "MuzzleA_07": {
+          "parent": "HP_HT1_EmitDamage",
+          "head": [
+            160.7161407470703,
+            -170.86705017089844,
+            88.8294677734375
+          ]
+        },
+        "HP_HT2_bone": {
+          "parent": "Root",
+          "head": [
+            191.81398010253906,
+            -22.886194229125977,
+            79.69027709960938
+          ]
+        },
+        "HP_HT2_EmitDamage": {
+          "parent": "HP_HT2_bone",
+          "head": [
+            194.0515899658203,
+            -23.25836753845215,
+            78.15416717529297
+          ]
+        },
+        "p_hp_stardestroyer_damage.002": {
+          "parent": "HP_HT2_EmitDamage",
+          "head": [
+            186.4287109375,
+            -33.3539924621582,
+            74.13873291015625
+          ]
+        },
+        "p_hp_stardestroyer_damage.003": {
+          "parent": "HP_HT2_EmitDamage",
+          "head": [
+            185.828125,
+            -13.212930679321289,
+            81.42513275146484
+          ]
+        },
+        "MuzzleA_06": {
+          "parent": "HP_HT2_EmitDamage",
+          "head": [
+            204.12612915039062,
+            -24.621185302734375,
+            88.57394409179688
+          ]
+        },
+        "HP_TL1_bone": {
+          "parent": "Root",
+          "head": [
+            119.51972961425781,
+            151.3472900390625,
+            116.33867645263672
+          ]
+        },
+        "HP_TL1_EmitDamage": {
+          "parent": "HP_TL1_bone",
+          "head": [
+            118.99590301513672,
+            144.72731018066406,
+            116.3296127319336
+          ]
+        },
+        "p_hp_stardestroyer_damage.004": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            120.29607391357422,
+            145.10020446777344,
+            115.5467300415039
+          ]
+        },
+        "p_hp_stardestroyer_damage.005": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            129.41519165039062,
+            147.90415954589844,
+            114.5307846069336
+          ]
+        },
+        "MuzzleA_01": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            114.57299041748047,
+            161.67124938964844,
+            130.81459045410156
+          ]
+        },
+        "MuzzleA_01.001": {
+          "parent": "HP_TL1_EmitDamage",
+          "head": [
+            119.4135971069336,
+            161.67124938964844,
+            130.81459045410156
+          ]
+        },
+        "HP_TL4_bone": {
+          "parent": "Root",
+          "head": [
+            -110.08268737792969,
+            143.16110229492188,
+            122.84148406982422
+          ]
+        },
+        "HP_TL4_EmitDamage": {
+          "parent": "HP_TL4_bone",
+          "head": [
+            -107.79066467285156,
+            149.31103515625,
+            112.71955108642578
+          ]
+        },
+        "p_hp_stardestroyer_damage.006": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -106.93180084228516,
+            157.69296264648438,
+            114.749267578125
+          ]
+        },
+        "p_hp_stardestroyer_damage.007": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -115.95633697509766,
+            146.30746459960938,
+            114.17172241210938
+          ]
+        },
+        "MuzzleA_02": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -117.27997589111328,
+            162.77227783203125,
+            133.01937866210938
+          ]
+        },
+        "MuzzleA_02.001": {
+          "parent": "HP_TL4_EmitDamage",
+          "head": [
+            -120.91040802001953,
+            159.57049560546875,
+            133.01937866210938
+          ]
+        },
+        "HP_TL3_bone": {
+          "parent": "Root",
+          "head": [
+            -110.26625061035156,
+            -51.99123001098633,
+            160.20382690429688
+          ]
+        },
+        "HP_TL3_EmitDamage": {
+          "parent": "HP_TL3_bone",
+          "head": [
+            -113.23245239257812,
+            -49.20181655883789,
+            153.41055297851562
+          ]
+        },
+        "MuzzleA_03": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -115.96908569335938,
+            -58.682865142822266,
+            170.68194580078125
+          ]
+        },
+        "MuzzleA_03.001": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -120.16849517822266,
+            -56.27528762817383,
+            170.68194580078125
+          ]
+        },
+        "p_hp_stardestroyer_damage.008": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -111.25933074951172,
+            -58.46424102783203,
+            151.96524047851562
+          ]
+        },
+        "p_hp_stardestroyer_damage.009": {
+          "parent": "HP_TL3_EmitDamage",
+          "head": [
+            -115.67656707763672,
+            -47.0787467956543,
+            151.88143920898438
+          ]
+        },
+        "HP_TL2_bone": {
+          "parent": "Root",
+          "head": [
+            34.884071350097656,
+            -32.194210052490234,
+            156.9320526123047
+          ]
+        },
+        "HP_TL2_EmitDamage": {
+          "parent": "HP_TL2_bone",
+          "head": [
+            37.987510681152344,
+            -43.856632232666016,
+            152.73402404785156
+          ]
+        },
+        "MuzzleA_04": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            44.12018585205078,
+            -56.17621994018555,
+            164.56785583496094
+          ]
+        },
+        "MuzzleA_04.001": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            48.28505325317383,
+            -53.70937728881836,
+            164.56785583496094
+          ]
+        },
+        "p_hp_stardestroyer_damage.010": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            31.839330673217773,
+            -49.693275451660156,
+            149.1797637939453
+          ]
+        },
+        "p_hp_stardestroyer_damage.011": {
+          "parent": "HP_TL2_EmitDamage",
+          "head": [
+            43.08944320678711,
+            -21.842302322387695,
+            149.095947265625
+          ]
+        },
+        "HP_LL1_bone": {
+          "parent": "Root",
+          "head": [
+            -27.330902099609375,
+            -8.97331428527832,
+            173.90443420410156
+          ]
+        },
+        "HP_LL1_EmitDamage": {
+          "parent": "HP_LL1_bone",
+          "head": [
+            -28.21605682373047,
+            -6.970973491668701,
+            165.96461486816406
+          ]
+        },
+        "p_hp_stardestroyer_damage.012": {
+          "parent": "HP_LL1_EmitDamage",
+          "head": [
+            -25.35549545288086,
+            -7.73293399810791,
+            169.33929443359375
+          ]
+        },
+        "MuzzleA_00": {
+          "parent": "HP_LL1_EmitDamage",
+          "head": [
+            -27.862106323242188,
+            -17.904024124145508,
+            178.1915283203125
+          ]
+        },
+        "HP_SHG_bone": {
+          "parent": "Root",
+          "head": [
+            91.21841430664062,
+            63.61153030395508,
+            114.20264434814453
+          ]
+        },
+        "HP_SHG_EmitDamage": {
+          "parent": "HP_SHG_bone",
+          "head": [
+            91.81793212890625,
+            92.97074890136719,
+            108.23908996582031
+          ]
+        },
+        "p_hp_stardestroyer_damage.013": {
+          "parent": "HP_SHG_EmitDamage",
+          "head": [
+            98.71282958984375,
+            92.61884307861328,
+            113.29508209228516
+          ]
+        },
+        "p_hp_stardestroyer_damage.014": {
+          "parent": "HP_SHG_EmitDamage",
+          "head": [
+            84.68010711669922,
+            96.9001693725586,
+            113.29508209228516
+          ]
+        },
+        "HP_HB_bone": {
+          "parent": "Root",
+          "head": [
+            47.053653717041016,
+            79.12592315673828,
+            134.32235717773438
+          ]
+        },
+        "HP_HB_EmitDamage": {
+          "parent": "HP_HB_bone",
+          "head": [
+            52.5676155090332,
+            100.2427749633789,
+            131.6413116455078
+          ]
+        },
+        "p_hp_stardestroyer_damage.015": {
+          "parent": "HP_HB_EmitDamage",
+          "head": [
+            65.36383819580078,
+            108.11748504638672,
+            124.49089813232422
+          ]
+        },
+        "HP_LL2_bone": {
+          "parent": "Root",
+          "head": [
+            23.459640502929688,
+            91.55709838867188,
+            154.4208984375
+          ]
+        },
+        "HP_LL2_EmitDamage": {
+          "parent": "HP_LL2_bone",
+          "head": [
+            23.043750762939453,
+            96.51956939697266,
+            145.4571533203125
+          ]
+        },
+        "MuzzleA_05": {
+          "parent": "HP_LL2_EmitDamage",
+          "head": [
+            29.94412612915039,
+            105.09227752685547,
+            159.719970703125
+          ]
+        },
+        "p_hp_stardestroyer_damage.016": {
+          "parent": "HP_LL2_EmitDamage",
+          "head": [
+            23.8394718170166,
+            89.45813751220703,
+            148.72900390625
+          ]
+        },
+        "Camera01": {
+          "parent": "Root",
+          "head": [
+            601.4495849609375,
+            337.41119384765625,
+            705.1265258789062
+          ]
+        },
+        "Camera01.Target": {
+          "parent": "Root",
+          "head": [
+            1.506927490234375,
+            15.326774597167969,
+            -2.4970483991637593e-06
+          ]
+        },
+        "spawn_00": {
+          "parent": "Root",
+          "head": [
+            29.12506103515625,
+            102.44426727294922,
+            119.53457641601562
+          ]
+        }
+      },
+      "bounds_min": [
+        -205.4298858642578,
+        -296.7026062011719,
+        -262.0719299316406
+      ],
+      "bounds_max": [
+        218.01905822753906,
+        277.5797119140625,
+        216.07162475585938
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root",
+      "blinkeys": "blinkeys",
+      "P_Blink_caution": "P_Blink_caution",
+      "P_Blink_caution.001": "P_Blink_caution",
+      "P_Blink_caution.002": "P_Blink_caution",
+      "P_Blink_caution.003": "P_Blink_caution",
+      "P_Blink_caution.004": "P_Blink_caution",
+      "P_Blink_caution.005": "P_Blink_caution",
+      "P_Blink_ryellow": "P_Blink_ryellow",
+      "P_Blink_ryellow.001": "P_Blink_ryellow",
+      "P_Blink_white": "P_Blink_white",
+      "P_Blink_white.001": "P_Blink_white",
+      "P_Blink_caution.006": "P_Blink_caution",
+      "P_Blink_caution.007": "P_Blink_caution",
+      "P_Blink_caution.008": "P_Blink_caution",
+      "P_Blink_caution.009": "P_Blink_caution",
+      "HP_HT1_bone": "HP_HT1_bone",
+      "HP_HT1_EmitDamage": "HP_HT1_EmitDamage",
+      "p_hp_stardestroyer_damage": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.001": "p_hp_stardestroyer_damage",
+      "MuzzleA_07": "MuzzleA_07",
+      "HP_HT2_bone": "HP_HT2_bone",
+      "HP_HT2_EmitDamage": "HP_HT2_EmitDamage",
+      "p_hp_stardestroyer_damage.002": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.003": "p_hp_stardestroyer_damage",
+      "MuzzleA_06": "MuzzleA_06",
+      "HP_TL1_bone": "HP_TL1_bone",
+      "HP_TL1_EmitDamage": "HP_TL1_EmitDamage",
+      "p_hp_stardestroyer_damage.004": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.005": "p_hp_stardestroyer_damage",
+      "MuzzleA_01": "MuzzleA_01",
+      "MuzzleA_01.001": "MuzzleA_01",
+      "HP_TL4_bone": "HP_TL4_bone",
+      "HP_TL4_EmitDamage": "HP_TL4_EmitDamage",
+      "p_hp_stardestroyer_damage.006": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.007": "p_hp_stardestroyer_damage",
+      "MuzzleA_02": "MuzzleA_02",
+      "MuzzleA_02.001": "MuzzleA_02",
+      "HP_TL3_bone": "HP_TL3_bone",
+      "HP_TL3_EmitDamage": "HP_TL3_EmitDamage",
+      "MuzzleA_03": "MuzzleA_03",
+      "MuzzleA_03.001": "MuzzleA_03",
+      "p_hp_stardestroyer_damage.008": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.009": "p_hp_stardestroyer_damage",
+      "HP_TL2_bone": "HP_TL2_bone",
+      "HP_TL2_EmitDamage": "HP_TL2_EmitDamage",
+      "MuzzleA_04": "MuzzleA_04",
+      "MuzzleA_04.001": "MuzzleA_04",
+      "p_hp_stardestroyer_damage.010": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.011": "p_hp_stardestroyer_damage",
+      "HP_LL1_bone": "HP_LL1_bone",
+      "HP_LL1_EmitDamage": "HP_LL1_EmitDamage",
+      "p_hp_stardestroyer_damage.012": "p_hp_stardestroyer_damage",
+      "MuzzleA_00": "MuzzleA_00",
+      "HP_SHG_bone": "HP_SHG_bone",
+      "HP_SHG_EmitDamage": "HP_SHG_EmitDamage",
+      "p_hp_stardestroyer_damage.013": "p_hp_stardestroyer_damage",
+      "p_hp_stardestroyer_damage.014": "p_hp_stardestroyer_damage",
+      "HP_HB_bone": "HP_HB_bone",
+      "HP_HB_EmitDamage": "HP_HB_EmitDamage",
+      "p_hp_stardestroyer_damage.015": "p_hp_stardestroyer_damage",
+      "HP_LL2_bone": "HP_LL2_bone",
+      "HP_LL2_EmitDamage": "HP_LL2_EmitDamage",
+      "MuzzleA_05": "MuzzleA_05",
+      "p_hp_stardestroyer_damage.016": "p_hp_stardestroyer_damage",
+      "Camera01": "Camera01",
+      "Camera01.Target": "Camera01.Target",
+      "spawn_00": "spawn_00"
+    },
+    "materials": [
+      {
+        "name": "BattleMiningFacilitySlot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_A.tga",
+          "NormalTexture": "NB_APBase_A_Bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 770,
+        "triangleCount": 1209
+      },
+      {
+        "name": "BattleMiningFacilitySlot01",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_APBase_B.tga",
+          "NormalTexture": "NB_APBase_B_bump.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 2796,
+        "triangleCount": 1710
+      },
+      {
+        "name": "BattleMiningFacilitySlot02",
+        "properties": {
+          "BaseTexture": "NB_APBase_B.tga",
+          "UVScrollRate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ]
+        },
+        "shader": "MeshAdditive.fx",
+        "vertexCount": 80,
+        "triangleCount": 46
+      },
+      {
+        "name": "BattleMiningFacilitySlot03",
+        "properties": {
+          "DebugColor": [
+            0.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "shader": "MeshShadowVolume.fx",
+        "vertexCount": 5416,
+        "triangleCount": 7340
+      },
+      {
+        "name": "BattleMiningFacilitySlot04",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 411,
+        "triangleCount": 304
+      },
+      {
+        "name": "BattleMiningFacilitySlot05",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "BaseTexture": "W_blast00.tga"
+        },
+        "shader": "MeshAlpha.fx",
+        "vertexCount": 128,
+        "triangleCount": 82
+      },
+      {
+        "name": "BattleMiningFacilitySlot06",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "BaseTexture": "NV_Girders00.tga"
+        },
+        "shader": "MeshAlpha.fx",
+        "vertexCount": 96,
+        "triangleCount": 48
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 0.00013647875839232116,
+    "geometry_error": 0.00024722063821441115,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  },
+  {
+    "name": "MiningConstruction",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "Driller_ALT1": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "Driller_ALT1"
+        },
+        "Fan_ALT1": {
+          "triangles": 60,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "Fan_ALT1"
+        },
+        "fanpiece_ALT1": {
+          "triangles": 1,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "fanpiece_ALT1"
+        },
+        "main2_ALT1": {
+          "triangles": 63,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "ALT1"
+        },
+        "Main_ALT1": {
+          "triangles": 2130,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "ALT1"
+        },
+        "SHADOW_Driller_ALT1": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Driller_ALT1"
+        },
+        "SHADOW_Fan_ALT1": {
+          "triangles": 40,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Fan_ALT1"
+        },
+        "SHADOW_Main_ALT1": {
+          "triangles": 1610,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT1"
+        },
+        "collision_ALT1": {
+          "triangles": 148,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT1"
+        },
+        "Driller_ALT2": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "Driller_ALT2"
+        },
+        "Fan_ALT2": {
+          "triangles": 36,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "Fan_ALT2"
+        },
+        "fanpiece_ALT2": {
+          "triangles": 1,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "fanpiece_ALT2"
+        },
+        "SHADOW_Driller_ALT2": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Driller_ALT2"
+        },
+        "SHADOW_Fan_ALT2": {
+          "triangles": 24,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Fan_ALT2"
+        },
+        "SHADOW_Main_ALT2": {
+          "triangles": 1420,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT2"
+        },
+        "Main_ALT2": {
+          "triangles": 2210,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "ALT2"
+        },
+        "collision_ALT2": {
+          "triangles": 148,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT2"
+        },
+        "Main_ALT3": {
+          "triangles": 2200,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot04"
+          ],
+          "parent": "ALT3"
+        },
+        "SHADOW_Main_ALT3": {
+          "triangles": 1253,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT3"
+        },
+        "collision_ALT3": {
+          "triangles": 112,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT3"
+        },
+        "girder1x09": {
+          "triangles": 48,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot05"
+          ],
+          "parent": "girder1x09"
+        },
+        "Driller_ALT0": {
+          "triangles": 144,
+          "hidden": false,
+          "materials": [
+            "MiningConstructionSlot06"
+          ],
+          "parent": "Driller_ALT0"
+        },
+        "Fan_ALT0": {
+          "triangles": 72,
+          "hidden": false,
+          "materials": [
+            "MiningConstructionSlot06"
+          ],
+          "parent": "Fan_ALT0"
+        },
+        "Main_ALT0": {
+          "triangles": 2192,
+          "hidden": false,
+          "materials": [
+            "MiningConstructionSlot06"
+          ],
+          "parent": "Main_ALT0"
+        },
+        "SHADOW_Driller_ALT0": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Driller_ALT0"
+        },
+        "SHADOW_Fan_ALT0": {
+          "triangles": 72,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Fan_ALT0"
+        },
+        "SHADOW_Main_ALT0": {
+          "triangles": 2018,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT0"
+        },
+        "collision_ALT0": {
+          "triangles": 148,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT0"
+        },
+        "girder1x11": {
+          "triangles": 48,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot05"
+          ],
+          "parent": "girder1x11"
+        },
+        "girder1x15": {
+          "triangles": 72,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot05"
+          ],
+          "parent": "girder1x15"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ALT1": {
+          "parent": "Root",
+          "head": [
+            29.68254852294922,
+            -4.79443359375,
+            61.01319885253906
+          ]
+        },
+        "Driller_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.0261688232421875
+          ]
+        },
+        "Fan_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            78.50640106201172,
+            -8.692988395690918,
+            36.420013427734375
+          ]
+        },
+        "fanpiece_ALT1": {
+          "parent": "Fan_ALT1",
+          "head": [
+            78.50640106201172,
+            -8.692988395690918,
+            36.420021057128906
+          ]
+        },
+        "p_Spark_Tiny00_ALT1": {
+          "parent": "fanpiece_ALT1",
+          "head": [
+            106.41417694091797,
+            -22.703147888183594,
+            37.094512939453125
+          ]
+        },
+        "p_blink_white_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -20.52911376953125,
+            10.516378402709961,
+            92.32254028320312
+          ]
+        },
+        "p_explosion_med01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -30.424549102783203,
+            58.235958099365234,
+            32.58618927001953
+          ]
+        },
+        "p_explosion_small01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            79.1098861694336,
+            -22.703142166137695,
+            37.094505310058594
+          ]
+        },
+        "p_smoke_med01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            86.35504150390625,
+            -17.378204345703125,
+            30.96178436279297
+          ]
+        },
+        "p_smoke_small01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -31.096923828125,
+            74.48143005371094,
+            46.00829315185547
+          ]
+        },
+        "p_steam_small01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -8.709976196289062,
+            63.77104187011719,
+            35.417701721191406
+          ]
+        },
+        "SHADOW_Driller_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.0261688232421875
+          ]
+        },
+        "SHADOW_Fan_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            78.50640106201172,
+            -8.692988395690918,
+            36.420013427734375
+          ]
+        },
+        "SHADOW_Main_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            31.76083755493164,
+            7.740195274353027,
+            24.907859802246094
+          ]
+        },
+        "collision_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            51.629150390625,
+            60.789093017578125,
+            28.617103576660156
+          ]
+        },
+        "ALT2": {
+          "parent": "Root",
+          "head": [
+            30.077964782714844,
+            -5.8046112060546875,
+            55.294742584228516
+          ]
+        },
+        "Driller_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.0261688232421875
+          ]
+        },
+        "Fan_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            78.50640106201172,
+            -8.692988395690918,
+            36.42001724243164
+          ]
+        },
+        "fanpiece_ALT2": {
+          "parent": "Fan_ALT2",
+          "head": [
+            78.50640106201172,
+            -8.692988395690918,
+            36.42002487182617
+          ]
+        },
+        "p_Spark_Tiny00_ALT2": {
+          "parent": "fanpiece_ALT2",
+          "head": [
+            106.41417694091797,
+            -22.703147888183594,
+            37.09451675415039
+          ]
+        },
+        "p_explosion_small01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            161.4588623046875,
+            6.5889434814453125,
+            36.02009963989258
+          ]
+        },
+        "p_explosion_small01_ALT2.001": {
+          "parent": "ALT2",
+          "head": [
+            -30.424549102783203,
+            64.95439910888672,
+            32.586185455322266
+          ]
+        },
+        "p_explosion_med01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -26.714088439941406,
+            -7.6854047775268555,
+            36.100711822509766
+          ]
+        },
+        "p_smoke_med01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            86.35504150390625,
+            -17.378204345703125,
+            30.961780548095703
+          ]
+        },
+        "p_smoke_small01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -19.649765014648438,
+            -7.517460823059082,
+            80.8856201171875
+          ]
+        },
+        "p_smoke_small01_ALT2.001": {
+          "parent": "ALT2",
+          "head": [
+            -27.761138916015625,
+            68.41168975830078,
+            40.010684967041016
+          ]
+        },
+        "SHADOW_Driller_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.0261688232421875
+          ]
+        },
+        "SHADOW_Fan_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            78.50640106201172,
+            -8.692988395690918,
+            36.42001724243164
+          ]
+        },
+        "p_explosion_med01_ALT2.001": {
+          "parent": "ALT2",
+          "head": [
+            67.76556396484375,
+            -71.48686218261719,
+            10.890445709228516
+          ]
+        },
+        "SHADOW_Main_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            31.76083755493164,
+            7.740195274353027,
+            24.907855987548828
+          ]
+        },
+        "collision_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            51.629150390625,
+            60.789093017578125,
+            28.61709976196289
+          ]
+        },
+        "ALT3": {
+          "parent": "Root",
+          "head": [
+            40.17620849609375,
+            -5.8046112060546875,
+            57.3620719909668
+          ]
+        },
+        "p_explosion_med01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            73.38396453857422,
+            -37.40203857421875,
+            26.174419403076172
+          ]
+        },
+        "p_explosion_med01_ALT3.001": {
+          "parent": "ALT3",
+          "head": [
+            -19.48025131225586,
+            -7.6854047775268555,
+            59.11835861206055
+          ]
+        },
+        "p_explosion_med01_ALT3.002": {
+          "parent": "ALT3",
+          "head": [
+            -39.89170837402344,
+            107.95950317382812,
+            5.017692565917969
+          ]
+        },
+        "p_explosion_small01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            -61.123382568359375,
+            81.93436431884766,
+            7.761348724365234
+          ]
+        },
+        "p_explosion_small01_ALT3.001": {
+          "parent": "ALT3",
+          "head": [
+            27.427833557128906,
+            -61.01384735107422,
+            23.425533294677734
+          ]
+        },
+        "p_smoke_med01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            -37.682594299316406,
+            76.87316131591797,
+            4.804744720458984
+          ]
+        },
+        "p_smoke_small01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            50.93103790283203,
+            -0.8059978485107422,
+            85.40483093261719
+          ]
+        },
+        "SHADOW_Main_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            31.760841369628906,
+            7.740195274353027,
+            24.907848358154297
+          ]
+        },
+        "collision_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            51.62915802001953,
+            60.789093017578125,
+            28.617107391357422
+          ]
+        },
+        "p_girder_dust_med00": {
+          "parent": "Root",
+          "head": [
+            -48.02365493774414,
+            58.040283203125,
+            0.0
+          ]
+        },
+        "girder1x09": {
+          "parent": "Root",
+          "head": [
+            -20.320369720458984,
+            -8.625944137573242,
+            -89.0
+          ]
+        },
+        "p_girder_sparks00": {
+          "parent": "girder1x09",
+          "head": [
+            119.69578552246094,
+            -51.19477081298828,
+            -2.9961700439453125
+          ]
+        },
+        "Driller_ALT0": {
+          "parent": "Root",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.0261688232421875
+          ]
+        },
+        "Fan_ALT0": {
+          "parent": "Root",
+          "head": [
+            78.50640869140625,
+            -8.692988395690918,
+            36.420013427734375
+          ]
+        },
+        "Main_ALT0": {
+          "parent": "Root",
+          "head": [
+            31.76083755493164,
+            7.740195274353027,
+            24.907859802246094
+          ]
+        },
+        "p_blink_white_ALT0": {
+          "parent": "Root",
+          "head": [
+            -20.50556182861328,
+            -27.977214813232422,
+            92.24006652832031
+          ]
+        },
+        "p_blink_white_ALT0.001": {
+          "parent": "Root",
+          "head": [
+            -20.52911376953125,
+            10.516378402709961,
+            92.32254028320312
+          ]
+        },
+        "p_blink_white_ALT0.002": {
+          "parent": "Root",
+          "head": [
+            138.60983276367188,
+            7.6289873123168945,
+            71.89810180664062
+          ]
+        },
+        "p_smoke_med01_ALT0": {
+          "parent": "Root",
+          "head": [
+            86.35504150390625,
+            -17.378204345703125,
+            30.96178436279297
+          ]
+        },
+        "p_steam_small01_ALT0": {
+          "parent": "Root",
+          "head": [
+            -47.76761245727539,
+            87.94068145751953,
+            52.12865447998047
+          ]
+        },
+        "p_steam_small01_ALT0.001": {
+          "parent": "Root",
+          "head": [
+            -8.709976196289062,
+            63.771034240722656,
+            35.417701721191406
+          ]
+        },
+        "SHADOW_Driller_ALT0": {
+          "parent": "Root",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.0261688232421875
+          ]
+        },
+        "SHADOW_Fan_ALT0": {
+          "parent": "Root",
+          "head": [
+            78.50640869140625,
+            -8.692988395690918,
+            36.420013427734375
+          ]
+        },
+        "SHADOW_Main_ALT0": {
+          "parent": "Root",
+          "head": [
+            31.76083755493164,
+            7.740195274353027,
+            24.907859802246094
+          ]
+        },
+        "collision_ALT0": {
+          "parent": "Root",
+          "head": [
+            51.629154205322266,
+            60.789093017578125,
+            28.617103576660156
+          ]
+        },
+        "girder1x11": {
+          "parent": "Root",
+          "head": [
+            -12.618331909179688,
+            80.41065979003906,
+            -76.51233673095703
+          ]
+        },
+        "p_girder_sparks00.001": {
+          "parent": "girder1x11",
+          "head": [
+            10.087982177734375,
+            -51.19476318359375,
+            20.099449157714844
+          ]
+        },
+        "girder1x15": {
+          "parent": "Root",
+          "head": [
+            31.77939796447754,
+            -38.6784782409668,
+            -89.0
+          ]
+        },
+        "p_girder_sparks00.002": {
+          "parent": "girder1x15",
+          "head": [
+            44.15792465209961,
+            20.512367248535156,
+            16.547927856445312
+          ]
+        },
+        "p_girder_dust_med00.001": {
+          "parent": "Root",
+          "head": [
+            78.60294342041016,
+            -67.46566772460938,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -110.3743896484375,
+        -127.55211639404297,
+        -0.8864669799804688
+      ],
+      "bounds_max": [
+        173.05921936035156,
+        117.9632568359375,
+        91.79523468017578
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "main2_ALT1": {
+          "triangles": 63,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "ALT1"
+        },
+        "Main_ALT1": {
+          "triangles": 2130,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "ALT1"
+        },
+        "Driller_ALT1": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "Driller_ALT1"
+        },
+        "Fan_ALT1": {
+          "triangles": 60,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "Fan_ALT1"
+        },
+        "fanpiece_ALT1": {
+          "triangles": 1,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot00"
+          ],
+          "parent": "fanpiece_ALT1"
+        },
+        "SHADOW_Driller_ALT1": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Driller_ALT1"
+        },
+        "SHADOW_Fan_ALT1": {
+          "triangles": 40,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Fan_ALT1"
+        },
+        "SHADOW_Main_ALT1": {
+          "triangles": 1610,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT1"
+        },
+        "collision_ALT1": {
+          "triangles": 148,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT1"
+        },
+        "Main_ALT2": {
+          "triangles": 2210,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "ALT2"
+        },
+        "Driller_ALT2": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "Driller_ALT2"
+        },
+        "Fan_ALT2": {
+          "triangles": 36,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "Fan_ALT2"
+        },
+        "fanpiece_ALT2": {
+          "triangles": 1,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot03"
+          ],
+          "parent": "fanpiece_ALT2"
+        },
+        "SHADOW_Driller_ALT2": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Driller_ALT2"
+        },
+        "SHADOW_Fan_ALT2": {
+          "triangles": 24,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Fan_ALT2"
+        },
+        "SHADOW_Main_ALT2": {
+          "triangles": 1420,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT2"
+        },
+        "collision_ALT2": {
+          "triangles": 148,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT2"
+        },
+        "Main_ALT3": {
+          "triangles": 2200,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot04"
+          ],
+          "parent": "ALT3"
+        },
+        "SHADOW_Main_ALT3": {
+          "triangles": 1253,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT3"
+        },
+        "collision_ALT3": {
+          "triangles": 112,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT3"
+        },
+        "girder1x09": {
+          "triangles": 48,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot05"
+          ],
+          "parent": "girder1x09"
+        },
+        "Driller_ALT0": {
+          "triangles": 144,
+          "hidden": false,
+          "materials": [
+            "MiningConstructionSlot06"
+          ],
+          "parent": "Driller_ALT0"
+        },
+        "Fan_ALT0": {
+          "triangles": 72,
+          "hidden": false,
+          "materials": [
+            "MiningConstructionSlot06"
+          ],
+          "parent": "Fan_ALT0"
+        },
+        "Main_ALT0": {
+          "triangles": 2192,
+          "hidden": false,
+          "materials": [
+            "MiningConstructionSlot06"
+          ],
+          "parent": "Main_ALT0"
+        },
+        "SHADOW_Driller_ALT0": {
+          "triangles": 144,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Driller_ALT0"
+        },
+        "SHADOW_Fan_ALT0": {
+          "triangles": 72,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Fan_ALT0"
+        },
+        "SHADOW_Main_ALT0": {
+          "triangles": 2018,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot01"
+          ],
+          "parent": "SHADOW_Main_ALT0"
+        },
+        "collision_ALT0": {
+          "triangles": 148,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot02"
+          ],
+          "parent": "collision_ALT0"
+        },
+        "girder1x11": {
+          "triangles": 48,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot05"
+          ],
+          "parent": "girder1x11"
+        },
+        "girder1x15": {
+          "triangles": 72,
+          "hidden": true,
+          "materials": [
+            "MiningConstructionSlot05"
+          ],
+          "parent": "girder1x15"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ALT1": {
+          "parent": "Root",
+          "head": [
+            29.68254852294922,
+            -4.794423580169678,
+            61.01319885253906
+          ]
+        },
+        "Driller_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.026167407631874084
+          ]
+        },
+        "Fan_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            78.50640106201172,
+            -8.69298267364502,
+            36.420013427734375
+          ]
+        },
+        "fanpiece_ALT1": {
+          "parent": "Fan_ALT1",
+          "head": [
+            78.50640106201172,
+            -8.69298267364502,
+            36.420021057128906
+          ]
+        },
+        "p_Spark_Tiny00_ALT1": {
+          "parent": "fanpiece_ALT1",
+          "head": [
+            106.41416931152344,
+            -22.70314598083496,
+            37.09451675415039
+          ]
+        },
+        "p_blink_white_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -20.52911376953125,
+            10.516393661499023,
+            92.32254028320312
+          ]
+        },
+        "p_explosion_med01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -30.424549102783203,
+            58.2359619140625,
+            32.586181640625
+          ]
+        },
+        "p_explosion_small01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            79.1098861694336,
+            -22.703136444091797,
+            37.09450912475586
+          ]
+        },
+        "p_smoke_med01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            86.35504150390625,
+            -17.378198623657227,
+            30.9617862701416
+          ]
+        },
+        "p_smoke_small01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -31.096923828125,
+            74.48143768310547,
+            46.00828170776367
+          ]
+        },
+        "p_steam_small01_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -8.709976196289062,
+            63.77104949951172,
+            35.41769027709961
+          ]
+        },
+        "SHADOW_Driller_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.026167407631874084
+          ]
+        },
+        "SHADOW_Fan_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            78.50640106201172,
+            -8.69298267364502,
+            36.420013427734375
+          ]
+        },
+        "SHADOW_Main_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            31.76083755493164,
+            7.740199565887451,
+            24.90785789489746
+          ]
+        },
+        "collision_ALT1": {
+          "parent": "ALT1",
+          "head": [
+            51.629150390625,
+            60.78909683227539,
+            28.617094039916992
+          ]
+        },
+        "ALT2": {
+          "parent": "Root",
+          "head": [
+            30.077964782714844,
+            -5.804602146148682,
+            55.294742584228516
+          ]
+        },
+        "Driller_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.026167407631874084
+          ]
+        },
+        "Fan_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            78.50640106201172,
+            -8.69298267364502,
+            36.42001724243164
+          ]
+        },
+        "fanpiece_ALT2": {
+          "parent": "Fan_ALT2",
+          "head": [
+            78.50640106201172,
+            -8.69298267364502,
+            36.42002487182617
+          ]
+        },
+        "p_Spark_Tiny00_ALT2": {
+          "parent": "fanpiece_ALT2",
+          "head": [
+            106.41416931152344,
+            -22.70314598083496,
+            37.094520568847656
+          ]
+        },
+        "p_explosion_small01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            161.4588623046875,
+            6.588949203491211,
+            36.02009963989258
+          ]
+        },
+        "p_explosion_small01_ALT2.001": {
+          "parent": "ALT2",
+          "head": [
+            -30.424549102783203,
+            64.95440673828125,
+            32.58617401123047
+          ]
+        },
+        "p_explosion_med01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -26.714088439941406,
+            -7.685399055480957,
+            36.100711822509766
+          ]
+        },
+        "p_smoke_med01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            86.35504150390625,
+            -17.378198623657227,
+            30.961782455444336
+          ]
+        },
+        "p_smoke_small01_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -19.649765014648438,
+            -7.517447471618652,
+            80.8856201171875
+          ]
+        },
+        "p_smoke_small01_ALT2.001": {
+          "parent": "ALT2",
+          "head": [
+            -27.761138916015625,
+            68.41169738769531,
+            40.01067352294922
+          ]
+        },
+        "SHADOW_Driller_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.026167407631874084
+          ]
+        },
+        "SHADOW_Fan_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            78.50640106201172,
+            -8.69298267364502,
+            36.42001724243164
+          ]
+        },
+        "p_explosion_med01_ALT2.001": {
+          "parent": "ALT2",
+          "head": [
+            67.76556396484375,
+            -71.48686218261719,
+            10.890457153320312
+          ]
+        },
+        "SHADOW_Main_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            31.76083755493164,
+            7.740199565887451,
+            24.907854080200195
+          ]
+        },
+        "collision_ALT2": {
+          "parent": "ALT2",
+          "head": [
+            51.629150390625,
+            60.78909683227539,
+            28.617090225219727
+          ]
+        },
+        "ALT3": {
+          "parent": "Root",
+          "head": [
+            40.17620849609375,
+            -5.804601669311523,
+            57.3620719909668
+          ]
+        },
+        "p_explosion_med01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            73.38396453857422,
+            -37.402034759521484,
+            26.17442512512207
+          ]
+        },
+        "p_explosion_med01_ALT3.001": {
+          "parent": "ALT3",
+          "head": [
+            -19.48025131225586,
+            -7.685395240783691,
+            59.11835861206055
+          ]
+        },
+        "p_explosion_med01_ALT3.002": {
+          "parent": "ALT3",
+          "head": [
+            -39.89170837402344,
+            107.95950317382812,
+            5.017674922943115
+          ]
+        },
+        "p_explosion_small01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            -61.123382568359375,
+            81.93436431884766,
+            7.761335372924805
+          ]
+        },
+        "p_explosion_small01_ALT3.001": {
+          "parent": "ALT3",
+          "head": [
+            27.427833557128906,
+            -61.01384353637695,
+            23.4255428314209
+          ]
+        },
+        "p_smoke_med01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            -37.682594299316406,
+            76.87316131591797,
+            4.804732322692871
+          ]
+        },
+        "p_smoke_small01_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            50.93103790283203,
+            -0.8059839606285095,
+            85.40483093261719
+          ]
+        },
+        "SHADOW_Main_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            31.760841369628906,
+            7.740199565887451,
+            24.907846450805664
+          ]
+        },
+        "collision_ALT3": {
+          "parent": "ALT3",
+          "head": [
+            51.62915802001953,
+            60.78909683227539,
+            28.617097854614258
+          ]
+        },
+        "p_girder_dust_med00": {
+          "parent": "Root",
+          "head": [
+            -48.02365493774414,
+            58.040283203125,
+            -9.455961844651029e-06
+          ]
+        },
+        "girder1x09": {
+          "parent": "Root",
+          "head": [
+            -20.320369720458984,
+            -8.625958442687988,
+            -89.0
+          ]
+        },
+        "p_girder_sparks00": {
+          "parent": "girder1x09",
+          "head": [
+            119.69578552246094,
+            -51.19477081298828,
+            -2.996161699295044
+          ]
+        },
+        "Driller_ALT0": {
+          "parent": "Root",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.026167407631874084
+          ]
+        },
+        "Fan_ALT0": {
+          "parent": "Root",
+          "head": [
+            78.50640869140625,
+            -8.69298267364502,
+            36.420013427734375
+          ]
+        },
+        "Main_ALT0": {
+          "parent": "Root",
+          "head": [
+            31.76083755493164,
+            7.740199565887451,
+            24.90785789489746
+          ]
+        },
+        "p_blink_white_ALT0": {
+          "parent": "Root",
+          "head": [
+            -20.50556182861328,
+            -27.97719955444336,
+            92.24007415771484
+          ]
+        },
+        "p_blink_white_ALT0.001": {
+          "parent": "Root",
+          "head": [
+            -20.52911376953125,
+            10.516393661499023,
+            92.32254028320312
+          ]
+        },
+        "p_blink_white_ALT0.002": {
+          "parent": "Root",
+          "head": [
+            138.60983276367188,
+            7.62899923324585,
+            71.89810180664062
+          ]
+        },
+        "p_smoke_med01_ALT0": {
+          "parent": "Root",
+          "head": [
+            86.35504150390625,
+            -17.378198623657227,
+            30.9617862701416
+          ]
+        },
+        "p_steam_small01_ALT0": {
+          "parent": "Root",
+          "head": [
+            -47.76761245727539,
+            87.94068908691406,
+            52.128639221191406
+          ]
+        },
+        "p_steam_small01_ALT0.001": {
+          "parent": "Root",
+          "head": [
+            -8.709976196289062,
+            63.77104187011719,
+            35.41769027709961
+          ]
+        },
+        "SHADOW_Driller_ALT0": {
+          "parent": "Root",
+          "head": [
+            -20.523880004882812,
+            -8.692988395690918,
+            -0.026167407631874084
+          ]
+        },
+        "SHADOW_Fan_ALT0": {
+          "parent": "Root",
+          "head": [
+            78.50640869140625,
+            -8.69298267364502,
+            36.420013427734375
+          ]
+        },
+        "SHADOW_Main_ALT0": {
+          "parent": "Root",
+          "head": [
+            31.76083755493164,
+            7.740199565887451,
+            24.90785789489746
+          ]
+        },
+        "collision_ALT0": {
+          "parent": "Root",
+          "head": [
+            51.629154205322266,
+            60.78909683227539,
+            28.617094039916992
+          ]
+        },
+        "girder1x11": {
+          "parent": "Root",
+          "head": [
+            -12.618331909179688,
+            80.41064453125,
+            -76.5123519897461
+          ]
+        },
+        "p_girder_sparks00.001": {
+          "parent": "girder1x11",
+          "head": [
+            10.087982177734375,
+            -51.194759368896484,
+            20.099456787109375
+          ]
+        },
+        "girder1x15": {
+          "parent": "Root",
+          "head": [
+            31.77939796447754,
+            -38.67849349975586,
+            -88.99999237060547
+          ]
+        },
+        "p_girder_sparks00.002": {
+          "parent": "girder1x15",
+          "head": [
+            44.15792465209961,
+            20.51236915588379,
+            16.547924041748047
+          ]
+        },
+        "p_girder_dust_med00.001": {
+          "parent": "Root",
+          "head": [
+            78.60294342041016,
+            -67.46566772460938,
+            1.0991551789629739e-05
+          ]
+        }
+      },
+      "bounds_min": [
+        -110.3743896484375,
+        -127.55210876464844,
+        -0.8864724636077881
+      ],
+      "bounds_max": [
+        173.05921936035156,
+        117.96326446533203,
+        91.79524230957031
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root",
+      "ALT1": "ALT1",
+      "Driller_ALT1": "Driller_ALT1",
+      "Fan_ALT1": "Fan_ALT1",
+      "fanpiece_ALT1": "fanpiece_ALT1",
+      "p_Spark_Tiny00_ALT1": "p_Spark_Tiny00_ALT1",
+      "p_blink_white_ALT1": "p_blink_white_ALT1",
+      "p_explosion_med01_ALT1": "p_explosion_med01_ALT1",
+      "p_explosion_small01_ALT1": "p_explosion_small01_ALT1",
+      "p_smoke_med01_ALT1": "p_smoke_med01_ALT1",
+      "p_smoke_small01_ALT1": "p_smoke_small01_ALT1",
+      "p_steam_small01_ALT1": "p_steam_small01_ALT1",
+      "SHADOW_Driller_ALT1": "SHADOW_Driller_ALT1",
+      "SHADOW_Fan_ALT1": "SHADOW_Fan_ALT1",
+      "SHADOW_Main_ALT1": "SHADOW_Main_ALT1",
+      "collision_ALT1": "collision_ALT1",
+      "ALT2": "ALT2",
+      "Driller_ALT2": "Driller_ALT2",
+      "Fan_ALT2": "Fan_ALT2",
+      "fanpiece_ALT2": "fanpiece_ALT2",
+      "p_Spark_Tiny00_ALT2": "p_Spark_Tiny00_ALT2",
+      "p_explosion_small01_ALT2": "p_explosion_small01_ALT2",
+      "p_explosion_small01_ALT2.001": "p_explosion_small01_ALT2",
+      "p_explosion_med01_ALT2": "p_explosion_med01_ALT2",
+      "p_smoke_med01_ALT2": "p_smoke_med01_ALT2",
+      "p_smoke_small01_ALT2": "p_smoke_small01_ALT2",
+      "p_smoke_small01_ALT2.001": "p_smoke_small01_ALT2",
+      "SHADOW_Driller_ALT2": "SHADOW_Driller_ALT2",
+      "SHADOW_Fan_ALT2": "SHADOW_Fan_ALT2",
+      "p_explosion_med01_ALT2.001": "p_explosion_med01_ALT2",
+      "SHADOW_Main_ALT2": "SHADOW_Main_ALT2",
+      "collision_ALT2": "collision_ALT2",
+      "ALT3": "ALT3",
+      "p_explosion_med01_ALT3": "p_explosion_med01_ALT3",
+      "p_explosion_med01_ALT3.001": "p_explosion_med01_ALT3",
+      "p_explosion_med01_ALT3.002": "p_explosion_med01_ALT3",
+      "p_explosion_small01_ALT3": "p_explosion_small01_ALT3",
+      "p_explosion_small01_ALT3.001": "p_explosion_small01_ALT3",
+      "p_smoke_med01_ALT3": "p_smoke_med01_ALT3",
+      "p_smoke_small01_ALT3": "p_smoke_small01_ALT3",
+      "SHADOW_Main_ALT3": "SHADOW_Main_ALT3",
+      "collision_ALT3": "collision_ALT3",
+      "p_girder_dust_med00": "p_girder_dust_med00",
+      "girder1x09": "girder1x09",
+      "p_girder_sparks00": "p_girder_sparks00",
+      "Driller_ALT0": "Driller_ALT0",
+      "Fan_ALT0": "Fan_ALT0",
+      "Main_ALT0": "Main_ALT0",
+      "p_blink_white_ALT0": "p_blink_white_ALT0",
+      "p_blink_white_ALT0.001": "p_blink_white_ALT0",
+      "p_blink_white_ALT0.002": "p_blink_white_ALT0",
+      "p_smoke_med01_ALT0": "p_smoke_med01_ALT0",
+      "p_steam_small01_ALT0": "p_steam_small01_ALT0",
+      "p_steam_small01_ALT0.001": "p_steam_small01_ALT0",
+      "SHADOW_Driller_ALT0": "SHADOW_Driller_ALT0",
+      "SHADOW_Fan_ALT0": "SHADOW_Fan_ALT0",
+      "SHADOW_Main_ALT0": "SHADOW_Main_ALT0",
+      "collision_ALT0": "collision_ALT0",
+      "girder1x11": "girder1x11",
+      "p_girder_sparks00.001": "p_girder_sparks00",
+      "girder1x15": "girder1x15",
+      "p_girder_sparks00.002": "p_girder_sparks00",
+      "p_girder_dust_med00.001": "p_girder_dust_med00"
+    },
+    "materials": [
+      {
+        "name": "MiningConstructionSlot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_CM22Mining_d1.tga",
+          "NormalTexture": "NB_CMC22Mining_BC.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 196,
+        "triangleCount": 144
+      },
+      {
+        "name": "MiningConstructionSlot01",
+        "properties": {
+          "DebugColor": [
+            0.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "shader": "MeshShadowVolume.fx",
+        "vertexCount": 372,
+        "triangleCount": 516
+      },
+      {
+        "name": "MiningConstructionSlot02",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 286,
+        "triangleCount": 148
+      },
+      {
+        "name": "MiningConstructionSlot03",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_CM22Mining_d2.tga",
+          "NormalTexture": "NB_CMC22Mining_BC.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 196,
+        "triangleCount": 144
+      },
+      {
+        "name": "MiningConstructionSlot04",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_CM22Mining_d3.tga",
+          "NormalTexture": "NB_CMC22Mining_BC_d3.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 3211,
+        "triangleCount": 2200
+      },
+      {
+        "name": "MiningConstructionSlot05",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "BaseTexture": "NB_Girder2.tga"
+        },
+        "shader": "MeshAlpha.fx",
+        "vertexCount": 136,
+        "triangleCount": 48
+      },
+      {
+        "name": "MiningConstructionSlot06",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            32.0
+          ],
+          "Colorization": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_CMC22Mining.TGA",
+          "NormalTexture": "NB_CMC22Mining_BC.tga"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 196,
+        "triangleCount": 144
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 2.1579186437577746e-05,
+    "geometry_error": 2.750817318316642e-05,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  }
+]

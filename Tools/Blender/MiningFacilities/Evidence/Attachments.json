@@ -1,0 +1,42 @@
+[
+  {
+    "model": "NB_APBASE_HP_HB",
+    "bone": "HP_HB_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_SHG",
+    "bone": "HP_SHG_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_HT1",
+    "bone": "HP_HT1_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_HT2",
+    "bone": "HP_HT2_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_TL1",
+    "bone": "HP_TL1_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_TL2",
+    "bone": "HP_TL2_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_TL3",
+    "bone": "HP_TL3_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_TL4",
+    "bone": "HP_TL4_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_LL1",
+    "bone": "HP_LL1_BONE"
+  },
+  {
+    "model": "NB_APBASE_HP_LL1",
+    "bone": "HP_LL2_BONE"
+  }
+]
