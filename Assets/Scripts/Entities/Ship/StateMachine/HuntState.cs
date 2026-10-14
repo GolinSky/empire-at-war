@@ -79,16 +79,21 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void FindTarget()
         {
+            // The closest preferred enemy; the closest other one only when no preferred enemy is left.
             IEntity closest = null;
+            bool hasPreferred = false;
             float nearest = float.PositiveInfinity;
             foreach (IEntity entity in _locator.Entities)
             {
                 if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits || entity.IsCloaked() ||
                     _respectsFog && entity.IsHiddenByFog()) continue;
+                bool isPreferred = ShipEngagement.IsPreferred(entity, _weapon);
+                if (hasPreferred && !isPreferred) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
-                if (distance >= nearest) continue;
+                if (distance >= nearest && (hasPreferred || !isPreferred)) continue;
+                hasPreferred = isPreferred;
                 nearest = distance;
                 closest = entity;
             }

@@ -62,6 +62,7 @@ namespace EmpireAtWar.Tests.Editor
             public string Id => nameof(FakeWeapon);
             public int ResetCount { get; private set; }
             public float AttackDistance => 100f;
+            public TargetPreference PreferredTarget => TargetPreference.Ships;
 
             public float GetEngagementRange(ShipClass targetClass) => 100f;
 

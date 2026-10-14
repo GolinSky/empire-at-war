@@ -10,6 +10,9 @@ namespace EmpireAtWar.Components.Weapon
         /// <summary>Longest firing distance of any hardpoint.</summary>
         float AttackDistance { get; }
 
+        /// <summary>What the loadout is built to fight: ship AI picks these enemies before the others.</summary>
+        TargetPreference PreferredTarget { get; }
+
         /// <summary>Distance to hold against this target class so most of the effective damage can fire.</summary>
         float GetEngagementRange(ShipClass targetClass);
 

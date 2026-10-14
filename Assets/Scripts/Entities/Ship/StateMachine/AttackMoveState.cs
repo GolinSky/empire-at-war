@@ -30,6 +30,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private IEntity _engagementTarget;
 
         private readonly Func<IEntity, float> _rangeTo;
+        private readonly Func<IEntity, bool> _isPreferred;
         private AttackMoveEngagement _nextEngagement;
         private AttackMoveEngagement _engagement;
 
@@ -50,6 +51,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _radar = radar;
             _attackDataFactory = attackDataFactory;
             _rangeTo = enemy => _movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+            _isPreferred = enemy => ShipEngagement.IsPreferred(enemy, _weapon);
         }
 
         public void SetData(Vector3 destination, AttackMoveEngagement engagement)
@@ -79,17 +81,22 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 DelaySearch();
             }
 
-            if (_engagementTarget == null && Time.time >= _nextSearchTime)
+            // A held target the loadout is not built for gives way once a preferred enemy is in the set.
+            bool isSearching = _engagementTarget == null || !_isPreferred(_engagementTarget);
+            if (isSearching && Time.time >= _nextSearchTime)
             {
                 _nextSearchTime = Time.time + SEARCH_INTERVAL;
                 _hasSearched = true;
-                _engagementTarget = _engagement.SelectTarget(_member, _rangeTo);
-                if (_engagementTarget != null)
+                if (_engagementTarget == null || _engagement.HasPreferred(_isPreferred))
                 {
-                    _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
-                    // A new target always breaks off the course to the attack-move point.
-                    if (!ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
-                        ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, newTarget: true);
+                    _engagementTarget = _engagement.SelectTarget(_member, _rangeTo, _isPreferred);
+                    if (_engagementTarget != null)
+                    {
+                        _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
+                        // A new target always breaks off the course to the attack-move point.
+                        if (!ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
+                            ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, newTarget: true);
+                    }
                 }
             }
 

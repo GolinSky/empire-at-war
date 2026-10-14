@@ -65,7 +65,7 @@ namespace EmpireAtWar.Components.AttackComponent
             return new WeaponProfile(definition.WeaponType, definition.DisplayName, family.Family, family.DamageType,
                 damage, shots, interval, reload, range, family.StrikecraftOnly, family.Interceptable, shotPrefab,
                 projectileSpeed, color, size, usesFactionColor, family.TargetSizeBias, caliber.DamageBias,
-                caliber.AccuracyBias, rangeClass.AccuracyMultiplier, turnRate);
+                caliber.AccuracyBias, rangeClass.AccuracyMultiplier, turnRate, family.PreferredTarget);
         }
     }
 }

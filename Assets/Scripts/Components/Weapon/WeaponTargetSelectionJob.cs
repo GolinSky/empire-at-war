@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using EmpireAtWar.Components.AttackComponent;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -44,6 +45,9 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
+            // Preferred targets first; the rest only when none is in reach. Each candidate is visited once.
+            int passes = input.Preference == (int)TargetPreference.Any ? 1 : 2;
+            for (int pass = 0; pass < passes; pass++)
             for (int i = input.CandidateStart; i < input.CandidateStart + input.CandidateCount; i++)
             {
                 if (GroupEligible[input.GroupStart + CandidateGroups[i]] == 0) continue;
@@ -51,6 +55,7 @@ namespace EmpireAtWar.Components.Weapon
                 byte flags = SlotFlags[slot];
                 if ((flags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (input.StrikecraftOnly != 0 && (flags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
+                if (IsPreferred(input.Preference, flags) != (pass == 0)) continue;
                 result.Visited++;
                 float3 direction = SlotPositions[slot] - input.Origin;
                 // Planar, like WeaponTargetSelector: ships on different height tiers must stay in range.
@@ -105,6 +110,10 @@ namespace EmpireAtWar.Components.Weapon
             Results[index] = result;
         }
 
+        internal static bool IsPreferred(int preference, byte slotFlags) =>
+            preference == (int)TargetPreference.Any ||
+            preference == (int)TargetPreference.Strikecraft == ((slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0);
+
         internal struct Input
         {
             public float3 Origin;
@@ -118,6 +127,8 @@ namespace EmpireAtWar.Components.Weapon
             public int CandidateCount;
             public int GroupStart;
             public int StrikecraftOnly;
+            // A TargetPreference value.
+            public int Preference;
         }
 
         internal struct Result

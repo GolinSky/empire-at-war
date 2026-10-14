@@ -28,6 +28,8 @@ namespace EmpireAtWar.Components.AttackComponent
         [Header("Targeting")]
         [Tooltip("Point defense: fires only at fighters, bombers and interceptors.")]
         [SerializeField] private bool strikecraftOnly;
+        [Tooltip("Targets a ship hardpoint picks first; the others only when none of these is in reach.")]
+        [SerializeField] private TargetPreference preferredTarget;
         [Tooltip("Missile defense can shoot this projectile down before it lands.")]
         [SerializeField] private bool interceptable;
         [Tooltip("Caliber shifts damage and accuracy towards bigger targets. Off for strikecraft weapons.")]
@@ -60,6 +62,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public float Reload => reload;
         public float Range => range;
         public bool StrikecraftOnly => strikecraftOnly;
+        public TargetPreference PreferredTarget => preferredTarget;
         public bool Interceptable => interceptable;
         public bool TargetSizeBias => targetSizeBias;
         public float TurnRate => turnRate;

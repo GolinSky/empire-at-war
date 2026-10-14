@@ -48,6 +48,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public float MaxYaw => yAxisRange.Max;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
         internal bool StrikecraftOnly => _profile.StrikecraftOnly;
+        internal TargetPreference PreferredTarget => _profile.PreferredTarget;
         internal float DelayBetweenShots =>
             _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
             _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
