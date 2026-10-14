@@ -18,6 +18,7 @@ namespace EmpireAtWar.Entities.Map
         private readonly IGameModelObserver _gameModel;
         private readonly MapModel _mapModel;
         private readonly BattleDefinition _battle;
+        private readonly EmpireAtWar.Services.ShipSpawning.IShipSpawnClearance _spawnClearance;
         private readonly List<IObserver<BattleMap>> _observers = new List<IObserver<BattleMap>>();
 
         private BattleMap _battleMap;
@@ -26,13 +27,15 @@ namespace EmpireAtWar.Entities.Map
             MapGenerationSettings settings,
             MapLayoutView mapLayoutView,
             IGameModelObserver gameModel,
-            MapModel mapModel, BattleDefinition battle)
+            MapModel mapModel, BattleDefinition battle,
+            EmpireAtWar.Services.ShipSpawning.IShipSpawnClearance spawnClearance)
         {
             _settings = settings;
             _mapLayoutView = mapLayoutView;
             _gameModel = gameModel;
             _mapModel = mapModel;
             _battle = battle;
+            _spawnClearance = spawnClearance;
         }
 
         public async Awaitable LoadAsync(CancellationToken cancellationToken)
@@ -45,9 +48,15 @@ namespace EmpireAtWar.Entities.Map
             _settings.GetSize(mapSize);
             _settings.GetStationRadius(players[0].Faction);
             _settings.GetRockLayer(AsteroidSize.Large);
+            MapLayout simulationLayout = _battle.Map.Type == MapType.Empty
+                ? EmptyLayoutGenerator.Generate(_battle.Simulation,
+                    EmptyLayoutGenerator.GetSpacing(_battle.Simulation.FleetA, _spawnClearance),
+                    EmptyLayoutGenerator.GetSpacing(_battle.Simulation.FleetB, _spawnClearance))
+                : null;
 
             await Awaitable.BackgroundThreadAsync();
-            MapLayout layout = generator.Generate(mapSize, players, new Random());
+            MapLayout layout = _battle.Map.Type == MapType.Empty ? simulationLayout
+                : generator.Generate(mapSize, players, new Random());
             layout = new MapLayout(players.ToDictionary(player => player.Id, player => layout.GetStationPosition(player.Id)),
                 layout.Zones, layout.Sites.Where(site => _battle.HasFeature(BattleFeatures.CaptureSites) &&
                     (site.FacilityType != EmpireAtWar.Entities.CaptureSites.SiteFacilityType.Mining ||

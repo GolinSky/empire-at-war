@@ -51,8 +51,7 @@ namespace EmpireAtWar.Entities.Map
         public async Awaitable BuildAsync(MapLayout layout, CancellationToken cancellationToken)
         {
             // Fog first: spawned colliders are hover-tested against the fog from their first frame.
-            _fog.InitializeArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
-            DrawBorder(layout);
+            UpdateBounds(layout.SizeRange);
             float sliceStart = Time.realtimeSinceStartup;
 
             foreach (ZoneSpot zone in layout.Zones)
@@ -124,10 +123,11 @@ namespace EmpireAtWar.Entities.Map
             instance.transform.localScale = prefab.transform.localScale * rock.Scale;
         }
 
-        private void DrawBorder(MapLayout layout)
+        public void UpdateBounds(EmpireAtWar.Models.SkirmishCamera.Vector2Range bounds)
         {
-            Vector2 min = layout.SizeRange.Min;
-            Vector2 max = layout.SizeRange.Max;
+            _fog.InitializeArea((bounds.Max.x - bounds.Min.x) / fogReferenceSide);
+            Vector2 min = bounds.Min;
+            Vector2 max = bounds.Max;
             borderLine.loop = true;
             borderLine.positionCount = 4;
             borderLine.SetPosition(0, new Vector3(min.x, borderHeight, min.y));
