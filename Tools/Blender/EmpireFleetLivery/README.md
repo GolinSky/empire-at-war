@@ -24,3 +24,18 @@ Unity command: `unity command run_script --file Tools/Blender/EmpireFleetLivery/
 - Saved prefab/material/team/fog/reference checks: `91,968` passed.
 - All eight palettes visibly distinct in live/wreck renders. Blue/green changes affect about `0.3–0.5%` of visible live pixels; original albedo hashes unchanged.
 - Evidence in `Evidence/`; canonical renders in `Previews/<ship>/`. These supersede each import's earlier rim-colored preview evidence.
+
+## Seven-ship mask refresh — 2026-10-14
+
+- Scope: ISDI, ISDII, VictoryI, VictoryII, original Victory (stored under Empire; user confirmed), Republic Imperator, Empire AcclamatorAssault.
+- Built-in image generation added fine chips, scratches and fading to existing stripe masks. Existing stripe meshes, source albedos and gameplay prefabs remain unchanged. This refresh uses `_TeamMaskMap`, rather than Allegiance's albedo hue selection.
+- Victory I/II original masks had identical SHA-256 hashes; both receive the same worn layout. ISDI keeps its existing mask path. ISDII uses `Assets/Art/Textures/Models/EmpireShips/ISDIIReplacement/ISDII_WornTeamStripeMask.png`; its live/wreck stripe materials use the existing high-contrast hull albedo/normal instead of the previous white albedo.
+- Other outputs replace `VictoryI_EV_Victory_SD_TeamMask.png`, `VictoryII_EV_Victory_SD_TeamMask.png`, `Victory_Hull_TeamMask.png`, `Imperator_Hull_TeamMask.png`, and `AcclamatorAssault_HullStripeMask.png` in their existing ship texture folders. Existing GUIDs are preserved.
+- Import/save: `unity command run_script --file Tools/Blender/EmpireFleetLivery/ImportWornMasks.cs --json`.
+- Preview: `unity command run_script --file Tools/Blender/EmpireFleetLivery/RenderWornMasks.cs --args '["ISDI"]' --json`; substitute each ship name above. Preview scenes are closed and render settings restored. No icons or gameplay scenes are changed.
+- Verification: 28 neutral/blue/red/green renders in `Previews/WornMasks/<ship>/`; all seven blue/green pairs differ. Results in `Evidence/WornMaskRenderVerification.json`; live/wreck references in `Evidence/WornMaskReferences.json`. No new import/serialization errors after the corrected property audit. No gameplay tests run for this texture/material update.
+
+### Image prompts
+
+- Shared ISDI/ISDII wear: “Create a production grayscale texture mask for chipped old starship hull paint. 1024x1024 square, seamless tile, flat unlit 2D mask only. White/light gray means remaining paint, black means chipped exposed metal. About 20% irregular tiny black chips, about 15% gray faded wear, remaining 65% near white paint. Very fine multi-scale erosion and scratches, aged shabby military spacecraft finish like worn Republic Acclamator paint. Dense fine detail distributed evenly over entire image with no large empty areas, no objects, no symbols, no text, no border, no lighting or shadows. Opaque grayscale RGB.”
+- Layout edits use the original mask as image 1 and shared wear as image 2: preserve aspect ratio and stripe positions, sizes, angles and cutouts; apply approximately 20% fine black chips, scratches and gray fading only within white shapes; slight inward edge erosion; flat opaque grayscale, no text/shadows. Victory I: square; Victory and Imperator: portrait 1:2; AcclamatorAssault: square. Victory II reuses the Victory I result.

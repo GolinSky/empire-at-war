@@ -1,0 +1,86 @@
+[
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_TeamStripes_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/ISDIWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_TeamStripes_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/ISDIIReplacement/ISDII_WornTeamStripeMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/ISDIIReplacement/ISDII_WornTeamStripeMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/VictoryIShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/VictoryIWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/VictoryI/VictoryI_EV_Victory_SD_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/VictoryIIShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/VictoryII/VictoryII_EV_Victory_SD_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/VictoryIIWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/VictoryII/VictoryII_EV_Victory_SD_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/Victory/Victory_Hull_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/VictoryWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/Victory/Victory_Hull_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/RepublicShips/Imperator/Imperator_Hull_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/ImperatorWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/RepublicShips/Imperator/Imperator_Hull_TeamMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Ships/Empire/AcclamatorAssaultShipView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault_HullStripeMask.png"
+    ]
+  },
+  {
+    "prefab": "Assets/Prefabs/Models/Wrecks/AcclamatorAssaultWreckView.prefab",
+    "masks": [
+      "Assets/Art/Textures/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault_HullStripeMask.png"
+    ]
+  }
+]

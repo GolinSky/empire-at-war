@@ -24,11 +24,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 1220b83749689dc43876402f056e33d1, type: 3}
+        m_Texture: {fileID: 2800000, guid: d3802883ac730bb46aecac5dab48ef4a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e219bd00c1b7a0e4b97b4a748981c01d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
-        m_Texture: {fileID: 2800000, guid: 1220b83749689dc43876402f056e33d1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 54d4bcf38687d8f4ca4202743aaf1e42, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -74,7 +74,7 @@ Material:
     - _WreckTiltSpeed: 2
     - _WreckTornEdgeWidth: 4
     m_Colors:
-    - _BaseColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _WreckAxis: {r: 1, g: 0, b: 0, a: 0}
     - _WreckAxisRange: {r: -1, g: 1, b: 0, a: 0}
