@@ -894,9 +894,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             return new FactionRoster(
                 definition,
-                new[] { LoadSharedData<MiningFacilityCatalog>() },
+                LoadSharedData<MiningFacilityCatalog>(),
                 LoadSharedData<DefendPlatformCatalog>(),
-                new[] { LoadSharedData<SuperWeaponCatalog>() });
+                LoadSharedData<SuperWeaponCatalog>());
         }
 
         private static T LoadSharedData<T>() where T : ScriptableObject

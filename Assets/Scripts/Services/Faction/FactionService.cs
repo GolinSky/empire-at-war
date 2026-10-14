@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly PlayerSlot _owner;
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
-        private readonly System.Collections.Generic.IReadOnlyList<SuperWeaponModel> _superWeapons;
+        private readonly SuperWeaponModel _superWeapons;
 
         private bool _isInitialized;
 
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Services.Factions
             IStationRegistry stationRegistry,
             PlayerFactionModel model,
             FactionResearchModel research,
-            System.Collections.Generic.IReadOnlyList<SuperWeaponModel> superWeapons,
+            SuperWeaponModel superWeapons,
             PlayerSlot owner,
             IEntityLocator entities)
         {
@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.Factions
                 }
                 if (unitRequest is SuperWeaponUnitRequest revertedSuperWeapon)
                 {
-                    _superWeapons[0].CancelCharging(revertedSuperWeapon.Key);
+                    _superWeapons.CancelCharging(revertedSuperWeapon.Key);
                 }
                 _wallet.Refund(unitRequest);
                 return;
@@ -150,7 +150,7 @@ namespace EmpireAtWar.Services.Factions
                     _research.Complete(researchUnitRequest.Key);
                     return;
                 case SuperWeaponUnitRequest superWeaponUnitRequest:
-                    _superWeapons[0].CompleteCharging(superWeaponUnitRequest.Key);
+                    _superWeapons.CompleteCharging(superWeaponUnitRequest.Key);
                     return;
             }
 
@@ -161,7 +161,7 @@ namespace EmpireAtWar.Services.Factions
         {
             if (!_stationRegistry.HasProductionBase(_owner.Id) ||
                 !_model.CanQueueUnit(unitRequest) ||
-                unitRequest is SuperWeaponUnitRequest superWeapon && (_superWeapons.Count == 0 || !_superWeapons[0].CanPurchase(superWeapon.Key)))
+                unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {
                 return;
             }
@@ -174,7 +174,7 @@ namespace EmpireAtWar.Services.Factions
             _model.QueueUnit(unitRequest);
             if (unitRequest is SuperWeaponUnitRequest purchasedSuperWeapon)
             {
-                _superWeapons[0].StartCharging(purchasedSuperWeapon.Key);
+                _superWeapons.StartCharging(purchasedSuperWeapon.Key);
             }
         }
 
@@ -199,7 +199,7 @@ namespace EmpireAtWar.Services.Factions
             {
                 if (unitRequest is SuperWeaponUnitRequest superWeapon)
                 {
-                    _superWeapons[0].CancelCharging(superWeapon.Key);
+                    _superWeapons.CancelCharging(superWeapon.Key);
                 }
                 _wallet.Refund(unitRequest);
             }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -20,22 +21,20 @@ namespace EmpireAtWar.Models.Factions
 
         public FactionRoster(
             FactionDefinition definition,
-            IReadOnlyList<MiningFacilityCatalog> miningFacilities,
+            MiningFacilityCatalog miningFacilities,
             DefendPlatformCatalog defendPlatforms,
-            IReadOnlyList<SuperWeaponCatalog> superWeapons,
-            EmpireAtWar.Entities.Game.BattleFeatures features = EmpireAtWar.Entities.Game.BattleFeatures.All)
+            SuperWeaponCatalog superWeapons,
+            BattleFeatures features = BattleFeatures.All)
         {
             Definition = definition;
-            if ((features & EmpireAtWar.Entities.Game.BattleFeatures.MiningSites) != 0)
-                foreach (MiningFacilityCatalog catalog in miningFacilities)
-                    foreach (MiningFacilityType type in definition.MiningFacilities)
-                        MiningFacilities.Add(type, catalog.Get(type));
+            if ((features & BattleFeatures.MiningSites) != 0)
+                foreach (MiningFacilityType type in definition.MiningFacilities)
+                    MiningFacilities.Add(type, miningFacilities.Get(type));
             foreach (DefendPlatformType type in definition.DefendPlatforms)
                 DefendPlatforms.Add(type, defendPlatforms.Get(type));
-            if ((features & EmpireAtWar.Entities.Game.BattleFeatures.SuperWeapons) != 0)
-            foreach (SuperWeaponCatalog catalog in superWeapons)
+            if ((features & BattleFeatures.SuperWeapons) != 0)
                 foreach (SuperWeaponType type in definition.SuperWeapons)
-                    SuperWeapons.Add(type, catalog.Get(type));
+                    SuperWeapons.Add(type, superWeapons.Get(type));
         }
     }
 }

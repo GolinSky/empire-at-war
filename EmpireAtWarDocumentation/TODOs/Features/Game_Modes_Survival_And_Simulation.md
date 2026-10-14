@@ -91,6 +91,16 @@ created: 2026-10-14
 - Verification files: `output/BattleBuilderPhase0/baseline.json`, `composition.json`, `fifth-pass.json`; UI render previews inspected at 1920×1080. No gameplay Play Mode run.
 - Concurrent Empire fleet import is changing this checkout and sharing the test runner; its source/assets are excluded from this commit. Re-run the full suite after that work stabilizes.
 
+### Phase 0 review fixes (2026-10-14)
+- Disabled features register no-op stand-ins from their module (`IBattleModule.ConfigureDisabled`): `NoFogOfWar`, `RevealedMiniMapFogMask`, `NoCaptureSites`. Consumers take single dependencies again; no `IReadOnlyList<T>` optional injection.
+- Inert state is always registered: `SuperWeaponModel` (player), `SuperWeaponTargetingModel`, `SuperWeaponOriginRegistry`, `SuperWeaponCatalog`, `MiningFacilityCatalog` (battle). `FactionRoster` filters super weapons / mining by features. `MiningSitesModule` removed.
+- `ICaptureSitesSystem` has one registration: the real system (on) or `NoCaptureSites` (off). `BattleCaptureSites` removed.
+- `BattleDefinition` masks each player's features with the battle's; `BattlePlayer.Has(feature)` is the only check.
+- `EconomyModule.ConfigurePlayer(builder, player, playerRoot)` owns shop, cheats, AI production, research (AI), debug view.
+- `FogModule` registers `VisionService` via factory (no string-named `WithParameter`) and deactivates the fog object; `MapLayoutView` gets `IFogOfWarSystem` by `[Inject]`.
+- Super weapon button: hidden by `CoreGameUi.Initialize`, shown by `SuperWeaponPresenter.Bind`.
+- Verification: full EditMode 1,295/1,313 passed; all touched suites green (BattleDefinition 14, RealEntityComposition 8, others 84). 18 failures unrelated: 13 balance `SensorJammingSettings`, 4 fleet import (Allegiance/Procursator), 1 `UiCanvasArchitectureTests` screen count 22 vs 21.
+
 ## Phase 1 — Shop Abstraction
 - [ ] `IProductionAccess` + `SelfProductionAccess` + `HostedProductionAccess`; registered per player scope from `BattlePlayer`.
 - [ ] Replace direct `HasProductionBase(Owner)` gates in `FactionService` (purchase + `BuildUnit` refund) and `EnemyFactionController` (`Purchase`, `ForceUpgradeStation`).

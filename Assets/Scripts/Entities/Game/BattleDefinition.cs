@@ -22,7 +22,9 @@ namespace EmpireAtWar.Entities.Game
         {
             Mode = mode;
             Map = map;
-            Players = System.Array.AsReadOnly(players.ToArray());
+            // Each player keeps only the features the whole battle enables.
+            Players = System.Array.AsReadOnly(players
+                .Select(player => new BattlePlayer(player.Slot, player.Role, player.Features & features)).ToArray());
             Slots = System.Array.AsReadOnly(players.Select(player => player.Slot).ToArray());
             Features = features;
             Outcome = outcome;

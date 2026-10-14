@@ -1,18 +1,13 @@
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Controllers.Economy;
-using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.CaptureSites;
-using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Squadrons;
 using UnityEngine;
 using global::VContainer;
@@ -31,11 +26,9 @@ namespace EmpireAtWar.Services.VContainer
             base.Configure(builder);
             builder.RegisterInstance(_owner);
             SkirmishScope battleScope = (SkirmishScope)Parent;
-            var player = battleScope.Battle.GetPlayer(_owner.Id);
-            battleScope.Modules.ConfigurePlayer(builder, player);
-            builder.RegisterInstance(new UnitRequestFactory(
-                battleScope.Battle.HasFeature(BattleFeatures.SuperWeapons) &&
-                (player.Features & BattleFeatures.SuperWeapons) != 0))
+            BattlePlayer player = battleScope.Battle.GetPlayer(_owner.Id);
+            battleScope.Modules.ConfigurePlayer(builder, player, transform);
+            builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
             UnitFactoryRegistrations.Register(builder);
             builder.Register<SquadronPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -49,34 +42,16 @@ namespace EmpireAtWar.Services.VContainer
                 .WithParameter(Assets.LoadComponent<BoxCollider>(_owner.Faction + "SpaceStationView"));
             builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyShipAbilityController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyUnitLimitModel>(Lifetime.Singleton);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (player.CanProduce && battleScope.Battle.HasFeature(BattleFeatures.Economy) &&
-                (player.Features & BattleFeatures.Economy) != 0)
-            {
-                GameObject debugRoot = new GameObject(nameof(EnemyEconomyDebugView));
-                debugRoot.transform.SetParent(transform, false);
-                builder.RegisterComponent(debugRoot.AddComponent<EnemyEconomyDebugView>())
-                .AsImplementedInterfaces().AsSelf();
-            }
-#endif
             builder.Register<EnemySquadronCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionRoster>(Lifetime.Singleton)
                 .WithParameter(battleScope.Factions.Get(_owner.Faction))
-                .WithParameter(battleScope.Battle.Features & player.Features);
+                .WithParameter(player.Features);
             builder.Register<EnemyFactionModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            if (player.CanProduce && battleScope.Battle.HasFeature(BattleFeatures.Economy) &&
-                (player.Features & BattleFeatures.Economy) != 0)
-            {
-                builder.Register<EnemyService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-                builder.Register<EnemyProductionDecisionModel>(Lifetime.Singleton);
-                builder.Register<EnemyCounterProductionModel>(Lifetime.Singleton);
-                builder.Register<EnemyProductionStrategy>(Lifetime.Singleton);
-                builder.Register<EnemyFactionController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-                builder.Register<FactionResearchModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            }
-            else if (player.OwnsStation)
-                builder.Register<EmpireAtWar.Services.Player.PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            // With an economy, EnemyService spawns the station; without one only the station spawner remains.
+            if (player.OwnsStation && !player.Has(BattleFeatures.Economy))
+                builder.Register<PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterLifecycle();
         }
     }

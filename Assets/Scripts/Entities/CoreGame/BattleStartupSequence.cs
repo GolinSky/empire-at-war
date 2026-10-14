@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using EmpireAtWar.Entities.Game;
 using System.Threading;
 using EmpireAtWar.Entities.Map;
@@ -22,7 +21,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IPlayerRoster _playerRoster;
         private readonly ILocalPlayer _localPlayer;
         private readonly ICameraService _cameraService;
-        private readonly IReadOnlyList<IFogOfWarSystem> _fogOfWarSystems;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly IFadeService _fadeService;
         private readonly BattleDefinition _battle;
 
@@ -33,7 +32,7 @@ namespace EmpireAtWar.Controllers.Game
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             ICameraService cameraService,
-            IReadOnlyList<IFogOfWarSystem> fogOfWarSystems,
+            IFogOfWarSystem fogOfWarSystem,
             IFadeService fadeService, BattleDefinition battle)
         {
             _mapLoader = mapLoader;
@@ -42,7 +41,7 @@ namespace EmpireAtWar.Controllers.Game
             _playerRoster = playerRoster;
             _localPlayer = localPlayer;
             _cameraService = cameraService;
-            _fogOfWarSystems = fogOfWarSystems;
+            _fogOfWarSystem = fogOfWarSystem;
             _fadeService = fadeService;
             _battle = battle;
         }
@@ -64,7 +63,7 @@ namespace EmpireAtWar.Controllers.Game
             // Spawned stations register their fog vision in their contexts' Start.
             await Awaitable.NextFrameAsync(cancellationToken);
             await Awaitable.NextFrameAsync(cancellationToken);
-            foreach (var fog in _fogOfWarSystems) fog.RevealImmediately();
+            _fogOfWarSystem.RevealImmediately();
             await _fadeService.FadeOutAsync(FADE_OUT_DURATION, cancellationToken);
         }
     }

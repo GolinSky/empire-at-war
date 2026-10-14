@@ -47,7 +47,6 @@ namespace EmpireAtWar.Entities.CoreGameUi
         public IUnitActionsView UnitActionsView => unitActionsView;
         public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
         public Transform ContextualPopup => contextualPopup.transform;
-        public void SetSuperWeaponsEnabled(bool enabled) => superWeaponsView.SetAvailable(enabled);
 
         public void Initialize()
         {
@@ -56,6 +55,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
             reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.AddListener(_presenter.StartCinematic);
             clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
+            // Hidden until a super weapon presenter binds; battles without super weapons have none.
+            superWeaponsView.SetAvailable(false);
             _isInitialized = true;
         }
 

@@ -1,34 +1,36 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Game;
 using global::VContainer;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
     public sealed class BattleModules
     {
-        private readonly BattleDefinition _definition;
+        private readonly IReadOnlyList<IBattleModule> _disabled;
         public IReadOnlyList<IBattleModule> Enabled { get; }
 
         public BattleModules(BattleDefinition definition, params IBattleModule[] available)
         {
-            _definition = definition;
             List<IBattleModule> enabled = new List<IBattleModule>();
+            List<IBattleModule> disabled = new List<IBattleModule>();
             foreach (IBattleModule module in available)
-                if (definition.HasFeature(module.Feature)) enabled.Add(module);
+                (definition.HasFeature(module.Feature) ? enabled : disabled).Add(module);
             Enabled = enabled.AsReadOnly();
+            _disabled = disabled.AsReadOnly();
         }
 
         public void ConfigureBattle(IContainerBuilder builder)
         {
             foreach (IBattleModule module in Enabled) module.ConfigureBattle(builder);
+            foreach (IBattleModule module in _disabled) module.ConfigureDisabled(builder);
         }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player)
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
-            BattlePlayer effectivePlayer = new BattlePlayer(player.Slot, player.Role, player.Features & _definition.Features);
             foreach (IBattleModule module in Enabled)
-                if ((player.Features & module.Feature) == module.Feature)
-                    module.ConfigurePlayer(builder, effectivePlayer);
+                if (player.Has(module.Feature))
+                    module.ConfigurePlayer(builder, player, playerRoot);
         }
     }
 }

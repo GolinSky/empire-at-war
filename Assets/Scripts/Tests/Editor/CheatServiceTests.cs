@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
                 shipFactory: new ShipFactory(null, null, null, null, null, null),
                 shipSpawnPoints: new NoShipSpawnPoints(),
                 entityLocator: new EmptyEntityLocator(),
-                superWeaponModel: new[] { _superWeaponModel },
+                superWeaponModel: _superWeaponModel,
                 rangeDebugModel: new RangeDebugModel(),
                 owner: TestPlayers.CreateDuel().Get(TestPlayers.Human));
         }

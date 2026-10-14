@@ -6,6 +6,7 @@ using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using global::VContainer;
 using global::VContainer.Unity;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
@@ -28,9 +29,15 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<CaptureSiteBuildUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player)
+        public void ConfigureDisabled(IContainerBuilder builder)
         {
-            if (!player.CanProduce || (player.Features & BattleFeatures.Economy) == 0) return;
+            _sites.gameObject.SetActive(false);
+            builder.Register<NoCaptureSites>(Lifetime.Singleton).As<ICaptureSitesSystem>();
+        }
+
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        {
+            if (!player.Has(BattleFeatures.Economy)) return;
             builder.Register<SiteFacilityBuilder>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (player.Slot.IsAi)
                 builder.Register<EnemySiteConstructionController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
