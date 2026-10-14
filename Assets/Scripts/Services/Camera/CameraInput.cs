@@ -22,6 +22,8 @@ namespace EmpireAtWar.Services.Camera
 
         public event Action<float> Zoomed;
 
+        public event Action<float> ZoomScrolled;
+
         public Vector2 Move
         {
             get
@@ -62,15 +64,15 @@ namespace EmpireAtWar.Services.Camera
                 }
             }
 
-            RaiseZoom(_camera.Zoom.ReadValue<float>());
-            RaiseZoom(_camera.ZoomScroll.ReadValue<float>());
+            RaiseZoom(Zoomed, _camera.Zoom.ReadValue<float>());
+            RaiseZoom(ZoomScrolled, _camera.ZoomScroll.ReadValue<float>());
         }
 
-        private void RaiseZoom(float direction)
+        private static void RaiseZoom(Action<float> zoomEvent, float direction)
         {
             if (!Mathf.Approximately(direction, 0f))
             {
-                Zoomed?.Invoke(direction);
+                zoomEvent?.Invoke(direction);
             }
         }
 
