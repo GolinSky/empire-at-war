@@ -26,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
                 UiServiceStub uiService = new UiServiceStub(view);
                 RouteStub routes = new RouteStub();
                 controller = new MainMenuUiController(uiService, new CancelRouterStub(),
-                    routes, routes, new TooltipServiceStub(), routes);
+                    routes, routes, new TooltipServiceStub());
                 controller.Open();
                 controller.Open();
                 Button start = (Button)new SerializedObject(view)
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH));
             MainMenuUiController controller = new MainMenuUiController(
                 new UiServiceStub(root.GetComponent<MainMenuUi>()), new CancelRouterStub(),
-                new RouteStub(), new RouteStub(), new TooltipServiceStub(), new RouteStub());
+                new RouteStub(), new RouteStub(), new TooltipServiceStub());
             try
             {
                 controller.Open();
@@ -70,11 +70,56 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void PlayRoute_ReusesViewForwardsModesAndReturnsOnCancel()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/PlayUi.prefab");
+            EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController controller = null;
+            try
+            {
+                var view = root.GetComponent<EmpireAtWar.Entities.MainMenu.Play.PlayUi>();
+                var service = new UiServiceStub(view);
+                var skirmish = new RouteStub();
+                var survival = new RouteStub();
+                controller = new EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController(
+                    service, new CancelRouterStub(), skirmish, survival);
+                controller.Open();
+                controller.Open();
+                var fields = new SerializedObject(view);
+                var skirmishButton = (Button)fields.FindProperty("skirmishButton").objectReferenceValue;
+                var survivalButton = (Button)fields.FindProperty("survivalButton").objectReferenceValue;
+                var simulationButton = (Button)fields.FindProperty("simulationButton").objectReferenceValue;
+                var backButton = (Button)fields.FindProperty("backButton").objectReferenceValue;
+                skirmishButton.onClick.Invoke();
+                survivalButton.onClick.Invoke();
+                Assert.That(skirmish.OpenCount, Is.EqualTo(1));
+                Assert.That(survival.OpenCount, Is.EqualTo(1));
+                Assert.That(simulationButton.interactable, Is.False);
+                Assert.That(controller.TryCancel(), Is.True);
+                Assert.That(view.IsVisible, Is.False);
+                Assert.That(controller.IsFocused, Is.False);
+                controller.Open();
+                Assert.That(service.CreateCount, Is.EqualTo(1));
+                backButton.onClick.Invoke();
+                Assert.That(view.IsVisible, Is.False);
+                controller.LateDispose();
+                skirmishButton.onClick.Invoke();
+                survivalButton.onClick.Invoke();
+                Assert.That(skirmish.OpenCount, Is.EqualTo(1));
+                Assert.That(survival.OpenCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                if (controller != null) controller.LateDispose();
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
         private sealed class UiServiceStub : IUiService
         {
-            private readonly MainMenuUi _view;
+            private readonly BaseUi _view;
             public int CreateCount { get; private set; }
-            public UiServiceStub(MainMenuUi view) => _view = view;
+            public UiServiceStub(BaseUi view) => _view = view;
             public TUi CreateUi<TUi>() where TUi : BaseUi
             {
                 CreateCount++;
@@ -85,7 +130,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SetContentVisible(bool isVisible) { }
         }
 
-        private sealed class RouteStub : ISkirmishRoute, ISettingsRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute
+        private sealed class RouteStub : EmpireAtWar.Entities.MainMenu.Play.IPlayRoute, ISettingsRoute, ISkirmishRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute
         {
             public int OpenCount { get; private set; }
             public void Open() => OpenCount++;

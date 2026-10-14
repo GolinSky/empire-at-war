@@ -1,6 +1,6 @@
 using System;
 using EmpireAtWar.Entities.MainMenu.Settings;
-using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.MainMenu.Play;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using VContainer;
@@ -13,8 +13,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
 {
     public class MainMenuUiController : UiController, IMainMenuPresenter, ILateDisposable
     {
-        private readonly ISkirmishRoute _skirmishRoute;
-        private readonly EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute _survivalRoute;
+        private readonly IPlayRoute _playRoute;
         private readonly ISettingsRoute _settingsRoute;
         private MainMenuUi _ui;
 
@@ -24,13 +23,11 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         public MainMenuUiController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
-            ISkirmishRoute skirmishRoute,
+            IPlayRoute playRoute,
             ISettingsRoute settingsRoute,
-            ITooltipService tooltipService,
-            EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute survivalRoute) : base(uiService, cancelRouter)
+            ITooltipService tooltipService) : base(uiService, cancelRouter)
         {
-            _skirmishRoute = skirmishRoute;
-            _survivalRoute = survivalRoute;
+            _playRoute = playRoute;
             _settingsRoute = settingsRoute;
             _tooltips = new TooltipRequests(tooltipService);
         }
@@ -56,10 +53,10 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             _ui.Show();
         }
 
-        public void OpenSkirmish()
+        public void OpenPlay()
         {
             _tooltips.HideAll();
-            _skirmishRoute.Open();
+            _playRoute.Open();
         }
 
         public void OpenSettings()
@@ -68,17 +65,11 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             _settingsRoute.Open();
         }
 
-        public void OpenSurvival()
-        {
-            _tooltips.HideAll();
-            _survivalRoute.Open();
-        }
-
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => _ui != null, () => new TooltipContent(title: (string)key,
                 description: (string)key switch
                 {
-                    "Skirmish" => "Set up a battle with factions, teams and AI opponents.",
+                    "Play" => "Choose Skirmish, Survival or Battle Simulation.",
                     "Settings" => "Edit display, camera and key-binding settings.",
                     "Quit" => "Exit the application.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))

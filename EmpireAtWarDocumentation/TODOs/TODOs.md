@@ -8,6 +8,7 @@
   - **Plan**: [[TODOs/Features/Game_Modes_Survival_And_Simulation|Game Modes Survival And Simulation]]
   - **Status**: 2026-10-14 Phase 0 implemented: battle definitions/roles, optional feature modules, Skirmish super-weapons toggle, Survival setup with launch disabled, and mode-aware results. Baseline regression repairs included. Phase 0 checks and 8 real-scope cases pass.
   - **Verification**: full EditMode 1,288/1,308; 18 concurrent fleet-import failures and 2 concurrent Editor timeout-log failures. Full-suite green gate remains open.
+  - **Menu**: Main Menu → Play → three mode buttons via `IPlayRoute`; 3/3 focused menu lifecycle tests pass. Survival setup only; Simulation disabled.
   - **Remaining**: stable full-suite rerun; Phase 1 hosted production; Phase 2 Survival gameplay; Phase 3 Battle Simulation.
 
 - [ ] **AI composition analysis and counter measures**
