@@ -45,6 +45,8 @@ namespace EmpireAtWar.Services.Camera
     {
         // Load hitches would otherwise turn one frame of held input into a long jump.
         private const float MAX_FRAME_DELTA = 0.05f;
+        // Keeps the view-ray to height conversion finite if a pose ever looks near the horizon.
+        private const float MIN_PITCH_SINE = 0.1f;
 
         private IMapModelObserver _mapModel;
         private INotifier<BattleState> _battleState;
@@ -55,6 +57,7 @@ namespace EmpireAtWar.Services.Camera
         [SerializeField] private UnityEngine.Camera sceneCamera;
         private CameraData _cameraData;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
+        private readonly CameraZoom _zoom = new CameraZoom();
 
         private Plane _plane = new();
         private Vector2 _keyboardInput;
@@ -66,6 +69,7 @@ namespace EmpireAtWar.Services.Camera
 
         private float PanSpeed => _cameraData.PanSpeed * _preferences.PanSpeedMultiplier;
         private static float FrameDelta => Mathf.Min(Time.unscaledDeltaTime, MAX_FRAME_DELTA);
+        private float PitchSine => Mathf.Max(-CameraForward.y, MIN_PITCH_SINE);
 
         public Vector3 CameraPosition => transform.position;
         public Transform CameraTransform => transform;
@@ -94,7 +98,9 @@ namespace EmpireAtWar.Services.Camera
         {
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
+            _zoom.Reset(CameraPosition.y);
             _cameraInput.Zoomed += ZoomCamera;
+            _cameraInput.ZoomScrolled += ScrollZoom;
             _cameraInput.Panned += PanCamera;
             _inputLock.LockChanged += OnLockChanged;
             _battleState.AddObserver(this);
@@ -106,12 +112,14 @@ namespace EmpireAtWar.Services.Camera
             if (!_canMove)
             {
                 _keyboardVelocity = Vector2.zero;
+                _zoom.Reset(CameraPosition.y);
             }
         }
 
         public void LateDispose()
         {
             _cameraInput.Zoomed -= ZoomCamera;
+            _cameraInput.ZoomScrolled -= ScrollZoom;
             _cameraInput.Panned -= PanCamera;
             _inputLock.LockChanged -= OnLockChanged;
             _battleState.RemoveObserver(this);
@@ -176,6 +184,7 @@ namespace EmpireAtWar.Services.Camera
         {
             _keyboardVelocity = Vector2.zero;
             transform.SetPositionAndRotation(position, rotation);
+            _zoom.Reset(position.y);
         }
 
         public void SetCullingMask(LayerMask mask)
@@ -190,6 +199,12 @@ namespace EmpireAtWar.Services.Camera
                 return;
             }
 
+            TickZoom();
+            TickKeyboardPan();
+        }
+
+        private void TickKeyboardPan()
+        {
             _keyboardInput = _cameraInput.Move;
             _keyboardVelocity = VelocitySmoothing.MoveTowardsTarget(
                 _keyboardVelocity,
@@ -227,6 +242,8 @@ namespace EmpireAtWar.Services.Camera
             if (isLocked)
             {
                 _keyboardVelocity = Vector2.zero;
+                // A lock can hand the camera to another owner; drop any unfinished zoom.
+                _zoom.Reset(CameraPosition.y);
             }
         }
 
@@ -242,27 +259,57 @@ namespace EmpireAtWar.Services.Camera
             return right * input.x + forward * input.y;
         }
 
-        private void ZoomCamera(float scrollDelta)
+        private void ZoomCamera(float axis)
         {
             if (!_canMove)
             {
                 return;
             }
 
-            scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
-            if (_preferences.InvertZoom)
+            DollyZoomTarget(Mathf.Clamp(axis, -1f, 1f) * _cameraData.ZoomSpeed * FrameDelta);
+        }
+
+        private void ScrollZoom(float notches)
+        {
+            if (!_canMove)
             {
-                scrollDelta = -scrollDelta;
+                return;
             }
 
-            float zoomSpeed = _cameraData.ZoomSpeed * _preferences.ZoomSpeedMultiplier;
-            Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * zoomSpeed * FrameDelta;
+            DollyZoomTarget(notches * _cameraData.ZoomStepDistance);
+        }
 
-            if (!_cameraData.ZoomRange.IsInRange(newPosition.y))
+        private void DollyZoomTarget(float viewDistance)
+        {
+            // Tick does not run while locked, so a target set now would replay on unlock.
+            if (_inputLock.IsLocked)
+            {
                 return;
+            }
 
-            newPosition.y = _cameraData.ZoomRange.Clamp(newPosition.y);
-            SetPosition(ClampPosition(newPosition));
+            if (_preferences.InvertZoom)
+            {
+                viewDistance = -viewDistance;
+            }
+
+            _zoom.Dolly(
+                viewDistance * _preferences.ZoomSpeedMultiplier,
+                PitchSine,
+                _cameraData.ZoomRange.Min,
+                _cameraData.ZoomRange.Max);
+        }
+
+        private void TickZoom()
+        {
+            float height = CameraPosition.y;
+            float heightDelta = _zoom.Step(height, _cameraData.ZoomSmoothTime, FrameDelta) - height;
+            if (Mathf.Abs(heightDelta) <= Mathf.Epsilon)
+            {
+                return;
+            }
+
+            // Moving along the view ray keeps the ground point under the screen centre fixed, as in EaW.
+            SetPosition(ClampPosition(CameraPosition - CameraForward * (heightDelta / PitchSine)));
         }
 
         private Vector3 ClampPosition(Vector3 position)

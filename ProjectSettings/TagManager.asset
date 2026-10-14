@@ -21,8 +21,8 @@ TagManager:
   - Obstacle
   - Dead
   - Background
-  - 
-  - 
+  - WorldUi
+  - Fog
   - 
   - 
   - 
