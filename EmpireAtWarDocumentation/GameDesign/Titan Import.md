@@ -24,6 +24,7 @@ tags:
 - Fitted length `472.49353` = current Venator `119.3834` × `4500/1137`; physical 4,500 m remains provisional.
 - Own gameplay, reinforcement preview, wreck, icons, team stripes, faction/tooltip/data maps and existing-group Addressable entries.
 - Original ALO/DDS unchanged; five source-albedo/UV stripe overlays add 724 derived triangles. Original source meshes and UVs remain unchanged.
+- Engine visual repair (2026-10-14): imported `MeshShield.fx` `Engine_Glow` and `Engine_Exhaust_Glow` renderers produced detached rings or invisible exhaust. Both are disabled in the visual prefab; six fitted white additive discs light the original mechanical nozzles. Rebuild with `Tools/Blender/EmpireEngineGlow/FixEmpireEngineGlow.cs` after `BuildArt.cs`.
 
 ## Edge Cases
 

@@ -55,3 +55,4 @@
 - After rebuilding art/gameplay, run the shared [Empire fleet livery workflow](../EmpireFleetLivery/README.md). It supersedes the earlier team-mask/rim and stripe rendering steps.
 - Neutral hull, small chipped hue-based stripes like Acclamator; live/wreck materials, ownership bindings, hologram and icons updated.
 - Canonical current renders and verification: `Tools/Blender/EmpireFleetLivery/`. All four ship test suites passed (`39/39` total).
+- After rebuilding art, run [Empire engine glow fix](../EmpireEngineGlow/README.md) to replace the imported detached glow rings with fitted nozzle glow.
