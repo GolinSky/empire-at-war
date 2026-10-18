@@ -19,7 +19,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.UnitOrders
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -100)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.ORDER_INPUT_INITIALIZE)]
     public sealed class PlayerOrderInputHandler : IInitializable, ILateDisposable,
         IPlayerOrderInputHandler
     {

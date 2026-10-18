@@ -246,22 +246,23 @@ namespace EmpireAtWar.Tests.Editor
             public void LateDispose() => _calls.Add("release:" + _name);
         }
 
-        [LifecycleOrder(Initialize = -100)]
+        [LifecycleOrder(Initialize = LifecycleOrders.HEALTH_INITIALIZE)]
         private sealed class HealthCallbacks : RecordingCallbacks
         { public HealthCallbacks(List<string> calls) : base(calls, "health") { } }
-        [LifecycleOrder(Initialize = -90)]
+        [LifecycleOrder(Initialize = LifecycleOrders.SQUADRON_FLIGHT_INITIALIZE)]
         private sealed class FlightCallbacks : RecordingCallbacks
         { public FlightCallbacks(List<string> calls) : base(calls, "flight") { } }
-        [LifecycleOrder(LateTick = -2000)]
+        [LifecycleOrder(LateTick = LifecycleOrders.FIGHTER_POSE_LATE_TICK)]
         private sealed class PoseCallbacks : RecordingCallbacks
         { public PoseCallbacks(List<string> calls) : base(calls, "pose") { } }
-        [LifecycleOrder(LateTick = -1000)]
+        [LifecycleOrder(LateTick = LifecycleOrders.COMBAT_LATE_TICK)]
         private sealed class CombatCallbacks : RecordingCallbacks
         { public CombatCallbacks(List<string> calls) : base(calls, "combat") { } }
-        [LifecycleOrder(Tick = 1000, LateTick = 1000, Dispose = -1000)]
+        [LifecycleOrder(Tick = LifecycleOrders.SHIP_SFX_TICK,
+            LateTick = LifecycleOrders.SHIP_SFX_LATE_TICK, Dispose = LifecycleOrders.SHIP_SFX_DISPOSE)]
         private sealed class SfxCallbacks : RecordingCallbacks
         { public SfxCallbacks(List<string> calls) : base(calls, "sfx") { } }
-        [LifecycleOrder(LateTick = 2000)]
+        [LifecycleOrder(LateTick = LifecycleOrders.NAVIGATION_LATE_TICK)]
         private sealed class NavigationCallbacks : RecordingCallbacks
         { public NavigationCallbacks(List<string> calls) : base(calls, "navigation") { } }
 

@@ -171,3 +171,9 @@ updated: 2026-10-13
 - Per-player EntityScopeOwnership releases active/pooled children synchronously; native GameObject destruction remains owned by the scope.
 - GUID verification passed: 1,561 retained assets, nine file moves; build scenes and Addressable entries unchanged. Evidence: `Temp/vcontainer-guid-verification.json`.
 - Unity operations follow AGENTS scene-safety, official CLI and asset-persistence rules; no agent Play Mode runs.
+- Lifecycle hardening 2026-10-18 (rules: [[Architecture/VCONTAINER_LIFECYCLE]]):
+  - `Services/VContainer/` split into `Lifecycle/`, `Scopes/{Players,Entities}/`, `Battle/{Modules,Modes}/`, `Registrations/`; 36 GUIDs preserved, namespaces unchanged.
+  - `LifecycleOrders` constants replace all production order literals; coordinator caches `[LifecycleOrder]` per type.
+  - `AssetLifetimeScope.Configure` registers the coordinator; per-scope and `DynamicEntityInstaller` calls removed. `ProjectScope` keeps its own call (root, skips base).
+  - `TooltipRegistrations`, `UiRegistrations`, `BattleDataRegistrations` extracted; `SkirmishScope` 225 → 196 lines.
+  - `LifecycleContractTests`: no project type implements VContainer entry points; child scope gets exactly one coordinator.

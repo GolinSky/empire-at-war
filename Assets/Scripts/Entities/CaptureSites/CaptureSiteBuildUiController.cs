@@ -9,7 +9,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(LateDispose = 100)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateDispose = EmpireAtWar.Lifecycle.LifecycleOrders.CAPTURE_SITE_BUILD_UI_LATE_DISPOSE)]
     public sealed class CaptureSiteBuildUiController : UiController, ICaptureSiteBuildPresenter, IInitializable, ITickable, ILateDisposable
     {
         private readonly ICaptureSiteBuildSelection _selection;

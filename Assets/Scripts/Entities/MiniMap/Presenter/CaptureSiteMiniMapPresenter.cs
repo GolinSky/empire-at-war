@@ -11,7 +11,7 @@ namespace EmpireAtWar.Presenters.MiniMap
     /// <summary>
     /// Marks every capture site with its last seen owner; a facility seen built shows its own unit marker instead.
     /// </summary>
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = 100)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HUD_PRESENTERS_INITIALIZE)]
     public sealed class CaptureSiteMiniMapPresenter : IInitializable, ILateTickable, ILateDisposable,
         IObserver<BattleState>
     {

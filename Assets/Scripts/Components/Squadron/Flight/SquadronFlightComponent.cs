@@ -16,7 +16,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
     /// Moves every fighter along its simulated flight path. The squadron root is kept on the centroid of
     /// the live fighters so selection, radar, minimap and targeting treat the squadron as one unit.
     /// </summary>
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -90)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.SQUADRON_FLIGHT_INITIALIZE)]
     public sealed class SquadronFlightComponent : MonoComponent<SquadronFlightModel>, ISquadronFlightComponent,
         IInitializable, ILateDisposable
     {

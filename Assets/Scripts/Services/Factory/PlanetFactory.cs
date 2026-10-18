@@ -8,7 +8,7 @@ using LifetimeScope = global::VContainer.Unity.LifetimeScope;
 
 namespace EmpireAtWar.Services.Factory
 {
-    [LifecycleOrder(Dispose = 200)]
+    [LifecycleOrder(Dispose = LifecycleOrders.PLANETS_DISPOSE)]
     public sealed class PlanetFactory : IOrderedDisposable
     {
         private readonly LifetimeScope _owner;

@@ -41,5 +41,6 @@ flowchart LR
 
 - [[../Architecture/PROJECT_ORGANIZATION|PROJECT_ORGANIZATION.md]]: Mandatory folder structures and asset placement rules.
 - [[../Architecture/UI_REFACTORING_PLAYBOOK|UI_REFACTORING_PLAYBOOK.md]]: Detailed checklists and Mermaid flows for migrating UI/features to clean MVP structures.
+- [[../Architecture/VCONTAINER_LIFECYCLE|VCONTAINER_LIFECYCLE.md]]: Lifecycle interfaces, order constants, scope registration and disposal rules.
 - [[../Architecture/GRAPHIFY_GUIDE|GRAPHIFY_GUIDE.md]]: Guide on installing and using `graphify` to build, query, and traverse codebase dependencies.
 - [[AGENTS|AGENTS.md]]: Shared instructions, behaviors, and patterns for AI coding assistants.

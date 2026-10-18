@@ -1,5 +1,4 @@
 using EmpireAtWar.Entities.Planet;
-using EmpireAtWar.Lifecycle;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -20,7 +19,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<PlanetController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(view).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(superWeaponOrigin);
-            builder.RegisterLifecycle();
         }
     }
 }

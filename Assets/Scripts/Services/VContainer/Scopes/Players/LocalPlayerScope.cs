@@ -3,7 +3,6 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.Heroes;
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Entities.SuperWeapons;
-using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
@@ -32,7 +31,6 @@ namespace EmpireAtWar.Services.VContainer
             battleScope.Modules.ConfigurePlayer(builder, player, transform);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
-            builder.RegisterLifecycle();
         }
 
         public static void RegisterPlayerServices(IContainerBuilder builder, PlayerSlot owner, FactionDefinition faction,

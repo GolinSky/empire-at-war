@@ -12,7 +12,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = -1000)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = EmpireAtWar.Lifecycle.LifecycleOrders.COMBAT_LATE_TICK)]
     public sealed class CombatAttackCoordinator : ILateTickable, IOrderedDisposable
     {
         internal const int JOB_SELECTION_THRESHOLD = TargetSelectionBatch.JOB_SELECTION_THRESHOLD;

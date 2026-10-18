@@ -8,7 +8,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = 100)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HUD_PRESENTERS_INITIALIZE)]
     public sealed class ReinforcementZoneMiniMapPresenter :
         IInitializable, ILateTickable, ILateDisposable, IObserver<BattleState>
     {

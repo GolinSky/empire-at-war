@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
-    [LifecycleOrder(Dispose = 1000)]
+    [LifecycleOrder(Dispose = LifecycleOrders.ENTITY_SCOPES_DISPOSE)]
     public sealed class EntityScopeOwnership : IOrderedDisposable
     {
         private readonly List<EntityLifetimeScope> _scopes = new List<EntityLifetimeScope>();

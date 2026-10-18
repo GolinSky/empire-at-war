@@ -1,5 +1,4 @@
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Factions;
@@ -8,30 +7,24 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.CoreGameUi;
-using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.EnemyFaction.Data;
 using EmpireAtWar.Entities.Fps;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Menu;
-using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.MiniMap;
-using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitOrderFeedback;
-using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.MiniMap;
@@ -53,11 +46,9 @@ using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Timing;
-using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Vision;
-using EmpireAtWar.Ui.Base;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Views.SpawnArea;
@@ -113,14 +104,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(Factions).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerScopeBootstrap>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleUnitSpawner>(Lifetime.Singleton);
-            TooltipSettings tooltipSettings = Assets.Load<TooltipSettings>(nameof(TooltipSettings));
-            builder.RegisterInstance(tooltipSettings).AsImplementedInterfaces().AsSelf();
-            AssetRegistrations.RegisterShared<TooltipIconData>(builder, Assets);
-            builder.RegisterInstance(tooltipSettings.Timing);
-            builder.Register<TooltipClock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<TooltipModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<TooltipService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<TooltipUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            TooltipRegistrations.Register(builder, Assets);
             builder.Register<TooltipLifecyclePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<WorldTooltipPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(reinforcementZoneData);
@@ -139,10 +123,7 @@ namespace EmpireAtWar.Services.VContainer
             // Mode services keep their entry-point order: after the player scopes, before the battle UI.
             BattleModes.Create(Battle, Assets).ConfigureBattle(builder);
             builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            UiService uiService = Object.Instantiate(Assets.LoadComponent<UiService>(nameof(UiService)), transform);
-            builder.RegisterComponent(uiService).AsImplementedInterfaces().AsSelf();
-            builder.RegisterInstance(uiService.Placement);
-            builder.Register<UiCancelRouter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            UiRegistrations.Register(builder, Assets, transform);
             builder.Register<FadeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.Fade.FadeUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
@@ -191,28 +172,18 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SkirmishFlowSubscriptions>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitActionsPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            AssetRegistrations.RegisterShared<StationLevelData>(builder, Assets);
-            AssetRegistrations.RegisterShared<MiningFacilityCatalog>(builder, Assets);
-            AssetRegistrations.RegisterShared<DefendPlatformCatalog>(builder, Assets);
-            AssetRegistrations.RegisterShared<SuperWeaponCatalog>(builder, Assets);
-            AssetRegistrations.RegisterShared<WeaponsData>(builder, Assets);
-            AssetRegistrations.RegisterShared<DamageMatrixData>(builder, Assets);
-            AssetRegistrations.RegisterShared<LayerData>(builder, Assets);
+            BattleDataRegistrations.Register(builder, Assets);
             builder.Register<LayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            AssetRegistrations.RegisterShared<ShipsData>(builder, Assets);
             builder.Register<FighterExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(fighterExplosion);
             builder.Register<HardPointExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(hardPointExplosion);
-            AssetRegistrations.RegisterShared<ReinforcementData>(builder, Assets);
-            AssetRegistrations.RegisterShared<ShipClassMatchupData>(builder, Assets);
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SpawnBlockerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
                 unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, shipSfxSourcesPrefab, cameraService);
             MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem);
-            builder.RegisterLifecycle();
         }
 
         protected override void OnDestroy()

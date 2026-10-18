@@ -4,7 +4,8 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Input
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -400, LateDispose = -2000)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.INPUT_LOCK_INITIALIZE,
+        LateDispose = EmpireAtWar.Lifecycle.LifecycleOrders.INPUT_LOCK_LATE_DISPOSE)]
     public sealed class InputLockService : IInputLock, IInitializable, ILateDisposable
     {
         private readonly GameInputActions _actions;

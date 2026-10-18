@@ -166,7 +166,6 @@ namespace EmpireAtWar.Tests.Editor
                     builder.RegisterInstance(view.transform).Keyed(EntityBindType.ViewTransform);
                     builder.RegisterComponent(view).AsSelf().AsImplementedInterfaces();
                     EntityFeatureBindings.RegisterComponent(builder, view.Owned);
-                    builder.RegisterLifecycle();
                 });
 
             public ProbeEntity CreateInvalid(ProbeEntity prefab) =>

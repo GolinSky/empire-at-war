@@ -13,7 +13,8 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
-    [LifecycleOrder(Initialize = -300, Dispose = 300)]
+    [LifecycleOrder(Initialize = LifecycleOrders.PLAYER_SCOPES_INITIALIZE,
+        Dispose = LifecycleOrders.PLAYER_SCOPES_DISPOSE)]
     public sealed class PlayerScopeBootstrap : IInitializable, IOrderedDisposable
     {
         private readonly SkirmishScope _owner;

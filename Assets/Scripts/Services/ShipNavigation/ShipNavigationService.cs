@@ -86,7 +86,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             bool reserveAsPending = false);
     }
 
-    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = 2000)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = EmpireAtWar.Lifecycle.LifecycleOrders.NAVIGATION_LATE_TICK)]
     public sealed class ShipNavigationService : Service, IShipNavigationService, ILateTickable, IOrderedDisposable
     {
         // An order searches two rings around its point; past that the ship heads for the nearest reachable spot.

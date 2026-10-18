@@ -19,7 +19,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.CoreGameUi
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -200)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.CORE_HUD_INITIALIZE)]
     public class CoreGameUiController : UiController, ICoreGamePresenter, ISkirmishRouteNavigation,
         IUnitActionsViewProvider, ISuperWeaponsViewProvider, ICoreGameHudStatus,
         IObserver<ISelectionSubject>, IObserver<BattleState>, IObserver<GameSpeed>,

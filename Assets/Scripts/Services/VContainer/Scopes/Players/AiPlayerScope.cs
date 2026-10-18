@@ -2,7 +2,6 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
-using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
@@ -59,7 +58,6 @@ namespace EmpireAtWar.Services.VContainer
             // With an economy, EnemyService spawns the station; without one only the station spawner remains.
             if (player.OwnsStation && !player.Has(BattleFeatures.Economy))
                 builder.Register<PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.RegisterLifecycle();
         }
     }
 }

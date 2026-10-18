@@ -14,7 +14,7 @@ namespace EmpireAtWar.ViewComponents.Squadrons
     /// Writes every fighter's flight pose in Burst jobs once per frame instead of two transform writes per fighter.
     /// Its LateTick runs before the attack coordinator's, so fighter guns fire from this frame's pose.
     /// </summary>
-    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = -2000)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = EmpireAtWar.Lifecycle.LifecycleOrders.FIGHTER_POSE_LATE_TICK)]
     public sealed class FighterPoseBatch : ILateTickable, IOrderedDisposable
     {
         private const int INITIAL_CAPACITY = 256;

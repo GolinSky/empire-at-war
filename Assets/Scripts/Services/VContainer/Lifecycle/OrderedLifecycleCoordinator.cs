@@ -14,6 +14,9 @@ namespace EmpireAtWar.Lifecycle
         // Per-callback markers named like Zenject's, e.g. "EmpireAtWar.Services.Foo.Tick()".
         private static readonly Dictionary<(Type, string), ProfilerMarker> CallbackMarkers =
             new Dictionary<(Type, string), ProfilerMarker>();
+        // Entity scopes rebuild coordinators on every spawn; the attribute is read once per type.
+        private static readonly Dictionary<Type, LifecycleOrderAttribute> CallbackOrders =
+            new Dictionary<Type, LifecycleOrderAttribute>();
 
         private readonly IInitializable[] _initializables;
         private readonly ITickable[] _tickables;
@@ -117,9 +120,20 @@ namespace EmpireAtWar.Lifecycle
         {
             return callbacks.OrderBy(callback =>
             {
-                LifecycleOrderAttribute order = callback.GetType().GetCustomAttribute<LifecycleOrderAttribute>();
+                LifecycleOrderAttribute order = OrderOf(callback.GetType());
                 return order == null ? 0 : selectOrder(order);
             }).ToArray();
+        }
+
+        private static LifecycleOrderAttribute OrderOf(Type type)
+        {
+            if (!CallbackOrders.TryGetValue(type, out LifecycleOrderAttribute order))
+            {
+                order = type.GetCustomAttribute<LifecycleOrderAttribute>();
+                CallbackOrders.Add(type, order);
+            }
+
+            return order;
         }
     }
 }

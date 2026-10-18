@@ -17,7 +17,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
     /// <summary>
     /// Exposes each fighter as a hardpoint so existing weapons can target and destroy them individually.
     /// </summary>
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = -100)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HEALTH_INITIALIZE)]
     public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, ISquadronHealthComponent,
         IHealthModelObserver, IHealthTooltipObserver, IInitializable, ITickable, ILateDisposable
     {

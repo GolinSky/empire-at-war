@@ -1,5 +1,4 @@
 using EmpireAtWar.Entities.Loading;
-using EmpireAtWar.Lifecycle;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -16,7 +15,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterComponent(view).AsImplementedInterfaces().AsSelf();
             builder.Register<LoadingUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SceneActivationFlow>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.RegisterLifecycle();
         }
     }
 }

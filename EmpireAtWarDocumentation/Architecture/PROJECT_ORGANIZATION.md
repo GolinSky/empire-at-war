@@ -85,7 +85,7 @@ graph TD
 - **Entities/**: Domain models, states, and business rules; feature UI triplets colocate under `Entities/<Feature>/` or its UI feature folder.
   - `<Feature>Ui`, `I<Feature>Presenter`, `<Feature>UiController` share the feature namespace. Models and shared components remain separate; passive screens omit the presenter.
 - **Services/**: Application and game services, presenters, and VContainer composition scopes (MVP Presenter).
-  - `VContainer/`: project → scene → player → entity scopes and ordered lifecycle dispatch.
+  - `VContainer/`: project → scene → player → entity scopes and ordered lifecycle dispatch. Subfolders: `Lifecycle/`, `Scopes/` (`Players/`, `Entities/`), `Battle/Modules/`, `Battle/Modes/`, `Registrations/`. Rules: [[Architecture/VCONTAINER_LIFECYCLE]].
   - `Factory/`: shared typed entity creation; no container resolution.
 - VContainer `1.19.0` is a pinned UPM dependency in `Packages/manifest.json`; settings live in `Assets/Settings/VContainerSettings.asset`.
 - **Editor/**: Editor tools, builders, windows, and custom inspectors.

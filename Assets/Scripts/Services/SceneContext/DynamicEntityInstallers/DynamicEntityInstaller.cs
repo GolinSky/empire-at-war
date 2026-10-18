@@ -2,7 +2,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Lifecycle;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -43,7 +42,6 @@ namespace EmpireAtWar
             EntityInstaller.Register(builder, View);
             foreach (MonoBehaviour injectable in Bindings.Injectables)
                 builder.RegisterComponent(injectable).Keyed(injectable);
-            builder.RegisterLifecycle();
         }
 
         protected abstract void InstallFeatures(IContainerBuilder builder);

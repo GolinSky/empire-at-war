@@ -17,7 +17,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.UnitActions.Controller
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = 100)]
+    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HUD_PRESENTERS_INITIALIZE)]
     public sealed class UnitActionsPresenter : UiController, IInitializable, ILateDisposable,
         IObserver<ISelectionSubject>, IObserver<BattleState>
     {

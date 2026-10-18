@@ -1,3 +1,4 @@
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Mvc;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -11,6 +12,7 @@ namespace EmpireAtWar.Services.VContainer
         protected override void Configure(IContainerBuilder builder)
         {
             Assets = ((AssetLifetimeScope)Parent).Assets;
+            builder.RegisterLifecycle();
         }
     }
 }
