@@ -2482,11 +2482,9 @@ MonoBehaviour:
   - {fileID: 4262427325409502832}
   - {fileID: 2421366840077825344}
   - {fileID: 1590958760751346123}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 7089729450846539594}
+  - {fileID: 2063350815373331289}
+  - {fileID: 9020676666919256761}
   compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2291986679457826982
 BoxCollider:
