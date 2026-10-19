@@ -245,6 +245,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f2a66c2107353d45b494ef0b3bfce46
+    m_Address: VenatorIIShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a3858034bc188a740997a46830d4827e
     m_Address: ISDIIIShipData
     m_ReadOnly: 0

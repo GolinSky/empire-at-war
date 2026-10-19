@@ -19,7 +19,6 @@ namespace EmpireAtWar.Editor.AI
     {
         public const string SHIP_DATA_FOLDER = "Assets/Settings/Data/Ship";
         public const string SQUADRON_DATA_FOLDER = "Assets/Settings/Data/Squadron";
-        private const string SHIP_VIEW_FOLDER = "Assets/Prefabs/Models/Ships";
         private const string SQUADRON_VIEW_FOLDER = "Assets/Prefabs/Models/Squadrons";
         private const string SHIP_DATA_SUFFIX = "ShipData";
         private const string SHIP_VIEW_SUFFIX = "ShipView";
@@ -66,8 +65,16 @@ namespace EmpireAtWar.Editor.AI
                 yield return AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid));
         }
 
-        public static GameObject LoadShipView(ShipData data) =>
-            LoadView(data.name, SHIP_DATA_SUFFIX, $"{SHIP_VIEW_FOLDER}/{System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(data)))}", SHIP_VIEW_SUFFIX);
+        public static GameObject LoadShipView(ShipData data)
+        {
+            var mappings = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Repository.Data.AssetMappingData>("Assets/Settings/AssetMappingData.asset");
+            string viewName = data.name.Substring(0, data.name.Length - SHIP_DATA_SUFFIX.Length) + SHIP_VIEW_SUFFIX;
+            string viewPath = AssetDatabase.GUIDToAssetPath(mappings.GetAssetKey(viewName));
+            GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
+            if (view == null)
+                throw new MissingReferenceException($"{data.name} has no mapped view for {viewName}.");
+            return view;
+        }
 
         public static GameObject LoadSquadronView(SquadronData data) =>
             LoadView(data.name, SQUADRON_DATA_SUFFIX, SQUADRON_VIEW_FOLDER, SQUADRON_VIEW_SUFFIX);

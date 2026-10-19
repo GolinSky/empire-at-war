@@ -1,5 +1,6 @@
 using System.Text;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Entities.Ship.Data;
 using UnityEditor;
 using UnityEngine;
@@ -13,9 +14,6 @@ namespace EmpireAtWar.Editor
     public static class ShipHullHeightBaker
     {
         private const string SHIP_DATA_FOLDER = "Assets/Settings/Data/Ship";
-        private const string SHIP_VIEW_FOLDER = "Assets/Prefabs/Models/Ships";
-        private const string DATA_SUFFIX = "ShipData";
-        private const string VIEW_SUFFIX = "ShipView";
         private const string HULL_BOTTOM_PROPERTY = "<HullBottom>k__BackingField";
         private const string HULL_TOP_PROPERTY = "<HullTop>k__BackingField";
         private const string BODY_TRANSFORM_PROPERTY = "bodyTransform";
@@ -29,7 +27,7 @@ namespace EmpireAtWar.Editor
             foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(ShipData), new[] { SHIP_DATA_FOLDER }))
             {
                 ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(guid));
-                Bounds hull = MeasureHull(LoadView(data), data.BodyRotationMaxAngle);
+                Bounds hull = MeasureHull(WeaponLoadoutBaker.LoadShipView(data), data.BodyRotationMaxAngle);
                 SerializedObject serializedData = new SerializedObject(data);
                 serializedData.FindProperty(HULL_BOTTOM_PROPERTY).floatValue = hull.min.y;
                 serializedData.FindProperty(HULL_TOP_PROPERTY).floatValue = hull.max.y;
@@ -40,17 +38,6 @@ namespace EmpireAtWar.Editor
 
             AssetDatabase.SaveAssets();
             Debug.Log(report.ToString());
-        }
-
-        private static GameObject LoadView(ShipData data)
-        {
-            string viewName = data.name.Substring(0, data.name.Length - DATA_SUFFIX.Length) + VIEW_SUFFIX;
-            string factionFolder = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(AssetDatabase.GetAssetPath(data)));
-            string viewPath = $"{SHIP_VIEW_FOLDER}/{factionFolder}/{viewName}.prefab";
-            GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
-            if (view == null)
-                throw new MissingReferenceException($"{data.name} has no ship view at {viewPath}.");
-            return view;
         }
 
         private static Bounds MeasureHull(GameObject viewPrefab, float maxBankAngle)
