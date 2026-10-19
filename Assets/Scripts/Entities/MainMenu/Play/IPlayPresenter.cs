@@ -6,8 +6,6 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         void OpenSurvival();
         void OpenSimulation();
         void Close();
-        void SelectSaveMode(int index);
-        void SelectSave(int index);
-        void LoadSave();
+        void OpenLoadGame();
     }
 }

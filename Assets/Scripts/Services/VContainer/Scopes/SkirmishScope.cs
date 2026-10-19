@@ -148,6 +148,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);
             builder.Register<SettingsRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PauseMenuRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Entities.Saves.SaveGameRouteUiController>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<ShipUiData>(builder, Assets);
             AssetRegistrations.RegisterShared<ShipAbilityCatalog>(builder, Assets);
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);

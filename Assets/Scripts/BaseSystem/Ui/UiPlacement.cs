@@ -73,6 +73,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(CaptureSiteBuildUi), contextualSlot },
                     { typeof(EndGameUi), endGameSlot },
                     { typeof(PauseMenuUi), modalSlot },
+                    { typeof(EmpireAtWar.Entities.Saves.SaveBrowserUi), modalSlot },
                     { typeof(SettingsUi), modalSlot },
                     { typeof(TooltipUi), tooltipSlot },
                     { typeof(FadeUi), fadeSlot }

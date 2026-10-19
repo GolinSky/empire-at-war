@@ -6,6 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.MainMenu.Play;
+using EmpireAtWar.Entities.Saves;
 
 public static class PreviewSaveUi
 {
@@ -14,7 +15,19 @@ public static class PreviewSaveUi
         Directory.CreateDirectory("output/BattleSessionSave");
         Render("Assets/Prefabs/Ui/MainMenu/PlayUi.prefab", "Play");
         Render("Assets/Prefabs/Ui/SkirmishMenu/PauseMenuUi.prefab", "Pause");
-        return "Rendered Play and Pause in output/BattleSessionSave.";
+        Render("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab", "Load");
+        Render("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab", "Name");
+        return "Rendered Play, Pause, Load and Name.";
+    }
+
+    private sealed class PreviewPresenter : ISaveBrowserPresenter
+    {
+        public void Close() {}
+        public void SelectMode(int index) {}
+        public void SelectSave(int index) {}
+        public void SaveAsNew() {}
+        public void ConfirmName(string name) {}
+        public void CancelName() {}
     }
 
     private static void Render(string path, string name)
@@ -48,17 +61,26 @@ public static class PreviewSaveUi
             {
                 var view = root.GetComponent<PauseMenuUi>();
                 view.SetSavingAvailable(true);
-                view.SetSaveStatus("Saved Battle above Coruscant.");
+
                 view.SetMenuVisible(true);
             }
+            else if (name == "Play") root.GetComponent<PlayUi>().Show();
             else
             {
-                var view = root.GetComponent<PlayUi>();
-                view.SetSaves(0, new System.Collections.Generic.List<string> { "Battle above Coruscant — 19/10/2026 17:00 — 00:24:30" });
-                view.SetLoadState(true, "");
+                var view = root.GetComponent<SaveBrowserUi>();
+                view.AssignPresenter(new PreviewPresenter());
+                view.SetTitle(name == "Name" ? "SAVE GAME — SKIRMISH" : "LOAD GAME");
+                view.SetMode(0, name != "Name");
+                view.SetSaveAsNewVisible(name == "Name");
+                view.SetSaves(new System.Collections.Generic.List<string> {
+                    "Battle above Coruscant — 19/10/2026 17:00 — 00:24:30",
+                    "Outer Rim offensive — 18/10/2026 20:45 — 00:42:16",
+                    "quicksave — 18/10/2026 20:30 — 00:37:02"
+                }, new System.Collections.Generic.List<bool> {true,true,true});
+                view.SetStatus("");
                 view.Show();
-            }
-            Canvas.ForceUpdateCanvases();
+                view.SetNameEntryVisible(name == "Name");
+            }            Canvas.ForceUpdateCanvases();
             camera.Render();
             RenderTexture.active = texture;
             pixels = new Texture2D(1920, 1080, TextureFormat.RGB24, false);

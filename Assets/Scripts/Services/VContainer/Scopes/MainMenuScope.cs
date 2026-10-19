@@ -27,6 +27,8 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Entities.Saves.LoadGameRouteUiController>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             builder.Register<MainMenuUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MainMenuOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(teamColorPalette);
