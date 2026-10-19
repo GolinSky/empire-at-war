@@ -258,7 +258,7 @@ MonoBehaviour:
           rid: 6801466898397790287
     - key: 18
       value:
-        icon: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3, type: 3}
+        icon: {fileID: 21300000, guid: a6278cd137e6426468225b59d670b5f3, type: 3}
         displayName: Lock S-Foils
         description: 'Toggle closed wings: speed x1.3, weapon delay x3 and shield
           regeneration x3 (9/s per fighter). Reopen to return to normal combat configuration.
@@ -289,7 +289,7 @@ MonoBehaviour:
           rid: 6801466921437888596
     - key: 40
       value:
-        icon: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696, type: 3}
+        icon: {fileID: 21300000, guid: d56dd5bba26a9424696a4a8b1c8d936b, type: 3}
         displayName: Hit and Run
         description: 'Movement speed increases by 25% for 8 seconds. Cooldown: 35
           seconds.'
@@ -500,7 +500,7 @@ MonoBehaviour:
           rid: 6801466898397790283
     - key: 11
       value:
-        icon: {fileID: 21300000, guid: 0de3c6aa32ec3c74a9067d72b1062fc0, type: 3}
+        icon: {fileID: 21300000, guid: a3ecb5fe284f3f3478773883a21f8848, type: 3}
         displayName: Cloak
         description: Hide from enemy sensors, targeting and minimap for up to 80
           s. Cannot fire while cloaked. Friendly vision and movement remain active.
@@ -516,7 +516,7 @@ MonoBehaviour:
           rid: 6801466898397790284
     - key: 35
       value:
-        icon: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a, type: 3}
+        icon: {fileID: 21300000, guid: 25f606fb36ea77942b60e1c0eca1bf51, type: 3}
         displayName: Intensify Firepower
         description: Turbolasers, ion cannons and the SPHAT beam fire about three
           times faster for 15 s. Damage, speed and shield regeneration are unchanged.
@@ -532,7 +532,7 @@ MonoBehaviour:
           rid: 6801466989490733131
     - key: 19
       value:
-        icon: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a, type: 3}
+        icon: {fileID: 21300000, guid: 25f606fb36ea77942b60e1c0eca1bf51, type: 3}
         displayName: Full Salvo
         description: 'For 20 seconds, missiles, rockets and torpedoes fire about
           three times faster, while other weapons fire at one-third their normal
@@ -580,7 +580,7 @@ MonoBehaviour:
           rid: 6801466921437888597
     - key: 26
       value:
-        icon: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5, type: 3}
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Power to Shields
         description: For 30 seconds, shield regeneration increases eightfold (640/s),
           movement falls to 80% and weapon fire delays double. Recovers 60 seconds
@@ -596,7 +596,7 @@ MonoBehaviour:
           rid: 6801466944227639373
     - key: 36
       value:
-        icon: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a, type: 3}
+        icon: {fileID: 21300000, guid: ee7b79f13d927674cb535bcd3d3a2042, type: 3}
         displayName: Torpedo Salvo
         description: Torpedoes fire 50% faster for 6 seconds. 30 second recovery.
           Other weapons remain unchanged.
@@ -611,7 +611,7 @@ MonoBehaviour:
           rid: 6801467062609510478
     - key: 50
       value:
-        icon: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d, type: 3}
+        icon: {fileID: 21300000, guid: 2caa7c29d34ca0546baf50d44d6e1153, type: 3}
         displayName: Fighter Reinforcements
         description: 'Launch one replacement X-Wing or Y-Wing squadron from an operational
           bay''s reserve. Requires a vacant active slot after a squadron is lost.
@@ -627,7 +627,7 @@ MonoBehaviour:
           rid: 6801467062609510480
     - key: 51
       value:
-        icon: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3, type: 3}
+        icon: {fileID: 21300000, guid: c4bc2b0af6b1251448e515b3ba90a40a, type: 3}
         displayName: Rapid Deployment
         description: Launch up to two available reserve squadrons immediately, within
           the active capacity. 45 second cooldown.
@@ -642,7 +642,7 @@ MonoBehaviour:
           rid: 6801467062609510485
     - key: 52
       value:
-        icon: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
+        icon: {fileID: 21300000, guid: 3bd948ebdb28cda44b1a0ab08cd80910, type: 3}
         displayName: Fighter Coordination
         description: 'Nearby allied squadrons gain +20% accuracy and +15% movement
           speed for 10 seconds. Command radius: 750. Recovery: 45 seconds.'
