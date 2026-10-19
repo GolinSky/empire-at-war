@@ -181,6 +181,14 @@ namespace EmpireAtWar.Tests.Editor
                 return ReturnEnemy;
             }
 
+            public void CollectAt(Vector2 point, IList<SelectionEntry> result)
+            {
+                if (ReturnEnemy)
+                {
+                    result.Add(new SelectionEntry(_enemy, null));
+                }
+            }
+
             public void CollectSameShipType(SelectionEntry entry, ICollection<SelectionEntry> result) { }
 
             public void CollectAllPlayerUnits(ICollection<SelectionEntry> result) { }

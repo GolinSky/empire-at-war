@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Selection.Marquee;
@@ -15,6 +16,8 @@ namespace EmpireAtWar.Services.Battle
     {
         bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection);
 
+        void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results);
+
         void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results);
 
         void CollectAllPlayerUnits(ICollection<SelectionEntry> results);
@@ -28,6 +31,8 @@ namespace EmpireAtWar.Services.Battle
     {
         private const int MAX_RAYCAST_HITS = 32;
 
+        private static readonly Comparison<PointCandidate> COMPARE_POINT_CANDIDATES = ComparePointCandidates;
+
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
@@ -35,6 +40,8 @@ namespace EmpireAtWar.Services.Battle
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
         private readonly RaycastHit[] _raycastHits = new RaycastHit[MAX_RAYCAST_HITS];
+        private readonly List<PointCandidate> _pointCandidates = new List<PointCandidate>();
+        private readonly List<SelectionEntry> _pointResults = new List<SelectionEntry>();
 
         public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer)
         {
@@ -45,7 +52,15 @@ namespace EmpireAtWar.Services.Battle
 
         public bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection)
         {
-            // Squadron icons are drawn over the scene, so they win over whatever the ray hits behind them.
+            _pointResults.Clear();
+            CollectAt(screenPosition, _pointResults);
+            selection = _pointResults.Count > 0 ? _pointResults[0] : default;
+            return _pointResults.Count > 0;
+        }
+
+        public void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results)
+        {
+            // Squadron icons are drawn over the scene, so they come before whatever the ray hits behind them.
             foreach (IEntity iconEntity in _entityLocator.Entities)
             {
                 if (!iconEntity.HealthModel.IsDestroyed &&
@@ -53,18 +68,14 @@ namespace EmpireAtWar.Services.Battle
                     icon.ContainsScreenPoint(screenPosition) &&
                     iconEntity.TryGetFacade(out IEntitySelectionFacade iconSelection))
                 {
-                    selection = new SelectionEntry(iconEntity, iconSelection);
-                    return true;
+                    results.Add(new SelectionEntry(iconEntity, iconSelection));
                 }
             }
 
-            // Structures are large and would hide ships under or behind them, so a unit anywhere
-            // along the ray wins over a structure; within the same rank the closest hit wins.
+            // Structures are large and would hide ships under or behind them, so units anywhere
+            // along the ray come before structures; within the same rank the closest hit comes first.
+            _pointCandidates.Clear();
             int hitCount = _cameraService.ScreenPointRaycastAll(screenPosition, _raycastHits);
-            bool hasSelection = false;
-            bool isSelectionUnit = false;
-            float selectionDistance = float.MaxValue;
-            selection = default;
             for (int i = 0; i < hitCount; i++)
             {
                 RaycastHit hit = _raycastHits[i];
@@ -76,22 +87,59 @@ namespace EmpireAtWar.Services.Battle
                     continue;
                 }
 
-                bool isUnit = entity.IsUnit();
-                bool isBetter = !hasSelection ||
-                                (isUnit && !isSelectionUnit) ||
-                                (isUnit == isSelectionUnit && hit.distance < selectionDistance);
-                if (!isBetter)
-                {
-                    continue;
-                }
-
-                selection = new SelectionEntry(entity, command);
-                hasSelection = true;
-                isSelectionUnit = isUnit;
-                selectionDistance = hit.distance;
+                AddPointCandidate(new PointCandidate(new SelectionEntry(entity, command), entity.IsUnit(), hit.distance));
             }
 
-            return hasSelection;
+            _pointCandidates.Sort(COMPARE_POINT_CANDIDATES);
+            for (int i = 0; i < _pointCandidates.Count; i++)
+            {
+                if (!Contains(results, _pointCandidates[i].Entry.Entity))
+                {
+                    results.Add(_pointCandidates[i].Entry);
+                }
+            }
+        }
+
+        // An entity with several colliders keeps only its closest hit.
+        private void AddPointCandidate(PointCandidate candidate)
+        {
+            for (int i = 0; i < _pointCandidates.Count; i++)
+            {
+                if (_pointCandidates[i].Entry.Entity.Id == candidate.Entry.Entity.Id)
+                {
+                    if (candidate.Distance < _pointCandidates[i].Distance)
+                    {
+                        _pointCandidates[i] = candidate;
+                    }
+
+                    return;
+                }
+            }
+
+            _pointCandidates.Add(candidate);
+        }
+
+        private static bool Contains(IList<SelectionEntry> entries, IEntity entity)
+        {
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (entries[i].Entity.Id == entity.Id)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static int ComparePointCandidates(PointCandidate a, PointCandidate b)
+        {
+            if (a.IsUnit != b.IsUnit)
+            {
+                return a.IsUnit ? -1 : 1;
+            }
+
+            return a.Distance.CompareTo(b.Distance);
         }
 
         public void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results)
@@ -208,6 +256,20 @@ namespace EmpireAtWar.Services.Battle
                 {
                     results.Add(entry);
                 }
+            }
+        }
+
+        private readonly struct PointCandidate
+        {
+            public SelectionEntry Entry { get; }
+            public bool IsUnit { get; }
+            public float Distance { get; }
+
+            public PointCandidate(SelectionEntry entry, bool isUnit, float distance)
+            {
+                Entry = entry;
+                IsUnit = isUnit;
+                Distance = distance;
             }
         }
 

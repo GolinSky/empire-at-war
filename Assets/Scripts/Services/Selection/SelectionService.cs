@@ -16,6 +16,8 @@ namespace EmpireAtWar.Services.Battle
     public sealed class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable,
         ISelectionSubject
     {
+        private const float REPEATED_TAP_RADIUS = 12f;
+
         private readonly IPointerGestures _gestures;
         private readonly IPointerInput _pointerInput;
         private readonly ISelectionInput _selectionInput;
@@ -30,7 +32,10 @@ namespace EmpireAtWar.Services.Battle
         private readonly SelectionContext _playerSelectionContext;
         private readonly SelectionContext _otherSelectionContext;
 
+        private readonly List<SelectionEntry> _pointBuffer = new List<SelectionEntry>();
+
         private long? _lastTappedEntityId;
+        private Vector2 _lastTappedPosition;
 
         public ISelectionContext PlayerSelectionContext => _playerSelectionContext;
         public ISelectionContext OtherSelectionContext => _otherSelectionContext;
@@ -116,26 +121,55 @@ namespace EmpireAtWar.Services.Battle
 
         private void SelectAt(Vector2 screenPosition)
         {
-            if (!_selectionQuery.TryFindAt(screenPosition, out SelectionEntry selection))
+            _pointBuffer.Clear();
+            _selectionQuery.CollectAt(screenPosition, _pointBuffer);
+            if (_pointBuffer.Count == 0)
             {
                 _lastTappedEntityId = null;
                 return;
             }
 
-            bool isRepeatedTap = _lastTappedEntityId == selection.Entity.Id;
-            _lastTappedEntityId = selection.Entity.Id;
-            if (isRepeatedTap &&
-                _localPlayer.IsLocal(selection.Entity.Owner) &&
-                _pointerInput.ClickCount >= 2 &&
-                TryCollectSameShipType(selection))
+            bool isSameSpot = (screenPosition - _lastTappedPosition).sqrMagnitude <=
+                              REPEATED_TAP_RADIUS * REPEATED_TAP_RADIUS;
+            int lastIndex = isSameSpot ? IndexOf(_pointBuffer, _lastTappedEntityId) : -1;
+            bool isDoubleClick = _pointerInput.ClickCount >= 2;
+            if (lastIndex >= 0 && isDoubleClick)
             {
-                SetSelection(GetScope(selection.Entity), _selectionBuffer);
-                return;
+                SelectionEntry repeated = _pointBuffer[lastIndex];
+                if (_localPlayer.IsLocal(repeated.Entity.Owner) && TryCollectSameShipType(repeated))
+                {
+                    SetSelection(GetScope(repeated.Entity), _selectionBuffer);
+                    return;
+                }
             }
 
+            // A slow repeated click on the same spot cycles through everything under the cursor,
+            // so a structure hidden behind a ship (or the other way round) stays selectable.
+            int index = 0;
+            if (lastIndex >= 0)
+            {
+                index = isDoubleClick ? lastIndex : (lastIndex + 1) % _pointBuffer.Count;
+            }
+
+            SelectionEntry selection = _pointBuffer[index];
+            _lastTappedEntityId = selection.Entity.Id;
+            _lastTappedPosition = screenPosition;
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
             SetSelection(GetScope(selection.Entity), _selectionBuffer);
+        }
+
+        private static int IndexOf(IReadOnlyList<SelectionEntry> entries, long? entityId)
+        {
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (entries[i].Entity.Id == entityId)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         private bool TryCollectSameShipType(SelectionEntry selection)

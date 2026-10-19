@@ -85,6 +85,54 @@ namespace EmpireAtWar.Tests.Selection
         }
 
         [Test]
+        public void RepeatedTapOnSameSpot_CyclesThroughOverlappingEntities()
+        {
+            Vector2 position = new Vector2(10f, 10f);
+            FakeInputService inputService = new FakeInputService();
+            FakeSelectionQuery selectionQuery = new FakeSelectionQuery();
+            SelectionService selectionService = new SelectionService(
+                inputService,
+                inputService,
+                inputService,
+                new EntityLocator(),
+                selectionQuery,
+                new FakeMarqueeSelectionPresenter(),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            FakeSelectionCommand shipCommand = new FakeSelectionCommand(SelectionType.Ship);
+            FakeSelectionCommand stationCommand = new FakeSelectionCommand(SelectionType.Base);
+            selectionQuery.Add(
+                position,
+                new SelectionEntry(
+                    new FakeEntity(id: 1, owner: TestPlayers.Human, selectionCommand: shipCommand),
+                    shipCommand));
+            selectionQuery.Add(
+                position,
+                new SelectionEntry(
+                    new FakeEntity(id: 2, owner: TestPlayers.Human, selectionCommand: stationCommand),
+                    stationCommand));
+
+            selectionService.Initialize();
+            try
+            {
+                inputService.RaiseSelectionBegan(position);
+                Assert.That(shipCommand.IsSelected, Is.True);
+                Assert.That(stationCommand.IsSelected, Is.False);
+
+                inputService.RaiseSelectionBegan(position);
+                Assert.That(shipCommand.IsSelected, Is.False);
+                Assert.That(stationCommand.IsSelected, Is.True);
+
+                inputService.RaiseSelectionBegan(position);
+                Assert.That(shipCommand.IsSelected, Is.True);
+                Assert.That(stationCommand.IsSelected, Is.False);
+            }
+            finally
+            {
+                selectionService.LateDispose();
+            }
+        }
+
+        [Test]
         public void MiniMapPointerExit_KeepsMapVisible()
         {
             GameObject gameObject = new GameObject(
@@ -169,19 +217,38 @@ namespace EmpireAtWar.Tests.Selection
 
         private sealed class FakeSelectionQuery : ISelectionQuery
         {
-            private readonly Dictionary<Vector2, SelectionEntry> _selections =
-                new Dictionary<Vector2, SelectionEntry>();
+            private readonly Dictionary<Vector2, List<SelectionEntry>> _selections =
+                new Dictionary<Vector2, List<SelectionEntry>>();
 
             public void Add(Vector2 position, SelectionEntry selection)
             {
-                _selections.Add(position, selection);
+                if (!_selections.TryGetValue(position, out List<SelectionEntry> entries))
+                {
+                    entries = new List<SelectionEntry>();
+                    _selections.Add(position, entries);
+                }
+
+                entries.Add(selection);
             }
 
             public bool TryFindAt(
                 Vector2 screenPosition,
                 out SelectionEntry selection)
             {
-                return _selections.TryGetValue(screenPosition, out selection);
+                bool found = _selections.TryGetValue(screenPosition, out List<SelectionEntry> entries);
+                selection = found ? entries[0] : default;
+                return found;
+            }
+
+            public void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results)
+            {
+                if (_selections.TryGetValue(screenPosition, out List<SelectionEntry> entries))
+                {
+                    foreach (SelectionEntry entry in entries)
+                    {
+                        results.Add(entry);
+                    }
+                }
             }
 
             public void CollectSameShipType(
