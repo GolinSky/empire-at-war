@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Units;
@@ -105,11 +107,17 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.Owner != _enemy || entity.HealthModel.IsDestroyed) continue;
                 alive++;
-                if (_commanded.Add(entity.Id)) _newUnits.Add(entity);
+                if (_commanded.Add(entity.Id) || IsIdleShip(entity)) _newUnits.Add(entity);
             }
             if (_newUnits.Count > 0) _orders.IssueAttackMove(_newUnits, _map.GetStationPosition(_human));
             _settleTime -= Time.deltaTime;
             if (_pending.Count == 0 && alive == 0 && _settleTime <= 0) _model.CompleteWave();
         }
+
+        // An ability cast or a finished attack-move leaves a ship without an order; it resumes the assault.
+        private static bool IsIdleShip(IEntity entity) =>
+            entity.IsShip() &&
+            entity.GetFacade<IUnitOrderObserverFacade>().CurrentOrder == UnitOrderType.None &&
+            !entity.GetFacade<IAbilityFacingFacade>().IsAbilityFacing;
     }
 }
