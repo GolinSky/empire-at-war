@@ -18,6 +18,7 @@
   - **Status**: 2026-10-14 Phases 1–3 implemented: hosted production, level-5 Survival with five authored waves per faction, runtime fleet Simulation, setup/HUD and restart cleanup. Both modes launch through Play.
   - **Verification**: full EditMode **1,317/1,333 passed**; all mode tests pass. Survival five-wave progression/win and station-loss checks passed; scripted destruction verifies progression, not difficulty balance. Simulation ships/squadrons, pause, 4×, New/cancel, same-scene replacement and Ended restart passed with zero console errors. AI vs AI UI polish, backdrop fix and six compact dropdowns saved through Unity; 1920 × 1080 render and setup/HUD binding checks passed. No new automated test run.
   - **Remaining**: Phase 0 full-suite green gate: 13 SensorJamming allowlist failures, Allegiance radar/weapon-scope checks, and stale entity-prefab count. Plan stays active for these pre-existing failures.
+  - **Survival wave update (2026-10-19)**: all unlocked ship types carried forward; shared per-tier maxima doubled → **4/16/26/32/38 ships** for each faction. Heroes/unique flagships kept single; direct squadrons unchanged. Asset imported/saved, Survival gameplay tests **4/4 passed**; combat balance remains unverified.
   - **Evidence**: `output/BattleBuilderPhase1/final-tests.json`, `survival-runtime.txt`, `simulation-runtime.txt`.
 
 

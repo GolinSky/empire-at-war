@@ -148,6 +148,14 @@ created: 2026-10-14
 - [x] `SurvivalUi` setup in main menu; delivered in Phase 0. Launch enabled with wave gameplay.
 - [x] Tests: `SurvivalModel` transitions; lose during preparation; win after wave 5; edge spawn avoids fields; wave enemy has no super weapon/research; UI prefab reference tests.
 
+### Survival roster update (2026-10-19)
+- Updated `Assets/Settings/Data/Battles/SurvivalWaveData.asset`: wave N contains every faction ship with `AvailableLevel <= N`; earlier-tier quantities carry forward unchanged.
+- Largest per-level roster across factions: `2 / 6 / 5 / 3 / 3`. User selected 2× counts → tier batches `4 / 12 / 10 / 6 / 6`; cumulative ships `4 / 16 / 26 / 32 / 38` for every faction.
+- Duplicate ordinary combat ships within their unlock tier; heroes, Stealth Corvette, Mandator, Imperator, Malevolence, Executor and Titan stay at one copy per wave.
+- Existing direct squadron entries remain `2 / 3 / 4 / 5 / 6`; hangar squadrons are additional. Preparation and spawn-group counts unchanged.
+- Class/power limitation: Separatist level 3 only offers Captor; Empire has multiple capital ships. Equal counts do not establish equal combat strength; combat playtesting remains unverified.
+- Verification: new roster regression fails on old data, passes on updated data; `SurvivalGameplayTests` **4/4 passed**. All 20 waves imported, explicitly reserialized and saved; no new console errors during import. Broader plan remains in-progress for its existing verification gates.
+
 ## Phase 3 — Battle Simulation Mode
 ### Rules
 - Empty map. Only chosen units. Two `SimulationSide` players, all features off.

@@ -13,6 +13,9 @@ namespace EmpireAtWar.Services.Saves
         /// <see cref="System.IO.InvalidDataException"/> for an unreadable, foreign-mode or older-version save.</summary>
         BattleSave Load(GameMode mode, BattleSaveSlot slot);
 
+        /// <summary>Removes the slot file. File access errors propagate to the caller.</summary>
+        void Delete(GameMode mode, BattleSaveSlot slot);
+
         /// <summary>Headers of the readable saves of one mode, newest first; older versions are listed but not loadable.</summary>
         IReadOnlyList<BattleSaveHeader> List(GameMode mode);
     }

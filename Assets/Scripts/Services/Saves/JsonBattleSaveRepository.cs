@@ -55,6 +55,8 @@ namespace EmpireAtWar.Services.Saves
             return save;
         }
 
+        public void Delete(GameMode mode, BattleSaveSlot slot) => File.Delete(GetPath(mode, slot));
+
         public IReadOnlyList<BattleSaveHeader> List(GameMode mode)
         {
             string folder = GetFolder(mode);

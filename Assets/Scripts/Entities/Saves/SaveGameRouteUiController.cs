@@ -67,6 +67,22 @@ namespace EmpireAtWar.Entities.Saves
             Save(_headers[index].Slot);
         }
 
+        public void RemoveSave(int index)
+        {
+            if (!CanSave()) return;
+            BattleSaveHeader header = _headers[index];
+            try
+            {
+                _repository.Delete(_battle.Mode, header.Slot);
+                _ui.SetStatus($"Removed {header.Slot.Name}.");
+                RefreshSaves();
+            }
+            catch (Exception exception)
+            {
+                _ui.SetStatus($"Could not remove save: {exception.Message}");
+            }
+        }
+
         public void SaveAsNew()
         {
             if (!CanSave()) return;

@@ -77,6 +77,14 @@ namespace EmpireAtWar.Models.ReinforcementZones
             return true;
         }
 
+        public void Restore(PlayerId owner, PlayerId capturingPlayer, float captureProgress, bool isContested)
+        {
+            Owner = owner;
+            CapturingPlayer = capturingPlayer;
+            CaptureProgress = captureProgress;
+            IsContested = isContested;
+        }
+
         private void ResetCapture()
         {
             CapturingPlayer = PlayerId.None;

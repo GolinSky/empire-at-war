@@ -1,7 +1,11 @@
 using System;
+using System.Linq;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.Saves;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
@@ -158,12 +162,82 @@ namespace EmpireAtWar.Tests.Editor
                 PrefabUtility.UnloadPrefabContents(root);
             }
         }
+
+        [Test]
+        public void LoadRoute_RemoveButtonsDeleteUnsupportedSaveAndReuseRowWithoutLoading()
+        {
+            var root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab");
+            LoadGameRouteUiController controller = null;
+            try
+            {
+                var view = root.GetComponent<SaveBrowserUi>();
+                var header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                    DateTime.UtcNow, 400f, EmpireAtWar.Controllers.Game.GameSpeed.Normal);
+                var old = JsonUtility.FromJson<BattleSaveHeader>(JsonUtility.ToJson(header).Replace(
+                    "\"version\":" + BattleSaveHeader.CURRENT_VERSION, "\"version\":0"));
+                var remaining = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Autosave,
+                    DateTime.UtcNow, 200f, EmpireAtWar.Controllers.Game.GameSpeed.Normal);
+                var saves = new EmptySaves { Headers = new[] { old, remaining } };
+                controller = new LoadGameRouteUiController(new UiServiceStub(view), new CancelRouterStub(), saves, null);
+                controller.Open();
+                controller.Open();
+                var fields = new SerializedObject(view);
+                var content = (RectTransform)fields.FindProperty("content").objectReferenceValue;
+                var row = content.GetComponentsInChildren<SaveBrowserRow>().First();
+                var rowFields = new SerializedObject(row);
+                var load = (Button)rowFields.FindProperty("button").objectReferenceValue;
+                var remove = (Button)rowFields.FindProperty("removeButton").objectReferenceValue;
+
+                Assert.That(old.IsCompatible, Is.False);
+                Assert.That(load.interactable, Is.False);
+                Assert.That(remove.interactable, Is.True);
+                remove.onClick.Invoke();
+
+                Assert.That(saves.DeleteCount, Is.EqualTo(1));
+                Assert.That(saves.DeletedSlot.Name, Is.EqualTo(BattleSaveSlot.Quicksave.Name));
+                Assert.That(saves.DeletedMode, Is.EqualTo(GameMode.Skirmish));
+                Assert.That(content.GetComponentsInChildren<SaveBrowserRow>(), Is.EqualTo(new[] { row }));
+                Assert.That(load.interactable, Is.True);
+                remove.onClick.Invoke();
+
+                Assert.That(saves.DeleteCount, Is.EqualTo(2));
+                Assert.That(saves.DeletedSlot.Name, Is.EqualTo(BattleSaveSlot.Autosave.Name));
+                Assert.That(saves.LoadCount, Is.Zero);
+                Assert.That(saves.Headers, Is.Empty);
+                Assert.That(content.GetComponentsInChildren<SaveBrowserRow>(), Is.Empty);
+                var status = (TMPro.TMP_Text)fields.FindProperty("status").objectReferenceValue;
+                Assert.That(status.text, Does.Contain("No saves"));
+                Assert.That(view.IsVisible, Is.True);
+            }
+            finally
+            {
+                if (controller != null) controller.LateDispose();
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
         private sealed class EmptySaves : EmpireAtWar.Services.Saves.IBattleSaveRepository
         {
             public EmpireAtWar.Services.Saves.BattleSaveHeader[] Headers = Array.Empty<EmpireAtWar.Services.Saves.BattleSaveHeader>();
             public EmpireAtWar.Entities.Game.GameMode LastMode;
+            public int LoadCount;
+            public int DeleteCount;
+            public GameMode DeletedMode;
+            public BattleSaveSlot DeletedSlot;
             public void Save(EmpireAtWar.Services.Saves.BattleSave save) => throw new NotSupportedException();
-            public EmpireAtWar.Services.Saves.BattleSave Load(EmpireAtWar.Entities.Game.GameMode mode, EmpireAtWar.Services.Saves.BattleSaveSlot slot) => throw new System.IO.InvalidDataException("Unreadable save");
+            public BattleSave Load(GameMode mode, BattleSaveSlot slot)
+            {
+                LoadCount++;
+                throw new System.IO.InvalidDataException("Unreadable save");
+            }
+
+            public void Delete(GameMode mode, BattleSaveSlot slot)
+            {
+                DeleteCount++;
+                DeletedMode = mode;
+                DeletedSlot = slot;
+                Headers = Headers.Where(header => header.Mode != mode || header.Slot.Name != slot.Name).ToArray();
+            }
             public System.Collections.Generic.IReadOnlyList<EmpireAtWar.Services.Saves.BattleSaveHeader> List(EmpireAtWar.Entities.Game.GameMode mode)
             {
                 LastMode = mode;

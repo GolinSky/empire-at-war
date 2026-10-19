@@ -26,6 +26,7 @@ namespace EmpireAtWar.Entities.Saves
         private readonly List<SaveBrowserRow> _rows = new List<SaveBrowserRow>();
         private ISaveBrowserPresenter _presenter;
         private bool _isInitialized;
+        private int _modeIndex;
 
         public void AssignPresenter(ISaveBrowserPresenter presenter) => _presenter = presenter;
 
@@ -69,6 +70,7 @@ namespace EmpireAtWar.Entities.Saves
 
         public void SetMode(int index, bool showTabs)
         {
+            _modeIndex = index;
             modeTabs.SetActive(showTabs);
             skirmishToggle.SetIsOnWithoutNotify(index == 0);
             survivalToggle.SetIsOnWithoutNotify(index == 1);
@@ -81,7 +83,7 @@ namespace EmpireAtWar.Entities.Saves
             {
                 if (i == _rows.Count) _rows.Add(Instantiate(rowTemplate, content));
                 var row = _rows[i];
-                row.Initialize(i, labels[i], enabled[i], _presenter.SelectSave);
+                row.Initialize(i, labels[i], enabled[i], _presenter.SelectSave, _presenter.RemoveSave);
                 row.gameObject.SetActive(true);
             }
             scrollRect.verticalNormalizedPosition = 1;
@@ -97,8 +99,8 @@ namespace EmpireAtWar.Entities.Saves
             saveName.ActivateInputField();
         }
 
-        private void SelectSkirmish(bool selected) { if (selected) _presenter.SelectMode(0); }
-        private void SelectSurvival(bool selected) { if (selected) _presenter.SelectMode(1); }
+        private void SelectSkirmish(bool selected) { if (selected && _modeIndex != 0) _presenter.SelectMode(0); }
+        private void SelectSurvival(bool selected) { if (selected && _modeIndex != 1) _presenter.SelectMode(1); }
         private void ConfirmName() => _presenter.ConfirmName(saveName.text);
         private void OnDestroy() => Dispose();
     }

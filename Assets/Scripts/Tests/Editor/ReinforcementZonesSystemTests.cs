@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Vision;
@@ -23,6 +24,124 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
+
+        [Test]
+        public void RelaySave_JsonRoundTripRestoresCaptureAndRelayServices()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            VisionService vision = new VisionService(roster);
+            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
+                CaptureStrengthBuilder strength = new CaptureStrengthBuilder(roster);
+                strength.Add(TestPlayers.Enemy, 1f);
+                system.Zones[0].Tick(zone.CaptureDuration / data.CaptureSpeedPerNetShip, strength.Build());
+                strength.Clear();
+                strength.Add(TestPlayers.Human, 2f);
+                strength.Add(TestPlayers.Enemy, 1f);
+                system.Zones[0].Tick(zone.CaptureDuration * 0.25f / data.CaptureSpeedPerNetShip, strength.Build());
+                strength.Add(TestPlayers.Enemy, 1f);
+                system.Zones[0].Tick(1f, strength.Build());
+                ReinforcementZonesSaveSource source = new ReinforcementZonesSaveSource(system);
+                BattleSave save = new BattleSave();
+                source.Capture(save);
+                BattleSave restored = BattleSave.FromJson(save.ToJson());
+                system.UpdateState(CreateMap(zone));
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(PlayerId.None));
+                int changes = 0;
+                system.OwnershipChanged += () =>
+                {
+                    changes++;
+                    Assert.That(vision.IsVisible(TestPlayers.Enemy, zone.Center), Is.True);
+                    Assert.That(blockers.IsBlocked(TestPlayers.Enemy, zone.Center), Is.False);
+                };
+
+                source.RestoreBeforeUnits(restored);
+
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Enemy));
+                Assert.That(system.Zones[0].CapturingPlayer, Is.EqualTo(TestPlayers.Human));
+                Assert.That(system.Zones[0].CaptureProgress, Is.EqualTo(0.25f).Within(0.0001f));
+                Assert.That(system.Zones[0].IsContested, Is.True);
+                Assert.That(system.GetOwnedCapturableZoneCount(TestPlayers.Enemy), Is.EqualTo(1));
+                Assert.That(vision.IsVisible(TestPlayers.SecondEnemy, zone.Center), Is.True);
+                Assert.That(vision.IsVisible(TestPlayers.Human, zone.Center), Is.False);
+                Assert.That(blockers.IsBlocked(TestPlayers.Human, zone.Center), Is.True);
+                Assert.That(system.Zones[0].IsRevealed, Is.False);
+                Assert.That(changes, Is.EqualTo(1));
+
+                strength.Clear();
+                strength.Add(TestPlayers.Human, 1f);
+                system.Zones[0].Tick(zone.CaptureDuration * 0.75f / data.CaptureSpeedPerNetShip, strength.Build());
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Human),
+                    "Capture must continue from saved progress.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
+        public void RelaySave_RestoringNeutralRemovesPreviousVisionAndBlocksEveryTeam()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            VisionService vision = new VisionService(roster);
+            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
+                Assert.That(vision.IsVisible(TestPlayers.Human, zone.Center), Is.True);
+
+                system.RestoreZones(new[]
+                {
+                    ReinforcementZoneSave.Create(PlayerId.None, PlayerId.None, 0f, false)
+                });
+
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(PlayerId.None));
+                Assert.That(vision.Sources, Is.Empty);
+                Assert.That(system.Zones[0].IsRevealed, Is.False);
+                Assert.That(blockers.IsBlocked(TestPlayers.Human, zone.Center), Is.True);
+                Assert.That(blockers.IsBlocked(TestPlayers.Enemy, zone.Center), Is.True);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
+        public void RelaySave_RejectsMismatchedZoneCountBeforeChangingState()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                ReinforcementZonesSystem system = CreateSystem(root, data,
+                    CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero));
+                int changes = 0;
+                system.OwnershipChanged += () => changes++;
+
+                Assert.Throws<System.InvalidOperationException>(() =>
+                    system.RestoreZones(System.Array.Empty<ReinforcementZoneSave>()));
+
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Human));
+                Assert.That(changes, Is.Zero);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
 
         [Test]
         public void StructureClearance_RejectsFootprintOverlappingZone()

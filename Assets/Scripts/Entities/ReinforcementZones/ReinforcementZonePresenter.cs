@@ -13,6 +13,9 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         private readonly ReinforcementZoneModel _model;
 
         public PlayerId Owner => _model.Owner;
+        public PlayerId CapturingPlayer => _model.CapturingPlayer;
+        public float CaptureProgress => _model.CaptureProgress;
+        public bool IsContested => _model.IsContested;
         public bool IsCapturable => _view.IsCapturable;
         public bool IsRevealed { get; private set; }
         public UnityEngine.Vector3 Center => _view.Center;
@@ -35,6 +38,12 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
             bool ownerChanged = _model.Tick(deltaTime, tally);
             Render();
             return ownerChanged;
+        }
+
+        public void Restore(PlayerId owner, PlayerId capturingPlayer, float captureProgress, bool isContested)
+        {
+            _model.Restore(owner, capturingPlayer, captureProgress, isContested);
+            Render();
         }
 
         public void SetVisibility(bool isRevealed, bool isHovered)

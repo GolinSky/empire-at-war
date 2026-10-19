@@ -20,20 +20,20 @@ MonoBehaviour:
     - entries:
       - isSquadron: 0
         unitId: 6
-        quantity: 2
-      - isSquadron: 0
-        unitId: 1
-        quantity: 1
+        quantity: 4
       - isSquadron: 1
         unitId: 2
         quantity: 2
       spawnGroupCount: 1
     - entries:
       - isSquadron: 0
-        unitId: 1
-        quantity: 3
+        unitId: 6
+        quantity: 4
       - isSquadron: 0
-        unitId: 5
+        unitId: 1
+        quantity: 11
+      - isSquadron: 0
+        unitId: 11
         quantity: 1
       - isSquadron: 1
         unitId: 5
@@ -41,21 +41,51 @@ MonoBehaviour:
       spawnGroupCount: 2
     - entries:
       - isSquadron: 0
-        unitId: 5
+        unitId: 6
         quantity: 4
       - isSquadron: 0
-        unitId: 0
-        quantity: 2
+        unitId: 1
+        quantity: 11
+      - isSquadron: 0
+        unitId: 11
+        quantity: 1
+      - isSquadron: 0
+        unitId: 2
+        quantity: 3
+      - isSquadron: 0
+        unitId: 5
+        quantity: 6
+      - isSquadron: 0
+        unitId: 8
+        quantity: 1
       - isSquadron: 1
         unitId: 3
         quantity: 4
       spawnGroupCount: 3
     - entries:
       - isSquadron: 0
-        unitId: 0
-        quantity: 5
+        unitId: 6
+        quantity: 4
       - isSquadron: 0
-        unitId: 7
+        unitId: 1
+        quantity: 11
+      - isSquadron: 0
+        unitId: 11
+        quantity: 1
+      - isSquadron: 0
+        unitId: 2
+        quantity: 3
+      - isSquadron: 0
+        unitId: 5
+        quantity: 6
+      - isSquadron: 0
+        unitId: 8
+        quantity: 1
+      - isSquadron: 0
+        unitId: 0
+        quantity: 4
+      - isSquadron: 0
+        unitId: 200
         quantity: 2
       - isSquadron: 1
         unitId: 4
@@ -63,11 +93,38 @@ MonoBehaviour:
       spawnGroupCount: 4
     - entries:
       - isSquadron: 0
-        unitId: 7
+        unitId: 6
+        quantity: 4
+      - isSquadron: 0
+        unitId: 1
+        quantity: 11
+      - isSquadron: 0
+        unitId: 11
+        quantity: 1
+      - isSquadron: 0
+        unitId: 2
+        quantity: 3
+      - isSquadron: 0
+        unitId: 5
         quantity: 6
       - isSquadron: 0
+        unitId: 8
+        quantity: 1
+      - isSquadron: 0
+        unitId: 0
+        quantity: 4
+      - isSquadron: 0
+        unitId: 200
+        quantity: 2
+      - isSquadron: 0
+        unitId: 7
+        quantity: 4
+      - isSquadron: 0
         unitId: 9
-        quantity: 3
+        quantity: 1
+      - isSquadron: 0
+        unitId: 10
+        quantity: 1
       - isSquadron: 1
         unitId: 6
         quantity: 6
@@ -76,11 +133,11 @@ MonoBehaviour:
     waves:
     - entries:
       - isSquadron: 0
-        unitId: 107
+        unitId: 106
         quantity: 2
       - isSquadron: 0
-        unitId: 106
-        quantity: 1
+        unitId: 107
+        quantity: 2
       - isSquadron: 1
         unitId: 102
         quantity: 2
@@ -88,31 +145,55 @@ MonoBehaviour:
     - entries:
       - isSquadron: 0
         unitId: 106
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
-        unitId: 108
-        quantity: 1
+        unitId: 107
+        quantity: 2
+      - isSquadron: 0
+        unitId: 102
+        quantity: 12
       - isSquadron: 1
         unitId: 101
         quantity: 3
       spawnGroupCount: 2
     - entries:
       - isSquadron: 0
-        unitId: 108
-        quantity: 4
+        unitId: 106
+        quantity: 2
+      - isSquadron: 0
+        unitId: 107
+        quantity: 2
+      - isSquadron: 0
+        unitId: 102
+        quantity: 12
       - isSquadron: 0
         unitId: 105
-        quantity: 2
+        quantity: 10
       - isSquadron: 1
         unitId: 100
         quantity: 4
       spawnGroupCount: 3
     - entries:
       - isSquadron: 0
-        unitId: 105
-        quantity: 5
+        unitId: 106
+        quantity: 2
       - isSquadron: 0
-        unitId: 103
+        unitId: 107
+        quantity: 2
+      - isSquadron: 0
+        unitId: 102
+        quantity: 12
+      - isSquadron: 0
+        unitId: 105
+        quantity: 10
+      - isSquadron: 0
+        unitId: 100
+        quantity: 2
+      - isSquadron: 0
+        unitId: 101
+        quantity: 2
+      - isSquadron: 0
+        unitId: 108
         quantity: 2
       - isSquadron: 1
         unitId: 102
@@ -120,11 +201,32 @@ MonoBehaviour:
       spawnGroupCount: 4
     - entries:
       - isSquadron: 0
+        unitId: 106
+        quantity: 2
+      - isSquadron: 0
+        unitId: 107
+        quantity: 2
+      - isSquadron: 0
+        unitId: 102
+        quantity: 12
+      - isSquadron: 0
+        unitId: 105
+        quantity: 10
+      - isSquadron: 0
+        unitId: 100
+        quantity: 2
+      - isSquadron: 0
+        unitId: 101
+        quantity: 2
+      - isSquadron: 0
+        unitId: 108
+        quantity: 2
+      - isSquadron: 0
         unitId: 103
-        quantity: 6
+        quantity: 5
       - isSquadron: 0
         unitId: 104
-        quantity: 3
+        quantity: 1
       - isSquadron: 1
         unitId: 101
         quantity: 6
@@ -134,31 +236,70 @@ MonoBehaviour:
     - entries:
       - isSquadron: 0
         unitId: 301
-        quantity: 2
-      - isSquadron: 0
-        unitId: 308
-        quantity: 1
+        quantity: 4
       - isSquadron: 1
         unitId: 300
         quantity: 2
       spawnGroupCount: 1
     - entries:
       - isSquadron: 0
-        unitId: 308
-        quantity: 3
+        unitId: 301
+        quantity: 4
       - isSquadron: 0
-        unitId: 309
-        quantity: 1
+        unitId: 300
+        quantity: 2
+      - isSquadron: 0
+        unitId: 306
+        quantity: 2
+      - isSquadron: 0
+        unitId: 307
+        quantity: 2
+      - isSquadron: 0
+        unitId: 308
+        quantity: 2
+      - isSquadron: 0
+        unitId: 320
+        quantity: 2
+      - isSquadron: 0
+        unitId: 311
+        quantity: 2
       - isSquadron: 1
         unitId: 301
         quantity: 3
       spawnGroupCount: 2
     - entries:
       - isSquadron: 0
-        unitId: 309
+        unitId: 301
         quantity: 4
       - isSquadron: 0
-        unitId: 312
+        unitId: 300
+        quantity: 2
+      - isSquadron: 0
+        unitId: 306
+        quantity: 2
+      - isSquadron: 0
+        unitId: 307
+        quantity: 2
+      - isSquadron: 0
+        unitId: 308
+        quantity: 2
+      - isSquadron: 0
+        unitId: 320
+        quantity: 2
+      - isSquadron: 0
+        unitId: 311
+        quantity: 2
+      - isSquadron: 0
+        unitId: 304
+        quantity: 2
+      - isSquadron: 0
+        unitId: 309
+        quantity: 2
+      - isSquadron: 0
+        unitId: 310
+        quantity: 4
+      - isSquadron: 0
+        unitId: 321
         quantity: 2
       - isSquadron: 1
         unitId: 1
@@ -166,8 +307,44 @@ MonoBehaviour:
       spawnGroupCount: 3
     - entries:
       - isSquadron: 0
+        unitId: 301
+        quantity: 4
+      - isSquadron: 0
+        unitId: 300
+        quantity: 2
+      - isSquadron: 0
+        unitId: 306
+        quantity: 2
+      - isSquadron: 0
+        unitId: 307
+        quantity: 2
+      - isSquadron: 0
+        unitId: 308
+        quantity: 2
+      - isSquadron: 0
+        unitId: 320
+        quantity: 2
+      - isSquadron: 0
+        unitId: 311
+        quantity: 2
+      - isSquadron: 0
+        unitId: 304
+        quantity: 2
+      - isSquadron: 0
+        unitId: 309
+        quantity: 2
+      - isSquadron: 0
+        unitId: 310
+        quantity: 4
+      - isSquadron: 0
+        unitId: 321
+        quantity: 2
+      - isSquadron: 0
+        unitId: 302
+        quantity: 2
+      - isSquadron: 0
         unitId: 312
-        quantity: 5
+        quantity: 2
       - isSquadron: 0
         unitId: 322
         quantity: 2
@@ -177,8 +354,53 @@ MonoBehaviour:
       spawnGroupCount: 4
     - entries:
       - isSquadron: 0
+        unitId: 301
+        quantity: 4
+      - isSquadron: 0
+        unitId: 300
+        quantity: 2
+      - isSquadron: 0
+        unitId: 306
+        quantity: 2
+      - isSquadron: 0
+        unitId: 307
+        quantity: 2
+      - isSquadron: 0
+        unitId: 308
+        quantity: 2
+      - isSquadron: 0
+        unitId: 320
+        quantity: 2
+      - isSquadron: 0
+        unitId: 311
+        quantity: 2
+      - isSquadron: 0
+        unitId: 304
+        quantity: 2
+      - isSquadron: 0
+        unitId: 309
+        quantity: 2
+      - isSquadron: 0
+        unitId: 310
+        quantity: 4
+      - isSquadron: 0
+        unitId: 321
+        quantity: 2
+      - isSquadron: 0
+        unitId: 302
+        quantity: 2
+      - isSquadron: 0
+        unitId: 312
+        quantity: 2
+      - isSquadron: 0
         unitId: 322
-        quantity: 6
+        quantity: 2
+      - isSquadron: 0
+        unitId: 303
+        quantity: 1
+      - isSquadron: 0
+        unitId: 305
+        quantity: 2
       - isSquadron: 0
         unitId: 330
         quantity: 3
@@ -190,32 +412,65 @@ MonoBehaviour:
     waves:
     - entries:
       - isSquadron: 0
-        unitId: 215
+        unitId: 208
         quantity: 2
       - isSquadron: 0
-        unitId: 204
-        quantity: 1
+        unitId: 215
+        quantity: 2
       - isSquadron: 1
         unitId: 200
         quantity: 2
       spawnGroupCount: 1
     - entries:
       - isSquadron: 0
-        unitId: 204
-        quantity: 3
+        unitId: 208
+        quantity: 2
       - isSquadron: 0
-        unitId: 201
-        quantity: 1
+        unitId: 215
+        quantity: 2
+      - isSquadron: 0
+        unitId: 202
+        quantity: 4
+      - isSquadron: 0
+        unitId: 209
+        quantity: 4
+      - isSquadron: 0
+        unitId: 211
+        quantity: 4
       - isSquadron: 1
         unitId: 203
         quantity: 3
       spawnGroupCount: 2
     - entries:
       - isSquadron: 0
-        unitId: 201
+        unitId: 208
+        quantity: 2
+      - isSquadron: 0
+        unitId: 215
+        quantity: 2
+      - isSquadron: 0
+        unitId: 202
         quantity: 4
       - isSquadron: 0
+        unitId: 209
+        quantity: 4
+      - isSquadron: 0
+        unitId: 211
+        quantity: 4
+      - isSquadron: 0
+        unitId: 201
+        quantity: 2
+      - isSquadron: 0
+        unitId: 203
+        quantity: 2
+      - isSquadron: 0
+        unitId: 204
+        quantity: 2
+      - isSquadron: 0
         unitId: 205
+        quantity: 2
+      - isSquadron: 0
+        unitId: 212
         quantity: 2
       - isSquadron: 1
         unitId: 201
@@ -223,8 +478,38 @@ MonoBehaviour:
       spawnGroupCount: 3
     - entries:
       - isSquadron: 0
+        unitId: 208
+        quantity: 2
+      - isSquadron: 0
+        unitId: 215
+        quantity: 2
+      - isSquadron: 0
+        unitId: 202
+        quantity: 4
+      - isSquadron: 0
+        unitId: 209
+        quantity: 4
+      - isSquadron: 0
+        unitId: 211
+        quantity: 4
+      - isSquadron: 0
+        unitId: 201
+        quantity: 2
+      - isSquadron: 0
+        unitId: 203
+        quantity: 2
+      - isSquadron: 0
+        unitId: 204
+        quantity: 2
+      - isSquadron: 0
         unitId: 205
-        quantity: 5
+        quantity: 2
+      - isSquadron: 0
+        unitId: 212
+        quantity: 2
+      - isSquadron: 0
+        unitId: 206
+        quantity: 4
       - isSquadron: 0
         unitId: 213
         quantity: 2
@@ -234,11 +519,50 @@ MonoBehaviour:
       spawnGroupCount: 4
     - entries:
       - isSquadron: 0
+        unitId: 208
+        quantity: 2
+      - isSquadron: 0
+        unitId: 215
+        quantity: 2
+      - isSquadron: 0
+        unitId: 202
+        quantity: 4
+      - isSquadron: 0
+        unitId: 209
+        quantity: 4
+      - isSquadron: 0
+        unitId: 211
+        quantity: 4
+      - isSquadron: 0
+        unitId: 201
+        quantity: 2
+      - isSquadron: 0
+        unitId: 203
+        quantity: 2
+      - isSquadron: 0
+        unitId: 204
+        quantity: 2
+      - isSquadron: 0
+        unitId: 205
+        quantity: 2
+      - isSquadron: 0
+        unitId: 212
+        quantity: 2
+      - isSquadron: 0
+        unitId: 206
+        quantity: 4
+      - isSquadron: 0
         unitId: 213
-        quantity: 6
+        quantity: 2
       - isSquadron: 0
         unitId: 207
-        quantity: 3
+        quantity: 1
+      - isSquadron: 0
+        unitId: 210
+        quantity: 4
+      - isSquadron: 0
+        unitId: 214
+        quantity: 1
       - isSquadron: 1
         unitId: 202
         quantity: 6

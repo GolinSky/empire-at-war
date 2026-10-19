@@ -37,6 +37,40 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AuthoredWaves_IncludeEveryUnlockedShipWithEqualTierCounts()
+        {
+            var data = AssetDatabase.LoadAssetAtPath<SurvivalWaveData>("Assets/Settings/Data/Battles/SurvivalWaveData.asset");
+            var catalog = AssetDatabase.LoadAssetAtPath<FactionCatalog>(AssetDatabase.GUIDToAssetPath(
+                AssetDatabase.FindAssets("t:FactionCatalog").Single()));
+            foreach (var faction in catalog.Factions)
+            {
+                var waves = data.Factions.Single(entry => entry.Faction == faction.FactionType).Waves;
+                for (int level = 1; level <= waves.Count; level++)
+                {
+                    var ships = waves[level - 1].Entries.Where(entry => entry.Unit.IsShip)
+                        .ToDictionary(entry => entry.Unit.ShipType, entry => entry.Quantity);
+                    Assert.That(ships.Keys, Is.EquivalentTo(faction.Ships
+                        .Where(entry => entry.Value.AvailableLevel <= level).Select(entry => entry.Key)),
+                        $"{faction.FactionType}, wave {level}");
+                    for (int tier = 1; tier <= level; tier++)
+                    {
+                        int expected = 2 * catalog.Factions.Max(candidate => candidate.Ships
+                            .Count(entry => entry.Value.AvailableLevel == tier));
+                        Assert.That(ships.Where(entry => faction.Ships[entry.Key].AvailableLevel == tier)
+                            .Sum(entry => entry.Value), Is.EqualTo(expected),
+                            $"{faction.FactionType}, wave {level}, tier {tier}");
+                    }
+                    foreach (var hero in faction.Ships.Where(entry => entry.Value.IsHero
+                                 && entry.Value.AvailableLevel <= level))
+                        Assert.That(ships[hero.Key], Is.EqualTo(1));
+                    if (level > 1)
+                        foreach (var previous in waves[level - 2].Entries.Where(entry => entry.Unit.IsShip))
+                            Assert.That(ships[previous.Unit.ShipType], Is.EqualTo(previous.Quantity));
+                }
+            }
+        }
+
+        [Test]
         public void FiveWaves_UsePreparationThenWin()
         {
             SurvivalModel model = new SurvivalModel();

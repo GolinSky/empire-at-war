@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.Camera;
@@ -144,6 +145,28 @@ namespace EmpireAtWar.Services.ReinforcementZones
         }
 
         public void Tick() => TickZones(Time.deltaTime);
+
+        public void RestoreZones(IReadOnlyList<ReinforcementZoneSave> saves)
+        {
+            if (saves.Count != _zones.Count)
+                throw new InvalidOperationException($"Saved {saves.Count} reinforcement zones; the map has {_zones.Count}.");
+
+            for (int i = 0; i < _zones.Count; i++)
+            {
+                ReinforcementZoneSave save = saves[i];
+                _zones[i].Restore(save.Owner, save.CapturingPlayer, save.CaptureProgress, save.IsContested);
+                Transform anchor = _zoneViews[i].transform;
+                _spawnBlockerService.Register(save.Owner, anchor, _data.RelaySpawnBlockRadius);
+                _visionService.Unregister(anchor);
+                if (save.Owner != PlayerId.None)
+                    _visionService.Register(save.Owner, anchor, _data.RelaySpawnBlockRadius);
+            }
+
+            foreach (ReinforcementZonePresenter zone in _zones)
+                zone.SetVisibility(_visionService.IsVisible(_localPlayer.Id, zone.Center), false);
+
+            OwnershipChanged?.Invoke();
+        }
 
         private void TickZones(float deltaTime)
         {

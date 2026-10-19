@@ -72,6 +72,40 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_repository.List(GameMode.Skirmish).Count, Is.EqualTo(1));
         }
 
+        [TestCase("autosave")]
+        [TestCase("quicksave")]
+        [TestCase("Before the push")]
+        public void Delete_RemovesOnlySelectedSlotAndMode(string name)
+        {
+            BattleSaveSlot slot = BattleSaveSlot.FromName(name);
+            BattleSaveSlot otherSlot = BattleSaveSlot.Named("Keep");
+            _repository.Save(CreateSave(Skirmish(), slot, DateTime.UtcNow));
+            _repository.Save(CreateSave(Skirmish(), otherSlot, DateTime.UtcNow));
+            _repository.Save(CreateSave(Survival(), slot, DateTime.UtcNow));
+
+            _repository.Delete(GameMode.Skirmish, slot);
+
+            Assert.That(File.Exists(Path.Combine(_directory, "Saves", "Skirmish", name + ".json")), Is.False);
+            Assert.Throws<FileNotFoundException>(() => _repository.Load(GameMode.Skirmish, slot));
+            Assert.That(_repository.List(GameMode.Skirmish).Select(header => header.Slot.Name),
+                Is.EqualTo(new[] { otherSlot.Name }));
+            Assert.That(_repository.Load(GameMode.Survival, slot).Header.Slot.Name, Is.EqualTo(name));
+        }
+
+        [Test]
+        public void Delete_OlderVersion_RemovesFileWithoutLoading()
+        {
+            _repository.Save(CreateSave(Skirmish(), BattleSaveSlot.Quicksave, DateTime.UtcNow));
+            string path = Path.Combine(_directory, "Saves", "Skirmish", "quicksave.json");
+            File.WriteAllText(path, Regex.Replace(File.ReadAllText(path), "\"version\":\\s*\\d+", "\"version\": 0"));
+            Assert.That(_repository.List(GameMode.Skirmish).Single().IsCompatible, Is.False);
+
+            _repository.Delete(GameMode.Skirmish, BattleSaveSlot.Quicksave);
+
+            Assert.That(_repository.List(GameMode.Skirmish), Is.Empty);
+            Assert.That(File.Exists(path), Is.False);
+        }
+
         [Test]
         public void ModesUseSeparateFolders()
         {
@@ -95,16 +129,17 @@ namespace EmpireAtWar.Tests.Editor
             Assert.Throws<InvalidDataException>(() => _repository.Load(GameMode.Skirmish, BattleSaveSlot.Quicksave));
         }
 
-        [Test]
-        public void Load_OlderVersion_IsRefusedButListed()
+        [TestCase(0)]
+        [TestCase(1)]
+        public void Load_OlderVersion_IsRefusedButListed(int version)
         {
             _repository.Save(CreateSave(Skirmish(), BattleSaveSlot.Quicksave, DateTime.UtcNow));
             string path = Path.Combine(_directory, "Saves", "Skirmish", "quicksave.json");
-            File.WriteAllText(path, Regex.Replace(File.ReadAllText(path), "\"version\":\\s*\\d+", "\"version\": 0"));
+            File.WriteAllText(path, Regex.Replace(File.ReadAllText(path), "\"version\":\\s*\\d+", $"\"version\": {version}"));
 
             InvalidDataException error = Assert.Throws<InvalidDataException>(
                 () => _repository.Load(GameMode.Skirmish, BattleSaveSlot.Quicksave));
-            Assert.That(error.Message, Does.Contain("version 0"));
+            Assert.That(error.Message, Does.Contain($"version {version}"));
             Assert.That(_repository.List(GameMode.Skirmish).Single().IsCompatible, Is.False);
         }
 
@@ -135,6 +170,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.Throws<ArgumentException>(() => _repository.List(GameMode.BattleSimulation));
             Assert.Throws<ArgumentException>(() => _repository.Load(GameMode.BattleSimulation, BattleSaveSlot.Quicksave));
+            Assert.Throws<ArgumentException>(() => _repository.Delete(GameMode.BattleSimulation, BattleSaveSlot.Quicksave));
         }
 
         [TestCase("")]

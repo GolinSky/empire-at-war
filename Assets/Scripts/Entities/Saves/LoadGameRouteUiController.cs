@@ -82,6 +82,20 @@ namespace EmpireAtWar.Entities.Saves
             catch (Exception exception) { _ui.SetStatus($"Load failed: {exception.Message}"); }
         }
 
+        public void RemoveSave(int index)
+        {
+            BattleSaveHeader slot = _slots[index];
+            try
+            {
+                _saves.Delete(slot.Mode, slot.Slot);
+                SelectMode(_modeIndex);
+            }
+            catch (Exception exception)
+            {
+                _ui.SetStatus($"Could not remove save: {exception.Message}");
+            }
+        }
+
         public void SaveAsNew() => throw new InvalidOperationException("The load screen cannot create saves.");
         public void ConfirmName(string name) => throw new InvalidOperationException("The load screen cannot create saves.");
         public void CancelName() => _ui.SetNameEntryVisible(false);

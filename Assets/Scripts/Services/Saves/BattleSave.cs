@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private StructureSave[] structures = Array.Empty<StructureSave>();
         [SerializeField] private PlayerSave[] players = Array.Empty<PlayerSave>();
         [SerializeField] private CaptureSiteSave[] captureSites = Array.Empty<CaptureSiteSave>();
+        [SerializeField] private ReinforcementZoneSave[] reinforcementZones = Array.Empty<ReinforcementZoneSave>();
         [SerializeField] private int[] observedBases = Array.Empty<int>();
         [SerializeField] private bool hasSurvival;
         [SerializeField] private SurvivalSave survival;
@@ -27,6 +28,8 @@ namespace EmpireAtWar.Services.Saves
         public PlayerSave[] Players { get => players; set => players = value; }
         /// <summary>In map layout order; empty when the battle has no capture sites.</summary>
         public CaptureSiteSave[] CaptureSites { get => captureSites; set => captureSites = value; }
+        /// <summary>Relay ownership and capture state, in map layout order.</summary>
+        public ReinforcementZoneSave[] ReinforcementZones { get => reinforcementZones; set => reinforcementZones = value; }
         /// <summary>Players whose station the victory rule has seen alive, by player index.</summary>
         public int[] ObservedBases { get => observedBases; set => observedBases = value; }
         /// <summary>Null outside Survival.</summary>
