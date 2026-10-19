@@ -156,7 +156,8 @@ namespace EmpireAtWar.Services.Battle
                     entity.HealthModel.IsDestroyed ||
                     entity.Owner != selected.Entity.Owner ||
                     !selected.Entity.IsSameUnitType(entity) ||
-                    !entity.TryGetFacade(out IEntitySelectionFacade command))
+                    !entity.TryGetFacade(out IEntitySelectionFacade command) ||
+                    !IsOnScreen(command))
                 {
                     continue;
                 }
@@ -189,23 +190,28 @@ namespace EmpireAtWar.Services.Battle
                     entity.HealthModel.IsDestroyed ||
                     !entity.IsUnit() ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command) ||
-                    !(command is ISelectionPositionProvider positionProvider))
-                {
-                    continue;
-                }
-
-                Vector3 viewportPoint = _cameraService.WorldToViewportPoint(positionProvider.WorldPosition);
-                if (viewportPoint.z <= 0f ||
-                    viewportPoint.x < 0f ||
-                    viewportPoint.x > 1f ||
-                    viewportPoint.y < 0f ||
-                    viewportPoint.y > 1f)
+                    !IsOnScreen(command))
                 {
                     continue;
                 }
 
                 results.Add(new SelectionEntry(entity, command));
             }
+        }
+
+        private bool IsOnScreen(IEntitySelectionFacade command)
+        {
+            if (!(command is ISelectionPositionProvider positionProvider))
+            {
+                return false;
+            }
+
+            Vector3 viewportPoint = _cameraService.WorldToViewportPoint(positionProvider.WorldPosition);
+            return viewportPoint.z > 0f &&
+                viewportPoint.x >= 0f &&
+                viewportPoint.x <= 1f &&
+                viewportPoint.y >= 0f &&
+                viewportPoint.y <= 1f;
         }
 
         public void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results)

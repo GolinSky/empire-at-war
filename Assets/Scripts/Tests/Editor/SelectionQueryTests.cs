@@ -22,6 +22,8 @@ namespace EmpireAtWar.Tests.Editor
         private static readonly MarqueeRectangle WHOLE_SCREEN =
             new MarqueeRectangle(new MarqueePoint(0f, 0f), new MarqueePoint(100f, 100f));
 
+        private static readonly Vector3 OFF_SCREEN_POSITION = new Vector3(1000f, 0f, 0f);
+
         [Test]
         public void CollectInside_DropsStructuresWhenUnitsAreInside()
         {
@@ -51,6 +53,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(results, Has.Count.EqualTo(2));
         }
 
+        [Test]
+        public void CollectSameShipType_SkipsUnitsOutsideTheScreen()
+        {
+            EntityLocator locator = new EntityLocator();
+            FakeEntity tapped = new FakeEntity(id: 1, SelectionType.Ship, isUnit: true);
+            FakeEntity visible = new FakeEntity(id: 2, SelectionType.Ship, isUnit: true);
+            FakeEntity offScreen = new FakeEntity(id: 3, SelectionType.Ship, isUnit: true, OFF_SCREEN_POSITION);
+            locator.AddEntity(tapped);
+            locator.AddEntity(visible);
+            locator.AddEntity(offScreen);
+            List<SelectionEntry> results = new List<SelectionEntry>();
+
+            CreateQuery(locator).CollectSameShipType(
+                new SelectionEntry(tapped, tapped.GetFacade<IEntitySelectionFacade>()),
+                results);
+
+            Assert.That(results, Has.Count.EqualTo(2));
+            Assert.That(results[0].Entity, Is.SameAs(tapped));
+            Assert.That(results[1].Entity, Is.SameAs(visible));
+        }
+
         private static SelectionQuery CreateQuery(IEntityLocator locator)
         {
             return new SelectionQuery(
@@ -75,7 +98,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public int ScreenPointRaycastAll(Vector2 point, RaycastHit[] results) => 0;
 
-            public Vector3 WorldToViewportPoint(Vector3 point) => new Vector3(0.5f, 0.5f, 1f);
+            public Vector3 WorldToViewportPoint(Vector3 point) => new Vector3(0.5f + point.x, 0.5f, 1f);
 
             public Vector2 WorldToScreenPoint(Vector3 point) => new Vector2(50f, 50f);
 
@@ -93,11 +116,12 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeSelection : IEntitySelectionFacade, ISelectionPositionProvider
         {
             public SelectionType SelectionType { get; set; }
-            public Vector3 WorldPosition => Vector3.zero;
+            public Vector3 WorldPosition { get; }
 
-            public FakeSelection(SelectionType selectionType)
+            public FakeSelection(SelectionType selectionType, Vector3 worldPosition)
             {
                 SelectionType = selectionType;
+                WorldPosition = worldPosition;
             }
 
             public void Select(bool isSelected) { }
@@ -112,10 +136,10 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver HealthModel { get; } = new FakeHealth();
             public PlayerId Owner => TestPlayers.Human;
 
-            public FakeEntity(long id, SelectionType selectionType, bool isUnit)
+            public FakeEntity(long id, SelectionType selectionType, bool isUnit, Vector3 worldPosition = default)
             {
                 Id = id;
-                _selection = new FakeSelection(selectionType);
+                _selection = new FakeSelection(selectionType, worldPosition);
                 _unitType = isUnit ? new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator)) : null;
             }
 
