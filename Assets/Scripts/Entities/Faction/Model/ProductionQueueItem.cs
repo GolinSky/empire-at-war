@@ -9,9 +9,14 @@ namespace EmpireAtWar.Models.Factions
         public float RemainingBuildTime { get; private set; }
 
         public ProductionQueueItem(UnitRequest unitRequest)
+            : this(unitRequest, unitRequest.FactionData.BuildTime)
+        {
+        }
+
+        public ProductionQueueItem(UnitRequest unitRequest, float remainingBuildTime)
         {
             UnitRequest = unitRequest;
-            RemainingBuildTime = unitRequest.FactionData.BuildTime;
+            RemainingBuildTime = remainingBuildTime;
         }
 
         public void Advance(float deltaTime)

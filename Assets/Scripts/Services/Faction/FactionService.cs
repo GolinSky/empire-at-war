@@ -49,7 +49,7 @@ namespace EmpireAtWar.Services.Factions
 
         private bool _isInitialized;
 
-        public float Income { get; private set; }
+        public float Income => DEFAULT_INCOME * _model.CurrentLevel;
 
         public FactionService(
             ISelectionService selectionService,
@@ -67,7 +67,6 @@ namespace EmpireAtWar.Services.Factions
             _model = model;
             _research = research;
             _superWeapons = superWeapons;
-            Income = DEFAULT_INCOME;
             _selectionService = selectionService;
             _wallet = wallet;
             _reinforcementPool = reinforcementPool;
@@ -84,7 +83,6 @@ namespace EmpireAtWar.Services.Factions
             }
 
             _selectionService.AddObserver(this);
-            Income = DEFAULT_INCOME * _model.CurrentLevel;
             _economyProvider.AddProvider(this);
             _model.OnUnitCompleted += BuildUnit;
             _entities.EntityAdded += HandleEntityAdded;
@@ -144,7 +142,6 @@ namespace EmpireAtWar.Services.Factions
             {
                 case LevelUnitRequest levelUnitRequest:
                     _model.CurrentLevel++;
-                    Income = DEFAULT_INCOME * _model.CurrentLevel;
                     _economyProvider.RecalculateIncome(this);
                     return;
                 case ResearchUnitRequest researchUnitRequest:

@@ -21,10 +21,13 @@ namespace EmpireAtWar.Entities.SpaceStation
             _ids = ids;
         }
 
-        public virtual SpaceStation Create(PlayerId owner, FactionType factionType, Vector3 position)
+        public virtual SpaceStation Create(PlayerId owner, FactionType factionType, Vector3 position) =>
+            Create(owner, factionType, position, _ids.GenerateUniqueId());
+
+        /// <summary>Creates a station with a known id, e.g. one restored from a save.</summary>
+        public SpaceStation Create(PlayerId owner, FactionType factionType, Vector3 position, long entityId)
         {
             SpaceStationData data = Assets.Load<SpaceStationData>(nameof(SpaceStationData));
-            long entityId = _ids.GenerateUniqueId();
             return Spawn(Assets.LoadComponent<SpaceStation>(factionType + "SpaceStationView"), position, Quaternion.identity,
                 (builder, view) => new EmpireAtWar.SpaceStation.SpaceStationInstaller(view, data, _localPlayer,
                     owner, entityId, position, factionType).Install(builder));

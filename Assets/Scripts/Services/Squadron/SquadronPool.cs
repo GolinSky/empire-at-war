@@ -84,6 +84,15 @@ namespace EmpireAtWar.Services.Squadrons
             return squadron;
         }
 
+        public Squadron SpawnRestored(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation,
+            long entityId)
+        {
+            (PlayerId, SquadronType) key = (owner, squadronType);
+            Squadron squadron = _factory.Create(owner, squadronType, position, rotation, entityId);
+            squadron.Released += () => HandleReleased(squadron, key);
+            return squadron;
+        }
+
         public void Tick()
         {
             for (int i = _dying.Count - 1; i >= 0; i--)

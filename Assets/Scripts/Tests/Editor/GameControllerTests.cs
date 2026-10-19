@@ -43,7 +43,9 @@ namespace EmpireAtWar.Tests.Editor
                 PlanetType.Coruscant,
                 MapSize.Small,
                 BattleVictoryCondition.DestroyEnemyFleet,
-                2000f).Build()));
+                2000f,
+                true,
+                0).Build()));
             Assert.That(sceneService.LoadRequestCount, Is.Zero);
         }
 
@@ -65,10 +67,36 @@ namespace EmpireAtWar.Tests.Editor
                 PlanetType.Coruscant,
                 MapSize.Small,
                 BattleVictoryCondition.DestroyEnemyFleet,
-                2000f).Build());
+                2000f,
+                true,
+                0).Build());
 
             Assert.That(_model.Players, Is.EqualTo(players));
             Assert.That(sceneService.LoadRequestCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void LoadBattle_RebuildsDefinitionAndKeepsSnapshotUntilStartup()
+        {
+            var scenes = new TrackingSceneService();
+            var controller = new GameController(scenes, _model);
+            var definition = SkirmishPreset.Default();
+            var save = EmpireAtWar.Services.Saves.BattleSave.Create(
+                EmpireAtWar.Services.Saves.BattleSaveHeader.Create(GameMode.Skirmish,
+                    EmpireAtWar.Services.Saves.BattleSaveSlot.Quicksave, DateTime.UtcNow, 456f,
+                    EmpireAtWar.Controllers.Game.GameSpeed.Fast), BattleSetupSave.From(definition),
+                EmpireAtWar.Services.Saves.CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 600f),
+                Array.Empty<EmpireAtWar.Services.Saves.UnitSave>(), Array.Empty<EmpireAtWar.Services.Saves.StructureSave>());
+
+            controller.LoadBattle(save);
+            Assert.That(_model.Battle.Map.Seed, Is.EqualTo(definition.Map.Seed));
+            Assert.That(_model.PendingBattleSave, Is.SameAs(save));
+            Assert.That(scenes.LoadRequestCount, Is.EqualTo(1));
+            controller.StartBattle(definition);
+            Assert.That(_model.PendingBattleSave, Is.Null);
+            controller.LoadBattle(save);
+            controller.ExitGame();
+            Assert.That(_model.PendingBattleSave, Is.Null);
         }
 
         // Every slot plays the same faction: mirror matches are allowed now that stations are keyed by player.

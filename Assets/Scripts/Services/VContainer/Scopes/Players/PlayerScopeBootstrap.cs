@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Stations;
@@ -54,7 +57,12 @@ namespace EmpireAtWar.Services.VContainer
                 _players.Add(player);
                 player.Build();
                 _owner.Container.Resolve<BattleUnitSpawner>().Register(slot.Id,
-                    player.Container.Resolve<ShipFactory>(), player.Container.Resolve<ISquadronSpawner>());
+                    player.Container.Resolve<ShipFactory>(), player.Container.Resolve<ISquadronSpawner>(),
+                    new StructureFactories(player.Container.Resolve<SpaceStationFactory>(),
+                        player.Container.Resolve<MiningFacilityFactory>(),
+                        player.Container.Resolve<AsteroidMiningFacilityFactory>(),
+                        player.Container.Resolve<DefendPlatformFactory>(),
+                        player.Container.Resolve<AsteroidDefendPlatformFactory>()));
                 playerRoot.SetActive(true);
             }
 

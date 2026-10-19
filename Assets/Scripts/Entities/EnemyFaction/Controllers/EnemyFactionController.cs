@@ -20,7 +20,6 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Timing;
 #endif
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
@@ -31,7 +30,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic
     public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IEnemyStationCheat, IInitializable, ILateDisposable, IIncomeProvider,
-        IEnemyReinforcementObserver
+        IEnemyReinforcementObserver, ITickable
     {
         private const float DEFAULT_INCOME = 5f;
 
@@ -48,17 +47,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly PlayerSlot _owner;
-        private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds = new();
+        private readonly EnemyBuildQueue _builds = new EnemyBuildQueue();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
-        private readonly TimerPoolService _timerPoolService;
         private readonly FactionResearchModel _research;
 
         private bool _isInitialized;
 
         private PlayerId Owner => _owner.Id;
         public float Income => DEFAULT_INCOME * Model.CurrentLevel;
-        public bool HasPendingReinforcement => _pendingBuilds.Count > 0;
+        public bool HasPendingReinforcement => _builds.Count > 0;
+        public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
         public EnemyFactionController(
             IEconomyProvider economyProvider,
@@ -73,7 +72,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             ShipFactory shipFactory,
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
-            TimerPoolService timerPoolService,
             FactionResearchModel research,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
@@ -84,7 +82,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _shipFactory = shipFactory;
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
-            _timerPoolService = timerPoolService;
             _research = research;
             _economyProvider = economyProvider;
             _wallet = wallet;
@@ -156,124 +153,129 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     }
 
                     Model.CurrentLevel++;
-                  //  Debug.Log($"Upgrade level {Model.CurrentLevel}");
-                    break;
-                case ResearchUnitRequest researchUnitRequest:
-                {
-                    if (!TryReserveAndSpend(researchUnitRequest))
-                    {
-                        return;
-                    }
-
-                    // The reservation blocks a second purchase of this line until the tier completes.
-                    ScheduleBuild(researchUnitRequest, () =>
-                        {
-                            _research.Complete(researchUnitRequest.Key);
-                            ReleaseUnit(researchUnitRequest);
-                        });
-                    break;
-                }
-                case ShipUnitRequest shipUnitRequest:
-                {
-                    if (!TryReserveAndSpend(shipUnitRequest))
-                    {
-                        return;
-                    }
-
+                    return;
+                case ShipUnitRequest:
+                    if (!TryReserveAndSpend(unitRequest)) return;
                     _unitLimitModel.RecordShipOrder();
-                    ScheduleBuild(shipUnitRequest, () =>
-                        {
-                            ShipEntity ship = _shipFactory.Create(
-                                Owner,
-                                shipUnitRequest.Key,
-                                GenerateShipCoordinates(shipUnitRequest.Key));
-                            ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
-                        });
                     break;
-                }
+                // A research reservation blocks a second purchase of the line until the tier completes.
+                case ResearchUnitRequest:
+                case SquadronUnitRequest:
+                case MiningFacilityUnitRequest:
+                case DefendPlatformUnitRequest:
+                    if (!TryReserveAndSpend(unitRequest)) return;
+                    break;
+                default:
+                    return;
+            }
+
+            _builds.Add(unitRequest, unitRequest.FactionData.BuildTime);
+        }
+
+        public void Tick() => Advance(Time.deltaTime);
+
+        public void Advance(float deltaTime) => _builds.Advance(deltaTime, ExecuteBuild);
+
+        /// <summary>Puts back a saved build: its reservation is taken again and it keeps its time left.</summary>
+        public void RestorePendingBuild(UnitRequest unitRequest, float timeLeft)
+        {
+            AdoptReservation(unitRequest);
+            _builds.Add(unitRequest, timeLeft);
+        }
+
+        /// <summary>Counts a restored unit against the limits again and frees its slot when it is gone.</summary>
+        public void AdoptShip(ShipEntity ship, ShipUnitRequest unitRequest)
+        {
+            AdoptReservation(unitRequest);
+            Track(ship, unitRequest);
+        }
+
+        public void AdoptSquadron(ISquadron squadron, SquadronUnitRequest unitRequest)
+        {
+            AdoptReservation(unitRequest);
+            Track(squadron, unitRequest);
+        }
+
+        public void AdoptMiningFacility(MiningFacilityEntity facility, MiningFacilityUnitRequest unitRequest)
+        {
+            AdoptReservation(unitRequest);
+            Track(facility, unitRequest);
+        }
+
+        public void AdoptDefendPlatform(DefendPlatformEntity platform, DefendPlatformUnitRequest unitRequest)
+        {
+            AdoptReservation(unitRequest);
+            Track(platform, unitRequest);
+        }
+
+        private void AdoptReservation(UnitRequest unitRequest) =>
+            _unitLimitModel.Adopt(UnitLimitKey.From(unitRequest), unitRequest.FactionData.UnitCapacity);
+
+        private void Build(UnitRequest unitRequest)
+        {
+            switch (unitRequest)
+            {
+                case ResearchUnitRequest researchUnitRequest:
+                    _research.Complete(researchUnitRequest.Key);
+                    ReleaseUnit(researchUnitRequest);
+                    break;
+                case ShipUnitRequest shipUnitRequest:
+                    Track(_shipFactory.Create(Owner, shipUnitRequest.Key, GenerateShipCoordinates(shipUnitRequest.Key)),
+                        shipUnitRequest);
+                    break;
                 case SquadronUnitRequest squadronUnitRequest:
-                {
-                    if (!TryReserveAndSpend(squadronUnitRequest))
+                    if (!_squadronLauncher.TryLaunchFromStation(Owner, squadronUnitRequest.Key, out ISquadron squadron))
                     {
+                        // The station fell during the build, so no hangar can launch the squadron.
+                        ReleaseUnit(squadronUnitRequest);
+                        _wallet.Refund(squadronUnitRequest);
+                        Debug.Log(
+                            $"[EnemyAI:Production] {squadronUnitRequest.Id} not launched: " +
+                            "no living station. Purchase refunded.");
                         return;
                     }
 
-                    ScheduleBuild(squadronUnitRequest, () =>
-                        {
-                            if (!_squadronLauncher.TryLaunchFromStation(
-                                    Owner,
-                                    squadronUnitRequest.Key,
-                                    out ISquadron squadron))
-                            {
-                                // The station fell during the build, so no hangar can launch the squadron.
-                                ReleaseUnit(squadronUnitRequest);
-                                _wallet.Refund(squadronUnitRequest);
-                                Debug.Log(
-                                    $"[EnemyAI:Production] {squadronUnitRequest.Id} not launched: " +
-                                    "no living station. Purchase refunded.");
-                                return;
-                            }
-
-                            Action handler = null;
-                            handler = () =>
-                            {
-                                squadron.Released -= handler;
-                                ReleaseUnit(squadronUnitRequest);
-                            };
-                            squadron.Released += handler;
-                            _squadronCommander.Command(squadron, squadronUnitRequest.Key);
-                        });
+                    Track(squadron, squadronUnitRequest);
                     break;
-                }
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
-                {
-                    if (!TryReserveAndSpend(miningFacilityUnitRequest))
-                    {
-                        return;
-                    }
-
-                    ScheduleBuild(miningFacilityUnitRequest, () =>
-                        {
-                            Vector3 position = GenerateMapCoordinates();
-                            MiningFacilityEntity facility = _miningFacilityFactory.Create(
-                                Owner,
-                                miningFacilityUnitRequest.Key,
-                                position);
-                            facility.OnRelease += () =>
-                            {
-                                _enemyStructurePlacementService.RecordDestroyedPosition(
-                                    facility.transform.position);
-                                ReleaseUnit(miningFacilityUnitRequest);
-                            };
-                        });
+                    Track(_miningFacilityFactory.Create(Owner, miningFacilityUnitRequest.Key, GenerateMapCoordinates()),
+                        miningFacilityUnitRequest);
                     break;
-                }
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
-                {
-                    if (!TryReserveAndSpend(defendPlatformUnitRequest))
-                    {
-                        return;
-                    }
-
-                    ScheduleBuild(defendPlatformUnitRequest, () =>
-                        {
-                            Vector3 position = GenerateMapCoordinates();
-                            DefendPlatformEntity platform = _defendPlatformFactory.Create(
-                                Owner,
-                                defendPlatformUnitRequest.Key,
-                                position);
-                            platform.OnRelease += () =>
-                            {
-                                _enemyStructurePlacementService.RecordDestroyedPosition(
-                                    platform.transform.position);
-                                ReleaseUnit(defendPlatformUnitRequest);
-                            };
-                        });
+                    Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, GenerateMapCoordinates()),
+                        defendPlatformUnitRequest);
                     break;
-                }
-
             }
         }
+
+        private void Track(ShipEntity ship, ShipUnitRequest unitRequest) =>
+            ship.OnRelease += _ => ReleaseUnit(unitRequest);
+
+        private void Track(ISquadron squadron, SquadronUnitRequest unitRequest)
+        {
+            Action handler = null;
+            handler = () =>
+            {
+                squadron.Released -= handler;
+                ReleaseUnit(unitRequest);
+            };
+            squadron.Released += handler;
+            _squadronCommander.Command(squadron, unitRequest.Key);
+        }
+
+        private void Track(MiningFacilityEntity facility, MiningFacilityUnitRequest unitRequest) =>
+            facility.OnRelease += () =>
+            {
+                _enemyStructurePlacementService.RecordDestroyedPosition(facility.transform.position);
+                ReleaseUnit(unitRequest);
+            };
+
+        private void Track(DefendPlatformEntity platform, DefendPlatformUnitRequest unitRequest) =>
+            platform.OnRelease += () =>
+            {
+                _enemyStructurePlacementService.RecordDestroyedPosition(platform.transform.position);
+                ReleaseUnit(unitRequest);
+            };
 
         private bool TryReserveAndSpend(UnitRequest unitRequest)
         {
@@ -305,16 +307,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 unitRequest.FactionData.UnitCapacity);
         }
 
-        private void ScheduleBuild(UnitRequest unitRequest, Action buildAction)
-        {
-            CustomCoroutine pendingBuild = _timerPoolService.Invoke(
-                () => ExecuteBuild(unitRequest, buildAction),
-                unitRequest.FactionData.BuildTime);
-            _pendingBuilds.Add(pendingBuild, unitRequest);
-            pendingBuild.OnFinished += HandleBuildFinished;
-        }
-
-        private void ExecuteBuild(UnitRequest unitRequest, Action buildAction)
+        private void ExecuteBuild(UnitRequest unitRequest)
         {
             if (_productionAccess.ProductionHost != Owner && !_productionAccess.CanProduce)
             {
@@ -330,7 +323,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 using (BattleProfilerMarkers.EnemyBuild.Auto())
 #endif
                 {
-                    buildAction();
+                    Build(unitRequest);
                 }
             }
             catch (Exception exception)
@@ -348,27 +341,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
         }
 
-        private void HandleBuildFinished(CustomCoroutine pendingBuild)
-        {
-            pendingBuild.OnFinished -= HandleBuildFinished;
-            _pendingBuilds.Remove(pendingBuild);
-        }
-
         private void CancelPendingBuilds()
         {
-            foreach (KeyValuePair<CustomCoroutine, UnitRequest> pendingBuild
-                     in _pendingBuilds)
+            foreach (EnemyPendingBuild pendingBuild in _builds.Builds)
             {
-                pendingBuild.Key.OnFinished -= HandleBuildFinished;
-                pendingBuild.Key.Release();
-                if (pendingBuild.Value is ShipUnitRequest)
+                if (pendingBuild.Request is ShipUnitRequest)
                 {
                     _unitLimitModel.CancelShipOrder();
                 }
-                ReleaseUnit(pendingBuild.Value);
+                ReleaseUnit(pendingBuild.Request);
             }
 
-            _pendingBuilds.Clear();
+            _builds.Clear();
         }
 
         private Vector3 GenerateShipCoordinates(ShipType shipType)

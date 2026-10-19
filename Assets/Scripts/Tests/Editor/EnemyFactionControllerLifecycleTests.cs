@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.Players;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -21,7 +20,6 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -49,8 +47,6 @@ namespace EmpireAtWar.Tests.Editor
                     nameof(ReinforcementData.MaxUnitCapacity),
                     10);
 
-                TimerPoolService timerPool =
-                    new TimerPoolService();
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingEconomyProvider economyProvider =
                     new TrackingEconomyProvider();
@@ -59,7 +55,6 @@ namespace EmpireAtWar.Tests.Editor
                     shipFactory: null,
                     miningFacilityFactory: null,
                     defendPlatformFactory: null,
-                    timerPoolService: timerPool,
                     research: null,
                     economyProvider: economyProvider,
                     wallet: new TrackingWallet(),
@@ -77,14 +72,15 @@ namespace EmpireAtWar.Tests.Editor
                 controller.Purchase(
                     new ShipUnitRequest(factionData, ShipType.Venator));
 
-                Assert.That(GetActiveTimerCount(timerPool), Is.EqualTo(1));
+                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
+                Assert.That(controller.PendingBuilds[0].TimeLeft, Is.EqualTo(10f));
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.EqualTo(1));
                 Assert.That(unitLimitModel.ShipOrdersCount, Is.EqualTo(1));
 
                 controller.LateDispose();
                 controller.LateDispose();
 
-                Assert.That(GetActiveTimerCount(timerPool), Is.Zero);
+                Assert.That(controller.PendingBuilds, Is.Empty);
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.Zero);
                 Assert.That(unitLimitModel.ShipOrdersCount, Is.Zero);
                 Assert.That(economyProvider.RemoveCount, Is.EqualTo(1));
@@ -114,8 +110,6 @@ namespace EmpireAtWar.Tests.Editor
                     nameof(ReinforcementData.MaxUnitCapacity),
                     10);
 
-                TimerPoolService timerPool =
-                    new TimerPoolService();
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingWallet wallet = new TrackingWallet();
                 EnemyFactionController controller = new EnemyFactionController(
@@ -123,7 +117,6 @@ namespace EmpireAtWar.Tests.Editor
                     shipFactory: null,
                     miningFacilityFactory: null,
                     defendPlatformFactory: null,
-                    timerPoolService: timerPool,
                     research: null,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: wallet,
@@ -138,37 +131,27 @@ namespace EmpireAtWar.Tests.Editor
                     playerRegistry: new PlayerRegistry());
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
-                UnitLimitKey unitId = UnitLimitKey.From(request);
-                Assert.That(
-                    unitLimitModel.TryReserve(unitId, 1, 1, 10),
-                    Is.True);
-                unitLimitModel.RecordShipOrder();
+                Regex failure = new Regex(
+                    @"^\[EnemyAI:Production\] Build failed for " +
+                    @"ShipUnitRequest \(Venator\)\. Purchase refunded\.");
 
-                LogAssert.Expect(
-                    LogType.Error,
-                    new Regex(
-                        @"^\[EnemyAI:Production\] Build failed for " +
-                        @"ShipUnitRequest \(Venator\)\. Purchase refunded\."));
-                ScheduleBuild(
-                    controller,
-                    request,
-                    () => throw new InvalidOperationException("build failure"));
-                GetOnlyActiveTimer(timerPool).Release(true);
+                controller.Purchase(request);
+                LogAssert.Expect(LogType.Error, failure);
+                controller.Advance(10f);
 
                 Assert.That(wallet.RefundCount, Is.EqualTo(1));
                 Assert.That(unitLimitModel.ShipOrdersCount, Is.Zero);
                 Assert.That(wallet.LastRefunded, Is.SameAs(request));
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.Zero);
-                Assert.That(GetActiveTimerCount(timerPool), Is.Zero);
-                Assert.That(GetPendingBuildCount(controller), Is.Zero);
+                Assert.That(controller.PendingBuilds, Is.Empty);
 
-                bool laterBuildExecuted = false;
-                ScheduleBuild(controller, request, () => laterBuildExecuted = true);
-                GetOnlyActiveTimer(timerPool).Release(true);
+                controller.Purchase(request);
+                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1), "A failed build must not block the next purchase.");
+                LogAssert.Expect(LogType.Error, failure);
+                controller.Advance(10f);
 
-                Assert.That(laterBuildExecuted, Is.True);
-                Assert.That(GetActiveTimerCount(timerPool), Is.Zero);
-                Assert.That(GetPendingBuildCount(controller), Is.Zero);
+                Assert.That(wallet.RefundCount, Is.EqualTo(2));
+                Assert.That(controller.PendingBuilds, Is.Empty);
             }
             finally
             {
@@ -190,14 +173,12 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 10);
-                TimerPoolService timerPool = new TimerPoolService();
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 EnemyFactionController controller = new EnemyFactionController(
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
                     defendPlatformFactory: null,
-                    timerPoolService: timerPool,
                     research: research,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: new TrackingWallet(),
@@ -218,7 +199,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(unitLimitModel.GetReservedCount(UnitLimitKey.From(request)), Is.EqualTo(1));
                 Assert.That(research.GetCompletedTiers(ResearchType.IncreasedProduction), Is.Zero);
 
-                GetOnlyActiveTimer(timerPool).Release(true);
+                controller.Advance(tier.FactionData.BuildTime);
 
                 Assert.That(research.GetCompletedTiers(ResearchType.IncreasedProduction), Is.EqualTo(1));
                 Assert.That(research.IncomeMultiplier, Is.GreaterThan(1f));
@@ -243,7 +224,6 @@ namespace EmpireAtWar.Tests.Editor
                 shipFactory: null,
                 miningFacilityFactory: null,
                 defendPlatformFactory: null,
-                timerPoolService: new TimerPoolService(),
                 research: null,
                 economyProvider: new TrackingEconomyProvider(),
                 wallet: null,
@@ -285,10 +265,10 @@ namespace EmpireAtWar.Tests.Editor
                 SetBackingField(faction, nameof(FactionData.BuildTime), 10);
                 SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
                 var access = new OperationalProductionAccess { ProductionHost = TestPlayers.Human };
-                var timers = new TimerPoolService(); var wallet = new TrackingWallet();
+                var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel(); var model = new EnemyFactionModel(null, null);
                 var controller = new EnemyFactionController(model: model, shipFactory: null,
-                    miningFacilityFactory: null, defendPlatformFactory: null, timerPoolService: timers, research: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
@@ -299,7 +279,7 @@ namespace EmpireAtWar.Tests.Editor
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
                 Assert.That(wallet.SpendCount, Is.EqualTo(1));
                 access.CanProduce = false;
-                GetOnlyActiveTimer(timers).Release(true);
+                controller.Advance(10f);
                 Assert.That(wallet.RefundCount, Is.EqualTo(1));
                 Assert.That(limits.CurrentUnitCapacity, Is.Zero);
                 Assert.That(limits.ShipOrdersCount, Is.Zero);
@@ -318,62 +298,6 @@ namespace EmpireAtWar.Tests.Editor
                 PRIVATE_INSTANCE);
             Assert.That(field, Is.Not.Null);
             field.SetValue(target, value);
-        }
-
-        private static int GetActiveTimerCount(
-            TimerPoolService timerPoolService)
-        {
-            return GetActiveTimers(timerPoolService).Count;
-        }
-
-        private static ICollection GetActiveTimers(
-            TimerPoolService timerPoolService)
-        {
-            FieldInfo activeTimersField = typeof(TimerPoolService).GetField(
-                "customCoroutines",
-                PRIVATE_INSTANCE);
-            Assert.That(activeTimersField, Is.Not.Null);
-            ICollection activeTimers =
-                activeTimersField.GetValue(timerPoolService) as ICollection;
-            Assert.That(activeTimers, Is.Not.Null);
-            return activeTimers;
-        }
-
-        private static CustomCoroutine GetOnlyActiveTimer(
-            TimerPoolService timerPoolService)
-        {
-            ICollection activeTimers = GetActiveTimers(timerPoolService);
-            Assert.That(activeTimers.Count, Is.EqualTo(1));
-            foreach (object activeTimer in activeTimers)
-            {
-                return (CustomCoroutine)activeTimer;
-            }
-
-            throw new InvalidOperationException("Expected one active timer.");
-        }
-
-        private static void ScheduleBuild(
-            EnemyFactionController controller,
-            UnitRequest request,
-            Action buildAction)
-        {
-            MethodInfo method = typeof(EnemyFactionController).GetMethod(
-                "ScheduleBuild",
-                PRIVATE_INSTANCE);
-            Assert.That(method, Is.Not.Null);
-            method.Invoke(controller, new object[] { request, buildAction });
-        }
-
-        private static int GetPendingBuildCount(
-            EnemyFactionController controller)
-        {
-            FieldInfo field = typeof(EnemyFactionController).GetField(
-                "_pendingBuilds",
-                PRIVATE_INSTANCE);
-            Assert.That(field, Is.Not.Null);
-            ICollection pendingBuilds = field.GetValue(controller) as ICollection;
-            Assert.That(pendingBuilds, Is.Not.Null);
-            return pendingBuilds.Count;
         }
 
         private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService

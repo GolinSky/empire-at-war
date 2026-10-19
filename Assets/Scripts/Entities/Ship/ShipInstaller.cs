@@ -24,14 +24,20 @@ namespace EmpireAtWar.Ship
     public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipData>
     {
         private readonly ShipType _shipType;
+        private readonly ShipSpawnPose _pose;
 
         public ShipInstaller(Ship view, ShipData data, ILocalPlayer localPlayer, PlayerId owner,
-            long entityId, Vector3 position, ShipType shipType)
-            : base(view, data, localPlayer, owner, entityId, position) => _shipType = shipType;
+            long entityId, Vector3 position, ShipType shipType, ShipSpawnPose pose)
+            : base(view, data, localPlayer, owner, entityId, position)
+        {
+            _shipType = shipType;
+            _pose = pose;
+        }
 
         protected override void InstallFeatures(IContainerBuilder builder)
         {
             builder.RegisterInstance(_shipType);
+            builder.RegisterInstance(_pose);
             builder.RegisterInstance(Data).AsSelf().As<IShipData, IShipMoveData, IRadarData, IHangarData>();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
@@ -56,6 +62,7 @@ namespace EmpireAtWar.Ship
             builder.Register<ShipOrderFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipDestroyFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ShipSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<UnitTypeFacade>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter("unitTypeId", UnitTypeId.Ship(_shipType));
         }

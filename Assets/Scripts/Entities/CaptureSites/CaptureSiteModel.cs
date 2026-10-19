@@ -105,6 +105,19 @@ namespace EmpireAtWar.Entities.CaptureSites
             return true;
         }
 
+        /// <summary>Loads a saved site; contested flags are recomputed on the next capture tick.</summary>
+        public void Restore(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer, float captureProgress,
+            SiteFacilityType facilityType, float constructionProgress, float buildDuration)
+        {
+            Owner = owner;
+            State = state;
+            CapturingPlayer = capturingPlayer;
+            CaptureProgress = captureProgress;
+            FacilityType = facilityType;
+            ConstructionProgress = constructionProgress;
+            _buildDuration = buildDuration;
+        }
+
         public void ReleaseFacility()
         {
             Owner = PlayerId.None;

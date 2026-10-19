@@ -31,6 +31,7 @@ namespace EmpireAtWar.Models.Reinforcement
         private readonly Dictionary<ShipType, FactionData> _shipFactionData = new();
         private readonly Dictionary<SquadronType, FactionData> _squadronFactionData = new();
         private readonly Dictionary<UnitLimitKey, int> _reserveCounts = new();
+        private readonly Dictionary<UnitLimitKey, UnitRequest> _reserveRequests = new();
 
         private int _currentUnitCapacity;
 
@@ -114,7 +115,18 @@ namespace EmpireAtWar.Models.Reinforcement
         {
             UnitLimitKey key = UnitLimitKey.From(unitRequest);
             _reserveCounts[key] = GetReserveCount(unitRequest) + 1;
+            _reserveRequests[key] = unitRequest;
             OnReinforcementAdded?.Invoke(unitRequest);
+        }
+
+        /// <summary>Each kind of built unit waiting to be placed, with how many are waiting.</summary>
+        public IEnumerable<KeyValuePair<UnitRequest, int>> Reserve
+        {
+            get
+            {
+                foreach (KeyValuePair<UnitLimitKey, int> entry in _reserveCounts)
+                    yield return new KeyValuePair<UnitRequest, int>(_reserveRequests[entry.Key], entry.Value);
+            }
         }
 
         public int GetReserveCount(UnitRequest request) =>
@@ -124,7 +136,11 @@ namespace EmpireAtWar.Models.Reinforcement
         {
             UnitLimitKey key = UnitLimitKey.From(request);
             int remaining = _reserveCounts[key] - 1;
-            if (remaining == 0) _reserveCounts.Remove(key);
+            if (remaining == 0)
+            {
+                _reserveCounts.Remove(key);
+                _reserveRequests.Remove(key);
+            }
             else _reserveCounts[key] = remaining;
         }
     }

@@ -8,6 +8,8 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
 using VContainer;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar
 {
@@ -26,6 +28,8 @@ namespace EmpireAtWar
             builder.RegisterInstance(_type);
             builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
             builder.Register<DefendPlatformTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter("kind", StructureKind.DefendPlatform).WithParameter("type", (int)_type);
             if (isProductionBase) builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.DefendPlatform,
                 isProductionBase ? SelectionType.Base : SelectionType.DefendPlatform);

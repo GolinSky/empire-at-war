@@ -758,7 +758,7 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
                 recordingShipNavigationService, new IgnoredSpawnClearance(), null, null, null, model, null,
-                ShipType.Arquitens, Vector3.zero, TestPlayers.Human });
+                ShipType.Arquitens, Vector3.zero, TestPlayers.Human, ShipSpawnPose.Hyperspace });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
             Assert.That(motionType, Is.Not.Null);

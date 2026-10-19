@@ -86,5 +86,31 @@ namespace EmpireAtWar.Tests.Editor
             model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, playerShips, 1 - playerShips));
             return model;
         }
+
+        [Test]
+        public void Restore_ConstructingSite_FinishesOnItsSavedProgress()
+        {
+            CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
+
+            model.Restore(TestPlayers.Human, CaptureSiteState.Constructing, PlayerId.None, 0f,
+                SiteFacilityType.BattleAsteroid, 0.75f, 20f);
+
+            Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
+            Assert.That(model.FacilityType, Is.EqualTo(SiteFacilityType.BattleAsteroid));
+            Assert.That(model.TickConstruction(4f), Is.False);
+            Assert.That(model.TickConstruction(1f), Is.True, "A quarter of a 20 s build is left.");
+            Assert.That(model.State, Is.EqualTo(CaptureSiteState.Operational));
+        }
+
+        [Test]
+        public void Restore_CaptureInProgress_ContinuesForTheSameTeam()
+        {
+            CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
+
+            model.Restore(PlayerId.None, CaptureSiteState.Neutral, TestPlayers.Human, 0.5f, SiteFacilityType.Mining, 0f, 0f);
+
+            Assert.That(model.TickCapture(CAPTURE_DURATION / 2f, TestPlayers.DuelTally(ROSTER, 1, 0)), Is.True);
+            Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
+        }
     }
 }

@@ -54,6 +54,15 @@ namespace EmpireAtWar.Entities.SuperWeapons
             _cooldownLeft[type] = COOLDOWN_DURATION;
         }
 
+        /// <summary>Loads a saved state and remaining cooldown for one weapon.</summary>
+        public void Restore(SuperWeaponType type, SuperWeaponState state, float cooldownLeft)
+        {
+            _states[type] = state;
+            if (cooldownLeft > 0f) _cooldownLeft[type] = cooldownLeft;
+            else _cooldownLeft.Remove(type);
+            OnStateChanged?.Invoke(type, state);
+        }
+
         public void Tick(float deltaTime)
         {
             _cooling.Clear();

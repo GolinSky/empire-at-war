@@ -8,6 +8,8 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         event Action Released;
 
+        long EntityId { get; }
+
         Vector3 WorldPosition { get; }
 
         void Guard(IEntity friendly, Vector3 offset);

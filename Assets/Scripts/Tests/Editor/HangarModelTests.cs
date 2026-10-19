@@ -118,6 +118,31 @@ namespace EmpireAtWar.Tests.Editor
         private static HangarModel CreateModel(int reserve, int maxActive) =>
             new HangarModel(new TestHangarData(new HangarBay(SquadronType.Delta7, reserve, maxActive)));
 
+        [Test]
+        public void Restore_LoadsReserveAndTimer_AdoptedSquadronsHoldTheirBay()
+        {
+            HangarModel model = CreateModel(reserve: 5, maxActive: 1);
+
+            model.Restore(new[] { 2 }, 1f);
+            model.AdoptLaunched(0);
+
+            Assert.That(model.GetReserve(0), Is.EqualTo(2));
+            Assert.That(model.Cooldown, Is.EqualTo(1f));
+            Assert.That(model.TryLaunch(1f, out _), Is.False, "The bay's one active slot is taken by the adopted squadron.");
+            model.SquadronLost(0);
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out int bay), Is.True);
+            Assert.That(bay, Is.EqualTo(0));
+            Assert.That(model.GetReserve(0), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Restore_BayCountMismatch_Throws()
+        {
+            HangarModel model = CreateModel(reserve: 5, maxActive: 1);
+
+            Assert.Throws<System.InvalidOperationException>(() => model.Restore(new[] { 1, 1 }, 0f));
+        }
+
         private sealed class TestHangarData : IHangarData
         {
             public IReadOnlyList<HangarBay> HangarBays { get; }

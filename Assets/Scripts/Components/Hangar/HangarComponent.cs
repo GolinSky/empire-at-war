@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Components.Hangar
     /// <see cref="Launch"/> launches extra squadrons outside the reserve.
     /// </summary>
     public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, IInitializable, ITickable,
-        ILateDisposable, IHangarLaunchEvents
+        ILateDisposable, IHangarLaunchEvents, IHangarSaveFacade
     {
         private IHangarData _data;
         private IHealthModelObserver _health;
@@ -31,8 +32,8 @@ namespace EmpireAtWar.Components.Hangar
         [SerializeField] private HardPoint[] bayHardPoints = Array.Empty<HardPoint>();
         [SerializeField] private Transform[] bayLaunchPoints = Array.Empty<Transform>();
         [SerializeField] private bool isDestroyable = true;
-        private readonly List<(ISquadron Squadron, Action Handler)> _launched =
-            new List<(ISquadron Squadron, Action Handler)>();
+        private readonly List<(ISquadron Squadron, int Bay, Action Handler)> _launched =
+            new List<(ISquadron Squadron, int Bay, Action Handler)>();
         private ISquadronSpawner _squadronSpawner;
         private ISquadronLaunchSlots _launchSlots;
 
@@ -128,7 +129,7 @@ namespace EmpireAtWar.Components.Hangar
                 _hangarUnits.Clear();
             }
             Model.Shutdown();
-            foreach ((ISquadron squadron, Action handler) in _launched)
+            foreach ((ISquadron squadron, int _, Action handler) in _launched)
             {
                 squadron.Released -= handler;
             }
@@ -137,6 +138,28 @@ namespace EmpireAtWar.Components.Hangar
         }
 
         public ISquadron Launch(SquadronType squadronType) => Launch(squadronType, launchPoint);
+
+        public HangarSave Capture()
+        {
+            int[] reserve = new int[Model.BayCount];
+            for (int i = 0; i < reserve.Length; i++) reserve[i] = Model.GetReserve(i);
+            LaunchedSquadronSave[] launched = new LaunchedSquadronSave[_launched.Count];
+            for (int i = 0; i < launched.Length; i++)
+                launched[i] = LaunchedSquadronSave.Create(_launched[i].Squadron.EntityId, _launched[i].Bay);
+            return HangarSave.Create(reserve, Model.Cooldown, launched);
+        }
+
+        /// <summary>Loads reserves and the launch timer, then takes back each launched squadron that was restored.</summary>
+        public void Restore(HangarSave save, IReadOnlyDictionary<long, Squadron> squadrons)
+        {
+            Model.Restore(save.Reserve, save.Cooldown);
+            foreach (LaunchedSquadronSave launched in save.Launched)
+            {
+                if (!squadrons.TryGetValue(launched.SquadronId, out Squadron squadron)) continue;
+                Model.AdoptLaunched(launched.Bay);
+                Track(squadron, launched.Bay);
+            }
+        }
 
         public bool CanLaunchReplacement => !_isReleased && _launchSlots.IsAvailable && Model.CanLaunchReplacement;
 
@@ -181,16 +204,21 @@ namespace EmpireAtWar.Components.Hangar
         private void LaunchFromBay(int bay)
         {
             Transform point = bayLaunchPoints.Length == 0 ? launchPoint : bayLaunchPoints[bay];
-            ISquadron squadron = Launch(_data.HangarBays[bay].SquadronType, point);
+            Track(Launch(_data.HangarBays[bay].SquadronType, point), bay);
+        }
+
+        // Losing a bay's squadron frees the bay for a replacement.
+        private void Track(ISquadron squadron, int bay)
+        {
             Action handler = null;
             handler = () =>
             {
                 squadron.Released -= handler;
-                _launched.Remove((squadron, handler));
+                _launched.Remove((squadron, bay, handler));
                 Model.SquadronLost(bay);
             };
             squadron.Released += handler;
-            _launched.Add((squadron, handler));
+            _launched.Add((squadron, bay, handler));
         }
     }
 }

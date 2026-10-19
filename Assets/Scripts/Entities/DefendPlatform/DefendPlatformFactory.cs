@@ -21,7 +21,11 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _ids = ids;
         }
 
-        public virtual DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position)
+        public virtual DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position) =>
+            Create(owner, type, position, _ids.GenerateUniqueId());
+
+        /// <summary>Creates a platform with a known id, e.g. one restored from a save.</summary>
+        public DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, long entityId)
         {
             string dataPath = type switch
             {
@@ -36,7 +40,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
                 _ => "DefendPlatformView",
             };
             DefendPlatformData data = Assets.Load<DefendPlatformData>(AssetPrefix + dataPath);
-            long entityId = _ids.GenerateUniqueId();
             return Spawn(Assets.LoadComponent<DefendPlatform>(AssetPrefix + prefabPath), position, Quaternion.identity,
                 (builder, view) => new DefendPlatformInstaller(view, data, _localPlayer, owner, entityId, position, type).Install(builder));
         }

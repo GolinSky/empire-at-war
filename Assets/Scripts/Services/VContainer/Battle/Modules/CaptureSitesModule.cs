@@ -4,6 +4,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Saves;
 using global::VContainer;
 using global::VContainer.Unity;
 using UnityEngine;
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterComponent(_sites).AsImplementedInterfaces().AsSelf();
             builder.Register<CaptureSiteMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CaptureSiteBuildUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<CaptureSitesSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
         }
 
         public void ConfigureDisabled(IContainerBuilder builder)

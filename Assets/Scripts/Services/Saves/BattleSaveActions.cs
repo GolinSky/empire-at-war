@@ -1,0 +1,65 @@
+using System;
+using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Entities.Game;
+using UnityEngine;
+
+namespace EmpireAtWar.Services.Saves
+{
+    public sealed class BattleSaveActions
+    {
+        private readonly BattleSaveService _saves;
+        private readonly IBattleSaveRepository _repository;
+        private readonly IGameCommand _game;
+        private readonly BattleDefinition _battle;
+
+        public event Action<string> StatusChanged;
+        public string Status { get; private set; } = "";
+        public bool IsSupported => _battle.Outcome != OutcomeRule.Simulation;
+        public bool CanSave => _saves.CanSave;
+
+        public BattleSaveActions(BattleSaveService saves, IBattleSaveRepository repository,
+            IGameCommand game, BattleDefinition battle)
+        {
+            _saves = saves;
+            _repository = repository;
+            _game = game;
+            _battle = battle;
+        }
+
+        public void SaveNamed(string name)
+        {
+            try { Save(BattleSaveSlot.Named(name)); }
+            catch (ArgumentException exception) { SetStatus(exception.Message); }
+        }
+
+        public async void Save(BattleSaveSlot slot)
+        {
+            try
+            {
+                SetStatus($"Saving {slot.Name}...");
+                await _saves.SaveAsync(slot);
+                SetStatus($"Saved {slot.Name}.");
+            }
+            catch (Exception exception)
+            {
+                SetStatus($"Save failed: {exception.Message}");
+            }
+        }
+
+        public void QuickLoad()
+        {
+            try
+            {
+                if (!CanSave) throw new InvalidOperationException("Loading is unavailable while the battle is loading, ended, or saving.");
+                _game.LoadBattle(_repository.Load(_battle.Mode, BattleSaveSlot.Quicksave));
+            }
+            catch (Exception exception) { SetStatus($"Load failed: {exception.Message}"); }
+        }
+
+        private void SetStatus(string status)
+        {
+            Status = status;
+            if (StatusChanged != null) StatusChanged(status);
+        }
+    }
+}

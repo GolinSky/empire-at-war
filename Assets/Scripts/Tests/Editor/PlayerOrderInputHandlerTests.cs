@@ -199,6 +199,7 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 CameraForward => Vector3.forward;
             public float FieldOfView => 60f;
             public UnityEngine.Camera SceneCamera => null;
+            public float ZoomTargetHeight => 0f;
 
             public Vector3 GetWorldPoint(Vector2 point, Vector3 origin)
             {
@@ -219,6 +220,7 @@ namespace EmpireAtWar.Tests.Editor
             public void MoveTo(Vector3 point) { }
 
             public void SetPose(Vector3 position, Quaternion rotation) { }
+            public void RestorePose(Vector3 position, Quaternion rotation, float zoomTargetHeight) { }
 
             public void SetCullingMask(LayerMask mask) { }
         }

@@ -71,7 +71,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var builder = SkirmishPreset.Create(SkirmishPreset.Default().Slots,
                 EmpireAtWar.Entities.Planet.PlanetType.Coruscant, MapSize.Small,
-                BattleVictoryCondition.DestroyEnemyFleet, 1000);
+                BattleVictoryCondition.DestroyEnemyFleet, 1000, true, 0);
             BattleDefinition definition = builder.Build();
             builder.Players.Clear();
             Assert.That(definition.Players.Count, Is.EqualTo(2));

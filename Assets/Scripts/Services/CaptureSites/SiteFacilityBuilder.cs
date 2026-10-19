@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Services.IdGeneration;
 using UnityEngine;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private readonly EconomyModel _economyModel;
         private readonly AsteroidMiningFacilityFactory _miningFacilityFactory;
         private readonly AsteroidDefendPlatformFactory _battleAsteroidFactory;
+        private readonly IUniqueIdGenerator _ids;
 
         private readonly PlayerId _owner;
 
@@ -29,8 +31,10 @@ namespace EmpireAtWar.Services.CaptureSites
             PlayerSlot owner,
             EconomyModel economyModel,
             AsteroidMiningFacilityFactory miningFacilityFactory,
-            AsteroidDefendPlatformFactory battleAsteroidFactory)
+            AsteroidDefendPlatformFactory battleAsteroidFactory,
+            IUniqueIdGenerator ids)
         {
+            _ids = ids;
             _owner = owner.Id;
             _playerRegistry = playerRegistry;
             _economyModel = economyModel;
@@ -58,23 +62,26 @@ namespace EmpireAtWar.Services.CaptureSites
             return _economyModel.TrySpend(price);
         }
 
-        public void Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed)
+        public long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed)
         {
+            long entityId = _ids.GenerateUniqueId();
             switch (facilityType)
             {
                 case SiteFacilityType.Mining:
                     MiningFacilityEntity facility = _miningFacilityFactory.Create(
-                        _owner, MiningFacilityType.AsteroidMiner, position);
+                        _owner, MiningFacilityType.AsteroidMiner, position, entityId);
                     facility.OnRelease += onDestroyed;
                     break;
                 case SiteFacilityType.BattleAsteroid:
                     DefendPlatformEntity battleAsteroid = _battleAsteroidFactory.Create(
-                        _owner, DefendPlatformType.BattleAsteroid, position);
+                        _owner, DefendPlatformType.BattleAsteroid, position, entityId);
                     battleAsteroid.OnRelease += onDestroyed;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(facilityType), facilityType, null);
             }
+
+            return entityId;
         }
     }
 }

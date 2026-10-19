@@ -9,6 +9,8 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
 using VContainer;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.Saves;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.SpaceStation
@@ -30,6 +32,8 @@ namespace EmpireAtWar.SpaceStation
             builder.Register<PlayerBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationFootprintFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter("kind", StructureKind.SpaceStation).WithParameter("type", (int)_factionType);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Base, SelectionType.Base);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);

@@ -9,7 +9,7 @@
 - Unity order: `BuildArt.cs` → `BuildShip.cs` → `Render.cs` → `Register.cs` → `Verify.cs`. Invoke with `unity command run_script --file <path> --entry <Class>.Main --timeout_ms 60000 --json`; inspect nested `result.success`.
 - Construction/registration/rendering require Edit Mode and reject active or pending Play Mode. Read-only saved-asset verification does not start Play Mode.
 - `BuildArt.cs`: scale `0.02`, no vertex welding/compression, source visibility, own materials, eight mounted turrets; centered length `40` project units, bow `+Z`, up `+Y`.
-- `BuildShip.cs`: hull-only targeting, eight weapon bindings, own fitted shield, opaque-hull placement and shader-breaking wreck. `Render.cs`: actual-model icons, placement, eight live/wreck team palettes in isolated preview scenes.
+- `BuildShip.cs`: eight targetable weapon hardpoints (`ShipUnits`, weapon health `250`, overriding source `Is_Targetable=No`), own fitted shield, opaque-hull placement and shader-breaking wreck. `Render.cs`: actual-model icons, placement, eight live/wreck team palettes in isolated preview scenes.
 - `VerifyGeometry.py` compares source/FBX vertex positions and UV corners. Capture `GEOMETRY_JSON` as `GeometryVerification.json`.
 - `Package.py`: assert original hashes, inspect preview bounds/team response and retain blends/FBXs/textures/evidence in `output/aotr-empire-units/ArquitensImperialCruiser-Converted/`.
 - IDs: ship `204`; light long-range turbolaser `39`; burst laser `40`; source-specific Boost Weapon Power `23`. Existing Republic Arquitens remains separate.

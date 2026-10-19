@@ -135,6 +135,41 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.HasUnits, Is.True);
         }
 
+        [Test]
+        public void Restore_AppliesSavedFractions()
+        {
+            HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out HardPointModel engine,
+                out HardPointModel shieldGenerator);
+
+            model.Restore(0.25f, 0.5f, new[] { 0.5f, 0f, 1f });
+
+            Assert.That(model.Hull, Is.EqualTo(HULL * 0.25f));
+            Assert.That(model.Shields, Is.EqualTo(SHIELDS * 0.5f));
+            Assert.That(weapon.Health, Is.EqualTo(50f));
+            Assert.That(engine.IsDestroyed, Is.True);
+            Assert.That(shieldGenerator.Health, Is.EqualTo(150f));
+            Assert.That(model.IsLostShieldGenerator, Is.False);
+        }
+
+        [Test]
+        public void Restore_DestroyedShieldGeneratorDropsShields()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+
+            model.Restore(1f, 1f, new[] { 1f, 1f, 0f });
+
+            Assert.That(model.IsLostShieldGenerator, Is.True);
+            Assert.That(model.Shields, Is.Zero);
+        }
+
+        [Test]
+        public void Restore_HardPointCountMismatch_Throws()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+
+            Assert.Throws<InvalidOperationException>(() => model.Restore(1f, 1f, new[] { 1f }));
+        }
+
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,
             out HardPointModel shieldGenerator)
         {

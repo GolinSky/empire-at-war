@@ -30,6 +30,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(menuPanel.activeSelf, Is.False);
                 Assert.That(menuPanel.GetComponent<Canvas>(), Is.Null);
                 Assert.That(menuPanel.GetComponent<MPImage>(), Is.Not.Null);
+                foreach (string field in new[] { "savePanel", "saveName", "saveButton", "quickSaveButton", "quickLoadButton", "saveStatus" })
+                    Assert.That(serializedMenuUi.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
                 Assert.That(root.transform.Find("RoundButtonCyan"), Is.Null);
 
                 AssertCompactProceduralButton(menuPanel.transform, "ResumeButton");

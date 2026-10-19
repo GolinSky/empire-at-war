@@ -39,6 +39,24 @@ public static class VerifyEditorHub
         }
         var selected = tools.First(tool => tool.Category == "Units");
         EditorHubWindow.OpenTool(selected.MenuPath);
+        foreach (float width in new[] { 1280f, 1600f })
+        {
+            hub.position = new Rect(40, 60, width, 820);
+            await Task.Delay(300);
+            VisualElement header = hub.rootVisualElement.Q("hub-header");
+            VisualElement search = hub.rootVisualElement.Q("hub-search");
+            VisualElement workspace = hub.rootVisualElement.Q("hub-content");
+            VisualElement card = hub.rootVisualElement.Q("hub-command-card");
+            Require(search.parent == header && search.worldBound.xMin > header.worldBound.center.x,
+                "Search must be in the top-right header.");
+            Require(search.worldBound.xMax <= header.worldBound.xMax && search.layout.width <= 240,
+                "Search overflowed its header.");
+            Require(workspace.layout.width > width * 0.7f, "Main content was squeezed into a side panel.");
+            Require(Math.Abs(card.worldBound.center.x - workspace.worldBound.center.x) < 1,
+                "Command details are not centered in the workspace.");
+            Require(card.worldBound.xMin >= workspace.worldBound.xMin && card.worldBound.xMax <= workspace.worldBound.xMax,
+                "Command details overflowed the workspace.");
+        }
         hub.rootVisualElement.Q<ToolbarSearchField>().value = "no-matching-editor-tool-123";
         Require(hub.rootVisualElement.Q<Label>("hub-empty").text == "No matching tools.", "Search did not filter.");
         hub.rootVisualElement.Q<ToolbarSearchField>().value = "";
@@ -69,6 +87,9 @@ public static class VerifyEditorHub
         await Task.Delay(700);
         VisualElement content = hub.rootVisualElement.Q("hub-content");
         Require(content.layout.width > 900 && content.layout.height > 400, "Hub content layout did not resolve.");
+        if (embedded != null)
+            Require(Math.Abs(content.layout.width - hub.rootVisualElement.layout.width) < 1,
+                "Embedded tool did not fill the central workspace.");
         return new { Status = "passed", Tools = tools.Count, LegacyActions = tools.Count(tool => tool.IsLegacy),
             Categories = tools.Select(tool => tool.Category).Distinct().ToArray(), EmbeddedBalance = embedded != null,
             ContentWidth = content.layout.width, ContentHeight = content.layout.height,

@@ -51,10 +51,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public BattleDefinition CreateBattle()
         {
-            BattleDefinitionBuilder builder = SkirmishPreset.Create(CreatePlayers(), Planet, MapSize,
-                VictoryCondition, StartingMoney);
-            if (!SuperWeapons) builder.Features &= ~BattleFeatures.SuperWeapons;
-            return builder.Build();
+            return SkirmishPreset.Create(CreatePlayers(), Planet, MapSize,
+                VictoryCondition, StartingMoney, SuperWeapons, SkirmishPreset.NewMapSeed()).Build();
         }
 
         /// <param name="occupant">Row 0 always stays the human; other rows pick Closed or an AI level.</param>

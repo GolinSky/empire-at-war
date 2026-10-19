@@ -76,87 +76,10 @@ namespace EmpireAtWar.Services.Input
     /// </example>
     public partial class @GameInputActions: IInputActionCollection2, IDisposable
     {
-        // Pointer
-        private readonly InputActionMap m_Pointer;
-        private List<IPointerActions> m_PointerActionsCallbackInterfaces = new List<IPointerActions>();
-        private readonly InputAction m_Pointer_Position;
-        private readonly InputAction m_Pointer_Primary;
-        private readonly InputAction m_Pointer_ClickCount;
-        // Camera
-        private readonly InputActionMap m_Camera;
-        private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
-        private readonly InputAction m_Camera_Move;
-        private readonly InputAction m_Camera_Zoom;
-        private readonly InputAction m_Camera_ZoomScroll;
-        private readonly InputAction m_Camera_DragPan;
-        private readonly InputAction m_Camera_DragDelta;
-        // Battle
-        private readonly InputActionMap m_Battle;
-        private List<IBattleActions> m_BattleActionsCallbackInterfaces = new List<IBattleActions>();
-        private readonly InputAction m_Battle_Select;
-        private readonly InputAction m_Battle_Command;
-        private readonly InputAction m_Battle_SelectVisible;
-        private readonly InputAction m_Battle_SelectAll;
-        private readonly InputAction m_Battle_QueueWaypoint;
-        // Ui
-        private readonly InputActionMap m_Ui;
-        private List<IUiActions> m_UiActionsCallbackInterfaces = new List<IUiActions>();
-        private readonly InputAction m_Ui_Cancel;
-
-        private int m_KeyboardMouseSchemeIndex = -1;
-
         /// <summary>
         /// Provides access to the underlying asset instance.
         /// </summary>
         public InputActionAsset asset { get; }
-
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.bindingMask" />
-        public InputBinding? bindingMask
-        {
-            get => asset.bindingMask;
-            set => asset.bindingMask = value;
-        }
-
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.devices" />
-        public ReadOnlyArray<InputDevice>? devices
-        {
-            get => asset.devices;
-            set => asset.devices = value;
-        }
-
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.controlSchemes" />
-        public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.bindings" />
-        public IEnumerable<InputBinding> bindings => asset.bindings;
-        /// <summary>
-        /// Provides a new <see cref="PointerActions" /> instance referencing this action map.
-        /// </summary>
-        public PointerActions @Pointer => new PointerActions(this);
-        /// <summary>
-        /// Provides a new <see cref="CameraActions" /> instance referencing this action map.
-        /// </summary>
-        public CameraActions @Camera => new CameraActions(this);
-        /// <summary>
-        /// Provides a new <see cref="BattleActions" /> instance referencing this action map.
-        /// </summary>
-        public BattleActions @Battle => new BattleActions(this);
-        /// <summary>
-        /// Provides a new <see cref="UiActions" /> instance referencing this action map.
-        /// </summary>
-        public UiActions @Ui => new UiActions(this);
-        /// <summary>
-        /// Provides access to the input control scheme.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputControlScheme" />
-        public InputControlScheme KeyboardMouseScheme
-        {
-            get
-            {
-                if (m_KeyboardMouseSchemeIndex == -1) m_KeyboardMouseSchemeIndex = asset.FindControlSchemeIndex("Keyboard&Mouse");
-                return asset.controlSchemes[m_KeyboardMouseSchemeIndex];
-            }
-        }
 
         /// <summary>
         /// Constructs a new instance.
@@ -545,6 +468,24 @@ namespace EmpireAtWar.Services.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSave"",
+                    ""type"": ""Button"",
+                    ""id"": ""bf05c706-aa76-4780-b614-6b08eb31ed23"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickLoad"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0532e43-8f90-40f1-b04c-e07c0c9ea70e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -657,6 +598,28 @@ namespace EmpireAtWar.Services.Input
                     ""action"": ""QueueWaypoint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8d81df4-3f4a-432a-8f5f-ed9534a695ab"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8a91c52-d030-4a76-b246-339b3032ff98"",
+                    ""path"": ""<Keyboard>/f9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickLoad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -727,9 +690,19 @@ namespace EmpireAtWar.Services.Input
             m_Battle_SelectVisible = m_Battle.FindAction("SelectVisible", throwIfNotFound: true);
             m_Battle_SelectAll = m_Battle.FindAction("SelectAll", throwIfNotFound: true);
             m_Battle_QueueWaypoint = m_Battle.FindAction("QueueWaypoint", throwIfNotFound: true);
+            m_Battle_QuickSave = m_Battle.FindAction("QuickSave", throwIfNotFound: true);
+            m_Battle_QuickLoad = m_Battle.FindAction("QuickLoad", throwIfNotFound: true);
             // Ui
             m_Ui = asset.FindActionMap("Ui", throwIfNotFound: true);
             m_Ui_Cancel = m_Ui.FindAction("Cancel", throwIfNotFound: true);
+        }
+
+        ~@GameInputActions()
+        {
+            UnityEngine.Debug.Assert(!m_Pointer.enabled, "This will cause a leak and performance issues, GameInputActions.Pointer.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Camera.enabled, "This will cause a leak and performance issues, GameInputActions.Camera.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Battle.enabled, "This will cause a leak and performance issues, GameInputActions.Battle.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Ui.enabled, "This will cause a leak and performance issues, GameInputActions.Ui.Disable() has not been called.");
         }
 
         /// <summary>
@@ -740,13 +713,22 @@ namespace EmpireAtWar.Services.Input
             UnityEngine.Object.Destroy(asset);
         }
 
-        ~@GameInputActions()
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.bindingMask" />
+        public InputBinding? bindingMask
         {
-            UnityEngine.Debug.Assert(!m_Pointer.enabled, "This will cause a leak and performance issues, GameInputActions.Pointer.Disable() has not been called.");
-            UnityEngine.Debug.Assert(!m_Camera.enabled, "This will cause a leak and performance issues, GameInputActions.Camera.Disable() has not been called.");
-            UnityEngine.Debug.Assert(!m_Battle.enabled, "This will cause a leak and performance issues, GameInputActions.Battle.Disable() has not been called.");
-            UnityEngine.Debug.Assert(!m_Ui.enabled, "This will cause a leak and performance issues, GameInputActions.Ui.Disable() has not been called.");
+            get => asset.bindingMask;
+            set => asset.bindingMask = value;
         }
+
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.devices" />
+        public ReadOnlyArray<InputDevice>? devices
+        {
+            get => asset.devices;
+            set => asset.devices = value;
+        }
+
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.controlSchemes" />
+        public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
 
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.Contains(InputAction)" />
         public bool Contains(InputAction action)
@@ -778,6 +760,9 @@ namespace EmpireAtWar.Services.Input
             asset.Disable();
         }
 
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.bindings" />
+        public IEnumerable<InputBinding> bindings => asset.bindings;
+
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionAsset.FindAction(string, bool)" />
         public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false)
         {
@@ -790,6 +775,12 @@ namespace EmpireAtWar.Services.Input
             return asset.FindBinding(bindingMask, out action);
         }
 
+        // Pointer
+        private readonly InputActionMap m_Pointer;
+        private List<IPointerActions> m_PointerActionsCallbackInterfaces = new List<IPointerActions>();
+        private readonly InputAction m_Pointer_Position;
+        private readonly InputAction m_Pointer_Primary;
+        private readonly InputAction m_Pointer_ClickCount;
         /// <summary>
         /// Provides access to input actions defined in input action map "Pointer".
         /// </summary>
@@ -797,6 +788,10 @@ namespace EmpireAtWar.Services.Input
         {
             private @GameInputActions m_Wrapper;
 
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public PointerActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
             /// <summary>
             /// Provides access to the underlying input action "Pointer/Position".
             /// </summary>
@@ -809,30 +804,20 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Pointer/ClickCount".
             /// </summary>
             public InputAction @ClickCount => m_Wrapper.m_Pointer_ClickCount;
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-            public bool enabled => Get().enabled;
-
-            /// <summary>
-            /// Construct a new instance of the input action map wrapper class.
-            /// </summary>
-            public PointerActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
-
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Pointer; }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
             public void Enable() { Get().Enable(); }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
             public void Disable() { Get().Disable(); }
-
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
             /// <summary>
             /// Implicitly converts an <see ref="PointerActions" /> to an <see ref="InputActionMap" /> instance.
             /// </summary>
             public static implicit operator InputActionMap(PointerActions set) { return set.Get(); }
-
             /// <summary>
             /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
             /// </summary>
@@ -903,7 +888,19 @@ namespace EmpireAtWar.Services.Input
                 AddCallbacks(instance);
             }
         }
+        /// <summary>
+        /// Provides a new <see cref="PointerActions" /> instance referencing this action map.
+        /// </summary>
+        public PointerActions @Pointer => new PointerActions(this);
 
+        // Camera
+        private readonly InputActionMap m_Camera;
+        private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
+        private readonly InputAction m_Camera_Move;
+        private readonly InputAction m_Camera_Zoom;
+        private readonly InputAction m_Camera_ZoomScroll;
+        private readonly InputAction m_Camera_DragPan;
+        private readonly InputAction m_Camera_DragDelta;
         /// <summary>
         /// Provides access to input actions defined in input action map "Camera".
         /// </summary>
@@ -911,6 +908,10 @@ namespace EmpireAtWar.Services.Input
         {
             private @GameInputActions m_Wrapper;
 
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public CameraActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
             /// <summary>
             /// Provides access to the underlying input action "Camera/Move".
             /// </summary>
@@ -931,30 +932,20 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Camera/DragDelta".
             /// </summary>
             public InputAction @DragDelta => m_Wrapper.m_Camera_DragDelta;
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-            public bool enabled => Get().enabled;
-
-            /// <summary>
-            /// Construct a new instance of the input action map wrapper class.
-            /// </summary>
-            public CameraActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
-
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Camera; }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
             public void Enable() { Get().Enable(); }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
             public void Disable() { Get().Disable(); }
-
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
             /// <summary>
             /// Implicitly converts an <see ref="CameraActions" /> to an <see ref="InputActionMap" /> instance.
             /// </summary>
             public static implicit operator InputActionMap(CameraActions set) { return set.Get(); }
-
             /// <summary>
             /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
             /// </summary>
@@ -1037,7 +1028,21 @@ namespace EmpireAtWar.Services.Input
                 AddCallbacks(instance);
             }
         }
+        /// <summary>
+        /// Provides a new <see cref="CameraActions" /> instance referencing this action map.
+        /// </summary>
+        public CameraActions @Camera => new CameraActions(this);
 
+        // Battle
+        private readonly InputActionMap m_Battle;
+        private List<IBattleActions> m_BattleActionsCallbackInterfaces = new List<IBattleActions>();
+        private readonly InputAction m_Battle_Select;
+        private readonly InputAction m_Battle_Command;
+        private readonly InputAction m_Battle_SelectVisible;
+        private readonly InputAction m_Battle_SelectAll;
+        private readonly InputAction m_Battle_QueueWaypoint;
+        private readonly InputAction m_Battle_QuickSave;
+        private readonly InputAction m_Battle_QuickLoad;
         /// <summary>
         /// Provides access to input actions defined in input action map "Battle".
         /// </summary>
@@ -1045,6 +1050,10 @@ namespace EmpireAtWar.Services.Input
         {
             private @GameInputActions m_Wrapper;
 
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public BattleActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
             /// <summary>
             /// Provides access to the underlying input action "Battle/Select".
             /// </summary>
@@ -1065,30 +1074,28 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Battle/QueueWaypoint".
             /// </summary>
             public InputAction @QueueWaypoint => m_Wrapper.m_Battle_QueueWaypoint;
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-            public bool enabled => Get().enabled;
-
             /// <summary>
-            /// Construct a new instance of the input action map wrapper class.
+            /// Provides access to the underlying input action "Battle/QuickSave".
             /// </summary>
-            public BattleActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
-
+            public InputAction @QuickSave => m_Wrapper.m_Battle_QuickSave;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/QuickLoad".
+            /// </summary>
+            public InputAction @QuickLoad => m_Wrapper.m_Battle_QuickLoad;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Battle; }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
             public void Enable() { Get().Enable(); }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
             public void Disable() { Get().Disable(); }
-
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
             /// <summary>
             /// Implicitly converts an <see ref="BattleActions" /> to an <see ref="InputActionMap" /> instance.
             /// </summary>
             public static implicit operator InputActionMap(BattleActions set) { return set.Get(); }
-
             /// <summary>
             /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
             /// </summary>
@@ -1116,6 +1123,12 @@ namespace EmpireAtWar.Services.Input
                 @QueueWaypoint.started += instance.OnQueueWaypoint;
                 @QueueWaypoint.performed += instance.OnQueueWaypoint;
                 @QueueWaypoint.canceled += instance.OnQueueWaypoint;
+                @QuickSave.started += instance.OnQuickSave;
+                @QuickSave.performed += instance.OnQuickSave;
+                @QuickSave.canceled += instance.OnQuickSave;
+                @QuickLoad.started += instance.OnQuickLoad;
+                @QuickLoad.performed += instance.OnQuickLoad;
+                @QuickLoad.canceled += instance.OnQuickLoad;
             }
 
             /// <summary>
@@ -1142,6 +1155,12 @@ namespace EmpireAtWar.Services.Input
                 @QueueWaypoint.started -= instance.OnQueueWaypoint;
                 @QueueWaypoint.performed -= instance.OnQueueWaypoint;
                 @QueueWaypoint.canceled -= instance.OnQueueWaypoint;
+                @QuickSave.started -= instance.OnQuickSave;
+                @QuickSave.performed -= instance.OnQuickSave;
+                @QuickSave.canceled -= instance.OnQuickSave;
+                @QuickLoad.started -= instance.OnQuickLoad;
+                @QuickLoad.performed -= instance.OnQuickLoad;
+                @QuickLoad.canceled -= instance.OnQuickLoad;
             }
 
             /// <summary>
@@ -1171,7 +1190,15 @@ namespace EmpireAtWar.Services.Input
                 AddCallbacks(instance);
             }
         }
+        /// <summary>
+        /// Provides a new <see cref="BattleActions" /> instance referencing this action map.
+        /// </summary>
+        public BattleActions @Battle => new BattleActions(this);
 
+        // Ui
+        private readonly InputActionMap m_Ui;
+        private List<IUiActions> m_UiActionsCallbackInterfaces = new List<IUiActions>();
+        private readonly InputAction m_Ui_Cancel;
         /// <summary>
         /// Provides access to input actions defined in input action map "Ui".
         /// </summary>
@@ -1180,33 +1207,27 @@ namespace EmpireAtWar.Services.Input
             private @GameInputActions m_Wrapper;
 
             /// <summary>
-            /// Provides access to the underlying input action "Ui/Cancel".
-            /// </summary>
-            public InputAction @Cancel => m_Wrapper.m_Ui_Cancel;
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-            public bool enabled => Get().enabled;
-
-            /// <summary>
             /// Construct a new instance of the input action map wrapper class.
             /// </summary>
             public UiActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
-
+            /// <summary>
+            /// Provides access to the underlying input action "Ui/Cancel".
+            /// </summary>
+            public InputAction @Cancel => m_Wrapper.m_Ui_Cancel;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Ui; }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
             public void Enable() { Get().Enable(); }
-
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
             public void Disable() { Get().Disable(); }
-
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
             /// <summary>
             /// Implicitly converts an <see ref="UiActions" /> to an <see ref="InputActionMap" /> instance.
             /// </summary>
             public static implicit operator InputActionMap(UiActions set) { return set.Get(); }
-
             /// <summary>
             /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
             /// </summary>
@@ -1265,7 +1286,23 @@ namespace EmpireAtWar.Services.Input
                 AddCallbacks(instance);
             }
         }
-
+        /// <summary>
+        /// Provides a new <see cref="UiActions" /> instance referencing this action map.
+        /// </summary>
+        public UiActions @Ui => new UiActions(this);
+        private int m_KeyboardMouseSchemeIndex = -1;
+        /// <summary>
+        /// Provides access to the input control scheme.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputControlScheme" />
+        public InputControlScheme KeyboardMouseScheme
+        {
+            get
+            {
+                if (m_KeyboardMouseSchemeIndex == -1) m_KeyboardMouseSchemeIndex = asset.FindControlSchemeIndex("Keyboard&Mouse");
+                return asset.controlSchemes[m_KeyboardMouseSchemeIndex];
+            }
+        }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Pointer" which allows adding and removing callbacks.
         /// </summary>
@@ -1280,7 +1317,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnPosition(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "Primary" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1288,7 +1324,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnPrimary(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "ClickCount" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1297,7 +1332,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnClickCount(InputAction.CallbackContext context);
         }
-
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Camera" which allows adding and removing callbacks.
         /// </summary>
@@ -1312,7 +1346,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnMove(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "Zoom" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1320,7 +1353,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnZoom(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "ZoomScroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1328,7 +1360,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnZoomScroll(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "DragPan" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1336,7 +1367,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDragPan(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "DragDelta" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1345,7 +1375,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDragDelta(InputAction.CallbackContext context);
         }
-
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Battle" which allows adding and removing callbacks.
         /// </summary>
@@ -1360,7 +1389,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSelect(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "Command" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1368,7 +1396,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnCommand(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "SelectVisible" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1376,7 +1403,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSelectVisible(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "SelectAll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1384,7 +1410,6 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSelectAll(InputAction.CallbackContext context);
-
             /// <summary>
             /// Method invoked when associated input action "QueueWaypoint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
@@ -1392,8 +1417,21 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnQueueWaypoint(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "QuickSave" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnQuickSave(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "QuickLoad" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnQuickLoad(InputAction.CallbackContext context);
         }
-
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ui" which allows adding and removing callbacks.
         /// </summary>

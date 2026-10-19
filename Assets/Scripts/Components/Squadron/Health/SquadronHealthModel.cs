@@ -69,6 +69,28 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public float GetMemberShields(int memberId) => _shields[memberId];
 
+        public float GetMemberShieldPercentage(int memberId)
+        {
+            float max = _data.MemberShields * _shieldsMultiplier;
+            return max <= 0f ? 0f : _shields[memberId] / max;
+        }
+
+        /// <summary>Applies saved fractions of each fighter's hull and shields; a fighter at zero hull stays dead.</summary>
+        public void Restore(IReadOnlyList<float> memberHull, IReadOnlyList<float> memberShields)
+        {
+            if (memberHull.Count != Members.Length || memberShields.Count != Members.Length)
+                throw new InvalidOperationException(
+                    $"Saved {memberHull.Count} fighters; the squadron has {Members.Length}.");
+            for (int i = 0; i < Members.Length; i++)
+            {
+                Members[i].Restore(memberHull[i]);
+                _shields[i] = Members[i].IsDestroyed ? 0f : _data.MemberShields * _shieldsMultiplier * memberShields[i];
+            }
+
+            Recalculate();
+            OnValueChanged?.Invoke();
+        }
+
         public void RefreshStatModifiers()
         {
             if (_hullMultiplier == _modifiers.HullMultiplier &&

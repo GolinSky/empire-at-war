@@ -100,6 +100,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public float NavigationRadius => Data.NavigationRadius;
         public UnitOrderType CurrentOrder => _orders.Current;
         public bool IsDestroyed => _health.Destroyed;
+        public long EntityId { get; private set; }
 
         /// <summary>
         /// True once nothing applied to the dead squadron is still running: abilities and timed effects would
@@ -130,8 +131,10 @@ namespace EmpireAtWar.Entities.Squadrons
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
-            ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate)
+            ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
+            long entityId)
         {
+            EntityId = entityId;
             _flight = flight;
             _health = health;
             _radar = radar;

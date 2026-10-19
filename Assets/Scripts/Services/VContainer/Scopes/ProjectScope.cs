@@ -6,6 +6,7 @@ using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.SceneService;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Timing;
 using Utilities.ScriptUtils.Time;
@@ -39,6 +40,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<GameController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SceneLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<JsonSettingsRepository>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter(Application.persistentDataPath);
+            builder.Register<JsonBattleSaveRepository>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter(Application.persistentDataPath);
             builder.Register<DisplaySettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<GraphicsSettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

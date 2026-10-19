@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
 using UnityEngine;
 using global::VContainer;
@@ -49,6 +50,7 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyShipAbilityController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EnemyUnitLimitModel>(Lifetime.Singleton);
             builder.Register<EnemySquadronCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionRoster>(Lifetime.Singleton)

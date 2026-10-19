@@ -7,6 +7,8 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
 using VContainer;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.Saves;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.MiningFacility
@@ -27,6 +29,8 @@ namespace EmpireAtWar.MiningFacility
             builder.Register<MiningFacilityModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
                 .WithParameter("baseIncome", Data.Income);
             builder.Register<MiningFacilityTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter("kind", StructureKind.MiningFacility).WithParameter("type", (int)_type);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.MiningFacility, SelectionType.MiningFacility);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);

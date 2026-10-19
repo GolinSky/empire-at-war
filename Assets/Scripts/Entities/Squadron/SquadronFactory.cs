@@ -21,10 +21,14 @@ namespace EmpireAtWar.Entities.Squadrons
             _ids = ids;
         }
 
-        public virtual Squadron Create(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation)
+        public virtual Squadron Create(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation) =>
+            Create(owner, squadronType, position, rotation, _ids.GenerateUniqueId());
+
+        /// <summary>Creates a squadron with a known id, e.g. one restored from a save.</summary>
+        public Squadron Create(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation,
+            long entityId)
         {
             SquadronData data = Assets.Load<SquadronData>(squadronType + "SquadronData");
-            long entityId = _ids.GenerateUniqueId();
             return Spawn(Assets.LoadComponent<Squadron>(squadronType + "SquadronView"), position, rotation,
                 (builder, view) => new SquadronInstaller(view, data, _localPlayer, owner, entityId, position,
                     squadronType, rotation).Install(builder));

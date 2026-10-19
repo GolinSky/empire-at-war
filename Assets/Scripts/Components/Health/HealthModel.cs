@@ -119,6 +119,25 @@ namespace EmpireAtWar.Models.Health
             OnValueChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Applies saved fractions of hull, shields and each hardpoint. A lost shield generator drops the shields,
+        /// as it does in combat. The save must come from the same hardpoint layout.
+        /// </summary>
+        public void Restore(float hullPercentage, float shieldPercentage, IReadOnlyList<float> hardPointPercentages)
+        {
+            if (hardPointPercentages.Count != HardPointModels.Length)
+                throw new InvalidOperationException(
+                    $"Saved {hardPointPercentages.Count} hardpoints; {ShipClass} has {HardPointModels.Length}.");
+            for (int i = 0; i < HardPointModels.Length; i++)
+                HardPointModels[i].Restore(hardPointPercentages[i]);
+            IsLostShieldGenerator = HardPointModels.Any(point => point.HardPointType == HardPointType.ShieldGenerator) &&
+                HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
+                    .All(point => point.IsDestroyed);
+            Hull = MaxHull * hullPercentage;
+            Shields = IsLostShieldGenerator ? 0f : MaxShields * shieldPercentage;
+            OnValueChanged?.Invoke();
+        }
+
         public void ApplyDamage(float damage, DamageType damageType, int hardPointId)
         {
             if (IsDestroyed)

@@ -7,6 +7,7 @@ using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
 using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Controllers.Game
 {
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly IFadeService _fadeService;
         private readonly BattleDefinition _battle;
+        private readonly BattleRestoreStep _restore;
 
         public BattleStartupSequence(
             IBattleMapLoader mapLoader,
@@ -33,7 +35,7 @@ namespace EmpireAtWar.Controllers.Game
             ILocalPlayer localPlayer,
             ICameraService cameraService,
             IFogOfWarSystem fogOfWarSystem,
-            IFadeService fadeService, BattleDefinition battle)
+            IFadeService fadeService, BattleDefinition battle, BattleRestoreStep restore)
         {
             _mapLoader = mapLoader;
             _mapModel = mapModel;
@@ -44,6 +46,7 @@ namespace EmpireAtWar.Controllers.Game
             _fogOfWarSystem = fogOfWarSystem;
             _fadeService = fadeService;
             _battle = battle;
+            _restore = restore;
         }
 
         public async Awaitable RunAsync(CancellationToken cancellationToken)
@@ -53,13 +56,15 @@ namespace EmpireAtWar.Controllers.Game
             // Player contexts register their station spawners in their own kernels' Start this frame.
             await Awaitable.NextFrameAsync(cancellationToken);
             await _mapLoader.LoadAsync(cancellationToken);
-            foreach (PlayerSlot player in _playerRoster.Players)
+            if (!_restore.TryRestore())
             {
-                if (_battle.GetPlayer(player.Id).OwnsStation)
-                    _playerRegistry.GetStationSpawner(player.Id).Spawn();
+                foreach (PlayerSlot player in _playerRoster.Players)
+                {
+                    if (_battle.GetPlayer(player.Id).OwnsStation)
+                        _playerRegistry.GetStationSpawner(player.Id).Spawn();
+                }
+                _cameraService.MoveTo(_mapModel.GetStationPosition(_localPlayer.Id));
             }
-
-            _cameraService.MoveTo(_mapModel.GetStationPosition(_localPlayer.Id));
             // Spawned stations register their fog vision in their contexts' Start.
             await Awaitable.NextFrameAsync(cancellationToken);
             await Awaitable.NextFrameAsync(cancellationToken);

@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Entities.Menu
         private TooltipHoverSubscription _tooltipHover;
 
         private BattleState _state;
+        private readonly BattleSaveActions _saves;
 
         // Escape is ignored while the battle loads and after it ends.
         private bool CanOpen => _state == BattleState.Running || _state == BattleState.Paused;
@@ -35,11 +37,12 @@ namespace EmpireAtWar.Entities.Menu
             IUiCancelRouter cancelRouter,
             ISettingsRoute settingsRoute,
             INotifier<BattleState> battleState,
-            ITooltipService tooltipService) : base(uiService, cancelRouter)
+            ITooltipService tooltipService, BattleSaveActions saves) : base(uiService, cancelRouter)
         {
             _cancelRouter = cancelRouter;
             _settingsRoute = settingsRoute;
             _battleState = battleState;
+            _saves = saves;
             _tooltips = new TooltipRequests(tooltipService);
         }
 
@@ -48,6 +51,9 @@ namespace EmpireAtWar.Entities.Menu
             _ui = CreateUi<PauseMenuUi>();
             _ui.AssignPresenter(this);
             _ui.Initialize();
+            _ui.SetSavingAvailable(_saves.IsSupported);
+            _ui.SetSaveStatus(_saves.Status);
+            _saves.StatusChanged += OnSaveStatus;
             _tooltipHover = new TooltipHoverSubscription(
                 _ui.TooltipHover, HandleTooltipHover, _tooltips);
             _ui.SetMenuVisible(false);
@@ -57,6 +63,7 @@ namespace EmpireAtWar.Entities.Menu
 
         public void LateDispose()
         {
+            _saves.StatusChanged -= OnSaveStatus;
             _cancelRouter.CancelUnhandled -= Open;
             _battleState.RemoveObserver(this);
             if (_tooltipHover != null) _tooltipHover.Dispose();
@@ -72,6 +79,16 @@ namespace EmpireAtWar.Entities.Menu
         public void Open()
         {
             SetMenuOpen(true);
+        }
+
+        public void SaveNamed(string name) => _saves.SaveNamed(name);
+        public void QuickSave() => _saves.Save(BattleSaveSlot.Quicksave);
+        public void QuickLoad() => _saves.QuickLoad();
+
+        private void OnSaveStatus(string status)
+        {
+            _ui.SetSaveStatus(status);
+            if (status.StartsWith("Load failed:") || status.StartsWith("Save failed:")) Open();
         }
 
         public void Close()

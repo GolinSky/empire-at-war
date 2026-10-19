@@ -2,6 +2,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.StationFacing;
 using global::VContainer;
 
@@ -16,12 +17,16 @@ namespace EmpireAtWar.Services.VContainer
         {
             SurvivalWaveData waves = _assets.Load<SurvivalWaveData>(nameof(SurvivalWaveData));
             builder.Register<LocalPlayer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleSaveInput>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<BattleAutosave>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SurvivalAutosave>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterInstance(waves);
             builder.RegisterInstance(new SurvivalModel(waves.FirstPreparationSeconds, waves.PreparationSeconds));
             builder.Register<SurvivalOutcomeRule>(Lifetime.Singleton).As<IBattleOutcomeRule>();
             builder.Register<CenteredStationFacing>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EdgeSpawnPointProvider>(Lifetime.Singleton);
             builder.Register<SurvivalWaveDirector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SurvivalSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
             builder.Register<SurvivalHudUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }

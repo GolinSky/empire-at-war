@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Saves;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.Map;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Entities.Game
     public class GameData : Data, IModel, IGameModelObserver
     {
         public BattleDefinition Battle { get; set; } = SkirmishPreset.Default();
+        public BattleSave PendingBattleSave { get; set; }
         public GameMode GameMode => Battle.Mode;
         public PlanetType PlanetType => Battle.Map.Planet;
         public MapSize MapSize => Battle.Map.Size;

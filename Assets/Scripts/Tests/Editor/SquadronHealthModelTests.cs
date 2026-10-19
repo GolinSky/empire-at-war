@@ -132,6 +132,21 @@ namespace EmpireAtWar.Tests.Editor
             return members;
         }
 
+        [Test]
+        public void Restore_AppliesEachFighterAndKeepsDeadFightersDead()
+        {
+            SquadronHealthModel model = CreateModel(out HardPointModel[] members);
+
+            model.Restore(new[] { 1f, 0.5f, 0f }, new[] { 0.25f, 1f, 1f });
+
+            Assert.That(members[1].Health, Is.EqualTo(MEMBER_HULL * 0.5f));
+            Assert.That(members[2].IsDestroyed, Is.True);
+            Assert.That(model.GetMemberShields(0), Is.EqualTo(MEMBER_SHIELDS * 0.25f));
+            Assert.That(model.GetMemberShields(2), Is.Zero);
+            Assert.That(model.AliveCount, Is.EqualTo(2));
+            Assert.That(model.GetMemberShieldPercentage(0), Is.EqualTo(0.25f));
+        }
+
         private SquadronHealthModel CreateModel(out HardPointModel[] members)
         {
             members = CreateMembers();

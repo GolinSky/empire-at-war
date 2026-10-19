@@ -50,6 +50,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 _startPosition;
         private PlayerId _owner;
         private ShipType _shipType;
+        private ShipSpawnPose _spawnPose;
 
         [SerializeField] private bool logNavigationDecisions;
         private bool _isNavigationRegistered;
@@ -93,8 +94,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             IRadarModelObserver radarModel,
             IWeaponFacing weaponFacing,
             ShipMoveModel model, CombatModifiers modifiers, ShipType shipType, Vector3 startPosition,
-            PlayerId owner)
+            PlayerId owner, ShipSpawnPose spawnPose)
         {
+            _spawnPose = spawnPose;
             _weaponFacing = weaponFacing;
             SetModel(model);
             _modifiers = modifiers;
@@ -119,16 +121,27 @@ namespace EmpireAtWar.Components.Ship.Movement
                 lineRenderer, hyperSpaceEase);
             _modifiers.Changed += UpdateRouteSpeed;
             // The spawner already validated this point; the ship lands exactly where it was placed.
-            Model.ConfigureSpawnPose(_startPosition.ToNumerics(),
-                _stationFacingService.GetRotation(_owner).ToNumerics());
-            transform.SetPositionAndRotation(Model.JumpPosition.ToUnity(),
-                Model.StartRotation.ToUnity());
-            _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
-            _isNavigationRegistered = true;
-            // Holds the landing spot against other spawns until the hull physically arrives.
-            _shipSpawnClearance.ReserveLanding(this, _owner, _shipType, _startPosition);
-            _motion.PlayHyperSpace(Model.HyperSpacePosition.ToUnity(),
-                Model.HyperSpaceDuration, FinishHyperSpaceJump);
+            Quaternion rotation = _spawnPose.IsRestored ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
+            Model.ConfigureSpawnPose(_startPosition.ToNumerics(), rotation.ToNumerics());
+            if (_spawnPose.IsRestored)
+            {
+                // A loaded ship is already in place: no jump, no landing reservation, no arrival sound.
+                transform.SetPositionAndRotation(Model.HyperSpacePosition.ToUnity(), Model.StartRotation.ToUnity());
+                _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
+                _isNavigationRegistered = true;
+                Model.Arrive(Model.HyperSpacePosition);
+            }
+            else
+            {
+                transform.SetPositionAndRotation(Model.JumpPosition.ToUnity(),
+                    Model.StartRotation.ToUnity());
+                _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
+                _isNavigationRegistered = true;
+                // Holds the landing spot against other spawns until the hull physically arrives.
+                _shipSpawnClearance.ReserveLanding(this, _owner, _shipType, _startPosition);
+                _motion.PlayHyperSpace(Model.HyperSpacePosition.ToUnity(),
+                    Model.HyperSpaceDuration, FinishHyperSpaceJump);
+            }
             _visionService.Register(_owner, transform, _radarModel.Range);
         }
 

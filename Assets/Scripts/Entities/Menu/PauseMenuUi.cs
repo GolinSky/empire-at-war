@@ -1,3 +1,4 @@
+using TMPro;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -14,6 +15,12 @@ namespace EmpireAtWar.Entities.Menu
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private TooltipHoverView tooltipHover;
+        [SerializeField] private GameObject savePanel;
+        [SerializeField] private TMP_InputField saveName;
+        [SerializeField] private Button saveButton;
+        [SerializeField] private Button quickSaveButton;
+        [SerializeField] private Button quickLoadButton;
+        [SerializeField] private TMP_Text saveStatus;
 
         private bool _isInitialized;
 
@@ -35,6 +42,9 @@ namespace EmpireAtWar.Entities.Menu
             resumeButton.onClick.AddListener(_presenter.Close);
             optionsButton.onClick.AddListener(_presenter.OpenSettings);
             exitButton.onClick.AddListener(_presenter.ExitSkirmish);
+            saveButton.onClick.AddListener(SaveNamed);
+            quickSaveButton.onClick.AddListener(_presenter.QuickSave);
+            quickLoadButton.onClick.AddListener(_presenter.QuickLoad);
             _isInitialized = true;
         }
 
@@ -48,6 +58,9 @@ namespace EmpireAtWar.Entities.Menu
             resumeButton.onClick.RemoveListener(_presenter.Close);
             optionsButton.onClick.RemoveListener(_presenter.OpenSettings);
             exitButton.onClick.RemoveListener(_presenter.ExitSkirmish);
+            saveButton.onClick.RemoveListener(SaveNamed);
+            quickSaveButton.onClick.RemoveListener(_presenter.QuickSave);
+            quickLoadButton.onClick.RemoveListener(_presenter.QuickLoad);
             _isInitialized = false;
         }
 
@@ -64,6 +77,10 @@ namespace EmpireAtWar.Entities.Menu
         {
             Dispose();
         }
+
+        private void SaveNamed() => _presenter.SaveNamed(saveName.text);
+        public void SetSavingAvailable(bool available) => savePanel.SetActive(available);
+        public void SetSaveStatus(string status) => saveStatus.text = status;
 
         public void SetMenuVisible(bool isVisible)
         {

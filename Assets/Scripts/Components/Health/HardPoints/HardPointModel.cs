@@ -67,6 +67,14 @@ namespace EmpireAtWar.Models.Health
             OnHardPointHealthChanged?.Invoke();
         }
 
+        /// <summary>Sets health to a saved fraction of the maximum; an uninstalled hardpoint stays at zero.</summary>
+        public void Restore(float healthPercentage)
+        {
+            Health = _originHealth * healthPercentage;
+            HealthPercentage = _originHealth <= 0f ? 0f : healthPercentage;
+            OnHardPointHealthChanged?.Invoke();
+        }
+
         public void ScaleHealth(float multiplier)
         {
             _originHealth *= multiplier;

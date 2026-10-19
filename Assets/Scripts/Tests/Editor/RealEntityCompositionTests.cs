@@ -1,16 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Squadrons.Flight;
+using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Health.Overlay;
+using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
@@ -24,12 +30,16 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Presenters.MiniMap;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Settings;
@@ -38,6 +48,7 @@ using EmpireAtWar.ViewComponents.Squadrons;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 using global::VContainer;
 using global::VContainer.Internal;
 using global::VContainer.Unity;
@@ -127,6 +138,7 @@ namespace EmpireAtWar.Tests.Editor
             var players = _battle.GetComponentsInChildren<AssetLifetimeScope>(true)
                 .Where(scope => scope is LocalPlayerScope || scope is AiPlayerScope).ToArray();
             Assert.That(players.Length, Is.EqualTo(3));
+            Assert.That(_battle.Container.Resolve<BattleSaveService>(), Is.Not.Null);
             var human = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(0));
             var ally = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(1));
             var wave = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(2));
@@ -137,6 +149,232 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(wave.Container.TryGetRegistration(typeof(FactionResearchModel), out _), Is.False);
             Assert.That(wave.Container.TryGetRegistration(typeof(EmpireAtWar.Models.Economy.EconomyModel), out _), Is.False);
             Assert.That(_battle.Container.Resolve<IBattleOutcomeRule>(), Is.TypeOf<SurvivalOutcomeRule>());
+        }
+
+        [Test]
+        public void SavedUnits_RestoreWithIdsPoseHealthAbilitiesHangarAndOrders()
+        {
+            BuildSaveProject();
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
+            IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
+            ShipAbilityService abilities = _battle.Container.Resolve<ShipAbilityService>();
+            Vector3 origin = layout.GetStationPosition(slot.Id);
+
+            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(slot.Id, ShipType.Acclamator, origin);
+            EntityLifetimeScope shipScope = ship.transform.parent.GetComponent<EntityLifetimeScope>();
+            IEntity shipEntity = locator.GetEntity(ship.EntityId);
+            Assert.That(shipEntity.GetFacade<IHangarCommand>().TryLaunchImmediately(), Is.True);
+            HealthModel health = shipScope.Container.Resolve<HealthModel>();
+            float[] hardPoints = health.HardPointModels.Select((point, i) =>
+                point.HardPointType == HardPointType.Hangar ? 1f : i % 3 == 0 ? 0f : 0.5f).ToArray();
+            health.Restore(0.4f, 0.3f, hardPoints);
+            ShipAbilitySlot ability = shipEntity.GetFacade<IShipAbilityFacade>().Slots[0];
+            abilities.Restore(ability, ShipAbilityState.Recovering, ability.Definition.RecoveryDelay * 3f);
+            IEntity squadronEntity = locator.Entities.Single(entity => entity.Id != ship.EntityId);
+            Vector3 destination = origin + new Vector3(400f, 0f, 250f);
+            shipEntity.GetFacade<IMoveFacade>().MoveTo(destination);
+            float[] memberHull = squadronEntity.HealthModel.HardPointModels.Select((_, i) => i == 0 ? 0f : 0.75f).ToArray();
+            EntityLifetimeScope squadronScope = squadronEntity.GetFacade<IEntityTransformFacade>().Transform.parent
+                .GetComponent<EntityLifetimeScope>();
+            squadronScope.Container.Resolve<SquadronHealthModel>().Restore(memberHull, memberHull.Select(_ => 1f).ToArray());
+            UnitSaveService units = _battle.Container.Resolve<UnitSaveService>();
+
+            BattleSave saved = JsonUtility.FromJson<BattleSave>(BattleSave.Create(null, null, null, units.CaptureUnits(),
+                Array.Empty<StructureSave>()).ToJson());
+            Pose shipPose = new Pose(ship.transform.position, ship.transform.rotation);
+            long squadronId = squadronEntity.Id;
+            // Edit mode skips OnDestroy, where entity scopes normally leave their owner's registry.
+            EntityScopeOwnership ownership = human.Container.Resolve<EntityScopeOwnership>();
+            ownership.Unregister(squadronScope);
+            ownership.Unregister(shipScope);
+            DisposeRoot(squadronScope);
+            DisposeRoot(shipScope);
+            Assert.That(locator.Entities, Is.Empty);
+            units.Restore(saved);
+
+            IEntity restoredShip = locator.GetEntity(ship.EntityId);
+            IEntity restoredSquadron = locator.GetEntity(squadronId);
+            Transform shipTransform = restoredShip.GetFacade<IEntityTransformFacade>().Transform;
+            EntityLifetimeScope restoredScope = shipTransform.parent.GetComponent<EntityLifetimeScope>();
+            Assert.That(shipTransform.position, Is.EqualTo(shipPose.position));
+            Assert.That(Quaternion.Angle(shipTransform.rotation, shipPose.rotation), Is.LessThan(0.01f));
+            Assert.That(restoredScope.Container.Resolve<ShipMoveModel>().Phase, Is.Not.EqualTo(MovementPhase.Arriving),
+                "A loaded ship is already in place, not jumping in.");
+            HealthModel restoredHealth = restoredScope.Container.Resolve<HealthModel>();
+            Assert.That(restoredHealth.HullPercentage, Is.EqualTo(0.4f).Within(0.0001f));
+            Assert.That(restoredHealth.HardPointModels.Select(point => point.HealthPercentage), Is.EqualTo(hardPoints));
+            ShipAbilitySlot restoredAbility = restoredShip.GetFacade<IShipAbilityFacade>().Slots[0];
+            Assert.That(restoredAbility.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(restoredAbility.TimeLeft, Is.EqualTo(ability.Definition.RecoveryDelay * 3f));
+            Assert.That(restoredAbility.Progress01, Is.EqualTo(1f));
+            UnitOrderModel order = restoredScope.Container.Resolve<UnitOrderModel>();
+            Assert.That(order.Current, Is.EqualTo(UnitOrderType.Move));
+            Assert.That(order.Destination.X, Is.EqualTo(destination.x).Within(0.01f));
+            Assert.That(order.Destination.Z, Is.EqualTo(destination.z).Within(0.01f));
+            Assert.That(restoredSquadron.HealthModel.HardPointModels.Select(member => member.HealthPercentage), Is.EqualTo(memberHull));
+            UnitOrderModel squadronOrder = restoredSquadron.GetFacade<IEntityTransformFacade>().Transform.parent
+                .GetComponent<EntityLifetimeScope>().Container.Resolve<UnitOrderModel>();
+            Assert.That(squadronOrder.Current, Is.EqualTo(UnitOrderType.Guard));
+            Assert.That(squadronOrder.Target, Is.SameAs(restoredShip), "The squadron guards its restored carrier again.");
+            HangarModel hangar = restoredScope.Container.Resolve<HangarModel>();
+            Assert.That(Enumerable.Range(0, hangar.BayCount).Sum(hangar.GetActive), Is.EqualTo(1),
+                "The carrier takes back the squadron it launched.");
+        }
+
+        [Test]
+        public void SavedSkirmish_RestoresPlayerStateStructuresAndOwnerBookkeepingIntoNewBattle()
+        {
+            BuildSaveProject();
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            AiPlayerScope ai = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
+            PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
+            PlayerSlot aiSlot = ai.Container.Resolve<PlayerSlot>();
+            IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
+            FactionRoster humanRoster = human.Container.Resolve<FactionRoster>();
+            FactionRoster aiRoster = ai.Container.Resolve<FactionRoster>();
+            IUnitRequestFactory requests = human.Container.Resolve<IUnitRequestFactory>();
+
+            var station = human.Container.Resolve<SpaceStationFactory>()
+                .Create(humanSlot.Id, humanSlot.Faction, layout.GetStationPosition(humanSlot.Id));
+            ai.Container.Resolve<SpaceStationFactory>()
+                .Create(aiSlot.Id, aiSlot.Faction, layout.GetStationPosition(aiSlot.Id));
+            long stationId = locator.Entities.Single(entity => entity.Owner == humanSlot.Id).Id;
+            ShipType humanShip = humanRoster.Ships.Keys.OrderBy(type => type).First();
+            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(humanSlot.Id, humanShip,
+                layout.GetStationPosition(humanSlot.Id) + Vector3.right * 300f);
+            MiningFacilityType mineType = humanRoster.MiningFacilities.Keys.OrderBy(type => type).First();
+            human.Container.Resolve<MiningFacilityFactory>().Create(humanSlot.Id, mineType,
+                layout.GetStationPosition(humanSlot.Id) + Vector3.forward * 300f);
+
+            human.Container.Resolve<EconomyModel>().Restore(4321f);
+            // The faction UI swaps its level and research buttons with Object.Destroy, which edit mode rejects:
+            // one error per level change and per completed tier, both now and on restore.
+            Regex editModeDestroy = new Regex("Destroy may not be called from edit mode");
+            for (int i = 0; i < 4; i++) LogAssert.Expect(LogType.Error, editModeDestroy);
+            PlayerFactionModel faction = human.Container.Resolve<PlayerFactionModel>();
+            faction.CurrentLevel = 2;
+            FactionResearchModel research = human.Container.Resolve<FactionResearchModel>();
+            ResearchType researchLine = research.ResearchTypes.OrderBy(type => type).First();
+            research.Complete(researchLine);
+            ShipUnitRequest queued = requests.ConstructUnitRequest(humanRoster.Ships[humanShip], humanShip);
+            faction.QueueUnit(queued);
+            faction.Advance(queued.FactionData.BuildTime * 0.25f);
+            float queuedTimeLeft = faction.QueuedItems.Single().RemainingBuildTime;
+            SquadronType reserveType = humanRoster.Squadrons.Keys.OrderBy(type => type).First();
+            human.Container.Resolve<EmpireAtWar.Services.Reinforcement.ReinforcementService>()
+                .Add(requests.ConstructUnitRequest(humanRoster.Squadrons[reserveType], reserveType));
+            human.Container.Resolve<EmpireAtWar.Entities.SuperWeapons.SuperWeaponModel>()
+                .Restore(EmpireAtWar.Entities.SuperWeapons.SuperWeaponType.IonCannon,
+                    EmpireAtWar.Entities.SuperWeapons.SuperWeaponState.Ready, 30f);
+
+            ai.Container.Resolve<EconomyModel>().Restore(99999f);
+            var aiController = ai.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController>();
+            ShipType aiShip = aiRoster.Ships.Keys.OrderBy(type => type).First();
+            aiController.Purchase(ai.Container.Resolve<IUnitRequestFactory>()
+                .ConstructUnitRequest(aiRoster.Ships[aiShip], aiShip));
+            Assert.That(aiController.PendingBuilds.Count, Is.EqualTo(1), "The AI needs a living station to buy.");
+            aiController.Advance(1f);
+            float aiBuildLeft = aiController.PendingBuilds.Single().TimeLeft;
+            var aiLimits = ai.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Models.EnemyUnitLimitModel>();
+            int aiCapacity = aiLimits.CurrentUnitCapacity;
+            float aiMoney = ai.Container.Resolve<EconomyModel>().Money;
+            Assert.That(aiMoney, Is.LessThan(99999f), "The purchase was paid.");
+            _battle.Container.Resolve<BattleVictoryModel>().RestoreObservedBases(new[] { aiSlot.Id });
+
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+            BattleSave saved = BattleSave.FromJson(
+                _battle.Container.Resolve<BattleSaveService>().Capture(BattleSaveSlot.Quicksave).ToJson());
+            DisposeRoot(_battle);
+            BuildSaveBattle();
+            human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            ai = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
+            locator = _battle.Container.Resolve<IEntityLocator>();
+            Assert.That(locator.Entities, Is.Empty);
+
+            _battle.Container.Resolve<BattleRestorer>().Restore(saved);
+
+            Assert.That(human.Container.Resolve<EconomyModel>().Money, Is.EqualTo(4321f));
+            faction = human.Container.Resolve<PlayerFactionModel>();
+            Assert.That(faction.CurrentLevel, Is.EqualTo(2));
+            Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(10f));
+            Assert.That(human.Container.Resolve<FactionResearchModel>().GetCompletedTiers(researchLine), Is.EqualTo(1));
+            ProductionQueueItem restoredItem = faction.QueuedItems.Single();
+            Assert.That(restoredItem.UnitRequest.Id, Is.EqualTo(queued.Id));
+            Assert.That(restoredItem.RemainingBuildTime, Is.EqualTo(queuedTimeLeft));
+            var reinforcements = human.Container.Resolve<EmpireAtWar.Models.Reinforcement.ReinforcementModel>();
+            Assert.That(reinforcements.Reserve.Single().Value, Is.EqualTo(1));
+            Assert.That(reinforcements.CurrentUnitCapacity, Is.EqualTo(humanRoster.Ships[humanShip].UnitCapacity),
+                "The restored ship counts against unit capacity again.");
+            var superWeapons = human.Container.Resolve<EmpireAtWar.Entities.SuperWeapons.SuperWeaponModel>();
+            Assert.That(superWeapons.GetState(EmpireAtWar.Entities.SuperWeapons.SuperWeaponType.IonCannon),
+                Is.EqualTo(EmpireAtWar.Entities.SuperWeapons.SuperWeaponState.Ready));
+            Assert.That(superWeapons.GetCooldownRemaining(EmpireAtWar.Entities.SuperWeapons.SuperWeaponType.IonCannon),
+                Is.EqualTo(30f));
+            Assert.That(faction.CanQueueUnit(requests.ConstructUnitRequest(humanRoster.MiningFacilities[mineType], mineType)),
+                Is.EqualTo(humanRoster.MiningFacilities[mineType].MaxCount > 1),
+                "The restored mining facility holds its structure slot again.");
+
+            Assert.That(ai.Container.Resolve<EconomyModel>().Money, Is.EqualTo(aiMoney), "A paid build is not paid again.");
+            aiController = ai.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController>();
+            Assert.That(aiController.PendingBuilds.Single().TimeLeft, Is.EqualTo(aiBuildLeft));
+            aiLimits = ai.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Models.EnemyUnitLimitModel>();
+            Assert.That(aiLimits.CurrentUnitCapacity, Is.EqualTo(aiCapacity), "The paid build keeps its reservation.");
+            Assert.That(aiLimits.ShipOrdersCount, Is.EqualTo(1));
+
+            Assert.That(locator.GetEntity(stationId).Owner, Is.EqualTo(humanSlot.Id));
+            Assert.That(locator.GetEntity(ship.EntityId), Is.Not.Null);
+            Assert.That(locator.Entities.Count, Is.EqualTo(4), "Two stations, the ship and the mining facility.");
+            Assert.That(_battle.Container.Resolve<BattleVictoryModel>().ObservedBases, Is.EquivalentTo(new[] { aiSlot.Id }));
+            Assert.That(station, Is.Not.Null);
+        }
+
+        [Test]
+        public void SavedSurvival_ResumesTheWaveInProgressWithoutQueuingItAgain()
+        {
+            BuildSaveProject(SurvivalPreset.Create(new SurvivalSettings(FactionType.Republic, null,
+                FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
+                false)).Build());
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
+            human.Container.Resolve<SpaceStationFactory>()
+                .Create(humanSlot.Id, humanSlot.Faction, layout.GetStationPosition(humanSlot.Id));
+            var model = _battle.Container.Resolve<EmpireAtWar.Entities.Game.SurvivalModel>();
+            var director = _battle.Container.Resolve<SurvivalWaveDirector>();
+            IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+            model.StartWaveNow();
+            director.Tick();
+            int pending = director.Pending.Count;
+            int spawned = director.Spawned;
+            Assert.That(spawned, Is.EqualTo(1), "One attacker spawns per tick.");
+            Assert.That(pending, Is.GreaterThan(0), "The first wave has more than one unit.");
+            long[] attackers = locator.Entities.Where(entity => entity.Owner != humanSlot.Id)
+                .Select(entity => entity.Id).ToArray();
+            Assert.That(attackers.Length, Is.EqualTo(spawned));
+
+            BattleSave saved = BattleSave.FromJson(
+                _battle.Container.Resolve<BattleSaveService>().Capture(BattleSaveSlot.Quicksave).ToJson());
+            DisposeRoot(_battle);
+            BuildSaveBattle();
+            model = _battle.Container.Resolve<EmpireAtWar.Entities.Game.SurvivalModel>();
+            director = _battle.Container.Resolve<SurvivalWaveDirector>();
+            locator = _battle.Container.Resolve<IEntityLocator>();
+            _battle.Container.Resolve<BattleRestorer>().Restore(saved);
+
+            Assert.That(model.WaveIndex, Is.EqualTo(1));
+            Assert.That(model.Phase, Is.EqualTo(EmpireAtWar.Entities.Game.SurvivalPhase.WaveActive));
+            Assert.That(director.Wave, Is.EqualTo(1));
+            Assert.That(director.Pending.Count, Is.EqualTo(pending));
+            Assert.That(director.Spawned, Is.EqualTo(spawned));
+            foreach (long attacker in attackers) Assert.That(locator.TryGetEntity(attacker, out _), Is.True);
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+            director.Tick();
+            Assert.That(director.Pending.Count, Is.LessThanOrEqualTo(pending), "The resumed wave is not queued again.");
+            Assert.That(model.Phase, Is.EqualTo(EmpireAtWar.Entities.Game.SurvivalPhase.WaveActive));
         }
 
         [TestCase(BattleFeatures.All, PlayerRole.AiOpponent)]
@@ -164,7 +402,7 @@ namespace EmpireAtWar.Tests.Editor
             }))
                 _project.Build();
             _project.GameData.Battle = SkirmishPreset.Create(TestPlayers.CreateDuel().Players,
-                _project.GameData.PlanetType, MapSize.Small, _project.GameData.VictoryCondition, 1000f).Build();
+                _project.GameData.PlanetType, MapSize.Small, _project.GameData.VictoryCondition, 1000f, true, 0).Build();
             bool superWeapons = (features & BattleFeatures.SuperWeapons) != 0;
             if (features != BattleFeatures.All)
             {
@@ -319,6 +557,46 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(entities.Entities.Any(entity => entity.Owner == slots[index + 1].Id), Is.True);
                 }
             }
+        }
+
+        private void BuildSaveProject(BattleDefinition battle = null)
+        {
+            _project = InstantiateScope<ProjectScope>(PROJECT_PREFAB_PATH);
+            using (LifetimeScope.EnqueueParent(null))
+            using (LifetimeScope.Enqueue(builder =>
+            {
+                if (ReferenceEquals(builder.ApplicationOrigin, _project))
+                    builder.RegisterInstance<ISettingsRepository>(new MemorySettings());
+            })) _project.Build();
+            _project.GameData.Battle = battle ?? SkirmishPreset.Create(TestPlayers.CreateDuel().Players,
+                _project.GameData.PlanetType, MapSize.Small, _project.GameData.VictoryCondition, 1000f, true, 0).Build();
+        }
+
+        /// <summary>Builds a battle scope for the project's battle; called again, it stands in for the scene a load rebuilds.</summary>
+        private MapLayout BuildSaveBattle()
+        {
+            // The scope prefab must not build itself on instantiation.
+            _root.SetActive(false);
+            _battle = InstantiateScope<SkirmishScope>(SKIRMISH_PREFAB_PATH);
+            _battle.parentReference.Object = _project;
+            _root.SetActive(true);
+            var authored = new SerializedObject(_battle);
+            authored.FindProperty("reinforcementZoneData").objectReferenceValue = AssetDatabase.GetDependencies(BATTLE_SCENE_PATH)
+                .Select(AssetDatabase.LoadAssetAtPath<ReinforcementZoneData>).Single(data => data != null);
+            authored.ApplyModifiedPropertiesWithoutUndo();
+            var settings = (MapGenerationSettings)authored.FindProperty("settings").objectReferenceValue;
+            var mapView = (MapLayoutView)authored.FindProperty("mapLayoutView").objectReferenceValue;
+            MapLayout layout = _project.GameData.Battle.Map.Type == MapType.Survival
+                ? new SurvivalLayoutGenerator(settings, mapView.FeatureRadii).Generate(_project.GameData.Battle)
+                : new MapLayoutGenerator(settings, mapView.FeatureRadii).Generate(
+                    _project.GameData.MapSize, _project.GameData.Players, new System.Random(MAP_SEED));
+            using (LifetimeScope.Enqueue(builder =>
+            {
+                if (!ReferenceEquals(builder.ApplicationOrigin, _battle)) return;
+                builder.Register<MapSetup>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(layout);
+                builder.RegisterInstance<IBattleStartupSequence>(new CompletedStartup());
+            })) _battle.Build();
+            return layout;
         }
 
         private TScope InstantiateScope<TScope>(string path) where TScope : LifetimeScope

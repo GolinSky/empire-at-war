@@ -167,6 +167,13 @@ namespace EmpireAtWar.Services.ShipAbilities
             return true;
         }
 
+        /// <summary>Loads a saved slot state; a recovering slot resumes counting down.</summary>
+        public void Restore(ShipAbilitySlot slot, ShipAbilityState state, float timeLeft)
+        {
+            slot.Restore(state, timeLeft);
+            if (state == ShipAbilityState.Recovering && !_running.Contains(slot)) _running.Add(slot);
+        }
+
         public void Tick() => Advance(Time.deltaTime);
 
         public void Advance(float deltaTime)

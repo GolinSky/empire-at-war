@@ -7,5 +7,8 @@ namespace EmpireAtWar.Entities.Menu
         void OpenSettings();
 
         void ExitSkirmish();
+        void SaveNamed(string name);
+        void QuickSave();
+        void QuickLoad();
     }
 }

@@ -51,6 +51,8 @@ namespace EmpireAtWar.Services.CaptureSites
         private CaptureSitePresenter _selectedSite;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
+        /// <summary>In map layout order, so a seeded rebuild matches saved sites by index.</summary>
+        public IReadOnlyList<CaptureSitePresenter> SitePresenters => _sites;
         public event Action SelectionChanged = delegate { };
         public CaptureSitePresenter SelectedSite => _selectedSite;
         public Vector2 SelectionScreenPosition { get; private set; }
@@ -146,7 +148,8 @@ namespace EmpireAtWar.Services.CaptureSites
                 site.TickCapture(deltaTime, _strengths[i]);
                 if (site.TickConstruction(deltaTime))
                 {
-                    GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition, site.ReleaseFacility);
+                    site.SetFacility(GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition,
+                        site.ReleaseFacility));
                 }
 
                 bool isVisible = _visionService.IsVisible(_localPlayer.Id, site.Center);

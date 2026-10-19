@@ -39,6 +39,7 @@ using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
@@ -123,6 +124,13 @@ namespace EmpireAtWar.Services.VContainer
             // Mode services keep their entry-point order: after the player scopes, before the battle UI.
             BattleModes.Create(Battle, Assets).ConfigureBattle(builder);
             builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleClock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UnitSaveService>(Lifetime.Singleton);
+            builder.Register<PlayerSaveRegistry>(Lifetime.Singleton).AsSelf().As<IBattleSaveSource>();
+            builder.Register<BattleSaveService>(Lifetime.Singleton);
+            builder.Register<BattleSaveActions>(Lifetime.Singleton);
+            builder.Register<BattleRestorer>(Lifetime.Singleton);
+            builder.Register<BattleRestoreStep>(Lifetime.Singleton);
             UiRegistrations.Register(builder, Assets, transform);
             builder.Register<FadeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.Fade.FadeUiController>(Lifetime.Singleton)

@@ -14,6 +14,11 @@ namespace EmpireAtWar.Entities.Game
         private readonly HashSet<PlayerId> _observedBases = new HashSet<PlayerId>();
         private readonly HashSet<TeamId> _survivingTeams = new HashSet<TeamId>();
 
+        /// <summary>Players whose station has been seen alive; only they can be defeated by losing it.</summary>
+        public IReadOnlyCollection<PlayerId> ObservedBases => _observedBases;
+
+        public void RestoreObservedBases(IEnumerable<PlayerId> players) => _observedBases.UnionWith(players);
+
         public BattleOutcome Evaluate(
             BattleVictoryCondition victoryCondition,
             IReadOnlyList<PlayerBattleState> players,

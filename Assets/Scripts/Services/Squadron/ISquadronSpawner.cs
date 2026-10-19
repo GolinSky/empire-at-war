@@ -8,5 +8,9 @@ namespace EmpireAtWar.Services.Squadrons
     public interface ISquadronSpawner
     {
         Squadron Spawn(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation);
+
+        /// <summary>Builds a new squadron with a saved id; pooled squadrons keep their own ids, so none is reused.</summary>
+        Squadron SpawnRestored(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation,
+            long entityId);
     }
 }

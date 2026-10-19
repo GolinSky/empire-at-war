@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
 using UnityEngine;
@@ -157,6 +158,48 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(service.TryActivate(caster, ShipAbilityId.ProtonBeam, null), Is.False);
             Assert.That(factory.Created, Is.Empty);
+        }
+
+        [Test]
+        public void Save_ActiveAbility_BecomesRecoveringForRemainingPlusFullRecovery()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            service.Advance(2f);
+
+            AbilitySlotSave save = AbilitySlotSave.From(caster.Slots[0]);
+
+            Assert.That(save.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(save.TimeLeft, Is.EqualTo(caster.Slots[0].TimeLeft + caster.Slots[0].Definition.RecoveryDelay));
+            service.LateDispose();
+        }
+
+        [Test]
+        public void Restore_LongCooldown_BarStartsFullAndCountsDownToReady()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            ShipAbilitySlot slot = caster.Slots[0];
+            float cooldown = slot.Definition.RecoveryDelay * 2f;
+
+            service.Restore(slot, ShipAbilityState.Recovering, cooldown);
+
+            Assert.That(slot.Progress01, Is.EqualTo(1f));
+            service.Advance(cooldown / 2f);
+            Assert.That(slot.Progress01, Is.EqualTo(0.5f).Within(0.0001f));
+            service.Advance(cooldown / 2f);
+            Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.True);
+        }
+
+        [Test]
+        public void Restore_ActiveState_IsRejected()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+
+            Assert.Throws<ArgumentException>(() => service.Restore(caster.Slots[0], ShipAbilityState.Active, 1f));
         }
 
         private static FakeCommand CreateCaster(bool canCancel = true, bool targeted = false,

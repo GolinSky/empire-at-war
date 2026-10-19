@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.Camera
         Vector3 CameraForward { get; }
         float FieldOfView { get; }
         UnityEngine.Camera SceneCamera { get; }
+        /// <summary>Height the zoom spring is moving toward.</summary>
+        float ZoomTargetHeight { get; }
 
         Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position);
 
@@ -35,6 +37,7 @@ namespace EmpireAtWar.Services.Camera
         void MoveTo(Vector3 worldPoint);
 
         void SetPose(Vector3 position, Quaternion rotation);
+        void RestorePose(Vector3 position, Quaternion rotation, float zoomTargetHeight);
 
         void SetCullingMask(LayerMask mask);
     }
@@ -76,6 +79,7 @@ namespace EmpireAtWar.Services.Camera
         public Vector3 CameraForward => transform.forward;
         public float FieldOfView => sceneCamera.fieldOfView;
         public UnityEngine.Camera SceneCamera => sceneCamera;
+        public float ZoomTargetHeight => _zoom.TargetHeight;
 
         [Inject]
         public void Constructor(
@@ -185,6 +189,12 @@ namespace EmpireAtWar.Services.Camera
             _keyboardVelocity = Vector2.zero;
             transform.SetPositionAndRotation(position, rotation);
             _zoom.Reset(position.y);
+        }
+
+        public void RestorePose(Vector3 position, Quaternion rotation, float zoomTargetHeight)
+        {
+            SetPose(position, rotation);
+            _zoom.Reset(zoomTargetHeight);
         }
 
         public void SetCullingMask(LayerMask mask)

@@ -20,6 +20,7 @@
   - **Remaining**: Phase 0 full-suite green gate: 13 SensorJamming allowlist failures, Allegiance radar/weapon-scope checks, and stale entity-prefab count. Plan stays active for these pre-existing failures.
   - **Evidence**: `output/BattleBuilderPhase1/final-tests.json`, `survival-runtime.txt`, `simulation-runtime.txt`.
 
+
 - [ ] **AI composition analysis and counter measures**
   - **Plan**: [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]
   - **Status**: 2026-10-07 implemented: baked weapon loadouts, damage-matrix force ratings, utility strategic rules, counter production and squadron escorts. AI/new tests 119/119; full EditMode 1151/1155 (4 unrelated). Commit `e5daa9ab`.
@@ -401,6 +402,17 @@
 
 
 ### Features
+
+- [x] **Battle session save (Skirmish + Survival)**
+  - **Plan**: [[Done/Features/Battle_Session_Save|Battle Session Save]]
+  - **Status**: completed 2026-10-19, uncommitted. All six phases and runtime loading implemented; Simulation excluded.
+  - **Decisions**: an active ability → cooldown of time left + full `RecoveryDelay`; ships mid-jump load already arrived; camera position/rotation/zoom restored.
+  - **Phase 1 done (2026-10-19, uncommitted)**: `MapSpec.Seed` drives the Skirmish layout; `BattleSetupSave` rebuilds Skirmish/Survival definitions from JSON, refuses Simulation. New/affected EditMode fixtures pass (7/7, 18/18, 14/14, 2/2); 2 `RealEntityCompositionTests` fighter-bank failures pre-exist.
+  - **Phase 2 done (2026-10-19, uncommitted)**: `Services/Saves/` — `JsonBattleSaveRepository` (`Saves/<Mode>/<slot>.json`, version 1, older versions refused), `BattleSaveService` (main-thread capture, background write, refuses Simulation/Loading/Ended), `BattleClock`. New EditMode fixtures 16/16 + 10/10.
+  - **Phase 3 done (2026-10-19, uncommitted)**: ships + squadrons saved/restored with ids, pose (no hyperspace), health fractions, abilities (cooldown rule + bar fix), hangar links and orders; real-scope EditMode round trip passes. `CombatModifiers` dropped from the save (effects of active abilities). Structures → Phase 4.
+  - **Phase 4 done (2026-10-19, uncommitted)**: player state (money, level, research, queue, reserve, superweapons, AI builds), structures, capture sites and victory memory via `IBattleSaveSource` / `PlayerSaveRegistry` / `BattleRestorer`; capacity and limits rebuilt by adopting restored units. Save → new battle → restore EditMode test passes; full EditMode 1458/1478 (same 20 out-of-scope failures).
+  - **Phase 5 done (2026-10-19, uncommitted)**: `SurvivalSaveSource` saves the model and wave director queue; a mid-wave save resumes without re-queuing. Real-scope EditMode round trip passes; full EditMode 1460/1480 (same 20 out-of-scope failures).
+  - **Phase 6 done (2026-10-19, uncommitted)**: runtime scene reload + startup restore; F5/F9; pause named/quicksave controls; Play mode-specific load list; 300-second and between-wave autosaves. Full EditMode **1466/1486 passed**, same 20 pre-existing failures; all 6 new tests pass. Prefabs saved and 1920×1080 renders verified. Gameplay checks remain user-owned.
 
 - [x] **Import MC30c Frigate**
   - **Plan**: [[Done/Features/MC30c_Import|MC30c Frigate Import]]

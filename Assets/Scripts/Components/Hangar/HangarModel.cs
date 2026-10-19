@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.Hangar
@@ -35,6 +36,24 @@ namespace EmpireAtWar.Components.Hangar
         }
 
         public int GetReserve(int bay) => _reserve[bay];
+
+        public float Cooldown => _cooldown;
+
+        /// <summary>Loads saved reserves and launch timer with no squadron out; <see cref="AdoptLaunched"/> counts each restored one.</summary>
+        public void Restore(IReadOnlyList<int> reserve, float cooldown)
+        {
+            if (reserve.Count != _reserve.Length)
+                throw new InvalidOperationException($"Saved {reserve.Count} hangar bays; the hangar has {_reserve.Length}.");
+            for (int i = 0; i < _reserve.Length; i++)
+            {
+                _reserve[i] = reserve[i];
+                _active[i] = 0;
+            }
+
+            _cooldown = cooldown;
+        }
+
+        public void AdoptLaunched(int bay) => _active[bay]++;
 
         public int GetActive(int bay) => _active[bay];
 

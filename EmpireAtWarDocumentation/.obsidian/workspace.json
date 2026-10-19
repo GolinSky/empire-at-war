@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GameDesign/Empire Fleet Import.md",
+                "file": "Done/Features/Battle_Session_Save.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Empire Fleet Import"
+              "title": "Battle_Session_Save"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "alo # Galactic Empire Fleet — Ship Balance & ALO Mapping",
+                "query": "Battle_Session_Save",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -188,12 +188,14 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "GameDesign/Empire Fleet Import.md",
+    "TODOs/Features/Battle_Session_Save.md",
+    "Done/Features/Battle_Session_Save.md",
     "Architecture/VCONTAINER_LIFECYCLE.md",
     "GameDesign/Allegiance Import.md",
     "GameDesign/Titan Import.md",
     "Architecture/ALO_MODEL_IMPORT_GUIDE.md",
     "TODOs/Features/Empire_Fleet_Import.md",
-    "GameDesign/Empire Fleet Import.md",
     "Architecture/PROJECT_ORGANIZATION.md",
     "TODOs/Features/Game_Modes_Survival_And_Simulation.md",
     "Done/Refactoring/UI_Service_Refactoring - Research.md",
@@ -212,8 +214,6 @@
     "GameDesign/Nebula Star Destroyer Import.md",
     "GameDesign/MC50 Medium Cruiser Import.md",
     "GameDesign/Assault Frigate Mk II Import.md",
-    "GameDesign/Dauntless Import.md",
-    "GameDesign/CD-273 Corellian Destroyer Import.md",
     "Done/Tooling",
     "GameDesign/Corellian Corvette Import.md.tmp.58056.bc89b044b557",
     "GameDesign/Nebulon-B Import.md.tmp.58056.534006750f7c",

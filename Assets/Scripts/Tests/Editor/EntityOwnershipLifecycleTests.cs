@@ -77,6 +77,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class SquadronSpy : ISquadron
         {
             public event Action Released { add { } remove { } }
+            public long EntityId => 0;
             public Vector3 WorldPosition => Vector3.zero;
             public IEntity Guarded { get; private set; }
             public Vector3 GuardOffset { get; private set; }

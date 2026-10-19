@@ -9,6 +9,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
 using global::VContainer;
 
@@ -51,6 +52,8 @@ namespace EmpireAtWar.Services.VContainer
                 Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionResearchModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ReinforcementSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }

@@ -2,7 +2,7 @@
 
 Open **Tools > Empire At War > Editor Hub**. Category tabs, grouped tool lists and category search provide one entry point for project tools. Window tools render inside the hub; commands call their existing Unity menu handlers and preserve their validators.
 
-Open window tools use the full content area with a compact **Switch tool** menu. The launcher sidebar and duplicate headings are hidden while editing; switching to a command restores the category browser. The hub preserves Unity's default styles so navigation text and controls render correctly.
+Search sits in the top-right header. Command details are centered in the main workspace; window tools use its full width with a compact **Switch tool** menu. The launcher sidebar and duplicate tool headings are hidden while editing; switching to a command restores the category browser. The hub follows the Balance unit comparison view's charcoal panels, subtle borders, compact controls and blue selection accents.
 
 The inventory below covers project-owned tools in `Assets/Scripts/Editor`, plus the vendor editors under `Assets/Plugins` and `Assets/ThirdParty`. Unity's built-in and Package Manager editors keep their standard locations.
 
@@ -108,5 +108,6 @@ unity command run_script --file Tools/EditorHub/VerifyEditorHub.cs --entry Verif
 
 - Unity 6000.4.7f1 compilation passed with no compilation errors.
 - Navigation smoke check passed for all 36 local entries, seven categories, five Legacy actions, search, existing validator states, three embedded windows and Balance UI preservation across navigation. Battle Simulator's embedded Run-button check completed 10 seeds and rendered its results/chart.
+- Header search containment and centered command details passed at 1280px and 1600px window widths. Embedded Balance fills the 1400px workspace width.
 - No builder, repair, capture, noise-generation or app-launch command was executed during verification.
 - The smoke check leaves the hub open. It does not run the full EditMode/PlayMode suite.

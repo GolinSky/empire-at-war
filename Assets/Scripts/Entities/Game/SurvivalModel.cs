@@ -45,6 +45,14 @@ namespace EmpireAtWar.Entities.Game
             Changed?.Invoke();
         }
 
+        public void Restore(int waveIndex, SurvivalPhase phase, float preparationTimeLeft)
+        {
+            WaveIndex = waveIndex;
+            Phase = phase;
+            PreparationTimeLeft = preparationTimeLeft;
+            Changed?.Invoke();
+        }
+
         public void Lose()
         {
             if (Phase == SurvivalPhase.Won || Phase == SurvivalPhase.Lost) return;

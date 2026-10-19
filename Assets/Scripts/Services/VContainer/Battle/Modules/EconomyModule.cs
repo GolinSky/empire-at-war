@@ -12,6 +12,7 @@ using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Factions;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Views.Cheats;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Services.VContainer
         {
             builder.Register<EconomyModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EconomyService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EconomySaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             if (player.Slot.IsAi) ConfigureAi(builder, playerRoot);
             else ConfigureHuman(builder, playerRoot);
         }
@@ -44,6 +46,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<EconomyUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HumanProductionSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipBuildUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CheatService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CheatWorldService>(Lifetime.Singleton);
@@ -61,6 +64,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<EnemyProductionStrategy>(Lifetime.Singleton);
             builder.Register<EnemyFactionController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionResearchModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<AiProductionSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             GameObject debugRoot = new GameObject(nameof(EnemyEconomyDebugView));
             debugRoot.transform.SetParent(playerRoot, false);

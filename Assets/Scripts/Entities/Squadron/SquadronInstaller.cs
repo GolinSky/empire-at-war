@@ -63,6 +63,7 @@ namespace EmpireAtWar.Entities.Squadrons
             builder.Register<SquadronAbilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HealthFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SquadronTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<SquadronSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<UnitTypeFacade>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
                 .WithParameter("unitTypeId", UnitTypeId.Squadron(_squadronType));
         }

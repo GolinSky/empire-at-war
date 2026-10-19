@@ -82,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
                 var skirmish = new RouteStub();
                 var survival = new RouteStub();
                 controller = new EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController(
-                    service, new CancelRouterStub(), skirmish, survival, new RouteStub());
+                    service, new CancelRouterStub(), skirmish, survival, new RouteStub(), new EmptySaves(), null);
                 controller.Open();
                 controller.Open();
                 var fields = new SerializedObject(view);
@@ -112,6 +112,61 @@ namespace EmpireAtWar.Tests.Editor
             {
                 if (controller != null) controller.LateDispose();
                 PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void PlayLoadList_SeparatesModesDisablesOldVersionsAndShowsLoadErrors()
+        {
+            var root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/PlayUi.prefab");
+            EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController controller = null;
+            try
+            {
+                var view = root.GetComponent<EmpireAtWar.Entities.MainMenu.Play.PlayUi>();
+                var saves = new EmptySaves();
+                var header = EmpireAtWar.Services.Saves.BattleSaveHeader.Create(
+                    EmpireAtWar.Entities.Game.GameMode.Skirmish, EmpireAtWar.Services.Saves.BattleSaveSlot.Quicksave,
+                    DateTime.UtcNow, 400f, EmpireAtWar.Controllers.Game.GameSpeed.Normal);
+                var old = JsonUtility.FromJson<EmpireAtWar.Services.Saves.BattleSaveHeader>(
+                    JsonUtility.ToJson(header).Replace("\"version\":1", "\"version\":0"));
+                saves.Headers = new[] { header, old };
+                var routes = new RouteStub();
+                controller = new EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController(
+                    new UiServiceStub(view), new CancelRouterStub(), routes, routes, routes, saves, null);
+                controller.Open();
+                var fields = new SerializedObject(view);
+                var load = (Button)fields.FindProperty("loadButton").objectReferenceValue;
+                var status = (TMPro.TMP_Text)fields.FindProperty("loadStatus").objectReferenceValue;
+                var slots = (TMPro.TMP_Dropdown)fields.FindProperty("saveSlots").objectReferenceValue;
+                Assert.That(load.interactable, Is.True);
+                Assert.That(slots.options.Count, Is.EqualTo(2));
+                controller.SelectSave(1);
+                Assert.That(load.interactable, Is.False);
+                Assert.That(status.text, Does.Contain("not supported"));
+                controller.SelectSaveMode(1);
+                Assert.That(saves.LastMode, Is.EqualTo(EmpireAtWar.Entities.Game.GameMode.Survival));
+                Assert.That(load.interactable, Is.False);
+                controller.SelectSaveMode(0);
+                controller.LoadSave();
+                Assert.That(status.text, Does.Contain("Load failed").And.Contain("Unreadable save"));
+            }
+            finally
+            {
+                if (controller != null) controller.LateDispose();
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        private sealed class EmptySaves : EmpireAtWar.Services.Saves.IBattleSaveRepository
+        {
+            public EmpireAtWar.Services.Saves.BattleSaveHeader[] Headers = Array.Empty<EmpireAtWar.Services.Saves.BattleSaveHeader>();
+            public EmpireAtWar.Entities.Game.GameMode LastMode;
+            public void Save(EmpireAtWar.Services.Saves.BattleSave save) => throw new NotSupportedException();
+            public EmpireAtWar.Services.Saves.BattleSave Load(EmpireAtWar.Entities.Game.GameMode mode, EmpireAtWar.Services.Saves.BattleSaveSlot slot) => throw new System.IO.InvalidDataException("Unreadable save");
+            public System.Collections.Generic.IReadOnlyList<EmpireAtWar.Services.Saves.BattleSaveHeader> List(EmpireAtWar.Entities.Game.GameMode mode)
+            {
+                LastMode = mode;
+                return mode == EmpireAtWar.Entities.Game.GameMode.Skirmish ? Headers : Array.Empty<EmpireAtWar.Services.Saves.BattleSaveHeader>();
             }
         }
 

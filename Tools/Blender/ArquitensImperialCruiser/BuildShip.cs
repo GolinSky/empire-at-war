@@ -87,9 +87,10 @@ public static class BuildArquitensImperialCruiserShip
                 weapons.Add(weapon);
                 mappings.Add(new {attachment, id = weapon.Id, weaponType = (int)weapon.WeaponType,
                     position = new[] {position.x, position.y, position.z}, yaw = weapon.transform.eulerAngles.y,
-                    muzzleA = muzzleA.name, muzzleB = muzzleB.name, targetable = false});
+                    muzzleA = muzzleA.name, muzzleB = muzzleB.name, targetable = true});
             }
-            Assign(health, "<ShipUnits>k__BackingField", new UnityEngine.Object[0]);
+            // Source marks every turret Is_Targetable=No; the project always exposes weapon hardpoints as targets.
+            Assign(health, "<ShipUnits>k__BackingField", weapons.ToArray());
             weaponsComponent.transform.SetParent(body, false);
             Assign(weaponsComponent, "hardPoints", weapons.ToArray());
             shield.transform.SetParent(body, true);
@@ -119,7 +120,11 @@ public static class BuildArquitensImperialCruiserShip
         Set(data, "ShieldRegenerateValue", 4); Set(data, "ShieldRegenerateDelay", 1);
         Set(data, "HullBottom", bottom); Set(data, "HullTop", top); Set(data, "NavigationRadius", radius);
         Set(data, "Range", 562.5f); Set(data, "BodyRotationMaxAngle", 15);
-        data.FindProperty("hardPointHealth").arraySize = 0;
+        var hardPointHealth = data.FindProperty("hardPointHealth"); hardPointHealth.arraySize = 1;
+        var weaponHealth = hardPointHealth.GetArrayElementAtIndex(0);
+        weaponHealth.FindPropertyRelative("hardPointType").intValue = 0;
+        weaponHealth.FindPropertyRelative("health").floatValue = 250;
+        weaponHealth.FindPropertyRelative("hullDamageMultiplier").floatValue = 1;
         data.FindProperty("hangarBays").arraySize = 0;
         var abilities = data.FindProperty("abilities"); abilities.arraySize = 1; abilities.GetArrayElementAtIndex(0).intValue = 23;
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(WRECK);
@@ -148,7 +153,7 @@ public static class BuildArquitensImperialCruiserShip
         finally { PrefabUtility.UnloadPrefabContents(root); }
         AssetDatabase.SaveAssets();
         File.WriteAllText(TASK + "GameplayBounds.json", JsonConvert.SerializeObject(new {size = new[] {bounds.size.x, bounds.size.y, bounds.size.z}, bottom, top, radius}, Formatting.Indented));
-        return "Saved eight non-targetable weapons, hull-only health, shield/fog/team/collision bindings, ship data, wreck and placement preview.";
+        return "Saved eight targetable weapons, shield/fog/team/collision bindings, ship data, wreck and placement preview.";
     }
     static void Copy(string source, string target) { if (!File.Exists(target) && !AssetDatabase.CopyAsset(source, target)) throw new InvalidOperationException(target); }
     static MonoBehaviour Component(GameObject root, string name) => root.GetComponentsInChildren<MonoBehaviour>(true).Single(m => m.GetType().Name == name);

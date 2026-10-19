@@ -63,6 +63,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 maxUnitCapacity);
         }
 
+        /// <summary>Takes a reservation for a unit restored from a save, which already passed the limits once.</summary>
+        public void Adopt(UnitLimitKey unitId, int unitCapacity)
+        {
+            _reservedCounts[unitId] = GetReservedCount(unitId) + 1;
+            CurrentUnitCapacity += unitCapacity;
+        }
+
         public void Release(UnitLimitKey unitId, int unitCapacity)
         {
             int reservedCount = GetReservedCount(unitId);

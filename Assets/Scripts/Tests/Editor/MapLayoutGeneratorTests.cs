@@ -1,8 +1,10 @@
 using System;
+using System.Text;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Models.Factions;
@@ -302,6 +304,49 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(first.GetStationPosition(TestPlayers.Human)));
             Assert.That(second.Fields.Count, Is.EqualTo(first.Fields.Count));
             Assert.That(second.PlanetPosition, Is.EqualTo(first.PlanetPosition));
+        }
+
+        [Test]
+        public void SavedSkirmishSeed_RebuildsIdenticalLayout()
+        {
+            BattleDefinition battle = SkirmishPreset.Create(TestPlayers.CreateTeamGame().Players,
+                EmpireAtWar.Entities.Planet.PlanetType.Coruscant, MapSize.Large,
+                BattleVictoryCondition.DestroyEnemyFleet, 1000f, true, SkirmishPreset.NewMapSeed()).Build();
+            BattleDefinition loaded = JsonUtility.FromJson<BattleSetupSave>(
+                JsonUtility.ToJson(BattleSetupSave.From(battle))).Rebuild();
+
+            Assert.That(Fingerprint(GenerateFor(loaded)), Is.EqualTo(Fingerprint(GenerateFor(battle))));
+        }
+
+        private MapLayout GenerateFor(BattleDefinition battle)
+        {
+            return _generator.Generate(battle.Map.Size, battle.Slots, new Random(battle.Map.Seed));
+        }
+
+        private static string Fingerprint(MapLayout layout)
+        {
+            StringBuilder text = new StringBuilder();
+            text.Append(layout.PlanetPosition.ToString("R")).Append('|');
+            for (int i = 0; i < TestPlayers.CreateTeamGame().Players.Count; i++)
+                text.Append(layout.GetStationPosition(new PlayerId(i)).ToString("R")).Append(';');
+            foreach (ZoneSpot zone in layout.Zones)
+                text.Append(zone.Center.ToString("R")).Append(zone.Owner).Append(zone.IsCapturable).Append(';');
+            foreach (SiteSpot site in layout.Sites)
+                text.Append(site.Center.ToString("R")).Append(site.FacilityType).Append(';');
+            foreach (MapLane lane in layout.Lanes)
+                foreach (Vector3 point in lane.Points)
+                    text.Append(point.ToString("R")).Append(';');
+            foreach (AsteroidField field in layout.Fields)
+            {
+                text.Append(field.Floor.ToString("R")).Append(field.Ceiling.ToString("R")).Append('|');
+                foreach (FieldVolume volume in field.Volumes)
+                    text.Append(volume.Center.ToString("R")).Append(volume.Radius.ToString("R")).Append(';');
+                foreach (AsteroidSpot rock in field.Rocks)
+                    text.Append(rock.Position.ToString("R")).Append(rock.Rotation.ToString("R"))
+                        .Append(rock.Scale.ToString("R")).Append(rock.Size).Append(';');
+            }
+
+            return text.ToString();
         }
 
         private MapLayout Generate(MapSize mapSize, EnemyAiDifficulty difficulty, int seed)

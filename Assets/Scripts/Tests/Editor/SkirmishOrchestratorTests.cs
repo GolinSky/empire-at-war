@@ -318,6 +318,7 @@ namespace EmpireAtWar.Tests.Editor
             public void ExitGame() => ExitCount++;
 
             public void StartBattle(BattleDefinition definition) { }
+            public void LoadBattle(EmpireAtWar.Services.Saves.BattleSave save) { }
         }
     }
 }

@@ -59,6 +59,8 @@ namespace EmpireAtWar.Models.Economy
             return true;
         }
 
+        public void Restore(float money) => SetMoney(money);
+
         private void SetMoney(float value)
         {
             _money = value;

@@ -17,8 +17,8 @@ public static class VerifyArquitensImperialCruiser
     {
         var root = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
         var health = Config(root, "HealthComponent");
-        Check(health.FindProperty("<ShipUnits>k__BackingField").arraySize == 0, "Hull-only targeting");
         var guns = References(Config(root, "WeaponComponent").FindProperty("hardPoints")).Cast<WeaponHardPoint>().ToArray();
+        Check(References(health.FindProperty("<ShipUnits>k__BackingField")).SequenceEqual(guns), "Every weapon hardpoint is targetable");
         Check(guns.Length == 8 && guns.Select(g => g.Id).OrderBy(i => i).SequenceEqual(Enumerable.Range(0, 8)), "Eight ordered weapons");
         Check(guns.Count(g => (int)g.WeaponType == 39) == 4 && guns.Count(g => (int)g.WeaponType == 40) == 4, "Four turbolasers and four laser cannons");
         Check(!root.GetComponentsInChildren<MonoBehaviour>(true).Any(c => c.GetType().Name == "HangarComponent"), "No hangar");
@@ -28,7 +28,9 @@ public static class VerifyArquitensImperialCruiser
         var data = new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>(DATA));
         Check(Number(data, "Hull") == 1300 && Number(data, "Shields") == 1200 && Number(data, "Speed") == 30, "Requested stats");
         Check(Number(data, "ShieldRegenerateValue") == 4, "Shield regeneration");
-        Check(data.FindProperty("hardPointHealth").arraySize == 0 && data.FindProperty("hangarBays").arraySize == 0, "No targetable systems or fighters");
+        var hardPointHealth = data.FindProperty("hardPointHealth");
+        Check(hardPointHealth.arraySize == 1 && hardPointHealth.GetArrayElementAtIndex(0).FindPropertyRelative("hardPointType").intValue == 0 && hardPointHealth.GetArrayElementAtIndex(0).FindPropertyRelative("health").floatValue == 250, "Weapon hardpoint health");
+        Check(data.FindProperty("hangarBays").arraySize == 0, "No fighters");
         Check(data.FindProperty("abilities").arraySize == 1 && data.FindProperty("abilities").GetArrayElementAtIndex(0).intValue == 23, "Own Boost Weapon Power");
         Check(Entry("Assets/Settings/Data/Ship/Shared/ShipsData.asset", "shipsData.keyValue", 204).FindPropertyRelative("m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(DATA), "Ship registry");
         foreach (var path in new[] {VIEW, DATA})
@@ -113,7 +115,7 @@ public static class VerifyArquitensImperialCruiser
             Check(error < .0001f, "Unity attachment positions " + name + ": " + error);
             geometry.Add(new {name, meshes = meshes.Length, triangles, bones = ((JObject)conversion["source"]["bones"]).Count, maximumBoneError = error});
         }
-        var report = new {asset = VIEW, hull = 1300, shields = 1200, speed = 30, targetableHardpoints = 0, teamRendererBindings = teamRenderers.Length, wreckMeshes = opaque.Length, weapons = guns.GroupBy(g => (int)g.WeaponType).Select(g => new {type = g.Key, count = g.Count()}).ToArray(), bounds = new[] {bounds.size.x, bounds.size.y, bounds.size.z}, geometry, registrations = true, missingScripts = 0, brokenReferences = 0, playModeStartedByThisImport = false, editorWasPlayingDuringReadback = EditorApplication.isPlaying, automatedTests = false};
+        var report = new {asset = VIEW, hull = 1300, shields = 1200, speed = 30, targetableHardpoints = guns.Length, teamRendererBindings = teamRenderers.Length, wreckMeshes = opaque.Length, weapons = guns.GroupBy(g => (int)g.WeaponType).Select(g => new {type = g.Key, count = g.Count()}).ToArray(), bounds = new[] {bounds.size.x, bounds.size.y, bounds.size.z}, geometry, registrations = true, missingScripts = 0, brokenReferences = 0, playModeStartedByThisImport = false, editorWasPlayingDuringReadback = EditorApplication.isPlaying, automatedTests = false};
         File.WriteAllText("Temp/ArquitensImperialCruiserImport/Verification.json", JsonConvert.SerializeObject(report, Formatting.Indented));
         return JsonConvert.SerializeObject(report);
     }

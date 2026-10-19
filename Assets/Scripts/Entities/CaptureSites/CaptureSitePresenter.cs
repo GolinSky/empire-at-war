@@ -33,6 +33,9 @@ namespace EmpireAtWar.Entities.CaptureSites
         public bool IsRevealed { get; private set; }
         public bool IsOperational => _model.State == CaptureSiteState.Operational;
         public bool HasFacility => _model.State is CaptureSiteState.Constructing or CaptureSiteState.Operational;
+        public PlayerId CapturingPlayer => _model.CapturingPlayer;
+        /// <summary>Entity id of the operational facility; 0 while the site has none.</summary>
+        public long FacilityId { get; private set; }
 
         public CaptureSitePresenter(
             ICaptureSiteView view,
@@ -84,9 +87,20 @@ namespace EmpireAtWar.Entities.CaptureSites
             _model.StartConstruction(facilityType, _data.GetCost(facilityType).BuildTime);
         }
 
+        public void SetFacility(long facilityId) => FacilityId = facilityId;
+
         public void ReleaseFacility()
         {
+            FacilityId = 0;
             _model.ReleaseFacility();
+        }
+
+        public void Restore(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer, float captureProgress,
+            SiteFacilityType facilityType, float constructionProgress)
+        {
+            _model.Restore(owner, state, capturingPlayer, captureProgress, facilityType, constructionProgress,
+                _data.GetCost(facilityType).BuildTime);
+            Render();
         }
 
         public void Render()

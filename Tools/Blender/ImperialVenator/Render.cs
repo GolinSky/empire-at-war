@@ -11,13 +11,6 @@ public static class RenderImperialVenator
 {
     public static string Main()
     {
-        foreach (string folder in new[] { "Assets/Art/Materials/Models/EmpireShips/ImperialVenator", "Assets/Art/Materials/Wrecks/ImperialVenator" })
-        foreach (string guid in AssetDatabase.FindAssets("t:Material", new[] { folder }))
-        {
-            var material = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
-            if (material.HasProperty("_TeamMaskStrength")) { material.SetFloat("_TeamMaskStrength", .2f); material.SetFloat("_TeamLiveryStrength", 0); EditorUtility.SetDirty(material); }
-        }
-        AssetDatabase.SaveAssets();
         var scene=EditorSceneManager.NewPreviewScene();
         var previousPalette=Shader.GetGlobalVectorArray("_TeamColors");
         var previousAmbient=RenderSettings.ambientLight;

@@ -48,6 +48,34 @@ namespace EmpireAtWar.Services.Battle
             _human = battle.Human.Slot.Id;
         }
 
+        /// <summary>The wave whose units have been queued; it trails <see cref="SurvivalModel.WaveIndex"/> between waves.</summary>
+        public int Wave => _wave;
+        /// <summary>Units of the current wave still waiting for a spawn point, in spawn order.</summary>
+        public IReadOnlyCollection<UnitTypeId> Pending => _pending;
+        public int Spawned => _spawned;
+        public float SettleTime => _settleTime;
+
+        /// <summary>
+        /// Loads a saved wave in progress so it is not queued again. Spawn edges are picked afresh: earlier
+        /// units have left their spawn points.
+        /// </summary>
+        public void Restore(int wave, IEnumerable<UnitTypeId> pending, int spawned, float settleTime)
+        {
+            _wave = wave;
+            _pending.Clear();
+            foreach (UnitTypeId unit in pending) _pending.Enqueue(unit);
+            _spawned = spawned;
+            _settleTime = settleTime;
+            if (_pending.Count > 0) _points.BeginWave();
+        }
+
+        /// <summary>Restored attackers already have their attack order; they are not ordered again.</summary>
+        public void AdoptLivingAttackers()
+        {
+            foreach (IEntity entity in _entities.Entities)
+                if (entity.Owner == _enemy && !entity.HealthModel.IsDestroyed) _commanded.Add(entity.Id);
+        }
+
         public void Tick()
         {
             if (_state.State != BattleState.Running) return;

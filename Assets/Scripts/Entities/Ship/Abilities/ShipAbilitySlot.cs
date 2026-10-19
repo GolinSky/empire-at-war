@@ -12,6 +12,9 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public ShipAbilityId Id { get; }
         public ShipAbilityDefinition Definition { get; }
         public IShipAbilityFacade Owner { get; }
+        // A restored cooldown can be longer than the recovery delay; the bar measures against the longer one.
+        private float _recoveryTotal;
+
         public ShipAbilityState State { get; private set; } = ShipAbilityState.Ready;
         public float TimeLeft { get; private set; }
         public IShipAbility RunningAbility { get; private set; }
@@ -28,7 +31,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public float Progress01 => State switch
         {
             ShipAbilityState.Active => Definition.Duration > 0f ? TimeLeft / Definition.Duration : 0f,
-            ShipAbilityState.Recovering => Definition.RecoveryDelay > 0f ? TimeLeft / Definition.RecoveryDelay : 0f,
+            ShipAbilityState.Recovering => _recoveryTotal > 0f ? TimeLeft / _recoveryTotal : 0f,
             _ => 0f
         };
 
@@ -38,6 +41,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             Id = id;
             Definition = definition;
             Owner = owner;
+            _recoveryTotal = definition.RecoveryDelay;
         }
 
         internal void Activate(IShipAbility ability)
@@ -53,6 +57,19 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             RunningAbility = null;
             State = ShipAbilityState.Recovering;
             TimeLeft = Definition.RecoveryDelay;
+            _recoveryTotal = Definition.RecoveryDelay;
+            Changed?.Invoke();
+        }
+
+        /// <summary>Loads a saved Ready or Recovering state; active abilities are saved as recovering.</summary>
+        internal void Restore(ShipAbilityState state, float timeLeft)
+        {
+            if (state == ShipAbilityState.Active)
+                throw new ArgumentException("Active abilities are restored as recovering.", nameof(state));
+            RunningAbility = null;
+            State = state;
+            TimeLeft = state == ShipAbilityState.Recovering ? timeLeft : 0f;
+            _recoveryTotal = Math.Max(Definition.RecoveryDelay, TimeLeft);
             Changed?.Invoke();
         }
 

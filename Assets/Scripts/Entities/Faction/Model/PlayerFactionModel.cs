@@ -134,6 +134,41 @@ namespace EmpireAtWar.Models.Factions
             NotifyProductionChanged();
         }
 
+        /// <summary>Every queued item in pipeline order; only each pipeline's first item has started building.</summary>
+        public IEnumerable<ProductionQueueItem> QueuedItems
+        {
+            get
+            {
+                foreach (Queue<ProductionQueueItem> queue in _productionQueues.Values)
+                foreach (ProductionQueueItem item in queue)
+                    yield return item;
+            }
+        }
+
+        /// <summary>
+        /// Queues saved items as they were, already paid for. Structures and the Resolute take their reservations
+        /// again, as a purchase does.
+        /// </summary>
+        public void RestoreQueue(IEnumerable<ProductionQueueItem> items)
+        {
+            foreach (ProductionQueueItem item in items)
+            {
+                UnitRequest unitRequest = item.UnitRequest;
+                if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))
+                {
+                    queue = new Queue<ProductionQueueItem>();
+                    _productionQueues.Add(unitRequest.Id, queue);
+                }
+
+                queue.Enqueue(item);
+                if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
+                    _resoluteReserved = true;
+                if (IsStructureRequest(unitRequest)) ReserveStructure(unitRequest);
+            }
+
+            NotifyProductionChanged();
+        }
+
         public void ReserveStructure(UnitRequest request)
         {
             var key = (request.GetType(), request.Id);
