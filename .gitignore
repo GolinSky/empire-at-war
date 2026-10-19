@@ -57,3 +57,5 @@ graphify-out/**
 # Do not ignore markdown files
 !graphify-out/**/*.md
 
+# Generated local artifacts
+/output/
