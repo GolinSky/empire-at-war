@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 

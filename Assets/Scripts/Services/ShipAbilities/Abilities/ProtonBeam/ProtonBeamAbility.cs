@@ -3,7 +3,6 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using Object = UnityEngine.Object;

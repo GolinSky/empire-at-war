@@ -4,7 +4,7 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;

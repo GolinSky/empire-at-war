@@ -1,7 +1,6 @@
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.ShipAbilities;
 
-namespace EmpireAtWar.Entities.Ship.Abilities
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     /// <summary>
     /// Orders a unit to close to the ability range of the target and then use the ability.

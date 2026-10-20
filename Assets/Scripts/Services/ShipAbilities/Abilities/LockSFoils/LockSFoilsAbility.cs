@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities

@@ -1,5 +1,4 @@
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.ShipNavigation;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ namespace EmpireAtWar.Components.Obstacles
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Collider))]
     public sealed class MapObstacle : MonoBehaviour, IMapObstacleContactSource,
-        IMiniMapObstacleSource
+        IObstacleBoundsSource
     {
         [SerializeField] private Collider obstacleCollider;
 

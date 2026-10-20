@@ -1,4 +1,6 @@
-namespace EmpireAtWar.Controllers.Factions
+using EmpireAtWar.Controllers.Factions;
+
+namespace EmpireAtWar.Services.Enemy
 {
     public interface IEnemyPurchaseProcessor
     {

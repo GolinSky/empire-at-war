@@ -1,4 +1,3 @@
-using EmpireAtWar.Entities.CoreGameUi;
 using System;
 using System.Threading;
 using EmpireAtWar.Commands.Game;

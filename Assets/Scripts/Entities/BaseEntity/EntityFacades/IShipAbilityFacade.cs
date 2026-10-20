@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
 
-namespace EmpireAtWar.Entities.Ship.Abilities
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public interface IShipAbilityFacade : IEntityFacade
     {

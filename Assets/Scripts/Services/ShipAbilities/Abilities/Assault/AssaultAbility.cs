@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities

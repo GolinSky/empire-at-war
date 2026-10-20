@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
@@ -96,7 +97,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _model.MapRange = layout.SizeRange;
             // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
             Physics.SyncTransforms();
-            foreach (IMiniMapObstacleSource obstacleSource in battleMap.Obstacles)
+            foreach (IObstacleBoundsSource obstacleSource in battleMap.Obstacles)
             {
                 Bounds bounds = obstacleSource.WorldBounds;
                 _model.AddObstacle(new MiniMapObstacle(

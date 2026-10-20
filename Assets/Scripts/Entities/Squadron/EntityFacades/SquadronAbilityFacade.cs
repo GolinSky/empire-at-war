@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Health;

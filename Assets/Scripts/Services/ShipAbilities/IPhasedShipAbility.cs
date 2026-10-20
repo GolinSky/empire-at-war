@@ -1,5 +1,5 @@
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;

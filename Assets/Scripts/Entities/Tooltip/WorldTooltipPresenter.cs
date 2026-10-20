@@ -7,7 +7,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Models.MiniMap;
+using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.CaptureSites;
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly HardPointOverlayData _hardPointData;
         private readonly WeaponsData _weaponsData;
         private readonly INotifier<BattleMap> _battleMap;
-        private readonly List<IMiniMapObstacleSource> _obstacles = new List<IMiniMapObstacleSource>();
+        private readonly List<IObstacleBoundsSource> _obstacles = new List<IObstacleBoundsSource>();
 
         private TooltipHandle _handle;
 
@@ -108,7 +108,7 @@ namespace EmpireAtWar.Entities.Tooltip
                 }
                 RaycastHit hit = _cameraService.ScreenPointToRay(point);
                 if (hit.collider != null && _visionService.IsVisible(_local.Id, hit.point))
-                    foreach (IMiniMapObstacleSource obstacle in _obstacles)
+                    foreach (IObstacleBoundsSource obstacle in _obstacles)
                     {
                         if (!obstacle.WorldBounds.Contains(hit.point)) continue;
                         _handle = _tooltipService.Show(new TooltipContentProvider(this, obstacle,

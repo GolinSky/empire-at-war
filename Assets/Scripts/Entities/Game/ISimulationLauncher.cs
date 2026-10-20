@@ -1,6 +1,4 @@
-using EmpireAtWar.Entities.Game;
-
-namespace EmpireAtWar.Entities.MainMenu.Simulation
+namespace EmpireAtWar.Entities.Game
 {
     public interface ISimulationLauncher
     {

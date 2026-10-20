@@ -1,4 +1,4 @@
-namespace EmpireAtWar.Entities.CoreGameUi
+namespace EmpireAtWar.Controllers.Game
 {
     public interface ISkirmishFlow
     {

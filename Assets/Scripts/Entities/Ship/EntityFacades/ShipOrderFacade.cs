@@ -3,7 +3,6 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
