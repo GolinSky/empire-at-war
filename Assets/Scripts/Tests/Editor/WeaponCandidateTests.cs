@@ -4,6 +4,7 @@ using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using NUnit.Framework;
@@ -100,6 +101,24 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(IsDirty(), Is.True);
         }
 
+        [Test]
+        public void RespawnedTarget_IsListedAgainAfterItsGroupDied()
+        {
+            HealthStub health = new HealthStub(Units(1));
+            HealthFacadeStub facade = new HealthFacadeStub();
+            _weapon.AddTarget(new AttackData(health, facade, HardPointType.Any, null), AttackType.Base);
+            _weapon.AddTarget(Group(1), AttackType.Base);
+            _weapon.AddTarget(Group(1), AttackType.Base);
+
+            health.Destroy();
+            health.Respawn();
+
+            Assert.That(_weapon.HasTarget(facade), Is.False);
+            AttackData respawned = new AttackData(health, facade, HardPointType.Any, null);
+            _weapon.AddTarget(respawned, AttackType.Base);
+            Assert.That(((List<AttackData>)Field("_attackDataList")).Contains(respawned), Is.True);
+        }
+
         private AttackData Group(int units) =>
             new AttackData(new HealthStub(Units(units)), null, HardPointType.Any, null);
 
@@ -163,6 +182,13 @@ namespace EmpireAtWar.Tests.Weapon
                 IsDestroyed = true;
                 OnDestroy?.Invoke();
             }
+
+            public void Respawn() => IsDestroyed = false;
+        }
+
+        private sealed class HealthFacadeStub : IHealthFacade
+        {
+            public void ApplyDamage(float damage, DamageType damageType, int id) { }
         }
 
         private sealed class HardPointStub : IHardPointModel

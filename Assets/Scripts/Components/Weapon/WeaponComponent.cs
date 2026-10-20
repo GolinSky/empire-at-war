@@ -593,8 +593,19 @@ namespace EmpireAtWar.Components.Weapon
             Array.Clear(_retryAt, 0, _retryAt.Length);
         }
 
+        // Pooled targets (squadrons) report IsDestroyed false again after a respawn, so their dead groups leave the
+        // list now; a stale group would otherwise match the new life by source and block its detection.
         private void OnGroupDestroyed()
         {
+            for (int i = _attackDataList.Count - 1; i >= 0; i--)
+            {
+                AttackData group = _attackDataList[i];
+                if (!group.IsDestroyed) continue;
+                _attackDataList.RemoveAt(i);
+                UnsubscribeIfUnused(group);
+                AttackSequenceDiagnostics.RecordTargetInvalidation();
+            }
+
             _destroyedGroups++;
             if (_destroyedGroups * 2 >= _candidateGroups.Count) InvalidateCandidates();
         }
