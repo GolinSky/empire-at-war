@@ -40,9 +40,6 @@ public static class RenderNebula
             RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.4f,.42f,.47f);
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             Render(camera,target,texture,ICON);
-            var pixels=texture.GetPixels32();
-            for(int i=0;i<pixels.Length;i++)pixels[i]=new Color32(255,255,255,pixels[i].a);
-            texture.SetPixels32(pixels);texture.Apply();File.WriteAllBytes(ICON.Replace("Icon.png","Silhouette.png"),texture.EncodeToPNG());
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};
             Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
             for(int i=0;i<8;i++)
@@ -95,13 +92,13 @@ public static class RenderNebula
             Shader.SetGlobalVectorArray("_TeamColors",previousPalette.Length>0?previousPalette:new Vector4[8]);
         }
         AssetDatabase.Refresh();
-        foreach(var path in new[]{ICON,ICON.Replace("Icon.png","Silhouette.png")})
+        foreach(var path in new[]{ICON})
         {
             var importer=(TextureImporter)AssetImporter.GetAtPath(path);
             importer.textureType=TextureImporterType.Sprite;importer.spriteImportMode=SpriteImportMode.Single;
             importer.alphaIsTransparency=true;importer.mipmapEnabled=false;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();
         }
-        AssetDatabase.SaveAssets();return "Corellian icon, silhouette, eight team palettes, placement and wreck rendered.";
+        AssetDatabase.SaveAssets();return "Corellian icon, eight team palettes, placement and wreck rendered.";
     }
     static void Render(Camera camera,RenderTexture target,Texture2D texture,string path)
     {

@@ -49,9 +49,6 @@ public static class RenderTectorReplacement
                 {
                     camera.targetTexture = iconTarget;
                     Render(camera, iconTarget, icon, ICONS + "TectorIcon.png");
-                    var pixels = icon.GetPixels32();
-                    for (int i = 0; i < pixels.Length; i++) pixels[i] = new Color32(255, 255, 255, pixels[i].a);
-                    icon.SetPixels32(pixels); icon.Apply(); File.WriteAllBytes(ICONS + "TectorSilhouette.png", icon.EncodeToPNG());
                 }
                 finally { camera.targetTexture = target; RenderTexture.ReleaseTemporary(iconTarget); }
             }
@@ -92,7 +89,7 @@ public static class RenderTectorReplacement
             Shader.SetGlobalVectorArray("_TeamColors", previousPalette.Length > 0 ? previousPalette : new Vector4[8]);
         }
         AssetDatabase.Refresh(); AssetDatabase.SaveAssets();
-        return "Rendered actual Tector replacement, transparent 512px icon/silhouette, placement, and eight live/wreck palettes.";
+        return "Rendered actual Tector replacement, transparent 512px icon, placement, and eight live/wreck palettes.";
     }
     private static void Render(Camera camera, RenderTexture target, Texture2D texture, string path)
     {

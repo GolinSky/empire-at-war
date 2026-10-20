@@ -39,7 +39,5 @@ for i in range(1,8):assert ImageChops.difference(base,Image.open(TASK/f'Previews
 icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png').convert('RGBA')
 assert icon.size==(512,512) and icon.getchannel('A').getextrema()==(0,255)
 bounds=icon.getchannel('A').getbbox();assert bounds[0]>0 and bounds[1]>0 and bounds[2]<512 and bounds[3]<512
-silhouette=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette.png').convert('RGBA')
-assert silhouette.getchannel('A').tobytes()==icon.getchannel('A').tobytes()
 result=dict(source_hashes_unchanged=len(audit['source_hashes']),lossless_texture_copies=textures,old_visual_records_removed=len(cleanup['originalArchiveRecords']),shared_tector_assets_preserved=len(cleanup['movedAssets']),unused_records_deleted=len(cleanup['deletedAssets']),visible_binary_triangle_counts=True,live_and_wreck_palettes=8,transparent_icon_size=list(icon.size),icon_crop=list(bounds))
 (TASK/'SourceVerification.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))

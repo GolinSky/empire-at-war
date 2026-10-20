@@ -298,7 +298,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Squadrons.Icon.SquadronIconComponent
   iconRoot: {fileID: 3449200199873622024}
   frameImage: {fileID: 2120427636231629580}
-  silhouetteImage: {fileID: 8696505948647311753}
   iconImage: {fileID: 781039129813190373}
   screenSize: 72
   clickSize: 132
@@ -1814,7 +1813,6 @@ RectTransform:
   m_Children:
   - {fileID: 2725740972429801536}
   - {fileID: 5563171590969940400}
-  - {fileID: 745272085030712711}
   - {fileID: 3731542325231857467}
   m_Father: {fileID: 692308280999168013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1967,8 +1965,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -18, y: -18}
+  m_AnchoredPosition: {x: 0, y: -1.5}
+  m_SizeDelta: {x: -13.5, y: -13.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7402239058386819054
 CanvasRenderer:
@@ -1985,13 +1983,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5406956875396861065}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 52757c449fe40a046b09a009258d41dd, type: 2}
+  m_Color: {r: 0.2, g: 0.55, b: 1, a: 0.2}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3684,81 +3682,6 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 2
   <WeaponType>k__BackingField: 15
---- !u!1 &9038581526658494965
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 745272085030712711}
-  - component: {fileID: 5178238812936483156}
-  - component: {fileID: 8696505948647311753}
-  m_Layer: 12
-  m_Name: Silhouette
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &745272085030712711
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9038581526658494965}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3449200199873622024}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -1.5}
-  m_SizeDelta: {x: -13.5, y: -13.5}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5178238812936483156
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9038581526658494965}
-  m_CullTransparentMesh: 1
---- !u!114 &8696505948647311753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9038581526658494965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 2100000, guid: 52757c449fe40a046b09a009258d41dd, type: 2}
-  m_Color: {r: 0.2, g: 0.55, b: 1, a: 0.2}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 524d65b06058f0a428ee3d2a9b9b78e9, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &9180604307971085455
 GameObject:
   m_ObjectHideFlags: 0

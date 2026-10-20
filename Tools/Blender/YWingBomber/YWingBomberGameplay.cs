@@ -100,7 +100,7 @@ public static class YWingBomberGameplay
             var selected=new SerializedObject(root.GetComponent<SelectionComponent>());
             ((UnityEngine.UI.Image)selected.FindProperty("selectedImage").objectReferenceValue).rectTransform.sizeDelta=new Vector2(36,36);
             var iconData=new SerializedObject(root.GetComponent<SquadronIconComponent>());
-            foreach(var field in new[]{"iconImage","silhouetteImage"}) ((UnityEngine.UI.Image)iconData.FindProperty(field).objectReferenceValue).sprite=icon;
+            ((UnityEngine.UI.Image)iconData.FindProperty("iconImage").objectReferenceValue).sprite=icon;
             PrefabUtility.SaveAsPrefabAsset(root,VIEW);
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }

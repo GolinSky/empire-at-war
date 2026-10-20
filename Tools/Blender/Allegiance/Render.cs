@@ -37,9 +37,6 @@ public static class RenderAllegiance
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             Directory.CreateDirectory("Temp/AllegianceImport/Previews");
             Render(camera,target,texture,"Assets/Art/Textures/Ui/Icons/ShipIcon/AllegianceIcon.png");
-            var iconPixels=texture.GetPixels32();
-            for(int i=0;i<iconPixels.Length;i++) iconPixels[i]=new Color32(255,255,255,iconPixels[i].a);
-            texture.SetPixels32(iconPixels); texture.Apply(); File.WriteAllBytes("Assets/Art/Textures/Ui/Icons/ShipIcon/AllegianceSilhouette.png",texture.EncodeToPNG());
             camera.transform.position=new Vector3(0,600,0); camera.transform.rotation=Quaternion.Euler(90,0,0); Render(camera,target,texture,"Temp/AllegianceImport/Previews/Top.png"); camera.transform.position=new Vector3(280,330,-380); camera.transform.LookAt(Vector3.zero); Render(camera,target,texture,"Temp/AllegianceImport/Previews/Stern.png"); camera.transform.position=new Vector3(280,330,380); camera.transform.LookAt(Vector3.zero);
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};
             Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
@@ -72,14 +69,14 @@ public static class RenderAllegiance
             else Shader.SetGlobalVectorArray("_TeamColors",new Vector4[8]);
         }
         AssetDatabase.Refresh();
-        foreach(var name in new[]{"AllegianceIcon","AllegianceSilhouette"})
+        foreach(var name in new[]{"AllegianceIcon"})
         {
             var importer=(TextureImporter)AssetImporter.GetAtPath("Assets/Art/Textures/Ui/Icons/ShipIcon/"+name+".png");
             importer.textureType=TextureImporterType.Sprite; importer.spriteImportMode=SpriteImportMode.Single;
             importer.alphaIsTransparency=true; importer.mipmapEnabled=false; importer.textureCompression=TextureImporterCompression.Uncompressed; importer.SaveAndReimport();
         }
         AssetDatabase.SaveAssets();
-        return "Rendered transparent Allegiance icon, silhouette, top/stern views and eight team palettes.";
+        return "Rendered transparent Allegiance icon, top/stern views and eight team palettes.";
     }
     static void Render(Camera camera,RenderTexture target,Texture2D texture,string path)
     {

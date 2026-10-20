@@ -39,9 +39,6 @@ public static class RenderISDIRemake
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             Directory.CreateDirectory("Temp/ISDIRemakeImport/Previews");
             Render(camera,target,texture,"Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png");
-            var iconPixels=texture.GetPixels32();
-            for(int i=0;i<iconPixels.Length;i++) iconPixels[i]=new Color32(255,255,255,iconPixels[i].a);
-            texture.SetPixels32(iconPixels); texture.Apply(); File.WriteAllBytes("Assets/Art/Textures/Ui/Icons/ShipIcon/ISDISilhouette.png",texture.EncodeToPNG());
             camera.transform.position=new Vector3(0,500,0); camera.transform.rotation=Quaternion.Euler(90,0,0); Render(camera,target,texture,"Temp/ISDIRemakeImport/Previews/Top.png"); camera.transform.position=new Vector3(240,280,-330); camera.transform.LookAt(Vector3.zero); Render(camera,target,texture,"Temp/ISDIRemakeImport/Previews/Stern.png"); camera.transform.position=new Vector3(240,280,330); camera.transform.LookAt(Vector3.zero);
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};
             Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
@@ -84,14 +81,14 @@ public static class RenderISDIRemake
             Shader.SetGlobalVectorArray("_TeamColors",previousPalette.Length>0?previousPalette:new Vector4[8]);
         }
         AssetDatabase.Refresh();
-        foreach(var name in new[]{"ISDIIcon","ISDISilhouette"})
+        foreach(var name in new[]{"ISDIIcon"})
         {
             var importer=(TextureImporter)AssetImporter.GetAtPath("Assets/Art/Textures/Ui/Icons/ShipIcon/"+name+".png");
             importer.textureType=TextureImporterType.Sprite; importer.spriteImportMode=SpriteImportMode.Single;
             importer.alphaIsTransparency=true; importer.mipmapEnabled=false; importer.textureCompression=TextureImporterCompression.Uncompressed; importer.SaveAndReimport();
         }
         AssetDatabase.SaveAssets();
-        return "Rendered ISDI icon, silhouette, placement, top/stern views and eight live/wreck team palettes.";
+        return "Rendered ISDI icon, placement, top/stern views and eight live/wreck team palettes.";
     }
     static void Render(Camera camera,RenderTexture target,Texture2D texture,string path)
     {

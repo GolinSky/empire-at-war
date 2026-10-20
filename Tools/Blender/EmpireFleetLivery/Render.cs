@@ -24,7 +24,6 @@ public static class RenderFleetLivery
             RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.4f,.42f,.47f);
             Render(camera,target,texture,folder+"Unowned.png");
             string icon="Assets/Art/Textures/Ui/Icons/ShipIcon/"+ship+"Icon.png";File.WriteAllBytes(icon,texture.EncodeToPNG());
-            var pixels=texture.GetPixels32();for(int i=0;i<pixels.Length;i++)pixels[i]=new Color32(255,255,255,pixels[i].a);texture.SetPixels32(pixels);texture.Apply();File.WriteAllBytes(icon.Replace("Icon.png","Silhouette.png"),texture.EncodeToPNG());
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
             for(int i=0;i<8;i++){foreach(var r in renderers)r.SetShaderUserValue((uint)(i+1));Render(camera,target,texture,folder+"Team"+i+".png");}
             foreach(var r in renderers)

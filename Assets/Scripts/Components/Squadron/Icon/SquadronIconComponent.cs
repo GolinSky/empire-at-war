@@ -30,7 +30,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [Tooltip("Marker root, moved onto the shared squadron icon canvas when the squadron spawns.")]
         [SerializeField] private RectTransform iconRoot;
         [SerializeField] private Image frameImage;
-        [SerializeField] private Image silhouetteImage;
         [SerializeField] private Image iconImage;
         private CameraData _cameraData;
 
@@ -173,8 +172,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             Color color = _playerColors.GetColor(_owner);
             frameImage.color = color;
             color.a = isSelected ? 0.35f : 0.2f;
-            silhouetteImage.color = color;
-            iconImage.color = Color.white;
+            iconImage.color = color;
         }
     }
 }

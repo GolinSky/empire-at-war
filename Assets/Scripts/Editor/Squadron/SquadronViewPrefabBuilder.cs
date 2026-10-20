@@ -40,9 +40,8 @@ namespace EmpireAtWar.Editor.Squadrons
         private const float ICON_SIZE = 72f;
         private const float ICON_FRAME_STROKE = 1.5f;
         private const float ICON_FRAME_CORNER_RADIUS = 3f;
-        private const float ICON_SILHOUETTE_PADDING = 6.75f;
+        private const float ICON_PADDING = 6.75f;
         private const float ICON_SHADOW_OFFSET = -1.5f;
-        private const float ICON_PADDING = 9f;
 
         [MenuItem("Tools/Empire At War/Units/Squadrons/Build Squadron Views")]
         public static void BuildAll()
@@ -239,23 +238,16 @@ namespace EmpireAtWar.Editor.Squadrons
             rectangle.CornerRadius = Vector4.one * ICON_FRAME_CORNER_RADIUS;
             frame.Rectangle = rectangle;
 
-            UnityEngine.UI.Image silhouetteImage =
-                CreateIconImage<UnityEngine.UI.Image>("Silhouette", canvasObject.transform, ICON_SILHOUETTE_PADDING);
-            silhouetteImage.sprite = unitIcon;
-            silhouetteImage.material = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Ui/IconShadow.mat");
-            silhouetteImage.preserveAspect = true;
-            silhouetteImage.rectTransform.anchoredPosition = new Vector2(0f, ICON_SHADOW_OFFSET);
-
             UnityEngine.UI.Image iconImage =
                 CreateIconImage<UnityEngine.UI.Image>("Icon", canvasObject.transform, ICON_PADDING);
             iconImage.sprite = unitIcon;
+            iconImage.material = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Ui/SquadronIcon.mat");
             iconImage.preserveAspect = true;
-            iconImage.color = Color.white;
+            iconImage.rectTransform.anchoredPosition = new Vector2(0f, ICON_SHADOW_OFFSET);
 
             SerializedObject iconObject = new SerializedObject(icon);
             iconObject.FindProperty("iconRoot").objectReferenceValue = canvasRect;
             iconObject.FindProperty("frameImage").objectReferenceValue = frame;
-            iconObject.FindProperty("silhouetteImage").objectReferenceValue = silhouetteImage;
             iconObject.FindProperty("iconImage").objectReferenceValue = iconImage;
             iconObject.ApplyModifiedPropertiesWithoutUndo();
 

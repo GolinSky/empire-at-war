@@ -40,7 +40,7 @@ for name, record in source['textures'].items():
     assert hashlib.sha256(Path(record['path']).read_bytes()).hexdigest()==record['sha256'],name
     imported=Path('Assets/Art/Textures/Models/EmpireShips/Tector')/('Tector_Remake_'+Path(name).stem+'.png')
     assert Image.open(imported).convert('RGBA').tobytes()==Image.open(record['path']).convert('RGBA').tobytes(),name
-for name in ('TectorIcon','TectorSilhouette'):
+for name in ('TectorIcon',):
     path=Path('Assets/Art/Textures/Ui/Icons/ShipIcon')/(name+'.png')
     image=Image.open(path).convert('RGBA')
     assert image.size==(512,512) and image.getchannel('A').getextrema()==(0,255),name

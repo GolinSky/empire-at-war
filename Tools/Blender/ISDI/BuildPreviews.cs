@@ -41,7 +41,7 @@ public static class BuildImperialPreviews
             finally{PrefabUtility.UnloadPrefabContents(root);}
             Render(name,visual,icons);
         }
-        AssetDatabase.SaveAssets();return "Saved four hologram previews, transparent icons, fighter silhouettes and eight team palettes for every imported model.";
+        AssetDatabase.SaveAssets();return "Saved four hologram previews, transparent icons and eight team palettes for every imported model.";
     }
     static void Render(string name,GameObject visual,string folder)
     {
@@ -54,11 +54,11 @@ public static class BuildImperialPreviews
         camera.orthographicSize=points.Max(p=>Mathf.Max(Mathf.Abs(p.x),Mathf.Abs(p.y)))*1.1f;
         var target=RenderTexture.GetTemporary(512,512,24,RenderTextureFormat.ARGB32);camera.targetTexture=target;var texture=new Texture2D(512,512,TextureFormat.RGBA32,false);
         var temporaryMaterials=new System.Collections.Generic.List<Material>();
-        string iconPath="Assets/Art/Textures/Ui/Icons/"+folder+"/"+name+"Icon.png",silhouettePath="Assets/Art/Textures/Ui/Icons/"+folder+"/"+name+"Silhouette.png";
+        string iconPath="Assets/Art/Textures/Ui/Icons/"+folder+"/"+name+"Icon.png";
         try
         {
             RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.4f,.42f,.47f);
-            Capture(iconPath);var pixels=texture.GetPixels32();for(int i=0;i<pixels.Length;i++)pixels[i]=new Color32(255,255,255,pixels[i].a);texture.SetPixels32(pixels);texture.Apply();File.WriteAllBytes(silhouettePath,texture.EncodeToPNG());
+            Capture(iconPath);
             string previews="Temp/ISDIImport/Previews/"+name;Directory.CreateDirectory(previews);
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
             for(int i=0;i<8;i++){foreach(var r in renderers)r.SetShaderUserValue((uint)(i+1));Capture(previews+"/Team"+i+".png");}
@@ -83,6 +83,6 @@ public static class BuildImperialPreviews
             void Capture(string path){camera.Render();RenderTexture.active=target;texture.ReadPixels(new Rect(0,0,512,512),0,0);texture.Apply();File.WriteAllBytes(path,texture.EncodeToPNG());}
         }
         finally{RenderTexture.active=oldActive;camera.targetTexture=null;RenderTexture.ReleaseTemporary(target);UnityEngine.Object.DestroyImmediate(texture);EditorSceneManager.ClosePreviewScene(scene);foreach(var material in temporaryMaterials)UnityEngine.Object.DestroyImmediate(material);RenderSettings.ambientMode=oldMode;RenderSettings.ambientLight=oldAmbient;Shader.SetGlobalVectorArray("_TeamColors",oldPalette.Length>0?oldPalette:new Vector4[8]);}
-        AssetDatabase.Refresh();foreach(string path in new[]{iconPath,silhouettePath}){var importer=(TextureImporter)AssetImporter.GetAtPath(path);importer.textureType=TextureImporterType.Sprite;importer.spriteImportMode=SpriteImportMode.Single;importer.alphaIsTransparency=true;importer.mipmapEnabled=false;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();}
+        AssetDatabase.Refresh();var importer=(TextureImporter)AssetImporter.GetAtPath(iconPath);importer.textureType=TextureImporterType.Sprite;importer.spriteImportMode=SpriteImportMode.Single;importer.alphaIsTransparency=true;importer.mipmapEnabled=false;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();
     }
 }

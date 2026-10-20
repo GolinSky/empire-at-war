@@ -22,7 +22,7 @@ for report in reports:
             converted = Image.open(material[key+'Map']).convert('RGBA')
             assert converted.size == original.size and converted.tobytes() == original.tobytes(), material[key]
             texture_count += 1
-for name in ('ISDIIIIcon', 'ISDIIISilhouette'):
+for name in ('ISDIIIIcon',):
     path=Path('Assets/Art/Textures/Ui/Icons/ShipIcon')/(name+'.png')
     image=Image.open(path)
     assert image.size==(512,512) and image.mode=='RGBA'
@@ -40,7 +40,7 @@ for name in ('SourceAudit','ConversionReport','GeometryReport','UnityGeometry','
     shutil.copy2(TASK/(name+'.json'),DESTINATION/(name+'.json'))
 for source in TASK.glob('*SourceGeometry.json'):
     shutil.copy2(source,DESTINATION/source.name)
-for name in ('ISDIIIIcon','ISDIIISilhouette'):
+for name in ('ISDIIIIcon',):
     shutil.copy2(Path('Assets/Art/Textures/Ui/Icons/ShipIcon')/(name+'.png'),DESTINATION/(name+'.png'))
 shutil.copy2('Tools/Blender/ISDIII/README.md',DESTINATION/'README.md')
 (DESTINATION/'SourceCredits.txt').write_text('AOTR Workshop item 1397421866. Source unit E_Imperial_Star_Destroyer_3; model EV_ISD3.ALO.\nOriginal model/texture paths and SHA-256 fingerprints are recorded in SourceAudit.json.\nConverted assets retain the source artwork; no claim of original authorship is made.\n')

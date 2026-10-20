@@ -44,8 +44,6 @@ icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png').con
 assert icon.size == (512,512) and icon.getchannel('A').getextrema() == (0,255)
 bounds = icon.getchannel('A').getbbox()
 assert bounds[0]>0 and bounds[1]>0 and bounds[2]<512 and bounds[3]<512
-silhouette = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceSilhouette.png').convert('RGBA')
-assert silhouette.getchannel('A').tobytes() == icon.getchannel('A').tobytes()
 result = dict(source_hashes_unchanged=len(audit['source_hashes']), lossless_texture_copies=textures,
               maximum_geometry_error=maximum_geometry_error, maximum_bone_error=maximum_bone_error,
               live_palettes=8, wreck_palettes=8, team_changed_pixel_fraction=coverage, icon_crop=list(bounds),

@@ -10,7 +10,7 @@ source = json.loads((OUTPUT.parent/'SourceAudit.json').read_text())
 snapshot = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in (ASSETS/'Settings').rglob('*') if p.is_file()}
 snapshot.update({str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in (ASSETS/'AddressableAssetsData').rglob('*') if p.is_file()})
 (OUTPUT/'CoreDataHashes.json').write_text(json.dumps(snapshot,indent=2))
-for path in ['Prefabs/Models/Ships/Empire/Tector.prefab','Prefabs/Models/Ships/Empire/TectorShipView.prefab','Prefabs/Models/Wrecks/TectorWreckView.prefab','Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab','Art/Textures/Ui/Icons/ShipIcon/TectorIcon.png','Art/Textures/Ui/Icons/ShipIcon/TectorSilhouette.png']:
+for path in ['Prefabs/Models/Ships/Empire/Tector.prefab','Prefabs/Models/Ships/Empire/TectorShipView.prefab','Prefabs/Models/Wrecks/TectorWreckView.prefab','Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab','Art/Textures/Ui/Icons/ShipIcon/TectorIcon.png']:
     asset = ASSETS/path
     backup = OUTPUT/'OriginalAssets'/path
     backup.parent.mkdir(parents=True,exist_ok=True)
