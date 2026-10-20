@@ -48,6 +48,9 @@ namespace EmpireAtWar.Services.Saves
                 // A built structure keeps its limit slot while it waits to be placed.
                 if (request is MiningFacilityUnitRequest || request is DefendPlatformUnitRequest)
                     _faction.ReserveStructure(request);
+                // So does a built Resolute: only one may be queued, in reserve or deployed.
+                if (request is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
+                    _faction.SetResoluteReserved(true);
                 _reinforcementService.Add(request);
             }
         }
