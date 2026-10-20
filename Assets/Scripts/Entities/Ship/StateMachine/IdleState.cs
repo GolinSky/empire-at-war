@@ -46,8 +46,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Tick(float deltaTime)
         {
-            if (_engagementTarget != null && !ShipEngagement.CanEngage(
-                    _engagementTarget, _shipMoveComponent, _weaponComponent))
+            if (_engagementTarget != null && (_engagementTarget.IsCloaked() || !ShipEngagement.CanEngage(
+                    _engagementTarget, _shipMoveComponent, _weaponComponent)))
             {
                 _engagementTarget = null;
             }
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 for (int i = 0; i < _radarComponent.Enemies.Count; i++)
                 {
                     IEntity enemy = _radarComponent.Enemies[i];
-                    if (!ShipEngagement.CanEngage(enemy, _shipMoveComponent, _weaponComponent))
+                    if (enemy.IsCloaked() || !ShipEngagement.CanEngage(enemy, _shipMoveComponent, _weaponComponent))
                     {
                         continue;
                     }
