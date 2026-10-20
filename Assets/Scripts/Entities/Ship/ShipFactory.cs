@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.VContainer;
@@ -31,6 +32,9 @@ namespace EmpireAtWar.Ship
         /// <summary>Creates a ship with a known id; a restored pose places it without a hyperspace jump.</summary>
         public Ship Create(PlayerId owner, ShipType shipType, Vector3 position, long entityId, ShipSpawnPose pose)
         {
+            if (shipType == ShipType.ISDIII)
+                throw new InvalidOperationException("ISDIII is disabled in every game mode and cannot be spawned or restored.");
+
             ShipData data = Assets.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
             return Spawn(Assets.LoadComponent<Ship>(shipType + "ShipView"), position, Quaternion.identity,
                 (builder, view) => new ShipInstaller(view, data, _localPlayer, owner, entityId, position, shipType, pose)

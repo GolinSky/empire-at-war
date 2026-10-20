@@ -164,12 +164,15 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(MapSize.Small)]
-        [TestCase(MapSize.Medium)]
-        [TestCase(MapSize.Large)]
-        public void Fields_LeaveLanesPassableAndEveryPointOfInterestConnected(MapSize mapSize)
+        [TestCase(MapSize.Small, 7)]
+        [TestCase(MapSize.Medium, 7)]
+        [TestCase(MapSize.Large, 7)]
+        [TestCase(MapSize.Small, 19)]
+        [TestCase(MapSize.Medium, 19)]
+        [TestCase(MapSize.Large, 19)]
+        public void Fields_LeaveLanesPassableAndEveryPointOfInterestConnected(MapSize mapSize, int seed)
         {
-            MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, 7);
+            MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, seed);
             MapSizeSettings size = _settings.GetSize(mapSize);
             // Volumes may reach half a raster cell past the rasterised lane edge.
             float narrowestWidth = Mathf.Min(size.MinLaneWidth, size.PocketEntranceWidth);

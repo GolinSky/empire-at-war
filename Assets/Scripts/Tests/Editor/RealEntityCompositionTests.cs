@@ -680,12 +680,26 @@ namespace EmpireAtWar.Tests.Editor
                 .GetField("_poseSlots", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                 .GetValue(flight);
             FighterPoseBatch poses = _battle.Container.Resolve<FighterPoseBatch>();
+            Assert.That(typeof(SquadronFlightComponent)
+                .GetField("_poseBatch", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .GetValue(flight), Is.SameAs(poses));
+            Unity.Collections.NativeArray<FighterPose> registeredPoses =
+                (Unity.Collections.NativeArray<FighterPose>)typeof(FighterPoseBatch)
+                    .GetField("_poses", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .GetValue(poses);
+            UnityEngine.Jobs.TransformAccessArray registeredBodies =
+                (UnityEngine.Jobs.TransformAccessArray)typeof(FighterPoseBatch)
+                    .GetField("_bodies", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .GetValue(poses);
             Assert.That(slots.Length, Is.EqualTo(fighters.Count));
             Assert.That(slots.Distinct().Count(), Is.EqualTo(slots.Length));
             for (int i = 0; i < fighters.Count; i++)
             {
                 Quaternion rest = fighters[i].BodyRestRotation;
                 Assert.That(Quaternion.Dot(rest, rest), Is.EqualTo(1f).Within(0.001f), fighters[i].name);
+                Assert.That(registeredBodies[slots[i]], Is.SameAs(fighters[i].Body), fighters[i].name);
+                Assert.That(Quaternion.Angle(registeredPoses[slots[i]].BodyRestRotation, rest),
+                    Is.LessThan(0.01f), $"{fighters[i].name}: batch registration preserves the authored rest.");
                 poses.Set(slots[i], fighters[i].Position, Vector3.forward, BANK);
             }
             poses.LateTick();

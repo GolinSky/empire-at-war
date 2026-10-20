@@ -6,11 +6,50 @@ using EmpireAtWar.Models.Factions;
 using System.Linq;
 using UnityEditor;
 using NUnit.Framework;
+using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Services.IdGeneration;
+using EmpireAtWar.Ship;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class SurvivalGameplayTests
     {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ShipFactory_ISDIII_RejectsSpawnAndRestoreBeforeLoadingAssets(bool restore)
+        {
+            var factory = new ShipFactory(null, null, null, null, null, new UniqueIdGenerator());
+
+            var exception = Assert.Throws<System.InvalidOperationException>(() =>
+            {
+                if (restore)
+                    factory.Create(new PlayerId(0), ShipType.ISDIII, Vector3.zero, 1,
+                        ShipSpawnPose.Restored(Quaternion.identity));
+                else
+                    factory.Create(new PlayerId(0), ShipType.ISDIII, Vector3.zero);
+            });
+
+            Assert.That(exception.Message, Does.Contain("ISDIII is disabled in every game mode"));
+        }
+
+        [Test]
+        public void PlayableRostersAndAuthoredWaves_ExcludeISDIII()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<FactionCatalog>(AssetDatabase.GUIDToAssetPath(
+                AssetDatabase.FindAssets("t:FactionCatalog").Single()));
+            foreach (var faction in catalog.Factions)
+                Assert.That(faction.Ships.ContainsKey(ShipType.ISDIII), Is.False,
+                    $"{faction.FactionType}: player, AI and simulation rosters must exclude ISDIII.");
+
+            var data = AssetDatabase.LoadAssetAtPath<SurvivalWaveData>("Assets/Settings/Data/Battles/SurvivalWaveData.asset");
+            foreach (var faction in data.Factions)
+                foreach (var wave in faction.Waves)
+                    Assert.That(wave.Entries.Any(entry => entry.Unit.IsShip
+                        && entry.Unit.ShipType == ShipType.ISDIII), Is.False,
+                        $"{faction.Faction}: survival waves must exclude ISDIII.");
+        }
+
         [Test]
         public void AuthoredWaves_CoverEveryFactionWithFiveValidWaves()
         {

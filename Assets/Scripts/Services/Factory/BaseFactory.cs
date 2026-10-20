@@ -1,6 +1,7 @@
 using EmpireAtWar.Mvc;
 using System;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.VContainer;
 using UnityEngine;
 using VContainer;
@@ -36,6 +37,7 @@ namespace EmpireAtWar.Services.Factory
                 {
                     entity.transform.SetParent(child.transform, true);
                     install(builder, entity);
+                    builder.RegisterLifecycle();
                 }, typeof(TEntity).Name + " Scope");
                 child.SetOwnership(_ownership);
                 _ownership.Register(child);

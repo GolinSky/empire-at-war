@@ -14,7 +14,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const float MINIMUM_RADIUS_SHARE = 0.75f;
         private const float PARTIAL_COVER_SHARE = 0.5f;
 
-        public static List<FieldVolume> Cover(FieldGrid grid, IReadOnlyList<int> cells, int[] edgeDistances)
+        public static List<FieldVolume> Cover(FieldGrid grid, IReadOnlyList<int> cells, int[] edgeDistances,
+            IReadOnlyList<MapLane> lanes, float passableHalfWidth)
         {
             List<FieldVolume> volumes = new List<FieldVolume>();
             List<int> uncovered = new List<int>(cells);
@@ -34,6 +35,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                     grid.CellSize * MINIMUM_RADIUS_SHARE,
                     (edgeDistances[deepest] - 0.5f) * grid.CellSize);
                 Vector3 center = grid.GetCenter(deepest);
+                // Raster cells can straddle a lane edge; keep the navigation circles outside its clearance.
+                foreach (MapLane lane in lanes)
+                {
+                    radius = Mathf.Min(radius,
+                        PlanarGeometry.DistanceToPolyline(center, lane.Points) - passableHalfWidth);
+                }
                 volumes.Add(new FieldVolume(center, radius));
                 // Cells the circle only partly reaches count as covered; the next circle would add little.
                 float coverage = radius + grid.CellSize * PARTIAL_COVER_SHARE;

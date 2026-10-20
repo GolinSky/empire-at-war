@@ -46,6 +46,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             }
 
             int[] edgeDistances = grid.GetEdgeDistances();
+            float passableHalfWidth = (UnityEngine.Mathf.Min(size.MinLaneWidth, size.PocketEntranceWidth)
+                - size.FieldCellSize) * 0.5f;
             List<AsteroidField> fields = new List<AsteroidField>();
             foreach (List<int> cells in cellGroups)
             {
@@ -55,7 +57,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
 
                 fields.Add(new AsteroidField(
-                    FieldVolumeCover.Cover(grid, cells, edgeDistances),
+                    FieldVolumeCover.Cover(grid, cells, edgeDistances, lanes, passableHalfWidth),
                     _rockScatter.Scatter(grid, cells, size.RockDensity, random),
                     _settings.FieldFloor,
                     _settings.FieldCeiling));

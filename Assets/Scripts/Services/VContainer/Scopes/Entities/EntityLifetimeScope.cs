@@ -5,6 +5,12 @@ namespace EmpireAtWar.Services.VContainer
         private EntityScopeOwnership _ownership;
         private bool _isOwned;
 
+        protected override void Configure(global::VContainer.IContainerBuilder builder)
+        {
+            Assets = ((AssetLifetimeScope)Parent).Assets;
+            // BaseFactory registers lifecycle after the entity's component injection callbacks.
+        }
+
         public void SetOwnership(EntityScopeOwnership ownership)
         {
             _ownership = ownership;

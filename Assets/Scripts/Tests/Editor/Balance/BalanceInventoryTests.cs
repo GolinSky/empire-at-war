@@ -1,6 +1,8 @@
 using System.Linq;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 
@@ -8,6 +10,25 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class BalanceInventoryTests
     {
+        [Test]
+        public void AbilityInventory_RegistersCurrentSupportAbilitiesAndTheirTuningFields()
+        {
+            BalanceRegistration inventory = new BalanceRegistration();
+            BalanceAbilityAdapter.Register(inventory);
+
+            foreach (ShipAbilityId id in new[] { ShipAbilityId.DauntlessSensorJamming,
+                         ShipAbilityId.FighterReinforcements, ShipAbilityId.LiberatorRapidDeployment,
+                         ShipAbilityId.MC30cTorpedoSalvo, ShipAbilityId.FighterCoordination })
+                foreach (string stat in new[] { "duration", "recoveryDelay", "range", "aiUse" })
+                    Assert.That(inventory.Fields.Values.Any(field => field.Stat == $"ability/{(int)id}/{stat}"),
+                        Is.True, $"{id}: {stat}");
+
+            Assert.That(inventory.Fields.Values.Any(field =>
+                field.Dependency == nameof(TorpedoSalvoSettings) && field.Stat.EndsWith("/fireDelayMultiplier")), Is.True);
+            Assert.That(inventory.Fields.Values.Any(field =>
+                field.Dependency == nameof(FighterCoordinationSettings) && field.Stat.EndsWith("/commandRadius")), Is.True);
+        }
+
         [Test]
         public void CurrentRoster_AllEntriesResolveToDataPrefabsAndApprovedFields()
         {

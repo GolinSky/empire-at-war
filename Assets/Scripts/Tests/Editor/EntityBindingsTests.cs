@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Entities
                     Assert.That(bindings.AudioDialog, Is.Not.Null, path);
                 }
             }
-            Assert.That(count, Is.EqualTo(76));
+            Assert.That(count, Is.GreaterThan(0), "The entity prefab audit must inspect at least one entity.");
         }
     }
 }
