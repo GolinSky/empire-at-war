@@ -17,8 +17,8 @@ using EmpireAtWar.Entities.Map;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Controller
 {
-    public class CinematicCameraPresenter : UiController, ICinematicCameraController, IInitializable, ILateTickable,
-        ILateDisposable, IObserver<BattleState>
+    public class CinematicCameraPresenter : UiController, ICinematicCameraController, ICinematicReturnPose, IInitializable,
+        ILateTickable, ILateDisposable, IObserver<BattleState>
     {
         private const long NO_TARGET = -1;
 
@@ -127,6 +127,13 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             SampleActivity();
             _targetId = NO_TARGET;
             StartShot(_sequencer.First());
+        }
+
+        public bool TryGetReturnPose(out Vector3 position, out Quaternion rotation)
+        {
+            position = _savedPosition;
+            rotation = _savedRotation;
+            return _model.IsActive;
         }
 
         public void UpdateState(BattleState state)

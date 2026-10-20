@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Services.Saves
         private readonly BattleDefinition _battle;
         private readonly SkirmishStateModel _state;
         private readonly ICameraService _camera;
+        private readonly ICinematicReturnPose _cinematic;
         private readonly BattleClock _clock;
         private readonly IBattleSaveRepository _repository;
         private readonly UnitSaveService _units;
@@ -25,12 +27,13 @@ namespace EmpireAtWar.Services.Saves
         public bool CanSave => GetRefusal() == null;
 
         public BattleSaveService(BattleDefinition battle, SkirmishStateModel state, ICameraService camera,
-            BattleClock clock, IBattleSaveRepository repository, UnitSaveService units,
+            ICinematicReturnPose cinematic, BattleClock clock, IBattleSaveRepository repository, UnitSaveService units,
             IReadOnlyList<IBattleSaveSource> sources)
         {
             _battle = battle;
             _state = state;
             _camera = camera;
+            _cinematic = cinematic;
             _clock = clock;
             _repository = repository;
             _units = units;
@@ -45,7 +48,7 @@ namespace EmpireAtWar.Services.Saves
             BattleSave save = BattleSave.Create(
                 BattleSaveHeader.Create(_battle.Mode, slot, DateTime.UtcNow, _clock.Elapsed, _state.Speed),
                 BattleSetupSave.From(_battle),
-                CameraPoseSave.Create(_camera.CameraPosition, _camera.CameraTransform.rotation, _camera.ZoomTargetHeight),
+                CaptureCamera(),
                 _units.CaptureUnits(), _units.CaptureStructures());
             foreach (IBattleSaveSource source in _sources) source.Capture(save);
             return save;
@@ -66,6 +69,13 @@ namespace EmpireAtWar.Services.Saves
                 IsSaving = false;
             }
         }
+
+        // A cinematic shot is not a gameplay view: the save keeps the pose the mode returns to, at the zoom its exit
+        // resets to.
+        private CameraPoseSave CaptureCamera() =>
+            _cinematic.TryGetReturnPose(out Vector3 position, out Quaternion rotation)
+                ? CameraPoseSave.Create(position, rotation, position.y)
+                : CameraPoseSave.Create(_camera.CameraPosition, _camera.CameraTransform.rotation, _camera.ZoomTargetHeight);
 
         private string GetRefusal()
         {

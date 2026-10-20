@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private GameObject _cameraObject;
         private FakeCamera _camera;
+        private FakeCinematic _cinematic;
         private SkirmishStateModel _state;
         private string _directory;
         private JsonBattleSaveRepository _repository;
@@ -29,6 +31,7 @@ namespace EmpireAtWar.Tests.Editor
             _cameraObject = new GameObject(nameof(BattleSaveServiceTests));
             _cameraObject.transform.SetPositionAndRotation(new Vector3(-120f, 600f, 75f), Quaternion.Euler(60f, -35f, 0f));
             _camera = new FakeCamera(_cameraObject.transform, 540f);
+            _cinematic = new FakeCinematic();
             _state = new SkirmishStateModel();
             _directory = Path.Combine(Path.GetTempPath(), "BattleSaveServiceTests_" + Guid.NewGuid().ToString("N"));
             _repository = new JsonBattleSaveRepository(_directory);
@@ -61,6 +64,21 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(save.Camera.Rotation, Is.EqualTo(_cameraObject.transform.rotation));
             Assert.That(save.Camera.ZoomTargetHeight, Is.EqualTo(540f));
             Assert.That(save.Setup.Rebuild().Map.Seed, Is.EqualTo(battle.Map.Seed));
+        }
+
+        [Test]
+        public void Capture_DuringCinematic_RecordsTheGameplayPoseItReturnsTo()
+        {
+            _state.SetState(BattleState.Running);
+            _cinematic.IsActive = true;
+            _cinematic.Position = new Vector3(40f, 450f, -10f);
+            _cinematic.Rotation = Quaternion.Euler(55f, 20f, 0f);
+
+            BattleSave save = CreateService(SkirmishPreset.Default()).Capture(BattleSaveSlot.Autosave);
+
+            Assert.That(save.Camera.Position, Is.EqualTo(_cinematic.Position));
+            Assert.That(save.Camera.Rotation, Is.EqualTo(_cinematic.Rotation));
+            Assert.That(save.Camera.ZoomTargetHeight, Is.EqualTo(450f));
         }
 
         [Test]
@@ -130,7 +148,7 @@ namespace EmpireAtWar.Tests.Editor
                 clock.Restore(723f);
                 var units = new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null);
                 var service = new BattleSaveService(SkirmishPreset.Default(), _state, _camera,
-                    clock, _repository, units, Array.Empty<IBattleSaveSource>());
+                    _cinematic, clock, _repository, units, Array.Empty<IBattleSaveSource>());
                 game.PendingBattleSave = BattleSave.FromJson(service.Capture(BattleSaveSlot.Quicksave).ToJson());
                 clock.Restore(0f);
                 _state.SetSpeed(GameSpeed.Normal);
@@ -150,8 +168,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private BattleSaveService CreateService(BattleDefinition battle) =>
-            new BattleSaveService(battle, _state, _camera, new BattleClock(_state), _repository,
+            new BattleSaveService(battle, _state, _camera, _cinematic, new BattleClock(_state), _repository,
                 new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null), Array.Empty<IBattleSaveSource>());
+
+        private sealed class FakeCinematic : ICinematicReturnPose
+        {
+            public bool IsActive { get; set; }
+            public Vector3 Position { get; set; }
+            public Quaternion Rotation { get; set; } = Quaternion.identity;
+
+            public bool TryGetReturnPose(out Vector3 position, out Quaternion rotation)
+            {
+                position = Position;
+                rotation = Rotation;
+                return IsActive;
+            }
+        }
 
         private sealed class FakeCamera : ICameraService
         {
