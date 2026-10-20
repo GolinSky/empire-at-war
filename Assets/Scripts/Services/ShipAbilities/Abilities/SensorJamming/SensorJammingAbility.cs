@@ -59,7 +59,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         }
 
         private static bool HasSensor(IShipAbilityFacade caster) =>
-            caster.Health.GetShipUnits(HardPointType.SensorArray).Any(point => !point.IsDestroyed);
+            caster.Health.GetShipUnits(HardPointType.SensorArray)
+                .Any(point => point.HardPointType == HardPointType.SensorArray && !point.IsDestroyed);
 
         private bool RemoveDistant(CombatModifiers modifiers)
         {

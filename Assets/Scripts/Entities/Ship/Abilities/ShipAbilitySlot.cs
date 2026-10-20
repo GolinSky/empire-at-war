@@ -21,11 +21,14 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public IShipAbility RunningAbility { get; private set; }
         public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.IsIonDisabled &&
             (Id != ShipAbilityId.TractorBeam ||
-                Owner.Health.GetShipUnits(HardPointType.TractorBeam).Any(point => !point.IsDestroyed)) &&
+                Owner.Health.GetShipUnits(HardPointType.TractorBeam)
+                .Any(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed)) &&
             (Id != ShipAbilityId.DauntlessSensorJamming ||
-                Owner.Health.GetShipUnits(HardPointType.SensorArray).Any(point => !point.IsDestroyed)) &&
+                Owner.Health.GetShipUnits(HardPointType.SensorArray)
+                .Any(point => point.HardPointType == HardPointType.SensorArray && !point.IsDestroyed)) &&
             (Id != ShipAbilityId.FighterCoordination ||
-                Owner.Health.GetShipUnits(HardPointType.CommandArray).Any(point => !point.IsDestroyed));
+                Owner.Health.GetShipUnits(HardPointType.CommandArray)
+                .Any(point => point.HardPointType == HardPointType.CommandArray && !point.IsDestroyed));
         public bool CanActivate => IsAvailable && State == ShipAbilityState.Ready;
         public bool CanPress => IsAvailable && (State == ShipAbilityState.Ready ||
             State == ShipAbilityState.Active && Definition.CanCancel);

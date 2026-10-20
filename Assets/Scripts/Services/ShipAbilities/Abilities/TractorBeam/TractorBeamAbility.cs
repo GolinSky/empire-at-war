@@ -36,14 +36,16 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
             _settings.CanTarget(target.HealthModel.ShipClass) &&
             target.TryGetFacade(out ICombatModifiersFacade _) &&
-            caster.Health.GetShipUnits(HardPointType.TractorBeam).Any(point => !point.IsDestroyed);
+            caster.Health.GetShipUnits(HardPointType.TractorBeam)
+                .Any(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed);
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _caster = caster;
             _target = target;
             _range = definition.Range;
-            _hardPoint = caster.Health.GetShipUnits(HardPointType.TractorBeam).First(point => !point.IsDestroyed);
+            _hardPoint = caster.Health.GetShipUnits(HardPointType.TractorBeam)
+                .First(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed);
             _targetTransform = target.GetFacade<IEntityTransformFacade>().Transform;
             _targetModifiers = target.GetFacade<ICombatModifiersFacade>().Modifiers;
             _targetModifiers.Add(_movementPenalty);

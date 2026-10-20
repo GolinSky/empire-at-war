@@ -29,7 +29,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
-            _commandArray = caster.Health.GetShipUnits(HardPointType.CommandArray).First(point => !point.IsDestroyed);
+            _commandArray = caster.Health.GetShipUnits(HardPointType.CommandArray)
+                .First(point => point.HardPointType == HardPointType.CommandArray && !point.IsDestroyed);
             _casterModifiers = caster.Modifiers;
             foreach (IEntity entity in _entities.Entities)
             {
@@ -48,7 +49,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         }
 
         public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
-            caster.Health.GetShipUnits(HardPointType.CommandArray).Any(point => !point.IsDestroyed);
+            caster.Health.GetShipUnits(HardPointType.CommandArray)
+                .Any(point => point.HardPointType == HardPointType.CommandArray && !point.IsDestroyed);
 
         public void Advance(float deltaTime) { }
 
