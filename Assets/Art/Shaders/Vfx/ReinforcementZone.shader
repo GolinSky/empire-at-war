@@ -4,6 +4,9 @@ Shader "EmpireAtWar/ReinforcementZone"
     {
         _BaseColor ("Zone Color", Color) = (0.48, 0.55, 0.62, 0.08)
         _BorderOpacity ("Border Opacity", Range(0, 1)) = 0.48
+        _BorderWidth ("Border Half Width", Float) = 0.009
+        _OutlineWidth ("Outline Half Width", Float) = 0.032
+        _OutlineOpacity ("Outline Opacity", Range(0, 1)) = 0.32
         _DepthFadeDistance ("Intersection Fade Distance", Float) = 8
     }
 
@@ -42,6 +45,9 @@ Shader "EmpireAtWar/ReinforcementZone"
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
                 half _BorderOpacity;
+                float _BorderWidth;
+                float _OutlineWidth;
+                half _OutlineOpacity;
                 float _DepthFadeDistance;
             CBUFFER_END
 
@@ -60,13 +66,13 @@ Shader "EmpireAtWar/ReinforcementZone"
                 float radius = length(input.uv * 2.0 - 1.0);
                 float antialias = max(fwidth(radius), 0.001);
                 float edgeDistance = abs(radius - 0.95);
-                half border = 1.0 - smoothstep(0.009, 0.009 + antialias, edgeDistance);
-                half outline = 1.0 - smoothstep(0.032, 0.032 + antialias, edgeDistance);
+                half border = 1.0 - smoothstep(_BorderWidth, _BorderWidth + antialias, edgeDistance);
+                half outline = 1.0 - smoothstep(_OutlineWidth, _OutlineWidth + antialias, edgeDistance);
                 half fill = 1.0 - smoothstep(0.91, 0.95, radius);
 
                 // The dark keyline separates the muted color from similar backgrounds.
                 half fillAlpha = fill * _BaseColor.a * 0.3;
-                half outlineAlpha = outline * 0.32;
+                half outlineAlpha = outline * _OutlineOpacity;
                 half borderAlpha = border * _BorderOpacity;
                 half3 color = lerp(_BaseColor.rgb, half3(0.025, 0.04, 0.06), outline);
                 color = lerp(color, _BaseColor.rgb, border);

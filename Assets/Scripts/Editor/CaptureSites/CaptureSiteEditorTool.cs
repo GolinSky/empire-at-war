@@ -14,7 +14,7 @@ namespace EmpireAtWar.Editor.CaptureSites
     [EmpireAtWar.Editor.EditorToolInfo("Capture-site authoring and maintenance. Build Sites rebuilds data and prefabs; the other commands rebuild site prefabs or apply obstacles and the mini-map icon.")]
     public static class CaptureSiteEditorTool
     {
-        private const float SITE_RADIUS = 40f;
+        private const float SITE_RADIUS = 60f;
         private const float SITE_SCALE = 5f;
 
         private const int UI_LAYER = 5;

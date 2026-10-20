@@ -460,7 +460,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -2, z: 0}
-  m_LocalScale: {x: 80, y: 80, z: 1}
+  m_LocalScale: {x: 120, y: 120, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 872490856487092242}
@@ -909,12 +909,12 @@ MonoBehaviour:
   progressFill: {fileID: 2274206431328672243}
   statusText: {fileID: 8295116990790753155}
   tooltipHover: {fileID: 3750406511550428136}
-  neutralColor: {r: 0.58, g: 0.64, b: 0.72, a: 0.08}
-  playerColor: {r: 0.22, g: 0.74, b: 0.97, a: 0.1}
-  allyColor: {r: 0.36, g: 0.9, b: 0.62, a: 0.1}
-  opponentColor: {r: 0.94, g: 0.27, b: 0.27, a: 0.1}
-  contestedColor: {r: 1, g: 0.75, b: 0.1, a: 0.14}
-  radius: 40
+  neutralColor: {r: 0.58, g: 0.64, b: 0.72, a: 0.04}
+  playerColor: {r: 0.22, g: 0.74, b: 0.97, a: 0.05}
+  allyColor: {r: 0.36, g: 0.9, b: 0.62, a: 0.05}
+  opponentColor: {r: 0.94, g: 0.27, b: 0.27, a: 0.05}
+  contestedColor: {r: 1, g: 0.75, b: 0.1, a: 0.07}
+  radius: 60
   captureDuration: 12
   facilityHeightOffset: -60
   screenHeightFraction: 0.24

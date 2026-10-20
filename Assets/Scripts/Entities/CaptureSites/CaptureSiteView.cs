@@ -27,13 +27,13 @@ namespace EmpireAtWar.Entities.CaptureSites
         private Camera _camera;
         private RectTransform _canvasTransform;
 
-        [SerializeField] private Color neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.08f);
-        [SerializeField] private Color playerColor = new Color(0.22f, 0.74f, 0.97f, 0.1f);
-        [SerializeField] private Color allyColor = new Color(0.36f, 0.9f, 0.62f, 0.1f);
-        [SerializeField] private Color opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.1f);
-        [SerializeField] private Color contestedColor = new Color(1f, 0.75f, 0.1f, 0.14f);
+        [SerializeField] private Color neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.04f);
+        [SerializeField] private Color playerColor = new Color(0.22f, 0.74f, 0.97f, 0.05f);
+        [SerializeField] private Color allyColor = new Color(0.36f, 0.9f, 0.62f, 0.05f);
+        [SerializeField] private Color opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.05f);
+        [SerializeField] private Color contestedColor = new Color(1f, 0.75f, 0.1f, 0.07f);
 
-        [SerializeField, Min(1f)] private float radius = 40f;
+        [SerializeField, Min(1f)] private float radius = 60f;
         [SerializeField, Min(1f)] private float captureDuration = 12f;
         [SerializeField, FormerlySerializedAs("miningFacilityHeightOffset"),
          Tooltip("World-space height of a built facility relative to the site center; keeps it on the site rocks.")]
@@ -43,6 +43,10 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
         private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
+        private static readonly int BORDER_WIDTH_ID = Shader.PropertyToID("_BorderWidth");
+        private static readonly int OUTLINE_WIDTH_ID = Shader.PropertyToID("_OutlineWidth");
+        private static readonly int BORDER_OPACITY_ID = Shader.PropertyToID("_BorderOpacity");
+        private static readonly int OUTLINE_OPACITY_ID = Shader.PropertyToID("_OutlineOpacity");
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
@@ -54,6 +58,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private void Awake()
         {
+            ringRenderer.enabled = false;
             _propertyBlock = new MaterialPropertyBlock();
             _camera = Camera.main;
             _canvasTransform = (RectTransform)statusCanvas.transform;
@@ -90,6 +95,10 @@ namespace EmpireAtWar.Entities.CaptureSites
             ringRenderer.GetPropertyBlock(_propertyBlock);
             _propertyBlock.SetColor(BASE_COLOR_ID, ownerColor);
             _propertyBlock.SetColor(COLOR_ID, ownerColor);
+            _propertyBlock.SetFloat(BORDER_WIDTH_ID, 0.003f);
+            _propertyBlock.SetFloat(OUTLINE_WIDTH_ID, 0.006f);
+            _propertyBlock.SetFloat(BORDER_OPACITY_ID, 0.24f);
+            _propertyBlock.SetFloat(OUTLINE_OPACITY_ID, 0.1f);
             ringRenderer.SetPropertyBlock(_propertyBlock);
 
             bool isConstructing = state == CaptureSiteState.Constructing;
