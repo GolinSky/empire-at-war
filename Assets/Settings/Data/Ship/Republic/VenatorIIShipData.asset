@@ -27,7 +27,7 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: d3c580642f7138244acc90b4f49bc788,
     type: 2}
   <ShipClass>k__BackingField: 4
-  <Hull>k__BackingField: 7000
+  <Hull>k__BackingField: 6000
   <Shields>k__BackingField: 5000
   <ShieldRegenerateValue>k__BackingField: 25
   <ShieldRegenerateDelay>k__BackingField: 3
@@ -49,11 +49,11 @@ MonoBehaviour:
   abilities: 0300000005000000
   hangarBays:
   - squadronType: 2
-    reserve: 0
-    maxActive: 0
-  - squadronType: 5
-    reserve: 0
-    maxActive: 0
+    reserve: 2
+    maxActive: 2
+  - squadronType: 6
+    reserve: 2
+    maxActive: 2
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
@@ -61,6 +61,10 @@ MonoBehaviour:
     count: 2
   - weaponType: 9
     count: 8
+  - weaponType: 12
+    count: 1
+  - weaponType: 14
+    count: 2
   - weaponType: 23
     count: 4
   - weaponType: 48
