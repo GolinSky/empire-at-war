@@ -25,3 +25,4 @@ MonoBehaviour:
         <Price>k__BackingField: 1600
         <BuildTime>k__BackingField: 30
   <CaptureSpeedPerNetShip>k__BackingField: 1
+  <SquadronCaptureWeight>k__BackingField: 0.5
