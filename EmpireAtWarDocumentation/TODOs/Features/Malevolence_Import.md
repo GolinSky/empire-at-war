@@ -61,7 +61,7 @@ updated: 2026-10-03
 ## Files
 - Source: `C:/Users/golin/Documents/CIS_Hero_Units_Pack_2014/Malevolence/`.
 - Editable packed Blender file, FBX, PNGs and reports: `C:/Users/golin/Documents/CIS_Hero_Units_Pack_2014/Malevolence-Converted/`.
-- Conversion script: `Tools/Blender/export_malevolence.py`; import reference: [[Architecture/ALO_MODEL_IMPORT_GUIDE]].
+- Conversion script: `Tools/Blender/export_malevolence.py`; import reference: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 - Art: `Assets/Art/{Models,Materials/Models,Textures/Models}/SeparatistShips/Malevolence/`.
 - Prefabs: `Assets/Prefabs/Models/Ships/Malevolence{,ShipView}.prefab`; `Assets/Prefabs/Models/Wrecks/MalevolenceWreckView.prefab`; `Assets/Prefabs/Ui/Reinforcement/MalevolenceReinforcementView.prefab`.
 - Data: `Assets/Settings/Data/Ship/MalevolenceShipData.asset`; `Assets/Settings/Data/Ship/Wreck/MalevolenceWreckData.asset`; `Assets/Settings/Data/Tooltip/Matchups/MalevolenceMatchups.asset`.

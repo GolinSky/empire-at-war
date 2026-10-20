@@ -7,14 +7,14 @@ created: 2026-10-04
 
 ## Goal
 - Import supplied `Recusant Patrol/CIS_Recusant_Patrol.ALO` as CIS **Patrol Frigate**, separate from Recusant.
-- Complete [[Architecture/ALO_MODEL_IMPORT_GUIDE|ALO Model Import — Blender to Unity]] integration and acceptance.
+- Complete [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE|ALO Model Import — Blender to Unity]] integration and acceptance.
 
 ## Decision
 - Intact ALO; preserve original files and helper meshes. Source damaged ALO/death ALA are retained; static integration uses the project wreck flow.
 - Reuse corvette model/entity/components; eight lasers, Power to Engines, no hangar. `ShipType.PatrolFrigate = 106`.
 - User values: tech 1; cost 1,500; build 15 s; population 1; hull/shields/regen 900/700/15.
 - User size: 60% of existing Recusant's 135.16174-unit length → 81.09705 units. Navigation radius scaled to 56.14411.
-- Provisional project tuning: speed 36; turn 60; height 80; count limit 20. Details: [[GameDesign/Patrol Frigate Import]].
+- Provisional project tuning: speed 36; turn 60; height 80; count limit 20. Details: [[AssetPipeline/Imports/Patrol Frigate Import]].
 
 ## Implementation
 - [x] Audit source, textures, hierarchy and source hashes; all five originals unchanged.
@@ -27,6 +27,6 @@ created: 2026-10-04
 - [ ] Provisional balance review. No Play Mode or automated tests run.
 
 ## Files
-- [[GameDesign/Patrol Frigate Import]] — values, mappings, source caveats and verification.
+- [[AssetPipeline/Imports/Patrol Frigate Import]] — values, mappings, source caveats and verification.
 - Exporter: `Tools/Blender/export_patrol_frigate.py`; evidence: `Temp/PatrolFrigateImport/`.
 - Separate packed conversion: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Recusant Patrol-Converted/`.

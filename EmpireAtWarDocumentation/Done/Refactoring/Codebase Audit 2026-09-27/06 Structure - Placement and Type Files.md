@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Structure — Placement and type files
@@ -24,9 +27,9 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed placement mismatch; no obsolete API claim.
 
-- **Evidence:** [Assets/Scripts/Services/NavigationService/SelectionType.cs:1](file:///F:/Private/empire-at-war/Assets/Scripts/Services/NavigationService/SelectionType.cs#L1) defines selection state while active selection code lives under Services/Selection.
-- [Assets/Scripts/Components/Utils/Scenes/SceneReference.cs:1](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Utils/Scenes/SceneReference.cs#L1) identifies itself as MIT-licensed third-party code.
-- The vendored toolbar extender sits inside project Editor scripts and accesses Unity internals through reflection ([Assets/Scripts/Editor/ToolbarTimeScale/UnityToolbarExtender/Editor/ToolbarCallback.cs:16](file:///F:/Private/empire-at-war/Assets/Scripts/Editor/ToolbarTimeScale/UnityToolbarExtender/Editor/ToolbarCallback.cs#L16)).
+- **Evidence:** `Assets/Scripts/Services/NavigationService/SelectionType.cs:1` defines selection state while active selection code lives under Services/Selection.
+- `Assets/Scripts/Components/Utils/Scenes/SceneReference.cs:1` identifies itself as MIT-licensed third-party code.
+- The vendored toolbar extender sits inside project Editor scripts and accesses Unity internals through reflection (`Assets/Scripts/Editor/ToolbarTimeScale/UnityToolbarExtender/Editor/ToolbarCallback.cs:16`).
 
 - **Solution:** place SelectionType with selection contracts; identify vendor-owned sources as such and isolate them under the existing third-party policy.
 - Preserve licenses, namespaces where needed, assembly/editor boundaries, GUIDs and serialized enum values.
@@ -43,9 +46,9 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed policy mismatch.
 
-- **Evidence:** [Assets/Scripts/Services/Selection/SelectionContext.cs:10](file:///F:/Private/empire-at-war/Assets/Scripts/Services/Selection/SelectionContext.cs#L10) contains ISelectionSubject, ISelectionContext, SelectionContext and SelectionEntry.
-- [Assets/Scripts/Services/Selection/SelectionService.cs:16](file:///F:/Private/empire-at-war/Assets/Scripts/Services/Selection/SelectionService.cs#L16) contains its interface and implementation.
-- [Assets/Scripts/Entities/Faction/Controller/IPurchaseProcessor.cs:5](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/Faction/Controller/IPurchaseProcessor.cs#L5) contains both purchase interfaces.
+- **Evidence:** `Assets/Scripts/Services/Selection/SelectionContext.cs:10` contains ISelectionSubject, ISelectionContext, SelectionContext and SelectionEntry.
+- `Assets/Scripts/Services/Selection/SelectionService.cs:16` contains its interface and implementation.
+- `Assets/Scripts/Entities/Faction/Controller/IPurchaseProcessor.cs:5` contains both purchase interfaces.
 - RandomVector3.cs also contains RandomFloat; RandomFromArray.cs contains RandomAudioClips.
 
 - **Solution:** split project-owned top-level types into matching files, preserving their namespaces and public contracts.

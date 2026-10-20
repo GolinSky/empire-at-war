@@ -242,7 +242,7 @@ completed: 2026-09-30
 ## Files
 
 - [[Done/Refactoring/Project_Organization_Remediation_Plan - Research]] — exact 736-file manifest, additional prefab move, metadata evidence, bindings, duplicate groups, baseline failures and path rewrites.
-- [[PROJECT_ORGANIZATION]] — authoritative organization policy; implementation alignment target.
+- [[Architecture/PROJECT_ORGANIZATION]] — authoritative organization policy; implementation alignment target.
 - `AGENTS.md` — metadata/persistence, official CLI, Serena, UI note and no-test rules.
 - `Assets/Scripts/Editor/Rendering/ShipLitSetupTool.cs`, `AutodeskMaterialConverter.cs`, `ShipWreckBuilder.cs` — filename-derived behavior.
 - `Assets/Scripts/Editor/Squadron/SquadronViewPrefabBuilder.cs`, `Assets/Scripts/Editor/CaptureSites/*.cs` — eight asset-path rewrites.

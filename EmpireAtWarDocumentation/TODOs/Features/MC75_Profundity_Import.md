@@ -20,7 +20,7 @@ status: in-progress
 - [ ] Review provisional scale, flight, weapon/range, economy and build limit.
 
 ## Files
-- [[GameDesign/MC75 Profundity Import|Source values, decisions and inspection evidence]]
+- [[AssetPipeline/Imports/MC75 Profundity Import|Source values, decisions and inspection evidence]]
 - `Tools/Blender/MC75Profundity/`; ignored reports `Temp/MC75ProfundityImport/`.
 
 ## Important Values

@@ -1653,7 +1653,7 @@ Assets/Settings/Lighting/CoruscantLighting.lighting
 
 ## Files
 
-- [[PROJECT_ORGANIZATION]] — current organization authority; proposed conventions must be recorded there before asset changes.
+- [[Architecture/PROJECT_ORGANIZATION]] — current organization authority; proposed conventions must be recorded there before asset changes.
 - [[Done/Refactoring/Project_Organization_Remediation_Plan]] — phases, preflight, persistence, verification, rollback and completion criteria.
 - `ProjectSettings/ProjectVersion.txt`, `Packages/manifest.json` — version evidence.
 - `Assets/Scripts/Editor/Rendering/ShipLitSetupTool.cs` — filename-based ShipLit pairing.

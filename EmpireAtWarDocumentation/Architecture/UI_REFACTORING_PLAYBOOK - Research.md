@@ -1,6 +1,6 @@
 # UI Refactoring Playbook
 
-- Working reference: [[UI_REFACTORING_PLAYBOOK]].
+- Working reference: [[Architecture/UI_REFACTORING_PLAYBOOK]].
 - Detailed plan/evidence; recorded status and dates retained.
 
 - Reference implementation: `ReinforcementUi`.

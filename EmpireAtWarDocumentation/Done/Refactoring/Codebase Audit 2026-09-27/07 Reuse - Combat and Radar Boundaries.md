@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Reuse — Combat and radar boundaries
@@ -21,7 +24,7 @@ category: Refactoring
 
 - **Priority:** P2 · **Confidence:** confirmed MVP boundary issue.
 
-- **Evidence:** [Assets/Scripts/Components/Weapon/WeaponModel.cs:9](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Weapon/WeaponModel.cs#L9) depends on WeaponsData/DamageMatrixData and uses UnityEngine.Random.value and Mathf.
+- **Evidence:** `Assets/Scripts/Components/Weapon/WeaponModel.cs:9` depends on WeaponsData/DamageMatrixData and uses UnityEngine.Random.value and Mathf.
 - That conflicts with the pure-C# model rule.
 
 - **Solution:** expose a small read-only combat configuration contract containing plain values; keep ScriptableObject lookup in the Unity adapter.

@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Complexity — State and input
@@ -36,8 +39,8 @@ category: Refactoring
 
 - **Priority:** P2 · **Confidence:** confirmed responsibility mix.
 
-- **Evidence:** [Assets/Scripts/Services/InputService/InputService.cs:194](file:///F:/Private/empire-at-war/Assets/Scripts/Services/InputService/InputService.cs#L194) coordinates pointer drag, camera panning, keyboard zoom, touch pinch state, selection shortcuts, and command keys.
-- [Assets/Scripts/Services/InputService/InputService.cs:307](file:///F:/Private/empire-at-war/Assets/Scripts/Services/InputService/InputService.cs#L307) also performs UI raycasts, allocates event data/results, and resolves the UI layer on each call.
+- **Evidence:** `Assets/Scripts/Services/InputService/InputService.cs:194` coordinates pointer drag, camera panning, keyboard zoom, touch pinch state, selection shortcuts, and command keys.
+- `Assets/Scripts/Services/InputService/InputService.cs:307` also performs UI raycasts, allocates event data/results, and resolves the UI layer on each call.
 
 - **Solution:** retain InputService as the input adapter; extract gesture state into a focused model and UI hit detection into an injected service that owns reusable raycast storage.
 - Keep camera mapping separate only where it reduces the current branching.

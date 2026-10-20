@@ -37,11 +37,11 @@ status: in-progress
 - All three models: `17` meshes; Unity maximum geometry error `0.00000693` project units; source hashes unchanged.
 - Saved prefabs/registries have no missing references; unique IDs, six targets and TIE weapon/member bindings verified.
 - Unity ready, not compiling, Play Mode stopped, Console errors `0`; no automated tests or Play Mode run.
-- Project-specific balance choices and cosmetic limitations: [[GameDesign/Victory Import]].
+- Project-specific balance choices and cosmetic limitations: [[AssetPipeline/Imports/Victory Import]].
 
 ## Files
 
-- Reference: [[GameDesign/Victory Import]].
+- Reference: [[AssetPipeline/Imports/Victory Import]].
 - Prefab/data: `Assets/Prefabs/Models/Ships/VictoryShipView.prefab`, `Assets/Settings/Data/Ship/VictoryShipData.asset`.
 - Evidence: `Temp/VictoryImport/{SavedInspection,TIEInspection,FinalAssets,GeometryVerification}.json`, `Output/SourceHashes.json`.
 

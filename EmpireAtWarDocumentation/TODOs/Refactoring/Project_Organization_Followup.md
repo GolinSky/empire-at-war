@@ -51,6 +51,8 @@ created: 2026-10-13
 
 ### Repository hygiene
 
+- Documentation ownership/navigation completed on 2026-10-20: [[Done/Documentation/Vault_Organization_And_GameDesign_References]]. Legacy outside-vault copies now identify the canonical vault references; this does not complete asset moves, guide-policy changes or generated-output decisions.
+
 - Docs/TODOs.md overlaps the canonical backlog; ObsidianDocumentation contains an advisory ship-movement plan.
 - Define documentation ownership and repair links before archiving or removing anything.
 - Graphify Markdown reports/history are tracked by deliberate .gitignore exceptions; review retention separately.

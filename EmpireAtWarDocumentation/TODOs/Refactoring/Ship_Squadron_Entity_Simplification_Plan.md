@@ -10,7 +10,7 @@ status: in-progress
 
 ## Recorded Status
 
-- Source: [[Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS]].
+- Source: [[Artifacts/Audits/Ship_Squadron_2026-09-25/SHIP_SQUADRON_ENTITY_ANALYSIS]].
 - Plan: 2026-09-25; implemented 2026-09-26 on `fix/battle-related-bugs`.
 - Recorded working tree: uncommitted; Unity compilation/Console had zero errors.
 - Tests updated to compile; automated tests and Play Mode were not run.

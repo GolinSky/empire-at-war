@@ -1,16 +1,18 @@
 # Graphify Guide for AI Agents and Developers
 
+> Historical guide. Use [Tools/Graphify/README.md](Tools/Graphify/README.md) for current configured indexing, scope, status, and recovery. The vault entrypoint is [Tooling/GRAPHIFY_GUIDE](EmpireAtWarDocumentation/Tooling/GRAPHIFY_GUIDE.md). Old rebuild, installation, and output assumptions below are retained history.
+
 This guide explains how to install, configure, and use **Graphify** in this project to navigate its structure and assist AI coding agents (such as Claude Code, Cursor, Aider, and Antigravity) with token-efficient codebase querying.
 
 ---
 
 ## 1. What is Graphify?
 **Graphify** is a local AST and semantic parser that transforms the project directory (C# source files, scene configurations, and playbooks) into a queryable semantic knowledge graph. It outputs its files to `graphify-out/`, including:
-* **[GRAPH_REPORT.md](file:///f:/Private/empire-at-war/graphify-out/GRAPH_REPORT.md)**: A high-level plain-text overview of the code's modules, communities, and dependency flows.
+* **[GRAPH_REPORT.md](graphify-out/GRAPH_REPORT.md)**: A high-level plain-text overview of the code's modules, communities, and dependency flows.
 * **`graph.json`**: The full JSON representation of the graph (approx. 112 MB) used for querying.
 * **`graphify-out/memory/`**: Cache files and markdown summaries of queries ran against the graph.
 
-To prevent repository bloat, the large `graph.json` and its cache directories are ignored by Git. Only the `.md` report files and query history are tracked and synced across machines, as configured in [.gitignore](file:///f:/Private/empire-at-war/.gitignore).
+To prevent repository bloat, the large `graph.json` and its cache directories are ignored by Git. Only the `.md` report files and query history are tracked and synced across machines, as configured in [.gitignore](.gitignore).
 
 ---
 
@@ -46,7 +48,7 @@ Run the setup command for the specific agent you are using from the root of this
 | **Antigravity / Gemini** | `graphify install --platform antigravity` | Configures `.agent/rules` and workspace workflows |
 | **Cursor** | `graphify install --platform cursor` | Creates `.cursor/rules/graphify.mdc` |
 | **Claude Code** | `graphify install --platform claude` | Updates `CLAUDE.md` and hooks into pre-tool execution |
-| **Codex / Aider** | `graphify install --platform codex` | Appends context capabilities to [AGENTS.md](file:///f:/Private/empire-at-war/AGENTS.md) |
+| **Codex / Aider** | `graphify install --platform codex` | Appends context capabilities to [AGENTS.md](AGENTS.md) |
 
 ---
 
@@ -93,7 +95,7 @@ graphify explain "EconomyController"
 ---
 
 ## 6. How it helps in Refactoring
-As outlined in the [UI_REFACTORING_PLAYBOOK.md](file:///f:/Private/empire-at-war/UI_REFACTORING_PLAYBOOK.md), when starting a refactor:
-1. Reference the [GRAPH_REPORT.md](file:///f:/Private/empire-at-war/graphify-out/GRAPH_REPORT.md) to inspect the current feature's community.
+As outlined in the [UI_REFACTORING_PLAYBOOK.md](EmpireAtWarDocumentation/Architecture/UI_REFACTORING_PLAYBOOK.md), when starting a refactor:
+1. Reference the [GRAPH_REPORT.md](graphify-out/GRAPH_REPORT.md) to inspect the current feature's community.
 2. Run `graphify path` or `graphify query` to locate exactly which C# models and views will be affected by changes.
 3. Verify that your refactor did not break dependency rules (e.g. View should not depend directly on Model in MVP structure).

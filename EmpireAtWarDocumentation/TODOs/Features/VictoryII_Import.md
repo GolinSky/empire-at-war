@@ -21,7 +21,7 @@ updated: 2026-10-06
 - [x] Rename ship identifiers, assets, embedded rig names, tools, evidence and vault links to `VictoryII`; retain ship ID `203`.
 - [x] Verify source hashes, Unity geometry, saved references, metadata, import/compile checks and eight palettes/placement/wreck/icon renders.
 - [ ] Clean-skirmish acceptance: combat, targetable systems, abilities, fighter launches, fog/selection, placement and destruction.
-- [ ] Review provisional balance and source-to-project differences in [[GameDesign/Victory II Import]].
+- [ ] Review provisional balance and source-to-project differences in [[AssetPipeline/Imports/Victory II Import]].
 
 ## Important Values
 
@@ -37,7 +37,7 @@ updated: 2026-10-06
 
 ## Files
 
-- [[GameDesign/Victory II Import]]
+- [[AssetPipeline/Imports/Victory II Import]]
 - `Assets/Prefabs/Models/Ships/VictoryIIShipView.prefab`
 - `Assets/Settings/Data/Ship/VictoryIIShipData.asset`
 - `output/aotr-empire-units/VictoryII-Converted/`

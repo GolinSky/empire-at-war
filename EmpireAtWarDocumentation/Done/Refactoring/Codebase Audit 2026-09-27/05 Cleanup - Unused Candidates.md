@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Cleanup — Unused candidates
@@ -21,7 +24,7 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** unused candidate, not proven universally dead.
 
-- **Evidence:** [Assets/Scripts/Components/Utils/Collections/CollectionUtility.cs:10](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Utils/Collections/CollectionUtility.cs#L10) implements in-place shuffle, then reverses the result.
+- **Evidence:** `Assets/Scripts/Components/Utils/Collections/CollectionUtility.cs:10` implements in-place shuffle, then reverses the result.
 - Repository C# text searches found only its declaration; Serena reference lookup returned no references.
 
 - **Solution:** remove it in a later cleanup if reflection/external consumers are ruled out.
@@ -35,7 +38,7 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed no located source callers; cleanup candidate.
 
-- **Evidence:** [Assets/Scripts/Services/Extensions/DependencyBuilder.cs:19](file:///F:/Private/empire-at-war/Assets/Scripts/Services/Extensions/DependencyBuilder.cs#L19) exposes `BuildPathToFile`, but repository C# search and Serena found no callers.
+- **Evidence:** `Assets/Scripts/Services/Extensions/DependencyBuilder.cs:19` exposes `BuildPathToFile`, but repository C# search and Serena found no callers.
 - `ConstructName<T>` caches its first computed name in mutable `PathToFile`; current located callers construct a fresh builder for each binding.
 
 - **Solution:** remove the unused custom-name branch once external consumers are excluded.

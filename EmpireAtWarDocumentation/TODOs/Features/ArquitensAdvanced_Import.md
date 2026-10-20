@@ -8,7 +8,7 @@ status: in-progress
 
 - Import AOTR `ev_arquitens.ALO` with eight separate turret instances and register the Empire ship.
 - Preserve source geometry/attachments/visibility; verify saved Unity assets, registration and rendered appearance.
-- Complete gameplay acceptance when requested; reference [[GameDesign/ArquitensImperialCruiser Import]].
+- Complete gameplay acceptance when requested; reference [[AssetPipeline/Imports/ArquitensImperialCruiser Import]].
 
 ## Decision
 

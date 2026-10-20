@@ -1,5 +1,8 @@
 # Shared AI Agent Instructions
 
+> [!info] Advisory policy summary
+> Repository root `AGENTS.md` is authoritative and contains the complete current policy. This note is a partial reference; it never overrides root instructions. Documentation placement: [[Rules/DOCUMENTATION_ORGANIZATION]].
+
 - Applies to Codex, Claude, Gemini, and Antigravity agents in the repository.
 
 ## Architecture: Model-View-Presenter

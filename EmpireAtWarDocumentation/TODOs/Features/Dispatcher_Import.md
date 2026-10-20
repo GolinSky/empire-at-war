@@ -7,9 +7,9 @@ updated: 2026-10-05
 
 ## Goal
 
-- Convert intact/damaged `CIS_TecnoDestroyer` ALOs and register the CIS frigate through [[Architecture/ALO_MODEL_IMPORT_GUIDE]].
+- Convert intact/damaged `CIS_TecnoDestroyer` ALOs and register the CIS frigate through [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 - Preserve geometry, UVs, bones, hidden state, texture pixels and source hashes.
-- Reference and exact mappings: [[GameDesign/Dispatcher Import]].
+- Reference and exact mappings: [[AssetPipeline/Imports/Dispatcher Import]].
 
 ## Rules
 

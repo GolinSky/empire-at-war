@@ -1,5 +1,7 @@
 # Ship Movement Simplification Plan — Revision 2
 
+> Historical advisory copy. The active plan and current execution status are maintained in [EmpireAtWarDocumentation](../../EmpireAtWarDocumentation/TODOs/Refactoring/Ship_Movement_Simplification_Plan.md). Retain the recorded decisions below as history; do not execute this copy as a separate plan.
+
 ## Recorded Status
 
 - Created/revised: 2026-09-23; revision 2.
@@ -46,4 +48,4 @@
 
 ## Files
 
-- [[Ship_Movement_Simplification_Plan - Research]] — exact component/model contracts, merge steps, source sizes and measurement table.
+- [Vault research companion](../../EmpireAtWarDocumentation/TODOs/Refactoring/Ship_Movement_Simplification_Plan%20-%20Research.md) — exact component/model contracts, merge steps, source sizes and measurement table.

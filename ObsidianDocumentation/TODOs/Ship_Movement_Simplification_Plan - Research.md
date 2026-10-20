@@ -1,6 +1,8 @@
 # Ship movement simplification plan
 
-- Working reference: [[Ship_Movement_Simplification_Plan]].
+> Historical advisory copy. Current progress and evidence belong to the [vault research companion](../../EmpireAtWarDocumentation/TODOs/Refactoring/Ship_Movement_Simplification_Plan%20-%20Research.md) and its linked plan. Recorded completion below describes the original snapshot.
+
+- Working reference: [canonical vault plan](../../EmpireAtWarDocumentation/TODOs/Refactoring/Ship_Movement_Simplification_Plan.md).
 - Detailed plan/evidence; recorded status and dates retained.
 
 - Created: 2026-09-23 · Revised: 2026-09-23 (rev 2)

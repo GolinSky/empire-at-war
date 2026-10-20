@@ -53,4 +53,4 @@ completed: 2026-10-12
 - `F:/CodexArtifacts/tector-preview/Tector-preview.blend` and `01-perspective.png`, `02-top.png`, `03-underside.png`, `04-stern.png`.
 - `F:/CodexArtifacts/tector-preview/UnityReplacement/` — full audits, backups and Unity previews.
 - `Tools/Blender/TectorReplacement/README.md` and `ImportEvidence.json` — durable implementation/verification.
-- [[GameDesign/Tector Star Destroyer Import]] — current replacement and initial AOTR integration history.
+- [[AssetPipeline/Imports/Tector Star Destroyer Import]] — current replacement and initial AOTR integration history.

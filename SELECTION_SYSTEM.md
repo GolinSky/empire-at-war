@@ -1,5 +1,7 @@
 # Selection System
 
+> Historical implementation snapshot. Current player behavior is documented in [Commands and Controls](EmpireAtWarDocumentation/GameDesign/Commands_And_Controls.md); the maintained technical reference is [Architecture/SELECTION_SYSTEM](EmpireAtWarDocumentation/Architecture/SELECTION_SYSTEM.md). Do not use the old threshold, same-type selection, or movement-interface claims below as current behavior.
+
 The selection system now supports selecting and commanding multiple player ships while preserving the existing single-selection API for older consumers.
 
 ## Player Features

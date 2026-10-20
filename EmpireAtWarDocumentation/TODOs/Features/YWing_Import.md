@@ -8,7 +8,7 @@ updated: 2026-10-05
 
 ## Goal
 
-- Import `ReV_ywing.ALO` through [[Architecture/ALO_MODEL_IMPORT_GUIDE]]; integrate a Republic five-craft BTL-B heavy bomber squadron.
+- Import `ReV_ywing.ALO` through [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; integrate a Republic five-craft BTL-B heavy bomber squadron.
 - Use supplied hull/shields/regeneration 60/30/3 per craft, two lasers and one two-shot proton launcher, Ion Shot and passive astromech repair.
 
 ## Implementation
@@ -45,7 +45,7 @@ updated: 2026-10-05
 
 ## Files
 
-- [[GameDesign/Y-Wing Import]] — exact values, behavior, verification limits and paths.
+- [[AssetPipeline/Imports/Y-Wing Import]] — exact values, behavior, verification limits and paths.
 - `Assets/Prefabs/Models/Squadrons/YWingSquadronView.prefab`; `Assets/Settings/Data/Squadron/YWingSquadronData.asset`.
 - Source `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_ywing.ALO`; deliverables in sibling `ReV_ywing-Converted/`.
 - `Tools/Blender/export_ywing.py`, `prepare_ywing_textures.py`, `README.md`.

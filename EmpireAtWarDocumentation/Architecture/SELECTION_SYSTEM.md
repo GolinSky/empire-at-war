@@ -1,37 +1,39 @@
+---
+type: technical-reference
+system:
+  - selection
+  - input
+verified: 2026-10-20
+verification: source
+---
 # Selection System
 
-- Supports selection and commands for multiple player ships.
-- Preserves the single-selection API for older consumers.
+## Rules
 
-## Player Features
+- Player-facing bindings and order semantics: [[GameDesign/Commands_And_Controls]].
+- `SelectionService` applies selection policy; `SelectionQuery` owns world/visibility queries; `SelectionContext` owns the selected set and primary entity.
+- Double-click selects the same ship or squadron type for the same local owner on screen; it does not select every off-screen instance.
+- Slow repeated clicks can cycle overlapping objects. This is distinct from double-click same-type selection.
+- Mouse marquee starts at a drag distance `>= 5` screen pixels. A rectangle containing units prefers them; structures are selected only when no units are inside.
+- Ctrl+A selects visible player units; Ctrl+Shift+A selects all player units.
+- Orders flow through `UnitOrderService` and entity facades such as `IMoveFacade`; the historical `IMoveCommand` description is obsolete.
 
-- **Single selection:** click or tap a selectable unit.
-- **Ship-type selection:** activate the same player ship twice to select every player-owned ship of that `ShipType`.
-- **Marquee selection:** drag the mouse more than 5 screen pixels to draw a selection rectangle.
-  - Releasing selects all visible player units whose world positions project inside the rectangle.
-- **Group movement:** the ship UI move command is sent to every selected entity that provides an `IMoveCommand`.
-- **Safe updates:** replacing a selection deselects removed units, avoids duplicates, and automatically removes destroyed entities.
+## Implementation
 
-- Mouse drag → marquee selection.
-- Touch drag → camera pan.
-- Input starting over UI → no selection.
+- Marquee model owns drag/rectangle state; its view renders; its presenter connects input to selection.
+- Left-button drag selects; middle-button drag pans the camera. Input beginning over UI does not initiate world selection.
+- Default move commands use compact size-aware destinations at each unit's height; full controls and queue behavior are documented in GameDesign.
+- Source review on 2026-10-20; no Unity tests or interaction checks were run for this note update.
 
-## Design
+## Files
 
-- Marquee feature: `Assets/Scripts/Components/Selection/Marquee`.
-- Responsibilities: MVP.
-
-- `MarqueeSelectionModel` owns drag state and normalized rectangle data without Unity dependencies.
-- `IMarqueeSelectionView` / `MarqueeSelectionView` render the box only.
-- `MarqueeSelectionPresenter` translates input drag events into model and view updates.
-- `MarqueeSelectionUtility` is a generic, pure C# bounding-box filter that can be reused by other systems.
-
-- `SelectionQuery` owns selection world queries.
-- `SelectionService` applies click, repeated-tap, and marquee policies.
-- `SelectionContext`: `Entities` → full selection.
-- `Entity` → first entity; backward-compatible primary selection.
-
-## Verification
-
-- Coverage: rectangle normalization, boundary inclusion, reverse dragging, model lifecycle.
-- File: `Assets/Scripts/Tests/Editor/MarqueeSelectionUtilityTests.cs`.
+- `Assets/Scripts/Services/Selection/SelectionService.cs`
+- `Assets/Scripts/Services/Selection/SelectionQuery.cs`
+- `Assets/Scripts/Services/Selection/SelectionContext.cs`
+- `Assets/Scripts/Services/Input/MouseDragState.cs`
+- `Assets/Scripts/Services/Camera/CameraInput.cs`; `Assets/Settings/Input/EmpireAtWar.inputactions` — camera drag action and middle-button binding.
+- `Assets/Scripts/Services/UnitOrders/UnitOrderService.cs`
+- `Assets/Scripts/Entities/BaseEntity/EntityFacades/IMoveFacade.cs`
+- `Assets/Scripts/Components/Selection/Marquee/`
+- [[GameDesign/Commands_And_Controls]]
+- [[Architecture/00_Architecture]]

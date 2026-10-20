@@ -12,7 +12,7 @@ updated: 2026-10-07
 
 ## Implementation
 
-- [x] Read [[Architecture/ALO_MODEL_IMPORT_GUIDE]], placement/UI rules and source mapping; document missing `Temp/ALO_MODEL_MAP.txt` and verified catalog/XML fallback.
+- [x] Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], placement/UI rules and source mapping; document missing `Temp/ALO_MODEL_MAP.txt` and verified catalog/XML fallback.
 - [x] Convert AOTR `RV_MC80_Independence.ALO` through isolated Blender MCP; verify geometry, UVs, 214 bones and unchanged source hashes.
 - [x] Create art/gameplay/data/shield/placement/wreck/icons and register Rebellion ship `305`.
 - [x] Configure supplied `30,000 / 40,000 / 17`, 20 targetable hardpoints, 22 non-targetable weapons and Power to Shields.
@@ -33,7 +33,7 @@ updated: 2026-10-07
 
 ## Files
 
-- Reference: [[GameDesign/MC80 Independence Import]].
+- Reference: [[AssetPipeline/Imports/MC80 Independence Import]].
 - Tooling: `Tools/Blender/MC80Independence/`.
 - Evidence/editable source: `output/aotr-rebel-units/MC80Independence-Converted/`.
 - Gameplay/data: `Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab`, `Assets/Settings/Data/Ship/MC80IndependenceShipData.asset`.

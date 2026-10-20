@@ -1,6 +1,6 @@
 # Findings
 
-- Evidence paths use aliases defined in [[01_INVENTORY]].
+- Evidence paths use aliases defined in [[Artifacts/Codex_Audit_2026-09-13/01_INVENTORY]].
 - All findings are open: this audit did not apply repairs.
 - Priority reflects impact, not file age or length.
 - Confidence distinguishes observed facts from untested consequences.

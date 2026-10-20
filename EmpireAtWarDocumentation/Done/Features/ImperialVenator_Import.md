@@ -15,7 +15,7 @@ completed: 2026-10-09
 - User approved tech-2 TIE Fighter + TIE Bomber; omit unsupported Gozanti transport.
 - Own `ImperialVenator=211`, ability `ImperialVenatorIntensifyFirepower=35`; 15 weapons / 18 targets.
 - Keep source ALO/DDS unchanged. Imperial hull/bridge textures and ten shared turret references verified from XML/binary data.
-- Use existing unit/view/presenter consumers; no new UI behavior. Source/project balance differences recorded in [[GameDesign/Imperial Venator Import]].
+- Use existing unit/view/presenter consumers; no new UI behavior. Source/project balance differences recorded in [[AssetPipeline/Imports/Imperial Venator Import]].
 
 ## Implementation
 
@@ -43,7 +43,7 @@ completed: 2026-10-09
 
 ## Files
 
-- [[GameDesign/Imperial Venator Import]] — source facts, mappings and verification limits.
+- [[AssetPipeline/Imports/Imperial Venator Import]] — source facts, mappings and verification limits.
 - `Tools/Blender/ImperialVenator/README.md`, `Evidence.json` — reproducible model-specific workflow and evidence.
 - `Assets/Prefabs/Models/Ships/ImperialVenatorShipView.prefab`, `Assets/Settings/Data/Ship/ImperialVenatorShipData.asset` — saved gameplay assets.
 - `output/ImperialVenator/ImperialVenator-Converted.zip` — twelve editable blends/FBXs, textures, reports and screenshots; CRC/SHA-256 recorded.

@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Reuse — UI assets and extraction rules
@@ -21,7 +24,7 @@ category: Refactoring
 
 - **Priority:** P2 · **Confidence:** confirmed MVP boundary issue.
 
-- **Evidence:** [Assets/Scripts/Entities/ShipUi/Model/ShipUiModel.cs:28](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/ShipUi/Model/ShipUiModel.cs#L28) returns Unity Sprites through ShipUiData; [Assets/Scripts/Entities/ShipUi/Model/IShipUiModelObserver.cs:17](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/ShipUi/Model/IShipUiModelObserver.cs#L17) exposes that Unity type.
+- **Evidence:** `Assets/Scripts/Entities/ShipUi/Model/ShipUiModel.cs:28` returns Unity Sprites through ShipUiData; `Assets/Scripts/Entities/ShipUi/Model/IShipUiModelObserver.cs:17` exposes that Unity type.
 - ShipUi and ShipGroupUi both obtain icons through this model.
 
 - **Solution:** keep selected ship/squadron/ability state in the pure model.

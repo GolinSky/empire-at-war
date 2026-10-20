@@ -1,5 +1,8 @@
 # Walkthrough - Obsidian Vault & MCP Setup
 
+> [!info] Historical setup record
+> Retained legacy workflow, not current configuration instructions. Current authority is repository `AGENTS.md`; vault access uses `empire-vault` over stdio. Original settings examples and credential text below are unchanged.
+
 ## Vault Organization
 
 - Vault: `F:\Private\empire-at-war\EmpireAtWarDocumentation`.

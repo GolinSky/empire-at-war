@@ -7,7 +7,7 @@ updated: 2026-10-04
 # Captor Import
 
 ## Goal
-- Import `Carrier/CIS_Carrier.ALO` as the CIS Captor-class Carrier using [[Architecture/ALO_MODEL_IMPORT_GUIDE]].
+- Import `Carrier/CIS_Carrier.ALO` as the CIS Captor-class Carrier using [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 - Preserve source art; integrate ship assets, data, hardpoints, placement preview, wreck, icon and registrations.
 
 ## Implementation

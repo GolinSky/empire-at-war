@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Duplication — Markers, keys and tooling
@@ -21,7 +24,7 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed.
 
-- **Evidence:** [Assets/Scripts/Entities/MiniMap/Presenter/CaptureSiteMiniMapPresenter.cs:13](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/MiniMap/Presenter/CaptureSiteMiniMapPresenter.cs#L13) and [Assets/Scripts/Entities/MiniMap/Presenter/ReinforcementZoneMiniMapPresenter.cs:10](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/MiniMap/Presenter/ReinforcementZoneMiniMapPresenter.cs#L10) both build a source→marker dictionary, register markers, iterate during LateTick, and unregister/clear on disposal.
+- **Evidence:** `Assets/Scripts/Entities/MiniMap/Presenter/CaptureSiteMiniMapPresenter.cs:13` and `Assets/Scripts/Entities/MiniMap/Presenter/ReinforcementZoneMiniMapPresenter.cs:10` both build a source→marker dictionary, register markers, iterate during LateTick, and unregister/clear on disposal.
 
 - **Solution:** extract a small marker collection/lifetime collaborator only.
 - Keep capture-site operational visibility, zone diameter, and last-seen ownership policy in their respective presenters.
@@ -34,8 +37,8 @@ category: Refactoring
 
 - **Priority:** P2 · **Confidence:** confirmed.
 
-- **Evidence:** [Assets/Scripts/Entities/EnemyFaction/Controllers/EnemyFactionController.cs:223](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/EnemyFaction/Controllers/EnemyFactionController.cs#L223) builds `runtime request type FullName + ':' + Id`.
-- [Assets/Scripts/Entities/EnemyFaction/Models/EnemyUnitLimitModel.cs:52](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/EnemyFaction/Models/EnemyUnitLimitModel.cs#L52) and line 94 build the equivalent key from a generic request type.
+- **Evidence:** `Assets/Scripts/Entities/EnemyFaction/Controllers/EnemyFactionController.cs:223` builds `runtime request type FullName + ':' + Id`.
+- `Assets/Scripts/Entities/EnemyFaction/Models/EnemyUnitLimitModel.cs:52` and line 94 build the equivalent key from a generic request type.
 
 - **Solution:** give reservation identity one owner.
 - Use a small typed key containing request kind and canonical request identifier, or centralize existing key construction as the smaller first step.
@@ -49,7 +52,7 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed.
 
-- **Evidence:** [Tools/Audio/generate_ship_sfx.py:105](file:///F:/Private/empire-at-war/Tools/Audio/generate_ship_sfx.py#L105) and [Tools/Audio/generate_weapon_sfx.py:86](file:///F:/Private/empire-at-war/Tools/Audio/generate_weapon_sfx.py#L86) both remove DC offset, normalize peak level, encode signed 16-bit PCM, handle byte order and write mono WAV at 44.1 kHz.
+- **Evidence:** `Tools/Audio/generate_ship_sfx.py:105` and `Tools/Audio/generate_weapon_sfx.py:86` both remove DC offset, normalize peak level, encode signed 16-bit PCM, handle byte order and write mono WAV at 44.1 kHz.
 
 - **Solution:** extract the shared encoder into a small module within `Tools/Audio`.
 - Keep synthesis and weapon-specific RMS/seam reporting in the calling scripts.

@@ -14,7 +14,7 @@ updated: 2026-10-06
 ## Decision
 
 - New squadron `YWingBomber = 301`; source `RV_Y_WING.ALO` plus `RV_Y_WING_TURRET.ALO`.
-- Reference: [[GameDesign/Y-Wing Bomber Import]]; workflow: [[Architecture/ALO_MODEL_IMPORT_GUIDE]].
+- Reference: [[AssetPipeline/Imports/Y-Wing Bomber Import]]; workflow: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 - Use existing Ion Shot; weapon/economy/flight tuning remains provisional. Source passive ion slowdown is not ported.
 
 ## Implementation

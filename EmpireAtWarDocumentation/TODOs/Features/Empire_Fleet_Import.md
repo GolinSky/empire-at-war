@@ -8,7 +8,7 @@ created: 2026-10-14
 ## Goal
 
 - Import Procursator, Allegiance, Titan and Tartan for the Galactic Empire.
-- Use [[GameDesign/Empire Fleet Import]] for proposed balance, exact ALO paths, weapons, abilities and source links.
+- Use [[GameDesign/Proposals/Empire Fleet Import]] for proposed balance, exact ALO paths, weapons, abilities and source links.
 
 ## Rules
 
@@ -22,15 +22,15 @@ created: 2026-10-14
 
 ## Files
 
-- [[GameDesign/Empire Fleet Import]] — supplied specifications and sources.
-- [[Architecture/ALO_MODEL_IMPORT_GUIDE]] — conversion workflow.
+- [[GameDesign/Proposals/Empire Fleet Import]] — supplied specifications and sources.
+- [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]] — conversion workflow.
 - [[Architecture/PROJECT_ORGANIZATION]] — asset placement.
 
 ## TODO
 
 - [x] Procursator — imported 2026-10-14; 12 models, 15 weapons/17 targets, no hangar, existing Power to Weapons. Saved checks 7,385; Procursator EditMode 6/6 and actual local/AI factory spawning passed after injection-list repair; 30 stationary simulation encounters. Combat Play Mode/balance acceptance remains unrun. Rebuild/evidence: `Tools/Blender/Procursator/`.
-- [x] Allegiance — completed 2026-10-14 as Empire `213`; `20,000/16,000/12`, 21 weapons + 7 subsystems, zero squadron bays, existing Power to Main Batteries + Tractor Beam. Geometry/UV verified; Allegiance EditMode tests `12/12` passed, including the repaired spawn-injection bindings. Reference: [[GameDesign/Allegiance Import]].
-- [x] Titan — completed 2026-10-14 as Empire `214`; `28,000/18,000/16`, 24 weapons + 9 subsystems, zero squadron bays, existing Power to Weapons + Tractor Beam. Saved verification 52,482 checks; Titan EditMode `12/12`, three capital simulations and actual local/AI scope composition passed. Reference: [[GameDesign/Titan Import]]; commit `c80046172`.
+- [x] Allegiance — completed 2026-10-14 as Empire `213`; `20,000/16,000/12`, 21 weapons + 7 subsystems, zero squadron bays, existing Power to Main Batteries + Tractor Beam. Geometry/UV verified; Allegiance EditMode tests `12/12` passed, including the repaired spawn-injection bindings. Reference: [[AssetPipeline/Imports/Allegiance Import]].
+- [x] Titan — completed 2026-10-14 as Empire `214`; `28,000/18,000/16`, 24 weapons + 9 subsystems, zero squadron bays, existing Power to Weapons + Tractor Beam. Saved verification 52,482 checks; Titan EditMode `12/12`, three capital simulations and actual local/AI scope composition passed. Reference: [[AssetPipeline/Imports/Titan Import]]; commit `c80046172`.
 - [x] Tartan — completed 2026-10-14; Empire `215`, `650/850/70`, 9 targetable weapons, no engine/shield-generator/hangar subsystem or squadrons. Existing Power to Weapons `20`; geometry/source hashes/saved references and eight live/wreck palettes passed; final EditMode `9/9`, 30 capital-opponent simulations completed. Commit `58bb0d846`.
 - [ ] Verify supplied comparison stats against current Unity assets before balance tuning.
 - [ ] Balance weapon DPS, range, accuracy and tracking separately from mount counts.
@@ -76,7 +76,7 @@ created: 2026-10-14
 - Verified model icon, separate hologram/wreck, eight live/wreck team palettes; `95` helper renderers stripped. Source alpha carries no usable livery mask; neutral panels retain palette rim coloring.
 - Project choices: level `4`, max count `3`, population `12`, shield regeneration `80/s`, subsystem health `600..1200`; source death animation unsupported by static import.
 - Completed: `2026-10-14`; Allegiance EditMode tests `11/11` passed, including scale/collision/muzzle placement, saved references, main batteries, zero squadrons, independent subsystem destruction and three capital simulations. Broader fleet-plan scope remains active.
-- Files: `Tools/Blender/Allegiance/`; dedicated Empire art/prefabs/data/icons, `AllegianceShipTests.cs`, [[GameDesign/Allegiance Import]]. Editable package: `output/remake-empire-units/Allegiance-Converted`. Commit: `52cdd8350`.
+- Files: `Tools/Blender/Allegiance/`; dedicated Empire art/prefabs/data/icons, `AllegianceShipTests.cs`, [[AssetPipeline/Imports/Allegiance Import]]. Editable package: `output/remake-empire-units/Allegiance-Converted`. Commit: `52cdd8350`.
 
 ## Tartan Progress — 2026-10-14
 
@@ -97,7 +97,7 @@ created: 2026-10-14
 - Related fixes: donor injection references replaced with 33 targets/team-color view, all MeshRenderers bound, Mandator-scoped quad tuning copied to Titan profile `88`, radar raised to longest gun `877.49994`.
 - Verification: saved checks `52,482`; Titan EditMode `12/12` after reproducing/fixing two integration failures; two Titan wreck checks passed in observed broader run. Three deterministic stationary combat simulations against Venator/Victory II/MC80 passed. Actual project/battle/local/AI scopes spawned Titan and verified health, voice, independent state and teardown.
 - Broader pre-fix snapshot: `1,288/1,308`; failures in other ship integrations, balance validation and concurrent Editor timeout logs. No full-suite green claim. Simulator excludes movement/arcs/abilities; combat Play Mode/balance acceptance remains separate fleet work.
-- Files: `Tools/Blender/Titan/`, `TitanShipTests.cs`, [[GameDesign/Titan Import]]; editable local package `output/remake-empire-units/Titan-Converted/`.
+- Files: `Tools/Blender/Titan/`, `TitanShipTests.cs`, [[AssetPipeline/Imports/Titan Import]]; editable local package `output/remake-empire-units/Titan-Converted/`.
 
 ## Procursator Spawn Fix — 2026-10-14
 

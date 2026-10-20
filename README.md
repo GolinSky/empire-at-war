@@ -1,26 +1,28 @@
 # Empire At War (Unity 6 Project)
 
-An RTS-inspired space-battle game featuring faction control, reinforcement systems, customizable ship behaviors, and economy management. The codebase is heavily structured around strict architectural boundaries (MVP) and integrates advanced developer tools like Model Context Protocol (MCP) and Graphify to support AI-assisted development.
+An RTS-inspired space-battle game featuring faction control, reinforcements, ship behavior, and economy management. MVP is optional where it fits, especially stateful UI; repository `AGENTS.md` defines the architecture policy.
+
+Start with the [documentation dashboard](EmpireAtWarDocumentation/00_Home.md), [current GameDesign references](EmpireAtWarDocumentation/GameDesign/00_GameDesign.md), and [canonical backlog](EmpireAtWarDocumentation/TODOs/TODOs.md). Proposals, import records, and dated audits are labeled separately from current rules.
 
 ---
 
 ## 🚀 Technology Stack
 
 * **Game Engine:** **Unity 6** (Editor Version `6000.4.7f1`)
-* **Dependency Injection:** **Zenject** (Extenject) for clean binding lifecycles, project/scene contexts, and factory patterns.
+* **Dependency Injection:** **VContainer** (`1.19.0`) with project, scene, player, and entity scopes.
 * **Rendering:** **Universal Render Pipeline (URP)** (`17.4.0`) for optimized visual performance.
-* **Asset & Data Management:** **Addressables** (`2.9.1`) for dynamic loading of prefabs, visual assets, and databases via the `AddressableRepository`.
+* **Asset & Data Management:** **Addressables** (`2.9.1`) for dynamic loading of prefabs, visual assets, and databases.
 * **Input System:** Unity's **New Input System** (`1.19.0`) for scalable cross-platform controls.
 * **Animation Engine:** **DOTween** for smooth UI transitions and procedural visual effects.
 * **Agent Toolkit & AI Integrations:**
-  * **Unity MCP (`com.coplaydev.unity-mcp`):** An in-editor Model Context Protocol server that exposes Unity runtime and editor tools directly to AI coding assistants.
+  * **Unity automation:** Official `unity` CLI and `com.unity.pipeline` bridge, per `AGENTS.md`. Package presence does not override that policy.
   * **Graphify:** A codebase semantic indexing tool used to map dependency trees and query the project graph.
 
 ---
 
 ## 🏛️ Architecture (Model-View-Presenter)
 
-The codebase strictly enforces the **Model-View-Presenter (MVP)** pattern to decouple gameplay business rules from Unity-specific APIs and rendering lifecycles.
+Use **Model-View-Presenter (MVP)** where its responsibilities fit the feature. Do not force this structure onto small features or entity components.
 
 ```mermaid
 flowchart LR
@@ -37,7 +39,8 @@ flowchart LR
     View -->|"User Intent"| Presenter
     Presenter -->|"Request"| Service
     Service -->|"State Changes"| Model
-    Model -->|"C# Events"| View
+    Model -->|"C# Events"| Presenter
+    Presenter -->|"Render state"| View
 ```
 
 ### Components and Responsibilities:
@@ -57,7 +60,7 @@ The repository follows a strict **type-first** layout under `Assets/`. Developer
 * **`Assets/Prefabs/`**: Reusable GameObject configurations (UI screens, unit views).
 * **`Assets/Scripts/`**: All C# code, separated into `Components/`, `Entities/`, `Services/`, `Editor/`, and `Tests/`.
 * **`Assets/Settings/`**: Global configurations, Input Action maps, and HDRP/URP profiles.
-* **`Assets/Plugins/`**: Project-wide third-party packages (Zenject, Mirror, DOTween).
+* **`Assets/Plugins/`**: Major external assets; Package Manager dependencies are recorded in `Packages/manifest.json`.
 * **`Assets/ThirdParty/`**: External assets or documentation.
 * **`Assets/Sandbox/`**: Temporary prototypes, debug scenes, and scratchpads.
 
@@ -67,7 +70,7 @@ The repository follows a strict **type-first** layout under `Assets/`. Developer
 
 Ensure you read the relevant document before proposing or implementing changes:
 
-* **[PROJECT_ORGANIZATION.md](file:///f:/Private/empire-at-war/PROJECT_ORGANIZATION.md):** Mandatory folder structures and asset placement rules.
-* **[UI_REFACTORING_PLAYBOOK.md](file:///f:/Private/empire-at-war/UI_REFACTORING_PLAYBOOK.md):** Detailed checklists and Mermaid flows for migrating UI/features to clean MVP structures.
-* **[GRAPHIFY_GUIDE.md](file:///f:/Private/empire-at-war/GRAPHIFY_GUIDE.md):** Guide on installing and using `graphifyy` to build, query, and traverse the codebase dependencies.
-* **[AGENTS.md](file:///f:/Private/empire-at-war/AGENTS.md):** Shared instructions, behaviors, and patterns for AI coding assistants working in this repository.
+* **[Project organization](EmpireAtWarDocumentation/Architecture/PROJECT_ORGANIZATION.md):** Canonical asset placement reference; root `AGENTS.md` takes precedence over older examples.
+* **[UI refactoring playbook](EmpireAtWarDocumentation/Architecture/UI_REFACTORING_PLAYBOOK.md):** UI responsibilities and migration checklist.
+* **[Graphify operations](Tools/Graphify/README.md):** Current configured indexing, status, and recovery.
+* **[AGENTS.md](AGENTS.md):** Canonical shared instructions and engineering policy.

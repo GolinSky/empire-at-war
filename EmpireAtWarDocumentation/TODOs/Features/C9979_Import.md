@@ -7,8 +7,8 @@ updated: 2026-10-05
 
 ## Goal
 
-- Convert `SeV_c9979.ALO` and register the CIS space/skirmish transport using [[Architecture/ALO_MODEL_IMPORT_GUIDE]].
-- Source, decisions and values: [[GameDesign/C-9979 Import]].
+- Convert `SeV_c9979.ALO` and register the CIS space/skirmish transport using [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
+- Source, decisions and values: [[AssetPipeline/Imports/C-9979 Import]].
 
 ## Rules
 

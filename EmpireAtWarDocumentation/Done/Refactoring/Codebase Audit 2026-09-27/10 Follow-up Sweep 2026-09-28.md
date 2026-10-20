@@ -3,8 +3,12 @@ tags:
   - code-audit
   - follow-up
 created: 2026-09-28
-status: open
 category: Refactoring
+type: audit-record
+finding_status: open
+record_state: superseded
+reviewed: 2026-10-20
+superseded_by: "[[Done/Refactoring/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30]]"
 ---
 
 # Follow-up sweep — 28 September 2026

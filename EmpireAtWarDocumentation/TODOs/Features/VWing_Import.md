@@ -12,7 +12,7 @@ updated: 2026-10-05
 
 ## Rules
 
-- Follow [[Architecture/ALO_MODEL_IMPORT_GUIDE]] integration steps; skip ALO/Blender acquisition and conversion.
+- Follow [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]] integration steps; skip ALO/Blender acquisition and conversion.
 - Preserve source model/MTL/texture bytes and unrelated user changes. No automated tests requested.
 - Open MainMenu scene is dirty; use isolated preview scenes.
 
@@ -29,10 +29,10 @@ updated: 2026-10-05
 - [x] Save data, enum `VWing = 6`, Republic roster, mappings, existing View/Data Addressables, transparent icons and matchups.
 - [x] Saved-reference/geometry/import/compile verification passed; five health targets, twenty unique body-mounted weapons, bound fog/team/preview arrays, own icon/placement mappings, no missing scripts or donor dependencies. Eight team renders produced; blue/green inspected.
 - Source hashes: nine original model/MTL/texture files unchanged. No new Console errors; existing warnings only. No automated tests or Play Mode run.
-- Final source/project values and exact paths: [[GameDesign/V-Wing Import]].
+- Final source/project values and exact paths: [[AssetPipeline/Imports/V-Wing Import]].
 - [ ] Clean-skirmish acceptance and provisional balance review.
 
 ## Files
 
 - Source: `Assets/Art/Models/RepublicShips/Vwing/V-wing.obj`.
-- Reference: [[GameDesign/V-Wing Import]].
+- Reference: [[AssetPipeline/Imports/V-Wing Import]].

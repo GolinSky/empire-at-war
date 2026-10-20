@@ -49,7 +49,7 @@ status: in-progress
 - Import scope is saved and verified. Plan remains active for unsupported abilities/system behavior and battle acceptance; no completion date assigned.
 
 ## Files
-- Reference: [[GameDesign/Mandator Import]].
+- Reference: [[AssetPipeline/Imports/Mandator Import]].
 - Exporter / procedure: `Tools/Blender/export_mandator.py`, `Tools/Blender/README.md`.
 - Runtime prefab: `Assets/Prefabs/Models/Ships/MandatorShipView.prefab`.
 - Package: `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_Mandator-Converted/`.

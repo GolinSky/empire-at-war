@@ -16,7 +16,7 @@ updated: 2026-10-05
 - No automated tests or Play Mode requested; carrier changes outside scope.
 
 ## Implementation
-- [x] Read [[Architecture/ALO_MODEL_IMPORT_GUIDE]], placement and UI rules; inspect live source and donor assets.
+- [x] Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], placement and UI rules; inspect live source and donor assets.
 - [x] Convert packed Blender/FBX/textures; eight meshes, fourteen bones, 5,097 triangles preserved, UVs and parents verified.
 - [x] Create visual/gameplay/data/placement; four members, twelve unique weapons, one engine trail/member and fitted collision/navigation/selection bounds.
 - [x] Register Republic roster, own asset mapping, existing View/Data Addressables groups, icons, team colors and matchup assets.
@@ -34,7 +34,7 @@ updated: 2026-10-05
 - Source/FBX/Unity all `8 / 5,097 / 14` meshes/triangles/bones. Max Blender geometry error `0.000005723` source units; Unity bone error `0.0000001062` units; no parent mismatches.
 
 ## Files
-- Reference: [[GameDesign/NTB-630 Import]]. Conversion/reproduction notes: `Tools/Blender/README.md`.
+- Reference: [[AssetPipeline/Imports/NTB-630 Import]]. Conversion/reproduction notes: `Tools/Blender/README.md`.
 - `Assets/Prefabs/Models/Squadrons/NTB630.prefab`, `NTB630SquadronView.prefab`; `Assets/Settings/Data/Squadron/NTB630SquadronData.asset`.
 - Type-first art `RepublicShips/NTB630`; own placement, icon/silhouette and matchup assets registered.
 - Sibling `ReV_ntb630-Converted/`: packed source, FBX, textures, reports, previews, scripts and credits.

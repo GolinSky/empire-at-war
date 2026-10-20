@@ -20,13 +20,13 @@ tags: [codex, configuration, audit]
 
 ## Read the results
 
-- [[01_INVENTORY|Inventory, ownership, MCP and role matrices]]
-- [[02_EFFECTIVE_LOAD_MAP|What loads and which layer wins]]
-- [[03_FINDINGS|Prioritized findings and evidence]]
-- [[04_MIGRATION_MAP|Minimal repair batches and preservation map]]
-- [[05_VALIDATION|Checks performed and checks still outstanding]]
-- [[06_ROLLBACK|Rollback and change-control procedure]]
-- [[07_HANDOFF|Repair handoff and completion checklist]]
+- [[Artifacts/Codex_Audit_2026-09-13/01_INVENTORY|Inventory, ownership, MCP and role matrices]]
+- [[Artifacts/Codex_Audit_2026-09-13/02_EFFECTIVE_LOAD_MAP|What loads and which layer wins]]
+- [[Artifacts/Codex_Audit_2026-09-13/03_FINDINGS|Prioritized findings and evidence]]
+- [[Artifacts/Codex_Audit_2026-09-13/04_MIGRATION_MAP|Minimal repair batches and preservation map]]
+- [[Artifacts/Codex_Audit_2026-09-13/05_VALIDATION|Checks performed and checks still outstanding]]
+- [[Artifacts/Codex_Audit_2026-09-13/06_ROLLBACK|Rollback and change-control procedure]]
+- [[Artifacts/Codex_Audit_2026-09-13/07_HANDOFF|Repair handoff and completion checklist]]
 - `inventory.json`: paths, sizes, modification times and SHA-256 hashes of 27 inspected declarative/reference files.
   - It contains no file bodies.
 - `patches/`: three small, unapplied documentation proposals.

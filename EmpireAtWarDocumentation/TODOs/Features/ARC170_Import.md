@@ -8,7 +8,7 @@ updated: 2026-10-04
 
 ## Goal
 
-- Import `ReV_arc170.ALO` through [[Architecture/ALO_MODEL_IMPORT_GUIDE]]; register a Republic five-craft heavy fighter / fighter-bomber squadron.
+- Import `ReV_arc170.ALO` through [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; register a Republic five-craft heavy fighter / fighter-bomber squadron.
 - Use user values: tech 5, hull 105 per craft, shields 35, shield regeneration 5, cost 375, population 1.
 
 ## Implementation
@@ -46,7 +46,7 @@ updated: 2026-10-04
 
 ## Files
 
-- [[GameDesign/ARC-170 Import]] — values, conversion decisions, paths and verified limits.
+- [[AssetPipeline/Imports/ARC-170 Import]] — values, conversion decisions, paths and verified limits.
 - `Assets/Prefabs/Models/Squadrons/ARC170.prefab`, `ARC170SquadronView.prefab`; `Assets/Settings/Data/Squadron/ARC170SquadronData.asset`.
 - `Assets/Prefabs/Ui/Reinforcement/ARC170ReinforcementView.prefab`; `RepublicShips/ARC170` type-first art folders.
 - Source `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_arc170.ALO`; sibling `ReV_arc170-Converted/` holds separate deliverables and credits.

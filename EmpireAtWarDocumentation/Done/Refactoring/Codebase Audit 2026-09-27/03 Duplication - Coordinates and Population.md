@@ -3,10 +3,13 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: implemented
 scope: read-only source review
 updated: "2026-09-27\r"
 category: Refactoring
+type: audit-record
+finding_status: implemented
+record_state: historical
+reviewed: 2026-10-20
 ---
 
 # Duplication — Coordinates and population
@@ -21,7 +24,7 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed.
 
-- **Evidence:** identical `ToPoint(Vector3)` and ground-plane `ToVector(FormationPoint)` helpers occur in [Assets/Scripts/Entities/Ship/Orders/ShipOrderRunner.cs:221](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/Ship/Orders/ShipOrderRunner.cs#L221) and [Assets/Scripts/Entities/Squadron/Squadron.cs:311](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/Squadron/Squadron.cs#L311).
+- **Evidence:** identical `ToPoint(Vector3)` and ground-plane `ToVector(FormationPoint)` helpers occur in `Assets/Scripts/Entities/Ship/Orders/ShipOrderRunner.cs:221` and `Assets/Scripts/Entities/Squadron/Squadron.cs:311`.
 - Additional direct conversions appear in UnitOrderService and PlayerOrderInputHandler.
 
 - **Solution:** add one Unity-bound formation-coordinate adapter under `Components/Utils` or the formation integration boundary.
@@ -35,7 +38,7 @@ category: Refactoring
 
 - **Priority:** P3 · **Confidence:** confirmed small duplication.
 
-- **Evidence:** [Assets/Scripts/Entities/Map/Generation/MapGeometry.cs:37](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/Map/Generation/MapGeometry.cs#L37) computes planar distance to a segment; [Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs:232](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs#L232) computes squared distance.
+- **Evidence:** `Assets/Scripts/Entities/Map/Generation/MapGeometry.cs:37` computes planar distance to a segment; `Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs:232` computes squared distance.
 - Both return distance to the start point for zero-length segments.
 - The original note overstated the significance of their tiny-segment arithmetic difference.
 
@@ -52,7 +55,7 @@ category: Refactoring
 
 - **Priority:** P2 · **Confidence:** confirmed.
 
-- **Evidence:** [Assets/Scripts/Services/CaptureSites/CaptureSitesSystem.cs:286](file:///F:/Private/empire-at-war/Assets/Scripts/Services/CaptureSites/CaptureSitesSystem.cs#L286) and [Assets/Scripts/Services/ReinforcementZones/ReinforcementZonesSystem.cs:108](file:///F:/Private/empire-at-war/Assets/Scripts/Services/ReinforcementZones/ReinforcementZonesSystem.cs#L108) each enumerate all ships, check containment and count Player/Opponent ownership.
+- **Evidence:** `Assets/Scripts/Services/CaptureSites/CaptureSitesSystem.cs:286` and `Assets/Scripts/Services/ReinforcementZones/ReinforcementZonesSystem.cs:108` each enumerate all ships, check containment and count Player/Opponent ownership.
 
 - **Solution:** extract a narrowly scoped ship-population query service with an explicit containment contract.
 - Both systems supply their area; the service returns the two counts.

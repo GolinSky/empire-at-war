@@ -10,7 +10,7 @@ date: 2026-10-05
 - Replace Tractor Beam with Laser Beam; integrate data, weapons, hangar, wreck, placement, icons and team colors.
 
 ## Rules
-- Follow [[Architecture/ALO_MODEL_IMPORT_GUIDE]]; preserve original source files and attachment hierarchy.
+- Follow [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; preserve original source files and attachment hierarchy.
 - No automated tests requested. No Play Mode started; runtime acceptance remains unverified.
 - User approved ARC-170/Delta-7 substitutes; ARC-170 selected for the fighter bay.
 
@@ -43,6 +43,6 @@ date: 2026-10-05
 - Static conversion excludes death ALA and EaW animated effects. No new Unity import/serialization/compilation errors; no automated tests or Play Mode run.
 
 ## Files
-- Reference and exact values: [[GameDesign/Imperator Import]].
+- Reference and exact values: [[AssetPipeline/Imports/Imperator Import]].
 - Exporter and mapping: `Tools/Blender/export_imperator.py`, `Tools/Blender/README.md`.
 - Bundle: `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/EV_StarDestroyer_MKI-Converted/`.

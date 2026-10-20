@@ -1,41 +1,23 @@
-# Empire At War - Obsidian Vault Dashboard
+# Empire At War Documentation
 
-## TODOs
+## Files
 
-- [[TODOs/TODOs|Project Backlog & Active Tasks]]
-- [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Battle Attack & Projectile Optimization Plan]]
-- [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration — performance verification pending]]
-
-## Done
-
-- [[Done/Refactoring/UI_Service_Refactoring|UI Rework Before VContainer]]
-
-- [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders)]]
-- [[Done/Refactoring/Project_Organization_Remediation_Plan|Project Organization & Asset Naming]]
-
-## Architecture
-
-- [[Architecture/PROJECT_ORGANIZATION|Project Organization Guide]] - Authoritative Type-First Asset Structure & Rules
-- [[Architecture/UI_REFACTORING_PLAYBOOK|UI Refactoring Playbook]] - MVP UI Responsibilities & Flow
-- [[Architecture/SELECTION_SYSTEM|Selection System]] - Selection System Architecture
-- [[Architecture/GRAPHIFY_GUIDE|Graphify Guide]] - Codebase Knowledge Graph Guide
+- [[Project_Overview]] — project scope, package versions and authority.
+- [[GameDesign/00_GameDesign]] — current game rules, economy, combat, modes and data ownership.
+- [[Architecture/00_Architecture]] — implementation, lifecycle and placement.
+- [[AssetPipeline/00_AssetPipeline]] — import guides, integrations and provenance.
+- [[Tooling/00_Tooling]] — operational manuals and authoring tools.
+- [[Rules/DOCUMENTATION_ORGANIZATION]] — note placement, status and verification conventions.
+- [[Rules/AGENTS]], [[Rules/UI_UX_GUIDELINES]], [[Rules/UI_CODE_BUILD_GUIDE]], [[Rules/UNITY_JOBS_AND_THREADING_RULES]] — engineering rules.
+- [[TODOs/TODOs#Active Tasks]] — active work and next gates.
+- [[TODOs/TODOs#Done]] — completed plans and evidence.
+- [[Artifacts/00_Artifacts]] — dated audits and historical records.
 
 ## Rules
 
-- [[Rules/AGENTS|AI Agent Rules & Standards]] - Mandatory Shared Instructions, MVP Rules, SOLID/GRASP, Unity Constraints
-- [[Rules/UI_UX_GUIDELINES|UI & UX Recipe Manual]] - Mandatory UI/UX Standards, Button Transition Rules, MPUIKit Guidelines
-- [[Rules/UI_CODE_BUILD_GUIDE|UI Code Build Rule]] - Architecture, prefab, and Addressables workflow for new UI features
-- [[Rules/UNITY_JOBS_AND_THREADING_RULES|Unity Jobs & Threading Rules]] - Burst/Jobs ownership, completion, allocator and audit rules
-- [[Rules/README|Project Overview]] - General Project Readme
-
-## Artifacts
-
-- [[Artifacts/Implementation_Plan|Vault & MCP Implementation Plan]]
-- [[Artifacts/Walkthrough|Vault Setup Walkthrough]]
-
-## Features
-
-- [[Features/CONTROLS_ANALYSIS|Control & Input System Analysis]]
+- Source/asset-verified references are dated; historical values and proposals are explicitly marked.
+- Repository `AGENTS.md` is the policy authority. Current vault access uses the `empire-vault` stdio server.
+- The legacy setup section below is retained verbatim for history. It is not current setup guidance; no settings or credentials were changed.
 
 ## Obsidian MCP Integration Settings
 

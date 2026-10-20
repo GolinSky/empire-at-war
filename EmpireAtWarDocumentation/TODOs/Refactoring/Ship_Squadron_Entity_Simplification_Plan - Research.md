@@ -7,7 +7,7 @@ status: in-progress
 - Working reference: [[TODOs/Refactoring/Ship_Squadron_Entity_Simplification_Plan]].
 - Detailed plan/evidence; recorded status and dates retained.
 
-- **Source analysis:** [[Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS]] · **Date:** 2026-09-25 · **Status:** implemented 2026-09-26 (see Execution record).
+- **Source analysis:** [[Artifacts/Audits/Ship_Squadron_2026-09-25/SHIP_SQUADRON_ENTITY_ANALYSIS]] · **Date:** 2026-09-25 · **Status:** implemented 2026-09-26 (see Execution record).
 - Not committed; no tests run.
 
 - Small, independent, behavior-preserving steps.

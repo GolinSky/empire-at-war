@@ -13,7 +13,7 @@ created: 2026-10-04
 
 ## Rules
 
-- Follow [[Architecture/ALO_MODEL_IMPORT_GUIDE]], [[Architecture/PROJECT_ORGANIZATION]] and UI rules.
+- Follow [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], [[Architecture/PROJECT_ORGANIZATION]] and UI rules.
 - Preserve original ALO/DDS assets and unrelated changes. No automated tests requested or run.
 - Open `MainMenuScene` is dirty; scene and unsaved edits preserved. No Play Mode verification performed.
 

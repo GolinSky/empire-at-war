@@ -7,7 +7,7 @@ completed: 2026-10-12
 
 ## Goal
 
-- Import and register the Workshop MC30c using [[GameDesign/Rebel units]] balance and [[Architecture/ALO_MODEL_IMPORT_GUIDE]].
+- Import and register the Workshop MC30c using [[GameDesign/Proposals/Rebel units]] balance and [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 
 ## Implementation
 
@@ -15,7 +15,7 @@ completed: 2026-10-12
 - [x] Create own art, gameplay, data, 16 targetable hardpoints, Torpedo Salvo and approved burst cluster bombs.
 - [x] Save placement, wreck, icon, team colors and every ship registration.
 - [x] Verify persisted assets, unchanged inputs, texture copies, previews, imports and compilation.
-- [x] Record evidence and package editable conversion in [[GameDesign/MC30c Frigate Import]].
+- [x] Record evidence and package editable conversion in [[AssetPipeline/Imports/MC30c Frigate Import]].
 
 ## Decision
 

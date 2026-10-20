@@ -12,7 +12,7 @@ updated: 2026-10-05
 
 ## Implementation
 
-- [x] Read [[Architecture/ALO_MODEL_IMPORT_GUIDE]] and placement/UI rules; audit source ALO/DDS and local RaW XML.
+- [x] Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]] and placement/UI rules; audit source ALO/DDS and local RaW XML.
 - [x] Convert through Blender 3.6.23; preserve geometry, UVs, bones, attachments and hidden helpers; save editable blends and FBX.
 - [x] Build model/materials/textures, five-member gameplay prefab/data, two lasers per fighter and own placement/icons.
 - [x] Register Republic squadron `5`, roster, View/Data addresses, asset mappings, HUD/tooltip and reinforcement references.
@@ -30,7 +30,7 @@ updated: 2026-10-05
 
 ## Files
 
-- Reference: [[GameDesign/V-19 Torrent Import]].
+- Reference: [[AssetPipeline/Imports/V-19 Torrent Import]].
 - `Assets/Prefabs/Models/Squadrons/V19TorrentSquadronView.prefab`.
 - `Assets/Settings/Data/Squadron/V19TorrentSquadronData.asset`.
 - Source sibling `ReV_v19_torrent-Converted/` contains editable source and verification evidence.

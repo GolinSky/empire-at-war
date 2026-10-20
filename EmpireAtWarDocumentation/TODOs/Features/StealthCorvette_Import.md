@@ -10,9 +10,9 @@ created: 2026-10-05
 - Add cloaking: enemy rendering/detection/targeting suppressed; weapons disabled; movement and friendly reinforcement vision retained.
 
 ## Rules
-- Follow [[Architecture/ALO_MODEL_IMPORT_GUIDE]] and [[Architecture/PROJECT_ORGANIZATION]].
+- Follow [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]] and [[Architecture/PROJECT_ORGANIZATION]].
 - Source ALO/DDS unchanged; no automated tests or Play Mode requested.
-- Reference and choices: [[GameDesign/Stealth Corvette Import]].
+- Reference and choices: [[AssetPipeline/Imports/Stealth Corvette Import]].
 
 ## Important Values
 - Hull/shields/regeneration: `850/900/15` each second; two concussion launchers and two laser cannons; no independently destroyable systems.

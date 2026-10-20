@@ -12,7 +12,7 @@ updated: 2026-10-07
 
 ## Implementation
 
-- [x] Read [[Architecture/ALO_MODEL_IMPORT_GUIDE]], project placement and UI guidance; verify live model map/XML.
+- [x] Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], project placement and UI guidance; verify live model map/XML.
 - [x] Audit original hull, six turret sources, fighter, textures and bone hierarchy.
 - [x] Convert through Blender 3.6.23 MCP; preserve hidden state/UVs; validate FBX geometry, parents and attachment positions.
 - [x] Import materials/textures/FBX; save geometry, gameplay, shield/collision/selection/nav bounds, own wreck and preview.
@@ -21,7 +21,7 @@ updated: 2026-10-07
 - [x] Verify source hashes, Unity geometry/UVs/attachments, saved references, import/compile checks and icon/eight palette renders.
 - [x] 2026-10-07: remove the Advanced suffix; use `VictoryI` across code, assets, tooling, conversion archive and documentation; preserve ship ID `202` and current balance.
 - [ ] Clean-skirmish acceptance: combat/hardpoints/abilities/fighter launch/fog/selection/placement/death.
-- [ ] Review provisional balance and source-to-project differences listed in [[GameDesign/Victory I Import]].
+- [ ] Review provisional balance and source-to-project differences listed in [[AssetPipeline/Imports/Victory I Import]].
 
 ## Important Values
 
@@ -40,6 +40,6 @@ updated: 2026-10-07
 
 ## Files
 
-- [[GameDesign/Victory I Import]]
+- [[AssetPipeline/Imports/Victory I Import]]
 - `Assets/Prefabs/Models/Ships/VictoryIShipView.prefab`
 - `Assets/Settings/Data/Ship/VictoryIShipData.asset`

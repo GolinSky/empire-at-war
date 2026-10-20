@@ -4,7 +4,7 @@
 
 - Move feature UI to explicit MVP responsibilities.
 - Reference implementation: `ReinforcementUi`.
-- Read [[PROJECT_ORGANIZATION]] before applying placement changes.
+- Read [[Architecture/PROJECT_ORGANIZATION]] before applying placement changes.
 
 ## Responsibilities
 
@@ -47,4 +47,4 @@
 
 ## Files
 
-- [[UI_REFACTORING_PLAYBOOK - Research]] — code templates, field classification, Reinforcement graph, detailed checklist and task record.
+- [[Architecture/UI_REFACTORING_PLAYBOOK - Research]] — code templates, field classification, Reinforcement graph, detailed checklist and task record.

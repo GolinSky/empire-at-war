@@ -18,7 +18,7 @@ updated: 2026-10-10
 ## Decision
 
 - Keep current balance and Interceptor/Brute/Punisher bays (user, 2026-10-09).
-- Use all 24 source weapon mounts with existing profiles/arcs; retain abilities 21/22. Source differences recorded in [[GameDesign/ISD I Import]] and `Tools/Blender/ISDIRemake/README.md`.
+- Use all 24 source weapon mounts with existing profiles/arcs; retain abilities 21/22. Source differences recorded in [[AssetPipeline/Imports/ISD I Import]] and `Tools/Blender/ISDIRemake/README.md`.
 
 ## Implementation
 
@@ -42,6 +42,6 @@ updated: 2026-10-10
 
 ## Files
 
-- [[GameDesign/ISD I Import]]; [[GameDesign/ISD I Import - AOTR History]].
+- [[AssetPipeline/Imports/ISD I Import]]; [[AssetPipeline/History/ISD I Import - AOTR History]].
 - `Tools/Blender/ISDIRemake/README.md`, `Evidence/`, `Previews/`.
 - `output/remake-empire-units/ISDI-Converted/` — editable conversion package.

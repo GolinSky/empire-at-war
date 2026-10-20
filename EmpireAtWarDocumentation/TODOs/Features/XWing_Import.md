@@ -12,14 +12,14 @@ updated: 2026-10-05
 
 ## Implementation
 
-- [x] Read [[Architecture/ALO_MODEL_IMPORT_GUIDE]], organization/UI rules and live squadron architecture.
+- [x] Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], organization/UI rules and live squadron architecture.
 - [x] Audit ALO/ALA/DDS; preserve source hashes; export editable packed blend, FBX and lossless textures.
 - [x] Preserve 14 bones / 10 meshes / 2,639 triangles; visible hull 1,732 triangles and matching UVs.
 - [x] Create geometry-only visual, five-craft gameplay, placement, data, 20 cannon bindings and 20 engine trails.
 - [x] Add animated Lock S-Foils toggle: speed ×1.3, fire delay ×3, regeneration ×3; normal configuration restored on second press.
 - [x] Register Rebel roster, view/data Addressables, mapping, icons, tooltips, matchups, weapon and audio keys.
 - [x] Save/import assets; inspect three prefabs and all registrations; verify six animation poses and eight team palettes.
-- [x] Record source/package credits and [[GameDesign/X-Wing Import|integration reference]].
+- [x] Record source/package credits and [[AssetPipeline/Imports/X-Wing Import|integration reference]].
 - [ ] Clean-scene in-game acceptance: buy/deploy, fire all four cannons per living member, close/reopen wings, ion disable/teardown, fog/selection and member death.
 - [ ] Confirm provisional movement/range/size/economy against project pacing.
 
@@ -44,7 +44,7 @@ updated: 2026-10-05
 
 ## Files
 
-- [[GameDesign/X-Wing Import]]; `output/eaw-rebel-ships/XWing-Converted/`.
+- [[AssetPipeline/Imports/X-Wing Import]]; `output/eaw-rebel-ships/XWing-Converted/`.
 - `Assets/Prefabs/Models/Squadrons/XWingSquadronView.prefab`; `Assets/Settings/Data/Squadron/XWingSquadronData.asset`.
 - Reports: `GeometryVerification.json`, `AssetVerification.json`, `RegistrationVerification.json`, `TextureVerification.json` in the converted package.
 

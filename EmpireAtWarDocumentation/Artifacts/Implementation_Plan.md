@@ -1,5 +1,8 @@
 # Implementation Plan - Obsidian Vault Integration & MCP Config
 
+> [!info] Historical setup record
+> Retained legacy workflow, not current configuration instructions. Current authority is repository `AGENTS.md`; vault access uses `empire-vault` over stdio. Original settings examples and credential text below are unchanged.
+
 - Vault: `f:\Private\empire-at-war\EmpireAtWarDocumentation`.
 - Planned work: note index, vault settings, local MCP registration for **Antigravity** and **Codex**.
 

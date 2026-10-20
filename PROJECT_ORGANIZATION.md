@@ -1,5 +1,7 @@
 # Project Organization Guide - MirrorMultiplayerTemplate
 
+> Historical template copy. The current project reference is [Architecture/PROJECT_ORGANIZATION](EmpireAtWarDocumentation/Architecture/PROJECT_ORGANIZATION.md); repository [AGENTS.md](AGENTS.md) takes precedence. Retained text below is not a second placement policy.
+
 This document outlines the asset organization rules for the **MirrorMultiplayerTemplate** Unity project. The project follows a **type-first** structure, where the root folder defines the asset type, and subfolders define the domain or category.
 
 ## Structure Overview
