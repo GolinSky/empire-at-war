@@ -68,15 +68,19 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _pendingTime = 0f;
         }
 
+        // Hits the first live hardpoint; a wreck or a unit without hardpoints takes it on the hull through index 0.
         private void ApplyDamage(float damage)
         {
             HardPointModel[] hardPoints = _target.HealthModel.HardPointModels;
+            int hardPointId = 0;
             for (int i = 0; i < hardPoints.Length; i++)
             {
                 if (hardPoints[i].IsDestroyed) continue;
-                _health.ApplyDamage(damage, _settings.DamageType, i);
+                hardPointId = i;
                 break;
             }
+
+            _health.ApplyDamage(damage, _settings.DamageType, hardPointId);
         }
 
         public void Stop()
