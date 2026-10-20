@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
@@ -6,7 +9,10 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Player;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -18,6 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Initialize_AppliesInjectedStartPosition()
         {
             GameObject gameObject = new GameObject(nameof(DefendPlatformTests));
+            DefendPlatformData data = ScriptableObject.CreateInstance<DefendPlatformData>();
 
             try
             {
@@ -27,6 +34,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 SetField(platform, "_healthComponent", healthComponent);
                 SetField(platform, "_startPosition", startPosition);
+                typeof(DefendPlatform).GetProperty("Data", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(platform, data);
 
                 platform.Initialize();
 
@@ -35,6 +44,95 @@ namespace EmpireAtWar.Tests.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(gameObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
+        public void BattleAsteroid_PaysAlliesAndRecalculatesResearchUntilReleased()
+        {
+            GameObject gameObject = new GameObject(nameof(DefendPlatformTests));
+            try
+            {
+                DefendPlatform platform = gameObject.AddComponent<DefendPlatform>();
+                DefendPlatformData data = AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
+                    "Assets/Settings/Data/Models/DefendPlatform/AsteroidDefendPlatformData.asset");
+                Assert.That(data.Income, Is.EqualTo(10f));
+                ResearchStub research = new ResearchStub();
+                PlayerRegistry registry = new PlayerRegistry();
+                EconomyProbe owner = new EconomyProbe();
+                EconomyProbe ally = new EconomyProbe();
+                EconomyProbe enemy = new EconomyProbe();
+                registry.RegisterEconomy(TestPlayers.Human, owner);
+                registry.RegisterEconomy(TestPlayers.Ally, ally);
+                registry.RegisterEconomy(TestPlayers.Enemy, enemy);
+                SetField(platform, "_healthComponent", new HealthComponentStub());
+                SetField(platform, "_playerRoster", TestPlayers.CreateTeamGame());
+                SetField(platform, "_playerRegistry", registry);
+                SetField(platform, "_owner", TestPlayers.Human);
+                SetField(platform, "_research", research);
+                SetField(platform, "_componentLifecycle", new EntityComponentLifecycle(Array.Empty<IMonoComponent>()));
+                typeof(DefendPlatform).GetProperty("Data", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(platform, data);
+
+                platform.Initialize();
+                Assert.That(owner.Income, Is.EqualTo(10f));
+                Assert.That(ally.Income, Is.EqualTo(10f));
+                Assert.That(enemy.Income, Is.Zero);
+
+                research.Complete(1.2f);
+                Assert.That(owner.Income, Is.EqualTo(12f));
+                Assert.That(ally.Income, Is.EqualTo(12f));
+                research.Complete(1.4f);
+                Assert.That(owner.Income, Is.EqualTo(14f));
+                Assert.That(ally.Income, Is.EqualTo(14f));
+
+                platform.LateDispose();
+                Assert.That(owner.Income, Is.Zero);
+                Assert.That(ally.Income, Is.Zero);
+                research.Complete(1.4f);
+                Assert.That(owner.Income, Is.Zero);
+                Assert.That(ally.Income, Is.Zero);
+                platform.LateDispose();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(gameObject);
+            }
+        }
+
+        [TestCase("DefendPlatformData")]
+        [TestCase("AotrEmpressDefensePlatformData")]
+        [TestCase("AotrGolanIIIDefensePlatformData")]
+        public void OtherDefendPlatforms_HaveNoIncome(string assetName)
+        {
+            DefendPlatformData data = AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
+                $"Assets/Settings/Data/Models/DefendPlatform/{assetName}.asset");
+            Assert.That(data.Income, Is.Zero);
+        }
+
+        private sealed class EconomyProbe : IEconomyProvider
+        {
+            public float Income { get; private set; }
+            public void AddMoney(float amount) { }
+            public void AddProvider(IIncomeProvider provider) => Income = provider.Income;
+            public void RemoveProvider(IIncomeProvider provider) => Income = 0f;
+            public void RecalculateIncome(IIncomeProvider provider) => Income = provider.Income;
+        }
+
+        private sealed class ResearchStub : IFactionResearchModelObserver
+        {
+            public event Action<ResearchType> OnResearchCompleted;
+            public IReadOnlyCollection<ResearchType> ResearchTypes => Array.Empty<ResearchType>();
+            public float IncomeMultiplier { get; private set; } = 1f;
+            public float StationIncomeMultiplier => 1f;
+            public bool TryGetNextTier(ResearchType type, out ResearchTierData tier) { tier = null; return false; }
+            public int GetCompletedTiers(ResearchType type) => 0;
+            public float GetMultiplier(ResearchStat stat, ShipClass shipClass) => 1f;
+            public void Complete(float multiplier)
+            {
+                IncomeMultiplier = multiplier;
+                OnResearchCompleted?.Invoke(ResearchType.IncreasedProduction);
             }
         }
 

@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
     public class DefendPlatformData : Data
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
+        [field: SerializeField] public float Income { get; private set; }
         [Tooltip("Optional. Empty = the platform is only removed; set = a breaking wreck replaces it.")]
         [field: SerializeField] public UnitWreckData Wreck { get; private set; }
     }

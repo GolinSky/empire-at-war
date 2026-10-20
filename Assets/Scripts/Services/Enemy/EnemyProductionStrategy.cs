@@ -610,7 +610,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (ResearchEffect effect in tier.Effects)
             {
-                if (effect.Stat == ResearchStat.Income)
+                if (effect.Stat == ResearchStat.Income || effect.Stat == ResearchStat.StationIncome)
                 {
                     return true;
                 }

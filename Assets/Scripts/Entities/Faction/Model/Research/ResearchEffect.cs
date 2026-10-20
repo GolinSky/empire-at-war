@@ -7,7 +7,7 @@ namespace EmpireAtWar.Models.Factions
     [Serializable]
     public struct ResearchEffect
     {
-        [Tooltip("Unit classes the effect applies to. Ignored for Income.")]
+        [Tooltip("Unit classes the effect applies to. Ignored for Income and StationIncome.")]
         [SerializeField] private ShipClass[] shipClasses;
 
         [SerializeField] private ResearchStat stat;

@@ -8,5 +8,6 @@ namespace EmpireAtWar.Models.Factions
         EnhancedEngines = 3,
         ImprovedDefenses = 4,
         ReinforcedStructures = 5,
+        IncreasedStationIncome = 6,
     }
 }

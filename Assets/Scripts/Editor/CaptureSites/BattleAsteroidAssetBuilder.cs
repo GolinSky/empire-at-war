@@ -31,6 +31,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const float SURFACE_HEIGHT_PERCENTILE = 0.85f;
         // Sinks each cannon base slightly into the uneven rock so no edge floats.
         private const float MOUNT_SINK = 0.1f;
+        private const float INCOME = 10f;
         private const float HULL = 3500f;
         private const float SHIELDS = 1800f;
 
@@ -232,6 +233,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             AssetDatabase.CopyAsset(SOURCE_DATA_PATH, DATA_PATH);
             ScriptableObject data = AssetDatabase.LoadAssetAtPath<ScriptableObject>(DATA_PATH);
             SerializedObject serializedData = new SerializedObject(data);
+            serializedData.FindProperty("<Income>k__BackingField").floatValue = INCOME;
             SerializedProperty componentData = serializedData.FindProperty("<ComponentData>k__BackingField");
             componentData.FindPropertyRelative("<Hull>k__BackingField").floatValue = HULL;
             componentData.FindPropertyRelative("<Shields>k__BackingField").floatValue = SHIELDS;

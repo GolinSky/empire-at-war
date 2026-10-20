@@ -32,7 +32,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IEnemyStationCheat, IInitializable, ILateDisposable, IIncomeProvider,
         IEnemyReinforcementObserver, ITickable
     {
-        private const float DEFAULT_INCOME = 5f;
+        private const float DEFAULT_INCOME = 15f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -55,7 +55,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private bool _isInitialized;
 
         private PlayerId Owner => _owner.Id;
-        public float Income => DEFAULT_INCOME * Model.CurrentLevel;
+        public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 

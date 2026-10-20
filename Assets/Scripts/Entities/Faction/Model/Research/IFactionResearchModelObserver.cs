@@ -11,6 +11,7 @@ namespace EmpireAtWar.Models.Factions
 
         IReadOnlyCollection<ResearchType> ResearchTypes { get; }
         float IncomeMultiplier { get; }
+        float StationIncomeMultiplier { get; }
 
         bool TryGetNextTier(ResearchType researchType, out ResearchTierData tier);
 

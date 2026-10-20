@@ -185,7 +185,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             {
                 foreach (ResearchEffect effect in tier.Effects)
                     stats.Add(new TooltipStat(
-                        label: effect.Stat + " · " + (effect.Stat == ResearchStat.Income ? "Faction income" : string.Join(", ", effect.ShipClasses)),
+                        label: effect.Stat + " · " + (effect.Stat == ResearchStat.Income ? "Mining income" :
+                            effect.Stat == ResearchStat.StationIncome ? "Station income" : string.Join(", ", effect.ShipClasses)),
                         current: effect.Multiplier, format: "0.##'×'"));
                 status = "Research effects replace the previous tier of this line.";
             }

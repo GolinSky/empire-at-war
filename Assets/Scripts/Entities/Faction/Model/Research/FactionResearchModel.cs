@@ -19,6 +19,7 @@ namespace EmpireAtWar.Models.Factions
 
         public IReadOnlyCollection<ResearchType> ResearchTypes => _lines.Keys;
         public float IncomeMultiplier { get; private set; } = 1f;
+        public float StationIncomeMultiplier { get; private set; } = 1f;
 
         public FactionResearchModel(FactionRoster roster)
         {
@@ -59,6 +60,7 @@ namespace EmpireAtWar.Models.Factions
         {
             _multipliers.Clear();
             IncomeMultiplier = 1f;
+            StationIncomeMultiplier = 1f;
             foreach (KeyValuePair<ResearchType, int> completed in _completedTiers)
             {
                 foreach (ResearchEffect effect in _lines[completed.Key].Tiers[completed.Value - 1].Effects)
@@ -66,6 +68,12 @@ namespace EmpireAtWar.Models.Factions
                     if (effect.Stat == ResearchStat.Income)
                     {
                         IncomeMultiplier *= effect.Multiplier;
+                        continue;
+                    }
+
+                    if (effect.Stat == ResearchStat.StationIncome)
+                    {
+                        StationIncomeMultiplier *= effect.Multiplier;
                         continue;
                     }
 

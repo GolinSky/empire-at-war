@@ -32,7 +32,7 @@ namespace EmpireAtWar.Services.Factions
     public class FactionService : Service, IFactionService, IInitializable, ILateDisposable,
         IIncomeProvider, IObserver<ISelectionSubject>, ITickable
     {
-        private const float DEFAULT_INCOME = 5f;
+        private const float DEFAULT_INCOME = 15f;
 
         private readonly ISelectionService _selectionService;
         private readonly IWallet _wallet;
@@ -49,7 +49,7 @@ namespace EmpireAtWar.Services.Factions
 
         private bool _isInitialized;
 
-        public float Income => DEFAULT_INCOME * _model.CurrentLevel;
+        public float Income => DEFAULT_INCOME * _model.CurrentLevel * _research.StationIncomeMultiplier;
 
         public FactionService(
             ISelectionService selectionService,

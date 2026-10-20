@@ -141,7 +141,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             SerializedProperty entries = serializedData.FindProperty("facilityCosts").FindPropertyRelative("keyValue");
             entries.arraySize = 2;
             SetCost(entries.GetArrayElementAtIndex(0), SiteFacilityType.Mining, "Asteroid Mine", 600f, 25f);
-            SetCost(entries.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, "Battle Asteroid", 800f, 30f);
+            SetCost(entries.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, "Battle Asteroid", 1600f, 30f);
             serializedData.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(data);
             AsteroidMiningFacilityAssetBuilder.AddAddressable(DATA_PATH, "Model");

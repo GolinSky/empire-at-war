@@ -17,13 +17,14 @@ namespace EmpireAtWar.Services.Economy
     public class EconomyService : Service, IWallet, ITickable, IEconomyProvider, IIncomeProvider, IInitializable,
         ILateDisposable, IObserver<BattleState>
     {
-        private const float DEFAULT_INCOME = 1f;
+        private const float DEFAULT_INCOME = 3f;
 
         private readonly ITimer _incomeTimer;
 
         private readonly EconomyModel _model;
         private readonly INotifier<BattleState> _battleState;
         private readonly IPlayerRegistry _playerRegistry;
+        private readonly IFactionResearchModelObserver _research;
         private readonly PlayerId _owner;
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
@@ -31,7 +32,7 @@ namespace EmpireAtWar.Services.Economy
         // Income is paid only while the battle runs, never during loading.
         private bool _isRunning;
 
-        public float Income => DEFAULT_INCOME;
+        public float Income => DEFAULT_INCOME * _research.StationIncomeMultiplier;
         public float TotalIncome => _commonIncome;
 
         public EconomyService(
@@ -39,11 +40,13 @@ namespace EmpireAtWar.Services.Economy
             EconomyData data,
             INotifier<BattleState> battleState,
             IPlayerRegistry playerRegistry,
-            PlayerSlot owner)
+            PlayerSlot owner,
+            IFactionResearchModelObserver research)
         {
             _model = model;
             _battleState = battleState;
             _playerRegistry = playerRegistry;
+            _research = research;
             _owner = owner.Id;
             _incomeTimer = TimerFactory.ConstructTimer(data.IncomeDelay);
         }
@@ -51,6 +54,7 @@ namespace EmpireAtWar.Services.Economy
         public void Initialize()
         {
             AddProvider(this);
+            _research.OnResearchCompleted += HandleResearchCompleted;
             _battleState.AddObserver(this);
             // Registered so allied mining facilities can pay into this economy too.
             _playerRegistry.RegisterEconomy(_owner, this);
@@ -58,6 +62,7 @@ namespace EmpireAtWar.Services.Economy
 
         public void LateDispose()
         {
+            _research.OnResearchCompleted -= HandleResearchCompleted;
             _battleState.RemoveObserver(this);
             _playerRegistry.UnregisterEconomy(_owner);
         }
@@ -115,6 +120,8 @@ namespace EmpireAtWar.Services.Economy
         {
             CalculateBaseIncome();
         }
+
+        private void HandleResearchCompleted(ResearchType researchType) => CalculateBaseIncome();
 
         private void CalculateBaseIncome()
         {

@@ -7,5 +7,6 @@ namespace EmpireAtWar.Models.Factions
         Speed = 2,
         DamageTaken = 3,
         ShieldCapacity = 4,
+        StationIncome = 5,
     }
 }

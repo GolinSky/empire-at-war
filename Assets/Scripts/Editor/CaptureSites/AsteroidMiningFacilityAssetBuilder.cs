@@ -26,7 +26,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string SHIELD_MATERIAL_PATH = "Assets/Art/Materials/Vfx/ShipShield.mat";
 
         private const float SELECTION_SCALE = 2.1f;
-        private const float INCOME = 20f;
+        private const float INCOME = 60f;
         private const float HULL = 2500f;
         private const float SHIELDS = 1200f;
 

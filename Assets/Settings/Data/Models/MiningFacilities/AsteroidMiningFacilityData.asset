@@ -38,4 +38,4 @@ MonoBehaviour:
     <SpawnBlockRadius>k__BackingField: 160
   <Wreck>k__BackingField: {fileID: 11400000, guid: 87c122af171b71a41b7a92fd1f025cdd,
     type: 2}
-  <Income>k__BackingField: 20
+  <Income>k__BackingField: 60

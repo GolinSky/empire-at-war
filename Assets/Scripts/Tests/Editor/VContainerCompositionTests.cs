@@ -346,6 +346,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<ResearchType> OnResearchCompleted { add { } remove { } }
             public IReadOnlyCollection<ResearchType> ResearchTypes => Array.Empty<ResearchType>();
             public float IncomeMultiplier => 1f;
+            public float StationIncomeMultiplier => 1f;
             public float Multiplier { get; set; }
             public bool TryGetNextTier(ResearchType researchType, out ResearchTierData tier)
             { tier = null; return false; }

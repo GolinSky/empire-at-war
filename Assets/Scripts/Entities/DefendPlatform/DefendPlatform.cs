@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Lifecycle;
 using VContainer;
 using LifetimeScope = VContainer.Unity.LifetimeScope;
@@ -15,8 +18,12 @@ using VContainer.Internal;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
-    public class DefendPlatform : EntityView, IController, IInitializable, ILateDisposable
+    public class DefendPlatform : EntityView, IController, IIncomeProvider, IInitializable, ILateDisposable
     {
+        private IPlayerRoster _playerRoster;
+        private IPlayerRegistry _playerRegistry;
+        private IFactionResearchModelObserver _research;
+        private readonly List<IEconomyProvider> _teamEconomies = new();
         private IHealthComponent _healthComponent;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
@@ -34,9 +41,13 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private DefendPlatformData Data { get; set; }
 
         public override string Id => GetType().Name;
+        public float Income => Data.Income * _research.IncomeMultiplier;
 
         [Inject]
         private void Construct(
+            IPlayerRoster playerRoster,
+            IPlayerRegistry playerRegistry,
+            IFactionResearchModelObserver research,
             IHealthComponent healthComponent,
             IUnitWreckService unitWreckService,
             IUnitExplosionService unitExplosionService,
@@ -46,6 +57,9 @@ namespace EmpireAtWar.Entities.DefendPlatform
             Vector3 startPosition,
             PlayerId owner, DefendPlatformData data)
         {
+            _playerRoster = playerRoster;
+            _playerRegistry = playerRegistry;
+            _research = research;
             _healthComponent = healthComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
@@ -61,6 +75,19 @@ namespace EmpireAtWar.Entities.DefendPlatform
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
+            if (Data.Income > 0f)
+            {
+                foreach (PlayerSlot player in _playerRoster.Players)
+                {
+                    if (_playerRoster.IsAllied(_owner, player.Id))
+                    {
+                        IEconomyProvider economy = _playerRegistry.GetEconomy(player.Id);
+                        economy.AddProvider(this);
+                        _teamEconomies.Add(economy);
+                    }
+                }
+                _research.OnResearchCompleted += HandleResearchCompleted;
+            }
         }
 
         public void LateDispose()
@@ -74,6 +101,15 @@ namespace EmpireAtWar.Entities.DefendPlatform
             if (!_componentLifecycle.Release())
             {
                 return;
+            }
+            if (Data.Income > 0f)
+            {
+                _research.OnResearchCompleted -= HandleResearchCompleted;
+                foreach (IEconomyProvider economy in _teamEconomies)
+                {
+                    economy.RemoveProvider(this);
+                }
+                _teamEconomies.Clear();
             }
             if (playDeathEffects)
             {
@@ -92,5 +128,13 @@ namespace EmpireAtWar.Entities.DefendPlatform
         }
 
         private void HandleDestroyed() => Release(true);
+
+        private void HandleResearchCompleted(ResearchType researchType)
+        {
+            foreach (IEconomyProvider economy in _teamEconomies)
+            {
+                economy.RecalculateIncome(this);
+            }
+        }
     }
 }

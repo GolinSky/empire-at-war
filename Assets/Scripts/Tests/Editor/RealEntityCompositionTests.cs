@@ -143,7 +143,7 @@ namespace EmpireAtWar.Tests.Editor
             var ally = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(1));
             var wave = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(2));
             Assert.That(human.Container.Resolve<PlayerFactionModel>().CurrentLevel, Is.EqualTo(5));
-            Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(25));
+            Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(75));
             Assert.That(ally.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Models.EnemyFactionModel>().CurrentLevel, Is.EqualTo(5));
             Assert.That(ally.Container.Resolve<EmpireAtWar.Services.Stations.IProductionAccess>().ProductionHost, Is.EqualTo(new PlayerId(0)));
             Assert.That(wave.Container.TryGetRegistration(typeof(FactionResearchModel), out _), Is.False);
@@ -299,7 +299,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(human.Container.Resolve<EconomyModel>().Money, Is.EqualTo(4321f));
             faction = human.Container.Resolve<PlayerFactionModel>();
             Assert.That(faction.CurrentLevel, Is.EqualTo(2));
-            Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(10f));
+            Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(30f));
             Assert.That(human.Container.Resolve<FactionResearchModel>().GetCompletedTiers(researchLine), Is.EqualTo(1));
             ProductionQueueItem restoredItem = faction.QueuedItems.Single();
             Assert.That(restoredItem.UnitRequest.Id, Is.EqualTo(queued.Id));
