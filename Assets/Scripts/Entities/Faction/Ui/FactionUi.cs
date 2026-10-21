@@ -288,7 +288,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
                 unitUi.SetActive(isSelectionVisible);
-                unitUi.SetAvailable(_presenter.IsUnitAvailable(unitUi.FactionData));
             }
         }
     }

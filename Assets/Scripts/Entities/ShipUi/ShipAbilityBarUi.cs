@@ -57,7 +57,15 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             for (int i = 0; i < _buttons.Count; i++)
                 if (_buttons[i].gameObject.activeSelf)
-                    _buttons[i].SetWaiting(_model.PendingAbilityId == _buttons[i].Id);
+                    _buttons[i].SetWaiting(IsWaiting(_buttons[i].Id));
+        }
+
+        private bool IsWaiting(ShipAbilityId id)
+        {
+            if (_model.PendingAbilityId != id) return false;
+            foreach (ShipAbilitySlot slot in _groups[id])
+                if (_model.IsPendingCaster(slot.Owner.Entity)) return true;
+            return false;
         }
     }
 }

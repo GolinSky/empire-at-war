@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.Saves
@@ -17,14 +18,17 @@ namespace EmpireAtWar.Entities.Saves
         private SaveBrowserUi _ui;
         private bool _enteringName;
         private bool _saving;
+        private readonly IInputLock _inputLock;
+        private IDisposable _menuInputLock;
 
         public SaveGameRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            BattleDefinition battle, IBattleSaveRepository repository, BattleSaveActions saves)
+            BattleDefinition battle, IBattleSaveRepository repository, BattleSaveActions saves, IInputLock inputLock)
             : base(uiService, cancelRouter)
         {
             _battle = battle;
             _repository = repository;
             _saves = saves;
+            _inputLock = inputLock;
         }
 
         public void Initialize()
@@ -39,6 +43,7 @@ namespace EmpireAtWar.Entities.Saves
         public void Open()
         {
             if (!_saves.IsSupported) return;
+            if (_menuInputLock == null) _menuInputLock = _inputLock.Acquire();
             _ui.SetTitle($"SAVE GAME — {_battle.Mode.ToString().ToUpperInvariant()}");
             _ui.SetMode((int)_battle.Mode, false);
             _ui.SetSaveAsNewVisible(true);
@@ -51,6 +56,7 @@ namespace EmpireAtWar.Entities.Saves
 
         public void Close()
         {
+            ReleaseInputLock();
             CancelName();
             _ui.Hide();
             Unfocus();
@@ -128,6 +134,7 @@ namespace EmpireAtWar.Entities.Saves
 
         public void LateDispose()
         {
+            ReleaseInputLock();
             _saves.StatusChanged -= OnSaveStatus;
             if (_ui != null) _ui.Dispose();
             Unfocus();
@@ -138,6 +145,13 @@ namespace EmpireAtWar.Entities.Saves
             if (!_saving && _saves.CanSave) return true;
             _ui.SetStatus("Saving is unavailable while the battle is loading, ended, or saving.");
             return false;
+        }
+
+        private void ReleaseInputLock()
+        {
+            if (_menuInputLock == null) return;
+            _menuInputLock.Dispose();
+            _menuInputLock = null;
         }
 
         private void Save(BattleSaveSlot slot)

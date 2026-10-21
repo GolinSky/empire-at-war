@@ -19,5 +19,6 @@ namespace EmpireAtWar.Services.Input
         event Action<Vector2> DragChanged;
 
         event Action<Vector2> DragEnded;
+        event Action DragCanceled;
     }
 }

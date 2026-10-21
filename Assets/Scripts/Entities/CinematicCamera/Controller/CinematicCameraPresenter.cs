@@ -14,6 +14,9 @@ using EmpireAtWar.Lifecycle;
 using Random = System.Random;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Services.ShipAbilities;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Controller
 {
@@ -28,6 +31,9 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private readonly IEntityLocator _entityLocator;
         private readonly INotifier<BattleState> _battleState;
         private readonly ILayerService _layerService;
+        private readonly UnitActionTargetingModel _unitTargeting;
+        private readonly SuperWeaponTargetingModel _superWeaponTargeting;
+        private readonly IShipAbilityTargeting _abilityTargeting;
         private System.IDisposable _inputLockHandle;
 
         private readonly CinematicCameraModel _model;
@@ -73,7 +79,10 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             CinematicCameraData cinematicCameraData,
             IMapModelObserver mapModel,
             CameraData cameraData,
-            ILayerService layerService) : base(uiService, cancelRouter)
+            ILayerService layerService,
+            UnitActionTargetingModel unitTargeting,
+            SuperWeaponTargetingModel superWeaponTargeting,
+            IShipAbilityTargeting abilityTargeting) : base(uiService, cancelRouter)
         {
             _model = model;
             _settings = cinematicCameraData;
@@ -85,6 +94,9 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _entityLocator = entityLocator;
             _battleState = battleState;
             _layerService = layerService;
+            _unitTargeting = unitTargeting;
+            _superWeaponTargeting = superWeaponTargeting;
+            _abilityTargeting = abilityTargeting;
 
             Random random = new Random();
             _scorer = new CinematicInterestScorer(settings: _settings, random: random, relations: playerRoster);
@@ -116,6 +128,9 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _savedPosition = _cameraService.CameraPosition;
             _savedRotation = _cameraService.CameraTransform.rotation;
             _inputLockHandle = _inputLock.Acquire();
+            _unitTargeting.Cancel();
+            _superWeaponTargeting.Cancel();
+            _abilityTargeting.CancelTargeting();
             UiService.SetHudVisible(false);
             _cameraService.SetCullingMask(_layerService.CinemaCameraMask);
             Focus();

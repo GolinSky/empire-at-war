@@ -59,11 +59,12 @@ namespace EmpireAtWar.Entities.Tooltip
         }
 
         public void Initialize()
-        { _gestures.DragStarted += StartDrag; _gestures.DragEnded += EndDrag; _battleMap.AddObserver(this); }
+        { _gestures.DragStarted += StartDrag; _gestures.DragEnded += EndDrag; _gestures.DragCanceled += CancelDrag; _battleMap.AddObserver(this); }
 
         public void LateDispose()
         {
             _gestures.DragStarted -= StartDrag; _gestures.DragEnded -= EndDrag; _battleMap.RemoveObserver(this);
+            _gestures.DragCanceled -= CancelDrag;
             _tooltipService.Hide(_handle);
         }
 
@@ -72,6 +73,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private void StartDrag(Vector2 point) { _dragging = true; _tooltipService.Hide(_handle); }
 
         private void EndDrag(Vector2 point) => _dragging = false;
+        private void CancelDrag() => _dragging = false;
 
         public void Tick()
         {

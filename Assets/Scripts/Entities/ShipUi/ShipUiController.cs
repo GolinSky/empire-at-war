@@ -87,6 +87,8 @@ namespace EmpireAtWar.Entities.ShipUi
             _selectionService.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.Content, this);
             _shipAbilityService.TargetingChanged -= UpdateTargeting;
+            _shipAbilityService.CancelTargeting();
+            Unfocus();
             if (_shipTooltipHover != null) _shipTooltipHover.Dispose();
             if (_groupTooltipHover != null) _groupTooltipHover.Dispose();
             if (_shipUi != null)
@@ -155,8 +157,20 @@ namespace EmpireAtWar.Entities.ShipUi
         public void PressAbility(ShipAbilityId id) =>
             _shipAbilityService.Press(_playerSelectionContext.Entities, id);
 
-        private void UpdateTargeting() => _model.SetPendingAbility(
-            _shipAbilityService.IsWaitingForTarget ? _shipAbilityService.PendingAbilityId : (ShipAbilityId?)null);
+        private void UpdateTargeting()
+        {
+            _model.SetPendingAbility(
+                _shipAbilityService.IsWaitingForTarget ? _shipAbilityService.PendingAbilityId : (ShipAbilityId?)null,
+                _shipAbilityService.PendingCasters);
+            if (_shipAbilityService.IsWaitingForTarget) Focus();
+            else Unfocus();
+        }
+
+        protected override bool HandleCancel()
+        {
+            _shipAbilityService.CancelTargeting();
+            return true;
+        }
 
         public void UpdateState(ISelectionSubject subject)
         {
@@ -167,7 +181,10 @@ namespace EmpireAtWar.Entities.ShipUi
 
             _playerSelectionContext = subject.PlayerSelectionContext;
             _tooltips.HideAll();
-            _shipAbilityService.CancelTargeting();
+            if (subject.IsPruningSelection)
+                _shipAbilityService.PruneTargeting(_playerSelectionContext.Entities);
+            else
+                _shipAbilityService.CancelTargeting();
             UpdateSelection();
         }
 

@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
+        public IReadOnlyList<IEntity> PendingCasters => _pendingCasters;
 
         public ShipAbilityService(IShipAbilityFactory shipAbilityFactory, IPlayerRelations relations)
         {
@@ -149,6 +150,24 @@ namespace EmpireAtWar.Services.ShipAbilities
             PendingAbilityId = ShipAbilityId.None;
             _pendingCasters.Clear();
             TargetingChanged?.Invoke();
+        }
+
+        public void PruneTargeting(IReadOnlyList<IEntity> selection)
+        {
+            if (!IsWaitingForTarget) return;
+            _pendingCasters.RemoveAll(caster => caster.HealthModel.IsDestroyed ||
+                !Contains(selection, caster) ||
+                !caster.TryGetFacade(out IShipAbilityFacade abilities) ||
+                !TryFindSlot(abilities, PendingAbilityId, out ShipAbilitySlot slot) || !slot.CanActivate);
+            if (_pendingCasters.Count == 0) CancelTargeting();
+            else TargetingChanged?.Invoke();
+        }
+
+        private static bool Contains(IReadOnlyList<IEntity> entities, IEntity entity)
+        {
+            for (int i = 0; i < entities.Count; i++)
+                if (entities[i] == entity) return true;
+            return false;
         }
 
         public bool TryCancel(IShipAbilityFacade caster, ShipAbilityId id)

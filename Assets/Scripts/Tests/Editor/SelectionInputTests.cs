@@ -22,6 +22,7 @@ using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Tests.Selection
 {
+    [Category("BattleInput")]
     public sealed class SelectionInputTests
     {
         [TestCase(true)]
@@ -258,6 +259,7 @@ namespace EmpireAtWar.Tests.Selection
             public event Action<Vector2> DragChanged { add { } remove { } }
 
             public event Action<Vector2> DragEnded { add { } remove { } }
+            public event Action DragCanceled { add { } remove { } }
 
             public event Action<Vector2> PrimaryPressed { add { } remove { } }
 

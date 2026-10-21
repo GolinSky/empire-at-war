@@ -22,6 +22,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class PlayerOrderInputHandlerTests
     {
         private GameObject _view;
@@ -117,6 +118,35 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_camera.LastOrigin.y, Is.EqualTo(15f));
         }
 
+        [Test]
+        public void MinimapPoint_HonorsAttackMoveAndWaypointModes()
+        {
+            _targeting.Start(UnitActionId.AttackMove);
+            Assert.That(_handler.TryIssueMove(Vector3.one), Is.True);
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(_targeting.Pending, Is.Null);
+            _orders.LastAction = null;
+            _targeting.Start(UnitActionId.WaypointMove);
+            Assert.That(_handler.TryIssueMove(Vector3.one), Is.True);
+            Assert.That(_targeting.Waypoints.Count, Is.EqualTo(1));
+            Assert.That(_orders.LastAction, Is.Null);
+        }
+
+        [TestCase(UnitActionId.Attack)]
+        [TestCase(UnitActionId.Guard)]
+        public void MinimapPoint_DoesNotIssueMoveForEntityTargeting(UnitActionId action)
+        {
+            _targeting.Start(action);
+            Assert.That(_handler.TryIssueMove(Vector3.one), Is.False);
+            Assert.That(_targeting.Pending, Is.EqualTo(action));
+            Assert.That(_orders.LastAction, Is.Null);
+            _targeting.Cancel();
+            _abilities.IsWaitingForTarget = true;
+            Assert.That(_handler.TryIssueMove(Vector3.one), Is.False);
+            Assert.That(_abilities.IsWaitingForTarget, Is.True);
+            Assert.That(_orders.LastAction, Is.Null);
+        }
+
         private sealed class FakeInput : IPointerGestures, IUnitOrderInput
         {
             public event Action<Vector2> WorldPressed { add { } remove { } }
@@ -130,6 +160,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<Vector2> DragChanged { add { } remove { } }
 
             public event Action<Vector2> DragEnded { add { } remove { } }
+            public event Action DragCanceled { add { } remove { } }
 
             public event Action QueueWaypointReleased;
 
@@ -299,9 +330,10 @@ namespace EmpireAtWar.Tests.Editor
                 where TCommand : IEntityFacade
             { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
                 if (Owner == TestPlayers.Human &&
-                    typeof(TCommand) == typeof(IWaypointMoveFacade))
+                    (typeof(TCommand) == typeof(IWaypointMoveFacade) || typeof(TCommand) == typeof(IMoveFacade)))
                 {
-                    command = (TCommand)(IEntityFacade)new FakeWaypointCommand();
+                    command = (TCommand)(IEntityFacade)new FakeWaypointCommand(
+                        ((IEntityTransformFacade)HealthModel).Transform);
                     return true;
                 }
                 command = default;
@@ -309,11 +341,15 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeWaypointCommand : IWaypointMoveFacade
+        private sealed class FakeWaypointCommand : IWaypointMoveFacade, IMoveFacade
         {
-            public Vector3 WorldPosition => Vector3.zero;
+            private readonly Transform _transform;
+            public Vector3 WorldPosition => _transform.position;
             public float NavigationRadius => 1f;
 
+            public FakeWaypointCommand(Transform transform) => _transform = transform;
+            public void MoveTo(Vector2 screenPosition) { }
+            public void MoveTo(Vector3 worldPosition) { }
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
         }
 

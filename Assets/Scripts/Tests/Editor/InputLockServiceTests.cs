@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class InputLockServiceTests
     {
         private InputActionsProvider _provider;

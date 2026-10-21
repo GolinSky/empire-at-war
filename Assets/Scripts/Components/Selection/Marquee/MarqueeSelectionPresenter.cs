@@ -39,6 +39,7 @@ namespace EmpireAtWar.Components.Selection.Marquee
             _gestures.DragStarted += HandleDragStarted;
             _gestures.DragChanged += HandleDragChanged;
             _gestures.DragEnded += HandleDragEnded;
+            _gestures.DragCanceled += HandleDragCanceled;
         }
 
         public void LateDispose()
@@ -46,6 +47,7 @@ namespace EmpireAtWar.Components.Selection.Marquee
             _gestures.DragStarted -= HandleDragStarted;
             _gestures.DragChanged -= HandleDragChanged;
             _gestures.DragEnded -= HandleDragEnded;
+            _gestures.DragCanceled -= HandleDragCanceled;
             _model.Cancel();
             _view.Hide();
         }
@@ -83,6 +85,12 @@ namespace EmpireAtWar.Components.Selection.Marquee
             MarqueeRectangle rectangle = _model.Complete(ToPoint(screenPosition));
             _view.Hide();
             Completed?.Invoke(rectangle);
+        }
+
+        private void HandleDragCanceled()
+        {
+            _model.Cancel();
+            _view.Hide();
         }
 
         private static MarqueePoint ToPoint(Vector2 screenPosition)

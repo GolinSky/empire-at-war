@@ -86,12 +86,23 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public bool TryIssueMove(Vector3 worldPoint)
         {
+            if (_abilities.IsWaitingForTarget || _superWeapons.Pending != null ||
+                _targeting.Pending == UnitActionId.Attack || _targeting.Pending == UnitActionId.Guard)
+                return false;
             List<IEntity> receivers = Snapshot();
             foreach (IEntity receiver in receivers)
             {
                 if (!receiver.TryGetFacade(out IMoveFacade move)) continue;
                 worldPoint.y = move.WorldPosition.y;
-                _unitOrderService.IssueMove(receivers, worldPoint);
+                if (_targeting.Pending == UnitActionId.AttackMove)
+                {
+                    _unitOrderService.IssueAttackMove(receivers, worldPoint);
+                    _targeting.Cancel();
+                }
+                else if (_targeting.Pending == UnitActionId.WaypointMove)
+                    _targeting.AddWaypoint(ToPoint(worldPoint));
+                else
+                    _unitOrderService.IssueMove(receivers, worldPoint);
                 return true;
             }
             return false;

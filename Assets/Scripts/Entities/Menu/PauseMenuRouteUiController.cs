@@ -1,4 +1,5 @@
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
@@ -30,6 +31,8 @@ namespace EmpireAtWar.Entities.Menu
         private BattleState _state;
         private readonly BattleSaveActions _saves;
         private readonly ISaveGameRoute _saveGameRoute;
+        private readonly IInputLock _inputLock;
+        private IDisposable _menuInputLock;
 
         // Escape is ignored while the battle loads and after it ends.
         private bool CanOpen => _state == BattleState.Running || _state == BattleState.Paused;
@@ -40,13 +43,14 @@ namespace EmpireAtWar.Entities.Menu
             ISettingsRoute settingsRoute,
             INotifier<BattleState> battleState,
             ITooltipService tooltipService, BattleSaveActions saves,
-            ISaveGameRoute saveGameRoute) : base(uiService, cancelRouter)
+            ISaveGameRoute saveGameRoute, IInputLock inputLock) : base(uiService, cancelRouter)
         {
             _cancelRouter = cancelRouter;
             _settingsRoute = settingsRoute;
             _battleState = battleState;
             _saves = saves;
             _saveGameRoute = saveGameRoute;
+            _inputLock = inputLock;
             _tooltips = new TooltipRequests(tooltipService);
         }
 
@@ -65,6 +69,7 @@ namespace EmpireAtWar.Entities.Menu
 
         public void LateDispose()
         {
+            ReleaseInputLock();
             _cancelRouter.CancelUnhandled -= Open;
             _battleState.RemoveObserver(this);
             if (_tooltipHover != null) _tooltipHover.Dispose();
@@ -102,6 +107,7 @@ namespace EmpireAtWar.Entities.Menu
 
         public void ExitSkirmish()
         {
+            ReleaseInputLock();
             _ui.SetMenuVisible(false);
             Unfocus();
             UpdateState(UserNotifierState.ExitGame);
@@ -125,10 +131,12 @@ namespace EmpireAtWar.Entities.Menu
             _ui.SetMenuVisible(isOpen);
             if (isOpen)
             {
+                if (_menuInputLock == null) _menuInputLock = _inputLock.Acquire();
                 Focus();
             }
             else
             {
+                ReleaseInputLock();
                 Unfocus();
             }
 
@@ -150,6 +158,19 @@ namespace EmpireAtWar.Entities.Menu
         public void UpdateState(BattleState state)
         {
             _state = state;
+            if (state == BattleState.Ended)
+            {
+                _ui.SetMenuVisible(false);
+                Unfocus();
+                ReleaseInputLock();
+            }
+        }
+
+        private void ReleaseInputLock()
+        {
+            if (_menuInputLock == null) return;
+            _menuInputLock.Dispose();
+            _menuInputLock = null;
         }
 
         private void UpdateState(UserNotifierState state)

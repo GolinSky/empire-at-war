@@ -42,6 +42,7 @@ namespace EmpireAtWar.Services.Battle
         public ISelectionContext PlayerSelectionContext => _playerSelectionContext;
         public ISelectionContext OtherSelectionContext => _otherSelectionContext;
         public SelectionScope UpdatedScope { get; private set; }
+        public bool IsPruningSelection { get; private set; }
 
         public SelectionService(
             IPointerGestures gestures,
@@ -256,7 +257,7 @@ namespace EmpireAtWar.Services.Battle
             SelectionScope scope = GetScope(entity);
             if (GetContext(scope).Remove(entity))
             {
-                NotifyObservers(scope);
+                NotifyObservers(scope, isPruningSelection: true);
             }
         }
 
@@ -277,9 +278,10 @@ namespace EmpireAtWar.Services.Battle
             return scope == SelectionScope.Local ? _playerSelectionContext : _otherSelectionContext;
         }
 
-        private void NotifyObservers(SelectionScope scope)
+        private void NotifyObservers(SelectionScope scope, bool isPruningSelection = false)
         {
             UpdatedScope = scope;
+            IsPruningSelection = isPruningSelection;
             for (int i = 0; i < _observers.Count; i++)
             {
                 _observers[i].UpdateState(this);

@@ -12,6 +12,7 @@ using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
@@ -23,10 +24,12 @@ namespace EmpireAtWar.Services.Reinforcement
     /// <summary>Runs the drag-to-place flow: input lock, preview, validation and release.
     /// What may be placed where is decided by the request's <see cref="IReinforcementPlacement"/>.</summary>
     public class ReinforcementService : Service, IReinforcementService, ILateTickable, IInitializable,
-        ILateDisposable, IReinforcementPool, IObserver<BattleResult>
+        ILateDisposable, IReinforcementPool, IObserver<BattleResult>, IUiCancelHandler
     {
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointerInput;
+        private readonly IUiHitTest _uiHitTest;
+        private readonly IUiCancelRouter _cancelRouter;
         private readonly ICameraService _cameraService;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ISpawnAreaOverlay _spawnAreaOverlay;
@@ -51,7 +54,9 @@ namespace EmpireAtWar.Services.Reinforcement
             ReinforcementModel model,
             ReinforcementPlacementFactory placementFactory,
             PlayerSlot owner,
-            IPlayerRegistry playerRegistry)
+            IPlayerRegistry playerRegistry,
+            IUiHitTest uiHitTest,
+            IUiCancelRouter cancelRouter)
         {
             _playerRegistry = playerRegistry;
             _owner = owner;
@@ -62,6 +67,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _cameraService = cameraService;
             _battleVictoryNotifier = battleVictoryNotifier;
             _spawnAreaOverlay = spawnAreaOverlay;
+            _uiHitTest = uiHitTest;
+            _cancelRouter = cancelRouter;
         }
 
         public void Initialize()
@@ -73,6 +80,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void LateDispose()
         {
+            CancelPlacement();
             _playerRegistry.UnregisterReinforcementReserve(_owner.Id);
             _pointerInput.PrimaryReleased -= Interrupt;
             _battleVictoryNotifier.RemoveObserver(this);
@@ -97,7 +105,8 @@ namespace EmpireAtWar.Services.Reinforcement
             Vector3 position = _cameraService.GetWorldPoint(_pointerInput.Position, _preview.Position);
             position.y = 0;
             _preview.UpdatePosition(position);
-            _preview.SetPlacementValidity(_placement.IsPositionValid(position));
+            _preview.SetPlacementValidity(!_uiHitTest.IsOverUi(_pointerInput.Position) &&
+                _placement.IsPositionValid(position));
         }
 
         public void Add(UnitRequest request)
@@ -126,7 +135,8 @@ namespace EmpireAtWar.Services.Reinforcement
         public void TrySpawnReinforcement(UnitRequest request)
         {
             // Units already in the pool stay deployable after the station falls.
-            if (_hasBattleEnded || !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            if (_hasBattleEnded || _inputLock.IsLocked ||
+                !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
             {
                 _model.InvokeSpawnShipEvent(false);
                 return;
@@ -141,6 +151,14 @@ namespace EmpireAtWar.Services.Reinforcement
             _model.IsTrySpawning = true;
             _preview = placement.CreatePreview();
             _spawnAreaOverlay.Show(_owner.Id);
+            _cancelRouter.Focus(this);
+        }
+
+        public bool TryCancel()
+        {
+            if (!_model.IsTrySpawning) return false;
+            CancelPlacement();
+            return true;
         }
 
         private void CancelPlacement()
@@ -151,6 +169,7 @@ namespace EmpireAtWar.Services.Reinforcement
             }
 
             _model.IsTrySpawning = false;
+            _cancelRouter.Unfocus(this);
             _preview.Destroy();
             _spawnAreaOverlay.Hide();
             _placementLock.Dispose();
@@ -164,7 +183,14 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
+            if (_inputLock.IsLocked || _uiHitTest.IsOverUi(screenPosition))
+            {
+                CancelPlacement();
+                return;
+            }
+
             _model.IsTrySpawning = false;
+            _cancelRouter.Unfocus(this);
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _preview.Position);
             bool canSpawn = _preview.CanSpawn && _placement.IsPositionValid(spawnPosition);
 

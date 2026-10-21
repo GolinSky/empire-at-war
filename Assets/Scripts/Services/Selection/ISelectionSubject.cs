@@ -6,5 +6,6 @@ namespace EmpireAtWar.Services.Battle
         ISelectionContext PlayerSelectionContext { get; }
         ISelectionContext OtherSelectionContext { get; }
         SelectionScope UpdatedScope { get; }
+        bool IsPruningSelection { get; }
     }
 }

@@ -177,11 +177,13 @@ namespace EmpireAtWar.Entities.MiniMap
 
         public void MoveCamera(Vector3 worldPoint)
         {
+            if (_inputLock.IsLocked) return;
             _cameraService.MoveTo(worldPoint);
         }
 
         public void OrderMove(Vector3 worldPoint)
         {
+            if (_inputLock.IsLocked) return;
             // Match world input: taps on an obstacle are not move targets.
             if (_model.IsObstacleAt(worldPoint)) return;
             if (_orderInput.TryIssueMove(worldPoint))

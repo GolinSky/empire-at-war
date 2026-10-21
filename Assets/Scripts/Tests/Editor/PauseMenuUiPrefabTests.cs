@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class PauseMenuUiPrefabTests
     {
         private const string PREFAB_PATH =

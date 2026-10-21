@@ -1,4 +1,7 @@
 using System;
+using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using VContainer;
@@ -10,6 +13,9 @@ namespace EmpireAtWar.Services.Input
     {
         private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _uiHitTest;
+        private readonly IShipAbilityTargeting _abilities;
+        private readonly UnitActionTargetingModel _targeting;
+        private readonly SuperWeaponTargetingModel _superWeapons;
 
         private readonly MouseDragState _drag = new MouseDragState();
 
@@ -26,23 +32,35 @@ namespace EmpireAtWar.Services.Input
         public event Action<Vector2> DragChanged;
 
         public event Action<Vector2> DragEnded;
+        public event Action DragCanceled;
 
-        public PointerGestures(IPointerInput pointerInput, IUiHitTest uiHitTest, InputActionsProvider provider)
+        public PointerGestures(IPointerInput pointerInput, IUiHitTest uiHitTest, InputActionsProvider provider,
+            IShipAbilityTargeting abilities, UnitActionTargetingModel targeting, SuperWeaponTargetingModel superWeapons)
         {
             _battle = provider.Actions.Battle;
             _pointerInput = pointerInput;
             _uiHitTest = uiHitTest;
+            _abilities = abilities;
+            _targeting = targeting;
+            _superWeapons = superWeapons;
         }
 
         public void Tick()
         {
-            if (!_battle.enabled)
+            if (!_battle.Select.enabled)
             {
-                _drag.End();
+                CancelDrag();
                 return;
             }
 
             Vector2 position = _pointerInput.Position;
+            if (_abilities.IsWaitingForTarget || _targeting.Pending != null || _superWeapons.Pending != null)
+            {
+                CancelDrag();
+                if (_battle.Command.WasReleasedThisFrame() && !_uiHitTest.IsOverUi(position))
+                    WorldCommanded?.Invoke(position);
+                return;
+            }
             if (_battle.Select.WasPressedThisFrame())
             {
                 Press(position);
@@ -72,6 +90,13 @@ namespace EmpireAtWar.Services.Input
             {
                 WorldPressed?.Invoke(position);
             }
+        }
+
+        private void CancelDrag()
+        {
+            bool wasDragging = _drag.HasDragged;
+            _drag.End();
+            if (wasDragging) DragCanceled?.Invoke();
         }
 
         private void Track(Vector2 position)

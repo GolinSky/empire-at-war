@@ -26,8 +26,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public UnitRequest Request => _unitRequest;
         public FactionData FactionData { get; private set; }
 
-        public void SetAvailable(bool available) => purchaseButton.interactable = available;
-
         public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded,
             bool atLimit = false)
         {

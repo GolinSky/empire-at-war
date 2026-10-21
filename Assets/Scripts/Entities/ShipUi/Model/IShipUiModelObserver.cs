@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipAbilities;
@@ -14,5 +15,6 @@ namespace EmpireAtWar.Models.ShipUi
         ShipType? SelectedShipType { get; }
         SquadronType? SelectedSquadronType { get; }
         ShipAbilityId? PendingAbilityId { get; }
+        bool IsPendingCaster(IEntity entity);
     }
 }

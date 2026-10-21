@@ -15,9 +15,17 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.ShipUi;
+using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.ShipUi;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.UiRouting;
+using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class ShipAbilityServiceTests
     {
         private GameObject _targetView;
@@ -187,6 +195,72 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TargetingPruning_PreservesSurvivingCastersAndClearsLastCaster()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand first = CreateCaster(targeted: true);
+            FakeCommand second = CreateCaster(targeted: true);
+            service.Press(new IEntity[] { first.Entity, second.Entity }, ShipAbilityId.BoostEnginePower);
+            first.FakeHealth.IsDestroyedValue = true;
+            service.PruneTargeting(new IEntity[] { second.Entity });
+            Assert.That(service.IsWaitingForTarget, Is.True);
+            Assert.That(service.PendingCasters, Is.EqualTo(new[] { second.Entity }));
+            service.PruneTargeting(Array.Empty<IEntity>());
+            Assert.That(service.IsWaitingForTarget, Is.False);
+            Assert.That(service.PendingCasters, Is.Empty);
+        }
+
+        [Test]
+        public void ShipUiEscape_CancelsArmedAbilityBeforePauseMenuFallback()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster(targeted: true);
+            AbilityCancelInput input = new AbilityCancelInput();
+            UiCancelRouter router = new UiCancelRouter(input);
+            ShipUiModel model = new ShipUiModel();
+            ShipUiController controller = new ShipUiController(uiService: null, cancelRouter: router,
+                selectionService: new AbilitySelection(), routeNavigation: new AbilityRoutes(),
+                cameraService: null, tooltipService: null, bindings: null, model: model,
+                icons: null, shipAbilityService: service, tooltipIcons: null, factions: null);
+            int unhandledCount = 0;
+            router.CancelUnhandled += () => unhandledCount++;
+            router.Initialize();
+            controller.Initialize();
+            try
+            {
+                service.Press(new[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+                Assert.That(controller.IsFocused, Is.True);
+                Assert.That(model.PendingAbilityId, Is.EqualTo(ShipAbilityId.BoostEnginePower));
+                input.Press();
+                Assert.That(service.IsWaitingForTarget, Is.False);
+                Assert.That(model.PendingAbilityId, Is.Null);
+                Assert.That(controller.IsFocused, Is.False);
+                Assert.That(unhandledCount, Is.Zero);
+                input.Press();
+                Assert.That(unhandledCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                controller.LateDispose();
+                router.Dispose();
+                service.LateDispose();
+            }
+        }
+
+        [Test]
+        public void TargetingModel_OnlyMarksCastersInArmedGroup()
+        {
+            FakeCommand first = CreateCaster(targeted: true);
+            FakeCommand second = CreateCaster(targeted: true);
+            EmpireAtWar.Models.ShipUi.ShipUiModel model = new EmpireAtWar.Models.ShipUi.ShipUiModel();
+            model.SetPendingAbility(ShipAbilityId.BoostEnginePower, new[] { first.Entity });
+            Assert.That(model.IsPendingCaster(first.Entity), Is.True);
+            Assert.That(model.IsPendingCaster(second.Entity), Is.False);
+            model.SetPendingAbility(null, Array.Empty<IEntity>());
+            Assert.That(model.IsPendingCaster(first.Entity), Is.False);
+        }
+
+        [Test]
         public void UnknownAbilityId_TryActivateReturnsFalse()
         {
             FakeFactory factory = new FakeFactory();
@@ -255,6 +329,30 @@ namespace EmpireAtWar.Tests.Editor
         {
             typeof(ShipAbilityDefinition).GetField(name,
                 BindingFlags.Instance | BindingFlags.NonPublic).SetValue(instance, value);
+        }
+
+        private sealed class AbilityCancelInput : ICancelInput
+        {
+            public event Action CancelPressed;
+            public void Press() => CancelPressed?.Invoke();
+        }
+
+        private sealed class AbilitySelection : ISelectionService
+        {
+            public string Id => nameof(AbilitySelection);
+            public ISelectionContext PlayerSelectionContext => null;
+            public ISelectionContext OtherSelectionContext => null;
+            public void RemoveSelectable(ISelectionContext selectionContext) { }
+            public void SelectCurrentUnitsByType(UnitTypeId unitTypeId) { }
+            public void AddObserver(IObserver<ISelectionSubject> observer) { }
+            public void RemoveObserver(IObserver<ISelectionSubject> observer) { }
+        }
+
+        private sealed class AbilityRoutes : ISkirmishRouteNavigation
+        {
+            public void RegisterRoute(SkirmishUiRoutePosition position, ISkirmishUiRoute route) { }
+            public void UnregisterRoute(SkirmishUiRoutePosition position, ISkirmishUiRoute route) { }
+            public void SetRouteActive(SkirmishUiRoutePosition position, bool isActive) { }
         }
 
         private sealed class FakeFactory : IShipAbilityFactory

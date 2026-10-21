@@ -2,6 +2,7 @@ using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.Battle;
@@ -86,7 +87,11 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             {
                 _ui.StopAttack();
                 _attackTarget = null;
+                return;
             }
+
+            _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
+                _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
         private void AttackFeedbackCompleted() => _attackTarget = null;
@@ -116,7 +121,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (order.Action == UnitActionId.Attack && order.Target != null)
             {
                 _attackTarget = order.Target;
-                _ui.PlayAttack(_pointerInput.Position, AttackFeedbackCompleted);
+                _ui.PlayAttack(_cameraService.WorldToScreenPoint(
+                    _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position), AttackFeedbackCompleted);
             }
             else if (order.Action == UnitActionId.WaypointMove &&
                      order.Waypoints != null)

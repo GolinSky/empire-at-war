@@ -21,11 +21,11 @@ namespace EmpireAtWar.Services.Battle
         public void Tick()
         {
             // Ctrl+Shift+A also satisfies the Ctrl+A shortcut, so the longer one is checked first.
-            if (_battle.SelectAll.WasPerformedThisFrame())
+            if (_battle.SelectAll.enabled && _battle.SelectAll.WasPerformedThisFrame())
             {
                 SelectAllRequested?.Invoke();
             }
-            else if (_battle.SelectVisible.WasPerformedThisFrame())
+            else if (_battle.SelectVisible.enabled && _battle.SelectVisible.WasPerformedThisFrame())
             {
                 SelectVisibleRequested?.Invoke();
             }

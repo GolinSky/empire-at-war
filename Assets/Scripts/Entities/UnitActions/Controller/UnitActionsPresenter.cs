@@ -121,7 +121,9 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         public void UpdateState(ISelectionSubject subject)
         {
             if (subject.UpdatedScope != SelectionScope.Local) return;
-            _targeting.Cancel();
+            if (!subject.IsPruningSelection ||
+                (_targeting.Pending.HasValue && !HasReceiver(_targeting.Pending.Value)))
+                _targeting.Cancel();
             RefreshAvailability();
         }
 

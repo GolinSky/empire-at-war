@@ -26,6 +26,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class UnitActionsPresenterTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();
@@ -147,6 +148,26 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Retreat));
         }
 
+        [TestCase(UnitActionId.Attack)]
+        [TestCase(UnitActionId.Guard)]
+        [TestCase(UnitActionId.AttackMove)]
+        [TestCase(UnitActionId.WaypointMove)]
+        public void SelectionPruning_PreservesPendingCommandForSurvivors(UnitActionId action)
+        {
+            _selection.Select(Entity(1, null));
+            _view.Press(action);
+            if (action == UnitActionId.WaypointMove)
+                _targeting.AddWaypoint(new FormationPoint(3f, 4f));
+            _selection.IsPruningSelection = true;
+            _presenter.UpdateState(_selection);
+            Assert.That(_targeting.Pending, Is.EqualTo(action));
+            if (action == UnitActionId.WaypointMove)
+                Assert.That(_targeting.Waypoints.Count, Is.EqualTo(1));
+
+            _selection.Select(Entity(2, Array.Empty<Type>()));
+            Assert.That(_targeting.Pending, Is.Null);
+        }
+
         private FakeEntity Entity(long id, Type[] commands)
         {
             GameObject obj = new GameObject("Unit " + id);
@@ -194,6 +215,7 @@ namespace EmpireAtWar.Tests.Editor
             public ISelectionContext PlayerSelectionContext => this;
             public ISelectionContext OtherSelectionContext => null;
             public SelectionScope UpdatedScope => SelectionScope.Local;
+            public bool IsPruningSelection { get; set; }
             public IEntity Entity => _entities.Count > 0 ? _entities[0] : null;
             public IReadOnlyList<IEntity> Entities => _entities;
             public IEntitySelectionFacade SelectionFacade => null;
