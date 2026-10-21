@@ -14,8 +14,6 @@ namespace EmpireAtWar.Services.Saves
         public Dictionary<long, Squadron> Squadrons { get; } = new Dictionary<long, Squadron>();
         public Dictionary<long, MiningFacilityEntity> MiningFacilities { get; } = new Dictionary<long, MiningFacilityEntity>();
         public Dictionary<long, DefendPlatformEntity> DefendPlatforms { get; } = new Dictionary<long, DefendPlatformEntity>();
-        /// <summary>Squadrons a hangar bay launched; they belong to the bay, not to their owner's unit limits.</summary>
-        public HashSet<long> HangarSquadrons { get; } = new HashSet<long>();
         /// <summary>Facilities a capture site built; they belong to the site, not to their owner's structure limits.</summary>
         public HashSet<long> SiteFacilities { get; } = new HashSet<long>();
 

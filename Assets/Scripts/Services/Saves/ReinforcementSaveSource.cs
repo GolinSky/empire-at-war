@@ -13,7 +13,8 @@ namespace EmpireAtWar.Services.Saves
     /// <summary>
     /// The human's built units waiting to be placed, and the bookkeeping of placed ones: restored ships and
     /// squadrons count against unit capacity again, placed structures against their structure limit.
-    /// Hangar squadrons and capture-site facilities are not counted, as when they were first built.
+    /// Only placed squadrons are counted, so hangar squadrons stay free even after their carrier is lost;
+    /// capture-site facilities are not counted either, as when they were first built.
     /// </summary>
     public sealed class ReinforcementSaveSource : PlayerSaveSource
     {
@@ -37,8 +38,12 @@ namespace EmpireAtWar.Services.Saves
             _levels = levels;
         }
 
-        public override void Capture(PlayerSave save) => save.Reserve = _reinforcements.Reserve
-            .SelectMany(entry => Enumerable.Repeat(UnitRequestSave.From(entry.Key), entry.Value)).ToArray();
+        public override void Capture(PlayerSave save)
+        {
+            save.Reserve = _reinforcements.Reserve
+                .SelectMany(entry => Enumerable.Repeat(UnitRequestSave.From(entry.Key), entry.Value)).ToArray();
+            save.PaidSquadrons = _reinforcements.PlacedSquadrons.ToArray();
+        }
 
         public override void RestoreBeforeUnits(PlayerSave save)
         {
@@ -66,13 +71,15 @@ namespace EmpireAtWar.Services.Saves
                     _reinforcements.AddUnitCapacity(unit.UnitType.ShipType);
                     context.Ships[unit.Id].OnRelease += _reinforcements.RemoveUnitCapacity;
                 }
-                else if (!context.HangarSquadrons.Contains(unit.Id))
+                else if (save.PaidSquadrons.Contains(unit.Id))
                 {
                     var squadronType = unit.UnitType.SquadronType;
+                    long squadronId = unit.Id;
                     _reinforcements.UpdateSquadronData(_requests.ConstructUnitRequest(
                         _roster.Squadrons[squadronType], squadronType));
-                    _reinforcements.AddUnitCapacity(squadronType);
-                    context.Squadrons[unit.Id].Released += () => _reinforcements.RemoveUnitCapacity(squadronType);
+                    _reinforcements.AddUnitCapacity(squadronType, squadronId);
+                    context.Squadrons[squadronId].Released +=
+                        () => _reinforcements.RemoveUnitCapacity(squadronType, squadronId);
                 }
             }
 

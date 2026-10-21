@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private UnitRequestSave[] reserve = Array.Empty<UnitRequestSave>();
         [SerializeField] private UnitRequestSave[] pendingBuilds = Array.Empty<UnitRequestSave>();
         [SerializeField] private int shipOrders;
+        [SerializeField] private long[] paidSquadrons = Array.Empty<long>();
         [SerializeField] private SuperWeaponSave[] superWeapons = Array.Empty<SuperWeaponSave>();
 
         public PlayerId Player => new PlayerId(player);
@@ -34,6 +35,8 @@ namespace EmpireAtWar.Services.Saves
         /// <summary>The AI's paid builds with their time left.</summary>
         public UnitRequestSave[] PendingBuilds { get => pendingBuilds; set => pendingBuilds = value; }
         public int ShipOrders { get => shipOrders; set => shipOrders = value; }
+        /// <summary>Squadrons the player paid for. Every other squadron came from a hangar bay, even one whose carrier is gone.</summary>
+        public long[] PaidSquadrons { get => paidSquadrons; set => paidSquadrons = value; }
         public SuperWeaponSave[] SuperWeapons { get => superWeapons; set => superWeapons = value; }
 
         public static PlayerSave Create(PlayerId player) => new PlayerSave { player = player.Index };

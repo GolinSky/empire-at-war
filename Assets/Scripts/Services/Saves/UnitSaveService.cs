@@ -118,7 +118,6 @@ namespace EmpireAtWar.Services.Saves
         {
             if (hangar == null) return;
             entity.GetFacade<IHangarSaveFacade>().Restore(hangar, context.Squadrons);
-            foreach (LaunchedSquadronSave launched in hangar.Launched) context.HangarSquadrons.Add(launched.SquadronId);
         }
 
         private void RestoreAbilities(IEntity entity, IReadOnlyList<AbilitySlotSave> saves)

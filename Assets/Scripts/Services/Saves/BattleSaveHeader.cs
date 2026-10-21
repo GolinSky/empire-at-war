@@ -10,7 +10,7 @@ namespace EmpireAtWar.Services.Saves
     public sealed class BattleSaveHeader
     {
         /// <summary>Raise when the save layout changes; older saves are refused, not migrated.</summary>
-        public const int CURRENT_VERSION = 2;
+        public const int CURRENT_VERSION = 3;
 
         [SerializeField] private int version;
         [SerializeField] private GameMode mode;

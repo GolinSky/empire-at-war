@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _relations = relations;
         }
 
-        public bool IsComplete => !HasSensor(_caster);
+        public bool IsComplete => !HasSensor(_caster) || _caster.Modifiers.IsIonDisabled;
         public bool SurvivesCasterDeath => false;
         public bool CanStart(IShipAbilityFacade caster, IEntity target) => HasSensor(caster);
 

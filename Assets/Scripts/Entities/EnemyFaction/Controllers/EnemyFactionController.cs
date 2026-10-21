@@ -48,6 +48,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly ReinforcementData _reinforcementData;
         private readonly PlayerSlot _owner;
         private readonly EnemyBuildQueue _builds = new EnemyBuildQueue();
+        private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly FactionResearchModel _research;
@@ -58,6 +59,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
+        /// <summary>Living squadrons the AI paid for; hangar squadrons are free and never listed.</summary>
+        public IEnumerable<long> BuiltSquadrons => _builtSquadrons;
 
         public EnemyFactionController(
             IEconomyProvider economyProvider,
@@ -253,13 +256,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void Track(ISquadron squadron, SquadronUnitRequest unitRequest)
         {
+            long squadronId = squadron.EntityId;
             Action handler = null;
             handler = () =>
             {
                 squadron.Released -= handler;
+                _builtSquadrons.Remove(squadronId);
                 ReleaseUnit(unitRequest);
             };
             squadron.Released += handler;
+            _builtSquadrons.Add(squadronId);
             _squadronCommander.Command(squadron, unitRequest.Key);
         }
 

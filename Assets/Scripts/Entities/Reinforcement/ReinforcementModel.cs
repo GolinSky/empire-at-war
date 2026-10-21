@@ -32,6 +32,7 @@ namespace EmpireAtWar.Models.Reinforcement
         private readonly Dictionary<SquadronType, FactionData> _squadronFactionData = new();
         private readonly Dictionary<UnitLimitKey, int> _reserveCounts = new();
         private readonly Dictionary<UnitLimitKey, UnitRequest> _reserveRequests = new();
+        private readonly HashSet<long> _placedSquadrons = new();
 
         private int _currentUnitCapacity;
 
@@ -93,13 +94,18 @@ namespace EmpireAtWar.Models.Reinforcement
             return _squadronFactionData[squadronType].UnitCapacity <= CapacityLeft;
         }
 
-        public void AddUnitCapacity(SquadronType squadronType)
+        /// <summary>Placed squadrons that count against unit capacity; hangar squadrons never do.</summary>
+        public IEnumerable<long> PlacedSquadrons => _placedSquadrons;
+
+        public void AddUnitCapacity(SquadronType squadronType, long squadronId)
         {
+            _placedSquadrons.Add(squadronId);
             CurrentUnitCapacity += _squadronFactionData[squadronType].UnitCapacity;
         }
 
-        public void RemoveUnitCapacity(SquadronType squadronType)
+        public void RemoveUnitCapacity(SquadronType squadronType, long squadronId)
         {
+            _placedSquadrons.Remove(squadronId);
             CurrentUnitCapacity -= _squadronFactionData[squadronType].UnitCapacity;
         }
 

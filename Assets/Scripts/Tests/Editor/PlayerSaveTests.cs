@@ -87,6 +87,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PlacedSquadrons_ListsOnlyLivingPlacedSquadrons()
+        {
+            ReinforcementModel reinforcements = new ReinforcementModel(null);
+            reinforcements.UpdateSquadronData(new SquadronUnitRequest(CreateFactionData(1, 1), SquadronType.XWing));
+
+            reinforcements.AddUnitCapacity(SquadronType.XWing, 7);
+            reinforcements.AddUnitCapacity(SquadronType.XWing, 8);
+            reinforcements.RemoveUnitCapacity(SquadronType.XWing, 7);
+
+            Assert.That(reinforcements.PlacedSquadrons, Is.EqualTo(new long[] { 8 }));
+        }
+
+        [Test]
         public void SuperWeapon_RestoredReadyWeapon_FiresOnlyAfterItsCooldown()
         {
             SuperWeaponModel superWeapons = new SuperWeaponModel();

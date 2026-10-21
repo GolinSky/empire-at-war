@@ -71,6 +71,18 @@ namespace EmpireAtWar.Tests.Editor
             AssertNeutral(ally.Modifiers);
         }
 
+        [Test]
+        public void SensorJamming_CasterIonDisabled_Completes()
+        {
+            TestCommand caster = new TestCommand(id: 1, owner: TestPlayers.Human);
+            IPhasedShipAbility ability = new SensorJammingAbility(new EntityLocator(), relations: null);
+
+            ability.Start(caster, new ShipAbilityDefinition(), null);
+            Assert.That(ability.IsComplete, Is.False);
+            caster.Modifiers.SetIonDisabled(true);
+            Assert.That(ability.IsComplete, Is.True);
+        }
+
         private static TSettings CreateSettings<TSettings>(string modifierField, CombatStatModifier modifier)
             where TSettings : ShipAbilitySettings, new()
         {
@@ -168,7 +180,24 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasShields => true;
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
-                Array.Empty<IHardPointModel>();
+                hardPointType == HardPointType.SensorArray
+                    ? new IHardPointModel[] { new SensorArrayStub() }
+                    : Array.Empty<IHardPointModel>();
+        }
+
+        private sealed class SensorArrayStub : IHardPointModel
+        {
+            public event Action OnHardPointHealthChanged { add { } remove { } }
+            public event Action OnDestroyed { add { } remove { } }
+
+            public HardPointType HardPointType => HardPointType.SensorArray;
+            public float HealthPercentage => 1f;
+            public int Id => 0;
+            public int Generation => 0;
+            public bool IsDestroyed => false;
+            public Vector3 Position => Vector3.zero;
+            public Transform Transform => null;
+            public Transform Pivot => null;
         }
     }
 }

@@ -9,8 +9,8 @@ using EmpireAtWar.Services.Stations;
 namespace EmpireAtWar.Services.Saves
 {
     /// <summary>
-    /// The AI's station level, research, paid builds and unit limits. Restored ships, squadrons not owned by a
-    /// hangar bay, and structures not built by a capture site take their limit slots again, as when they were built.
+    /// The AI's station level, research, paid builds and unit limits. Restored ships, paid squadrons, and
+    /// structures not built by a capture site take their limit slots again, as when they were built.
     /// </summary>
     public sealed class AiProductionSaveSource : PlayerSaveSource
     {
@@ -45,6 +45,7 @@ namespace EmpireAtWar.Services.Saves
             save.PendingBuilds = _controller.PendingBuilds
                 .Select(build => UnitRequestSave.From(build.Request, build.TimeLeft)).ToArray();
             save.ShipOrders = _limits.ShipOrdersCount;
+            save.PaidSquadrons = _controller.BuiltSquadrons.ToArray();
         }
 
         public override void RestoreBeforeUnits(PlayerSave save)
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Services.Saves
                     _controller.AdoptShip(context.Ships[unit.Id],
                         _requests.ConstructUnitRequest(_roster.Ships[shipType], shipType));
                 }
-                else if (!context.HangarSquadrons.Contains(unit.Id))
+                else if (save.PaidSquadrons.Contains(unit.Id))
                 {
                     var squadronType = unit.UnitType.SquadronType;
                     _controller.AdoptSquadron(context.Squadrons[unit.Id],

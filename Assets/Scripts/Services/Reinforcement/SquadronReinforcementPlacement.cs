@@ -48,8 +48,9 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             Squadron squadron = _squadronSpawner.Spawn(_owner, _squadronType, position,
                 _stationFacingService.GetRotation(_owner));
-            squadron.Released += () => _model.RemoveUnitCapacity(_squadronType);
-            _model.AddUnitCapacity(_squadronType);
+            long squadronId = squadron.EntityId;
+            squadron.Released += () => _model.RemoveUnitCapacity(_squadronType, squadronId);
+            _model.AddUnitCapacity(_squadronType, squadronId);
         }
     }
 }
