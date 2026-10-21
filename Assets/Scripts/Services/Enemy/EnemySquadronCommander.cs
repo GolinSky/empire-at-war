@@ -97,10 +97,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Command(ISquadron squadron, SquadronType squadronType)
         {
-            Action handler = () => Release(squadron);
-            _squadrons.Add(squadron, new CommandedSquadron(
-                _profileCatalog.Get(UnitTypeId.Squadron(squadronType)), handler));
-            squadron.Released += handler;
+            Track(squadron, squadronType);
             AssessThreats();
             AssignEscorts();
             IssueOrder(squadron);
@@ -114,6 +111,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             _decisionTimer.StartTimer();
+            TrackOwnedSquadrons();
             AssessThreats();
             AssignEscorts();
             AssignScout();
@@ -123,6 +121,31 @@ namespace EmpireAtWar.Services.Enemy
             {
                 IssueOrder(squadron);
             }
+        }
+
+        private void TrackOwnedSquadrons()
+        {
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (entity.Owner == _owner.Id && !entity.HealthModel.IsDestroyed &&
+                    entity.TryGetFacade(out ISquadron squadron) && !_squadrons.ContainsKey(squadron))
+                {
+                    Track(squadron, entity.GetFacade<IUnitTypeFacade>().UnitTypeId.SquadronType);
+                }
+            }
+        }
+
+        private void Track(ISquadron squadron, SquadronType squadronType)
+        {
+            if (_squadrons.ContainsKey(squadron))
+            {
+                return;
+            }
+
+            Action handler = () => Release(squadron);
+            _squadrons.Add(squadron, new CommandedSquadron(
+                _profileCatalog.Get(UnitTypeId.Squadron(squadronType)), handler));
+            squadron.Released += handler;
         }
 
         /// <summary>

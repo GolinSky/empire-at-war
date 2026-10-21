@@ -73,7 +73,8 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             _healthPercentage = healthPercentage;
             if (wasAlive && IsDestroyed)
             {
-                Explode();
+                Disable();
+                _explosions.Play(transform.position);
             }
             else if (!wasAlive && !IsDestroyed)
             {
@@ -81,7 +82,14 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             }
         }
 
-        private void Explode()
+        public void RestoreData(float healthPercentage)
+        {
+            _healthPercentage = healthPercentage;
+            if (IsDestroyed) Disable();
+            else Restore();
+        }
+
+        private void Disable()
         {
             gun.UpdateData(0f);
             foreach (WeaponHardPoint additionalGun in additionalGuns)
@@ -94,8 +102,6 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             {
                 trail.emitting = false;
             }
-
-            _explosions.Play(transform.position);
         }
 
         // A reused squadron brings its destroyed fighters back.

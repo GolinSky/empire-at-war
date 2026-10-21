@@ -1,5 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Squadrons.Flight;
+using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Health;
@@ -103,6 +110,83 @@ namespace EmpireAtWar.Tests.Editor
         private IEntity Select(SquadronTargetSelector selector, bool seen) => seen
             ? selector.SelectSeen(Vector3.zero, 100f)
             : selector.SelectNear(_candidates, Vector3.zero, 100f);
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Hunt_WithoutVisibleTargets_PersistsBeforeAndAfterAKill(bool hadTarget)
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject root = new GameObject("HuntingSquadron");
+            _objects.Add(root);
+            Squadron squadron = root.AddComponent<Squadron>();
+            SquadronData data = ScriptableObject.CreateInstance<SquadronData>();
+            UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            try
+            {
+                var flight = new FlightStub(data);
+                var pilot = new SquadronPilot(flight);
+                var weapon = new WeaponSpy();
+                var orders = new UnitOrderModel();
+                typeof(Squadron).GetField("_orders", PRIVATE_INSTANCE).SetValue(squadron, orders);
+                typeof(Squadron).GetField("_flight", PRIVATE_INSTANCE).SetValue(squadron, flight);
+                typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
+                typeof(Squadron).GetField("_weapon", PRIVATE_INSTANCE).SetValue(squadron, weapon);
+                typeof(Squadron).GetField("_orderSettings", PRIVATE_INSTANCE).SetValue(squadron, settings);
+                typeof(Squadron).GetField("_targetSelector", PRIVATE_INSTANCE).SetValue(squadron, CreateSelector());
+                if (hadTarget)
+                {
+                    IEntity killed = AddTarget(1f);
+                    pilot.Engage(killed);
+                    ((HealthStub)killed.HealthModel).IsDestroyed = true;
+                    typeof(Squadron).GetField("_engaged", PRIVATE_INSTANCE).SetValue(squadron, killed);
+                }
+
+                squadron.Hunt();
+                MethodInfo update = typeof(Squadron).GetMethod("UpdateOrder", PRIVATE_INSTANCE);
+                for (int i = 0; i < 3; i++) update.Invoke(squadron, new object[] { 1f });
+
+                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Hunt));
+                Assert.That(typeof(Squadron).GetField("_engaged", PRIVATE_INSTANCE).GetValue(squadron), Is.Null);
+                Assert.That(pilot.HasArrived, Is.True);
+                Assert.That(weapon.ResetCount, Is.EqualTo(hadTarget ? 1 : 0));
+                if (hadTarget) Assert.That(pilot.LoiterCenter, Is.EqualTo(flight.Centroid));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(data);
+                UnityEngine.Object.DestroyImmediate(settings);
+            }
+        }
+
+        private sealed class FlightStub : ISquadronFlightComponent
+        {
+            public FlightStub(IFighterFlightData data) { Data = data; }
+            public string Id => "flight";
+            public IFighterFlightData Data { get; }
+            public int Count => 0;
+            public Vector3 Centroid => new Vector3(10f, 0f, 20f);
+            public Vector3 Heading => Vector3.forward;
+            public bool IsAlive(int index) => throw new NotSupportedException();
+            public Vector3 GetPosition(int index) => throw new NotSupportedException();
+            public Vector3 GetForward(int index) => throw new NotSupportedException();
+            public void Steer(int index, Vector3 target, float speed) => throw new NotSupportedException();
+            public void Step(float deltaTime) => throw new NotSupportedException();
+            public void Respawn(Vector3 position, Quaternion rotation) => throw new NotSupportedException();
+        }
+
+        private sealed class WeaponSpy : IWeaponComponent
+        {
+            public int ResetCount { get; private set; }
+            public string Id => "weapon";
+            public float AttackDistance => throw new NotSupportedException();
+            public TargetPreference PreferredTarget => throw new NotSupportedException();
+            public float GetEngagementRange(ShipClass targetClass) => throw new NotSupportedException();
+            public void AddTarget(AttackData attackData, AttackType attackType) => throw new NotSupportedException();
+            public bool HasTarget(IHealthFacade healthFacade) => throw new NotSupportedException();
+            public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => throw new NotSupportedException();
+            public void ResetTarget() { ResetCount++; }
+            public void Release() => throw new NotSupportedException();
+        }
 
         private SquadronTargetSelector CreateSelector(ShipClass shipClass = ShipClass.Fighter, PlayerId? side = null)
         {

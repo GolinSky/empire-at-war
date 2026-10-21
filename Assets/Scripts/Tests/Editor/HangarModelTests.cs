@@ -1,7 +1,14 @@
 using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -9,6 +16,72 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const float INITIAL_DELAY = 4f;
         private const float LAUNCH_INTERVAL = 8f;
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Upgrade_RepairsHangarAndResumesReserveLaunches(bool individualBay)
+        {
+            var root = new GameObject("Hangar repair test");
+            var data = new TestHangarData(new HangarBay(SquadronType.Delta7, 3, 1));
+            var health = new HealthModel(data, null, new CombatModifiers());
+            var hardPointModel = new HardPointModel(HardPointType.Hangar, 0);
+            health.InitializeHardPoints(new[] { hardPointModel });
+            var adapter = new HardPointAdapter(new HardPointViewStub(root.transform), hardPointModel, root.transform);
+            var component = root.AddComponent<HangarComponent>();
+            try
+            {
+                var healthComponent = root.AddComponent<HealthComponent>();
+                SetField(healthComponent, "_hardPointAdapters", new[] { adapter });
+                var hardPoint = root.AddComponent<HardPoint>();
+                SetField(component, "hangarHardPoint", hardPoint);
+                if (individualBay) SetField(component, "bayHardPoints", new[] { hardPoint });
+                var model = new HangarModel(data);
+                typeof(HangarComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(EmpireAtWar.Models.Players.PlayerId) });
+                component.Initialize();
+                Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
+                hardPointModel.ApplyDamage(hardPointModel.MaxHealth);
+                model.SquadronLost(0);
+                Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False);
+
+                health.Upgrade(2, 1f, 1f, 1f);
+
+                Assert.That(model.IsOperational, Is.True);
+                Assert.That(model.GetReserve(0), Is.EqualTo(2));
+                Assert.That(model.GetActive(0), Is.Zero);
+                Assert.That(model.Cooldown, Is.EqualTo(LAUNCH_INTERVAL));
+                Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.True);
+                Assert.That(model.GetReserve(0), Is.EqualTo(1));
+                component.Release();
+                hardPointModel.SetHealth(100f, 1f);
+                Assert.That(model.IsOperational, Is.False, "Released hangars must stop observing repairs.");
+            }
+            finally
+            {
+                component.Release();
+                adapter.Dispose();
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        private static void SetField(object target, string name, object value) =>
+            target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(target, value);
+
+        private sealed class HardPointViewStub : IHardPoint
+        {
+            public bool IsDestroyed => false;
+            public int Id => 0;
+            public HardPointType HardPointType => HardPointType.Hangar;
+            public Vector3 Position => Transform.position;
+            public Transform Transform { get; }
+            public HardPointViewStub(Transform transform) => Transform = transform;
+            public bool TryGetWeaponType(out WeaponType weaponType)
+            {
+                weaponType = default;
+                return false;
+            }
+            public void UpdateData(float healthPercentage) { }
+        }
 
         [Test]
         public void TryLaunch_WaitsForInitialDelay()
@@ -143,8 +216,17 @@ namespace EmpireAtWar.Tests.Editor
             Assert.Throws<System.InvalidOperationException>(() => model.Restore(new[] { 1, 1 }, 0f));
         }
 
-        private sealed class TestHangarData : IHangarData
+        private sealed class TestHangarData : IHangarData, IHealthData
         {
+            public ShipClass ShipClass => ShipClass.Structure;
+            public float Hull => 1000f;
+            public float Shields => 0f;
+            public float ShieldRegenerateValue => 0f;
+            public float ShieldRegenerateDelay => 0f;
+            public IReadOnlyList<HardPointHealth> HardPointHealth { get; } = new[]
+            {
+                JsonUtility.FromJson<HardPointHealth>($"{{\"hardPointType\":{(int)HardPointType.Hangar},\"health\":100,\"hullDamageMultiplier\":1}}")
+            };
             public IReadOnlyList<HangarBay> HangarBays { get; }
             public float HangarInitialDelay => INITIAL_DELAY;
             public float HangarLaunchInterval => LAUNCH_INTERVAL;

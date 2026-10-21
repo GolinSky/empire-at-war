@@ -41,13 +41,17 @@ namespace EmpireAtWar.Models.Health
             _wasDestroyed = _model.IsDestroyed;
 
             _model.OnHardPointHealthChanged += HandleHealthChanged;
+            _model.OnRestored += HandleRestored;
             _view.UpdateData(_model.HealthPercentage);
         }
 
         public void Dispose()
         {
             _model.OnHardPointHealthChanged -= HandleHealthChanged;
+            _model.OnRestored -= HandleRestored;
         }
+
+        private void HandleRestored() => _view.RestoreData(_model.HealthPercentage);
 
         private void HandleHealthChanged()
         {

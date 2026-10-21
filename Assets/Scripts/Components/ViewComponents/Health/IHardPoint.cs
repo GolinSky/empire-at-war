@@ -17,5 +17,7 @@ namespace EmpireAtWar.ViewComponents.Health
         bool TryGetWeaponType(out WeaponType weaponType);
 
         void UpdateData(float healthPercentage);
+
+        void RestoreData(float healthPercentage) => UpdateData(healthPercentage);
     }
 }

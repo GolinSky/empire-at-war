@@ -16,7 +16,7 @@ namespace EmpireAtWar.Components.Hangar
 {
     /// <summary>
     /// Launches squadrons from a carrier's or space station's reserve and escorts them around it.
-    /// Reserve launching stops for good when the hangar hardpoint or its owner is destroyed.
+    /// Reserve launching pauses while its hangar hardpoints are destroyed and stops when its owner is destroyed.
     /// <see cref="Launch"/> launches extra squadrons outside the reserve.
     /// </summary>
     public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, IInitializable, ITickable,
@@ -80,8 +80,12 @@ namespace EmpireAtWar.Components.Hangar
                 {
                     continue;
                 }
-                Action handler = bayHardPoints.Length == 0 ? OnHangarDestroyed : () => Model.DisableBay(bay);
-                unit.OnDestroyed += handler;
+                Action handler = bayHardPoints.Length == 0 ? OnHangarHealthChanged : () =>
+                {
+                    if (unit.IsDestroyed) Model.DisableBay(bay);
+                    else Model.EnableBay(bay);
+                };
+                unit.OnHardPointHealthChanged += handler;
                 _hangarUnits.Add((unit, handler));
             }
             if (!hasLaunchHangar || (bayHardPoints.Length != 0 && _hangarUnits.Count != Model.BayCount))
@@ -124,7 +128,7 @@ namespace EmpireAtWar.Components.Hangar
             {
                 foreach ((IHardPointModel unit, Action handler) in _hangarUnits)
                 {
-                    unit.OnDestroyed -= handler;
+                    unit.OnHardPointHealthChanged -= handler;
                 }
                 _hangarUnits.Clear();
             }
@@ -189,12 +193,13 @@ namespace EmpireAtWar.Components.Hangar
             return squadron;
         }
 
-        private void OnHangarDestroyed()
+        private void OnHangarHealthChanged()
         {
             foreach ((IHardPointModel unit, Action handler) in _hangarUnits)
             {
                 if (!unit.IsDestroyed)
                 {
+                    Model.Resume();
                     return;
                 }
             }

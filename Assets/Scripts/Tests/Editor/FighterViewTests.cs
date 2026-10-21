@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
 using NUnit.Framework;
 using UnityEngine;
@@ -56,6 +60,46 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void Restore_DeadFighterDisablesItsViewWithoutExplosion_AndNextDeathExplodes()
+        {
+            (FighterView view, Transform body) = InactiveFighter(Quaternion.identity);
+            Collider hitCollider = view.gameObject.AddComponent<BoxCollider>();
+            WeaponHardPoint gun = body.gameObject.AddComponent<WeaponHardPoint>();
+            typeof(HardPoint).GetField("spawnDestroyedExplosion", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(gun, false);
+            TrailRenderer trail = body.gameObject.AddComponent<TrailRenderer>();
+            view.SetEditorReferences(1, body, hitCollider, gun, new[] { trail });
+            SilentExplosions explosions = new SilentExplosions();
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance<IFighterExplosionPool>(explosions);
+            builder.RegisterComponent(view);
+            HardPointModel model = new HardPointModel(HardPointType.Any, 1);
+            model.SetHealth(100f, 1f);
+
+            using (builder.Build())
+            using (new HardPointAdapter(view, model, view.transform))
+            {
+                model.Restore(0f);
+
+                Assert.That(view.IsDestroyed, Is.True);
+                Assert.That(body.gameObject.activeSelf, Is.False);
+                Assert.That(hitCollider.enabled, Is.False);
+                Assert.That(gun.IsDestroyed, Is.True);
+                Assert.That(trail.emitting, Is.False);
+                Assert.That(explosions.PlayCount, Is.Zero);
+
+                model.SetHealth(100f, 1f);
+
+                Assert.That(body.gameObject.activeSelf, Is.True);
+                Assert.That(hitCollider.enabled, Is.True);
+                Assert.That(gun.IsDestroyed, Is.False);
+                Assert.That(trail.emitting, Is.True);
+                model.ApplyDamage(100f);
+                Assert.That(explosions.PlayCount, Is.EqualTo(1));
+            }
+        }
+
         private (FighterView View, Transform Body) InactiveFighter(Quaternion rest)
         {
             GameObject fighter = new GameObject("Fighter");
@@ -74,7 +118,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class SilentExplosions : IFighterExplosionPool
         {
-            public void Play(Vector3 position) { }
+            public int PlayCount { get; private set; }
+            public void Play(Vector3 position) => PlayCount++;
         }
     }
 }

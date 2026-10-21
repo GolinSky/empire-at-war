@@ -497,6 +497,7 @@ namespace EmpireAtWar.Tests.Editor
                 Squadron squadron = player.Container.Resolve<SquadronFactory>().Create(
                     slot.Id, squadronType, origin + Vector3.right * 100f, Quaternion.identity);
                 EntityLifetimeScope squadronScope = AssertEntity(squadron, player, slot);
+                Assert.That(squadronScope.Container.Resolve<IEntity>().GetFacade<ISquadron>(), Is.SameAs(squadron));
                 AssertVoiceCapability(squadronScope, slot);
                 int[] poseSlots = AssertFightersBank(squadron);
                 AssertPoolRoundTrip(squadron, squadronScope, origin + Vector3.right * 150f);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
-    public interface ISquadron
+    public interface ISquadron : IEntityFacade
     {
         event Action Released;
 

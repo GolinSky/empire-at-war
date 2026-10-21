@@ -11,6 +11,8 @@ namespace EmpireAtWar.Models.Health
 
         public event Action OnHardPointHealthChanged;
 
+        public event Action OnRestored;
+
         public int Id { get; }
         public int Generation { get; private set; }
         public HardPointType HardPointType { get; }
@@ -72,6 +74,7 @@ namespace EmpireAtWar.Models.Health
         {
             Health = _originHealth * healthPercentage;
             HealthPercentage = _originHealth <= 0f ? 0f : healthPercentage;
+            OnRestored?.Invoke();
             OnHardPointHealthChanged?.Invoke();
         }
 

@@ -146,6 +146,14 @@ namespace EmpireAtWar.Components.Hangar
             IsOperational = false;
         }
 
+        public void EnableBay(int bay)
+        {
+            _disabled[bay] = false;
+            Resume();
+        }
+
+        public void Resume() => IsOperational = true;
+
         public void Shutdown() => IsOperational = false;
     }
 }

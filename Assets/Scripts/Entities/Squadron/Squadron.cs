@@ -430,7 +430,11 @@ namespace EmpireAtWar.Entities.Squadrons
             _huntRetargetTimer = _orderSettings.HuntRetargetInterval;
             IEntity target = _targetSelector.SelectAnywhere(_flight.Centroid);
             if (target != null) Engage(target);
-            else if (_engaged != null) Stop();
+            else if (_engaged != null)
+            {
+                Disengage();
+                _pilot.Loiter(_flight.Centroid);
+            }
         }
 
         private bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();

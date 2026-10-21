@@ -23,11 +23,82 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class EnemyUnitCommanderTests
     {
+        [Test]
+        public void ReserveSquadrons_AreTrackedOnceAndRejoinAfterPoolReuse()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EntityLocator locator = new EntityLocator();
+            FakeSquadron reserve = new FakeSquadron(1, TestPlayers.Enemy);
+            FakeSquadron friendly = new FakeSquadron(2, TestPlayers.Human);
+            locator.AddEntity(reserve);
+            locator.AddEntity(friendly);
+            UnitCombatProfileCatalog catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            UnitCombatProfile profile = new UnitCombatProfile(ShipClass.Fighter, 1f, 0f,
+                Array.Empty<float>(), Array.Empty<float>(), Array.Empty<float>(), Array.Empty<UnitCombatProfile>());
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), profile);
+            EnemySquadronCommander commander = new EnemySquadronCommander(null, null, locator, roster,
+                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy));
+            MethodInfo discover = typeof(EnemySquadronCommander).GetMethod("TrackOwnedSquadrons",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo track = typeof(EnemySquadronCommander).GetMethod("Track",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
+                .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
+            try
+            {
+                discover.Invoke(commander, null);
+                discover.Invoke(commander, null);
+                track.Invoke(commander, new object[] { reserve, SquadronType.Vulture });
+                Assert.That(tracked.Keys, Is.EquivalentTo(new[] { reserve }));
+                Assert.That(tracked[reserve].Profile, Is.SameAs(profile));
+                Assert.That(reserve.ReleaseListeners, Is.EqualTo(1));
+
+                locator.RemoveEntity(reserve);
+                reserve.Release();
+                Assert.That(tracked, Is.Empty);
+                Assert.That(reserve.ReleaseListeners, Is.Zero);
+                locator.AddEntity(reserve);
+                discover.Invoke(commander, null);
+                Assert.That(tracked.Keys, Is.EquivalentTo(new[] { reserve }));
+                Assert.That(reserve.ReleaseListeners, Is.EqualTo(1));
+            }
+            finally { commander.LateDispose(); }
+            Assert.That(reserve.ReleaseListeners, Is.Zero);
+        }
+
+        private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade
+        {
+            public event Action Released;
+            public int ReleaseListeners => Released == null ? 0 : Released.GetInvocationList().Length;
+            public long Id { get; }
+            public long EntityId => Id;
+            public PlayerId Owner { get; }
+            public IHealthModelObserver HealthModel { get; } = new FakeHealthModel(null);
+            public UnitTypeId UnitTypeId => UnitTypeId.Squadron(SquadronType.Vulture);
+            public Vector3 WorldPosition => Vector3.zero;
+            public FakeSquadron(long id, PlayerId owner) { Id = id; Owner = owner; }
+            public void Guard(IEntity friendly, Vector3 offset) { }
+            public void AttackMoveTo(Vector3 position) { }
+            public void Hunt() { }
+            public void Release() => Released();
+            public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade => (TFacade)(object)this;
+            public bool TryGetFacade<TFacade>(out TFacade facade) where TFacade : IEntityFacade
+            {
+                if (this is TFacade found) { facade = found; return true; }
+                facade = default;
+                return false;
+            }
+        }
+
         [Test]
         public void IntelGatherer_DoesNotReportCloakedShipInVisibleTerrain()
         {
