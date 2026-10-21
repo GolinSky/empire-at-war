@@ -13,7 +13,7 @@ namespace EmpireAtWar.Models.Factions
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }
-        bool IsResoluteReserved { get; }
+        bool IsHeroReserved(ShipType shipType);
         FactionType FactionType { get; }
 
         FactionData GetCurrentLevelFactionData();
@@ -31,8 +31,8 @@ namespace EmpireAtWar.Models.Factions
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
         private SelectionType _selectionType;
-        private bool _resoluteReserved;
-        public bool IsResoluteReserved => _resoluteReserved;
+        // Hero ships queued, in reserve or alive; each may exist only once until destroyed.
+        private readonly HashSet<ShipType> _reservedHeroes = new();
 
         private int _currentLevel = 1;
 
@@ -86,8 +86,7 @@ namespace EmpireAtWar.Models.Factions
                 throw new ArgumentNullException(nameof(unitRequest));
             }
 
-            if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute &&
-                _resoluteReserved) return false;
+            if (IsHeroRequest(unitRequest, out ShipType hero) && _reservedHeroes.Contains(hero)) return false;
 
             if (IsStructureRequest(unitRequest) &&
                 GetStructureCount(unitRequest.GetType(), unitRequest.Id) >=
@@ -125,8 +124,7 @@ namespace EmpireAtWar.Models.Factions
             }
 
             queue.Enqueue(new ProductionQueueItem(unitRequest));
-            if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
-                _resoluteReserved = true;
+            if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Add(hero);
             if (IsStructureRequest(unitRequest))
             {
                 ReserveStructure(unitRequest);
@@ -146,7 +144,7 @@ namespace EmpireAtWar.Models.Factions
         }
 
         /// <summary>
-        /// Queues saved items as they were, already paid for. Structures and the Resolute take their reservations
+        /// Queues saved items as they were, already paid for. Structures and hero ships take their reservations
         /// again, as a purchase does.
         /// </summary>
         public void RestoreQueue(IEnumerable<ProductionQueueItem> items)
@@ -161,8 +159,7 @@ namespace EmpireAtWar.Models.Factions
                 }
 
                 queue.Enqueue(item);
-                if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
-                    _resoluteReserved = true;
+                if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Add(hero);
                 if (IsStructureRequest(unitRequest)) ReserveStructure(unitRequest);
             }
 
@@ -184,8 +181,7 @@ namespace EmpireAtWar.Models.Factions
             }
 
             unitRequest = queue.Dequeue().UnitRequest;
-            if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
-                _resoluteReserved = false;
+            if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Remove(hero);
             if (IsStructureRequest(unitRequest))
             {
                 ReleaseStructure(unitRequest);
@@ -204,11 +200,21 @@ namespace EmpireAtWar.Models.Factions
             ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
         }
 
-        public void SetResoluteReserved(bool reserved)
+        public bool IsHeroReserved(ShipType shipType) => _reservedHeroes.Contains(shipType);
+
+        public bool IsHeroShip(ShipType shipType) =>
+            _roster.Ships.TryGetValue(shipType, out FactionData data) && data.IsHero;
+
+        public void SetHeroReserved(ShipType shipType, bool reserved)
         {
-            if (_resoluteReserved == reserved) return;
-            _resoluteReserved = reserved;
-            NotifyProductionChanged();
+            if (reserved ? _reservedHeroes.Add(shipType) : _reservedHeroes.Remove(shipType))
+                NotifyProductionChanged();
+        }
+
+        public static bool IsHeroRequest(UnitRequest unitRequest, out ShipType shipType)
+        {
+            shipType = unitRequest is ShipUnitRequest ship ? ship.Key : default;
+            return unitRequest is ShipUnitRequest && unitRequest.FactionData.IsHero;
         }
 
         public void ReleaseStructure<TRequest>(string id) where TRequest : UnitRequest

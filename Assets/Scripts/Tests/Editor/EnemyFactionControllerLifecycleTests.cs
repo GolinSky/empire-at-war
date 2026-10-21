@@ -395,6 +395,39 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }
 
+        [Test]
+        public void StationUpgrade_WaitsForBuildTimeAndBlocksASecondPurchase()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                var upgrade = new FactionData();
+                SetBackingField(upgrade, nameof(FactionData.BuildTime), 10);
+                var wallet = new TrackingWallet();
+                var model = new EnemyFactionModel(null, null);
+                var controller = new EnemyFactionController(model: model, shipFactory: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
+                    unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+
+                controller.Purchase(new LevelUnitRequest(upgrade, 1));
+                controller.Purchase(new LevelUnitRequest(upgrade, 1));
+
+                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                Assert.That(controller.IsUpgradingStation, Is.True);
+                controller.Advance(9f);
+                Assert.That(model.CurrentLevel, Is.EqualTo(1));
+                controller.Advance(1f);
+                Assert.That(model.CurrentLevel, Is.EqualTo(2));
+                Assert.That(controller.IsUpgradingStation, Is.False);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
+        }
+
         private static void SetBackingField<T>(
             object target,
             string propertyName,

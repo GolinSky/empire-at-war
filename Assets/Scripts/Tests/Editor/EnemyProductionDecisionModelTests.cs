@@ -979,6 +979,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public UnitRequest LastRequest { get; private set; }
             public int RequestCount { get; private set; }
+            public bool IsUpgradingStation => false;
 
             public void Purchase(UnitRequest request)
             {

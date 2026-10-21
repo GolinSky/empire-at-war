@@ -167,7 +167,8 @@ namespace EmpireAtWar.Services.Enemy
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
-            FactionData levelData = _productionAccess.ProductionHost == _owner.Id
+            FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
+                                    !_purchaseProcessor.IsUpgradingStation
                 ? _factionModel.GetCurrentLevelFactionData() : null;
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;

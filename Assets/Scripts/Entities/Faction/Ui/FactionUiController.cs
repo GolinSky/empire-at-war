@@ -101,8 +101,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
 
         public bool IsUnitLimitReached(UnitRequest request) =>
-            request is ShipUnitRequest ship && ship.Key == ShipType.Resolute &&
-            _model.IsResoluteReserved;
+            PlayerFactionModel.IsHeroRequest(request, out ShipType hero) && _model.IsHeroReserved(hero);
 
         public void UpdateState(BattleState state)
         {
@@ -166,8 +165,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 ? "Population limit reached: deployment unavailable" : "Click to add to production";
             if (IsUnitLimitReached(request))
             {
-                requirements.Add(new TooltipRequirement("Only one Resolute at a time", false));
-                status = "Resolute is already queued, in reserve or deployed.";
+                requirements.Add(new TooltipRequirement($"Only one {data.Name} at a time", false));
+                status = $"{data.Name} is already queued, in reserve or deployed.";
             }
             var stats = new System.Collections.Generic.List<TooltipStat>
             {

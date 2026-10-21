@@ -123,8 +123,8 @@ namespace EmpireAtWar.Services.Factions
         {
             if (!_productionAccess.CanProduce)
             {
-                if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
-                    _model.SetResoluteReserved(false);
+                if (PlayerFactionModel.IsHeroRequest(unitRequest, out ShipType hero))
+                    _model.SetHeroReserved(hero, false);
                 if (unitRequest is MiningFacilityUnitRequest ||
                     unitRequest is DefendPlatformUnitRequest)
                 {
@@ -177,19 +177,24 @@ namespace EmpireAtWar.Services.Factions
             }
         }
 
-        private bool IsOwnedResolute(IEntity entity) => entity.Owner == _owner.Id &&
-            entity.TryGetFacade(out IUnitTypeFacade type) &&
-            type.UnitTypeId == UnitTypeId.Ship(ShipType.Resolute);
+        private bool IsOwnedHero(IEntity entity, out ShipType hero)
+        {
+            hero = default;
+            if (entity.Owner != _owner.Id || !entity.TryGetFacade(out IUnitTypeFacade type) ||
+                !type.UnitTypeId.IsShip) return false;
+            hero = type.UnitTypeId.ShipType;
+            return _model.IsHeroShip(hero);
+        }
 
         private void HandleEntityAdded(IEntity entity)
         {
-            if (IsOwnedResolute(entity)) _model.SetResoluteReserved(true);
+            if (IsOwnedHero(entity, out ShipType hero)) _model.SetHeroReserved(hero, true);
         }
 
         private void HandleEntityRemoved(IEntity entity)
         {
-            if (IsOwnedResolute(entity) && entity.HealthModel.IsDestroyed)
-                _model.SetResoluteReserved(false);
+            if (IsOwnedHero(entity, out ShipType hero) && entity.HealthModel.IsDestroyed)
+                _model.SetHeroReserved(hero, false);
         }
 
         public void CancelBuilding(string id)

@@ -20,6 +20,8 @@ namespace EmpireAtWar.Models.Economy
         public event Action<float> OnMoneyChanged;
 
         public float Money => _money;
+        /// <summary>Seconds until the next income payment; zero pays on the next running tick.</summary>
+        public float IncomeTimeLeft { get; private set; }
 
         public EconomyModel(EconomyData data)
             : this(data, data.StartMoneyAmount)
@@ -59,7 +61,24 @@ namespace EmpireAtWar.Models.Economy
             return true;
         }
 
-        public void Restore(float money) => SetMoney(money);
+        /// <summary>Counts the income delay down and returns true when a payment is due, starting the next delay.</summary>
+        public bool AdvanceIncomeTimer(float deltaTime, float incomeDelay)
+        {
+            IncomeTimeLeft -= deltaTime;
+            if (IncomeTimeLeft > 0f)
+            {
+                return false;
+            }
+
+            IncomeTimeLeft = incomeDelay;
+            return true;
+        }
+
+        public void Restore(float money, float incomeTimeLeft)
+        {
+            IncomeTimeLeft = incomeTimeLeft;
+            SetMoney(money);
+        }
 
         private void SetMoney(float value)
         {

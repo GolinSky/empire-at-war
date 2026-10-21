@@ -57,20 +57,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ProductionQueue_Restore_KeepsTimeLeftAndTakesStructureAndResoluteReservations()
+        public void ProductionQueue_Restore_KeepsTimeLeftAndTakesStructureAndHeroReservations()
         {
             PlayerFactionModel faction = new PlayerFactionModel(null, null);
             FactionData single = CreateFactionData(maxCount: 1, buildTime: 30);
             MiningFacilityUnitRequest mine = new MiningFacilityUnitRequest(single, MiningFacilityType.CommonMiner);
+            FactionData hero = CreateFactionData(maxCount: 1, buildTime: 30);
+            typeof(FactionData).GetField("isHero", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(hero, true);
 
             faction.RestoreQueue(new[]
             {
-                new ProductionQueueItem(new ShipUnitRequest(single, ShipType.Resolute), 12f),
+                new ProductionQueueItem(new ShipUnitRequest(hero, ShipType.HomeOne), 12f),
                 new ProductionQueueItem(mine, 5f)
             });
 
             Assert.That(faction.QueuedItems.Select(item => item.RemainingBuildTime), Is.EqualTo(new[] { 12f, 5f }));
-            Assert.That(faction.IsResoluteReserved, Is.True);
+            Assert.That(faction.IsHeroReserved(ShipType.HomeOne), Is.True);
             Assert.That(faction.CanQueueUnit(mine), Is.False, "The queued facility holds the only structure slot.");
         }
 

@@ -13,8 +13,8 @@ namespace EmpireAtWar.Services.Saves
             _economy = economy;
         }
 
-        public override void Capture(PlayerSave save) => save.SetMoney(_economy.Money);
+        public override void Capture(PlayerSave save) => save.SetMoney(_economy.Money, _economy.IncomeTimeLeft);
 
-        public override void RestoreBeforeUnits(PlayerSave save) => _economy.Restore(save.Money);
+        public override void RestoreBeforeUnits(PlayerSave save) => _economy.Restore(save.Money, save.IncomeTimeLeft);
     }
 }

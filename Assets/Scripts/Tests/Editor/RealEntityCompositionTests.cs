@@ -249,7 +249,7 @@ namespace EmpireAtWar.Tests.Editor
             human.Container.Resolve<MiningFacilityFactory>().Create(humanSlot.Id, mineType,
                 layout.GetStationPosition(humanSlot.Id) + Vector3.forward * 300f);
 
-            human.Container.Resolve<EconomyModel>().Restore(4321f);
+            human.Container.Resolve<EconomyModel>().Restore(4321f, 7f);
             // The faction UI swaps its level and research buttons with Object.Destroy, which edit mode rejects:
             // one error per level change and per completed tier, both now and on restore.
             Regex editModeDestroy = new Regex("Destroy may not be called from edit mode");
@@ -270,7 +270,7 @@ namespace EmpireAtWar.Tests.Editor
                 .Restore(EmpireAtWar.Entities.SuperWeapons.SuperWeaponType.IonCannon,
                     EmpireAtWar.Entities.SuperWeapons.SuperWeaponState.Ready, 30f);
 
-            ai.Container.Resolve<EconomyModel>().Restore(99999f);
+            ai.Container.Resolve<EconomyModel>().Restore(99999f, 0f);
             var aiController = ai.Container.Resolve<EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController>();
             ShipType aiShip = aiRoster.Ships.Keys.OrderBy(type => type).First();
             aiController.Purchase(ai.Container.Resolve<IUnitRequestFactory>()
@@ -297,6 +297,7 @@ namespace EmpireAtWar.Tests.Editor
             _battle.Container.Resolve<BattleRestorer>().Restore(saved);
 
             Assert.That(human.Container.Resolve<EconomyModel>().Money, Is.EqualTo(4321f));
+            Assert.That(human.Container.Resolve<EconomyModel>().IncomeTimeLeft, Is.EqualTo(7f), "Loading does not pay early.");
             faction = human.Container.Resolve<PlayerFactionModel>();
             Assert.That(faction.CurrentLevel, Is.EqualTo(2));
             Assert.That(human.Container.Resolve<EmpireAtWar.Services.Factions.FactionService>().Income, Is.EqualTo(30f));

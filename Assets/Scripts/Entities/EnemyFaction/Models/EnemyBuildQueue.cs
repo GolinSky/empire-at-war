@@ -30,6 +30,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             for (int i = _finished.Count - 1; i >= 0; i--) complete(_finished[i]);
         }
 
+        public void RemoveAll(Predicate<UnitRequest> match) => _builds.RemoveAll(build => match(build.Request));
+
         public void Clear() => _builds.Clear();
     }
 }

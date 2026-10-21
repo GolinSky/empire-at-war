@@ -112,6 +112,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
         }
 
+        [Test]
+        public void HeroShip_StaysReservedAfterCompletionUntilReleased()
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData factionData = CreateFactionData(maxCount: 1, buildTime: 10);
+            typeof(FactionData).GetField("isHero", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(factionData, true);
+            ShipUnitRequest request = new ShipUnitRequest(factionData, ShipType.HomeOne);
+
+            model.QueueUnit(request);
+            model.Advance(10f);
+
+            Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
+            Assert.That(model.CanQueueUnit(request), Is.False, "A built hero is in reserve or deployed.");
+            model.SetHeroReserved(ShipType.HomeOne, false);
+            Assert.That(model.CanQueueUnit(request), Is.True, "A destroyed hero can be rebuilt.");
+        }
+
         private static PlayerFactionModel CreateModel()
         {
             return new PlayerFactionModel(null, null);

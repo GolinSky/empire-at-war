@@ -9,6 +9,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -81,6 +82,25 @@ namespace EmpireAtWar.Tests.Editor
             {
                 economy.LateDispose();
             }
+        }
+
+        [Test]
+        public void IncomeDelay_SurvivesSaveSoLoadingDoesNotPayEarly()
+        {
+            EconomyData data = Load<EconomyData>("Assets/Settings/Data/Economy/EconomyData.asset");
+            EconomyModel model = new EconomyModel(data, 100f);
+            Assert.That(model.AdvanceIncomeTimer(0f, 10f), Is.True);
+            Assert.That(model.AdvanceIncomeTimer(4f, 10f), Is.False);
+
+            PlayerSave save = PlayerSave.Create(TestPlayers.Human);
+            save.SetMoney(model.Money, model.IncomeTimeLeft);
+            PlayerSave loadedSave = JsonUtility.FromJson<PlayerSave>(JsonUtility.ToJson(save));
+            EconomyModel loaded = new EconomyModel(data, 100f);
+            loaded.Restore(loadedSave.Money, loadedSave.IncomeTimeLeft);
+
+            Assert.That(loaded.AdvanceIncomeTimer(0f, 10f), Is.False);
+            Assert.That(loaded.AdvanceIncomeTimer(5f, 10f), Is.False);
+            Assert.That(loaded.AdvanceIncomeTimer(1f, 10f), Is.True);
         }
 
         [Test]

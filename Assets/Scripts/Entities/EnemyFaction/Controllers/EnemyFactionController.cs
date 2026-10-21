@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.Stations;
@@ -59,6 +60,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private PlayerId Owner => _owner.Id;
         public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
+        public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
         /// <summary>Living squadrons the AI paid for; hangar squadrons are free and never listed.</summary>
         public IEnumerable<long> BuiltSquadrons => _builtSquadrons;
@@ -135,6 +137,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             if (_productionAccess.ProductionHost != Owner ||
                 Model.GetCurrentLevelFactionData() == null || !_productionAccess.CanProduce) return false;
 
+            // Refund a building upgrade so its later completion cannot exceed the level limit.
+            foreach (EnemyPendingBuild upgrade in _builds.Builds.Where(build => build.Request is LevelUnitRequest))
+                _wallet.Refund(upgrade.Request);
+            _builds.RemoveAll(request => request is LevelUnitRequest);
             Model.CurrentLevel++;
             return true;
         }
@@ -151,13 +157,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
-                    if (!_wallet.TrySpend(levelUnitRequest))
+                    if (IsUpgradingStation || !_wallet.TrySpend(levelUnitRequest))
                     {
                         return;
                     }
 
-                    Model.CurrentLevel++;
-                    return;
+                    break;
                 case ShipUnitRequest:
                     if (!TryReserveAndSpend(unitRequest)) return;
                     _unitLimitModel.RecordShipOrder();
@@ -219,6 +224,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             switch (unitRequest)
             {
+                case LevelUnitRequest levelUnitRequest:
+                    Model.CurrentLevel++;
+                    // Frees the slot a restored upgrade adopted; a purchased upgrade holds none.
+                    ReleaseUnit(levelUnitRequest);
+                    break;
                 case ResearchUnitRequest researchUnitRequest:
                     _research.Complete(researchUnitRequest.Key);
                     ReleaseUnit(researchUnitRequest);
@@ -330,7 +340,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {
-            if (_productionAccess.ProductionHost != Owner && !_productionAccess.CanProduce)
+            if (!_productionAccess.CanProduce &&
+                (_productionAccess.ProductionHost != Owner || unitRequest is LevelUnitRequest))
             {
                 if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
                 ReleaseUnit(unitRequest);

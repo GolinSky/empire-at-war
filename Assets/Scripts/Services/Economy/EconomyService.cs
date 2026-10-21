@@ -8,7 +8,6 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
@@ -19,9 +18,8 @@ namespace EmpireAtWar.Services.Economy
     {
         private const float DEFAULT_INCOME = 3f;
 
-        private readonly ITimer _incomeTimer;
-
         private readonly EconomyModel _model;
+        private readonly EconomyData _data;
         private readonly INotifier<BattleState> _battleState;
         private readonly IPlayerRegistry _playerRegistry;
         private readonly IFactionResearchModelObserver _research;
@@ -44,11 +42,11 @@ namespace EmpireAtWar.Services.Economy
             IFactionResearchModelObserver research)
         {
             _model = model;
+            _data = data;
             _battleState = battleState;
             _playerRegistry = playerRegistry;
             _research = research;
             _owner = owner.Id;
-            _incomeTimer = TimerFactory.ConstructTimer(data.IncomeDelay);
         }
 
         public void Initialize()
@@ -74,9 +72,8 @@ namespace EmpireAtWar.Services.Economy
 
         public void Tick()
         {
-            if (_isRunning && _incomeTimer.IsComplete)
+            if (_isRunning && _model.AdvanceIncomeTimer(Time.deltaTime, _data.IncomeDelay))
             {
-                _incomeTimer.StartTimer();
                 _model.AddMoney(_commonIncome);
             }
         }
