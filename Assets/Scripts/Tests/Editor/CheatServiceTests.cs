@@ -132,7 +132,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<IEntity> EntityRemoved { add { } remove { } }
 
             public string Id => nameof(EmptyEntityLocator);
-            public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
+            public Dictionary<long, IEntity>.ValueCollection Entities { get; } = new Dictionary<long, IEntity>().Values;
 
             public void AddEntity(IEntity entity) { }
 

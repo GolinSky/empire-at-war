@@ -6,9 +6,9 @@ $homePath = "$root\data"
 $installed = "$root\app\build-tools"
 if (Test-Path -LiteralPath "$homePath\config.xml") { throw 'Existing Jenkins configuration requires an explicit update instead of bootstrap.' }
 New-Item -ItemType Directory -Path $installed,"$homePath\init.groovy.d" -Force | Out-Null
-Get-ChildItem -LiteralPath $PSScriptRoot -File | Copy-Item -Destination $installed
-Copy-Item -LiteralPath "$PSScriptRoot\Start-Jenkins.ps1" -Destination "$root\Start-Jenkins.ps1"
-Copy-Item -LiteralPath "$PSScriptRoot\Stop-Jenkins.ps1" -Destination "$root\Stop-Jenkins.ps1"
+& "$PSScriptRoot\Install-BuildTools.ps1"
+Copy-Item -LiteralPath "$installed\Start-Jenkins.ps1" -Destination "$root\Start-Jenkins.ps1"
+Copy-Item -LiteralPath "$installed\Stop-Jenkins.ps1" -Destination "$root\Stop-Jenkins.ps1"
 $credentialFile = "$root\admin-login.json"
 if (-not (Test-Path -LiteralPath $credentialFile)) {
     $bytes = New-Object byte[] 32
@@ -47,7 +47,7 @@ location.setUrl('http://localhost:8080/')
 location.save()
 def job = jenkins.createProject(WorkflowJob, 'EmpireAtWar-Windows-Local')
 job.setDefinition(new CpsFlowDefinition(new File('F:/Jenkins/app/build-tools/Jenkinsfile').getText('UTF-8'), true))
-job.setDescription('Builds the committed local main branch in F:/UnityCI/empire-at-war. Resource gates apply. No automated tests.')
+job.setDescription('Tests and builds committed local main in F:/UnityCI/empire-at-war. EditMode and resource gates apply.')
 job.save()
 jenkins.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
 jenkins.save()

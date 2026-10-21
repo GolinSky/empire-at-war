@@ -11,6 +11,29 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class EntityLocatorTests
     {
         [Test]
+        public void Entities_EnumeratesLiveContentsWithoutAllocatingThroughLocatorInterface()
+        {
+            IEntityLocator locator = new EntityLocator();
+            var first = new FakeEntity(1);
+            var second = new FakeEntity(2);
+            locator.AddEntity(first);
+            locator.AddEntity(second);
+            foreach (IEntity entity in locator.Entities) _ = entity.Id;
+
+            long total = 0;
+            GcAllocationAssert.DoesNotAllocate(() =>
+            {
+                total = 0;
+                for (int iteration = 0; iteration < 100; iteration++)
+                    foreach (IEntity entity in locator.Entities) total += entity.Id;
+            });
+
+            Assert.That(total, Is.EqualTo(300));
+            locator.RemoveEntity(first);
+            Assert.That(locator.Entities, Is.EquivalentTo(new[] { second }));
+        }
+
+        [Test]
         public void TryGetEntity_ResolvesViewEntityFromChildCollider()
         {
             const long ID = 42;

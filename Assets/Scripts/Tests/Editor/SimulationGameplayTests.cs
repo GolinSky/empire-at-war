@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Game;
@@ -78,14 +81,107 @@ namespace EmpireAtWar.Tests.Editor
             finally { foreach (GameObject root in roots) UnityEngine.Object.DestroyImmediate(root); }
         }
 
+        [Test]
+        public void Targeting_GroupsEqualTargets_PreservesTies_AndClearReissuesOrders()
+        {
+            var left = new Unit(1, 0);
+            var right = new Unit(2, 1);
+            var first = new Unit(3, 10);
+            var second = new Unit(4, -10);
+            try
+            {
+                var orders = new AttackRecorder();
+                var targeting = new SimulationTargeting(orders);
+                IEntity[] own = { left, right }, opponents = { first, second };
+                targeting.Command(own, opponents);
+                Assert.That(orders.Calls, Is.EqualTo(1));
+                Assert.That(orders.Targets, Is.EquivalentTo(new Dictionary<long, long> { [1] = 3, [2] = 3 }));
+                orders.Targets.Clear();
+                targeting.Clear();
+                targeting.Command(own, opponents);
+                Assert.That(orders.Calls, Is.EqualTo(2));
+                Assert.That(orders.Targets.Count, Is.EqualTo(2));
+            }
+            finally
+            {
+                foreach (Unit unit in new[] { left, right, first, second }) UnityEngine.Object.DestroyImmediate(unit.Root);
+            }
+        }
+
+        [Test]
+        public void Targeting_UnchangedTargets_DoNotAllocate()
+        {
+            var own = new Unit(1, 0);
+            var enemy = new Unit(2, 10);
+            try
+            {
+                var targeting = new SimulationTargeting(new AttackRecorder());
+                IEntity[] receivers = { own }, opponents = { enemy };
+                targeting.Command(receivers, opponents);
+                for (int i = 0; i < 10; i++) targeting.Command(receivers, opponents);
+                GcAllocationAssert.DoesNotAllocate(() =>
+                {
+                    for (int i = 0; i < 100; i++) targeting.Command(receivers, opponents);
+                });
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(own.Root);
+                UnityEngine.Object.DestroyImmediate(enemy.Root);
+            }
+        }
+
+        [Test]
+        public void Director_CountsLivingSides_AndRefreshesHullAfterRemoval()
+        {
+            var a = new Unit(1, 0, 0);
+            var b = new Unit(2, 10, 1);
+            var destroyed = new Unit(3, 20, 1);
+            var empty = new Unit(4, 30, 0);
+            var other = new Unit(5, 40, 2);
+            var model = new SimulationModel(Setup(100000));
+            var state = new SkirmishStateModel();
+            state.SetState(BattleState.Running);
+            var entities = new EntityLocator();
+            destroyed.Health.IsDestroyed = true;
+            empty.Health.HasUnits = false;
+            a.Health.Hull = 75;
+            b.Health.Hull = 50;
+            foreach (Unit unit in new[] { a, b, destroyed, empty, other }) entities.AddEntity(unit);
+            var director = new SimulationDirector(model, state, null, null, null, entities,
+                new SimulationTargeting(new AttackRecorder()), null, null, null, null);
+            // Enter the post-spawn tick without creating scene assets or spawning prefabs.
+            typeof(SimulationDirector).GetField("_prepared", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(director, true);
+            try
+            {
+                director.Tick();
+                Assert.That(model.IsSpawning, Is.False);
+                Assert.That(model.CountA, Is.EqualTo(1));
+                Assert.That(model.CountB, Is.EqualTo(1));
+                Assert.That(model.Result, Is.Null);
+                a.Health.Hull = 40;
+                entities.RemoveEntity(b);
+                director.Tick();
+                Assert.That(model.Result.Outcome, Is.EqualTo(BattleOutcome.PlayerVictory));
+                Assert.That(model.Result.HullA, Is.EqualTo(40));
+                Assert.That(model.Result.HullB, Is.Zero);
+            }
+            finally
+            {
+                director.LateDispose();
+                foreach (Unit unit in new[] { a, b, destroyed, empty, other }) UnityEngine.Object.DestroyImmediate(unit.Root);
+            }
+        }
+
         private sealed class Unit : IEntity, IEntityTransformFacade
         {
             public GameObject Root { get; } = new GameObject(nameof(Unit));
             public long Id { get; }
-            public PlayerId Owner => default;
-            public IHealthModelObserver HealthModel => null;
+            public PlayerId Owner { get; }
+            public Health Health { get; } = new Health();
+            public IHealthModelObserver HealthModel => Health;
             public Transform Transform => Root.transform;
-            public Unit(long id, float x) { Id = id; Root.transform.position = new Vector3(x, 0, 0); }
+            public Unit(long id, float x, int side = 0) { Id = id; Owner = new PlayerId(side); Root.transform.position = new Vector3(x, 0, 0); }
             public T GetFacade<T>() where T : IEntityFacade => (T)(object)this;
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
             {
@@ -94,12 +190,33 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        private sealed class Health : IHealthModelObserver
+        {
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
+            public ShipClass ShipClass => ShipClass.Capital;
+            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public float Hull { get; set; } = 100;
+            public float HullPercentage => Hull / 100;
+            public float Shields => 0;
+            public float ShieldPercentage => 0;
+            public bool IsDestroyed { get; set; }
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits { get; set; } = true;
+            public bool HasLiveHardPoints => false;
+            public bool HasShields => false;
+            public PlayerId Owner => default;
+            public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
+        }
+
         private sealed class AttackRecorder : IUnitOrderService
         {
             public readonly Dictionary<long, long> Targets = new();
+            public int Calls { get; private set; }
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
             {
+                Calls++;
                 foreach (IEntity receiver in receivers) Targets.Add(receiver.Id, target.Id);
             }
             public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) => throw new NotSupportedException();

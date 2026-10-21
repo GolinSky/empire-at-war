@@ -11,7 +11,7 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         event Action<IEntity> EntityRemoved;
 
-        IReadOnlyCollection<IEntity> Entities { get; }
+        Dictionary<long, IEntity>.ValueCollection Entities { get; }
 
         void AddEntity(IEntity entity);
 
@@ -34,7 +34,7 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         public event Action<IEntity> EntityRemoved;
 
-        public IReadOnlyCollection<IEntity> Entities => _entities.Values;
+        public Dictionary<long, IEntity>.ValueCollection Entities => _entities.Values;
 
         public void AddEntity(IEntity entity)
         {

@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][ValidateSet('Prepare','Build','Package')][string]$Phase)
+param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Package')][string]$Phase)
 $ErrorActionPreference = 'Stop'
 try {
     if ($Phase -eq 'Prepare') { & "$PSScriptRoot\Prepare-Snapshot.ps1"; exit 0 }
@@ -7,8 +7,8 @@ try {
     $ci = 'F:\UnityCI\empire-at-war'
     $player = "$env:WORKSPACE\player"
     $artifacts = "$env:WORKSPACE\artifacts"
-    if ($Phase -eq 'Build') {
-        Write-ResourceSample -Preflight -Stage 'build'
+    if ($Phase -in @('Test','Build')) {
+        Write-ResourceSample -Preflight -Stage $Phase
         Assert-CiIdle
         $sha = (Get-Content -LiteralPath "$artifacts\commit.txt").Trim()
         $head = (& git -C $ci rev-parse HEAD).Trim()
@@ -16,6 +16,23 @@ try {
         $version = (Select-String -LiteralPath "$ci\ProjectSettings\ProjectVersion.txt" -Pattern '^m_EditorVersion: (.+)$').Matches[0].Groups[1].Value
         $editor = "F:\Program Files\Unity\Hub\Editor\$version\Editor\Unity.exe"
         if (-not (Test-Path -LiteralPath $editor)) { throw "Required Editor missing: $version" }
+        if ($Phase -eq 'Test') {
+            if (-not $env:BUILD_NUMBER) { throw 'Jenkins build number is required for test provenance.' }
+            foreach ($previous in @("$artifacts\EditMode-results.xml", "$artifacts\EditMode-results.xml.provenance.json")) {
+                if (Test-Path -LiteralPath $previous) { Remove-Item -LiteralPath $previous -Force }
+            }
+            # This launches a separate batch Editor on the clean, idle CI snapshot.
+            # It never runs tests in the developer's open Editor or scenes.
+            & unity test $ci --mode EditMode --editor-path $editor --output "$artifacts\EditMode-results.xml" --timeout $policy.BuildTimeoutSeconds --non-interactive
+            if ($LASTEXITCODE -ne 0) { throw "EditMode tests failed: exit $LASTEXITCODE" }
+            & "$PSScriptRoot\Assert-TestResults.ps1" -Path "$artifacts\EditMode-results.xml"
+            @{
+                Commit=$sha; Build=$env:BUILD_NUMBER
+                ReportSHA256=(Get-FileHash -LiteralPath "$artifacts\EditMode-results.xml" -Algorithm SHA256).Hash
+            } | ConvertTo-Json | Set-Content -LiteralPath "$artifacts\EditMode-results.xml.provenance.json" -Encoding UTF8
+            exit 0
+        }
+        & "$PSScriptRoot\Assert-TestResults.ps1" -Path "$artifacts\EditMode-results.xml" -Commit $sha -Build $env:BUILD_NUMBER
         if (Test-Path -LiteralPath "$player\EmpireAtWar.exe") { throw 'Old player output rejected.' }
         @{Commit=$sha;Build=$env:BUILD_NUMBER;State='BuildStarted'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
         & unity build $ci --target StandaloneWindows64 --editor-path $editor --output-path "$player\EmpireAtWar.exe" --log-file "$artifacts\Unity.log" --provenance-path "$artifacts\build-provenance.json" --args '-job-worker-count 4' --timeout $policy.BuildTimeoutSeconds --non-interactive
@@ -23,6 +40,7 @@ try {
         foreach ($required in @('EmpireAtWar.exe','UnityPlayer.dll','EmpireAtWar_Data\globalgamemanagers','EmpireAtWar_Data\Managed\Assembly-CSharp.dll','EmpireAtWar_Data\StreamingAssets\aa\settings.json')) {
             if (-not (Test-Path -LiteralPath "$player\$required" -PathType Leaf)) { throw "Incomplete Mono player: $required" }
         }
+        if (Test-Path -LiteralPath "$player\EmpireAtWar_Data\Managed\Assembly-CSharp-Editor.dll") { throw 'Editor tools and tests must not ship in the player.' }
         $bundles = @(Get-ChildItem -LiteralPath "$player\EmpireAtWar_Data\StreamingAssets\aa" -Recurse -Filter '*.bundle')
         if (-not $bundles.Count) { throw 'Addressables bundles are missing from player.' }
         if (-not (Test-Path -LiteralPath "$artifacts\build-provenance.json")) { throw 'CLI provenance is missing.' }

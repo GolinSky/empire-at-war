@@ -4,6 +4,10 @@ $ErrorActionPreference = 'Stop'
 $baseUrl = 'http://127.0.0.1:8080/'
 $app = 'F:\Jenkins\app'
 $installed = "$app\build-tools"
+$sourceCommit = (& git -C $PSScriptRoot rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0) { throw 'Could not resolve committed build tools.' }
+$sourceChanges = @(& git -C $PSScriptRoot status --porcelain -- .)
+if ($LASTEXITCODE -ne 0 -or $sourceChanges.Count) { throw 'Commit all Tools/Jenkins changes before installing job configuration.' }
 $sourceJob = 'EmpireAtWar-Windows-Local'
 $publishJob = 'EmpireAtWar-Publish-GitHub'
 $login = Get-Content -LiteralPath 'F:\Jenkins\admin-login.json' -Raw | ConvertFrom-Json
@@ -46,10 +50,8 @@ foreach ($pipeline in @($buildPipeline, $publishPipeline)) {
 $sourceResponse = Invoke-JenkinsRequest "job/$sourceJob/config.xml"
 $sourceXml = Read-JobXml $sourceResponse.Content
 $sourceScript = $sourceXml.SelectSingleNode('/flow-definition/definition/script')
-$normalize = { param($value) ($value -replace '\r\n', "`n").Trim() }
-$withoutPermission = $buildPipeline -replace "(?m)^\s*copyArtifactPermission\('EmpireAtWar-Publish-GitHub'\)\r?\n", ''
-if ((& $normalize $sourceScript.InnerText) -cne (& $normalize $withoutPermission) -and (& $normalize $sourceScript.InnerText) -cne (& $normalize $buildPipeline)) {
-    throw 'Installed build Pipeline differs beyond the publishing permission. Reconcile it before updating.'
+if ($sourceXml.SelectSingleNode('/flow-definition/definition').GetAttribute('class') -ne 'org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition') {
+    throw 'Existing build job is not an inline Pipeline; refusing to replace it.'
 }
 $jobs = ((Invoke-JenkinsRequest 'api/json?tree=jobs[name]').Content | ConvertFrom-Json).jobs
 $publishExists = @($jobs | Where-Object { $_.name -eq $publishJob }).Count -eq 1
@@ -101,7 +103,7 @@ foreach ($property in $properties.DocumentElement.ChildNodes) {
     [void]$parent.AppendChild($publishXml.ImportNode($property, $true))
 }
 $files = @('Jenkinsfile','Jenkinsfile.Publish','Publish-GitHubRelease.ps1','Configure-GitHubPublish.ps1')
-foreach ($name in $files) { Copy-Item -LiteralPath "$PSScriptRoot\$name" -Destination "$installed\$name" -Force }
+& "$PSScriptRoot\Install-BuildTools.ps1" -Revision $sourceCommit
 if (-not $publishExists) { $publishPath = "createItem?name=$publishJob" } else { $publishPath = "job/$publishJob/config.xml" }
 [void](Invoke-JenkinsRequest $publishPath -Method POST -Body $publishXml.OuterXml -ContentType 'application/xml; charset=utf-8')
 [void](Invoke-JenkinsRequest "job/$sourceJob/config.xml" -Method POST -Body $sourceXml.OuterXml -ContentType 'application/xml; charset=utf-8')

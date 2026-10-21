@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][ValidateSet('Prepare','Build','Package','ArchiveMonitor','ArchiveComplete')][string]$Phase)
+param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Package','ArchiveMonitor','ArchiveComplete')][string]$Phase)
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot\BuildResources.ps1"
 $workspace = 'F:\Jenkins\data\workspace\EmpireAtWar-Windows-Local'
@@ -31,6 +31,14 @@ if ($Phase -eq 'ArchiveComplete') {
     return
 }
 if ($Phase -eq 'Prepare') {
+    $installation = Get-Content -LiteralPath 'F:\Jenkins\app\build-tools-installation.json' -Raw | ConvertFrom-Json
+    $installedCommit = (Get-Content -LiteralPath 'F:\Jenkins\app\build-tools-commit.txt').Trim()
+    if ($installation.Commit -ne $installedCommit -or -not $installation.Files.Count) { throw 'Build-tools installation provenance is missing or inconsistent; reinstall committed tools.' }
+    foreach ($file in $installation.Files) {
+        if ((Get-FileHash -LiteralPath (Join-Path $PSScriptRoot $file.File) -Algorithm SHA256).Hash -ne $file.SHA256) {
+            throw "Installed build tool changed: $($file.File). Reinstall committed tools."
+        }
+    }
     Assert-CiIdle
     if (Test-Path -LiteralPath "$workspace\archive-pending.json") { throw 'Previous output has not been archived. Recover it before another run.' }
     if (Test-Path -LiteralPath "$workspace\archive-finished") { Remove-Item -LiteralPath "$workspace\archive-finished" }
@@ -45,6 +53,7 @@ if ($Phase -eq 'Prepare') {
     }
     Copy-Item -LiteralPath "$PSScriptRoot\ResourcePolicy.json" -Destination "$workspace\artifacts\resource-policy.json"
     Copy-Item -LiteralPath 'F:\Jenkins\app\build-tools-commit.txt' -Destination "$workspace\artifacts\tools-commit.txt"
+    Copy-Item -LiteralPath 'F:\Jenkins\app\build-tools-installation.json' -Destination "$workspace\artifacts\tools-installation.json"
     try { Write-ResourceSample -Preflight -Stage 'prepare' }
     catch { $_.ToString() | Set-Content -LiteralPath "$workspace\artifacts\failure.txt"; throw }
 }

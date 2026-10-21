@@ -133,8 +133,10 @@ namespace EmpireAtWar.Services.Battle
                 _aliveBases[i] = false;
             }
 
-            foreach (IShipEntity ship in _shipService.Ships)
+            IReadOnlyList<IShipEntity> ships = _shipService.Ships;
+            for (int i = 0; i < ships.Count; i++)
             {
+                IShipEntity ship = ships[i];
                 _shipCounts[ship.Owner.Index]++;
             }
 
@@ -152,15 +154,19 @@ namespace EmpireAtWar.Services.Battle
             }
 
             // Construction survives station loss and becomes an entity when it completes.
-            foreach (ICaptureSite site in _captureSites.Sites)
+            IReadOnlyList<ICaptureSite> sites = _captureSites.Sites;
+            for (int i = 0; i < sites.Count; i++)
             {
+                ICaptureSite site = sites[i];
                 if (site.State == CaptureSiteState.Constructing)
                     _unitCounts[site.Owner.Index]++;
             }
 
             _states.Clear();
-            foreach (PlayerSlot player in _playerRoster.Players)
+            IReadOnlyList<PlayerSlot> players = _playerRoster.Players;
+            for (int i = 0; i < players.Count; i++)
             {
+                PlayerSlot player = players[i];
                 int index = player.Id.Index;
                 _states.Add(new PlayerBattleState(
                     player.Id,

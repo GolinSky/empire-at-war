@@ -1,8 +1,8 @@
 # Penpot MCP
 
 - Project-local stdio bridge to the hosted Penpot MCP server at `https://design.penpot.app/mcp/stream`.
-- Codex server: `penpot-local`, configured in `.codex/config.toml`; mirrored in `.agents`, `.antigravity`, and `.gemini` MCP configs.
-- The inherited user-level `penpot` connection is disabled for this project to avoid duplicate tools. User-level configuration is unchanged.
+- Codex server: `penpot-local`, configured in `.codex/config.toml`; mirrored in Claude’s `.mcp.json`, `.agents`, `.antigravity`, and `.gemini` MCP configs.
+- Codex disables the inherited user-level `penpot` connection for this project. Other clients must select `penpot-local` for repository work; user-level configuration is unchanged.
 - Runtime: Node.js; dependency: `mcp-remote` pinned in `package-lock.json`.
 
 ## Allowed project

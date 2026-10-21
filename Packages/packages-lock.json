@@ -1,52 +1,35 @@
 {
   "dependencies": {
-    "com.coplaydev.unity-mcp": {
-      "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0",
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.physics2d": "1.0.0",
-        "com.unity.modules.uielements": "1.0.0",
-        "com.unity.modules.screencapture": "1.0.0",
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.nuget.newtonsoft-json": "3.0.2",
-        "com.unity.test-framework": "1.1.31"
-      },
-      "hash": "11836003a5e2ffcb7715ecec7e1fbb9d9cdb5bb8"
-    },
     "com.script-utils.dotween": {
-      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween#7a93f802d01050cefcf30d558675244434035e97",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "7a93f802d01050cefcf30d558675244434035e97"
     },
     "com.script-utils.editor-serialization": {
-      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/EditorSerialization",
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/EditorSerialization#386e2d982ca7b37a27b48fd133169360c8a83271",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "386e2d982ca7b37a27b48fd133169360c8a83271"
     },
     "com.script-utils.layer": {
-      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Layer",
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Layer#d40aedeb3476a7eea9abd89d381645cf37a1f9a5",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "d40aedeb3476a7eea9abd89d381645cf37a1f9a5"
     },
     "com.script-utils.math": {
-      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math",
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math#251db181b0cdd1f0c0c391a062e865c37a6e3171",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "251db181b0cdd1f0c0c391a062e865c37a6e3171"
     },
     "com.script-utils.time": {
-      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Time",
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Time#2152a29d3da23fb66acec0fd5216b7b817d95797",
       "depth": 0,
       "source": "git",
       "dependencies": {},
@@ -245,7 +228,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.search.extensions": {
-      "version": "https://github.com/Unity-Technologies/com.unity.search.extensions.git?path=package",
+      "version": "https://github.com/Unity-Technologies/com.unity.search.extensions.git?path=package#676a4de037c32724f8c5779f5645ab44cd165404",
       "depth": 0,
       "source": "git",
       "dependencies": {},
@@ -269,7 +252,7 @@
     },
     "com.unity.test-framework": {
       "version": "1.6.0",
-      "depth": 1,
+      "depth": 0,
       "source": "builtin",
       "dependencies": {
         "com.unity.ext.nunit": "2.0.3",
@@ -319,7 +302,7 @@
       "url": "https://packages.unity.com"
     },
     "jp.hadashikick.vcontainer": {
-      "version": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.19.0",
+      "version": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#5401e5a7ebc4980a2b82141ffc26391a6547edd7",
       "depth": 0,
       "source": "git",
       "dependencies": {},

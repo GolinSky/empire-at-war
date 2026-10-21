@@ -28,7 +28,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         {
             try { await _director.RestartAsync(setup); }
             catch (OperationCanceledException) { }
-            catch (Exception exception) { Debug.LogException(exception); throw; }
+            catch (Exception exception) { Debug.LogException(exception); }
         }
     }
 }

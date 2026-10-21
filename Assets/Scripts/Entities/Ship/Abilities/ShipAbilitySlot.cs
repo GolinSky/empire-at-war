@@ -1,6 +1,6 @@
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using System;
-using System.Linq;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.ShipAbilities;
 
@@ -21,14 +21,11 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public IShipAbility RunningAbility { get; private set; }
         public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.IsIonDisabled &&
             (Id != ShipAbilityId.TractorBeam ||
-                Owner.Health.GetShipUnits(HardPointType.TractorBeam)
-                .Any(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed)) &&
+                HasLiveHardPoint(HardPointType.TractorBeam)) &&
             (Id != ShipAbilityId.DauntlessSensorJamming ||
-                Owner.Health.GetShipUnits(HardPointType.SensorArray)
-                .Any(point => point.HardPointType == HardPointType.SensorArray && !point.IsDestroyed)) &&
+                HasLiveHardPoint(HardPointType.SensorArray)) &&
             (Id != ShipAbilityId.FighterCoordination ||
-                Owner.Health.GetShipUnits(HardPointType.CommandArray)
-                .Any(point => point.HardPointType == HardPointType.CommandArray && !point.IsDestroyed));
+                HasLiveHardPoint(HardPointType.CommandArray));
         public bool CanActivate => IsAvailable && State == ShipAbilityState.Ready;
         public bool CanPress => IsAvailable && (State == ShipAbilityState.Ready ||
             State == ShipAbilityState.Active && Definition.CanCancel);
@@ -46,6 +43,13 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             Definition = definition;
             Owner = owner;
             _recoveryTotal = definition.RecoveryDelay;
+        }
+
+        private bool HasLiveHardPoint(HardPointType type)
+        {
+            foreach (HardPointModel point in Owner.Health.HardPointModels)
+                if (point.HardPointType == type && !point.IsDestroyed) return true;
+            return false;
         }
 
         internal void Activate(IShipAbility ability)

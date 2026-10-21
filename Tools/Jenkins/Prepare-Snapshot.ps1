@@ -50,7 +50,8 @@ Invoke-Git -C $ci lfs fsck
 Invoke-Git -C $ci add --renormalize -u
 Invoke-Git -C $ci diff --cached --exit-code $sha --
 if (Invoke-Git -C $ci status --porcelain) { throw 'Hydrated snapshot is dirty.' }
-if ((Get-Content -LiteralPath "$ci\Packages\manifest.json" -Raw) -match '"file:') { throw 'External file packages are not reproducible.' }
+& "$PSScriptRoot\Assert-PackagePins.ps1" -ProjectPath $ci
 if ((Get-Content -LiteralPath "$ci\Assets\AddressableAssetsData\AddressableAssetSettings.asset" -Raw) -notmatch 'm_BuildAddressablesWithPlayerBuild: 1') { throw 'Commit explicit Addressables BuildWithPlayer before building.' }
-Copy-Item -LiteralPath "$PSScriptRoot\ResourcePolicy.json" -Destination "$env:WORKSPACE\artifacts\resource-policy.json"
+Copy-Item -LiteralPath "$ci\Tools\Jenkins\ResourcePolicy.json" -Destination "$env:WORKSPACE\artifacts\resource-policy.json"
+$sha | Set-Content -LiteralPath "$env:WORKSPACE\artifacts\snapshot-tools-commit.txt" -Encoding ASCII
 Write-Host "Pinned main at $sha; Library $([math]::Round($librarySize,2)) GiB."

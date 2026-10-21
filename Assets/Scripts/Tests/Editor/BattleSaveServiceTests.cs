@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
@@ -12,6 +15,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
@@ -165,6 +169,76 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(restore.TryRestore(), Is.False);
             }
             finally { Object.DestroyImmediate(game); }
+        }
+
+        [UnityTest]
+        public IEnumerator SaveActions_DisposedDuringWrite_DoesNotNotifyCompletion() =>
+            DisposeDuringSave(false);
+
+        [UnityTest]
+        public IEnumerator SaveActions_DisposedDuringFailedWrite_DoesNotNotifyFailure() =>
+            DisposeDuringSave(true);
+
+        private IEnumerator DisposeDuringSave(bool fail)
+        {
+            _state.SetState(BattleState.Running);
+            BattleDefinition battle = SkirmishPreset.Default();
+            using var repository = new BlockingRepository(fail);
+            var service = new BattleSaveService(battle, _state, _camera, _cinematic,
+                new BattleClock(_state), repository,
+                new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null),
+                Array.Empty<IBattleSaveSource>());
+            using var actions = new BattleSaveActions(service, repository, null, battle);
+            var statuses = new List<string>();
+            actions.StatusChanged += statuses.Add;
+            Task save = actions.SaveAsync(BattleSaveSlot.Quicksave);
+            float deadline = Time.realtimeSinceStartup + 10f;
+            try
+            {
+                while (!repository.Started.IsSet && Time.realtimeSinceStartup < deadline) yield return null;
+                Assert.That(repository.Started.IsSet, Is.True, "Save did not reach the worker thread.");
+                Assert.That(service.IsSaving, Is.True);
+                Assert.That(statuses.Count, Is.EqualTo(1));
+                actions.Dispose();
+            }
+            finally { repository.Continue.Set(); }
+            while (!save.IsCompleted && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(save.IsCompleted, Is.True, "Save did not finish after releasing the repository.");
+            save.GetAwaiter().GetResult();
+            Assert.That(service.IsSaving, Is.False);
+            Assert.That(statuses.Count, Is.EqualTo(1), "Disposed battle must not receive a save continuation.");
+            Assert.That(actions.Status, Is.EqualTo(statuses[0]));
+            Assert.That(actions.CanSave, Is.False);
+            Task ignored = actions.SaveAsync(BattleSaveSlot.Quicksave);
+            Assert.That(ignored.IsCompleted, Is.True);
+            Assert.That(repository.WriteCount, Is.EqualTo(1));
+        }
+
+        private sealed class BlockingRepository : IBattleSaveRepository, IDisposable
+        {
+            private readonly bool _fail;
+            public ManualResetEventSlim Started { get; } = new ManualResetEventSlim();
+            public ManualResetEventSlim Continue { get; } = new ManualResetEventSlim();
+            public int WriteCount { get; private set; }
+
+            public BlockingRepository(bool fail) { _fail = fail; }
+
+            public void Save(BattleSave save)
+            {
+                WriteCount++;
+                Started.Set();
+                if (!Continue.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException();
+                if (_fail) throw new IOException("Test write failure.");
+            }
+
+            public BattleSave Load(GameMode mode, BattleSaveSlot slot) => throw new NotSupportedException();
+            public void Delete(GameMode mode, BattleSaveSlot slot) => throw new NotSupportedException();
+            public IReadOnlyList<BattleSaveHeader> List(GameMode mode) => throw new NotSupportedException();
+            public void Dispose()
+            {
+                Started.Dispose();
+                Continue.Dispose();
+            }
         }
 
         private BattleSaveService CreateService(BattleDefinition battle) =>

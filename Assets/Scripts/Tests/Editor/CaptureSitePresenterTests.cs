@@ -2,6 +2,9 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Tooltip;
+using EmpireAtWar.Services.CaptureSites;
+using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -98,6 +101,44 @@ namespace EmpireAtWar.Tests.Editor
                 SiteFacilityType.Mining, 0f);
             _presenter.SetVisibility(true, true);
             Assert.That(_view.IsVisible, Is.False);
+        }
+
+        [Test]
+        public void CaptureSystem_ExcludesOwnedAndOperationalSitesFromCaptureTargets()
+        {
+            CaptureSitesSystem system = CreateSystem();
+            Assert.That(system.TryGetCaptureTarget(TestPlayers.Human, Vector3.right * 100, out Vector3 position), Is.True);
+            Assert.That(position, Is.EqualTo(Vector3.zero));
+            _presenter.Restore(TestPlayers.Human, CaptureSiteState.Owned, PlayerId.None, 0,
+                SiteFacilityType.Mining, 0);
+            Assert.That(system.TryGetCaptureTarget(TestPlayers.Human, Vector3.zero, out _), Is.False);
+            _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Operational, PlayerId.None, 0,
+                SiteFacilityType.Mining, 0);
+            Assert.That(system.TryGetCaptureTarget(TestPlayers.Human, Vector3.zero, out _), Is.False);
+        }
+
+        [Test]
+        public void CaptureSystem_RaidsOnlyOperationalHostileSites()
+        {
+            CaptureSitesSystem system = CreateSystem();
+            _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Constructing, PlayerId.None, 0,
+                SiteFacilityType.Mining, 0);
+            Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.zero, out _), Is.False);
+            _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Operational, PlayerId.None, 0,
+                SiteFacilityType.Mining, 0);
+            Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.zero, out Vector3 position), Is.True);
+            Assert.That(position, Is.EqualTo(Vector3.zero));
+            Assert.That(system.TryGetRaidTarget(TestPlayers.Enemy, Vector3.zero, out _), Is.False);
+        }
+
+        private CaptureSitesSystem CreateSystem()
+        {
+            var system = new CaptureSitesSystem();
+            typeof(CaptureSitesSystem).GetField("_playerRoster", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system, _roster);
+            var sites = (List<CaptureSitePresenter>)typeof(CaptureSitesSystem)
+                .GetField("_sites", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(system);
+            sites.Add(_presenter);
+            return system;
         }
 
         private sealed class FixedClock : ITooltipClock

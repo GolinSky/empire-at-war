@@ -31,6 +31,8 @@ namespace EmpireAtWar.Services.Battle
         private readonly ICameraService _camera;
         private readonly CancellationTokenSource _cancellation = new();
         private readonly Queue<(PlayerId Owner, UnitTypeId Unit, Vector3 Position)> _pending = new();
+        private readonly List<IEntity> _livingA = new();
+        private readonly List<IEntity> _livingB = new();
         private bool _prepared;
         private bool _resetting;
         private float _settleTime;
@@ -71,14 +73,17 @@ namespace EmpireAtWar.Services.Battle
             _settleTime -= Time.deltaTime;
             if (_settleTime > 0) return;
             _model.CompleteSpawning();
-            var a = Living(0); var b = Living(1);
-            _targeting.Command(a, b); _targeting.Command(b, a);
-            _model.Advance(Time.deltaTime, a.Count, b.Count,
-                a.Sum(entity => entity.HealthModel.Hull), b.Sum(entity => entity.HealthModel.Hull));
+            _livingA.Clear(); _livingB.Clear();
+            float hullA = 0, hullB = 0;
+            foreach (IEntity entity in _entities.Entities)
+            {
+                if (entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits) continue;
+                if (entity.Owner.Index == 0) { _livingA.Add(entity); hullA += entity.HealthModel.Hull; }
+                else if (entity.Owner.Index == 1) { _livingB.Add(entity); hullB += entity.HealthModel.Hull; }
+            }
+            _targeting.Command(_livingA, _livingB); _targeting.Command(_livingB, _livingA);
+            _model.Advance(Time.deltaTime, _livingA.Count, _livingB.Count, hullA, hullB);
         }
-
-        private List<IEntity> Living(int side) => _entities.Entities.Where(entity =>
-            entity.Owner.Index == side && !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits).ToList();
 
         private void PrepareFleet(int side, IReadOnlyList<SimulationFleetEntry> fleet)
         {

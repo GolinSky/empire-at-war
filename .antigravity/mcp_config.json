@@ -28,7 +28,9 @@
       "command": "uvx",
       "args": [
         "--from", "graphifyy[mcp]==0.9.54",
-        "python", "Tools/Graphify/run.py", "mcp"
+        "python", "Tools/Graphify/run.py", "mcp",
+        "--project-path",
+        "F:\\Private\\empire-at-war"
       ],
       "env": {
         "GRAPHIFY_QUERY_LOG_DISABLE": "1"
@@ -37,7 +39,9 @@
     "unity": {
       "command": "unity",
       "args": [
-        "mcp"
+        "mcp",
+        "--project-path",
+        "F:\\Private\\empire-at-war"
       ]
     }
   }

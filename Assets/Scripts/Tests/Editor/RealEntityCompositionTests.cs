@@ -333,6 +333,191 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SurvivalAttackers_HaveOnlyLifecycleMarkersAndCompleteTheWaveAfterDespawn()
+        {
+            BuildSaveProject(SurvivalPreset.Create(new SurvivalSettings(FactionType.Republic, null,
+                FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
+                false)).Build());
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
+            human.Container.Resolve<SpaceStationFactory>()
+                .Create(humanSlot.Id, humanSlot.Faction, layout.GetStationPosition(humanSlot.Id));
+            var model = _battle.Container.Resolve<EmpireAtWar.Entities.Game.SurvivalModel>();
+            var director = _battle.Container.Resolve<SurvivalWaveDirector>();
+            var miniMap = _battle.Container.Resolve<EmpireAtWar.Models.MiniMap.MiniMapData>();
+            IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
+            int staticMarks = 0;
+            miniMap.OnMarkAdded += _ => staticMarks++;
+            int initialMarkers = miniMap.Markers.Count;
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+
+            for (int wave = 1; wave <= 3; wave++)
+            {
+                model.StartWaveNow();
+                director.Tick();
+                IEntity attacker = locator.Entities.Single(entity => entity.Owner != humanSlot.Id);
+                Assert.That(staticMarks, Is.Zero, "Spawns must not add permanent station-style marks.");
+                Assert.That(miniMap.Markers.Count, Is.EqualTo(initialMarkers + 1));
+                director.Restore(wave, Array.Empty<EmpireAtWar.Entities.Units.UnitTypeId>(), 1, 0);
+                director.Tick();
+                Assert.That(model.Phase, Is.EqualTo(SurvivalPhase.WaveActive), "A living attacker blocks completion.");
+                EntityLifetimeScope scope = attacker.GetFacade<IEntityTransformFacade>().Transform.parent
+                    .GetComponent<EntityLifetimeScope>();
+                scope.Parent.Container.Resolve<EntityScopeOwnership>().Unregister(scope);
+                DisposeRoot(scope);
+                Assert.That(miniMap.Markers.Count, Is.EqualTo(initialMarkers), "Despawn removes the unit marker.");
+                director.Tick();
+                Assert.That(model.Phase, Is.EqualTo(SurvivalPhase.Preparation));
+                Assert.That(model.WaveIndex, Is.EqualTo(wave + 1));
+            }
+        }
+
+        [Test]
+        public void SurvivalAttackers_ResumeAssaultAfterTheirOrderIsStopped()
+        {
+            BuildSaveProject(SurvivalPreset.Create(new SurvivalSettings(FactionType.Republic, null,
+                FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
+                false)).Build());
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
+            human.Container.Resolve<SpaceStationFactory>().Create(slot.Id, slot.Faction, layout.GetStationPosition(slot.Id));
+            var model = _battle.Container.Resolve<EmpireAtWar.Entities.Game.SurvivalModel>();
+            var director = _battle.Container.Resolve<SurvivalWaveDirector>();
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+            model.StartWaveNow();
+            director.Tick();
+            IEntity attacker = _battle.Container.Resolve<IEntityLocator>().Entities.Single(entity => entity.Owner != slot.Id);
+            director.Restore(1, Array.Empty<EmpireAtWar.Entities.Units.UnitTypeId>(), 1, 0);
+            var orders = _battle.Container.Resolve<EmpireAtWar.Services.UnitOrders.IUnitOrderService>();
+            orders.IssueStop(new[] { attacker });
+            Assert.That(attacker.GetFacade<IUnitOrderObserverFacade>().CurrentOrder, Is.EqualTo(UnitOrderType.None));
+            var retryTime = typeof(SurvivalWaveDirector).GetField("_nextIdleRetryTime",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            retryTime.SetValue(director, float.PositiveInfinity);
+            director.Tick();
+            Assert.That(attacker.GetFacade<IUnitOrderObserverFacade>().CurrentOrder, Is.EqualTo(UnitOrderType.None));
+            var facing = attacker.GetFacade<IAbilityFacingFacade>();
+            facing.BeginAbilityFacing();
+            retryTime.SetValue(director, float.NegativeInfinity);
+            director.Tick();
+            Assert.That(attacker.GetFacade<IUnitOrderObserverFacade>().CurrentOrder, Is.EqualTo(UnitOrderType.None));
+            facing.EndAbilityFacing();
+            retryTime.SetValue(director, float.NegativeInfinity);
+            director.Tick();
+            Assert.That(attacker.GetFacade<IUnitOrderObserverFacade>().CurrentOrder, Is.EqualTo(UnitOrderType.AttackMove));
+        }
+
+        [Test]
+        public void SurvivalAttackers_ProfileRepeatedCompletedOrders()
+        {
+            BuildSaveProject(SurvivalPreset.Create(new SurvivalSettings(FactionType.Republic, null,
+                FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
+                false)).Build());
+            MapLayout layout = BuildSaveBattle();
+            // These production pools have unparented roots; keep this probe's instances in its teardown tree.
+            foreach (object pool in new object[] {
+                         _battle.Container.Resolve<EmpireAtWar.Services.Squadrons.FighterExplosionPool>(),
+                         _battle.Container.Resolve<EmpireAtWar.Services.UnitExplosion.HardPointExplosionPool>() })
+                ((Transform)pool.GetType().GetField("_root", System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic).GetValue(pool)).SetParent(_battle.transform);
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
+            human.Container.Resolve<SpaceStationFactory>().Create(slot.Id, slot.Faction, layout.GetStationPosition(slot.Id));
+            var model = _battle.Container.Resolve<SurvivalModel>();
+            var director = _battle.Container.Resolve<SurvivalWaveDirector>();
+            var orders = _battle.Container.Resolve<EmpireAtWar.Services.UnitOrders.IUnitOrderService>();
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+            model.StartWaveNow();
+            director.Tick();
+            IEntity attacker = _battle.Container.Resolve<IEntityLocator>().Entities.Single(entity => entity.Owner != slot.Id);
+            director.Restore(1, Array.Empty<EmpireAtWar.Entities.Units.UnitTypeId>(), 1, 0);
+            EntityLifetimeScope scope = attacker.GetFacade<IEntityTransformFacade>().Transform.parent
+                .GetComponent<EntityLifetimeScope>();
+            var runner = scope.Container.Resolve<EmpireAtWar.Entities.Ship.Orders.ShipOrderRunner>();
+            var attackMove = scope.Container.Resolve<EmpireAtWar.Entities.Ship.StateMachine.AttackMoveState>();
+            var movement = scope.Container.Resolve<IShipMovement>();
+            scope.Container.Resolve<ShipMoveModel>().FinishArrival();
+            var searchTime = typeof(EmpireAtWar.Entities.Ship.StateMachine.AttackMoveState)
+                .GetField("_nextSearchTime", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            int issued = 0;
+            orders.OrderIssued += order =>
+            {
+                if (order.Action == EmpireAtWar.Entities.UnitActions.UnitActionId.AttackMove) issued++;
+            };
+
+            var allocationRecorder = UnityEngine.Profiling.Recorder.Get("GC.Alloc");
+            allocationRecorder.FilterToCurrentThread();
+            allocationRecorder.enabled = false;
+            allocationRecorder.enabled = true;
+            var allocationControl = new byte[1024];
+            allocationRecorder.enabled = false;
+            GC.KeepAlive(allocationControl);
+            Assert.That(allocationRecorder.sampleBlockCount, Is.GreaterThan(0), "GC.Alloc recorder positive control.");
+            movement.Stop();
+            searchTime.SetValue(attackMove, float.PositiveInfinity);
+            for (int i = 0; i < 60; i++)
+            {
+                runner.Tick(1f / 60f);
+                director.Tick();
+            }
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.AttackMove));
+            Assert.That(issued, Is.Zero, "Attack-move waits for its first target search before completing.");
+            // Real runner and order service; isolate the no-target, stopped-movement completion path.
+            // Force only the search deadline, since EditMode does not advance the player clock.
+            movement.Stop();
+            searchTime.SetValue(attackMove, float.NegativeInfinity);
+            runner.Tick(1f / 60f);
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.None));
+            director.Tick();
+            issued = 0;
+            const int ITERATIONS = 600;
+            var retryTime = typeof(SurvivalWaveDirector).GetField("_nextIdleRetryTime",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            long elapsedTicks = 0;
+            long allocated = 0;
+            for (int i = 0; i < ITERATIONS; i++)
+            {
+                movement.Stop();
+                searchTime.SetValue(attackMove, float.NegativeInfinity);
+                runner.Tick(1f / 60f);
+                // Advance the retry deadline by one simulated frame; EditMode time stays fixed.
+                retryTime.SetValue(director, (float)retryTime.GetValue(director) - 1f / 60f);
+                allocationRecorder.enabled = true;
+                long beforeTicks = System.Diagnostics.Stopwatch.GetTimestamp();
+                director.Tick();
+                elapsedTicks += System.Diagnostics.Stopwatch.GetTimestamp() - beforeTicks;
+                allocationRecorder.enabled = false;
+                allocated += allocationRecorder.sampleBlockCount;
+            }
+            Debug.Log($"Survival repeated completion: {ITERATIONS} director ticks, {issued} orders, " +
+                $"{allocated} allocation samples, {elapsedTicks * 1000d / System.Diagnostics.Stopwatch.Frequency:F3} ms. " +
+                "Controlled completion stress case, not a measured gameplay frame rate.");
+            Assert.That(issued, Is.InRange(35, 41), "Idle retries are bounded to four per simulated second.");
+
+            runner.Stop();
+            runner.BeginAbilityFacing();
+            retryTime.SetValue(director, float.NegativeInfinity);
+            director.Tick();
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.None));
+            runner.EndAbilityFacing();
+            retryTime.SetValue(director, float.NegativeInfinity);
+            director.Tick();
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.AttackMove));
+
+            retryTime.SetValue(director, float.PositiveInfinity);
+            _battle.Container.Resolve<BattleUnitSpawner>().Spawn(attacker.Owner,
+                attacker.GetFacade<EmpireAtWar.Entities.Units.IUnitTypeFacade>().UnitTypeId,
+                attacker.GetFacade<IEntityTransformFacade>().Transform.position + Vector3.right * 100);
+            IEntity reinforcement = _battle.Container.Resolve<IEntityLocator>().Entities
+                .Single(entity => entity.Owner == attacker.Owner && entity.Id != attacker.Id);
+            director.Tick();
+            Assert.That(reinforcement.GetFacade<IUnitOrderObserverFacade>().CurrentOrder,
+                Is.EqualTo(UnitOrderType.AttackMove), "New spawns bypass the idle retry interval.");
+        }
+
+        [Test]
         public void SavedSurvival_ResumesTheWaveInProgressWithoutQueuingItAgain()
         {
             BuildSaveProject(SurvivalPreset.Create(new SurvivalSettings(FactionType.Republic, null,

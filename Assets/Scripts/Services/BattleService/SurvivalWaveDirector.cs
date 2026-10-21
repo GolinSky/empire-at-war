@@ -9,7 +9,6 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
@@ -18,6 +17,8 @@ namespace EmpireAtWar.Services.Battle
 {
     public sealed class SurvivalWaveDirector : ITickable
     {
+        private const float IDLE_RETRY_INTERVAL = 0.25f;
+
         private readonly SurvivalModel _model;
         private readonly SurvivalWaveData _data;
         private readonly BattleDefinition _battle;
@@ -28,7 +29,6 @@ namespace EmpireAtWar.Services.Battle
         private readonly IStationRegistry _stations;
         private readonly IUnitOrderService _orders;
         private readonly IMapModelObserver _map;
-        private readonly MiniMapData _miniMap;
         private readonly PlayerId _enemy;
         private readonly PlayerId _human;
         private readonly Queue<UnitTypeId> _pending = new();
@@ -37,15 +37,14 @@ namespace EmpireAtWar.Services.Battle
         private int _wave;
         private int _spawned;
         private float _settleTime;
+        private float _nextIdleRetryTime;
 
         public SurvivalWaveDirector(SurvivalModel model, SurvivalWaveData data, BattleDefinition battle,
             SkirmishStateModel state, BattleUnitSpawner spawner, EdgeSpawnPointProvider points,
-            IEntityLocator entities, IStationRegistry stations, IUnitOrderService orders, IMapModelObserver map,
-            MiniMapData miniMap)
+            IEntityLocator entities, IStationRegistry stations, IUnitOrderService orders, IMapModelObserver map)
         {
             _model = model; _data = data; _battle = battle; _state = state; _spawner = spawner;
             _points = points; _entities = entities; _stations = stations; _orders = orders; _map = map;
-            _miniMap = miniMap;
             _enemy = battle.Players.Single(player => player.Role == PlayerRole.WaveAttacker).Slot.Id;
             _human = battle.Human.Slot.Id;
         }
@@ -97,17 +96,19 @@ namespace EmpireAtWar.Services.Battle
                 if (_points.TryGet(_enemy, unit, _spawned % wave.SpawnGroupCount, out Vector3 position))
                 {
                     _spawner.Spawn(_enemy, unit, position);
-                    _miniMap.AddMark(MarkType.Ship, position);
                     _pending.Dequeue(); _spawned++; _settleTime = 1f;
                 }
             }
+            // Batch completed orders instead of rebuilding their formation and engagement every frame.
+            bool retryIdle = Time.time >= _nextIdleRetryTime;
+            if (retryIdle) _nextIdleRetryTime = Time.time + IDLE_RETRY_INTERVAL;
             _newUnits.Clear();
             int alive = 0;
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.Owner != _enemy || entity.HealthModel.IsDestroyed) continue;
                 alive++;
-                if (_commanded.Add(entity.Id) || IsIdleShip(entity)) _newUnits.Add(entity);
+                if (_commanded.Add(entity.Id) || retryIdle && IsIdleShip(entity)) _newUnits.Add(entity);
             }
             if (_newUnits.Count > 0) _orders.IssueAttackMove(_newUnits, _map.GetStationPosition(_human));
             _settleTime -= Time.deltaTime;

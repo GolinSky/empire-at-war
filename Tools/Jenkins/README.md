@@ -13,10 +13,15 @@
 - Each run pins `refs/heads/main` once; development edits stay outside that snapshot.
 - CI uses the dedicated detached worktree `F:\UnityCI\empire-at-war` and its own persistent `Library`.
 - The worktree must share the source Git directory, remain detached, and contain no reparse points. Cleanup rejects other roots and active CI Editors.
-- Submodules and external `file:` packages are rejected. Git LFS hydration and integrity checks precede the build.
+- Submodules, external `file:` packages, and Git packages without a full commit pin matching the lock file are rejected. Git LFS hydration and integrity checks precede the build.
 - Unity CLI reads the committed Editor version; builds Windows x64 using the shared scene list and existing Mono backend.
 - Addressables must use committed `BuildWithPlayer`. The installed 2.9.1 player processor throws on content-build errors.
-- No automated test stage. Acceptance requires cold/warm builds and a manual extracted-player check.
+- EditMode tests gate the player build. The official `unity test` batch runner opens only the clean, idle CI snapshot; failures, missing reports, and zero passed tests fail the job. NUnit results are archived with the other artifacts.
+- Every test attempt removes its previous report/provenance before launching Unity. A successful run records the snapshot commit, Jenkins build number, and report SHA-256; the build gate verifies all three to reject stale or replaced reports.
+- Test, build, package, and archive phases use `Tools/Jenkins` from that same committed snapshot. The installed scripts only bootstrap preparation; artifacts record both installed and snapshot tool commits.
+- Preparation verifies the installed scripts against the installer’s hash manifest before snapshot mutation. Changes to bootstrap/preparation itself require reinstalling committed tools; later phases automatically follow committed `main`.
+- Test scripts remain under `Assets/Scripts/Tests/Editor` in `Assembly-CSharp-Editor` because they reference runtime code in `Assembly-CSharp`; an isolated test asmdef requires a separate runtime assembly migration. The test framework is an explicit manifest dependency. The player validation rejects an accidentally packaged `Assembly-CSharp-Editor.dll`.
+- Acceptance still requires cold/warm builds and a manual extracted-player check.
 
 ## Resource policy
 
@@ -43,9 +48,9 @@
 ## Updating the installed job
 
 1. Review and commit changes to this folder on `main`.
-2. While Jenkins is idle, copy the committed tools to `F:\Jenkins\app\build-tools` and `Start-Jenkins.ps1` / `Stop-Jenkins.ps1` to `F:\Jenkins`.
-3. Update the job's Pipeline script to the exact committed `Jenkinsfile` through its authenticated configuration UI/API.
-4. Record the tools SHA in `F:\Jenkins\app\build-tools-commit.txt`. Restarting Jenkins does not automatically update the job.
+2. While Jenkins is idle, run `Tools/Jenkins/Install-BuildTools.ps1`. It exports `refs/heads/main` with `git archive`, verifies installed hashes, and writes `build-tools-commit.txt` and `build-tools-installation.json` automatically; uncommitted edits are never copied.
+3. Update the job's Pipeline script to the installed `Jenkinsfile` through its authenticated configuration UI/API, or run `Configure-GitHubPublish.ps1` to update both existing jobs from a clean committed tools directory.
+4. If launch scripts changed, copy the installed `Start-Jenkins.ps1` / `Stop-Jenkins.ps1` to `F:\Jenkins`. Restarting Jenkins does not automatically update the job.
 
 `Configure-Jenkins.ps1` is a first-install bootstrap and refuses an existing configuration. It provisions authenticated access and the job through Jenkins' supported Groovy init hook instead of requiring manual setup-wizard clicks.
 
@@ -99,7 +104,7 @@ Before changing GitHub, the job requires SUCCESS, all four archived inputs, matc
    powershell.exe -NoProfile -ExecutionPolicy Bypass -File F:\Private\empire-at-war\Tools\Jenkins\Configure-GitHubPublish.ps1
    ```
 
-3. The script validates both Pipelines, backs up the affected job XML under `F:\Jenkins\app\release-config-backups`, installs the four reviewed files, and updates only the two jobs through the authenticated API.
-4. Verify `F:\Jenkins\app\release-tools-installation.json`: source commit/working-tree changes, exact file hashes, Pipeline validation, and configuration readback. This supplemental record does not replace the base build-tools commit marker.
+3. The script rejects uncommitted tools, validates both Pipelines, backs up the affected job XML under `F:\Jenkins\app\release-config-backups`, installs all tools from the resolved commit, and updates only the two jobs through the authenticated API.
+4. Verify `F:\Jenkins\app\release-tools-installation.json`: source commit, exact file hashes, Pipeline validation, and configuration readback. The installer also records the base build-tools commit and hashes automatically.
 
 Configuration does not create a GitHub token or start any build/upload. Initial verification covers PowerShell parsing and Jenkins configuration; live upload and recovery acceptance remain pending until a credential and source build/tag are supplied. No automated tests are run by setup.

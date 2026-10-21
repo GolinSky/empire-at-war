@@ -7,12 +7,16 @@ pipeline {
         timeout(time: 120, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '3'))
     }
-    environment {
-        CI_TOOLS = 'F:/Jenkins/app/build-tools'
-    }
     stages {
         stage('Prepare committed main') {
-            steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Prepare' }
+            steps {
+                script { env.CI_TOOLS = 'F:/Jenkins/app/build-tools' }
+                powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Prepare'
+                script { env.CI_TOOLS = 'F:/UnityCI/empire-at-war/Tools/Jenkins' }
+            }
+        }
+        stage('EditMode tests') {
+            steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Test' }
         }
         stage('Build Windows x64') {
             steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Build' }

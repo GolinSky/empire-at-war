@@ -165,7 +165,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public event Action OnValueChanged { add { } remove { } }
 
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public HardPointModel[] HardPointModels { get; } = new[]
+                { new HardPointModel(HardPointType.SensorArray, 0) };
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
             public bool HasLiveHardPoints => true;

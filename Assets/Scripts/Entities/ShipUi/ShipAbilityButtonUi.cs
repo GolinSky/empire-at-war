@@ -23,6 +23,8 @@ namespace EmpireAtWar.Entities.ShipUi
         private Action<ShipAbilityId> _onPressed;
 
         private bool _waiting;
+        private int _displayedSeconds = -1;
+        private bool _displayedWaiting;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
 
@@ -64,8 +66,13 @@ namespace EmpireAtWar.Entities.ShipUi
             activeHighlight.SetActive(active);
             targetingHighlight.SetActive(_waiting);
             button.interactable = interactable;
-            cooldownText.text = _waiting ? "TARGET" : (active || !interactable) && remaining > 0f
-                ? $"{Mathf.CeilToInt(remaining)}s" : "";
+            int seconds = (active || !interactable) && remaining > 0f ? Mathf.CeilToInt(remaining) : 0;
+            if (_displayedWaiting != _waiting || _displayedSeconds != seconds)
+            {
+                cooldownText.text = _waiting ? "TARGET" : seconds > 0 ? $"{seconds}s" : "";
+                _displayedWaiting = _waiting;
+                _displayedSeconds = seconds;
+            }
         }
 
         private void HandleClick() => _onPressed(Id);

@@ -133,7 +133,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity station = Entity(2, TestPlayers.Enemy,
                 Array.Empty<Type>(), new PlayerBaseFacade());
             station.Health.Transform.position = new Vector3(200f, 0f, 0f);
-            _locator.EntitiesList.Add(station);
+            _locator.AddEntity(station);
             _unitOrderService.IssueRetreat(new IEntity[] { ship });
             Assert.That(ship.Command.LastPoint.x, Is.LessThan(200f));
             station.Health.IsDestroyedValue = true;
@@ -287,14 +287,14 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<IEntity> EntityRemoved { add { } remove { } }
 
             public string Id => nameof(FakeLocator);
-            public List<IEntity> EntitiesList { get; } = new List<IEntity>();
-            public IReadOnlyCollection<IEntity> Entities => EntitiesList;
+            private readonly Dictionary<long, IEntity> _entities = new Dictionary<long, IEntity>();
+            public Dictionary<long, IEntity>.ValueCollection Entities => _entities.Values;
 
-            public void AddEntity(IEntity entity) => EntitiesList.Add(entity);
+            public void AddEntity(IEntity entity) => _entities.Add(entity.Id, entity);
 
-            public void RemoveEntity(IEntity entity) => EntitiesList.Remove(entity);
+            public void RemoveEntity(IEntity entity) => _entities.Remove(entity.Id);
 
-            public IEntity GetEntity(long id) => EntitiesList.Find(entity => entity.Id == id);
+            public IEntity GetEntity(long id) => _entities.TryGetValue(id, out IEntity entity) ? entity : null;
 
             public bool TryGetEntity(long id, out IEntity entity)
             { entity = GetEntity(id); return entity != null; }
