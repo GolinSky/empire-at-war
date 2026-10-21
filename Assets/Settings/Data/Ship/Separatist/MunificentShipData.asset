@@ -41,9 +41,6 @@ MonoBehaviour:
   - hardPointType: 2
     health: 400
     hullDamageMultiplier: 1
-  - hardPointType: 4
-    health: 250
-    hullDamageMultiplier: 1
   - hardPointType: 8
     health: 150
     hullDamageMultiplier: 1

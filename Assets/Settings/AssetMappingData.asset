@@ -77,27 +77,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ProjectilesData
-      value:
-        m_AssetGUID: 2b971ad1a3d99dd4590f41be6e6fee50
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: WeaponDamageData
-      value:
-        m_AssetGUID: 2f8acb09e989fe54fbb45ed7510ec287
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: DamageCalculationData
-      value:
-        m_AssetGUID: 3147ba13197ab094b8cdfa36c3b45a50
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MiniMapData
       value:
         m_AssetGUID: 38bf9d71cf198ee4c95db7c57cba6be8
@@ -157,41 +136,6 @@ MonoBehaviour:
     - key: PlanetData
       value:
         m_AssetGUID: fbbdc831ce20cd7438fbdb30070fa53c
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: WeaponHardPoint
-      value:
-        m_AssetGUID: 23702bc0e5303b740b61f1b451630b85
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: MiningFacilityInstaller
-      value:
-        m_AssetGUID: b68ebe0d40d378f4c936e357035d799d
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: ShipInstaller
-      value:
-        m_AssetGUID: c6751126098e6404ab308cdd43135bc6
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: DefendPlatformInstaller
-      value:
-        m_AssetGUID: d1015cfc037add141aca99418c39b590
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: SpaceStationInstaller
-      value:
-        m_AssetGUID: dc14dab4bd7163a4988425df3c77fd90
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

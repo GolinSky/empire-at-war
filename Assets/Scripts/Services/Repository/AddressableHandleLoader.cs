@@ -24,22 +24,22 @@ namespace EmpireAtWar.Repository
                 return key;
 
             AssetMappingData mappingData = GetMappingData();
-            return mappingData != null ? mappingData.GetAssetKey(key) : key;
+            return mappingData.GetAssetKey(key);
         }
 
         // The mapping handle is kept for the loader's lifetime, which is the application's.
         private AssetMappingData GetMappingData()
         {
-            if (_mappingLoadAttempted)
-                return _mappingData;
-
-            _mappingLoadAttempted = true;
-            _mappingData = Addressables
-                .LoadAssetAsync<AssetMappingData>(MAPPING_DATA_KEY)
-                .WaitForCompletion();
+            if (!_mappingLoadAttempted)
+            {
+                _mappingLoadAttempted = true;
+                _mappingData = Addressables
+                    .LoadAssetAsync<AssetMappingData>(MAPPING_DATA_KEY)
+                    .WaitForCompletion();
+            }
 
             if (_mappingData == null)
-                Debug.LogWarning($"[{nameof(AddressableHandleLoader)}] {MAPPING_DATA_KEY} was not found. Falling back to the requested Addressables keys.");
+                throw new System.InvalidOperationException($"[{nameof(AddressableHandleLoader)}] Required {MAPPING_DATA_KEY} could not be loaded.");
 
             return _mappingData;
         }

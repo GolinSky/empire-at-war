@@ -9,6 +9,7 @@
 =========================================================*/
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 
 public class PPFXClickMoveSmooth : MonoBehaviour {
@@ -25,9 +26,9 @@ public class PPFXClickMoveSmooth : MonoBehaviour {
 	void Update () 
 	{
 		//check if user has clicked
-		if(Input.GetMouseButtonDown(0))
+		if((Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame))
 		{    
-	        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+	        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 	        RaycastHit hit;
 	        if(Physics.Raycast(ray,out hit))
 	        {

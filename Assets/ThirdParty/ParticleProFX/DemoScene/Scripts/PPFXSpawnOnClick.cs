@@ -9,6 +9,7 @@
 =========================================================*/
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 
 public class PPFXSpawnOnClick : MonoBehaviour {
@@ -26,17 +27,17 @@ public class PPFXSpawnOnClick : MonoBehaviour {
 	
 	void Update ()
     {
-    	if(Input.GetMouseButtonDown(0) ||  Input.touchCount > 0)
+		if((Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) ||  (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed))
     	{
         
          
 	        Ray ray;
 	       
-	        if(Application.platform == RuntimePlatform.Android)
+	        if(Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
 	        {
-		    	ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+				ray = Camera.main.ScreenPointToRay(Touchscreen.current.primaryTouch.position.ReadValue());
 	        }else{
-	        	ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 	        }
 	       
 	        RaycastHit hit;

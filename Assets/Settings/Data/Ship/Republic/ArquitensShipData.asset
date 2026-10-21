@@ -24,7 +24,8 @@ MonoBehaviour:
   <BodyRotationMaxAngle>k__BackingField: 30
   <NavigationRadius>k__BackingField: 24.48608
   <DestroyDelay>k__BackingField: 0.35
-  <Wreck>k__BackingField: {fileID: 0}
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 3b3e14dbb8d27ee488c4fb02b7881352,
+    type: 2}
   <ShipClass>k__BackingField: 3
   <Hull>k__BackingField: 2900
   <Shields>k__BackingField: 1400
@@ -39,9 +40,6 @@ MonoBehaviour:
     hullDamageMultiplier: 1
   - hardPointType: 2
     health: 400
-    hullDamageMultiplier: 1
-  - hardPointType: 4
-    health: 250
     hullDamageMultiplier: 1
   <Range>k__BackingField: 540
   <Delay>k__BackingField: 0.25

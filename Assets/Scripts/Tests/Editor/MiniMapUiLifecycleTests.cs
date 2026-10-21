@@ -15,6 +15,26 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/MiniMap/MiniMapUi.prefab";
 
+        [Test]
+        public void MiniMapSurfaceHasNoMissingPrefabAndKeepsItsBindings()
+        {
+            var root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            try
+            {
+                var surface = root.transform.Find("Panel/MiniMap");
+                Assert.That(surface, Is.Not.Null);
+                Assert.That(PrefabUtility.IsPrefabAssetMissing(surface.gameObject), Is.False);
+                var ui = new SerializedObject(root.GetComponent<MiniMapUi>());
+                foreach (string field in new[] { "miniMapRectTransform", "tooltipHover", "iconParent",
+                             "mapImage", "cameraFootprintView", "obstacleView", "moveTargetView", "fogImage" })
+                    Assert.That(ui.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void ExplicitInitializationSubscribesOnceAndBothTeardownOrdersUnsubscribe(bool destroyFirst)

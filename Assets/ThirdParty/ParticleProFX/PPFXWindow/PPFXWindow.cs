@@ -15,7 +15,7 @@ using System.IO;
 
 public class PPFXWindow : EditorWindow {
 		
-	static string pfxAssetPath = "ParticleProFX/Resources/Library";
+	static string pfxAssetPath = "ThirdParty/ParticleProFX/Content/Library";
 	//static string pfxLogoPath = "ParticleProFX/PPFXEditor/logo.png";
 	//static string pfxEditorPath = "ParticleProFX/PPFXEditor";
 	

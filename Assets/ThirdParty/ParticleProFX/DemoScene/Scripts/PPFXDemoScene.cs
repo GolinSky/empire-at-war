@@ -8,6 +8,7 @@
 =========================================================*/
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,8 +35,6 @@ public class PPFXDemoScene : MonoBehaviour {
 	
 	void Start()
 	{
-		prefabs = Resources.LoadAll<GameObject>("Library");
-		previews = Resources.LoadAll<Texture2D>("library");
 		spawnScript.inst = prefabs[0];
 	}
 
@@ -134,7 +133,7 @@ public class PPFXDemoScene : MonoBehaviour {
 	
 	void Update()
 	{
-		if(Input.GetKeyDown("h"))
+		if(Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame)
 		{
 			if(hideGUI)
 			{
@@ -144,7 +143,7 @@ public class PPFXDemoScene : MonoBehaviour {
 			}
 		}
 		
-		if(Input.GetKeyDown("r"))
+		if(Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
 		{
 			Reset();
 		}

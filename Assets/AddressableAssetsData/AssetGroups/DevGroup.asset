@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: DevGroup
   m_GUID: 5ae4c999412c9384bad7ae32198fba68
-  m_SerializeEntries:
-  - m_GUID: 23702bc0e5303b740b61f1b451630b85
-    m_Address: WeaponHardPoint
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
   m_SchemaSet:
