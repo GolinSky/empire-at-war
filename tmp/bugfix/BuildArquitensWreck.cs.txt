@@ -1,0 +1,15 @@
+var wreckView = EmpireAtWar.Editor.Rendering.ShipWreckBuilder.Build("Assets/Prefabs/Models/Ships/Republic/ArquitensShipView.prefab");
+var wreckData = UnityEngine.ScriptableObject.CreateInstance<EmpireAtWar.Services.UnitWreck.UnitWreckData>();
+wreckData.name = "ArquitensWreckData";
+var serializedWreck = new UnityEditor.SerializedObject(wreckData);
+serializedWreck.FindProperty("<Prefab>k__BackingField").objectReferenceValue = wreckView;
+serializedWreck.ApplyModifiedPropertiesWithoutUndo();
+UnityEditor.AssetDatabase.CreateAsset(wreckData, "Assets/Settings/Data/Models/Wrecks/Republic/ArquitensWreckData.asset");
+UnityEditor.EditorUtility.SetDirty(wreckData);
+var shipData = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.ScriptableObject>("Assets/Settings/Data/Ship/Republic/ArquitensShipData.asset");
+var serializedShip = new UnityEditor.SerializedObject(shipData);
+serializedShip.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wreckData;
+serializedShip.ApplyModifiedPropertiesWithoutUndo();
+UnityEditor.EditorUtility.SetDirty(shipData);
+UnityEditor.AssetDatabase.SaveAssets();
+return UnityEditor.AssetDatabase.GetAssetPath(wreckView);

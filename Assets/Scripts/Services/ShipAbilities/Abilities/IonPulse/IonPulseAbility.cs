@@ -95,7 +95,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _model.Advance(deltaTime);
             if (!_model.HasFired)
             {
-                if (_target.HealthModel.IsDestroyed || _cannon.IsDestroyed || !_facing.IsAbilityFacing ||
+                if (_target.HealthModel.IsDestroyed || _target.IsCloaked() || _cannon.IsDestroyed || !_facing.IsAbilityFacing ||
                     _caster.Modifiers.IsIonDisabled || _model.AlignmentExpired)
                 {
                     _cancelled = true;

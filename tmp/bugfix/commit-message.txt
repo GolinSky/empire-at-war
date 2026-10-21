@@ -1,0 +1,16 @@
+Fix missing prefab links, ship hardpoints and asset configuration
+
+Repair the minimap instance, register omitted ship hardpoints and health,
+remove phantom hangar data, and generate Arquitens' own wreck. Remove stale
+asset mappings and fail fast when the required mapping cannot load.
+
+Move ParticleProFX out of Resources while preserving GUIDs and demo references,
+migrate its demo input, remove unused catalog entries and obsolete assets,
+repair missing references and renderer ownership, align standalone quality,
+and remove unused post-processing configuration.
+
+Validation: 15 focused NUnit assertion checks passed through the Unity CLI
+script runner (loader source compiled separately); 182 mappings and both
+renderer feature maps verified. Four migrated input scripts compile.
+Full EditMode validation blocked by unrelated current test compile errors;
+only the package test stub was discovered by the normal test runner.

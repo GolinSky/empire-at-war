@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly IEntityLocator _entities;
         private readonly FighterCoordinationSettings _settings;
+        private readonly IPlayerRelations _relations;
         private readonly List<CombatModifiers> _affected = new List<CombatModifiers>();
         private IHardPointModel _commandArray;
         private CombatModifiers _casterModifiers;
@@ -21,10 +23,12 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool IsComplete => _commandArray.IsDestroyed || _casterModifiers.IsIonDisabled;
         public bool SurvivesCasterDeath => false;
 
-        public FighterCoordinationAbility(IEntityLocator entities, FighterCoordinationSettings settings)
+        public FighterCoordinationAbility(IEntityLocator entities, FighterCoordinationSettings settings,
+            IPlayerRelations relations)
         {
             _entities = entities;
             _settings = settings;
+            _relations = relations;
         }
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
@@ -34,7 +38,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _casterModifiers = caster.Modifiers;
             foreach (IEntity entity in _entities.Entities)
             {
-                if (entity.Owner != caster.Entity.Owner || entity.HealthModel.IsDestroyed ||
+                if (!_relations.IsAllied(caster.Entity.Owner, entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IUnitTypeFacade unit) || !unit.UnitTypeId.IsSquadron)
                     continue;
 

@@ -72,6 +72,78 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PhasedAbility_IonDisabledBeforeTick_StopsWithoutAdvancing()
+        {
+            RecordingPhasedAbility ability = new RecordingPhasedAbility();
+            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            service.Advance(0.1f);
+            caster.Modifiers.SetIonDisabled(true);
+
+            service.Advance(0.2f);
+
+            Assert.That(ability.AdvanceCount, Is.EqualTo(1));
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(6f));
+            service.Clear();
+            Assert.That(ability.StopCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void PhasedAbility_ContinuesDuringIonDisable_WhenItsEffectPersists()
+        {
+            RecordingPhasedAbility ability = new RecordingPhasedAbility { CancelOnIonDisable = false };
+            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            caster.Modifiers.SetIonDisabled(true);
+
+            service.Advance(0.2f);
+
+            Assert.That(ability.AdvanceCount, Is.EqualTo(1));
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            service.Clear();
+        }
+
+        [Test]
+        public void PhasedAbility_CompletesDuringTick_StopsInSameTick()
+        {
+            RecordingPhasedAbility ability = new RecordingPhasedAbility { CompleteOnAdvance = true };
+            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+
+            service.Advance(0.2f);
+
+            Assert.That(ability.AdvanceCount, Is.EqualTo(1));
+            Assert.That(ability.StopCount, Is.EqualTo(1));
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+        }
+
+        [Test]
+        public void IonPulse_TargetCloaksDuringCharge_CancelsAndReleasesFacing()
+        {
+            _targetView = new GameObject("Ion pulse participants");
+            FakeCommand caster = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
+            FakeCommand target = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
+            IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), new EntityLocator(), TestPlayers.CreateDuel());
+            Assert.That(ability.CanStart(caster, target.Entity), Is.True);
+            ability.Start(caster, caster.Slots[0].Definition, target.Entity);
+            ability.Advance(0.1f);
+            Assert.That(ability.IsComplete, Is.False);
+            target.Modifiers.SetCloaked(true);
+
+            ability.Advance(0.1f);
+
+            Assert.That(ability.IsComplete, Is.True);
+            Assert.That(ability.SurvivesCasterDeath, Is.False);
+            ability.Stop();
+            Assert.That(caster.IsAbilityFacing, Is.False);
+        }
+
+        [Test]
         public void Activation_ProgressesThroughDurationAndRecovery()
         {
             FakeFactory factory = new FakeFactory();
@@ -377,7 +449,52 @@ namespace EmpireAtWar.Tests.Editor
             public void Stop() => StopCount++;
         }
 
-        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade
+        private sealed class PhasedFactory : IShipAbilityFactory
+        {
+            private readonly IPhasedShipAbility _ability;
+
+            public PhasedFactory(IPhasedShipAbility ability) { _ability = ability; }
+
+            public IShipAbility Create(ShipAbilityDefinition definition) => _ability;
+        }
+
+        private sealed class RecordingPhasedAbility : IPhasedShipAbility
+        {
+            private IShipAbilityFacade _caster;
+            private bool _complete;
+
+            public int AdvanceCount { get; private set; }
+            public int StopCount { get; private set; }
+            public bool CompleteOnAdvance { get; set; }
+            public bool CancelOnIonDisable { get; set; } = true;
+            public bool IsComplete => _complete || CancelOnIonDisable && _caster.Modifiers.IsIonDisabled;
+            public bool SurvivesCasterDeath => false;
+
+            public bool CanStart(IShipAbilityFacade caster, IEntity target) => true;
+            public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => _caster = caster;
+            public void Advance(float deltaTime)
+            {
+                AdvanceCount++;
+                _complete = CompleteOnAdvance;
+            }
+            public void Stop() => StopCount++;
+        }
+
+        private sealed class IonCannonStub : IHardPointModel
+        {
+            public event Action OnHardPointHealthChanged { add { } remove { } }
+            public event Action OnDestroyed { add { } remove { } }
+            public HardPointType HardPointType => HardPointType.IonPulseCannon;
+            public float HealthPercentage => 1f;
+            public int Id => 0;
+            public int Generation => 0;
+            public bool IsDestroyed => false;
+            public Vector3 Position => Vector3.right;
+            public Transform Transform => null;
+            public Transform Pivot => null;
+        }
+
+        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade, IAbilityFacingFacade
         {
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
@@ -387,9 +504,14 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver Health => FakeHealth;
             public float RadarRange => 20f;
 
-            public FakeCommand(ShipAbilityDefinition definition)
+            public bool IsAbilityFacing { get; private set; }
+            public void BeginAbilityFacing() => IsAbilityFacing = true;
+            public void FaceAbility(Vector3 direction) { }
+            public void EndAbilityFacing() => IsAbilityFacing = false;
+
+            public FakeCommand(ShipAbilityDefinition definition, Transform transform = null)
             {
-                FakeHealth = new FakeHealth(null);
+                FakeHealth = new FakeHealth(transform);
                 Entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth);
                 Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostEnginePower,
                     definition: definition, owner: this) };
@@ -451,11 +573,12 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+            public IHardPointModel[] Units { get; set; } = Array.Empty<IHardPointModel>();
 
             public FakeHealth(Transform transform) { Transform = transform; }
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
-                Array.Empty<IHardPointModel>();
+                Units;
         }
     }
 }

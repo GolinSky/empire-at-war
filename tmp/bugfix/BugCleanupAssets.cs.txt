@@ -1,0 +1,23 @@
+var moveError = UnityEditor.AssetDatabase.MoveAsset("Assets/ThirdParty/ParticleProFX/Resources", "Assets/ThirdParty/ParticleProFX/Content");
+if (!string.IsNullOrEmpty(moveError)) throw new System.InvalidOperationException(moveError);
+foreach (var path in new[] {
+    "Assets/AddressableAssetsData/DataBuilders/BuildScriptVirtualMode.asset",
+    "Assets/AddressableAssetsData/link 2.xml",
+    "Assets/AddressableAssetsData/link 3.xml"
+})
+{
+    if (!UnityEditor.AssetDatabase.DeleteAsset(path)) throw new System.InvalidOperationException("Failed to delete " + path);
+}
+var settings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+foreach (var guid in new[] {
+    "902633263ac036548bdbe737a6a7515d", "b68ebe0d40d378f4c936e357035d799d",
+    "c6751126098e6404ab308cdd43135bc6", "c9402d6872adfe54ea7f83e4efa23f9b",
+    "d1015cfc037add141aca99418c39b590", "dc14dab4bd7163a4988425df3c77fd90",
+    "eeaeaca6063684843b0addc5ae03c79f", "23702bc0e5303b740b61f1b451630b85"
+})
+{
+    if (!settings.RemoveAssetEntry(guid)) throw new System.InvalidOperationException("Missing addressable " + guid);
+}
+UnityEditor.EditorUtility.SetDirty(settings);
+UnityEditor.AssetDatabase.SaveAssets();
+return "Moved ParticleProFX out of Resources, removed three obsolete Addressables assets and eight unused registrations.";

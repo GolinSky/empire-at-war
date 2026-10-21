@@ -225,6 +225,11 @@ namespace EmpireAtWar.Services.ShipAbilities
 
                 if (slot.State == ShipAbilityState.Active && slot.RunningAbility is IPhasedShipAbility phased)
                 {
+                    if (phased.IsComplete)
+                    {
+                        Stop(slot);
+                        continue;
+                    }
                     phased.Advance(deltaTime);
                     if (phased.IsComplete)
                     {

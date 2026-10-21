@@ -20,6 +20,8 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public float TimeLeft { get; private set; }
         public IShipAbility RunningAbility { get; private set; }
         public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.IsIonDisabled &&
+            (Id != ShipAbilityId.IonPulse ||
+                HasLiveHardPoint(HardPointType.IonPulseCannon)) &&
             (Id != ShipAbilityId.TractorBeam ||
                 HasLiveHardPoint(HardPointType.TractorBeam)) &&
             (Id != ShipAbilityId.DauntlessSensorJamming ||

@@ -11,6 +11,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float CommandRadius => commandRadius;
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new FighterCoordinationAbility(dependencies.Entities, this);
+            new FighterCoordinationAbility(dependencies.Entities, this, dependencies.Relations);
     }
 }

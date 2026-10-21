@@ -1,0 +1,55 @@
+Assets/AddressableAssetsData/AssetGroups/DevGroup.asset
+Assets/AddressableAssetsData/AssetGroups/Installers.asset
+Assets/AddressableAssetsData/DataBuilders/BuildScriptVirtualMode.asset
+Assets/AddressableAssetsData/DataBuilders/BuildScriptVirtualMode.asset.meta
+Assets/AddressableAssetsData/link 2.xml
+Assets/AddressableAssetsData/link 2.xml.meta
+Assets/AddressableAssetsData/link 3.xml
+Assets/AddressableAssetsData/link 3.xml.meta
+Assets/Art/Materials/Models/SpaceStations/SpaceStationModular/SpaceStationModular_Slot00.mat
+Assets/Art/Materials/Models/SpaceStations/SpaceStationModular/SpaceStationModular_Slot03.mat
+Assets/Art/Materials/Vfx/DualProjectile.mat
+Assets/Art/Materials/Vfx/LaserProjectile.mat
+Assets/Art/Materials/Vfx/OctupleProjectile.mat
+Assets/Art/Materials/Vfx/Projectile.mat
+Assets/Art/Materials/Vfx/TractorBeam.mat
+Assets/Art/Materials/Wrecks/Arquitens
+Assets/Art/Materials/Wrecks/Arquitens.meta
+Assets/Prefabs/Models/Ships/Empire/AcclamatorAssaultShipView.prefab
+Assets/Prefabs/Models/Ships/Empire/ISDIIIShipView.prefab
+Assets/Prefabs/Models/Ships/Empire/VictoryIIShipView.prefab
+Assets/Prefabs/Models/Ships/Empire/VictoryIShipView.prefab
+Assets/Prefabs/Models/Wrecks/ArquitensWreckView.prefab
+Assets/Prefabs/Models/Wrecks/ArquitensWreckView.prefab.meta
+Assets/Prefabs/Ui/MainMenu/MainMenuUi.prefab
+Assets/Prefabs/Ui/MainMenu/PlayUi.prefab
+Assets/Prefabs/Ui/MiniMap/MiniMapUi.prefab
+Assets/Scenes/Battle/Battle.unity
+Assets/Scripts/Services/Repository/AddressableHandleLoader.cs
+Assets/Scripts/Tests/Editor/AddressableHandleLoaderTests.cs
+Assets/Scripts/Tests/Editor/AddressableHandleLoaderTests.cs.meta
+Assets/Scripts/Tests/Editor/MiniMapUiLifecycleTests.cs
+Assets/Scripts/Tests/Editor/ShipAssetIntegrityTests.cs
+Assets/Scripts/Tests/Editor/ShipAssetIntegrityTests.cs.meta
+Assets/Settings/AssetMappingData.asset
+Assets/Settings/Data/Models/Wrecks/Republic/ArquitensWreckData.asset
+Assets/Settings/Data/Models/Wrecks/Republic/ArquitensWreckData.asset.meta
+Assets/Settings/Data/Ship/Empire/AcclamatorAssaultShipData.asset
+Assets/Settings/Data/Ship/Empire/VictoryIIShipData.asset
+Assets/Settings/Data/Ship/Empire/VictoryIShipData.asset
+Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset
+Assets/Settings/Data/Ship/Republic/ArquitensShipData.asset
+Assets/Settings/Data/Ship/Republic/HeavyDreadnoughtShipData.asset
+Assets/Settings/Data/Ship/Separatist/MunificentShipData.asset
+Assets/Settings/Data/Ship/Separatist/RecusantShipData.asset
+Assets/Settings/Render Pipelines/URP-Balanced-Renderer.asset
+Assets/Settings/Render Pipelines/URP-Performant-Renderer.asset
+Assets/ThirdParty/_Heathen Engineering/Assets/UX/HeathenEngineering.UX.asmdef
+Assets/ThirdParty/ParticleProFX
+Assets/ThirdParty/ParticleProFX/DemoScene/Prefabs/_DemoScene.prefab
+Assets/ThirdParty/ParticleProFX/DemoScene/Prefabs/_DemoSceneWeb.prefab
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/ProjectSettings.asset
+ProjectSettings/QualitySettings.asset
+ProjectSettings/ShaderGraphSettings 2.asset

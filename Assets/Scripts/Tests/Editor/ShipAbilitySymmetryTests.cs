@@ -83,6 +83,85 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ability.IsComplete, Is.True);
         }
 
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        public void SensorJamming_IonDisable_CleansUpAndPreservesOtherEffects(bool overlappingJammer, bool ionPulse)
+        {
+            EntityLocator entities = new EntityLocator();
+            IPlayerRelations relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new SensorJammingFactory(entities, relations), relations);
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            SetField(definition, "duration", 30f);
+            SetField(definition, "recoveryDelay", 5f);
+            SetField(definition, "range", 100f);
+            TestCommand first = new TestCommand(TestPlayers.Human, 1, definition);
+            TestCommand second = new TestCommand(TestPlayers.Human, 2, definition);
+            GameObject targetView = new GameObject("Jammed target");
+            TestCommand target = new TestCommand(TestPlayers.Enemy, 3, transform: targetView.transform);
+            entities.AddEntity(first.Entity);
+            entities.AddEntity(second.Entity);
+            entities.AddEntity(target.Entity);
+            target.Modifiers.AddFighterCoordination();
+            try
+            {
+                Assert.That(service.TryActivate(first, ShipAbilityId.DauntlessSensorJamming, null), Is.True);
+                if (overlappingJammer)
+                    Assert.That(service.TryActivate(second, ShipAbilityId.DauntlessSensorJamming, null), Is.True);
+                Assert.That(target.Modifiers.AccuracyMultiplier, Is.EqualTo(0.96f).Within(0.0001f));
+
+                if (ionPulse) first.Modifiers.AddIonPulseDisable();
+                else first.Modifiers.SetIonDisabled(true);
+                service.Advance(0.1f);
+                Assert.That(first.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+                Assert.That(first.Slots[0].TimeLeft, Is.EqualTo(5f));
+                Assert.That(target.Modifiers.AccuracyMultiplier,
+                    Is.EqualTo(overlappingJammer ? 0.96f : 1.2f).Within(0.0001f));
+
+                if (overlappingJammer)
+                {
+                    Assert.That(second.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+                    second.Modifiers.SetIonDisabled(true);
+                    service.Advance(0.1f);
+                    Assert.That(second.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+                }
+                Assert.That(target.Modifiers.AccuracyMultiplier, Is.EqualTo(1.2f));
+                Assert.That(target.Modifiers.SpeedMultiplier, Is.EqualTo(1.15f));
+
+                if (ionPulse) first.Modifiers.RemoveIonPulseDisable();
+                else first.Modifiers.SetIonDisabled(false);
+                service.Advance(5f);
+                Assert.That(first.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+                Assert.That(service.TryActivate(first, ShipAbilityId.DauntlessSensorJamming, null), Is.True);
+                Assert.That(target.Modifiers.AccuracyMultiplier, Is.EqualTo(0.96f).Within(0.0001f));
+                service.Clear();
+                service.LateDispose();
+                Assert.That(target.Modifiers.AccuracyMultiplier, Is.EqualTo(1.2f));
+            }
+            finally
+            {
+                service.Clear();
+                target.Modifiers.RemoveFighterCoordination();
+                UnityEngine.Object.DestroyImmediate(targetView);
+            }
+            Assert.That(target.Modifiers.HasTemporaryEffects, Is.False);
+        }
+
+        private sealed class SensorJammingFactory : IShipAbilityFactory
+        {
+            private readonly IEntityLocator _entities;
+            private readonly IPlayerRelations _relations;
+
+            public SensorJammingFactory(IEntityLocator entities, IPlayerRelations relations)
+            {
+                _entities = entities;
+                _relations = relations;
+            }
+
+            public IShipAbility Create(ShipAbilityDefinition definition) => new SensorJammingAbility(_entities, _relations);
+        }
+
         private static TSettings CreateSettings<TSettings>(string modifierField, CombatStatModifier modifier)
             where TSettings : ShipAbilitySettings, new()
         {
@@ -106,7 +185,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(modifiers.DamageTakenMultiplier, Is.EqualTo(1f));
         }
 
-        private sealed class TestCommand : IShipAbilityFacade, IAttackFacade
+        private sealed class TestCommand : IShipAbilityFacade, IAttackFacade, ICombatModifiersFacade
         {
             public IReadOnlyList<ShipAbilitySlot> Slots { get; } = Array.Empty<ShipAbilitySlot>();
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
@@ -116,11 +195,13 @@ namespace EmpireAtWar.Tests.Editor
             public float RadarRange => 100f;
             public float NavigationRadius => 1f;
 
-            public TestCommand(PlayerId owner, long id)
+            public TestCommand(PlayerId owner, long id, ShipAbilityDefinition definition = null, Transform transform = null)
             {
-                FakeHealth health = new FakeHealth();
+                FakeHealth health = new FakeHealth { Transform = transform };
                 Health = health;
                 Entity = new TestEntity(id: id, owner: owner, health: health, command: this);
+                if (definition != null)
+                    Slots = new[] { new ShipAbilitySlot(this, definition, ShipAbilityId.DauntlessSensorJamming) };
             }
 
             public void Attack(IEntity target, Vector3 formationOffset) { }
@@ -177,7 +258,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
             public PlayerId Owner => TestPlayers.Human;
-            public Transform Transform => null;
+            public Transform Transform { get; set; }
             public bool HasShields => true;
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
