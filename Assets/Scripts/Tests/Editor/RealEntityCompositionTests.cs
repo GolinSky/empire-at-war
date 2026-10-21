@@ -447,7 +447,9 @@ namespace EmpireAtWar.Tests.Editor
                 _project.GameData.PlanetType, _project.GameData.MapSize, layout.PlanetPosition);
             PlanetScope planetScope = planet.GetComponentInParent<PlanetScope>();
             Assert.That(planetScope.Parent, Is.SameAs(_battle));
-            Assert.That(planetScope.Assets, Is.SameAs(_project.Assets));
+            Assert.That(planetScope.Assets, Is.SameAs(_battle.Assets));
+            Assert.That(_battle.Assets, Is.Not.SameAs(_project.Assets), "The battle scope owns its own asset cache.");
+            Assert.That(_battle.Container.Resolve<EmpireAtWar.Mvc.IAssetService>(), Is.SameAs(_battle.Assets));
             Assert.That(planetScope.View, Is.SameAs(planet));
             Assert.That(planetScope.Container.Resolve<PlanetData>(), Is.Not.Null);
             bool fog = (features & BattleFeatures.Fog) != 0;
@@ -617,7 +619,7 @@ namespace EmpireAtWar.Tests.Editor
             EntityLifetimeScope scope = view.transform.parent.GetComponent<EntityLifetimeScope>();
             Assert.That(scope, Is.Not.Null, view.name);
             Assert.That(scope.Parent, Is.SameAs(player));
-            Assert.That(scope.Assets, Is.SameAs(_project.Assets));
+            Assert.That(scope.Assets, Is.SameAs(_battle.Assets));
             Assert.That(scope.Container.Resolve<PlayerId>(), Is.EqualTo(slot.Id));
             IEntity entity = scope.Container.Resolve<IEntity>();
             Assert.That(entity.Owner, Is.EqualTo(slot.Id));

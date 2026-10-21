@@ -28,6 +28,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.MiniMap;
+using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -88,6 +89,8 @@ namespace EmpireAtWar.Services.VContainer
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
+            OwnAssets(new CachedAssetService(((ProjectScope)Parent).AssetLoader));
+            builder.RegisterInstance(Assets);
             Battle = ((ProjectScope)Parent).GameData.Battle;
             builder.RegisterInstance(Battle);
             Modules = new BattleModules(Battle, new SuperWeaponsModule(Assets), new EconomyModule(Assets),

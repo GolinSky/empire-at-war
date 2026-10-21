@@ -25,10 +25,12 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private AudioMixer audioMixer;
 
         public GameData GameData { get; private set; }
+        public IAssetHandleLoader AssetLoader { get; private set; }
 
         protected override void Configure(IContainerBuilder builder)
         {
-            Assets = new AddressableAssetService();
+            AssetLoader = new AddressableHandleLoader();
+            OwnAssets(new CachedAssetService(AssetLoader));
             GameData = Object.Instantiate(Assets.Load<GameData>(nameof(GameData)));
             builder.RegisterInstance(Assets);
             builder.RegisterInstance(GameData).AsImplementedInterfaces().AsSelf();

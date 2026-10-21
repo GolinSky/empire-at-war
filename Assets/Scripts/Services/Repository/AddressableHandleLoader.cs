@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using EmpireAtWar.Mvc;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using EmpireAtWar.Repository.Data;
 
 namespace EmpireAtWar.Repository
 {
-    public class AddressableAssetService : IAssetService
+    public class AddressableHandleLoader : IAssetHandleLoader
     {
         private const string MAPPING_DATA_KEY = nameof(AssetMappingData);
 
@@ -13,22 +13,9 @@ namespace EmpireAtWar.Repository
 
         private bool _mappingLoadAttempted;
 
-        public TSource Load<TSource>(string key) where TSource : Object
+        public AsyncOperationHandle<TSource> Load<TSource>(string key) where TSource : Object
         {
-            return Addressables.LoadAssetAsync<TSource>(ResolveKey(key)).WaitForCompletion();
-        }
-
-        public TComponent LoadComponent<TComponent>(string key) where TComponent : Component
-        {
-            GameObject prefab = LoadPrefab(key);
-            if (prefab == null || !prefab.TryGetComponent(out TComponent component))
-                throw new MissingComponentException($"Addressable prefab '{key}' has no {typeof(TComponent).Name}.");
-            return component;
-        }
-
-        public GameObject LoadPrefab(string key)
-        {
-            return Addressables.LoadAssetAsync<GameObject>(ResolveKey(key)).WaitForCompletion();
+            return Addressables.LoadAssetAsync<TSource>(ResolveKey(key));
         }
 
         private string ResolveKey(string key)
@@ -40,6 +27,7 @@ namespace EmpireAtWar.Repository
             return mappingData != null ? mappingData.GetAssetKey(key) : key;
         }
 
+        // The mapping handle is kept for the loader's lifetime, which is the application's.
         private AssetMappingData GetMappingData()
         {
             if (_mappingLoadAttempted)
@@ -51,7 +39,7 @@ namespace EmpireAtWar.Repository
                 .WaitForCompletion();
 
             if (_mappingData == null)
-                Debug.LogWarning($"[{nameof(AddressableAssetService)}] {MAPPING_DATA_KEY} was not found. Falling back to the requested Addressables keys.");
+                Debug.LogWarning($"[{nameof(AddressableHandleLoader)}] {MAPPING_DATA_KEY} was not found. Falling back to the requested Addressables keys.");
 
             return _mappingData;
         }
