@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -28,6 +30,10 @@ namespace EmpireAtWar.Tests.Weapon
                     GameObject hardPointObject = new GameObject("HardPoint");
                     hardPointObject.transform.SetParent(ownerObject.transform);
                     WeaponHardPoint hardPoint = hardPointObject.AddComponent<WeaponHardPoint>();
+                    hardPoint.SetData(new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser,
+                        DamageType.Laser, 1f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white,
+                        Vector3.one, false, false, default, default, 1f, 0f),
+                        100f, 0f, weapon, coordinator, new CombatModifiers(), null, null, null, null);
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)

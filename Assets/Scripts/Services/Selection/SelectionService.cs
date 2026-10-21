@@ -1,3 +1,4 @@
+using Action = System.Action;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Selection.Marquee;
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly List<IObserver<ISelectionSubject>> _observers =
             new List<IObserver<ISelectionSubject>>();
         private readonly List<SelectionEntry> _selectionBuffer = new List<SelectionEntry>();
+        private readonly Dictionary<IEntity, Action> _deathHandlers = new Dictionary<IEntity, Action>();
         private readonly SelectionContext _playerSelectionContext;
         private readonly SelectionContext _otherSelectionContext;
 
@@ -77,6 +79,9 @@ namespace EmpireAtWar.Services.Battle
             _selectionInput.SelectVisibleRequested -= HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
+            foreach (var pair in _deathHandlers)
+                pair.Key.HealthModel.OnDestroy -= pair.Value;
+            _deathHandlers.Clear();
             _playerSelectionContext.ResetCurrentSelectable();
             _otherSelectionContext.ResetCurrentSelectable();
         }
@@ -207,12 +212,22 @@ namespace EmpireAtWar.Services.Battle
 
         private void SetSelection(SelectionScope scope, IReadOnlyList<SelectionEntry> selection)
         {
+            foreach (IEntity entity in GetContext(scope).Entities)
+                UnsubscribeDeath(entity);
             GetContext(scope).Replace(selection);
+            foreach (IEntity entity in GetContext(scope).Entities)
+            {
+                Action handler = () => HandleEntityRemoved(entity);
+                _deathHandlers.Add(entity, handler);
+                entity.HealthModel.OnDestroy += handler;
+            }
             NotifyObservers(scope);
         }
 
         private void ClearSelection(SelectionScope scope)
         {
+            foreach (IEntity entity in GetContext(scope).Entities)
+                UnsubscribeDeath(entity);
             GetContext(scope).ResetCurrentSelectable();
             NotifyObservers(scope);
         }
@@ -232,6 +247,7 @@ namespace EmpireAtWar.Services.Battle
 
         private void HandleEntityRemoved(EmpireAtWar.Entities.BaseEntity.IEntity entity)
         {
+            UnsubscribeDeath(entity);
             if (_lastTappedEntityId == entity.Id)
             {
                 _lastTappedEntityId = null;
@@ -242,6 +258,13 @@ namespace EmpireAtWar.Services.Battle
             {
                 NotifyObservers(scope);
             }
+        }
+
+        private void UnsubscribeDeath(IEntity entity)
+        {
+            if (!_deathHandlers.TryGetValue(entity, out Action handler)) return;
+            entity.HealthModel.OnDestroy -= handler;
+            _deathHandlers.Remove(entity);
         }
 
         private SelectionScope GetScope(IEntity entity)

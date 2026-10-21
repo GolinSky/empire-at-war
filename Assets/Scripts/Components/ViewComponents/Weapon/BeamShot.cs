@@ -84,7 +84,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             // Keep the last known points when the shooter or the target is destroyed mid-beam.
             if (_muzzle != null) _lastOrigin = _muzzle.position;
-            if (_target != null) _lastAimPoint = ResolveAimPoint(_lastOrigin, _target.position + _aimOffset);
+            if (_target != null && !IsImpactTargetDestroyed)
+                _lastAimPoint = ResolveAimPoint(_lastOrigin, _target.position + _aimOffset);
 
             float elapsed = Time.time - _startTime;
             float growth = Mathf.Clamp01(elapsed / growthDuration);
@@ -99,6 +100,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _isHitPlaying = true;
                 if (HasArmorImpact) hitEffect.Play(true);
                 CompleteImpact(end, _lastAimPoint - _lastOrigin);
+            }
+
+            if (_isHitPlaying)
+            {
+                if (HasArmorImpact && !hitEffect.isPlaying) hitEffect.Play(true);
+                else if (!HasArmorImpact && hitEffect.isPlaying)
+                    hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             }
 
             if (elapsed >= growthDuration + _currentHoldDuration)

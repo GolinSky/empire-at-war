@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -32,6 +35,46 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             UnityEngine.Object.DestroyImmediate(_matrix);
+        }
+
+        [Test]
+        public void PointDefense_WhileCloakedPreservesMissileAndCanFireAfterDecloaking()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+            CombatModifiers modifiers = new CombatModifiers();
+            IncomingMissileRegistry missiles = new IncomingMissileRegistry();
+            GameObject mountObject = new GameObject("PointDefense");
+            try
+            {
+                const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+                HealthComponent health = mountObject.AddComponent<HealthComponent>();
+                typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(health, new object[] { model, modifiers, mountObject.transform, TestPlayers.Human });
+                IncomingMissile missile = missiles.Launch(health, Vector3.forward, 100f);
+                MissileInterceptorHardPoint mount = mountObject.AddComponent<MissileInterceptorHardPoint>();
+                LineRenderer laser = mountObject.AddComponent<LineRenderer>();
+                laser.positionCount = 2;
+                laser.enabled = false;
+                typeof(MissileInterceptorHardPoint).GetField("laser", PRIVATE_INSTANCE).SetValue(mount, laser);
+                typeof(MissileInterceptorHardPoint).GetField("interceptChance", PRIVATE_INSTANCE).SetValue(mount, 1f);
+                typeof(MissileInterceptorHardPoint).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(mount, new object[] { missiles, health, modifiers });
+                MethodInfo update = typeof(MissileInterceptorHardPoint).GetMethod("Update", PRIVATE_INSTANCE);
+
+                modifiers.SetCloaked(true);
+                update.Invoke(mount, null);
+                Assert.That(missile.IsIntercepted, Is.False);
+                Assert.That(laser.enabled, Is.False);
+
+                modifiers.SetCloaked(false);
+                update.Invoke(mount, null);
+                Assert.That(missile.IsIntercepted, Is.True);
+                Assert.That(laser.enabled, Is.True);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(mountObject);
+            }
         }
 
         [Test]
@@ -168,6 +211,22 @@ namespace EmpireAtWar.Tests.Editor
             HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
 
             Assert.Throws<InvalidOperationException>(() => model.Restore(1f, 1f, new[] { 1f }));
+        }
+
+        [Test]
+        public void RegenerateShields_AfterDeath_DoesNotRestoreShieldsOrNotify()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+            model.ApplyDamage(SHIELDS, DamageType.Turbolaser, 0);
+            model.ApplyDamage(HULL, DamageType.Turbolaser, 1);
+            int changes = 0;
+            model.OnValueChanged += () => changes++;
+
+            model.RegenerateShields(100f);
+
+            Assert.That(model.IsDestroyed, Is.True);
+            Assert.That(model.Shields, Is.Zero);
+            Assert.That(changes, Is.Zero);
         }
 
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,

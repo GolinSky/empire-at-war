@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using DG.Tweening;
 using EmpireAtWar.Components.Selection.Marquee;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
@@ -23,6 +24,67 @@ namespace EmpireAtWar.Tests.Selection
 {
     public sealed class SelectionInputTests
     {
+        [TestCase(true)]
+        [TestCase(false)]
+        public void SelectedEntityDeath_ClearsSelectionBeforeDespawn(bool local)
+        {
+            FakeInputService input = new FakeInputService();
+            FakeSelectionQuery query = new FakeSelectionQuery();
+            EntityLocator locator = new EntityLocator();
+            SelectionService service = new SelectionService(input, input, input, locator, query,
+                new FakeMarqueeSelectionPresenter(), TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            FakeSelectionCommand command = new FakeSelectionCommand(SelectionType.Ship);
+            FakeEntity entity = new FakeEntity(command, local ? TestPlayers.Human : TestPlayers.Enemy, 1);
+            locator.AddEntity(entity);
+            query.Add(Vector2.zero, new SelectionEntry(entity, command));
+            service.Initialize();
+            try
+            {
+                input.RaiseSelectionBegan(Vector2.zero);
+                Assert.That(command.IsSelected, Is.True);
+                Assert.That(entity.Health.DeathSubscribers, Is.EqualTo(1));
+
+                entity.Health.Destroy();
+
+                Assert.That(command.IsSelected, Is.False);
+                Assert.That(service.PlayerSelectionContext.HasSelectable, Is.False);
+                Assert.That(service.OtherSelectionContext.HasSelectable, Is.False);
+                Assert.That(locator.Entities, Does.Contain(entity));
+                Assert.That(entity.Health.DeathSubscribers, Is.Zero);
+                locator.RemoveEntity(entity);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
+        [Test]
+        public void SelectionClearedOrDisposed_RemovesDeathSubscription()
+        {
+            FakeInputService input = new FakeInputService();
+            FakeSelectionQuery query = new FakeSelectionQuery();
+            SelectionService service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            FakeSelectionCommand command = new FakeSelectionCommand(SelectionType.Ship);
+            FakeEntity entity = new FakeEntity(command, TestPlayers.Human, 1);
+            query.Add(Vector2.zero, new SelectionEntry(entity, command));
+            service.Initialize();
+            try
+            {
+                input.RaiseSelectionBegan(Vector2.zero);
+                input.RaiseSelectionBegan(Vector2.one);
+                Assert.That(entity.Health.DeathSubscribers, Is.Zero);
+                input.RaiseSelectionBegan(Vector2.zero);
+                Assert.That(entity.Health.DeathSubscribers, Is.EqualTo(1));
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+            Assert.That(entity.Health.DeathSubscribers, Is.Zero);
+        }
+
         [Test]
         public void SelectionBegan_ClearsPreviousSelectionBeforeApplyingHit()
         {
@@ -295,12 +357,39 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
+        private sealed class FakeHealth : IHealthModelObserver
+        {
+            public event Action OnDestroy;
+            public event Action OnValueChanged { add { } remove { } }
+            public int DeathSubscribers => OnDestroy == null ? 0 : OnDestroy.GetInvocationList().Length;
+            public ShipClass ShipClass => ShipClass.Fighter;
+            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public float Hull => IsDestroyed ? 0f : 100f;
+            public float HullPercentage => IsDestroyed ? 0f : 1f;
+            public float Shields => 0f;
+            public float ShieldPercentage => 0f;
+            public bool IsDestroyed { get; private set; }
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => !IsDestroyed;
+            public bool HasLiveHardPoints => !IsDestroyed;
+            public bool HasShields => false;
+            public PlayerId Owner => default;
+            public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
+
+            public void Destroy()
+            {
+                IsDestroyed = true;
+                if (OnDestroy != null) OnDestroy.Invoke();
+            }
+        }
+
         private sealed class FakeEntity : GameEntity
         {
             private readonly IEntitySelectionFacade _selectionCommand;
 
             public long Id { get; }
-            public IHealthModelObserver HealthModel => null;
+            public FakeHealth Health { get; } = new FakeHealth();
+            public IHealthModelObserver HealthModel => Health;
             public PlayerId Owner { get; }
 
             public FakeEntity(

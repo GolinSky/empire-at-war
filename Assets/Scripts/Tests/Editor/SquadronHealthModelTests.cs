@@ -121,6 +121,25 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Shields, Is.EqualTo(MEMBER_SHIELDS * MEMBER_COUNT));
         }
 
+        [Test]
+        public void InitializeMembers_RefreshesModifiersChangedWhileDespawned()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            modifiers.SetFleetCommand(true);
+            SquadronHealthModel model = new SquadronHealthModel(new TestHealthData(), _matrix, modifiers);
+            model.InitializeMembers(CreateMembers());
+            for (int i = 0; i < MEMBER_COUNT; i++)
+                model.ApplyDamage(MEMBER_HULL * 10f, DamageType.ProtonTorpedo, i);
+
+            modifiers.SetFleetCommand(false);
+            model.InitializeMembers(CreateMembers());
+
+            Assert.That(model.Hull, Is.EqualTo(MEMBER_HULL * MEMBER_COUNT));
+            Assert.That(model.MaxHull, Is.EqualTo(MEMBER_HULL * MEMBER_COUNT));
+            Assert.That(model.Shields, Is.EqualTo(MEMBER_SHIELDS * MEMBER_COUNT));
+            Assert.That(model.MaxShields, Is.EqualTo(MEMBER_SHIELDS * MEMBER_COUNT));
+        }
+
         private static HardPointModel[] CreateMembers()
         {
             HardPointModel[] members = new HardPointModel[MEMBER_COUNT];

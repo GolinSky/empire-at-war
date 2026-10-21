@@ -55,6 +55,7 @@ namespace EmpireAtWar.Components.Weapon
                 byte flags = SlotFlags[slot];
                 if ((flags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (input.StrikecraftOnly != 0 && (flags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
+                if (input.ShipsOnly != 0 && (flags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0) continue;
                 if (IsPreferred(input.Preference, flags) != (pass == 0)) continue;
                 result.Visited++;
                 float3 direction = SlotPositions[slot] - input.Origin;
@@ -127,6 +128,7 @@ namespace EmpireAtWar.Components.Weapon
             public int CandidateCount;
             public int GroupStart;
             public int StrikecraftOnly;
+            public int ShipsOnly;
             // A TargetPreference value.
             public int Preference;
         }

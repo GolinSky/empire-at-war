@@ -7,6 +7,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
+using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Tests.Weapon
 {
@@ -81,6 +82,52 @@ namespace EmpireAtWar.Tests.Weapon
             {
                 Object.DestroyImmediate(mount);
             }
+        }
+
+        [Test]
+        public void RestartAttackSequence_ClearsReloadAndTurnFromPreviousLife()
+        {
+            GameObject mount = new GameObject("Mount");
+            try
+            {
+                WeaponHardPoint weapon = mount.AddComponent<WeaponHardPoint>();
+                FloatRange arc = new FloatRange();
+                SetBound(arc, "Min", -90f);
+                SetBound(arc, "Max", 90f);
+                weapon.SetData(arc);
+                weapon.SetData(Profile(45f), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+                ITimer timer = (ITimer)typeof(WeaponHardPoint).GetField("_reloadTimer",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(weapon);
+                timer.ChangeDelay(100f).StartTimer();
+                weapon.TurnTowards(Vector3.right * 10f);
+                weapon.ReleaseAttackSequence();
+
+                weapon.RestartAttackSequence();
+
+                Assert.That(timer.TimeLeft, Is.Zero);
+                Assert.That(typeof(WeaponHardPoint).GetField("_turnEndTime",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(weapon), Is.EqualTo(float.NegativeInfinity));
+                Assert.That(weapon.TurnTowards(Vector3.forward * 10f), Is.Zero);
+            }
+            finally { Object.DestroyImmediate(mount); }
+        }
+
+        [Test]
+        public void WeaponRange_TracksFleetCommandWithoutReinitializingMount()
+        {
+            GameObject mount = new GameObject("Mount");
+            try
+            {
+                WeaponHardPoint weapon = mount.AddComponent<WeaponHardPoint>();
+                CombatModifiers modifiers = new CombatModifiers();
+                weapon.SetData(Profile(0f), 100f, 0f, null, null, modifiers, null, null, null, null);
+                Assert.That(weapon.MaxAttackDistance, Is.EqualTo(100f));
+                modifiers.SetFleetCommand(true);
+                Assert.That(weapon.MaxAttackDistance, Is.EqualTo(150f));
+                modifiers.SetFleetCommand(false);
+                Assert.That(weapon.MaxAttackDistance, Is.EqualTo(100f));
+            }
+            finally { Object.DestroyImmediate(mount); }
         }
 
         private static WeaponProfile Profile(float turnRate) =>

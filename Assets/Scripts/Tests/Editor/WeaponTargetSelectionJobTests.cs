@@ -172,6 +172,22 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(result.Visited, Is.EqualTo(2));
         }
 
+        [Test]
+        public void ShipsOnly_SkipsStrikecraftEvenWhenPreferredShipIsOutOfRange()
+        {
+            Vector3[] positions = { new Vector3(0f, 0f, 50f), new Vector3(0f, 0f, 4f) };
+            byte[] flags = { TargetSelectionCapture.SLOT_VALID,
+                TargetSelectionCapture.SLOT_VALID | TargetSelectionCapture.SLOT_STRIKECRAFT };
+            WeaponTargetSelectionJob.Input input = Input(positions.Length);
+            input.Preference = (int)TargetPreference.Ships;
+            input.ShipsOnly = 1;
+
+            WeaponTargetSelectionJob.Result result = Run(8, input, positions, flags, null);
+
+            Assert.That(result.CandidateIndex, Is.EqualTo(-1));
+            Assert.That(result.Visited, Is.EqualTo(1));
+        }
+
         private static WeaponTargetSelectionJob.Input Input(int candidateCount) => new WeaponTargetSelectionJob.Input
         {
             Origin = float3.zero,

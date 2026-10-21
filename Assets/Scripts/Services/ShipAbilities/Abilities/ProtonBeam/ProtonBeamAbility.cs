@@ -27,7 +27,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private float _timeLeft;
         private float _pendingTime;
 
-        public bool IsComplete => _timeLeft <= 0f || _target.HealthModel.IsDestroyed || _caster.Modifiers.IsIonDisabled;
+        public bool IsComplete => _timeLeft <= 0f || _target.HealthModel.IsDestroyed || _target.IsCloaked() || _caster.Modifiers.IsIonDisabled;
         public bool SurvivesCasterDeath => false;
 
         public ProtonBeamAbility(ProtonBeamSettings settings,
@@ -80,7 +80,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 break;
             }
 
-            _health.ApplyDamage(damage, _settings.DamageType, hardPointId);
+            _health.ApplyDamage(damage * _caster.Modifiers.GetDamageMultiplier(_target), _settings.DamageType, hardPointId);
         }
 
         public void Stop()

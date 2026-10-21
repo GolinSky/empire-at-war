@@ -112,6 +112,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if (!_isFlying) return false;
             float remaining = Mathf.Max(_arrivalTime - now, 0f);
+            if (_target != null && IsImpactTargetDestroyed)
+            {
+                _target = null;
+                _lastAimPoint = _flightAimPoint;
+            }
             if (_target != null) TrackTarget(now, remaining, deltaTime);
 
             if (remaining <= 0f)
@@ -164,7 +169,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     _anchor += (_flightAimPoint - _anchor) * (1f - remaining / _anchorDuration);
                     _anchorDuration = remaining;
                 }
-                _surfaceOffset = ResolveAimPoint(_start, targetPoint) - targetPoint;
+                _surfaceOffset = ResolveAimPoint(_anchor, targetPoint) - targetPoint;
                 _nextSurfaceRefresh = now + SURFACE_REFRESH_INTERVAL;
             }
 

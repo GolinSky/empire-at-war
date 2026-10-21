@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -10,6 +11,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -19,6 +21,41 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class ShipAbilityServiceTests
     {
         private GameObject _targetView;
+
+        [TestCase(false, 0.2f)]
+        [TestCase(true, 0.2f)]
+        [TestCase(false, 0.05f)]
+        [TestCase(true, 0.05f)]
+        public void BeamDamage_UsesAttackerBonusesAndStopsWhenTargetCloaks(bool composite, float step)
+        {
+            WeaponsData weapons = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            IPhasedShipAbility beam = composite
+                ? new CompositeBeamAbility(new CompositeBeamSettings(), null, weapons)
+                : new ProtonBeamAbility(new ProtonBeamSettings(), null, weapons);
+            FakeCommand caster = CreateCaster();
+            FakeCommand target = CreateCaster();
+            caster.Modifiers.Add(new CombatStatModifier(2f, 1f, 1f, 1f, 1f));
+            caster.Modifiers.SetFleetCommand(true);
+            caster.Modifiers.SetFocusFire(target.Entity, 1.5f);
+            // Exercise the running ability without spawning its visual presentation.
+            SetBeamField(beam, "_caster", caster);
+            SetBeamField(beam, "_target", target.Entity);
+            SetBeamField(beam, "_health", target.FakeHealth);
+            SetBeamField(beam, "_damagePerSecond", 100f);
+            SetBeamField(beam, "_timeLeft", 1f);
+
+            for (int i = 0; i < Mathf.CeilToInt(1f / step) + 1; i++) beam.Advance(step);
+
+            Assert.That(target.FakeHealth.DamageReceived, Is.EqualTo(330f).Within(0.001f));
+            SetBeamField(beam, "_timeLeft", 1f);
+            Assert.That(beam.IsComplete, Is.False);
+            target.Modifiers.SetCloaked(true);
+            Assert.That(beam.IsComplete, Is.True);
+        }
+
+        private static void SetBeamField(IPhasedShipAbility beam, string name, object value) =>
+            beam.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(beam, value);
 
         [TearDown]
         public void TearDown()
@@ -242,7 +279,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Stop() => StopCount++;
         }
 
-        private sealed class FakeCommand : IShipAbilityFacade
+        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade
         {
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
@@ -293,8 +330,11 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
+        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade, IHealthFacade
         {
+            public float DamageReceived { get; private set; }
+            public void ApplyDamage(float damage, DamageType damageType, int id) => DamageReceived += damage;
+
             public event Action OnDestroy { add { } remove { } }
 
             public event Action OnValueChanged { add { } remove { } }

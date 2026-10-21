@@ -29,22 +29,25 @@ namespace EmpireAtWar.Services.Battle
         private readonly BattleVictoryService _victory;
         private readonly TeamIntelRegistry _intel;
         private readonly ShipAbilityService _abilities;
+        private readonly CombatAttackCoordinator _attacks;
 
         public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, BattleUnitSpawner spawner,
             ShotPoolPrewarmer shots, BoltFlightBatch bolts, IncomingMissileRegistry missiles, UnitWreckService wrecks,
             UnitExplosionService explosions, FighterExplosionPool fighters, HardPointExplosionPool hardPoints,
-            ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities)
+            ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities,
+            CombatAttackCoordinator attacks)
         {
             _players = players; _roster = roster; _spawner = spawner; _shots = shots; _bolts = bolts;
             _missiles = missiles; _wrecks = wrecks; _explosions = explosions; _fighters = fighters;
             _hardPoints = hardPoints; _impacts = impacts; _victory = victory;
-            _intel = intel; _abilities = abilities;
+            _intel = intel; _abilities = abilities; _attacks = attacks;
         }
 
         public async Awaitable ResetAsync(SimulationSetup setup, CancellationToken cancellationToken)
         {
             _abilities.Clear();
             _players.Dispose();
+            _attacks.ClearPendingAttacks();
             _intel.Clear();
             _spawner.Clear();
             _shots.Clear(); _bolts.Clear(); _missiles.Clear();

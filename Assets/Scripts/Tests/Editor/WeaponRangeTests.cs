@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Selection;
@@ -37,6 +38,8 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(WeaponComponent).GetField("_attackRangeCircle", PRIVATE_INSTANCE).SetValue(weapon, circle);
                 typeof(WeaponComponent).GetField("_viewTransform", PRIVATE_INSTANCE)
                     .SetValue(weapon, root.transform);
+                typeof(WeaponComponent).GetField("_modifiers", PRIVATE_INSTANCE)
+                    .SetValue(weapon, new CombatModifiers());
 
                 weapon.Tick();
 

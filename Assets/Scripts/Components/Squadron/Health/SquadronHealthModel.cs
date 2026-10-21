@@ -54,6 +54,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public void InitializeMembers(IReadOnlyList<HardPointModel> members)
         {
+            _hullMultiplier = _modifiers.HullMultiplier;
+            _shieldsMultiplier = _modifiers.ShieldsMultiplier;
             Members = new HardPointModel[members.Count];
             _shields = new float[members.Count];
             IsDestroyed = false;

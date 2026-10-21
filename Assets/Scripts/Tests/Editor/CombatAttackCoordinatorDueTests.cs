@@ -53,14 +53,14 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
-        public void LateTick_CancelledImpactDoesNotCommitAfterEarlierCallback()
+        public void LateTick_FiredImpactsStillCommitWhenEarlierImpactKillsTheirOwner()
         {
             CombatAttackCoordinator coordinator = new CombatAttackCoordinator();
             GameObject targetObject = new GameObject("Target");
             try
             {
                 FakeTarget target = new FakeTarget(targetObject.transform);
-                RecordingOwner cancelledOwner = new RecordingOwner(() => Assert.Fail("Cancelled impact committed."));
+                RecordingOwner cancelledOwner = new RecordingOwner(() => { });
                 RecordingOwner firstOwner = new RecordingOwner(() => coordinator.Unregister(cancelledOwner));
                 coordinator.Register(firstOwner);
                 coordinator.Register(cancelledOwner);
@@ -72,8 +72,34 @@ namespace EmpireAtWar.Tests.Weapon
                 coordinator.LateTick();
 
                 Assert.That(firstOwner.Commits, Is.EqualTo(1));
-                Assert.That(cancelledOwner.Commits, Is.Zero);
+                Assert.That(cancelledOwner.Commits, Is.EqualTo(64));
                 Assert.That(coordinator.PendingImpacts, Is.Zero);
+            }
+            finally
+            {
+                coordinator.Dispose();
+                UnityEngine.Object.DestroyImmediate(targetObject);
+            }
+        }
+
+        [Test]
+        public void ClearPendingAttacks_DiscardsInFlightDamageWithoutUnregisteringWeapons()
+        {
+            CombatAttackCoordinator coordinator = new CombatAttackCoordinator();
+            GameObject targetObject = new GameObject("Target");
+            try
+            {
+                FakeTarget target = new FakeTarget(targetObject.transform);
+                RecordingOwner owner = new RecordingOwner(() => { });
+                coordinator.Register(owner);
+                coordinator.ScheduleImpact(owner, null, target, 1f, default, 0f, null);
+                coordinator.ClearPendingAttacks();
+                coordinator.LateTick();
+                Assert.That(owner.Commits, Is.Zero);
+                coordinator.ScheduleImpact(owner, null, target, 1f, default, 0f, null);
+                MakeImpactsDue(coordinator);
+                coordinator.LateTick();
+                Assert.That(owner.Commits, Is.EqualTo(1));
             }
             finally
             {
@@ -141,8 +167,7 @@ namespace EmpireAtWar.Tests.Weapon
                     }
                     long elapsed = Stopwatch.GetTimestamp() - start;
                     Assert.That(owner.Commits - commitsBefore, Is.EqualTo(dueCount));
-                    coordinator.Unregister(owner);
-                    coordinator.Register(owner);
+                    coordinator.ClearPendingAttacks();
                     if (iteration >= 0) samples[iteration] =
                         (long)(elapsed * (1000000000d / Stopwatch.Frequency));
                 }

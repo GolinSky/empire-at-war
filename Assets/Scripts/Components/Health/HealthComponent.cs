@@ -168,6 +168,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void Tick()
         {
+            if (_isReleased || Model.IsDestroyed) return;
             if (!Model.IsLostShieldGenerator && Model.Shields < Model.MaxShields &&
                 _refreshShieldsTimer.IsComplete)
             {

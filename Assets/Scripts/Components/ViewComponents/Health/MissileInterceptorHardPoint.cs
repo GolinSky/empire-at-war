@@ -44,7 +44,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private void Update()
         {
             if (laser.enabled && _laserTimer.IsComplete) laser.enabled = false;
-            if (IsDestroyed || _modifiers.IsIonDisabled || !_reloadTimer.IsComplete) return;
+            if (IsDestroyed || _ownHealth.IsDestroyed || _modifiers.IsIonDisabled || _modifiers.IsCloaked || !_reloadTimer.IsComplete) return;
             if (!_missiles.TryFindThreat(_ownHealth.Owner, transform.position, range, out IncomingMissile missile))
                 return;
 

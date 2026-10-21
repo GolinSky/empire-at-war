@@ -183,6 +183,7 @@ namespace EmpireAtWar.Models.Health
 
         public void RegenerateShields(float value)
         {
+            if (IsDestroyed) return;
             Shields = Math.Min(MaxShields, Shields + value);
             OnValueChanged?.Invoke();
         }

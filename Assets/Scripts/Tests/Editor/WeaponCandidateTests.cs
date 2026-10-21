@@ -2,11 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Services.Cheats;
+using EmpireAtWar.Utils;
+using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.ViewComponents.Weapon;
+using Utilities.ScriptUtils.Math;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -20,6 +29,7 @@ namespace EmpireAtWar.Tests.Weapon
         private readonly List<GameObject> _objects = new List<GameObject>();
         private CombatAttackCoordinator _coordinator;
         private WeaponComponent _weapon;
+        private DebugRangeCircle _circle;
 
         [SetUp]
         public void SetUp()
@@ -33,10 +43,130 @@ namespace EmpireAtWar.Tests.Weapon
         [TearDown]
         public void TearDown()
         {
+            if (_circle != null) _circle.Destroy();
             foreach (GameObject created in _objects)
                 if (created != null) Object.DestroyImmediate(created);
             _objects.Clear();
             _coordinator.Dispose();
+        }
+
+        [TestCase(1)]
+        [TestCase(174)]
+        public void Tick_QueuesEveryReadyMountInOneFrame(int mountCount)
+        {
+            List<WeaponHardPoint> mounts = ConfigureMounts(mountCount);
+
+            _weapon.Tick();
+
+            TargetSelectionBatch batch = (TargetSelectionBatch)typeof(CombatAttackCoordinator)
+                .GetField("_targetSelection", PRIVATE_INSTANCE).GetValue(_coordinator);
+            Assert.That(batch.RequestCount, Is.EqualTo(mounts.Count));
+        }
+
+        [Test]
+        public void NoEligibleTargets_DelaysOnlyThatMount()
+        {
+            List<WeaponHardPoint> mounts = ConfigureMounts(2);
+            _weapon.CommitTargetSelection(mounts[0], _weapon.TargetVersion,
+                new WeaponTargetSelectionJob.Result { CandidateIndex = -1, NearestDistance = float.PositiveInfinity },
+                null, null, 0);
+
+            _weapon.Tick();
+
+            TargetSelectionBatch batch = (TargetSelectionBatch)typeof(CombatAttackCoordinator)
+                .GetField("_targetSelection", PRIVATE_INSTANCE).GetValue(_coordinator);
+            Assert.That(batch.RequestCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TurnedSalvo_DoesNotFireAtRespawnedTarget()
+        {
+            WeaponHardPoint mount = ConfigureMounts(1)[0];
+            AttackData group = Group(1);
+            HardPointStub target = (HardPointStub)group.Units[0];
+            target.Transform.position = Vector3.right * 10f;
+            typeof(WeaponComponent).GetMethod("Engage", PRIVATE_INSTANCE)
+                .Invoke(_weapon, new object[] { mount, group, target });
+            System.Collections.IList salvos = (System.Collections.IList)Field("_turningSalvos");
+            Assert.That(salvos.Count, Is.EqualTo(1));
+            object salvo = salvos[0];
+            salvo.GetType().GetField("FireTime").SetValue(salvo, float.NegativeInfinity);
+            salvos[0] = salvo;
+            target.Generation++;
+
+            Assert.DoesNotThrow(() => Invoke("FireTurnedSalvos"));
+            Assert.That(_coordinator.PendingSequences, Is.Zero);
+            Assert.That(salvos.Count, Is.Zero);
+        }
+
+        [Test]
+        public void Torpedo_RejectedShotDoesNotConsumeAttackRun()
+        {
+            ConfigureMounts(0);
+            FighterTorpedoHardPoint mount = Track(new GameObject("Torpedo")).AddComponent<FighterTorpedoHardPoint>();
+            CombatModifiers modifiers = new CombatModifiers();
+            modifiers.SetCloaked(true);
+            mount.SetData(Profile(), 100f, 0f, _weapon, _coordinator, modifiers, null, null, null, null);
+            typeof(FighterTorpedoHardPoint).GetField("_attackRuns", PRIVATE_INSTANCE)
+                .SetValue(mount, new AttackRunStub());
+            AttackData group = Group(1);
+
+            mount.Attack(group, group.Units[0]);
+
+            Assert.That(typeof(FighterTorpedoHardPoint).GetField("_firedRun", PRIVATE_INSTANCE).GetValue(mount), Is.Zero);
+            Assert.That(mount.CanEngage(ShipClass.Fighter), Is.False);
+            Assert.That(mount.CanEngage(ShipClass.Capital), Is.True);
+        }
+
+        [TestCase(DamageType.Ion)]
+        [TestCase(DamageType.IonCannon)]
+        public void IonMount_DoesNotAcquireStrikecraft(DamageType damageType)
+        {
+            WeaponHardPoint mount = Track(new GameObject("Ion")).AddComponent<WeaponHardPoint>();
+            mount.SetData(Profile(damageType), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+            Assert.That(mount.CanEngage(ShipClass.Fighter), Is.False);
+            Assert.That(mount.CanEngage(ShipClass.Bomber), Is.False);
+            Assert.That(mount.CanEngage(ShipClass.Interceptor), Is.False);
+            Assert.That(mount.CanEngage(ShipClass.Capital), Is.True);
+        }
+
+        private List<WeaponHardPoint> ConfigureMounts(int count)
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            typeof(WeaponComponent).GetField("_modifiers", PRIVATE_INSTANCE).SetValue(_weapon, modifiers);
+            WeaponModel model = new WeaponModel(new Dictionary<(DamageType, ShipClass), float>());
+            model.SetRanges(100f, new Dictionary<ShipClass, float>());
+            typeof(WeaponComponent).BaseType.GetMethod("SetModel", PRIVATE_INSTANCE)
+                .Invoke(_weapon, new object[] { model });
+            _circle = new DebugRangeCircle(new RangeDebugModel(), new SelectionModel(), null, "TestRange", Color.red);
+            typeof(WeaponComponent).GetField("_attackRangeCircle", PRIVATE_INSTANCE).SetValue(_weapon, _circle);
+            typeof(WeaponComponent).GetField("_viewTransform", PRIVATE_INSTANCE).SetValue(_weapon, _weapon.transform);
+            List<WeaponHardPoint> mounts = new List<WeaponHardPoint>();
+            for (int i = 0; i < count; i++)
+            {
+                WeaponHardPoint mount = Track(new GameObject("Mount")).AddComponent<WeaponHardPoint>();
+                FloatRange arc = new FloatRange();
+                typeof(Range<float>).GetProperty("Min").GetSetMethod(true).Invoke(arc, new object[] { -180f });
+                typeof(Range<float>).GetProperty("Max").GetSetMethod(true).Invoke(arc, new object[] { 180f });
+                mount.SetData(arc);
+                mount.SetData(Profile(), 100f, 0f, _weapon, _coordinator, modifiers, null, null, null, null);
+                object timer = typeof(WeaponHardPoint).GetField("_reloadTimer", PRIVATE_INSTANCE).GetValue(mount);
+                timer.GetType().GetField("_timer", PRIVATE_INSTANCE).SetValue(timer, float.NegativeInfinity);
+                mounts.Add(mount);
+            }
+            typeof(WeaponComponent).GetField("hardPoints", PRIVATE_INSTANCE).SetValue(_weapon, mounts);
+            typeof(WeaponComponent).GetField("_retryAt", PRIVATE_INSTANCE).SetValue(_weapon, new float[count]);
+            _coordinator.Register(_weapon);
+            return mounts;
+        }
+
+        private static WeaponProfile Profile(DamageType damageType = DamageType.Laser) =>
+            new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, damageType, 1f, 1, 0f, 1f, 100f,
+                false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 1f, 45f);
+
+        private sealed class AttackRunStub : IFighterAttackRunObserver
+        {
+            public int GetAttackRun(int fighterIndex) => 1;
         }
 
         [Test]
@@ -119,8 +249,28 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(((List<AttackData>)Field("_attackDataList")).Contains(respawned), Is.True);
         }
 
-        private AttackData Group(int units) =>
-            new AttackData(new HealthStub(Units(units)), null, HardPointType.Any, null);
+        private AttackData Group(int units)
+        {
+            HealthStub health = new HealthStub(Units(units));
+            return new AttackData(health, new HealthFacadeStub(), HardPointType.Any, new EntityStub(health));
+        }
+
+        private sealed class EntityStub : IEntity
+        {
+            public EntityStub(IHealthModelObserver health) => HealthModel = health;
+            public long Id => 1;
+            public IHealthModelObserver HealthModel { get; }
+            public PlayerId Owner => default;
+
+            public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade =>
+                throw new InvalidOperationException("The target fixture has no entity facades.");
+
+            public bool TryGetFacade<TFacade>(out TFacade facade) where TFacade : IEntityFacade
+            {
+                facade = default;
+                return false;
+            }
+        }
 
         private IHardPointModel[] Units(int count)
         {
@@ -200,7 +350,7 @@ namespace EmpireAtWar.Tests.Weapon
             public HardPointType HardPointType => HardPointType.Weapon;
             public float HealthPercentage => 1f;
             public int Id => 0;
-            public int Generation => 0;
+            public int Generation { get; set; }
             public bool IsDestroyed => false;
             public Vector3 Position => Transform.position;
             public Transform Transform { get; }

@@ -1,4 +1,10 @@
+using System;
 using System.Reflection;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Players;
+using Object = UnityEngine.Object;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
@@ -164,6 +170,117 @@ namespace EmpireAtWar.Tests.Weapon
                 Object.DestroyImmediate(muzzle);
                 Object.DestroyImmediate(target);
             }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void FlightBatch_TargetDeathOrShieldReturnDoesNotReverseBolt(bool targetDies)
+        {
+            GameObject bolt = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab"));
+            GameObject muzzle = new GameObject("Test muzzle");
+            GameObject target = new GameObject("Test target");
+            BoltFlightBatch flights = new BoltFlightBatch();
+            try
+            {
+                target.transform.position = Vector3.forward * 100f;
+                WeaponProfile profile = new WeaponProfile();
+                JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
+                VisualHealth health = new VisualHealth();
+                BoltShot shot = bolt.GetComponent<BoltShot>();
+                shot.PrepareImpact(new ImpactEffectPresenter(new SilentImpactView(), LoadDamageMatrix()),
+                    health, DamageType.Turbolaser, 1f, 1f, true);
+                Fire(bolt, muzzle.transform, target.transform, profile, flights);
+                float launch = Time.time;
+                flights.Advance(launch + 0.6f, 0f);
+                Assert.That(bolt.transform.position.z, Is.EqualTo(60f).Within(0.01f));
+                if (targetDies)
+                {
+                    health.IsDestroyed = true;
+                    target.transform.position = Vector3.back * 100f;
+                }
+                else health.HasShields = true;
+                flights.Advance(launch + 0.7f, 0f);
+                flights.Advance(launch + 0.8f, 0f);
+                Assert.That(bolt.transform.position.z, Is.GreaterThanOrEqualTo(60f));
+                flights.Advance(launch + 1.1f, 0f);
+                Assert.That(bolt.transform.position.z, Is.GreaterThanOrEqualTo(60f));
+            }
+            finally
+            {
+                flights.Dispose();
+                Object.DestroyImmediate(bolt);
+                Object.DestroyImmediate(muzzle);
+                Object.DestroyImmediate(target);
+            }
+        }
+
+        [Test]
+        public void Beam_ImpactChangesFromShieldToArmorAndBackWhileHolding()
+        {
+            GameObject root = new GameObject("Beam");
+            GameObject target = new GameObject("Target");
+            GameObject particles = new GameObject("Impact", typeof(ParticleSystem));
+            try
+            {
+                BeamShot shot = root.AddComponent<BeamShot>();
+                LineRenderer line = root.AddComponent<LineRenderer>();
+                ParticleSystem hit = particles.GetComponent<ParticleSystem>();
+                typeof(BeamShot).GetField("beam", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(shot, line);
+                typeof(BeamShot).GetField("hitEffect", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(shot, hit);
+                VisualHealth health = new VisualHealth { HasShields = true };
+                shot.PrepareImpact(new ImpactEffectPresenter(new SilentImpactView(), LoadDamageMatrix()),
+                    health, DamageType.Turbolaser, 1f, 1f, true);
+                target.transform.position = Vector3.forward * 100f;
+                shot.PlayBeam(root.transform, target.transform, 10f, new WeaponProfile());
+                typeof(BeamShot).GetField("_startTime", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(shot, Time.time - 1f);
+                MethodInfo update = typeof(BeamShot).GetMethod("UpdateBeam", BindingFlags.Instance | BindingFlags.NonPublic);
+                update.Invoke(shot, null);
+                Assert.That(hit.isPlaying, Is.False);
+                health.HasShields = false;
+                update.Invoke(shot, null);
+                Assert.That(hit.isPlaying, Is.True);
+                health.HasShields = true;
+                update.Invoke(shot, null);
+                Assert.That(hit.isPlaying, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(target);
+                Object.DestroyImmediate(particles);
+            }
+        }
+
+        private static DamageMatrixData LoadDamageMatrix() => AssetDatabase.LoadAssetAtPath<DamageMatrixData>(
+            "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
+
+        private sealed class SilentImpactView : IImpactEffectView
+        {
+            public void Emit(ImpactSurface surface, Vector3 position, Vector3 direction, float size) { }
+        }
+
+        private sealed class VisualHealth : IHealthModelObserver, IShieldTarget
+        {
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
+            public ShipClass ShipClass => ShipClass.Capital;
+            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public float Hull => 100f;
+            public float HullPercentage => 1f;
+            public float Shields => HasShields ? 100f : 0f;
+            public float ShieldPercentage => HasShields ? 1f : 0f;
+            public bool IsDestroyed { get; set; }
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => true;
+            public bool HasLiveHardPoints => true;
+            public bool HasShields { get; set; }
+            public PlayerId Owner => default;
+            public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
+            public Vector3 GetImpactPosition(Vector3 origin, Vector3 target, DamageType type) =>
+                HasShields ? new Vector3(0f, 0f, Mathf.Max(origin.z, 40f)) : target;
+            public bool ShowShieldImpact(Vector3 position, float damage) => true;
         }
 
         [TestCase(WeaponFamily.Laser)]

@@ -12,6 +12,7 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private int fighterIndex;
         private IFighterAttackRunObserver _attackRuns;
         private int _firedRun;
+        internal override bool ShipsOnly => true;
 
         [Inject]
         private void Construct(IFighterAttackRunObserver attackRuns)
@@ -23,8 +24,13 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             int run = _attackRuns.GetAttackRun(fighterIndex);
             if (run == 0 || run == _firedRun) return;
-            _firedRun = run;
-            base.Attack(attackData, hardPointModel);
+            if (TryAttack(attackData, hardPointModel)) _firedRun = run;
+        }
+
+        public override void RestartAttackSequence()
+        {
+            base.RestartAttackSequence();
+            _firedRun = 0;
         }
     }
 }

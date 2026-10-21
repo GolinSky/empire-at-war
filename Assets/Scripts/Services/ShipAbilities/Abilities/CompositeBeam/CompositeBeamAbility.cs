@@ -27,7 +27,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private float _timeLeft;
         private float _pendingTime;
 
-        public bool IsComplete => _timeLeft <= 0f || _target.HealthModel.IsDestroyed || _caster.Modifiers.IsIonDisabled;
+        public bool IsComplete => _timeLeft <= 0f || _target.HealthModel.IsDestroyed || _target.IsCloaked() || _caster.Modifiers.IsIonDisabled;
         public bool SurvivesCasterDeath => false;
 
         public CompositeBeamAbility(CompositeBeamSettings settings,
@@ -75,7 +75,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 hardPointId = i;
                 break;
             }
-            _health.ApplyDamage(_damagePerSecond * _pendingTime, DamageType.CompositeBeam, hardPointId);
+            _health.ApplyDamage(_damagePerSecond * _pendingTime * _caster.Modifiers.GetDamageMultiplier(_target),
+                DamageType.CompositeBeam, hardPointId);
             _pendingTime = 0f;
         }
 

@@ -32,9 +32,6 @@ namespace EmpireAtWar.Components.Weapon
         private const float CONTACT_ENGAGE_FACTOR = 1.15f;
         // Continuous weapons such as beams land their damage in ticks this far apart.
         public const float DAMAGE_TICK_INTERVAL = 0.1f;
-        // With every candidate beyond reach of all hardpoints the weapon waits this long before selecting again.
-        // Target changes (orders, new contacts) cancel the wait.
-        private const float IDLE_RESELECT_INTERVAL = 0.25f;
         // A hardpoint that found nothing to fire at waits a random time in this range before selecting again,
         // so retries spread across frames. Target changes cancel the wait.
         private const float MIN_RETRY_INTERVAL = 0.25f;
@@ -77,22 +74,17 @@ namespace EmpireAtWar.Components.Weapon
         private DebugRangeCircle _attackRangeCircle;
 #endif
 
-        private int _currentWeaponIndex = 0;
         private int _targetVersion;
         // Target changes only mark candidates stale; the next reader rebuilds once for all of them.
         private bool _candidatesDirty;
         // The first candidate group is the main target's own block, added ahead of the listed groups.
         private bool _hasMainBlock;
-        private float _idleUntil;
         // Index = hardpoint: when it may select a target again.
         private float[] _retryAt = Array.Empty<float>();
         // Destroyed targets fail every candidate check already, so their candidates are dropped in bulk.
         private int _destroyedGroups;
         // Salvos waiting for their mount to finish turning.
         private readonly List<PendingSalvo> _turningSalvos = new List<PendingSalvo>();
-        // Largest distance between two hardpoints: a candidate farther than range + span from one hardpoint
-        // is out of every hardpoint's range.
-        private float _hardPointSpan;
 
         private bool _isReleased;
         private bool _isInitialized;
@@ -101,7 +93,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public event Action<WeaponProfile, Transform> ShotEmitted;
 
-        public float AttackDistance => Model.MaxWeaponRange;
+        public float AttackDistance => Model.MaxWeaponRange * _modifiers.VisionMultiplier;
 
         public TargetPreference PreferredTarget { get; private set; }
 
@@ -146,7 +138,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction);
                 profiles.Add(profile);
-                hardPoint.SetData(profile, profile.Range * _modifiers.VisionMultiplier, _damageMatrix.MissSpread,
+                hardPoint.SetData(profile, profile.Range, _damageMatrix.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
@@ -155,15 +147,11 @@ namespace EmpireAtWar.Components.Weapon
             float maxRange = 0f;
             foreach (ShipClass targetClass in (ShipClass[])Enum.GetValues(typeof(ShipClass)))
                 engagementRanges.Add(targetClass,
-                    WeaponEngagementRange.Calculate(profiles, targetClass, _damageMatrix) * _modifiers.VisionMultiplier);
+                    WeaponEngagementRange.Calculate(profiles, targetClass, _damageMatrix));
             foreach (WeaponProfile profile in profiles)
-                maxRange = Mathf.Max(maxRange, profile.Range * _modifiers.VisionMultiplier);
+                maxRange = Mathf.Max(maxRange, profile.Range);
             Model.SetRanges(maxRange, engagementRanges);
             PreferredTarget = GetLoadoutPreference(profiles);
-            for (int i = 0; i < hardPoints.Count; i++)
-                for (int j = i + 1; j < hardPoints.Count; j++)
-                    _hardPointSpan = Mathf.Max(_hardPointSpan,
-                        Vector3.Distance(hardPoints[i].transform.position, hardPoints[j].transform.position));
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _attackRangeCircle = _rangeCircleFactory.Create("AttackRange", Color.red, _selection);
 #endif
@@ -177,8 +165,6 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             _isReleased = false;
-            _currentWeaponIndex = 0;
-            _idleUntil = 0f;
             Initialize();
         }
 
@@ -282,11 +268,12 @@ namespace EmpireAtWar.Components.Weapon
             return strikecraftDps > shipsDps ? TargetPreference.Strikecraft : TargetPreference.Ships;
         }
 
-        public float GetEngagementRange(ShipClass targetClass) => Model.GetEngagementRange(targetClass);
+        public float GetEngagementRange(ShipClass targetClass) =>
+            Model.GetEngagementRange(targetClass) * _modifiers.VisionMultiplier;
 
         public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass)
         {
-            return distance <= Mathf.Max(Model.GetEngagementRange(targetClass) * ENGAGE_RANGE_FACTOR,
+            return distance <= Mathf.Max(GetEngagementRange(targetClass) * ENGAGE_RANGE_FACTOR,
                 contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
@@ -376,24 +363,18 @@ namespace EmpireAtWar.Components.Weapon
                 return;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _attackRangeCircle.Draw(_viewTransform.position, Model.MaxWeaponRange);
+            _attackRangeCircle.Draw(_viewTransform.position, AttackDistance);
 #endif
             if (hardPoints == null || hardPoints.Count == 0)
                 return;
 
             FireTurnedSalvos();
-            if (Time.time < _idleUntil)
-                return;
-
-            WeaponHardPoint weapon = hardPoints[_currentWeaponIndex];
-            if (!weapon.IsDestroyed && !weapon.IsBusy && Time.time >= _retryAt[_currentWeaponIndex])
+            for (int i = 0; i < hardPoints.Count; i++)
             {
-                _attackCoordinator.QueueTargetSelection(this, weapon);
+                WeaponHardPoint weapon = hardPoints[i];
+                if (!weapon.IsDestroyed && !weapon.IsBusy && Time.time >= _retryAt[i])
+                    _attackCoordinator.QueueTargetSelection(this, weapon);
             }
-
-            _currentWeaponIndex++;
-            if (_currentWeaponIndex >= hardPoints.Count)
-                _currentWeaponIndex = 0;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
@@ -488,7 +469,7 @@ namespace EmpireAtWar.Components.Weapon
 
             // Ship positions in the selection batch may be a few batches old, so the pick is re-aimed live.
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
-                (!CanAcquire(group) || !IsTargetValid(group, unit) || unit.Generation != generation ||
+                (!CanAcquire(group) || !weapon.CanEngage(group.TargetClass) || !IsTargetValid(group, unit) || unit.Generation != generation ||
                  !HasFiringSolution(weapon, unit.Position)))
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback(_targetVersion != targetVersion
@@ -500,8 +481,6 @@ namespace EmpireAtWar.Components.Weapon
 
             if (result.CandidateIndex < 0)
             {
-                if (result.NearestDistance > Model.MaxWeaponRange + _hardPointSpan)
-                    _idleUntil = Time.time + IDLE_RESELECT_INTERVAL;
                 DelayRetry(weapon);
                 return;
             }
@@ -524,6 +503,7 @@ namespace EmpireAtWar.Components.Weapon
                 HardPoint = weapon,
                 Group = group,
                 Unit = unit,
+                TargetGeneration = unit.Generation,
                 FireTime = Time.time + turnSeconds
             });
         }
@@ -538,6 +518,7 @@ namespace EmpireAtWar.Components.Weapon
                 _turningSalvos.RemoveAt(i);
                 WeaponHardPoint weapon = salvo.HardPoint;
                 if (weapon.IsDestroyed || _modifiers.IsCloaked || !CanAcquire(salvo.Group) ||
+                    salvo.Unit.Generation != salvo.TargetGeneration ||
                     !IsTargetValid(salvo.Group, salvo.Unit) || !HasFiringSolution(weapon, salvo.Unit.Position)) continue;
                 weapon.Attack(salvo.Group, salvo.Unit);
             }
@@ -589,7 +570,6 @@ namespace EmpireAtWar.Components.Weapon
 
         private void CancelWaits()
         {
-            _idleUntil = 0f;
             Array.Clear(_retryAt, 0, _retryAt.Length);
         }
 
@@ -780,7 +760,7 @@ namespace EmpireAtWar.Components.Weapon
         public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, float damage,
             DamageType damageType, int targetId)
         {
-            if (_isReleased || hardPointModel.Id != targetId || !IsTargetValid(attackData, hardPointModel))
+            if (hardPointModel.Id != targetId || !IsTargetValid(attackData, hardPointModel))
             {
                 return false;
             }
@@ -797,6 +777,7 @@ namespace EmpireAtWar.Components.Weapon
             public WeaponHardPoint HardPoint;
             public AttackData Group;
             public IHardPointModel Unit;
+            public int TargetGeneration;
             public float FireTime;
         }
     }

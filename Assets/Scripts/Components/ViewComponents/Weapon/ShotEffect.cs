@@ -41,7 +41,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         protected bool IsStrikecraftTarget { get; private set; }
         /// <summary>Moves the whole target unit; read it for the unit's travel, free of its turning.</summary>
         protected Transform TargetPivot { get; private set; }
-        protected bool HasArmorImpact => _impactCaptured && _impactSurface == ImpactSurface.Armor;
+        protected bool HasArmorImpact => _impactTarget != null &&
+            _impactPresenter.ResolveSurface(_impactTarget, _impactDamageType) == ImpactSurface.Armor;
+        protected bool IsImpactTargetDestroyed => _impactTarget != null && _impactTarget.IsDestroyed;
         /// <summary>Flies bolts for the whole battle; only bolts use it.</summary>
         protected BoltFlightBatch BoltFlights { get; private set; }
 

@@ -111,6 +111,7 @@ namespace EmpireAtWar.Components.Weapon
                         CandidateCount = request.CandidateCount,
                         GroupStart = request.GroupStart,
                         StrikecraftOnly = request.CandidateCount > 0 && request.HardPoint.StrikecraftOnly ? 1 : 0,
+                        ShipsOnly = request.HardPoint.ShipsOnly ? 1 : 0,
                         Preference = (int)request.HardPoint.PreferredTarget
                     };
                 }
@@ -262,6 +263,7 @@ namespace EmpireAtWar.Components.Weapon
                 byte slotFlags = flags[slot];
                 if ((slotFlags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (request.HardPoint.StrikecraftOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
+                if (request.HardPoint.ShipsOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0) continue;
                 if (WeaponTargetSelectionJob.IsPreferred(preference, slotFlags) != (pass == 0)) continue;
                 result.Visited++;
                 float3 position = positions[slot];

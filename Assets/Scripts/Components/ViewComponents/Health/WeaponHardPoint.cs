@@ -43,18 +43,20 @@ namespace EmpireAtWar.ViewComponents.Health
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete || Time.time < _turnEndTime;
-        public float MaxAttackDistance => _maxAttackDistance;
+        public float MaxAttackDistance => _maxAttackDistance * _modifiers.VisionMultiplier;
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
         internal bool StrikecraftOnly => _profile.StrikecraftOnly;
+        internal virtual bool ShipsOnly => _profile.DamageType == DamageType.Ion || _profile.DamageType == DamageType.IonCannon;
         internal TargetPreference PreferredTarget => _profile.PreferredTarget;
         internal float DelayBetweenShots =>
             _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
             _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
             _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);
 
-        internal bool CanEngage(ShipClass targetClass) => !_profile.StrikecraftOnly || targetClass.IsStrikecraft();
+        internal bool CanEngage(ShipClass targetClass) =>
+            (!StrikecraftOnly || targetClass.IsStrikecraft()) && (!ShipsOnly || !targetClass.IsStrikecraft());
 
         public override bool TryGetWeaponType(out WeaponType weaponType)
         {
@@ -105,8 +107,12 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
-            _attackCoordinator.BeginSequence(WeaponPresenter, this, attackData, hardPointModel);
+            TryAttack(attackData, hardPointModel);
         }
+
+        protected bool TryAttack(AttackData attackData, IHardPointModel hardPointModel) =>
+            CanEngage(attackData.TargetClass) &&
+            _attackCoordinator.BeginSequence(WeaponPresenter, this, attackData, hardPointModel);
 
         public void ReleaseAttackSequence()
         {
@@ -122,10 +128,13 @@ namespace EmpireAtWar.ViewComponents.Health
         }
 
         /// <summary>Lets a released hardpoint fire again when its squadron is reused.</summary>
-        public void RestartAttackSequence()
+        public virtual void RestartAttackSequence()
         {
             _effectPool = null;
             _sequence.Restart();
+            _reloadTimer.ForceFinish();
+            _turnEndTime = float.NegativeInfinity;
+            _mountYaw = (MinYaw + MaxYaw) * 0.5f;
         }
 
         private void OnDestroy()

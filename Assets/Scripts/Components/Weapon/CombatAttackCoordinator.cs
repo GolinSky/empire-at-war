@@ -65,6 +65,18 @@ namespace EmpireAtWar.Components.Weapon
             if (_dueResults.IsCreated) _dueResults.Dispose();
         }
 
+        public void ClearPendingAttacks()
+        {
+            for (int i = 0; i < _sequences.Count; i++)
+                _sequences[i].HardPoint.StopEmitting(_sequences[i].HardPointGeneration);
+            for (int i = 0; i < _impacts.Count; i++) AttackSequenceDiagnostics.RecordCancelledImpact();
+            _sequences.Clear();
+            _impacts.Clear();
+            _sequenceIndices.Clear();
+            _impactIndices.Clear();
+            _dueEvents.Clear();
+        }
+
         public void Register(IWeaponPresenter owner)
         {
             if (owner == null) throw new ArgumentNullException(nameof(owner));
@@ -80,28 +92,21 @@ namespace EmpireAtWar.Components.Weapon
             {
                 if (ReferenceEquals(_sequences[i].Owner, owner)) RemoveSequenceAt(i);
             }
-
-            for (int i = _impacts.Count - 1; i >= 0; i--)
-            {
-                if (!ReferenceEquals(_impacts[i].Owner, owner)) continue;
-                RemoveImpactAt(i);
-                AttackSequenceDiagnostics.RecordCancelledImpact();
-            }
         }
 
-        public void BeginSequence(IWeaponPresenter owner, WeaponHardPoint hardPoint,
+        public bool BeginSequence(IWeaponPresenter owner, WeaponHardPoint hardPoint,
             AttackData targetGroup, IHardPointModel target)
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before firing.");
-            if (!targetGroup.CanAcquireTarget || !targetGroup.CanTarget(target) || !targetGroup.Contains(target)) return;
-            if (!hardPoint.TryStartScheduledSequence(out int hardPointGeneration)) return;
+            if (!targetGroup.CanAcquireTarget || !targetGroup.CanTarget(target) || !targetGroup.Contains(target)) return false;
+            if (!hardPoint.TryStartScheduledSequence(out int hardPointGeneration)) return false;
 
             int shots = hardPoint.ShotsPerSalvo;
             if (shots <= 0)
             {
                 hardPoint.StopEmitting(hardPointGeneration);
-                return;
+                return false;
             }
 
             int targetGeneration = target.Generation;
@@ -110,7 +115,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 // An ion disable interrupts the salvo; the sequence must end or the hardpoint stays busy forever.
                 hardPoint.StopEmitting(hardPointGeneration);
-                return;
+                return true;
             }
 
             // Coroutine waits resumed on a later frame; never emit a catch-up burst after a long frame.
@@ -130,6 +135,7 @@ namespace EmpireAtWar.Components.Weapon
             };
             _sequenceIndices.Add(sequence.EventSequence, _sequences.Count);
             _sequences.Add(sequence);
+            return true;
         }
 
         internal void QueueTargetSelection(WeaponComponent weapon, WeaponHardPoint hardPoint)
@@ -155,13 +161,12 @@ namespace EmpireAtWar.Components.Weapon
         public void ScheduleImpact(IWeaponPresenter owner, AttackData targetGroup,
             IHardPointModel target, float damage, DamageType damageType, float delay, IncomingMissile missile)
         {
-            if (!_owners.TryGetValue(owner, out int ownerGeneration))
+            if (!_owners.ContainsKey(owner))
                 throw new InvalidOperationException("Weapon must be registered before scheduling damage.");
 
             ImpactRecord impact = new ImpactRecord
             {
                 Owner = owner,
-                OwnerGeneration = ownerGeneration,
                 TargetGroup = targetGroup,
                 Target = target,
                 TargetId = target.Id,
@@ -400,8 +405,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 ImpactRecord impact = _impacts[index];
                 RemoveImpactAt(index);
-                if (IsRegistered(impact.Owner, impact.OwnerGeneration) &&
-                    (impact.Missile == null || !impact.Missile.IsIntercepted) &&
+                if ((impact.Missile == null || !impact.Missile.IsIntercepted) &&
                     impact.Target.Generation == impact.TargetGeneration &&
                     impact.Owner.CommitImpact(impact.TargetGroup, impact.Target, impact.Damage, impact.DamageType,
                         impact.TargetId))
@@ -545,7 +549,6 @@ namespace EmpireAtWar.Components.Weapon
 
             public long EventSequence;
 
-            public int OwnerGeneration;
             public int TargetId;
             public int TargetGeneration;
             public int EarliestFrame;
