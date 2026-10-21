@@ -12,7 +12,7 @@ namespace EmpireAtWar.Services.Audio
     /// Drives the exposed group volumes of the game <see cref="AudioMixer"/>. Player gain is added to each
     /// authored level, so full volume keeps the authored mix. <c>SfxDuckVolume</c> stays owned by ship SFX.
     /// </summary>
-    public sealed class AudioSettingsApplier : ISettingsApplier, IAudioSettingsPreview, IInitializable, IOrderedDisposable
+    public sealed class AudioSettingsApplier : ISettingsApplier, IAudioSettingsPreview, IInitializable, ITickable, IOrderedDisposable
     {
         private const string MASTER_VOLUME_PARAMETER = "MasterVolume";
         private const string MUSIC_VOLUME_PARAMETER = "MusicVolume";
@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Audio
         private readonly AudioMixer _mixer;
         private readonly Dictionary<string, float> _authoredDecibels = new Dictionary<string, float>();
         private AudioSettingsData _active = new AudioSettingsData();
+        private bool _hasStarted;
 
         public AudioSettingsApplier(AudioMixer mixer)
         {
@@ -39,6 +40,15 @@ namespace EmpireAtWar.Services.Audio
         public void Dispose()
         {
             Application.focusChanged -= HandleFocusChanged;
+        }
+
+        public void Tick()
+        {
+            if (_hasStarted) return;
+
+            // Settings load during Awake; Unity only supports mixer writes from Start onwards.
+            _hasStarted = true;
+            SetVolumes();
         }
 
         public void Apply(SettingsData settings)
@@ -60,6 +70,8 @@ namespace EmpireAtWar.Services.Audio
         // Unfocused muting is temporary: it silences the master bus without touching the stored volume.
         private void SetVolumes()
         {
+            if (!_hasStarted) return;
+
             bool isMuted = _active.MuteWhenUnfocused && !Application.isFocused;
             SetVolume(MASTER_VOLUME_PARAMETER, isMuted ? 0f : _active.MasterVolume);
             SetVolume(MUSIC_VOLUME_PARAMETER, _active.MusicVolume);
