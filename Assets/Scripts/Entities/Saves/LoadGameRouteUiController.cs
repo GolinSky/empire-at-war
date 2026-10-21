@@ -12,15 +12,17 @@ namespace EmpireAtWar.Entities.Saves
     {
         private readonly IBattleSaveRepository _saves;
         private readonly IGameCommand _game;
+        private readonly GameData _gameData;
         private SaveBrowserUi _ui;
         private IReadOnlyList<BattleSaveHeader> _slots = Array.Empty<BattleSaveHeader>();
         private int _modeIndex;
 
         public LoadGameRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            IBattleSaveRepository saves, IGameCommand game) : base(uiService, cancelRouter)
+            IBattleSaveRepository saves, IGameCommand game, GameData gameData = null) : base(uiService, cancelRouter)
         {
             _saves = saves;
             _game = game;
+            _gameData = gameData;
         }
 
         public void Open()
@@ -34,7 +36,17 @@ namespace EmpireAtWar.Entities.Saves
             _ui.SetTitle("LOAD GAME");
             _ui.SetSaveAsNewVisible(false);
             _ui.SetNameEntryVisible(false);
-            SelectMode(_modeIndex);
+            if (_gameData != null && !string.IsNullOrEmpty(_gameData.PendingLoadError))
+            {
+                string error = _gameData.PendingLoadError;
+                _gameData.PendingLoadError = null;
+                SelectMode(_gameData.GameMode == GameMode.Survival ? 1 : 0);
+                _ui.SetStatus(error);
+            }
+            else
+            {
+                SelectMode(_modeIndex);
+            }
             _ui.Show();
             Focus();
         }

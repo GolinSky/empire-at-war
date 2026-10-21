@@ -116,14 +116,26 @@ namespace EmpireAtWar.Services.Saves
 
         private static void RestoreHangar(IEntity entity, HangarSave hangar, BattleRestoreContext context)
         {
-            if (hangar == null) return;
-            entity.GetFacade<IHangarSaveFacade>().Restore(hangar, context.Squadrons);
+            if (!entity.TryGetFacade(out IHangarSaveFacade facade))
+            {
+                if (hangar != null)
+                    throw new InvalidOperationException($"Entity {entity.Id} has no hangar, but hangar data was saved.");
+                return;
+            }
+            if (hangar == null)
+                throw new InvalidOperationException($"Entity {entity.Id} has a hangar, but no hangar data was saved.");
+            facade.Restore(hangar, context.Squadrons);
         }
 
         private void RestoreAbilities(IEntity entity, IReadOnlyList<AbilitySlotSave> saves)
         {
-            if (saves.Count == 0) return;
-            IReadOnlyList<ShipAbilitySlot> slots = entity.GetFacade<IShipAbilityFacade>().Slots;
+            if (!entity.TryGetFacade(out IShipAbilityFacade facade))
+            {
+                if (saves.Count != 0)
+                    throw new InvalidOperationException($"Unit {entity.Id} has no abilities, but {saves.Count} were saved.");
+                return;
+            }
+            IReadOnlyList<ShipAbilitySlot> slots = facade.Slots;
             if (slots.Count != saves.Count)
                 throw new InvalidOperationException($"Saved {saves.Count} ability slots; unit {entity.Id} has {slots.Count}.");
             for (int i = 0; i < slots.Count; i++)

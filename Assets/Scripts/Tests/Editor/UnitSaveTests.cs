@@ -1,10 +1,18 @@
+using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -69,7 +77,62 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(loaded.UnitType, Is.EqualTo(UnitTypeId.Squadron(SquadronType.XWing)));
         }
 
+        [Test]
+        public void ShipSaveFacade_DuringHyperspaceArrival_SavesLandingSpotInsteadOfTransitPosition()
+        {
+            GameObject view = new GameObject(nameof(ShipSaveFacade));
+            try
+            {
+                Vector3 landingSpot = new Vector3(150f, -25f, 300f);
+                Quaternion rotation = Quaternion.Euler(0f, 45f, 0f);
+                ShipMoveModel move = new ShipMoveModel(new MoveDataStub(), new CombatModifiers());
+                move.ConfigureSpawnPose(landingSpot.ToNumerics(), rotation.ToNumerics());
+                view.transform.SetPositionAndRotation(move.JumpPosition.ToUnity(), rotation);
+                HealthModel health = new HealthModel(new HealthDataStub(), null, new CombatModifiers());
+                ShipSaveFacade facade = new ShipSaveFacade(42L, new PlayerId(0), ShipType.Venator,
+                    view.transform, move, health, new UnitOrderModel());
+
+                UnitSave arriving = facade.Capture();
+                Assert.That(move.Phase, Is.EqualTo(MovementPhase.Arriving));
+                Assert.That(arriving.Position, Is.EqualTo(landingSpot));
+
+                Vector3 movedPosition = new Vector3(220f, -25f, 380f);
+                move.FinishArrival();
+                view.transform.position = movedPosition;
+                UnitSave arrived = facade.Capture();
+                Assert.That(arrived.Position, Is.EqualTo(movedPosition));
+            }
+            finally
+            {
+                Object.DestroyImmediate(view);
+            }
+        }
+
         private static UnitOrderSave RoundTrip(UnitOrderSave save) =>
-            JsonUtility.FromJson<UnitOrderSave>(JsonUtility.ToJson(save));
+            JsonUtility.FromJson<UnitOrderSave>(JsonUtility.FromJson<UnitOrderSave>(JsonUtility.ToJson(save)) != null
+                ? JsonUtility.ToJson(save) : "");
+
+        private sealed class MoveDataStub : IShipMoveData
+        {
+            public float Speed => 10f;
+            public float Height => -25f;
+            public float HullBottom => -40f;
+            public float HullTop => -10f;
+            public float RotationSpeed => 20f;
+            public float TurnAcceleration => 10f;
+            public float HyperSpaceDuration => 2f;
+            public float BodyRotationMaxAngle => 15f;
+            public float NavigationRadius => 30f;
+        }
+
+        private sealed class HealthDataStub : IHealthData
+        {
+            public ShipClass ShipClass => ShipClass.Cruiser;
+            public float Hull => 100f;
+            public float Shields => 100f;
+            public float ShieldRegenerateValue => 1f;
+            public float ShieldRegenerateDelay => 1f;
+            public IReadOnlyList<HardPointHealth> HardPointHealth => System.Array.Empty<HardPointHealth>();
+        }
     }
 }

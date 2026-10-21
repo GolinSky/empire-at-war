@@ -46,6 +46,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         private EmpireAtWar.Entities.Squadrons.Data.SquadronData Data { get; set; }
 
+        public int FighterCount => fighters.Count;
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
         public ShipClass ShipClass => Model.ShipClass;

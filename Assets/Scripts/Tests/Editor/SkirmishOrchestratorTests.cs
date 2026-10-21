@@ -12,6 +12,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Input;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -115,6 +116,42 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(_inputLock.IsLocked, Is.False);
             }
             finally { flow.LateDispose(); }
+        }
+
+        [Test]
+        public void Startup_WhenSequenceThrows_ReleasesInputLockRestoresTimeAndExitsToMenu()
+        {
+            var startup = new PendingStartupStub();
+            var state = new SkirmishStateModel();
+            var flow = new SkirmishOrchestrator(_gameCommand, startup, _inputLock,
+                state, SkirmishPreset.Default());
+            bool observedUnobservedException = false;
+            LogAssert.ignoreFailingMessages = true;
+            try
+            {
+                flow.Initialize();
+                Assert.That(state.State, Is.EqualTo(BattleState.Loading));
+                Assert.That(Time.timeScale, Is.Zero);
+                Assert.That(_inputLock.IsLocked, Is.True);
+                try
+                {
+                    startup.Completion.SetException(new InvalidOperationException("Corrupt battle save."));
+                }
+                catch (InvalidOperationException)
+                {
+                    observedUnobservedException = true;
+                }
+
+                Assert.That(observedUnobservedException, Is.False);
+                Assert.That(_inputLock.IsLocked, Is.False);
+                Assert.That(Time.timeScale, Is.EqualTo(1f));
+                Assert.That(_gameCommand.ExitCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                LogAssert.ignoreFailingMessages = false;
+                flow.LateDispose();
+            }
         }
 
         [Test]

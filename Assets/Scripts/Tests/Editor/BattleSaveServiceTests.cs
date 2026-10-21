@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using System.IO;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
@@ -169,6 +174,99 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(restore.TryRestore(), Is.False);
             }
             finally { Object.DestroyImmediate(game); }
+        }
+
+        [Test]
+        public void RestoreStep_WhenRestorerThrows_ClearsPendingSaveAndRecordsPendingLoadError()
+        {
+            var game = ScriptableObject.CreateInstance<GameData>();
+            try
+            {
+                _state.SetState(BattleState.Running);
+                var clock = new BattleClock(_state);
+                var units = new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null);
+                var service = new BattleSaveService(SkirmishPreset.Default(), _state, _camera,
+                    _cinematic, clock, _repository, units, Array.Empty<IBattleSaveSource>());
+                game.PendingBattleSave = service.Capture(BattleSaveSlot.Quicksave);
+                var restore = new BattleRestoreStep(game,
+                    new BattleRestorer(units, new IBattleSaveSource[] { new ThrowingSaveSource() }),
+                    clock, _state, _camera);
+
+                Assert.Throws<InvalidOperationException>(() => restore.TryRestore());
+                Assert.That(game.PendingBattleSave, Is.Null);
+                Assert.That(game.PendingLoadError, Does.StartWith("Load failed:").And.Contain("Simulated restore failure"));
+            }
+            finally { Object.DestroyImmediate(game); }
+        }
+
+        [Test]
+        public void Validator_RejectsMismatchedCountsMissingReferencesAndInvalidEnums()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            var mapSettings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>("Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            Assert.That(mapSettings, Is.Not.Null);
+            var validator = new BattleSaveValidator(assets, mapSettings);
+            BattleDefinition definition = SkirmishPreset.Default();
+            var header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave, DateTime.UtcNow, 10f, GameSpeed.Normal);
+            var setup = BattleSetupSave.From(definition);
+            var camera = CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f);
+
+            var wrongCaptureSites = BattleSave.Create(header, setup, camera,
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            wrongCaptureSites.CaptureSites = new[]
+            {
+                CaptureSiteSave.Create(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L)
+            };
+            Assert.Throws<InvalidDataException>(() => validator.Validate(wrongCaptureSites, definition));
+
+            var missingFacilitySave = BattleSave.Create(header, setup, camera,
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            missingFacilitySave.CaptureSites = CreateDefaultCaptureSites(mapSettings, definition);
+            missingFacilitySave.CaptureSites[0] = CaptureSiteSave.Create(new PlayerId(0),
+                CaptureSiteState.Operational, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 999L);
+            missingFacilitySave.ReinforcementZones = CreateDefaultReinforcementZones(mapSettings, definition);
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(missingFacilitySave, definition)).Message,
+                Does.Contain("facility 999 is missing"));
+
+            var badPlayer = PlayerSave.Create(new PlayerId(0));
+            badPlayer.Research = new[] { ResearchSave.Create(ResearchType.IncreasedProduction, 99) };
+            var badPlayerSave = BattleSave.Create(header, setup, camera,
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            badPlayerSave.CaptureSites = CreateDefaultCaptureSites(mapSettings, definition);
+            badPlayerSave.ReinforcementZones = CreateDefaultReinforcementZones(mapSettings, definition);
+            badPlayerSave.Players = new[] { badPlayer };
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(badPlayerSave, definition)).Message,
+                Does.Contain("Saved research"));
+            badPlayer.Research = new[] { ResearchSave.Create((ResearchType)int.MaxValue, 1) };
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(badPlayerSave, definition)).Message,
+                Does.Contain("Saved research"));
+        }
+
+        private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
+        {
+            MapSizeSettings size = mapSettings.GetSize(definition.Map.Size);
+            int count = definition.Slots.Count + ((size.MiningSiteCount - 2) / 2) * 2 + (size.BattleSiteCount / 2) * 2;
+            var sites = new CaptureSiteSave[count];
+            for (int i = 0; i < count; i++)
+                sites[i] = CaptureSiteSave.Create(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L);
+            return sites;
+        }
+
+        private static ReinforcementZoneSave[] CreateDefaultReinforcementZones(MapGenerationSettings mapSettings, BattleDefinition definition)
+        {
+            int count = mapSettings.GetSize(definition.Map.Size).CapturableZoneCount;
+            var zones = new ReinforcementZoneSave[count];
+            for (int i = 0; i < count; i++)
+                zones[i] = ReinforcementZoneSave.Create(PlayerId.None, PlayerId.None, 0f, false);
+            return zones;
+        }
+
+        private sealed class ThrowingSaveSource : IBattleSaveSource
+        {
+            public void Capture(BattleSave save) { }
+            public void RestoreBeforeUnits(BattleSave save) =>
+                throw new InvalidOperationException("Simulated restore failure.");
+            public void RestoreAfterUnits(BattleRestoreContext context) { }
         }
 
         [UnityTest]

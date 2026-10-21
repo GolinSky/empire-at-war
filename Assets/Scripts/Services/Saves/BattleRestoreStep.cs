@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Camera;
@@ -26,12 +27,20 @@ namespace EmpireAtWar.Services.Saves
         {
             BattleSave save = _game.PendingBattleSave;
             if (save == null) return false;
-            _restorer.Restore(save);
-            _clock.Restore(save.Header.BattleTime);
-            _state.SetSpeed(save.Header.GameSpeed);
-            _camera.RestorePose(save.Camera.Position, save.Camera.Rotation, save.Camera.ZoomTargetHeight);
             _game.PendingBattleSave = null;
-            return true;
+            try
+            {
+                _restorer.Restore(save);
+                _clock.Restore(save.Header.BattleTime);
+                _state.SetSpeed(save.Header.GameSpeed);
+                _camera.RestorePose(save.Camera.Position, save.Camera.Rotation, save.Camera.ZoomTargetHeight);
+                return true;
+            }
+            catch (Exception exception)
+            {
+                _game.PendingLoadError = $"Load failed: {exception.Message}";
+                throw;
+            }
         }
     }
 }

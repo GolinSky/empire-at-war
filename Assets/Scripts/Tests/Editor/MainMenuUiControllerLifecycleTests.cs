@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MainMenu;
 using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -160,6 +161,47 @@ namespace EmpireAtWar.Tests.Editor
             {
                 if (controller != null) controller.LateDispose();
                 PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void LoadRoute_WhenReturningFromFailedRestore_ShowsPendingLoadErrorAndClearsIt()
+        {
+            var mainRoot = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            var saveRoot = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab");
+            var gameData = ScriptableObject.CreateInstance<GameData>();
+            MainMenuUiController mainMenu = null;
+            LoadGameRouteUiController loadRoute = null;
+            try
+            {
+                gameData.Battle = new EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel().CreateBattle();
+                gameData.PendingLoadError = "Load failed: Save has 1 capture sites, expected 4.";
+                var mainView = mainRoot.GetComponent<MainMenuUi>();
+                var saveView = saveRoot.GetComponent<SaveBrowserUi>();
+                var playRoute = new RouteStub();
+                mainMenu = new MainMenuUiController(new UiServiceStub(mainView), new CancelRouterStub(),
+                    playRoute, new RouteStub(), new TooltipServiceStub());
+                var saves = new EmptySaves();
+                loadRoute = new LoadGameRouteUiController(new UiServiceStub(saveView), new CancelRouterStub(),
+                    saves, null, gameData);
+                var orchestrator = new MainMenuOrchestrator(mainMenu, playRoute, loadRoute, gameData);
+
+                orchestrator.Initialize();
+
+                var status = (TMPro.TMP_Text)new SerializedObject(saveView).FindProperty("status").objectReferenceValue;
+                Assert.That(playRoute.OpenCount, Is.EqualTo(1));
+                Assert.That(saveView.IsVisible, Is.True);
+                Assert.That(saves.LastMode, Is.EqualTo(GameMode.Survival));
+                Assert.That(status.text, Is.EqualTo("Load failed: Save has 1 capture sites, expected 4."));
+                Assert.That(gameData.PendingLoadError, Is.Null);
+            }
+            finally
+            {
+                if (loadRoute != null) loadRoute.LateDispose();
+                if (mainMenu != null) mainMenu.LateDispose();
+                UnityEngine.Object.DestroyImmediate(gameData);
+                PrefabUtility.UnloadPrefabContents(saveRoot);
+                PrefabUtility.UnloadPrefabContents(mainRoot);
             }
         }
 

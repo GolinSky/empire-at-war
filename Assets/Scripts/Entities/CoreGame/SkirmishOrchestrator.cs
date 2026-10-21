@@ -147,8 +147,6 @@ namespace EmpireAtWar.Controllers.Game
                 SetState(BattleState.Loading);
                 _loadingInputLock = _inputLock.Acquire();
                 await _startupSequence.RunAsync(cancellationToken);
-                _loadingInputLock.Dispose();
-                _loadingInputLock = null;
                 SetState(BattleState.Running);
             }
             catch (OperationCanceledException)
@@ -158,7 +156,15 @@ namespace EmpireAtWar.Controllers.Game
             catch (Exception exception)
             {
                 Debug.LogException(exception);
-                throw;
+                ExitSkirmish();
+            }
+            finally
+            {
+                if (_loadingInputLock != null)
+                {
+                    _loadingInputLock.Dispose();
+                    _loadingInputLock = null;
+                }
             }
         }
 

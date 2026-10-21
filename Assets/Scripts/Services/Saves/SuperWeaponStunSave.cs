@@ -14,6 +14,8 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private CombatStatModifier modifier;
         [SerializeField] private float timeLeft;
 
+        public long TargetId => targetId;
+
         public static SuperWeaponStunSave From(SuperWeaponStun stun) => new SuperWeaponStunSave
         {
             targetId = stun.Target.Id,

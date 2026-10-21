@@ -25,6 +25,9 @@ namespace EmpireAtWar.Services.Saves
 
         public void RestoreBeforeUnits(BattleSave save)
         {
+            if (save.CaptureSites.Length != _sites.SitePresenters.Count)
+                throw new InvalidOperationException(
+                    $"Saved {save.CaptureSites.Length} capture sites; the map has {_sites.SitePresenters.Count}.");
         }
 
         public void RestoreAfterUnits(BattleRestoreContext context)

@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private float timeLeft;
 
         public UnitRequestKind Kind => kind;
+        public int Key => key;
+        public int Tier => tier;
         public float TimeLeft => timeLeft;
 
         public static UnitRequestSave From(UnitRequest request, float timeLeft = 0f)

@@ -17,6 +17,9 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private float nextShotTime;
         [SerializeField] private float[] impactTimes;
 
+        public SuperWeaponType Type => type;
+        public long TargetId => targetId;
+
         public static SuperWeaponSalvoSave From(SuperWeaponSalvo salvo) => new SuperWeaponSalvoSave
         {
             type = salvo.Type,

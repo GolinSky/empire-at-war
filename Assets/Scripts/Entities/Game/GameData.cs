@@ -23,6 +23,7 @@ namespace EmpireAtWar.Entities.Game
     {
         public BattleDefinition Battle { get; set; } = SkirmishPreset.Default();
         public BattleSave PendingBattleSave { get; set; }
+        public string PendingLoadError { get; set; }
         public GameMode GameMode => Battle.Mode;
         public PlanetType PlanetType => Battle.Map.Planet;
         public MapSize MapSize => Battle.Map.Size;

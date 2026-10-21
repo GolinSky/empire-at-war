@@ -1,4 +1,5 @@
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Services.VContainer
     {
         [SerializeField] private CoroutineHost coroutineService;
         [SerializeField] private AudioMixer audioMixer;
+        [SerializeField] private MapGenerationSettings mapGenerationSettings;
 
         public GameData GameData { get; private set; }
         public IAssetHandleLoader AssetLoader { get; private set; }
@@ -39,6 +41,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(audioMixer);
             builder.Register<TimerPoolService>(Lifetime.Singleton);
             builder.Register<TimerPoolTick>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.RegisterInstance(new BattleSaveValidator(Assets, mapGenerationSettings));
             builder.Register<GameController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SceneLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<JsonSettingsRepository>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()

@@ -159,7 +159,8 @@ namespace EmpireAtWar.Components.Hangar
             Model.Restore(save.Reserve, save.Cooldown);
             foreach (LaunchedSquadronSave launched in save.Launched)
             {
-                if (!squadrons.TryGetValue(launched.SquadronId, out Squadron squadron)) continue;
+                if (!squadrons.TryGetValue(launched.SquadronId, out Squadron squadron))
+                    throw new InvalidOperationException($"Launched squadron {launched.SquadronId} was not restored.");
                 Model.AdoptLaunched(launched.Bay);
                 Track(squadron, launched.Bay);
             }

@@ -1,12 +1,18 @@
 using System;
+using System.IO;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Repository;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SceneService;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
@@ -97,6 +103,32 @@ namespace EmpireAtWar.Tests.Editor
             controller.LoadBattle(save);
             controller.ExitGame();
             Assert.That(_model.PendingBattleSave, Is.Null);
+        }
+
+        [Test]
+        public void LoadBattle_WithIncompatibleSaveContent_ThrowsBeforeMutatingModelOrLoadingScene()
+        {
+            var scenes = new TrackingSceneService();
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            var mapSettings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>("Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            Assert.That(mapSettings, Is.Not.Null);
+            var validator = new BattleSaveValidator(assets, mapSettings);
+            var controller = new GameController(scenes, _model, validator);
+            var definition = SkirmishPreset.Default();
+            var badUnit = UnitSave.Create(1L, new PlayerId(0), UnitTypeId.Ship(ShipType.Venator),
+                Vector3.zero, Quaternion.identity,
+                UnitHealthSave.ForShip(1f, 1f, new[] { 1f }),
+                UnitOrderSave.From(new UnitOrderModel()));
+            var save = BattleSave.Create(
+                BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave, DateTime.UtcNow, 10f,
+                    EmpireAtWar.Controllers.Game.GameSpeed.Normal),
+                BattleSetupSave.From(definition),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 600f),
+                new[] { badUnit }, Array.Empty<StructureSave>());
+
+            Assert.Throws<InvalidDataException>(() => controller.LoadBattle(save));
+            Assert.That(_model.PendingBattleSave, Is.Null);
+            Assert.That(scenes.LoadRequestCount, Is.Zero);
         }
 
         // Every slot plays the same faction: mirror matches are allowed now that stations are keyed by player.
