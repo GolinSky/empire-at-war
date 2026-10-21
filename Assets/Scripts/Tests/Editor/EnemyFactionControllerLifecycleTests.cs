@@ -16,6 +16,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Services.ShipSpawning;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -160,6 +161,112 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void BlockedShip_RetainsPurchaseAndRetriesWithoutDelayingOtherBuilds()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            var shipObject = new GameObject("Deployment test ship");
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                var wallet = new TrackingWallet();
+                var limits = new EnemyUnitLimitModel();
+                var spawnPoints = new BlockedShipSpawnPoints();
+                var factory = new TrackingShipFactory(shipObject.AddComponent<EmpireAtWar.Ship.Ship>());
+                var controller = new EnemyFactionController(model: new EnemyFactionModel(null, null),
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
+                    unitLimitModel: limits, reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+                var blocked = new ShipUnitRequest(faction, ShipType.Venator);
+                controller.Purchase(blocked);
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
+
+                controller.Advance(10f);
+
+                Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Recusant }));
+                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
+                Assert.That(controller.PendingBuilds[0].Request, Is.SameAs(blocked));
+                Assert.That(controller.PendingBuilds[0].TimeLeft, Is.EqualTo(1f));
+                Assert.That(wallet.RefundCount, Is.Zero);
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(2));
+                Assert.That(limits.ShipOrdersCount, Is.EqualTo(2));
+                Assert.That(limits.ReleaseVersion, Is.Zero);
+
+                controller.Purchase(blocked);
+                Assert.That(wallet.SpendCount, Is.EqualTo(2), "The blocked ship retains its unit limit reservation.");
+                controller.Advance(0.5f);
+                Assert.That(spawnPoints.BlockedShipAttempts, Is.EqualTo(1));
+                controller.Advance(0.5f);
+                Assert.That(spawnPoints.BlockedShipAttempts, Is.EqualTo(2));
+                Assert.That(wallet.RefundCount, Is.Zero);
+
+                spawnPoints.IsBlocked = false;
+                controller.Advance(1f);
+
+                Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Recusant, ShipType.Venator }));
+                Assert.That(controller.PendingBuilds, Is.Empty);
+                Assert.That(wallet.SpendCount, Is.EqualTo(2));
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(2));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shipObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void BlockedShip_ProductionLostDuringRetry_ReleasesPendingReinforcement(bool hosted)
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                var wallet = new TrackingWallet();
+                var limits = new EnemyUnitLimitModel();
+                var access = new OperationalProductionAccess
+                {
+                    ProductionHost = hosted ? TestPlayers.Human : TestPlayers.Enemy
+                };
+                var controller = new EnemyFactionController(model: new EnemyFactionModel(null, null),
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet,
+                    shipSpawnPoints: new BlockedShipSpawnPoints(), unitLimitModel: limits, reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: access, squadronLauncher: null, squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
+                controller.Advance(10f);
+                Assert.That(controller.HasPendingReinforcement, Is.True);
+
+                access.CanProduce = false;
+                if (!hosted)
+                    LogAssert.Expect(LogType.Error, new Regex(@"^\[EnemyAI:Production\] Build failed for ShipUnitRequest"));
+                controller.Advance(1f);
+
+                Assert.That(controller.HasPendingReinforcement, Is.False);
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                Assert.That(limits.CurrentUnitCapacity, Is.Zero);
+                Assert.That(limits.ShipOrdersCount, Is.Zero);
+                controller.Advance(10f);
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
+        }
+
+        [Test]
         public void ResearchPurchase_CompletesTierOnBuildAndFreesTheLine()
         {
             FactionResearchModel research = new FactionResearchModel(new FactionRoster(
@@ -298,6 +405,40 @@ namespace EmpireAtWar.Tests.Editor
                 PRIVATE_INSTANCE);
             Assert.That(field, Is.Not.Null);
             field.SetValue(target, value);
+        }
+
+        private sealed class BlockedShipSpawnPoints : IShipSpawnPoints
+        {
+            public bool IsBlocked { get; set; } = true;
+            public int BlockedShipAttempts { get; private set; }
+
+            public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
+            {
+                position = Vector3.zero;
+                if (shipType != ShipType.Venator) return true;
+                BlockedShipAttempts++;
+                return !IsBlocked;
+            }
+
+            public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
+                throw new NotImplementedException();
+        }
+
+        private sealed class TrackingShipFactory : EmpireAtWar.Ship.ShipFactory
+        {
+            private readonly EmpireAtWar.Ship.Ship _ship;
+            public List<ShipType> Created { get; } = new List<ShipType>();
+
+            public TrackingShipFactory(EmpireAtWar.Ship.Ship ship) : base(null, null, null, null, null, null)
+            {
+                _ship = ship;
+            }
+
+            public override EmpireAtWar.Ship.Ship Create(PlayerId owner, ShipType shipType, Vector3 position)
+            {
+                Created.Add(shipType);
+                return _ship;
+            }
         }
 
         private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService

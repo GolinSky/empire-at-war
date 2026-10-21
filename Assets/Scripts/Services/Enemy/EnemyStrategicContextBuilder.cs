@@ -207,8 +207,13 @@ namespace EmpireAtWar.Services.Enemy
                 offset.y = 0f;
                 float distance = offset.sqrMagnitude;
                 bool isShip = sighting.UnitTypeId.IsShip;
+                if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) || entity.IsCloaked())
+                {
+                    continue;
+                }
+
                 if (_localThreat != null && sighting.EntityId == _localThreat.Id && distance <= radiusSquared &&
-                    _intel.GetConfidence(sighting, now) > 0f && _entityLocator.TryGetEntity(sighting.EntityId, out _))
+                    _intel.GetConfidence(sighting, now) > 0f)
                 {
                     keepsPrevious = true;
                     previousIsShip = isShip;
@@ -217,8 +222,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (distance > radiusSquared ||
                     closestIsShip && !isShip ||
                     isShip == closestIsShip && distance >= closestDistance ||
-                    _intel.GetConfidence(sighting, now) <= 0f ||
-                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity))
+                    _intel.GetConfidence(sighting, now) <= 0f)
                 {
                     continue;
                 }
@@ -315,7 +319,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (!sighting.UnitTypeId.IsShip ||
                     _intel.GetConfidence(sighting, now) <= 0f ||
-                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity))
+                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
+                    entity.IsCloaked())
                 {
                     continue;
                 }

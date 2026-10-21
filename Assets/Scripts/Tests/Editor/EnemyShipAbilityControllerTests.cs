@@ -137,11 +137,125 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void RejectedPreferredTarget_TriesRemainingTargets(bool hasEligibleTarget)
+        {
+            GameObject targetView = new GameObject("Targets");
+            try
+            {
+                targetView.transform.position = Vector3.right * 5f;
+                ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                Type type = typeof(ShipAbilityDefinition);
+                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
+                type.GetField("requiresEnemyTarget", flags).SetValue(definition, true);
+                type.GetField("range", flags).SetValue(definition, 20f);
+                type.GetField("duration", flags).SetValue(definition, 5f);
+                FakeCommand caster = new FakeCommand(definition);
+                EntityLocator entities = new EntityLocator();
+                entities.AddEntity(caster.Entity);
+                entities.AddEntity(new FakeEntity(new FakeHealth(targetView.transform, 1f)
+                    { HullPercentage = 0.1f, ShipClass = ShipClass.Corvette },
+                    null, TestPlayers.Human, 2));
+                IEntity eligible = new FakeEntity(new FakeHealth(targetView.transform, 1f)
+                    { ShipClass = hasEligibleTarget ? ShipClass.Frigate : ShipClass.Corvette },
+                    null, TestPlayers.Human, 3);
+                entities.AddEntity(eligible);
+                TargetedFactory factory = new TargetedFactory();
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                ShipAbilityService service = new ShipAbilityService(factory, roster);
+                EnemyShipAbilityController controller = new EnemyShipAbilityController(
+                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy));
+
+                controller.Tick();
+
+                Assert.That(factory.Attempts, Is.EqualTo(new long[] { 2, 3 }));
+                Assert.That(factory.ActivatedTarget, Is.SameAs(hasEligibleTarget ? eligible : null));
+                Assert.That(caster.Slots[0].State, Is.EqualTo(hasEligibleTarget
+                    ? ShipAbilityState.Active : ShipAbilityState.Ready));
+                service.LateDispose();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(targetView);
+            }
+        }
+
+        [Test]
+        public void LockSFoils_StaysClosedDuringRetreatAndReopensAfterward()
+        {
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            Type type = typeof(ShipAbilityDefinition);
+            type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Escape);
+            type.GetField("isToggle", flags).SetValue(definition, true);
+            type.GetField("canCancel", flags).SetValue(definition, true);
+            FakeCommand caster = new FakeCommand(definition, ShipAbilityId.LockSFoils);
+            EntityLocator entities = new EntityLocator();
+            entities.AddEntity(caster.Entity);
+            RecordingFactory factory = new RecordingFactory();
+            PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+            ShipAbilityService service = new ShipAbilityService(factory, roster);
+            FakeState state = new FakeState { CurrentState = EnemyStrategicState.RetreatValue };
+            EnemyShipAbilityController controller = new EnemyShipAbilityController(
+                entities, state, roster, service, roster.Get(TestPlayers.Enemy));
+
+            controller.Tick();
+            service.Advance(60f);
+            typeof(EnemyShipAbilityController).GetField("_timeLeft", flags).SetValue(controller, 0f);
+            controller.Tick();
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(factory.StoppedCount, Is.Zero);
+
+            state.CurrentState = EnemyStrategicState.HuntFleet;
+            typeof(EnemyShipAbilityController).GetField("_timeLeft", flags).SetValue(controller, 0f);
+            controller.Tick();
+            Assert.That(factory.StoppedCount, Is.EqualTo(1));
+            service.Advance(0f);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+            typeof(EnemyShipAbilityController).GetField("_timeLeft", flags).SetValue(controller, 0f);
+            controller.Tick();
+            Assert.That(factory.CreatedCount, Is.EqualTo(1));
+            service.LateDispose();
+        }
+
+        private sealed class TargetedFactory : IShipAbilityFactory
+        {
+            public List<long> Attempts { get; } = new List<long>();
+            public IEntity ActivatedTarget { get; private set; }
+
+            public IShipAbility Create(ShipAbilityDefinition definition) => new TargetedAbility(this);
+
+            private sealed class TargetedAbility : IPhasedShipAbility
+            {
+                private readonly TargetedFactory _factory;
+
+                public bool IsComplete => false;
+                public bool SurvivesCasterDeath => false;
+
+                public TargetedAbility(TargetedFactory factory) => _factory = factory;
+
+                public bool CanStart(IShipAbilityFacade caster, IEntity target)
+                {
+                    _factory.Attempts.Add(target.Id);
+                    return target.HealthModel.ShipClass == ShipClass.Frigate;
+                }
+
+                public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
+                    IEntity target) => _factory.ActivatedTarget = target;
+
+                public void Advance(float deltaTime) { }
+                public void Stop() { }
+            }
+        }
+
         private sealed class RecordingFactory : IShipAbilityFactory
         {
             private readonly Action _onStart;
 
             public int CreatedCount { get; private set; }
+            public int StoppedCount { get; private set; }
 
             public RecordingFactory() : this(() => { })
             {
@@ -155,28 +269,30 @@ namespace EmpireAtWar.Tests.Editor
             public IShipAbility Create(ShipAbilityDefinition definition)
             {
                 CreatedCount++;
-                return new RecordingAbility(_onStart);
+                return new RecordingAbility(_onStart, () => StoppedCount++);
             }
         }
 
         private sealed class RecordingAbility : IShipAbility
         {
             private readonly Action _onStart;
+            private readonly Action _onStop;
 
-            public RecordingAbility(Action onStart)
+            public RecordingAbility(Action onStart, Action onStop)
             {
                 _onStart = onStart;
+                _onStop = onStop;
             }
 
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
                 IEntity target) => _onStart();
 
-            public void Stop() { }
+            public void Stop() => _onStop();
         }
 
         private sealed class FakeState : IEnemyAiStateProvider
         {
-            public EnemyStrategicState CurrentState => EnemyStrategicState.Hold;
+            public EnemyStrategicState CurrentState { get; set; } = EnemyStrategicState.Hold;
             public int ActiveShipCount => 1;
         }
 
@@ -189,11 +305,12 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver Health { get; }
             public float RadarRange => 20f;
 
-            public FakeCommand(ShipAbilityDefinition definition)
+            public FakeCommand(ShipAbilityDefinition definition,
+                ShipAbilityId id = ShipAbilityId.BoostShieldPower)
             {
                 Health = new FakeHealth(null, 0f);
                 Entity = new FakeEntity(id: 1, owner: TestPlayers.Enemy, health: Health, command: this);
-                Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostShieldPower,
+                Slots = new[] { new ShipAbilitySlot(id: id,
                     definition: definition, owner: this) };
             }
         }
@@ -266,9 +383,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public bool HasLiveHardPoints => true;
-            public float HullPercentage => 1f;
+            public float HullPercentage { get; set; } = 1f;
             public float Shields => _shieldPercentage;
             public float ShieldPercentage => _shieldPercentage;
             public bool IsDestroyed => false;

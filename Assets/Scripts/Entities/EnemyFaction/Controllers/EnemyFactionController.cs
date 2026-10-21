@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         IEnemyReinforcementObserver, ITickable
     {
         private const float DEFAULT_INCOME = 15f;
+        private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -223,8 +224,22 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     ReleaseUnit(researchUnitRequest);
                     break;
                 case ShipUnitRequest shipUnitRequest:
-                    Track(_shipFactory.Create(Owner, shipUnitRequest.Key, GenerateShipCoordinates(shipUnitRequest.Key)),
-                        shipUnitRequest);
+                    if (!_shipSpawnPoints.TryGetRandomSpawnPosition(
+                            _productionAccess.ProductionHost, shipUnitRequest.Key, out Vector3 position))
+                    {
+                        if (_productionAccess.CanProduce)
+                        {
+                            // Keep the completed ship paid and reserved while its arrival area is blocked.
+                            _builds.Add(shipUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
+                            return;
+                        }
+
+                        // An impossible arrival must not keep a defeated faction alive indefinitely.
+                        throw new InvalidOperationException(
+                            $"No open enemy spawn position is available near a held relay or home for {shipUnitRequest.Key}.");
+                    }
+
+                    Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
                     break;
                 case SquadronUnitRequest squadronUnitRequest:
                     if (!_squadronLauncher.TryLaunchFromStation(Owner, squadronUnitRequest.Key, out ISquadron squadron))
@@ -359,20 +374,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             _builds.Clear();
-        }
-
-        private Vector3 GenerateShipCoordinates(ShipType shipType)
-        {
-            if (_shipSpawnPoints.TryGetRandomSpawnPosition(
-                    _productionAccess.ProductionHost,
-                    shipType,
-                    out Vector3 position))
-            {
-                return position;
-            }
-
-            throw new InvalidOperationException(
-                $"No open enemy spawn position is available near a held relay or home for {shipType}.");
         }
 
         private Vector3 GenerateMapCoordinates()

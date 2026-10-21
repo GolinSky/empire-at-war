@@ -374,7 +374,7 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 1
+        aiUse: 2
         settings:
           rid: 6801466921437888601
     - key: 32

@@ -69,6 +69,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (!_playerRoster.IsHostile(_owner.Id, entity.Owner) ||
                     health.IsDestroyed ||
                     !health.HasUnits ||
+                    entity.IsCloaked() ||
                     !entity.TryGetFacade(out IUnitTypeFacade unit))
                 {
                     continue;

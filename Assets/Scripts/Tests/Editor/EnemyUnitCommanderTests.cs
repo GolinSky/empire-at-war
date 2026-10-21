@@ -15,11 +15,93 @@ using NUnit.Framework;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using System.Reflection;
+using System.Linq;
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
+using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Vision;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class EnemyUnitCommanderTests
     {
+        [Test]
+        public void IntelGatherer_DoesNotReportCloakedShipInVisibleTerrain()
+        {
+            GameObject view = new GameObject("Cloaked target");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                EntityLocator locator = new EntityLocator();
+                FakeEntity target = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 1);
+                target.Modifiers.SetCloaked(true);
+                locator.AddEntity(target);
+                TeamIntelRegistry registry = new TeamIntelRegistry();
+                VisionService vision = new VisionService(roster, fogEnabled: false);
+
+                new HostileIntelGatherer(locator, vision, roster, registry, owner).Tick();
+                Assert.That(registry.Get(owner.Team).Sightings, Is.Empty);
+
+                float lastSeen = Time.time - 5f;
+                registry.Get(owner.Team).Report(new HostileSighting(target.Id,
+                    UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(100f, 0f), 1f, 0f, 1f, lastSeen));
+                new HostileIntelGatherer(locator, vision, roster, registry, owner).Tick();
+                Assert.That(registry.Get(owner.Team).Sightings.Single().SeenAt, Is.EqualTo(lastSeen));
+                Assert.That(registry.Get(owner.Team).Sightings.Single().Position.X, Is.EqualTo(100f));
+
+                target.Modifiers.SetCloaked(false);
+                new HostileIntelGatherer(locator, vision, roster, registry, owner).Tick();
+                Assert.That(registry.Get(owner.Team).Sightings.Count, Is.EqualTo(1));
+                Assert.That(registry.Get(owner.Team).Sightings.Single().Position.X, Is.Zero);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [TestCase("FindLocalThreat")]
+        [TestCase("FindClosestKnownShip")]
+        public void StrategicTarget_CloakedContactDoesNotHideValidAlternative(string selector)
+        {
+            GameObject view = new GameObject("Targets");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                EntityLocator locator = new EntityLocator();
+                FakeEntity first = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 1);
+                FakeEntity second = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 2);
+                locator.AddEntity(first);
+                locator.AddEntity(second);
+                TeamIntelRegistry registry = new TeamIntelRegistry();
+                HostileIntelModel intel = registry.Get(owner.Team);
+                intel.Report(new HostileSighting(1, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(10f, 0f), 1f, 0f, 1f, 0f));
+                intel.Report(new HostileSighting(2, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
+                EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
+                    null, null, null, locator, null, roster, null, registry, null, owner, null);
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                object[] args = { Vector3.zero, 0f };
+                Assert.That(find.Invoke(builder, args), Is.SameAs(first));
+                // Build stores this result between decisions. Exercise the same cached-target path.
+                typeof(EnemyStrategicContextBuilder).GetField("_localThreat",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, first);
+
+                first.Modifiers.SetCloaked(true);
+                Assert.That(find.Invoke(builder, args), Is.SameAs(second));
+                second.Modifiers.SetCloaked(true);
+                Assert.That(find.Invoke(builder, args), Is.Null);
+                first.Modifiers.SetCloaked(false);
+                Assert.That(find.Invoke(builder, args), Is.SameAs(first));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
         [Test]
         public void CaptureZone_CommitsFastestShipAndStopsOnlyBusyRemainder()
         {
@@ -232,8 +314,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeEntity : IEntity
+        private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade
         {
+            public CombatModifiers Modifiers { get; } = new CombatModifiers();
+            public UnitTypeId UnitTypeId => UnitTypeId.Ship(ShipType.Venator);
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
@@ -247,6 +331,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             {
+                if (this is TCommand self) { command = self; return true; }
                 if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
                 command = default;
                 return false;

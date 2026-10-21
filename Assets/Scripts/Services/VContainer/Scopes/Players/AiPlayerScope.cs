@@ -50,7 +50,10 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyShipAbilityController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<SuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
+            if (player.Has(BattleFeatures.SuperWeapons) && player.Has(BattleFeatures.Economy))
+                builder.Register<AiSuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
+            else
+                builder.Register<SuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EnemyUnitLimitModel>(Lifetime.Singleton);
             builder.Register<EnemySquadronCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionRoster>(Lifetime.Singleton)

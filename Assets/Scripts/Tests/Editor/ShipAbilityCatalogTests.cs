@@ -33,6 +33,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PowerToMainBatteries_IsUsedOffensively()
+        {
+            ShipAbilityCatalog catalog =
+                AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(CATALOG_PATH);
+            Assert.That(catalog.Get(ShipAbilityId.PowerToMainBatteries).AiUse,
+                Is.EqualTo(ShipAbilityAiUse.Offensive));
+        }
+
+        [Test]
         public void ConfiguredShips_UseCatalogIdsWithoutDuplicates()
         {
             ShipAbilityCatalog catalog =

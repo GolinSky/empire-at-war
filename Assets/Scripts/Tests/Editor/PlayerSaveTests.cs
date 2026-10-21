@@ -7,8 +7,12 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -128,6 +132,80 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(finished, Is.EqualTo(new UnitRequest[] { first, second }));
             Assert.That(builds.Builds.Single().TimeLeft, Is.EqualTo(3f));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AiSuperWeapon_SaveLoad_ResumesPaidChargeAndCompletesOrRefundsOnce(bool hasStation)
+        {
+            FactionRoster roster = CreateRoster(FactionType.Empire);
+            var option = roster.SuperWeapons.First();
+            EnemyFactionModel faction = new EnemyFactionModel(null, roster) { CurrentLevel = option.Value.AvailableLevel };
+            PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
+            ProductionAccess production = new ProductionAccess { CanProduce = true };
+            EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            SuperWeaponModel model = new SuperWeaponModel();
+            model.Restore(option.Key, SuperWeaponState.Unavailable, 45f);
+            EnemySuperWeaponController controller = new EnemySuperWeaponController(
+                null, null, null, production, model, faction, economy, owner);
+            typeof(EnemySuperWeaponController).GetMethod("TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(controller, new object[] { option.Key, option.Value });
+            controller.AdvanceCharging(option.Value.BuildTime / 2f);
+            float remaining = option.Value.BuildTime / 2f;
+            PlayerSave save = PlayerSave.Create(owner.Id);
+            new AiSuperWeaponSaveSource(new PlayerSaveRegistry(), owner, model, controller).Capture(save);
+            save = JsonUtility.FromJson<PlayerSave>(JsonUtility.ToJson(save));
+
+            SuperWeaponModel restoredModel = new SuperWeaponModel();
+            EconomyModel restoredEconomy = new EconomyModel(null, economy.Money);
+            production.CanProduce = hasStation;
+            EnemySuperWeaponController restored = new EnemySuperWeaponController(
+                null, null, null, production, restoredModel, faction, restoredEconomy, owner);
+            new AiSuperWeaponSaveSource(new PlayerSaveRegistry(), owner, restoredModel, restored).RestoreBeforeUnits(save);
+
+            Assert.That(restored.GetChargeTimeRemaining(option.Key), Is.EqualTo(remaining));
+            Assert.That(restoredModel.GetCooldownRemaining(option.Key), Is.EqualTo(45f));
+            restored.AdvanceCharging(remaining - 0.5f);
+            Assert.That(restoredModel.GetState(option.Key), Is.EqualTo(SuperWeaponState.Charging));
+            restored.AdvanceCharging(0.5f);
+            restored.AdvanceCharging(remaining);
+            Assert.That(restoredModel.GetState(option.Key),
+                Is.EqualTo(hasStation ? SuperWeaponState.Ready : SuperWeaponState.Unavailable));
+            Assert.That(restoredEconomy.Money,
+                Is.EqualTo(economy.Money + (hasStation ? 0 : option.Value.Price)));
+            Assert.That(restoredModel.CanFire(option.Key), Is.False, "Loading must preserve the independent cooldown.");
+            restoredModel.Tick(45f);
+            Assert.That(restoredModel.CanFire(option.Key), Is.EqualTo(hasStation));
+        }
+
+        [Test]
+        public void AiSuperWeapon_LegacyChargingSave_RestartsPaidChargeWithoutSpending()
+        {
+            FactionRoster roster = CreateRoster(FactionType.Empire);
+            var option = roster.SuperWeapons.First();
+            PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
+            SuperWeaponModel model = new SuperWeaponModel();
+            EconomyModel economy = new EconomyModel(null, 1f);
+            EnemySuperWeaponController controller = new EnemySuperWeaponController(null, null, null,
+                new ProductionAccess { CanProduce = true }, model, new EnemyFactionModel(null, roster), economy, owner);
+            PlayerSave save = PlayerSave.Create(owner.Id);
+            save.SuperWeapons = new[] { JsonUtility.FromJson<SuperWeaponSave>(
+                "{\"type\":" + (int)option.Key + ",\"state\":" + (int)SuperWeaponState.Charging + ",\"cooldown\":0}") };
+
+            new AiSuperWeaponSaveSource(new PlayerSaveRegistry(), owner, model, controller).RestoreBeforeUnits(save);
+
+            Assert.That(controller.GetChargeTimeRemaining(option.Key), Is.EqualTo(option.Value.BuildTime));
+            controller.AdvanceCharging(option.Value.BuildTime);
+            Assert.That(model.CanFire(option.Key), Is.True);
+            Assert.That(economy.Money, Is.EqualTo(1f));
+        }
+
+        private sealed class ProductionAccess : IProductionAccess
+        {
+            public bool CanProduce { get; set; }
+            public PlayerId ProductionHost => TestPlayers.Enemy;
+            public bool TryGetProductionBase(out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
+                throw new System.NotSupportedException();
         }
 
         private static FactionRoster CreateRoster(FactionType faction) => new FactionRoster(

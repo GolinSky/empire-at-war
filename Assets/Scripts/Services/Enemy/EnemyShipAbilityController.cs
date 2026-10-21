@@ -95,7 +95,14 @@ namespace EmpireAtWar.Services.Enemy
                 for (int i = 0; i < caster.Slots.Count; i++)
                 {
                     ShipAbilitySlot slot = caster.Slots[i];
-                    if (slot.State != ShipAbilityState.Ready ||
+                    if (slot.Id == ShipAbilityId.LockSFoils &&
+                        slot.State == ShipAbilityState.Active &&
+                        _state.CurrentState != EnemyStrategicState.RetreatValue)
+                    {
+                        _shipAbilityService.TryCancel(caster, slot.Id);
+                        continue;
+                    }
+                    if (!slot.CanActivate ||
                         Random.value >= _profile.AbilityUseChance) continue;
                     TryUse(caster, slot, _profile);
                 }
@@ -117,15 +124,20 @@ namespace EmpireAtWar.Services.Enemy
                 _state.CurrentState != EnemyStrategicState.RetreatValue) return;
             if (definition.AiUse == ShipAbilityAiUse.Offensive && _targets.Count == 0) return;
 
-            IEntity target = null;
             if (definition.RequiresEnemyTarget)
             {
                 CollectTargets(caster, definition.Range);
-                if (_targets.Count == 0) return;
-                target = Random.value < profile.AbilityTargetPrecision
-                    ? BestTarget() : _targets[Random.Range(0, _targets.Count)];
+                // Target eligibility differs by ability; a rejected preferred target must not block the rest.
+                while (_targets.Count > 0)
+                {
+                    IEntity target = Random.value < profile.AbilityTargetPrecision
+                        ? BestTarget() : _targets[Random.Range(0, _targets.Count)];
+                    if (_shipAbilityService.TryActivate(caster, slot.Id, target)) return;
+                    _targets.Remove(target);
+                }
+                return;
             }
-            _shipAbilityService.TryActivate(caster, slot.Id, target);
+            _shipAbilityService.TryActivate(caster, slot.Id, null);
         }
 
         private void CollectTargets(IShipAbilityFacade caster, float range)

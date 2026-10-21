@@ -80,7 +80,15 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private void AdvanceCharging(float deltaTime)
+        public float GetChargeTimeRemaining(SuperWeaponType type) => _chargeTimeLeft[type];
+
+        public void RestoreCharging(SuperWeaponType type, float? timeLeft)
+        {
+            // Older saves kept the charging state but not its timer; restart the paid charge.
+            _chargeTimeLeft[type] = timeLeft ?? _factionModel.SuperWeapons[type].BuildTime;
+        }
+
+        public void AdvanceCharging(float deltaTime)
         {
             _charging.Clear();
             _charging.AddRange(_chargeTimeLeft.Keys);

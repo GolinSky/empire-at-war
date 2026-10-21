@@ -151,6 +151,14 @@ namespace EmpireAtWar.Services.ShipAbilities
             TargetingChanged?.Invoke();
         }
 
+        public bool TryCancel(IShipAbilityFacade caster, ShipAbilityId id)
+        {
+            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) ||
+                slot.State != ShipAbilityState.Active || !slot.Definition.CanCancel) return false;
+            Stop(slot);
+            return true;
+        }
+
         public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
             if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot)) return false;
