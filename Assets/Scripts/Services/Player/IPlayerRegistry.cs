@@ -1,6 +1,7 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.CaptureSites;
 
 namespace EmpireAtWar.Services.Player
@@ -14,6 +15,10 @@ namespace EmpireAtWar.Services.Player
         void RegisterSiteBuilder(PlayerId owner, ISiteFacilityBuilder builder);
 
         void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement);
+
+        void RegisterReinforcementReserve(PlayerId owner, ReinforcementModel reserve);
+
+        void UnregisterReinforcementReserve(PlayerId owner);
 
         void RegisterAiStationCheat(PlayerId owner, IEnemyStationCheat station);
 
@@ -39,7 +44,7 @@ namespace EmpireAtWar.Services.Player
 
         IEnemyStationCheat GetAiStationCheat(PlayerId owner);
 
-        /// <summary>Only AI players queue builds that still arrive after their station died; humans never do.</summary>
+        /// <summary>Builds still arriving or purchased units waiting for deployment.</summary>
         bool HasPendingReinforcement(PlayerId owner);
     }
 }

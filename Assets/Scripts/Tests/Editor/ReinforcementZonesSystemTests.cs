@@ -348,6 +348,35 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void Relay_StrengthRefreshIsThrottledWhileCaptureProgressAdvancesEveryTick()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, zone);
+                CaptureSquadrons squadrons = new CaptureSquadrons { Owner = TestPlayers.Enemy };
+                SetField(system, "_shipService", new ShipService());
+                SetField(system, "_squadronRegistry", squadrons);
+                SetField(system, "_captureStrengthBuilder", new CaptureStrengthBuilder(TestPlayers.CreateTeamGame()));
+                MethodInfo tick = typeof(ReinforcementZonesSystem).GetMethod("TickZones", PRIVATE_INSTANCE);
+                tick.Invoke(system, new object[] { 0.1f });
+                float progress = system.Zones[0].CaptureProgress;
+                tick.Invoke(system, new object[] { 0.1f });
+                Assert.That(squadrons.ScanCount, Is.EqualTo(1));
+                Assert.That(system.Zones[0].CaptureProgress, Is.GreaterThan(progress));
+                tick.Invoke(system, new object[] { 0.16f });
+                Assert.That(squadrons.ScanCount, Is.EqualTo(2));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
             ReinforcementZoneData data, params ReinforcementZoneView[] zones) =>
             CreateSystem(root, data, new SpawnBlockerService(TestPlayers.CreateTeamGame()), zones);
@@ -417,10 +446,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(CaptureSquadrons);
             public PlayerId Owner { get; set; } = PlayerId.None;
+            public int ScanCount { get; private set; }
 
             public void AddSquadronStrength(System.Func<Vector3, bool> contains, float weight,
                 CaptureStrengthBuilder tally)
             {
+                ScanCount++;
                 if (Owner != PlayerId.None && contains(Vector3.zero)) tally.Add(Owner, weight);
             }
 

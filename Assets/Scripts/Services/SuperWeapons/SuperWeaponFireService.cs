@@ -37,6 +37,18 @@ namespace EmpireAtWar.Services.SuperWeapons
         private readonly List<SuperWeaponStun> _stuns = new List<SuperWeaponStun>();
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
 
+        public IReadOnlyList<SuperWeaponSalvo> Salvos => _salvos;
+        public IReadOnlyList<SuperWeaponStun> Stuns => _stuns;
+
+        public void RestoreSalvo(SuperWeaponSalvo salvo) => _salvos.Add(salvo);
+
+        public void RestoreStun(SuperWeaponStun stun)
+        {
+            stun.Modifiers.Add(stun.Modifier);
+            stun.Modifiers.SetIonDisabled(true);
+            _stuns.Add(stun);
+        }
+
         public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
             IPlayerRelations relations, SuperWeaponData data,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IAudioService audioService,
@@ -91,7 +103,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             GameObject origin = new GameObject($"{type}Origin");
             origin.transform.SetPositionAndRotation(originPosition,
                 Quaternion.LookRotation(targetPosition - originPosition));
-            _salvos.Add(new SuperWeaponSalvo(profile: _data.GetProfile(type), target: target, origin: origin.transform));
+            _salvos.Add(new SuperWeaponSalvo(type, target, _data.GetProfile(type), origin.transform));
         }
 
         public void Tick()
@@ -170,7 +182,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&
                 target.TryGetFacade(out ICombatModifiersFacade combat))
             {
-                ApplyStun(combat.Modifiers, profile);
+                ApplyStun(target, combat.Modifiers, profile);
             }
 
             if (profile.AreaDamage > 0f)
@@ -228,7 +240,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             return 0;
         }
 
-        private void ApplyStun(CombatModifiers modifiers, SuperWeaponProfile profile)
+        private void ApplyStun(IEntity target, CombatModifiers modifiers, SuperWeaponProfile profile)
         {
             // A repeated hit refreshes the running disable instead of stacking it.
             foreach (SuperWeaponStun stun in _stuns)
@@ -240,7 +252,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
             modifiers.Add(profile.StunModifier);
             modifiers.SetIonDisabled(true);
-            _stuns.Add(new SuperWeaponStun(modifiers, profile.StunModifier, profile.StunDuration));
+            _stuns.Add(new SuperWeaponStun(target, modifiers, profile.StunModifier, profile.StunDuration));
         }
     }
 }

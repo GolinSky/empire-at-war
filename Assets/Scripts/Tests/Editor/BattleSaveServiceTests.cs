@@ -171,6 +171,36 @@ namespace EmpireAtWar.Tests.Editor
             new BattleSaveService(battle, _state, _camera, _cinematic, new BattleClock(_state), _repository,
                 new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null), Array.Empty<IBattleSaveSource>());
 
+        [TestCase(BattleState.NotInitialized, false)]
+        [TestCase(BattleState.Loading, false)]
+        [TestCase(BattleState.Running, true)]
+        [TestCase(BattleState.Paused, true)]
+        [TestCase(BattleState.Ended, true)]
+        public void QuickLoad_AllowsEndedBattlesButNotStartup(BattleState state, bool allowed)
+        {
+            var battle = SkirmishPreset.Default();
+            _state.SetState(BattleState.Running);
+            var service = CreateService(battle);
+            _repository.Save(service.Capture(BattleSaveSlot.Quicksave));
+            var game = new LoadCommandStub();
+            var actions = new BattleSaveActions(service, _repository, game, battle);
+            _state.SetState(state);
+
+            actions.QuickLoad();
+
+            Assert.That(game.Loaded != null, Is.EqualTo(allowed));
+            Assert.That(service.CanLoad, Is.EqualTo(allowed));
+            if (!allowed) Assert.That(actions.Status, Does.StartWith("Load failed:"));
+        }
+
+        private sealed class LoadCommandStub : EmpireAtWar.Commands.Game.IGameCommand
+        {
+            public BattleSave Loaded { get; private set; }
+            public void ExitGame() { }
+            public void StartBattle(BattleDefinition definition) { }
+            public void LoadBattle(BattleSave save) => Loaded = save;
+        }
+
         private sealed class FakeCinematic : ICinematicReturnPose
         {
             public bool IsActive { get; set; }

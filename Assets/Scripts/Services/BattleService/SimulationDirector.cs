@@ -98,13 +98,23 @@ namespace EmpireAtWar.Services.Battle
         {
             if (_resetting) return;
             _resetting = true;
-            _flow.BeginSimulationRestart();
             try
             {
+                _flow.BeginSimulationRestart();
                 await _reset.ResetAsync(setup, _cancellation.Token);
                 _pending.Clear(); _targeting.Clear(); _prepared = false; _settleTime = 0;
                 _model.Reset(setup);
                 _flow.CompleteSimulationRestart(setup.FastSpeed);
+            }
+            catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch
+            {
+                // Reset may already have disposed the fleets; return to a usable menu instead of resuming them.
+                _flow.ExitSkirmish();
+                throw;
             }
             finally { _resetting = false; }
         }

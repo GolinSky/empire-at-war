@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.SuperWeapons
     /// <summary>One firing in flight: shots still to fire and seconds until each fired shot lands.</summary>
     public sealed class SuperWeaponSalvo
     {
+        public SuperWeaponType Type { get; }
         public SuperWeaponProfile Profile { get; }
         public IEntity Target { get; }
         public Transform Origin { get; }
@@ -16,8 +17,9 @@ namespace EmpireAtWar.Services.SuperWeapons
         public float NextShotTime { get; set; }
         public bool IsComplete => ShotsFired >= Profile.Weapon.ShotsPerSalvo && ImpactTimes.Count == 0;
 
-        public SuperWeaponSalvo(IEntity target, SuperWeaponProfile profile, Transform origin)
+        public SuperWeaponSalvo(SuperWeaponType type, IEntity target, SuperWeaponProfile profile, Transform origin)
         {
+            Type = type;
             Profile = profile;
             Target = target;
             Origin = origin;

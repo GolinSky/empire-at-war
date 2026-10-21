@@ -55,6 +55,7 @@ namespace EmpireAtWar.Models.Reinforcement
         public int MaxUnitCapacity => _data.MaxUnitCapacity;
         public int CapacityLeft => MaxUnitCapacity - CurrentUnitCapacity;
         public bool IsTrySpawning { get; set; }
+        public bool HasReserve => _reserveCounts.Count > 0;
 
         public ReinforcementModel(ReinforcementData data)
         {

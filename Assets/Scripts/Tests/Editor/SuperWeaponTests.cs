@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -12,6 +13,8 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
@@ -84,8 +87,12 @@ namespace EmpireAtWar.Tests.Editor
             public void Fire(SuperWeaponType type, IEntity target) => Target = target;
         }
 
-        private sealed class StationTarget : IHealthModelObserver, IEntityTransformFacade
+        private sealed class StationTarget : IHealthModelObserver, IEntityTransformFacade, IHealthFacade, ICombatModifiersFacade
         {
+            public CombatModifiers Modifiers { get; } = new CombatModifiers();
+            public int HitCount { get; private set; }
+            public bool Destroyed { get; set; }
+            public void ApplyDamage(float damage, DamageType damageType, int id) => HitCount++;
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
             public Transform Transform { get; }
@@ -95,7 +102,7 @@ namespace EmpireAtWar.Tests.Editor
             public float HullPercentage => 1f;
             public float Shields => 1000f;
             public float ShieldPercentage => 1f;
-            public bool IsDestroyed => false;
+            public bool IsDestroyed => Destroyed;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
             public bool HasLiveHardPoints => true;
@@ -104,6 +111,140 @@ namespace EmpireAtWar.Tests.Editor
             public StationTarget(Transform transform) => Transform = transform;
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
                 Array.Empty<IHardPointModel>();
+        }
+
+        [TestCase(SuperWeaponType.IonCannon)]
+        [TestCase(SuperWeaponType.HypervelocityGun)]
+        [TestCase(SuperWeaponType.PlasmaCannon)]
+        public void Save_RestoresPendingSuperWeaponImpactsWithoutRepeatingShots(SuperWeaponType type)
+        {
+            GameObject view = new GameObject("Saved target");
+            GameObject origin = new GameObject("Saved origin");
+            GameObject audio = new GameObject("Test audio");
+            EntityLocator entities = new EntityLocator();
+            StationTarget health = new StationTarget(view.transform);
+            Entity target = new Entity(health, entities, new IEntityFacade[] { health },
+                TestPlayers.Human, 123, Array.Empty<IPooledEntityEvents>(),
+                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+            entities.AddEntity(target);
+            SuperWeaponData data = AssetDatabase.LoadAssetAtPath<SuperWeaponData>(
+                "Assets/Settings/Data/Models/SuperWeapons/SuperWeaponData.asset");
+            SuperWeaponFireService fire = CreateFireService(entities, data, audio);
+            SuperWeaponFireService restored = CreateFireService(entities, data, audio);
+            try
+            {
+                origin.transform.position = new Vector3(3f, 5f, 7f);
+                SuperWeaponSalvo salvo = new SuperWeaponSalvo(type, target, data.GetProfile(type), origin.transform)
+                {
+                    ShotsFired = data.GetProfile(type).Weapon.ShotsPerSalvo,
+                    NextShotTime = 0.75f
+                };
+                salvo.ImpactTimes.AddRange(new[] { 0.1f, 0.3f });
+                fire.RestoreSalvo(salvo);
+                fire.RestoreSalvo(new SuperWeaponSalvo(type, target, data.GetProfile(type), origin.transform)
+                {
+                    ShotsFired = 0,
+                    NextShotTime = 1.25f
+                });
+                BattleSave save = new BattleSave();
+                new SuperWeaponCombatSaveSource(fire, entities, data).Capture(save);
+                new SuperWeaponCombatSaveSource(restored, entities, data).RestoreAfterUnits(
+                    new BattleRestoreContext(BattleSave.FromJson(save.ToJson())));
+
+                SuperWeaponSalvo loaded = restored.Salvos[0];
+                Assert.That(loaded.Type, Is.EqualTo(type));
+                Assert.That(loaded.Target, Is.SameAs(target));
+                Assert.That(loaded.Origin.position, Is.EqualTo(origin.transform.position));
+                Assert.That(loaded.ShotsFired, Is.EqualTo(salvo.ShotsFired));
+                Assert.That(loaded.NextShotTime, Is.EqualTo(0.75f));
+                Assert.That(restored.Salvos[1].ShotsFired, Is.Zero, "A warming-up salvo must stay unfired.");
+                Assert.That(restored.Salvos[1].NextShotTime, Is.EqualTo(1.25f));
+                Assert.That(restored.Salvos[1].ImpactTimes, Is.Empty);
+                MethodInfo advance = typeof(SuperWeaponFireService).GetMethod("AdvanceSalvo",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                advance.Invoke(restored, new object[] { loaded, 0.11f });
+                Assert.That(health.HitCount, Is.EqualTo(1));
+                Assert.That(loaded.IsComplete, Is.False);
+                advance.Invoke(restored, new object[] { loaded, 0.2f });
+                Assert.That(health.HitCount, Is.EqualTo(2));
+                Assert.That(loaded.IsComplete, Is.True);
+                advance.Invoke(restored, new object[] { loaded, 1f });
+                Assert.That(health.HitCount, Is.EqualTo(2), "Loaded impacts must apply exactly once.");
+                health.Destroyed = true;
+                new SuperWeaponCombatSaveSource(fire, entities, data).Capture(save);
+                Assert.That(save.SuperWeaponSalvos, Is.Empty, "Dead targets are absent from the saved entities.");
+            }
+            finally
+            {
+                foreach (SuperWeaponSalvo salvo in restored.Salvos)
+                    UnityEngine.Object.DestroyImmediate(salvo.Origin.gameObject);
+                UnityEngine.Object.DestroyImmediate(origin);
+                fire.LateDispose();
+                restored.LateDispose();
+                UnityEngine.Object.DestroyImmediate(view);
+                UnityEngine.Object.DestroyImmediate(audio);
+            }
+        }
+
+        [Test]
+        public void Save_RestoresSuperWeaponStunAndRemovesItWhenExpired()
+        {
+            GameObject view = new GameObject("Stunned target");
+            GameObject audio = new GameObject("Test audio");
+            EntityLocator entities = new EntityLocator();
+            StationTarget health = new StationTarget(view.transform);
+            Entity target = new Entity(health, entities, new IEntityFacade[] { health },
+                TestPlayers.Human, 123, Array.Empty<IPooledEntityEvents>(),
+                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+            entities.AddEntity(target);
+            SuperWeaponFireService fire = CreateFireService(entities, null, audio);
+            SuperWeaponFireService restored = CreateFireService(entities, null, audio);
+            try
+            {
+                CombatStatModifier modifier = new CombatStatModifier(0.5f, 1f, 0.25f, 1f, 1f);
+                fire.RestoreStun(new SuperWeaponStun(target, health.Modifiers, modifier, 3.5f));
+                BattleSave save = new BattleSave();
+                SuperWeaponCombatSaveSource source = new SuperWeaponCombatSaveSource(fire, entities, null);
+                source.Capture(save);
+                fire.LateDispose();
+                new SuperWeaponCombatSaveSource(restored, entities, null).RestoreAfterUnits(
+                    new BattleRestoreContext(BattleSave.FromJson(save.ToJson())));
+                Assert.That(health.Modifiers.IsIonDisabled, Is.True);
+                Assert.That(health.Modifiers.SpeedMultiplier, Is.EqualTo(0.25f));
+                Assert.That(restored.Stuns[0].TimeLeft, Is.EqualTo(3.5f));
+                restored.Stuns[0].TimeLeft = 0f;
+                restored.Tick();
+                Assert.That(restored.Stuns, Is.Empty);
+                Assert.That(health.Modifiers.IsIonDisabled, Is.False);
+                Assert.That(health.Modifiers.SpeedMultiplier, Is.EqualTo(1f));
+            }
+            finally
+            {
+                fire.LateDispose();
+                restored.LateDispose();
+                UnityEngine.Object.DestroyImmediate(view);
+                UnityEngine.Object.DestroyImmediate(audio);
+            }
+        }
+
+        [Test]
+        public void Save_OlderSaveHasNoSuperWeaponCombatEffects()
+        {
+            BattleSave save = BattleSave.FromJson("{}");
+            // A pre-feature save must not try to restore any runtime effects.
+            new SuperWeaponCombatSaveSource(null, null, null).RestoreAfterUnits(new BattleRestoreContext(save));
+        }
+
+        private static SuperWeaponFireService CreateFireService(EntityLocator entities, SuperWeaponData data, GameObject audio)
+        {
+            AudioSource audioSource = audio.AddComponent<AudioSource>();
+            ShipSfxSources sources = audio.AddComponent<ShipSfxSources>();
+            typeof(ShipSfxSources).GetField("sfx", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(sources, new[] { audioSource });
+            ShipSfxData sfx = AssetDatabase.LoadAssetAtPath<ShipSfxData>(
+                "Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
+            return new SuperWeaponFireService(entities, null, TestPlayers.CreateTeamGame(), data,
+                null, null, null, sfx, sources);
         }
 
         [Test]

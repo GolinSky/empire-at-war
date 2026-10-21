@@ -11,6 +11,7 @@ using EmpireAtWar.Views.SpawnArea;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Player;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ReinforcementModel _model;
         private readonly ReinforcementPlacementFactory _placementFactory;
         private readonly PlayerSlot _owner;
+        private readonly IPlayerRegistry _playerRegistry;
         private UnitSpawnView _preview;
         private UnitRequest _currentRequest;
 
@@ -48,8 +50,10 @@ namespace EmpireAtWar.Services.Reinforcement
             ISpawnAreaOverlay spawnAreaOverlay,
             ReinforcementModel model,
             ReinforcementPlacementFactory placementFactory,
-            PlayerSlot owner)
+            PlayerSlot owner,
+            IPlayerRegistry playerRegistry)
         {
+            _playerRegistry = playerRegistry;
             _owner = owner;
             _model = model;
             _placementFactory = placementFactory;
@@ -62,12 +66,14 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void Initialize()
         {
+            _playerRegistry.RegisterReinforcementReserve(_owner.Id, _model);
             _pointerInput.PrimaryReleased += Interrupt;
             _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _playerRegistry.UnregisterReinforcementReserve(_owner.Id);
             _pointerInput.PrimaryReleased -= Interrupt;
             _battleVictoryNotifier.RemoveObserver(this);
         }

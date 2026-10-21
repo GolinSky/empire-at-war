@@ -247,12 +247,40 @@ namespace EmpireAtWar.Tests.Movement
             {
                 var players = EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel();
                 HuntState state = new HuntState(_movement, _weapon, null, new EntityLocator(), null,
-                    EmpireAtWar.Tests.Editor.TestPlayers.CreateLocalPlayer(players), settings,
+                    new EmpireAtWar.Services.Vision.VisionService(players), settings,
                     EmpireAtWar.Tests.Editor.TestPlayers.Human);
                 _movement.MoveToPosition(Vector3.forward * 100f);
                 state.Enter();
                 state.Tick(0.1f);
                 Assert.That(state.IsComplete, Is.False);
+                Assert.That(_movement.IsMoving, Is.False);
+            }
+            finally { Object.DestroyImmediate(settings); }
+        }
+
+        [TestCase(0)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void Hunt_DropsTargetAsSoonAsTeamVisionIsLost(int owner)
+        {
+            UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            try
+            {
+                var players = EmpireAtWar.Tests.Editor.TestPlayers.CreateTeamGame();
+                var vision = new EmpireAtWar.Services.Vision.VisionService(players);
+                PlayerId side = new PlayerId(owner);
+                if (owner == 3) _target.Owner = EmpireAtWar.Tests.Editor.TestPlayers.Human;
+                var locator = new EntityLocator();
+                locator.AddEntity(_target);
+                HuntState state = new HuntState(_movement, _weapon, null, locator, players, vision, settings, side);
+                const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+                typeof(HuntState).GetField("_target", PRIVATE_INSTANCE).SetValue(state, _target);
+                typeof(HuntState).GetField("_retargetTimer", PRIVATE_INSTANCE).SetValue(state, 100f);
+                _movement.MoveToPosition(_target.Transform.position);
+
+                state.Tick(0.1f);
+
+                Assert.That(typeof(HuntState).GetField("_target", PRIVATE_INSTANCE).GetValue(state), Is.Null);
                 Assert.That(_movement.IsMoving, Is.False);
             }
             finally { Object.DestroyImmediate(settings); }
@@ -411,7 +439,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             public long Id => 1;
             public IHealthModelObserver HealthModel { get; } = new Health();
-            public PlayerId Owner => EmpireAtWar.Tests.Editor.TestPlayers.Enemy;
+            public PlayerId Owner { get; set; } = EmpireAtWar.Tests.Editor.TestPlayers.Enemy;
             public Transform Transform { get; }
             public float NavigationRadius { get; set; } = 5f;
             public Target(Transform transform) => Transform = transform;

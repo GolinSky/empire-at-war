@@ -21,14 +21,10 @@ namespace EmpireAtWar.Entities.Squadrons
         private readonly PlayerId _side;
         private readonly ShipClass _shipClass;
 
-        private readonly bool _respectsFog;
-
         public SquadronTargetSelector(IEntityLocator entityLocator, IVisionService visionService,
-            IPlayerRelations relations, ILocalPlayer localPlayer, PlayerId side, ISquadronHealthData data)
+            IPlayerRelations relations, PlayerId side, ISquadronHealthData data)
         {
             _relations = relations;
-            // Only the human's squadrons are limited to what their side can see.
-            _respectsFog = localPlayer.IsLocal(side);
             _entityLocator = entityLocator;
             _visionService = visionService;
             _side = side;
@@ -44,11 +40,13 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 IEntity candidate = candidates[i];
                 if (!IsValidEnemy(candidate)) continue;
-                float distance = (candidate.GetFacade<IEntityTransformFacade>().Transform.position - center).sqrMagnitude;
+                Vector3 position = candidate.GetFacade<IEntityTransformFacade>().Transform.position;
+                float distance = (position - center).sqrMagnitude;
                 if (distance > radiusSquared) continue;
                 float score = Score(candidate, distance);
                 if (score >= bestScore && best != null) continue;
                 if (candidate.IsCloaked()) continue;
+                if (!_visionService.IsVisible(_side, position)) continue;
                 best = candidate;
                 bestScore = score;
             }
@@ -73,8 +71,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 float score = Score(candidate, distance);
                 if (score >= bestScore) continue;
                 if (candidate.IsCloaked()) continue;
-                if (_respectsFog &&
-                    !_visionService.IsVisible(_side, position)) continue;
+                if (!_visionService.IsVisible(_side, position)) continue;
                 best = candidate;
                 bestScore = score;
             }

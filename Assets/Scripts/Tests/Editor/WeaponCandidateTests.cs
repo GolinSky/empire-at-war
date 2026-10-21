@@ -12,6 +12,8 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Cheats;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Tests.Editor;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -38,6 +40,8 @@ namespace EmpireAtWar.Tests.Weapon
             GameObject weaponObject = Track(new GameObject("Weapon"));
             _weapon = weaponObject.AddComponent<WeaponComponent>();
             typeof(WeaponComponent).GetField("_attackCoordinator", PRIVATE_INSTANCE).SetValue(_weapon, _coordinator);
+            typeof(WeaponComponent).GetField("_visionService", PRIVATE_INSTANCE)
+                .SetValue(_weapon, new VisionService(TestPlayers.CreateDuel(), false));
         }
 
         [TearDown]
@@ -252,18 +256,24 @@ namespace EmpireAtWar.Tests.Weapon
         private AttackData Group(int units)
         {
             HealthStub health = new HealthStub(Units(units));
-            return new AttackData(health, new HealthFacadeStub(), HardPointType.Any, new EntityStub(health));
+            return new AttackData(health, new HealthFacadeStub(), HardPointType.Any,
+                new EntityStub(health, health.GetShipUnits(HardPointType.Any)[0].Transform));
         }
 
         private sealed class EntityStub : IEntity
         {
-            public EntityStub(IHealthModelObserver health) => HealthModel = health;
+            private readonly IEntityTransformFacade _transform;
+            public EntityStub(IHealthModelObserver health, Transform transform)
+            {
+                HealthModel = health;
+                _transform = new EntityTransformFacade(transform);
+            }
             public long Id => 1;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner => default;
 
             public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade =>
-                throw new InvalidOperationException("The target fixture has no entity facades.");
+                _transform is TFacade facade ? facade : throw new InvalidOperationException("Missing fixture facade.");
 
             public bool TryGetFacade<TFacade>(out TFacade facade) where TFacade : IEntityFacade
             {

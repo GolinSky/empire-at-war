@@ -14,6 +14,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Utils;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Components.Weapon
         private const float MAX_RETRY_INTERVAL = 0.5f;
 
         private ISelectionModelObserver _selection;
-        private ILocalPlayer _localPlayer;
+        private IVisionService _visionService;
         private IPlayerRoster _playerRoster;
         private PlayerId _owner;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
@@ -88,8 +89,6 @@ namespace EmpireAtWar.Components.Weapon
 
         private bool _isReleased;
         private bool _isInitialized;
-        // The local team never fires at what its fog of war hides, so no shot flies into the dark.
-        private bool _respectsLocalFog;
 
         public event Action<WeaponProfile, Transform> ShotEmitted;
 
@@ -101,7 +100,7 @@ namespace EmpireAtWar.Components.Weapon
         private void Construct(WeaponModel model, ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
-            ILocalPlayer localPlayer, IPlayerRoster playerRoster, PlayerId owner,
+            IVisionService visionService, IPlayerRoster playerRoster, PlayerId owner,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
             [Key(EntityBindType.ViewTransform)] Transform viewTransform)
         {
@@ -112,7 +111,7 @@ namespace EmpireAtWar.Components.Weapon
             _viewTransform = viewTransform;
 #endif
             SetModel(model);
-            _localPlayer = localPlayer;
+            _visionService = visionService;
             _playerRoster = playerRoster;
             _owner = owner;
             _missiles = missiles;
@@ -127,7 +126,6 @@ namespace EmpireAtWar.Components.Weapon
         public void Initialize()
         {
             _isInitialized = true;
-            _respectsLocalFog = _localPlayer.IsFriendly(_owner);
             _retryAt = new float[hardPoints.Count];
             _attackCoordinator.Register(this);
 
@@ -251,7 +249,8 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         private bool CanAcquire(AttackData group) =>
-            group.CanAcquireTarget && !(_respectsLocalFog && group.TargetEntity.IsHiddenByFog());
+            group.CanAcquireTarget && _visionService.IsVisible(_owner,
+                group.TargetEntity.GetFacade<IEntityTransformFacade>().Transform.position);
 
         // Strikecraft only when anti-strikecraft weapons carry most of the firepower, e.g. a laser corvette.
         private static TargetPreference GetLoadoutPreference(List<WeaponProfile> profiles)
@@ -397,7 +396,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _candidateGroups.Count; i++)
             {
                 AttackData group = _candidateGroups[i];
-                bool canAcquire = capture.CanAcquire(group, _respectsLocalFog, out bool isWreck);
+                bool canAcquire = capture.CanAcquire(group, _owner, _visionService, out bool isWreck);
                 // A new wreck makes its destroyed hardpoints valid aim points again.
                 if (isWreck && _liveGroupsAtRebuild.Contains(group))
                 {

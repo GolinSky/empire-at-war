@@ -69,7 +69,7 @@ namespace EmpireAtWar.Entities.Game
 
             return victoryCondition switch
             {
-                // Destroy-all also waits for every unit and building and for AI builds still on the way.
+                // Destroy-all also waits for construction, incoming builds and undeployed reserves.
                 BattleVictoryCondition.DestroyEnemyFleet =>
                     player.UnitCount == 0 && !player.HasPendingReinforcement,
                 BattleVictoryCondition.DestroyOpponentBase => true,

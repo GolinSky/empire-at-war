@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.SuperWeapons;
+using EmpireAtWar.Services.Saves;
 using global::VContainer;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace EmpireAtWar.Services.VContainer
         {
             AssetRegistrations.RegisterShared<SuperWeaponData>(builder, _assets);
             builder.Register<SuperWeaponFireService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SuperWeaponCombatSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
         }
 
         public void ConfigureDisabled(IContainerBuilder builder) { }

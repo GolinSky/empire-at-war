@@ -1,5 +1,7 @@
 using System;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Controllers.Game;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
@@ -42,6 +44,30 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_inputLockService.IsLocked, Is.False);
             Assert.That(_provider.Actions.Battle.enabled, Is.True);
             Assert.That(_provider.Actions.Camera.enabled, Is.True);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void EndedBattle_QuickLoadSurvivesInputLockAndUnsubscribesOnTeardown(bool lockFirst)
+        {
+            SkirmishStateModel state = new SkirmishStateModel();
+            BattleSaveInput saves = new BattleSaveInput(_provider, null, state, _inputLockService);
+            saves.Initialize();
+            IDisposable inputLock = null;
+            try
+            {
+                if (lockFirst) inputLock = _inputLockService.Acquire();
+                state.SetState(BattleState.Ended);
+                if (!lockFirst) inputLock = _inputLockService.Acquire();
+                Assert.That(_provider.Actions.Battle.QuickLoad.enabled, Is.True);
+                Assert.That(_provider.Actions.Battle.QuickSave.enabled, Is.False);
+                Assert.That(_provider.Actions.Camera.enabled, Is.False);
+                saves.LateDispose();
+                Assert.That(_provider.Actions.Battle.QuickLoad.enabled, Is.False);
+                state.SetState(BattleState.Ended);
+                Assert.That(_provider.Actions.Battle.QuickLoad.enabled, Is.False);
+            }
+            finally { inputLock.Dispose(); }
         }
 
         [Test]

@@ -17,6 +17,8 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private CaptureSiteSave[] captureSites = Array.Empty<CaptureSiteSave>();
         [SerializeField] private ReinforcementZoneSave[] reinforcementZones = Array.Empty<ReinforcementZoneSave>();
         [SerializeField] private int[] observedBases = Array.Empty<int>();
+        [SerializeField] private SuperWeaponSalvoSave[] superWeaponSalvos = Array.Empty<SuperWeaponSalvoSave>();
+        [SerializeField] private SuperWeaponStunSave[] superWeaponStuns = Array.Empty<SuperWeaponStunSave>();
         [SerializeField] private bool hasSurvival;
         [SerializeField] private SurvivalSave survival;
 
@@ -32,6 +34,8 @@ namespace EmpireAtWar.Services.Saves
         public ReinforcementZoneSave[] ReinforcementZones { get => reinforcementZones; set => reinforcementZones = value; }
         /// <summary>Players whose station the victory rule has seen alive, by player index.</summary>
         public int[] ObservedBases { get => observedBases; set => observedBases = value; }
+        public SuperWeaponSalvoSave[] SuperWeaponSalvos { get => superWeaponSalvos; set => superWeaponSalvos = value; }
+        public SuperWeaponStunSave[] SuperWeaponStuns { get => superWeaponStuns; set => superWeaponStuns = value; }
         /// <summary>Null outside Survival.</summary>
         public SurvivalSave Survival
         {

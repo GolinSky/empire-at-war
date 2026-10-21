@@ -25,6 +25,9 @@ namespace EmpireAtWar.Services.Saves
 
         public bool IsSaving { get; private set; }
         public bool CanSave => GetRefusal() == null;
+        public bool CanLoad => _battle.Outcome != OutcomeRule.Simulation && !IsSaving &&
+            (_state.State == BattleState.Running || _state.State == BattleState.Paused ||
+             _state.State == BattleState.Ended);
 
         public BattleSaveService(BattleDefinition battle, SkirmishStateModel state, ICameraService camera,
             ICinematicReturnPose cinematic, BattleClock clock, IBattleSaveRepository repository, UnitSaveService units,

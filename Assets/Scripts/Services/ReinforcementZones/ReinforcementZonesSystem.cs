@@ -45,6 +45,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
         IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
     {
+        private const float STRENGTH_REFRESH_INTERVAL = 0.25f;
+
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
         private IVisionService _visionService;
@@ -62,6 +64,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly List<ZoneSpot> _homes = new List<ZoneSpot>();
         private readonly List<Transform> _homeVisionAnchors = new List<Transform>();
         private CaptureStrengthBuilder _captureStrengthBuilder;
+        private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
+        private float _strengthRefreshCountdown;
 
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
 
@@ -126,6 +130,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
 
             _zones.Clear();
+            _strengths.Clear();
+            _strengthRefreshCountdown = 0f;
             foreach (ReinforcementZoneView view in _zoneViews)
             {
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
@@ -135,6 +141,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
                     relations: _playerRoster);
                 _zones.Add(new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer));
+                _strengths.Add(default);
                 // Each zone centre holds a relay: only its owner's team may spawn around it.
                 _spawnBlockerService.Register(view.StartingOwner, view.transform, _data.RelaySpawnBlockRadius);
                 if (view.StartingOwner != PlayerId.None)
@@ -150,6 +157,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
         {
             if (saves.Count != _zones.Count)
                 throw new InvalidOperationException($"Saved {saves.Count} reinforcement zones; the map has {_zones.Count}.");
+
+            _strengthRefreshCountdown = 0f;
 
             for (int i = 0; i < _zones.Count; i++)
             {
@@ -170,15 +179,24 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         private void TickZones(float deltaTime)
         {
+            _strengthRefreshCountdown -= deltaTime;
+            bool refreshStrength = _strengthRefreshCountdown <= 0f;
+            if (refreshStrength)
+                _strengthRefreshCountdown = STRENGTH_REFRESH_INTERVAL;
+
             for (int i = 0; i < _zones.Count; i++)
             {
                 ReinforcementZonePresenter zone = _zones[i];
-                _captureStrengthBuilder.Clear();
-                Func<Vector3, bool> contains = zone.Contains;
-                _shipService.AddShipStrength(contains, _captureStrengthBuilder);
-                _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
+                if (refreshStrength)
+                {
+                    _captureStrengthBuilder.Clear();
+                    Func<Vector3, bool> contains = zone.Contains;
+                    _shipService.AddShipStrength(contains, _captureStrengthBuilder);
+                    _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
+                    _strengths[i] = _captureStrengthBuilder.Build();
+                }
 
-                if (zone.Tick(deltaTime, _captureStrengthBuilder.Build()))
+                if (zone.Tick(deltaTime, _strengths[i]))
                 {
                     _spawnBlockerService.Register(zone.Owner, _zoneViews[i].transform, _data.RelaySpawnBlockRadius);
                     _visionService.Register(zone.Owner, _zoneViews[i].transform, _data.RelaySpawnBlockRadius);

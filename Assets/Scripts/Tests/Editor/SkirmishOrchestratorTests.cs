@@ -70,6 +70,7 @@ namespace EmpireAtWar.Tests.Editor
                 state.SetState(BattleState.Ended);
                 flow.BeginSimulationRestart();
                 Assert.That(state.State, Is.EqualTo(BattleState.Loading));
+                Assert.That(Time.timeScale, Is.Zero);
                 flow.CompleteSimulationRestart(true);
                 Assert.That(state.State, Is.EqualTo(BattleState.Running));
                 Assert.That(state.Speed, Is.EqualTo(GameSpeed.Fast));
@@ -93,6 +94,54 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_inputLock.ActiveHandles, Is.Zero);
             Assert.That(_inputLock.AcquireCount, Is.EqualTo(1));
             Assert.That(Time.timeScale, Is.EqualTo(1f));
+        }
+
+        [Test]
+        public void Startup_FreezesBattleUntilSequenceCompletes()
+        {
+            var startup = new PendingStartupStub();
+            var state = new SkirmishStateModel();
+            var flow = new SkirmishOrchestrator(_gameCommand, startup, _inputLock,
+                state, SkirmishPreset.Default());
+            try
+            {
+                flow.Initialize();
+                Assert.That(state.State, Is.EqualTo(BattleState.Loading));
+                Assert.That(Time.timeScale, Is.Zero);
+                Assert.That(_inputLock.IsLocked, Is.True);
+                startup.Completion.SetResult();
+                Assert.That(state.State, Is.EqualTo(BattleState.Running));
+                Assert.That(Time.timeScale, Is.EqualTo(1f));
+                Assert.That(_inputLock.IsLocked, Is.False);
+            }
+            finally { flow.LateDispose(); }
+        }
+
+        [Test]
+        public void Simulation_FailedRestartExitsToMenuAndRestoresTime()
+        {
+            var entry = new SimulationFleetEntry(EmpireAtWar.Entities.Units.UnitTypeId.Ship(ShipType.Venator), 1);
+            var setup = new SimulationSetup(FactionType.Republic, FactionType.Separatist,
+                new[] { entry }, new[] { entry }, 1000, 30, false);
+            var state = new SkirmishStateModel();
+            var flow = new SkirmishOrchestrator(_gameCommand, new CompletedStartupStub(), _inputLock,
+                state, SimulationPreset.Create(setup).Build());
+            var director = new EmpireAtWar.Services.Battle.SimulationDirector(null, state, flow,
+                null, null, null, null, null, null, null, null);
+            try
+            {
+                state.SetState(BattleState.Ended);
+                Assert.Throws<NullReferenceException>(() => director.RestartAsync(setup).GetAwaiter().GetResult());
+                Assert.That(_gameCommand.ExitCount, Is.EqualTo(1));
+                Assert.That(Time.timeScale, Is.EqualTo(1f));
+            }
+            finally { director.LateDispose(); flow.LateDispose(); }
+        }
+
+        private sealed class PendingStartupStub : IBattleStartupSequence
+        {
+            public AwaitableCompletionSource Completion { get; } = new AwaitableCompletionSource();
+            public Awaitable RunAsync(CancellationToken cancellationToken) => Completion.Awaitable;
         }
 
         [Test]

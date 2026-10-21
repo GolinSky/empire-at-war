@@ -50,7 +50,7 @@ namespace EmpireAtWar.Services.Saves
         {
             try
             {
-                if (!CanSave) throw new InvalidOperationException("Loading is unavailable while the battle is loading, ended, or saving.");
+                if (!_saves.CanLoad) throw new InvalidOperationException("Loading is unavailable before battle startup completes, during a save, or in Battle Simulation.");
                 _game.LoadBattle(_repository.Load(_battle.Mode, BattleSaveSlot.Quicksave));
             }
             catch (Exception exception) { SetStatus($"Load failed: {exception.Message}"); }

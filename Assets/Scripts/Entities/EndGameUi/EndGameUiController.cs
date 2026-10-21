@@ -65,7 +65,9 @@ namespace EmpireAtWar.Entities.EndGameUi
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => _isShown && !_isLeaving, () =>
                 new TooltipContent(title: (string)key, description: (string)key == "Objective"
-                    ? _result.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet
+                    ? _result.Mode == GameMode.Survival
+                        ? "Keep your station alive and defeat all five waves."
+                        : _result.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet
                         ? "Destroy the opposing fleet to win the battle." : "Destroy the opposing station to win the battle."
                     : "Return to the main menu to set up another battle."));
     }

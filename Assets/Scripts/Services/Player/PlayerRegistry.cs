@@ -2,12 +2,15 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.CaptureSites;
 
 namespace EmpireAtWar.Services.Player
 {
     public sealed class PlayerRegistry : IPlayerRegistry
     {
+        private readonly Dictionary<PlayerId, ReinforcementModel> _reinforcementReserves =
+            new Dictionary<PlayerId, ReinforcementModel>();
         private readonly Dictionary<PlayerId, ISiteFacilityBuilder> _siteBuilders =
             new Dictionary<PlayerId, ISiteFacilityBuilder>();
         private readonly Dictionary<PlayerId, IEnemyReinforcementObserver> _aiReinforcements =
@@ -91,8 +94,14 @@ namespace EmpireAtWar.Services.Player
 
         public bool HasPendingReinforcement(PlayerId owner)
         {
-            return _aiReinforcements.TryGetValue(owner, out IEnemyReinforcementObserver reinforcement) &&
-                reinforcement.HasPendingReinforcement;
+            return (_aiReinforcements.TryGetValue(owner, out IEnemyReinforcementObserver reinforcement) &&
+                reinforcement.HasPendingReinforcement) ||
+                (_reinforcementReserves.TryGetValue(owner, out ReinforcementModel reserve) && reserve.HasReserve);
         }
+
+        public void RegisterReinforcementReserve(PlayerId owner, ReinforcementModel reserve) =>
+            _reinforcementReserves.Add(owner, reserve);
+
+        public void UnregisterReinforcementReserve(PlayerId owner) => _reinforcementReserves.Remove(owner);
     }
 }

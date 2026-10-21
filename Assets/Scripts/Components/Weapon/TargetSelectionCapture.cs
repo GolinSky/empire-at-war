@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Utils;
 using Unity.Collections;
@@ -34,6 +37,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly Dictionary<IHealthModelObserver, TargetState> _targets =
             new Dictionary<IHealthModelObserver, TargetState>();
         private readonly Dictionary<IEntity, EntityState> _entities = new Dictionary<IEntity, EntityState>();
+        private readonly Dictionary<(IEntity, PlayerId), bool> _visibility = new Dictionary<(IEntity, PlayerId), bool>();
         // Slots used by this batch's owners; only these are refreshed.
         private readonly List<int> _usedSlots = new List<int>();
         private int[] _usedStamps = Array.Empty<int>();
@@ -199,8 +203,8 @@ namespace EmpireAtWar.Components.Weapon
             if (PositionCapacity != positionCapacity) _readAllSlots = true;
         }
 
-        /// <summary>Matches WeaponComponent's live check: not cloaked, and not hidden by fog for local-team weapons.</summary>
-        public bool CanAcquire(AttackData group, bool respectsLocalFog, out bool isWreck)
+        /// <summary>Matches WeaponComponent's live check, with vision cached per target and viewer for this batch.</summary>
+        public bool CanAcquire(AttackData group, PlayerId viewer, IVisionService visionService, out bool isWreck)
         {
             IEntity entity = group.TargetEntity;
             if (!_entities.TryGetValue(entity, out EntityState state))
@@ -210,14 +214,13 @@ namespace EmpireAtWar.Components.Weapon
             }
             isWreck = state.IsWreck;
             if (state.IsCloaked) return false;
-            if (!respectsLocalFog) return true;
-            if (state.FogRead == 0)
+            var key = (entity, viewer);
+            if (!_visibility.TryGetValue(key, out bool visible))
             {
-                state.FogRead = 1;
-                state.IsHiddenByFog = entity.IsHiddenByFog();
-                _entities[entity] = state;
+                visible = visionService.IsVisible(viewer, entity.GetFacade<IEntityTransformFacade>().Transform.position);
+                _visibility.Add(key, visible);
             }
-            return !state.IsHiddenByFog;
+            return visible;
         }
 
         public bool IsWreck(AttackData group)
@@ -230,6 +233,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             _targets.Clear();
             _entities.Clear();
+            _visibility.Clear();
             _usedSlots.Clear();
             _batchStamp++;
             _lastHealth = null;
@@ -267,8 +271,6 @@ namespace EmpireAtWar.Components.Weapon
         {
             public bool IsCloaked;
             public bool IsWreck;
-            public bool IsHiddenByFog;
-            public byte FogRead;
         }
 
         private struct TargetState

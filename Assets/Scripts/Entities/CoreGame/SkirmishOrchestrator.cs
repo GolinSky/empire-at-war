@@ -186,6 +186,7 @@ namespace EmpireAtWar.Controllers.Game
                 case BattleState.Running:
                     Time.timeScale = _stateModel.Speed == GameSpeed.Fast ? FAST_TIME_SCALE : NORMAL_TIME_SCALE;
                     break;
+                case BattleState.Loading:
                 case BattleState.Paused:
                 case BattleState.Ended:
                     Time.timeScale = PAUSE_TIME_SCALE;

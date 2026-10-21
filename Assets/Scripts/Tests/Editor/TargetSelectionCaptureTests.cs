@@ -9,6 +9,8 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Tests.Editor;
 using NUnit.Framework;
 using Unity.Collections;
 using Unity.Mathematics;
@@ -289,48 +291,58 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
-        public void CanAcquire_SharedTarget_SeparatesFogPolicyAndRefreshesEachBatch()
+        public void CanAcquire_SharedTarget_SeparatesTeamVisionAndRefreshesEachBatch()
         {
             using TargetSelectionCapture capture = new TargetSelectionCapture();
             HealthStub health = new HealthStub();
             CombatModifiers modifiers = new CombatModifiers();
-            FogStub fog = new FogStub { Hidden = true };
+            FogStub fog = new FogStub { Hidden = false };
+            HardPointStub unit = Unit(Vector3.zero);
+            VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
+            Transform source = Unit(Vector3.zero).Transform;
+            vision.Register(TestPlayers.Enemy, source, 10f);
             Entity entity = new Entity(health, null,
-                new IEntityFacade[] { new CombatModifiersFacade(modifiers), fog }, default, 1,
+                new IEntityFacade[] { new CombatModifiersFacade(modifiers), fog, new EntityTransformFacade(unit.Transform) }, default, 1,
                 System.Array.Empty<IPooledEntityEvents>(),
                 System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
-            HardPointStub unit = Unit(Vector3.zero);
             AttackData first = new AttackData(health, null, unit, entity);
             AttackData second = new AttackData(health, null, unit, entity);
 
-            Assert.That(capture.CanAcquire(first, false, out bool wreck), Is.True);
+            Assert.That(capture.CanAcquire(first, TestPlayers.Enemy, vision, out bool wreck), Is.True);
             Assert.That(wreck, Is.False);
             Assert.That(fog.Reads, Is.Zero);
-            Assert.That(capture.CanAcquire(second, true, out wreck), Is.False);
-            Assert.That(capture.CanAcquire(first, true, out wreck), Is.False);
+            Assert.That(capture.CanAcquire(second, TestPlayers.Human, vision, out wreck), Is.False);
+            Assert.That(capture.CanAcquire(first, TestPlayers.Ally, vision, out wreck), Is.False);
+            Assert.That(capture.CanAcquire(first, TestPlayers.Human, vision, out wreck), Is.False);
             Assert.That(health.LiveReads, Is.EqualTo(1));
-            Assert.That(fog.Reads, Is.EqualTo(1));
+            Assert.That(fog.Reads, Is.Zero);
 
             health.Live = false;
-            fog.Hidden = false;
+            vision.Unregister(source);
+            vision.Register(TestPlayers.Ally, source, 10f);
             capture.ClearTargets();
-            Assert.That(capture.CanAcquire(second, true, out wreck), Is.True);
+            Assert.That(capture.CanAcquire(second, TestPlayers.Human, vision, out wreck), Is.True);
+            Assert.That(capture.CanAcquire(first, TestPlayers.Enemy, vision, out wreck), Is.False);
             Assert.That(wreck, Is.True);
             Assert.That(health.LiveReads, Is.EqualTo(2));
-            Assert.That(fog.Reads, Is.EqualTo(2));
+            Assert.That(fog.Reads, Is.Zero);
 
             modifiers.SetCloaked(true);
             health.IsDestroyed = true;
             capture.ClearTargets();
-            Assert.That(capture.CanAcquire(first, false, out wreck), Is.False);
+            Assert.That(capture.CanAcquire(first, TestPlayers.Human, vision, out wreck), Is.False);
             Assert.That(wreck, Is.False);
 
             modifiers.SetCloaked(false);
             health.IsDestroyed = false;
             health.Live = true;
             capture.ClearTargets();
-            Assert.That(capture.CanAcquire(first, true, out wreck), Is.True);
+            Assert.That(capture.CanAcquire(first, TestPlayers.Human, vision, out wreck), Is.True);
             Assert.That(wreck, Is.False);
+            source.position = Vector3.forward * 100f;
+            vision.Register(TestPlayers.Ally, source, 10f);
+            capture.ClearTargets();
+            Assert.That(capture.CanAcquire(first, TestPlayers.Human, vision, out wreck), Is.False);
         }
 
         private sealed class FogStub : IFogVisibilityFacade

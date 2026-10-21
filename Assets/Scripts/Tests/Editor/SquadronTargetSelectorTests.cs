@@ -74,22 +74,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Combat(expected).Reads, Is.EqualTo(1));
             foreach (IEntity rejected in new[] { worse, distant, dead, ally })
                 Assert.That(Combat(rejected).Reads, Is.Zero);
-            Assert.That(_vision.Reads, Is.EqualTo(seen ? 1 : 0));
+            Assert.That(_vision.Reads, Is.EqualTo(1));
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public void SelectSeen_RejectsCloakedTargetsAndAppliesFogOnlyForLocalSquadrons(bool local)
+        [TestCase(0, true)]
+        [TestCase(2, true)]
+        [TestCase(1, true)]
+        [TestCase(0, false)]
+        [TestCase(2, false)]
+        [TestCase(1, false)]
+        public void Selection_RejectsCloakedAndHiddenTargetsForEverySide(int owner, bool seen)
         {
-            IEntity cloaked = AddTarget(1f);
+            PlayerId side = new PlayerId(owner);
+            PlayerId enemy = side == TestPlayers.Enemy ? TestPlayers.Human : TestPlayers.Enemy;
+            IEntity cloaked = AddTarget(1f, owner: enemy);
             Combat(cloaked).Value.SetCloaked(true);
-            IEntity hidden = AddTarget(2f);
+            IEntity hidden = AddTarget(2f, owner: enemy);
             _vision.Hidden.Add(hidden.GetFacade<IEntityTransformFacade>().Transform.position);
-            IEntity visible = AddTarget(3f);
-            PlayerId side = local ? TestPlayers.Human : TestPlayers.Ally;
+            IEntity visible = AddTarget(3f, owner: enemy);
 
-            Assert.That(CreateSelector(side: side).SelectSeen(Vector3.zero, 100f), Is.SameAs(local ? visible : hidden));
-            Assert.That(_vision.Reads, Is.EqualTo(local ? 2 : 0));
+            Assert.That(Select(CreateSelector(side: side), seen), Is.SameAs(visible));
+            Assert.That(_vision.Reads, Is.EqualTo(2));
         }
 
         [Test]
@@ -191,7 +196,7 @@ namespace EmpireAtWar.Tests.Editor
         private SquadronTargetSelector CreateSelector(ShipClass shipClass = ShipClass.Fighter, PlayerId? side = null)
         {
             PlayerRoster roster = TestPlayers.CreateTeamGame();
-            return new SquadronTargetSelector(_locator, _vision, roster, TestPlayers.CreateLocalPlayer(roster),
+            return new SquadronTargetSelector(_locator, _vision, roster,
                 side ?? TestPlayers.Human, new SquadronHealthData { ShipClass = shipClass });
         }
 

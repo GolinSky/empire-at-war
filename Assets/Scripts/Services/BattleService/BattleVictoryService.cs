@@ -13,6 +13,8 @@ using EmpireAtWar.Lifecycle;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Services.CaptureSites;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -25,6 +27,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IPlayerRoster _playerRoster;
         private readonly ILocalPlayer _localPlayer;
         private readonly IPlayerRegistry _playerRegistry;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly IBattleOutcomeRule _victoryModel;
@@ -47,8 +50,10 @@ namespace EmpireAtWar.Services.Battle
             ILocalPlayer localPlayer,
             IPlayerRegistry playerRegistry,
             INotifier<BattleState> battleState,
-            IBattleOutcomeRule victoryModel)
+            IBattleOutcomeRule victoryModel,
+            ICaptureSitesSystem captureSites)
         {
+            _captureSites = captureSites;
             _gameModel = gameModel;
             _shipService = shipService;
             _entityLocator = entityLocator;
@@ -144,6 +149,13 @@ namespace EmpireAtWar.Services.Battle
                     // Ships, squadrons, defense platforms and mining facilities all keep a player in the battle.
                     _unitCounts[entity.Owner.Index]++;
                 }
+            }
+
+            // Construction survives station loss and becomes an entity when it completes.
+            foreach (ICaptureSite site in _captureSites.Sites)
+            {
+                if (site.State == CaptureSiteState.Constructing)
+                    _unitCounts[site.Owner.Index]++;
             }
 
             _states.Clear();
