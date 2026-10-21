@@ -7,6 +7,28 @@ namespace EmpireAtWar.Tests.Movement
     public sealed class FormationModelTests
     {
         [Test]
+        public void CompactDestinations_RotateWithTravelDirectionAndClearOccupiedCenter()
+        {
+            var east = new List<FormationPoint>();
+            var north = new List<FormationPoint>();
+            var positions = new[] { new FormationPoint(0f, 0f), new FormationPoint(2f, 0f) };
+            var rotated = new[] { new FormationPoint(0f, 0f), new FormationPoint(0f, 2f) };
+            var radii = new[] { 5f, 5f };
+            FormationModel.CalculateCompactDestinations(positions, radii,
+                new FormationPoint(100f, 0f), east, 50f);
+            FormationModel.CalculateCompactDestinations(rotated, radii,
+                new FormationPoint(0f, 100f), north, 50f);
+            for (int i = 0; i < east.Count; i++)
+            {
+                Assert.That(north[i].X, Is.EqualTo(-east[i].Z).Within(0.001f));
+                Assert.That(north[i].Z, Is.EqualTo(east[i].X).Within(0.001f));
+                Assert.That(FormationModel.HasClearance(east[i], 5f,
+                    new FormationPoint(100f, 0f), 50f), Is.True);
+            }
+            Assert.That(FormationModel.HasClearance(east[0], 5f, east[1], 5f), Is.True);
+        }
+
+        [Test]
         public void CalculateDestination_PreservesOffsetsAroundTargetCenter()
         {
             List<FormationPoint> positions = new List<FormationPoint>

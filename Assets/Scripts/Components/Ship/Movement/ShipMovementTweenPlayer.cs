@@ -42,8 +42,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isSelected;
         private bool _hasLookDirection;
         private bool _isTurningToRoute;
+        private bool _isBraking;
 
         public Vector3? CurrentPathTangent => _currentPathTangent;
+        public bool IsBraking => _isBraking;
+        public bool HasMomentum => _route != null && _currentSpeed > Mathf.Epsilon;
 
         public ShipMovementTweenPlayer(
             Transform rootTransform,
@@ -59,7 +62,13 @@ namespace EmpireAtWar.Components.Ship.Movement
             ClearRoute();
         }
 
-        public void SetRouteSpeed(float speed) => _routeSpeed = speed;
+        public void SetRouteSpeed(float speed)
+        {
+            _routeSpeed = speed;
+            _currentSpeed = Mathf.Min(_currentSpeed, speed);
+        }
+
+        public void BrakeForReplan() => _isBraking = true;
 
         public void SetSelected(bool isSelected, bool isMoving)
         {
@@ -149,6 +158,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _pathCompleted = null;
             _currentPathTangent = null;
             _isTurningToRoute = false;
+            _isBraking = false;
             ClearRoute();
         }
 
@@ -197,10 +207,15 @@ public void Tick(float deltaTime)
             // A re-plan keeps the current speed, so pursuit re-paths do not restart from rest.
             float acceleration = _routeSpeed / SPEED_RAMP_TIME;
             float remainingDistance = (1f - _routeProgress) * _route.Length;
-            float targetSpeed = Mathf.Max(
+            float targetSpeed = _isBraking ? 0f : Mathf.Max(
                 Mathf.Min(_routeSpeed, Mathf.Sqrt(2f * acceleration * remainingDistance)),
                 _routeSpeed * MINIMUM_SPEED_FACTOR);
             _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * deltaTime);
+            if (_isBraking && _currentSpeed <= Mathf.Epsilon)
+            {
+                StopPath();
+                return;
+            }
             float requestedStep = _currentSpeed * deltaTime /
                 Mathf.Max(_route.Length, Mathf.Epsilon);
             float nextProgress = Mathf.Min(1f, _routeProgress + requestedStep);

@@ -10,7 +10,8 @@ namespace EmpireAtWar.Components.Movement.Formation
             IReadOnlyList<FormationPoint> positions,
             IReadOnlyList<float> radii,
             FormationPoint objective,
-            IList<FormationPoint> destinations)
+            IList<FormationPoint> destinations,
+            float occupiedRadius = 0f)
         {
             if (positions.Count != radii.Count)
             {
@@ -41,6 +42,7 @@ namespace EmpireAtWar.Components.Movement.Formation
                 positions.Count > 1
                     ? spacing / (2f * (float)Math.Sin(Math.PI / positions.Count))
                     : spacing);
+            radius = Math.Max(radius, occupiedRadius + maximumRadius + 0.1f);
             // ShipService preserves fleet order, so reissued orders retain slot ownership.
             for (int i = 0; i < positions.Count; i++)
             {

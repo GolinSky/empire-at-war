@@ -12,22 +12,22 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     /// </summary>
     public sealed class AbilityApproachState : IBaseState
     {
-        private const float DESTINATION_UPDATE_RANGE_FRACTION = 0.1f;
+        private const float RETRY_INTERVAL = 0.5f;
+        private const int MAX_STALLED_ATTEMPTS = 3;
+        private const float STANDOFF_RANGE_FACTOR = 0.9f;
 
         private readonly IShipMovement _movement;
-
         private IEntity _target;
         private Transform _targetTransform;
-        private Vector3 _destination;
+        private Vector3 _lastAttemptPosition;
         private float _range;
+        private float _retryTimer;
+        private int _stalledAttempts;
 
         private Vector3 TargetPosition => _targetTransform.position;
-        private float DestinationUpdateDistance =>
-            Mathf.Max(_movement.NavigationRadius, _range * DESTINATION_UPDATE_RANGE_FRACTION);
-
         public bool IsInRange => PlanarGeometry.Distance(_movement.CurrentPosition, TargetPosition) <= _range;
-
-        public bool IsComplete => _target.HealthModel.IsDestroyed || _target.IsCloaked() || IsInRange;
+        public bool IsComplete => _target.HealthModel.IsDestroyed || _target.IsCloaked() || IsInRange ||
+                                  _stalledAttempts >= MAX_STALLED_ATTEMPTS;
 
         public AbilityApproachState(IShipMovement movement)
         {
@@ -43,15 +43,22 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Enter()
         {
+            _stalledAttempts = 0;
+            _retryTimer = 0f;
             if (IsComplete) return;
             MoveToTarget();
         }
 
         public void Tick(float deltaTime)
         {
-            if (IsComplete || _movement.IsMoving) return;
-            float updateDistance = DestinationUpdateDistance;
-            if ((TargetPosition - _destination).sqrMagnitude >= updateDistance * updateDistance) MoveToTarget();
+            if (IsComplete) return;
+            _retryTimer -= deltaTime;
+            if (_movement.IsMoving || _retryTimer > 0f) return;
+            if (PlanarGeometry.Distance(_movement.CurrentPosition, _lastAttemptPosition) < 0.1f)
+                _stalledAttempts++;
+            else
+                _stalledAttempts = 0;
+            if (!IsComplete) MoveToTarget();
         }
 
         public void Exit()
@@ -60,8 +67,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void MoveToTarget()
         {
-            _destination = TargetPosition;
-            _movement.MoveToPosition(_destination, preserveCourse: true);
+            _lastAttemptPosition = _movement.CurrentPosition;
+            _retryTimer = RETRY_INTERVAL;
+            Vector3 fromTarget = _movement.CurrentPosition - TargetPosition;
+            fromTarget.y = 0f;
+            float distance = Mathf.Max(_range * STANDOFF_RANGE_FACTOR,
+                ShipEngagement.ContactDistance(_movement, _target));
+            _movement.MoveToPosition(TargetPosition + fromTarget.normalized * distance, preserveCourse: true);
         }
     }
 }

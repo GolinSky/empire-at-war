@@ -9,10 +9,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     internal sealed class ShipNavigationCache : IDisposable
     {
-        // One grid per clearance and hull-height obstacle set in use; the least recently used is dropped past this.
-        private const int MAX_GRIDS = 8;
-
-        // Most recently used last. Map obstacles are static, so a grid stays valid until its obstacle set changes.
+        // Keep every clearance and hull-height obstacle set for the battle: mixed fleets
+        // must not evict each other's grids on every planning round.
         private readonly List<ShipPathGrid> _grids = new List<ShipPathGrid>();
         private readonly Dictionary<IShipNavigationAgent, StationaryEntry> _stationary =
             new Dictionary<IShipNavigationAgent, StationaryEntry>();
@@ -24,15 +22,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 ShipPathGrid grid = _grids[i];
                 if (!grid.Matches(contacts, mapRange, clearance)) continue;
-                _grids.RemoveAt(i);
-                _grids.Add(grid);
                 grid.SetOrigin(origin);
                 return grid;
-            }
-            if (_grids.Count == MAX_GRIDS)
-            {
-                _grids[0].Dispose();
-                _grids.RemoveAt(0);
             }
             ShipPathGrid created = new ShipPathGrid(contacts, mapRange, origin, clearance);
             _grids.Add(created);

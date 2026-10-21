@@ -39,11 +39,6 @@ namespace EmpireAtWar.Components.Ship.Audio
                 _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
         }
 
-        public void HandleStopped()
-        {
-            if (_isSelected) _shipSfxService.TryPlayVoice(_voices.Damage);
-        }
-
         public void HandleMove(Vector3 position)
         {
             if (_isSelected) _shipSfxService.TryPlayVoice(_voices.Move);

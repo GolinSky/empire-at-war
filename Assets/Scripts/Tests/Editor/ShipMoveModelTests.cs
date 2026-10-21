@@ -10,6 +10,40 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class ShipMoveModelTests
     {
         [Test]
+        public void ArrivingComponent_IgnoresCombatFacingAndAttackVoice()
+        {
+            UnityEngine.GameObject ship = new UnityEngine.GameObject("Arriving ship");
+            try
+            {
+                ShipMoveComponent movement = ship.AddComponent<ShipMoveComponent>();
+                ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
+                typeof(EmpireAtWar.Mvc.MonoComponent<ShipMoveModel>)
+                    .GetMethod("SetModel", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .Invoke(movement, new object[] { model });
+                typeof(ShipMoveComponent).GetField("_modifiers",
+                        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .SetValue(movement, new CombatModifiers());
+                bool lookingAt = false;
+                movement.LookingAt += _ => lookingAt = true;
+
+                Assert.That(movement.IsMoving, Is.False, "Uninitialized ships must not stop before navigation registration.");
+                typeof(ShipMoveComponent).GetField("_isNavigationRegistered",
+                        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .SetValue(movement, true);
+                Assert.That(movement.IsMoving, Is.True);
+                movement.LookAtTarget(UnityEngine.Vector3.right * 20f);
+                movement.LookInDirection(UnityEngine.Vector3.right);
+
+                Assert.That(lookingAt, Is.False);
+                Assert.That(ship.transform.rotation, Is.EqualTo(UnityEngine.Quaternion.identity));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(ship);
+            }
+        }
+
+        [Test]
         public void ConfigureSpawnPose_HyperSpaceEntryFollowsStartRotation()
         {
             ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());

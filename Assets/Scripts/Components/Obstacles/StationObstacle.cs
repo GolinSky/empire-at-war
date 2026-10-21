@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Services.ShipNavigation;
 using UnityEngine;
+using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Components.Obstacles
 {
@@ -11,9 +12,11 @@ namespace EmpireAtWar.Components.Obstacles
     public sealed class StationObstacle : IMapObstacleContactSource
     {
         public RadarContact Contact { get; }
+        public PlayerId Owner { get; }
 
-        public StationObstacle(Vector3 position, float radius)
+        public StationObstacle(PlayerId owner, Vector3 position, float radius)
         {
+            Owner = owner;
             // The footprint radius doubles as the vertical reach: ships far below pass under.
             Contact = new RadarContact(position, radius, false,
                 position.y - radius, position.y + radius);

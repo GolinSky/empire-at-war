@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
@@ -6,10 +9,15 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Ship.Orders;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Ship;
 using NUnit.Framework;
 using UnityEngine;
@@ -24,6 +32,7 @@ namespace EmpireAtWar.Tests.Movement
         private Target _target;
         private Movement _movement;
         private Weapon _weapon;
+        private UnitOrderSettings _orderSettings;
 
         [SetUp]
         public void SetUp()
@@ -36,7 +45,11 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [TearDown]
-        public void TearDown() => Object.DestroyImmediate(_targetObject);
+        public void TearDown()
+        {
+            Object.DestroyImmediate(_targetObject);
+            if (_orderSettings != null) Object.DestroyImmediate(_orderSettings);
+        }
 
         [TestCase(false)]
         [TestCase(true)]
@@ -137,6 +150,80 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void AbilityApproach_UsesRangeStandoff()
+        {
+            AbilityApproachState state = new AbilityApproachState(_movement);
+            state.SetData(_target, 100f);
+            state.Enter();
+            Assert.That(_movement.Destination.x, Is.EqualTo(410f));
+            _movement.FinishLeg();
+            Assert.That(state.IsInRange, Is.True);
+            Assert.That(state.IsComplete, Is.True);
+        }
+
+        [Test]
+        public void AbilityApproach_FailedPathRetriesThenCompletesWithoutCasting()
+        {
+            AbilityApproachState state = new AbilityApproachState(_movement);
+            state.SetData(_target, 100f);
+            state.Enter();
+            for (int i = 0; i < 3; i++)
+            {
+                _movement.Stop();
+                state.Tick(0.5f);
+            }
+            Assert.That(_movement.MoveCount, Is.EqualTo(3));
+            Assert.That(state.IsComplete, Is.True);
+            Assert.That(state.IsInRange, Is.False);
+        }
+
+        [Test]
+        public void AbilityApproach_HullOutsideCastRangeCompletesAfterContact()
+        {
+            _target.NavigationRadius = 120f;
+            AbilityApproachState state = new AbilityApproachState(_movement);
+            state.SetData(_target, 100f);
+            state.Enter();
+            for (int i = 0; i < 4; i++)
+            {
+                _movement.FinishLeg();
+                state.Tick(0.5f);
+            }
+            Assert.That(state.IsComplete, Is.True);
+            Assert.That(state.IsInRange, Is.False);
+            Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position), Is.EqualTo(125f));
+        }
+
+        [Test]
+        public void AbilityApproach_FailureResumesRemainingWaypoints()
+        {
+            UnitOrderModel orders = new UnitOrderModel();
+            var first = new EmpireAtWar.Components.Movement.Formation.FormationPoint(10f, 20f);
+            var second = new EmpireAtWar.Components.Movement.Formation.FormationPoint(30f, 40f);
+            orders.Replace(UnitOrderType.WaypointMove, first, waypoints: new[] { first, second });
+            orders.AdvanceWaypoint(out _);
+            ShipStateMachine machine = new ShipStateMachine();
+            IdleState idle = new IdleState(_movement, _weapon, new Radar());
+            machine.SetState(idle);
+            NavigateState navigate = new NavigateState(_movement);
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null, null);
+
+            runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.UseAbility));
+            for (int i = 0; i < 3; i++)
+            {
+                _movement.Stop();
+                runner.Tick(0.5f);
+            }
+
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.WaypointMove));
+            Assert.That(orders.WaypointIndex, Is.EqualTo(1));
+            Assert.That(machine.CurrentState, Is.SameAs(navigate));
+            Assert.That(_movement.Destination, Is.EqualTo(new Vector3(30f, 0f, 40f)));
+        }
+
+        [Test]
         public void AttackMove_ArrivedShip_DoesNotFinishBeforeItsFirstTargetSearch()
         {
             // Seeded so the random first delay is above zero; edit-mode time does not advance between ticks.
@@ -150,6 +237,138 @@ namespace EmpireAtWar.Tests.Movement
 
             Assert.That(state.IsComplete, Is.False);
             state.Exit();
+        }
+
+        [Test]
+        public void Hunt_NoVisibleEnemiesRemainsActiveAndStopsPreviousMovement()
+        {
+            UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            try
+            {
+                var players = EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel();
+                HuntState state = new HuntState(_movement, _weapon, null, new EntityLocator(), null,
+                    EmpireAtWar.Tests.Editor.TestPlayers.CreateLocalPlayer(players), settings,
+                    EmpireAtWar.Tests.Editor.TestPlayers.Human);
+                _movement.MoveToPosition(Vector3.forward * 100f);
+                state.Enter();
+                state.Tick(0.1f);
+                Assert.That(state.IsComplete, Is.False);
+                Assert.That(_movement.IsMoving, Is.False);
+            }
+            finally { Object.DestroyImmediate(settings); }
+        }
+
+        [Test]
+        public void AbilityApproach_SuccessfulCastResumesGuard()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            RecordingAbility ability = new RecordingAbility();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(ability),
+                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
+            IdleState idle = new IdleState(_movement, _weapon, new Radar());
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster);
+            runner.Start();
+            runner.Guard(_target, Vector3.forward * 20f);
+            runner.CastAbility(ShipAbilityId.BoostEnginePower, _target, 100f);
+            _movement.FinishLeg();
+
+            runner.Tick(0.1f);
+
+            Assert.That(ability.StartCount, Is.EqualTo(1));
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.Guard));
+            Assert.That(machine.CurrentState, Is.SameAs(guard));
+            Assert.That(_movement.Destination, Is.EqualTo(_target.Transform.position + Vector3.forward * 20f));
+            abilities.Clear();
+        }
+
+        [Test]
+        public void Guard_RepeatedExplicitOrderCancelsCloak()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.Cloak);
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new CloakAbility()),
+                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                new IdleState(_movement, _weapon, new Radar()), null, null, null, guard, null, null, abilities, caster);
+            runner.Start();
+            runner.Guard(_target, Vector3.forward * 20f);
+            Assert.That(abilities.TryActivate(caster, ShipAbilityId.Cloak, null), Is.True);
+            Assert.That(caster.Modifiers.IsCloaked, Is.True);
+
+            runner.Guard(_target, Vector3.forward * 20f);
+
+            Assert.That(caster.Modifiers.IsCloaked, Is.False);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            abilities.Clear();
+        }
+
+        [Test]
+        public void AttackMove_SameDestinationNewEngagementReplacesMembership()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+            Radar radar = new Radar();
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
+                new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, null, attackMove,
+                null, null, null, abilities, caster);
+            runner.Start();
+            AttackMoveEngagement first = new AttackMoveEngagement();
+            AttackMoveEngagement second = new AttackMoveEngagement();
+            runner.AttackMoveTo(Vector3.forward * 100f, first);
+            first.Report(0, new[] { _target });
+
+            runner.AttackMoveTo(Vector3.forward * 100f, second);
+
+            Assert.That(first.Contains(_target), Is.False);
+            Assert.DoesNotThrow(() => second.Report(0, new[] { _target }));
+            Assert.That(second.Contains(_target), Is.True);
+            Assert.That(_movement.MoveCount, Is.EqualTo(2));
+            runner.Release();
+        }
+
+        private sealed class AbilityCaster : IShipAbilityFacade
+        {
+            private readonly Movement _movement;
+            public IReadOnlyList<ShipAbilitySlot> Slots { get; }
+            public CombatModifiers Modifiers { get; } = new CombatModifiers();
+            public Vector3 WorldPosition => _movement.CurrentPosition;
+            public IEntity Entity { get; }
+            public IHealthModelObserver Health => Entity.HealthModel;
+            public float RadarRange => 100f;
+            public AbilityCaster(IEntity entity, Movement movement, ShipAbilityId id)
+            {
+                Entity = entity;
+                _movement = movement;
+                ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                typeof(ShipAbilityDefinition).GetField("canCancel", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .SetValue(definition, true);
+                Slots = new[] { new ShipAbilitySlot(this, definition, id) };
+            }
+        }
+
+        private sealed class AbilityFactory : IShipAbilityFactory
+        {
+            private readonly IShipAbility _ability;
+            public AbilityFactory(IShipAbility ability) => _ability = ability;
+            public IShipAbility Create(ShipAbilityDefinition definition) => _ability;
+        }
+
+        private sealed class RecordingAbility : IShipAbility
+        {
+            public int StartCount { get; private set; }
+            public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => StartCount++;
+            public void Stop() { }
         }
 
         private sealed class Movement : IShipMovement

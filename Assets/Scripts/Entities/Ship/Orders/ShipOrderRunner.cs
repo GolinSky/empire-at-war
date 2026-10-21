@@ -35,9 +35,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly AbilityApproachState _abilityApproachState;
         private AttackMoveEngagement _attackMoveEngagement;
         private ShipAbilityId _pendingAbilityId;
-        private float _pendingAbilityRange;
+        private IEntity _pendingAbilityTarget;
 
-        public UnitOrderType CurrentOrder => _orders.Current;
+        public UnitOrderType CurrentOrder => _pendingAbilityTarget != null ? UnitOrderType.UseAbility : _orders.Current;
         public bool IsAbilityFacing { get; private set; }
 
         public void BeginAbilityFacing()
@@ -91,6 +91,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public void Release()
         {
             IsAbilityFacing = false;
+            _pendingAbilityTarget = null;
             _orders.Clear();
             // Leaves the shared attack-move engagement so the group stops counting this ship.
             if (_stateMachine.CurrentState == _attackMoveState) _stateMachine.SetState(_idleState);
@@ -102,37 +103,42 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public void MoveTo(Vector3 worldPosition)
         {
             FormationPoint destination = ToPoint(worldPosition);
-            if (_orders.Matches(UnitOrderType.Move, destination)) return;
+            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Move, destination)) return;
             Issue(UnitOrderType.Move, destination);
         }
 
         public void Attack(IEntity target, Vector3 formationOffset)
         {
+            _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            if (_orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) return;
+            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) return;
             Issue(UnitOrderType.Attack, target: target, offset: offset);
         }
 
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset)
         {
+            _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            if (_orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
+            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
                     targetHardPointId: hardPointId)) return;
             Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
         }
 
         public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement)
         {
+            _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint point = ToPoint(destination);
-            if (_orders.Matches(UnitOrderType.AttackMove, point)) return;
+            if (_pendingAbilityTarget == null && _attackMoveEngagement == engagement &&
+                _orders.Matches(UnitOrderType.AttackMove, point)) return;
             _attackMoveEngagement = engagement;
             Issue(UnitOrderType.AttackMove, point);
         }
 
         public void Guard(IEntity friendly, Vector3 offset)
         {
+            _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint formationOffset = ToPoint(offset);
-            if (_orders.Matches(UnitOrderType.Guard, target: friendly, offset: formationOffset)) return;
+            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Guard, target: friendly, offset: formationOffset)) return;
             Issue(UnitOrderType.Guard, target: friendly, offset: formationOffset);
         }
 
@@ -141,20 +147,21 @@ namespace EmpireAtWar.Entities.Ship.Orders
             if (waypoints.Count == 0) return;
             List<FormationPoint> points = new List<FormationPoint>(waypoints.Count);
             foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
-            if (_orders.MatchesWaypoints(points)) return;
+            if (_pendingAbilityTarget == null && _orders.MatchesWaypoints(points)) return;
             Issue(UnitOrderType.WaypointMove, points[0], waypoints: points);
         }
 
         public void Hunt()
         {
-            if (_orders.Current == UnitOrderType.Hunt) return;
+            _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
+            if (_pendingAbilityTarget == null && _orders.Current == UnitOrderType.Hunt) return;
             Issue(UnitOrderType.Hunt);
         }
 
         public void Retreat(Vector3 destination)
         {
             FormationPoint point = ToPoint(destination);
-            if (_orders.Matches(UnitOrderType.Retreat, point)) return;
+            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Retreat, point)) return;
             _weapon.ResetTarget();
             Issue(UnitOrderType.Retreat, point);
         }
@@ -162,8 +169,10 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public void CastAbility(ShipAbilityId id, IEntity target, float range)
         {
             _pendingAbilityId = id;
-            _pendingAbilityRange = range;
-            Issue(UnitOrderType.UseAbility, target: target);
+            _pendingAbilityTarget = target;
+            IsAbilityFacing = false;
+            _abilityApproachState.SetData(target, range);
+            _stateMachine.SetState(_abilityApproachState);
         }
 
         public void Stop()
@@ -177,6 +186,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
         {
             IsAbilityFacing = false;
+            _pendingAbilityTarget = null;
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId);
             StartOrder();
         }
@@ -219,10 +229,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 case UnitOrderType.Hunt:
                     _stateMachine.SetState(_huntState);
                     break;
-                case UnitOrderType.UseAbility:
-                    _abilityApproachState.SetData(_orders.Target, _pendingAbilityRange);
-                    _stateMachine.SetState(_abilityApproachState);
-                    break;
                 default:
                     _movement.Stop();
                     _stateMachine.SetState(_idleState);
@@ -232,6 +238,19 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         private void CompleteOrder()
         {
+            if (_pendingAbilityTarget != null)
+            {
+                IEntity target = _pendingAbilityTarget;
+                _pendingAbilityTarget = null;
+                _movement.Stop();
+                _stateMachine.SetState(_idleState);
+                // Keep the underlying order, including its waypoint index and shared engagement.
+                if (_abilityApproachState.IsInRange)
+                    _abilities.TryActivate(_abilityCaster, _pendingAbilityId, target);
+                if (!IsAbilityFacing) StartOrder();
+                return;
+            }
+
             if (_orders.Current == UnitOrderType.WaypointMove && _orders.AdvanceWaypoint(out FormationPoint next))
             {
                 _navigateState.SetWorldDestination(ToVector(next));
@@ -239,11 +258,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 return;
             }
 
-            IEntity abilityTarget = _orders.Current == UnitOrderType.UseAbility ? _orders.Target : null;
             _orders.Clear();
             _stateMachine.SetState(_idleState);
-            // Cast after going idle: abilities that take over the ship's facing expect an idle ship.
-            if (abilityTarget != null) _abilities.TryActivate(_abilityCaster, _pendingAbilityId, abilityTarget);
         }
 
     }

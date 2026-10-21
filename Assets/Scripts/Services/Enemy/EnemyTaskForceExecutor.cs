@@ -34,11 +34,20 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3 _captureTarget;
 
         private bool _hasCaptureTarget;
+        private EnemyStrategicState _lastState;
+        private readonly HashSet<IShipEntity> _assignedShips = new HashSet<IShipEntity>();
 
         public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) => _unitOrderService = unitOrderService;
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
+            if (_lastState != decision.State)
+            {
+                _assignedShips.Clear();
+                _hasCaptureTarget = false;
+            }
+            _lastState = decision.State;
+            _assignedShips.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
             switch (decision.State)
             {
                 case EnemyStrategicState.CaptureZone:
@@ -55,12 +64,18 @@ namespace EmpireAtWar.Services.Enemy
                         CAPTURE_TARGET_EPSILON_SQUARED;
                     _captureTarget = context.CaptureTarget;
                     _hasCaptureTarget = true;
-                    List<GameEntity> captureReceivers = isSameCaptureTarget
-                        ? ResolveWithout(context, _captureShips, captureCount,
-                            UnitOrderType.AttackMove)
-                        : Resolve(context, _captureShips, captureCount);
-                    if (captureReceivers.Count > 0)
+                    bool captureChanged = !isSameCaptureTarget;
+                    for (int i = 0; i < captureCount; i++)
+                        captureChanged |= !_assignedShips.Contains(_captureShips[i]) ||
+                            (_captureShips[i].CurrentOrder != UnitOrderType.None &&
+                             _captureShips[i].CurrentOrder != UnitOrderType.AttackMove);
+                    if (captureChanged && captureCount > 0)
+                    {
+                        List<GameEntity> captureReceivers = Resolve(context, _captureShips, captureCount);
                         _unitOrderService.IssueAttackMove(captureReceivers, context.CaptureTarget);
+                    }
+                    _assignedShips.Clear();
+                    for (int i = 0; i < captureCount; i++) _assignedShips.Add(_captureShips[i]);
                     StopRemaining(context, _captureShips, captureCount);
                     return;
                 case EnemyStrategicState.HuntFleet:
@@ -98,6 +113,7 @@ namespace EmpireAtWar.Services.Enemy
                     List<GameEntity> retreatReceivers = ResolveWithout(context,
                         context.Ships, context.Ships.Count, UnitOrderType.Retreat);
                     if (retreatReceivers.Count > 0) _unitOrderService.IssueRetreat(retreatReceivers);
+                    foreach (IShipEntity ship in context.Ships) _assignedShips.Add(ship);
                     return;
                 case EnemyStrategicState.Hold:
                 case EnemyStrategicState.RebuildFleet:
@@ -142,7 +158,9 @@ namespace EmpireAtWar.Services.Enemy
                     _radii.Add(ships[i].NavigationRadius);
                 }
                 BattleFormationModel.CalculateDestinations(_positions, _radii,
-                    default, _destinations);
+                    default, _destinations,
+                    target.TryGetFacade(out EmpireAtWar.Entities.BaseEntity.EntityFacades.INavigationFootprintFacade footprint)
+                        ? footprint.NavigationRadius : 0f);
                 for (int i = 0; i < count; i++)
                     _battleOffsets.Add(ships[i], _destinations[i]);
             }
@@ -165,12 +183,13 @@ namespace EmpireAtWar.Services.Enemy
             return receivers;
         }
 
-        private static List<GameEntity> ResolveWithout(EnemyStrategicContext context,
+        private List<GameEntity> ResolveWithout(EnemyStrategicContext context,
             IReadOnlyList<IShipEntity> ships, int count, UnitOrderType runningOrder)
         {
             List<GameEntity> receivers = new List<GameEntity>(count);
             for (int i = 0; i < count; i++)
-                if (ships[i].CurrentOrder != runningOrder)
+                if (ships[i].CurrentOrder != runningOrder &&
+                    (!_assignedShips.Contains(ships[i]) || ships[i].CurrentOrder != UnitOrderType.None))
                     receivers.Add(context.Receivers[ships[i]]);
             return receivers;
         }

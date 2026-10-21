@@ -58,6 +58,81 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void Plan_EdgeObstacleKeepsEntireDetourInsideMap()
+        {
+            SetRangeValue("<Max>k__BackingField", new Vector2(99f, 99f));
+            FakeAgent agent = new FakeAgent(new Vector3(-40f, 0f, 94f), 0f, 2f, 10f, 30f);
+            ShipNavigationService service = CreateService(new[]
+            {
+                new RadarContact(new Vector3(0f, 0f, 91f), 12f, false)
+            });
+
+            ShipNavigationPlan plan = Plan(service, agent, new Vector3(40f, 0f, 94f));
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Destination, Is.EqualTo(new Vector3(40f, 0f, 94f)));
+            for (int i = 0; i <= 1000; i++)
+            {
+                Vector3 position = plan.Route.EvaluateNormalizedDistance(i / 1000f, out _);
+                Assert.That(position.x, Is.InRange(-100f, 99f));
+                Assert.That(position.z, Is.InRange(-100f, 99f));
+            }
+        }
+
+        [Test]
+        public void Plan_MixedFleetReusesMoreThanEightClearanceGrids()
+        {
+            ShipNavigationService service = CreateService();
+            object cache = typeof(ShipNavigationService).GetField("_cache",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
+            MethodInfo getGrid = cache.GetType().GetMethod("GetGrid");
+            var grids = new object[12];
+            for (int i = 0; i < grids.Length; i++)
+                grids[i] = getGrid.Invoke(cache, new object[]
+                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f });
+
+            for (int i = 0; i < grids.Length; i++)
+                Assert.That(getGrid.Invoke(cache, new object[]
+                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f }),
+                    Is.SameAs(grids[i]));
+        }
+
+        [Test]
+        public void MapContacts_RemoveDestroyedStationFootprint()
+        {
+            var stations = new FakeStationRegistry { IsAlive = true };
+            var provider = new MapObstacleContactProvider(null, stations);
+            provider.UpdateState(new BattleMap(null, null, null,
+                System.Array.Empty<EmpireAtWar.Components.Obstacles.MapObstacle>(),
+                new[] { new EmpireAtWar.Components.Obstacles.StationObstacle(
+                    new PlayerId(0), Vector3.zero, 30f) }));
+            var contacts = new List<RadarContact>();
+            provider.CopyContacts(contacts);
+            Assert.That(contacts.Count, Is.EqualTo(1));
+
+            stations.IsAlive = false;
+            provider.CopyContacts(contacts);
+
+            Assert.That(contacts, Is.Empty);
+        }
+
+        private sealed class FakeStationRegistry : EmpireAtWar.Services.Stations.IStationRegistry
+        {
+            public string Id => nameof(FakeStationRegistry);
+            public bool IsAlive;
+            public bool HasProductionBase(PlayerId owner) => IsAlive;
+            public bool TryGetProductionBase(PlayerId owner,
+                out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
+                TryGetLivingStation(owner, out productionBase);
+            public bool TryGetLivingStation(PlayerId owner,
+                out EmpireAtWar.Entities.BaseEntity.IEntity station)
+            {
+                station = null;
+                return IsAlive;
+            }
+        }
+
+        [Test]
         public void Plan_AvoidsMapObstacleCrossingRoute()
         {
             FakeAgent clearAgent = new FakeAgent(
@@ -504,13 +579,15 @@ namespace EmpireAtWar.Tests.Movement
             {
                 ShipMoveComponent component = CreateReadyComponent(gameObject,
                     out RecordingShipNavigationService navigationService, false);
+                SetPrivateField(component, "_isNavigationRegistered", true);
                 GetModel(component).Queue(new System.Numerics.Vector3(25f, 0f, 0f));
 
                 component.Stop();
 
                 Assert.That(navigationService.PendingCancellationCount, Is.EqualTo(1));
                 Assert.That(navigationService.PlanCallCount, Is.Zero);
-                Assert.That(component.IsMoving, Is.False);
+                // Stop clears the queued order, but the hyperspace arrival still owns movement.
+                Assert.That(component.IsMoving, Is.True);
             }
             finally
             {

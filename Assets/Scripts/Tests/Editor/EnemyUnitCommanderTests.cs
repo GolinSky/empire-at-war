@@ -274,6 +274,43 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RetreatValue_ArrivalDoesNotReissueUntilStrategyChanges()
+        {
+            FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
+            FakeOrderService orders = new FakeOrderService();
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyStrategicContext context = Context(new IShipEntity[] { ship });
+            EnemyStrategicDecision retreat = new EnemyStrategicDecision(
+                state: EnemyStrategicState.RetreatValue, committedShipCount: 1, reason: "test");
+            executor.Execute(retreat, context);
+            orders.Calls.Clear();
+            executor.Execute(retreat, context);
+            Assert.That(orders.Calls, Is.Empty);
+            executor.Execute(new EnemyStrategicDecision(
+                state: EnemyStrategicState.Hold, committedShipCount: 0, reason: "test"), context);
+            executor.Execute(retreat, context);
+            Assert.That(orders.Calls.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CaptureZone_ArrivalStaysAssignedAndReinforcementSharesNewGroup()
+        {
+            FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
+            FakeShip reinforcement = new FakeShip(id: 2, position: Vector3.right);
+            FakeOrderService orders = new FakeOrderService();
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyStrategicDecision decision = new EnemyStrategicDecision(
+                state: EnemyStrategicState.CaptureZone, committedShipCount: 2, reason: "test");
+            executor.Execute(decision, Context(new IShipEntity[] { ship }));
+            orders.Calls.Clear();
+            executor.Execute(decision, Context(new IShipEntity[] { ship }));
+            Assert.That(orders.Calls, Is.Empty);
+            executor.Execute(decision, Context(new IShipEntity[] { ship, reinforcement }));
+            Assert.That(orders.Calls.Count, Is.EqualTo(1));
+            Assert.That(orders.Calls[0].Receivers.Count, Is.EqualTo(2));
+        }
+
+        [Test]
         public void CaptureZone_SameTargetSkipsShipsAlreadyAttackMoving()
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);

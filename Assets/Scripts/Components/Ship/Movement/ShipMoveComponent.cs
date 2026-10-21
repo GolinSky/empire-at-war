@@ -72,8 +72,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public event Action<Vector3> LookingAt;
 
-        public event Action Stopped;
-
         public event Action HyperSpaceCompleted;
 
         public Vector3 NavigationPosition => transform.position;
@@ -85,7 +83,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationRotationSpeed => Model.RotationSpeed;
         public Vector3 CurrentPosition => transform.position;
         // A ship waiting for its plan counts as moving, so a move order does not complete before it starts.
-        public bool IsMoving => Model.IsMoving || _hasQueuedPlan;
+        public bool IsMoving => (_isNavigationRegistered && Model.Phase == MovementPhase.Arriving) ||
+                                Model.IsMoving || _hasQueuedPlan;
 
         [Inject]
         private void Construct(IMapModelObserver mapModel,
@@ -150,7 +149,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void Tick()
         {
             if (!_modifiers.IsIonDisabled) _motion.Tick(Time.deltaTime);
-            if (_hasQueuedPlan && !_isInPlanQueue && IsRepathDue()) EnqueuePlan();
+            if (_hasQueuedPlan && !_isInPlanQueue && !_motion.IsBraking && IsRepathDue()) EnqueuePlan();
         }
 
         public override void Release()
@@ -219,7 +218,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void EnqueuePlan()
         {
-            if (_isInPlanQueue) return;
+            if (_isInPlanQueue || _motion.IsBraking) return;
             _isInPlanQueue = true;
             _shipNavigationService.RequestPlan(this);
         }
@@ -227,7 +226,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void ExecuteQueuedPlan()
         {
             _isInPlanQueue = false;
-            if (!_hasQueuedPlan || _isReleased) return;
+            if (!_hasQueuedPlan || _isReleased || _motion.IsBraking) return;
             _hasQueuedPlan = false;
             _lastPlanTime = Time.time;
             Plan(_queuedDestination, _queuedPreserveCourse);
@@ -236,7 +235,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void LookAtTarget(Vector3 targetPosition)
         {
-            if (_modifiers.IsIonDisabled) return;
+            if (_modifiers.IsIonDisabled || Model.Phase == MovementPhase.Arriving) return;
             if (!IsMoving)
             {
                 Vector3 bearing = targetPosition - transform.position;
@@ -285,7 +284,6 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _shipNavigationService.Stop(this);
             }
             else _shipNavigationService.CancelPendingDestination(this);
-            Stopped?.Invoke();
         }
 
         // Engine damage only changes speed; the current route stays valid.
@@ -350,6 +348,13 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (plan.IsDeferred)
             {
                 Model.Defer(destination.ToNumerics());
+                return;
+            }
+            if (plan.TurnDuration > Mathf.Epsilon && _motion.HasMomentum)
+            {
+                // Brake on the validated route, then plan the turn from the actual stop point.
+                _motion.BrakeForReplan();
+                QueuePlan(destination, false);
                 return;
             }
             Model.Accept(plan.Destination.ToNumerics());

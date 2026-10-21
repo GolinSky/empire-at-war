@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private readonly bool _respectsFog;
 
-        public bool IsComplete => _target == null;
+        public bool IsComplete => false;
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
@@ -54,14 +54,18 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void Tick(float deltaTime)
         {
             _retargetTimer -= deltaTime;
-            if (_retargetTimer <= 0f || _target == null ||
-                _target.HealthModel.IsDestroyed || _target.IsCloaked())
+            if (_retargetTimer <= 0f || _target != null &&
+                (_target.HealthModel.IsDestroyed || _target.IsCloaked()))
             {
                 FindTarget();
                 _retargetTimer = _settings.HuntRetargetInterval;
             }
 
-            if (_target == null) return;
+            if (_target == null)
+            {
+                if (_movement.IsMoving) _movement.Stop();
+                return;
+            }
             Vector3 target = _target.GetFacade<IEntityTransformFacade>().Transform.position;
             if (ShipEngagement.CanEngage(_target, _movement, _weapon))
             {

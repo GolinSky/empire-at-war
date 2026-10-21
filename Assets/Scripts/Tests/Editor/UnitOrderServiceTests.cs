@@ -113,6 +113,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void GuardAndAttack_KeepSmallEscortOutsideLargeTarget()
+        {
+            FakeEntity escort = Entity(1, TestPlayers.Human);
+            FakeEntity target = Entity(2, TestPlayers.Human);
+            target.Command.NavigationRadius = 100f;
+            _unitOrderService.IssueGuard(new IEntity[] { escort }, target);
+            Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
+            _unitOrderService.IssueGuard(new IEntity[] { escort }, target, new[] { Vector3.zero });
+            Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
+            _unitOrderService.IssueAttack(new IEntity[] { escort }, target);
+            Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
+        }
+
+        [Test]
         public void Retreat_UsesOwnStationThenDefaultZoneWhenStationDestroyed()
         {
             FakeEntity ship = Entity(1, TestPlayers.Enemy);
@@ -203,13 +217,13 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeCommand : IMoveFacade, IAttackFacade,
             IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
-            IHuntFacade, IRetreatFacade, IFocusFireFacade
+            IHuntFacade, IRetreatFacade, IFocusFireFacade, INavigationFootprintFacade
         {
             public int CallCount { get; set; }
             public UnitActionId LastAction { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public Vector3 WorldPosition => Vector3.zero;
-            public float NavigationRadius => 5f;
+            public float NavigationRadius { get; set; } = 5f;
 
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
 

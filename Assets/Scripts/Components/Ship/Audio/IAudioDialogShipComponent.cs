@@ -7,8 +7,6 @@ namespace EmpireAtWar.Components.Ship.Audio
     {
         void HandleEnemyDetected();
 
-        void HandleStopped();
-
         void HandleMove(Vector3 position);
 
         void HandleAttack(Vector3 target);

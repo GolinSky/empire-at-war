@@ -57,8 +57,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             _cells = new NavigationGridCells(
                 new float2(mapRange.Min.x, mapRange.Min.y),
                 cellSize,
-                Mathf.CeilToInt(size.x / cellSize) + 1,
-                Mathf.CeilToInt(size.y / cellSize) + 1);
+                Mathf.FloorToInt(size.x / cellSize) + 1,
+                Mathf.FloorToInt(size.y / cellSize) + 1);
             // Inflating by half a cell diagonal guarantees that the straight
             // segment between two adjacent walkable nodes keeps full clearance.
             _inflation = clearance + cellSize * HALF_DIAGONAL_FACTOR;
@@ -111,6 +111,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             _originRegion = -1;
             _hasSearched = false;
         }
+
+        public bool ContainsRoute(EmpireAtWar.Components.Ship.Movement.ShipBezierRoute route) =>
+            route.IsWithinBounds(_mapMin, _mapMax);
 
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)
         {

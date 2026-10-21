@@ -154,7 +154,6 @@ namespace EmpireAtWar.Ship
             {
                 _shipMoveComponent.DestinationChanged += audioDialog.HandleMove;
                 _shipMoveComponent.LookingAt += audioDialog.HandleAttack;
-                _shipMoveComponent.Stopped += audioDialog.HandleStopped;
                 _selectionModel.OnSelected += audioDialog.HandleSelection;
             }
 
@@ -241,7 +240,6 @@ namespace EmpireAtWar.Ship
             {
                 _shipMoveComponent.DestinationChanged -= audioDialog.HandleMove;
                 _shipMoveComponent.LookingAt -= audioDialog.HandleAttack;
-                _shipMoveComponent.Stopped -= audioDialog.HandleStopped;
                 _selectionModel.OnSelected -= audioDialog.HandleSelection;
             }
         }

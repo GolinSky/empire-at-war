@@ -11,7 +11,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         event Action<Vector3> LookingAt;
 
-        event Action Stopped;
 
         event Action HyperSpaceCompleted;
 

@@ -79,7 +79,8 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IAttackFacade> commands = Collect<IAttackFacade>(receivers);
             Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
             List<Vector3> slots = Compact(commands, point,
-                command => command.WorldPosition, command => command.NavigationRadius);
+                command => command.WorldPosition, command => command.NavigationRadius,
+                target.TryGetFacade(out INavigationFootprintFacade footprint) ? footprint.NavigationRadius : 0f);
             List<Vector3> offsets = new List<Vector3>(slots.Count);
             foreach (Vector3 slot in slots)
                 offsets.Add(new Vector3(slot.x - point.x, 0f, slot.z - point.z));
@@ -147,7 +148,8 @@ namespace EmpireAtWar.Services.UnitOrders
                     receiver.TryGetFacade(out IGuardFacade command)) commands.Add(command);
             Vector3 point = friendly.GetFacade<IEntityTransformFacade>().Transform.position;
             List<Vector3> slots = Compact(commands, point,
-                command => command.WorldPosition, command => command.NavigationRadius);
+                command => command.WorldPosition, command => command.NavigationRadius,
+                friendly.TryGetFacade(out INavigationFootprintFacade footprint) ? footprint.NavigationRadius : 0f);
             List<Vector3> offsets = new List<Vector3>(slots.Count);
             foreach (Vector3 slot in slots)
                 offsets.Add(new Vector3(slot.x - point.x, 0f, slot.z - point.z));
@@ -158,6 +160,20 @@ namespace EmpireAtWar.Services.UnitOrders
             IReadOnlyList<Vector3> offsets)
         {
             if (friendly == null || !IsAlive(friendly)) return;
+            if (friendly.TryGetFacade(out INavigationFootprintFacade footprint))
+            {
+                int slot = 0;
+                foreach (IEntity receiver in receivers)
+                {
+                    if (!IsAlive(receiver) || receiver.Id == friendly.Id ||
+                        !receiver.TryGetFacade(out IGuardFacade guard)) continue;
+                    Vector3 offset = offsets[slot++];
+                    float clearance = footprint.NavigationRadius + guard.NavigationRadius;
+                    if (offset.x * offset.x + offset.z * offset.z >= clearance * clearance) continue;
+                    IssueGuard(receivers, friendly);
+                    return;
+                }
+            }
             int index = 0;
             foreach (IEntity receiver in receivers)
                 if (IsAlive(receiver) && receiver.Id != friendly.Id &&
@@ -238,7 +254,8 @@ namespace EmpireAtWar.Services.UnitOrders
             !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
 
         private static List<Vector3> Compact<TCommand>(IReadOnlyList<TCommand> commands,
-            Vector3 point, Func<TCommand, Vector3> position, Func<TCommand, float> radius)
+            Vector3 point, Func<TCommand, Vector3> position, Func<TCommand, float> radius,
+            float occupiedRadius = 0f)
         {
             List<FormationPoint> positions = new List<FormationPoint>(commands.Count);
             List<float> radii = new List<float>(commands.Count);
@@ -250,7 +267,7 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             List<FormationPoint> destinations = new List<FormationPoint>();
             FormationModel.CalculateCompactDestinations(positions, radii,
-                ToPoint(point), destinations);
+                ToPoint(point), destinations, occupiedRadius);
             List<Vector3> slots = new List<Vector3>(destinations.Count);
             for (int i = 0; i < destinations.Count; i++)
                 slots.Add(new Vector3(destinations[i].X, position(commands[i]).y,

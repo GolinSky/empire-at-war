@@ -55,6 +55,21 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public Vector3 InitialTangent => _segments[0].Segment.EvaluateTangent(0f);
 
+        public bool IsWithinBounds(Vector2 min, Vector2 max)
+        {
+            foreach (SegmentArcLength arc in _segments)
+            {
+                CubicBezierSegment segment = arc.Segment;
+                // A Bezier curve stays inside the convex hull of its control points.
+                if (!Contains(segment.P0) || !Contains(segment.P1) ||
+                    !Contains(segment.P2) || !Contains(segment.P3)) return false;
+            }
+            return true;
+
+            bool Contains(Vector3 point) => point.x >= min.x && point.x <= max.x &&
+                point.z >= min.y && point.z <= max.y;
+        }
+
         public ShipBezierRoute(IReadOnlyList<CubicBezierSegment> segments)
         {
 

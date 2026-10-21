@@ -99,7 +99,8 @@ namespace EmpireAtWar.Components.Movement.Formation
             IReadOnlyList<FormationPoint> positions,
             IReadOnlyList<float> radii,
             FormationPoint targetCenter,
-            IList<FormationPoint> destinations)
+            IList<FormationPoint> destinations,
+            float occupiedRadius = 0f)
         {
             if (positions == null)
             {
@@ -142,23 +143,24 @@ namespace EmpireAtWar.Components.Movement.Formation
                 destinations.Add(targetCenter);
             }
 
-            int centerIndex = FindClosestPosition(
-                positions,
-                targetCenter,
-                null);
             bool[] assignedPositions = new bool[positions.Count];
-            assignedPositions[centerIndex] = true;
-            if (positions.Count == 1)
+            int assignedCount = 0;
+            if (occupiedRadius <= 0f)
             {
-                return;
+                int centerIndex = FindClosestPosition(positions, targetCenter, null);
+                assignedPositions[centerIndex] = true;
+                assignedCount = 1;
             }
 
+            FormationPoint center = CalculateCenter(positions);
+            double heading = Math.Atan2(targetCenter.Z - center.Z, targetCenter.X - center.X);
             List<FormationPoint> availableSlots =
                 BuildCompactSlots(
                     targetCenter,
-                    maximumRadius * 2f,
-                    positions.Count - 1);
-            for (int assignmentIndex = 1;
+                    Math.Max(maximumRadius * 2f, occupiedRadius + maximumRadius + 0.1f),
+                    positions.Count - assignedCount,
+                    heading);
+            for (int assignmentIndex = assignedCount;
                  assignmentIndex < positions.Count;
                  assignmentIndex++)
             {
@@ -204,7 +206,8 @@ namespace EmpireAtWar.Components.Movement.Formation
         private static List<FormationPoint> BuildCompactSlots(
             FormationPoint center,
             float spacing,
-            int requiredCount)
+            int requiredCount,
+            double heading)
         {
             List<FormationPoint> slots = new List<FormationPoint>();
             for (int ring = 1; slots.Count < requiredCount; ring++)
@@ -213,7 +216,7 @@ namespace EmpireAtWar.Components.Movement.Formation
                 float radius = spacing * ring;
                 for (int slot = 0; slot < slotCount; slot++)
                 {
-                    double angle = slot * Math.PI * 2d / slotCount;
+                    double angle = heading + slot * Math.PI * 2d / slotCount;
                     slots.Add(new FormationPoint(
                         center.X + (float)Math.Cos(angle) * radius,
                         center.Z + (float)Math.Sin(angle) * radius));

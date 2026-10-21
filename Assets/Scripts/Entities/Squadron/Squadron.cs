@@ -344,7 +344,6 @@ namespace EmpireAtWar.Entities.Squadrons
             _orders.Clear();
             Disengage();
             _pilot.Loiter(_flight.Centroid);
-            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs) audioDialog.HandleStopped();
         }
 
         private void PlayMoveVoice(Vector3 destination)

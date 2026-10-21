@@ -5,6 +5,8 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Services.Stations;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
@@ -22,11 +24,13 @@ namespace EmpireAtWar.Services.ShipNavigation
         IMapObstacleContactProvider, IInitializable, ILateDisposable, IObserver<BattleMap>
     {
         private readonly INotifier<BattleMap> _battleMap;
+        private readonly IStationRegistry _stations;
         private readonly List<IMapObstacleContactSource> _sources = new List<IMapObstacleContactSource>();
 
-        public MapObstacleContactProvider(INotifier<BattleMap> battleMap)
+        public MapObstacleContactProvider(INotifier<BattleMap> battleMap, IStationRegistry stations)
         {
             _battleMap = battleMap;
+            _stations = stations;
         }
 
         public void Initialize()
@@ -41,6 +45,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void UpdateState(BattleMap battleMap)
         {
+            _sources.Clear();
             _sources.AddRange(battleMap.Obstacles);
             _sources.AddRange(battleMap.StationObstacles);
         }
@@ -62,6 +67,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                         "A registered map obstacle contact source is missing.");
                 }
 
+                if (source is StationObstacle station &&
+                    !_stations.TryGetLivingStation(station.Owner, out _)) continue;
                 destination.Add(source.Contact);
             }
         }

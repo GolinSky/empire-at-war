@@ -113,6 +113,7 @@ namespace EmpireAtWar.Entities.Map
             {
                 if (!_battle.GetPlayer(player.Id).OwnsStation) continue;
                 obstacles.Add(new StationObstacle(
+                    player.Id,
                     layout.GetStationPosition(player.Id),
                     _settings.GetStationRadius(player.Faction)));
             }

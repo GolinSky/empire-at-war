@@ -1,4 +1,6 @@
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Services.ShipNavigation;
+using DG.Tweening;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -6,6 +8,75 @@ namespace EmpireAtWar.Tests.Movement
 {
     public sealed class ShipRotationKinematicsTests
     {
+        [TestCase(0.25f)]
+        [TestCase(0.4f)]
+        public void RouteSpeed_ReductionImmediatelyLimitsDistanceTravelled(float coefficient)
+        {
+            GameObject root = new GameObject("Moving ship");
+            GameObject body = new GameObject("Body");
+            body.transform.SetParent(root.transform);
+            ShipMovementTweenPlayer motion = new ShipMovementTweenPlayer(root.transform,
+                body.transform, root.AddComponent<LineRenderer>(), Ease.Linear);
+            try
+            {
+                ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
+                    Vector3.zero, Vector3.forward, Vector3.forward * 1000f);
+                motion.PlayPath(new ShipNavigationPlan(route, Vector3.forward * 1000f,
+                    null, 0f, 100f), 10f, 90f, 90f, 0f, null);
+                for (int i = 0; i < 30; i++) motion.Tick(0.1f);
+                Vector3 before = root.transform.position;
+
+                motion.SetRouteSpeed(10f * coefficient);
+                motion.Tick(0.1f);
+
+                Assert.That(Vector3.Distance(before, root.transform.position),
+                    Is.LessThanOrEqualTo(coefficient + 0.001f));
+            }
+            finally
+            {
+                motion.Release();
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void BrakeForReplan_ContinuesAlongRouteUntilMomentumIsGone()
+        {
+            GameObject root = new GameObject("Moving ship");
+            GameObject body = new GameObject("Body");
+            body.transform.SetParent(root.transform);
+            ShipMovementTweenPlayer motion = new ShipMovementTweenPlayer(root.transform,
+                body.transform, root.AddComponent<LineRenderer>(), Ease.Linear);
+            bool completed = false;
+            try
+            {
+                ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
+                    Vector3.zero, Vector3.forward, Vector3.forward * 1000f);
+                motion.PlayPath(new ShipNavigationPlan(route, Vector3.forward * 1000f,
+                    null, 0f, 100f), 10f, 90f, 90f, 0f, () => completed = true);
+                for (int i = 0; i < 30; i++) motion.Tick(0.1f);
+                float before = root.transform.position.z;
+
+                motion.BrakeForReplan();
+                motion.Tick(0.1f);
+
+                Assert.That(root.transform.position.z - before, Is.InRange(0.8f, 1f));
+                Assert.That(motion.IsBraking, Is.True);
+                for (int i = 0; i < 20; i++) motion.Tick(0.1f);
+                Assert.That(motion.IsBraking, Is.False);
+                Assert.That(motion.HasMomentum, Is.False);
+                Assert.That(completed, Is.False, "Braking is not arrival at the old destination.");
+                Vector3 stopped = root.transform.position;
+                motion.Tick(0.1f);
+                Assert.That(root.transform.position, Is.EqualTo(stopped));
+            }
+            finally
+            {
+                motion.Release();
+                Object.DestroyImmediate(root);
+            }
+        }
+
         [Test]
         public void CalculateMinimumTurnRadius_UsesSpeedAndAngularRate()
         {
