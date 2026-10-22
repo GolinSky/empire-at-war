@@ -54,11 +54,15 @@ tool_timeout_sec = 180
 GRAPHIFY_QUERY_LOG_DISABLE = "1"
 
 # Compatibility tombstone for the retired mcp-for-unity server.
+# Codex rejects entries without a transport when no user-level entry exists (fresh macOS).
 [mcp_servers.unityMCP]
+command = "unity"
 enabled = false
 
 # Use the project-local bridge instead of the inherited user-level connection.
+# Placeholder URL keeps the disabled entry valid; it is never contacted.
 [mcp_servers.penpot]
+url = "http://127.0.0.1:9/disabled"
 enabled = false
 
 [mcp_servers.penpot-local]
