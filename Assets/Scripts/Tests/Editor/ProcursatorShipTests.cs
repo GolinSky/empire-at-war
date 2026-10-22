@@ -110,7 +110,7 @@ namespace EmpireAtWar.Tests.Editor
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             var ship = view.GetComponent<EmpireAtWar.Ship.Ship>();
             var health = view.GetComponentsInChildren<HealthComponent>(true).Single();
-            var teamColor = view.GetComponentsInChildren<EmpireAtWar.Components.TeamColor.TeamColorView>(true).Single();
+            var teamColor = view.GetComponentsInChildren<EmpireAtWar.Components.TeamColor.UnitRenderStateComponent>(true).Single();
             Assert.That(ship.Bindings.Injectables, Is.All.Not.Null, "Deleted donor components must not remain in injection slots.");
             Assert.That(ship.Bindings.Injectables, Is.EquivalentTo(health.ShipUnits.Cast<MonoBehaviour>().Append(teamColor)));
         }

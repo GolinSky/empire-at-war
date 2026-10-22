@@ -203,7 +203,7 @@ namespace EmpireAtWar.Tests.Editor
                 var shield = root.GetComponentInChildren<Shield>(true);
                 var launch = root.transform.Find("HangarLaunchPoint");
                 var fog = new SerializedObject(root.GetComponents<MonoBehaviour>().Single(c => c.GetType().Name == "FogVisibilityComponent"));
-                var team = new SerializedObject(root.GetComponents<MonoBehaviour>().Single(c => c.GetType().Name == "TeamColorView"));
+                var team = new SerializedObject(root.GetComponents<MonoBehaviour>().Single(c => c.GetType().Name == "UnitRenderStateComponent"));
                 Assert.That(team.FindProperty("meshRenderers").arraySize, Is.EqualTo(root.GetComponentsInChildren<MeshRenderer>(true).Length));
                 root.transform.SetPositionAndRotation(new Vector3(100, 20, -300), Quaternion.Euler(0, 60, 0));
                 foreach (int level in new[] {initialLevel, 2, 3, 4, 5, 5})

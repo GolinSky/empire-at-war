@@ -1,4 +1,6 @@
 using EmpireAtWar.Components.TeamColor;
+using System.Linq;
+using EmpireAtWar.Entities.BaseEntity;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +25,41 @@ namespace EmpireAtWar.Tests.Editor
         };
 
         [Test]
+        public void HighlightEntities_BindOneRenderStateAndEveryRendererIncludingInactiveLevels()
+        {
+            int checkedEntities = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Prefabs" }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                EntityView entity = prefab.GetComponent<EntityView>();
+                if (!(entity is EmpireAtWar.Ship.Ship) &&
+                    !(entity is EmpireAtWar.Entities.DefendPlatform.DefendPlatform) &&
+                    !(entity is EmpireAtWar.Entities.SpaceStation.SpaceStation) &&
+                    !(entity is EmpireAtWar.Entities.MiningFacility.MiningFacility)) continue;
+
+                Assert.That(entity.Bindings, Is.Not.Null, path);
+                UnitRenderStateComponent[] components = entity.Bindings.Injectables
+                    .OfType<UnitRenderStateComponent>().ToArray();
+                Assert.That(components, Has.Length.EqualTo(1),
+                    $"{path}: highlight registration requires exactly one render state in Injectables.");
+                Assert.That(prefab.GetComponentsInChildren<UnitRenderStateComponent>(true),
+                    Is.EquivalentTo(components), $"{path}: an unbound render state exists in the hierarchy.");
+
+                SerializedProperty rendererProperty = new SerializedObject(components[0]).FindProperty("meshRenderers");
+                Object[] renderers = new Object[rendererProperty.arraySize];
+                for (int i = 0; i < renderers.Length; i++)
+                    renderers[i] = rendererProperty.GetArrayElementAtIndex(i).objectReferenceValue;
+                Assert.That(renderers, Is.All.Not.Null, path);
+                Assert.That(renderers, Is.EquivalentTo(prefab.GetComponentsInChildren<MeshRenderer>(true)),
+                    $"{path}: highlight must cover every renderer, including inactive station levels.");
+                checkedEntities++;
+            }
+
+            Assert.That(checkedEntities, Is.GreaterThan(0), "No highlight entity prefabs were inspected.");
+        }
+
+        [Test]
         public void TeamColorViews_ListEveryMeshRendererWithoutMissingEntries()
         {
             int checkedViews = 0;
@@ -30,7 +67,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                TeamColorView view = prefab.GetComponent<TeamColorView>();
+                UnitRenderStateComponent view = prefab.GetComponent<UnitRenderStateComponent>();
                 if (view == null)
                 {
                     continue;

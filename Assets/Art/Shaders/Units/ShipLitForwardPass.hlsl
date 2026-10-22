@@ -46,6 +46,8 @@ struct Varyings
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     float4 shadowCoord            : TEXCOORD7;   // only needed when shadows cannot be resolved per pixel
 #endif
+    // Same for the whole ship, like the team color. Ship Wreck leaves it 0: wrecks never highlight.
+    nointerpolation half highlight : TEXCOORD8;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO                   // VR single-pass support; costs nothing otherwise
 };
@@ -73,6 +75,7 @@ Varyings ShipLitPassVertex(Attributes input)
 
     // Read once per vertex instead of once per pixel.
     output.teamColor = GetTeamColor();
+    output.highlight = GetHighlight();
     output.fogFactor = ComputeFogFactor(positionInputs.positionCS.z);
 
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
@@ -156,6 +159,7 @@ half4 ShipLitPassFragment(Varyings input) : SV_Target
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     SurfaceData surface = CreateSurfaceData(input);
+    surface.emission += GetHighlightEmission(surface.albedo, input.highlight);
     InputData inputData = CreateInputData(input, surface.normalTS);
 
     half4 color = UniversalFragmentPBR(inputData, surface);

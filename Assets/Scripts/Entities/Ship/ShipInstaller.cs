@@ -40,6 +40,7 @@ namespace EmpireAtWar.Ship
             builder.RegisterInstance(_pose);
             builder.RegisterInstance(Data).AsSelf().As<IShipData, IShipMoveData, IRadarData, IHangarData>();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
+            EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);

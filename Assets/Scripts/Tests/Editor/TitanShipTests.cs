@@ -50,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ship.Bindings.Injectables.Distinct().Count(), Is.EqualTo(ship.Bindings.Injectables.Length));
             foreach (var point in view.GetComponentsInChildren<HardPoint>(true))
                 Assert.That(ship.Bindings.Injectables.Contains(point), Is.True, point.name);
-            var renderers = new SerializedObject(view.GetComponent<TeamColorView>()).FindProperty("meshRenderers");
+            var renderers = new SerializedObject(view.GetComponent<UnitRenderStateComponent>()).FindProperty("meshRenderers");
             Assert.That(renderers.arraySize, Is.EqualTo(view.GetComponentsInChildren<MeshRenderer>(true).Length));
         }
 

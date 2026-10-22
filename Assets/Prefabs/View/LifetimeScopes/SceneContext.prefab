@@ -462,7 +462,6 @@ MonoBehaviour:
   siteRoot: {fileID: 7593169863859123632}
   fieldRoot: {fileID: 6769320644097990905}
   borderLine: {fileID: 5965768392532275115}
-  fogOfWarSystem: {fileID: 3633680370215819205}
   borderHeight: 0
   fogReferenceSide: 600
 --- !u!114 &1561019271551565166
@@ -609,6 +608,8 @@ MonoBehaviour:
   reinforcementZoneData: {fileID: 0}
   unitOrderSettings: {fileID: 11400000, guid: afce51dcd754fd0469faa3093790d821, type: 2}
   teamColorPalette: {fileID: 11400000, guid: e126eded0451c624bbeb3e2c6170e260, type: 2}
+  unitHighlightSettings: {fileID: 11400000, guid: 0aac2804c0ddb744fa5d2d7bd30f1c8f,
+    type: 2}
   fighterExplosion: {fileID: 6075391245261940467, guid: 54f8def27abde8249aeb5df35d3462d9,
     type: 3}
   hardPointExplosion: {fileID: 6307781649551483135, guid: 17a65e70ac12d8e4b839ac0bd03f953b,

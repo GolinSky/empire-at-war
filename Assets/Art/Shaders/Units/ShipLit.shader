@@ -7,8 +7,9 @@
 //     is always sampled with neutral defaults. Materials that share a shader variant
 //     are grouped by the SRP Batcher, which is what makes many ships cheap.
 //   * Team color without extra materials: the owner's palette index arrives through
-//     MeshRenderer.SetShaderUserValue (see TeamColorView.cs), which keeps both the
-//     SRP Batcher and the GPU Resident Drawer working.
+//     MeshRenderer.SetShaderUserValue (see UnitRenderStateComponent.cs), which keeps both the
+//     SRP Batcher and the GPU Resident Drawer working. The same per-renderer value carries
+//     the hover/selection highlight bits (see ShipLitInput.hlsl).
 //   * "Simplified lit": URP's physically based lighting, but only the features ships
 //     use - metallic workflow, normal, occlusion, emission. No parallax, detail maps,
 //     clear coat, transparency, alpha clipping or lightmaps.

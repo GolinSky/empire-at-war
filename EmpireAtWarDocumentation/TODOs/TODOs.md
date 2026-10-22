@@ -91,6 +91,7 @@
 - [ ] **Close settings audit follow-ups** (Wave 1) → [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
   - **Remaining**: remaining settings core EditMode tests; live category/rebind interaction; manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
 
+
 ### Bugs
 
 - [ ] **Fix scene-teardown pool errors and material leaks** (Wave 1) → [[TODOs/Bugs/Scene_Teardown_And_Material_Leaks|Scene Teardown and Material Leaks]]
@@ -216,6 +217,9 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Unit hover/selection highlight in Ship Lit (EaW 2005 style)** → [[Done/Features/Unit_Highlight_Plan|Unit Highlight Plan]]; [[Done/Features/Unit_Highlight_Plan - Research|Shader, batching and material-change inventory]]
+  - **Completed 2026-10-22**: render state, settings, entity facade and shared hover/tooltip picking; 95 distinct EditMode tests passed. Runtime battle acceptance/profiling skipped by user request.
 
 - [x] **Battle session save (Skirmish + Survival)** → [[Done/Features/Battle_Session_Save|Battle Session Save]]
 

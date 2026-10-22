@@ -82,17 +82,17 @@ namespace EmpireAtWar.Editor.Rendering
         }
 
         /// <summary>
-        /// Gives a unit root a <see cref="TeamColorView"/> listing every mesh renderer under it.
+        /// Gives a unit root a <see cref="UnitRenderStateComponent"/> listing every mesh renderer under it.
         /// Anything that rebuilds a unit prefab's hierarchy must call this before saving, or the view keeps
         /// references to renderers that no longer exist.
         /// </summary>
         /// <returns>The number of renderers the view now colors.</returns>
         public static int AssignTeamColorRenderers(GameObject root)
         {
-            TeamColorView view = root.GetComponent<TeamColorView>();
+            UnitRenderStateComponent view = root.GetComponent<UnitRenderStateComponent>();
             if (view == null)
             {
-                view = root.AddComponent<TeamColorView>();
+                view = root.AddComponent<UnitRenderStateComponent>();
             }
 
             // Authoring-time collection only: the result is stored as explicit serialized references.

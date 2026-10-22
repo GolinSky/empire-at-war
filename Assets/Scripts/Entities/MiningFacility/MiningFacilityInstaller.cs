@@ -32,6 +32,7 @@ namespace EmpireAtWar.MiningFacility
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter("kind", StructureKind.MiningFacility).WithParameter("type", (int)_type);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.MiningFacility, SelectionType.MiningFacility);
+            EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);

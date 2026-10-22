@@ -32,7 +32,7 @@ namespace EmpireAtWar.Editor.Rendering
         // Lists that only enumerate meshes; stripped helpers are removed from them. Any other reference keeps the helper.
         private static readonly HashSet<string> RENDERER_LISTS = new HashSet<string>
         {
-            "TeamColorView.meshRenderers", "FogVisibilityComponent.renderers", "UnitWreckView.meshRenderers",
+            "UnitRenderStateComponent.meshRenderers", "FogVisibilityComponent.renderers", "UnitWreckView.meshRenderers",
             "UnitWreckView.meshFilters", "UnitSpawnView.meshRenderers", "ExplosionVfx.renderers",
             "Ship.explosionHullRenderers", "SpaceStation.explosionHullRenderers",
             "DefendPlatform.explosionHullRenderers", "MiningFacility.explosionHullRenderers"

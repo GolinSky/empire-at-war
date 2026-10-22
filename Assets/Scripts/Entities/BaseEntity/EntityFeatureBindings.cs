@@ -8,6 +8,7 @@ using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
@@ -24,6 +25,12 @@ namespace EmpireAtWar.Entities.BaseEntity
 {
     public static class EntityFeatureBindings
     {
+        public static void RegisterHighlight(IContainerBuilder builder, EntityBindings bindings)
+        {
+            builder.RegisterInstance<IUnitRenderStateComponent>(bindings.Injectables.OfType<UnitRenderStateComponent>().Single());
+            builder.Register<UnitHighlightFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+        }
+
         public static void RegisterSelection(IContainerBuilder builder, EntityBindings bindings,
             SelectionType selectionType, SelectionType selectedAs)
         {

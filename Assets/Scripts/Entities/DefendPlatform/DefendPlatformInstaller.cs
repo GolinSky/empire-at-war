@@ -33,6 +33,7 @@ namespace EmpireAtWar
             if (isProductionBase) builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.DefendPlatform,
                 isProductionBase ? SelectionType.Base : SelectionType.DefendPlatform);
+            EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);

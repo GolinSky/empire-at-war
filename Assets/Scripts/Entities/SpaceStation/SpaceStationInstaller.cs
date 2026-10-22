@@ -35,6 +35,7 @@ namespace EmpireAtWar.SpaceStation
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter("kind", StructureKind.SpaceStation).WithParameter("type", (int)_factionType);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Base, SelectionType.Base);
+            EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);

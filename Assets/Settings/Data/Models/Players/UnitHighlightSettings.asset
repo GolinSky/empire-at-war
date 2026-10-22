@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42432293a0b7c484e9b06a3025da1db3, type: 3}
+  m_Name: UnitHighlightSettings
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Player.UnitHighlightSettings
+  color: {r: 1, g: 1, b: 1, a: 1}
+  hoverStrength: 0.35
+  selectedStrength: 0.25

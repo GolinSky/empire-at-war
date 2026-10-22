@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             var bindings = view.GetComponent<EntityBindings>();
             var points = view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits;
-            var team = view.GetComponentsInChildren<TeamColorView>(true).Single();
+            var team = view.GetComponentsInChildren<UnitRenderStateComponent>(true).Single();
             Assert.That(bindings.Injectables, Is.All.Not.Null);
             Assert.That(bindings.Injectables, Is.EquivalentTo(points.Cast<MonoBehaviour>().Append(team)));
             var builder = new ContainerBuilder();

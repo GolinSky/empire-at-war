@@ -58,7 +58,7 @@ namespace EmpireAtWar.Services.UnitWreck
             float startTime = Time.time + delay;
             WreckCutPlan cutPlan = WreckCutPlan.Create(data.MinParts, data.MaxParts, data.MinCutRatio, data.MaxCutRatio, _random);
             UnitWreckView view = GetPool(data).Get();
-            view.Show(unit.position, unit.rotation, TeamColorView.GetUserValue(owner, _playerRoster), startTime,
+            view.Show(unit.position, unit.rotation, UnitRenderStateComponent.GetTeamUserValue(owner, _playerRoster), startTime,
                 cutPlan, (float)_random.NextDouble(), data);
             _activeWrecks.Add(new ActiveWreck(data, view, startTime + data.Lifetime));
         }

@@ -67,6 +67,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private ReinforcementZoneData reinforcementZoneData;
         [SerializeField] private UnitOrderSettings unitOrderSettings;
         [SerializeField] private TeamColorPalette teamColorPalette;
+        [SerializeField] private UnitHighlightSettings unitHighlightSettings;
         [SerializeField] private ExplosionVfx fighterExplosion;
         [SerializeField] private ExplosionVfx hardPointExplosion;
         [SerializeField] private ImpactEffectView impactEffectPrefab;
@@ -102,6 +103,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<PlayerRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(teamColorPalette);
             builder.Register<TeamColorService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.RegisterInstance(unitHighlightSettings);
+            builder.Register<UnitHighlightService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerColors>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TeamIntelRegistry>(Lifetime.Singleton);
             Factions = Assets.Load<FactionCatalog>(nameof(FactionCatalog));
@@ -110,7 +113,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleUnitSpawner>(Lifetime.Singleton);
             TooltipRegistrations.Register(builder, Assets);
             builder.Register<TooltipLifecyclePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<WorldTooltipPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(reinforcementZoneData);
             builder.RegisterInstance(unitOrderSettings);
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -123,6 +125,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterComponent(overlayRoot.AddComponent<HardPointOverlayView>())
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<HardPointOverlayPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UnitHoverService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<WorldTooltipPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AttackDataFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             // Mode services keep their entry-point order: after the player scopes, before the battle UI.
             BattleModes.Create(Battle, Assets).ConfigureBattle(builder);
