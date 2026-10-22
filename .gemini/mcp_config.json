@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "blender": {
-      "command": "C:\\Users\\golin\\.local\\bin\\uvx.exe",
+      "command": "uvx",
       "args": ["mcp-for-blender==2.1.3"],
       "env": {
         "BLENDER_HOST": "127.0.0.1",
@@ -12,25 +12,23 @@
       }
     },
     "penpot-local": {
-      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "command": "node",
       "args": [
-        "F:\\Private\\empire-at-war\\Tools\\Penpot\\start.mjs"
+        "Tools/Penpot/start.mjs"
       ]
     },
     "empire-vault": {
-      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "command": "node",
       "args": [
-        "C:\\Users\\golin\\AppData\\Local\\AI-Tools\\mcpvault\\0.16.0\\node_modules\\@bitbonsai\\mcpvault\\dist\\server.js",
-        "F:\\Private\\empire-at-war\\EmpireAtWarDocumentation"
+        "Tools/McpVault/node_modules/@bitbonsai/mcpvault/dist/server.js",
+        "EmpireAtWarDocumentation"
       ]
     },
     "graphify": {
       "command": "uvx",
       "args": [
         "--from", "graphifyy[mcp]==0.9.54",
-        "python", "Tools/Graphify/run.py", "mcp",
-        "--project-path",
-        "F:\\Private\\empire-at-war"
+        "python", "Tools/Graphify/run.py", "mcp"
       ],
       "env": {
         "GRAPHIFY_QUERY_LOG_DISABLE": "1"
@@ -41,7 +39,7 @@
       "args": [
         "mcp",
         "--project-path",
-        "F:\\Private\\empire-at-war"
+        "."
       ]
     }
   }

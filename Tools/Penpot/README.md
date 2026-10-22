@@ -15,6 +15,8 @@
 
 ## Setup
 
+See [portable MCP setup](../McpVault/README.md) for Windows/macOS PATH and working-directory requirements.
+
 1. Run `npm ci --prefix Tools/Penpot --ignore-scripts --no-fund --no-audit` from the repository root.
 2. Put the full Penpot MCP URL, including `userToken`, in `Tools/Penpot/.local/server-url.txt`. This file and `node_modules/` are Git-ignored.
 3. Restart the MCP client to load `penpot-local`. Open a file in the allowed project and keep its Penpot MCP plugin connected when using design tools.

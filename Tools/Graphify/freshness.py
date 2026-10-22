@@ -1,13 +1,17 @@
-"""Freshness and Windows locking around Graphify 0.9.54's update engine."""
+"""Freshness and cross-platform locking around Graphify 0.9.54's update engine."""
 
 import contextlib
 import hashlib
 import json
-import msvcrt
 import os
 import sys
 import time
 from pathlib import Path
+
+if os.name == "nt":
+    import msvcrt
+else:
+    import fcntl
 
 import graphify.cache as graphify_cache
 from graphify.detect import CODE_EXTENSIONS
@@ -29,7 +33,10 @@ def file_lock(path: Path, timeout: float = 120):
         while True:
             stream.seek(0)
             try:
-                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+                if os.name == "nt":
+                    msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 break
             except OSError:
                 if time.monotonic() >= deadline:
@@ -39,7 +46,10 @@ def file_lock(path: Path, timeout: float = 120):
             yield
         finally:
             stream.seek(0)
-            msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            if os.name == "nt":
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
 
 
 def write_json(path: Path, value: dict):

@@ -1,0 +1,7 @@
+{
+  "name": "empire-at-war-vault-mcp",
+  "private": true,
+  "dependencies": {
+    "@bitbonsai/mcpvault": "0.16.0"
+  }
+}
