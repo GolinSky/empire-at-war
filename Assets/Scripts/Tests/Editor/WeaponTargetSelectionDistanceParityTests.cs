@@ -136,20 +136,23 @@ namespace EmpireAtWar.Tests.Weapon
 
         private static void AssertParity(Input[] requests, float3[] positions, byte[] flags = null)
         {
+            var candidateSlots = new int[positions.Length];
+            var candidateFlags = new byte[positions.Length];
+            var candidateGroups = new int[positions.Length];
+            for (int i = 0; i < positions.Length; i++)
+            {
+                candidateSlots[i] = i;
+                candidateFlags[i] = flags == null ? TargetSelectionCapture.SLOT_VALID : flags[i];
+                candidateGroups[i] = flags != null && i % 13 == 0 ? 1 : 0;
+            }
             using var inputs = new NativeArray<Input>(requests, Allocator.TempJob);
             using var slotPositions = new NativeArray<float3>(positions, Allocator.TempJob);
-            using var slotFlags = new NativeArray<byte>(positions.Length, Allocator.TempJob);
-            using var slots = new NativeArray<int>(positions.Length, Allocator.TempJob);
-            using var groups = new NativeArray<int>(positions.Length, Allocator.TempJob);
+            using var slotFlags = new NativeArray<byte>(candidateFlags, Allocator.TempJob);
+            using var slots = new NativeArray<int>(candidateSlots, Allocator.TempJob);
+            using var groups = new NativeArray<int>(candidateGroups, Allocator.TempJob);
             using var eligible = new NativeArray<byte>(new byte[] { 1, 0 }, Allocator.TempJob);
             using var expected = new NativeArray<Result>(requests.Length, Allocator.TempJob);
             using var actual = new NativeArray<Result>(requests.Length, Allocator.TempJob);
-            for (int i = 0; i < positions.Length; i++)
-            {
-                slots[i] = i;
-                slotFlags[i] = flags == null ? TargetSelectionCapture.SLOT_VALID : flags[i];
-                groups[i] = flags != null && i % 13 == 0 ? 1 : 0;
-            }
             new OriginalJob
             {
                 Inputs = inputs, CandidateSlots = slots, CandidateGroups = groups, GroupEligible = eligible,
