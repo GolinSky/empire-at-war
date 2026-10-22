@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.IdGeneration;
+using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -13,12 +14,14 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         private readonly ILocalPlayer _localPlayer;
         private readonly IUniqueIdGenerator _ids;
+        private readonly FighterPoseBatch _poses;
 
         public SquadronFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership, ILocalPlayer localPlayer,
-            IUniqueIdGenerator ids) : base(assets, scope, ownership)
+            IUniqueIdGenerator ids, FighterPoseBatch poses) : base(assets, scope, ownership)
         {
             _localPlayer = localPlayer;
             _ids = ids;
+            _poses = poses;
         }
 
         public virtual Squadron Create(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation) =>
@@ -28,6 +31,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public Squadron Create(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation,
             long entityId)
         {
+            _poses.CompletePlacement();
             SquadronData data = Assets.Load<SquadronData>(squadronType + "SquadronData");
             return Spawn(Assets.LoadComponent<Squadron>(squadronType + "SquadronView"), position, rotation,
                 (builder, view) => new SquadronInstaller(view, data, _localPlayer, owner, entityId, position,

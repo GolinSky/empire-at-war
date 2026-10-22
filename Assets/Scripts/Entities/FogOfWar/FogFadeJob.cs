@@ -14,18 +14,22 @@ namespace EmpireAtWar.Models.FogOfWar
         public float MaxDelta;
         public NativeArray<int> Changed;
 
+        internal static float Step(float current, float target, float delta, float maxDelta)
+        {
+            float next = math.select(
+                current + math.select(-maxDelta, maxDelta, delta > 0f),
+                target, math.abs(delta) <= maxDelta);
+            return math.select(next, current, delta == 0f);
+        }
+
         public void Execute()
         {
             int changed = 0;
             for (int i = 0; i < Current.Length; i++)
             {
                 float delta = Target[i] - Current[i];
-                if (delta == 0f) continue;
-
-                Current[i] = math.abs(delta) <= MaxDelta
-                    ? Target[i]
-                    : Current[i] + (delta > 0f ? MaxDelta : -MaxDelta);
-                changed = 1;
+                Current[i] = Step(Current[i], Target[i], delta, MaxDelta);
+                changed |= math.select(0, 1, delta != 0f);
             }
 
             Changed[0] = changed;

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90caf09ea784b724c849c92a694f56ff, type: 3}
+  m_Name: ShipAmbienceData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Audio.ShipAmbienceData
+  loops:
+  - {fileID: 8300000, guid: aef8614a8f32df64f971395ae349a466, type: 3}
+  - {fileID: 8300000, guid: 13796938ccc483c44a10833a81a97bd7, type: 3}
+  innerRadius: 50
+  outerRadius: 300
+  fadeTime: 1
+  volume: 0.3
+  updateInterval: 0.25

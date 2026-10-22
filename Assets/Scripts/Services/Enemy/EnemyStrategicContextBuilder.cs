@@ -74,8 +74,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceCompositionBuilder _forceBuilder;
         private readonly HostileIntelModel _intel;
         private readonly IVisionService _vision;
-        // Structures never move, so one the team has seen stays a known raid target until it is destroyed.
-        private readonly HashSet<long> _seenStructures = new HashSet<long>();
         // Targets stay picked while still valid: a new pick re-orders every committed ship, and each order makes
         // the ship's weapons re-sort their candidates.
         private GameEntity _localThreat;
@@ -137,7 +135,7 @@ namespace EmpireAtWar.Services.Enemy
                 origin);
             // Hostiles are known only through the team's intel: what was seen, weighted by how fresh it is.
             float now = Time.time;
-            // Any known hostile ship is a fair fleet target; the closest one still alive wins.
+            // Intel may inform strategy, but direct attack targets must currently be visible.
             GameEntity enemyFleetTarget = FindClosestKnownShip(origin, now);
             // Strength is compared against the whole team of the focused enemy.
             int focusTeamShipCount = CountKnownShips(focusEnemy, now);
@@ -190,8 +188,8 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// The closest known hostile within <see cref="LOCAL_ENGAGEMENT_RADIUS"/>; ships win over squadrons.
-        /// The previous pick stays while it is still known in range and no ship replaces a squadron pick.
+        /// The closest visible hostile within <see cref="LOCAL_ENGAGEMENT_RADIUS"/>; ships win over squadrons.
+        /// The previous pick stays while visible in range and no ship replaces a squadron pick.
         /// </summary>
         private GameEntity FindLocalThreat(Vector3 origin, float now)
         {
@@ -207,7 +205,8 @@ namespace EmpireAtWar.Services.Enemy
                 offset.y = 0f;
                 float distance = offset.sqrMagnitude;
                 bool isShip = sighting.UnitTypeId.IsShip;
-                if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) || entity.IsCloaked())
+                if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) || entity.IsCloaked() ||
+                    !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
                 {
                     continue;
                 }
@@ -236,7 +235,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// The closest hostile structure (not a base) the team has seen, with no known hostile ship within
+        /// The closest visible hostile structure (not a base), with no known hostile ship within
         /// <see cref="LOCAL_ENGAGEMENT_RADIUS"/> of it.
         /// </summary>
         private GameEntity FindRaidTarget(Vector3 origin, float now)
@@ -256,11 +255,10 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_vision.IsVisible(_owner.Id, position)) _seenStructures.Add(entity.Id);
+                if (!_vision.IsVisible(_owner.Id, position)) continue;
                 if (ReferenceEquals(entity, _raidTarget) && !IsDefended(position, now)) keepsPrevious = true;
                 float distance = (position - origin).sqrMagnitude;
                 if (distance >= closestDistance ||
-                    !_seenStructures.Contains(entity.Id) ||
                     IsDefended(position, now))
                 {
                     continue;
@@ -310,7 +308,7 @@ namespace EmpireAtWar.Services.Enemy
             return closestShip != null ? closestShip.Owner : PlayerId.None;
         }
 
-        /// <summary>The living hostile ship whose last known position is closest to <paramref name="origin"/>.</summary>
+        /// <summary>The visible hostile ship whose last known position is closest to <paramref name="origin"/>.</summary>
         private GameEntity FindClosestKnownShip(Vector3 origin, float now)
         {
             GameEntity closest = null;
@@ -320,7 +318,8 @@ namespace EmpireAtWar.Services.Enemy
                 if (!sighting.UnitTypeId.IsShip ||
                     _intel.GetConfidence(sighting, now) <= 0f ||
                     !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
-                    entity.IsCloaked())
+                    entity.IsCloaked() ||
+                    !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
                 {
                     continue;
                 }

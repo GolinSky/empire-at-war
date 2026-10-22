@@ -23,6 +23,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         public NativeArray<float> CostSoFar;
         public NativeArray<int> CameFrom;
         public NativeArray<byte> Closed;
+        public NativeArray<uint> VisitedGeneration;
+        public uint Generation;
         public NativeList<OpenNode> Open;
         public NavigationGridCells Cells;
         public float2 Start;
@@ -35,6 +37,12 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Execute()
         {
+            // Generation 1 starts a fresh stamp cycle, including unsigned rollover.
+            if (Generation == 1)
+            {
+                for (int i = 0; i < VisitedGeneration.Length; i++) VisitedGeneration[i] = 0;
+            }
+
             Waypoints.Clear();
             RawPath.Clear();
             Status[0] = STATUS_NO_PATH;
@@ -62,16 +70,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         // The goal shares the start's region, so the search always reaches it.
         private void Search(int startCell, int goalCell)
         {
-            for (int i = 0; i < CostSoFar.Length; i++)
-            {
-                CostSoFar[i] = float.PositiveInfinity;
-                CameFrom[i] = -1;
-                Closed[i] = 0;
-            }
-
             Open.Clear();
             int goalX = goalCell % Cells.Width;
             int goalY = goalCell / Cells.Width;
+            InitializeCell(startCell);
             CostSoFar[startCell] = 0f;
             Push(startCell, Heuristic(startCell, goalX, goalY));
             while (Open.Length > 0)
@@ -114,6 +116,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         }
 
                         int neighbor = ny * Cells.Width + nx;
+                        InitializeCell(neighbor);
                         float cost = CostSoFar[cell] + (isDiagonal ? DIAGONAL_COST : 1f);
                         if (cost >= CostSoFar[neighbor])
                         {
@@ -126,6 +129,15 @@ namespace EmpireAtWar.Services.ShipNavigation
                     }
                 }
             }
+        }
+
+        private void InitializeCell(int cell)
+        {
+            if (VisitedGeneration[cell] == Generation) return;
+            VisitedGeneration[cell] = Generation;
+            CostSoFar[cell] = float.PositiveInfinity;
+            CameFrom[cell] = -1;
+            Closed[cell] = 0;
         }
 
         // Octile distance in cells: consistent with the step costs, so the first goal pop is a shortest path.
@@ -160,13 +172,20 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             float2 segment = to - from;
             float lengthSquared = math.lengthsq(segment);
+            // Use the rounded endpoint from the projection expression itself. For a
+            // saturated parameter, every projected point lies inside these bounds.
+            float2 end = from + segment;
+            float2 minimum = math.min(from, end);
+            float2 maximum = math.max(from, end);
             for (int i = 0; i < Obstacles.Length; i++)
             {
                 float3 obstacle = Obstacles[i];
+                float safeRadius = obstacle.z + LineOfSightInflation;
+                float2 nearest = math.clamp(obstacle.xy, minimum, maximum);
+                if (math.distancesq(obstacle.xy, nearest) >= safeRadius * safeRadius) continue;
                 float parameter = lengthSquared <= math.EPSILON
                     ? 0f
                     : math.saturate(math.dot(obstacle.xy - from, segment) / lengthSquared);
-                float safeRadius = obstacle.z + LineOfSightInflation;
                 if (math.distancesq(obstacle.xy, from + segment * parameter) <
                     safeRadius * safeRadius)
                 {

@@ -84,6 +84,45 @@ namespace EmpireAtWar.Models.FogOfWar
             _reveals.Clear();
         }
 
+        /// <summary>Rebuilds optional targets, fades and writes the mask with one completion before upload.</summary>
+        public bool UpdateAndWriteBytes(float maxDelta, NativeArray<byte> pixels,
+            bool rebuildTargets, bool keepHistory, float edgeSoftness, float intensity)
+        {
+            if (edgeSoftness < 0f || edgeSoftness > 1f) throw new ArgumentOutOfRangeException(nameof(edgeSoftness));
+            JobHandle handle = default;
+            if (rebuildTargets)
+            {
+                handle = new FogResetJob
+                {
+                    Current = _current,
+                    Target = _target,
+                    BaseVisibility = keepHistory ? HISTORIC_VISIBILITY : 0f
+                }.Schedule();
+                if (_reveals.Length != 0)
+                {
+                    handle = new FogRevealJob
+                    {
+                        Target = _target,
+                        Circles = _reveals.AsArray(),
+                        Resolution = Resolution,
+                        EdgeSoftness = edgeSoftness,
+                        Intensity = intensity
+                    }.Schedule(Resolution, REVEAL_ROWS_PER_BATCH, handle);
+                }
+            }
+
+            new FogFadeWriteJob
+            {
+                Current = _current,
+                Target = _target,
+                MaxDelta = maxDelta,
+                Changed = _changed,
+                Pixels = pixels
+            }.Schedule(handle).Complete();
+            if (rebuildTargets) _reveals.Clear();
+            return _changed[0] != 0;
+        }
+
         /// <summary>Moves current visibility toward the targets; returns true when any cell changed.</summary>
         public bool Fade(float maxDelta)
         {

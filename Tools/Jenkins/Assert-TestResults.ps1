@@ -6,6 +6,9 @@ $run = $report.SelectSingleNode('/test-run')
 if ($null -eq $run -or $run.result -ne 'Passed' -or [int]$run.passed -lt 1 -or [int]$run.failed -ne 0) {
     throw 'EditMode gate requires a passing NUnit report with at least one passed test and no failures.'
 }
+if ($null -eq $run.SelectSingleNode(".//test-case[starts-with(@fullname, 'EmpireAtWar.Tests.') and @result='Passed']")) {
+    throw 'EditMode gate requires at least one passed project test case in EmpireAtWar.Tests.; package tests alone do not satisfy the gate.'
+}
 if ($PSBoundParameters.ContainsKey('Commit') -or $PSBoundParameters.ContainsKey('Build')) {
     if (-not $Commit -or -not $Build) { throw 'Test provenance requires both commit and Jenkins build number.' }
     $provenance = Get-Content -LiteralPath "$Path.provenance.json" -Raw | ConvertFrom-Json

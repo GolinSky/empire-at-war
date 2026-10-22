@@ -981,6 +981,11 @@ namespace EmpireAtWar.Tests.Editor
             public int RequestCount { get; private set; }
             public bool IsUpgradingStation => false;
 
+            public bool CanQueue(string requestId, int maxCount) => true;
+
+            public void ReserveExternalPipeline(string requestId) { }
+            public void ReleaseExternalPipeline(string requestId) { }
+
             public void Purchase(UnitRequest request)
             {
                 LastRequest = request;

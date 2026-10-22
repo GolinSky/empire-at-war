@@ -25,6 +25,10 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         IObserver<BattleState>
     {
         private readonly ILocalPlayer _localPlayer;
+        private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
+        private readonly EmpireAtWar.Services.Audio.InterfaceSfxData _interfaceData;
+        private readonly System.Collections.Generic.Dictionary<SuperWeaponType, SuperWeaponState> _lastStates = new();
+        private bool _isBattleRunning;
         private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly ISuperWeaponsViewProvider _viewProvider;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -52,10 +56,13 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             INotifier<BattleState> battleState, SuperWeaponModel model,
             SuperWeaponTargetingModel targeting,
             UnitActionTargetingModel unitTargeting,
-            SuperWeaponData data)
+            SuperWeaponData data, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
+            EmpireAtWar.Services.Audio.InterfaceSfxData interfaceData)
             : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
+            _interfaceAudio = interfaceAudio;
+            _interfaceData = interfaceData;
             _model = model;
             _targeting = targeting;
             _superWeaponFireService = superWeaponFireService;
@@ -86,6 +93,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         public void UpdateState(BattleState state)
         {
             _isBattleEnded = state == BattleState.Ended;
+            _isBattleRunning = state == BattleState.Running;
         }
 
         public void Activate(bool isActive)
@@ -113,7 +121,10 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _abilities.TargetingChanged += HandleAbilityTargetingChanged;
 
             foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
+            {
+                _lastStates[type] = _model.GetState(type);
                 _view.SetState(type, _model.GetState(type), _model.CanFire(type));
+            }
             RenderPending();
         }
 
@@ -187,16 +198,28 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         {
             if (_isBattleEnded) return;
             // Invalid picks such as fighters keep the weapon waiting for a proper target.
-            if (!_superWeaponFireService.CanTarget(_localPlayer.Id, target)) return;
+            if (!_superWeaponFireService.CanTarget(_localPlayer.Id, target))
+            {
+                _interfaceAudio.PlayRejected();
+                return;
+            }
             _targeting.Cancel();
             _model.Consume(type);
             _superWeaponFireService.Fire(type, target);
+            _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalFiring);
         }
 
         private void HandleStateChanged(SuperWeaponType type, SuperWeaponState state)
         {
+            SuperWeaponState previous = _lastStates[type];
+            _lastStates[type] = state;
             _view.SetState(type, state, _model.CanFire(type));
             if (!_model.CanFire(type) && _targeting.Pending == type) _targeting.Cancel();
+            if (_model.IsRestoring || !_isBattleRunning) return;
+            if (previous == SuperWeaponState.Unavailable && state == SuperWeaponState.Charging)
+                _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalBought);
+            else if (state == SuperWeaponState.Ready && _model.CanFire(type))
+                _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalAvailable);
         }
 
         private void HandleUnitTargetingChanged()

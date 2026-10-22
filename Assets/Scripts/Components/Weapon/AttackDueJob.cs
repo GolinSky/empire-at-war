@@ -17,7 +17,7 @@ namespace EmpireAtWar.Components.Weapon
         public void Execute(int index)
         {
             Input input = Inputs[index];
-            Results[index] = (byte)(input.EarliestFrame <= Frame && input.DueTime <= Now ? 1 : 0);
+            Results[index] = (byte)((input.EarliestFrame <= Frame & input.DueTime <= Now) ? 1 : 0);
         }
 
         internal struct Input

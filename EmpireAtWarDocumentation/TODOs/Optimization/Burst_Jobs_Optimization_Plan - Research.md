@@ -1,7 +1,8 @@
 ---
 category: Optimization
-status: todo
+status: in-progress
 created: 2026-10-22
+updated: 2026-10-22
 ---
 # Burst Jobs Optimization — Research
 
@@ -120,3 +121,99 @@ created: 2026-10-22
 ## Sources
 - Burst manual: loop vectorization, `Loop.ExpectVectorized`, `Hint`, `FloatMode`.
 - Job system manual: batch sizes, dependencies, `WaitForJobGroupID`.
+
+## Assembly inspection — 2026-10-22
+- Burst 1.8.29 Inspector backend `BurstReflection.FindExecuteMethods` → `BurstCompilerService.GetDisassembly`; job attribute options retained, safety disabled, debug=0. No Player execution.
+- `CpuTargetsX64 = 72` = SSE2 (8) + AVX2 (64), verified in installed `BurstPlatformAotSettings.cs` / `BurstCompilerOptions.cs`.
+- Evidence: `Logs/BurstJobs/2026-10-22/Inspect.cs`, 12 `.asm` files, `instruction-counts.json`. Counts cover complete emitted job producer including scheduling wrapper; static counts are not executed-branch frequency.
+
+| Variant | All jumps | cmov | blend | packed add/mul/sub | scalar add/mul/sub |
+|---|---:|---:|---:|---:|---:|
+| Radar if | 17 | 1 | 0 | 2 | 1 |
+| Radar ternary/select (each) | 14 | 4 | 0 | 2 | 1 |
+| Target filter if | 44 | 4 | 0 | 0 | 0 |
+| Target filter ternary/select (each) | 12 | 6 | 0 | 0 | 0 |
+
+- Counts match for SSE2 and AVX2; AVX2 uses VEX forms. Radar packed math operates on x/z within one target; no demonstrated cross-target loop vectorization.
+- Decision: retain current production branch variants until ≥3 Player runs and actual pass-ratio evidence establish a winner.
+
+## Navigation ownership audit — 2026-10-22
+- `NavigationRouteJob.Search` still clears full-grid scratch arrays; `NavigationGridBlockJob` still tests cells × obstacles; LOS still tests every obstacle. Phase 5 implementation remains pending matched baseline measurements.
+- `ShipPathGrid.Build` already computes regions once; `NavigationNearestReachableJob` uses `NavigationGridCells.FindNearestCellInRegion` ring search. Do not implement Battle CPU's stale per-plan flood replacement again.
+- Old 4.315 ms flood / 3.892 ms nearest-search captures describe older implementations and unmatched workloads; they do not establish current cost.
+
+## Remaining phase gates — 2026-10-22
+- Shield batching: synchronous `Shield.GetSurfacePosition` returns the hit immediately; deferred results need the explicit Phase 4 design decision.
+- Due inline/job and all batch-size choices: pending Phase 0 schedule/complete measurements. A two-comparison kernel alone does not measure copy, sorting and apply costs.
+- Radar: snapshot/jobs/delivery occur inside `FixedTick`; rendered-frame delivery can change behavior across multiple fixed steps. Preserve fixed-step deadline and protect registration/buffer mutation before splitting.
+- Fighters: pose batch late tick precedes combat so guns see current pose. Any overlap must preserve this order and complete before register/unregister/grow/dispose. Bolt pooling/removal has the same in-flight ownership requirement.
+- Shield SoA/select, radar SoA/owner eligibility and navigation rewrites remain feasible experiments, not approval blockers. Establish representative baseline before changing these additional paths; no production winner selected from static code shape.
+- Phase 6 remains gated on measurements from Phases 1–5. No fast-math, hints or batch-size edits in this pass.
+
+## Fog code generation — 2026-10-22
+- Captured production `FogResetJob` and new `FogFadeWriteJob` on SSE2/AVX2 using Inspector backend, strict/default float mode and safety disabled; artifacts beside branch assembly.
+- AVX2 reset: four YMM `vcmpltps`/`vandps`/`vmovups` groups per iteration (32 cells). Fused fade/write: two YMM groups (16 cells), `vsubps`, `vblendvps`, `vaddps`, `vmulps`, packed byte conversion, vector OR reduction.
+- This establishes vectorized code generation, not a measured frame-time improvement.
+- Tradeoff: fused pass writes byte memory even when visibility is unchanged; texture `Apply()` remains conditional. Compare stable and changing masks in Player before accepting performance.
+
+## Implementation verification — 2026-10-22
+- Unity compilation succeeds. `WeaponTargetSelection` 23/23 and `FogVisibility` 22/22 EditMode tests pass (45 distinct cases); Burst enabled, synchronous compilation enabled for verification, safety checks enabled. Original synchronous setting restored afterward.
+- Target parity includes 11 new cases against frozen old Burst implementation; compares all result fields by float bits. Direct `1e-10f` degenerate cutoff validated at adjacent squared float values. Far rejection uses conservative `max(0, range) + 2*tolerance` bound; exact fallback tests retained within it.
+- Fog sqrt parity checks every integer `0..16777216` inside a synchronous Burst job. Above that range original double sqrt remains. Reveal parity uses frozen original Burst loop, including large-radius overflow fallback; managed-reference comparison initially differed by a few ULP and was replaced with equivalent Burst execution without weakening equality.
+- Fused fade/write preserves exact target assignment and unchanged-cell float values. Chain tests compare history on/off across 20 frames. Both actual callers complete before texture upload; no job survives the method return.
+- Test artifacts: `Logs/BurstJobs/2026-10-22/weapon-tests.json`, `fog-tests.json`. No Play Mode/Player runs or matched speedup claim.
+- Plan stays active: Player baselines, real pass ratios, ≥3 benchmark runs, remaining Phase 3/4/5 experiments and Phase 6 tuning remain outstanding.
+
+## Continued implementation — due predicate
+- User requested remaining work independent of Player measurements and deferred shield batching.
+- `AttackDueJob`: `&&` → `&` for pure comparisons; no scheduler, batch or delivery changes.
+- 8/8 EditMode tests pass with synchronous Burst and safety enabled; added 35 input combinations × 35 now/frame combinations including NaN, ±inf, signed zero and int extrema.
+- Before/after SSE2/AVX2 assembly saved in `Logs/BurstJobs/2026-10-22/AttackDueJob-{before,after}-{CPU}.asm`; original loop uses scalar jumps, new AVX2 loop evaluates 32 records with packed float/int comparisons and AND. This is codegen evidence, not speed evidence.
+- Due execution model and batch size remain pending Player schedule/complete measurements.
+
+## Continued implementation — shield, radar and navigation
+- Shield: `Shield.PackPlanes` builds persistent `float4x4` groups with X/Y/Z/W columns; unused lanes are parallel non-rejecting planes. Kernel does four-plane dot/divide/select, preserves original extrema order for signed-zero ties, accumulates MISS. 13 exact Burst parity cases pass. No deferred results.
+- Shield SSE2/AVX2 disassembly confirms packed multiply/add/divide and 64-byte group stride. Outer extrema reduction remains ordered; `Loop.ExpectVectorized()` would test a different property than the explicit SIMD arithmetic. Inspect artifacts in `Logs/BurstJobs/2026-10-22/`.
+- Radar: owner eligibility built once per scan, separate persistent X/Z buffers; original skip for ineligible targets retained. Producer dependency, batch sizes and same-`FixedTick` delivery unchanged. All 39 Radar-filter tests pass, including 7 kernel bitset parity cases, partial words, asymmetric hostility, NaN/inf, stale-mask clearing, destroyed transform, swap-removal and delivery unregistration. This run includes existing benchmark fixtures; no Player conclusion inferred.
+- Radar destroyed-transform integration proves job writes NaN after a previously valid transform is destroyed while still registered; main-thread prefill removed. Owner×target eligibility preparation cost remains unmeasured.
+- Navigation: one generation stamp per cell, initialize search scratch only on first visit; first generation and rollover clear stamps. Start parent explicitly reset to -1, including start=goal.
+- Raster: single-writer obstacle-first enumeration; binary-search actual rounded grid coordinates for conservative axis bounds, retain strict original circle comparison. Reduces candidate checks but gives up cell-level parallel scheduling; Player acceptance remains open.
+- LOS: rounded endpoint `from + (to-from)` defines bounding box; distance to box is a lower bound, original projection comparison retained for survivors.
+- Navigation verification: 7 new parity cases (240 random raster layouts, boundary cases, 360 reused-buffer route searches/rollover, disconnected/blocked maps, 2000 LOS cases), 26 service tests and 1 grid test pass. Exact raw-path/waypoint comparisons retained. Independent source review found no actionable navigation or radar correctness/lifetime issue.
+
+## Burst cache verification correction
+- Initial scheduled shield/radar tests executed stale pre-layout kernels despite clean script compilation. Shield packed columns were read as old individual planes; radar output remained unwritten at the old `WordsPerQuery` offset.
+- `BurstCompiler.TriggerRecompilation()` alone did not invalidate those assemblies. Used installed Burst's `CompilerCommandDirtyAllAssemblies` then `TriggerRecompilation` through Unity eval; recovery script saved as `Logs/BurstJobs/2026-10-22/RefreshBurst.cs`.
+- After invalidation, unchanged shield tests pass 13/13 and radar 39/39; assembly shows new packed layout. Reran earlier layout-stable kernels too: weapon 23/23, fog 22/22, due-filter 23/23. This supersedes the earlier cache-dependent verification evidence.
+- No source behavior was weakened to accommodate stale-kernel failures. No Play Mode or Player execution.
+
+## Continued pass acceptance
+- 156 distinct EditMode cases pass after cache invalidation, deduplicated by full test name across saved result files; includes 4 existing `ShieldSwap_UsesNewSurfaceForImpacts` prefab integration cases. `verified-cases.json` lists every case.
+- Unity compilation succeeds; new scripts/metas imported; `git diff --check` passes. Synchronous Burst setting restored to its original false value. No Unity asset/configuration edits required.
+- Remaining gates: Player timings/workload ratios and branch/batch selection; timing splits need runtime hierarchy/dependency/ownership evidence; deferred shield batching needs explicit result-latency design; Phase 6 remains measurement-gated.
+- Codegen ≠ speed: shield scans all planes instead of early parallel MISS exit; radar adds owner×target preparation; obstacle-first raster trades cell parallelism for fewer candidates; fused fog writes stable masks. Measure each full feature path before performance acceptance.
+
+
+### Same-frame scheduling validation — 2026-10-22
+- `BoltFlightBatch.Tick` tracks/lands then schedules placement; `LateTick` completes at -1500 before combat (-1000). Public `Advance` remains synchronous for direct callers.
+- Complete before Add, repeat schedule, Clear, Dispose, listed-bolt Play and ResetVisuals. Play guard is essential: replay writes Transform before Add and an already-listed bolt skips Add. Prewarm has no BoltFlights dependency yet, so guard uses `IsInFlightBatch`.
+- Bolt disposal order 1100 precedes entity scopes 1000 (descending disposal). Reset/cancel hooks also cover `SimulationResetService` clearing pools before batch Clear. Live skirmish tick gate stays enabled; only squadron pooling toggles entity gates.
+- Bolt spawn audit: pool, ion ability and superweapon instantiate without parent; no later parenting found. Independent roots permit transform scheduling; no measured parallelism/speed claim.
+- Radar gathers live state/queries/hostility, schedules and flushes position reads, prepares independent eligibility/output buffers, schedules dependent detection, completes in `finally`, then delivers. Snapshot and callback ordering remain inside one FixedTick. RadarJob samples cover scheduling/dispatch/completion; snapshot preparation remains separately marked.
+- Fighter scheduling deferred: battle coordinator Update runs before entity coordinators producing poses. Lifecycle order sorts only scope-local callbacks; moving to Tick would schedule stale poses or force early completion in Set. A global post-Update bridge would expand lifecycle scope. Existing LateTick has no independent work between placement → dependent bank → Complete. Squadron/fighter transforms share scope roots; no hierarchy redesign performed.
+- Validation: 83 distinct EditMode cases passed: Bolt 26 (7 new scheduling cases), Radar 41 (2 new same-tick/snapshot cases), ShotEffectPoolLifecycleTests 13, LifecycleContractTests 3. Reports: `Logs/BurstJobs/2026-10-22/{bolt,radar,pool,lifecycle}-scheduling-tests.json`. Clean compile; Console errors empty since cursor 15240 through 15274. Burst cache invalidated before tests; synchronous compilation setting restored false afterward.
+- Independent radar review found no data ownership/dependency issue. Explicit `ScheduleBatchedJobs` offers workers preparation overlap; wake-up overhead and overall benefit still require Player measurement.
+- Independent bolt review found no actionable correctness issue across Fire/Update/reset/cancel/pool callbacks and teardown. Bolt scheduling does not force an extra dispatch flush; actual worker overlap depends on engine/other-job dispatch before LateTick. Validate timeline before adding another wake-up cost.
+
+
+### Fighter PostTick implementation — 2026-10-22
+- Supersedes the fighter deferral above; user authorized the lifecycle change. Custom `EmpireAtWar.Lifecycle.IPostTickable` routes through `OrderedLifecycleCoordinator` → VContainer `IPostTickable`; callbacks use scope-local ordering, profiler markers and existing gates/disposal suppression.
+- Installed VContainer 1.19.0 `PlayerLoopHelper`: `VContainerUpdate` → `ScriptRunBehaviourUpdate` → `VContainerPostUpdate`; `VContainerLateUpdate` precedes `ScriptRunBehaviourLateUpdate`. PostTick follows registered Tick and MonoBehaviour Update producers, not every delayed task or engine operation in the Update phase.
+- `FighterPoseBatch.PostTick`: placement → bank dependency; flush with `ScheduleBatchedJobs`. LateTick at -2000 completes before combat at -1000. Direct LateTick remains synchronous; early completion followed by mutation causes latest poses to be scheduled again at LateTick.
+- Complete before Set/Register/Unregister; preserve covering placement handle if bank scheduling fails. Dispose at 1100 precedes entity scopes (1000); unregister after terminal disposal is intentionally inert, Register rejects disposed owner.
+- Complete before `SquadronFlightComponent.QueuePoses` / `ApplyPoses` root writes; `SquadronFactory.Create` before instantiation/parenting; `Squadron.Respawn` before activation/health restoration; `Despawn` before disabling hierarchy. No generic factory or hierarchy restructuring.
+- Only production gate changes are squadron-local; pooled child gates cannot disable the battle batch completion. Shared hierarchy roots remain; worker scaling and dispatch cost are unmeasured.
+- Verification: clean compile; 73 distinct EditMode cases pass: Fighter 46, PostTickLifecycleTests 5, CompositionTests 19, LifecycleContractTests 3. Shared runner was concurrently used by another task; an audio report initially occupying the composition result was discarded. Reran composition and captured all 19 matching test names directly from the status file. Includes actual installed phase inspection, child producer → parent scheduling → combat read, late mutation, pending slot reuse/growth, disposal/unregister and real entity spawn/pool round trips with pending work.
+- Reports: `Logs/BurstJobs/2026-10-22/fighter-posttick-tests.json`, `posttick-lifecycle-tests.json`, `posttick-composition-tests.json`, `posttick-contract-tests.json`. Burst synchronous compilation restored false. No Player/Play Mode run.
+- Console limitation: composition run logged unrelated `ShipAmbienceService.Dispose` line 187 using `Object.Destroy` in EditMode (concurrent audio changes); the final separately verified composition report contains 19/19 passed. Audio source not modified by this work. Earlier transient audio compilation errors cleared on final compile.
+- Independent lifecycle/ownership reviews found no actionable scheduling defect. Engine animation/shared hierarchy overlap and actual frame benefit still require runtime observation; no performance improvement claimed.

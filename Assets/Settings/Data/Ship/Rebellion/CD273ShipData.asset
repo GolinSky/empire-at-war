@@ -41,7 +41,7 @@ MonoBehaviour:
   - hardPointType: 2
     health: 340
     hullDamageMultiplier: 1
-  <Range>k__BackingField: 550
+  <Range>k__BackingField: 300
   <Delay>k__BackingField: 0.25
   abilities: 05000000
   hangarBays: []
@@ -49,8 +49,6 @@ MonoBehaviour:
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
   - weaponType: 8
-    count: 4
-  - weaponType: 13
-    count: 2
+    count: 6
   - weaponType: 14
     count: 2

@@ -17,7 +17,6 @@ namespace EmpireAtWar.Services.ShipNavigation
         private const float MINIMUM_CELL_SIZE = 4f;
 
         private const int MAXIMUM_CELLS_PER_AXIS = 160;
-        private const int BLOCK_JOB_BATCH_SIZE = 256;
 
         private const float HALF_DIAGONAL_FACTOR = 0.7072f;
 
@@ -32,6 +31,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         private NativeArray<float> _costSoFar;
         private NativeArray<int> _cameFrom;
         private NativeArray<byte> _closed;
+        private NativeArray<uint> _visitedGeneration;
+        private uint _searchGeneration;
         private NativeList<NavigationRouteJob.OpenNode> _open;
         private NativeList<float2> _rawPath;
         private NativeList<float2> _path;
@@ -85,6 +86,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (_costSoFar.IsCreated) _costSoFar.Dispose();
             if (_cameFrom.IsCreated) _cameFrom.Dispose();
             if (_closed.IsCreated) _closed.Dispose();
+            if (_visitedGeneration.IsCreated) _visitedGeneration.Dispose();
             if (_open.IsCreated) _open.Dispose();
             if (_rawPath.IsCreated) _rawPath.Dispose();
             if (_path.IsCreated) _path.Dispose();
@@ -118,6 +120,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)
         {
             BeginSearch();
+            _searchGeneration = _searchGeneration == uint.MaxValue ? 1 : _searchGeneration + 1;
             NavigationRouteJob job = new NavigationRouteJob
             {
                 Blocked = _blocked,
@@ -126,6 +129,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 CostSoFar = _costSoFar,
                 CameFrom = _cameFrom,
                 Closed = _closed,
+                VisitedGeneration = _visitedGeneration,
+                Generation = _searchGeneration,
                 Open = _open,
                 Cells = _cells,
                 Start = _origin,
@@ -235,6 +240,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             _costSoFar = new NativeArray<float>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _cameFrom = new NativeArray<int>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _closed = new NativeArray<byte>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _visitedGeneration = new NativeArray<uint>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _open = new NativeList<NavigationRouteJob.OpenNode>(256, Allocator.Persistent);
             _rawPath = new NativeList<float2>(64, Allocator.Persistent);
             _path = new NativeList<float2>(16, Allocator.Persistent);
@@ -251,7 +257,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     CellSize = _cells.CellSize,
                     Width = _cells.Width,
                     Inflation = _inflation
-                }.Schedule(cellCount, BLOCK_JOB_BATCH_SIZE);
+                }.Schedule();
                 new NavigationRegionJob
                 {
                     Blocked = _blocked,

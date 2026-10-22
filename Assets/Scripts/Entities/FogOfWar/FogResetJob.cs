@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 
 namespace EmpireAtWar.Models.FogOfWar
 {
@@ -16,7 +17,7 @@ namespace EmpireAtWar.Models.FogOfWar
         {
             for (int i = 0; i < Target.Length; i++)
             {
-                Target[i] = Current[i] > 0f ? BaseVisibility : 0f;
+                Target[i] = math.select(0f, BaseVisibility, Current[i] > 0f);
             }
         }
     }

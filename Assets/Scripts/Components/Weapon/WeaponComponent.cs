@@ -48,6 +48,8 @@ namespace EmpireAtWar.Components.Weapon
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private WeaponsData _weaponsData;
+        private float _warheadDamageMultiplier = 1f;
+        private float _warheadReloadMultiplier = 1f;
         private DamageMatrixData _damageMatrix;
         private IncomingMissileRegistry _missiles;
         private DebugRangeCircleFactory _rangeCircleFactory;
@@ -123,6 +125,12 @@ namespace EmpireAtWar.Components.Weapon
             _selection = selection;
         }
 
+        public void ConfigureWarheads(float damageMultiplier, float reloadMultiplier)
+        {
+            _warheadDamageMultiplier = damageMultiplier;
+            _warheadReloadMultiplier = reloadMultiplier;
+        }
+
         public void Initialize()
         {
             _isInitialized = true;
@@ -134,7 +142,8 @@ namespace EmpireAtWar.Components.Weapon
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
-                WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction);
+                WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction)
+                    .WithWarheadMultipliers(_warheadDamageMultiplier, _warheadReloadMultiplier);
                 profiles.Add(profile);
                 hardPoint.SetData(profile, profile.Range, _damageMatrix.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer);

@@ -48,6 +48,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ApplyDamage_SquadronShieldBonusDoesNotChangeShipShieldMultiplier()
+        {
+            JsonUtility.FromJsonOverwrite(@"{""damageTypes"":[
+                {""damageType"":0,""damage"":{""fighter"":2},""vsShield"":0.5,""squadronShieldMultiplier"":2}
+            ]}", _matrix);
+            SquadronHealthModel model = CreateModel(out HardPointModel[] members);
+
+            model.ApplyDamage(10f, DamageType.Laser, 1);
+
+            Assert.That(model.GetMemberShields(1), Is.EqualTo(10f));
+            Assert.That(model.GetMemberShields(0), Is.EqualTo(MEMBER_SHIELDS));
+            Assert.That(members[1].Health, Is.EqualTo(MEMBER_HULL));
+            Assert.That(_matrix.GetShieldMultiplier(DamageType.Laser), Is.EqualTo(0.5f));
+        }
+
+        [Test]
         public void ApplyDamage_KillsOnlyTheHitFighter()
         {
             SquadronHealthModel model = CreateModel(out HardPointModel[] members);

@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.Enemy
                 data.MemberHull * data.MemberCount,
                 data.MemberShields * data.MemberCount,
                 data.WeaponLoadout, _weaponsData, _damageMatrix,
-                Array.Empty<UnitCombatProfile>());
+                Array.Empty<UnitCombatProfile>(), data.WarheadDamageMultiplier, data.WarheadReloadMultiplier);
         }
     }
 }

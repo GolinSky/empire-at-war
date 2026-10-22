@@ -14,8 +14,9 @@ namespace EmpireAtWar.ViewComponents.Squadrons
     /// Writes every fighter's flight pose in Burst jobs once per frame instead of two transform writes per fighter.
     /// Its LateTick runs before the attack coordinator's, so fighter guns fire from this frame's pose.
     /// </summary>
-    [EmpireAtWar.Lifecycle.LifecycleOrder(LateTick = EmpireAtWar.Lifecycle.LifecycleOrders.FIGHTER_POSE_LATE_TICK)]
-    public sealed class FighterPoseBatch : ILateTickable, IOrderedDisposable
+    [LifecycleOrder(LateTick = LifecycleOrders.FIGHTER_POSE_LATE_TICK,
+        Dispose = LifecycleOrders.FIGHTER_POSE_DISPOSE)]
+    public sealed class FighterPoseBatch : IPostTickable, ILateTickable, IOrderedDisposable
     {
         private const int INITIAL_CAPACITY = 256;
 
@@ -24,9 +25,14 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         private TransformAccessArray _fighters;
         private TransformAccessArray _bodies;
         private NativeArray<FighterPose> _poses;
+        private JobHandle _placement;
+        private bool _hasPendingPlacement;
+        private bool _isDisposed;
 
         public int Register(Transform fighter, Transform body, Quaternion bodyRestRotation)
         {
+            if (_isDisposed) throw new ObjectDisposedException(nameof(FighterPoseBatch));
+            CompletePlacement();
             if (!_fighters.isCreated)
             {
                 _fighters = new TransformAccessArray(INITIAL_CAPACITY);
@@ -54,12 +60,16 @@ namespace EmpireAtWar.ViewComponents.Squadrons
 
         public void Unregister(int slot)
         {
+            // The battle owner disposes before entity scopes release their registrations.
+            if (_isDisposed) return;
+            CompletePlacement();
             _poses[slot] = default;
             _freeSlots.Push(slot);
         }
 
         public void Set(int slot, Vector3 position, Vector3 forward, float bank)
         {
+            CompletePlacement();
             FighterPose pose = _poses[slot];
             pose.Position = position;
             pose.Forward = forward;
@@ -68,20 +78,56 @@ namespace EmpireAtWar.ViewComponents.Squadrons
             _poses[slot] = pose;
         }
 
+        public void PostTick()
+        {
+            SchedulePlacement();
+            if (_hasPendingPlacement) JobHandle.ScheduleBatchedJobs();
+        }
+
         public void LateTick()
         {
+            // Direct callers and mutations after PostTick still publish the latest poses.
+            if (!_hasPendingPlacement) SchedulePlacement();
+            CompletePlacement();
+        }
+
+        private void SchedulePlacement()
+        {
+            CompletePlacement();
             if (!_fighters.isCreated || _fighters.length == 0) return;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronPlacement.Auto())
 #endif
             {
-                JobHandle placed = new FighterPlacementJob { Poses = _poses }.Schedule(_fighters);
-                new FighterBankJob { Poses = _poses }.Schedule(_bodies, placed).Complete();
+                _placement = new FighterPlacementJob { Poses = _poses }.Schedule(_fighters);
+                _hasPendingPlacement = true;
+                try
+                {
+                    _placement = new FighterBankJob { Poses = _poses }.Schedule(_bodies, _placement);
+                }
+                catch
+                {
+                    CompletePlacement();
+                    throw;
+                }
             }
+        }
+
+        internal void CompletePlacement()
+        {
+            if (!_hasPendingPlacement) return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.SquadronPlacement.Auto())
+#endif
+                _placement.Complete();
+            _hasPendingPlacement = false;
         }
 
         public void Dispose()
         {
+            if (_isDisposed) return;
+            CompletePlacement();
+            _isDisposed = true;
             if (_fighters.isCreated) _fighters.Dispose();
             if (_bodies.isCreated) _bodies.Dispose();
             if (_poses.IsCreated) _poses.Dispose();

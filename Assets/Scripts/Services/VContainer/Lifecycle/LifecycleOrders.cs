@@ -6,6 +6,7 @@ namespace EmpireAtWar.Lifecycle
     {
         public const int INPUT_LOCK_INITIALIZE = -400;
         public const int PLAYER_SCOPES_INITIALIZE = -300;
+        public const int INTERFACE_SFX_INITIALIZE = PLAYER_SCOPES_INITIALIZE - 1;
         public const int CORE_HUD_INITIALIZE = -200;
         public const int HEALTH_INITIALIZE = -100;
         public const int ORDER_INPUT_INITIALIZE = -100;
@@ -15,11 +16,14 @@ namespace EmpireAtWar.Lifecycle
         public const int SHIP_SFX_TICK = 1000;
 
         public const int FIGHTER_POSE_LATE_TICK = -2000;
+        public const int BOLT_POSE_LATE_TICK = -1500;
         public const int COMBAT_LATE_TICK = -1000;
         public const int SHIP_SFX_LATE_TICK = 1000;
         public const int NAVIGATION_LATE_TICK = 2000;
 
         public const int ENTITY_SCOPES_DISPOSE = 1000;
+        public const int BOLT_FLIGHT_DISPOSE = ENTITY_SCOPES_DISPOSE + 100;
+        public const int FIGHTER_POSE_DISPOSE = ENTITY_SCOPES_DISPOSE + 100;
         public const int PLAYER_SCOPES_DISPOSE = 300;
         public const int PLANETS_DISPOSE = 200;
         public const int SHIP_SFX_DISPOSE = -1000;

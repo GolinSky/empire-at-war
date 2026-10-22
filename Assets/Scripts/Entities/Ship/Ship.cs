@@ -49,6 +49,7 @@ namespace EmpireAtWar.Ship
     public class Ship : EntityView, IController, IShipEntity, IInitializable, ILateDisposable, ITickable
     {
         private IHealthComponent _healthComponent;
+        private IHealthAudioEvents _healthAudioEvents;
         private IShipMoveComponent _shipMoveComponent;
         private IRadarComponent _radarComponent;
         private IWeaponComponent _weaponComponent;
@@ -92,6 +93,7 @@ namespace EmpireAtWar.Ship
         [Inject]
         private void Construct(
             IHealthComponent healthComponent,
+            IHealthAudioEvents healthAudioEvents,
             IShipMoveComponent shipMoveComponent,
             IRadarComponent radarComponent,
             IWeaponComponent weaponComponent,
@@ -110,6 +112,7 @@ namespace EmpireAtWar.Ship
             PlayerId owner, IShipService shipService, IShipData data, ShipType shipType)
         {
             _healthComponent = healthComponent;
+            _healthAudioEvents = healthAudioEvents;
             _shipMoveComponent = shipMoveComponent;
             _radarComponent = radarComponent;
             _weaponComponent = weaponComponent;
@@ -134,12 +137,17 @@ namespace EmpireAtWar.Ship
         public void Initialize()
         {
             _audioShipComponent.InitializeAudio(_audioAbilities);
+            ResetShieldAudio();
+            _healthAudioEvents.HealthRestored += ResetShieldAudio;
+            _healthComponent.HealthModelObserver.OnValueChanged += HandleHealthChanged;
+            _healthAudioEvents.ShieldImpacted += _audioShipComponent.PlayShieldImpact;
             _weaponFireEvents.ShotEmitted += _audioShipComponent.PlayWeaponShot;
             foreach (ShipAbilitySlot ability in _audioAbilities)
                 ability.Changed += _audioShipComponent.HandleAbilityChanged;
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             foreach (HardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
             {
+                hardPointModel.OnDestroyedByDamage += _audioShipComponent.PlayHardPointLost;
                 if (hardPointModel.HardPointType == HardPointType.Engines)
                 {
                     _engineUnits.Add(hardPointModel);
@@ -190,6 +198,10 @@ namespace EmpireAtWar.Ship
 
         private void HandleDestroyed() => Release(true);
 
+        private void ResetShieldAudio() => _audioShipComponent.ResetShields(_healthComponent.HealthModelObserver);
+
+        private void HandleHealthChanged() => _audioShipComponent.HandleHealthChanged(_healthComponent.HealthModelObserver);
+
         private void Release(bool playDeathEffects)
         {
             if (_isReleased) return;
@@ -225,6 +237,11 @@ namespace EmpireAtWar.Ship
 
         private void Unsubscribe()
         {
+            _healthAudioEvents.HealthRestored -= ResetShieldAudio;
+            _healthComponent.HealthModelObserver.OnValueChanged -= HandleHealthChanged;
+            _healthAudioEvents.ShieldImpacted -= _audioShipComponent.PlayShieldImpact;
+            foreach (HardPointModel hardPoint in _healthComponent.HealthModelObserver.HardPointModels)
+                hardPoint.OnDestroyedByDamage -= _audioShipComponent.PlayHardPointLost;
             _weaponFireEvents.ShotEmitted -= _audioShipComponent.PlayWeaponShot;
             foreach (ShipAbilitySlot ability in _audioAbilities)
                 ability.Changed -= _audioShipComponent.HandleAbilityChanged;

@@ -46,6 +46,102 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void FixedTick_MovedTargetIsDeliveredInTheSameTick()
+        {
+            FakeEntity target = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeScanner scanner = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
+            _service.Register(scanner);
+
+            _service.FixedTick();
+            Assert.That(scanner.ScanCount, Is.EqualTo(1));
+            Assert.That(scanner.LastScan, Is.EqualTo(new IEntity[] { target }));
+
+            target.GetFacade<IEntityTransformFacade>().Transform.position = new Vector3(200f, 0f, 0f);
+            _service.FixedTick();
+            Assert.That(scanner.ScanCount, Is.EqualTo(2));
+            Assert.That(scanner.LastScan, Is.Empty);
+        }
+
+        [Test]
+        public void Scan_DeliveryMutationsDoNotChangeOtherResultsFromTheSameSnapshot()
+        {
+            FakeEntity original = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeEntity replacement = null;
+            FakeScanner first = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
+            FakeScanner second = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
+            _service.Register(first);
+            _service.Register(second);
+            first.OnScan = () =>
+            {
+                original.GetFacade<IEntityTransformFacade>().Transform.position = new Vector3(200f, 0f, 0f);
+                _locator.RemoveEntity(original);
+                replacement = AddEntity(2, TestPlayers.Enemy, new Vector3(20f, 0f, 0f));
+                first.OnScan = null;
+            };
+
+            _service.FixedTick();
+            Assert.That(first.LastScan, Is.EqualTo(new IEntity[] { original }));
+            Assert.That(second.LastScan, Is.EqualTo(new IEntity[] { original }));
+
+            _service.FixedTick();
+            Assert.That(first.LastScan, Is.EqualTo(new IEntity[] { replacement }));
+            Assert.That(second.LastScan, Is.EqualTo(new IEntity[] { replacement }));
+        }
+
+        [Test]
+        public void Scan_DestroyedTransform_DoesNotReusePreviousPosition()
+        {
+            FakeEntity destroyed = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeEntity alive = AddEntity(2, TestPlayers.Enemy, new Vector3(20f, 0f, 0f));
+            FakeScanner scanner = Register(TestPlayers.Human, Vector3.zero);
+            TickUntilScanned(scanner);
+            Assert.That(scanner.LastScan, Has.Member(destroyed));
+
+            Object.DestroyImmediate(destroyed.GetFacade<IEntityTransformFacade>().Transform.gameObject);
+            TickUntilScanned(scanner);
+
+            Assert.That(scanner.LastScan, Is.EqualTo(new IEntity[] { alive }));
+        }
+
+        [Test]
+        public void Scan_SwapRemovalAcrossBitWords_RebuildsOwnerEligibility()
+        {
+            FakeEntity removed = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            List<IEntity> enemies = new List<IEntity>();
+            for (int i = 2; i <= 65; i++)
+                enemies.Add(AddEntity(i, TestPlayers.Enemy, new Vector3(20f, 0f, 0f)));
+            FakeEntity friendly = AddEntity(66, TestPlayers.Human, new Vector3(30f, 0f, 0f));
+            FakeScanner scanner = Register(TestPlayers.Human, Vector3.zero);
+            TickUntilScanned(scanner);
+
+            _locator.RemoveEntity(removed);
+            TickUntilScanned(scanner);
+
+            Assert.That(scanner.LastScan, Is.EquivalentTo(enemies));
+            Assert.That(scanner.LastScan, Has.No.Member(friendly));
+            ((FakeEntity)enemies[0]).Health.IsDestroyedValue = true;
+            enemies.RemoveAt(0);
+            TickUntilScanned(scanner);
+            Assert.That(scanner.LastScan, Is.EquivalentTo(enemies));
+        }
+
+        [Test]
+        public void Scan_UnregisterDuringDelivery_SkipsLaterDueRadar()
+        {
+            AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeScanner first = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
+            FakeScanner second = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
+            _service.Register(first);
+            _service.Register(second);
+            first.OnScan = () => _service.Unregister(second);
+
+            _service.FixedTick();
+
+            Assert.That(first.ScanCount, Is.EqualTo(1));
+            Assert.That(second.ScanCount, Is.Zero);
+        }
+
+        [Test]
         public void Scan_DetectsOnlyHostileTargetsWithinPlanarRange()
         {
             FakeEntity inRange = AddEntity(1, TestPlayers.Enemy, new Vector3(60f, 0f, 60f));
@@ -219,7 +315,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             public PlayerId Owner { get; }
             public float Range => RANGE;
-            public float Delay => DELAY;
+            public float DelayValue { get; set; } = DELAY;
+            public float Delay => DelayValue;
+            public Action OnScan { get; set; }
             public Vector3 ScanCenter { get; }
             public List<IEntity> LastScan { get; } = new List<IEntity>();
             public int ScanCount { get; private set; }
@@ -238,6 +336,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     LastScan.Add(detectedEnemies[i]);
                 }
+                if (OnScan != null) OnScan();
             }
         }
 

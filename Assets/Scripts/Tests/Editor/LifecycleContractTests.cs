@@ -21,7 +21,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             typeof(VContainer.Unity.IInitializable), typeof(IPostInitializable), typeof(IStartable),
             typeof(IPostStartable), typeof(IAsyncStartable), typeof(VContainer.Unity.ITickable),
-            typeof(IPostTickable), typeof(VContainer.Unity.IFixedTickable), typeof(IPostFixedTickable),
+            typeof(VContainer.Unity.IPostTickable), typeof(VContainer.Unity.IFixedTickable), typeof(IPostFixedTickable),
             typeof(VContainer.Unity.ILateTickable), typeof(IPostLateTickable)
         };
 

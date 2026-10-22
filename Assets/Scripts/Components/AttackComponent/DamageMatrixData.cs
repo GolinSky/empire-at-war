@@ -34,6 +34,18 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public float GetShieldMultiplier(DamageType damageType) => GetProfile(damageType).VsShield;
 
+        public float GetShipShieldMultiplier(DamageType damageType)
+        {
+            DamageTypeProfile profile = GetProfile(damageType);
+            return profile.VsShield * profile.ShipShieldMultiplier;
+        }
+
+        public float GetSquadronShieldMultiplier(DamageType damageType)
+        {
+            DamageTypeProfile profile = GetProfile(damageType);
+            return profile.VsShield * profile.SquadronShieldMultiplier;
+        }
+
         public bool IsShieldPiercing(DamageType damageType) => GetProfile(damageType).ShieldPiercing;
 
         private DamageTypeProfile GetProfile(DamageType damageType)

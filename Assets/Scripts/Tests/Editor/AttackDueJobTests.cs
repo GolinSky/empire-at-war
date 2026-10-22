@@ -7,6 +7,29 @@ namespace EmpireAtWar.Tests.Weapon
 {
     public sealed class AttackDueJobTests
     {
+        [Test]
+        public void ScheduledJob_MatchesShortCircuitPredicateAtNumericBoundaries()
+        {
+            float[] times = { float.NegativeInfinity, -1f, -0f, 0f, 1f, float.PositiveInfinity, float.NaN };
+            int[] frames = { int.MinValue, -1, 0, 1, int.MaxValue };
+            using var inputs = new NativeArray<AttackDueJob.Input>(times.Length * frames.Length, Allocator.TempJob);
+            using var results = new NativeArray<byte>(inputs.Length, Allocator.TempJob);
+            var values = new AttackDueJob.Input[inputs.Length];
+            for (int i = 0; i < values.Length; i++)
+                values[i] = new AttackDueJob.Input { DueTime = times[i % times.Length], EarliestFrame = frames[i / times.Length] };
+            inputs.CopyFrom(values);
+
+            foreach (float now in times)
+            foreach (int frame in frames)
+            {
+                new AttackDueJob { Inputs = inputs, Results = results, Now = now, Frame = frame }
+                    .Schedule(inputs.Length, 32).Complete();
+                for (int i = 0; i < values.Length; i++)
+                    Assert.That(results[i], Is.EqualTo((byte)(values[i].EarliestFrame <= frame &&
+                        values[i].DueTime <= now ? 1 : 0)), $"Index {i}, now {now}, frame {frame}");
+            }
+        }
+
         [TestCase(1)]
         [TestCase(31)]
         [TestCase(32)]

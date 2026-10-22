@@ -44,6 +44,11 @@ namespace EmpireAtWar.Components.Weapon
                 Results[index] = result;
                 return;
             }
+            float nearestDistanceSquared = float.PositiveInfinity;
+            float rangeTolerance = 0.0001f * math.max(1f, math.abs(input.MaxDistance));
+            // Leave a generous rounding margin around the exact serial-fallback band.
+            float farDistance = math.max(0f, input.MaxDistance) + 2f * rangeTolerance;
+            float farDistanceSquared = farDistance * farDistance;
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
             // Preferred targets first; the rest only when none is in reach. Each candidate is visited once.
             int passes = input.Preference == (int)TargetPreference.Any ? 1 : 2;
@@ -60,20 +65,27 @@ namespace EmpireAtWar.Components.Weapon
                 result.Visited++;
                 float3 direction = SlotPositions[slot] - input.Origin;
                 // Planar, like WeaponTargetSelector: ships on different height tiers must stay in range.
-                float distance = math.length(new float2(direction.x, direction.z));
-                result.NearestDistance = math.min(result.NearestDistance, distance);
-                if (!math.all(math.isfinite(direction)) || math.length(direction) <= 0.00001f ||
-                    math.lengthsq(new float2(direction.x, direction.z)) <= math.lengthsq(direction) * 0.0000000001f)
+                float distanceSquared = math.lengthsq(new float2(direction.x, direction.z));
+                float directionSquared = math.lengthsq(direction);
+                nearestDistanceSquared = math.min(nearestDistanceSquared, distanceSquared);
+                // Exact float cutoff for the original rounded sqrt <= 0.00001f comparison.
+                if (!math.all(math.isfinite(direction)) ||
+                    directionSquared <= 0.0000000001f ||
+                    distanceSquared <= directionSquared * 0.0000000001f)
                 {
                     result.RequiresSerialFallback = 1;
                     result.FallbackReason = FALLBACK_DEGENERATE_DIRECTION;
+                    result.NearestDistance = math.sqrt(nearestDistanceSquared);
                     Results[index] = result;
                     return;
                 }
-                if (math.abs(distance - input.MaxDistance) <= 0.0001f * math.max(1f, math.abs(input.MaxDistance)))
+                if (distanceSquared > farDistanceSquared) continue;
+                float distance = math.sqrt(distanceSquared);
+                if (math.abs(distance - input.MaxDistance) <= rangeTolerance)
                 {
                     result.RequiresSerialFallback = 1;
                     result.FallbackReason = FALLBACK_RANGE_BOUNDARY;
+                    result.NearestDistance = math.sqrt(nearestDistanceSquared);
                     Results[index] = result;
                     return;
                 }
@@ -89,6 +101,7 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     result.RequiresSerialFallback = 1;
                     result.FallbackReason = FALLBACK_DEGENERATE_DIRECTION;
+                    result.NearestDistance = math.sqrt(nearestDistanceSquared);
                     Results[index] = result;
                     return;
                 }
@@ -99,15 +112,18 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     result.RequiresSerialFallback = 1;
                     result.FallbackReason = FALLBACK_YAW_BOUNDARY;
+                    result.NearestDistance = math.sqrt(nearestDistanceSquared);
                     Results[index] = result;
                     return;
                 }
                 if (localYaw > input.MaxYaw || localYaw < input.MinYaw) continue;
                 result.CandidateIndex = i;
                 result.SelectedAim = aim.value;
+                result.NearestDistance = math.sqrt(nearestDistanceSquared);
                 Results[index] = result;
                 return;
             }
+            result.NearestDistance = math.sqrt(nearestDistanceSquared);
             Results[index] = result;
         }
 

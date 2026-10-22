@@ -43,17 +43,18 @@ namespace EmpireAtWar.Tests.Editor
                 Button button = (Button)serializedCard.FindProperty("purchaseButton").objectReferenceValue;
 
                 card.RenderAvailability(true, affordable, false, battleEnded, atLimit);
-                Assert.That(button.interactable, Is.False);
+                Assert.That(button.interactable, Is.EqualTo(!battleEnded && !atLimit),
+                    "An unaffordable card must still deliver a click for rejected-purchase feedback.");
 
                 // Selection, level and research updates all use this visibility refresh.
                 refresh.Invoke(view, new object[] { SelectionType.None });
                 refresh.Invoke(view, new object[] { SelectionType.Base });
                 Assert.That(card.gameObject.activeSelf, Is.True);
-                Assert.That(button.interactable, Is.False, "Reselection must preserve purchase restrictions.");
+                Assert.That(button.interactable, Is.EqualTo(!battleEnded && !atLimit), "Reselection must preserve purchase restrictions.");
 
                 card.RenderAvailability(true, affordable, false, battleEnded, atLimit);
                 refresh.Invoke(view, new object[] { SelectionType.Base });
-                Assert.That(button.interactable, Is.False, "Repeated refreshes must preserve cached availability.");
+                Assert.That(button.interactable, Is.EqualTo(!battleEnded && !atLimit), "Repeated refreshes must preserve cached availability.");
 
                 card.RenderAvailability(true, true, false, false, false);
                 Assert.That(button.interactable, Is.True, "Removing the restriction must enable purchases.");

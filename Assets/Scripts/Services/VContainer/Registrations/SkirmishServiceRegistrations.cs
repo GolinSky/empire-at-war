@@ -31,14 +31,19 @@ namespace EmpireAtWar.Services.VContainer
     {
         public static void Register(IContainerBuilder builder, IAssetService assets, Transform owner,
             ImpactEffectView impactEffectPrefab, UnitExplosionView unitExplosionPrefab,
-            Material rangeDebugLineMaterial, ShipSfxData shipSfxData, ShipSfxSources shipSfxSourcesPrefab,
+            Material rangeDebugLineMaterial, ShipSfxData shipSfxData, InterfaceSfxData interfaceSfxData,
+            ShipAmbienceData shipAmbienceData, ShipSfxSources shipSfxSourcesPrefab,
             CameraService cameraService)
         {
             builder.RegisterInstance(unitExplosionPrefab);
             builder.RegisterInstance(shipSfxData);
+            builder.RegisterInstance(interfaceSfxData);
+            builder.RegisterInstance(shipAmbienceData);
             ShipSfxSources sources = Object.Instantiate(shipSfxSourcesPrefab, owner);
             builder.RegisterComponent(sources);
             builder.Register<ShipSfxService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<InterfaceSfxService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ShipAmbienceService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             ImpactEffectView impactView = Object.Instantiate(impactEffectPrefab, owner);
             builder.RegisterComponent(impactView).AsImplementedInterfaces().AsSelf();
             builder.Register<ImpactEffectPresenter>(Lifetime.Singleton);

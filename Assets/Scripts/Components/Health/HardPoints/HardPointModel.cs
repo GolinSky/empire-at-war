@@ -13,6 +13,8 @@ namespace EmpireAtWar.Models.Health
 
         public event Action OnRestored;
 
+        public event Action OnDestroyedByDamage;
+
         public int Id { get; }
         public int Generation { get; private set; }
         public HardPointType HardPointType { get; }
@@ -56,8 +58,10 @@ namespace EmpireAtWar.Models.Health
 
         public void ApplyDamage(float damage)
         {
+            bool wasAlive = !IsDestroyed;
             Health = Math.Max(0f, Health - damage);
             HealthPercentage = _originHealth <= 0f ? 0f : Health / _originHealth;
+            if (wasAlive && IsDestroyed) OnDestroyedByDamage?.Invoke();
             OnHardPointHealthChanged?.Invoke();
         }
 

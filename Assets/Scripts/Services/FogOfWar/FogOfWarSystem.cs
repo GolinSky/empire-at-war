@@ -99,8 +99,8 @@ namespace EmpireAtWar.Services.FogOfWar
         public void RevealImmediately()
         {
             UpdateFogTargets();
-            _grid.Fade(1f);
-            WritePixels();
+            _grid.UpdateAndWriteBytes(1f, _fogTexture.GetPixelData<byte>(0), true, keepHistory, edgeSoftness, 1f);
+            _fogTexture.Apply();
         }
 
         // Renderer.material returns an instance this component owns; the mask texture is created here too.
@@ -117,15 +117,17 @@ namespace EmpireAtWar.Services.FogOfWar
             _timer += Time.deltaTime;
 
             // Re-calculate the target pixels at fixed intervals for performance
-            if (_timer >= updateInterval)
+            bool rebuildTargets = _timer >= updateInterval;
+            if (rebuildTargets)
             {
                 _timer = 0;
                 UpdateFogTargets();
             }
 
-            if (_grid.Fade(fadeSpeed * Time.deltaTime))
+            if (_grid.UpdateAndWriteBytes(fadeSpeed * Time.deltaTime, _fogTexture.GetPixelData<byte>(0),
+                    rebuildTargets, keepHistory, edgeSoftness, 1f))
             {
-                WritePixels();
+                _fogTexture.Apply();
             }
         }
 
@@ -137,8 +139,6 @@ namespace EmpireAtWar.Services.FogOfWar
 
         private void UpdateFogTargets()
         {
-            _grid.ResetTargets(keepHistory);
-
             foreach (OwnedCircle source in _visionService.Sources)
             {
                 // Allies share vision, so their sources reveal the local fog too.
@@ -147,8 +147,6 @@ namespace EmpireAtWar.Services.FogOfWar
                 if (!inside) continue;
                 _grid.QueueReveal(pixel.x, pixel.y, RadiusToPixels(source.Radius));
             }
-
-            _grid.ApplyReveals(edgeSoftness, 1f);
         }
 
         private int RadiusToPixels(float radius)

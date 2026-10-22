@@ -33,7 +33,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private Bounds _meshBounds;
         // Burst-ready copy of hullPlanes. Every tracked shot clips against all planes (1024 per baked hull) each frame.
-        private NativeArray<Vector4> _planes;
+        private NativeArray<float4x4> _planes;
         private NativeArray<float> _clipEnter;
 
         private int _impactCount;
@@ -43,7 +43,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private void Awake()
         {
             _meshBounds = shieldRenderer.localBounds;
-            _planes = new NativeArray<Vector4>(hullPlanes, Allocator.Persistent);
+            _planes = PackPlanes(hullPlanes, Allocator.Persistent);
             _clipEnter = new NativeArray<float>(1, Allocator.Persistent);
         }
 
@@ -70,7 +70,7 @@ namespace EmpireAtWar.ViewComponents.Health
             if (_planes.IsCreated)
             {
                 _planes.Dispose();
-                _planes = new NativeArray<Vector4>(hullPlanes, Allocator.Persistent);
+                _planes = PackPlanes(hullPlanes, Allocator.Persistent);
             }
             _meshBounds = mesh.bounds;
             shieldRenderer.localBounds = _meshBounds;
@@ -94,22 +94,44 @@ namespace EmpireAtWar.ViewComponents.Health
             if (_planes.IsCreated) return RunClip(_planes, _clipEnter, localOrigin, direction);
 
             // Editor tools and tests call this on instances that never woke, so they clip against a short-lived copy.
-            using NativeArray<Vector4> planes = new NativeArray<Vector4>(hullPlanes, Allocator.TempJob);
+            using NativeArray<float4x4> planes = PackPlanes(hullPlanes, Allocator.TempJob);
             using NativeArray<float> clipEnter = new NativeArray<float>(1, Allocator.TempJob);
             return RunClip(planes, clipEnter, localOrigin, direction);
         }
 
-        private static float RunClip(NativeArray<Vector4> planes, NativeArray<float> clipEnter, Vector3 localOrigin,
+        private static float RunClip(NativeArray<float4x4> planes, NativeArray<float> clipEnter, Vector3 localOrigin,
             Vector3 direction)
         {
             new ShieldSurfaceClipJob
             {
-                Planes = planes.Reinterpret<float4>(),
+                Planes = planes,
                 Origin = localOrigin,
                 Direction = direction,
                 Enter = clipEnter
             }.Run();
             return clipEnter[0];
+        }
+
+        // Pack once per hull; unused lanes are parallel planes that cannot reject a segment.
+        internal static NativeArray<float4x4> PackPlanes(Vector4[] planes, Allocator allocator)
+        {
+            const int LANES = 4;
+            var groups = new NativeArray<float4x4>((planes.Length + LANES - 1) / LANES, allocator);
+            for (int groupIndex = 0; groupIndex < groups.Length; groupIndex++)
+            {
+                var group = new float4x4(float4.zero, float4.zero, float4.zero, new float4(float.PositiveInfinity));
+                int count = math.min(LANES, planes.Length - groupIndex * LANES);
+                for (int lane = 0; lane < count; lane++)
+                {
+                    Vector4 plane = planes[groupIndex * LANES + lane];
+                    group.c0[lane] = plane.x;
+                    group.c1[lane] = plane.y;
+                    group.c2[lane] = plane.z;
+                    group.c3[lane] = plane.w;
+                }
+                groups[groupIndex] = group;
+            }
+            return groups;
         }
 
         public void ShowImpact(Vector3 position, float damage)

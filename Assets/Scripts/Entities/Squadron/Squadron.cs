@@ -24,6 +24,7 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Utils;
+using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
 using UnityEngine.Rendering;
 using EmpireAtWar.Lifecycle;
@@ -71,7 +72,9 @@ namespace EmpireAtWar.Entities.Squadrons
         private UnitOrderSettings _orderSettings;
         private LifetimeScope _scope;
         private LifecycleTickGate _tickGate;
+        private FighterPoseBatch _poseBatch;
         private ShipSfxHandle _audioHandle;
+        private SfxProfile _engineSound;
         private EntityComponentLifecycle _componentLifecycle;
         private IReadOnlyList<IRespawnable> _respawnables;
         private IReadOnlyList<IDespawnable> _despawnables;
@@ -126,13 +129,13 @@ namespace EmpireAtWar.Entities.Squadrons
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
             LifetimeScope scope, ShipSfxHandle audioHandle, ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
-            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
+            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService, ShipSfxData sfxData, SquadronType squadronType,
             SFoilsModel sFoils, ContainerLocal<IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView>> sFoilsViews,
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
-            long entityId)
+            long entityId, FighterPoseBatch poseBatch)
         {
             EntityId = entityId;
             _flight = flight;
@@ -141,6 +144,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _weapon = weapon;
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
+            _engineSound = sfxData.GetUnit(squadronType).Engine;
             _selectionModel = selectionModel;
             _audioDialogs = audioDialogs.Value;
             _sFoils = sFoils;
@@ -159,6 +163,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _orderSettings = orderSettings;
             _scope = scope;
             _tickGate = tickGate;
+            _poseBatch = poseBatch;
             Data = data;
             _audioHandle = audioHandle;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
@@ -194,6 +199,7 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Takes the dead squadron out of the battle once its death presentation has ended.</summary>
         public void Despawn()
         {
+            _poseBatch.CompletePlacement();
             _tickGate.SetTicking(false);
             Despawned?.Invoke();
             foreach (IDespawnable part in _despawnables) part.Despawn();
@@ -203,6 +209,7 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Brings a despawned squadron back as a fresh one; listeners of the previous life are dropped.</summary>
         public void Respawn(Vector3 position, Quaternion rotation)
         {
+            _poseBatch.CompletePlacement();
             _scope.gameObject.SetActive(true);
             // Health first: restoring the fighters' views must precede the formation and trail reset.
             _health.Respawn();
@@ -230,10 +237,18 @@ namespace EmpireAtWar.Entities.Squadrons
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
             _pilot.Tick(Time.deltaTime);
+            Vector3 previousPosition = _flight.Centroid;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronFlight.Auto())
 #endif
             _flight.Step(Time.deltaTime);
+            if (Time.deltaTime > 0f && !_pilot.HasArrived)
+            {
+                float speed = Vector3.Distance(previousPosition, _flight.Centroid) / Time.deltaTime;
+                if (speed > 0f)
+                    _shipSfxService.TryHoldEngine(_audioHandle, _engineSound, _flight.Centroid,
+                        Mathf.Clamp01(speed / _flight.Data.CruiseSpeed), 1f);
+            }
         }
 
         private void TickOrder(float deltaTime)

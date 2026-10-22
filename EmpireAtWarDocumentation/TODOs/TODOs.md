@@ -7,6 +7,9 @@
 
 ### Features
 
+- [ ] **Extend audio system with Republic at War SFX (interface, orbital announcer, ambience, shields, per-unit engines/explosions, alarms)** → [[TODOs/Features/Audio_System_Extension_Plan|Audio System Extension Plan]]; [[TODOs/Features/Audio_System_Extension_Plan - Research|Clip inventory and unit mapping]]
+  - **Implemented 2026-10-22**: 33 mapped imports, interface/orbital cues, Burst ambience, shield/ability sounds, per-unit engines/explosions and alarms; compile passed, 73 distinct recorded EditMode cases passed.
+  - **Remaining**: user in-game listening acceptance (balance, flyby loop seams, shield cadence, ambience fade and announcer timing); no agent Play Mode.
 - [ ] **Replace battle and menu music with categorized Republic at War tracks** → [[TODOs/Features/Music_Replacement_Plan|Music Replacement Plan]]; [[TODOs/Features/Music_Replacement_Plan - Research|Exact track inventory]]
   - **Implemented (2026-10-22)**: 22 battle + 31 menu tracks; 41 legacy MP3s removed; Vorbis streaming; loading-state fix; 8/8 tests and Windows Editor menu playback/pause/mute/completion smoke passed. Windows build Succeeded (3.80 GiB), built playlists verified; unrelated planet shader error recorded.
   - **Remaining**: standalone/battle-scene and listening acceptance, strict single-source review (pre-existing idle scene clone), representative audio profiling; macOS build module/runtime unavailable.
@@ -135,7 +138,9 @@
 
 - [ ] **Optimize Burst jobs (lengthsq, select/SIMD, scheduling)** → [[TODOs/Optimization/Burst_Jobs_Optimization_Plan|Burst Jobs Optimization]]; [[TODOs/Optimization/Burst_Jobs_Optimization_Plan - Research|17-job audit and findings]]
   - **Phase 1 harness done 2026-10-22**: perf package + `Tests/Benchmarks` (radar + target-filter if/?:/select kernels); parity 18/18; Editor timings favour branch-free except at low pass ratios.
-  - **Next**: Burst Inspector assembly check, user Player run of `PlayerBranchVariant*`, measure real battle filter/radar ratios.
+  - **2026-10-22 execution**: target/fog, shield SoA clipping, radar eligibility/XZ layout, due predicate and navigation stamps/raster/LOS implemented. SSE2/AVX2 assembly captured; 156 distinct EditMode cases pass after Burst cache invalidation, including earlier-kernel reruns and shield-swap integration.
+  - **Scheduling 2026-10-22**: bolt Update → LateTick; radar preparation overlap within FixedTick (83 distinct tests pass). Fighter PostTick → pre-combat LateTick now implemented through ordered lifecycle bridge, with spawn/pool/root-write/teardown guards; 73 distinct follow-up tests pass. Compile clean; composition logs unrelated ambience EditMode destruction errors.
+  - **Remaining**: user Player baseline + ≥3 `PlayerBranchVariant*` runs, battle pass ratios, matched timing acceptance, batch/branch winners, fighter scheduling performance acceptance, Phase 6 tuning and deferred shield batching decision. Plan remains active.
 
 ### Refactoring
 

@@ -50,7 +50,10 @@ namespace EmpireAtWar.Tests.Editor
                         continue;
                     }
                     if (shipClass == ShipClass.Corvette)
+                    {
                         Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Turbolaser), context);
+                        Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), context);
+                    }
                     else if (shipClass == ShipClass.Frigate && definition.Family == WeaponFamily.Turbolaser)
                         Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), context);
                     else if ((shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
@@ -90,6 +93,42 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(weapons.Calibers.Select(rule => rule.Caliber), Is.EquivalentTo(Enum.GetValues(typeof(WeaponCaliber))));
             Assert.That(weapons.RangeClasses.Select(rule => rule.RangeClass),
                 Is.EquivalentTo(Enum.GetValues(typeof(WeaponRangeClass))));
+        }
+
+        [Test]
+        public void AntiSquadronWeapons_PenetrateSquadronShieldsWithoutBuffingShipShieldDamage()
+        {
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
+
+            Assert.That(matrix.GetSquadronShieldMultiplier(DamageType.Laser), Is.EqualTo(1f));
+            Assert.That(matrix.GetSquadronShieldMultiplier(DamageType.PointDefense), Is.EqualTo(1f));
+            Assert.That(matrix.GetShieldMultiplier(DamageType.Laser), Is.EqualTo(0.5f));
+            Assert.That(matrix.GetShieldMultiplier(DamageType.PointDefense), Is.EqualTo(0.25f));
+            foreach (ShipClass target in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
+            {
+                Assert.That(matrix.GetDamageMultiplier(DamageType.Laser, target), Is.EqualTo(2f));
+                Assert.That(matrix.GetDamageMultiplier(DamageType.PointDefense, target), Is.EqualTo(2.5f));
+            }
+        }
+
+        [Test]
+        public void HeavyLasers_CanDefendAgainstSquadrons_WhileTurbolasersRemainPoorCounters()
+        {
+            WeaponsData weapons = Weapons;
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
+            WeaponCaliberRule heavy = weapons.GetCaliber(WeaponCaliber.Heavy);
+            foreach (ShipClass target in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
+            {
+                float laserEffectiveness = heavy.DamageMultiplier * heavy.DamageBias[target] *
+                    heavy.AccuracyBias[target] * matrix.GetDamageMultiplier(DamageType.Laser, target) *
+                    matrix.GetAccuracy(DamageType.Laser, target);
+                float turboEffectiveness = heavy.DamageMultiplier * heavy.DamageBias[target] *
+                    heavy.AccuracyBias[target] * matrix.GetDamageMultiplier(DamageType.Turbolaser, target) *
+                    matrix.GetAccuracy(DamageType.Turbolaser, target);
+
+                Assert.That(laserEffectiveness, Is.GreaterThanOrEqualTo(0.8f));
+                Assert.That(turboEffectiveness, Is.LessThan(0.1f));
+            }
         }
 
         [Test]

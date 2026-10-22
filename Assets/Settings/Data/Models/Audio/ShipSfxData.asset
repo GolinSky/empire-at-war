@@ -1935,15 +1935,1054 @@ MonoBehaviour:
       maxInstances: 4
       loop: 0
     abilityId: 7
-  engine:
-    clip: {fileID: 8300000, guid: aa5595974c8463346852c657c3f27e31, type: 3}
+  fallbackEngine:
+    clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
     clips:
       array: []
     volume: 0.12
     priority: 10
     cooldown: 0
-    maxInstances: 4
+    maxInstances: 6
     loop: 1
+  fallbackExplosion:
+    clip: {fileID: 0}
+    clips:
+      array:
+      - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+      - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+    volume: 0.65
+    priority: 65
+    cooldown: 0
+    maxInstances: 4
+    loop: 0
+  ships:
+    keyValue:
+    - key: 0
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: b4c1fac01ddf63a46a974cd735be5f89, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 12
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: b4c1fac01ddf63a46a974cd735be5f89, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 211
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: b4c1fac01ddf63a46a974cd735be5f89, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 100
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: bf32b2f7bfb5cce4ba84125ec6a701ca, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 108
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: bf32b2f7bfb5cce4ba84125ec6a701ca, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 104
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 6ea7d50e246e8e543811d4204119a1b3, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 300
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 337230239b43b9344a0fb90f5f637dd1, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 301
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 34898d48db6bc564eb7a550349d0c6d0, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 201
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 205
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 206
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 10
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 200
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 202
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 203
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 210
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 207
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 213
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 103
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: 8ff4bea203c91724bb664abdafc92c85, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 1
+  squadrons:
+    keyValue:
+    - key: 0
+      value:
+        engine:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: a204efff81e0aaa498c32733cb622100, type: 3}
+            - {fileID: 8300000, guid: 2615afe3401f1a946a4c34111cf7e439, type: 3}
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 5
+      value:
+        engine:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: b125e68276ba2054da4887c4effe5d93, type: 3}
+            - {fileID: 8300000, guid: a5698811363ac044aa1dfde8a7347d31, type: 3}
+            - {fileID: 8300000, guid: 730ff7982a3314d47ae220d123157cc2, type: 3}
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 102
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 4f006688ff6d70747abf98ab38cd328e, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 200
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 203
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 201
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 202
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 204
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 205
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 300
+      value:
+        engine:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: afd9086f612c84344924c236584ac63d, type: 3}
+            - {fileID: 8300000, guid: 7b2d2ebaa5e9fc845b4f1c12e6763f8b, type: 3}
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 3
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 0d19ad369b5441b4a8ee2663bb816a66, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+    - key: 301
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 0d19ad369b5441b4a8ee2663bb816a66, type: 3}
+          clips:
+            array: []
+          volume: 0.12
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 90
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+        useAlarmOverride: 0
+  abilityActivated:
+    clip: {fileID: 8300000, guid: 196314a27370f86468e5cf6135952eda, type: 3}
+    clips:
+      array: []
+    volume: 0.4
+    priority: 60
+    cooldown: 0
+    maxInstances: 4
+    loop: 0
+  abilityCanceled:
+    clip: {fileID: 8300000, guid: 95d0fdee13c8aed48aab98861c0c814e, type: 3}
+    clips:
+      array: []
+    volume: 0.4
+    priority: 60
+    cooldown: 0
+    maxInstances: 4
+    loop: 0
+  shieldsDown:
+    clip: {fileID: 8300000, guid: e68f1f9db6841ae488d3f48987e96045, type: 3}
+    clips:
+      array: []
+    volume: 0.5
+    priority: 40
+    cooldown: 0.5
+    maxInstances: 3
+    loop: 0
+  shieldsUp:
+    clip: {fileID: 8300000, guid: 9a4b764fdeccb3c489609a07b4f8934d, type: 3}
+    clips:
+      array: []
+    volume: 0.5
+    priority: 40
+    cooldown: 0.5
+    maxInstances: 3
+    loop: 0
+  shieldImpact:
+    clip: {fileID: 0}
+    clips:
+      array:
+      - {fileID: 8300000, guid: 4b508ebc471a30b4a868ea9a05fa7215, type: 3}
+      - {fileID: 8300000, guid: 663bed283ed088a48b5a800047d5d3bb, type: 3}
+      - {fileID: 8300000, guid: 69d05e47060f7b648ba560775c7a5aa0, type: 3}
+      - {fileID: 8300000, guid: 36b84df8db783ff40b60de37b266b904, type: 3}
+    volume: 0.35
+    priority: 20
+    cooldown: 0.1
+    maxInstances: 3
+    loop: 0
+  shieldUpThreshold: 0.1
+  shieldCueCooldown: 4
   acceleration:
     clip: {fileID: 8300000, guid: d4d46927f06f942488989dacb6288519, type: 3}
     clips:
@@ -1954,11 +2993,9 @@ MonoBehaviour:
     maxInstances: 4
     loop: 0
   alarm:
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
     clips:
-      array:
-      - {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
-      - {fileID: 8300000, guid: 8569d4160b2fbed4ba562e97bc2c8ad9, type: 3}
+      array: []
     volume: 0.5
     priority: 90
     cooldown: 2
@@ -2410,5 +3447,5 @@ MonoBehaviour:
   voiceDuckGain: 0.4
   poolVoices: 20
   perShipVoices: 2
-  engineVoices: 4
+  engineVoices: 6
   startsPerWindow: 3

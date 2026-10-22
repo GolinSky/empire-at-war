@@ -23,7 +23,7 @@ namespace EmpireAtWar.Models.Factions
 
     public class PlayerFactionModel : Model, IPlayerFactionModelObserver
     {
-        private const int MAX_ACTIVE_PIPELINES = 7;
+        public const int MAX_ACTIVE_PIPELINES = 7;
 
         private readonly StationLevelData _stationLevels;
         private readonly FactionRoster _roster;

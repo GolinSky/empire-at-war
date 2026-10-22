@@ -56,6 +56,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
         {
+            // A pooled bolt can still occupy its previous flight slot until the next tracking pass.
+            if (IsInFlightBatch) BoltFlights.CompletePlacement();
             _transform = transform;
             Vector3 start = muzzle.position;
             _target = IsStrikecraftTarget ? null : target;
@@ -180,6 +182,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // A bolt returned to its pool mid-flight stops; the flight batch drops it on its next pass.
         protected override void ResetVisuals()
         {
+            if (IsInFlightBatch) BoltFlights.CompletePlacement();
             _isFlying = false;
             vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }

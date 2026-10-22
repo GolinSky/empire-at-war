@@ -14,7 +14,7 @@ namespace EmpireAtWar.ViewComponents.Health
     {
         public const float MISS = -1f;
 
-        [ReadOnly] public NativeArray<float4> Planes;
+        [ReadOnly] public NativeArray<float4x4> Planes;
         public float3 Origin;
         public float3 Direction;
         [WriteOnly] public NativeArray<float> Enter;
@@ -23,22 +23,27 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             float enter = float.NegativeInfinity;
             float exit = float.PositiveInfinity;
+            bool4 miss = false;
             for (int i = 0; i < Planes.Length; i++)
             {
-                float3 normal = Planes[i].xyz;
-                float approach = math.dot(normal, Direction);
-                float gap = Planes[i].w - math.dot(normal, Origin);
-                if (approach < 0f) enter = math.max(enter, gap / approach);
-                else if (approach > 0f) exit = math.min(exit, gap / approach);
-                else if (gap < 0f)
-                {
-                    Enter[0] = MISS;
-                    return;
-                }
+                // Columns hold x/y/z/w for four consecutive planes.
+                float4x4 planes = Planes[i];
+                float4 approach = planes.c0 * Direction.x + planes.c1 * Direction.y + planes.c2 * Direction.z;
+                float4 gap = planes.c3 - (planes.c0 * Origin.x + planes.c1 * Origin.y + planes.c2 * Origin.z);
+                bool4 entering = approach < 0f;
+                bool4 exiting = approach > 0f;
+                float4 fraction = gap / approach;
+                float4 entries = math.select(new float4(float.NegativeInfinity), fraction, entering);
+                float4 exits = math.select(new float4(float.PositiveInfinity), fraction, exiting);
+                // Preserve plane order for equal values, including positive/negative zero.
+                enter = math.max(math.max(math.max(math.max(enter, entries.x), entries.y), entries.z), entries.w);
+                exit = math.min(math.min(math.min(math.min(exit, exits.x), exits.y), exits.z), exits.w);
+                // Also preserves the original else branch for an unordered (NaN) approach.
+                miss |= !(entering | exiting) & (gap < 0f);
             }
 
             // An origin inside the shield must not shoot through the hull to its far surface.
-            Enter[0] = enter > exit || enter < 0f || enter > 1f ? MISS : enter;
+            Enter[0] = math.select(enter, MISS, math.any(miss) | enter > exit | enter < 0f | enter > 1f);
         }
     }
 }

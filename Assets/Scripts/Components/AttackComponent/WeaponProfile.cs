@@ -108,6 +108,18 @@ namespace EmpireAtWar.Components.AttackComponent
             projectileSpeed, boltColor, size, false, _hasTargetSizeBias, _damageBias, _accuracyBias, _accuracyMultiplier,
             _turnRate, _preferredTarget);
 
+        public WeaponProfile WithWarheadMultipliers(float damageMultiplier, float reloadMultiplier)
+        {
+            if (Family != WeaponFamily.FighterTorpedo && Family != WeaponFamily.FighterMissile)
+                return this;
+
+            return new WeaponProfile(weaponType, displayName, Family, damageType,
+                damage * damageMultiplier, shotsPerSalvo, shotInterval, reload * reloadMultiplier,
+                range, strikecraftOnly, interceptable, shotPrefab, projectileSpeed, color, size,
+                _usesFactionColor, _hasTargetSizeBias, _damageBias, _accuracyBias, _accuracyMultiplier,
+                _turnRate, _preferredTarget);
+        }
+
         public float GetDamageBias(ShipClass targetClass) => _hasTargetSizeBias ? _damageBias[targetClass] : 1f;
 
         public float GetAccuracyBias(ShipClass targetClass) => _hasTargetSizeBias ? _accuracyBias[targetClass] : 1f;

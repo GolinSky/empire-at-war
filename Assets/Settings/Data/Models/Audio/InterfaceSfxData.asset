@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bc451931dc7990479aa476cf9312a93, type: 3}
+  m_Name: InterfaceSfxData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Audio.InterfaceSfxData
+  rejected: {fileID: 8300000, guid: d634144eb1f5f57498c477083bf793ee, type: 3}
+  orbitalAvailable: {fileID: 8300000, guid: 2db2b551884abcb4c86bdc3ec9c12ba7, type: 3}
+  orbitalBought: {fileID: 8300000, guid: f0aa3f1fd9a1d224da52aeb0515bb3cf, type: 3}
+  orbitalFiring: {fileID: 8300000, guid: e032b15211d618046bf6565e05dcfde7, type: 3}
+  abilityActivated: {fileID: 8300000, guid: 196314a27370f86468e5cf6135952eda, type: 3}
+  abilityCanceled: {fileID: 8300000, guid: 95d0fdee13c8aed48aab98861c0c814e, type: 3}
