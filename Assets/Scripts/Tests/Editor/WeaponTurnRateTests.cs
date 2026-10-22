@@ -67,6 +67,43 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
+        [TestCase(-180f, 180f, 179f, -179f, 0f, 2f)]
+        [TestCase(-180f, 180f, -179f, 179f, 0f, 2f)]
+        [TestCase(-180f, 180f, 179f, -179f, 73f, 2f)]
+        [TestCase(-180f, 180f, -179f, 179f, 73f, 2f)]
+        [TestCase(-120f, 120f, 119f, -119f, 0f, 238f)]
+        [TestCase(-120f, 120f, -119f, 119f, 73f, 238f)]
+        public void TurnTowards_CrossesRearSeamOnlyForFullCircleMounts(
+            float minYaw, float maxYaw, float firstYaw, float secondYaw, float shipYaw, float expectedTurn)
+        {
+            const float TURN_RATE = 120f;
+            GameObject ship = new GameObject("Ship");
+            try
+            {
+                ship.transform.rotation = Quaternion.Euler(0f, shipYaw, 0f);
+                GameObject mount = new GameObject("Mount");
+                mount.transform.SetParent(ship.transform, false);
+                WeaponHardPoint weapon = mount.AddComponent<WeaponHardPoint>();
+                FloatRange arc = new FloatRange();
+                SetBound(arc, "Min", minYaw);
+                SetBound(arc, "Max", maxYaw);
+                weapon.SetData(arc);
+                weapon.SetData(Profile(TURN_RATE), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+                Vector3 firstTarget = ship.transform.TransformPoint(Quaternion.Euler(0f, firstYaw, 0f) * Vector3.forward * 10f);
+                Vector3 secondTarget = ship.transform.TransformPoint(Quaternion.Euler(0f, secondYaw, 0f) * Vector3.forward * 10f);
+                weapon.TurnTowards(firstTarget);
+
+                float duration = weapon.TurnTowards(secondTarget);
+
+                Assert.That(duration, Is.EqualTo(expectedTurn / TURN_RATE).Within(0.001f));
+                Assert.That(weapon.TurnTowards(secondTarget), Is.EqualTo(0f).Within(0.001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(ship);
+            }
+        }
+
         [Test]
         public void TurnTowards_WithoutTurnRateFiresAtOnce()
         {

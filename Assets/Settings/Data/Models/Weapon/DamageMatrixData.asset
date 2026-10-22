@@ -15,9 +15,9 @@ MonoBehaviour:
   damageTypes:
   - damageType: 0
     damage:
-      fighter: 1.5
-      bomber: 1.5
-      interceptor: 1.5
+      fighter: 2
+      bomber: 2
+      interceptor: 2
       corvette: 1
       frigate: 0.5
       cruiser: 0.35
@@ -36,12 +36,13 @@ MonoBehaviour:
       structure: 1
     vsShield: 0.5
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 2
     shieldPiercing: 0
   - damageType: 1
     damage:
-      fighter: 2
-      bomber: 2
-      interceptor: 2
+      fighter: 2.5
+      bomber: 2.5
+      interceptor: 2.5
       corvette: 0.3
       frigate: 0.1
       cruiser: 0.075
@@ -60,6 +61,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 0.25
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 4
     shieldPiercing: 0
   - damageType: 11
     damage:
@@ -84,6 +86,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 0
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 2
     damage:
@@ -108,6 +111,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 1
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 4
     damage:
@@ -132,6 +136,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 3
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 5
     damage:
@@ -156,6 +161,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 1
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 6
     damage:
@@ -180,6 +186,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 1
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 12
     damage:
@@ -204,6 +211,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 0.1
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 7
     damage:
@@ -228,6 +236,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 1
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 8
     damage:
@@ -252,6 +261,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 1
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 9
     damage:
@@ -276,6 +286,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 2
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 10
     damage:
@@ -300,6 +311,7 @@ MonoBehaviour:
       structure: 1
     vsShield: 0
     shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 13
     damage:
@@ -324,5 +336,6 @@ MonoBehaviour:
       structure: 1
     vsShield: 0.5
     shipShieldMultiplier: 0.4
+    squadronShieldMultiplier: 1
     shieldPiercing: 0
   missSpread: 6

@@ -98,8 +98,11 @@ namespace EmpireAtWar.ViewComponents.Health
             Quaternion aim = Quaternion.LookRotation(targetPosition - transform.position, Vector3.up);
             float targetYaw = Mathf.Clamp(
                 Mathf.DeltaAngle(0f, (Quaternion.Inverse(parentRotation) * aim).eulerAngles.y), MinYaw, MaxYaw);
-            // Both yaws lie inside the arc, so the mount turns through the arc, never across its dead zone.
-            float duration = Mathf.Abs(targetYaw - _mountYaw) / _profile.TurnRate;
+            // Full-circle mounts cross the rear seam; limited arcs must turn around their dead zone.
+            float yawDelta = MinYaw <= -180f && MaxYaw >= 180f
+                ? Mathf.DeltaAngle(_mountYaw, targetYaw)
+                : targetYaw - _mountYaw;
+            float duration = Mathf.Abs(yawDelta) / _profile.TurnRate;
             _mountYaw = targetYaw;
             _turnEndTime = Time.time + duration;
             return duration;

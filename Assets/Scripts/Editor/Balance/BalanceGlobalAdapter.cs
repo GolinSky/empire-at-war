@@ -44,7 +44,7 @@ namespace EmpireAtWar.Editor.Balance
                     int id = row.FindPropertyRelative("damageType").intValue;
                     string key = "matrix/" + id + "/";
                     string context = ((DamageType)id).ToString();
-                    foreach (string name in new[] { "vsShield", "shieldPiercing" })
+                    foreach (string name in new[] { "vsShield", "squadronShieldMultiplier", "shieldPiercing" })
                         registry.Add(matrix, key + name, row.propertyPath + "." + name, BalanceFieldGroup.GlobalData, context, BalanceFieldOwner.SharedProfile, true, registry.Units);
                     foreach (string kind in new[] { "damage", "accuracy" })
                         foreach (ShipClass shipClass in Enum.GetValues(typeof(ShipClass)))

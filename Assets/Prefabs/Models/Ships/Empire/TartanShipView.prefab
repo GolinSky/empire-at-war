@@ -143,7 +143,7 @@ MonoBehaviour:
     <Max>k__BackingField: 15
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 8
 --- !u!1 &1649773772496679110
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,8 +193,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 5191186858214955850}
   - component: {fileID: 1176519959325752383}
   m_Layer: 0
-  m_Name: Tartan_PD_HP_05
+  m_Name: Tartan_Laser_HP_05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -301,11 +301,11 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 14
+  <WeaponType>k__BackingField: 8
 --- !u!1 &4589936472972889740
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +451,7 @@ MonoBehaviour:
   <Id>k__BackingField: 6
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: 0
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
@@ -2166,7 +2166,7 @@ GameObject:
   - component: {fileID: 5780353333026986950}
   - component: {fileID: 6334433785493260660}
   m_Layer: 0
-  m_Name: Tartan_PD_HP_06
+  m_Name: Tartan_Laser_HP_06
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2204,11 +2204,11 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
-    <Min>k__BackingField: -270
-    <Max>k__BackingField: -90
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 14
+  <WeaponType>k__BackingField: 8
 --- !u!1001 &8197131554165475769
 PrefabInstance:
   m_ObjectHideFlags: 0

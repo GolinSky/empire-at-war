@@ -57,13 +57,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(10));
             Assert.That(bindings.Injectables.OfType<WeaponHardPoint>(), Is.EquivalentTo(weapons));
             var profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            foreach (var expected in new[] {(WeaponType.TartanLargeRepeatingLaser, 4), (WeaponType.HeavyLaser, 1), (WeaponType.PointDefense, 4)})
+            foreach (var expected in new[] {(WeaponType.TartanLargeRepeatingLaser, 4), (WeaponType.Laser, 3), (WeaponType.PointDefense, 2)})
             {
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
                 Assert.That(profiles.GetProfile(expected.Item1).ShotPrefab, Is.Not.Null);
             }
             Assert.That(profiles.GetProfile(WeaponType.TartanLargeRepeatingLaser).ShotsPerSalvo, Is.EqualTo(6));
+            Assert.That(profiles.GetDefinition(WeaponType.TartanLargeRepeatingLaser).Caliber, Is.EqualTo(WeaponCaliber.Light));
             Assert.That(profiles.GetProfile(WeaponType.PointDefense).StrikecraftOnly, Is.True);
+            Assert.That(weapons.Single(w => w.Id == 7).name, Is.EqualTo("Tartan_Laser_HP_05"));
+            Assert.That(weapons.Single(w => w.Id == 8).name, Is.EqualTo("Tartan_Laser_HP_06"));
             var bones = view.GetComponentsInChildren<Transform>(true);
             string[] muzzles = {"MuzzleA_00", "HP_01", "HP_02", "HP_03", "HP_05", "HP_01", "HP_02", "HP_05", "HP_06"};
             foreach (var weapon in weapons.OrderBy(w => w.Id))
@@ -71,7 +74,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(weapon.HardPointType, Is.EqualTo(HardPointType.Weapon));
                 var muzzle = bones.Single(t => t.name == muzzles[weapon.Id] && t.GetComponents<MeshFilter>().Length == 0);
                 Assert.That(Vector3.Distance(weapon.transform.position, muzzle.position), Is.LessThan(.0001f), weapon.name);
-                Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.EqualTo(weapon.WeaponType == WeaponType.HeavyLaser ? 30 : weapon.WeaponType == WeaponType.PointDefense ? 180 : 150).Within(.001f));
+                Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.EqualTo(weapon.Id == 0 ? 30 : weapon.WeaponType == WeaponType.TartanLargeRepeatingLaser ? 150 : 360).Within(.001f));
                 if (weapon.WeaponType == WeaponType.TartanLargeRepeatingLaser)
                     Assert.That(Mathf.Sign((weapon.MinYaw + weapon.MaxYaw) * .5f), Is.EqualTo(Mathf.Sign(weapon.transform.localPosition.x)), weapon.name + " must face away from the hull");
             }

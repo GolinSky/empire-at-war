@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.Enemy
                     else
                     {
                         float shieldMultiplier = target.IsStrikecraft()
-                            ? damageMatrix.GetShieldMultiplier(weapon.DamageType)
+                            ? damageMatrix.GetSquadronShieldMultiplier(weapon.DamageType)
                             : damageMatrix.GetShipShieldMultiplier(weapon.DamageType);
                         hullDps[index] += hullHitDps;
                         shieldDps[index] += hitDps * shieldMultiplier;

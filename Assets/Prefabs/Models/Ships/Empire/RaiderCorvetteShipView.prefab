@@ -49,11 +49,11 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
-    <Min>k__BackingField: -4.999996
-    <Max>k__BackingField: 95
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 60
+  <WeaponType>k__BackingField: 10
 --- !u!1 &650572403202896558
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,8 +139,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
-    <Min>k__BackingField: -119.99997
-    <Max>k__BackingField: 120.00003
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 62
@@ -193,8 +193,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
-    <Min>k__BackingField: -119.99999
-    <Max>k__BackingField: 120.00001
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
@@ -247,8 +247,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
-    <Min>k__BackingField: -119.99997
-    <Max>k__BackingField: 120.00003
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
@@ -301,11 +301,11 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
-    <Min>k__BackingField: -95
-    <Max>k__BackingField: 5.000004
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 60
+  <WeaponType>k__BackingField: 10
 --- !u!1 &4589936472972889740
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,8 +833,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
-    <Min>k__BackingField: -120
-    <Max>k__BackingField: 120
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 62
@@ -887,8 +887,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
-    <Min>k__BackingField: -120
-    <Max>k__BackingField: 120
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
@@ -958,7 +958,7 @@ GameObject:
   - component: {fileID: 649488234505277996}
   - component: {fileID: 5508820478850277608}
   m_Layer: 0
-  m_Name: HP_Raider_Corvette_Missile_02
+  m_Name: HP_Raider_Corvette_Laser_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -996,11 +996,11 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
-    <Min>k__BackingField: -4.999996
-    <Max>k__BackingField: 95
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 64
+  <WeaponType>k__BackingField: 8
 --- !u!1 &8327578505235340560
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,7 +2144,7 @@ GameObject:
   - component: {fileID: 1656654025216327772}
   - component: {fileID: 7849173806909718312}
   m_Layer: 0
-  m_Name: HP_Raider_Corvette_Missile_01
+  m_Name: HP_Raider_Corvette_Laser_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2182,11 +2182,11 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
-    <Min>k__BackingField: -95
-    <Max>k__BackingField: 5.000004
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 64
+  <WeaponType>k__BackingField: 8
 --- !u!1 &8963373816227380779
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,8 +2236,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
-    <Min>k__BackingField: -119.99999
-    <Max>k__BackingField: 120.00001
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40

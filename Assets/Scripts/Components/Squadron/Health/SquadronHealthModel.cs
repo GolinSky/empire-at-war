@@ -124,7 +124,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
                 if (damageType == DamageType.Laser || damageType == DamageType.FighterLaser)
                     damage *= _data.LaserShieldDamageMultiplier;
                 _shields[memberId] = Math.Max(0f,
-                    _shields[memberId] - damage * _damageMatrix.GetShieldMultiplier(damageType));
+                    _shields[memberId] - damage * _damageMatrix.GetSquadronShieldMultiplier(damageType));
             }
             else
             {

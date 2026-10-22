@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Ship.Data;
@@ -42,6 +43,23 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(data.MemberCount, Is.EqualTo(WeaponLoadoutBaker.DeriveMemberCount(view)).And.Positive,
                     $"{data.name}: {REBAKE_HINT}");
             }
+        }
+
+        [TestCase(WeaponType.Laser, 0.8f, 0.5f)]
+        [TestCase(WeaponType.PointDefense, 0.9f, 0f)]
+        public void CombatRating_UsesSquadronShieldBonusOnlyForStrikecraftTargets(
+            WeaponType weaponType, float fighterShieldFactor, float capitalShieldFactor)
+        {
+            WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_DATA);
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(DAMAGE_MATRIX);
+            WeaponLoadoutEntry[] loadout = { new WeaponLoadoutEntry(weaponType, 1) };
+            UnitCombatProfile profile = UnitCombatProfileFactory.Create(ShipClass.Corvette, 500f, 800f,
+                loadout, weapons, matrix, Array.Empty<UnitCombatProfile>());
+            WeaponProfile weapon = weapons.GetProfile(weaponType);
+            float rawDps = weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload;
+
+            Assert.That(profile.ShieldDps(ShipClass.Fighter), Is.EqualTo(rawDps * fighterShieldFactor).Within(0.001f));
+            Assert.That(profile.ShieldDps(ShipClass.Capital), Is.EqualTo(rawDps * capitalShieldFactor).Within(0.001f));
         }
 
         [Test]
