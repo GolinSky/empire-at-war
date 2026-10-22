@@ -20,6 +20,7 @@
     "com.unity.render-pipelines.universal": "17.4.0",
     "com.unity.search.extensions": "https://github.com/Unity-Technologies/com.unity.search.extensions.git?path=package#676a4de037c32724f8c5779f5645ab44cd165404",
     "com.unity.test-framework": "1.6.0",
+    "com.unity.test-framework.performance": "3.4.0",
     "com.unity.timeline": "1.8.12",
     "com.unity.ugui": "2.0.0",
     "com.unity.visualscripting": "1.9.11",

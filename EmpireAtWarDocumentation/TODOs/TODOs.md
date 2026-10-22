@@ -129,6 +129,10 @@
 - [ ] **Optimize battle particle rendering** → [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Effects and squadron indicators]]; [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research|Verified rendering and historical navigation evidence]]
   - **Next**: combat appearance/lifecycle acceptance and measured muzzle/bolt/smoke submission work; skip broad idle-session profiling. Shadows/motion blur only after higher-priority effects.
 
+- [ ] **Optimize Burst jobs (lengthsq, select/SIMD, scheduling)** → [[TODOs/Optimization/Burst_Jobs_Optimization_Plan|Burst Jobs Optimization]]; [[TODOs/Optimization/Burst_Jobs_Optimization_Plan - Research|17-job audit and findings]]
+  - **Phase 1 harness done 2026-10-22**: perf package + `Tests/Benchmarks` (radar + target-filter if/?:/select kernels); parity 18/18; Editor timings favour branch-free except at low pass ratios.
+  - **Next**: Burst Inspector assembly check, user Player run of `PlayerBranchVariant*`, measure real battle filter/radar ratios.
+
 ### Refactoring
 
 - [ ] **Project organization follow-up** → [[TODOs/Refactoring/Project_Organization_Followup|Project Organization Follow-up]]
