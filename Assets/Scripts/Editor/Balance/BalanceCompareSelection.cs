@@ -31,7 +31,6 @@ namespace EmpireAtWar.Editor.Balance
                 else return;
 
                 evt.StopPropagation();
-                evt.PreventDefault();
             });
         }
 

@@ -68,8 +68,8 @@ namespace EmpireAtWar.Tests.Weapon
                 referenceParticles.Simulate(0.25f, true, true, false);
                 actual.transform.SetPositionAndRotation(new Vector3(3f, 4f, 5f), Quaternion.Euler(10f, 30f, 0f));
                 reference.transform.SetPositionAndRotation(actual.transform.position, actual.transform.rotation);
-                actualParticles.GetComponent<ParticleSystemRenderer>().BakeMesh(actualMesh, camera, true);
-                referenceParticles.GetComponent<ParticleSystemRenderer>().BakeMesh(referenceMesh, camera, true);
+                actualParticles.GetComponent<ParticleSystemRenderer>().BakeMesh(actualMesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
+                referenceParticles.GetComponent<ParticleSystemRenderer>().BakeMesh(referenceMesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
                 Assert.That(actualMesh.vertexCount, Is.GreaterThan(0));
                 Assert.That(actualMesh.vertexCount, Is.EqualTo(referenceMesh.vertexCount));
                 CollectionAssert.AreEqual(referenceMesh.colors32, actualMesh.colors32);
@@ -315,7 +315,7 @@ namespace EmpireAtWar.Tests.Weapon
                     var profile = WeaponProfileFactory.Create(new WeaponDefinition(), rule,
                         weapons.GetCaliber(caliber), weapons.GetRangeClass(WeaponRangeClass.Standard));
                     var particles = Fire(bolt, muzzle.transform, target.transform, profile, flights);
-                    particles.GetComponent<ParticleSystemRenderer>().BakeMesh(mesh, camera, true);
+                    particles.GetComponent<ParticleSystemRenderer>().BakeMesh(mesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
                     mesh.RecalculateBounds();
                     Assert.That(mesh.vertexCount, Is.GreaterThan(0));
                     Assert.That(particles.main.startColor.color, Is.EqualTo(rule.Color));

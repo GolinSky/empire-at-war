@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Components.Ui.Tooltip;
-using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
