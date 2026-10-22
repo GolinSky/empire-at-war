@@ -11,6 +11,9 @@ using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.Faction.Ui
 {
@@ -29,6 +32,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private readonly INotifier<BattleState> _battleState;
 
         private readonly FactionRoster _roster;
+        private readonly IAssetService _assets;
+        private readonly ShipsData _shipsData;
         private readonly TooltipRequests _tooltips;
         private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
         private TooltipHoverSubscription _tooltipHover;
@@ -52,9 +57,13 @@ namespace EmpireAtWar.Entities.Faction.Ui
             EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus hud,
             INotifier<BattleState> battleState,
             FactionRoster roster,
-            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
+            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
+            IAssetService assets,
+            ShipsData shipsData) : base(uiService, cancelRouter)
         {
             _placement = placement;
+            _assets = assets;
+            _shipsData = shipsData;
             _factionService = factionService;
             _model = model;
             _research = research;
@@ -99,6 +108,28 @@ namespace EmpireAtWar.Entities.Faction.Ui
         }
 
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
+
+        public int GetUnitSortOrder(UnitRequest request) => request switch
+        {
+            SquadronUnitRequest => 0,
+            ShipUnitRequest ship => _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass switch
+            {
+                ShipClass.Fighter or ShipClass.Bomber or ShipClass.Interceptor => 0,
+                ShipClass.Corvette => 1,
+                ShipClass.Frigate => 2,
+                ShipClass.Cruiser => 3,
+                ShipClass.Capital => 4,
+                ShipClass.HeavyCapital => 5,
+                ShipClass.Structure => 6,
+                _ => throw new ArgumentOutOfRangeException(nameof(request))
+            },
+            DefendPlatformUnitRequest => 6,
+            MiningFacilityUnitRequest => 7,
+            LevelUnitRequest => 8,
+            SuperWeaponUnitRequest => 9,
+            ResearchUnitRequest => 10,
+            _ => throw new ArgumentOutOfRangeException(nameof(request))
+        };
 
         public bool IsUnitLimitReached(UnitRequest request) =>
             PlayerFactionModel.IsHeroRequest(request, out ShipType hero) && _model.IsHeroReserved(hero);

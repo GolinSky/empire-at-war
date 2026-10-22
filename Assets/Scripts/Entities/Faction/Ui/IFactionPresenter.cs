@@ -8,5 +8,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         bool IsUnitAvailable(EmpireAtWar.Models.Factions.FactionData data);
         bool IsUnitLimitReached(UnitRequest request);
+        int GetUnitSortOrder(UnitRequest request);
     }
 }

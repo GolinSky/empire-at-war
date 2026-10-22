@@ -283,8 +283,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 _isRouteActive && selectionType == SelectionType.Base;
             int siblingIndex = 0;
 
-            foreach (FactionUnitUi unitUi in _factionUnitsUi.OrderByDescending(
-                         unit => _presenter.IsUnitAvailable(unit.FactionData)))
+            foreach (FactionUnitUi unitUi in _factionUnitsUi
+                         .OrderBy(unit => _presenter.GetUnitSortOrder(unit.Request))
+                         .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
                 unitUi.SetActive(isSelectionVisible);

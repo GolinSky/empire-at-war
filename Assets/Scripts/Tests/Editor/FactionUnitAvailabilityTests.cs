@@ -69,6 +69,7 @@ namespace EmpireAtWar.Tests.Editor
             public void TryPurchaseUnit(UnitRequest unitRequest) { }
             public bool IsUnitAvailable(FactionData data) => true;
             public bool IsUnitLimitReached(UnitRequest request) => false;
+            public int GetUnitSortOrder(UnitRequest request) => 0;
         }
     }
 }
