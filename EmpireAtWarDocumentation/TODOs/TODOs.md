@@ -137,6 +137,7 @@
   - **Remaining**: user playtest; balance tuning (stations outranged, ISD II +200 %, missile reach vs radar); resolve existing StrikeFighterProtonTorpedo variant metadata.
 
 - [ ] **Migrate Zenject to VContainer** → [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration]]; [[TODOs/Refactoring/Zenject_To_VContainer_Migration - Research|Injection audit, scopes, factories and lifecycle mapping]]; [[Done/Refactoring/UI_Service_Refactoring|UI rework]]
+  - **Cleanup 2026-10-22**: removed 24 stale generated projects (Zenject, legacy MCP/framework/samples, Postprocessing and an obsolete URP test player project) and refreshed the IDE solution/editor inventory. `com.script-utils.math` still names its active math assembly `ScriptUtils.Zenject`; upstream naming correction remains.
   - **Remaining**: matched startup/spawn/teardown/frame measurements. `9c072d3c5` facade-lookup allocation fix confirmed (GC median 89 → 27 KB/frame) and per-tickable markers restored. [Capture](<F:/Private/empire-at-war/Logs/BattleAudit/20261013T1854Z-vcontainer/analysis.md>)
 
 - [ ] **Finish ship movement simplification verification and remaining phases** → [[TODOs/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]

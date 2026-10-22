@@ -81,8 +81,6 @@ Vendor code and conventional Inspector / Assets / GameObject / Window integratio
 | MPUIKit | `MPUIKitUtilityWindow`; `MPUIKitSettingsEditor`; `MPImageEditor`; `MPImageBasicEditor`; `MPEditorUtility` creation/conversion menus | Current optional UI dependency. Utility window: `Window/MPUIKit/Utility Panel`; inspectors remain selection-driven. |
 | MPUIKit drawers | `GradeintEffectPropertyDrawer`, `ChamferBoxPropertyDrawer`, `CirclePropertyDrawer`, `HexagonPropertyDrawer`, `NStarPolygonPropertyDrawer`, `ParallelogramPropertyDrawer`, `PentagonPropertyDrawer`, `RectanglePropertyDrawer`, `TrianglePropertyDrawer` | Supporting Inspector drawers; not standalone windows. |
 | MPUIKit helper | `EditorGUILayoutExtended` | Editor drawing helper; not a registered custom inspector. |
-| Zenject | `SceneDecoratorContextEditor`, `SceneContextEditor`, `ProjectContextEditor`, `GameObjectContextEditor`, `ZenjectReflectionBakingSettingsEditor` | Current dependency/configuration inspectors. |
-| Zenject tools | `ZenMenuItems`, `ReflectionBakingMenuItems`, `MpmWindow`, abstract `ZenjectEditorWindow` | Validation, context/script/test creation, reflection settings, pool monitor and editor base. Existing vendor menus retained. |
 | Particle Pro FX | `PPFXWindow`, `PPFXRendererLayerEditor`, `PPFXChainReactionInspector` | Vendor VFX authoring UI; package usage was not audited. `Window/Particle Pro FX` remains available. |
 | SceneReference | `SceneReferencePropertyDrawer` | Scene-reference Inspector UI; preserved. |
 | TutorialInfo | `ReadmeEditor`, `Tutorial/Show Tutorial Instructions` | Template documentation utility, not a production authoring workflow. Low-value in my assessment, but retained in its vendor location. |

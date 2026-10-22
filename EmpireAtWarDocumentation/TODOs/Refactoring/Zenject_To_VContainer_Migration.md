@@ -2,7 +2,7 @@
 category: Refactoring
 status: in-progress
 created: 2026-10-13
-updated: 2026-10-13
+updated: 2026-10-22
 ---
 # Zenject to VContainer Migration
 
@@ -150,6 +150,10 @@ updated: 2026-10-13
 - Coordinate with [[TODOs/Refactoring/Injection_And_Guard_Conventions]] and [[TODOs/Refactoring/Explicit_Component_Binding]]; Phase 2 hierarchy work overlaps the latter.
 
 ## TODO
+
+- Cleanup 2026-10-22: removed 11 stale root `Zenject*.csproj` files and regenerated the IDE solution; removed obsolete Zenject rows from `Tools/EditorHub/README.md`. Also removed 7 orphaned `LightWeightFramework`, `SampleAssembly`, and legacy `MCPForUnity` projects after verifying no source files exist and no current solution entries reference them. Static project scan has no old Zenject plugin paths/references; no new captured console errors. No gameplay code changed; tests not rerun.
+- Follow-up assembly audit 2026-10-22: removed 5 stale `Unity.Postprocessing` projects and `Unity.RenderPipelines.Universal.Runtime.Tests.Player.csproj`; absent from the regenerated solution and no surviving source files. Retained empty projects backed by installed package/asset asmdefs, including `HeathenEngineering.UX` and Unity test/doc assemblies.
+- Package naming issue: pinned `com.script-utils.math` declares assembly `ScriptUtils.Zenject`; its `Range`/math utilities are still used. Keep its generated projects/DLL; fix the assembly name upstream and update the package pin in a separate package change. This is not a Zenject dependency.
 
 - Execution started 2026-10-13. User verified the UI prerequisite's two battle/menu cycles and authorized cutover.
 - Baseline EditMode: 1,586/1,633 passed; 47 pre-existing failures; 90.36 s. Evidence: `Temp/vcontainer-baseline-test-result.json`.
