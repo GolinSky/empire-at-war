@@ -64,6 +64,65 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(false, false)]
+        [TestCase(true, true)]
+        public void UnavailableCards_HideOnSelectionAndRefreshUntilAvailable(bool unlocked, bool heroReserved)
+        {
+            FactionUnitUi prefab = AssetDatabase.LoadAssetAtPath<FactionUnitUi>(
+                "Assets/Prefabs/Ui/Factions/FactionUnit.prefab");
+            Assert.That(prefab, Is.Not.Null);
+            GameObject root = new GameObject("Faction visibility test");
+            FactionUi view = root.AddComponent<FactionUi>();
+            FactionUnitUi card = Object.Instantiate(prefab, root.transform);
+            var model = new PlayerFactionModel(null, null) { SelectionType = SelectionType.Base };
+            var presenter = new AvailabilityPresenter { Unlocked = unlocked, HeroReserved = heroReserved };
+            var data = new FactionData();
+            card.SetData(data, view, new ShipUnitRequest(data, ShipType.HomeOne));
+
+            try
+            {
+                ((List<FactionUnitUi>)typeof(FactionUi).GetField("_factionUnitsUi",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(view)).Add(card);
+                view.SetModel(model);
+                view.AssignPresenter(presenter);
+                MethodInfo refresh = typeof(FactionUi).GetMethod("RefreshUnitVisibility",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+
+                refresh.Invoke(view, new object[] { SelectionType.Base });
+                Assert.That(card.gameObject.activeSelf, Is.False, "Unavailable cards must be hidden on selection.");
+                card.SetActive(true);
+                view.RefreshAvailability(0f, false);
+                Assert.That(card.gameObject.activeSelf, Is.False, "Live updates must hide locked units and reserved heroes.");
+
+                presenter.Unlocked = true;
+                presenter.HeroReserved = false;
+                view.RefreshAvailability(0f, false);
+                Assert.That(card.gameObject.activeSelf, Is.True, "Unlocked units and released heroes must reappear.");
+
+                presenter.Unlocked = unlocked;
+                presenter.HeroReserved = heroReserved;
+                view.RefreshAvailability(0f, false);
+                Assert.That(card.gameObject.activeSelf, Is.False, "New purchases and level changes must hide cards again.");
+                refresh.Invoke(view, new object[] { SelectionType.None });
+                refresh.Invoke(view, new object[] { SelectionType.Base });
+                Assert.That(card.gameObject.activeSelf, Is.False, "Reselection must keep unavailable cards hidden.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        private sealed class AvailabilityPresenter : IFactionPresenter
+        {
+            public bool Unlocked { get; set; }
+            public bool HeroReserved { get; set; }
+            public void TryPurchaseUnit(UnitRequest unitRequest) { }
+            public bool IsUnitAvailable(FactionData data) => Unlocked;
+            public bool IsUnitLimitReached(UnitRequest request) => HeroReserved;
+            public int GetUnitSortOrder(UnitRequest request) => 0;
+        }
+
         private sealed class UnlockedPresenter : IFactionPresenter
         {
             public void TryPurchaseUnit(UnitRequest unitRequest) { }

@@ -166,9 +166,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 bool queued = false;
                 foreach (var queue in queues)
                     if (queue.UnitRequest.Id == unit.RequestId) queued = true;
-                unit.RenderAvailability(_presenter.IsUnitAvailable(unit.FactionData),
-                    credits >= unit.FactionData.Price, queued, battleEnded,
-                    _presenter.IsUnitLimitReached(unit.Request));
+                bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
+                bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
+                unit.SetActive(unlocked && !atLimit);
+                unit.RenderAvailability(unlocked,
+                    credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
         }
 
@@ -287,7 +289,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
-                unitUi.SetActive(isSelectionVisible);
+                unitUi.SetActive(isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                    !_presenter.IsUnitLimitReached(unitUi.Request));
             }
         }
     }
