@@ -16,6 +16,40 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(0)]
         [TestCase(1)]
+        [TestCase(31)]
+        [TestCase(32)]
+        [TestCase(63)]
+        [TestCase(64)]
+        [TestCase(65)]
+        [TestCase(95)]
+        [TestCase(96)]
+        [TestCase(127)]
+        [TestCase(128)]
+        public void Detection_PreservesSingleEligibleBit(int targetIndex)
+        {
+            int count = targetIndex + 1;
+            int words = (count + BITS_PER_WORD - 1) / BITS_PER_WORD;
+            ulong[] eligibleBits = new ulong[words];
+            eligibleBits[targetIndex / BITS_PER_WORD] = 1ul << (targetIndex % BITS_PER_WORD);
+            using NativeArray<RadarQuery> queries = new NativeArray<RadarQuery>(
+                new[] { new RadarQuery(float2.zero, 100f, 0) }, Allocator.TempJob);
+            using NativeArray<float> x = new NativeArray<float>(count, Allocator.TempJob);
+            using NativeArray<float> z = new NativeArray<float>(count, Allocator.TempJob);
+            using NativeArray<ulong> eligible = new NativeArray<ulong>(eligibleBits, Allocator.TempJob);
+            using NativeArray<ulong> actual = new NativeArray<ulong>(words, Allocator.TempJob);
+
+            new RadarDetectionJob
+            {
+                Queries = queries, PositionX = x, PositionZ = z,
+                EligibleBits = eligible, DetectedBits = actual, WordsPerQuery = words
+            }.Schedule(1, 1).Complete();
+
+            for (int word = 0; word < words; word++)
+                Assert.That(actual[word], Is.EqualTo(eligible[word]), $"result word {word}");
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
         [TestCase(63)]
         [TestCase(64)]
         [TestCase(65)]

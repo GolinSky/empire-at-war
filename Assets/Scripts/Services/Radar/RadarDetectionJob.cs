@@ -35,11 +35,12 @@ namespace EmpireAtWar.Services.Radar
                 ulong eligible = EligibleBits[eligibilityOffset + word];
                 ulong bits = 0;
                 int first = word * BITS_PER_WORD;
-                int last = math.min(first + BITS_PER_WORD, PositionX.Length);
-                for (int i = first; i < last; i++)
+                while (eligible != 0)
                 {
-                    ulong bit = 1ul << (i - first);
-                    if ((eligible & bit) == 0) continue;
+                    int bitIndex = math.tzcnt(eligible);
+                    ulong bit = 1ul << bitIndex;
+                    eligible &= eligible - 1;
+                    int i = first + bitIndex;
 
                     float2 position = new float2(PositionX[i], PositionZ[i]);
                     if (math.lengthsq(position - query.Center) <= query.RangeSquared)
