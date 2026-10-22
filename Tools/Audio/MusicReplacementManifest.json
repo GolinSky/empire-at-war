@@ -1,0 +1,647 @@
+{
+  "sourceRoot": "F:/Temp_audio/Republic_at_War_1129810972/Audio",
+  "configurationGuid": "023f129b8c45cdc45a5710abd9de1183",
+  "tracks": [
+    {
+      "source": "Space/Music/Ahsoka/A_Floating.mp3",
+      "destination": "Assets/Audio/Music/Battle/Ahsoka/A_Floating.mp3",
+      "role": "Battle",
+      "bytes": 4797814,
+      "sha256": "f08333964308df46618d9a4bcd176a57d04f354a012cf181224310dd2c71b574"
+    },
+    {
+      "source": "Space/Music/Ahsoka/A_Loyalists_Edit.mp3",
+      "destination": "Assets/Audio/Music/Battle/Ahsoka/A_Loyalists_Edit.mp3",
+      "role": "Battle",
+      "bytes": 5442957,
+      "sha256": "fabe6a8ab06f5fa95403e52dedaf43037be74e0abe312bc7b9ade2f35f5ec00a"
+    },
+    {
+      "source": "Space/Music/Ahsoka/A_Loyalists.mp3",
+      "destination": "Assets/Audio/Music/Battle/Ahsoka/A_Loyalists.mp3",
+      "role": "Battle",
+      "bytes": 2210334,
+      "sha256": "5b64d9882d22bbd47f3cabf9ab8289441156ce7b0e48822d3a245510796486c2"
+    },
+    {
+      "source": "Space/Music/Ahsoka/A_Not_the_Time_for_a_Lesson.mp3",
+      "destination": "Assets/Audio/Music/Battle/Ahsoka/A_Not_the_Time_for_a_Lesson.mp3",
+      "role": "Battle",
+      "bytes": 1681197,
+      "sha256": "34f8626911fea3626a917d0220bc51f30ecfa616c99ace1d121c0c7b816d618e"
+    },
+    {
+      "source": "Space/Music/Ahsoka/A_Open_Fire.mp3",
+      "destination": "Assets/Audio/Music/Battle/Ahsoka/A_Open_Fire.mp3",
+      "role": "Battle",
+      "bytes": 2038447,
+      "sha256": "ee3aef3160b71c74920f30c0b8b6a5db7697b16ba3a8f474bfed866b137ade17"
+    },
+    {
+      "source": "Space/Music/Attack_of_the_Clones/AOTC_Bounty_Hunters_Pursuit_Edit.mp3",
+      "destination": "Assets/Audio/Music/Battle/Attack_of_the_Clones/AOTC_Bounty_Hunters_Pursuit_Edit.mp3",
+      "role": "Battle",
+      "bytes": 2237234,
+      "sha256": "f8dd43c635ab75ba558f669decab36d6e8c8551fa5707974ba99fc79cfe85969"
+    },
+    {
+      "source": "Space/Music/Clone_Wars/CW_destroying_the_shield.mp3",
+      "destination": "Assets/Audio/Music/Battle/Clone_Wars/CW_destroying_the_shield.mp3",
+      "role": "Battle",
+      "bytes": 4970482,
+      "sha256": "73f6e3809068ba7fe22f12a1e95ba4cdd02efd96244802c87a44c1be6069da8e"
+    },
+    {
+      "source": "Space/Music/Other/space_ambient1.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_ambient1.mp3",
+      "role": "Battle",
+      "bytes": 1795591,
+      "sha256": "2c1821fc032e1deac56ff1e0bb37614da647a7140293d5b2eba0b4979a47f0eb"
+    },
+    {
+      "source": "Space/Music/Other/space_ambient2.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_ambient2.mp3",
+      "role": "Battle",
+      "bytes": 3120940,
+      "sha256": "9ef021e4abb52b64f47f467ad51d05909fe2ccec195e3206402e25989a9f4715"
+    },
+    {
+      "source": "Space/Music/Other/space_battle1.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_battle1.mp3",
+      "role": "Battle",
+      "bytes": 5106574,
+      "sha256": "8780f3c46017ee917ac2ddc0231baf05ba9c88b433b87e1c056ec70922d3b912"
+    },
+    {
+      "source": "Space/Music/Other/space_battle2.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_battle2.mp3",
+      "role": "Battle",
+      "bytes": 4756533,
+      "sha256": "0900ccb116ad8ee4f8bf41f990e498522c3f5663115286905ab5ac2f78ddb13f"
+    },
+    {
+      "source": "Space/Music/Other/space_battle3.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_battle3.mp3",
+      "role": "Battle",
+      "bytes": 2402232,
+      "sha256": "a5a1321cf8fcd2bf70c127d45ea7a80aecf81a6f0f29cd7ef773a53a05542b87"
+    },
+    {
+      "source": "Space/Music/Other/space_battle4.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_battle4.mp3",
+      "role": "Battle",
+      "bytes": 719764,
+      "sha256": "36481a61c9c9c80d41193374f1c7a28989727606aa697007c610fbcbdff3efa7"
+    },
+    {
+      "source": "Space/Music/Other/space_battle5.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_battle5.mp3",
+      "role": "Battle",
+      "bytes": 2087327,
+      "sha256": "9d1cd3b1b59206e22553927c3523560d4eb6b1a9f85bff97caa78b0e05645b74"
+    },
+    {
+      "source": "Space/Music/Other/space_battle6.mp3",
+      "destination": "Assets/Audio/Music/Battle/Other/space_battle6.mp3",
+      "role": "Battle",
+      "bytes": 2435905,
+      "sha256": "b1e7d2bb3e12fd8be981059ad0650d4b75e63966a223b1338340bf8f131a21d0"
+    },
+    {
+      "source": "Space/Music/Revenge_of_the_Sith/ROTS_Grievous_and_the_droids_Edit.mp3",
+      "destination": "Assets/Audio/Music/Battle/Revenge_of_the_Sith/ROTS_Grievous_and_the_droids_Edit.mp3",
+      "role": "Battle",
+      "bytes": 5475372,
+      "sha256": "5c0b0fccb0f595014d316f0d82362333e182a4fa0526ac49747f8889e84feba0"
+    },
+    {
+      "source": "Space/Music/Revenge_of_the_Sith/ROTS_Grievous_Speaks_to_Lord_Sidious_Edit.mp3",
+      "destination": "Assets/Audio/Music/Battle/Revenge_of_the_Sith/ROTS_Grievous_Speaks_to_Lord_Sidious_Edit.mp3",
+      "role": "Battle",
+      "bytes": 4411666,
+      "sha256": "4949fb4d31d9432fd6d9de4d25330fc5f36289bd1da9e7e644cfd75499ed8ec4"
+    },
+    {
+      "source": "Space/Music/The_Bad_Batch/TBB_Plan_99.mp3",
+      "destination": "Assets/Audio/Music/Battle/The_Bad_Batch/TBB_Plan_99.mp3",
+      "role": "Battle",
+      "bytes": 4317288,
+      "sha256": "7f3afd95985a94b2b3c26b80b1bd2596a8f92738a4f788122daf06e1971dae06"
+    },
+    {
+      "source": "Space/Music/The_Bad_Batch/TBB_Walker_Chase.mp3",
+      "destination": "Assets/Audio/Music/Battle/The_Bad_Batch/TBB_Walker_Chase.mp3",
+      "role": "Battle",
+      "bytes": 4110382,
+      "sha256": "498098af034781917b4f574a26c60b0fb4fc999e3b94bf4cb5f0ea8e0238b9da"
+    },
+    {
+      "source": "Space/Music/The_Clone_Wars/TCW_Ahsoka_vs_Maul.mp3",
+      "destination": "Assets/Audio/Music/Battle/The_Clone_Wars/TCW_Ahsoka_vs_Maul.mp3",
+      "role": "Battle",
+      "bytes": 3630225,
+      "sha256": "29de0f9e6ef8ebc1e836fd1f410ef78cc57a0e4ad19515f91623448b33e9adba"
+    },
+    {
+      "source": "Space/Music/The_Clone_Wars/TCW_Battle_Of_Quell.mp3",
+      "destination": "Assets/Audio/Music/Battle/The_Clone_Wars/TCW_Battle_Of_Quell.mp3",
+      "role": "Battle",
+      "bytes": 1741745,
+      "sha256": "9e3b08a8cd131ee320fc063ff4ec8966e4cef9935f5904041a909b3182ae9e3d"
+    },
+    {
+      "source": "Space/Music/The_Clone_Wars/TCW_Y_Wing.mp3",
+      "destination": "Assets/Audio/Music/Battle/The_Clone_Wars/TCW_Y_Wing.mp3",
+      "role": "Battle",
+      "bytes": 2721999,
+      "sha256": "b78a1f8ddb4edb84fd79ec4507e138988df3f798935f4aa49232ececc88bedb1"
+    },
+    {
+      "source": "Space/Music/The_Bad_Batch/TBB_First_Time_in_Space.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_First_Time_in_Space.mp3",
+      "role": "Menu",
+      "bytes": 2868840,
+      "sha256": "da1f9fbd138d6288ae31eaf3e790506b694770fb299acb72d844a483c845fbd4"
+    },
+    {
+      "source": "Galactic/Music/Ahsoka/A_Senate_Hearing.mp3",
+      "destination": "Assets/Audio/Music/Menu/Ahsoka/A_Senate_Hearing.mp3",
+      "role": "Menu",
+      "bytes": 2387025,
+      "sha256": "54bbb629f20393a267c81ef5af4945307ecce8873d3e58e961ea035083098969"
+    },
+    {
+      "source": "Galactic/Music/Ahsoka/A_The_Space_Whales.mp3",
+      "destination": "Assets/Audio/Music/Menu/Ahsoka/A_The_Space_Whales.mp3",
+      "role": "Menu",
+      "bytes": 5401347,
+      "sha256": "3a6697347b37e319e9bf7b7c25ce9c6d5c1fb60dea14a8ab6a697a2b7d16a6ff"
+    },
+    {
+      "source": "Galactic/Music/Ahsoka/A_They_are_all_Connected.mp3",
+      "destination": "Assets/Audio/Music/Menu/Ahsoka/A_They_are_all_Connected.mp3",
+      "role": "Menu",
+      "bytes": 2508392,
+      "sha256": "de15362633b436c0c840c652e2fe38a9857a99bb604e6651ab12611b3662f10f"
+    },
+    {
+      "source": "Galactic/Music/Attack_of_the_Clones/AOTC_Across_The_Stars.mp3",
+      "destination": "Assets/Audio/Music/Menu/Attack_of_the_Clones/AOTC_Across_The_Stars.mp3",
+      "role": "Menu",
+      "bytes": 13340325,
+      "sha256": "788e385994de11d930a1db8421b3b12b025093931ec01cdf135896fed4a29e59"
+    },
+    {
+      "source": "Galactic/Music/Clone_Wars/CW_the_jedi_council.mp3",
+      "destination": "Assets/Audio/Music/Menu/Clone_Wars/CW_the_jedi_council.mp3",
+      "role": "Menu",
+      "bytes": 3158641,
+      "sha256": "a055880045defd40828db4f7e17795e83db702c02a2788f127ab9c3dbe4013e0"
+    },
+    {
+      "source": "Galactic/Music/Obi_Wan_Kenobi/OW_Obi_Wan.mp3",
+      "destination": "Assets/Audio/Music/Menu/Obi_Wan_Kenobi/OW_Obi_Wan.mp3",
+      "role": "Menu",
+      "bytes": 4169422,
+      "sha256": "b6016024aba922be9886a2adb4fe6b5315f4e0ad4f5cdedbbde07915a688b53b"
+    },
+    {
+      "source": "Galactic/Music/Other/gc_ambient1.mp3",
+      "destination": "Assets/Audio/Music/Menu/Other/gc_ambient1.mp3",
+      "role": "Menu",
+      "bytes": 4451685,
+      "sha256": "9d95d21124ade316d03faa7b4278b9aa1dbd68f7995edb782529bf85891afa88"
+    },
+    {
+      "source": "Galactic/Music/Other/gc_ambient2.mp3",
+      "destination": "Assets/Audio/Music/Menu/Other/gc_ambient2.mp3",
+      "role": "Menu",
+      "bytes": 1971742,
+      "sha256": "89c099b7881ad49228f0a97d2941c31a860ef8aa7ae8b755aec6ab956c70096f"
+    },
+    {
+      "source": "Galactic/Music/Revenge_of_the_Sith/ROTS_Padmes_Ruminations.mp3",
+      "destination": "Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_Padmes_Ruminations.mp3",
+      "role": "Menu",
+      "bytes": 7884957,
+      "sha256": "3ff94561bd2edb73fca0fecf598756010008f5a01366ec36afb5ce205bf58915"
+    },
+    {
+      "source": "Galactic/Music/Revenge_of_the_Sith/ROTS_Palpatines_Teachings.mp3",
+      "destination": "Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_Palpatines_Teachings.mp3",
+      "role": "Menu",
+      "bytes": 13018541,
+      "sha256": "a4bced2372b24706663393f5a1cfae60b8acae3c4387cd2d4fe2b1d0c48b287e"
+    },
+    {
+      "source": "Galactic/Music/Revenge_of_the_Sith/ROTS_The_Birth_Of_The_Twins_And_Padme.mp3",
+      "destination": "Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_The_Birth_Of_The_Twins_And_Padme.mp3",
+      "role": "Menu",
+      "bytes": 8692613,
+      "sha256": "ed76e192476338e779edd1a3509dd56791d93552c61b9298d8e19d1d35cffecc"
+    },
+    {
+      "source": "Galactic/Music/Revenge_of_the_Sith/ROTS_The_Immolation_Scene.mp3",
+      "destination": "Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_The_Immolation_Scene.mp3",
+      "role": "Menu",
+      "bytes": 6483749,
+      "sha256": "87d34bc8cb67300573d3ede9f87baacd3c1524528970eefa03fb66b03bdd10f4"
+    },
+    {
+      "source": "Galactic/Music/Revenge_of_the_Sith/ROTS_Yoda_And_The_Younglings.mp3",
+      "destination": "Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_Yoda_And_The_Younglings.mp3",
+      "role": "Menu",
+      "bytes": 9416234,
+      "sha256": "c262b65a52784e67ddb896a37cf0558e30af2421dc93bec3f3a2550f546e43e5"
+    },
+    {
+      "source": "Galactic/Music/Tales_of_the_Jedi/TOTJ_Fall_Of_Dooku.mp3",
+      "destination": "Assets/Audio/Music/Menu/Tales_of_the_Jedi/TOTJ_Fall_Of_Dooku.mp3",
+      "role": "Menu",
+      "bytes": 2989672,
+      "sha256": "f455cd9b8f65634107ba37bf94d5d9560ec6ea9ac35404dbc7e6461c79809655"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Civil_War_About_to_Begin.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Civil_War_About_to_Begin.mp3",
+      "role": "Menu",
+      "bytes": 4053336,
+      "sha256": "0dd59a6355c4d4e0f2504bd2e5bc59a1042d47b280e22a5271475475596af51c"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Debriefed.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Debriefed.mp3",
+      "role": "Menu",
+      "bytes": 2884396,
+      "sha256": "9793ba4c36ee63aa9fc316ac42798f3ef0e3017847bcf073d0db68ced771bba5"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Different_Perspectives.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Different_Perspectives.mp3",
+      "role": "Menu",
+      "bytes": 2482498,
+      "sha256": "ca72d74133cba083d415ebb174fc8e7bdc56f9d2e46ee4d532897a3fa13f8024"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Mayday.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Mayday.mp3",
+      "role": "Menu",
+      "bytes": 6170519,
+      "sha256": "87d4f481175a565c700cb0df4962bb94d8c789f7f375f57b2c068a5a4d957fba"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Outpost.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Outpost.mp3",
+      "role": "Menu",
+      "bytes": 3279077,
+      "sha256": "76e2b760f6111615b477f660eb7c9db8d39aeddb7912652c606f12564bfa13e4"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Raxus_Under_The_Empire.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Raxus_Under_The_Empire.mp3",
+      "role": "Menu",
+      "bytes": 4525152,
+      "sha256": "9dd5bb124ccc21d82e81fc0ce9e7d9322edeee9b3f4401a00971b2a688ab8efe"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_So_Much_For_Peace.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_So_Much_For_Peace.mp3",
+      "role": "Menu",
+      "bytes": 2571763,
+      "sha256": "8288684e7ac1d3e30d4328336f0d44b5f944e9517584a0f44cc4c8da7c36d279"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Where_I_Fit.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Where_I_Fit.mp3",
+      "role": "Menu",
+      "bytes": 4113209,
+      "sha256": "a0b988f45df6da871eefcb138b9510af6d9253a37a5e0bf24693fc5edb036fb8"
+    },
+    {
+      "source": "Galactic/Music/The_Bad_Batch/TBB_Worth_More_Than_Jewels.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Worth_More_Than_Jewels.mp3",
+      "role": "Menu",
+      "bytes": 3150636,
+      "sha256": "b55ae6f116b0cf0970fb22b068d4289b502019782bb73651221f8f7ef466feab"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_Anakins_Theme.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_Anakins_Theme.mp3",
+      "role": "Menu",
+      "bytes": 7555815,
+      "sha256": "f5b9a1289f411c61a34d8e4ee3622e2c23cf3e91e56ae308c78fef222b0e0ef1"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_He_Is_the_Chosen_One.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_He_Is_the_Chosen_One.mp3",
+      "role": "Menu",
+      "bytes": 9349904,
+      "sha256": "a96d13973d69ea3bd10b7c8501244d43d9fc77333f45f9d37bd9c2af90d2cda9"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_Jar_Jars_Introduction.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_Jar_Jars_Introduction.mp3",
+      "role": "Menu",
+      "bytes": 12305878,
+      "sha256": "4438f80f277f252ba6ce549b8612c38439dd138e0325572de481e63e859f22fc"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_Passage_Through_the_Planet_Core_Edit.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_Passage_Through_the_Planet_Core_Edit.mp3",
+      "role": "Menu",
+      "bytes": 8415766,
+      "sha256": "376e55e8968536c0e33c5977ccf0d3c2fc522300fcf513b0dd6bcb5daf1341b6"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_The_Arrival_at_Tatooine.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_The_Arrival_at_Tatooine.mp3",
+      "role": "Menu",
+      "bytes": 9773386,
+      "sha256": "2fa66897eff4366bf488c6ab8750f3e1ee05ae777a7708846758fcf424db3ea2"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_The_High_Council_Meeting.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_The_High_Council_Meeting.mp3",
+      "role": "Menu",
+      "bytes": 7544274,
+      "sha256": "9ac33999d549e8da1685fcf5383630d60f1e293ea4dbda0ae46a4a7a697e2d6b"
+    },
+    {
+      "source": "Galactic/Music/The_Phantom_Menace/TPM_The_Trip_to_the_Naboo_Temple_and.mp3",
+      "destination": "Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_The_Trip_to_the_Naboo_Temple_and.mp3",
+      "role": "Menu",
+      "bytes": 9907880,
+      "sha256": "c2c098e514a8ae0e1bb204707691d00d31028b856f2a825203137fa50e787d4c"
+    }
+  ],
+  "legacy": [
+    {
+      "path": "Assets/Audio/Music/Ambient/AOTC_Across_The_Stars.mp3",
+      "guid": "12d34fd3977ecbd4c9001e2b2c851cb3",
+      "bytes": 3600173,
+      "sha256": "a995261a943b1177e0edf270ab712e079ff6db6996cffbdf97c6c3c5c7fb19ee"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/AOTC_Ambush_On_Coruscant.mp3",
+      "guid": "b1d265bb17a870945ba8c68ed7917fb7",
+      "bytes": 836009,
+      "sha256": "c4c69f3443938e3c15a984f8b5d491b6b5954c0c4c4558197368d559e6e2a3f0"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/AOTC_Bounty_Hunters_Pursuit_Edit.mp3",
+      "guid": "ee44bdb75f737d24891b7266a088aed8",
+      "bytes": 895360,
+      "sha256": "60f8ff2e9afcca11b06c9fd9816fbc8b319006e22a3f2b582c70678ae9364fda"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/AOTC_Departing_Coruscant.mp3",
+      "guid": "6487dcff0c9b5ad44ab4d1a125e5a6d1",
+      "bytes": 1673568,
+      "sha256": "1c168db25d1b7b2d7793dab7ebe83ec1f5590c7fd3902706de3a5df186770f77"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/AOTC_Return_To_Tatooine.mp3",
+      "guid": "606030c1aa97d4945a014b6e57d17dc8",
+      "bytes": 6675704,
+      "sha256": "bcfffebca0a7e26dadd92f1c88fe95218cf495d6c36c5bab396fd902e169d0ab"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/AOTC_The_Tusken_Camp_The_Homestead.mp3",
+      "guid": "7a3a017bcd1fbbf43a44dc0d702d7839",
+      "bytes": 5677199,
+      "sha256": "c6acc8b9cf5138842adeba292922f73eafa1af0f57f0bb2c3b48f379be84f964"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CIS_Lose.mp3",
+      "guid": "82ffceec18a46d94fbadb7697e0ffa5a",
+      "bytes": 204892,
+      "sha256": "6be924641ab2ccb328bbcb00ce16e20325043610f36c6573446850e92b53e8f7"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CIS_Win.mp3",
+      "guid": "c0625793c45700840927f3efedada340",
+      "bytes": 123564,
+      "sha256": "00576cbbf4df596e30c44f97d26356042a54ea92155969a37235bf6e1528c699"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/Complete_Ground_Defense.mp3",
+      "guid": "4801f8ea9f88bf346aa35e1f928c8ef1",
+      "bytes": 33205,
+      "sha256": "1b61c56a3c30034310eb67f831b3b9851f05b42312c3032b2d1898b9b74761ea"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/Complete_Super_Ship.mp3",
+      "guid": "842ddca814ba54243b4fb2a4263af0aa",
+      "bytes": 40415,
+      "sha256": "de7a941c85381c41d49457a365f02b423a5ff7f23ac33e25cc618d59a2c888a3"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CW_a_galaxy_divided.mp3",
+      "guid": "6b371dcbd12bff34aa603a3862d9d12e",
+      "bytes": 732459,
+      "sha256": "956bce60be8e4726b2c0737b6fca5df3ecb7aa885d930ad7f32773f1d310bf32"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CW_destroying_the_shield.mp3",
+      "guid": "52d2a7f888cbaf344b33d95df696a118",
+      "bytes": 1886800,
+      "sha256": "794dca7ac58839c28f46c3bb857d8da4659a61535d8a6abecb20e257e22146c9"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CW_dunes_of_tatooine.mp3",
+      "guid": "83ae2847a32517545a0bedcc9b7999c0",
+      "bytes": 1202649,
+      "sha256": "8162996167bccc786292f13674bd3b29d2e5c6595986bc84a230c77e49c1a60a"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CW_scaling_the_cliff.mp3",
+      "guid": "ec56a5ac7cab6ba4e9f00fb7c220b3ac",
+      "bytes": 547864,
+      "sha256": "1edccb38b32898df58865280994aa65870c72024169d0391a119f5224eda162c"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CW_sneaking_under_the_shield.mp3",
+      "guid": "3a4005cd9cb167d4e81f350e4130e0c1",
+      "bytes": 2646705,
+      "sha256": "933716802d402df945b8cdd761fd5fa18c9776f8db1c0ad08d92798974169dbc"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/CW_the_jedi_council.mp3",
+      "guid": "bb75953929bdbf648bf91ac1b4a7fdcb",
+      "bytes": 1244967,
+      "sha256": "0949c5cc71cae0bcb4c1e7f3299ddcc422ba728fb8c55fe7fdde34476244bece"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/gc_ambient1.mp3",
+      "guid": "7d1cb053dfbf071499bd3afdd6ad4f2a",
+      "bytes": 1784698,
+      "sha256": "9b81588216708490801212736c403bb61f299a4734f94ac3b44caecb63ae1923"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/gc_ambient2.mp3",
+      "guid": "706496f67422d8042985c1f2764311e0",
+      "bytes": 739588,
+      "sha256": "001c8d91943d239a305deab2e8f9c26a0f727b129122dad009b5fc89e43b115d"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/opening.mp3",
+      "guid": "aa072f98d2312464c902c72974d5d165",
+      "bytes": 1340009,
+      "sha256": "233520a684045e52420cfe52fbbff412ca0165337760cc3f994176ecf854e35c"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/RAW_Battle_Pending.mp3",
+      "guid": "d9f96a8028e4451428fe1e3f8bfee4cb",
+      "bytes": 787109,
+      "sha256": "c80a56b3e20d10ae9cc2b9a90a128d546602fc1c7d0f2dade971cbb01b7e91cd"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/Republic_Tactical_Lose_Edit.mp3",
+      "guid": "7a53022b1f09e5a429969d225544b36a",
+      "bytes": 148981,
+      "sha256": "1526132572b38b19d05a4c18b38582f5e905dc088e8f2bbd6446e2368a7b8c4f"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/Republic_Tactical_Win_Edit.mp3",
+      "guid": "c2be399ceafff5047aa099ce2d8630c4",
+      "bytes": 804362,
+      "sha256": "f2af59fe28ff80416c68d882a6647106cdd67a4d7ccddfe180ae357174b45d5e"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/ROTS_Edit.mp3",
+      "guid": "681dbce460502084c9eafc6fc94b2ce7",
+      "bytes": 1471832,
+      "sha256": "2f78b5e2adee3e881d274f8c7245b1d7764899e8da871bea034a781a4280e517"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/ROTS_Grievous_and_the_droids_Edit.mp3",
+      "guid": "f79f89a18dd86b04ba8ad29fd6d36a88",
+      "bytes": 1310262,
+      "sha256": "4af6b64e4a12c5e63b9413e96d6b8b9013d3639e9e0ca5e5db0a8a2c9d85f9fb"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/ROTS_Grievous_Speaks_to_Lord_Sidious_Edit.mp3",
+      "guid": "701dd341527169d4b9629bfab025b131",
+      "bytes": 1040339,
+      "sha256": "0ef636dbab717a7955f63e81d5044592c049652e4753e6c85fef0515cb86e207"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/ROTS_Palpatines_Teachings.mp3",
+      "guid": "6bc5d8a1a928e7f46bf828e5647f047f",
+      "bytes": 1302213,
+      "sha256": "b23457d939bd50e96c2fe33c6c98c4635443a96ecc6534d7a0583588bc46ae55"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_ambient2.mp3",
+      "guid": "6af828434fb54954cb24b29105f81487",
+      "bytes": 780405,
+      "sha256": "84794f6c5c8ed75319439285adfac8f779f020e8f785cffd588d797c3dc554ad"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_battle1.mp3",
+      "guid": "0b210004430caa1499cec0dad770b3f4",
+      "bytes": 511016,
+      "sha256": "c590b67f00f4eababbef32a79547c74ce3e37cd7e2ad6f85f0f9cca3a3f9275d"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_battle2.mp3",
+      "guid": "abef724f19e048249a0e9426e1cd80e5",
+      "bytes": 476012,
+      "sha256": "775848343391dfdd4a7f2f0b6fd4aadb3e1cf1dd15696ca08129fb715e3b7cc5"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_battle3.mp3",
+      "guid": "ad8bf693e432bb548a7e1704daaa0c2f",
+      "bytes": 600826,
+      "sha256": "884c3ec1b29f3ce135a1723c9f130ffc54b9f21cd83d019747c3959647c4de48"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_battle4.mp3",
+      "guid": "577c283ed8ebbdc4fb5cd2b15e94e821",
+      "bytes": 180111,
+      "sha256": "0ad0151b97957792a4004fa8b4b04e3065a50a723358581df97ced13e385722b"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_battle5.mp3",
+      "guid": "1a5848cabd0435843b86da46d040e2d7",
+      "bytes": 522002,
+      "sha256": "b5b0ef9a48a7922c81aba53e5c60951e4406b510ac8964a8a5db842bcc50cafd"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space_battle6.mp3",
+      "guid": "f156fa368509bf343aa785bd02c8293b",
+      "bytes": 609146,
+      "sha256": "97308f4278424592e1019f98dfb84e5fcfe33f95d6ca42f202a4e9f5c04be014"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/space-ambient1.mp3",
+      "guid": "0af73a16d67b73c4cb9bead0f13e3be9",
+      "bytes": 449068,
+      "sha256": "5a244dd2ccc8cd5179d23a8e273be40238aaddb8a5e7eb4d74abae3052d6ec6c"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/Special_Epic_Chor.mp3",
+      "guid": "f27734493b83cb144ac056b989040c23",
+      "bytes": 383491,
+      "sha256": "7547a3020fcff34458a100915622b1961e3ba55b67579257c7382bd0e187668d"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/Star_Wars_And_Revenge_Of_The_Sith.mp3",
+      "guid": "c89a85943dbb5e640bf2cc33229dbece",
+      "bytes": 1469397,
+      "sha256": "9fb92267cfa6ca04bcf9131d95f592b26e55a00f744d8514b1934893ec85f3a0"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/TPM_Anakins_Theme.mp3",
+      "guid": "ad3827a436845d4468c436afae9f80b3",
+      "bytes": 755940,
+      "sha256": "2bb80a0585f7906fb214a2d593851bd2db3ab3d4e682104541179b08bd878ea3"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/TPM_Core_Edit.mp3",
+      "guid": "f155835e5dab44a4fbb715fa29ebfde1",
+      "bytes": 279286,
+      "sha256": "1e91eaf17f0f065c6c11e6bc9fb4e8896567f51d14391d0a2499203c924876d9"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/TPM_He_Is_the_Chosen_One.mp3",
+      "guid": "5bfb06ddedd2a7c44a5465ff3c2fff58",
+      "bytes": 935349,
+      "sha256": "394d6d97c8862274651e4a9a4308c99af009eaada6bf733fcb2528fbbd48998d"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/TPM_Passage_Through_the_Planet_C.mp3",
+      "guid": "cee256e879fae5341b00629f66d3652b",
+      "bytes": 841935,
+      "sha256": "a94b162180e1c165149b431d6883dfa9e40023536625d8d597036c4b5483c4a4"
+    },
+    {
+      "path": "Assets/Audio/Music/Ambient/TPM_The_High_Council_Meeting.mp3",
+      "guid": "238ee0d4ca5745b4f9e415bc157a7d59",
+      "bytes": 754989,
+      "sha256": "9bc3dfe31186f76123d93aec3e1dae46a6a5504f1925f827d62ed3a6bc8b311f"
+    }
+  ],
+  "retained": [
+    {
+      "sha256": "91f5172266191669b1bca9022098785f60dfd208dd0606248274c3b510fe931c",
+      "bytes": 709468,
+      "path": "Assets/Audio/Music/Ship/amb_ship_loop_1.wav"
+    },
+    {
+      "sha256": "03f6b6f6c079746b72511aae7a4de4fd2e2399cdd2c8899a6973192cb9cf2333",
+      "bytes": 508,
+      "path": "Assets/Audio/Music/Ship/amb_ship_loop_1.wav.meta"
+    },
+    {
+      "sha256": "2c157f9e5f89c1c0f1922103861f947b7f3b793ac8b17df402aae3e07fbcbb0b",
+      "bytes": 1261892,
+      "path": "Assets/Audio/Music/Ship/amb_ship_loop_2.wav"
+    },
+    {
+      "sha256": "af3ebdcb5524348b3fb30f20902a650806c71a58e89e66e275f46b70490c0b09",
+      "bytes": 508,
+      "path": "Assets/Audio/Music/Ship/amb_ship_loop_2.wav.meta"
+    }
+  ]
+}

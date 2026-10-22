@@ -85,12 +85,15 @@ namespace EmpireAtWar.Services.Audio
         public void Tick()
         {
             if (!_playing) return;
+            AudioClip clip = _audioSource.clip;
+            if (clip.loadState == AudioDataLoadState.Failed)
+                throw new System.InvalidOperationException($"Failed to load music clip '{clip.name}'.");
+            if (clip.loadState == AudioDataLoadState.Unloaded || clip.loadState == AudioDataLoadState.Loading) return;
             if (!_audioSource.isPlaying)
             {
                 PlayNext();
                 return;
             }
-            AudioClip clip = _audioSource.clip;
             float remaining = (clip.samples - _audioSource.timeSamples) / (float)clip.frequency;
             if (remaining <= _fadeDuration) _fadingOut = true;
             _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _fadingOut ? 0f : _volume,

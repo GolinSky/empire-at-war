@@ -7,6 +7,10 @@
 
 ### Features
 
+- [ ] **Replace battle and menu music with categorized Republic at War tracks** → [[TODOs/Features/Music_Replacement_Plan|Music Replacement Plan]]; [[TODOs/Features/Music_Replacement_Plan - Research|Exact track inventory]]
+  - **Implemented (2026-10-22)**: 22 battle + 31 menu tracks; 41 legacy MP3s removed; Vorbis streaming; loading-state fix; 8/8 tests and Windows Editor menu playback/pause/mute/completion smoke passed. Windows build Succeeded (3.80 GiB), built playlists verified; unrelated planet shader error recorded.
+  - **Remaining**: standalone/battle-scene and listening acceptance, strict single-source review (pre-existing idle scene clone), representative audio profiling; macOS build module/runtime unavailable.
+
 - [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan** → [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
