@@ -16,6 +16,9 @@ namespace EmpireAtWar.Components.AttackComponent
         [Tooltip("Damage multiplier applied to shields.")]
         [SerializeField] private float vsShield = 1f;
 
+        [Tooltip("Additional shield damage multiplier for ships and structures.")]
+        [SerializeField] private float shipShieldMultiplier = 1f;
+
         [Tooltip("Ignores shields and always damages hardpoints and hull.")]
         [SerializeField] private bool shieldPiercing;
 
@@ -23,6 +26,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public ShipClassValues Damage => damage;
         public ShipClassValues Accuracy => accuracy;
         public float VsShield => vsShield;
+        public float ShipShieldMultiplier => shipShieldMultiplier;
         public bool ShieldPiercing => shieldPiercing;
     }
 }

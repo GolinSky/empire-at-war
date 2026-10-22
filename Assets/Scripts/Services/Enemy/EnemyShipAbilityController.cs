@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEntityLocator _entities;
         private readonly IEnemyAiStateProvider _state;
         private readonly IPlayerRelations _relations;
+        private readonly IVisionService _vision;
 
         private readonly PlayerSlot _owner;
         private readonly ShipAbilityService _shipAbilityService;
@@ -39,7 +41,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyShipAbilityController(IEntityLocator entities,
             IEnemyAiStateProvider state, IPlayerRelations relations,
-            ShipAbilityService shipAbilityService,
+            ShipAbilityService shipAbilityService, IVisionService vision,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -47,6 +49,7 @@ namespace EmpireAtWar.Services.Enemy
             _state = state;
             _relations = relations;
             _shipAbilityService = shipAbilityService;
+            _vision = vision;
         }
 
         public void Tick()
@@ -146,6 +149,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach ((IEntity entity, Vector3 position) in _hostiles)
             {
                 if (entity.HealthModel.IsDestroyed || entity.IsCloaked() ||
+                    !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position) ||
                     PlanarGeometry.Distance(caster.WorldPosition, position) > range)
                     continue;
                 _targets.Add(entity);

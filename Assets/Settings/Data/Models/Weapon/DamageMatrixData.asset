@@ -35,6 +35,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 0.5
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 1
     damage:
@@ -58,6 +59,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 0.25
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 11
     damage:
@@ -81,6 +83,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 0
+    shipShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 2
     damage:
@@ -104,6 +107,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 1
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 4
     damage:
@@ -127,6 +131,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 3
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 5
     damage:
@@ -150,6 +155,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 1
+    shipShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 6
     damage:
@@ -173,6 +179,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 1
+    shipShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 12
     damage:
@@ -196,6 +203,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 0.1
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 7
     damage:
@@ -219,6 +227,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 1
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 8
     damage:
@@ -242,6 +251,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 1
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 9
     damage:
@@ -265,6 +275,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 2
+    shipShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 10
     damage:
@@ -288,6 +299,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 0
+    shipShieldMultiplier: 1
     shieldPiercing: 1
   - damageType: 13
     damage:
@@ -311,5 +323,6 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
     vsShield: 0.5
+    shipShieldMultiplier: 0.4
     shieldPiercing: 0
   missSpread: 6

@@ -154,7 +154,8 @@ namespace EmpireAtWar.Tests.Editor
                 intel.Report(new HostileSighting(2, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
                     new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
-                    null, null, null, locator, null, roster, null, registry, null, owner, null);
+                    null, null, null, locator, null, roster, null, registry,
+                    new VisionService(roster, fogEnabled: false), owner, null);
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 object[] args = { Vector3.zero, 0f };
@@ -171,6 +172,54 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(find.Invoke(builder, args), Is.SameAs(first));
             }
             finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [TestCase("FindClosestKnownShip")]
+        [TestCase("FindLocalThreat")]
+        [TestCase("FindRaidTarget")]
+        public void RememberedTargets_RequireCurrentVisibilityIncludingCachedPick(string selector)
+        {
+            GameObject targetView = new GameObject("Target");
+            GameObject scoutView = new GameObject("Scout");
+            try
+            {
+                targetView.transform.position = Vector3.right * 10f;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                EntityLocator locator = new EntityLocator();
+                FakeEntity target = new FakeEntity(new FakeHealthModel(targetView.transform), TestPlayers.Human, 1)
+                    { IsUnit = selector != "FindRaidTarget" };
+                locator.AddEntity(target);
+                TeamIntelRegistry registry = new TeamIntelRegistry();
+                if (target.IsUnit)
+                    registry.Get(owner.Team).Report(new HostileSighting(1, UnitTypeId.Ship(ShipType.Venator),
+                        TestPlayers.Human, new FormationPoint(10f, 0f), 1f, 0f, 1f, 0f));
+                VisionService vision = new VisionService(roster);
+                vision.Register(owner.Id, scoutView.transform, 20f);
+                EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
+                    null, null, null, locator, null, roster, null, registry, vision, owner, null);
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
+                object[] args = { Vector3.zero, 0f };
+                Assert.That(find.Invoke(builder, args), Is.SameAs(target));
+                typeof(EnemyStrategicContextBuilder).GetField("_localThreat", flags).SetValue(builder, target);
+                typeof(EnemyStrategicContextBuilder).GetField("_raidTarget", flags).SetValue(builder, target);
+
+                // Last-seen position remains visible, but the target has moved outside team vision.
+                targetView.transform.position = Vector3.right * 100f;
+                Assert.That(find.Invoke(builder, args), Is.Null);
+                scoutView.transform.position = targetView.transform.position;
+                // EditMode assertions share a frame; registration refreshes the per-frame vision snapshot.
+                vision.Register(owner.Id, scoutView.transform, 20f);
+                Assert.That(find.Invoke(builder, args), Is.SameAs(target));
+                vision.Unregister(scoutView.transform);
+                Assert.That(find.Invoke(builder, args), Is.Null);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(targetView);
+                UnityEngine.Object.DestroyImmediate(scoutView);
+            }
         }
 
         [Test]
@@ -424,6 +473,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade
         {
+            public bool IsUnit { get; set; } = true;
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public UnitTypeId UnitTypeId => UnitTypeId.Ship(ShipType.Venator);
             public long Id { get; }
@@ -439,6 +489,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             {
+                if (!IsUnit && typeof(TCommand) == typeof(IUnitTypeFacade))
+                { command = default; return false; }
                 if (this is TCommand self) { command = self; return true; }
                 if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
                 command = default;

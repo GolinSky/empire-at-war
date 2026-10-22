@@ -39,6 +39,8 @@ namespace EmpireAtWar.Entities.Squadrons
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            foreach (var weapon in Bindings.Weapons)
+                weapon.ConfigureWarheads(Data.WarheadDamageMultiplier, Data.WarheadReloadMultiplier);
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             builder.Register<CombatModifiers>(Lifetime.Singleton);
             builder.Register<CombatModifiersFacade>(Lifetime.Singleton).AsImplementedInterfaces();

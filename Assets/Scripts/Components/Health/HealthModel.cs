@@ -151,7 +151,7 @@ namespace EmpireAtWar.Models.Health
             damage *= _modifiers.DamageTakenMultiplier;
             if (AbsorbsDamage(damageType))
             {
-                Shields = Math.Max(0f, Shields - damage * _damageMatrix.GetShieldMultiplier(damageType));
+                Shields = Math.Max(0f, Shields - damage * _damageMatrix.GetShipShieldMultiplier(damageType));
             }
             else
             {

@@ -16,20 +16,22 @@ namespace EmpireAtWar.Services.Enemy
             IReadOnlyList<WeaponLoadoutEntry> loadout,
             WeaponsData weaponsData,
             DamageMatrixData damageMatrix,
-            IReadOnlyList<UnitCombatProfile> hangar)
+            IReadOnlyList<UnitCombatProfile> hangar,
+            float warheadDamageMultiplier = 1f,
+            float warheadReloadMultiplier = 1f)
         {
             float[] hullDps = new float[ForceComposition.ClassSlots];
             float[] shieldDps = new float[ForceComposition.ClassSlots];
             float[] piercingDps = new float[ForceComposition.ClassSlots];
             foreach (WeaponLoadoutEntry entry in loadout)
             {
-                WeaponProfile weapon = weaponsData.GetProfile(entry.WeaponType);
+                WeaponProfile weapon = weaponsData.GetProfile(entry.WeaponType)
+                    .WithWarheadMultipliers(warheadDamageMultiplier, warheadReloadMultiplier);
                 if (weapon.Reload <= 0f)
                     throw new InvalidOperationException($"{entry.WeaponType} needs a positive reload to rate its damage.");
 
                 float dps = entry.Count * weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload;
                 bool piercing = damageMatrix.IsShieldPiercing(weapon.DamageType);
-                float shieldMultiplier = damageMatrix.GetShieldMultiplier(weapon.DamageType);
                 foreach (ShipClass target in ForceComposition.Classes)
                 {
                     if (weapon.StrikecraftOnly && !target.IsStrikecraft())
@@ -44,6 +46,9 @@ namespace EmpireAtWar.Services.Enemy
                     }
                     else
                     {
+                        float shieldMultiplier = target.IsStrikecraft()
+                            ? damageMatrix.GetShieldMultiplier(weapon.DamageType)
+                            : damageMatrix.GetShipShieldMultiplier(weapon.DamageType);
                         hullDps[index] += hullHitDps;
                         shieldDps[index] += hitDps * shieldMultiplier;
                     }

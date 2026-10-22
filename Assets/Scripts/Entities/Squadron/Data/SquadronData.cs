@@ -40,6 +40,10 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Tooltip("Distance a fighter extends away before turning back for another pass.")]
         [field: SerializeField] public float ExtendDistance { get; private set; } = 30f;
 
+        [Header("Warheads")]
+        [field: SerializeField] public float WarheadDamageMultiplier { get; private set; } = 1f;
+        [field: SerializeField] public float WarheadReloadMultiplier { get; private set; } = 1f;
+
         [Header("Health (per fighter)")]
         [field: SerializeField] public ShipClass ShipClass { get; private set; } = ShipClass.Fighter;
         [field: SerializeField] public float MemberHull { get; private set; } = 80f;
