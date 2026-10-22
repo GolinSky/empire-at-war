@@ -7,6 +7,7 @@ namespace EmpireAtWar.Lifecycle
     {
         public int Initialize { get; set; }
         public int Tick { get; set; }
+        public int PostTick { get; set; }
         public int FixedTick { get; set; }
         public int LateTick { get; set; }
         public int Dispose { get; set; }

@@ -143,6 +143,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         // The root moves now so selection, radar and icons see it this frame; fighters move in the pose batch.
         private void QueuePoses()
         {
+            _poseBatch.CompletePlacement();
             transform.position = Model.GetCentroid().ToUnity();
             for (int i = 0; i < fighters.Count; i++)
             {
@@ -155,6 +156,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         private void ApplyPoses()
         {
+            _poseBatch.CompletePlacement();
             // The root moves first: dead fighters keep their last world pose instead of drifting with it.
             transform.position = Model.GetCentroid().ToUnity();
             for (int i = 0; i < fighters.Count; i++)

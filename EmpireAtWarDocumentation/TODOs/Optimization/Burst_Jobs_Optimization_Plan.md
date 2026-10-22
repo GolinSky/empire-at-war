@@ -28,48 +28,52 @@ updated: 2026-10-22
   - Results: Editor → `%USERPROFILE%/AppData/LocalLow/DefaultCompany/EmpireAtWar/PerformanceTestResults.json`; Sample `Time` µs per 5 kernel runs.
 - [ ] Record per-job baseline with existing markers (`TargetBatchSchedule/Complete`, `DueBatchSchedule/Complete`, nav, fog, `Projectile.Track`) in a Development Player at fixed workload.
 - [ ] Profiler timeline: note `WaitForJobGroupID` on main thread per job; which jobs run on workers vs inline in `Complete()`.
-- [ ] Verify Burst AOT CPU target (`CpuTargetsX64 = 72`) so Inspector shows the shipping instruction set.
+- [x] Verified `CpuTargetsX64 = 72` against Burst 1.8.29 source: SSE2 (`1 << 3`) + AVX2 (`1 << 6`). Assembly captured for both targets on 2026-10-22.
 
 ### Phase 1 — Branch vs select experiment (the requested study)
 - [x] `RadarDetectionJob` inner loop: `RadarDetection{If,Ternary,Select}Job` (`If` = verbatim production loop; others combine conditions with `&`).
 - [x] `WeaponTargetSelectionJob` filter predicate (L53–L59): `TargetFilter{If,Ternary,Select}Job`; aim work replaced by counting (first accepted + accepted count). Expensive aim path keeps `if`.
 - [x] Parity: 18/18 EditMode (`EditorBranchVariantParityTests`) — every variant equals a plain C# reference at ratios 0.05/0.5/0.95, incl. partial bit words and NaN positions.
 - [x] Editor indicative timings (one run, Editor Burst JIT): branch-free flat; `if` wins only when the filter is predictable and rejects early. See Research → Phase 1 Editor results.
-- [ ] Per variant, Burst Inspector (Jobs → Burst → Open Inspector, `EmpireAtWar.Tests.Benchmarks` jobs, x64 AVX2 target): count `jmp/je/jne`, `cmov`, `vblendps`, packed (`vaddps/vmulps`) vs scalar (`addss/mulss`).
+- [x] Captured all six benchmark variants through the Burst Inspector compiler backend for SSE2 and AVX2; instruction counts and assembly: `Logs/BurstJobs/2026-10-22/`. Ternary/select have matching counts; scalar conditional moves, no blend instructions. Radar packed arithmetic covers one target's x/z coordinates, not SIMD across targets. See Research.
 - [ ] Player run: Test Runner → PlayMode → `PlayerBranchVariant*` → Run All Tests (Player), Development build. ≥3 runs, median/p95. **User step** (agent Play Mode/Player runs not allowed).
 - [ ] Measure real battle ratios before choosing: share of detectable ∧ hostile radar targets (2 players → ~50 % hostile = unpredictable), share of candidates passing the target filter.
 - [ ] Keep the winner only where it is measurably faster; record "no difference" results too.
 
 ### Phase 2 — `lengthsq` and sqrt removal (bit-exact)
-- [ ] `WeaponTargetSelectionJob`: squared-distance fast reject outside the fallback band; exact sqrt path inside it. `NearestDistance = sqrt(min dsq)` once at the end. Degenerate check `lengthsq <= 1e-10f`.
-- [ ] Parity test: random origins/tilted parents/ranges incl. exact-boundary distances → identical `CandidateIndex`, aim, `NearestDistance`, fallback reason vs current job.
-- [ ] `FogRevealJob`: `math.sqrt((float)distSqr)` replacing double sqrt; exhaustive EditMode equality test over all reachable `distSqr`.
-- [ ] `FogRevealJob`: compute row x-span from `dy` (`floor(sqrt(sqrOuter − dy²))`); drop per-x circle test. Pixel-equality test vs current output.
+- [x] `WeaponTargetSelectionJob`: conservative squared-distance fast reject outside fallback band; exact sqrt path inside. Nearest-distance sqrt once per return; `lengthsq <= 1e-10f` cutoff verified with adjacent representable squared values.
+- [x] 11 new scheduled parity cases vs frozen original Burst job: seeded geometry/tilts/filtering, range boundaries, near-zero cutoff, nonfinite/overflow directions; full result fields bit-identical. 23/23 target-selection tests pass (2026-10-22).
+- [x] Float sqrt for integer `distSqr <= 2^24`; double fallback above. Exhaustive synchronous-Burst equality over `0..2^24` passes; higher-integer fallback samples covered.
+- [x] Exact row x-span removes per-x circle check; legacy loop retained when outer radius >46340 to preserve integer-overflow behavior. Bitwise parity vs frozen original Burst reveal passes, including off-grid/overlap/soft edges/overflow.
 
 ### Phase 3 — SIMD-friendly loops (`math.select`, SoA)
-- [ ] `ShieldSurfaceClipJob`: branch-free plane loop (select enter/exit, `miss` flag); planes as SoA `float4` groups built once in `Shield`. Parity test over random segments incl. parallel/inside cases. Check `Loop.ExpectVectorized()` in an experiment build.
-- [ ] `FogFadeJob`: branch-free step with `math.select`, `changed` as OR-reduction; keep exact `Target` assignment. Fuse with `FogWriteJob` (one pass writes bytes). Pixel-equality test.
-- [ ] `FogResetJob`: `math.select`; confirm vectorized.
-- [ ] `RadarDetectionJob`: per-owner eligibility bitset precomputed once per scan; positions as SoA `x`/`z` floats. Bitset parity test.
-- [ ] `AttackDueJob`: `&` instead of `&&`; then decide inline vs job by Phase 0 schedule/complete cost (batch 32 → ≥1024 or main-thread loop).
+- [x] Shield planes packed once into four-lane SoA groups; packed dot/divide/select with ordered extrema reduction and accumulated MISS. 13/13 exact Burst parity cases pass (partial groups, random/parallel/inside/tangent/nonfinite/signed zero). SSE2/AVX2 assembly confirms packed operations. `Loop.ExpectVectorized()` is inapplicable to the intentional ordered outer reduction; explicit SIMD verified directly. Same-call completion retained.
+- [x] Select-based exact fade/OR reduction plus `FogFadeWriteJob` fusion. Fade/byte and 20-frame chained/history parity pass. AVX2 assembly confirms 16-cell vector loop. Stable-frame byte-write overhead remains a Player measurement gate.
+- [x] `FogResetJob` uses `math.select`; AVX2 assembly confirms 32-cell vector loop. SSE2/AVX2 artifacts saved.
+- [x] Radar per-owner eligibility bitset + separate X/Z native buffers implemented; 7 kernel parity cases and lifecycle regressions pass. Full radar filter 39/39 EditMode (including existing tests/benchmark fixtures). Same `FixedTick` delivery and batches preserved; preparation cost still needs Player measurement.
+- [x] `AttackDueJob` predicate uses `&`; 8/8 EditMode cases pass, including NaN/±inf/frame extrema. Before/after Burst assembly confirms scalar branches → packed comparisons/AND (AVX2 32-record loop). Batch remains 32; no timing claim.
+- [ ] Choose due inline vs job/batch ≥1024 from Phase 0 schedule/complete measurements.
 
 ### Phase 4 — Scheduling and sync points
-- [ ] Fog: chain Reset → Reveal → Fade/Write as one dependency chain with a single `Complete()` before texture `Apply()`; replace `.Run()` calls (main-thread) with scheduled jobs where the grid is 256².
-- [ ] Bolt/fighter transform jobs: confirm hierarchy roots allow parallel `Schedule`; schedule in Update, complete in LateUpdate (same frame).
-- [ ] Radar: schedule detection earlier in the frame, complete at delivery (same frame).
+- [x] Both fog callers use `UpdateAndWriteBytes`: optional Reset → Reveal → fused Fade/Write; one same-frame `Complete()` before conditional texture `Apply()`. Reveal list cleared after completion. 22/22 fog tests pass; Player performance acceptance pending.
+- [x] Bolt placement: `Tick` schedules; `LateTick` completes before combat. Independent spawn roots verified. Replay/reset, Add, repeated scheduling, Clear and Dispose complete pending work; disposal precedes entity scopes. Public `Advance` stays synchronous.
+- [x] Fighter scheduling: project `IPostTickable` bridges VContainer PostUpdate after registered Tick/MonoBehaviour Update producers. Placement → bank dispatched in PostTick; LateTick (-2000) completes before combat (-1000), same frame. Mutations complete pending work; LateTick reapplies newest poses after early completion. Spawn/respawn/despawn/root-write and disposal boundaries are explicit. Shared hierarchy roots remain unchanged; worker scaling/benefit needs Player measurement.
+- [x] Radar position reads dispatched before independent eligibility/result preparation; detection depends on positions and completes before same-`FixedTick` delivery. All live getters finish before dispatch; `finally` completes work on failure. No frame/physics-step latency added.
+- Verification 2026-10-22: bolt/radar pass: 83 distinct EditMode cases, clean compile/Console. Fighter follow-up: 73 distinct cases pass (Fighter 46, PostTick lifecycle 5, verified composition 19, contracts 3), clean compile. Composition logged unrelated `ShipAmbienceService.Dispose` EditMode `Object.Destroy` errors; no clean-Console claim for that run. Player overlap benefit and dispatch overhead remain unmeasured.
 - [ ] Batch-size sweep: `TARGET_JOB_BATCH_SIZE` 1/4/8, `DETECTION_BATCH_SIZE` 4/8/16, `REVEAL_ROWS_PER_BATCH` 8/16/32.
 - [ ] `ShieldSurfaceClipJob`: evaluate batching all frame clip queries into one `IJobParallelFor` — needs deferred results; **design decision before implementation**.
 
 ### Phase 5 — Algorithmic (navigation; measured hotspot)
-- [ ] `NavigationRouteJob.Search`: generation stamps instead of full-grid reset per plan.
-- [ ] `NavigationGridBlockJob`: rasterize obstacle bounding boxes instead of cells × obstacles.
-- [ ] `HasLineOfSight`: obstacle bounding prefilter.
-- [ ] Coordinate with Battle CPU plan nearest-reachable fallback item; no duplicate ownership.
+- [x] Navigation search uses per-cell generation stamps and lazy scratch initialization; generation rollover clears stamps. Repeated-search/rollover/disconnected-route parity passes against frozen original.
+- [x] Single-writer obstacle-first raster clears output, binary-searches actual rounded node coordinates for conservative bounds, then retains original strict circle predicate. Random/edge parity passes. Worker-count/performance tradeoff remains unmeasured.
+- [x] LOS uses distance to the rounded segment bounding box as a conservative lower bound before the unchanged projection predicate; random/tangent/degenerate parity and existing routes pass.
+- [x] Coordinated against live source (2026-10-22): `ShipPathGrid.Build` already computes persistent regions once; `NavigationNearestReachableJob` uses region-constrained ring search. Battle CPU's older per-plan flood/full-grid proposal is stale; do not duplicate it. Current matched performance acceptance remains open.
 
 ### Phase 6 — Targeted low-level tuning (only after Phases 1–5 measured)
 - [ ] `Hint.Unlikely` on `RequiresSerialFallback` paths if mispredicts show.
 - [ ] `FloatMode.Fast` on fog jobs only; pixel diff must be visually acceptable.
-- [ ] Minor: `FighterBankJob` `quaternion.RotateZ`; `RadarPositionJob` writes NaN for invalid transforms (drop main-thread pre-fill).
+- [ ] Minor: `FighterBankJob` `quaternion.RotateZ` remains under Phase 6 measurement gate.
+- [x] Radar position job writes NaN to X/Z for invalid transforms; main-thread prefill removed with Phase 3 layout change. Integration test detects target, destroys transform while still registered, rescans and confirms no stale position.
 
 ## Edge Cases
 - Target exactly on range/yaw boundary → must still route to serial fallback after Phase 2.
@@ -88,4 +92,6 @@ updated: 2026-10-22
 - `Assets/Scripts/Components/ViewComponents/{Weapon/BoltPlacementJob,Squadron/FighterPlacementJob,Squadron/FighterBankJob}.cs`
 
 ## TODO
-- Open decisions: benchmark harness package (Phase 0); deferred shield clip batching (Phase 4).
+- Harness package decision resolved: performance testing 3.4.0 installed. Open decision: deferred shield clip batching (Phase 4).
+- Player baseline, ≥3 branch benchmark runs and real battle pass ratios remain user steps. Do not select production branch variants, batch sizes or Phase 6 tuning without them.
+- Scheduling constraints: radar currently snapshots and delivers inside `FixedTick`; fighter poses complete before combat late ticks. Preserve those deadlines when evaluating earlier scheduling.

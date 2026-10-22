@@ -15,38 +15,36 @@ namespace EmpireAtWar.Services.Radar
         private const int BITS_PER_WORD = 64;
 
         [ReadOnly] public NativeArray<RadarQuery> Queries;
-        [ReadOnly] public NativeArray<RadarTarget> Targets;
-        [ReadOnly] public NativeArray<float3> Positions;
-        // SlotCount × SlotCount; 1 → row owner is hostile to column owner.
-        [ReadOnly] public NativeArray<byte> Hostility;
+        [ReadOnly] public NativeArray<float> PositionX;
+        [ReadOnly] public NativeArray<float> PositionZ;
+        // OwnerSlot × WordsPerQuery; eligibility is shared by all radars of an owner.
+        [ReadOnly] public NativeArray<ulong> EligibleBits;
 
         // Each radar writes only its own WordsPerQuery slice.
         [NativeDisableParallelForRestriction, WriteOnly] public NativeArray<ulong> DetectedBits;
 
-        public int SlotCount;
         public int WordsPerQuery;
 
         public void Execute(int index)
         {
             RadarQuery query = Queries[index];
-            int hostilityRow = query.OwnerSlot * SlotCount;
+            int eligibilityOffset = query.OwnerSlot * WordsPerQuery;
             int resultOffset = index * WordsPerQuery;
             for (int word = 0; word < WordsPerQuery; word++)
             {
+                ulong eligible = EligibleBits[eligibilityOffset + word];
                 ulong bits = 0;
                 int first = word * BITS_PER_WORD;
-                int last = math.min(first + BITS_PER_WORD, Targets.Length);
+                int last = math.min(first + BITS_PER_WORD, PositionX.Length);
                 for (int i = first; i < last; i++)
                 {
-                    RadarTarget target = Targets[i];
-                    if (!target.IsDetectable || Hostility[hostilityRow + target.OwnerSlot] == 0)
-                    {
-                        continue;
-                    }
+                    ulong bit = 1ul << (i - first);
+                    if ((eligible & bit) == 0) continue;
 
-                    if (math.lengthsq(Positions[i].xz - query.Center) <= query.RangeSquared)
+                    float2 position = new float2(PositionX[i], PositionZ[i]);
+                    if (math.lengthsq(position - query.Center) <= query.RangeSquared)
                     {
-                        bits |= 1ul << (i - first);
+                        bits |= bit;
                     }
                 }
 

@@ -24,6 +24,7 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Utils;
+using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
 using UnityEngine.Rendering;
 using EmpireAtWar.Lifecycle;
@@ -71,6 +72,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private UnitOrderSettings _orderSettings;
         private LifetimeScope _scope;
         private LifecycleTickGate _tickGate;
+        private FighterPoseBatch _poseBatch;
         private ShipSfxHandle _audioHandle;
         private SfxProfile _engineSound;
         private EntityComponentLifecycle _componentLifecycle;
@@ -133,7 +135,7 @@ namespace EmpireAtWar.Entities.Squadrons
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
-            long entityId)
+            long entityId, FighterPoseBatch poseBatch)
         {
             EntityId = entityId;
             _flight = flight;
@@ -161,6 +163,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _orderSettings = orderSettings;
             _scope = scope;
             _tickGate = tickGate;
+            _poseBatch = poseBatch;
             Data = data;
             _audioHandle = audioHandle;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
@@ -196,6 +199,7 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Takes the dead squadron out of the battle once its death presentation has ended.</summary>
         public void Despawn()
         {
+            _poseBatch.CompletePlacement();
             _tickGate.SetTicking(false);
             Despawned?.Invoke();
             foreach (IDespawnable part in _despawnables) part.Despawn();
@@ -205,6 +209,7 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Brings a despawned squadron back as a fresh one; listeners of the previous life are dropped.</summary>
         public void Respawn(Vector3 position, Quaternion rotation)
         {
+            _poseBatch.CompletePlacement();
             _scope.gameObject.SetActive(true);
             // Health first: restoring the fighters' views must precede the formation and trail reset.
             _health.Respawn();

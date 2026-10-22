@@ -6,7 +6,7 @@ using Unity.Mathematics;
 namespace EmpireAtWar.Services.ShipNavigation
 {
     [BurstCompile]
-    internal struct NavigationGridBlockJob : IJobParallelFor
+    internal struct NavigationGridBlockJob : IJob
     {
         // Obstacles are packed as (x, z, radius) on the navigation plane.
         [ReadOnly] public NativeArray<float3> Obstacles;
@@ -18,22 +18,48 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public int Width;
 
-        public void Execute(int index)
+        public void Execute()
         {
-            float2 node = GridOrigin + new float2(index % Width, index / Width) * CellSize;
-            byte blocked = 0;
+            for (int i = 0; i < Blocked.Length; i++) Blocked[i] = 0;
+            int height = Blocked.Length / Width;
             for (int i = 0; i < Obstacles.Length; i++)
             {
                 float3 obstacle = Obstacles[i];
                 float safeRadius = obstacle.z + Inflation;
-                if (math.distancesq(node, obstacle.xy) < safeRadius * safeRadius)
+                float radiusSquared = safeRadius * safeRadius;
+                int firstX = FindBound(GridOrigin.x, Width, obstacle.x, radiusSquared, false);
+                int endX = FindBound(GridOrigin.x, Width, obstacle.x, radiusSquared, true);
+                int firstY = FindBound(GridOrigin.y, height, obstacle.y, radiusSquared, false);
+                int endY = FindBound(GridOrigin.y, height, obstacle.y, radiusSquared, true);
+                for (int y = firstY; y < endY; y++)
                 {
-                    blocked = 1;
-                    break;
+                    for (int x = firstX; x < endX; x++)
+                    {
+                        float2 node = GridOrigin + new float2(x, y) * CellSize;
+                        if (math.distancesq(node, obstacle.xy) < radiusSquared)
+                            Blocked[y * Width + x] = 1;
+                    }
                 }
             }
+        }
 
-            Blocked[index] = blocked;
+        // Binary search the actual rounded node coordinates, avoiding inward-rounded
+        // world-to-cell bounds. Each excluded axis alone fails the original circle test.
+        private int FindBound(float origin, int count, float center, float radiusSquared, bool upper)
+        {
+            int first = 0;
+            int end = count;
+            while (first < end)
+            {
+                int middle = first + (end - first) / 2;
+                float node = origin + middle * CellSize;
+                float delta = node - center;
+                bool outside = delta * delta >= radiusSquared;
+                bool advance = upper ? !(node > center && outside) : node < center && outside;
+                if (advance) first = middle + 1;
+                else end = middle;
+            }
+            return first;
         }
     }
 }

@@ -70,18 +70,20 @@ namespace EmpireAtWar.Presenters.MiniMap
             if (!_hasMap) return;
 
             _timer += Time.deltaTime;
-            if (_timer >= UPDATE_INTERVAL)
+            bool rebuildTargets = _timer >= UPDATE_INTERVAL;
+            if (rebuildTargets)
             {
                 _timer = 0f;
                 UpdateTargets();
             }
 
-            if (_grid.Fade(FADE_SPEED * Time.deltaTime)) WritePixels();
+            if (_grid.UpdateAndWriteBytes(FADE_SPEED * Time.deltaTime, _texture.GetPixelData<byte>(0),
+                    rebuildTargets, false, EDGE_SOFTNESS, 1f))
+                _texture.Apply();
         }
 
         private void UpdateTargets()
         {
-            _grid.ResetTargets(false);
             foreach (OwnedCircle source in _vision.Sources)
             {
                 if (!_localPlayer.IsFriendly(source.Owner)) continue;
@@ -91,8 +93,6 @@ namespace EmpireAtWar.Presenters.MiniMap
                 int radius = Mathf.Max(1, Mathf.RoundToInt(source.Radius / Mathf.Max(_mapSize.x, _mapSize.y) * RESOLUTION));
                 _grid.QueueReveal(column, row, radius);
             }
-
-            _grid.ApplyReveals(EDGE_SOFTNESS, 1f);
         }
 
         private void WritePixels()

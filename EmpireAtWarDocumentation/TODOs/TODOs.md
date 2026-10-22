@@ -138,7 +138,9 @@
 
 - [ ] **Optimize Burst jobs (lengthsq, select/SIMD, scheduling)** → [[TODOs/Optimization/Burst_Jobs_Optimization_Plan|Burst Jobs Optimization]]; [[TODOs/Optimization/Burst_Jobs_Optimization_Plan - Research|17-job audit and findings]]
   - **Phase 1 harness done 2026-10-22**: perf package + `Tests/Benchmarks` (radar + target-filter if/?:/select kernels); parity 18/18; Editor timings favour branch-free except at low pass ratios.
-  - **Next**: Burst Inspector assembly check, user Player run of `PlayerBranchVariant*`, measure real battle filter/radar ratios.
+  - **2026-10-22 execution**: target/fog, shield SoA clipping, radar eligibility/XZ layout, due predicate and navigation stamps/raster/LOS implemented. SSE2/AVX2 assembly captured; 156 distinct EditMode cases pass after Burst cache invalidation, including earlier-kernel reruns and shield-swap integration.
+  - **Scheduling 2026-10-22**: bolt Update → LateTick; radar preparation overlap within FixedTick (83 distinct tests pass). Fighter PostTick → pre-combat LateTick now implemented through ordered lifecycle bridge, with spawn/pool/root-write/teardown guards; 73 distinct follow-up tests pass. Compile clean; composition logs unrelated ambience EditMode destruction errors.
+  - **Remaining**: user Player baseline + ≥3 `PlayerBranchVariant*` runs, battle pass ratios, matched timing acceptance, batch/branch winners, fighter scheduling performance acceptance, Phase 6 tuning and deferred shield batching decision. Plan remains active.
 
 ### Refactoring
 

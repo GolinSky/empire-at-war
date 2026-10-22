@@ -8,15 +8,14 @@ namespace EmpireAtWar.Services.Radar
     [BurstCompile]
     internal struct RadarPositionJob : IJobParallelForTransform
     {
-        // Pre-filled with NaN: a destroyed transform keeps NaN and fails every range test.
-        [WriteOnly] public NativeArray<float3> Positions;
+        [WriteOnly] public NativeArray<float> PositionX;
+        [WriteOnly] public NativeArray<float> PositionZ;
 
         public void Execute(int index, TransformAccess transform)
         {
-            if (transform.isValid)
-            {
-                Positions[index] = transform.position;
-            }
+            float3 position = transform.isValid ? (float3)transform.position : new float3(float.NaN);
+            PositionX[index] = position.x;
+            PositionZ[index] = position.z;
         }
     }
 }

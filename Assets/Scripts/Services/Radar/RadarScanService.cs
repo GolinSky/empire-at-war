@@ -46,10 +46,12 @@ namespace EmpireAtWar.Services.Radar
         private readonly List<IEntity> _detected = new List<IEntity>();
 
         private TransformAccessArray _targetTransforms;
-        private NativeList<float3> _targetPositions;
+        private NativeList<float> _targetPositionX;
+        private NativeList<float> _targetPositionZ;
         private NativeList<RadarTarget> _targetStates;
         private NativeList<RadarQuery> _queries;
         private NativeList<byte> _hostility;
+        private NativeList<ulong> _eligibleBits;
         private NativeList<ulong> _detectedBits;
 
         private int _registrationCount;
@@ -63,10 +65,12 @@ namespace EmpireAtWar.Services.Radar
         public void Initialize()
         {
             _targetTransforms = new TransformAccessArray(INITIAL_CAPACITY);
-            _targetPositions = new NativeList<float3>(INITIAL_CAPACITY, Allocator.Persistent);
+            _targetPositionX = new NativeList<float>(INITIAL_CAPACITY, Allocator.Persistent);
+            _targetPositionZ = new NativeList<float>(INITIAL_CAPACITY, Allocator.Persistent);
             _targetStates = new NativeList<RadarTarget>(INITIAL_CAPACITY, Allocator.Persistent);
             _queries = new NativeList<RadarQuery>(INITIAL_CAPACITY, Allocator.Persistent);
             _hostility = new NativeList<byte>(INITIAL_CAPACITY, Allocator.Persistent);
+            _eligibleBits = new NativeList<ulong>(INITIAL_CAPACITY, Allocator.Persistent);
             _detectedBits = new NativeList<ulong>(INITIAL_CAPACITY, Allocator.Persistent);
 
             foreach (IEntity entity in _entityLocator.Entities) HandleEntityAdded(entity);
@@ -79,10 +83,12 @@ namespace EmpireAtWar.Services.Radar
             _entityLocator.EntityAdded -= HandleEntityAdded;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _targetTransforms.Dispose();
-            _targetPositions.Dispose();
+            _targetPositionX.Dispose();
+            _targetPositionZ.Dispose();
             _targetStates.Dispose();
             _queries.Dispose();
             _hostility.Dispose();
+            _eligibleBits.Dispose();
             _detectedBits.Dispose();
         }
 
@@ -126,34 +132,67 @@ namespace EmpireAtWar.Services.Radar
 
         private void ScanDueRadars()
         {
-            int wordsPerQuery;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.RadarSnapshot.Auto())
 #endif
             {
-                wordsPerQuery = PrepareScan();
+                PrepareScan();
             }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.RadarJob.Auto())
-#endif
+            JobHandle handle = default;
+            int wordsPerQuery;
+            try
             {
-                RunJobs(wordsPerQuery);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.RadarJob.Auto())
+#endif
+                {
+                    handle = new RadarPositionJob
+                    {
+                        PositionX = _targetPositionX.AsArray(),
+                        PositionZ = _targetPositionZ.AsArray()
+                    }.ScheduleReadOnly(_targetTransforms, TRANSFORM_BATCH_SIZE);
+                    JobHandle.ScheduleBatchedJobs();
+                }
+
+                // Live entity/scanner reads are finished. Only independent snapshot buffers
+                // are touched while workers own the position arrays.
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.RadarSnapshot.Auto())
+#endif
+                {
+                    wordsPerQuery = PrepareResults();
+                }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.RadarJob.Auto())
+#endif
+                {
+                    handle = ScheduleDetection(wordsPerQuery, handle);
+                }
+            }
+            finally
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.RadarJob.Auto())
+#endif
+                {
+                    handle.Complete();
+                }
             }
 
             DeliverResults(wordsPerQuery);
         }
 
-        private int PrepareScan()
+        private void PrepareScan()
         {
             int targetCount = _targets.Count;
             _targetStates.ResizeUninitialized(targetCount);
-            _targetPositions.ResizeUninitialized(targetCount);
+            _targetPositionX.ResizeUninitialized(targetCount);
+            _targetPositionZ.ResizeUninitialized(targetCount);
             for (int i = 0; i < targetCount; i++)
             {
                 IEntity target = _targets[i];
                 _targetStates[i] = new RadarTarget(GetOwnerSlot(target.Owner), IsDetectable(target));
-                _targetPositions[i] = new float3(float.NaN);
             }
 
             _queries.Clear();
@@ -167,28 +206,29 @@ namespace EmpireAtWar.Services.Radar
             }
 
             BuildHostility(_slotOwners.Count);
+        }
 
-            int wordsPerQuery = (targetCount + BITS_PER_WORD - 1) / BITS_PER_WORD;
+        private int PrepareResults()
+        {
+            int wordsPerQuery = (_targets.Count + BITS_PER_WORD - 1) / BITS_PER_WORD;
+            _eligibleBits.ResizeUninitialized(_slotOwners.Count * wordsPerQuery);
+            BuildEligibility(_targetStates.AsArray(), _hostility.AsArray(), _slotOwners.Count,
+                wordsPerQuery, _eligibleBits.AsArray());
             _detectedBits.ResizeUninitialized(_dueRadars.Count * wordsPerQuery);
             return wordsPerQuery;
         }
 
-        private void RunJobs(int wordsPerQuery)
+        private JobHandle ScheduleDetection(int wordsPerQuery, JobHandle positions)
         {
-            JobHandle positions = new RadarPositionJob
-            {
-                Positions = _targetPositions.AsArray()
-            }.ScheduleReadOnly(_targetTransforms, TRANSFORM_BATCH_SIZE);
-            new RadarDetectionJob
+            return new RadarDetectionJob
             {
                 Queries = _queries.AsArray(),
-                Targets = _targetStates.AsArray(),
-                Positions = _targetPositions.AsArray(),
-                Hostility = _hostility.AsArray(),
+                PositionX = _targetPositionX.AsArray(),
+                PositionZ = _targetPositionZ.AsArray(),
+                EligibleBits = _eligibleBits.AsArray(),
                 DetectedBits = _detectedBits.AsArray(),
-                SlotCount = _slotOwners.Count,
                 WordsPerQuery = wordsPerQuery
-            }.Schedule(_dueRadars.Count, DETECTION_BATCH_SIZE, positions).Complete();
+            }.Schedule(_dueRadars.Count, DETECTION_BATCH_SIZE, positions);
         }
 
         private void DeliverResults(int wordsPerQuery)
@@ -278,6 +318,28 @@ namespace EmpireAtWar.Services.Radar
             if (index != last)
             {
                 _targetIndices[moved] = index;
+            }
+        }
+
+        internal static void BuildEligibility(NativeArray<RadarTarget> targets, NativeArray<byte> hostility,
+            int slotCount, int wordsPerOwner, NativeArray<ulong> eligibleBits)
+        {
+            for (int owner = 0; owner < slotCount; owner++)
+            {
+                int hostilityRow = owner * slotCount;
+                for (int word = 0; word < wordsPerOwner; word++)
+                {
+                    ulong bits = 0;
+                    int first = word * BITS_PER_WORD;
+                    int last = Math.Min(first + BITS_PER_WORD, targets.Length);
+                    for (int i = first; i < last; i++)
+                    {
+                        RadarTarget target = targets[i];
+                        if (target.IsDetectable && hostility[hostilityRow + target.OwnerSlot] != 0)
+                            bits |= 1ul << (i - first);
+                    }
+                    eligibleBits[owner * wordsPerOwner + word] = bits;
+                }
             }
         }
 

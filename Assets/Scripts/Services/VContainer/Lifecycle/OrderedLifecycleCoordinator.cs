@@ -8,7 +8,7 @@ using VContainer.Internal;
 namespace EmpireAtWar.Lifecycle
 {
     public sealed class OrderedLifecycleCoordinator : global::VContainer.Unity.IInitializable,
-        global::VContainer.Unity.ITickable, global::VContainer.Unity.IFixedTickable,
+        global::VContainer.Unity.ITickable, global::VContainer.Unity.IPostTickable, global::VContainer.Unity.IFixedTickable,
         global::VContainer.Unity.ILateTickable, IDisposable
     {
         // Per-callback markers named like Zenject's, e.g. "EmpireAtWar.Services.Foo.Tick()".
@@ -20,9 +20,11 @@ namespace EmpireAtWar.Lifecycle
 
         private readonly IInitializable[] _initializables;
         private readonly ITickable[] _tickables;
+        private readonly IPostTickable[] _postTickables;
         private readonly IFixedTickable[] _fixedTickables;
         private readonly ILateTickable[] _lateTickables;
         private readonly ProfilerMarker[] _tickMarkers;
+        private readonly ProfilerMarker[] _postTickMarkers;
         private readonly ProfilerMarker[] _fixedTickMarkers;
         private readonly ProfilerMarker[] _lateTickMarkers;
         private readonly IOrderedDisposable[] _disposables;
@@ -33,6 +35,7 @@ namespace EmpireAtWar.Lifecycle
         public OrderedLifecycleCoordinator(
             ContainerLocal<IReadOnlyList<IInitializable>> initializables,
             ContainerLocal<IReadOnlyList<ITickable>> tickables,
+            ContainerLocal<IReadOnlyList<IPostTickable>> postTickables,
             ContainerLocal<IReadOnlyList<IFixedTickable>> fixedTickables,
             ContainerLocal<IReadOnlyList<ILateTickable>> lateTickables,
             ContainerLocal<IReadOnlyList<IOrderedDisposable>> disposables,
@@ -41,9 +44,11 @@ namespace EmpireAtWar.Lifecycle
         {
             _initializables = Order(initializables.Value, order => order.Initialize);
             _tickables = Order(tickables.Value, order => order.Tick);
+            _postTickables = Order(postTickables.Value, order => order.PostTick);
             _fixedTickables = Order(fixedTickables.Value, order => order.FixedTick);
             _lateTickables = Order(lateTickables.Value, order => order.LateTick);
             _tickMarkers = Markers(_tickables, "Tick()");
+            _postTickMarkers = Markers(_postTickables, "PostTick()");
             _fixedTickMarkers = Markers(_fixedTickables, "FixedTick()");
             _lateTickMarkers = Markers(_lateTickables, "LateTick()");
             _disposables = Order(disposables.Value, order => order.Dispose);
@@ -64,6 +69,16 @@ namespace EmpireAtWar.Lifecycle
             {
                 using (_tickMarkers[i].Auto())
                     _tickables[i].Tick();
+            }
+        }
+
+        public void PostTick()
+        {
+            if (!_tickGate.IsTicking || _isDisposed) return;
+            for (int i = 0; i < _postTickables.Length; i++)
+            {
+                using (_postTickMarkers[i].Auto())
+                    _postTickables[i].PostTick();
             }
         }
 

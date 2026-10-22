@@ -685,6 +685,7 @@ namespace EmpireAtWar.Tests.Editor
                 AssertVoiceCapability(shipScope, slot);
                 AssertDecoratedHealth(shipScope, data);
                 SquadronType squadronType = player.Container.Resolve<FactionRoster>().Squadrons.Keys.OrderBy(type => type).First();
+                _battle.Container.Resolve<FighterPoseBatch>().PostTick();
                 Squadron squadron = player.Container.Resolve<SquadronFactory>().Create(
                     slot.Id, squadronType, origin + Vector3.right * 100f, Quaternion.identity);
                 EntityLifetimeScope squadronScope = AssertEntity(squadron, player, slot);
@@ -845,11 +846,14 @@ namespace EmpireAtWar.Tests.Editor
             IReadOnlyList<EmpireAtWar.Lifecycle.IInitializable> callbacks =
                 container.Resolve<ContainerLocal<IReadOnlyList<EmpireAtWar.Lifecycle.IInitializable>>>().Value;
             int callbackCount = callbacks.Count;
+            FighterPoseBatch poses = _battle.Container.Resolve<FighterPoseBatch>();
+            poses.PostTick();
             squadron.Stow();
             Assert.That(scope.gameObject.activeSelf, Is.False);
             Assert.That(gate.IsTicking, Is.False);
             Assert.That(_battle.Container.Resolve<IEntityLocator>().TryGetEntity(entity.Id, out _), Is.False);
             position.y = container.Resolve<SquadronData>().Height;
+            poses.PostTick();
             squadron.Respawn(position, Quaternion.Euler(0f, 40f, 0f));
             Assert.That(scope.Container, Is.SameAs(container), "Pool reuse retains the built child scope.");
             Assert.That(scope.gameObject.activeSelf, Is.True);
