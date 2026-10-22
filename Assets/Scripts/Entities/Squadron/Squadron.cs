@@ -72,6 +72,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private LifetimeScope _scope;
         private LifecycleTickGate _tickGate;
         private ShipSfxHandle _audioHandle;
+        private SfxProfile _engineSound;
         private EntityComponentLifecycle _componentLifecycle;
         private IReadOnlyList<IRespawnable> _respawnables;
         private IReadOnlyList<IDespawnable> _despawnables;
@@ -126,7 +127,7 @@ namespace EmpireAtWar.Entities.Squadrons
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
             LifetimeScope scope, ShipSfxHandle audioHandle, ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
-            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
+            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService, ShipSfxData sfxData, SquadronType squadronType,
             SFoilsModel sFoils, ContainerLocal<IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView>> sFoilsViews,
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
@@ -141,6 +142,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _weapon = weapon;
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
+            _engineSound = sfxData.GetUnit(squadronType).Engine;
             _selectionModel = selectionModel;
             _audioDialogs = audioDialogs.Value;
             _sFoils = sFoils;
@@ -230,10 +232,18 @@ namespace EmpireAtWar.Entities.Squadrons
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
             _pilot.Tick(Time.deltaTime);
+            Vector3 previousPosition = _flight.Centroid;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronFlight.Auto())
 #endif
             _flight.Step(Time.deltaTime);
+            if (Time.deltaTime > 0f && !_pilot.HasArrived)
+            {
+                float speed = Vector3.Distance(previousPosition, _flight.Centroid) / Time.deltaTime;
+                if (speed > 0f)
+                    _shipSfxService.TryHoldEngine(_audioHandle, _engineSound, _flight.Centroid,
+                        Mathf.Clamp01(speed / _flight.Data.CruiseSpeed), 1f);
+            }
         }
 
         private void TickOrder(float deltaTime)

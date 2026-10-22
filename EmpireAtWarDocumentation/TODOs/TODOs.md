@@ -7,6 +7,9 @@
 
 ### Features
 
+- [ ] **Extend audio system with Republic at War SFX (interface, orbital announcer, ambience, shields, per-unit engines/explosions, alarms)** → [[TODOs/Features/Audio_System_Extension_Plan|Audio System Extension Plan]]; [[TODOs/Features/Audio_System_Extension_Plan - Research|Clip inventory and unit mapping]]
+  - **Implemented 2026-10-22**: 33 mapped imports, interface/orbital cues, Burst ambience, shield/ability sounds, per-unit engines/explosions and alarms; compile passed, 73 distinct recorded EditMode cases passed.
+  - **Remaining**: user in-game listening acceptance (balance, flyby loop seams, shield cadence, ambience fade and announcer timing); no agent Play Mode.
 - [ ] **Replace battle and menu music with categorized Republic at War tracks** → [[TODOs/Features/Music_Replacement_Plan|Music Replacement Plan]]; [[TODOs/Features/Music_Replacement_Plan - Research|Exact track inventory]]
   - **Implemented (2026-10-22)**: 22 battle + 31 menu tracks; 41 legacy MP3s removed; Vorbis streaming; loading-state fix; 8/8 tests and Windows Editor menu playback/pause/mute/completion smoke passed. Windows build Succeeded (3.80 GiB), built playlists verified; unrelated planet shader error recorded.
   - **Remaining**: standalone/battle-scene and listening acceptance, strict single-source review (pre-existing idle scene clone), representative audio profiling; macOS build module/runtime unavailable.

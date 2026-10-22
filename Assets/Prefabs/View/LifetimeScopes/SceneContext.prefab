@@ -621,6 +621,8 @@ MonoBehaviour:
   rangeDebugLineMaterial: {fileID: 2100000, guid: 27a86eafd4192de41a9c9f1f84540b4c,
     type: 2}
   shipSfxData: {fileID: 11400000, guid: 972628407566d0e458e3f5410913c76d, type: 2}
+  interfaceSfxData: {fileID: 11400000, guid: 722032f25a76680409fa3b5d478168d0, type: 2}
+  shipAmbienceData: {fileID: 11400000, guid: 7380d5d388165664280272a3f10011c1, type: 2}
   shipSfxSourcesPrefab: {fileID: 8526247814071835242, guid: ef603ca36e26a6f448a4eb74e87984c2,
     type: 3}
   cameraService: {fileID: 4348158288540546956}

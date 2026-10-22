@@ -27,7 +27,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
     [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HEALTH_INITIALIZE)]
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
+        IHealthComponent, IHealthAudioEvents, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
         IHealthUpgrade, IIonFieldShape
     {
         private ITimer _refreshShieldsTimer;
@@ -47,6 +47,14 @@ namespace EmpireAtWar.Components.Ship.Health
         private bool _isReleased;
 
         public event Action<IIonStunRenderers> IonStunViewSpawned;
+
+        public event Action<Vector3> ShieldImpacted;
+
+        public event Action HealthRestored
+        {
+            add => Model.OnRestored += value;
+            remove => Model.OnRestored -= value;
+        }
 
         public event Action OnValueChanged
         {
@@ -285,7 +293,11 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool ShowShieldImpact(Vector3 position, float damage)
         {
             if (_shield == null) return false;
-            if (!_isReleased) _shield.ShowImpact(position, damage);
+            if (!_isReleased)
+            {
+                _shield.ShowImpact(position, damage);
+                ShieldImpacted?.Invoke(position);
+            }
             return true;
         }
     }

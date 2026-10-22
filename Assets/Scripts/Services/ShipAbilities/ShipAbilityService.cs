@@ -20,6 +20,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly List<IEntity> _pendingCasters = new List<IEntity>();
 
         public event Action TargetingChanged;
+        public event Action<IReadOnlyList<IEntity>> TargetRejected;
+        public event Action<IReadOnlyList<IEntity>> TargetingCanceled;
 
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
@@ -38,7 +40,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public void Clear()
         {
-            CancelTargeting();
+            ClearTargeting();
             for (int i = _running.Count - 1; i >= 0; i--)
             {
                 if (_running[i].State == ShipAbilityState.Active) Stop(_running[i]);
@@ -84,7 +86,11 @@ namespace EmpireAtWar.Services.ShipAbilities
                     break;
                 }
             }
-            if (definition == null) return;
+            if (definition == null)
+            {
+                TargetRejected?.Invoke(casters);
+                return;
+            }
 
             if (definition.RequiresEnemyTarget)
             {
@@ -140,10 +146,18 @@ namespace EmpireAtWar.Services.ShipAbilities
                     accepted = true;
                 }
             }
-            if (accepted) CancelTargeting();
+            if (accepted) ClearTargeting();
+            else TargetRejected?.Invoke(_pendingCasters);
         }
 
         public void CancelTargeting()
+        {
+            if (!IsWaitingForTarget) return;
+            TargetingCanceled?.Invoke(_pendingCasters);
+            ClearTargeting();
+        }
+
+        private void ClearTargeting()
         {
             if (!IsWaitingForTarget) return;
             IsWaitingForTarget = false;
@@ -159,7 +173,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                 !Contains(selection, caster) ||
                 !caster.TryGetFacade(out IShipAbilityFacade abilities) ||
                 !TryFindSlot(abilities, PendingAbilityId, out ShipAbilitySlot slot) || !slot.CanActivate);
-            if (_pendingCasters.Count == 0) CancelTargeting();
+            if (_pendingCasters.Count == 0) ClearTargeting();
             else TargetingChanged?.Invoke();
         }
 

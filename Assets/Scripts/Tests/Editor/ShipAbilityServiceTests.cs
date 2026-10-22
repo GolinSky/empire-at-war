@@ -30,6 +30,38 @@ namespace EmpireAtWar.Tests.Editor
     {
         private GameObject _targetView;
 
+        [Test]
+        public void TargetingFeedback_RejectsInvalidTargetAndOnlyReportsExplicitCancel()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster(targeted: true);
+            int rejected = 0;
+            int canceled = 0;
+            service.TargetRejected += casters =>
+            {
+                Assert.That(casters, Is.EqualTo(new[] { caster.Entity }));
+                rejected++;
+            };
+            service.TargetingCanceled += casters =>
+            {
+                Assert.That(casters, Is.EqualTo(new[] { caster.Entity }));
+                canceled++;
+            };
+            service.Press(new[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+            service.SubmitTarget(null);
+            Assert.That(rejected, Is.EqualTo(1));
+            Assert.That(service.IsWaitingForTarget, Is.True);
+            service.CancelTargeting();
+            service.CancelTargeting();
+            Assert.That(canceled, Is.EqualTo(1));
+            service.Press(new[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+            service.Clear();
+            Assert.That(canceled, Is.EqualTo(1), "Teardown must not play a player cancellation cue.");
+            service.Press(new[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+            service.PruneTargeting(Array.Empty<IEntity>());
+            Assert.That(canceled, Is.EqualTo(1), "Losing the selection must not play a cancellation cue.");
+        }
+
         [TestCase(false, 0.2f)]
         [TestCase(true, 0.2f)]
         [TestCase(false, 0.05f)]
@@ -229,6 +261,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeFactory factory = new FakeFactory();
             ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            int cancellations = 0;
+            service.TargetingCanceled += _ => cancellations++;
             FakeCommand caster = CreateCaster(targeted: true);
             _targetView = new GameObject("Target");
             FakeHealth targetHealth = new FakeHealth(_targetView.transform);
@@ -245,6 +279,7 @@ namespace EmpireAtWar.Tests.Editor
             service.SubmitTarget(target);
             Assert.That(service.IsWaitingForTarget, Is.False);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(cancellations, Is.Zero, "An accepted target must not play the targeting-canceled cue.");
             service.LateDispose();
         }
 

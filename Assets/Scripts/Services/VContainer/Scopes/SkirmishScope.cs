@@ -74,6 +74,8 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
         [SerializeField] private Material rangeDebugLineMaterial;
         [SerializeField] private ShipSfxData shipSfxData;
+        [SerializeField] private InterfaceSfxData interfaceSfxData;
+        [SerializeField] private ShipAmbienceData shipAmbienceData;
         [SerializeField] private ShipSfxSources shipSfxSourcesPrefab;
         [SerializeField] private CameraService cameraService;
         [SerializeField] private MapGenerationSettings settings;
@@ -199,7 +201,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SpawnBlockerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
-                unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, shipSfxSourcesPrefab, cameraService);
+                unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,
+                shipSfxSourcesPrefab, cameraService);
             MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem);
         }
 

@@ -21,6 +21,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         ILateDisposable, ISkirmishUiRoute, ITickable, IObserver<BattleState>
     {
         private readonly IFactionService _factionService;
+        private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
         private readonly IPlayerFactionModelObserver _model;
         private readonly IFactionResearchModelObserver _research;
         private readonly IUnitRequestFactory _unitRequestFactory;
@@ -59,8 +60,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
             FactionRoster roster,
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
             IAssetService assets,
-            ShipsData shipsData) : base(uiService, cancelRouter)
+            ShipsData shipsData, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio) : base(uiService, cancelRouter)
         {
+            _interfaceAudio = interfaceAudio;
             _placement = placement;
             _assets = assets;
             _shipsData = shipsData;
@@ -104,6 +106,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
+            if (_economy.Money < unitRequest.FactionData.Price)
+            {
+                _interfaceAudio.PlayRejected();
+                return;
+            }
             _factionService.TryPurchaseUnit(unitRequest);
         }
 

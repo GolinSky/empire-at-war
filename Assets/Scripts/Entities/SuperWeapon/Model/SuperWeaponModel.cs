@@ -18,6 +18,7 @@ namespace EmpireAtWar.Entities.SuperWeapons
         private readonly List<SuperWeaponType> _cooling = new();
 
         public event Action<SuperWeaponType, SuperWeaponState> OnStateChanged;
+        public bool IsRestoring { get; private set; }
 
         public SuperWeaponState GetState(SuperWeaponType type)
         {
@@ -60,7 +61,15 @@ namespace EmpireAtWar.Entities.SuperWeapons
             _states[type] = state;
             if (cooldownLeft > 0f) _cooldownLeft[type] = cooldownLeft;
             else _cooldownLeft.Remove(type);
-            OnStateChanged?.Invoke(type, state);
+            IsRestoring = true;
+            try
+            {
+                OnStateChanged?.Invoke(type, state);
+            }
+            finally
+            {
+                IsRestoring = false;
+            }
         }
 
         public void Tick(float deltaTime)

@@ -6,6 +6,7 @@ namespace EmpireAtWar.Lifecycle
     {
         public const int INPUT_LOCK_INITIALIZE = -400;
         public const int PLAYER_SCOPES_INITIALIZE = -300;
+        public const int INTERFACE_SFX_INITIALIZE = PLAYER_SCOPES_INITIALIZE - 1;
         public const int CORE_HUD_INITIALIZE = -200;
         public const int HEALTH_INITIALIZE = -100;
         public const int ORDER_INPUT_INITIALIZE = -100;

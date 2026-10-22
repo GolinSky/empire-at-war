@@ -31,6 +31,8 @@ namespace EmpireAtWar.Models.Health
 
         public event Action OnDestroy;
 
+        public event Action OnRestored;
+
         public ShipClass ShipClass => _data.ShipClass;
         public float Hull { get; private set; }
         public float MaxHull => _data.Hull * _hullMultiplier * _levelHullScale;
@@ -135,6 +137,7 @@ namespace EmpireAtWar.Models.Health
                     .All(point => point.IsDestroyed);
             Hull = MaxHull * hullPercentage;
             Shields = IsLostShieldGenerator ? 0f : MaxShields * shieldPercentage;
+            OnRestored?.Invoke();
             OnValueChanged?.Invoke();
         }
 

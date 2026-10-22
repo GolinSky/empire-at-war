@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
@@ -16,7 +17,17 @@ namespace EmpireAtWar.Services.Audio
         [Tooltip("Weapons that sound different from their family, plus weapons outside the families.")]
         [SerializeField] private WeaponAudioProfile[] weapons;
         [SerializeField] private ShipAbilityAudioProfile[] abilities;
-        [SerializeField] private SfxProfile engine;
+        [SerializeField] private SfxProfile fallbackEngine;
+        [SerializeField] private SfxProfile fallbackExplosion;
+        [SerializeField] private DictionaryWrapper<ShipType, ShipUnitAudioProfile> ships;
+        [SerializeField] private DictionaryWrapper<SquadronType, ShipUnitAudioProfile> squadrons;
+        [SerializeField] private SfxProfile abilityActivated;
+        [SerializeField] private SfxProfile abilityCanceled;
+        [SerializeField] private SfxProfile shieldsDown;
+        [SerializeField] private SfxProfile shieldsUp;
+        [SerializeField] private SfxProfile shieldImpact;
+        [SerializeField] private float shieldUpThreshold = 0.1f;
+        [SerializeField] private float shieldCueCooldown = 4f;
         [SerializeField] private SfxProfile acceleration;
         [SerializeField] private SfxProfile alarm;
         [SerializeField] private SfxProfile hyperspace;
@@ -33,10 +44,16 @@ namespace EmpireAtWar.Services.Audio
 
         [SerializeField] private int poolVoices = 20;
         [SerializeField] private int perShipVoices = 2;
-        [SerializeField] private int engineVoices = 4;
+        [SerializeField] private int engineVoices = 6;
         [SerializeField] private int startsPerWindow = 3;
 
-        public SfxProfile Engine => engine;
+        public SfxProfile AbilityActivated => abilityActivated;
+        public SfxProfile AbilityCanceled => abilityCanceled;
+        public SfxProfile ShieldsDown => shieldsDown;
+        public SfxProfile ShieldsUp => shieldsUp;
+        public SfxProfile ShieldImpact => shieldImpact;
+        public float ShieldUpThreshold => shieldUpThreshold;
+        public float ShieldCueCooldown => shieldCueCooldown;
         public SfxProfile Acceleration => acceleration;
         public SfxProfile Alarm => alarm;
         public SfxProfile Hyperspace => hyperspace;
@@ -54,6 +71,12 @@ namespace EmpireAtWar.Services.Audio
         public float VoiceDuckGain => voiceDuckGain;
 
         public ShipVoiceSet GetVoiceSet(FactionType faction) => voices.Dictionary[faction];
+
+        public ShipUnitAudioProfile GetUnit(ShipType type) => ships.Dictionary.TryGetValue(type, out var profile)
+            ? profile : new ShipUnitAudioProfile(fallbackEngine, fallbackExplosion, alarm);
+
+        public ShipUnitAudioProfile GetUnit(SquadronType type) => squadrons.Dictionary.TryGetValue(type, out var profile)
+            ? profile : new ShipUnitAudioProfile(fallbackEngine, fallbackExplosion, alarm);
 
         /// <summary>The weapon's own sound if it has one, otherwise its family's sound.</summary>
         public SfxProfile GetWeapon(WeaponType type, WeaponFamily family)

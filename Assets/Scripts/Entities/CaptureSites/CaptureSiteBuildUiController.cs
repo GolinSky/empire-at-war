@@ -14,13 +14,16 @@ namespace EmpireAtWar.Entities.CaptureSites
     {
         private readonly ICaptureSiteBuildSelection _selection;
         private readonly CaptureSiteData _data;
+        private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
         private readonly TooltipRequests _tooltips;
         private CaptureSiteBuildUi _ui;
         private TooltipHoverSubscription _tooltipHover;
 
         public CaptureSiteBuildUiController(IUiService uiService, ICaptureSiteBuildSelection selection,
-            CaptureSiteData data, ITooltipService tooltipService) : base(uiService, null)
+            CaptureSiteData data, ITooltipService tooltipService,
+            EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio) : base(uiService, null)
         {
+            _interfaceAudio = interfaceAudio;
             _selection = selection;
             _data = data;
             _tooltips = new TooltipRequests(tooltipService);
@@ -48,7 +51,15 @@ namespace EmpireAtWar.Entities.CaptureSites
             }
         }
 
-        public void Build(SiteFacilityType type) => _selection.BuildSelected(type);
+        public void Build(SiteFacilityType type)
+        {
+            if (!_selection.CanAfford(_data.GetCost(type).Price))
+            {
+                _interfaceAudio.PlayRejected();
+                return;
+            }
+            _selection.BuildSelected(type);
+        }
 
         private void RefreshSelection()
         {
