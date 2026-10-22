@@ -16,7 +16,8 @@
 - Submodules, external `file:` packages, and Git packages without a full commit pin matching the lock file are rejected. Git LFS hydration and integrity checks precede the build.
 - Unity CLI reads the committed Editor version; builds Windows x64 using the shared scene list and existing Mono backend.
 - Addressables must use committed `BuildWithPlayer`. The installed 2.9.1 player processor throws on content-build errors.
-- EditMode tests gate the player build. The official `unity test` batch runner opens only the clean, idle CI snapshot; failures, missing reports, and zero passed tests fail the job. NUnit results are archived with the other artifacts.
+- EditMode tests gate the player build. The official `unity test` batch runner opens only the clean, idle CI snapshot; failures, missing reports, and reports without a passed `EmpireAtWar.Tests.` test case fail the job. Passing package tests alone cannot satisfy the gate. NUnit results are archived with the other artifacts.
+- Gate regression checks: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tools/Jenkins/Test-AssertTestResults.ps1`.
 - Every test attempt removes its previous report/provenance before launching Unity. A successful run records the snapshot commit, Jenkins build number, and report SHA-256; the build gate verifies all three to reject stale or replaced reports.
 - Test, build, package, and archive phases use `Tools/Jenkins` from that same committed snapshot. The installed scripts only bootstrap preparation; artifacts record both installed and snapshot tool commits.
 - Preparation verifies the installed scripts against the installer’s hash manifest before snapshot mutation. Changes to bootstrap/preparation itself require reinstalling committed tools; later phases automatically follow committed `main`.

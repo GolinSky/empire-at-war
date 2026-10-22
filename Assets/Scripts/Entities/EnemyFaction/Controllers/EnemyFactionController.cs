@@ -62,6 +62,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public bool HasPendingReinforcement => _builds.Count > 0;
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
+
+        public bool CanQueue(string requestId, int maxCount) => _builds.CanAdd(requestId, maxCount);
+
+        public void ReserveExternalPipeline(string requestId) => _builds.ReserveExternalPipeline(requestId);
+
+        public void ReleaseExternalPipeline(string requestId) => _builds.ReleaseExternalPipeline(requestId);
         /// <summary>Living squadrons the AI paid for; hangar squadrons are free and never listed.</summary>
         public IEnumerable<long> BuiltSquadrons => _builtSquadrons;
 
@@ -147,7 +153,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Purchase(UnitRequest unitRequest)
         {
-            if (!_productionAccess.CanProduce ||
+            if (!CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
+                !_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != Owner)
             {
                 return;

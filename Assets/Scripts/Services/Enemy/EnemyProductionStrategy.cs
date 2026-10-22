@@ -170,6 +170,11 @@ namespace EmpireAtWar.Services.Enemy
             FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
                                     !_purchaseProcessor.IsUpgradingStation
                 ? _factionModel.GetCurrentLevelFactionData() : null;
+            if (levelData != null &&
+                !_purchaseProcessor.CanQueue(_factionModel.CurrentLevel.ToString(), levelData.MaxCount))
+            {
+                levelData = null;
+            }
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
             bool canResearchIncome = TrySelectResearch(true, out ResearchType incomeResearch,
@@ -630,7 +635,8 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool CanReserve<TRequest>(string requestId, FactionData data)
         {
-            return _unitLimitModel.CanReserve<TRequest>(
+            return _purchaseProcessor.CanQueue(requestId, data.MaxCount) &&
+                _unitLimitModel.CanReserve<TRequest>(
                 requestId,
                 data.MaxCount,
                 data.UnitCapacity,

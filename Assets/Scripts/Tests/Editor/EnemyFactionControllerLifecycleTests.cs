@@ -93,6 +93,58 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Purchase_FullPipelinesAndSameIdLimitRejectBeforeSpending()
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 100);
+                FactionData data = new FactionData();
+                SetBackingField(data, nameof(FactionData.MaxCount), 2);
+                SetBackingField(data, nameof(FactionData.BuildTime), 10);
+                SetBackingField(data, nameof(FactionData.UnitCapacity), 1);
+                TrackingWallet wallet = new TrackingWallet();
+                EnemyUnitLimitModel limits = new EnemyUnitLimitModel();
+                EnemyFactionController controller = new EnemyFactionController(
+                    model: new EnemyFactionModel(null, null),
+                    shipFactory: null,
+                    miningFacilityFactory: null,
+                    defendPlatformFactory: null,
+                    research: null,
+                    economyProvider: new TrackingEconomyProvider(),
+                    wallet: wallet,
+                    shipSpawnPoints: null,
+                    unitLimitModel: limits,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(),
+                    squadronLauncher: null,
+                    squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+                ShipType[] types = (ShipType[])Enum.GetValues(typeof(ShipType));
+                for (int i = 0; i < PlayerFactionModel.MAX_ACTIVE_PIPELINES; i++)
+                    controller.Purchase(new ShipUnitRequest(data, types[i]));
+
+                controller.Purchase(new ShipUnitRequest(data, types[PlayerFactionModel.MAX_ACTIVE_PIPELINES]));
+                Assert.That(wallet.SpendCount, Is.EqualTo(7));
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(7));
+                Assert.That(limits.ShipOrdersCount, Is.EqualTo(7));
+
+                controller.Purchase(new ShipUnitRequest(data, types[0]));
+                controller.Purchase(new ShipUnitRequest(data, types[0]));
+                Assert.That(wallet.SpendCount, Is.EqualTo(8));
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(8));
+                Assert.That(limits.ShipOrdersCount, Is.EqualTo(8));
+                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(8));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+            }
+        }
+
+        [Test]
         public void ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds()
         {
             EnemyFactionModel model =
@@ -402,6 +454,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 var upgrade = new FactionData();
+                SetBackingField(upgrade, nameof(FactionData.MaxCount), 1);
                 SetBackingField(upgrade, nameof(FactionData.BuildTime), 10);
                 var wallet = new TrackingWallet();
                 var model = new EnemyFactionModel(null, null);

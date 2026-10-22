@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
                 SuperWeaponModel model = new SuperWeaponModel();
                 // Charging, purchasing and economy are outside this firing regression.
                 EnemySuperWeaponController controller = new EnemySuperWeaponController(
-                    fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy));
+                    fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy), null);
                 MethodInfo tryFire = typeof(EnemySuperWeaponController).GetMethod("TryFire",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 model.StartCharging(type);

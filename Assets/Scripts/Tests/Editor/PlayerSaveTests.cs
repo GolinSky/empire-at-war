@@ -136,6 +136,105 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(builds.Builds.Single().TimeLeft, Is.EqualTo(3f));
         }
 
+        [Test]
+        public void BuildQueue_SameIdMatchesHumanTimingAndCarriesExcessTime()
+        {
+            EnemyBuildQueue builds = new EnemyBuildQueue();
+            PlayerFactionModel human = new PlayerFactionModel(null, null);
+            FactionData data = CreateFactionData(3, 10);
+            UnitRequest[] requests =
+            {
+                new LevelUnitRequest(data, 1),
+                new LevelUnitRequest(data, 2),
+                new LevelUnitRequest(data, 1),
+                new LevelUnitRequest(data, 1)
+            };
+            System.Collections.Generic.List<UnitRequest> finished = new System.Collections.Generic.List<UnitRequest>();
+            System.Collections.Generic.List<UnitRequest> humanFinished = new System.Collections.Generic.List<UnitRequest>();
+            human.OnUnitCompleted += humanFinished.Add;
+            foreach (UnitRequest request in requests)
+            {
+                builds.Add(request, data.BuildTime);
+                human.QueueUnit(request);
+            }
+
+            foreach (float elapsed in new[] { 4f, 8f, 18f })
+            {
+                builds.Advance(elapsed, finished.Add);
+                human.Advance(elapsed);
+                Assert.That(finished, Is.EquivalentTo(humanFinished));
+                Assert.That(builds.Builds.OrderBy(build => build.Request.Id).Select(build => build.TimeLeft),
+                    Is.EqualTo(human.QueuedItems.OrderBy(item => item.UnitRequest.Id)
+                        .Select(item => item.RemainingBuildTime)));
+            }
+            Assert.That(finished.Where(request => request.Id == "1"),
+                Is.EqualTo(new[] { requests[0], requests[2], requests[3] }));
+        }
+
+        [Test]
+        public void BuildQueue_AdmissionMatchesHumanPipelineAndPerIdLimits()
+        {
+            EnemyBuildQueue builds = new EnemyBuildQueue();
+            PlayerFactionModel human = new PlayerFactionModel(null, null);
+            FactionData data = CreateFactionData(2, 10);
+            for (int id = 1; id <= PlayerFactionModel.MAX_ACTIVE_PIPELINES; id++)
+            {
+                LevelUnitRequest request = new LevelUnitRequest(data, id);
+                builds.Add(request, 10f);
+                human.QueueUnit(request);
+            }
+
+            Assert.That(builds.CanAdd("8", data.MaxCount), Is.False);
+            Assert.That(builds.CanAdd("1", data.MaxCount), Is.True);
+            LevelUnitRequest second = new LevelUnitRequest(data, 1);
+            builds.Add(second, 10f);
+            human.QueueUnit(second);
+            Assert.That(builds.CanAdd(second.Id, data.MaxCount),
+                Is.EqualTo(human.CanQueueUnit(second)).And.False);
+
+            builds.RemoveAll(request => request.Id == "2");
+            Assert.That(builds.CanAdd("8", data.MaxCount), Is.True);
+            builds.Clear();
+            Assert.That(builds.CanAdd("1", 0), Is.False);
+            Assert.That(builds.CanAdd("8", data.MaxCount), Is.True);
+        }
+
+        [Test]
+        public void BuildQueue_RestoredSameIdPreservesRemainingTimesAndWaitsItsTurn()
+        {
+            EnemyBuildQueue restored = new EnemyBuildQueue();
+            FactionData data = CreateFactionData(2, 10);
+            ShipUnitRequest first = new ShipUnitRequest(data, ShipType.Venator);
+            ShipUnitRequest second = new ShipUnitRequest(data, ShipType.Venator);
+            restored.Add(first, 3f);
+            restored.Add(second, 7f);
+            System.Collections.Generic.List<UnitRequest> finished = new System.Collections.Generic.List<UnitRequest>();
+
+            restored.Advance(5f, finished.Add);
+
+            Assert.That(finished, Is.EqualTo(new[] { first }));
+            Assert.That(restored.Builds.Single().TimeLeft, Is.EqualTo(5f));
+            restored.Advance(5f, finished.Add);
+            Assert.That(finished, Is.EqualTo(new[] { first, second }));
+        }
+
+        [Test]
+        public void BuildQueue_LegacySaveWithEightIdsRunsOnlySevenAtOnce()
+        {
+            EnemyBuildQueue restored = new EnemyBuildQueue();
+            FactionData data = CreateFactionData(1, 10);
+            for (int id = 1; id <= 8; id++)
+                restored.Add(new LevelUnitRequest(data, id), 10f);
+            System.Collections.Generic.List<UnitRequest> finished = new System.Collections.Generic.List<UnitRequest>();
+
+            restored.Advance(10f, finished.Add);
+
+            Assert.That(finished.Count, Is.EqualTo(PlayerFactionModel.MAX_ACTIVE_PIPELINES));
+            Assert.That(restored.Builds.Single().TimeLeft, Is.EqualTo(10f));
+            restored.Advance(10f, finished.Add);
+            Assert.That(finished.Count, Is.EqualTo(8));
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void AiSuperWeapon_SaveLoad_ResumesPaidChargeAndCompletesOrRefundsOnce(bool hasStation)
@@ -149,7 +248,7 @@ namespace EmpireAtWar.Tests.Editor
             SuperWeaponModel model = new SuperWeaponModel();
             model.Restore(option.Key, SuperWeaponState.Unavailable, 45f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
-                null, null, null, production, model, faction, economy, owner);
+                null, null, null, production, model, faction, economy, owner, new QueuePurchaseProcessor());
             typeof(EnemySuperWeaponController).GetMethod("TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(controller, new object[] { option.Key, option.Value });
             controller.AdvanceCharging(option.Value.BuildTime / 2f);
@@ -161,11 +260,13 @@ namespace EmpireAtWar.Tests.Editor
             SuperWeaponModel restoredModel = new SuperWeaponModel();
             EconomyModel restoredEconomy = new EconomyModel(null, economy.Money);
             production.CanProduce = hasStation;
+            QueuePurchaseProcessor restoredProduction = new QueuePurchaseProcessor();
             EnemySuperWeaponController restored = new EnemySuperWeaponController(
-                null, null, null, production, restoredModel, faction, restoredEconomy, owner);
+                null, null, null, production, restoredModel, faction, restoredEconomy, owner, restoredProduction);
             new AiSuperWeaponSaveSource(new PlayerSaveRegistry(), owner, restoredModel, restored).RestoreBeforeUnits(save);
 
             Assert.That(restored.GetChargeTimeRemaining(option.Key), Is.EqualTo(remaining));
+            Assert.That(restoredProduction.CanQueue(option.Key.ToString(), 1), Is.False);
             Assert.That(restoredModel.GetCooldownRemaining(option.Key), Is.EqualTo(45f));
             restored.AdvanceCharging(remaining - 0.5f);
             Assert.That(restoredModel.GetState(option.Key), Is.EqualTo(SuperWeaponState.Charging));
@@ -173,6 +274,7 @@ namespace EmpireAtWar.Tests.Editor
             restored.AdvanceCharging(remaining);
             Assert.That(restoredModel.GetState(option.Key),
                 Is.EqualTo(hasStation ? SuperWeaponState.Ready : SuperWeaponState.Unavailable));
+            Assert.That(restoredProduction.CanQueue(option.Key.ToString(), 1), Is.True);
             Assert.That(restoredEconomy.Money,
                 Is.EqualTo(economy.Money + (hasStation ? 0 : option.Value.Price)));
             Assert.That(restoredModel.CanFire(option.Key), Is.False, "Loading must preserve the independent cooldown.");
@@ -189,7 +291,8 @@ namespace EmpireAtWar.Tests.Editor
             SuperWeaponModel model = new SuperWeaponModel();
             EconomyModel economy = new EconomyModel(null, 1f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(null, null, null,
-                new ProductionAccess { CanProduce = true }, model, new EnemyFactionModel(null, roster), economy, owner);
+                new ProductionAccess { CanProduce = true }, model, new EnemyFactionModel(null, roster), economy, owner,
+                new QueuePurchaseProcessor());
             PlayerSave save = PlayerSave.Create(owner.Id);
             save.SuperWeapons = new[] { JsonUtility.FromJson<SuperWeaponSave>(
                 "{\"type\":" + (int)option.Key + ",\"state\":" + (int)SuperWeaponState.Charging + ",\"cooldown\":0}") };
@@ -200,6 +303,46 @@ namespace EmpireAtWar.Tests.Editor
             controller.AdvanceCharging(option.Value.BuildTime);
             Assert.That(model.CanFire(option.Key), Is.True);
             Assert.That(economy.Money, Is.EqualTo(1f));
+        }
+
+        [Test]
+        public void AiSuperWeapon_SharesSevenPipelinesWithNormalBuilds()
+        {
+            FactionRoster roster = CreateRoster(FactionType.Empire);
+            var option = roster.SuperWeapons.First();
+            EnemyFactionModel faction = new EnemyFactionModel(null, roster) { CurrentLevel = option.Value.AvailableLevel };
+            EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            SuperWeaponModel model = new SuperWeaponModel();
+            QueuePurchaseProcessor production = new QueuePurchaseProcessor();
+            FactionData data = CreateFactionData(1, 10);
+            for (int id = 1; id <= PlayerFactionModel.MAX_ACTIVE_PIPELINES; id++)
+                production.Queue.Add(new LevelUnitRequest(data, id), 10f);
+            EnemySuperWeaponController controller = new EnemySuperWeaponController(
+                null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), production);
+            MethodInfo purchase = typeof(EnemySuperWeaponController).GetMethod(
+                "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.False);
+            Assert.That(economy.Money, Is.EqualTo(option.Value.Price * 3f));
+            production.Queue.RemoveAll(request => request.Id == "7");
+            Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.True);
+            Assert.That(production.CanQueue("7", 1), Is.False);
+            Assert.That(production.CanQueue(option.Key.ToString(), 1), Is.False);
+
+            controller.AdvanceCharging(option.Value.BuildTime);
+            Assert.That(model.GetState(option.Key), Is.EqualTo(SuperWeaponState.Ready));
+            Assert.That(production.CanQueue("7", 1), Is.True);
+        }
+
+        private sealed class QueuePurchaseProcessor : IEnemyPurchaseProcessor
+        {
+            public EnemyBuildQueue Queue { get; } = new EnemyBuildQueue();
+            public bool IsUpgradingStation => false;
+            public bool CanQueue(string requestId, int maxCount) => Queue.CanAdd(requestId, maxCount);
+            public void ReserveExternalPipeline(string requestId) => Queue.ReserveExternalPipeline(requestId);
+            public void ReleaseExternalPipeline(string requestId) => Queue.ReleaseExternalPipeline(requestId);
+            public void Purchase(UnitRequest request) => Queue.Add(request, request.FactionData.BuildTime);
         }
 
         private sealed class ProductionAccess : IProductionAccess

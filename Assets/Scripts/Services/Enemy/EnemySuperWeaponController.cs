@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEntityLocator _entities;
         private readonly IVisionService _vision;
         private readonly IProductionAccess _productionAccess;
+        private readonly IEnemyPurchaseProcessor _production;
 
         private readonly SuperWeaponModel _model;
         private readonly PlayerSlot _owner;
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Services.Enemy
             IVisionService vision,
             IProductionAccess productionAccess, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
-            PlayerSlot owner)
+            PlayerSlot owner, IEnemyPurchaseProcessor production)
         {
             _owner = owner;
             _model = model;
@@ -54,6 +55,7 @@ namespace EmpireAtWar.Services.Enemy
             _entities = entities;
             _vision = vision;
             _productionAccess = productionAccess;
+            _production = production;
         }
 
         public void Tick()
@@ -86,6 +88,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             // Older saves kept the charging state but not its timer; restart the paid charge.
             _chargeTimeLeft[type] = timeLeft ?? _factionModel.SuperWeapons[type].BuildTime;
+            _production.ReserveExternalPipeline(type.ToString());
         }
 
         public void AdvanceCharging(float deltaTime)
@@ -102,6 +105,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 _chargeTimeLeft.Remove(type);
+                _production.ReleaseExternalPipeline(type.ToString());
                 if (_productionAccess.CanProduce)
                 {
                     _model.CompleteCharging(type);
@@ -117,6 +121,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
             if (!_productionAccess.CanProduce ||
+                !_production.CanQueue(type.ToString(), data.MaxCount) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||
                 !_economyModel.TrySpend(data.Price))
@@ -124,6 +129,7 @@ namespace EmpireAtWar.Services.Enemy
 
             _model.StartCharging(type);
             _chargeTimeLeft[type] = data.BuildTime;
+            _production.ReserveExternalPipeline(type.ToString());
             Debug.Log($"[EnemyAI:SuperWeapon] Purchased {type}, Cost={data.Price}, Money={_economyModel.Money}");
             return true;
         }
