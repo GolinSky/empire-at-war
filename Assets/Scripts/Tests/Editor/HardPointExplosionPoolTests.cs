@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _anchor.position = Vector3.right * 10f;
 
-            _pool.Play(_anchor, null);
+            _pool.Play(_anchor, null, 1f);
 
             Assert.That(PlayingExplosions(), Has.Count.EqualTo(1));
             Assert.That(PlayingExplosions()[0].transform.position, Is.EqualTo(_anchor.position));
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Tick_FollowsMovingAnchor()
         {
-            _pool.Play(_anchor, null);
+            _pool.Play(_anchor, null, 1f);
             _anchor.position = Vector3.forward * 25f;
 
             _pool.Tick();
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Tick_FollowsOwnerFogVisibility()
         {
             FakeFogVisibility fog = new FakeFogVisibility { IsHiddenByFog = true };
-            _pool.Play(_anchor, fog);
+            _pool.Play(_anchor, fog, 1f);
             Assert.That(Renderer(PlayingExplosions()[0]).forceRenderingOff, Is.True);
 
             fog.IsHiddenByFog = false;
@@ -97,7 +97,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Tick_AfterAnchorDestroyed_KeepsLastPosition()
         {
             _anchor.position = Vector3.right * 5f;
-            _pool.Play(_anchor, null);
+            _pool.Play(_anchor, null, 1f);
             ExplosionVfx explosion = PlayingExplosions()[0];
             Object.DestroyImmediate(_anchor.gameObject);
 
@@ -109,7 +109,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Tick_AfterAnchorDestroyed_StopsLoopingExplosionAndReusesIt()
         {
-            _pool.Play(_anchor, null);
+            _pool.Play(_anchor, null, 1f);
             ExplosionVfx looping = PlayingExplosions()[0];
             ParticleSystem particles = looping.GetComponent<ParticleSystem>();
             ParticleSystem.MainModule main = particles.main;
@@ -123,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
             _pool.Tick();
             for (int i = 0; i < PREWARM_COUNT; i++)
             {
-                _pool.Play(Track(new GameObject("HardPoint")).transform, null);
+                _pool.Play(Track(new GameObject("HardPoint")).transform, null, 1f);
             }
 
             Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT));
@@ -134,7 +134,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             for (int i = 0; i <= PREWARM_COUNT; i++)
             {
-                _pool.Play(_anchor, null);
+                _pool.Play(_anchor, null, 1f);
             }
 
             Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT + 1));
@@ -147,7 +147,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject parent = Track(new GameObject("Owner"));
             _anchor.SetParent(parent.transform);
-            _pool.Play(_anchor, null);
+            _pool.Play(_anchor, null, 1f);
             ExplosionVfx explosion = PlayingExplosions()[0];
             (disableParent ? parent : _anchor.gameObject).SetActive(false);
 
@@ -161,6 +161,10 @@ namespace EmpireAtWar.Tests.Editor
         public void HardPoint_RestoredOrReenabledBeforeTick_RetiresOldFire(bool disable)
         {
             HardPoint hardPoint = _anchor.gameObject.AddComponent<HardPoint>();
+            SerializedObject serialized = new SerializedObject(hardPoint);
+            serialized.FindProperty("destroyedVfxAnchor").objectReferenceValue =
+                Track(new GameObject("VfxAnchor")).transform;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterInstance<IHardPointExplosionPool>(_pool);
             builder.RegisterInstance<IFogVisibilityFacade>(new VisibleFogFacade());
@@ -191,15 +195,61 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Play_ReusedExplosionReceivesNewWorldScale()
+        {
+            _pool.Play(_anchor, null, 8f);
+            ExplosionVfx explosion = PlayingExplosions()[0];
+            Assert.That(explosion.transform.lossyScale, Is.EqualTo(Vector3.one * 8f));
+            explosion.Clear();
+            _pool.Tick();
+
+            _pool.Play(_anchor, null, 1.5f);
+
+            Assert.That(PlayingExplosions()[0], Is.SameAs(explosion));
+            Assert.That(explosion.transform.lossyScale, Is.EqualTo(Vector3.one * 1.5f));
+        }
+
+        [Test]
+        public void HardPoint_DestructionFollowsSeparateAnchorWithoutMovingCombatPivot()
+        {
+            HardPoint hardPoint = _anchor.gameObject.AddComponent<HardPoint>();
+            Transform vfxAnchor = new GameObject("DestroyedVfxAnchor").transform;
+            vfxAnchor.SetParent(_anchor, false);
+            vfxAnchor.localPosition = Vector3.up * 5f;
+            SerializedObject serialized = new SerializedObject(hardPoint);
+            serialized.FindProperty("destroyedVfxAnchor").objectReferenceValue = vfxAnchor;
+            serialized.FindProperty("destroyedVfxScale").floatValue = 3f;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance<IHardPointExplosionPool>(_pool);
+            builder.RegisterInstance<IFogVisibilityFacade>(new VisibleFogFacade());
+            builder.RegisterComponent(hardPoint);
+            using IObjectResolver container = builder.Build();
+            Vector3 combatPosition = hardPoint.Position;
+
+            hardPoint.UpdateData(0f);
+            ExplosionVfx explosion = PlayingExplosions()[0];
+
+            Assert.That(hardPoint.Position, Is.EqualTo(combatPosition));
+            Assert.That(explosion.transform.position, Is.EqualTo(vfxAnchor.position));
+            Assert.That(explosion.transform.lossyScale, Is.EqualTo(Vector3.one * 3f));
+            _anchor.SetPositionAndRotation(Vector3.right * 10f, Quaternion.Euler(0f, 90f, 0f));
+            _pool.Tick();
+            Assert.That(explosion.transform.position, Is.EqualTo(vfxAnchor.position));
+            hardPoint.UpdateData(1f);
+            Assert.That(explosion.GetComponent<ParticleSystem>().isEmitting, Is.False);
+        }
+
+        [Test]
         public void Play_AfterExplosionFinished_ReusesIt()
         {
-            _pool.Play(_anchor, null);
+            _pool.Play(_anchor, null, 1f);
             ExplosionVfx finished = PlayingExplosions()[0];
             finished.GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             _pool.Tick();
             for (int i = 0; i < PREWARM_COUNT; i++)
             {
-                _pool.Play(_anchor, null);
+                _pool.Play(_anchor, null, 1f);
             }
 
             Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT));

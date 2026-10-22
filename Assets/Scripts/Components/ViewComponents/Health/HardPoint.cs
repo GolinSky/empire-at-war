@@ -31,6 +31,10 @@ namespace EmpireAtWar.ViewComponents.Health
         private bool _isInstalled = true;
 
         [SerializeField] private bool spawnDestroyedExplosion = true;
+        [Tooltip("Surface position for destruction VFX. Combat targeting still uses the hardpoint transform.")]
+        [SerializeField] private Transform destroyedVfxAnchor;
+        [Tooltip("World scale of pooled destruction VFX; the flame diameter is approximately twice this value.")]
+        [SerializeField, Min(0.01f)] private float destroyedVfxScale = 1f;
         [Tooltip("Upgrade level of the owner that installs this hardpoint; 1 = installed from the start.")]
         [SerializeField, Min(1)] private int unlockLevel = 1;
 
@@ -99,7 +103,7 @@ namespace EmpireAtWar.ViewComponents.Health
         protected virtual void OnDisable()
         {
             if (!_hasExploded) return;
-            ExplosionPool.Stop(transform);
+            ExplosionPool.Stop(destroyedVfxAnchor);
             _hasExploded = false;
         }
 
@@ -107,13 +111,13 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             if (healthPercentage > 0)
             {
-                if (_hasExploded) ExplosionPool.Stop(transform);
+                if (_hasExploded) ExplosionPool.Stop(destroyedVfxAnchor);
                 _hasExploded = false;
             }
             else if (_isInstalled && !_hasExploded && spawnDestroyedExplosion)
             {
                 _hasExploded = true;
-                ExplosionPool.Play(transform, FogVisibility);
+                ExplosionPool.Play(destroyedVfxAnchor, FogVisibility, destroyedVfxScale);
             }
         }
     }

@@ -38,9 +38,10 @@ namespace EmpireAtWar.Services.UnitExplosion
             }
         }
 
-        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility)
+        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale)
         {
             ExplosionVfx explosion = TakeIdle();
+            explosion.transform.localScale = Vector3.one * scale;
             ActiveExplosion active = new ActiveExplosion(explosion, anchor, fogVisibility);
             active.Follow();
             explosion.Play();
