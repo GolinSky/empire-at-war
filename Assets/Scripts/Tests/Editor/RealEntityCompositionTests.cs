@@ -181,9 +181,13 @@ namespace EmpireAtWar.Tests.Editor
             squadronScope.Container.Resolve<SquadronHealthModel>().Restore(memberHull, memberHull.Select(_ => 1f).ToArray());
             UnitSaveService units = _battle.Container.Resolve<UnitSaveService>();
 
+            ShipMoveModel movement = shipScope.Container.Resolve<ShipMoveModel>();
+            Assert.That(movement.Phase, Is.EqualTo(MovementPhase.Arriving));
+            // Loading skips hyperspace transit and restores the requested landing pose.
+            Pose shipPose = new Pose(new Vector3(origin.x, movement.Height, origin.z), ship.transform.rotation);
+            Assert.That(ship.transform.position, Is.Not.EqualTo(shipPose.position));
             BattleSave saved = JsonUtility.FromJson<BattleSave>(BattleSave.Create(null, null, null, units.CaptureUnits(),
                 Array.Empty<StructureSave>()).ToJson());
-            Pose shipPose = new Pose(ship.transform.position, ship.transform.rotation);
             long squadronId = squadronEntity.Id;
             // Edit mode skips OnDestroy, where entity scopes normally leave their owner's registry.
             EntityScopeOwnership ownership = human.Container.Resolve<EntityScopeOwnership>();
