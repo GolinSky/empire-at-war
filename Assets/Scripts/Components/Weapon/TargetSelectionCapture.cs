@@ -206,6 +206,13 @@ namespace EmpireAtWar.Components.Weapon
         /// <summary>Matches WeaponComponent's live check, with vision cached per target and viewer for this batch.</summary>
         public bool CanAcquire(AttackData group, PlayerId viewer, IVisionService visionService, out bool isWreck)
         {
+            // Dead groups can remain in the candidate cache until its next rebuild.
+            if (group.IsDestroyed)
+            {
+                isWreck = false;
+                return false;
+            }
+
             IEntity entity = group.TargetEntity;
             if (!_entities.TryGetValue(entity, out EntityState state))
             {

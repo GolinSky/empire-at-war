@@ -83,6 +83,70 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
+        public void ApplyTargetSelection_RebuiltCandidates_FallsBackBeforeReadingCapturedGroupIndex()
+        {
+            ConfigureMounts(1);
+            AttackData group = Group(1);
+            group.Units[0].Transform.position = Vector3.forward * 10f;
+            _weapon.AddTarget(group, AttackType.Base);
+            _weapon.Tick();
+            TargetSelectionBatch batch = (TargetSelectionBatch)typeof(CombatAttackCoordinator)
+                .GetField("_targetSelection", PRIVATE_INSTANCE).GetValue(_coordinator);
+            typeof(TargetSelectionBatch).GetMethod("CaptureTargetSelections", PRIVATE_INSTANCE).Invoke(batch, null);
+            System.Collections.IList requests = (System.Collections.IList)typeof(TargetSelectionBatch)
+                .GetField("_targetSelectionRequests", PRIVATE_INSTANCE).GetValue(batch);
+            object capturedRequest = requests[0];
+            Assert.That(_weapon.CandidateGroupCount, Is.EqualTo(1));
+
+            ((HealthStub)group.TargetHealth).Destroy();
+            Invoke("EnsureCandidates");
+            Assert.That(_weapon.CandidateGroupCount, Is.Zero);
+
+            Assert.DoesNotThrow(() => typeof(TargetSelectionBatch)
+                .GetMethod("ApplyTargetSelection", PRIVATE_INSTANCE).Invoke(batch, new object[]
+                {
+                    capturedRequest, new WeaponTargetSelectionJob.Result { CandidateIndex = 0 }
+                }));
+            Assert.That(((float[])Field("_retryAt"))[0], Is.GreaterThan(Time.time));
+            Assert.That(_coordinator.PendingSequences, Is.Zero);
+        }
+
+        [Test]
+        public void CanAcquire_DestroyedTarget_DoesNotReadDestroyedTransform()
+        {
+            AttackData group = Group(1);
+            ((HealthStub)group.TargetHealth).Destroy();
+            Object.DestroyImmediate(group.Units[0].Transform.gameObject);
+
+            bool canAcquire = (bool)typeof(WeaponComponent).GetMethod("CanAcquire", PRIVATE_INSTANCE)
+                .Invoke(_weapon, new object[] { group });
+
+            Assert.That(canAcquire, Is.False);
+        }
+
+        [Test]
+        public void TurnedSalvo_DestroyedTarget_DoesNotReadDestroyedTransform()
+        {
+            WeaponHardPoint mount = ConfigureMounts(1)[0];
+            AttackData group = Group(1);
+            HardPointStub target = (HardPointStub)group.Units[0];
+            target.Transform.position = Vector3.right * 10f;
+            typeof(WeaponComponent).GetMethod("Engage", PRIVATE_INSTANCE)
+                .Invoke(_weapon, new object[] { mount, group, target });
+            System.Collections.IList salvos = (System.Collections.IList)Field("_turningSalvos");
+            Assert.That(salvos.Count, Is.EqualTo(1));
+            object salvo = salvos[0];
+            salvo.GetType().GetField("FireTime").SetValue(salvo, float.NegativeInfinity);
+            salvos[0] = salvo;
+            ((HealthStub)group.TargetHealth).Destroy();
+            Object.DestroyImmediate(target.Transform.gameObject);
+
+            Assert.DoesNotThrow(() => Invoke("FireTurnedSalvos"));
+            Assert.That(_coordinator.PendingSequences, Is.Zero);
+            Assert.That(salvos.Count, Is.Zero);
+        }
+
+        [Test]
         public void TurnedSalvo_DoesNotFireAtRespawnedTarget()
         {
             WeaponHardPoint mount = ConfigureMounts(1)[0];

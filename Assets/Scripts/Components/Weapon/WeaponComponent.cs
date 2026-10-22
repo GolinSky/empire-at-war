@@ -249,7 +249,7 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         private bool CanAcquire(AttackData group) =>
-            group.CanAcquireTarget && _visionService.IsVisible(_owner,
+            !group.IsDestroyed && group.CanAcquireTarget && _visionService.IsVisible(_owner,
                 group.TargetEntity.GetFacade<IEntityTransformFacade>().Transform.position);
 
         // Strikecraft only when anti-strikecraft weapons carry most of the firepower, e.g. a laser corvette.

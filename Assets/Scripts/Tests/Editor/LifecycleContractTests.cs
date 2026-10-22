@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.VContainer;
@@ -58,6 +60,29 @@ namespace EmpireAtWar.Tests.Editor
                 "Use the EmpireAtWar.Lifecycle interfaces. VContainer entry points bypass LifecycleOrder, " +
                 "the tick gate and ordered disposal, and a type with both runs its callback twice.");
         }
+
+        [Test]
+        public void EntryPointExceptionHandler_PreservesOriginalExceptionAndThrowSite()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterLifecycle();
+            using (IObjectResolver container = builder.Build())
+            {
+                Type handlerType = typeof(LifetimeScope).Assembly.GetType(
+                    "VContainer.Unity.EntryPointExceptionHandler", true);
+                object handler = container.Resolve(handlerType);
+                InvalidOperationException original = Assert.Throws<InvalidOperationException>(ThrowLifecycleFailure);
+
+                TargetInvocationException published = Assert.Throws<TargetInvocationException>(() =>
+                    handlerType.GetMethod("Publish").Invoke(handler, new object[] { original }));
+
+                Assert.That(published.InnerException, Is.SameAs(original));
+                Assert.That(published.InnerException.StackTrace, Does.Contain(nameof(ThrowLifecycleFailure)));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowLifecycleFailure() => throw new InvalidOperationException("Lifecycle failure");
 
         [Test]
         public void ChildScope_RegistersExactlyOneCoordinator()

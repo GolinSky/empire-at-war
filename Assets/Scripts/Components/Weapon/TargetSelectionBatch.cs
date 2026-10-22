@@ -291,6 +291,13 @@ namespace EmpireAtWar.Components.Weapon
         private void ApplyTargetSelection(TargetSelectionRequest request, WeaponTargetSelectionJob.Result result)
         {
             AttackSequenceDiagnostics.RecordCandidateVisits(result.Visited);
+            if (request.TargetVersion != request.Weapon.TargetVersion)
+            {
+                AttackSequenceDiagnostics.RecordTargetSelectionFallback(WeaponTargetSelectionJob.FALLBACK_TARGET_VERSION);
+                request.Weapon.CommitTargetSelectionSerial(request.HardPoint);
+                return;
+            }
+
             if (result.RequiresSerialFallback != 0)
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback(result.FallbackReason);

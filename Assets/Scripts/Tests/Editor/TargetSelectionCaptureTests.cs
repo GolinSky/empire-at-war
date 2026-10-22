@@ -291,6 +291,36 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
+        public void CanAcquire_RetainedDestroyedGroup_DoesNotReadDestroyedTransform()
+        {
+            using TargetSelectionCapture capture = new TargetSelectionCapture();
+            HealthStub health = new HealthStub();
+            HardPointStub unit = Unit(Vector3.zero);
+            VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
+            Transform source = Unit(Vector3.zero).Transform;
+            vision.Register(TestPlayers.Human, source, 10f);
+            Entity entity = new Entity(health, null,
+                new IEntityFacade[]
+                {
+                    new CombatModifiersFacade(new CombatModifiers()),
+                    new EntityTransformFacade(unit.Transform)
+                }, default, 1,
+                Array.Empty<IPooledEntityEvents>(),
+                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+            AttackData group = new AttackData(health, null, unit, entity);
+            capture.Acquire(unit, health);
+            Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out _), Is.True);
+
+            // Cached candidate groups can retain a dead target until the next rebuild.
+            health.IsDestroyed = true;
+            UnityEngine.Object.DestroyImmediate(unit.Transform.gameObject);
+            capture.ClearTargets();
+
+            Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out bool wreck), Is.False);
+            Assert.That(wreck, Is.False);
+        }
+
+        [Test]
         public void CanAcquire_SharedTarget_SeparatesTeamVisionAndRefreshesEachBatch()
         {
             using TargetSelectionCapture capture = new TargetSelectionCapture();
