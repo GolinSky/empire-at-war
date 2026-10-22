@@ -125,7 +125,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             },
             DefendPlatformUnitRequest => 6,
             MiningFacilityUnitRequest => 7,
-            LevelUnitRequest => 8,
+            LevelUnitRequest => -1,
             SuperWeaponUnitRequest => 9,
             ResearchUnitRequest => 10,
             _ => throw new ArgumentOutOfRangeException(nameof(request))
