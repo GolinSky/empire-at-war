@@ -142,6 +142,11 @@
   - **Scheduling 2026-10-22**: bolt Update → LateTick; radar preparation overlap within FixedTick (83 distinct tests pass). Fighter PostTick → pre-combat LateTick now implemented through ordered lifecycle bridge, with spawn/pool/root-write/teardown guards; 73 distinct follow-up tests pass. Compile clean; composition logs unrelated ambience EditMode destruction errors.
   - **Remaining**: user Player baseline + ≥3 `PlayerBranchVariant*` runs, battle pass ratios, matched timing acceptance, batch/branch winners, fighter scheduling performance acceptance, Phase 6 tuning and deferred shield batching decision. Plan remains active.
 
+- [ ] **Remove startup/loading-screen freezes (sync Addressables loads, squadron prewarm)** → [[TODOs/Optimization/Loading_Freeze_Plan|Loading Freeze Plan]]
+  - **Implemented 2026-10-23**: async mapping/root/battle preload, scope-owned cache handoff, one-squadron-per-frame prewarm and 58 wreck AssetReferences; compilation clean, 77/77 relevant EditMode tests pass. Content build/layout succeeded: Data 15,883,473 B, no implicit wreck prefabs; [[TODOs/Optimization/Loading_Freeze_Plan - Research|Verification and bundle review]].
+  - **Editor profile 2026-10-23**: default skirmish reaches Running in 20.723 s after request, no runtime errors. Scope Configure 5.984/9.800 ms; 30 sliced prewarm items, max 41.978 ms. Primary startup/battle peaks 556.749/475.198 ms; confirming asset-load peak 631.154 ms. Editor hitches remain; details in research.
+  - **Remaining**: user-deferred Player baseline/matched captures, spinner/transition/leak acceptance; loading-scene async switch and packing changes only if profiling justifies them. Plan stays active.
+
 ### Refactoring
 
 - [ ] **Project organization follow-up** → [[TODOs/Refactoring/Project_Organization_Followup|Project Organization Follow-up]]
