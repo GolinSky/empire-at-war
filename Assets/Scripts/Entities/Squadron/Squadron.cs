@@ -75,6 +75,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private FighterPoseBatch _poseBatch;
         private ShipSfxHandle _audioHandle;
         private SfxProfile _engineSound;
+        private SfxProfile _moveSound;
         private EntityComponentLifecycle _componentLifecycle;
         private IReadOnlyList<IRespawnable> _respawnables;
         private IReadOnlyList<IDespawnable> _despawnables;
@@ -145,6 +146,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
             _engineSound = sfxData.GetUnit(squadronType).Engine;
+            _moveSound = sfxData.Acceleration;
             _selectionModel = selectionModel;
             _audioDialogs = audioDialogs.Value;
             _sFoils = sFoils;
@@ -284,7 +286,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_orders.Matches(UnitOrderType.Move, ToPoint(worldPosition))) return;
             _orders.Replace(UnitOrderType.Move, ToPoint(worldPosition));
-            PlayMoveVoice(worldPosition);
+            PlayMoveAudio(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
         }
@@ -312,7 +314,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_orders.Matches(UnitOrderType.AttackMove, ToPoint(worldPosition))) return;
             _orders.Replace(UnitOrderType.AttackMove, ToPoint(worldPosition));
-            PlayMoveVoice(worldPosition);
+            PlayMoveAudio(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
         }
@@ -333,7 +335,7 @@ namespace EmpireAtWar.Entities.Squadrons
             foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
             if (_orders.MatchesWaypoints(points)) return;
             _orders.Replace(UnitOrderType.WaypointMove, points[0], waypoints: points);
-            PlayMoveVoice(waypoints[0]);
+            PlayMoveAudio(waypoints[0]);
             Disengage();
             _pilot.FlyTo(waypoints[0]);
         }
@@ -349,7 +351,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_orders.Matches(UnitOrderType.Retreat, ToPoint(destination))) return;
             _orders.Replace(UnitOrderType.Retreat, ToPoint(destination));
-            PlayMoveVoice(destination);
+            PlayMoveAudio(destination);
             Disengage();
             _pilot.FlyTo(destination);
         }
@@ -361,8 +363,9 @@ namespace EmpireAtWar.Entities.Squadrons
             _pilot.Loiter(_flight.Centroid);
         }
 
-        private void PlayMoveVoice(Vector3 destination)
+        private void PlayMoveAudio(Vector3 destination)
         {
+            _shipSfxService.TryPlayOneShot(_audioHandle, _moveSound, _flight.Centroid);
             foreach (IAudioDialogShipComponent audioDialog in _audioDialogs) audioDialog.HandleMove(destination);
         }
 

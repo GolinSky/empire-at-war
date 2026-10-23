@@ -423,7 +423,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -460,7 +460,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -497,7 +497,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -534,7 +534,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -571,7 +571,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -608,7 +608,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -645,7 +645,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -682,7 +682,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -719,7 +719,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -756,7 +756,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -793,7 +793,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -830,7 +830,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -867,7 +867,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -904,7 +904,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -941,7 +941,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -978,7 +978,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1015,7 +1015,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1052,7 +1052,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1089,7 +1089,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1126,7 +1126,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1163,7 +1163,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1200,7 +1200,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1237,7 +1237,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1274,7 +1274,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1311,7 +1311,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1348,7 +1348,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1385,7 +1385,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1422,7 +1422,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1459,7 +1459,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1496,7 +1496,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1533,7 +1533,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1570,7 +1570,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1607,7 +1607,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1644,7 +1644,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1681,7 +1681,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1718,7 +1718,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1755,7 +1755,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1792,7 +1792,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1829,7 +1829,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1866,7 +1866,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1903,7 +1903,7 @@ MonoBehaviour:
       clips:
         array: []
       volume: 0.5
-      priority: 70
+      priority: 80
       cooldown: 0
       maxInstances: 4
       loop: 0
@@ -1939,7 +1939,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
     clips:
       array: []
-    volume: 0.12
+    volume: 0.37
     priority: 10
     cooldown: 0
     maxInstances: 6
@@ -1963,7 +1963,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.16
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -1982,7 +1982,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -1993,7 +1993,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.16
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2012,7 +2012,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2023,7 +2023,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.16
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2042,7 +2042,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2053,7 +2053,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: bf32b2f7bfb5cce4ba84125ec6a701ca, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.16
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2074,7 +2074,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2085,7 +2085,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: bf32b2f7bfb5cce4ba84125ec6a701ca, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.16
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2106,7 +2106,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2117,7 +2117,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 6ea7d50e246e8e543811d4204119a1b3, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.55
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2138,7 +2138,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2149,7 +2149,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 337230239b43b9344a0fb90f5f637dd1, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.19
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2170,7 +2170,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2181,7 +2181,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 34898d48db6bc564eb7a550349d0c6d0, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.23
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2202,7 +2202,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2213,7 +2213,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2232,7 +2232,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2243,7 +2243,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2262,7 +2262,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2273,7 +2273,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2292,7 +2292,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2303,7 +2303,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2322,7 +2322,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2333,7 +2333,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2352,7 +2352,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2363,7 +2363,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2382,7 +2382,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2393,7 +2393,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2412,7 +2412,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2423,7 +2423,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2442,7 +2442,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2453,7 +2453,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2472,7 +2472,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2483,7 +2483,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2502,7 +2502,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2513,7 +2513,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.37
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2534,7 +2534,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2549,7 +2549,7 @@ MonoBehaviour:
             array:
             - {fileID: 8300000, guid: a204efff81e0aaa498c32733cb622100, type: 3}
             - {fileID: 8300000, guid: 2615afe3401f1a946a4c34111cf7e439, type: 3}
-          volume: 0.12
+          volume: 0.4
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2570,7 +2570,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2584,7 +2584,7 @@ MonoBehaviour:
             - {fileID: 8300000, guid: b125e68276ba2054da4887c4effe5d93, type: 3}
             - {fileID: 8300000, guid: a5698811363ac044aa1dfde8a7347d31, type: 3}
             - {fileID: 8300000, guid: 730ff7982a3314d47ae220d123157cc2, type: 3}
-          volume: 0.12
+          volume: 0.55
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2605,7 +2605,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2616,7 +2616,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 4f006688ff6d70747abf98ab38cd328e, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.69
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2637,7 +2637,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2648,7 +2648,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2669,7 +2669,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2680,7 +2680,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2701,7 +2701,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2712,7 +2712,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2733,7 +2733,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2744,7 +2744,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2765,7 +2765,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2776,7 +2776,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2797,7 +2797,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2808,7 +2808,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: edd33f9de6290d945b31055d101cc30f, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2829,7 +2829,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2842,7 +2842,7 @@ MonoBehaviour:
             array:
             - {fileID: 8300000, guid: afd9086f612c84344924c236584ac63d, type: 3}
             - {fileID: 8300000, guid: 7b2d2ebaa5e9fc845b4f1c12e6763f8b, type: 3}
-          volume: 0.12
+          volume: 0.39
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2863,7 +2863,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2874,7 +2874,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 0d19ad369b5441b4a8ee2663bb816a66, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2895,7 +2895,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2906,7 +2906,7 @@ MonoBehaviour:
           clip: {fileID: 8300000, guid: 0d19ad369b5441b4a8ee2663bb816a66, type: 3}
           clips:
             array: []
-          volume: 0.12
+          volume: 0.24
           priority: 10
           cooldown: 0
           maxInstances: 6
@@ -2927,7 +2927,7 @@ MonoBehaviour:
           clips:
             array: []
           volume: 0.5
-          priority: 90
+          priority: 5
           cooldown: 2
           maxInstances: 1
           loop: 0
@@ -2937,7 +2937,7 @@ MonoBehaviour:
     clips:
       array: []
     volume: 0.4
-    priority: 60
+    priority: 75
     cooldown: 0
     maxInstances: 4
     loop: 0
@@ -2977,7 +2977,7 @@ MonoBehaviour:
       - {fileID: 8300000, guid: 69d05e47060f7b648ba560775c7a5aa0, type: 3}
       - {fileID: 8300000, guid: 36b84df8db783ff40b60de37b266b904, type: 3}
     volume: 0.35
-    priority: 20
+    priority: 50
     cooldown: 0.1
     maxInstances: 3
     loop: 0
@@ -2997,7 +2997,7 @@ MonoBehaviour:
     clips:
       array: []
     volume: 0.5
-    priority: 90
+    priority: 5
     cooldown: 2
     maxInstances: 1
     loop: 0
@@ -3444,6 +3444,7 @@ MonoBehaviour:
   edgeGain: 0.45
   offscreenMargin: 0.15
   minZoomGain: 0.6
+  engineMinZoomGain: 0.15
   voiceDuckGain: 0.4
   poolVoices: 20
   perShipVoices: 2

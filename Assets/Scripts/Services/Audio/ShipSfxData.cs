@@ -40,6 +40,8 @@ namespace EmpireAtWar.Services.Audio
         [SerializeField] private float edgeGain = 0.45f;
         [SerializeField] private float offscreenMargin = 0.15f;
         [SerializeField] private float minZoomGain = 0.6f;
+        [Tooltip("Engine gain at the farthest zoom; lower than minZoomGain so engines are a close-up sound.")]
+        [SerializeField] private float engineMinZoomGain = 0.15f;
         [SerializeField] private float voiceDuckGain = 0.4f;
 
         [SerializeField] private int poolVoices = 20;
@@ -68,6 +70,7 @@ namespace EmpireAtWar.Services.Audio
         public float EdgeGain => edgeGain;
         public float OffscreenMargin => offscreenMargin;
         public float MinZoomGain => minZoomGain;
+        public float EngineMinZoomGain => engineMinZoomGain;
         public float VoiceDuckGain => voiceDuckGain;
 
         public ShipVoiceSet GetVoiceSet(FactionType faction) => voices.Dictionary[faction];

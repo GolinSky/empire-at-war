@@ -98,7 +98,7 @@ namespace EmpireAtWar.Services.Audio
         {
             if (_disposed || ship.IsDestroyed) return false;
             UpdateTime();
-            float gain = GetGain(ship, position, out float pan);
+            float gain = GetGain(ship, position, isEngine, out float pan);
             for (int i = 0; loop && i < _slots.Length; i++)
             {
                 if (_slots[i].Owner != ship || _slots[i].Sound != sound || !_slots[i].Loop) continue;
@@ -143,11 +143,12 @@ namespace EmpireAtWar.Services.Audio
             {
                 VoiceSlot slot = _slots[i];
                 if (slot.Sound == null) { free = i; continue; }
-                if (slot.Owner == ship) ownerCount++;
+                // Engines have their own budget, so a ship's weapons never silence its engine and vice versa.
+                if (slot.Owner == ship && !slot.IsEngine) ownerCount++;
                 if (slot.Sound == sound) soundCount++;
                 if (slot.IsEngine) engineCount++;
             }
-            bool ownerCap = ownerCount >= _data.PerShipVoices;
+            bool ownerCap = !isEngine && ownerCount >= _data.PerShipVoices;
             bool soundCap = soundCount >= sound.MaxInstances;
             bool engineCap = isEngine && engineCount >= _data.EngineVoices;
             if (free >= 0 && !ownerCap && !soundCap && !engineCap) return free;
@@ -156,7 +157,7 @@ namespace EmpireAtWar.Services.Audio
             for (int i = 0; i < _slots.Length; i++)
             {
                 VoiceSlot slot = _slots[i];
-                if (slot.Sound == null || ownerCap && slot.Owner != ship ||
+                if (slot.Sound == null || ownerCap && (slot.Owner != ship || slot.IsEngine) ||
                     soundCap && slot.Sound != sound || engineCap && !slot.IsEngine) continue;
                 float effective = slot.Sound.Priority * slot.Gain;
                 if (effective >= priority) continue;
@@ -190,7 +191,7 @@ namespace EmpireAtWar.Services.Audio
                     if (_slots[i].Emitter == null) { Stop(i); continue; }
                     _slots[i].Position = _slots[i].Emitter.position;
                 }
-                _slots[i].Gain = GetGain(_slots[i].Owner, _slots[i].Position, out _slots[i].Pan);
+                _slots[i].Gain = GetGain(_slots[i].Owner, _slots[i].Position, _slots[i].IsEngine, out _slots[i].Pan);
                 if (_time >= _slots[i].EndsAt || _slots[i].Gain * _slots[i].VolumeScale < MIN_AUDIBLE_GAIN)
                     Stop(i);
             }
@@ -240,7 +241,7 @@ namespace EmpireAtWar.Services.Audio
         private float GetVolume(VoiceSlot slot) => slot.Sound.Volume * slot.VolumeScale * slot.Gain *
             Mathf.Clamp01((slot.EndsAt - _time) / FADE_TIME);
 
-        private float GetGain(ShipSfxHandle ship, Vector3 position, out float pan)
+        private float GetGain(ShipSfxHandle ship, Vector3 position, bool isEngine, out float pan)
         {
             Vector3 viewport = _cameraService.WorldToViewportPoint(position);
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
@@ -255,7 +256,7 @@ namespace EmpireAtWar.Services.Audio
                 (1f - Mathf.Clamp01(outside / _data.OffscreenMargin));
             float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max,
                 Mathf.Abs(_cameraService.CameraPosition.y - position.y));
-            return gain * Mathf.Lerp(1f, _data.MinZoomGain, zoom);
+            return gain * Mathf.Lerp(1f, isEngine ? _data.EngineMinZoomGain : _data.MinZoomGain, zoom);
         }
 
         public void ReleaseShip(ShipSfxHandle ship)

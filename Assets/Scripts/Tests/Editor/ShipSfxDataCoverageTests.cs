@@ -45,6 +45,22 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(checkedClips, Is.GreaterThan(0));
         }
 
+        [Test]
+        public void AbilityCuesOutrankEveryAlarm()
+        {
+            ShipSfxData data = AssetDatabase.LoadAssetAtPath<ShipSfxData>(DATA_PATH);
+            Assert.That(data, Is.Not.Null);
+            float alarm = data.Alarm.Priority;
+            foreach (ShipType type in Enum.GetValues(typeof(ShipType)))
+                if (data.GetUnit(type).Alarm != null) alarm = Mathf.Max(alarm, data.GetUnit(type).Alarm.Priority);
+            Assert.That(data.AbilityActivated.Priority, Is.GreaterThan(alarm));
+            using var serialized = new SerializedObject(data);
+            SerializedProperty abilities = serialized.FindProperty("abilities");
+            for (int i = 0; i < abilities.arraySize; i++)
+                Assert.That(abilities.GetArrayElementAtIndex(i).FindPropertyRelative("start.priority").floatValue,
+                    Is.GreaterThan(alarm), $"abilities[{i}].start");
+        }
+
         private static void AssertUnit(ShipUnitAudioProfile profile, string unit)
         {
             Assert.That(profile, Is.Not.Null, unit);
