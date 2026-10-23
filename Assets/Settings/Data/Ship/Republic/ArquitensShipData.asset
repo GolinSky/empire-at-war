@@ -30,7 +30,7 @@ MonoBehaviour:
   <Hull>k__BackingField: 2900
   <Shields>k__BackingField: 1400
   <ShieldRegenerateValue>k__BackingField: 14
-  <ShieldRegenerateDelay>k__BackingField: 3
+  <ShieldRegenerateDelay>k__BackingField: 1
   hardPointHealth:
   - hardPointType: 0
     health: 250
