@@ -49,10 +49,13 @@ MonoBehaviour:
   abilities: 23000000
   hangarBays:
   - squadronType: 200
-    reserve: 1
+    reserve: 40
     maxActive: 1
   - squadronType: 201
-    reserve: 1
+    reserve: 40
+    maxActive: 1
+  - squadronType: 203
+    reserve: 40
     maxActive: 1
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8

@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(
                 "Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset");
 
-            Assert.That(data.HangarBays.Count, Is.EqualTo(2));
+            Assert.That(data.HangarBays.Count, Is.EqualTo(3));
             Assert.That(data.HangarBays.All(b => b.MaxActive > 0 && b.Reserve > 0), Is.True);
         }
 

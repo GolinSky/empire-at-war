@@ -62,10 +62,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedHangars_KeepSeparateExitsButDoNotLaunchSquadrons()
+        public void SavedHangars_KeepSeparateExitsAndLaunchTwoSquadrons()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 201 }));
+            Assert.That(data.HangarBays.All(b => b.Reserve == 20 && b.MaxActive == 1), Is.True);
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             SerializedObject hangar = Config(view, "HangarComponent");
             SerializedProperty points = hangar.FindProperty("bayHardPoints");
@@ -79,9 +80,17 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(exit.localPosition.y, Is.LessThan(data.HullBottom));
             }
             HangarModel model = new HangarModel(data);
-            Assert.That(model.GetReserve(0), Is.Zero);
-            Assert.That(model.GetReserve(1), Is.Zero);
-            Assert.That(model.TryLaunch(data.HangarInitialDelay, out _), Is.False);
+            for (int expected = 0; expected < 2; expected++)
+            {
+                Assert.That(model.TryLaunch(data.HangarInitialDelay + data.HangarLaunchInterval, out int bay), Is.True);
+                Assert.That(bay, Is.EqualTo(expected));
+                Assert.That(model.GetReserve(bay), Is.EqualTo(19));
+            }
+            Assert.That(model.TryLaunch(100, out _), Is.False);
+            model.SquadronLost(0);
+            Assert.That(model.TryLaunchReplacement(out int replacement), Is.True);
+            Assert.That(replacement, Is.Zero);
+            Assert.That(model.GetReserve(0), Is.EqualTo(18));
             model.DisableBay(0);
             model.DisableBay(1);
             Assert.That(model.IsOperational, Is.False);

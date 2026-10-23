@@ -3543,12 +3543,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
   launchPoint: {fileID: 735769793688692964}
   hangarHardPoint: {fileID: 3045986044013642741}
-  bayHardPoints:
-  - {fileID: 3045986044013642741}
-  - {fileID: 8848574036653636665}
+  bayHardPoints: []
   bayLaunchPoints:
   - {fileID: 735769793688692964}
   - {fileID: 5043218694989077821}
+  - {fileID: 735769793688692964}
   isDestroyable: 1
 --- !u!1 &9149578860029813318
 GameObject:

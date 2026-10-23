@@ -46,14 +46,30 @@ namespace EmpireAtWar.Tests.Editor
         public void RepeatedSquadrons_HaveIndependentHangarBayFields()
         {
             BalanceRegistration inventory = BalanceInventory.Build();
-            var fields = inventory.Fields.Values.Where(field => field.Target.name == "LiberatorShipData"
-                && field.Stat.StartsWith("hangarBays/bay/") && field.Stat.EndsWith("/reserve")).ToArray();
-            Assert.That(fields.Length, Is.EqualTo(2));
-            Assert.That(fields.Select(field => field.Key).Distinct().Count(), Is.EqualTo(2));
-            Assert.That(fields.Select(field => field.Path).Distinct().Count(), Is.EqualTo(2));
-            BalanceDraft draft = new BalanceDraft();
-            draft.Set(fields[0].Snapshot(), "3");
-            Assert.That(draft.Value(fields[1].Key, "unchanged"), Is.EqualTo("unchanged"));
+            BalanceUnit unit = inventory.Units.First(entry => entry.Data.name == "LiberatorShipData");
+            UnityEngine.Object data = UnityEngine.Object.Instantiate(unit.Data);
+            try
+            {
+                using var serialized = new UnityEditor.SerializedObject(data);
+                var bays = serialized.FindProperty("hangarBays");
+                bays.arraySize = 2;
+                bays.GetArrayElementAtIndex(1).FindPropertyRelative("squadronType").intValue =
+                    bays.GetArrayElementAtIndex(0).FindPropertyRelative("squadronType").intValue;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                BalanceRegistration registry = new BalanceRegistration();
+                BalanceUnitAdapter.Hangar(registry, data, bays, "hangarBays", unit);
+                var fields = registry.Fields.Values.Where(field => field.Stat.EndsWith("/reserve")).ToArray();
+                Assert.That(fields.Length, Is.EqualTo(2));
+                Assert.That(fields.Select(field => field.Key).Distinct().Count(), Is.EqualTo(2));
+                Assert.That(fields.Select(field => field.Path).Distinct().Count(), Is.EqualTo(2));
+                BalanceDraft draft = new BalanceDraft();
+                draft.Set(fields[0].Snapshot(), "3");
+                Assert.That(draft.Value(fields[1].Key, "unchanged"), Is.EqualTo("unchanged"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(data);
+            }
         }
 
         [Test]

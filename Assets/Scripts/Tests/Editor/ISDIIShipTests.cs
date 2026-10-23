@@ -68,29 +68,29 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedHangar_LaunchesTwoMixedSquadronsWithoutReplacements()
+        public void SavedHangar_LaunchesThreeMixedSquadronsAndReplacesLosses()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 203, 204, 205 }));
+            Assert.That(data.HangarBays.All(b => b.Reserve == 40 && b.MaxActive == 1), Is.True);
             HangarModel model = new HangarModel(data);
-            for (int expected = 0; expected < 2; expected++)
+            for (int expected = 0; expected < 3; expected++)
             {
                 Assert.That(model.TryLaunch(30f, out int bay), Is.True);
                 Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.Zero);
+                Assert.That(model.GetReserve(bay), Is.EqualTo(39));
                 Assert.That(model.GetActive(bay), Is.EqualTo(1));
             }
             Assert.That(model.TryLaunch(30f, out _), Is.False);
-            for (int expected = 0; expected < 2; expected++)
+            for (int expected = 0; expected < 3; expected++)
             {
                 model.SquadronLost(expected);
-                Assert.That(model.TryLaunch(30f, out _), Is.False);
-                Assert.That(model.GetReserve(expected), Is.Zero);
+                Assert.That(model.TryLaunchReplacement(out int bay), Is.True);
+                Assert.That(bay, Is.EqualTo(expected));
+                Assert.That(model.GetReserve(bay), Is.EqualTo(38));
+                Assert.That(model.GetActive(bay), Is.EqualTo(1));
             }
-            Assert.That(model.GetReserve(2), Is.Zero);
-            Assert.That(model.GetActive(2), Is.Zero);
-            model.SquadronLost(0);
-            Assert.That(model.TryLaunch(30f, out _), Is.False);
+            Assert.That(model.TryLaunchReplacement(out _), Is.False);
             model.Shutdown();
             Assert.That(model.TryLaunch(30f, out _), Is.False);
         }
