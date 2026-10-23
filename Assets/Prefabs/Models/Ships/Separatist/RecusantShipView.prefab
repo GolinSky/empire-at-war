@@ -1645,7 +1645,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5497713686927895318}
   destroyedVfxScale: 1
   unlockLevel: 1
-  <HardPointType>k__BackingField: 1
+  <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 4
 --- !u!1 &5790465257638362256
 GameObject:
@@ -1848,6 +1848,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <WeaponType>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -1952,6 +1957,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2127462537491022042}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
@@ -2070,6 +2080,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <WeaponType>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -2181,6 +2196,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <WeaponType>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -2290,6 +2310,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2127462537491022042}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
@@ -2408,6 +2433,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <WeaponType>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -2522,6 +2552,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2127462537491022042}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
@@ -2747,6 +2782,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2127462537491022042}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
@@ -3072,6 +3112,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2127462537491022042}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <Id>k__BackingField
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField

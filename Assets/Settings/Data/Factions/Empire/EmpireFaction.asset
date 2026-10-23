@@ -81,8 +81,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}
         description: 2,600 hull; 1,400 shields; speed 48. Four light long-range 2-burst
-          turbolasers and four 2-burst laser cannons. Weapons, engines and shields
-          cannot be targeted separately. No hangar or fighter complement. Boost Weapon
+          turbolasers and four 2-burst laser cannons. Engines and shield generator
+          are targetable hardpoints. No hangar or fighter complement. Boost Weapon
           Power doubles fire rate for 20 s, stops shield regeneration, reduces speed
           to 25% and increases incoming damage by 50%.
         role: Artillery / Light Cruiser

@@ -44,6 +44,9 @@ MonoBehaviour:
   - hardPointType: 7
     health: 150
     hullDamageMultiplier: 1
+  - hardPointType: 2
+    health: 250
+    hullDamageMultiplier: 1
   <Range>k__BackingField: 450
   <Delay>k__BackingField: 0.25
   abilities: 0500000016000000

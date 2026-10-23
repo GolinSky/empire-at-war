@@ -214,6 +214,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1158608975886605116}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &740794869031942595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6222888947437988970}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6222888947437988970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740794869031942595}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2533755030737096849}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &845929485663683904
 GameObject:
   m_ObjectHideFlags: 0
@@ -6380,6 +6411,7 @@ MonoBehaviour:
   - {fileID: 1653304661394761974}
   - {fileID: 315361140253852735}
   - {fileID: 3943376018394116190}
+  - {fileID: 5829147674001457860}
 --- !u!114 &1283754632722916796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6590,6 +6622,7 @@ MonoBehaviour:
   - {fileID: 1653304661394761974}
   - {fileID: 315361140253852735}
   - {fileID: 3943376018394116190}
+  - {fileID: 5829147674001457860}
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0
@@ -12362,6 +12395,7 @@ Transform:
   - {fileID: 4455131415821107518}
   - {fileID: 6612583279338019173}
   - {fileID: 6734002662437699982}
+  - {fileID: 2533755030737096849}
   m_Father: {fileID: 773376535087680568}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6927596893981751800
@@ -19166,6 +19200,57 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8062201458535034193
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2533755030737096849}
+  - component: {fileID: 5829147674001457860}
+  m_Layer: 0
+  m_Name: EnginesUnit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2533755030737096849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8062201458535034193}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.0000038146973, z: -90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6222888947437988970}
+  m_Father: {fileID: 6288173655347290105}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5829147674001457860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8062201458535034193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 6222888947437988970}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 1
+  <Id>k__BackingField: 27
 --- !u!1 &8161312022712241867
 GameObject:
   m_ObjectHideFlags: 0

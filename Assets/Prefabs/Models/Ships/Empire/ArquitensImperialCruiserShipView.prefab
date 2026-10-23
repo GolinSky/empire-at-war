@@ -212,6 +212,37 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
+--- !u!1 &1262609536991677077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6381864779902959610}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6381864779902959610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262609536991677077}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 696602163119893152}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1762934955629605546
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,6 +602,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &4891785547253868335
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7139012674617329313}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7139012674617329313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4891785547253868335}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6739175238629256057}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5109170476880282050
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,6 +690,57 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
+--- !u!1 &5123490226248037766
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6739175238629256057}
+  - component: {fileID: 1462627055147111300}
+  m_Layer: 0
+  m_Name: EnginesUnit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6739175238629256057
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5123490226248037766}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.00000047683716, z: -20}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7139012674617329313}
+  m_Father: {fileID: 5889165115786701736}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1462627055147111300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5123490226248037766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 7139012674617329313}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 1
+  <Id>k__BackingField: 8
 --- !u!1 &5297953862614196520
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +798,57 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
+--- !u!1 &5639520826722898231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 696602163119893152}
+  - component: {fileID: 5820015615388131227}
+  m_Layer: 0
+  m_Name: ShieldGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &696602163119893152
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5639520826722898231}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 11.43013, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6381864779902959610}
+  m_Father: {fileID: 5889165115786701736}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5820015615388131227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5639520826722898231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 6381864779902959610}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 2
+  <Id>k__BackingField: 9
 --- !u!1 &6221076368196045240
 GameObject:
   m_ObjectHideFlags: 0
@@ -844,6 +1008,8 @@ Transform:
   - {fileID: 1250336899492543957}
   - {fileID: 4322667839875151633}
   - {fileID: 2662193322247188541}
+  - {fileID: 6739175238629256057}
+  - {fileID: 696602163119893152}
   m_Father: {fileID: 6092580562340744351}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6736715092492826216
@@ -1124,6 +1290,8 @@ MonoBehaviour:
   - {fileID: 3406233814493811603}
   - {fileID: 3304444583058273618}
   - {fileID: 7946665847653583100}
+  - {fileID: 1462627055147111300}
+  - {fileID: 5820015615388131227}
 --- !u!114 &4150898646505647277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260,6 +1428,8 @@ MonoBehaviour:
   - {fileID: 3406233814493811603}
   - {fileID: 3304444583058273618}
   - {fileID: 7946665847653583100}
+  - {fileID: 1462627055147111300}
+  - {fileID: 5820015615388131227}
 --- !u!1 &7290964567724939097
 GameObject:
   m_ObjectHideFlags: 0
