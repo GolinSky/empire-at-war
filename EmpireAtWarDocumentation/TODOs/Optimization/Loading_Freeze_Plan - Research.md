@@ -46,6 +46,15 @@ tags:
 - Confirming capture: **631.154 ms** asset-loading frame, File.Read self **333.391 ms**; battle activation **484.562 ms**; max prewarm **42.346 ms**. Seeds/caches differ; no matched comparison.
 - Both controlled passes reach Running with no runtime Console errors. No production changes. Profiler/FPS settings restored; non-playing clean MainMenuScene; temporary imported helper and metadata removed.
 
+### Editor Retest (2026-10-23, concurrent batches)
+
+- Tested revision `a583652df` with fixed seed `-1024548213`, matching the earlier primary scenario. Deep Profile off; 60 FPS after menu readiness; 243 captured frames / 7.682 s.
+- Request → `Running` **5.664 s** (earlier **20.723 s**); no new runtime errors. Cache/disk/system state is not controlled, so this is a reference comparison.
+- Worst frame **983.782 ms** during Editor asset integration; File.Read self **487.804 ms**, file-header self **140.314 ms**, serialized-read self **120.527 ms**. Loading freezes remain.
+- Max Configure: root **8.296 ms**, battle **8.819 ms**. Loading-scene API **0.905 ms**. 30 prewarm items in 30 frames; **144.742 ms** total, **48.837 ms** maximum item.
+- Battle-loading full frame median/p95 **16.641 / 68.160 ms**. A separate **684.943 ms** frame is mostly EditorLoop (**682.507 ms**), with only **1.058 ms** PlayerLoop.
+- Evidence: `Logs/LoadingFreeze/20261023T150935Z-editor-repeat/analysis.md`, native raw/data, timeline, scenario and metrics JSON. Editor/profiler restored, temporary helper removed, compilation clean; no production changes.
+
 ## Important Values
 
 | Group | Current bundle bytes | Explicit assets | Implicit assets |

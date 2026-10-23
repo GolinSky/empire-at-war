@@ -95,6 +95,15 @@ tags:
 - Loading hitches remain in Editor. AssetDatabase/serialized integration, scene-activation GC/JIT and first squadron construction need attribution before further changes; the **0.634 ms** loading-scene API sample alone does not justify an async API switch.
 - Report: `Logs/LoadingFreeze/20261023T142740Z-editor-startup/analysis.md`. Raw, saved `.data`, marker totals, frame hotspots, battle setup and timeline JSON are alongside it. No matched before/after or standalone improvement claim.
 
+### Editor Retest (2026-10-23, concurrent batches)
+
+- Tested revision `a583652df` with fixed seed `-1024548213`, matching the earlier primary scenario. Deep Profile off; 60 FPS after menu readiness; 243 captured frames / 7.682 s.
+- Request → `Running` **5.664 s** (earlier **20.723 s**); no new runtime errors. Cache/disk/system state is not controlled, so this is a reference comparison.
+- Worst frame **983.782 ms** during Editor asset integration; File.Read self **487.804 ms**, file-header self **140.314 ms**, serialized-read self **120.527 ms**. Loading freezes remain.
+- Max Configure: root **8.296 ms**, battle **8.819 ms**. Loading-scene API **0.905 ms**. 30 prewarm items in 30 frames; **144.742 ms** total, **48.837 ms** maximum item.
+- Battle-loading full frame median/p95 **16.641 / 68.160 ms**. A separate **684.943 ms** frame is mostly EditorLoop (**682.507 ms**), with only **1.058 ms** PlayerLoop.
+- Evidence: `Logs/LoadingFreeze/20261023T150935Z-editor-repeat/analysis.md`, native raw/data, timeline, scenario and metrics JSON. Editor/profiler restored, temporary helper removed, compilation clean; no production changes.
+
 ## Edge Cases
 
 - `CachedAssetService` keys by `(Type, key)`; preload must use the same `TSource` type or the miss still blocks.
