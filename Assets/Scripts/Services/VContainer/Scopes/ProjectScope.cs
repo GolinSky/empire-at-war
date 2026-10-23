@@ -65,7 +65,7 @@ namespace EmpireAtWar.Services.VContainer
                 GameData = Object.Instantiate(assets.Load<GameData>(nameof(GameData)));
                 SceneType scene = assets.Load<SceneData>(nameof(SceneData)).GetCurrentScene();
                 if (scene == SceneType.Battle)
-                    await BattlePreloader.PrepareAsync(GameData.Battle, cancellationToken);
+                    await BattlePreloader.PrepareAsync(GameData.Battle, GameData.PendingBattleSave != null, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 Build();
             }

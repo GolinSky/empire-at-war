@@ -16,14 +16,14 @@ namespace EmpireAtWar.Repository
             _loader = loader;
         }
 
-        public async Awaitable PrepareAsync(BattleDefinition battle, CancellationToken cancellationToken)
+        public async Awaitable PrepareAsync(BattleDefinition battle, bool restoresSave, CancellationToken cancellationToken)
         {
             Dispose();
             CachedAssetService assets = new CachedAssetService(_loader);
             _pendingAssets = assets;
             try
             {
-                await BattleAssetPreload.LoadAsync(assets, battle, cancellationToken);
+                await BattleAssetPreload.LoadAsync(assets, battle, restoresSave, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 _isReady = true;
             }

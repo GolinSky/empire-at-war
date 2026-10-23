@@ -6,7 +6,6 @@ using EmpireAtWar.Services.VContainer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Profiling;
-using Utilities.ScriptUtils.Time;
 using LifetimeScope = global::VContainer.Unity.LifetimeScope;
 
 namespace EmpireAtWar.Services.SceneService
@@ -17,7 +16,6 @@ namespace EmpireAtWar.Services.SceneService
         private static readonly ProfilerMarker LOADING_SCENE_MARKER = new ProfilerMarker("SceneService.LoadLoadingScene");
 
         private readonly SceneData _sceneModel;
-        private readonly TimerPoolService _timerPoolService;
         private readonly ProjectScope _projectScope;
         private AsyncOperation _asyncOperation;
         private IDisposable _sceneParent;
@@ -28,16 +26,15 @@ namespace EmpireAtWar.Services.SceneService
 
         public bool IsSceneLoaded => _asyncOperation != null && _asyncOperation.progress > MIN_SCENE_PROGRESS;
 
-        public SceneService(SceneData sceneModel, TimerPoolService timerPoolService, ProjectScope projectScope)
+        public SceneService(SceneData sceneModel, ProjectScope projectScope)
         {
             _sceneModel = sceneModel;
-            _timerPoolService = timerPoolService;
             _projectScope = projectScope;
         }
 
         public void Initialize()
         {
-            Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
+            Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.BelowNormal;
             SceneManager.sceneLoaded += HandleLoadingScene;
             TargetScene = _sceneModel.GetCurrentScene();
         }
@@ -78,6 +75,8 @@ namespace EmpireAtWar.Services.SceneService
                     _asyncOperation = null;
                 }
                 _projectScope.BattlePreloader.Dispose();
+                // Transitions integrate async loads at up to 50 ms per frame; gameplay keeps background loads cheap.
+                Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
                 TargetScene = sceneType;
                 if (_sceneParent == null)
                     _sceneParent = LifetimeScope.EnqueueParent(_projectScope);
@@ -102,7 +101,11 @@ namespace EmpireAtWar.Services.SceneService
             {
                 SceneType target = TargetScene;
                 CancellationToken cancellationToken = _loadCancellation.Token;
-                _timerPoolService.Invoke(() => LoadTargetScene(target, cancellationToken), 1f);
+                LoadTargetScene(target, cancellationToken);
+            }
+            else
+            {
+                Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.BelowNormal;
             }
         }
 
@@ -110,9 +113,11 @@ namespace EmpireAtWar.Services.SceneService
         {
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                // The loading screen renders its first frame before any load starts.
+                await Awaitable.NextFrameAsync(cancellationToken);
                 if (target == SceneType.Battle)
-                    await _projectScope.BattlePreloader.PrepareAsync(_projectScope.GameData.Battle, cancellationToken);
+                    await _projectScope.BattlePreloader.PrepareAsync(_projectScope.GameData.Battle,
+                        _projectScope.GameData.PendingBattleSave != null, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 if (_sceneParent == null)
                     _sceneParent = LifetimeScope.EnqueueParent(_projectScope);

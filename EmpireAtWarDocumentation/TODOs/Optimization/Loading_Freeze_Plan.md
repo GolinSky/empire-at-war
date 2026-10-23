@@ -104,6 +104,22 @@ tags:
 - Battle-loading full frame median/p95 **16.641 / 68.160 ms**. A separate **684.943 ms** frame is mostly EditorLoop (**682.507 ms**), with only **1.058 ms** PlayerLoop.
 - Evidence: `Logs/LoadingFreeze/20261023T150935Z-editor-repeat/analysis.md`, native raw/data, timeline, scenario and metrics JSON. Editor/profiler restored, temporary helper removed, compilation clean; no production changes.
 
+### Deferred Warm-up + CRC (2026-10-23)
+
+- Preload split: required before `Running` = shared data, UI, mode HUD, ship/structure data, station views, base `DefendPlatformView`/`MiningFacilityView` (read by `SkirmishScope.Configure`), squadron data/views (prewarm). Ship views, asteroid/Aotr structure views and all wrecks → `BattleAssetPreload.DeferredPrefabKeys`.
+  - Exception: pending save or `BattleSimulation` → deferred prefabs join the required batch (restore/simulation spawn units during startup).
+- `BattleAssetWarmup` (battle scope; `IObserver<BattleState>`): on first `Running` loads deferred prefabs into the battle cache, 4 in flight per batch; cancelled in `LateDispose`. A spawn before warm-up blocks only on its own handle (`CachedAssetService.Load` → `WaitForCompletion`).
+- `SceneService`: removed the 2024 fixed 1 s delay before the target load (now 1 frame); `backgroundLoadingPriority` High from `LoadScene` until the target scene loads, BelowNormal otherwise (was High permanently).
+- Addressables: `UseAssetBundleCrc` disabled on all 9 local groups. Evidence: Editor `AssetBundle.LoadFromFile` View 1,646 MB **15,491 ms** with CRC vs **40 ms** without; Model 426 MB **2,631 ms** vs **21 ms**. Takes effect at next content/Player build (`BuildWithPlayer`).
+- Editor captures (same runner/seed, +300 frames after Running):
+  - ADB mode: request → Running **3.731 s** (prev 5.664 / 20.723 s); loading max 484 ms; after Running p95 **17.61 ms**, worst PlayerLoop 19.6 ms (warm-up smooth).
+  - Packed mode (pre-CRC build): **20.501 s**, loading frames p95 17.61 ms → time is CRC reads, not main-thread work. Not re-captured after the CRC change (needs content rebuild).
+- Hitch investigation:
+  - Activation frame: `GC.Collect` 212–217 ms + `Mono.JIT` 132–136 ms under `Application.LoadLevelAsync Integrate` → Single-mode scene load runs Unity's unused-asset sweep with full blocking GC (`gcIncremental: 0`); at battle activation it only frees the loading scene. Fix candidate: load Battle additively, `SetActiveScene`, `UnloadSceneAsync(Loading)`; risk = objects instantiated unparented before `SetActiveScene` land in the loading scene. Not implemented.
+  - Menu → loading scene: `GC.Collect` 206–226 ms + `BatchDeleteObjects` 24–31 ms; same sweep, frees the menu → expected.
+  - First prewarm item 47–50 ms: `Mono.JIT` ~35 ms (first squadron-context code); later items ~2–5 ms; behind fade cover. JIT (also 132–136 ms at activation, ~220 ms at startup) disappears only with IL2CPP (scripting backend is Mono). Not changed.
+- Tests: compile clean; 43/43 EditMode (preloader 10 incl. 2 new split tests, cache 15, composition 18). Evidence: `Logs/LoadingFreeze/20261023T160000Z-editor-deferred-adb/analysis.md`, `../20261023T161500Z-editor-deferred-packed/`.
+
 ## Edge Cases
 
 - `CachedAssetService` keys by `(Type, key)`; preload must use the same `TSource` type or the miss still blocks.

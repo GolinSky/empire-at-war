@@ -95,9 +95,10 @@ namespace EmpireAtWar.Services.VContainer
         {
             using var configureSample = CONFIGURE_MARKER.Auto();
             base.Configure(builder);
-            OwnAssets(Application.isPlaying
+            CachedAssetService assets = Application.isPlaying
                 ? ((ProjectScope)Parent).BattlePreloader.TakeAssets()
-                : new CachedAssetService(((ProjectScope)Parent).AssetLoader));
+                : new CachedAssetService(((ProjectScope)Parent).AssetLoader);
+            OwnAssets(assets);
             builder.RegisterInstance(Assets);
             Battle = ((ProjectScope)Parent).GameData.Battle;
             builder.RegisterInstance(Battle);
@@ -192,6 +193,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<CinematicCameraModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleStartupSequence>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleAssetWarmup>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(assets);
             builder.Register<SkirmishOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishFlowSubscriptions>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

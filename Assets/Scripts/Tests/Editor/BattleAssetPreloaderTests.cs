@@ -41,7 +41,7 @@ namespace EmpireAtWar.Tests.Editor
             using (var loader = new EditorAssetLoader())
             using (var preloader = new BattleAssetPreloader(loader))
             {
-                preloader.PrepareAsync(CreateBattle(mode, first, second), CancellationToken.None).GetAwaiter().GetResult();
+                preloader.PrepareAsync(CreateBattle(mode, first, second), true, CancellationToken.None).GetAwaiter().GetResult();
                 int loadedCount = loader.Handles.Count;
                 using (CachedAssetService assets = preloader.TakeAssets())
                 {
@@ -79,6 +79,41 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(FactionType.Republic, FactionType.Separatist)]
+        [TestCase(FactionType.Empire, FactionType.Rebellion)]
+        public void Prepare_WithoutRestoreLeavesUnitViewsAndWrecksToTheWarmup(FactionType first, FactionType second)
+        {
+            BattleDefinition battle = CreateBattle(GameMode.Skirmish, first, second);
+            using (var loader = new EditorAssetLoader())
+            using (var preloader = new BattleAssetPreloader(loader))
+            {
+                preloader.PrepareAsync(battle, false, CancellationToken.None).GetAwaiter().GetResult();
+                using (CachedAssetService assets = preloader.TakeAssets())
+                {
+                    int requiredCount = loader.Handles.Count;
+                    List<string> deferred = BattleAssetPreload.DeferredPrefabKeys(assets, battle);
+                    Assert.That(loader.Handles.Count, Is.EqualTo(requiredCount), "Deferred keys come from preloaded data.");
+                    Assert.That(deferred, Has.Some.EndsWith("ShipView"));
+
+                    foreach (string key in deferred) assets.BeginPreload<GameObject>(key);
+                    assets.CompletePreloadsAsync(CancellationToken.None).GetAwaiter().GetResult();
+                    Assert.That(loader.Handles.Count, Is.EqualTo(requiredCount + deferred.Distinct().Count()),
+                        "Required preload must not contain deferred prefabs.");
+
+                    int warmedCount = loader.Handles.Count;
+                    FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
+                    foreach (FactionType factionType in new[] { first, second })
+                    {
+                        foreach (ShipType ship in factions.Get(factionType).Ships.Keys)
+                            assets.LoadComponent<ShipEntity>(ship + "ShipView");
+                    }
+                    assets.LoadComponent<BoxCollider>("MiningFacilityView");
+                    Assert.That(loader.Handles.Count, Is.EqualTo(warmedCount), "Factory keys must hit the warmed cache.");
+                }
+                Assert.That(loader.Handles.All(handle => !handle.IsValid()), Is.True);
+            }
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void Prepare_CancellationOrFailureReleasesAllPendingHandles(bool cancel)
@@ -92,7 +127,7 @@ namespace EmpireAtWar.Tests.Editor
                 else
                     loader.FailKey = "StationLevelData";
                 TestDelegate prepare = () => preloader.PrepareAsync(
-                    SkirmishPreset.Default(), cancellation.Token).GetAwaiter().GetResult();
+                    SkirmishPreset.Default(), false, cancellation.Token).GetAwaiter().GetResult();
                 if (cancel) Assert.Throws<OperationCanceledException>(prepare);
                 else Assert.Throws<InvalidOperationException>(prepare);
                 Assert.That(loader.Handles.Count, Is.GreaterThan(1));

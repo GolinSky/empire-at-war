@@ -29,7 +29,9 @@ using UnityEngine;
 
 namespace EmpireAtWar.Repository
 {
-    // Loads in three batches; each batch starts every load at once and needs only data from the batches before it.
+    // Loads what the battle needs before Running in three batches; each batch starts every load at once and needs
+    // only data from the batches before it. Unit views and wrecks are first used after Running, so they are left
+    // to BattleAssetWarmup unless a restore or simulation spawns units during startup.
     public static class BattleAssetPreload
     {
         private static readonly string[] UI_KEYS =
@@ -41,7 +43,7 @@ namespace EmpireAtWar.Repository
         private static readonly string[] STRUCTURE_PREFIXES = { "", "Asteroid" };
         private static readonly string[] PLATFORMS = { "DefendPlatform", "AotrGolanIIIDefensePlatform", "AotrEmpressDefensePlatform" };
 
-        public static async Awaitable LoadAsync(CachedAssetService assets, BattleDefinition battle,
+        public static async Awaitable LoadAsync(CachedAssetService assets, BattleDefinition battle, bool restoresSave,
             CancellationToken cancellationToken)
         {
             BeginShared(assets, battle);
@@ -49,43 +51,87 @@ namespace EmpireAtWar.Repository
 
             FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
             ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
-            SpaceStationData stations = assets.Load<SpaceStationData>(nameof(SpaceStationData));
-            HashSet<FactionType> battleFactions = new HashSet<FactionType>();
-            foreach (var slot in battle.Slots) battleFactions.Add(slot.Faction);
-
-            BeginStructures(assets);
-            foreach (FactionType faction in battleFactions)
+            BeginStructureData(assets);
+            foreach (FactionType faction in Factions(battle))
             {
                 assets.BeginPreload<GameObject>(faction + "SpaceStationView");
                 foreach (ShipType ship in factions.Get(faction).Ships.Keys)
-                {
                     assets.BeginPreload<ShipData>(ships.GetShipDataPath(ship));
-                    assets.BeginPreload<GameObject>(ship + "ShipView");
-                }
             }
             await assets.CompletePreloadsAsync(cancellationToken);
 
-            HashSet<SquadronType> squadrons = new HashSet<SquadronType>();
-            BeginStructureWrecks(assets);
-            foreach (FactionType faction in battleFactions)
-            {
-                FactionDefinition definition = factions.Get(faction);
-                if (stations.TryGetWreck(faction, out UnitWreckData stationWreck)) BeginWreck(assets, stationWreck);
-                AddBay(squadrons, stations.GetHangarBay(faction));
-                foreach (ShipType ship in definition.Ships.Keys)
-                {
-                    ShipData data = assets.Load<ShipData>(ships.GetShipDataPath(ship));
-                    BeginWreck(assets, data.Wreck);
-                    foreach (HangarBay bay in data.HangarBays) AddBay(squadrons, bay);
-                }
-                foreach (SquadronType squadron in definition.Squadrons.Keys) squadrons.Add(squadron);
-            }
-            foreach (SquadronType squadron in squadrons)
+            foreach (SquadronType squadron in Squadrons(assets, battle))
             {
                 assets.BeginPreload<SquadronData>(squadron + "SquadronData");
                 assets.BeginPreload<GameObject>(squadron + "SquadronView");
             }
+            if (restoresSave || battle.Mode == GameMode.BattleSimulation)
+            {
+                foreach (string key in DeferredPrefabKeys(assets, battle)) assets.BeginPreload<GameObject>(key);
+            }
             await assets.CompletePreloadsAsync(cancellationToken);
+        }
+
+        // Prefabs first instantiated after startup: ship and structure views, then every wreck. Needs the data
+        // loaded by LoadAsync.
+        public static List<string> DeferredPrefabKeys(CachedAssetService assets, BattleDefinition battle)
+        {
+            FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
+            ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
+            SpaceStationData stations = assets.Load<SpaceStationData>(nameof(SpaceStationData));
+            List<string> views = new List<string>();
+            List<string> wrecks = new List<string>();
+            foreach (FactionType faction in Factions(battle))
+            {
+                foreach (ShipType ship in factions.Get(faction).Ships.Keys)
+                {
+                    views.Add(ship + "ShipView");
+                    AddWreck(wrecks, assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck);
+                }
+                if (stations.TryGetWreck(faction, out UnitWreckData stationWreck)) AddWreck(wrecks, stationWreck);
+            }
+            foreach (string prefix in STRUCTURE_PREFIXES)
+            {
+                // The basic facility and platform views are required while the battle scope builds.
+                if (prefix.Length > 0) views.Add(prefix + "MiningFacilityView");
+                AddWreck(wrecks, assets.Load<MiningFacilityData>(prefix + nameof(MiningFacilityData)).Wreck);
+                foreach (string key in PlatformKeys(prefix))
+                {
+                    if (key != "DefendPlatform") views.Add(key + "View");
+                    AddWreck(wrecks, assets.Load<DefendPlatformData>(key + "Data").Wreck);
+                }
+            }
+            views.AddRange(wrecks);
+            return views;
+        }
+
+        private static HashSet<FactionType> Factions(BattleDefinition battle)
+        {
+            HashSet<FactionType> factions = new HashSet<FactionType>();
+            foreach (var slot in battle.Slots) factions.Add(slot.Faction);
+            return factions;
+        }
+
+        // Squadrons the factions can build plus every type a ship or station hangar launches; SquadronPool
+        // prewarms them during startup.
+        private static HashSet<SquadronType> Squadrons(CachedAssetService assets, BattleDefinition battle)
+        {
+            FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
+            ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
+            SpaceStationData stations = assets.Load<SpaceStationData>(nameof(SpaceStationData));
+            HashSet<SquadronType> squadrons = new HashSet<SquadronType>();
+            foreach (FactionType faction in Factions(battle))
+            {
+                FactionDefinition definition = factions.Get(faction);
+                AddBay(squadrons, stations.GetHangarBay(faction));
+                foreach (ShipType ship in definition.Ships.Keys)
+                {
+                    foreach (HangarBay bay in assets.Load<ShipData>(ships.GetShipDataPath(ship)).HangarBays)
+                        AddBay(squadrons, bay);
+                }
+                foreach (SquadronType squadron in definition.Squadrons.Keys) squadrons.Add(squadron);
+            }
+            return squadrons;
         }
 
         private static void BeginShared(CachedAssetService assets, BattleDefinition battle)
@@ -132,33 +178,21 @@ namespace EmpireAtWar.Repository
                 if (prefix.Length == 0 || platform == "DefendPlatform") yield return prefix + platform;
         }
 
-        private static void BeginStructures(CachedAssetService assets)
+        // SkirmishScope reads the basic platform and facility colliders while it builds.
+        private static void BeginStructureData(CachedAssetService assets)
         {
+            assets.BeginPreload<GameObject>("DefendPlatformView");
+            assets.BeginPreload<GameObject>("MiningFacilityView");
             foreach (string prefix in STRUCTURE_PREFIXES)
             {
                 assets.BeginPreload<MiningFacilityData>(prefix + nameof(MiningFacilityData));
-                assets.BeginPreload<GameObject>(prefix + "MiningFacilityView");
-                foreach (string key in PlatformKeys(prefix))
-                {
-                    assets.BeginPreload<DefendPlatformData>(key + "Data");
-                    assets.BeginPreload<GameObject>(key + "View");
-                }
+                foreach (string key in PlatformKeys(prefix)) assets.BeginPreload<DefendPlatformData>(key + "Data");
             }
         }
 
-        private static void BeginStructureWrecks(CachedAssetService assets)
+        private static void AddWreck(List<string> keys, UnitWreckData wreck)
         {
-            foreach (string prefix in STRUCTURE_PREFIXES)
-            {
-                BeginWreck(assets, assets.Load<MiningFacilityData>(prefix + nameof(MiningFacilityData)).Wreck);
-                foreach (string key in PlatformKeys(prefix))
-                    BeginWreck(assets, assets.Load<DefendPlatformData>(key + "Data").Wreck);
-            }
-        }
-
-        private static void BeginWreck(CachedAssetService assets, UnitWreckData wreck)
-        {
-            if (wreck != null) assets.BeginPreload<GameObject>(wreck.PrefabKey);
+            if (wreck != null) keys.Add(wreck.PrefabKey);
         }
 
         private static void AddBay(HashSet<SquadronType> squadrons, HangarBay bay)
