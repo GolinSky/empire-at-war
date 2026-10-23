@@ -12,6 +12,17 @@ namespace EmpireAtWar.Services.VContainer
 
         public IAssetService Assets { get; protected set; }
 
+        protected override void Awake()
+        {
+            if (UnityEngine.Application.isPlaying && autoRun && !IsRoot &&
+                parentReference.Object == null && parentReference.Type == null)
+            {
+                parentReference = ParentReference.Create<ProjectScope>();
+                VContainerSettings.Instance.GetOrCreateRootLifetimeScopeInstance();
+            }
+            base.Awake();
+        }
+
         protected override void Configure(IContainerBuilder builder)
         {
             Assets = ((AssetLifetimeScope)Parent).Assets;

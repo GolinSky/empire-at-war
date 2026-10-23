@@ -20,15 +20,17 @@ namespace EmpireAtWar.Services.UnitWreck
     public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IOrderedDisposable
     {
         private readonly IPlayerRoster _playerRoster;
+        private readonly IAssetService _assetService;
 
         private readonly Dictionary<UnitWreckData, ViewPool<UnitWreckView>> _pools =
             new Dictionary<UnitWreckData, ViewPool<UnitWreckView>>();
         private readonly List<ActiveWreck> _activeWrecks = new List<ActiveWreck>();
         private readonly System.Random _random = new System.Random();
 
-        public UnitWreckService(IPlayerRoster playerRoster)
+        public UnitWreckService(IPlayerRoster playerRoster, IAssetService assetService)
         {
             _playerRoster = playerRoster;
+            _assetService = assetService;
         }
 
         public void Dispose()
@@ -82,7 +84,8 @@ namespace EmpireAtWar.Services.UnitWreck
                 return pool;
             }
 
-            pool = new ViewPool<UnitWreckView>(prefab: data.Prefab, rootName: $"UnitWrecks_{data.name}", hide: view => view.Hide(),
+            pool = new ViewPool<UnitWreckView>(prefab: _assetService.LoadComponent<UnitWreckView>(data.PrefabKey),
+                rootName: $"UnitWrecks_{data.name}", hide: view => view.Hide(),
                 maxSize: data.MaxActive);
             _pools.Add(data, pool);
             return pool;

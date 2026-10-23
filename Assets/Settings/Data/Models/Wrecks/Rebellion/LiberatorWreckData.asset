@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 553d1e23eae7824438fd41f0e682b0d4, type: 3}
   m_Name: LiberatorWreckData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.UnitWreck.UnitWreckData
-  <Prefab>k__BackingField: {fileID: 1862052044231357528, guid: 48216c7b6520f3844a065086aca850ea,
-    type: 3}
+  prefab:
+    m_AssetGUID: 48216c7b6520f3844a065086aca850ea
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   <MaxActive>k__BackingField: 32
   <MinParts>k__BackingField: 2
   <MaxParts>k__BackingField: 3

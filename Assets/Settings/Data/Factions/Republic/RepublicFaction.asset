@@ -98,8 +98,8 @@ MonoBehaviour:
     - key: 6
       value:
         matchups: {fileID: 11400000, guid: f39746bde7f9b514282749a973ba31c5, type: 2}
-        description: Lasers, ion fire and concussion missiles protect the fleet against
-          light targets.
+        description: Seven laser cannons and three point-defense lasers protect the
+          fleet against light targets.
         role: "Corvette \xB7 Light screen"
         iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
         isHero: 0

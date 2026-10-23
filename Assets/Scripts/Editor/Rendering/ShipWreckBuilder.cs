@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using EmpireAtWar.ViewComponents.Wreck;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -162,7 +164,12 @@ namespace EmpireAtWar.Editor.Rendering
                 SetArray(serializedView.FindProperty("meshFilters"), filters);
                 serializedView.ApplyModifiedPropertiesWithoutUndo();
 
-                GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, $"{PREFAB_FOLDER}/{root.name}.prefab");
+                string prefabPath = $"{PREFAB_FOLDER}/{root.name}.prefab";
+                GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+                AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+                AddressableAssetGroup group = settings.FindGroup("View");
+                AddressableAssetEntry entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(prefabPath), group);
+                entry.SetAddress(prefab.name);
                 AssetDatabase.SaveAssets();
                 return prefab.GetComponent<UnitWreckView>();
             }

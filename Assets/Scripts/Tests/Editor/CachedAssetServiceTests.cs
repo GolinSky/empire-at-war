@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.VContainer;
@@ -74,6 +75,82 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Preload_UsesTheConsumerCacheAndReleasesOnce()
+        {
+            using CachedAssetService assets = new CachedAssetService(_loader);
+            assets.PreloadAsync<GameObject>(SHIP_KEY, CancellationToken.None).GetAwaiter().GetResult();
+            assets.PreloadAsync<GameObject>(SHIP_KEY, CancellationToken.None).GetAwaiter().GetResult();
+            assets.PreloadAsync<Material>(SHIP_KEY, CancellationToken.None).GetAwaiter().GetResult();
+            int releaseCount = 0;
+            foreach (AsyncOperationHandle handle in _loader.Handles)
+                handle.Destroyed += releasedHandle => releaseCount++;
+
+            Assert.That(assets.LoadPrefab(SHIP_KEY), Is.SameAs(_loader.Prefab));
+            Assert.That(assets.Load<Material>(SHIP_KEY), Is.SameAs(_loader.Material));
+            Assert.That(_loader.Handles.Count, Is.EqualTo(2));
+
+            assets.Dispose();
+            assets.Dispose();
+
+            Assert.That(releaseCount, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Preload_CancelledBeforeLoading_DoesNotAcquireAHandle()
+        {
+            using CachedAssetService assets = new CachedAssetService(_loader);
+            using CancellationTokenSource cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            Assert.Throws<OperationCanceledException>(() =>
+                assets.PreloadAsync<GameObject>(SHIP_KEY, cancellation.Token).GetAwaiter().GetResult());
+            Assert.That(_loader.Handles, Is.Empty);
+        }
+
+        [Test]
+        public void Preload_CancelledDuringAcquisition_ReleasesHandle()
+        {
+            using CachedAssetService assets = new CachedAssetService(_loader);
+            using CancellationTokenSource cancellation = new CancellationTokenSource();
+            _loader.OnLoad = cancellation.Cancel;
+
+            Assert.Throws<OperationCanceledException>(() =>
+                assets.PreloadAsync<GameObject>(SHIP_KEY, cancellation.Token).GetAwaiter().GetResult());
+
+            Assert.That(_loader.Handles.Count, Is.EqualTo(1));
+            Assert.That(_loader.Handles[0].IsValid(), Is.False);
+            _loader.OnLoad = null;
+            Assert.That(assets.LoadPrefab(SHIP_KEY), Is.SameAs(_loader.Prefab));
+            Assert.That(_loader.Handles.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Preload_NullAsset_ReleasesHandleAndAllowsRetry()
+        {
+            using CachedAssetService assets = new CachedAssetService(_loader);
+            _loader.ReturnNull = true;
+
+            Assert.Throws<InvalidOperationException>(() =>
+                assets.PreloadAsync<GameObject>(SHIP_KEY, CancellationToken.None).GetAwaiter().GetResult());
+
+            Assert.That(_loader.Handles[0].IsValid(), Is.False);
+            _loader.ReturnNull = false;
+            Assert.That(assets.LoadPrefab(SHIP_KEY), Is.SameAs(_loader.Prefab));
+            Assert.That(_loader.Handles.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Preload_AfterDispose_ThrowsWithoutAcquiringAHandle()
+        {
+            CachedAssetService assets = new CachedAssetService(_loader);
+            assets.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() =>
+                assets.PreloadAsync<GameObject>(SHIP_KEY, CancellationToken.None).GetAwaiter().GetResult());
+            Assert.That(_loader.Handles, Is.Empty);
+        }
+
+        [Test]
         public void Dispose_ReleasesEveryHandle()
         {
             CachedAssetService assets = new CachedAssetService(_loader);
@@ -144,6 +221,38 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_loader.Handles[0].IsValid(), Is.False);
         }
 
+        [Test]
+        public void DeferredParentBuild_ResumesWaitingChildWithTheReadyCache()
+        {
+            GameObject root = new GameObject("Deferred Asset Owner");
+            root.SetActive(false);
+            _objects.Add(root);
+            OwnerScope owner = root.AddComponent<OwnerScope>();
+            owner.autoRun = false;
+            owner.Loader = _loader;
+            root.SetActive(true);
+            GameObject childObject = new GameObject("Waiting Asset Child");
+            _objects.Add(childObject);
+            WaitingChildScope child = childObject.AddComponent<WaitingChildScope>();
+            child.parentReference = ParentReference.Create<OwnerScope>();
+
+            child.RunAwake();
+
+            Assert.That(owner.Container, Is.Null);
+            Assert.That(child.Container, Is.Null);
+
+            using (LifetimeScope.EnqueueParent(null)) owner.Build();
+
+            Assert.That(child.Container, Is.Not.Null);
+            Assert.That(child.Parent, Is.SameAs(owner));
+            Assert.That(child.Assets, Is.SameAs(owner.Assets));
+        }
+
+        private sealed class WaitingChildScope : AssetLifetimeScope
+        {
+            public void RunAwake() => base.Awake();
+        }
+
         private sealed class OwnerScope : AssetLifetimeScope
         {
             public FakeHandleLoader Loader { get; set; }
@@ -184,14 +293,17 @@ namespace EmpireAtWar.Tests.Editor
 
             public GameObject Prefab { get; }
             public Material Material { get; }
+            public Action OnLoad { get; set; }
+            public bool ReturnNull { get; set; }
             public List<AsyncOperationHandle> Handles { get; } = new List<AsyncOperationHandle>();
 
             public AsyncOperationHandle<TSource> Load<TSource>(string key) where TSource : Object
             {
                 Object asset = typeof(TSource) == typeof(Material) ? (Object)Material : Prefab;
                 AsyncOperationHandle<TSource> handle =
-                    _resourceManager.CreateCompletedOperation((TSource)asset, string.Empty);
+                    _resourceManager.CreateCompletedOperation(ReturnNull ? null : (TSource)asset, string.Empty);
                 Handles.Add(handle);
+                if (OnLoad != null) OnLoad();
                 return handle;
             }
         }

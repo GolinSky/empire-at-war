@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Squadrons;
 
 namespace EmpireAtWar.Services.Player
 {
@@ -24,6 +25,8 @@ namespace EmpireAtWar.Services.Player
 
         void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner);
 
+        void RegisterSquadronPrewarmer(PlayerId owner, ISquadronPrewarmer prewarmer);
+
         void RegisterEconomy(PlayerId owner, IEconomyProvider economy);
 
         void UnregisterSiteBuilder(PlayerId owner);
@@ -34,11 +37,15 @@ namespace EmpireAtWar.Services.Player
 
         void UnregisterStationSpawner(PlayerId owner);
 
+        void UnregisterSquadronPrewarmer(PlayerId owner);
+
         void UnregisterEconomy(PlayerId owner);
 
         ISiteFacilityBuilder GetSiteBuilder(PlayerId owner);
 
         IStationSpawner GetStationSpawner(PlayerId owner);
+
+        ISquadronPrewarmer GetSquadronPrewarmer(PlayerId owner);
 
         IEconomyProvider GetEconomy(PlayerId owner);
 

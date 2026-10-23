@@ -56,6 +56,8 @@ namespace EmpireAtWar.Controllers.Game
             // Player contexts register their station spawners in their own kernels' Start this frame.
             await Awaitable.NextFrameAsync(cancellationToken);
             await _mapLoader.LoadAsync(cancellationToken);
+            foreach (PlayerSlot player in _playerRoster.Players)
+                await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
             if (!_restore.TryRestore())
             {
                 foreach (PlayerSlot player in _playerRoster.Players)

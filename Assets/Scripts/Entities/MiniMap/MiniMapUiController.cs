@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Entities.MiniMap
         private readonly IInputLock _inputLock;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly INotifier<BattleMap> _battleMap;
         private readonly IMiniMapFogMask _fogMask;
         private MiniMapUi _miniMapView;
@@ -54,7 +56,7 @@ namespace EmpireAtWar.Entities.MiniMap
             IMiniMapFogMask fogMask,
             MiniMapData model,
             IPlayerColors playerColors,
-            TimerPoolService timerPoolService) : base(uiService, cancelRouter)
+            TimerPoolService timerPoolService, ICaptureSitesSystem captureSites) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
             _fogMask = fogMask;
@@ -66,6 +68,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _timerPoolService = timerPoolService;
             _routeNavigation = routeNavigation;
             _orderInput = orderInput;
+            _captureSites = captureSites;
         }
 
         public void Initialize()
@@ -184,8 +187,8 @@ namespace EmpireAtWar.Entities.MiniMap
         public void OrderMove(Vector3 worldPoint)
         {
             if (_inputLock.IsLocked) return;
-            // Match world input: taps on an obstacle are not move targets.
-            if (_model.IsObstacleAt(worldPoint)) return;
+            // Site rocks are valid approach targets; navigation finds a nearby reachable position.
+            if (_model.IsObstacleAt(worldPoint) && !_captureSites.IsPositionInAnySite(worldPoint)) return;
             if (_orderInput.TryIssueMove(worldPoint))
             {
                 _miniMapView.PlayMoveTarget(worldPoint);

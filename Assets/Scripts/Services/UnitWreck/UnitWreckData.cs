@@ -1,5 +1,5 @@
-using EmpireAtWar.ViewComponents.Wreck;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace EmpireAtWar.Services.UnitWreck
 {
@@ -11,7 +11,10 @@ namespace EmpireAtWar.Services.UnitWreck
     public sealed class UnitWreckData : ScriptableObject
     {
         [Tooltip("Copy of the unit view on the Ship Wreck shader. Build with Tools/Rendering/Build Wreck From Selected View.")]
-        [field: SerializeField] public UnitWreckView Prefab { get; private set; }
+        [SerializeField] private AssetReferenceGameObject prefab;
+
+        public string PrefabKey => prefab.AssetGUID;
+
         [Tooltip("Wrecks of this type alive at once; spawning another force-recycles the oldest.")]
         [field: SerializeField, Min(1)] public int MaxActive { get; private set; } = 32;
 

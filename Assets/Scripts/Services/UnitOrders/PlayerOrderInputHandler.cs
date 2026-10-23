@@ -5,13 +5,16 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using VContainer;
@@ -33,6 +36,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IShipAbilityTargeting _abilities;
         private readonly IUnitOrderService _unitOrderService;
         private readonly IHardPointHoverObserver _hardPointHover;
+        private readonly ICaptureSitesSystem _captureSites;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -43,7 +47,7 @@ namespace EmpireAtWar.Services.UnitOrders
             IShipAbilityTargeting abilities, IUnitOrderService unitOrderService,
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
-            SuperWeaponTargetingModel superWeapons)
+            SuperWeaponTargetingModel superWeapons, ICaptureSitesSystem captureSites)
         {
             _localPlayer = localPlayer;
             _gestures = gestures;
@@ -57,6 +61,7 @@ namespace EmpireAtWar.Services.UnitOrders
             _unitOrderService = unitOrderService;
             _superWeapons = superWeapons;
             _hardPointHover = hardPointHover;
+            _captureSites = captureSites;
         }
 
         public void Initialize()
@@ -93,6 +98,12 @@ namespace EmpireAtWar.Services.UnitOrders
             foreach (IEntity receiver in receivers)
             {
                 if (!receiver.TryGetFacade(out IMoveFacade move)) continue;
+                foreach (ICaptureSite site in _captureSites.Sites)
+                    if (site.Contains(worldPoint))
+                    {
+                        worldPoint = site.Center;
+                        break;
+                    }
                 worldPoint.y = move.WorldPosition.y;
                 if (_targeting.Pending == UnitActionId.AttackMove)
                 {
@@ -167,6 +178,14 @@ namespace EmpireAtWar.Services.UnitOrders
                 }
                 return;
             }
+            if (!hasUnit || !hasHardPoint && !IsEnemy(target) &&
+                hit.Command.SelectionType == SelectionType.MiningFacility)
+                foreach (ICaptureSite site in _captureSites.Sites)
+                    if (site.Contains(_cameraService.GetWorldPoint(screen, site.Center)))
+                    {
+                        TryIssueMove(site.Center);
+                        return;
+                    }
             if (pending != null)
             {
                 if (hasUnit || IsObstacle(screen)) return;

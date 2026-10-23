@@ -55,6 +55,7 @@ using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Views.SpawnArea;
 using UnityEngine;
+using Unity.Profiling;
 using global::VContainer;
 using global::VContainer.Unity;
 
@@ -62,6 +63,7 @@ namespace EmpireAtWar.Services.VContainer
 {
     public sealed class SkirmishScope : AssetLifetimeScope
     {
+        private static readonly ProfilerMarker CONFIGURE_MARKER = new ProfilerMarker("SkirmishScope.Configure");
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
         [SerializeField] private SpawnAreaOverlay spawnAreaOverlay;
         [SerializeField] private ReinforcementZoneData reinforcementZoneData;
@@ -91,8 +93,11 @@ namespace EmpireAtWar.Services.VContainer
 
         protected override void Configure(IContainerBuilder builder)
         {
+            using var configureSample = CONFIGURE_MARKER.Auto();
             base.Configure(builder);
-            OwnAssets(new CachedAssetService(((ProjectScope)Parent).AssetLoader));
+            OwnAssets(Application.isPlaying
+                ? ((ProjectScope)Parent).BattlePreloader.TakeAssets()
+                : new CachedAssetService(((ProjectScope)Parent).AssetLoader));
             builder.RegisterInstance(Assets);
             Battle = ((ProjectScope)Parent).GameData.Battle;
             builder.RegisterInstance(Battle);

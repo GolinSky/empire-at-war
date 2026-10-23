@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Squadrons;
 
 namespace EmpireAtWar.Services.Player
 {
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Services.Player
             new Dictionary<PlayerId, IEnemyStationCheat>();
         private readonly Dictionary<PlayerId, IStationSpawner> _stationSpawners =
             new Dictionary<PlayerId, IStationSpawner>();
+        private readonly Dictionary<PlayerId, ISquadronPrewarmer> _squadronPrewarmers =
+            new Dictionary<PlayerId, ISquadronPrewarmer>();
         private readonly Dictionary<PlayerId, IEconomyProvider> _economies =
             new Dictionary<PlayerId, IEconomyProvider>();
 
@@ -40,6 +43,11 @@ namespace EmpireAtWar.Services.Player
         public void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner)
         {
             _stationSpawners.Add(owner, spawner);
+        }
+
+        public void RegisterSquadronPrewarmer(PlayerId owner, ISquadronPrewarmer prewarmer)
+        {
+            _squadronPrewarmers.Add(owner, prewarmer);
         }
 
         public void RegisterEconomy(PlayerId owner, IEconomyProvider economy)
@@ -67,6 +75,11 @@ namespace EmpireAtWar.Services.Player
             _stationSpawners.Remove(owner);
         }
 
+        public void UnregisterSquadronPrewarmer(PlayerId owner)
+        {
+            _squadronPrewarmers.Remove(owner);
+        }
+
         public void UnregisterEconomy(PlayerId owner)
         {
             _economies.Remove(owner);
@@ -80,6 +93,11 @@ namespace EmpireAtWar.Services.Player
         public IStationSpawner GetStationSpawner(PlayerId owner)
         {
             return _stationSpawners[owner];
+        }
+
+        public ISquadronPrewarmer GetSquadronPrewarmer(PlayerId owner)
+        {
+            return _squadronPrewarmers[owner];
         }
 
         public IEconomyProvider GetEconomy(PlayerId owner)

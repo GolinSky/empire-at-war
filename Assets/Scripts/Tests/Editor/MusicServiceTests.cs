@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Mvc;
@@ -6,6 +7,7 @@ using EmpireAtWar.Services.Audio;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
@@ -25,6 +27,45 @@ namespace EmpireAtWar.Tests.Editor
             if (_clip != null) Object.DestroyImmediate(_clip);
         }
 
+        [UnityTearDown]
+        public IEnumerator ExitRuntime()
+        {
+            if (Application.isPlaying) yield return new ExitPlayMode();
+        }
+
+        [UnityTest]
+        public IEnumerator Tick_AdvancesBetweenStreamedBattleTracks()
+        {
+            yield return new EnterPlayMode();
+            AudioClip first = AssetDatabase.LoadAssetAtPath<AudioClip>(
+                "Assets/Audio/Music/Battle/Ahsoka/A_Floating.mp3");
+            StartTrack(first, true);
+            float deadline = Time.realtimeSinceStartup + 10f;
+            while (_source.volume < 0.5f && Time.realtimeSinceStartup < deadline)
+            {
+                _service.Tick();
+                yield return null;
+            }
+            Assert.That(_source.volume, Is.GreaterThanOrEqualTo(0.5f), $"First track: {first.loadState}");
+            AudioClip next = AssetDatabase.LoadAssetAtPath<AudioClip>(
+                "Assets/Audio/Music/Battle/Ahsoka/A_Open_Fire.mp3");
+            Assert.That(next.UnloadAudioData(), Is.True);
+            typeof(MusicService).GetField("_clips", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(_service, new List<AudioClip> { next });
+            _source.timeSamples = first.samples - first.frequency / 4;
+            deadline = Time.realtimeSinceStartup + 10f;
+            while ((_audio.PlayCount < 2 || _source.volume < 0.5f) && Time.realtimeSinceStartup < deadline)
+            {
+                _service.Tick();
+                yield return null;
+            }
+            Assert.That(_audio.PlayCount, Is.EqualTo(2));
+            Assert.That(_source.clip, Is.SameAs(next));
+            Assert.That(_source.isPlaying, Is.True);
+            Assert.That(_source.volume, Is.GreaterThanOrEqualTo(0.5f), $"Next track: {_source.clip.loadState}");
+            Assert.That(_source.timeSamples, Is.GreaterThan(0));
+        }
+
         [Test]
         public void Tick_DoesNotReplaceClipWhilePlaybackIsWaitingForAudioData()
         {
@@ -42,6 +83,21 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Tick_SelectsNextTrackAfterStartedStreamReleasesAudioData()
+        {
+            AudioClip importedClip = AssetDatabase.LoadAssetAtPath<AudioClip>(
+                "Assets/Audio/Music/Battle/Ahsoka/A_Floating.mp3");
+            StartTrack(importedClip);
+            typeof(MusicService).GetField("_started", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(_service, true);
+            Assert.That(importedClip.UnloadAudioData(), Is.True);
+            Assert.That(_source.isPlaying, Is.False);
+
+            _service.Tick();
+
+            Assert.That(_audio.PlayCount, Is.EqualTo(2), "A finished stream must not stall the playlist.");
+        }
+
+        [Test]
         public void Tick_SelectsNextTrackAfterLoadedPlaybackStops()
         {
             _clip = AudioClip.Create("Finished music", 44100, 1, 44100, false);
@@ -54,12 +110,12 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_audio.PlayCount, Is.EqualTo(2));
         }
 
-        private void StartTrack(AudioClip clip)
+        private void StartTrack(AudioClip clip, bool realPlayback = false)
         {
             GameObject template = new GameObject("Music source template");
             AudioSource source = template.AddComponent<AudioSource>();
             source.playOnAwake = false;
-            _audio = new RecordingAudioService();
+            _audio = new RecordingAudioService { RealPlayback = realPlayback };
             try
             {
                 _service = new MusicService(null, new SourceAssets(source), null, _audio);
@@ -85,6 +141,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class RecordingAudioService : Service, IAudioService
         {
+            public bool RealPlayback { get; set; }
             public int PlayCount { get; private set; }
             public void Play(AudioSource source, AudioClip clip, float volume, bool loop)
             {
@@ -92,6 +149,7 @@ namespace EmpireAtWar.Tests.Editor
                 source.clip = clip;
                 source.volume = volume;
                 source.loop = loop;
+                if (RealPlayback) source.Play();
             }
             public void Stop(AudioSource source) => source.Stop();
             public void PlayOneShot(AudioSource source, AudioClip clip, float volume) => throw new NotSupportedException();

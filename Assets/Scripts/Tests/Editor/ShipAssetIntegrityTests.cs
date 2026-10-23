@@ -67,8 +67,8 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Ship/Republic/ArquitensShipData.asset");
 
             Assert.That(data.Wreck, Is.Not.Null);
-            Assert.That(data.Wreck.Prefab, Is.Not.Null);
-            Assert.That(AssetDatabase.GetAssetPath(data.Wreck.Prefab),
+            Assert.That(data.Wreck.PrefabKey, Is.Not.Empty);
+            Assert.That(AssetDatabase.GUIDToAssetPath(data.Wreck.PrefabKey),
                 Is.EqualTo("Assets/Prefabs/Models/Wrecks/ArquitensWreckView.prefab"));
         }
     }

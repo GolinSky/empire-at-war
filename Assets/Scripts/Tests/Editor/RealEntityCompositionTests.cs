@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using EmpireAtWar.Components.Combat;
@@ -35,10 +36,13 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Presenters.MiniMap;
+using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Services.Factory;
@@ -150,6 +154,78 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(wave.Container.TryGetRegistration(typeof(EmpireAtWar.Models.Economy.EconomyModel), out _), Is.False);
             Assert.That(_battle.Container.Resolve<IBattleOutcomeRule>(), Is.TypeOf<SurvivalOutcomeRule>());
         }
+
+        [Test]
+        public void SquadronPrewarm_BuildsAndStowsOneSquadronPerSlice()
+        {
+            BuildSaveProject();
+            BuildSaveBattle();
+            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot owner = player.Container.Resolve<PlayerSlot>();
+            SquadronPool pool = player.Container.Resolve<SquadronPool>();
+            Assert.That(_battle.Container.Resolve<IPlayerRegistry>().GetSquadronPrewarmer(owner.Id), Is.SameAs(pool));
+            Assert.That(player.GetComponentsInChildren<Squadron>(true), Is.Empty);
+
+            using (IEnumerator<Squadron> slices = GetPrewarmSlices(pool, CancellationToken.None))
+            {
+                for (int count = 1; count <= 2; count++)
+                {
+                    Assert.That(slices.MoveNext(), Is.True);
+                    Squadron squadron = slices.Current;
+                    EntityLifetimeScope scope = squadron.transform.parent.GetComponent<EntityLifetimeScope>();
+                    Assert.That(player.GetComponentsInChildren<Squadron>(true).Length, Is.EqualTo(count));
+                    Assert.That(scope.gameObject.activeSelf, Is.False);
+                    Assert.That(scope.Container.Resolve<LifecycleTickGate>().IsTicking, Is.False);
+                    Assert.That(_battle.Container.Resolve<IEntityLocator>().Entities, Is.Empty);
+                }
+            }
+        }
+
+        [Test]
+        public void SquadronPrewarm_CancellationStopsCreationAndKeepsBuiltSquadronsReusable()
+        {
+            BuildSaveProject();
+            BuildSaveBattle();
+            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot owner = player.Container.Resolve<PlayerSlot>();
+            SquadronPool pool = player.Container.Resolve<SquadronPool>();
+            using (var cancellation = new CancellationTokenSource())
+            using (IEnumerator<Squadron> slices = GetPrewarmSlices(pool, cancellation.Token))
+            {
+                Assert.That(slices.MoveNext(), Is.True);
+                Squadron built = slices.Current;
+                SquadronType type = built.transform.parent.GetComponent<EntityLifetimeScope>()
+                    .Container.Resolve<SquadronType>();
+                cancellation.Cancel();
+                Assert.Throws<OperationCanceledException>(() => slices.MoveNext());
+                Assert.That(player.GetComponentsInChildren<Squadron>(true).Length, Is.EqualTo(1));
+                Squadron reused = pool.Spawn(owner.Id, type, new Vector3(10f, 0f, 20f), Quaternion.identity);
+                Assert.That(reused, Is.SameAs(built));
+                Squadron fallback = pool.Spawn(owner.Id, type, Vector3.zero, Quaternion.identity);
+                Assert.That(fallback, Is.Not.SameAs(built));
+                Assert.That(player.GetComponentsInChildren<Squadron>(true).Length, Is.EqualTo(2));
+            }
+        }
+
+        [Test]
+        public void SquadronPrewarm_CancelledBeforeStartBuildsNothing()
+        {
+            BuildSaveProject();
+            BuildSaveBattle();
+            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            SquadronPool pool = player.Container.Resolve<SquadronPool>();
+            using (var cancellation = new CancellationTokenSource())
+            {
+                cancellation.Cancel();
+                Assert.Throws<OperationCanceledException>(() => pool.PrewarmAsync(cancellation.Token).GetAwaiter().GetResult());
+                Assert.That(player.GetComponentsInChildren<Squadron>(true), Is.Empty);
+            }
+        }
+
+        private static IEnumerator<Squadron> GetPrewarmSlices(SquadronPool pool, CancellationToken cancellationToken) =>
+            ((IEnumerable<Squadron>)typeof(SquadronPool).GetMethod("CreatePrewarmed",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(pool, new object[] { cancellationToken })).GetEnumerator();
 
         [Test]
         public void SavedUnits_RestoreWithIdsPoseHealthAbilitiesHangarAndOrders()
@@ -801,6 +877,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(source, Is.Not.Null, path);
             TScope scope = Object.Instantiate(source, _root.transform, false);
             scope.autoRun = false;
+            if (scope is ProjectScope project)
+            {
+                AddressableHandleLoader loader = new AddressableHandleLoader();
+                CachedAssetService assets = new CachedAssetService(loader);
+                typeof(ProjectScope).GetField("_assetLoader", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(project, loader);
+                typeof(AssetLifetimeScope).GetMethod("OwnAssets", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(project, new object[] { assets });
+                typeof(ProjectScope).GetProperty(nameof(ProjectScope.GameData))
+                    .SetValue(project, Object.Instantiate(assets.Load<GameData>(nameof(GameData))));
+                typeof(ProjectScope).GetProperty(nameof(ProjectScope.BattlePreloader))
+                    .SetValue(project, new BattleAssetPreloader(loader));
+            }
             return scope;
         }
 

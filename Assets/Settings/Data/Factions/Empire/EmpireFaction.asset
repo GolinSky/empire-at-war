@@ -141,9 +141,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
         description: 600 hull; 800 shields; speed 35. Four 2-burst laser cannons,
           two dual repeating point-defense mounts, two heavy 2-burst ion blasters
-          and two heavy 5-burst concussion-missile launchers. No targetable hardpoints,
-          hangar or fighter complement. Pursuit boosts speed, damage and fire rate
-          for 15 s while stopping shield regeneration; recovers in 60 s.
+          and two heavy 5-burst concussion-missile launchers. Targetable engine and
+          shield-generator hardpoints; no hangar or fighter complement. Pursuit boosts
+          speed, damage and fire rate for 15 s while stopping shield regeneration;
+          recovers in 60 s.
         role: Screener / Corvette
         iconKey: 19c7fd1609d6359439e7fb94cbbc0065:21300000
         isHero: 0
@@ -274,8 +275,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 24a14022d6124b44fb118da9e93f01c2, type: 2}
         description: Anti-squadron escort corvette with four large repeating lasers,
           one heavy laser and four point-defense mounts. 650 hull, 850 shields, speed
-          70. No engine, shield-generator or hangar hardpoint; no squadrons. Power
-          to Weapons doubles fire rate for 10 s, reduces speed by 25% and increases
+          70. Targetable engine and shield-generator hardpoints; no hangar or squadrons.
+          Power to Weapons doubles fire rate for 10 s, reduces speed by 25% and increases
           damage taken by 50%; 60 s recovery.
         role: Screener / Corvette
         iconKey: a18de04525e87254ebd6a359e39a58ba:21300000

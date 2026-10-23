@@ -14,9 +14,10 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class CorvetteLoadoutTests
     {
         private const string RAIDER_DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
+        private const string THRANTA_DATA = "Assets/Settings/Data/Ship/Republic/ThrantaShipData.asset";
 
         [Test]
-        public void SavedCorvettes_HaveTwoPointDefenseMountsAndMatchingTargetableLoadouts()
+        public void SavedCorvettes_HaveExpectedPointDefenseMountsAndMatchingTargetableLoadouts()
         {
             BalanceRegistration registry = BalanceInventory.BuildCombat();
             WeaponsData weapons = BalanceRegistration.One<WeaponsData>();
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Tests.Editor
                 var healthBindings = BalancePrefabBindings.References(
                     unit.Components.OfType<HealthComponent>().Single(), BalanceRegistration.Auto("ShipUnits"));
                 bool isRaider = AssetDatabase.GetAssetPath(data) == RAIDER_DATA;
+                bool isThranta = AssetDatabase.GetAssetPath(data) == THRANTA_DATA;
 
                 Assert.That(mounts, Is.Not.Empty, unit.Caption);
                 Assert.That(mounts.Distinct().Count(), Is.EqualTo(mounts.Length), unit.Caption);
@@ -42,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
                     .OfType<WeaponHardPoint>()), unit.Caption);
                 Assert.That(mounts.Select(mount => mount.Id).Distinct().Count(), Is.EqualTo(mounts.Length), unit.Caption);
                 Assert.That(mounts.Count(mount => weapons.GetDefinition(mount.WeaponType).Family ==
-                    WeaponFamily.PointDefense), Is.EqualTo(2), unit.Caption);
+                    WeaponFamily.PointDefense), Is.EqualTo(isThranta ? 3 : 2), unit.Caption);
                 Assert.That(data.WeaponLoadout.Select(entry => entry.WeaponType).Distinct().Count(),
                     Is.EqualTo(data.WeaponLoadout.Count), unit.Caption);
                 Assert.That(data.WeaponLoadout.Select(entry => (entry.WeaponType, entry.Count)),
@@ -63,6 +65,42 @@ namespace EmpireAtWar.Tests.Editor
                         Assert.That(mount.MinYaw, Is.LessThanOrEqualTo(-180f), context);
                         Assert.That(mount.MaxYaw, Is.GreaterThanOrEqualTo(180f), context);
                     }
+                }
+            }
+        }
+
+        [Test]
+        public void SavedCorvettes_HaveEngineAndShieldGeneratorHardpointsWithHealthAndInjectionBindings()
+        {
+            BalanceRegistration registry = BalanceInventory.BuildCombat();
+            BalanceUnit[] corvettes = registry.Units.Where(unit =>
+                unit.Data is ShipData data && data.ShipClass == ShipClass.Corvette).ToArray();
+            Assert.That(corvettes.Length, Is.EqualTo(8));
+
+            foreach (BalanceUnit unit in corvettes)
+            {
+                ShipData data = (ShipData)unit.Data;
+                var healthBindings = BalancePrefabBindings.References(
+                    unit.Components.OfType<HealthComponent>().Single(), BalanceRegistration.Auto("ShipUnits"));
+                var injectables = unit.Components.OfType<EntityBindings>()
+                    .SelectMany(bindings => BalancePrefabBindings.References(
+                        bindings, BalanceRegistration.Auto("Injectables"))).ToArray();
+
+                foreach (HardPointType type in new[] { HardPointType.Engines, HardPointType.ShieldGenerator })
+                {
+                    string context = unit.Caption + " / " + type;
+                    HardPoint[] hardPoints = unit.Components.OfType<HardPoint>()
+                        .Where(point => point.HardPointType == type).ToArray();
+                    Assert.That(hardPoints, Is.Not.Empty, context);
+                    Assert.That(healthBindings.OfType<HardPoint>().Where(point => point.HardPointType == type),
+                        Is.EquivalentTo(hardPoints), context);
+                    Assert.That(injectables.OfType<HardPoint>().Where(point => point.HardPointType == type),
+                        Is.EquivalentTo(hardPoints), context);
+                    Assert.That(data.HardPointHealth.Count(health => health.HardPointType == type),
+                        Is.EqualTo(1), context);
+                    Assert.That(data.HardPointHealth.Single(health => health.HardPointType == type).Health,
+                        Is.GreaterThan(0f), context);
+                    Assert.That(hardPoints.All(point => point.UnlockLevel == 1), Is.True, context);
                 }
             }
         }

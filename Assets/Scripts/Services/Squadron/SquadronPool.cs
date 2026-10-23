@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SpaceStation;
@@ -6,6 +7,8 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Player;
+using Unity.Profiling;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -19,7 +22,7 @@ namespace EmpireAtWar.Services.Squadrons
     /// built while the battle loads, so early launches do not pay for a new context mid-battle; types launched
     /// by many hangars get more.
     /// </summary>
-    public sealed class SquadronPool : ISquadronSpawner, IInitializable, ITickable
+    public sealed class SquadronPool : ISquadronSpawner, ISquadronPrewarmer, IInitializable, ITickable, ILateDisposable
     {
         // How long a destroyed squadron's wrecks and explosions stay in the battle before it is despawned.
         private const float DEATH_PRESENTATION_SECONDS = 6f;
@@ -28,41 +31,74 @@ namespace EmpireAtWar.Services.Squadrons
         private const int MAX_PREWARM_PER_TYPE = 12;
         // Far below the battle plane: prewarmed squadrons are stowed in the frame they are built.
         private static readonly Vector3 PREWARM_POSITION = new Vector3(0f, -10000f, 0f);
+        private static readonly ProfilerMarker INITIALIZE_MARKER = new ProfilerMarker("SquadronPool.Initialize");
+        private static readonly ProfilerMarker COUNT_PREWARM_MARKER = new ProfilerMarker("SquadronPool.CountPrewarm");
+        private static readonly ProfilerMarker PREWARM_ITEM_MARKER = new ProfilerMarker("SquadronPool.PrewarmItem");
 
         private readonly SquadronFactory _factory;
         private readonly PlayerSlot _owner;
         private readonly FactionCatalog _factions;
         private readonly ShipsData _shipsData;
         private readonly IAssetService _assetService;
+        private readonly IPlayerRegistry _playerRegistry;
         private readonly Dictionary<(PlayerId, SquadronType), List<Squadron>> _despawned =
             new Dictionary<(PlayerId, SquadronType), List<Squadron>>();
         private readonly List<DyingSquadron> _dying = new List<DyingSquadron>();
 
         public SquadronPool(SquadronFactory factory, PlayerSlot owner, FactionCatalog factions, ShipsData shipsData,
-            IAssetService assetService)
+            IAssetService assetService, IPlayerRegistry playerRegistry)
         {
             _factory = factory;
             _owner = owner;
             _factions = factions;
             _shipsData = shipsData;
             _assetService = assetService;
+            _playerRegistry = playerRegistry;
         }
 
         public void Initialize()
         {
+            using (INITIALIZE_MARKER.Auto())
+                _playerRegistry.RegisterSquadronPrewarmer(_owner.Id, this);
+        }
+
+        public void LateDispose() => _playerRegistry.UnregisterSquadronPrewarmer(_owner.Id);
+
+        public async Awaitable PrewarmAsync(CancellationToken cancellationToken)
+        {
+            using (IEnumerator<Squadron> prewarm = CreatePrewarmed(cancellationToken).GetEnumerator())
+            {
+                while (prewarm.MoveNext())
+                    await Awaitable.NextFrameAsync(cancellationToken);
+            }
+        }
+
+        private IEnumerable<Squadron> CreatePrewarmed(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             foreach (KeyValuePair<SquadronType, int> prewarm in CountPrewarm())
             {
                 SquadronType squadronType = prewarm.Key;
                 int count = Mathf.Min(prewarm.Value, MAX_PREWARM_PER_TYPE);
-                List<Squadron> squadrons = new List<Squadron>(count);
-                for (int i = 0; i < count; i++)
+                (PlayerId, SquadronType) key = (_owner.Id, squadronType);
+                if (!_despawned.TryGetValue(key, out List<Squadron> squadrons))
                 {
-                    Squadron squadron = _factory.Create(_owner.Id, squadronType, PREWARM_POSITION, Quaternion.identity);
-                    squadron.Stow();
-                    squadrons.Add(squadron);
+                    squadrons = new List<Squadron>(count);
+                    _despawned.Add(key, squadrons);
                 }
 
-                _despawned.Add((_owner.Id, squadronType), squadrons);
+                for (int index = 0; index < count; index++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    Squadron squadron;
+                    using (PREWARM_ITEM_MARKER.Auto())
+                    {
+                        squadron = _factory.Create(_owner.Id, squadronType, PREWARM_POSITION, Quaternion.identity);
+                        squadron.Stow();
+                        squadrons.Add(squadron);
+                    }
+                    yield return squadron;
+                }
             }
         }
 
@@ -127,17 +163,20 @@ namespace EmpireAtWar.Services.Squadrons
         // ships and space station that launches it.
         private Dictionary<SquadronType, int> CountPrewarm()
         {
-            FactionDefinition faction = _factions.Get(_owner.Faction);
-            Dictionary<SquadronType, int> counts = new Dictionary<SquadronType, int>();
-            foreach (SquadronType squadronType in faction.Squadrons.Keys) counts[squadronType] = BUILDABLE_PREWARM;
-            foreach (var shipType in faction.Ships.Keys)
+            using (COUNT_PREWARM_MARKER.Auto())
             {
-                ShipData ship = _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
-                foreach (HangarBay bay in ship.HangarBays) AddBay(counts, bay);
-            }
+                FactionDefinition faction = _factions.Get(_owner.Faction);
+                Dictionary<SquadronType, int> counts = new Dictionary<SquadronType, int>();
+                foreach (SquadronType squadronType in faction.Squadrons.Keys) counts[squadronType] = BUILDABLE_PREWARM;
+                foreach (var shipType in faction.Ships.Keys)
+                {
+                    ShipData ship = _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
+                    foreach (HangarBay bay in ship.HangarBays) AddBay(counts, bay);
+                }
 
-            AddBay(counts, _assetService.Load<SpaceStationData>(nameof(SpaceStationData)).GetHangarBay(_owner.Faction));
-            return counts;
+                AddBay(counts, _assetService.Load<SpaceStationData>(nameof(SpaceStationData)).GetHangarBay(_owner.Faction));
+                return counts;
+            }
         }
 
         private static void AddBay(Dictionary<SquadronType, int> counts, HangarBay bay)

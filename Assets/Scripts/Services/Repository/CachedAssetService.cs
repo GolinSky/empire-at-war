@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using EmpireAtWar.Mvc;
@@ -22,17 +23,41 @@ namespace EmpireAtWar.Repository
 
         public TSource Load<TSource>(string key) where TSource : Object
         {
-            if (_isDisposed)
-                throw new ObjectDisposedException(nameof(CachedAssetService), $"Cannot load '{key}' after its scope released its assets.");
-
             (Type, string) cacheKey = (typeof(TSource), key);
-            if (!_handles.TryGetValue(cacheKey, out AsyncOperationHandle handle))
+            AsyncOperationHandle handle = GetOrLoad<TSource>(cacheKey);
+            try
             {
-                handle = _loader.Load<TSource>(key);
-                handle.WaitForCompletion();
-                _handles.Add(cacheKey, handle);
+                if (!handle.IsDone) handle.WaitForCompletion();
+                return GetResult<TSource>(key, handle);
             }
-            return (TSource)handle.Result;
+            catch
+            {
+                Release(cacheKey, handle);
+                throw;
+            }
+        }
+
+        public async Awaitable PreloadAsync<TSource>(string key, CancellationToken cancellationToken)
+            where TSource : Object
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            (Type, string) cacheKey = (typeof(TSource), key);
+            AsyncOperationHandle handle = GetOrLoad<TSource>(cacheKey);
+            try
+            {
+                while (!handle.IsDone)
+                {
+                    await Awaitable.NextFrameAsync(cancellationToken);
+                    ThrowIfDisposed();
+                }
+                cancellationToken.ThrowIfCancellationRequested();
+                GetResult<TSource>(key, handle);
+            }
+            catch
+            {
+                Release(cacheKey, handle);
+                throw;
+            }
         }
 
         public TComponent LoadComponent<TComponent>(string key) where TComponent : Component
@@ -50,6 +75,39 @@ namespace EmpireAtWar.Repository
             _isDisposed = true;
             foreach (AsyncOperationHandle handle in _handles.Values) handle.Release();
             _handles.Clear();
+        }
+
+        private AsyncOperationHandle GetOrLoad<TSource>((Type, string) cacheKey) where TSource : Object
+        {
+            ThrowIfDisposed();
+            if (!_handles.TryGetValue(cacheKey, out AsyncOperationHandle handle))
+            {
+                handle = _loader.Load<TSource>(cacheKey.Item2);
+                _handles.Add(cacheKey, handle);
+            }
+            return handle;
+        }
+
+        private static TSource GetResult<TSource>(string key, AsyncOperationHandle handle) where TSource : Object
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
+                throw new InvalidOperationException($"Failed to load '{key}' as {typeof(TSource).Name}.", handle.OperationException);
+            return (TSource)handle.Result;
+        }
+
+        private void Release((Type, string) cacheKey, AsyncOperationHandle handle)
+        {
+            if (_handles.TryGetValue(cacheKey, out AsyncOperationHandle ownedHandle) && ownedHandle.Equals(handle))
+            {
+                _handles.Remove(cacheKey);
+                handle.Release();
+            }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_isDisposed)
+                throw new ObjectDisposedException(nameof(CachedAssetService));
         }
     }
 }
