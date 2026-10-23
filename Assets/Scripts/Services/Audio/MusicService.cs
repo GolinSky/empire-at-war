@@ -30,6 +30,7 @@ namespace EmpireAtWar.Services.Audio
         private float _fadeDuration;
 
         private bool _playing;
+        private bool _started;
         private bool _fadingOut;
 
         public MusicService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver, IAudioService audioService)
@@ -74,6 +75,7 @@ namespace EmpireAtWar.Services.Audio
         {
             _audioService.Stop(_audioSource);
             _playing = false;
+            _started = false;
             _fadingOut = false;
             if (_clips.Count == 0) return;
             AudioClip clip = _clips[_random.Next(_clips.Count)];
@@ -88,7 +90,13 @@ namespace EmpireAtWar.Services.Audio
             AudioClip clip = _audioSource.clip;
             if (clip.loadState == AudioDataLoadState.Failed)
                 throw new System.InvalidOperationException($"Failed to load music clip '{clip.name}'.");
-            if (clip.loadState == AudioDataLoadState.Unloaded || clip.loadState == AudioDataLoadState.Loading) return;
+            // Only a deferred Play waits for audio data. The player releases a finished stream's data, so a
+            // started track that reports Unloaded has ended and must advance instead of stalling here.
+            if (!_started)
+            {
+                if (clip.loadState == AudioDataLoadState.Unloaded || clip.loadState == AudioDataLoadState.Loading) return;
+                _started = true;
+            }
             if (!_audioSource.isPlaying)
             {
                 PlayNext();
