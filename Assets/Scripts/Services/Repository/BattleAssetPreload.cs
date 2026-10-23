@@ -29,6 +29,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Repository
 {
+    // Loads in three batches; each batch starts every load at once and needs only data from the batches before it.
     public static class BattleAssetPreload
     {
         private static readonly string[] UI_KEYS =
@@ -37,100 +38,127 @@ namespace EmpireAtWar.Repository
             "ShipGroupUi", "EconomyUi", "MiniMapUi", "ReinforcementUi", "UnitOrderFeedbackUi",
             "TooltipUi", "PauseMenuUi", "SettingsUi", "SaveBrowserUi", "EndGameUi", "HeroUi"
         };
+        private static readonly string[] STRUCTURE_PREFIXES = { "", "Asteroid" };
+        private static readonly string[] PLATFORMS = { "DefendPlatform", "AotrGolanIIIDefensePlatform", "AotrEmpressDefensePlatform" };
 
         public static async Awaitable LoadAsync(CachedAssetService assets, BattleDefinition battle,
             CancellationToken cancellationToken)
         {
-            await LoadSharedAsync(assets, cancellationToken);
-            foreach (string key in UI_KEYS)
-                await assets.PreloadAsync<GameObject>(key, cancellationToken);
-            if (battle.Mode == GameMode.Survival)
-            {
-                await assets.PreloadAsync<SurvivalWaveData>(nameof(SurvivalWaveData), cancellationToken);
-                await assets.PreloadAsync<GameObject>("SurvivalHudUi", cancellationToken);
-            }
-            if (battle.Mode == GameMode.BattleSimulation)
-                await assets.PreloadAsync<GameObject>("SimulationHudUi", cancellationToken);
+            BeginShared(assets, battle);
+            await assets.CompletePreloadsAsync(cancellationToken);
 
             FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
             ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
             SpaceStationData stations = assets.Load<SpaceStationData>(nameof(SpaceStationData));
-            HashSet<FactionType> loadedFactions = new HashSet<FactionType>();
-            HashSet<SquadronType> squadrons = new HashSet<SquadronType>();
-            foreach (var slot in battle.Slots)
+            HashSet<FactionType> battleFactions = new HashSet<FactionType>();
+            foreach (var slot in battle.Slots) battleFactions.Add(slot.Faction);
+
+            BeginStructures(assets);
+            foreach (FactionType faction in battleFactions)
             {
-                if (!loadedFactions.Add(slot.Faction)) continue;
-                FactionDefinition faction = factions.Get(slot.Faction);
-                await assets.PreloadAsync<GameObject>(slot.Faction + "SpaceStationView", cancellationToken);
-                if (stations.TryGetWreck(slot.Faction, out UnitWreckData stationWreck))
-                    await LoadWreckAsync(assets, stationWreck, cancellationToken);
-                AddBay(squadrons, stations.GetHangarBay(slot.Faction));
-                foreach (ShipType ship in faction.Ships.Keys)
+                assets.BeginPreload<GameObject>(faction + "SpaceStationView");
+                foreach (ShipType ship in factions.Get(faction).Ships.Keys)
                 {
-                    string dataKey = ships.GetShipDataPath(ship);
-                    await assets.PreloadAsync<ShipData>(dataKey, cancellationToken);
-                    await assets.PreloadAsync<GameObject>(ship + "ShipView", cancellationToken);
-                    ShipData data = assets.Load<ShipData>(dataKey);
-                    await LoadWreckAsync(assets, data.Wreck, cancellationToken);
+                    assets.BeginPreload<ShipData>(ships.GetShipDataPath(ship));
+                    assets.BeginPreload<GameObject>(ship + "ShipView");
+                }
+            }
+            await assets.CompletePreloadsAsync(cancellationToken);
+
+            HashSet<SquadronType> squadrons = new HashSet<SquadronType>();
+            BeginStructureWrecks(assets);
+            foreach (FactionType faction in battleFactions)
+            {
+                FactionDefinition definition = factions.Get(faction);
+                if (stations.TryGetWreck(faction, out UnitWreckData stationWreck)) BeginWreck(assets, stationWreck);
+                AddBay(squadrons, stations.GetHangarBay(faction));
+                foreach (ShipType ship in definition.Ships.Keys)
+                {
+                    ShipData data = assets.Load<ShipData>(ships.GetShipDataPath(ship));
+                    BeginWreck(assets, data.Wreck);
                     foreach (HangarBay bay in data.HangarBays) AddBay(squadrons, bay);
                 }
-                foreach (SquadronType squadron in faction.Squadrons.Keys) squadrons.Add(squadron);
+                foreach (SquadronType squadron in definition.Squadrons.Keys) squadrons.Add(squadron);
             }
             foreach (SquadronType squadron in squadrons)
             {
-                await assets.PreloadAsync<SquadronData>(squadron + "SquadronData", cancellationToken);
-                await assets.PreloadAsync<GameObject>(squadron + "SquadronView", cancellationToken);
+                assets.BeginPreload<SquadronData>(squadron + "SquadronData");
+                assets.BeginPreload<GameObject>(squadron + "SquadronView");
             }
+            await assets.CompletePreloadsAsync(cancellationToken);
         }
 
-        private static async Awaitable LoadSharedAsync(CachedAssetService assets, CancellationToken cancellationToken)
+        private static void BeginShared(CachedAssetService assets, BattleDefinition battle)
         {
-            await assets.PreloadAsync<FactionCatalog>(nameof(FactionCatalog), cancellationToken);
-            await assets.PreloadAsync<ShipsData>(nameof(ShipsData), cancellationToken);
-            await assets.PreloadAsync<SpaceStationData>(nameof(SpaceStationData), cancellationToken);
-            await assets.PreloadAsync<StationLevelData>(nameof(StationLevelData), cancellationToken);
-            await assets.PreloadAsync<MiningFacilityCatalog>(nameof(MiningFacilityCatalog), cancellationToken);
-            await assets.PreloadAsync<DefendPlatformCatalog>(nameof(DefendPlatformCatalog), cancellationToken);
-            await assets.PreloadAsync<SuperWeaponCatalog>(nameof(SuperWeaponCatalog), cancellationToken);
-            await assets.PreloadAsync<WeaponsData>(nameof(WeaponsData), cancellationToken);
-            await assets.PreloadAsync<DamageMatrixData>(nameof(DamageMatrixData), cancellationToken);
-            await assets.PreloadAsync<LayerData>(nameof(LayerData), cancellationToken);
-            await assets.PreloadAsync<ReinforcementData>(nameof(ReinforcementData), cancellationToken);
-            await assets.PreloadAsync<ShipClassMatchupData>(nameof(ShipClassMatchupData), cancellationToken);
-            await assets.PreloadAsync<HardPointOverlayData>(nameof(HardPointOverlayData), cancellationToken);
-            await assets.PreloadAsync<TooltipSettings>(nameof(TooltipSettings), cancellationToken);
-            await assets.PreloadAsync<TooltipIconData>(nameof(TooltipIconData), cancellationToken);
-            await assets.PreloadAsync<MenuData>(nameof(MenuData), cancellationToken);
-            await assets.PreloadAsync<ShipUiData>(nameof(ShipUiData), cancellationToken);
-            await assets.PreloadAsync<ShipAbilityCatalog>(nameof(ShipAbilityCatalog), cancellationToken);
-            await assets.PreloadAsync<MiniMapData>(nameof(MiniMapData), cancellationToken);
-            await assets.PreloadAsync<CameraData>(nameof(CameraData), cancellationToken);
-            await assets.PreloadAsync<CinematicCameraData>(nameof(CinematicCameraData), cancellationToken);
-            await assets.PreloadAsync<SharedSelectionData>(nameof(SharedSelectionData), cancellationToken);
-            await assets.PreloadAsync<SuperWeaponData>(nameof(SuperWeaponData), cancellationToken);
-            await assets.PreloadAsync<EconomyData>(nameof(EconomyData), cancellationToken);
-            await assets.PreloadAsync<CaptureSiteData>(nameof(CaptureSiteData), cancellationToken);
-            foreach (string prefix in new[] { "", "Asteroid" })
+            assets.BeginPreload<FactionCatalog>(nameof(FactionCatalog));
+            assets.BeginPreload<ShipsData>(nameof(ShipsData));
+            assets.BeginPreload<SpaceStationData>(nameof(SpaceStationData));
+            assets.BeginPreload<StationLevelData>(nameof(StationLevelData));
+            assets.BeginPreload<MiningFacilityCatalog>(nameof(MiningFacilityCatalog));
+            assets.BeginPreload<DefendPlatformCatalog>(nameof(DefendPlatformCatalog));
+            assets.BeginPreload<SuperWeaponCatalog>(nameof(SuperWeaponCatalog));
+            assets.BeginPreload<WeaponsData>(nameof(WeaponsData));
+            assets.BeginPreload<DamageMatrixData>(nameof(DamageMatrixData));
+            assets.BeginPreload<LayerData>(nameof(LayerData));
+            assets.BeginPreload<ReinforcementData>(nameof(ReinforcementData));
+            assets.BeginPreload<ShipClassMatchupData>(nameof(ShipClassMatchupData));
+            assets.BeginPreload<HardPointOverlayData>(nameof(HardPointOverlayData));
+            assets.BeginPreload<TooltipSettings>(nameof(TooltipSettings));
+            assets.BeginPreload<TooltipIconData>(nameof(TooltipIconData));
+            assets.BeginPreload<MenuData>(nameof(MenuData));
+            assets.BeginPreload<ShipUiData>(nameof(ShipUiData));
+            assets.BeginPreload<ShipAbilityCatalog>(nameof(ShipAbilityCatalog));
+            assets.BeginPreload<MiniMapData>(nameof(MiniMapData));
+            assets.BeginPreload<CameraData>(nameof(CameraData));
+            assets.BeginPreload<CinematicCameraData>(nameof(CinematicCameraData));
+            assets.BeginPreload<SharedSelectionData>(nameof(SharedSelectionData));
+            assets.BeginPreload<SuperWeaponData>(nameof(SuperWeaponData));
+            assets.BeginPreload<EconomyData>(nameof(EconomyData));
+            assets.BeginPreload<CaptureSiteData>(nameof(CaptureSiteData));
+            foreach (string key in UI_KEYS) assets.BeginPreload<GameObject>(key);
+            if (battle.Mode == GameMode.Survival)
             {
-                await assets.PreloadAsync<MiningFacilityData>(prefix + nameof(MiningFacilityData), cancellationToken);
-                await assets.PreloadAsync<GameObject>(prefix + "MiningFacilityView", cancellationToken);
-                await LoadWreckAsync(assets, assets.Load<MiningFacilityData>(prefix + nameof(MiningFacilityData)).Wreck,
-                    cancellationToken);
-                foreach (string platform in new[] { "DefendPlatform", "AotrGolanIIIDefensePlatform", "AotrEmpressDefensePlatform" })
+                assets.BeginPreload<SurvivalWaveData>(nameof(SurvivalWaveData));
+                assets.BeginPreload<GameObject>("SurvivalHudUi");
+            }
+            if (battle.Mode == GameMode.BattleSimulation)
+                assets.BeginPreload<GameObject>("SimulationHudUi");
+        }
+
+        // Asteroid variants exist only for the mining facility and the basic platform.
+        private static IEnumerable<string> PlatformKeys(string prefix)
+        {
+            foreach (string platform in PLATFORMS)
+                if (prefix.Length == 0 || platform == "DefendPlatform") yield return prefix + platform;
+        }
+
+        private static void BeginStructures(CachedAssetService assets)
+        {
+            foreach (string prefix in STRUCTURE_PREFIXES)
+            {
+                assets.BeginPreload<MiningFacilityData>(prefix + nameof(MiningFacilityData));
+                assets.BeginPreload<GameObject>(prefix + "MiningFacilityView");
+                foreach (string key in PlatformKeys(prefix))
                 {
-                    if (prefix.Length > 0 && platform != "DefendPlatform") continue;
-                    string key = prefix + platform;
-                    await assets.PreloadAsync<DefendPlatformData>(key + "Data", cancellationToken);
-                    await assets.PreloadAsync<GameObject>(key + "View", cancellationToken);
-                    await LoadWreckAsync(assets, assets.Load<DefendPlatformData>(key + "Data").Wreck, cancellationToken);
+                    assets.BeginPreload<DefendPlatformData>(key + "Data");
+                    assets.BeginPreload<GameObject>(key + "View");
                 }
             }
         }
 
-        private static async Awaitable LoadWreckAsync(CachedAssetService assets, UnitWreckData wreck,
-            CancellationToken cancellationToken)
+        private static void BeginStructureWrecks(CachedAssetService assets)
         {
-            if (wreck != null) await assets.PreloadAsync<GameObject>(wreck.PrefabKey, cancellationToken);
+            foreach (string prefix in STRUCTURE_PREFIXES)
+            {
+                BeginWreck(assets, assets.Load<MiningFacilityData>(prefix + nameof(MiningFacilityData)).Wreck);
+                foreach (string key in PlatformKeys(prefix))
+                    BeginWreck(assets, assets.Load<DefendPlatformData>(key + "Data").Wreck);
+            }
+        }
+
+        private static void BeginWreck(CachedAssetService assets, UnitWreckData wreck)
+        {
+            if (wreck != null) assets.BeginPreload<GameObject>(wreck.PrefabKey);
         }
 
         private static void AddBay(HashSet<SquadronType> squadrons, HangarBay bay)

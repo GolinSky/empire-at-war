@@ -12,7 +12,7 @@ namespace EmpireAtWar.Repository
     public class AddressableHandleLoader : IAssetHandleLoader, IDisposable
     {
         private const string MAPPING_DATA_KEY = nameof(AssetMappingData);
-        private static readonly ProfilerMarker _mappingMarker = new ProfilerMarker("AddressableHandleLoader.GetMappingData");
+        private static readonly ProfilerMarker MAPPING_MARKER = new ProfilerMarker("AddressableHandleLoader.GetMappingData");
 
         private AssetMappingData _mappingData;
         private AsyncOperationHandle<AssetMappingData> _mappingHandle;
@@ -63,7 +63,7 @@ namespace EmpireAtWar.Repository
 
         private AssetMappingData GetMappingData()
         {
-            using (_mappingMarker.Auto())
+            using (MAPPING_MARKER.Auto())
             {
                 if (_mappingData != null) return _mappingData;
                 BeginMappingLoad();

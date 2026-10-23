@@ -140,6 +140,36 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CompletePreloads_LoadsTheWholeBatchIntoTheCache()
+        {
+            using CachedAssetService assets = new CachedAssetService(_loader);
+            assets.BeginPreload<GameObject>(SHIP_KEY);
+            assets.BeginPreload<Material>(SHIP_KEY);
+
+            assets.CompletePreloadsAsync(CancellationToken.None).GetAwaiter().GetResult();
+
+            Assert.That(assets.LoadPrefab(SHIP_KEY), Is.SameAs(_loader.Prefab));
+            Assert.That(assets.Load<Material>(SHIP_KEY), Is.SameAs(_loader.Material));
+            Assert.That(_loader.Handles.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void CompletePreloads_FailedAssetReleasesEveryHandleOfTheBatch()
+        {
+            using CachedAssetService assets = new CachedAssetService(_loader);
+            assets.BeginPreload<Material>(SHIP_KEY);
+            _loader.ReturnNull = true;
+            assets.BeginPreload<GameObject>(SHIP_KEY);
+            _loader.ReturnNull = false;
+
+            Assert.Throws<InvalidOperationException>(() =>
+                assets.CompletePreloadsAsync(CancellationToken.None).GetAwaiter().GetResult());
+
+            Assert.That(_loader.Handles.TrueForAll(handle => !handle.IsValid()), Is.True);
+            Assert.That(assets.LoadPrefab(SHIP_KEY), Is.SameAs(_loader.Prefab));
+        }
+
+        [Test]
         public void Preload_AfterDispose_ThrowsWithoutAcquiringAHandle()
         {
             CachedAssetService assets = new CachedAssetService(_loader);

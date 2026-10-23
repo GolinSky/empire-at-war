@@ -14,6 +14,8 @@ namespace EmpireAtWar.Repository
         private readonly IAssetHandleLoader _loader;
         private readonly Dictionary<(Type, string), AsyncOperationHandle> _handles =
             new Dictionary<(Type, string), AsyncOperationHandle>();
+        private readonly List<KeyValuePair<(Type, string), AsyncOperationHandle>> _pending =
+            new List<KeyValuePair<(Type, string), AsyncOperationHandle>>();
         private bool _isDisposed;
 
         public CachedAssetService(IAssetHandleLoader loader)
@@ -41,22 +43,48 @@ namespace EmpireAtWar.Repository
             where TSource : Object
         {
             cancellationToken.ThrowIfCancellationRequested();
+            BeginPreload<TSource>(key);
+            await CompletePreloadsAsync(cancellationToken);
+        }
+
+        // Starts the load without waiting, so a batch of keys loads concurrently; CompletePreloadsAsync awaits them.
+        public void BeginPreload<TSource>(string key) where TSource : Object
+        {
             (Type, string) cacheKey = (typeof(TSource), key);
-            AsyncOperationHandle handle = GetOrLoad<TSource>(cacheKey);
+            _pending.Add(new KeyValuePair<(Type, string), AsyncOperationHandle>(cacheKey, GetOrLoad<TSource>(cacheKey)));
+        }
+
+        // A failed or cancelled batch releases every handle it started, so a later Load retries them.
+        public async Awaitable CompletePreloadsAsync(CancellationToken cancellationToken)
+        {
             try
             {
-                while (!handle.IsDone)
+                foreach (KeyValuePair<(Type, string), AsyncOperationHandle> pending in _pending)
                 {
-                    await Awaitable.NextFrameAsync(cancellationToken);
-                    ThrowIfDisposed();
+                    while (!pending.Value.IsDone)
+                    {
+                        await Awaitable.NextFrameAsync(cancellationToken);
+                        ThrowIfDisposed();
+                    }
                 }
                 cancellationToken.ThrowIfCancellationRequested();
-                GetResult<TSource>(key, handle);
+                foreach (KeyValuePair<(Type, string), AsyncOperationHandle> pending in _pending)
+                {
+                    AsyncOperationHandle handle = pending.Value;
+                    if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
+                        throw new InvalidOperationException(
+                            $"Failed to load '{pending.Key.Item2}' as {pending.Key.Item1.Name}.", handle.OperationException);
+                }
             }
             catch
             {
-                Release(cacheKey, handle);
+                foreach (KeyValuePair<(Type, string), AsyncOperationHandle> pending in _pending)
+                    Release(pending.Key, pending.Value);
                 throw;
+            }
+            finally
+            {
+                _pending.Clear();
             }
         }
 

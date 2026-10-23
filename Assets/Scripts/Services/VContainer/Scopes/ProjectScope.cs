@@ -32,7 +32,7 @@ namespace EmpireAtWar.Services.VContainer
 {
     public sealed class ProjectScope : AssetLifetimeScope
     {
-        private static readonly ProfilerMarker _configureMarker = new ProfilerMarker("ProjectScope.Configure");
+        private static readonly ProfilerMarker CONFIGURE_MARKER = new ProfilerMarker("ProjectScope.Configure");
 
         [SerializeField] private CoroutineHost coroutineService;
         [SerializeField] private AudioMixer audioMixer;
@@ -56,13 +56,14 @@ namespace EmpireAtWar.Services.VContainer
             {
                 await _assetLoader.InitializeAsync(cancellationToken);
                 BattlePreloader = new BattleAssetPreloader(_assetLoader);
-                await assets.PreloadAsync<GameData>(nameof(GameData), cancellationToken);
-                await assets.PreloadAsync<SceneData>(nameof(SceneData), cancellationToken);
-                await assets.PreloadAsync<MusicAudioData>(nameof(MusicAudioData), cancellationToken);
-                await assets.PreloadAsync<GameObject>("MusicSource", cancellationToken);
+                assets.BeginPreload<GameData>(nameof(GameData));
+                assets.BeginPreload<SceneData>(nameof(SceneData));
+                assets.BeginPreload<MusicAudioData>(nameof(MusicAudioData));
+                assets.BeginPreload<GameObject>("MusicSource");
+                BeginMainMenuPreload(assets);
+                await assets.CompletePreloadsAsync(cancellationToken);
                 GameData = Object.Instantiate(assets.Load<GameData>(nameof(GameData)));
                 SceneType scene = assets.Load<SceneData>(nameof(SceneData)).GetCurrentScene();
-                await PreloadMainMenuAsync(assets, cancellationToken);
                 if (scene == SceneType.Battle)
                     await BattlePreloader.PrepareAsync(GameData.Battle, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -82,7 +83,7 @@ namespace EmpireAtWar.Services.VContainer
 
         protected override void Configure(IContainerBuilder builder)
         {
-            using var marker = _configureMarker.Auto();
+            using var marker = CONFIGURE_MARKER.Auto();
             builder.RegisterInstance(Assets);
             builder.RegisterInstance(GameData).AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<SceneData>(builder, Assets);
@@ -110,15 +111,15 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterLifecycle();
         }
 
-        private static async Awaitable PreloadMainMenuAsync(CachedAssetService assets, CancellationToken cancellationToken)
+        private static void BeginMainMenuPreload(CachedAssetService assets)
         {
-            await assets.PreloadAsync<FactionCatalog>(nameof(FactionCatalog), cancellationToken);
-            await assets.PreloadAsync<TooltipSettings>(nameof(TooltipSettings), cancellationToken);
-            await assets.PreloadAsync<TooltipIconData>(nameof(TooltipIconData), cancellationToken);
-            await assets.PreloadAsync<GameObject>(nameof(UiService), cancellationToken);
-            await assets.PreloadAsync<GameObject>(nameof(MainMenuUi), cancellationToken);
-            await assets.PreloadAsync<GameObject>(nameof(FadeUi), cancellationToken);
-            await assets.PreloadAsync<GameObject>(nameof(TooltipUi), cancellationToken);
+            assets.BeginPreload<FactionCatalog>(nameof(FactionCatalog));
+            assets.BeginPreload<TooltipSettings>(nameof(TooltipSettings));
+            assets.BeginPreload<TooltipIconData>(nameof(TooltipIconData));
+            assets.BeginPreload<GameObject>(nameof(UiService));
+            assets.BeginPreload<GameObject>(nameof(MainMenuUi));
+            assets.BeginPreload<GameObject>(nameof(FadeUi));
+            assets.BeginPreload<GameObject>(nameof(TooltipUi));
         }
 
         protected override void OnDestroy()
