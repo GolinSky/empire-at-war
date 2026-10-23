@@ -19,6 +19,7 @@ namespace EmpireAtWar.Services.SceneService
         private readonly ProjectScope _projectScope;
         private AsyncOperation _asyncOperation;
         private IDisposable _sceneParent;
+        private Scene _loadingScene;
         private CancellationTokenSource _loadCancellation = new CancellationTokenSource();
 
         public event Action<SceneType> OnSceneActivation;
@@ -99,6 +100,7 @@ namespace EmpireAtWar.Services.SceneService
             OnSceneActivation?.Invoke(_sceneModel.GetSceneType(scene));
             if (_sceneModel.IsLoadingScene(scene))
             {
+                _loadingScene = scene;
                 SceneType target = TargetScene;
                 CancellationToken cancellationToken = _loadCancellation.Token;
                 LoadTargetScene(target, cancellationToken);
@@ -106,6 +108,7 @@ namespace EmpireAtWar.Services.SceneService
             else
             {
                 Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.BelowNormal;
+                if (loadSceneMode == LoadSceneMode.Additive) ReplaceLoadingScene(scene);
             }
         }
 
@@ -121,12 +124,25 @@ namespace EmpireAtWar.Services.SceneService
                 cancellationToken.ThrowIfCancellationRequested();
                 if (_sceneParent == null)
                     _sceneParent = LifetimeScope.EnqueueParent(_projectScope);
-                _asyncOperation = SceneManager.LoadSceneAsync(_sceneModel.GetScene(target).SceneName);
+                // Additive: a Single load would run Unity's blocking unused-asset sweep and GC only to free the
+                // loading scene.
+                _asyncOperation = SceneManager.LoadSceneAsync(_sceneModel.GetScene(target).SceneName, LoadSceneMode.Additive);
                 _asyncOperation.allowSceneActivation = false;
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
             }
+        }
+
+        // Runs before the target scene's Start: its later instantiations land in it, and the loading camera and
+        // listener stop at once instead of when the asynchronous unload finishes. The loading scene has no
+        // EventSystem, so the target's EventSystem is the only one when it enables.
+        private void ReplaceLoadingScene(Scene target)
+        {
+            SceneManager.SetActiveScene(target);
+            foreach (GameObject root in _loadingScene.GetRootGameObjects()) root.SetActive(false);
+            SceneManager.UnloadSceneAsync(_loadingScene);
+            _loadingScene = default;
         }
     }
 }

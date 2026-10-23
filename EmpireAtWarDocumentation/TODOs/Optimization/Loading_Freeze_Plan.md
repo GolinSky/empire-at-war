@@ -120,6 +120,15 @@ tags:
   - First prewarm item 47–50 ms: `Mono.JIT` ~35 ms (first squadron-context code); later items ~2–5 ms; behind fade cover. JIT (also 132–136 ms at activation, ~220 ms at startup) disappears only with IL2CPP (scripting backend is Mono). Not changed.
 - Tests: compile clean; 43/43 EditMode (preloader 10 incl. 2 new split tests, cache 15, composition 18). Evidence: `Logs/LoadingFreeze/20261023T160000Z-editor-deferred-adb/analysis.md`, `../20261023T161500Z-editor-deferred-packed/`.
 
+### Additive Target Load (2026-10-23)
+
+- `SceneService.LoadTargetScene` → `LoadSceneAsync(target, Additive)`; on target `sceneLoaded`: `SetActiveScene(target)` → deactivate loading roots → `UnloadSceneAsync(loading)`. Removes the Single-load unused-asset sweep + blocking GC at activation (212–217 ms in Editor captures). Menu → loading stays Single (its sweep frees the previous scene).
+- Loading scene `EventSystem` removed (spinner is non-interactive; `UiHitTest` handles none) → no duplicate EventSystem warning during target Awake.
+- Leak check (runner `sceneLoaded` hook): 0 objects added to the loading scene during battle Awake/scope build; runtime roots land in Battle; loading scene unloaded next frame; 0 warnings/errors. Battle → MainMenu: 1 scene, 1 EventSystem.
+- Activation frame now has no `GC.Collect`; `Mono.JIT` remains (128–228 ms, varies by run).
+- Pre-existing, out of scope: `MainMenuScene.unity` contains serialized `MusicSource(Clone)` / `AudioDialogSource(Clone)` roots.
+- Tests: LoadingUiIsolation 4, GameController 4, BattleAssetPreloader 10 pass. Evidence: `Logs/LoadingFreeze/20261023T170000Z-editor-additive-adb/analysis.md`, `../20261023T171500Z-editor-additive-check/`.
+
 ## Edge Cases
 
 - `CachedAssetService` keys by `(Type, key)`; preload must use the same `TSource` type or the miss still blocks.
