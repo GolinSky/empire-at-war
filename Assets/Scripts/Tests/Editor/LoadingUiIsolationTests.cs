@@ -1,14 +1,74 @@
 using System;
+using System.Collections;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Entities.Loading;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class LoadingUiIsolationTests
     {
+        [Test]
+        public void LoadingSceneBindsAVisibleSpinnerArc()
+        {
+            var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Loading.unity");
+            try
+            {
+                var ui = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<LoadingUi>(true)).Single();
+                var serializedUi = new SerializedObject(ui);
+                var iconProperty = serializedUi.FindProperty("loadingIcon");
+                Assert.That(iconProperty, Is.Not.Null);
+                var icon = iconProperty.objectReferenceValue as RectTransform;
+                Assert.That(icon, Is.Not.Null);
+                var image = icon.GetComponent<Image>();
+                Assert.That(image.enabled, Is.True);
+                Assert.That(image.type, Is.EqualTo(Image.Type.Filled));
+                Assert.That(image.fillMethod, Is.EqualTo(Image.FillMethod.Radial360));
+                Assert.That(image.fillAmount, Is.GreaterThan(0f).And.LessThan(1f));
+            }
+            finally { EditorSceneManager.ClosePreviewScene(scene); }
+        }
+
+        [UnityTest]
+        public IEnumerator LoadingCircleRotatesWhileGameTimeIsPaused()
+        {
+            yield return new EnterPlayMode();
+            var root = new GameObject("LoadingUiTest", typeof(CanvasGroup));
+            var icon = new GameObject("LoadingIcon", typeof(RectTransform));
+            icon.transform.SetParent(root.transform, false);
+            float previousTimeScale = Time.timeScale;
+            try
+            {
+                var ui = root.AddComponent<LoadingUi>();
+                var iconField = typeof(LoadingUi).GetField("loadingIcon", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.That(iconField, Is.Not.Null);
+                iconField.SetValue(ui, (RectTransform)icon.transform);
+                Time.timeScale = 0f;
+                Quaternion initialRotation = icon.transform.localRotation;
+                yield return new WaitForSecondsRealtime(0.2f);
+                Assert.That(Quaternion.Angle(initialRotation, icon.transform.localRotation), Is.GreaterThan(0.01f));
+            }
+            finally
+            {
+                Time.timeScale = previousTimeScale;
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        [UnityTearDown]
+        public IEnumerator ExitRuntimeAfterAnimationTest()
+        {
+            if (Application.isPlaying) yield return new ExitPlayMode();
+        }
+
         [Test]
         public void ScenePlacedControllerHasOnlyItsOwnViewDependency()
         {
