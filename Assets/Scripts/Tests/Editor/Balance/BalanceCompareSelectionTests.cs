@@ -153,8 +153,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private static void Click(VisualElement target, bool control, bool shift = false)
         {
+            // Cards can be taller than the viewport, so click inside their visible top-left corner.
+            Rect viewport = target.GetFirstAncestorOfType<ScrollView>().contentViewport.worldBound;
             Vector2 position = target.ClassListContains("balance-compare-card")
-                ? target.worldBound.min + new Vector2(3, 3) : target.worldBound.center;
+                ? Vector2.Max(target.worldBound.min, viewport.min) + new Vector2(3, 3) : target.worldBound.center;
             EventModifiers modifiers = control ? EventModifiers.Control : EventModifiers.None;
             if (shift) modifiers |= EventModifiers.Shift;
             using (PointerDownEvent evt = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, mousePosition = position, button = 0, modifiers = modifiers }))

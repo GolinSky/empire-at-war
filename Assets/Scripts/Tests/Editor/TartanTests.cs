@@ -54,7 +54,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits, Is.EquivalentTo(view.GetComponentsInChildren<HardPoint>(true)));
             var bindings = view.GetComponents<EntityBindings>().Single();
             Assert.That(bindings.Injectables, Is.All.Not.Null);
-            Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(10));
+            Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(12));
             Assert.That(bindings.Injectables.OfType<WeaponHardPoint>(), Is.EquivalentTo(weapons));
             var profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             foreach (var expected in new[] {(WeaponType.TartanLargeRepeatingLaser, 4), (WeaponType.Laser, 3), (WeaponType.PointDefense, 2)})
