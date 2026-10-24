@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0554626448e8b4148bc58a7027cbcde8
+    m_Address: CarrackShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 06217750e90873e4d8dc19239726b5da
     m_Address: ExecutorWreckView
     m_ReadOnly: 0
@@ -462,6 +467,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9e4b91ea8a035d94da292e3708a13e78
     m_Address: AotrEmpressDefensePlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f8aba1b23d9b8745a23aa18789073e9
+    m_Address: CarrackWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

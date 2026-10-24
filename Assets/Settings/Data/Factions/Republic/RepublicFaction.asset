@@ -238,6 +238,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 7e5117ae6840c8d4a9252e2b589de44f,
           type: 3}
+    - key: 15
+      value:
+        matchups: {fileID: 11400000, guid: 5660afec4edee70409f96502d7e05d8c, type: 2}
+        description: 1,600 hull, 1,000 shields. Twelve dual laser cannons screen
+          the fleet against fighters and bombers. Power to Weapons doubles firing
+          rate for 10 seconds, reduces speed by 25% and increases incoming damage
+          by 50%; 60-second recovery.
+        role: Cruiser / Anti-fighter Escort
+        iconKey: ee8c2cac9ed92d8499f6b865153f7ff3:21300000
+        isHero: 0
+        <Name>k__BackingField: Carrack-class Cruiser
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 1600
+        <BuildTime>k__BackingField: 20
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: ee8c2cac9ed92d8499f6b865153f7ff3,
+          type: 3}
   squadrons:
     keyValue:
     - key: 2

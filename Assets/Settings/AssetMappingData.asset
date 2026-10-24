@@ -1302,3 +1302,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CarrackShipView
+      value:
+        m_AssetGUID: 0554626448e8b4148bc58a7027cbcde8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CarrackShipData
+      value:
+        m_AssetGUID: 2146d063228838a42b4bcad12e89cb18
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
