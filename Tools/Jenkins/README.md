@@ -14,7 +14,9 @@
 - CI uses the dedicated detached worktree `F:\UnityCI\empire-at-war` and its own persistent `Library`.
 - The worktree must share the source Git directory, remain detached, and contain no reparse points. Cleanup rejects other roots and active CI Editors.
 - Submodules, external `file:` packages, and Git packages without a full commit pin matching the lock file are rejected. Git LFS hydration and integrity checks precede the build.
-- Unity CLI reads the committed Editor version; builds Windows x64 using the shared scene list and existing Mono backend.
+- Unity CLI reads the committed Editor version; builds Windows x64 using the shared scene list and the committed IL2CPP backend (managed stripping Minimal).
+- IL2CPP needs the Editor's `windows-il2cpp` module (`unity install-modules -e <version> -m windows-il2cpp`) and Visual Studio's MSVC x64 tools + a Windows 10/11 SDK on the build machine.
+- Player validation requires `GameAssembly.dll` and `il2cpp_data\Metadata\global-metadata.dat` and rejects a `Managed` folder (Mono output). IL2CPP's `EmpireAtWar_BackUpThisFolder_ButDontShipItWithYourGame` is moved to `$WORKSPACE\player-symbols` before packaging; it is not archived and is replaced by the next build.
 - Addressables must use committed `BuildWithPlayer`. The installed 2.9.1 player processor throws on content-build errors.
 - EditMode tests gate the player build. The official `unity test` batch runner opens only the clean, idle CI snapshot; failures, missing reports, and reports without a passed `EmpireAtWar.Tests.` test case fail the job. Passing package tests alone cannot satisfy the gate. NUnit results are archived with the other artifacts.
 - Gate regression checks: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tools/Jenkins/Test-AssertTestResults.ps1`.
@@ -37,7 +39,7 @@
 
 ## Artifacts and recovery
 
-- Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
+- Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, `build-info.json`, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
 - Packaging uses .NET `ZipFile` with player files at the archive root; Windows' ZIP handler must recognize `EmpireAtWar.exe` before archiving. `tar -C player .` produced ZIPs that Windows Explorer could not extract.
 - Retention: 10 runs; artifacts from 3 runs. Retention limits counts, not total bytes.
 - Player output and workspace ZIP are deleted only after Jenkins confirms archiving; archived files remain downloadable.
@@ -45,6 +47,14 @@
 - `archive-pending.json` blocks a new snapshot when the only output copy still needs recovery. Recover/archive that output before removing the marker.
 - Cancellation closes the monitor's Job Object and kills only its CI group. Preparation refuses to reuse a worktree with an active CI Editor or held Unity lock.
 - Sign-in startup remains disabled until cold/warm builds, player navigation, cancellation, queued builds and resource rejection pass acceptance.
+
+## Versioning
+
+- Source of truth: `PlayerSettings.bundleVersion` (SemVer, e.g. `0.2.0-beta.1`). Bump it manually in a commit before a release build; CI never commits versions.
+- `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs` writes `EmpireAtWar_Data/StreamingAssets/build-info.json` into the player after every build: `version`, `build` (`BUILD_NUMBER`, else `local`), `commit` (`EAW_BUILD_COMMIT`, else `git rev-parse HEAD`), `builtAtUtc`.
+- The build phase sets `EAW_BUILD_COMMIT`, rejects a player whose stamp does not match the commit/build number, and archives `artifacts/build-info.json`.
+- The main menu shows `v<version> | Build <n> | <short sha>` (Editor: `Build Editor | dev`).
+- Publishing requires `RELEASE_TAG` = `v` + the embedded version. Builds made before stamping existed cannot be published.
 
 ## Updating the installed job
 
