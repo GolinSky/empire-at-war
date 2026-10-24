@@ -1,0 +1,708 @@
+{
+  "success": true,
+  "meshes": [
+    {
+      "name": "Turret00__Turret_00",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 7.29091767E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret00__Barrel_00",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 5.819089E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret00__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 7.523242E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret00__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 9.03580656E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret01__Turret_01",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 7.183534E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret01__Barrel_01",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 6.246058E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret01__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 6.073023E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret01__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 7.75576439E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret02__Turret_02",
+      "triangles": 60,
+      "vertices": 68,
+      "sampledCorners": 6,
+      "maximumPositionError": 6.529362E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret02__Barrel_02",
+      "triangles": 152,
+      "vertices": 206,
+      "sampledCorners": 15,
+      "maximumPositionError": 6.05654748E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret02__shadow_barrel",
+      "triangles": 626,
+      "vertices": 458,
+      "sampledCorners": 59,
+      "maximumPositionError": 8.387117E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret02__shadow_turret",
+      "triangles": 268,
+      "vertices": 200,
+      "sampledCorners": 26,
+      "maximumPositionError": 8.601469E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret03__Turret_03",
+      "triangles": 60,
+      "vertices": 68,
+      "sampledCorners": 6,
+      "maximumPositionError": 5.031211E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret03__Barrel_03",
+      "triangles": 152,
+      "vertices": 206,
+      "sampledCorners": 15,
+      "maximumPositionError": 6.664002E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret03__shadow_barrel",
+      "triangles": 626,
+      "vertices": 458,
+      "sampledCorners": 59,
+      "maximumPositionError": 7.468441E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret03__shadow_turret",
+      "triangles": 268,
+      "vertices": 200,
+      "sampledCorners": 26,
+      "maximumPositionError": 7.77149467E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret04__Turret_04",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 2.34663716E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret04__Barrel_04",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 1.88486439E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret04__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 1.365714E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret04__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 3.16803039E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret05__Turret_05",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 1.83713851E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret05__Barrel_05",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 4.04258373E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret05__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 3.264681E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret05__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 4.19355842E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret06__Turret_06",
+      "triangles": 60,
+      "vertices": 68,
+      "sampledCorners": 6,
+      "maximumPositionError": 8.237863E-08,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret06__Barrel_06",
+      "triangles": 152,
+      "vertices": 206,
+      "sampledCorners": 15,
+      "maximumPositionError": 1.36774474E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret06__shadow_barrel",
+      "triangles": 626,
+      "vertices": 458,
+      "sampledCorners": 59,
+      "maximumPositionError": 2.56369276E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret06__shadow_turret",
+      "triangles": 268,
+      "vertices": 200,
+      "sampledCorners": 26,
+      "maximumPositionError": 1.29597808E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret07__Turret_07",
+      "triangles": 60,
+      "vertices": 68,
+      "sampledCorners": 6,
+      "maximumPositionError": 8.56006537E-08,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret07__Barrel_07",
+      "triangles": 152,
+      "vertices": 206,
+      "sampledCorners": 15,
+      "maximumPositionError": 1.41364822E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret07__shadow_barrel",
+      "triangles": 626,
+      "vertices": 458,
+      "sampledCorners": 59,
+      "maximumPositionError": 1.41364822E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret07__shadow_turret",
+      "triangles": 268,
+      "vertices": 200,
+      "sampledCorners": 26,
+      "maximumPositionError": 1.46000971E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret08__Turret_08",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 2.16964182E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret08__Barrel_08",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 1.95994176E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret08__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 1.60490416E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret08__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 1.88486439E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret09__Turret_09",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 2.95404021E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret09__Barrel_09",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 2.21521688E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret09__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 3.71335034E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret09__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 3.295145E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret10__Turret_10",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 3.12924385E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret10__Barrel_10",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 4.1106685E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret10__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 5.41386044E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret10__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 5.07733944E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret11__Turret_11",
+      "triangles": 80,
+      "vertices": 125,
+      "sampledCorners": 8,
+      "maximumPositionError": 3.74905625E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret11__Barrel_11",
+      "triangles": 16,
+      "vertices": 48,
+      "sampledCorners": 2,
+      "maximumPositionError": 1.90827976E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Turret11__shadow_barrel",
+      "triangles": 58,
+      "vertices": 42,
+      "sampledCorners": 6,
+      "maximumPositionError": 1.81891849E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Turret11__shadow_turret",
+      "triangles": 300,
+      "vertices": 220,
+      "sampledCorners": 29,
+      "maximumPositionError": 4.07812962E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Hull__COL",
+      "triangles": 12,
+      "vertices": 24,
+      "sampledCorners": 2,
+      "maximumPositionError": 6.7697863E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface00"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_11_blast",
+      "triangles": 2,
+      "vertices": 6,
+      "sampledCorners": 1,
+      "maximumPositionError": 2.4211522E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__shadow",
+      "triangles": 25407,
+      "vertices": 18947,
+      "sampledCorners": 2382,
+      "maximumPositionError": 9.702933E-07,
+      "maximumUvError": 6.352021E-06,
+      "materials": [
+        "HeavyDreadnought_Surface02"
+      ]
+    },
+    {
+      "name": "Hull__hull",
+      "triangles": 6494,
+      "vertices": 11057,
+      "sampledCorners": 609,
+      "maximumPositionError": 8.139908E-07,
+      "maximumUvError": 1.013279E-06,
+      "materials": [
+        "HeavyDreadnought_Surface03"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_00_blast",
+      "triangles": 2,
+      "vertices": 6,
+      "sampledCorners": 1,
+      "maximumPositionError": 7.633482E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_01_blast",
+      "triangles": 2,
+      "vertices": 6,
+      "sampledCorners": 1,
+      "maximumPositionError": 5.3649353E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_02_blast",
+      "triangles": 50,
+      "vertices": 36,
+      "sampledCorners": 5,
+      "maximumPositionError": 3.12924385E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_03_blast",
+      "triangles": 50,
+      "vertices": 36,
+      "sampledCorners": 5,
+      "maximumPositionError": 4.097142E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_04_blast",
+      "triangles": 20,
+      "vertices": 18,
+      "sampledCorners": 2,
+      "maximumPositionError": 2.56801968E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_05_blast",
+      "triangles": 20,
+      "vertices": 18,
+      "sampledCorners": 2,
+      "maximumPositionError": 2.4755667E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_06_blast",
+      "triangles": 50,
+      "vertices": 36,
+      "sampledCorners": 5,
+      "maximumPositionError": 8.56006537E-08,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_07_blast",
+      "triangles": 50,
+      "vertices": 36,
+      "sampledCorners": 5,
+      "maximumPositionError": 8.024521E-08,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_09_blast",
+      "triangles": 2,
+      "vertices": 6,
+      "sampledCorners": 1,
+      "maximumPositionError": 1.90827976E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_08_blast",
+      "triangles": 2,
+      "vertices": 6,
+      "sampledCorners": 1,
+      "maximumPositionError": 1.71201307E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    },
+    {
+      "name": "Hull__b_attach_10_blast",
+      "triangles": 2,
+      "vertices": 6,
+      "sampledCorners": 1,
+      "maximumPositionError": 1.51962624E-07,
+      "maximumUvError": 0.0,
+      "materials": [
+        "HeavyDreadnought_Surface01"
+      ]
+    }
+  ],
+  "meshCount": 63,
+  "totalTriangles": 40221,
+  "bones": 141,
+  "maximumBoneError": 8.70028771E-07,
+  "sampleStride": 32,
+  "sampledCorners": 3807,
+  "tolerance": 1E-05,
+  "visibleHullTriangles": 8110,
+  "visibleMeshes": 25,
+  "rootIdentity": true
+}

@@ -1,0 +1,4273 @@
+{
+  "before": {
+    "meshes": {
+      "Turret00__Turret_00": {
+        "exported_name": "Turret00__Turret_00",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret00__Barrel_00": {
+        "exported_name": "Turret00__Barrel_00",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret00__shadow_barrel": {
+        "exported_name": "Turret00__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret00__shadow_turret": {
+        "exported_name": "Turret00__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret01__Turret_01": {
+        "exported_name": "Turret01__Turret_01",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret01__Barrel_01": {
+        "exported_name": "Turret01__Barrel_01",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret01__shadow_barrel": {
+        "exported_name": "Turret01__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret01__shadow_turret": {
+        "exported_name": "Turret01__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret02__Turret_02": {
+        "exported_name": "Turret02__Turret_02",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret02__Barrel_02": {
+        "exported_name": "Turret02__Barrel_02",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret02__shadow_barrel": {
+        "exported_name": "Turret02__shadow_barrel",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret02__shadow_turret": {
+        "exported_name": "Turret02__shadow_turret",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Turret03__Turret_03": {
+        "exported_name": "Turret03__Turret_03",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret03__Barrel_03": {
+        "exported_name": "Turret03__Barrel_03",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret03__shadow_barrel": {
+        "exported_name": "Turret03__shadow_barrel",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret03__shadow_turret": {
+        "exported_name": "Turret03__shadow_turret",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Turret04__Turret_04": {
+        "exported_name": "Turret04__Turret_04",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret04__Barrel_04": {
+        "exported_name": "Turret04__Barrel_04",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret04__shadow_barrel": {
+        "exported_name": "Turret04__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret04__shadow_turret": {
+        "exported_name": "Turret04__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret05__Turret_05": {
+        "exported_name": "Turret05__Turret_05",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret05__Barrel_05": {
+        "exported_name": "Turret05__Barrel_05",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret05__shadow_barrel": {
+        "exported_name": "Turret05__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret05__shadow_turret": {
+        "exported_name": "Turret05__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret06__Turret_06": {
+        "exported_name": "Turret06__Turret_06",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret06__Barrel_06": {
+        "exported_name": "Turret06__Barrel_06",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret06__shadow_barrel": {
+        "exported_name": "Turret06__shadow_barrel",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret06__shadow_turret": {
+        "exported_name": "Turret06__shadow_turret",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Turret07__Turret_07": {
+        "exported_name": "Turret07__Turret_07",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret07__Barrel_07": {
+        "exported_name": "Turret07__Barrel_07",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret07__shadow_barrel": {
+        "exported_name": "Turret07__shadow_barrel",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret07__shadow_turret": {
+        "exported_name": "Turret07__shadow_turret",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Turret08__Turret_08": {
+        "exported_name": "Turret08__Turret_08",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret08__Barrel_08": {
+        "exported_name": "Turret08__Barrel_08",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret08__shadow_barrel": {
+        "exported_name": "Turret08__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret08__shadow_turret": {
+        "exported_name": "Turret08__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret09__Turret_09": {
+        "exported_name": "Turret09__Turret_09",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret09__Barrel_09": {
+        "exported_name": "Turret09__Barrel_09",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret09__shadow_barrel": {
+        "exported_name": "Turret09__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret09__shadow_turret": {
+        "exported_name": "Turret09__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret10__Turret_10": {
+        "exported_name": "Turret10__Turret_10",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret10__Barrel_10": {
+        "exported_name": "Turret10__Barrel_10",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret10__shadow_barrel": {
+        "exported_name": "Turret10__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret10__shadow_turret": {
+        "exported_name": "Turret10__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Turret11__Turret_11": {
+        "exported_name": "Turret11__Turret_11",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret11__Barrel_11": {
+        "exported_name": "Turret11__Barrel_11",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret11__shadow_barrel": {
+        "exported_name": "Turret11__shadow_barrel",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret11__shadow_turret": {
+        "exported_name": "Turret11__shadow_turret",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__COL": {
+        "exported_name": "Hull__COL",
+        "triangles": 12,
+        "hidden": true,
+        "shader": "MeshCollision.fx",
+        "materials": [
+          "HeavyDreadnought_Surface00"
+        ],
+        "slot_triangles": [
+          12
+        ]
+      },
+      "Hull__b_attach_11_blast": {
+        "exported_name": "Hull__b_attach_11_blast",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Hull__shadow": {
+        "exported_name": "Hull__shadow",
+        "triangles": 25407,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02"
+        ],
+        "slot_triangles": [
+          25407
+        ]
+      },
+      "Hull__hull": {
+        "exported_name": "Hull__hull",
+        "triangles": 6494,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03"
+        ],
+        "slot_triangles": [
+          6494
+        ]
+      },
+      "Hull__b_attach_00_blast": {
+        "exported_name": "Hull__b_attach_00_blast",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Hull__b_attach_01_blast": {
+        "exported_name": "Hull__b_attach_01_blast",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Hull__b_attach_02_blast": {
+        "exported_name": "Hull__b_attach_02_blast",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Hull__b_attach_03_blast": {
+        "exported_name": "Hull__b_attach_03_blast",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Hull__b_attach_04_blast": {
+        "exported_name": "Hull__b_attach_04_blast",
+        "triangles": 20,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          20
+        ]
+      },
+      "Hull__b_attach_05_blast": {
+        "exported_name": "Hull__b_attach_05_blast",
+        "triangles": 20,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          20
+        ]
+      },
+      "Hull__b_attach_06_blast": {
+        "exported_name": "Hull__b_attach_06_blast",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Hull__b_attach_07_blast": {
+        "exported_name": "Hull__b_attach_07_blast",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Hull__b_attach_09_blast": {
+        "exported_name": "Hull__b_attach_09_blast",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Hull__b_attach_08_blast": {
+        "exported_name": "Hull__b_attach_08_blast",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Hull__b_attach_10_blast": {
+        "exported_name": "Hull__b_attach_10_blast",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0,
+          0,
+          0
+        ]
+      },
+      "COL": {
+        "parent": "Root",
+        "head": [
+          -0.2597332000732422,
+          -6.920577049255371,
+          -27.217376708984375
+        ]
+      },
+      "b_attach_11": {
+        "parent": "Root",
+        "head": [
+          22.18746566772461,
+          61.277854919433594,
+          7.878108978271484
+        ]
+      },
+      "b_attach_11_blast": {
+        "parent": "b_attach_11",
+        "head": [
+          23.1757869720459,
+          61.13169860839844,
+          7.35113525390625
+        ]
+      },
+      "b_attach_11_emit_damage": {
+        "parent": "b_attach_11",
+        "head": [
+          28.22127914428711,
+          61.32169723510742,
+          10.283839225769043
+        ]
+      },
+      "P_ship_fire": {
+        "parent": "b_attach_11_emit_damage",
+        "head": [
+          22.74477195739746,
+          61.28904724121094,
+          7.8883209228515625
+        ]
+      },
+      "Turret11__Root": {
+        "parent": "b_attach_11",
+        "head": [
+          22.187467575073242,
+          61.27785110473633,
+          7.878109931945801
+        ]
+      },
+      "Turret11__Turret_11": {
+        "parent": "Turret11__Root",
+        "head": [
+          22.379247665405273,
+          61.29414367675781,
+          7.915652751922607
+        ]
+      },
+      "Turret11__Barrel_11": {
+        "parent": "Turret11__Turret_11",
+        "head": [
+          24.260299682617188,
+          58.20610046386719,
+          8.572330474853516
+        ]
+      },
+      "Turret11__shadow_barrel": {
+        "parent": "Turret11__Barrel_11",
+        "head": [
+          24.260299682617188,
+          58.20610046386719,
+          8.572330474853516
+        ]
+      },
+      "Turret11__muzzleA_11": {
+        "parent": "Turret11__Barrel_11",
+        "head": [
+          24.289031982421875,
+          52.6072883605957,
+          8.544219970703125
+        ]
+      },
+      "Turret11__shadow_turret": {
+        "parent": "Turret11__Turret_11",
+        "head": [
+          22.379247665405273,
+          61.29414367675781,
+          7.915652751922607
+        ]
+      },
+      "shadow": {
+        "parent": "Root",
+        "head": [
+          -0.0000019073486328125,
+          -4.560234069824219,
+          -1.542886734008789
+        ]
+      },
+      "b_engines": {
+        "parent": "Root",
+        "head": [
+          -0.08849968761205673,
+          183.46176147460938,
+          -0.2724423408508301
+        ]
+      },
+      "b_engines_emit_damage": {
+        "parent": "b_engines",
+        "head": [
+          -0.08849941194057465,
+          192.58091735839844,
+          -0.2724412977695465
+        ]
+      },
+      "P_ship_fire_small": {
+        "parent": "b_engines_emit_damage",
+        "head": [
+          14.187170028686523,
+          187.75869750976562,
+          -17.996240615844727
+        ]
+      },
+      "P_ship_fire_small.001": {
+        "parent": "b_engines_emit_damage",
+        "head": [
+          14.009416580200195,
+          188.87339782714844,
+          20.60771369934082
+        ]
+      },
+      "P_ship_fire.001": {
+        "parent": "b_engines_emit_damage",
+        "head": [
+          -20.86046600341797,
+          191.9008331298828,
+          -0.004161254968494177
+        ]
+      },
+      "b_engines_particles": {
+        "parent": "b_engines",
+        "head": [
+          -0.08849950134754181,
+          187.91696166992188,
+          -0.27244195342063904
+        ]
+      },
+      "pe_dreadnought_lrg": {
+        "parent": "b_engines_particles",
+        "head": [
+          -20.860458374023438,
+          192.20550537109375,
+          -0.004161225166171789
+        ]
+      },
+      "pe_dreadnought_lrg.001": {
+        "parent": "b_engines_particles",
+        "head": [
+          21.01636505126953,
+          192.2054901123047,
+          -0.0041620670817792416
+        ]
+      },
+      "pe_dreadnought_med": {
+        "parent": "b_engines_particles",
+        "head": [
+          -14.012542724609375,
+          188.8734130859375,
+          20.607715606689453
+        ]
+      },
+      "pe_dreadnought_med.001": {
+        "parent": "b_engines_particles",
+        "head": [
+          14.009416580200195,
+          188.87339782714844,
+          20.607711791992188
+        ]
+      },
+      "pe_dreadnought_sml": {
+        "parent": "b_engines_particles",
+        "head": [
+          -13.944045066833496,
+          187.7587127685547,
+          -17.75948715209961
+        ]
+      },
+      "pe_dreadnought_sml.001": {
+        "parent": "b_engines_particles",
+        "head": [
+          13.94054889678955,
+          187.75869750976562,
+          -17.99624252319336
+        ]
+      },
+      "hull": {
+        "parent": "Root",
+        "head": [
+          -0.0000019073486328125,
+          -4.560234069824219,
+          -1.542886734008789
+        ]
+      },
+      "pi_damage_elec_mid_sparse": {
+        "parent": "hull",
+        "head": [
+          -28.79381561279297,
+          -40.81865310668945,
+          77.8147964477539
+        ]
+      },
+      "b_attach_00": {
+        "parent": "Root",
+        "head": [
+          -12.074913024902344,
+          -186.362548828125,
+          -7.708141803741455
+        ]
+      },
+      "b_attach_00_blast": {
+        "parent": "b_attach_00",
+        "head": [
+          -12.288949966430664,
+          -186.67056274414062,
+          -8.59130859375
+        ]
+      },
+      "b_attach_00_emit_damage": {
+        "parent": "b_attach_00",
+        "head": [
+          -12.383599281311035,
+          -187.2296905517578,
+          -12.99356460571289
+        ]
+      },
+      "P_ship_fire_small.002": {
+        "parent": "b_attach_00_emit_damage",
+        "head": [
+          -12.03227424621582,
+          -186.45899963378906,
+          -8.865406036376953
+        ]
+      },
+      "Turret00__Root": {
+        "parent": "b_attach_00",
+        "head": [
+          -12.074913024902344,
+          -186.362548828125,
+          -7.708141803741455
+        ]
+      },
+      "Turret00__Turret_00": {
+        "parent": "Turret00__Root",
+        "head": [
+          -12.102677345275879,
+          -186.34625244140625,
+          -7.901578903198242
+        ]
+      },
+      "Turret00__Barrel_00": {
+        "parent": "Turret00__Turret_00",
+        "head": [
+          -12.102677345275879,
+          -189.43429565429688,
+          -9.893960952758789
+        ]
+      },
+      "Turret00__shadow_barrel": {
+        "parent": "Turret00__Barrel_00",
+        "head": [
+          -12.102677345275879,
+          -189.43429565429688,
+          -9.893960952758789
+        ]
+      },
+      "Turret00__muzzleA_00": {
+        "parent": "Turret00__Barrel_00",
+        "head": [
+          -12.138687133789062,
+          -195.03311157226562,
+          -9.911821365356445
+        ]
+      },
+      "Turret00__shadow_turret": {
+        "parent": "Turret00__Turret_00",
+        "head": [
+          -12.102677345275879,
+          -186.34625244140625,
+          -7.901578903198242
+        ]
+      },
+      "b_attach_01": {
+        "parent": "Root",
+        "head": [
+          12.081783294677734,
+          -186.362548828125,
+          -7.708883285522461
+        ]
+      },
+      "b_attach_01_blast": {
+        "parent": "b_attach_01",
+        "head": [
+          12.309771537780762,
+          -186.67056274414062,
+          -8.591323852539062
+        ]
+      },
+      "b_attach_01_emit_damage": {
+        "parent": "b_attach_01",
+        "head": [
+          11.948037147521973,
+          -187.2296905517578,
+          -12.993566513061523
+        ]
+      },
+      "P_ship_fire_small.003": {
+        "parent": "b_attach_01_emit_damage",
+        "head": [
+          12.029123306274414,
+          -186.45901489257812,
+          -8.86539077758789
+        ]
+      },
+      "Turret01__Root": {
+        "parent": "b_attach_01",
+        "head": [
+          12.081783294677734,
+          -186.362548828125,
+          -7.708883285522461
+        ]
+      },
+      "Turret01__Turret_01": {
+        "parent": "Turret01__Root",
+        "head": [
+          12.0540189743042,
+          -186.34625244140625,
+          -7.90231990814209
+        ]
+      },
+      "Turret01__Barrel_01": {
+        "parent": "Turret01__Turret_01",
+        "head": [
+          12.0540189743042,
+          -189.43429565429688,
+          -9.894702911376953
+        ]
+      },
+      "Turret01__shadow_barrel": {
+        "parent": "Turret01__Barrel_01",
+        "head": [
+          12.0540189743042,
+          -189.43429565429688,
+          -9.894702911376953
+        ]
+      },
+      "Turret01__muzzleA_01": {
+        "parent": "Turret01__Barrel_01",
+        "head": [
+          12.018009185791016,
+          -195.03311157226562,
+          -9.91256332397461
+        ]
+      },
+      "Turret01__shadow_turret": {
+        "parent": "Turret01__Turret_01",
+        "head": [
+          12.0540189743042,
+          -186.34625244140625,
+          -7.90231990814209
+        ]
+      },
+      "b_attach_02": {
+        "parent": "Root",
+        "head": [
+          -27.056381225585938,
+          -78.05411529541016,
+          18.248088836669922
+        ]
+      },
+      "b_attach_02_blast": {
+        "parent": "b_attach_02",
+        "head": [
+          -26.39533042907715,
+          -78.20117950439453,
+          16.6395320892334
+        ]
+      },
+      "b_attach_02_emit_damage": {
+        "parent": "b_attach_02",
+        "head": [
+          -34.8585090637207,
+          -77.87616729736328,
+          21.730194091796875
+        ]
+      },
+      "P_ship_fire_small.004": {
+        "parent": "b_attach_02_emit_damage",
+        "head": [
+          -28.793807983398438,
+          -77.94416809082031,
+          18.464202880859375
+        ]
+      },
+      "Turret02__Root": {
+        "parent": "b_attach_02",
+        "head": [
+          -27.056381225585938,
+          -78.05410766601562,
+          18.248088836669922
+        ]
+      },
+      "Turret02__Turret_02": {
+        "parent": "Turret02__Root",
+        "head": [
+          -27.129629135131836,
+          -78.05460357666016,
+          18.286264419555664
+        ]
+      },
+      "Turret02__Barrel_02": {
+        "parent": "Turret02__Turret_02",
+        "head": [
+          -32.0771369934082,
+          -75.50743865966797,
+          20.10173797607422
+        ]
+      },
+      "Turret02__MuzzleA_02": {
+        "parent": "Turret02__Barrel_02",
+        "head": [
+          -32.09518814086914,
+          -87.25505065917969,
+          20.126209259033203
+        ]
+      },
+      "Turret02__shadow_barrel": {
+        "parent": "Turret02__Barrel_02",
+        "head": [
+          -32.0771369934082,
+          -75.50743865966797,
+          20.10173797607422
+        ]
+      },
+      "Turret02__shadow_turret": {
+        "parent": "Turret02__Turret_02",
+        "head": [
+          -27.129629135131836,
+          -78.05460357666016,
+          18.286264419555664
+        ]
+      },
+      "b_attach_03": {
+        "parent": "Root",
+        "head": [
+          27.061023712158203,
+          -78.05411529541016,
+          18.24458122253418
+        ]
+      },
+      "b_attach_03_blast": {
+        "parent": "b_attach_03",
+        "head": [
+          26.284151077270508,
+          -78.2011947631836,
+          16.6395320892334
+        ]
+      },
+      "b_attach_03_emit_damage": {
+        "parent": "b_attach_03",
+        "head": [
+          34.1673469543457,
+          -77.87615966796875,
+          21.730201721191406
+        ]
+      },
+      "P_ship_fire_small.005": {
+        "parent": "b_attach_03_emit_damage",
+        "head": [
+          27.730295181274414,
+          -77.94417572021484,
+          18.464218139648438
+        ]
+      },
+      "Turret03__Root": {
+        "parent": "b_attach_03",
+        "head": [
+          27.061025619506836,
+          -78.05411529541016,
+          18.24458122253418
+        ]
+      },
+      "Turret03__Turret_03": {
+        "parent": "Turret03__Root",
+        "head": [
+          27.141433715820312,
+          -78.05461120605469,
+          18.263473510742188
+        ]
+      },
+      "Turret03__Barrel_03": {
+        "parent": "Turret03__Turret_03",
+        "head": [
+          32.0745735168457,
+          -75.5074462890625,
+          20.117633819580078
+        ]
+      },
+      "Turret03__MuzzleA_03": {
+        "parent": "Turret03__Barrel_03",
+        "head": [
+          32.104225158691406,
+          -87.25505828857422,
+          20.110877990722656
+        ]
+      },
+      "Turret03__shadow_barrel": {
+        "parent": "Turret03__Barrel_03",
+        "head": [
+          32.0745735168457,
+          -75.5074462890625,
+          20.117633819580078
+        ]
+      },
+      "Turret03__shadow_turret": {
+        "parent": "Turret03__Turret_03",
+        "head": [
+          27.141433715820312,
+          -78.05461120605469,
+          18.263473510742188
+        ]
+      },
+      "b_attach_04": {
+        "parent": "Root",
+        "head": [
+          -21.289676666259766,
+          -37.392616271972656,
+          -15.471630096435547
+        ]
+      },
+      "b_attach_04_blast": {
+        "parent": "b_attach_04",
+        "head": [
+          -18.13013458251953,
+          -34.603302001953125,
+          -15.922538757324219
+        ]
+      },
+      "b_attach_04_emit_damage": {
+        "parent": "b_attach_04",
+        "head": [
+          -27.851194381713867,
+          -37.33887481689453,
+          -22.81089973449707
+        ]
+      },
+      "P_ship_fire_small.006": {
+        "parent": "b_attach_04_emit_damage",
+        "head": [
+          -21.986806869506836,
+          -37.06681442260742,
+          -15.870521545410156
+        ]
+      },
+      "Turret04__Root": {
+        "parent": "b_attach_04",
+        "head": [
+          -21.289676666259766,
+          -37.39262008666992,
+          -15.471630096435547
+        ]
+      },
+      "Turret04__Turret_04": {
+        "parent": "Turret04__Root",
+        "head": [
+          -21.477725982666016,
+          -37.37632751464844,
+          -15.524791717529297
+        ]
+      },
+      "Turret04__Barrel_04": {
+        "parent": "Turret04__Turret_04",
+        "head": [
+          -23.298511505126953,
+          -40.46437072753906,
+          -16.333696365356445
+        ]
+      },
+      "Turret04__shadow_barrel": {
+        "parent": "Turret04__Barrel_04",
+        "head": [
+          -23.298511505126953,
+          -40.46437072753906,
+          -16.333696365356445
+        ]
+      },
+      "Turret04__muzzleA_04": {
+        "parent": "Turret04__Barrel_04",
+        "head": [
+          -23.32945442199707,
+          -46.06318283081055,
+          -16.30803871154785
+        ]
+      },
+      "Turret04__shadow_turret": {
+        "parent": "Turret04__Turret_04",
+        "head": [
+          -21.477725982666016,
+          -37.37632751464844,
+          -15.524791717529297
+        ]
+      },
+      "b_attach_05": {
+        "parent": "Root",
+        "head": [
+          21.260910034179688,
+          -37.392616271972656,
+          -15.479561805725098
+        ]
+      },
+      "b_attach_05_blast": {
+        "parent": "b_attach_05",
+        "head": [
+          18.130611419677734,
+          -34.603302001953125,
+          -15.92251968383789
+        ]
+      },
+      "b_attach_05_emit_damage": {
+        "parent": "b_attach_05",
+        "head": [
+          28.097270965576172,
+          -37.338871002197266,
+          -22.81088638305664
+        ]
+      },
+      "P_ship_fire_small.007": {
+        "parent": "b_attach_05_emit_damage",
+        "head": [
+          22.019346237182617,
+          -37.06684875488281,
+          -15.870498657226562
+        ]
+      },
+      "Turret05__Root": {
+        "parent": "b_attach_05",
+        "head": [
+          21.260910034179688,
+          -37.39261245727539,
+          -15.479562759399414
+        ]
+      },
+      "Turret05__Turret_05": {
+        "parent": "Turret05__Root",
+        "head": [
+          21.427993774414062,
+          -37.376319885253906,
+          -15.580911636352539
+        ]
+      },
+      "Turret05__Barrel_05": {
+        "parent": "Turret05__Turret_05",
+        "head": [
+          23.26101303100586,
+          -40.46436309814453,
+          -16.3617000579834
+        ]
+      },
+      "Turret05__shadow_barrel": {
+        "parent": "Turret05__Barrel_05",
+        "head": [
+          23.26101303100586,
+          -40.46436309814453,
+          -16.3617000579834
+        ]
+      },
+      "Turret05__muzzleA_05": {
+        "parent": "Turret05__Barrel_05",
+        "head": [
+          23.26333236694336,
+          -46.063175201416016,
+          -16.401830673217773
+        ]
+      },
+      "Turret05__shadow_turret": {
+        "parent": "Turret05__Turret_05",
+        "head": [
+          21.427993774414062,
+          -37.376319885253906,
+          -15.580911636352539
+        ]
+      },
+      "b_attach_06": {
+        "parent": "Root",
+        "head": [
+          -27.105121612548828,
+          5.589469909667969,
+          8.076438903808594
+        ]
+      },
+      "b_attach_06_blast": {
+        "parent": "b_attach_06",
+        "head": [
+          -25.531414031982422,
+          5.692756652832031,
+          7.212092399597168
+        ]
+      },
+      "b_attach_06_emit_damage": {
+        "parent": "b_attach_06",
+        "head": [
+          -34.78284454345703,
+          5.658664703369141,
+          10.283828735351562
+        ]
+      },
+      "P_ship_fire_small.008": {
+        "parent": "b_attach_06_emit_damage",
+        "head": [
+          -28.24264907836914,
+          5.552737712860107,
+          8.91052532196045
+        ]
+      },
+      "Turret06__Root": {
+        "parent": "b_attach_06",
+        "head": [
+          -27.105121612548828,
+          5.589469909667969,
+          8.076438903808594
+        ]
+      },
+      "Turret06__Turret_06": {
+        "parent": "Turret06__Root",
+        "head": [
+          -27.177871704101562,
+          5.588976860046387,
+          8.115551948547363
+        ]
+      },
+      "Turret06__Barrel_06": {
+        "parent": "Turret06__Turret_06",
+        "head": [
+          -32.101627349853516,
+          8.136136054992676,
+          9.994488716125488
+        ]
+      },
+      "Turret06__MuzzleA_06": {
+        "parent": "Turret06__Barrel_06",
+        "head": [
+          -32.11936569213867,
+          -3.6114749908447266,
+          10.019190788269043
+        ]
+      },
+      "Turret06__shadow_barrel": {
+        "parent": "Turret06__Barrel_06",
+        "head": [
+          -32.101627349853516,
+          8.136136054992676,
+          9.994488716125488
+        ]
+      },
+      "Turret06__shadow_turret": {
+        "parent": "Turret06__Turret_06",
+        "head": [
+          -27.177871704101562,
+          5.588976860046387,
+          8.115551948547363
+        ]
+      },
+      "b_attach_07": {
+        "parent": "Root",
+        "head": [
+          26.7263126373291,
+          5.589469909667969,
+          7.925379753112793
+        ]
+      },
+      "b_attach_07_blast": {
+        "parent": "b_attach_07",
+        "head": [
+          25.42024040222168,
+          5.692756652832031,
+          7.212096214294434
+        ]
+      },
+      "b_attach_07_emit_damage": {
+        "parent": "b_attach_07",
+        "head": [
+          34.16734313964844,
+          5.658660888671875,
+          10.283836364746094
+        ]
+      },
+      "P_ship_fire_small.009": {
+        "parent": "b_attach_07_emit_damage",
+        "head": [
+          28.182701110839844,
+          5.552724838256836,
+          8.910548210144043
+        ]
+      },
+      "Turret07__Root": {
+        "parent": "b_attach_07",
+        "head": [
+          26.7263126373291,
+          5.589469909667969,
+          7.925379753112793
+        ]
+      },
+      "Turret07__Turret_07": {
+        "parent": "Turret07__Root",
+        "head": [
+          26.806568145751953,
+          5.588976860046387,
+          7.944915294647217
+        ]
+      },
+      "Turret07__Barrel_07": {
+        "parent": "Turret07__Turret_07",
+        "head": [
+          31.72470474243164,
+          8.136136054992676,
+          9.83851146697998
+        ]
+      },
+      "Turret07__MuzzleA_07": {
+        "parent": "Turret07__Barrel_07",
+        "head": [
+          31.75440788269043,
+          -3.6114749908447266,
+          9.831995010375977
+        ]
+      },
+      "Turret07__shadow_barrel": {
+        "parent": "Turret07__Barrel_07",
+        "head": [
+          31.72470474243164,
+          8.136136054992676,
+          9.83851146697998
+        ]
+      },
+      "Turret07__shadow_turret": {
+        "parent": "Turret07__Turret_07",
+        "head": [
+          26.806568145751953,
+          5.588976860046387,
+          7.944915294647217
+        ]
+      },
+      "b_attach_09": {
+        "parent": "Root",
+        "head": [
+          22.192527770996094,
+          44.936370849609375,
+          7.892558574676514
+        ]
+      },
+      "b_attach_09_blast": {
+        "parent": "b_attach_09",
+        "head": [
+          23.1757869720459,
+          44.408714294433594,
+          7.351138114929199
+        ]
+      },
+      "b_attach_09_emit_damage": {
+        "parent": "b_attach_09",
+        "head": [
+          28.22127914428711,
+          44.802024841308594,
+          10.283832550048828
+        ]
+      },
+      "P_ship_fire_small.010": {
+        "parent": "b_attach_09_emit_damage",
+        "head": [
+          22.744792938232422,
+          44.76935577392578,
+          7.888313293457031
+        ]
+      },
+      "Turret09__Root": {
+        "parent": "b_attach_09",
+        "head": [
+          22.192527770996094,
+          44.936370849609375,
+          7.892558574676514
+        ]
+      },
+      "Turret09__Turret_09": {
+        "parent": "Turret09__Root",
+        "head": [
+          22.38462257385254,
+          44.95266342163086,
+          7.928455829620361
+        ]
+      },
+      "Turret09__Barrel_09": {
+        "parent": "Turret09__Turret_09",
+        "head": [
+          24.2712345123291,
+          41.864620208740234,
+          8.568986892700195
+        ]
+      },
+      "Turret09__shadow_barrel": {
+        "parent": "Turret09__Barrel_09",
+        "head": [
+          24.2712345123291,
+          41.864620208740234,
+          8.568986892700195
+        ]
+      },
+      "Turret09__muzzleA_09": {
+        "parent": "Turret09__Barrel_09",
+        "head": [
+          24.299724578857422,
+          36.26580810546875,
+          8.540630340576172
+        ]
+      },
+      "Turret09__shadow_turret": {
+        "parent": "Turret09__Turret_09",
+        "head": [
+          22.38462257385254,
+          44.95266342163086,
+          7.928455829620361
+        ]
+      },
+      "b_attach_08": {
+        "parent": "Root",
+        "head": [
+          -22.189836502075195,
+          44.936370849609375,
+          7.893606185913086
+        ]
+      },
+      "b_attach_08_blast": {
+        "parent": "b_attach_08",
+        "head": [
+          -23.17578887939453,
+          44.37481689453125,
+          7.351139068603516
+        ]
+      },
+      "b_attach_08_emit_damage": {
+        "parent": "b_attach_08",
+        "head": [
+          -28.055965423583984,
+          45.264068603515625,
+          10.283838272094727
+        ]
+      },
+      "P_ship_fire_small.011": {
+        "parent": "b_attach_08_emit_damage",
+        "head": [
+          -22.582233428955078,
+          44.9973030090332,
+          7.964204788208008
+        ]
+      },
+      "Turret08__Root": {
+        "parent": "b_attach_08",
+        "head": [
+          -22.189836502075195,
+          44.936370849609375,
+          7.893606185913086
+        ]
+      },
+      "Turret08__Turret_08": {
+        "parent": "Turret08__Root",
+        "head": [
+          -22.364286422729492,
+          44.95266342163086,
+          7.981675148010254
+        ]
+      },
+      "Turret08__Barrel_08": {
+        "parent": "Turret08__Turret_08",
+        "head": [
+          -24.252397537231445,
+          41.864620208740234,
+          8.617773056030273
+        ]
+      },
+      "Turret08__shadow_barrel": {
+        "parent": "Turret08__Barrel_08",
+        "head": [
+          -24.252397537231445,
+          41.864620208740234,
+          8.617773056030273
+        ]
+      },
+      "Turret08__muzzleA_08": {
+        "parent": "Turret08__Barrel_08",
+        "head": [
+          -24.257827758789062,
+          36.26580810546875,
+          8.657601356506348
+        ]
+      },
+      "Turret08__shadow_turret": {
+        "parent": "Turret08__Turret_08",
+        "head": [
+          -22.364286422729492,
+          44.95266342163086,
+          7.981675148010254
+        ]
+      },
+      "b_attach_10": {
+        "parent": "Root",
+        "head": [
+          -22.210725784301758,
+          61.277854919433594,
+          7.860182285308838
+        ]
+      },
+      "b_attach_10_blast": {
+        "parent": "b_attach_10",
+        "head": [
+          -23.175796508789062,
+          61.097808837890625,
+          7.3511433601379395
+        ]
+      },
+      "b_attach_10_emit_damage": {
+        "parent": "b_attach_10",
+        "head": [
+          -28.055965423583984,
+          61.32170104980469,
+          10.283842086791992
+        ]
+      },
+      "P_ship_fire_small.012": {
+        "parent": "b_attach_10_emit_damage",
+        "head": [
+          -22.582229614257812,
+          61.289066314697266,
+          7.888284683227539
+        ]
+      },
+      "Turret10__Root": {
+        "parent": "b_attach_10",
+        "head": [
+          -22.210725784301758,
+          61.27785110473633,
+          7.860182285308838
+        ]
+      },
+      "Turret10__Turret_10": {
+        "parent": "Turret10__Root",
+        "head": [
+          -22.382516860961914,
+          61.29414367675781,
+          7.953328609466553
+        ]
+      },
+      "Turret10__Barrel_10": {
+        "parent": "Turret10__Turret_10",
+        "head": [
+          -24.25116539001465,
+          58.20610046386719,
+          8.644516944885254
+        ]
+      },
+      "Turret10__shadow_barrel": {
+        "parent": "Turret10__Barrel_10",
+        "head": [
+          -24.25116539001465,
+          58.20610046386719,
+          8.644516944885254
+        ]
+      },
+      "Turret10__muzzleA_10": {
+        "parent": "Turret10__Barrel_10",
+        "head": [
+          -24.25542449951172,
+          52.6072883605957,
+          8.684486389160156
+        ]
+      },
+      "Turret10__shadow_turret": {
+        "parent": "Turret10__Turret_10",
+        "head": [
+          -22.382516860961914,
+          61.29414367675781,
+          7.953328609466553
+        ]
+      },
+      "Pptw_ptwsa": {
+        "parent": "Root",
+        "head": [
+          -28.524871826171875,
+          -94.43002319335938,
+          -15.19279956817627
+        ]
+      },
+      "Pptw_ptwsa.001": {
+        "parent": "Root",
+        "head": [
+          28.289531707763672,
+          -94.43002319335938,
+          -15.19279956817627
+        ]
+      },
+      "Pptw_ptwsa.002": {
+        "parent": "Root",
+        "head": [
+          28.289531707763672,
+          44.55430603027344,
+          -15.19279956817627
+        ]
+      },
+      "Pptw_ptwsa.003": {
+        "parent": "Root",
+        "head": [
+          -29.357025146484375,
+          44.55430603027344,
+          -15.19279956817627
+        ]
+      }
+    }
+  },
+  "after": {
+    "meshes": {
+      "Hull__COL": {
+        "exported_name": "Hull__COL.002",
+        "triangles": 12,
+        "hidden": true,
+        "shader": "MeshCollision.fx",
+        "materials": [
+          "HeavyDreadnought_Surface00.002"
+        ],
+        "slot_triangles": [
+          12
+        ]
+      },
+      "Hull__b_attach_11_blast": {
+        "exported_name": "Hull__b_attach_11_blast.002",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Turret11__Turret_11": {
+        "exported_name": "Turret11__Turret_11.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret11__Barrel_11": {
+        "exported_name": "Turret11__Barrel_11.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret11__shadow_barrel": {
+        "exported_name": "Turret11__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret11__shadow_turret": {
+        "exported_name": "Turret11__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__shadow": {
+        "exported_name": "Hull__shadow.002",
+        "triangles": 25407,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          25407
+        ]
+      },
+      "Hull__hull": {
+        "exported_name": "Hull__hull.002",
+        "triangles": 6494,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          6494
+        ]
+      },
+      "Hull__b_attach_00_blast": {
+        "exported_name": "Hull__b_attach_00_blast.002",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Turret00__Turret_00": {
+        "exported_name": "Turret00__Turret_00.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret00__Barrel_00": {
+        "exported_name": "Turret00__Barrel_00.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret00__shadow_barrel": {
+        "exported_name": "Turret00__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret00__shadow_turret": {
+        "exported_name": "Turret00__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__b_attach_01_blast": {
+        "exported_name": "Hull__b_attach_01_blast.002",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Turret01__Turret_01": {
+        "exported_name": "Turret01__Turret_01.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret01__Barrel_01": {
+        "exported_name": "Turret01__Barrel_01.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret01__shadow_barrel": {
+        "exported_name": "Turret01__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret01__shadow_turret": {
+        "exported_name": "Turret01__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__b_attach_02_blast": {
+        "exported_name": "Hull__b_attach_02_blast.002",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Turret02__Turret_02": {
+        "exported_name": "Turret02__Turret_02.002",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret02__Barrel_02": {
+        "exported_name": "Turret02__Barrel_02.002",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret02__shadow_barrel": {
+        "exported_name": "Turret02__shadow_barrel.002",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret02__shadow_turret": {
+        "exported_name": "Turret02__shadow_turret.002",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Hull__b_attach_03_blast": {
+        "exported_name": "Hull__b_attach_03_blast.002",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Turret03__Turret_03": {
+        "exported_name": "Turret03__Turret_03.002",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret03__Barrel_03": {
+        "exported_name": "Turret03__Barrel_03.002",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret03__shadow_barrel": {
+        "exported_name": "Turret03__shadow_barrel.002",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret03__shadow_turret": {
+        "exported_name": "Turret03__shadow_turret.002",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Hull__b_attach_04_blast": {
+        "exported_name": "Hull__b_attach_04_blast.002",
+        "triangles": 20,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          20
+        ]
+      },
+      "Turret04__Turret_04": {
+        "exported_name": "Turret04__Turret_04.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret04__Barrel_04": {
+        "exported_name": "Turret04__Barrel_04.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret04__shadow_barrel": {
+        "exported_name": "Turret04__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret04__shadow_turret": {
+        "exported_name": "Turret04__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__b_attach_05_blast": {
+        "exported_name": "Hull__b_attach_05_blast.002",
+        "triangles": 20,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          20
+        ]
+      },
+      "Turret05__Turret_05": {
+        "exported_name": "Turret05__Turret_05.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret05__Barrel_05": {
+        "exported_name": "Turret05__Barrel_05.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret05__shadow_barrel": {
+        "exported_name": "Turret05__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret05__shadow_turret": {
+        "exported_name": "Turret05__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__b_attach_06_blast": {
+        "exported_name": "Hull__b_attach_06_blast.002",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Turret06__Turret_06": {
+        "exported_name": "Turret06__Turret_06.002",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret06__Barrel_06": {
+        "exported_name": "Turret06__Barrel_06.002",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret06__shadow_barrel": {
+        "exported_name": "Turret06__shadow_barrel.002",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret06__shadow_turret": {
+        "exported_name": "Turret06__shadow_turret.002",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Hull__b_attach_07_blast": {
+        "exported_name": "Hull__b_attach_07_blast.002",
+        "triangles": 50,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          50
+        ]
+      },
+      "Turret07__Turret_07": {
+        "exported_name": "Turret07__Turret_07.002",
+        "triangles": 60,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          60
+        ]
+      },
+      "Turret07__Barrel_07": {
+        "exported_name": "Turret07__Barrel_07.002",
+        "triangles": 152,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          152
+        ]
+      },
+      "Turret07__shadow_barrel": {
+        "exported_name": "Turret07__shadow_barrel.002",
+        "triangles": 626,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          626
+        ]
+      },
+      "Turret07__shadow_turret": {
+        "exported_name": "Turret07__shadow_turret.002",
+        "triangles": 268,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          268
+        ]
+      },
+      "Hull__b_attach_09_blast": {
+        "exported_name": "Hull__b_attach_09_blast.002",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Turret09__Turret_09": {
+        "exported_name": "Turret09__Turret_09.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret09__Barrel_09": {
+        "exported_name": "Turret09__Barrel_09.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret09__shadow_barrel": {
+        "exported_name": "Turret09__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret09__shadow_turret": {
+        "exported_name": "Turret09__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__b_attach_08_blast": {
+        "exported_name": "Hull__b_attach_08_blast.002",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Turret08__Turret_08": {
+        "exported_name": "Turret08__Turret_08.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret08__Barrel_08": {
+        "exported_name": "Turret08__Barrel_08.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret08__shadow_barrel": {
+        "exported_name": "Turret08__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret08__shadow_turret": {
+        "exported_name": "Turret08__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      },
+      "Hull__b_attach_10_blast": {
+        "exported_name": "Hull__b_attach_10_blast.002",
+        "triangles": 2,
+        "hidden": false,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "HeavyDreadnought_Surface01.002"
+        ],
+        "slot_triangles": [
+          2
+        ]
+      },
+      "Turret10__Turret_10": {
+        "exported_name": "Turret10__Turret_10.002",
+        "triangles": 80,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          80
+        ]
+      },
+      "Turret10__Barrel_10": {
+        "exported_name": "Turret10__Barrel_10.002",
+        "triangles": 16,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "HeavyDreadnought_Surface03.002"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "Turret10__shadow_barrel": {
+        "exported_name": "Turret10__shadow_barrel.002",
+        "triangles": 58,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          58
+        ]
+      },
+      "Turret10__shadow_turret": {
+        "exported_name": "Turret10__shadow_turret.002",
+        "triangles": 300,
+        "hidden": false,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "HeavyDreadnought_Surface02.002"
+        ],
+        "slot_triangles": [
+          300
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0,
+          0,
+          0
+        ]
+      },
+      "COL": {
+        "parent": "Root",
+        "head": [
+          -0.2597332000732422,
+          -6.920581340789795,
+          -27.217374801635742
+        ]
+      },
+      "b_attach_11": {
+        "parent": "Root",
+        "head": [
+          22.18746566772461,
+          61.277854919433594,
+          7.878098964691162
+        ]
+      },
+      "b_attach_11_blast": {
+        "parent": "b_attach_11",
+        "head": [
+          23.17578887939453,
+          61.13169479370117,
+          7.351123809814453
+        ]
+      },
+      "b_attach_11_emit_damage": {
+        "parent": "b_attach_11",
+        "head": [
+          28.221281051635742,
+          61.321693420410156,
+          10.283827781677246
+        ]
+      },
+      "P_ship_fire": {
+        "parent": "b_attach_11_emit_damage",
+        "head": [
+          22.744770050048828,
+          61.289039611816406,
+          7.888311862945557
+        ]
+      },
+      "Turret11__Root": {
+        "parent": "b_attach_11",
+        "head": [
+          22.187467575073242,
+          61.27784729003906,
+          7.87809944152832
+        ]
+      },
+      "Turret11__Turret_11": {
+        "parent": "Turret11__Root",
+        "head": [
+          22.379249572753906,
+          61.29413986206055,
+          7.915642261505127
+        ]
+      },
+      "Turret11__Barrel_11": {
+        "parent": "Turret11__Turret_11",
+        "head": [
+          24.260297775268555,
+          58.20609664916992,
+          8.572322845458984
+        ]
+      },
+      "Turret11__shadow_barrel": {
+        "parent": "Turret11__Barrel_11",
+        "head": [
+          24.260299682617188,
+          58.20609664916992,
+          8.572322845458984
+        ]
+      },
+      "Turret11__muzzleA_11": {
+        "parent": "Turret11__Barrel_11",
+        "head": [
+          24.28902816772461,
+          52.60728073120117,
+          8.544219970703125
+        ]
+      },
+      "Turret11__shadow_turret": {
+        "parent": "Turret11__Turret_11",
+        "head": [
+          22.379247665405273,
+          61.29413986206055,
+          7.9156413078308105
+        ]
+      },
+      "shadow": {
+        "parent": "Root",
+        "head": [
+          -0.0000019073486328125,
+          -4.560234546661377,
+          -1.5428860187530518
+        ]
+      },
+      "b_engines": {
+        "parent": "Root",
+        "head": [
+          -0.08849968761205673,
+          183.46176147460938,
+          -0.27247223258018494
+        ]
+      },
+      "b_engines_emit_damage": {
+        "parent": "b_engines",
+        "head": [
+          -0.08849887549877167,
+          192.58091735839844,
+          -0.2724727690219879
+        ]
+      },
+      "P_ship_fire_small": {
+        "parent": "b_engines_emit_damage",
+        "head": [
+          14.187170028686523,
+          187.75869750976562,
+          -17.99627113342285
+        ]
+      },
+      "P_ship_fire_small.001": {
+        "parent": "b_engines_emit_damage",
+        "head": [
+          14.009417533874512,
+          188.87339782714844,
+          20.60768699645996
+        ]
+      },
+      "P_ship_fire.001": {
+        "parent": "b_engines_emit_damage",
+        "head": [
+          -20.86046600341797,
+          191.9008331298828,
+          -0.004192219115793705
+        ]
+      },
+      "b_engines_particles": {
+        "parent": "b_engines",
+        "head": [
+          -0.08849924057722092,
+          187.91696166992188,
+          -0.27247270941734314
+        ]
+      },
+      "pe_dreadnought_lrg": {
+        "parent": "b_engines_particles",
+        "head": [
+          -20.860458374023438,
+          192.20550537109375,
+          -0.004192268941551447
+        ]
+      },
+      "pe_dreadnought_lrg.001": {
+        "parent": "b_engines_particles",
+        "head": [
+          21.01636505126953,
+          192.2054901123047,
+          -0.004193776287138462
+        ]
+      },
+      "pe_dreadnought_med": {
+        "parent": "b_engines_particles",
+        "head": [
+          -14.012540817260742,
+          188.8734130859375,
+          20.60768699645996
+        ]
+      },
+      "pe_dreadnought_med.001": {
+        "parent": "b_engines_particles",
+        "head": [
+          14.009418487548828,
+          188.87339782714844,
+          20.607683181762695
+        ]
+      },
+      "pe_dreadnought_sml": {
+        "parent": "b_engines_particles",
+        "head": [
+          -13.94404411315918,
+          187.7587127685547,
+          -17.759519577026367
+        ]
+      },
+      "pe_dreadnought_sml.001": {
+        "parent": "b_engines_particles",
+        "head": [
+          13.940549850463867,
+          187.75869750976562,
+          -17.996274948120117
+        ]
+      },
+      "hull": {
+        "parent": "Root",
+        "head": [
+          -0.0000019073486328125,
+          -4.560234546661377,
+          -1.5428860187530518
+        ]
+      },
+      "pi_damage_elec_mid_sparse": {
+        "parent": "hull",
+        "head": [
+          -28.79381561279297,
+          -40.818641662597656,
+          77.81480407714844
+        ]
+      },
+      "b_attach_00": {
+        "parent": "Root",
+        "head": [
+          -12.074913024902344,
+          -186.362548828125,
+          -7.70811128616333
+        ]
+      },
+      "b_attach_00_blast": {
+        "parent": "b_attach_00",
+        "head": [
+          -12.288949966430664,
+          -186.67056274414062,
+          -8.591278076171875
+        ]
+      },
+      "b_attach_00_emit_damage": {
+        "parent": "b_attach_00",
+        "head": [
+          -12.383599281311035,
+          -187.2296905517578,
+          -12.993534088134766
+        ]
+      },
+      "P_ship_fire_small.002": {
+        "parent": "b_attach_00_emit_damage",
+        "head": [
+          -12.03227424621582,
+          -186.45899963378906,
+          -8.865375518798828
+        ]
+      },
+      "Turret00__Root": {
+        "parent": "b_attach_00",
+        "head": [
+          -12.074913024902344,
+          -186.362548828125,
+          -7.70811128616333
+        ]
+      },
+      "Turret00__Turret_00": {
+        "parent": "Turret00__Root",
+        "head": [
+          -12.102677345275879,
+          -186.34625244140625,
+          -7.901548385620117
+        ]
+      },
+      "Turret00__Barrel_00": {
+        "parent": "Turret00__Turret_00",
+        "head": [
+          -12.102679252624512,
+          -189.43429565429688,
+          -9.893930435180664
+        ]
+      },
+      "Turret00__shadow_barrel": {
+        "parent": "Turret00__Barrel_00",
+        "head": [
+          -12.102679252624512,
+          -189.43429565429688,
+          -9.893930435180664
+        ]
+      },
+      "Turret00__muzzleA_00": {
+        "parent": "Turret00__Barrel_00",
+        "head": [
+          -12.138689994812012,
+          -195.03309631347656,
+          -9.911789894104004
+        ]
+      },
+      "Turret00__shadow_turret": {
+        "parent": "Turret00__Turret_00",
+        "head": [
+          -12.102678298950195,
+          -186.34625244140625,
+          -7.901548385620117
+        ]
+      },
+      "b_attach_01": {
+        "parent": "Root",
+        "head": [
+          12.081783294677734,
+          -186.362548828125,
+          -7.708852767944336
+        ]
+      },
+      "b_attach_01_blast": {
+        "parent": "b_attach_01",
+        "head": [
+          12.309771537780762,
+          -186.67056274414062,
+          -8.591293334960938
+        ]
+      },
+      "b_attach_01_emit_damage": {
+        "parent": "b_attach_01",
+        "head": [
+          11.948037147521973,
+          -187.2296905517578,
+          -12.993535995483398
+        ]
+      },
+      "P_ship_fire_small.003": {
+        "parent": "b_attach_01_emit_damage",
+        "head": [
+          12.02912425994873,
+          -186.45901489257812,
+          -8.865360260009766
+        ]
+      },
+      "Turret01__Root": {
+        "parent": "b_attach_01",
+        "head": [
+          12.081783294677734,
+          -186.362548828125,
+          -7.708852767944336
+        ]
+      },
+      "Turret01__Turret_01": {
+        "parent": "Turret01__Root",
+        "head": [
+          12.0540189743042,
+          -186.34625244140625,
+          -7.902289390563965
+        ]
+      },
+      "Turret01__Barrel_01": {
+        "parent": "Turret01__Turret_01",
+        "head": [
+          12.054018020629883,
+          -189.43429565429688,
+          -9.894672393798828
+        ]
+      },
+      "Turret01__shadow_barrel": {
+        "parent": "Turret01__Barrel_01",
+        "head": [
+          12.054017066955566,
+          -189.43429565429688,
+          -9.894672393798828
+        ]
+      },
+      "Turret01__muzzleA_01": {
+        "parent": "Turret01__Barrel_01",
+        "head": [
+          12.018006324768066,
+          -195.03309631347656,
+          -9.912531852722168
+        ]
+      },
+      "Turret01__shadow_turret": {
+        "parent": "Turret01__Turret_01",
+        "head": [
+          12.0540189743042,
+          -186.34625244140625,
+          -7.902289390563965
+        ]
+      },
+      "b_attach_02": {
+        "parent": "Root",
+        "head": [
+          -27.056381225585938,
+          -78.05411529541016,
+          18.24810218811035
+        ]
+      },
+      "b_attach_02_blast": {
+        "parent": "b_attach_02",
+        "head": [
+          -26.395328521728516,
+          -78.201171875,
+          16.639545440673828
+        ]
+      },
+      "b_attach_02_emit_damage": {
+        "parent": "b_attach_02",
+        "head": [
+          -34.8585090637207,
+          -77.87615966796875,
+          21.730207443237305
+        ]
+      },
+      "P_ship_fire_small.004": {
+        "parent": "b_attach_02_emit_damage",
+        "head": [
+          -28.793806076049805,
+          -77.94416046142578,
+          18.464216232299805
+        ]
+      },
+      "Turret02__Root": {
+        "parent": "b_attach_02",
+        "head": [
+          -27.056381225585938,
+          -78.0541000366211,
+          18.24810028076172
+        ]
+      },
+      "Turret02__Turret_02": {
+        "parent": "Turret02__Root",
+        "head": [
+          -27.129629135131836,
+          -78.0545883178711,
+          18.28627586364746
+        ]
+      },
+      "Turret02__Barrel_02": {
+        "parent": "Turret02__Turret_02",
+        "head": [
+          -32.07712936401367,
+          -75.50743103027344,
+          20.10175132751465
+        ]
+      },
+      "Turret02__MuzzleA_02": {
+        "parent": "Turret02__Barrel_02",
+        "head": [
+          -32.095191955566406,
+          -87.25503540039062,
+          20.126211166381836
+        ]
+      },
+      "Turret02__shadow_barrel": {
+        "parent": "Turret02__Barrel_02",
+        "head": [
+          -32.07713317871094,
+          -75.5074234008789,
+          20.101749420166016
+        ]
+      },
+      "Turret02__shadow_turret": {
+        "parent": "Turret02__Turret_02",
+        "head": [
+          -27.12962532043457,
+          -78.0545883178711,
+          18.286277770996094
+        ]
+      },
+      "b_attach_03": {
+        "parent": "Root",
+        "head": [
+          27.061023712158203,
+          -78.05411529541016,
+          18.24459457397461
+        ]
+      },
+      "b_attach_03_blast": {
+        "parent": "b_attach_03",
+        "head": [
+          26.28415298461914,
+          -78.20118713378906,
+          16.639545440673828
+        ]
+      },
+      "b_attach_03_emit_damage": {
+        "parent": "b_attach_03",
+        "head": [
+          34.1673469543457,
+          -77.87615203857422,
+          21.730215072631836
+        ]
+      },
+      "P_ship_fire_small.005": {
+        "parent": "b_attach_03_emit_damage",
+        "head": [
+          27.73029327392578,
+          -77.94416809082031,
+          18.464231491088867
+        ]
+      },
+      "Turret03__Root": {
+        "parent": "b_attach_03",
+        "head": [
+          27.06102752685547,
+          -78.05410766601562,
+          18.24459457397461
+        ]
+      },
+      "Turret03__Turret_03": {
+        "parent": "Turret03__Root",
+        "head": [
+          27.141435623168945,
+          -78.05459594726562,
+          18.263486862182617
+        ]
+      },
+      "Turret03__Barrel_03": {
+        "parent": "Turret03__Turret_03",
+        "head": [
+          32.0745735168457,
+          -75.50743103027344,
+          20.117645263671875
+        ]
+      },
+      "Turret03__MuzzleA_03": {
+        "parent": "Turret03__Barrel_03",
+        "head": [
+          32.104225158691406,
+          -87.25504302978516,
+          20.11088752746582
+        ]
+      },
+      "Turret03__shadow_barrel": {
+        "parent": "Turret03__Barrel_03",
+        "head": [
+          32.07456970214844,
+          -75.5074234008789,
+          20.117645263671875
+        ]
+      },
+      "Turret03__shadow_turret": {
+        "parent": "Turret03__Turret_03",
+        "head": [
+          27.141433715820312,
+          -78.05459594726562,
+          18.263486862182617
+        ]
+      },
+      "b_attach_04": {
+        "parent": "Root",
+        "head": [
+          -21.289676666259766,
+          -37.39262008666992,
+          -15.471624374389648
+        ]
+      },
+      "b_attach_04_blast": {
+        "parent": "b_attach_04",
+        "head": [
+          -18.1301326751709,
+          -34.603309631347656,
+          -15.922532081604004
+        ]
+      },
+      "b_attach_04_emit_damage": {
+        "parent": "b_attach_04",
+        "head": [
+          -27.851192474365234,
+          -37.33888244628906,
+          -22.810894012451172
+        ]
+      },
+      "P_ship_fire_small.006": {
+        "parent": "b_attach_04_emit_damage",
+        "head": [
+          -21.986806869506836,
+          -37.06682205200195,
+          -15.870514869689941
+        ]
+      },
+      "Turret04__Root": {
+        "parent": "b_attach_04",
+        "head": [
+          -21.289676666259766,
+          -37.39262771606445,
+          -15.471624374389648
+        ]
+      },
+      "Turret04__Turret_04": {
+        "parent": "Turret04__Root",
+        "head": [
+          -21.477725982666016,
+          -37.376338958740234,
+          -15.524785041809082
+        ]
+      },
+      "Turret04__Barrel_04": {
+        "parent": "Turret04__Turret_04",
+        "head": [
+          -23.298513412475586,
+          -40.464385986328125,
+          -16.33369255065918
+        ]
+      },
+      "Turret04__shadow_barrel": {
+        "parent": "Turret04__Barrel_04",
+        "head": [
+          -23.298513412475586,
+          -40.464378356933594,
+          -16.33369255065918
+        ]
+      },
+      "Turret04__muzzleA_04": {
+        "parent": "Turret04__Barrel_04",
+        "head": [
+          -23.329456329345703,
+          -46.06319046020508,
+          -16.308034896850586
+        ]
+      },
+      "Turret04__shadow_turret": {
+        "parent": "Turret04__Turret_04",
+        "head": [
+          -21.47772789001465,
+          -37.3763427734375,
+          -15.524785041809082
+        ]
+      },
+      "b_attach_05": {
+        "parent": "Root",
+        "head": [
+          21.260910034179688,
+          -37.39262008666992,
+          -15.4795560836792
+        ]
+      },
+      "b_attach_05_blast": {
+        "parent": "b_attach_05",
+        "head": [
+          18.130611419677734,
+          -34.60330581665039,
+          -15.922513961791992
+        ]
+      },
+      "b_attach_05_emit_damage": {
+        "parent": "b_attach_05",
+        "head": [
+          28.097274780273438,
+          -37.33887481689453,
+          -22.810882568359375
+        ]
+      },
+      "P_ship_fire_small.007": {
+        "parent": "b_attach_05_emit_damage",
+        "head": [
+          22.019350051879883,
+          -37.06685256958008,
+          -15.870497703552246
+        ]
+      },
+      "Turret05__Root": {
+        "parent": "b_attach_05",
+        "head": [
+          21.260910034179688,
+          -37.392616271972656,
+          -15.479557991027832
+        ]
+      },
+      "Turret05__Turret_05": {
+        "parent": "Turret05__Root",
+        "head": [
+          21.427993774414062,
+          -37.376319885253906,
+          -15.580907821655273
+        ]
+      },
+      "Turret05__Barrel_05": {
+        "parent": "Turret05__Turret_05",
+        "head": [
+          23.261011123657227,
+          -40.464359283447266,
+          -16.361692428588867
+        ]
+      },
+      "Turret05__shadow_barrel": {
+        "parent": "Turret05__Barrel_05",
+        "head": [
+          23.26101303100586,
+          -40.46436309814453,
+          -16.361692428588867
+        ]
+      },
+      "Turret05__muzzleA_05": {
+        "parent": "Turret05__Barrel_05",
+        "head": [
+          23.26333236694336,
+          -46.063175201416016,
+          -16.401817321777344
+        ]
+      },
+      "Turret05__shadow_turret": {
+        "parent": "Turret05__Turret_05",
+        "head": [
+          21.42799186706543,
+          -37.37631607055664,
+          -15.580907821655273
+        ]
+      },
+      "b_attach_06": {
+        "parent": "Root",
+        "head": [
+          -27.105121612548828,
+          5.589471340179443,
+          8.076437950134277
+        ]
+      },
+      "b_attach_06_blast": {
+        "parent": "b_attach_06",
+        "head": [
+          -25.53141212463379,
+          5.692758083343506,
+          7.212091445922852
+        ]
+      },
+      "b_attach_06_emit_damage": {
+        "parent": "b_attach_06",
+        "head": [
+          -34.782840728759766,
+          5.658667087554932,
+          10.28382682800293
+        ]
+      },
+      "P_ship_fire_small.008": {
+        "parent": "b_attach_06_emit_damage",
+        "head": [
+          -28.242643356323242,
+          5.55273962020874,
+          8.910524368286133
+        ]
+      },
+      "Turret06__Root": {
+        "parent": "b_attach_06",
+        "head": [
+          -27.105121612548828,
+          5.589471817016602,
+          8.076437950134277
+        ]
+      },
+      "Turret06__Turret_06": {
+        "parent": "Turret06__Root",
+        "head": [
+          -27.17786979675293,
+          5.588979244232178,
+          8.115550994873047
+        ]
+      },
+      "Turret06__Barrel_06": {
+        "parent": "Turret06__Turret_06",
+        "head": [
+          -32.10162353515625,
+          8.136137962341309,
+          9.994488716125488
+        ]
+      },
+      "Turret06__MuzzleA_06": {
+        "parent": "Turret06__Barrel_06",
+        "head": [
+          -32.11935806274414,
+          -3.6114728450775146,
+          10.019192695617676
+        ]
+      },
+      "Turret06__shadow_barrel": {
+        "parent": "Turret06__Barrel_06",
+        "head": [
+          -32.101619720458984,
+          8.136138916015625,
+          9.994487762451172
+        ]
+      },
+      "Turret06__shadow_turret": {
+        "parent": "Turret06__Turret_06",
+        "head": [
+          -27.17786979675293,
+          5.588978290557861,
+          8.115551948547363
+        ]
+      },
+      "b_attach_07": {
+        "parent": "Root",
+        "head": [
+          26.7263126373291,
+          5.589471340179443,
+          7.925378799438477
+        ]
+      },
+      "b_attach_07_blast": {
+        "parent": "b_attach_07",
+        "head": [
+          25.42024040222168,
+          5.6927571296691895,
+          7.212095737457275
+        ]
+      },
+      "b_attach_07_emit_damage": {
+        "parent": "b_attach_07",
+        "head": [
+          34.1673469543457,
+          5.65866231918335,
+          10.283835411071777
+        ]
+      },
+      "P_ship_fire_small.009": {
+        "parent": "b_attach_07_emit_damage",
+        "head": [
+          28.182706832885742,
+          5.552725791931152,
+          8.910548210144043
+        ]
+      },
+      "Turret07__Root": {
+        "parent": "b_attach_07",
+        "head": [
+          26.7263126373291,
+          5.589470863342285,
+          7.925379276275635
+        ]
+      },
+      "Turret07__Turret_07": {
+        "parent": "Turret07__Root",
+        "head": [
+          26.806568145751953,
+          5.588977336883545,
+          7.944914817810059
+        ]
+      },
+      "Turret07__Barrel_07": {
+        "parent": "Turret07__Turret_07",
+        "head": [
+          31.72470474243164,
+          8.136137008666992,
+          9.838510513305664
+        ]
+      },
+      "Turret07__MuzzleA_07": {
+        "parent": "Turret07__Barrel_07",
+        "head": [
+          31.754404067993164,
+          -3.6114771366119385,
+          9.831995964050293
+        ]
+      },
+      "Turret07__shadow_barrel": {
+        "parent": "Turret07__Barrel_07",
+        "head": [
+          31.72470474243164,
+          8.136136054992676,
+          9.838510513305664
+        ]
+      },
+      "Turret07__shadow_turret": {
+        "parent": "Turret07__Turret_07",
+        "head": [
+          26.806568145751953,
+          5.588977813720703,
+          7.944914817810059
+        ]
+      },
+      "b_attach_09": {
+        "parent": "Root",
+        "head": [
+          22.192527770996094,
+          44.936370849609375,
+          7.892551422119141
+        ]
+      },
+      "b_attach_09_blast": {
+        "parent": "b_attach_09",
+        "head": [
+          23.175785064697266,
+          44.40871047973633,
+          7.351130962371826
+        ]
+      },
+      "b_attach_09_emit_damage": {
+        "parent": "b_attach_09",
+        "head": [
+          28.22127914428711,
+          44.80202102661133,
+          10.283824920654297
+        ]
+      },
+      "P_ship_fire_small.010": {
+        "parent": "b_attach_09_emit_damage",
+        "head": [
+          22.744794845581055,
+          44.76935577392578,
+          7.888307571411133
+        ]
+      },
+      "Turret09__Root": {
+        "parent": "b_attach_09",
+        "head": [
+          22.192527770996094,
+          44.93636703491211,
+          7.892551422119141
+        ]
+      },
+      "Turret09__Turret_09": {
+        "parent": "Turret09__Root",
+        "head": [
+          22.38462257385254,
+          44.95265579223633,
+          7.928448677062988
+        ]
+      },
+      "Turret09__Barrel_09": {
+        "parent": "Turret09__Turret_09",
+        "head": [
+          24.27123260498047,
+          41.86461639404297,
+          8.568979263305664
+        ]
+      },
+      "Turret09__shadow_barrel": {
+        "parent": "Turret09__Barrel_09",
+        "head": [
+          24.271230697631836,
+          41.86461639404297,
+          8.568977355957031
+        ]
+      },
+      "Turret09__muzzleA_09": {
+        "parent": "Turret09__Barrel_09",
+        "head": [
+          24.299720764160156,
+          36.265804290771484,
+          8.54062271118164
+        ]
+      },
+      "Turret09__shadow_turret": {
+        "parent": "Turret09__Turret_09",
+        "head": [
+          22.384620666503906,
+          44.95265579223633,
+          7.9284467697143555
+        ]
+      },
+      "b_attach_08": {
+        "parent": "Root",
+        "head": [
+          -22.189836502075195,
+          44.936370849609375,
+          7.893599033355713
+        ]
+      },
+      "b_attach_08_blast": {
+        "parent": "b_attach_08",
+        "head": [
+          -23.17578887939453,
+          44.37481689453125,
+          7.351131916046143
+        ]
+      },
+      "b_attach_08_emit_damage": {
+        "parent": "b_attach_08",
+        "head": [
+          -28.055965423583984,
+          45.264068603515625,
+          10.283830642700195
+        ]
+      },
+      "P_ship_fire_small.011": {
+        "parent": "b_attach_08_emit_damage",
+        "head": [
+          -22.582233428955078,
+          44.99730682373047,
+          7.964198589324951
+        ]
+      },
+      "Turret08__Root": {
+        "parent": "b_attach_08",
+        "head": [
+          -22.189836502075195,
+          44.936370849609375,
+          7.893599033355713
+        ]
+      },
+      "Turret08__Turret_08": {
+        "parent": "Turret08__Root",
+        "head": [
+          -22.36428451538086,
+          44.95266342163086,
+          7.981667995452881
+        ]
+      },
+      "Turret08__Barrel_08": {
+        "parent": "Turret08__Turret_08",
+        "head": [
+          -24.252395629882812,
+          41.864620208740234,
+          8.617765426635742
+        ]
+      },
+      "Turret08__shadow_barrel": {
+        "parent": "Turret08__Barrel_08",
+        "head": [
+          -24.252395629882812,
+          41.864620208740234,
+          8.617765426635742
+        ]
+      },
+      "Turret08__muzzleA_08": {
+        "parent": "Turret08__Barrel_08",
+        "head": [
+          -24.257823944091797,
+          36.26580810546875,
+          8.657593727111816
+        ]
+      },
+      "Turret08__shadow_turret": {
+        "parent": "Turret08__Turret_08",
+        "head": [
+          -22.36428451538086,
+          44.95266342163086,
+          7.981667518615723
+        ]
+      },
+      "b_attach_10": {
+        "parent": "Root",
+        "head": [
+          -22.210725784301758,
+          61.277854919433594,
+          7.860172271728516
+        ]
+      },
+      "b_attach_10_blast": {
+        "parent": "b_attach_10",
+        "head": [
+          -23.175796508789062,
+          61.09780502319336,
+          7.351133823394775
+        ]
+      },
+      "b_attach_10_emit_damage": {
+        "parent": "b_attach_10",
+        "head": [
+          -28.055967330932617,
+          61.32169723510742,
+          10.283831596374512
+        ]
+      },
+      "P_ship_fire_small.012": {
+        "parent": "b_attach_10_emit_damage",
+        "head": [
+          -22.582231521606445,
+          61.2890625,
+          7.888274192810059
+        ]
+      },
+      "Turret10__Root": {
+        "parent": "b_attach_10",
+        "head": [
+          -22.210725784301758,
+          61.27784729003906,
+          7.860172748565674
+        ]
+      },
+      "Turret10__Turret_10": {
+        "parent": "Turret10__Root",
+        "head": [
+          -22.382518768310547,
+          61.29413604736328,
+          7.953320026397705
+        ]
+      },
+      "Turret10__Barrel_10": {
+        "parent": "Turret10__Turret_10",
+        "head": [
+          -24.251169204711914,
+          58.20608901977539,
+          8.64450740814209
+        ]
+      },
+      "Turret10__shadow_barrel": {
+        "parent": "Turret10__Barrel_10",
+        "head": [
+          -24.25116729736328,
+          58.20608901977539,
+          8.644505500793457
+        ]
+      },
+      "Turret10__muzzleA_10": {
+        "parent": "Turret10__Barrel_10",
+        "head": [
+          -24.255428314208984,
+          52.60728073120117,
+          8.68447494506836
+        ]
+      },
+      "Turret10__shadow_turret": {
+        "parent": "Turret10__Turret_10",
+        "head": [
+          -22.382518768310547,
+          61.29412841796875,
+          7.953319549560547
+        ]
+      },
+      "Pptw_ptwsa": {
+        "parent": "Root",
+        "head": [
+          -28.524871826171875,
+          -94.43002319335938,
+          -15.192784309387207
+        ]
+      },
+      "Pptw_ptwsa.001": {
+        "parent": "Root",
+        "head": [
+          28.289531707763672,
+          -94.43002319335938,
+          -15.192784309387207
+        ]
+      },
+      "Pptw_ptwsa.002": {
+        "parent": "Root",
+        "head": [
+          28.289531707763672,
+          44.55430221557617,
+          -15.1928071975708
+        ]
+      },
+      "Pptw_ptwsa.003": {
+        "parent": "Root",
+        "head": [
+          -29.357025146484375,
+          44.55430221557617,
+          -15.1928071975708
+        ]
+      }
+    }
+  },
+  "materials": [
+    {
+      "name": "HeavyDreadnought_Surface00",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0,
+          0,
+          1,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "HeavyDreadnought_Surface01",
+      "shader": "MeshAlpha.fx",
+      "base": "HeavyDreadnought_W_blast00",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "BaseTexture": "W_blast00.dds"
+      }
+    },
+    {
+      "name": "HeavyDreadnought_Surface02",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "HeavyDreadnought_Surface03",
+      "shader": "MeshBumpColorize.fx",
+      "base": "HeavyDreadnought_ReV_dreadnought_heavy_cruiser",
+      "normal": "HeavyDreadnought_ReV_dreadnought_heavy_cruiser_b",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "Colorization": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "UVOffset": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "BaseTexture": "ReV_dreadnought_heavy_cruiser.dds",
+        "NormalTexture": "ReV_dreadnought_heavy_cruiser_b.dds"
+      }
+    }
+  ],
+  "bone_error": 0.000035092104898403354,
+  "geometry": [
+    {
+      "name": "Turret00__Turret_00",
+      "corners": 240,
+      "position_error": 0.0000457763671875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret00__Barrel_00",
+      "corners": 48,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret00__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret00__shadow_turret",
+      "corners": 900,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret01__Turret_01",
+      "corners": 240,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret01__Barrel_01",
+      "corners": 48,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret01__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret01__shadow_turret",
+      "corners": 900,
+      "position_error": 0.0000457763671875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret02__Turret_02",
+      "corners": 180,
+      "position_error": 0.0000171661376953125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret02__Barrel_02",
+      "corners": 456,
+      "position_error": 0.000019073486328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret02__shadow_barrel",
+      "corners": 1878,
+      "position_error": 0.00002288818359375,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret02__shadow_turret",
+      "corners": 804,
+      "position_error": 0.0000171661376953125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret03__Turret_03",
+      "corners": 180,
+      "position_error": 0.00002288818359375,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret03__Barrel_03",
+      "corners": 456,
+      "position_error": 0.000030517578125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret03__shadow_barrel",
+      "corners": 1878,
+      "position_error": 0.0000457763671875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret03__shadow_turret",
+      "corners": 804,
+      "position_error": 0.000030517578125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret04__Turret_04",
+      "corners": 240,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret04__Barrel_04",
+      "corners": 48,
+      "position_error": 0.000019073486328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret04__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.000011444091796875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret04__shadow_turret",
+      "corners": 900,
+      "position_error": 0.000019073486328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret05__Turret_05",
+      "corners": 240,
+      "position_error": 0.00000762939453125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret05__Barrel_05",
+      "corners": 48,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret05__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.0000171661376953125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret05__shadow_turret",
+      "corners": 900,
+      "position_error": 0.000019073486328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret06__Turret_06",
+      "corners": 180,
+      "position_error": 0.00000762939453125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret06__Barrel_06",
+      "corners": 456,
+      "position_error": 0.000011444091796875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret06__shadow_barrel",
+      "corners": 1878,
+      "position_error": 0.000011444091796875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret06__shadow_turret",
+      "corners": 804,
+      "position_error": 0.00000762939453125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret07__Turret_07",
+      "corners": 180,
+      "position_error": 0.00000286102294921875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret07__Barrel_07",
+      "corners": 456,
+      "position_error": 0.0000057220458984375,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret07__shadow_barrel",
+      "corners": 1878,
+      "position_error": 0.000003814697265625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret07__shadow_turret",
+      "corners": 804,
+      "position_error": 0.0000057220458984375,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret08__Turret_08",
+      "corners": 240,
+      "position_error": 0.0000095367431640625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret08__Barrel_08",
+      "corners": 48,
+      "position_error": 0.0000095367431640625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret08__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.00001049041748046875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret08__shadow_turret",
+      "corners": 900,
+      "position_error": 0.0000095367431640625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret09__Turret_09",
+      "corners": 240,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret09__Barrel_09",
+      "corners": 48,
+      "position_error": 0.00000858306884765625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret09__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.0000133514404296875,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret09__shadow_turret",
+      "corners": 900,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret10__Turret_10",
+      "corners": 240,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret10__Barrel_10",
+      "corners": 48,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret10__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.000019073486328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret10__shadow_turret",
+      "corners": 900,
+      "position_error": 0.00002288818359375,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret11__Turret_11",
+      "corners": 240,
+      "position_error": 0.00001239776611328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret11__Barrel_11",
+      "corners": 48,
+      "position_error": 0.00000762939453125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret11__shadow_barrel",
+      "corners": 174,
+      "position_error": 0.00000762939453125,
+      "uv_error": 0
+    },
+    {
+      "name": "Turret11__shadow_turret",
+      "corners": 900,
+      "position_error": 0.000019073486328125,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__COL",
+      "corners": 36,
+      "position_error": 0.0000324249267578125,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_11_blast",
+      "corners": 6,
+      "position_error": 0.000011444091796875,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__shadow",
+      "corners": 76221,
+      "position_error": 0.000032901763916015625,
+      "uv_error": 0.000006020069122314453
+    },
+    {
+      "name": "Hull__hull",
+      "corners": 19482,
+      "position_error": 0.00003314018249511719,
+      "uv_error": 0.000006020069122314453
+    },
+    {
+      "name": "Hull__b_attach_00_blast",
+      "corners": 6,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_01_blast",
+      "corners": 6,
+      "position_error": 0.00003147125244140625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_02_blast",
+      "corners": 150,
+      "position_error": 0.0000152587890625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_03_blast",
+      "corners": 150,
+      "position_error": 0.00002288818359375,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_04_blast",
+      "corners": 60,
+      "position_error": 0.0000133514404296875,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_05_blast",
+      "corners": 60,
+      "position_error": 0.0000095367431640625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_06_blast",
+      "corners": 150,
+      "position_error": 0.000006198883056640625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_07_blast",
+      "corners": 150,
+      "position_error": 0.000003337860107421875,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_09_blast",
+      "corners": 6,
+      "position_error": 0.0000095367431640625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_08_blast",
+      "corners": 6,
+      "position_error": 0.00000858306884765625,
+      "uv_error": 0
+    },
+    {
+      "name": "Hull__b_attach_10_blast",
+      "corners": 6,
+      "position_error": 0.000011682510375976562,
+      "uv_error": 0
+    }
+  ],
+  "importer_cleanup_errors": [
+    "All imports encountered the documented cross-scene helper cleanup error"
+  ]
+}

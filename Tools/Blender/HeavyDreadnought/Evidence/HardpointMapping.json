@@ -1,0 +1,42 @@
+[
+  {
+    "id": 0,
+    "type": 0,
+    "source": "Turret06 muzzle"
+  },
+  {
+    "id": 1,
+    "type": 0,
+    "source": "Turret07 muzzle"
+  },
+  {
+    "id": 2,
+    "type": 0,
+    "source": "Turret04 muzzle"
+  },
+  {
+    "id": 3,
+    "type": 0,
+    "source": "Turret05 muzzle"
+  },
+  {
+    "id": 4,
+    "type": 0,
+    "source": "Turret00 muzzle"
+  },
+  {
+    "id": 5,
+    "type": 0,
+    "source": "Turret01 muzzle"
+  },
+  {
+    "id": 6,
+    "type": 2,
+    "source": "nearest upper hull surface"
+  },
+  {
+    "id": 7,
+    "type": 1,
+    "source": "b_engines"
+  }
+]

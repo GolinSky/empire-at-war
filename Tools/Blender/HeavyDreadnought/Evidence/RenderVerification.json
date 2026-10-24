@@ -1,0 +1,34 @@
+{
+  "Team": {
+    "all_eight_distinct": true,
+    "blue_green_changed_pixels": 1725,
+    "alpha_bounds": [
+      33,
+      63,
+      455,
+      411
+    ]
+  },
+  "WreckTeam": {
+    "all_eight_distinct": true,
+    "blue_green_changed_pixels": 7460,
+    "alpha_bounds": [
+      33,
+      63,
+      455,
+      411
+    ]
+  },
+  "icon": {
+    "size": [
+      512,
+      512
+    ],
+    "alpha_bounds": [
+      33,
+      63,
+      455,
+      411
+    ]
+  }
+}
