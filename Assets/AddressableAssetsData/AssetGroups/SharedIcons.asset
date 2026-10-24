@@ -1,0 +1,503 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: SharedIcons
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: SharedIcons
+  m_GUID: ff17cff815132e6499ce3b6bc6bb17ed
+  m_SerializeEntries:
+  - m_GUID: 003f227a5109a5745879774b3be70886
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/HeavyDreadnoughtIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0148d1e047b1c024494b31fb02e655ed
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/DroidBomberIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 026b6c5cca68d9b49918db3c7c0c0a5f
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MalevolenceIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0884e62f660956f45a6dc8ef863d13cc
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/NebulaIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 106240983beaf6b4e87c2b4ed41fd259
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/AllegianceIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 129f6cb74bcbfd146abb8dcd483d2864
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/EnhancedEnginesIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14a57369a6b0b6447917d19a5a8114c8
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/ARC170Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1583a68acc7d9f9488c947c5470db384
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/LiberatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19c7fd1609d6359439e7fb94cbbc0065
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/RaiderCorvetteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ef035bcae2fad145ab8ce8fa5776004
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/IncreasedProductionIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2556b3b94de26234e872c9e6cc31a730
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/StealthCorvetteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27b2ca6d030fce64fa71f572cb392d6d
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/QuasarFireIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28476024afa7c5f47bd010e6e4460dc4
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ThrantaIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c7347a89cf4cc4448b118d2c696cc1b
+    m_Address: Assets/Art/Textures/Ui/Icons/Ui/LevelUp.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ce1aa3deeeb0a541bb85a35a38c9390
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/AcclamatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2dc8ad80492076941aae35ba3ce7c2aa
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBruteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e60ab884151e074caf67bb570ba533b
+    m_Address: Assets/Art/Textures/Ui/SuperWeapons/IonCannonIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e88496bcd539524c9cf43ae79b88a88
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CD273Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3896a253ad3c5024b8b7260fb0c214a9
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d8c2c187dbb7c149b2b91ea81cc45fd
+    m_Address: Assets/Art/Textures/Ui/Icons/MiniMap/SpaceStationWhite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ebf9b17840b8ee4daae27c4f063d4af
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/TIEAvengerIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f8628327c2f7ab4d905d41954f545b1
+    m_Address: Assets/Art/Textures/Ui/SuperWeapons/PlasmaCannonIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41429e00e6d997249adaf10dc6d292a6
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Delta7Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 467453f64c3f87547aa904ce3fda10b9
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ImperatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 469dd9f50be001b43938f09f7cdbcb4f
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC30cIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46e861879378cc441bb7260e899b7559
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/EnhancedShieldsIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47bb7927ce6b11a40a4930c0e6e95426
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/V19TorrentIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 480ea67ea8c1d1444b4eae17e11f53e8
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ProcursatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 524d65b06058f0a428ee3d2a9b9b78e9
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/AWingIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52757c449fe40a046b09a009258d41dd
+    m_Address: Assets/Art/Materials/Ui/SquadronIcon.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5491174c7918a494cb8e2898869953fd
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipAbilities/InvulnerabilityIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 552ac5636e4f65c44994f1337d051b8a
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5555e458b6d140f9aeeee10a133cb94b
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/IncreasedStationIncomeIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c33cff1e56f4c246956a7183bb94b02
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f8bc4a82cc113244b19a13b489bb0f0
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CaptorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60d91c69afc54ad4fa9b45f6990ff8af
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ProvidenceIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60f458712418dd74393a49293c347c81
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/BothanAssaultCruiserIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6475693b4e9a23943aa6f6d43d698437
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64e95301a26b2ca498bc930f9eae7727
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEInterceptorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 653b257a6a126934d96618b6c8874dae
+    m_Address: Assets/Art/Textures/Ui/Icons/Ui/AotrEmpressDefensePlatformIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66c1ea9cf4e49774d99aff299b8237ca
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/DauntlessIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 677a9fb4a7566e14d932893ee85f3357
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/RothanaIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68a48dec07691c448a7ed517f75c5a1a
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianCorvetteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69c29902694322d4aacf1446e4b7f487
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/C9979Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6db48aa8ac87e0e4faf79f796d5b3f37
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/VWingIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6deef1e660f9c3a41b4d343f91418382
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73509b3f4bebe5542ba69d62230fff68
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 771dbf8529c7a394b864ffcb0bd556d7
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MandatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 793233063a2c3d241ab5dbc0af1a35d4
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c8d76c748665eb4f8c008d83b753703
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEFighterIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e5117ae6840c8d4a9252e2b589de44f
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CR70Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80ed7da538f88cc41a288cdfeecf753a
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC75ProfundityIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8128fcc8b8e454e47ab592309d37208e
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/LucrehulkIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83b847ad5990b534c940f6bcc1abfbf1
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/NTB630Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84c93b9211168f64bb4f04d91c77bf0a
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/ImprovedWeaponsIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8759435b430b0024899c5095289c56b5
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/PeltaIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8aec8fa8b8581064dbf2721ad11585bb
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/YWingIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ee3ff50731492c43b11469ff405c5d6
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ResoluteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 937b502e2d2d8684ca9920ab2b5d9a0d
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 988c54fd851290641a5fe8c93eff1927
+    m_Address: Assets/Art/Textures/Ui/Icons/Ui/AotrGolanIIIDefensePlatformIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e99f16d754a042a3b1b0f2d25045f52
+    m_Address: Assets/Art/Textures/Ui/Icons/Ui/DefensePlatformIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fcb02cde6a89f84a91b532e31af44f4
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/VultureIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a18de04525e87254ebd6a359e39a58ba
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/TartanIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5d07dd53c680c6408f3e98f4ce75765
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/NebulonBIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a601634e409db8d46bc55ff17c780a02
+    m_Address: Assets/Art/Materials/Ui/SquadronFrame.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abf3987a701188747b639680e9203c3e
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MunificentIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae063a7eec8a5af4696394f297681415
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/AssaultFrigateMkIIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae699c8c0850c9245b84a34c5fb8d767
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af913e547595237409f81ee21d82b267
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/InvincibleIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b73f9718576eb694bb3badc9b47afc43
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/ReinforcedStructuresIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8f66d736a9c0a841b8957320119ca55
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b95f55f2e2f204f42a94f0c44c5baa85
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MonCalCruiserIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c09ba886d721a5b48ae81ff6b7ddf9bb
+    m_Address: Assets/Art/Textures/Ui/SuperWeapons/HypervelocityGunIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c204e9888dc32854493ab00345e38bf4
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/PatrolFrigateIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c54029d425acba74c9c5d702e49710b6
+    m_Address: Assets/Art/Textures/Ui/Icons/Mining/MiningIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c75079b4b4d09794b8a289fefb0d3b53
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipAbilities/BoostShieldPowerIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7ed8d3ae8343e24a8ef2eca2a1a0e8f
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CentaxIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1df96d57bfbbb049952971439112bf5
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC80IndependenceIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d612310c959d0bb4d93c64dba1f5b3f4
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ImperialVenatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d899a22bd6d129e46a5aed14df2b81fa
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VenatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d92e0b25eb3e0d94ab8f1713e2ec1b84
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/TitanIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db3ba52ed373c8242844c936a9497696
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC50Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcd7ea16edf5bfd4ca9c2f1c95c1fda4
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcdfa3aa3e1fabb44b5e337f8aa8370f
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/RecusantIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e54026c071416a845b2d23e814c1e8d5
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensImperialCruiserIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea53c8c126651444aaedb6d6761e02b3
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/XWingIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebec4f97ee2c2454883747a62531d2c9
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ExecutorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee8c2cac9ed92d8499f6b865153f7ff3
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CarrackIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0344b89ac6897448a6494a4e3c4353e
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/AcclamatorAssaultIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0a9b1821246f484dbc3d7fcaa7828d1
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/TectorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f71730a251297854b97875858cdb2249
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/HomeOneIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7655a1be55b2a74aa984b640ec46f5d
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/DispatcherIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb4484b8a521b8944bfb7f11e310e2f0
+    m_Address: Assets/Art/Textures/Ui/UnitSelectionRing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd2f2005d81ff1545af20e1feec39c0e
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/ImprovedDefensesIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe1f61f0ff4f03a47a7a2a16340c510d
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianBattlecruiserIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe8c1e85b0bf680479b5946516c3041f
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEPunisherIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4796b0955821fc24fae369b3f9c7a121, type: 2}
+    - {fileID: 11400000, guid: 7ea6e246d1ad7924aa6c83ddd73a866e, type: 2}

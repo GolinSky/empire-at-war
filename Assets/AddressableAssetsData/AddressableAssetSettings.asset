@@ -63,14 +63,23 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: 9823472dcb24f3946bb09510d7ac1f4d, type: 2}
   - {fileID: 11400000, guid: 3a319b8636de06644b4f883096c70f53, type: 2}
+  - {fileID: 11400000, guid: fea45eb3df135a0439f5e2cbd76aeaa0, type: 2}
+  - {fileID: 11400000, guid: a327803e1f77d1b43885ce1ead9357d2, type: 2}
+  - {fileID: 11400000, guid: 49e92e2e243a7824eb77c9e896bd5b07, type: 2}
   - {fileID: 11400000, guid: 6c8264d391dd61741a71579d930d1d16, type: 2}
+  - {fileID: 11400000, guid: c40cde3c3ea6046499158d5f7cf4fc11, type: 2}
   - {fileID: 11400000, guid: 17482c57eb406414ba3ecd154917ef2a, type: 2}
   - {fileID: 11400000, guid: 69231825f2e75af4e9fd95b740f41b53, type: 2}
   - {fileID: 11400000, guid: 9a8f6da0e1b9da847b633703315085b3, type: 2}
+  - {fileID: 11400000, guid: 2fb04dae129e6174f881f0baf86b0049, type: 2}
   - {fileID: 11400000, guid: 42160ab7f7e28c74cb88bd781a75ffee, type: 2}
+  - {fileID: 11400000, guid: a49c572dabe3ec145b7d4813e6495591, type: 2}
   - {fileID: 11400000, guid: 9c71a107867fe5b43bdb412240236182, type: 2}
   - {fileID: 11400000, guid: 32461b8e25b2de54088abd16d13c9065, type: 2}
+  - {fileID: 11400000, guid: 692b58dbd0494de49b165cd71ecf1b0a, type: 2}
   - {fileID: 11400000, guid: 5820e32f78c1202449e9821754780e8c, type: 2}
+  - {fileID: 11400000, guid: 66da0a9184837824c93979a17bd1989d, type: 2}
+  - {fileID: 11400000, guid: 50f4bc1009abe644293f79eda3e002fd, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles

@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
-        m_Texture: {fileID: 2800000, guid: 5c167aa70c67aef4a80c2a0a1302dcec, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1c3043971e0d4c9419263ce9bc1858e9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []

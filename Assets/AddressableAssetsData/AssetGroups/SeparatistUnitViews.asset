@@ -1,0 +1,213 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: SeparatistUnitViews
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: SeparatistUnitViews
+  m_GUID: 4f7bb5b3f893f334bacb8070affac4db
+  m_SerializeEntries:
+  - m_GUID: 0383251f7e62fbd4f96c39ef5c59df42
+    m_Address: PatrolFrigateWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04e6fbce8504ce24592a0a82933cc165
+    m_Address: CaptorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07fbb46098b845b4f847f4511e25b732
+    m_Address: MunificentReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ba88225dba572b4194964454002a11e
+    m_Address: RecusantShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c9100437434e874fbbc39ea7716be81
+    m_Address: MunificentShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1707aa5c38f75584798f5dec8f24ea9b
+    m_Address: InvincibleReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 196b90063d94ba14f8b483717596ec85
+    m_Address: LucrehulkWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21d3c8b2d3c013d4ab0c615706ecf2ce
+    m_Address: VultureSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a19f6a12786e2645b1df9a43989cc40
+    m_Address: CaptorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c860664286ce464e830a24e1585937e
+    m_Address: RecusantReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dfea5679919bb64381bed73074104ef
+    m_Address: MalevolenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f4e660fc02c98e47a1538f74fc39ef0
+    m_Address: DroidBomberSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56bb18bf97f2ecb48acecbafea14543a
+    m_Address: C9979ShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 574735b0ac155f84eb262252b44b59cc
+    m_Address: RecusantWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69246d4d74c60084c85360472a5ac691
+    m_Address: C9979ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d020e23c659ac141ab82d2f25751fa2
+    m_Address: ProvidenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76b110f4b976620489e2f84386ec5661
+    m_Address: DispatcherWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d2c4f08668df824f957173b1a21ddfd
+    m_Address: VultureReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80484c47f0fde8944b6852594a403c69
+    m_Address: ProvidenceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8858efb503bde2f45878dcacfb31c2b0
+    m_Address: MalevolenceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9571c4609d1e6624faa6c4025de1f938
+    m_Address: LucrehulkReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 964d5c815b53d474aad71a194295d7a1
+    m_Address: Belbullab22SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0f0f836d24c5aa49996d4a12fef975e
+    m_Address: Belbullab22ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6bf908313ebc194bbd84a33f6988828
+    m_Address: LucrehulkShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0fbad4b04cbcd54cb40d77de3043a3b
+    m_Address: InvincibleShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4d889903f7d4224198e7a03e31d86af
+    m_Address: PatrolFrigateShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6d2b0e5c4399a7479336653b08cfad5
+    m_Address: MunificentWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c21ef5f0cf4422b40984dc091bb8444f
+    m_Address: DispatcherReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5b90b6f94c283d4e88b94f677eae054
+    m_Address: CaptorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c72a6cc0e3fc5e748b1117e99581c872
+    m_Address: ProvidenceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf56893a070520344bf92d738403ce68
+    m_Address: DispatcherShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d24918522da16f44da44f990ffa07168
+    m_Address: InvincibleWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da5c998e5e80ccb4db0951c5b73b208e
+    m_Address: MalevolenceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
+    m_Address: SeparatistSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecc0036839be2c6449761272343154b5
+    m_Address: C9979WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f695dba9f0edae94da3dd0979e830f47
+    m_Address: DroidBomberReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8953771aa6fc3e4eaf0d10232ff03b9
+    m_Address: PatrolFrigateReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe0d9a26fd0817246965c2cbc7f443c7
+    m_Address: SeparatistSpaceStationWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 451602ad3457d3d4bb72efa60d041e30, type: 2}
+    - {fileID: 11400000, guid: 617e4b75964299a43a3adea0facfbff2, type: 2}

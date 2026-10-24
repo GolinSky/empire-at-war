@@ -154,7 +154,10 @@
   - Audit 2026-10-24: 962 duplicated assets / 1.31 GiB redundant payload (Model+View 852), 128 identical-source sets, View 1.63 GiB; ReinforcementData hard-refs 78 previews; mapping rebuild drops `VenatorIIShipView`, SO keying overwrites variants.
   - **Phases 0–1 done 2026-10-24**: fresh layout baseline 979 dup assets / 1,430,171,798 B (Model+View 864), Analyze 5,272/25/64 recorded; mapping rebuild keeps aliases (`VenatorIIShipView`, `MenuUi`), Add Selected keys by entry address and refuses foreign-GUID overwrites; 8/8 EditMode tests pass.
   - **Phase 2 done 2026-10-24**: previews are AssetReferences in `View`, preloaded only for human/hosted factions; duplicated assets 979 → 115, redundant payload 1.43 GB → 135 MB, Model bundle 447 → 166 MB. Related EditMode tests pass; in-game placement check pending (user).
-  - **Next**: Phase 3 — explicit ownership for remaining Data+Model / Data+Model+View shared art.
+  - **Phases 3–4 done 2026-10-24**: shared ownership eliminates remaining 115 duplicated assets / 135,383,837 redundant bytes; 72 identical-import sets consolidated (262 files, 275,429,420 source bytes), 56 variant sets queued. Content bundles 1,951,810,468 → 1,532,590,578 B; zero duplicated payload. 394 AssetReferences resolve; VenatorII alias intact.
+  - **Phases 5–6 done 2026-10-24**: four faction view/preview/wreck groups; final Windows build 18 bundles / 1,534,762,737 B / zero duplicated payload (417,047,731 B lower vs Phase 2). Split adds 2.17 MB bundles and 18.17 KB catalog; faction closures 120–795 MB vs 1.38 GB unsplit. Audio closure 185 KB; no ship-art dependency. Fresh Analyze: no bundle duplicates, 20 Resources + 47 scene overlaps documented intentionally. Compile/Console clean, mixer regression 1/1 passed.
+  - **Verified 2026-10-24**: final layout 0 duplicates; 0 references to the 262 deleted GUIDs; 0 duplicate addresses; VenatorII alias intact. Phases 3–6 + music fix still uncommitted. Storage: 94 % textures; 173 uncompressed 2048² textures = 3.87 GB of 6.46 GB payload → Desktop Asset Compression plan.
+  - **Remaining (user)**: packed-player placement, master mute/music/SFX/ducking, early-spawn sync-load timing; no agent Play Mode. Plan stays active for these acceptance gates.
 
 ### Refactoring
 

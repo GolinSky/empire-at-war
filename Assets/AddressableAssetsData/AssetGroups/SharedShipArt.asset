@@ -1,0 +1,338 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: SharedShipArt
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: SharedShipArt
+  m_GUID: 2bdcd462733c338489949996349fcef9
+  m_SerializeEntries:
+  - m_GUID: 0058a324ddae89b4db4e6ed955c1e481
+    m_Address: Assets/Art/Models/SpaceStations/VanillaMiningFacilities/MiningFacility.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 020d19df50eb622479e633b10984c507
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot06.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09bb11b4693a41e45b79c96db77542f9
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot00_MetallicSmoothness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ce636d6aa0b64342b39358299188bce
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e9d5a909a1f7e84882a534d0d11e49f
+    m_Address: Packages/com.unity.render-pipelines.universal/Shaders/AutodeskInteractive/AutodeskInteractive.shadergraph
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13ea34e93bd44a640bd40e5a57bfdded
+    m_Address: Assets/Art/Materials/Models/Other/SciFiLamps/SciFiLamps_Shell.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 173e6cc3091e4254f8d951654bbcc315
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_APBase_B_bump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18ffd495bc1380344a9bf7f95c40add3
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot03.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b618f25af74e8147959eda0e1f37e00
+    m_Address: Assets/Art/Textures/Models/Other/SciFiLamps/SciFiLamps_Parts01_Occlusion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1fdc445096fc6ad4c817ea44be1efba1
+    m_Address: Assets/Art/Textures/Models/EmpireShips/ISDI/ISDIPart09_Hull_1_B.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23bdf9718ff056a4cbeaa06ee2268bb2
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot03.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27642f16edd62ff45971ae877711e753
+    m_Address: Assets/Art/Textures/Models/Other/SciFiLamps/SciFiLamps_Parts01_MetallicSmoothness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ad7de451e7f25746ab9d2a09056ae27
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_CMC22Mining_BC.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e63fe7cf85bc0f4399eabf56b815911
+    m_Address: Assets/Art/Materials/Models/Other/SciFiLamps/SciFiLamps_Glass.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31321ba15b8f8eb4c954353edc038b1d
+    m_Address: Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 372216f6c2d74c34fbdbaf82c1dc5594
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot02.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ff3e986004d0904f866f0fa692ebd70
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Executor/Executor_Empire_Death_Star_Hull_TeamMask.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 495e07f227ad0e44fa38090addcf3dba
+    m_Address: Assets/Art/Models/Shields/VictoryShipViewShield.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4977b2be150a30f4188cb3abc3c4f24f
+    m_Address: Assets/Art/Textures/Models/SpaceStations/AsteroidMiningFacility/AsteroidMiningFacility_Glass_AOSource.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b66eb03338ea9f41beb5d78c45e5bb5
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_APBase_A.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4bff71eef7808d146adf79a505aa6d21
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_W_blast00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53b5ac3690a110f47ab06c604774947c
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_APBase_A_Bump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ef07c46408a06c449b25e24fa561db8
+    m_Address: Assets/Art/Textures/Models/Asteroids/Asteroid01/Asteroid_01_Surface_Roughness.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 652eac79233ab4e4fbb2d722ab490154
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot06.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66dadf91af11c864a85cb4430c6ed02e
+    m_Address: Assets/Art/Materials/Models/Other/SciFiLamps/SciFiLamps_Parts01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a4ea75b200f2044eb4dd5ad49707b17
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot02.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71f489082c288894ab0d090ba2d5002e
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot05.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7435b8d242ce90b4cbe816ab0a4d9e77
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_1_TeamMask.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c5ff2ec6d387b841b0c0e1c4ddb62b2
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot00.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81d28558bb88cdd4eb318a4e9f79f8eb
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_Superstructure_Albedo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83440f925d2ba034b91ef9233864d425
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot00.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83dae2a954867c0428604f2ee944a920
+    m_Address: Assets/Art/Textures/Models/Other/SciFiLamps/SciFiLamps_Metal_Normal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84f97c52d0c82794ba6e3d32832d7a14
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_W_GlowRange.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90a975d91ef82d24181500248d6efea4
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_Girder2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9132d75d3d5baaf4988e85d2cecbd7b9
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NV_Girders00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 920384c1e9c1806458b9ba681ffaa341
+    m_Address: Assets/Art/Textures/Models/Other/SciFiLamps/SciFiLamps_Metal_Albedo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93ff57f333ccb994b9567337e2f079dc
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot07.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94f7abf409a705844b6fbf70d412a0c3
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Executor/Executor_Engine_Exhaust_B_Normal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 972ca9cfd2c7806499d54b8627d940d5
+    m_Address: Assets/Art/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacility.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a122eefdf3515c4689a98144aa6b17e
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_w_asteroid00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9dfc825aed78fcd4ba02077103263b40
+    m_Address: Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Unlit-Default.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0dce26211446a144a47c62524c07a21
+    m_Address: Assets/Art/Textures/Models/Other/SciFiLamps/SciFiLamps_Parts02_MetallicSmoothness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6640eda7e991a34f9ea12ff9a1a4799
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_APBase_B.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7bfe042f9d6d7146901e23d3018eaa4
+    m_Address: Assets/Art/Textures/Models/Asteroids/Asteroid01/Asteroid_01_Surface_AO.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8119784ae6ec8f4b8c85373be9f09c0
+    m_Address: Assets/Art/Models/Other/SciFiLamps/SciFiLamps.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b041ff5bd0ea52d4698252b564a5e837
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot09.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b51325fe0becb4f4fa476a7a7a0a34b5
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Tartan/Tartan_Hull_Superstructure_B_Normal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6c5f1633d7a5264b92dd4663980bc97
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_w_asteroid00_bc.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8ec22f9e5648444aa12fda6efcdf004
+    m_Address: Assets/Art/Textures/Models/RebellionShips/HomeOne/HomeOne_Shield_Albedo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3aebd803bb947b4f974546a5a9fcf79
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot08.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9b5f90c7a6bce6468521fbecd6476f2
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot05.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccb5f78fc0357d94b83b04d9673fd8d6
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot04.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce397ccb3fb4c924bb416beadf7f5901
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_Empire_Annihilator_Ball_TeamMask.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dac2f163298fee041bdfbf0167c30260
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_AMining_Rock.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfa5f456ed069094684e79c7f326bcfc
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Allegiance/Allegiance_Nb_shieldbase_Blue_Albedo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2bc1bd240feda04fba668079b6e72fc
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/MiningFacilitySlot01.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e373a80869c1a004183ed00483538b15
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_NB_CMC22Mining.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e515ad1a2419061429e1e980041b8a8e
+    m_Address: Assets/Art/Textures/Models/SpaceStations/VanillaMiningFacilities/MiningFacilities_RI_Pilot_goggles.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e769f7b0f7d1da542a4f36fe6d1b2774
+    m_Address: Assets/Art/Textures/Models/Other/SciFiLamps/SciFiLamps_Metal_Gloss.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec39e541fbe3c794889115459f704f2f
+    m_Address: Assets/Art/Textures/Models/EmpireShips/AcclamatorAssault/AcclamatorAssault_P_ISD_ENG_Albedo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f03c33103f6e4d846abc1c00d0638cd3
+    m_Address: Assets/Art/Textures/Models/EmpireShips/Titan/Titan_Lights_Grid_Orange_Desaturated_Dense_Additive.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8dfc9e359e839f4ab2cf54a177ed5f1
+    m_Address: Assets/Art/Materials/Models/Other/SciFiLamps/SciFiLamps_Parts02.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe83da3a180987549be475cc8faa46f7
+    m_Address: Assets/Art/Materials/Models/SpaceStations/VanillaMiningFacilities/BattleMiningFacilitySlot04.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5b33472ac601eaa4192e53bc7b4dff42, type: 2}
+    - {fileID: 11400000, guid: a4df6986889046a46b5fea5c3fa7d8c4, type: 2}

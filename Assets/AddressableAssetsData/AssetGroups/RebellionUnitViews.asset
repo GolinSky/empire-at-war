@@ -1,0 +1,313 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RebellionUnitViews
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RebellionUnitViews
+  m_GUID: d903bea84963c5a48817530e906a12ef
+  m_SerializeEntries:
+  - m_GUID: 03937783f671e3344ab62c666dbc3c2b
+    m_Address: EnduranceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ac08f12d8ee11342a737e2233105f18
+    m_Address: HomeOneReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bee19e4a0c88324f8cfcc9eb46f4470
+    m_Address: CD273WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0df0b5b98a9519c4c9ef112b2c4d2221
+    m_Address: MC50ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11bd8066669d41940b4052c494bb8d3c
+    m_Address: YWingBomberReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13b95f5491d4d064cb67648cf70fa056
+    m_Address: CD273ShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 146201b15b2d45247a07d88878115eb5
+    m_Address: DauntlessReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20cbb251c16df5249b6a784e77107a52
+    m_Address: MC75ProfundityShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24b90477440a9e44c8e15df587b3cc01
+    m_Address: NebulonBShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 321af9a415a384045a4e8a7ce25163bd
+    m_Address: MonCalCruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3471504197b5da542ad0dc223160c94d
+    m_Address: AssaultFrigateMkIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42819208abec00040b8eca095061bd3c
+    m_Address: MC30cShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48216c7b6520f3844a065086aca850ea
+    m_Address: LiberatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48fd84d5dbcc40b428deaa95429c4734
+    m_Address: NebulonBWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 532a740159cffbd46a317fa64a34529e
+    m_Address: NebulaReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 549969f5bcce41644a1cabc6434f1d8b
+    m_Address: NebulaShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54d09cd5e31fdef4690255567dcdbea9
+    m_Address: XWingSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 594f8542138301e4da495f689bc4a8cf
+    m_Address: QuasarFireReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5eeef7b8019ede841a32f2904e7c207d
+    m_Address: MC80IndependenceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fd52b6d50f8a7c4bbcdab52c3de99bf
+    m_Address: MC80IndependenceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61da10ce71bd48e49a0d7f7e48117a91
+    m_Address: MC80IndependenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6388ee7138aa57f46886c1c7f956b5d9
+    m_Address: MC75ProfundityWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d44f10b3ab53e947a8cc7b8987fc7f4
+    m_Address: AWingSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71148c82aa37cf94b94b631bd2b8a2df
+    m_Address: CorellianCorvetteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76a0857667702a5499ce4c857ebf3a29
+    m_Address: DauntlessWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81cbdd3371dcba04caf371c90d70967e
+    m_Address: CorellianCorvetteWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 869c8abfc930a964892aef3ee3c9f4a6
+    m_Address: EnduranceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 870b0e4f67a6e994c8121130474d0fbb
+    m_Address: HomeOneShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8888b5efaabc0404bb04e740e25c8372
+    m_Address: LiberatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89c4c6800d7ce9041bb471549c2379b9
+    m_Address: AssaultFrigateMkIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89ff134f310a9a4498ac3743b1524c26
+    m_Address: NebulonBReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c94249786d23114d98ed5599f73b143
+    m_Address: BothanAssaultCruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d45756028571d94aa6d0e89487ebd52
+    m_Address: MC75ProfundityReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d9399b59c088904495f676c8fd57cf7
+    m_Address: EnduranceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ff700428d31c8f408467005d351c20b
+    m_Address: MC50WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 997565e14375a324d91a2e56614879d4
+    m_Address: YWingBomberSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cabbe1dbbeea7d4f862b6bb2e32984a
+    m_Address: CorellianBattlecruiserWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a52a69e614891c740a760ba341f58a3b
+    m_Address: BothanAssaultCruiserWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5aba968bba177044a0a0be73f0751eb
+    m_Address: DauntlessShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a67c0d57d6d830f4f939d619fab31aea
+    m_Address: CorellianCorvetteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abebbdc804678f442885c7c817a9e1f6
+    m_Address: AWingReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acbcaf58aad9d4c42877e0317c620335
+    m_Address: MC30cWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2a23c8d1bcc8fc42a98fa3c746e664f
+    m_Address: AssaultFrigateMkIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b32b5a7adb5158d43b8e207f1a0d5e4a
+    m_Address: MonCalCruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6ba67b098b3be441868dfeacab31dd7
+    m_Address: BothanAssaultCruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7356f5f98a621d4a9ed0c4665792b56
+    m_Address: CorellianBattlecruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2d14274a52f5114e92215c1a06979e5
+    m_Address: CorellianBattlecruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d360139ffc7612e4198fd9f2f4765116
+    m_Address: MC30cReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4d5676863bcd6e47b181519d0705acc
+    m_Address: NebulaWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d720a68f8d256d04886c0e72d81f05ff
+    m_Address: MC50ShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7c14c6e2e6a4f6449378312ad8c1c7b
+    m_Address: QuasarFireShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2a7e956a844bfe44bba36a3b9853b81
+    m_Address: MonCalCruiserWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e46f524705dd7a343b31e72f14991a1d
+    m_Address: QuasarFireWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3df4761073611f49a060f2219950bcf
+    m_Address: CD273ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f837d798fc6ea1642957908e4a30c189
+    m_Address: XWingReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: faba6bf59f4a70a40b4c9279df4347fa
+    m_Address: LiberatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcc3274cbaf8b934aad8621c60702a8f
+    m_Address: RebellionSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcf89bb599b6ed44b9c260bed720ecd4
+    m_Address: HomeOneWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3e5fb431a1ae9f34d9ac3ae739286a2e, type: 2}
+    - {fileID: 11400000, guid: dfc00a4889742994ba62d81388ada658, type: 2}

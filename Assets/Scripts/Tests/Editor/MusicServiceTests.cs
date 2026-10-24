@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
@@ -67,6 +69,38 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Constructor_RoutesMusicToInjectedMixerInsteadOfPrefabMixer()
+        {
+            AudioMixer mixer = AssetDatabase.LoadAssetAtPath<AudioMixer>("Assets/Audio/AudioMixer.mixer");
+            string mixerPath = AssetDatabase.GenerateUniqueAssetPath("Assets/Sandbox/MusicServiceTestMixer.mixer");
+            GameObject template = new GameObject("Bundled music source template");
+            AudioSource source = template.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            try
+            {
+                Assert.That(AssetDatabase.CopyAsset("Assets/Audio/AudioMixer.mixer", mixerPath), Is.True);
+                AssetDatabase.SaveAssets();
+                AudioMixer bundledMixer = AssetDatabase.LoadAssetAtPath<AudioMixer>(mixerPath);
+                source.outputAudioMixerGroup = bundledMixer.FindMatchingGroups("Music").Single();
+                Assert.That(source.outputAudioMixerGroup.audioMixer, Is.Not.SameAs(mixer));
+
+                _service = new MusicService(null, new SourceAssets(source), null, new RecordingAudioService(), mixer);
+                _source = (AudioSource)typeof(MusicService).GetField("_audioSource", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .GetValue(_service);
+
+                Assert.That(_source.outputAudioMixerGroup, Is.SameAs(mixer.FindMatchingGroups("Music").Single()));
+                Assert.That(_source.outputAudioMixerGroup.audioMixer, Is.SameAs(mixer));
+                Assert.That(source.outputAudioMixerGroup.audioMixer, Is.SameAs(bundledMixer));
+            }
+            finally
+            {
+                Object.DestroyImmediate(template);
+                AssetDatabase.DeleteAsset(mixerPath);
+                AssetDatabase.SaveAssets();
+            }
+        }
+
+        [Test]
         public void Tick_DoesNotReplaceClipWhilePlaybackIsWaitingForAudioData()
         {
             AudioClip importedClip = AssetDatabase.LoadAssetAtPath<AudioClip>(
@@ -118,7 +152,8 @@ namespace EmpireAtWar.Tests.Editor
             _audio = new RecordingAudioService { RealPlayback = realPlayback };
             try
             {
-                _service = new MusicService(null, new SourceAssets(source), null, _audio);
+                _service = new MusicService(null, new SourceAssets(source), null, _audio,
+                    AssetDatabase.LoadAssetAtPath<AudioMixer>("Assets/Audio/AudioMixer.mixer"));
             }
             finally
             {

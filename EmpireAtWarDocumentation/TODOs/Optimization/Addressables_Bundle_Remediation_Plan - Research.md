@@ -1,6 +1,6 @@
 ---
 category: Optimization
-status: todo
+status: in-progress
 created: 2026-10-24
 ---
 # Addressables Audit 2026-10-24 — Findings
@@ -66,3 +66,16 @@ created: 2026-10-24
 - `GetMappingKey`: `asset is ScriptableObject → asset.GetType().Name` confirmed.
 - `ShipFactory.Create`: `Assets.LoadComponent<Ship>(shipType + "ShipView")` confirmed.
 - `CachedAssetService.cs:32`: `if (!handle.IsDone) handle.WaitForCompletion();` confirmed.
+
+## Implementation — 2026-10-24
+- Phases 1–2 live source verified before continuation; aliases retained and previews use AssetReferences.
+- Phase 3 explicit ownership: 115 remaining duplicated assets / 135,383,837 redundant bytes → zero; 1,951,810,468 → 1,927,606,772 bundle bytes.
+- Phase 4: 72 identical-import sets; 1,438 references remapped in 763 assets; 262 files / 275,429,420 source bytes removed through Unity; 56 importer-variant sets preserved. Bundle bytes → 1,532,590,578; zero stale GUIDs and zero duplicated payload.
+- Phase 5: combined per-faction main/wreck/preview groups chosen after dry runs (90 shared promotions vs 2,924 for separate preview groups). 213 entries moved; 14 common entries retain View. Existing addresses/labels preserved.
+- Final Windows layout `buildlayout_2026.10.24.18.35.02.json`: 579 explicit assets; 18 bundles / 1,534,762,737 B; zero duplicated assets/objects/payload. Catalog 117,720 B (+18,170 vs unsplit); bundle overhead +2,172,159 B vs Phase 4.
+- Bundle closure bytes: Empire 795,307,346; Rebellion 423,450,976; Republic 152,693,051; Separatist 120,012,344; common View 89,733,815. Previous unsplit View 1,380,274,052. These are dependency closure sizes, not runtime residency measurements.
+- Music fan-out corrected: mixer and shared audio-view entry belong to Audio, not SharedShipArt; final Audio closure 185,416 B. MusicService explicitly binds cloned source output to injected bootstrap mixer Music group. Independent mixer-copy regression 1/1 passed.
+- Fresh Analyze (no fixes): no bundle dependency duplicates; 20 Resources + 47 scene results classified in `Logs/AddressablesAudit/2026-10-24-phase6/current-overlap-decisions.csv`. Shader variant/player review remains deliberate; Resources fallbacks retained.
+- Verification: compilation clean, zero new import/serialization/Console errors, no Play Mode, 394 serialized AssetReferences resolve, no duplicate addresses, VenatorII alias intact; independent source/deletion/review-queue checks pass.
+- Evidence: `Logs/AddressablesAudit/2026-10-24-phase{3,4,5,5-final,6}/`; final matching catalog/layout and verification in `2026-10-24-phase5-final/`. Unrelated concurrent test/render-quality changes left untouched.
+- Remaining user acceptance: packed-player preview placement, master mute/music/SFX/ducking, early-spawn synchronous-load timing. Main plan remains active.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
@@ -6,6 +7,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
+using UnityEngine.Audio;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
@@ -33,13 +35,15 @@ namespace EmpireAtWar.Services.Audio
         private bool _started;
         private bool _fadingOut;
 
-        public MusicService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver, IAudioService audioService)
+        public MusicService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver,
+            IAudioService audioService, AudioMixer mixer)
         {
             _sceneService = sceneService;
             _gameModelObserver = gameModelObserver;
             _audioService = audioService;
             _musicAudioData = assetService.Load<MusicAudioData>(nameof(MusicAudioData));
             _audioSource = Object.Instantiate(assetService.LoadComponent<AudioSource>(SOURCE_PATH));
+            _audioSource.outputAudioMixerGroup = mixer.FindMatchingGroups("Music").Single();
             _audioSource.ignoreListenerPause = true;
             _audioSource.priority = 16;
             _volume = _audioSource.volume;

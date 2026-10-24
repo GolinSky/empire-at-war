@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41d73a8198e6a0248a72f9f830bd9ec8
+    m_Address: Assets/Prefabs/View/ViewComponents/AudioViewComponent.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6a07f8cdfb8c2934dbfe5fa1326268c4
     m_Address: MusicSource
     m_ReadOnly: 0
@@ -32,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d105f3706327c274db845257a59e3bdf
     m_Address: SHIP_ALARM
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e118c1010075e5e4f8338d3298c20b50
+    m_Address: Assets/Audio/AudioMixer.mixer
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

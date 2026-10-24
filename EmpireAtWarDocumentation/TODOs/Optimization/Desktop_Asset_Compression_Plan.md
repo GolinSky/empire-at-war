@@ -113,6 +113,7 @@ created: 2026-10-11
 - Remaining: unprocessed categories, matched loading/memory/DSP captures, listening/first-play/loop/crossfade/battle acceptance, macOS build support and actual supported-Mac validation. Plan remains active; Windows results do not complete desktop acceptance.
 
 ## TODO
+- Addressables audit handoff 2026-10-24: `Logs/AddressablesAudit/2026-10-24-phase4/desktop-uncompressed-textures.json` records 818 effective uncompressed automatic texture importers (771 in the historical layout). Source: `Logs/AddressablesAudit/2026-10-24/texture-import-settings.json`. Phase 4 consolidation removes duplicate paths; resolve canonical replacements through its `canonical-mapping.json` before applying compression. No importer settings changed by bundle remediation.
 - [x] Record preliminary metadata inventory and moderate category policy.
 - [x] Inventory effective Standalone import settings, declared dependencies, dependent atlases and review exceptions.
 - [x] Capture Windows build baseline/comparison and headless startup; record Windows GPU/API.

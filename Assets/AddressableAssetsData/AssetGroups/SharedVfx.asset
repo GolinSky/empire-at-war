@@ -1,0 +1,143 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: SharedVfx
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: SharedVfx
+  m_GUID: 35c5a9c8f6130be4a8e7abda47ffcc68
+  m_SerializeEntries:
+  - m_GUID: 00262b626be919a43b3a2be9e355c1d7
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Textures/smokeSheet04.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13b57cb2bd9f3444d9e0df8c7d7fddbb
+    m_Address: Assets/Art/Materials/Vfx/LaserProjectile.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15c052d12952b984fb0656e16e9975ac
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Materials/matppfx_smoke07.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 220fbf0c868de4b4d942a05d6a33d43c
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Textures/explosionSheet08.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23702bc0e5303b740b61f1b451630b85
+    m_Address: Assets/Prefabs/Vfx/Combat/WeaponHardPoint.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c128729f6f75ab4884d434397264f74
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Materials/matppfx_default.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 352d1200573a78d44aa21acf46e36671
+    m_Address: Assets/Art/Materials/Vfx/IonArcGlow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4298a8c614f304d2eab7d05856f874bb
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Textures/smokeSheet02.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 488f2cb48ae5fc54c9b2b9e7dba2614e
+    m_Address: Assets/Art/Materials/Vfx/Projectile.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a28dce88e7c1ee4a97e1b87b8b54550
+    m_Address: Assets/Art/Materials/Vfx/Hologram.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 538aea15efdeb0d41a5a9b46ede4b2e5
+    m_Address: Assets/Art/Materials/Vfx/MuzzleFlash.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7213d591eba8748f989e99b0eb98ea47
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Materials/matppfx_smoke02.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a726420710d0494f9443b7a0a08d30a
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Materials/matppfx_explosion09.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88152589cf3add6439cccf8982699e94
+    m_Address: Assets/Prefabs/Light/Point Light.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c4ff248983300645b2cc553764a063d
+    m_Address: Assets/Art/Materials/Vfx/DualProjectile.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95b0920aa75e7ca4d8ae0c4d15b826c6
+    m_Address: Assets/Art/Materials/Vfx/IonField.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95ddb46ba62b3544bbfda394a9a3040b
+    m_Address: Assets/Art/Materials/Vfx/ShipShield.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95f35aa44de2c334a8a9d2abd88322aa
+    m_Address: Assets/Art/Textures/Vfx/BlasterBolt.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5d43b0a4ff2cdf4a8f3ce07acd28310
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Textures/default.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3d81a9d8b8a74466ab1af457d2e9f1f
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Textures/smokeSheet03.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7fe6d7f6f17c4543908e5b79e8fb4af
+    m_Address: Assets/ThirdParty/ParticleProFX/Content/Textures/fireSheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e22dd2524a2ced64b850f380b8488317
+    m_Address: Assets/Art/Materials/Vfx/UnitOrderLine.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f49dbb9fe33e5814f8900d78fb93f2e9
+    m_Address: Assets/Prefabs/Vfx/Combat/IonStunField.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f72c9b041839f7549b306c7f3e0db949
+    m_Address: Assets/Art/Materials/Vfx/Engines.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 59fc904db96428f40aca8698a3fbb40c, type: 2}
+    - {fileID: 11400000, guid: 0ebadb98679707e4abbd48a0560a4052, type: 2}

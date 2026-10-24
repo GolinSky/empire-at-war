@@ -29,7 +29,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: a38e632998f46464c943338c66c84923, type: 3}
+        m_Texture: {fileID: 2800000, guid: 284cbcbecef9ab0478346399d3168586, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
-        m_Texture: {fileID: 2800000, guid: 123a8ba878132de4993cea19ba3e7e55, type: 3}
+        m_Texture: {fileID: 2800000, guid: 051ac994d45c6a54f85d67f327d9a272, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []

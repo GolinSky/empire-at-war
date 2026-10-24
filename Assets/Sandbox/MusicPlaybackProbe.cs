@@ -20,7 +20,8 @@ public sealed class MusicPlaybackProbe : MonoBehaviour
     {
         Application.runInBackground = true;
         Application.targetFrameRate = 60;
-        _service = new MusicService(null, new ProbeAssets(sourceTemplate, musicData), null, new AudioService());
+        _service = new MusicService(null, new ProbeAssets(sourceTemplate, musicData), null, new AudioService(),
+            sourceTemplate.outputAudioMixerGroup.audioMixer);
         _source = (AudioSource)typeof(MusicService).GetField("_audioSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_service);
         SetClip(clips[0]);
         typeof(MusicService).GetMethod("PlayNext", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(_service, null);

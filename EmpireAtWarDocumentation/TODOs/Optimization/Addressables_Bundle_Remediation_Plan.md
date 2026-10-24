@@ -81,7 +81,9 @@ created: 2026-10-24
 1. From the fresh layout, list implicit assets shared by ≥2 bundles (Model+View 852 assets / 1,220 MiB historically).
 2. Assign explicit ownership (e.g. shared-art group by faction/ship family) so one bundle holds each GUID; control dependency fan-out.
 3. Rebuild → duplicated-object count and redundant bytes vs baseline.
-- [ ] Duplicate payload reduced and measured.
+- [x] Duplicate payload reduced and measured (2026-10-24).
+- Build `buildlayout_2026.10.24.17.52.39.json` succeeded in 698 s: **115 → 0 duplicated assets**, **216 → 0 objects**, **135,383,837 → 0 B redundant payload**. Total bundle bytes **1,951,810,468 → 1,927,606,772**; 9 → 13 bundles, 489 explicit assets. Data 16,702,846 → 1,710,775 B; Model 166,120,482 → 146,411,813 B. Matching catalog/layout saved under phase3 evidence.
+- Execution 2026-10-24: 115 remaining implicit duplicate GUIDs assigned through Addressables APIs to `SharedIcons`, `SharedVfx`, `SharedFonts`, `SharedShaders`; schemas copied from `View` (CRC policy preserved). Phase 3 build passed; measurements above. Evidence: `Logs/AddressablesAudit/2026-10-24-phase3/`.
 
 ### Phase 4 — Identical source files (A2)
 - 128 identical-content sets, 647 files, 519 redundant (741 MB source); 72 sets also have identical `.meta` minus GUID. Inventory: `Logs/AddressablesAudit/2026-10-24/identical-source-assets.json`.
@@ -89,25 +91,52 @@ created: 2026-10-24
 2. Pick canonical asset per set; remap material/prefab references via Unity tooling; delete redundant files + metas.
 3. Sets with importer differences → review queue; keep until visual review.
 4. Hand texture path list (818 uncompressed effective desktop importers) to Desktop Asset Compression plan.
-- [ ] Identical-import sets consolidated; variants queued.
+- [x] Identical-import sets consolidated; variants queued (2026-10-24).
+- 72 identical-import sets consolidated: **262 redundant files / 275,429,420 source bytes** removed through `AssetDatabase.DeleteAsset`; 763 material/audio-data assets remapped through `SerializedObject`. Canonical paths/GUIDs retained. Independent verification: 72 canonical hashes/GUIDs valid, zero stale GUID references, all 56 importer-variant sets preserved. Evidence: `Logs/AddressablesAudit/2026-10-24-phase4/{canonical-mapping.json,importer-review-queue.json,verification-result.json}`. Content build succeeded in 547 s: **1,927,606,772 → 1,532,590,578 bundle bytes** (395,016,194 B lower); 13 bundles, zero duplicated assets/objects/payload. Matching catalog/layout saved in phase4 evidence.
+- Compression handoff: 818 effective uncompressed automatic importer paths (771 historical packed paths) exported to `desktop-uncompressed-textures.json`; Desktop Asset Compression plan updated. Resolve removed paths through the canonical mapping.
 
 ### Phase 5 — Bundle lifetime split (A4)
 - View 1.63 GiB (146 entries), Model 428 MiB (30 entries), all `PackTogether`.
 1. Only after Phases 2–4: split by measured load/lifetime (shared art, per-faction previews, per-faction views).
 2. Measure bundle count/catalog overhead; no blanket `PackSeparately`.
-- [ ] Split applied and measured.
+- [x] Split applied and measured (2026-10-24).
+- Final Windows build `buildlayout_2026.10.24.18.35.02.json` passed: **18 bundles / 1,534,762,737 B / zero duplicated assets, objects or payload**. Split overhead vs Phase 4: +5 bundles / +2,172,159 B; catalog 99,550 → 117,720 B (+18,170 B). Total vs Phase 2: **417,047,731 B lower**.
+- Faction bundle closures: Empire 795,307,346 B; Rebellion 423,450,976; Republic 152,693,051; Separatist 120,012,344. Previous unsplit View closure 1,380,274,052 B. Common View closure 89,733,815 B. These are bundle closures, not measured runtime memory.
+- Audio dependencies own the existing `Audio` group; closure **185,416 B**, no shared ship-art fan-out. Final evidence: `Logs/AddressablesAudit/2026-10-24-phase5-final/` (matching catalog/layout, address validation, verification result).
+- Applied 2026-10-24: 213 main/wreck/preview entries moved to `EmpireUnitViews`, `RepublicUnitViews`, `SeparatistUnitViews`, `RebellionUnitViews`; 14 common entries retain `View`. 90 implicit shared assets promoted (final owners: 63 shared ship art, 2 Audio, 11 shaders, 10 VFX, 2 fonts, 2 icons). Existing addresses/labels preserved; new schemas copy `View`, PackTogether, CRC off. 579 entries; 394 serialized AssetReferences resolve, no duplicate addresses, VenatorII alias intact. First split build passed (394 s): zero duplicates, 18 bundles, 1,534,917,629 B (+2,327,051 B vs unsplit), catalog 99,550 → 117,732 B. Shared mixer/audio-view dependencies exposed a 29.8 MB music closure; moved those 2 entries to existing `Audio` group to remove ship-art fan-out. Final confirmation build: `Logs/AddressablesAudit/2026-10-24-phase5-final/`.
+- Dry-run decision 2026-10-24: keep preview/main/wreck entries together in four faction `UnitViews` groups; common facility/platform views remain `View`, global catalogs remain `Model`. Separate preview groups would require 2,924 promoted dependencies; combined faction groups need 90. Previews already depend on full unit views, so the extra separation offers no art isolation. Evidence: `Logs/AddressablesAudit/2026-10-24-phase5/`.
 
 ### Phase 6 — Built-in / Resources overlap (A5)
 - Battle scene ∩ bundles: 53 paths; MainMenu: 1; Resources: 5 (ExplosionVfx, Point Light, alarm/hyperspace clips, mining-facility art, AudioMixer, TMP fonts).
 1. Per asset choose one route: load via Addressables reference, or exclude from bundles.
 2. Review TMP Resources fallbacks deliberately; shaders need variant-level review.
-- [ ] Overlaps resolved or documented as intentional.
+- [x] Overlaps resolved or documented as intentional (2026-10-24).
+- Fresh Analyze (no fixes): duplicate bundle dependencies **No issues found**; Resources **20** results; scene **47** results. All 67 overlap rows classified in `Logs/AddressablesAudit/2026-10-24-phase6/current-overlap-decisions.csv`. Built-in asteroid/map art, effects/SFX, TMP defaults/fallbacks and shader variants retain deliberate routes; canonical music mixer binding tested.
+- Final compile clean; no new import/serialization/Console errors; Editor not in Play Mode. 394 serialized AssetReferences resolve, zero duplicate addresses, VenatorII alias preserved. Music mixer identity EditMode regression 1/1 passed. User runtime gates remain Phase 7.
+- Review 2026-10-24: all 74 historical scene/Resources path pairs classified in `Logs/AddressablesAudit/2026-10-24-phase6/overlap-decisions.csv`; TMP fallbacks, map-site art, battle effects/SFX and shader path overlaps retained deliberately. Fresh Analyze captured above.
 
 ### Phase 7 — Runtime risks (user-run checks)
 - **Mixer identity (P1 candidate)**: `ProjectContext` injects built-in `AudioMixer` into `AudioSettingsApplier`; Addressable `MusicSource.prefab` references a bundled copy. Check: packed player, master exposed param → silence; music must mute. Fix: one canonical mixer, bind outputs explicitly.
 - **Sync load**: `CachedAssetService.Load` calls `WaitForCompletion` if warmup (`BattleAssetWarmup`, 4 in flight after `Running`) hasn't finished; early reinforcement/`ShipSpawnClearance` can hit it. Check in packed build; coordinate with Loading Freeze plan.
-- [ ] Mixer identity verified/fixed.
+- [ ] Mixer identity verified/fixed in packed player (user).
+- Code fix 2026-10-24: `MusicService` injects bootstrap `AudioMixer` and rebinds instantiated music output to its `Music` group. True independent-mixer EditMode regression test **1/1 passed**; compile clean. Bundled dormant `AudioDialogSource` mixer route retained intentionally; no live consumer. Packed-player master mute/music/SFX/ducking check remains required.
 - [ ] Early-spawn sync-load hitch measured.
+
+### Independent verification — 2026-10-24
+- Final layout `buildlayout_2026.10.24.18.35.02.json` re-analysed: no error, 579 explicit, 18 bundles, **1,534,762,737 B**, duplicated assets/objects/payload **0/0/0**. Bundle files on disk match (18:35).
+- Phase 4: 262 deleted files (247 png, 2 jpg, 13 wav) + 262 metas; scan of 6,954 Assets/ProjectSettings text files → **0 references** to the 262 deleted GUIDs.
+- Groups: 579 entries, **0 duplicate addresses**; 4 faction `UnitViews` + 5 `Shared*` groups present; `VenatorIIShipView` alias → `d9d6eb346b0497649911724f20048daf` intact.
+- Phase 7 code: `MusicService` takes bootstrap `AudioMixer`, sets `outputAudioMixerGroup = FindMatchingGroups("Music").Single()`; `MusicServiceTests` updated.
+- Not re-run: EditMode tests/Analyze (Editor was in Play Mode). Phases 3–6 + Phase 7 code are **uncommitted** (776 M / 524 D / 54 ??). Files changed after final build: URP pipeline assets, `TartanTests`, `BalanceCompareSelectionTests` (not bundle content).
+- Remaining: Phase 7 packed-player mixer check and early-spawn sync-load measurement (user) → plan stays active.
+
+### Storage breakdown — final build
+- On disk 1.53 GB (LZ4) ← **6,464 MB uncompressed payload**. Textures **6,100 MB / 94.4 %** (908); meshes 204 MB (3.1 %); audio 144 MB (2.2 %); everything else < 0.5 %.
+- **173 textures at 22.4 MB each = 3,870 MB** (60 % of payload): 2048² RGBA32 with mips, i.e. no GPU compression (`textureCompression: 0` default, Standalone not overridden). 168/173 already in the Desktop Asset Compression handoff list.
+- Other classes: 174 × 5–10 MB (DXT5/BC7, 981 MB), 44 × 10–20 MB (705 MB), 69 × 2–5 MB (DXT1, 254 MB), 433 < 2 MB (286 MB).
+- By bundle (uncompressed): EmpireUnitViews 3,682 MB, RebellionUnitViews 1,559, RepublicUnitViews 372, SeparatistUnitViews 217, View 176, SharedShipArt 163.
+- By ship texture folder: ISDI 1,064 MB (87 tex: 37 uncompressed + 38 DXT5), Liberator 508, Allegiance 445, Tector 433, Titan 412, Procursator 319, Endurance 281, Tartan 261, ISDIIReplacement 242.
+- Next lever is texture GPU compression (owned by [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression]]): 22.4 → 5.6 MB (BC7/DXT5) per texture ≈ −2.9 GB uncompressed payload and VRAM; disk saving needs a rebuild to measure. Evidence: `Logs/AddressablesAudit/2026-10-24-verify/storage-breakdown.txt`.
 
 ### Hygiene (optional)
 - 3 empty groups, orphan legacy `PlayerDataGroupSchema`, stale Android/iOS content-state files. Remove only with user approval.

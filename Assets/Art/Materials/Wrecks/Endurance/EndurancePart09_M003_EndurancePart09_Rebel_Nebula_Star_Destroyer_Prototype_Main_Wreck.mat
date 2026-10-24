@@ -25,11 +25,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 0b89f0956a9596a4bacd182536da0903, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2d9eaef04d9779d44b338a62bd655511, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: a9d83aa7c5513884da9ec405ed4522ee, type: 3}
+        m_Texture: {fileID: 2800000, guid: c0e6ef4150e0d514399f1f9b4feb2c77, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
-        m_Texture: {fileID: 2800000, guid: 0cc7a7573f47a3046a929e20aa9ef466, type: 3}
+        m_Texture: {fileID: 2800000, guid: 825dcfaf6f560f44b8c10c3e63472df5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []

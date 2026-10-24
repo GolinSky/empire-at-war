@@ -1,0 +1,313 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: EmpireUnitViews
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: EmpireUnitViews
+  m_GUID: 72b6d4725de52d444945008a262b0f51
+  m_SerializeEntries:
+  - m_GUID: 010561448aafee74bb1d92d47bb33f3b
+    m_Address: TIEAvengerSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06217750e90873e4d8dc19239726b5da
+    m_Address: ExecutorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06e2a4dcc11428545b8a89cf9eeb8b9a
+    m_Address: TartanReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13dc1d8a01ccc98449120683c92e2ea9
+    m_Address: ISDIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ba45b2a950a69f4c92297129f1a201c
+    m_Address: TIEPunisherReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20fe28ad29a934843a29c7561fbad84a
+    m_Address: VictoryIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27733b82b0779be4c8f62e4c82b10539
+    m_Address: TIEFighterSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c220f025d702824bb0ded6ab9bec89d
+    m_Address: TIEInterceptorSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f201f3499a8bfc4ba07003aa8343973
+    m_Address: ArquitensImperialCruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31a950c34955e204ca8e7103b1c1dd00
+    m_Address: ISDIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 358f7b4f3f4a567488ba6794911790f2
+    m_Address: TectorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a8f3ac05bbf5c9439c8a0b7fe8c9bc2
+    m_Address: VictoryIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b5b857ce337c8b45908f08d39688c71
+    m_Address: TartanWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cfd8751f2bd7cb498be770139212eda
+    m_Address: TitanReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 445c2beb9f82afd44bd708db7c0bb6fd
+    m_Address: ArquitensImperialCruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c69bd973395e5f42b3f05ad23653ca9
+    m_Address: AllegianceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4eb26463e615c41438db9dc147f24e46
+    m_Address: ProcursatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51b0b437cc9c1df4c9b28cfbecda0512
+    m_Address: ArquitensImperialCruiserWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52f523efadc8d8c41b886053168da5a3
+    m_Address: VictoryIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5abd78ead6c104d4193f2e5fe839d045
+    m_Address: EmpireSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f832ce046ca99d46a544f0b95b19e1c
+    m_Address: ExecutorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d3fc6fd8c8219942a1473edcc762f67
+    m_Address: ISDIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fd0cc7d74bff17459c45351f3dfa248
+    m_Address: TIEPunisherSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71636a83fa02a684f8f5b9d119219573
+    m_Address: TIEBruteSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75a7c88a8126b2641abbf6fc340f3b44
+    m_Address: ImperialVenatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f428c58ff383cf47b93c8ab3f55b2f5
+    m_Address: ISDIIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 814cc8ad470584b428d077524557f0e9
+    m_Address: ProcursatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91a5b56b15ee0b94a81a4db37877f9ac
+    m_Address: TIEBruteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94df7a44d71ef0e4b915ff9f06a1d110
+    m_Address: TIEBomberReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97247dfc7a0427349ae77747b06a11e8
+    m_Address: TitanWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9732c4b3a17ae73479b54c62db673005
+    m_Address: TitanShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97d22c97a3a205549808c07e00bc0ae5
+    m_Address: RaiderCorvetteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9999fe9ea994831489d55c3032c87350
+    m_Address: ProcursatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a18a912eef2f13e4cb56ec916afc1e10
+    m_Address: AcclamatorAssaultShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a24b89bdbc2900d4a9c609c0dfbe29ed
+    m_Address: AcclamatorAssaultReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a796cdb49bcc72145a58a9e9c820cd57
+    m_Address: VictoryIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acbada99ccf162c4cb4f265697f1ba94
+    m_Address: AllegianceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ada404c36f4a00645b4b938e1346fe99
+    m_Address: ISDIIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b31bfbf5f42265c4e912a5b25ed4ca6a
+    m_Address: AllegianceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b43babda8bfeb71458bf14202a25837f
+    m_Address: TIEInterceptorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1a184ac793b4274f9e3b204be5d5057
+    m_Address: AcclamatorAssaultWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5a735dafc563ad45b16c92aeabb3b3f
+    m_Address: ISDIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c97f32ff465f67a4dba5ba237bab67e3
+    m_Address: TectorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d05bbbe65c3c92943a28db2ed2799f7c
+    m_Address: TIEBomberSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2b3b3c5b7ae13940b236dd2b5db4341
+    m_Address: RaiderCorvetteWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d350016d0347cd346baf0a1fce39145c
+    m_Address: VictoryIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d47b48cf040c4cd4c8d53712ed54596b
+    m_Address: ImperialVenatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4b0ee7a90423404a9df04366d853336
+    m_Address: TIEAvengerReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0e072e0469e12d47ab5ce6beb081473
+    m_Address: TectorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e209ed36eac16ad4a97f514857839ca6
+    m_Address: ImperialVenatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5d34a50aa6564d49b82a6560699bee8
+    m_Address: ExecutorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f24f9301127af634ab504e1c96f3d728
+    m_Address: ISDIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2d6fc19fa4e3ba4cb9b44711e09dc60
+    m_Address: RaiderCorvetteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4383e14607b20346b0b482906dbd074
+    m_Address: TartanShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f519b0e4e4b4e864eb47d5a125297426
+    m_Address: ISDIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fafbf467e9fb7e24abf014a67b14fe2f
+    m_Address: ISDIIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc97fc77b1ffb1f4fbd742bce3df14cb
+    m_Address: TIEFighterReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdb7705059dca344ca02fe61ff047b08
+    m_Address: VictoryIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d01499a85a10f5347b65cacb584d16f6, type: 2}
+    - {fileID: 11400000, guid: e02ef745f2fd832468c0676ce7d46cf6, type: 2}
