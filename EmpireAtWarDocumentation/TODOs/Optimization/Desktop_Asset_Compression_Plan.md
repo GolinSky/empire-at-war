@@ -123,7 +123,8 @@ created: 2026-10-11
 
 ## TODO
 - [x] Pass 2: compress remaining shipped model textures (color, masks, normals) with screening; reconcile importers; rebuild and measure (2026-10-24).
-- [ ] Decide mesh normal gate (2° → 3° admits 443 more Low models) and in-game check.
+- [x] Mesh normal gate loosened to 3° (user decision, 2026-10-24): 435/449 passed; 4 Rebel station source FBX restored to Off (baked `*Hull.asset` exact-copy contract in `StationLevelViewTests`). 478 models at Low; mesh payload 203 → 104 MB; bundles 1,025,898,126 → **989,838,944 B** (`buildlayout_2026.10.24.19.42.45.json`), 0 duplicates. 13 geometry/texture test classes pass, Console clean.
+- [ ] In-game visual acceptance of compressed textures and meshes (user).
 - Addressables audit handoff 2026-10-24: `Logs/AddressablesAudit/2026-10-24-phase4/desktop-uncompressed-textures.json` records 818 effective uncompressed automatic texture importers (771 in the historical layout). Source: `Logs/AddressablesAudit/2026-10-24/texture-import-settings.json`. Phase 4 consolidation removes duplicate paths; resolve canonical replacements through its `canonical-mapping.json` before applying compression. No importer settings changed by bundle remediation.
 - [x] Record preliminary metadata inventory and moderate category policy.
 - [x] Inventory effective Standalone import settings, declared dependencies, dependent atlases and review exceptions.

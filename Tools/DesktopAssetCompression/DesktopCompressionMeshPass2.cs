@@ -9,19 +9,19 @@ using UnityEngine;
 
 // Mesh pass (2026-10-24): shipped models with mesh compression Off, excluding MeshCollider sources and blend-shape
 // meshes. Tries Medium, then Low, and restores Off when neither passes. Gate per model: same mesh/vertex counts,
-// max position error <= 0.05 % of the model bounds diagonal, max UV error <= 1/4096, max normal error <= 2 degrees.
-// Results append to output/DesktopAssetCompression/Pass2/Mesh<offset>.json.
+// max position error <= 0.05 % of the model bounds diagonal, max UV error <= 1/4096, max normal error <= 3 degrees (2 until the 2026-10-24 rerun).
+// Results append to output/DesktopAssetCompression/Pass2/MeshGate3_<offset>.json.
 public static class DesktopCompressionMeshPass2
 {
     private const string OUTPUT = "output/DesktopAssetCompression";
     private const double MAX_RELATIVE_POSITION_ERROR = 0.0005;
     private const double MAX_UV_ERROR = 1.0 / 4096;
-    private const double MAX_NORMAL_ANGLE = 2;
+    private const double MAX_NORMAL_ANGLE = 3;
 
     public static string Main(int offset, int count)
     {
         JArray candidates = Candidates();
-        string resultPath = OUTPUT + "/Pass2/Mesh" + offset + ".json";
+        string resultPath = OUTPUT + "/Pass2/MeshGate3_" + offset + ".json";
         JArray results = new JArray();
         foreach (JToken record in candidates.Skip(offset).Take(count))
         {

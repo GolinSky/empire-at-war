@@ -123,5 +123,41 @@
     "duplicatedAssets": 0
   },
   "tests": "AllegianceShip 12, CisStationImport 12, ExecutorShip 8, ProcursatorShip 6, StationLevelView 60, Tartan 9, TitanShip 12, UnitHelperMesh 1, UnitSpawnView 3, UnitWreckAssetDependency 2 (group assertion updated), WreckCutPlan 3, WreckMaterialSync 124: all pass",
-  "pending": "in-game visual acceptance; matched memory/loading capture; macOS"
+  "pending": "in-game visual acceptance; matched memory/loading capture; macOS",
+  "meshesGate3": {
+    "date": "2026-10-24",
+    "gate": "normal <= 3deg (other limits unchanged)",
+    "candidates": 449,
+    "passed": 435,
+    "revertedForBakedCopyContract": [
+      "Assets/Art/Models/SpaceStations/RebelSpaceStation/Level1/RebelSpaceStationLevel1.fbx",
+      "Assets/Art/Models/SpaceStations/RebelSpaceStation/Level3/RebelSpaceStationLevel3.fbx",
+      "Assets/Art/Models/SpaceStations/RebelSpaceStation/Level4/RebelSpaceStationLevel4.fbx",
+      "Assets/Art/Models/SpaceStations/RebelSpaceStation/Level5/RebelSpaceStationLevel5.fbx"
+    ],
+    "restored": [
+      "Assets/Art/Models/EmpireShips/Allegiance/AllegianceTurret03.fbx",
+      "Assets/Art/Models/EmpireShips/Allegiance/AllegianceTurret24.fbx",
+      "Assets/Art/Models/EmpireShips/Allegiance/AllegianceTurret43.fbx",
+      "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx",
+      "Assets/Art/Models/EmpireShips/RaiderCorvette/RaiderCorvette.fbx",
+      "Assets/Art/Models/EmpireShips/Titan/TitanPart04.fbx",
+      "Assets/Art/Models/EmpireShips/Titan/TitanPart40.fbx",
+      "Assets/Art/Models/RebellionShips/Liberator/LiberatorPart11.fbx",
+      "Assets/Art/Models/RepublicShips/HeavyDreadnought/HeavyDreadnought.fbx",
+      "Assets/Art/Models/RepublicShips/StealthCorvette/StealthCorvette.fbx",
+      "Assets/Art/Models/SpaceStations/RebelSpaceStation/Attachments/RB_Station_04_HP04_SHG.fbx",
+      "Assets/Art/Models/SpaceStations/RebelSpaceStation/Level2/RebelSpaceStationLevel2.fbx",
+      "Assets/Art/Models/SpaceStations/SpaceStationModular/SpaceStationModular.fbx",
+      "Assets/Art/Models/EmpireShips/ImperialVenator/ImperialVenator_Heavy_TL_01.fbx"
+    ],
+    "totalLowAfter": 478
+  },
+  "buildAfterMeshGate3": {
+    "layout": "buildlayout_2026.10.24.19.42.45.json",
+    "bundleBytes": 989838944,
+    "meshPayloadMB": "203 -> 104",
+    "duplicatedAssets": 0
+  },
+  "testsAfterMeshGate3": "Same 12 classes pass; StationLevelView 60/60 after restoring 4 Rebel station source FBX (DomeRepair asserts the baked Hull.asset copies equal their FBX source)"
 }

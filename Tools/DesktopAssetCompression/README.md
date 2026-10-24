@@ -40,6 +40,7 @@ unity command run_script --file Tools/DesktopAssetCompression/DesktopCompression
 
 - Fresh inventory, then `DesktopCompressionTexturePass2.cs` over every shipped, uncompressed, non-readable model texture with a material use (507): 462 retained (250 Normal color/mask, 50 High Quality/BC7, 162 normal maps at DXT5), 45 restored. Gates: color/mask RGB RMSE ≤ 2/255 and max alpha ≤ 8/255; normal maps decoded mean angle ≤ 1.5°, p99 ≤ 6°. Normal → High Quality → restore.
 - `DesktopCompressionMeshPass2.cs` over 496 shipped models (MeshCollider sources and blend shapes excluded): 47 retained at Low, 449 restored. Gate: position ≤ 0.05 % of bounds diagonal, UV ≤ 1/4096, normal ≤ 2°. Low's max normal error is 2.5–2.8° on most hulls, so it fails the gate.
+- Rerun at a 3° normal gate (user decision): 435 of the 449 restored models passed; 4 Rebel station source FBX (Levels 1, 3–5) put back to Off because `StationLevelViewTests` requires their baked `*Hull.asset` copies to equal the source exactly. 478 models now at Low; mesh payload 203 → 104 MB; bundles `1,025,898,126 → 989,838,944` bytes.
 - `DesktopCompressionReconcile.cs` re-applied 38 importers whose `.meta` write hit a file lock; all 1,003 importers match the recorded outcome on disk.
 - Addressables bundles `1,534,762,737 → 1,025,898,126` bytes; uncompressed payload 6,464 → 2,663 MB. Evidence: `Evidence/Pass2Summary.json`; per-asset results in `output/DesktopAssetCompression/Pass2/`.
 
