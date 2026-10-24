@@ -112,7 +112,18 @@ created: 2026-10-11
 - Evidence/tooling: `Tools/DesktopAssetCompression/README.md`, `Evidence/Manifest.json`, `Evidence/ReviewQueue.json`, `Evidence/Summary.json`. Full snapshots, builds, images and logs: `output/DesktopAssetCompression/`.
 - Remaining: unprocessed categories, matched loading/memory/DSP captures, listening/first-play/loop/crossfade/battle acceptance, macOS build support and actual supported-Mac validation. Plan remains active; Windows results do not complete desktop acceptance.
 
+## Implementation — 2026-10-24 (pass 2)
+- Fresh inventory (1,799 importers; 931 shipped textures, 600 uncompressed without override).
+- Textures: 507 shipped uncompressed non-readable model textures with material use → **462 retained** (250 Normal color/mask, 50 HQ/BC7, 162 normal maps DXT5), 45 restored (mostly sharp-alpha lights/additive). Gates: color/mask RGB RMSE ≤ 2/255, max alpha ≤ 8/255; normal decoded mean ≤ 1.5°, p99 ≤ 6° (observed median 0.16°, worst p99 5.6°). UI (93) and readable textures unchanged.
+- Meshes: 496 shipped models (MeshCollider sources, blend shapes excluded) → **47 Low retained**, 449 restored. Gate: position ≤ 0.05 % bounds diagonal, UV ≤ 1/4096, normal ≤ 2°. Low's max normal error 2.5–2.8° on most hulls → loosening to 3° would admit 443 more (decision pending).
+- 38 importers had failed `.meta` writes (file lock) → reconciled; 1,003/1,003 disk settings match results.
+- Addressables build `buildlayout_2026.10.24.19.26.31.json`: bundles **1,534,762,737 → 1,025,898,126 B (−33 %)**; payload 6,464 → 2,663 MB (textures 6,100 → 2,300 MB); 0 duplicates.
+- Tests pass: AllegianceShip 12, CisStationImport 12, ExecutorShip 8, ProcursatorShip 6, StationLevelView 60, Tartan 9, TitanShip 12, UnitHelperMesh 1, UnitSpawnView 3, UnitWreckAssetDependency 2 (stale `View` group assertion updated for faction groups), WreckCutPlan 3, WreckMaterialSync 124.
+- Pending: in-game visual acceptance (hull/team colors/normals/engine glows), matched memory/loading capture, macOS. Evidence: `Tools/DesktopAssetCompression/Evidence/Pass2Summary.json`, `output/DesktopAssetCompression/Pass2/`.
+
 ## TODO
+- [x] Pass 2: compress remaining shipped model textures (color, masks, normals) with screening; reconcile importers; rebuild and measure (2026-10-24).
+- [ ] Decide mesh normal gate (2° → 3° admits 443 more Low models) and in-game check.
 - Addressables audit handoff 2026-10-24: `Logs/AddressablesAudit/2026-10-24-phase4/desktop-uncompressed-textures.json` records 818 effective uncompressed automatic texture importers (771 in the historical layout). Source: `Logs/AddressablesAudit/2026-10-24/texture-import-settings.json`. Phase 4 consolidation removes duplicate paths; resolve canonical replacements through its `canonical-mapping.json` before applying compression. No importer settings changed by bundle remediation.
 - [x] Record preliminary metadata inventory and moderate category policy.
 - [x] Inventory effective Standalone import settings, declared dependencies, dependent atlases and review exceptions.

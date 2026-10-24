@@ -122,6 +122,7 @@
   - **Next**: verify equivalent head/trail material sharing, remove unnecessary bolt texture CPU copies, measure scoped fade/shader experiments and validate the full faction/mount/ability/superweapon variation matrix.
 
 - [ ] **Apply moderate desktop asset compression** → [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression Plan]]
+  - **Pass 2 (2026-10-24)**: 462/507 model textures compressed under screening, 47 meshes Low; Addressables bundles 1.53 GB → 1.03 GB, payload 6.46 → 2.66 GB; related EditMode tests pass. In-game visual check pending; mesh gate decision open.
   - **Next**: remaining categories, matched gameplay memory/loading/DSP captures, audio listening/startup/loop/crossfade and intended-scale visual acceptance; macOS module + actual Mac validation. Plan stays active.
 
 - [ ] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)** → [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]; [[TODOs/Optimization/Battle_CPU_Fixes_Plan - Research|Phase 8 acceptance checklist]]

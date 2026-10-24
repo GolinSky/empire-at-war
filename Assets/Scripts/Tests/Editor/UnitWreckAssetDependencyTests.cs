@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
                 Assert.That(prefab.TryGetComponent(out UnitWreckView _), Is.True, path);
                 Assert.That(AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(data.PrefabKey).parentGroup.Name,
-                    Is.EqualTo("View"), path);
+                    Does.EndWith("UnitViews").Or.EqualTo("View"), path);
                 Assert.That(AssetDatabase.GetDependencies(path, true), Does.Not.Contain(prefabPath), path);
             }
         }

@@ -36,6 +36,18 @@ unity command run_script --file Tools/DesktopAssetCompression/DesktopCompression
 - Batch offsets used: `0, 32, 64, 96, 128`, each with count `32`. Eligibility is limited to uncompressed, non-readable model color/emission textures with verified Ship Lit/Ship Wreck consumers and no enabled desktop override.
 - Restore an individual candidate by applying its `before` settings through the importer API, then `SaveAndReimport` and `AssetDatabase.SaveAssets`; read it back. Serialized importer JSON is an audit snapshot, not a reliable native-property rollback API.
 
+## Pass 2 — 2026-10-24
+
+- Fresh inventory, then `DesktopCompressionTexturePass2.cs` over every shipped, uncompressed, non-readable model texture with a material use (507): 462 retained (250 Normal color/mask, 50 High Quality/BC7, 162 normal maps at DXT5), 45 restored. Gates: color/mask RGB RMSE ≤ 2/255 and max alpha ≤ 8/255; normal maps decoded mean angle ≤ 1.5°, p99 ≤ 6°. Normal → High Quality → restore.
+- `DesktopCompressionMeshPass2.cs` over 496 shipped models (MeshCollider sources and blend shapes excluded): 47 retained at Low, 449 restored. Gate: position ≤ 0.05 % of bounds diagonal, UV ≤ 1/4096, normal ≤ 2°. Low's max normal error is 2.5–2.8° on most hulls, so it fails the gate.
+- `DesktopCompressionReconcile.cs` re-applied 38 importers whose `.meta` write hit a file lock; all 1,003 importers match the recorded outcome on disk.
+- Addressables bundles `1,534,762,737 → 1,025,898,126` bytes; uncompressed payload 6,464 → 2,663 MB. Evidence: `Evidence/Pass2Summary.json`; per-asset results in `output/DesktopAssetCompression/Pass2/`.
+
+```powershell
+unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionTexturePass2.cs --entry DesktopCompressionTexturePass2.Main --args '[0,40]' --timeout_ms 900000 --timeout 900 --json
+unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionMeshPass2.cs --entry DesktopCompressionMeshPass2.Main --args '[0,50]' --timeout_ms 900000 --timeout 900 --json
+```
+
 ## Remaining work
 
 - Classify and pilot the remaining normal/mask/UI/world VFX/mesh/audio categories. Engine loops under `Music/Ship` are outside the current declared dependency set and remain unchanged; sharp UI remains unchanged.
