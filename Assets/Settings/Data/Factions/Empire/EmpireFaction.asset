@@ -51,8 +51,8 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: ISD I
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4500
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 5000
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: b8f66d736a9c0a841b8957320119ca55,
@@ -109,7 +109,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: ISD II
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 6000
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
@@ -191,8 +191,8 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Tector Star Destroyer
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 8000
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 5500
         <BuildTime>k__BackingField: 70
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f0a9b1821246f484dbc3d7fcaa7828d1,
@@ -228,7 +228,7 @@ MonoBehaviour:
         <Name>k__BackingField: Procursator-class Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 5500
+        <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 55
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 480ea67ea8c1d1444b4eae17e11f53e8,

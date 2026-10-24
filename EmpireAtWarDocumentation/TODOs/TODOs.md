@@ -150,6 +150,10 @@
   - **Editor profile 2026-10-23**: default skirmish reaches Running in 20.723 s after request, no runtime errors. Scope Configure 5.984/9.800 ms; 30 sliced prewarm items, max 41.978 ms. Primary startup/battle peaks 556.749/475.198 ms; confirming asset-load peak 631.154 ms. Editor hitches remain; details in research.
   - **Remaining**: user-deferred Player baseline/matched captures, spinner/transition/leak acceptance; loading-scene async switch and packing changes only if profiling justifies them. Plan stays active.
 
+- [ ] **Remove Addressables bundle duplication and fix asset-mapping tools** → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables Bundle Remediation]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research|Audit 2026-10-24 findings]]
+  - Audit 2026-10-24: 962 duplicated assets / 1.31 GiB redundant payload (Model+View 852), 128 identical-source sets, View 1.63 GiB; ReinforcementData hard-refs 78 previews; mapping rebuild drops `VenatorIIShipView`, SO keying overwrites variants.
+  - **Next**: Phase 0 fresh build layout + Analyze baseline, then Phase 1 mapping-tool fixes with regression tests.
+
 ### Refactoring
 
 - [ ] **Project organization follow-up** → [[TODOs/Refactoring/Project_Organization_Followup|Project Organization Follow-up]]

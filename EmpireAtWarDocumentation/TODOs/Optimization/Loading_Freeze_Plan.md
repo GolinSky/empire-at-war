@@ -129,6 +129,18 @@ tags:
 - Pre-existing, out of scope: `MainMenuScene.unity` contains serialized `MusicSource(Clone)` / `AudioDialogSource(Clone)` roots.
 - Tests: LoadingUiIsolation 4, GameController 4, BattleAssetPreloader 10 pass. Evidence: `Logs/LoadingFreeze/20261023T170000Z-editor-additive-adb/analysis.md`, `../20261023T171500Z-editor-additive-check/`.
 
+### IL2CPP Player (2026-10-24)
+
+- Why: Mono JIT on first use cost 128–228 ms at battle activation, ~35 ms in the first prewarm item, ~220 ms at startup (Editor captures). IL2CPP compiles ahead of time.
+- Setup: `windows-il2cpp` module installed for 6000.4.7f1 (`unity install-modules`; player variations present; Hub's `modules.json` update failed → Hub may still list it as Available). VS Community 2026 MSVC x64 + Windows SDK 10.0.26100 present.
+- `ProjectSettings`: Standalone `scriptingBackend` IL2CPP, `managedStrippingLevel` Minimal (strips only Unity/.NET class libraries; project/package reflection untouched). Compiler config Release, codegen OptimizeSpeed unchanged. Runtime scan: no `Reflection.Emit`/`dynamic`/expression compilation.
+- Jenkins (`Invoke-BuildPhase.ps1`): requires `GameAssembly.dll` + `il2cpp_data\Metadata\global-metadata.dat`; rejects `EmpireAtWar_Data\Managed` (Mono output); moves `EmpireAtWar_BackUpThisFolder_ButDontShipItWithYourGame` to `$WORKSPACE\player-symbols` (not archived). Jenkins has no SCM trigger: builds committed local `main` on manual start.
+- Commits: `f74a62bae`; `c788e5fbb` + `89a5a1551` removed in-progress versioning/build-info lines swept into it (kept in working tree).
+- Jenkins build #16 (2026-10-24, user-started): Unity IL2CPP build **succeeded** (`il2cpp.exe` ran; `Build Finished, Result: Success.`; VS 2026 toolchain works). Job **FAILED** in validation: installed `F:\Jenkins\app\build-tools\Invoke-BuildPhase.ps1` (tools commit `736c0a90c`) still requires `Managed\Assembly-CSharp.dll`.
+  - Installed job pipeline is stale: always uses `F:/Jenkins/app/build-tools`, no EditMode stage; does not follow committed tools as README claims.
+  - Fix: `Install-BuildTools.ps1` + `Configure-GitHubPublish.ps1` (updates job XML via authenticated API). The latter refuses while `Tools/Jenkins` has uncommitted changes (in-progress versioning work: `Invoke-BuildPhase.ps1`, `README.md`, `Jenkinsfile.Publish`, `Publish-GitHubRelease.ps1`).
+- [ ] Update installed Jenkins tools + job pipeline, rerun, player smoke check.
+
 ## Edge Cases
 
 - `CachedAssetService` keys by `(Type, key)`; preload must use the same `TSource` type or the miss still blocks.
