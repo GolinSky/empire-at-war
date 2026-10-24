@@ -19,7 +19,7 @@ MonoBehaviour:
     waves:
     - entries:
       - isSquadron: 0
-        unitId: 6
+        unitId: 13
         quantity: 4
       - isSquadron: 1
         unitId: 2
@@ -27,7 +27,7 @@ MonoBehaviour:
       spawnGroupCount: 1
     - entries:
       - isSquadron: 0
-        unitId: 6
+        unitId: 13
         quantity: 4
       - isSquadron: 0
         unitId: 1
@@ -41,7 +41,7 @@ MonoBehaviour:
       spawnGroupCount: 2
     - entries:
       - isSquadron: 0
-        unitId: 6
+        unitId: 13
         quantity: 4
       - isSquadron: 0
         unitId: 1
@@ -64,7 +64,7 @@ MonoBehaviour:
       spawnGroupCount: 3
     - entries:
       - isSquadron: 0
-        unitId: 6
+        unitId: 13
         quantity: 4
       - isSquadron: 0
         unitId: 1
@@ -93,7 +93,7 @@ MonoBehaviour:
       spawnGroupCount: 4
     - entries:
       - isSquadron: 0
-        unitId: 6
+        unitId: 13
         quantity: 4
       - isSquadron: 0
         unitId: 1

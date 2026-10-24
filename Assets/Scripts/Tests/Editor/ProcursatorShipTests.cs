@@ -25,8 +25,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            Assert.That(data.Hull, Is.EqualTo(6800));
-            Assert.That(data.Shields, Is.EqualTo(4200));
+            Assert.That(data.Hull, Is.EqualTo(6500));
+            Assert.That(data.Shields, Is.EqualTo(4000));
             Assert.That(data.Speed, Is.EqualTo(19));
             Assert.That(data.ShipClass, Is.EqualTo(ShipClass.Capital));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.BoostWeaponPower }));

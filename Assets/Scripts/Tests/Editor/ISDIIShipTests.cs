@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_HasRequestedStatsWeaponsAndTargetableSystems()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(7000));
+            Assert.That(data.Hull, Is.EqualTo(9800));
             Assert.That(data.Shields, Is.EqualTo(5000));
             Assert.That(data.Speed, Is.EqualTo(25));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam }));
@@ -32,9 +32,9 @@ namespace EmpireAtWar.Tests.Editor
             HardPoint[] hardPoints = view.GetComponentsInChildren<HardPoint>(true);
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();
-            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(27));
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(27));
-            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.Zero);
+            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(28));
+            Assert.That(health.ShipUnits.Count, Is.EqualTo(28));
+            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.EqualTo(1));
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
             Assert.That(weapons.Length, Is.EqualTo(24));
             foreach (var expected in new[] { (WeaponType.ISDIIOctupleTurbolaser, 8), (WeaponType.ISDIIQuadIonCannon, 2),
@@ -112,8 +112,8 @@ namespace EmpireAtWar.Tests.Editor
             Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIcon.png");
             Assert.That(faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue, Is.EqualTo(icon));
             Assert.That(Entry("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset", "shipIconWrapper.keyValue").objectReferenceValue, Is.EqualTo(icon));
-            UnityEngine.Object spawn = Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").objectReferenceValue;
-            Assert.That(AssetDatabase.GetAssetPath(spawn), Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab"));
+            string spawn = AssetDatabase.GUIDToAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").FindPropertyRelative("m_AssetGUID").stringValue);
+            Assert.That(spawn, Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab"));
             ShipAbilityCatalog catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
             ShipAbilityDefinition definition = catalog.Get(ShipAbilityId.PowerToMainBatteries);
             Assert.That(definition.Settings, Is.TypeOf<PowerToMainBatteriesSettings>());

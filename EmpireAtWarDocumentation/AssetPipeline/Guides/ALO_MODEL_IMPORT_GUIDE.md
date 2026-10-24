@@ -150,7 +150,7 @@ bpy.ops.import_scene.fbx(
 | Republic `FactionsData` | Roster entry, role/description, cost, level, limits, population, icon and matchups |
 | `ShipUiData.shipIconWrapper` | Ship type → correct ship sprite |
 | `TooltipIconData.icons` | Correct sprite identifier/reference, including local file ID |
-| `ReinforcementData.spawnShipWrapper` | Ship type → its own placement prefab's `UnitSpawnView` component |
+| `ReinforcementData.spawnShipWrapper` | Ship type → `AssetReferenceGameObject` to its own placement prefab (write `value.m_AssetGUID`); prefab must be an Addressables entry in `View`, address `<Ship>ReinforcementView` |
 | Ship data dependencies | Wreck data, height tier, supported weapon profiles and abilities |
 | `ShipIconGenerator.MAPPINGS` | New ship included for future icon regeneration |
 
@@ -160,7 +160,7 @@ bpy.ops.import_scene.fbx(
 ### 7. Build the separate preview, wreck and icon
 
 - **Placement preview:** create `<Ship>ReinforcementView.prefab` with the same visible geometry, size and orientation; assign the shared `Assets/Art/Materials/Vfx/Hologram.mat` to visible slots and to `UnitSpawnView.hologramMaterial`. Only slots using that material are tinted; every listed `meshRenderers` entry must have one (`UnitSpawnViewTests`).
-- Assign its `UnitSpawnView` explicitly in `ReinforcementData`; fit trigger bounds and use the existing kinematic/no-gravity setup. Strip helpers (step 7a) and keep prefab root at identity; spawn height comes from ship data.
+- Add the prefab to the `View` Addressables group (address = prefab name) and reference it from `ReinforcementData` as an AssetReference (since 2026-10-24; a direct prefab reference pulls ship art into the Model bundle). Older `Tools/Blender/*/Register.cs` scripts still write `objectReferenceValue` — don't copy that line. Fit trigger bounds and use the existing kinematic/no-gravity setup. Strip helpers (step 7a) and keep prefab root at identity; spawn height comes from ship data.
 - **Wreck:** create dedicated wreck materials and data, using only intended visible opaque hull meshes. Preserve team-livery settings where the wreck shader uses them.
 - **Icon:** render the actual model with transparent background at `512 × 512`, matching existing framing. Inspect alpha, silhouette and crop; assign the imported sprite to all three icon consumers.
 - Icon and wreck generators must respect disabled helper renderers. Do not enable every renderer or regenerate unrelated ships as part of one import.

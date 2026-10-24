@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
             var weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             Assert.That(weapons.Length, Is.EqualTo(9));
             Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(9));
-            Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits, Is.EquivalentTo(weapons));
+            Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits, Is.EquivalentTo(view.GetComponentsInChildren<HardPoint>(true)));
             var bindings = view.GetComponents<EntityBindings>().Single();
             Assert.That(bindings.Injectables, Is.All.Not.Null);
             Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(10));
@@ -123,9 +123,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(faction.FindPropertyRelative("<Name>k__BackingField").stringValue, Is.EqualTo("Tartan-class Patrol Cruiser"));
             Assert.That(faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue, Is.EqualTo(icon));
             Assert.That(Entry("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset", "shipIconWrapper.keyValue").objectReferenceValue, Is.EqualTo(icon));
-            Assert.That(AssetDatabase.GetAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").objectReferenceValue), Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/TartanReinforcementView.prefab"));
+            Assert.That(AssetDatabase.GUIDToAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").FindPropertyRelative("m_AssetGUID").stringValue), Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/TartanReinforcementView.prefab"));
             var wreck = new SerializedObject(AssetDatabase.LoadAssetAtPath<ShipData>(DATA).Wreck);
-            Assert.That(AssetDatabase.GetAssetPath(wreck.FindProperty("<Prefab>k__BackingField").objectReferenceValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/TartanWreckView.prefab"));
+            Assert.That(AssetDatabase.GUIDToAssetPath(wreck.FindProperty("prefab.m_AssetGUID").stringValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/TartanWreckView.prefab"));
         }
 
         [TestCase("Assets/Prefabs/Models/Ships/Empire/Tartan.prefab")]

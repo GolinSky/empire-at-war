@@ -109,7 +109,7 @@ namespace EmpireAtWar.Tests.Editor
             Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ExecutorIcon.png");
             Assert.That(Entry("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset", "ships.keyValue").FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue, Is.EqualTo(icon));
             Assert.That(Entry("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset", "shipIconWrapper.keyValue").objectReferenceValue, Is.EqualTo(icon));
-            Assert.That(AssetDatabase.GetAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").objectReferenceValue),
+            Assert.That(AssetDatabase.GUIDToAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").FindPropertyRelative("m_AssetGUID").stringValue),
                 Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab"));
             ShipAbilityCatalog catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
             Assert.That(catalog.Get(ShipAbilityId.ExecutorLaserBeam).Settings, Is.Not.Null);

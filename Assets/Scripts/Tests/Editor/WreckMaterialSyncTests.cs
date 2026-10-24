@@ -22,7 +22,8 @@ namespace EmpireAtWar.Tests.Editor
         private static readonly string[] AUTHORED_WRECK_VIEWS =
         {
             "Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab",
-            "Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab"
+            "Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab",
+            "Assets/Prefabs/Models/Ships/Republic/CentaxShipView.prefab"
         };
 
         private static IEnumerable<string> WreckedViews() =>
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx", 35)]
         [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx", 25)]
+        [TestCase("Assets/Prefabs/Models/Ships/Republic/CentaxShipView.prefab", "Assets/Art/Models/RepublicShips/Centax/CentaxWreck.fbx", 3)]
         public void AuthoredDeathWreck_PreservesSourceGeometryAndBoundMaterials(string viewPath, string sourcePath, int meshCount)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);

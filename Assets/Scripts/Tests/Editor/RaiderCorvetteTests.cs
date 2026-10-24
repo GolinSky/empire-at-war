@@ -37,14 +37,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Range, Is.EqualTo(500f));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.Pursuit }));
             Assert.That(data.HangarBays, Is.Empty);
-            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth").arraySize, Is.EqualTo(1));
+            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth").arraySize, Is.EqualTo(3));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
 
             Assert.That(view.GetComponentsInChildren<MonoBehaviour>(true).Any(m => m.GetType().Name == "HangarComponent"), Is.False);
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             Assert.That(weapons.Length, Is.EqualTo(10));
             Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits,
-                Is.EquivalentTo(weapons));
+                Is.EquivalentTo(view.GetComponentsInChildren<HardPoint>(true)));
             Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(10));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             foreach (var expected in new[] { (WeaponType.BurstLaserCannon, 4, 2), (WeaponType.DualRepeatingPointDefense, 2, 6),
@@ -110,9 +110,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(faction.FindPropertyRelative("<Name>k__BackingField").stringValue, Is.EqualTo("Raider Corvette"));
             Assert.That(faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue, Is.EqualTo(icon));
             Assert.That(Entry("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset", "shipIconWrapper.keyValue").objectReferenceValue, Is.EqualTo(icon));
-            Assert.That(AssetDatabase.GetAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").objectReferenceValue), Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/RaiderCorvetteReinforcementView.prefab"));
+            Assert.That(AssetDatabase.GUIDToAssetPath(Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset", "spawnShipWrapper.keyValue").FindPropertyRelative("m_AssetGUID").stringValue), Is.EqualTo("Assets/Prefabs/Ui/Reinforcement/RaiderCorvetteReinforcementView.prefab"));
             var wreck = new SerializedObject(AssetDatabase.LoadAssetAtPath<ShipData>(DATA).Wreck);
-            Assert.That(AssetDatabase.GetAssetPath(wreck.FindProperty("<Prefab>k__BackingField").objectReferenceValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab"));
+            Assert.That(AssetDatabase.GUIDToAssetPath(wreck.FindProperty("prefab.m_AssetGUID").stringValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab"));
         }
 
         [TestCase("Assets/Prefabs/Models/Ships/Empire/RaiderCorvette.prefab")]

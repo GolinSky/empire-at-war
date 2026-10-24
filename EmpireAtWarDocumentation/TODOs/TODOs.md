@@ -152,7 +152,9 @@
 
 - [ ] **Remove Addressables bundle duplication and fix asset-mapping tools** → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables Bundle Remediation]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research|Audit 2026-10-24 findings]]
   - Audit 2026-10-24: 962 duplicated assets / 1.31 GiB redundant payload (Model+View 852), 128 identical-source sets, View 1.63 GiB; ReinforcementData hard-refs 78 previews; mapping rebuild drops `VenatorIIShipView`, SO keying overwrites variants.
-  - **Next**: Phase 0 fresh build layout + Analyze baseline, then Phase 1 mapping-tool fixes with regression tests.
+  - **Phases 0–1 done 2026-10-24**: fresh layout baseline 979 dup assets / 1,430,171,798 B (Model+View 864), Analyze 5,272/25/64 recorded; mapping rebuild keeps aliases (`VenatorIIShipView`, `MenuUi`), Add Selected keys by entry address and refuses foreign-GUID overwrites; 8/8 EditMode tests pass.
+  - **Phase 2 done 2026-10-24**: previews are AssetReferences in `View`, preloaded only for human/hosted factions; duplicated assets 979 → 115, redundant payload 1.43 GB → 135 MB, Model bundle 447 → 166 MB. Related EditMode tests pass; in-game placement check pending (user).
+  - **Next**: Phase 3 — explicit ownership for remaining Data+Model / Data+Model+View shared art.
 
 ### Refactoring
 

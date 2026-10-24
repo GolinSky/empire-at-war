@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Repository.Data;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -29,11 +30,20 @@ namespace EmpireAtWar.Editor
                 if (string.IsNullOrEmpty(path) || selectedAsset == mappingData)
                     continue;
 
-                string key = GetMappingKey(selectedAsset);
+                string guid = AssetDatabase.AssetPathToGUID(path);
+                AddressableAssetEntry existingEntry = AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid);
+                string key = GetMappingKey(selectedAsset, existingEntry == null ? null : existingEntry.address);
                 if (string.IsNullOrEmpty(key))
                     continue;
 
-                string guid = AssetDatabase.AssetPathToGUID(path);
+                string ownerGuid = FindMappedGuid(mappings, key);
+                if (ownerGuid != null && ownerGuid != guid)
+                {
+                    Debug.LogError($"[AssetMapping] Key {key} already maps to {AssetDatabase.GUIDToAssetPath(ownerGuid)}; " +
+                        $"{path} was not mapped. Give it a distinct Addressables address first.", selectedAsset);
+                    continue;
+                }
+
                 AddToAddressables(guid, selectedAsset.name);
                 SetMapping(mappings, key, guid);
                 updated = true;
@@ -56,7 +66,6 @@ namespace EmpireAtWar.Editor
             SerializedProperty mappings = serializedMapping
                 .FindProperty("assetMappings")
                 .FindPropertyRelative("keyValue");
-            mappings.ClearArray();
 
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings == null)
@@ -66,6 +75,7 @@ namespace EmpireAtWar.Editor
             }
 
             string mappingGuid = AssetDatabase.AssetPathToGUID(MAPPING_DATA_PATH);
+            List<(string Address, string Guid)> entries = new();
             foreach (AddressableAssetGroup group in settings.groups)
             {
                 if (group == null)
@@ -76,9 +86,14 @@ namespace EmpireAtWar.Editor
                     if (entry == null || entry.guid == mappingGuid || string.IsNullOrEmpty(entry.address))
                         continue;
 
-                    SetMapping(mappings, entry.address, entry.guid);
+                    entries.Add((entry.address, entry.guid));
                 }
             }
+
+            List<(string Key, string Guid)> rebuilt = BuildMappings(ReadMappings(mappings), entries);
+            mappings.ClearArray();
+            foreach ((string key, string guid) in rebuilt)
+                SetMapping(mappings, key, guid);
 
             AddToAddressables(mappingGuid, nameof(AssetMappingData));
             serializedMapping.ApplyModifiedProperties();
@@ -94,8 +109,39 @@ namespace EmpireAtWar.Editor
             return Selection.objects is { Length: > 0 };
         }
 
-        private static string GetMappingKey(Object asset)
+        /// <summary>
+        /// Keys every Addressables entry by its address, then keeps existing aliases: mappings whose key differs
+        /// from the address of a GUID that is still an entry (e.g. VenatorIIShipView → ResoluteShipView).
+        /// </summary>
+        internal static List<(string Key, string Guid)> BuildMappings(
+            IReadOnlyList<(string Key, string Guid)> existing, IReadOnlyList<(string Address, string Guid)> entries)
         {
+            Dictionary<string, string> addressByGuid = new();
+            List<(string Key, string Guid)> mappings = new();
+            foreach ((string address, string guid) in entries)
+            {
+                addressByGuid[guid] = address;
+                mappings.Add((address, guid));
+            }
+
+            foreach ((string key, string guid) in existing)
+            {
+                if (!addressByGuid.TryGetValue(guid, out string address) || address == key)
+                    continue;
+
+                mappings.RemoveAll(mapping => mapping.Key == key);
+                mappings.Add((key, guid));
+            }
+
+            return mappings;
+        }
+
+        /// <summary>An existing Addressables address is the canonical key; otherwise the key derives from the asset.</summary>
+        internal static string GetMappingKey(Object asset, string entryAddress)
+        {
+            if (!string.IsNullOrEmpty(entryAddress))
+                return entryAddress;
+
             if (asset is ScriptableObject)
                 return asset.GetType().Name;
 
@@ -127,6 +173,30 @@ namespace EmpireAtWar.Editor
             mappingData = ScriptableObject.CreateInstance<AssetMappingData>();
             AssetDatabase.CreateAsset(mappingData, MAPPING_DATA_PATH);
             return mappingData;
+        }
+
+        private static List<(string Key, string Guid)> ReadMappings(SerializedProperty mappings)
+        {
+            List<(string Key, string Guid)> result = new();
+            for (int i = 0; i < mappings.arraySize; i++)
+            {
+                SerializedProperty entry = mappings.GetArrayElementAtIndex(i);
+                result.Add((entry.FindPropertyRelative("key").stringValue,
+                    entry.FindPropertyRelative("value").FindPropertyRelative("m_AssetGUID").stringValue));
+            }
+
+            return result;
+        }
+
+        internal static string FindMappedGuid(SerializedProperty mappings, string key)
+        {
+            foreach ((string mappedKey, string guid) in ReadMappings(mappings))
+            {
+                if (mappedKey == key)
+                    return guid;
+            }
+
+            return null;
         }
 
         private static void SetMapping(SerializedProperty mappings, string key, string guid)

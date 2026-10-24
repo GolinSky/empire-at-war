@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Data;
@@ -73,28 +74,30 @@ namespace EmpireAtWar.Services.Reinforcement
                     return false;
                 case ShipUnitRequest shipRequest:
                     placement = new ShipReinforcementPlacement(_spawnRule, _previewFactory,
-                        _model, _shipFactory, _data.GetSpawnPrefab(shipRequest.Key), _owner.Id,
+                        _model, _shipFactory, LoadPreview(_data.GetSpawnPrefabKey(shipRequest.Key)), _owner.Id,
                         shipRequest.Key,
                         _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipRequest.Key)).Height);
                     return true;
                 case SquadronUnitRequest squadronRequest:
                     placement = new SquadronReinforcementPlacement(_spawnRule, _stationFacingService,
-                        _previewFactory, _model, _squadronSpawner, _data.GetSpawnPrefab(squadronRequest.Key),
+                        _previewFactory, _model, _squadronSpawner, LoadPreview(_data.GetSpawnPrefabKey(squadronRequest.Key)),
                         _owner.Id, squadronRequest.Key);
                     return true;
                 case MiningFacilityUnitRequest facilityRequest:
                     placement = new MiningFacilityReinforcementPlacement(_spawnRule, _previewFactory,
-                        _playerFactionModel, _miningFacilityFactory, _data.GetSpawnPrefab(facilityRequest.Key),
+                        _playerFactionModel, _miningFacilityFactory, LoadPreview(_data.GetSpawnPrefabKey(facilityRequest.Key)),
                         _owner.Id, facilityRequest.Key);
                     return true;
                 case DefendPlatformUnitRequest platformRequest:
                     placement = new DefendPlatformReinforcementPlacement(_spawnRule, _previewFactory,
-                        _playerFactionModel, _defendPlatformFactory, _data.GetSpawnPrefab(platformRequest.Key),
+                        _playerFactionModel, _defendPlatformFactory, LoadPreview(_data.GetSpawnPrefabKey(platformRequest.Key)),
                         _owner.Id, platformRequest.Key);
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request));
             }
         }
+
+        private UnitSpawnView LoadPreview(string key) => _assetService.LoadComponent<UnitSpawnView>(key);
     }
 }

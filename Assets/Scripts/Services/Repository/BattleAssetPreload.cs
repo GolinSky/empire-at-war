@@ -58,6 +58,7 @@ namespace EmpireAtWar.Repository
                 foreach (ShipType ship in factions.Get(faction).Ships.Keys)
                     assets.BeginPreload<ShipData>(ships.GetShipDataPath(ship));
             }
+            foreach (string key in PreviewKeys(assets, battle, factions)) assets.BeginPreload<GameObject>(key);
             await assets.CompletePreloadsAsync(cancellationToken);
 
             foreach (SquadronType squadron in Squadrons(assets, battle))
@@ -110,6 +111,20 @@ namespace EmpireAtWar.Repository
             HashSet<FactionType> factions = new HashSet<FactionType>();
             foreach (var slot in battle.Slots) factions.Add(slot.Faction);
             return factions;
+        }
+
+        // Reinforcement placement previews for the factions whose units the local player places: their own and any
+        // hosted ally's. Other factions never show a preview, so their art stays unloaded.
+        private static HashSet<string> PreviewKeys(CachedAssetService assets, BattleDefinition battle, FactionCatalog factions)
+        {
+            ReinforcementData reinforcement = assets.Load<ReinforcementData>(nameof(ReinforcementData));
+            HashSet<string> keys = new HashSet<string>();
+            foreach (BattlePlayer player in battle.Players)
+            {
+                if (player.Role != PlayerRole.Human && !player.IsHosted) continue;
+                keys.UnionWith(reinforcement.GetPreviewKeys(factions.Get(player.Slot.Faction)));
+            }
+            return keys;
         }
 
         // Squadrons the factions can build plus every type a ship or station hangar launches; SquadronPool

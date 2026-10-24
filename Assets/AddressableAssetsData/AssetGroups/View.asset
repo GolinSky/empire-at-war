@@ -25,8 +25,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 017b1bc6a9f95054980442088abdd3aa
+    m_Address: V19TorrentReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0383251f7e62fbd4f96c39ef5c59df42
     m_Address: PatrolFrigateWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03937783f671e3344ab62c666dbc3c2b
+    m_Address: EnduranceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0441fee520f32e648a03b7d8b06dbee5
+    m_Address: CarrackReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -50,8 +65,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06e2a4dcc11428545b8a89cf9eeb8b9a
+    m_Address: TartanReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0796a23492864114b8a7fc3426706de6
     m_Address: CR70ShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07fbb46098b845b4f847f4511e25b732
+    m_Address: MunificentReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ab8b97fa5f89054ca01e0c0ffbf4697
+    m_Address: ResoluteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ac08f12d8ee11342a737e2233105f18
+    m_Address: HomeOneReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -75,6 +110,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0df0b5b98a9519c4c9ef112b2c4d2221
+    m_Address: MC50ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1078bb84727c6ff4faa95ae4830a3f6c
+    m_Address: ImperatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11bd8066669d41940b4052c494bb8d3c
+    m_Address: YWingBomberReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 13b95f5491d4d064cb67648cf70fa056
     m_Address: CD273ShipView
     m_ReadOnly: 0
@@ -82,6 +132,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 13dc1d8a01ccc98449120683c92e2ea9
     m_Address: ISDIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 146201b15b2d45247a07d88878115eb5
+    m_Address: DauntlessReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1707aa5c38f75584798f5dec8f24ea9b
+    m_Address: InvincibleReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 172d43bd25e8e4e4e90d735ae976754b
+    m_Address: NTB630ReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -100,6 +165,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ba45b2a950a69f4c92297129f1a201c
+    m_Address: TIEPunisherReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1bfa1176c8003e94d88b6f4d1bdd7348
     m_Address: ArquitensWreckView
     m_ReadOnly: 0
@@ -107,6 +177,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1ca93b69553995d468e5f76bac1210e2
     m_Address: ImperatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d8741a65a8b40146b82104fba70ed1e
+    m_Address: CentaxReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -120,8 +195,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20fe28ad29a934843a29c7561fbad84a
+    m_Address: VictoryIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 21d3c8b2d3c013d4ab0c615706ecf2ce
     m_Address: VultureSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22aad1d1d6cecd043901814978cdaac2
+    m_Address: VenatorReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -145,6 +230,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c860664286ce464e830a24e1585937e
+    m_Address: RecusantReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e946fce1a75f284e9066e2dc4e37b1d
+    m_Address: CR70ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f201f3499a8bfc4ba07003aa8343973
     m_Address: ArquitensImperialCruiserShipView
     m_ReadOnly: 0
@@ -152,6 +247,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30429bfca42a8474a86d43c1caccc370
     m_Address: Delta7SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31a950c34955e204ca8e7103b1c1dd00
+    m_Address: ISDIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31f1ddce1e99d2840a2ca19d09d0a9ec
+    m_Address: Delta7ReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -175,6 +280,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38f8d2aed9401054a90b202ce8246b64
+    m_Address: RothanaReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3997b5cc91867724d99235cc38160e69
+    m_Address: ARC170ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 39bcc6a7c5c6f2e4dbfdc7a17f9736dd
     m_Address: StealthCorvetteWreckView
     m_ReadOnly: 0
@@ -190,8 +305,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cfd8751f2bd7cb498be770139212eda
+    m_Address: TitanReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3dfea5679919bb64381bed73074104ef
     m_Address: MalevolenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fb4538b56d15d3438042988f4e8d94c
+    m_Address: PeltaReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -200,8 +325,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 445c2beb9f82afd44bd708db7c0bb6fd
+    m_Address: ArquitensImperialCruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48216c7b6520f3844a065086aca850ea
     m_Address: LiberatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48a5a07c391827d4f81fb9af190943b1
+    m_Address: YWingReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -212,6 +347,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4ba81665b0ffa684bbe9b3c0eeb41349
     m_Address: VenatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c69bd973395e5f42b3f05ad23653ca9
+    m_Address: AllegianceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4eb26463e615c41438db9dc147f24e46
+    m_Address: ProcursatorReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -227,6 +372,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
     m_Address: MiningFacilityView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52f523efadc8d8c41b886053168da5a3
+    m_Address: VictoryIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 532a740159cffbd46a317fa64a34529e
+    m_Address: NebulaReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53589a42733efd045a38ce1daed1d855
+    m_Address: StealthCorvetteReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -255,6 +415,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5898ef802ceafc24f91a694c3645b006
+    m_Address: VictoryReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 594f8542138301e4da495f689bc4a8cf
+    m_Address: QuasarFireReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5abd78ead6c104d4193f2e5fe839d045
     m_Address: EmpireSpaceStationView
     m_ReadOnly: 0
@@ -270,6 +440,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f832ce046ca99d46a544f0b95b19e1c
+    m_Address: ExecutorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fd52b6d50f8a7c4bbcdab52c3de99bf
+    m_Address: MC80IndependenceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 602616906d6d9844aa9086252a1423f4
+    m_Address: ArquitensReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61da10ce71bd48e49a0d7f7e48117a91
     m_Address: MC80IndependenceShipView
     m_ReadOnly: 0
@@ -282,6 +467,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6575b4f6fa09aab4e896e861162168af
     m_Address: ThrantaWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69246d4d74c60084c85360472a5ac691
+    m_Address: C9979ReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -315,6 +505,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71148c82aa37cf94b94b631bd2b8a2df
+    m_Address: CorellianCorvetteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 71636a83fa02a684f8f5b9d119219573
     m_Address: TIEBruteSquadronView
     m_ReadOnly: 0
@@ -327,6 +522,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 757a79319c0388c469ac8ac2e2c80f92
     m_Address: HeavyDreadnoughtWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75a7c88a8126b2641abbf6fc340f3b44
+    m_Address: ImperialVenatorReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -350,6 +550,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d2c4f08668df824f957173b1a21ddfd
+    m_Address: VultureReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7eedc46a86a94114fabe4735b77bdeff
     m_Address: DefendPlatformView
     m_ReadOnly: 0
@@ -357,6 +562,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7f428c58ff383cf47b93c8ab3f55b2f5
     m_Address: ISDIIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80484c47f0fde8944b6852594a403c69
+    m_Address: ProvidenceReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -375,6 +585,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81f78a6bd8ddb7943b29a5b1706d8b63
+    m_Address: AcclamatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 869c8abfc930a964892aef3ee3c9f4a6
     m_Address: EnduranceShipView
     m_ReadOnly: 0
@@ -382,6 +597,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 870b0e4f67a6e994c8121130474d0fbb
     m_Address: HomeOneShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87174290095be7649a260133a3e3f11a
+    m_Address: DefendPlatformReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -400,6 +620,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89ff134f310a9a4498ac3743b1524c26
+    m_Address: NebulonBReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b70c9c30de88af48a0ad58a72d76f4b
     m_Address: AsteroidMiningFacilityView
     m_ReadOnly: 0
@@ -407,6 +632,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c94249786d23114d98ed5599f73b143
     m_Address: BothanAssaultCruiserShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d45756028571d94aa6d0e89487ebd52
+    m_Address: MC75ProfundityReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -422,6 +652,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 905644e6fcb289a449e3e4da26c9e520
     m_Address: CentaxShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91a5b56b15ee0b94a81a4db37877f9ac
+    m_Address: TIEBruteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94df7a44d71ef0e4b915ff9f06a1d110
+    m_Address: TIEBomberReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9571c4609d1e6624faa6c4025de1f938
+    m_Address: LucrehulkReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -485,8 +730,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0f0f836d24c5aa49996d4a12fef975e
+    m_Address: Belbullab22ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a18a912eef2f13e4cb56ec916afc1e10
     m_Address: AcclamatorAssaultShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a207a69345e0f0342918bfc9bd573bcf
+    m_Address: VWingReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a24b89bdbc2900d4a9c609c0dfbe29ed
+    m_Address: AcclamatorAssaultReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -525,6 +785,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abebbdc804678f442885c7c817a9e1f6
+    m_Address: AWingReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: acbada99ccf162c4cb4f265697f1ba94
     m_Address: AllegianceWreckView
     m_ReadOnly: 0
@@ -545,8 +810,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2a23c8d1bcc8fc42a98fa3c746e664f
+    m_Address: AssaultFrigateMkIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b31bfbf5f42265c4e912a5b25ed4ca6a
     m_Address: AllegianceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b32b5a7adb5158d43b8e207f1a0d5e4a
+    m_Address: MonCalCruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b43babda8bfeb71458bf14202a25837f
+    m_Address: TIEInterceptorReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -560,13 +840,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6ba67b098b3be441868dfeacab31dd7
+    m_Address: BothanAssaultCruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b6d2b0e5c4399a7479336653b08cfad5
     m_Address: MunificentWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6e005da455919a4e960d1a5db42c3df
+    m_Address: MandatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7356f5f98a621d4a9ed0c4665792b56
+    m_Address: CorellianBattlecruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1a184ac793b4274f9e3b204be5d5057
     m_Address: AcclamatorAssaultWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c21ef5f0cf4422b40984dc091bb8444f
+    m_Address: DispatcherReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -580,6 +880,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5b90b6f94c283d4e88b94f677eae054
+    m_Address: CaptorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c72a6cc0e3fc5e748b1117e99581c872
     m_Address: ProvidenceWreckView
     m_ReadOnly: 0
@@ -587,6 +892,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c90c026a3e39ede4aa839f3f104bb1f8
     m_Address: MiningFacilityWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c97f32ff465f67a4dba5ba237bab67e3
+    m_Address: TectorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cde314be341eb8d438166d17ab347c65
+    m_Address: AotrGolanIIIDefensePlatformReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -625,6 +940,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d360139ffc7612e4198fd9f2f4765116
+    m_Address: MC30cReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d4560da7232ad344b89334583087a3dc
     m_Address: AsteroidDefendPlatformWreckView
     m_ReadOnly: 0
@@ -635,8 +955,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4b0ee7a90423404a9df04366d853336
+    m_Address: TIEAvengerReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d4d5676863bcd6e47b181519d0705acc
     m_Address: NebulaWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d58371a6e981421418ef93aed06c320d
+    m_Address: ThrantaReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -655,8 +985,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d84a981dd98ca8d469ba6d297ddf571d
+    m_Address: CommonMiningReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9d6eb346b0497649911724f20048daf
     m_Address: ResoluteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da5c998e5e80ccb4db0951c5b73b208e
+    m_Address: MalevolenceReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -690,6 +1030,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e49bad619e0a06c4c83c0ae82d386fc1
+    m_Address: HeavyDreadnoughtReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5d34a50aa6564d49b82a6560699bee8
     m_Address: ExecutorShipView
     m_ReadOnly: 0
@@ -715,8 +1060,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1226a20384ba2d4db4934f397c5ab93
+    m_Address: AotrEmpressDefensePlatformReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f24f9301127af634ab504e1c96f3d728
     m_Address: ISDIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2d6fc19fa4e3ba4cb9b44711e09dc60
+    m_Address: RaiderCorvetteReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -725,13 +1080,53 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3df4761073611f49a060f2219950bcf
+    m_Address: CD273ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f4383e14607b20346b0b482906dbd074
     m_Address: TartanShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f519b0e4e4b4e864eb47d5a125297426
+    m_Address: ISDIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f695dba9f0edae94da3dd0979e830f47
+    m_Address: DroidBomberReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f7ad99ca50d6f3441833c0a8d56dc643
     m_Address: MandatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f837d798fc6ea1642957908e4a30c189
+    m_Address: XWingReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8953771aa6fc3e4eaf0d10232ff03b9
+    m_Address: PatrolFrigateReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: faba6bf59f4a70a40b4c9279df4347fa
+    m_Address: LiberatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fafbf467e9fb7e24abf014a67b14fe2f
+    m_Address: ISDIIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc97fc77b1ffb1f4fbd742bce3df14cb
+    m_Address: TIEFighterReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
