@@ -21,6 +21,18 @@
   "radius": 162.0,
   "hullBottom": -54.6882973,
   "hullTop": 54.6883049,
+  "selectionAnchor": [
+    0.0,
+    -56.6882973,
+    0.0
+  ],
+  "hullTint": [
+    0.549999952,
+    0.58,
+    0.62
+  ],
+  "price": 12000,
+  "population": 10,
   "shieldPlanes": 1024,
   "maxShieldPlaneViolation": -4.773506,
   "visibleMeshes": 2,

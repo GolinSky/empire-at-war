@@ -55,7 +55,7 @@ public static class BuildInvincibleArt
             if (material == null) { material = new Material(shader); AssetDatabase.CreateAsset(material, path); }
             material.shader = shader;
             if (baseMap != null) material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES + baseMap + ".png"));
-            material.SetColor("_BaseColor", Color.white);
+            material.SetColor("_BaseColor", maskMap != null ? new Color(.55f, .58f, .62f, 1) : additive ? new Color(.5f, .5f, .5f, 1) : Color.white);
             if (normalMap != null)
             {
                 material.SetTexture("_BumpMap", AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES + normalMap + ".png"));
@@ -76,7 +76,7 @@ public static class BuildInvincibleArt
                 material.SetFloat("_TeamMaskStrength", maskMap != null ? 1 : 0);
                 material.SetFloat("_TeamLiveryStrength", 0);
                 material.SetFloat("_TeamRimStrength", 0);
-                material.SetFloat("_Metallic", .15f); material.SetFloat("_Smoothness", .3f);
+                material.SetFloat("_Metallic", .2f); material.SetFloat("_Smoothness", .22f);
             }
             EditorUtility.SetDirty(material);
             modelImporter.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), name), material);

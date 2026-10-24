@@ -11,7 +11,9 @@
 - Weapons: `12` `DualHeavyTurboLaser`, `4` `MediumTurboLaser`, `8` `DualMediumTurboLaser`, `4` `HeavyIonCannon`; preserve donor arcs and hardpoint health.
 - Size `59.28171 × 109.37660 × 318.23566`; Providence length `114.23844`. Bow `+Z`, up `+Y`, centered visual, prefab root scale `1`.
 - Bank `±10°`; Y `−54.68830..54.68830`; navigation radius `162`. Own collider, shield, ion-field bounds, selection and clear hangar launch point.
-- Inherit Providence's remaining movement/regeneration/range/abilities/hangar values and price `6000`, build `60 s`, tech `4`, population `5`, limit `20`, non-hero roster flag.
+- Price `12000` and population `10`, doubled from Providence's `6000/5`. Inherit remaining movement/regeneration/range/abilities/hangar values, build `60 s`, tech `4`, limit `20`, non-hero roster flag.
+- Selection/global-overlay anchor `(0, −56.68830, 0)` = banked hull bottom − `2`; flat ring diameter `324`. Shared health-overlay offset stays `44 px`.
+- Hull/wreck tint `(0.55, 0.58, 0.62)`, metallic `0.2`, smoothness `0.22`; source-light tint `0.5`. Matching icon and live/wreck renders refreshed.
 
 ## Implementation
 

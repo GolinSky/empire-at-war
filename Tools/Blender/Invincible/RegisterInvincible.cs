@@ -89,7 +89,7 @@ public static class RegisterInvincible
         var unit = Entry(roster, SHIP_ID);
         string[] rosterFields = {"MaxCount", "AvailableLevel", "Price", "BuildTime", "UnitCapacity"};
         for (int i = 0; i < rosterFields.Length; i++)
-            unit.FindPropertyRelative("<" + rosterFields[i] + ">k__BackingField").intValue = rosterValues[i];
+            unit.FindPropertyRelative("<" + rosterFields[i] + ">k__BackingField").intValue = rosterValues[i] * (rosterFields[i] == "Price" || rosterFields[i] == "UnitCapacity" ? 2 : 1);
         unit.FindPropertyRelative("<Name>k__BackingField").stringValue = "Invincible";
         unit.FindPropertyRelative("role").stringValue = "Capital / Providence-class dreadnought / carrier";
         unit.FindPropertyRelative("description").stringValue = "A larger Providence-class hull with 10,000 hull, 6,000 shields and 28 weapon hardpoints. Retains Providence's abilities and fighter complement.";
@@ -103,7 +103,7 @@ public static class RegisterInvincible
         wreckData.FindProperty("prefab.m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(WRECK);
         Save(wreckData);
         AssetDatabase.SaveAssets();
-        return JsonConvert.SerializeObject(new {shipType = SHIP_ID, faction = "Separatist", view = VIEW, data = DATA, iconKey, rosterValues, isHero});
+        return JsonConvert.SerializeObject(new {shipType = SHIP_ID, faction = "Separatist", view = VIEW, data = DATA, iconKey, price = unit.FindPropertyRelative("<Price>k__BackingField").intValue, population = unit.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue, isHero});
     }
 
     static SerializedProperty Entry(SerializedProperty array, object key)

@@ -241,7 +241,8 @@
 
 - [x] **Import Invincible as a separate Separatist ship** → [[Done/Features/Invincible_Import|Invincible Import]]
   - Providence × `2.785714` size; `10000` hull / `6000` shields; `28` weapons, existing system counts.
-  - Completed 2026-10-24: own model/data/shield/wreck/placement/icon and all registrations saved; geometry/references/visual checks pass. No Play Mode combat or automated tests run.
+  - Source import completed 2026-10-24; saved references/geometry checks pass. No Play Mode combat or automated tests run.
+  - Follow-up completed 2026-10-24: lowered selection/global-overlay anchor, darker hull/wreck/lights, price/population `12000/10`; saved verification and builder compilation pass.
 
 - [x] **Unit hover/selection highlight in Ship Lit (EaW 2005 style)** → [[Done/Features/Unit_Highlight_Plan|Unit Highlight Plan]]; [[Done/Features/Unit_Highlight_Plan - Research|Shader, batching and material-change inventory]]
   - **Completed 2026-10-22**: render state, settings, entity facade and shared hover/tooltip picking; 95 distinct EditMode tests passed. Runtime battle acceptance/profiling skipped by user request.

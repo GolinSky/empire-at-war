@@ -106,6 +106,14 @@ public static class VerifyInvincible
         Require(points.All(p => new Vector2(p.x, p.z).magnitude <= radius + TOLERANCE), "Navigation radius must enclose hull.");
         var selection = Config(components, "SelectionComponent");
         Require(selection.FindProperty("ringSize").vector2Value.x >= 2 * radius, "Selection ring must fit hull.");
+        var selectionRoot = (Transform)selection.FindProperty("selectionRoot").objectReferenceValue;
+        var selectionPosition = root.transform.InverseTransformPoint(selectionRoot.position);
+        Require(selectionRoot.parent == root.transform && selectionPosition.y <= hullBottom - 2 + TOLERANCE, "Selection/global-overlay anchor must stay below the banked hull.");
+        Require(Mathf.Abs(selectionPosition.x) < TOLERANCE && Mathf.Abs(selectionPosition.z) < TOLERANCE, "Selection anchor must remain centered under the hull.");
+        var selectionRenderer = (SpriteRenderer)selection.FindProperty("selectedRenderer").objectReferenceValue;
+        Require(selectionRenderer.transform.localPosition.sqrMagnitude < .000001f, "Selection sprite must follow its anchor.");
+        var markerSize = Vector3.Scale(selectionRenderer.sprite.bounds.size, selectionRenderer.transform.lossyScale);
+        Require(Mathf.Abs(markerSize.x - radius * 2) < TOLERANCE && Mathf.Abs(markerSize.y - radius * 2) < TOLERANCE, "Saved selection sprite size must match the runtime ring size.");
         var shield = (Shield)health.FindProperty("shieldView").objectReferenceValue;
         Require(shield != null && shield.transform.IsChildOf(body), "Shield must bank with hull.");
         var shieldMesh = All(shield.gameObject).OfType<MeshFilter>().Single().sharedMesh;
@@ -126,6 +134,12 @@ public static class VerifyInvincible
         Require(root.transform.InverseTransformPoint(launch.position).z > bounds.max.z && !bounds.Contains(root.transform.InverseTransformPoint(launch.position)), "Hangar launch must clear hull.");
         Require(systems.Contains((HardPoint)hangar.FindProperty("hangarHardPoint").objectReferenceValue), "Hangar system binding.");
         var visible = All(prefabs[0]).OfType<MeshRenderer>().Where(r => r.enabled).ToArray();
+        var hullMaterial = visible.Single(r => r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Lit")).sharedMaterial;
+        var hullTint = hullMaterial.GetColor("_BaseColor");
+        Require(hullTint == new Color(.55f, .58f, .62f, 1) && Mathf.Abs(hullMaterial.GetFloat("_Metallic") - .2f) < .0001f && Mathf.Abs(hullMaterial.GetFloat("_Smoothness") - .22f) < .0001f, "Tuned hull material must retain its darker, rougher settings.");
+        var lightsMaterial = visible.Single(r => r.sharedMaterials.All(m => m.shader.name != "EmpireAtWar/Ship Lit")).sharedMaterial;
+        Require(lightsMaterial.GetColor("_BaseColor") == new Color(.5f, .5f, .5f, 1), "Source lights must retain the reduced brightness.");
+        Require(All(prefabs[2]).OfType<MeshRenderer>().Where(r => r.enabled).All(r => r.sharedMaterials.All(m => m.GetColor("_BaseColor") == hullTint)), "Wreck materials must match the tuned hull brightness.");
         var ownedRenderers = Refs(Config(components, "UnitRenderStateComponent").FindProperty("meshRenderers"));
         Require(injected.Contains(components.Single(c => c.GetType().Name == "UnitRenderStateComponent")), "Render state injection.");
         Require(All(root).OfType<MeshRenderer>().Where(r => r.enabled && (r.sharedMaterials.Any(m => m.shader.name == "EmpireAtWar/Ship Lit") || r.gameObject == shield.gameObject)).All(r => ownedRenderers.Contains(r)), "Unit render state must include hull and shield.");
@@ -153,7 +167,7 @@ public static class VerifyInvincible
         }
         var factionGuids = AssetDatabase.FindAssets("t:FactionDefinition", new[] {"Assets/Settings/Data/Factions"});
         Require(factionGuids.Length > 0, "Faction asset search must find the registered rosters.");
-        int separatistRosters = 0;
+        int separatistRosters = 0, price = 0, population = 0;
         foreach (var guid in factionGuids)
         {
             var faction = Load(AssetDatabase.GUIDToAssetPath(guid)); var rows = faction.FindProperty("ships.keyValue");
@@ -164,15 +178,18 @@ public static class VerifyInvincible
             var unit = Row(rows, shipId); var donor = Row(rows, (int)ShipType.Providence);
             Require(unit.FindPropertyRelative("iconKey").stringValue == iconKey && unit.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue == icon, "Faction icon binding.");
             Require(AssetDatabase.GetAssetPath(unit.FindPropertyRelative("matchups").objectReferenceValue) == "Assets/Settings/Data/Tooltip/Matchups/InvincibleMatchups.asset", "Own matchup data.");
-            foreach (string field in new[] {"<MaxCount>k__BackingField", "<AvailableLevel>k__BackingField", "<Price>k__BackingField", "<BuildTime>k__BackingField", "<UnitCapacity>k__BackingField", "isHero"})
+            foreach (string field in new[] {"<MaxCount>k__BackingField", "<AvailableLevel>k__BackingField", "<BuildTime>k__BackingField", "isHero"})
                 Require(SerializedProperty.DataEquals(unit.FindPropertyRelative(field), donor.FindPropertyRelative(field)), "Inherited roster field " + field);
+            price = unit.FindPropertyRelative("<Price>k__BackingField").intValue;
+            population = unit.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue;
+            Require(price == donor.FindPropertyRelative("<Price>k__BackingField").intValue * 2 && population == donor.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue * 2, "Price and population must double Providence.");
         }
         Require(separatistRosters == 1, "Exactly one Separatist roster must register Invincible.");
         var tooltip = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");
         Require(Enumerable.Range(0, tooltip.arraySize).Count(i => tooltip.GetArrayElementAtIndex(i).FindPropertyRelative("key").stringValue == iconKey && tooltip.GetArrayElementAtIndex(i).FindPropertyRelative("sprite").objectReferenceValue == icon) == 1, "Tooltip icon registration.");
         var mappingRows = JArray.Parse(File.ReadAllText("Temp/InvincibleImport/HardpointMapping.json"));
         Require(mappingRows.Count == 31 && mappingRows.Select(row => (string)row["source"]).Distinct().Count() == 31, "Distinct authored weapon/system socket mapping.");
-        var report = new {success = true, shipType = shipId, hull = Float(data, "Hull"), shields = Float(data, "Shields"), hardpoints = hardpoints.Length, weapons = weapons.Length, systemCount = systems.Length, size = Values(bounds.size), center = Values(bounds.center), donorLength, sizeRatio = bounds.size.z / donorLength, radius, hullBottom, hullTop, shieldPlanes = planes.Length, maxShieldPlaneViolation = maxViolation, visibleMeshes = visible.Length, ownPrefabCount = prefabs.Length, separatistRosters};
+        var report = new {success = true, shipType = shipId, hull = Float(data, "Hull"), shields = Float(data, "Shields"), hardpoints = hardpoints.Length, weapons = weapons.Length, systemCount = systems.Length, size = Values(bounds.size), center = Values(bounds.center), donorLength, sizeRatio = bounds.size.z / donorLength, radius, hullBottom, hullTop, selectionAnchor = Values(selectionPosition), hullTint = new[] {hullTint.r, hullTint.g, hullTint.b}, price, population, shieldPlanes = planes.Length, maxShieldPlaneViolation = maxViolation, visibleMeshes = visible.Length, ownPrefabCount = prefabs.Length, separatistRosters};
         string json = JsonConvert.SerializeObject(report, Formatting.Indented); File.WriteAllText("Temp/InvincibleImport/Verification.json", json); return json;
     }
 

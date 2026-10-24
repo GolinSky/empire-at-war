@@ -157,10 +157,13 @@ public static class BuildInvincibleShip
             var selection = Config(root, "SelectionComponent");
             selection.FindProperty("ringSize").vector2Value = Vector2.one * radius * 2;
             Save(selection);
-            var selected = (RectTransform)((UnityEngine.Component)selection.FindProperty("selectedRenderer").objectReferenceValue).transform;
-            selected.sizeDelta = Vector2.one * radius * 2;
-            selected.localScale = Vector3.one;
-            selected.parent.localScale = Vector3.one;
+            var selectionRoot = (Transform)selection.FindProperty("selectionRoot").objectReferenceValue;
+            selectionRoot.localPosition = new Vector3(bounds.center.x, bottom - 2, bounds.center.z);
+            selectionRoot.localScale = Vector3.one;
+            var selected = (SpriteRenderer)selection.FindProperty("selectedRenderer").objectReferenceValue;
+            selected.transform.localPosition = Vector3.zero;
+            var spriteSize = selected.sprite.bounds.size;
+            selected.transform.localScale = new Vector3(radius * 2 / spriteSize.x, radius * 2 / spriteSize.y, 1);
             PrefabUtility.SaveAsPrefabAsset(root, VIEW);
             File.WriteAllText(TASK + "HardpointMapping.json", JsonConvert.SerializeObject(mapping, Formatting.Indented));
         }
