@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0796a23492864114b8a7fc3426706de6
+    m_Address: CR70ShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b435acd8bada324bbff5dafa541fb29
     m_Address: DefendPlatformWreckView
     m_ReadOnly: 0
@@ -267,6 +272,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6575b4f6fa09aab4e896e861162168af
     m_Address: ThrantaWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6baa60f9e1228eb44a7076c056753c3b
+    m_Address: CR70WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

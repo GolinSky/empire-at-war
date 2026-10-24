@@ -15,6 +15,7 @@ namespace EmpireAtWar.Models.Factions
         Imperator = 10,
         StealthCorvette = 11,
         VenatorII = 12,
+        CR70 = 13,
 
         //separatist
         Providence = 100,

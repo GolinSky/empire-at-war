@@ -1288,3 +1288,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CR70ShipView
+      value:
+        m_AssetGUID: 0796a23492864114b8a7fc3426706de6
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CR70ShipData
+      value:
+        m_AssetGUID: 07bc34196cecfdb4fb9063946bfc1f5f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

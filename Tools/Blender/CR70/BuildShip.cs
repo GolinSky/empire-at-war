@@ -1,0 +1,149 @@
+using System;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using UnityEditor;
+using UnityEngine;
+using EmpireAtWar.Editor;
+using EmpireAtWar.Editor.Rendering;
+using EmpireAtWar.ViewComponents.Health;
+
+public static class BuildCR70Ship
+{
+    const string TASK = "Temp/CR70ChargerImport/";
+    const string VISUAL = "Assets/Prefabs/Models/Ships/Republic/CR70.prefab";
+    const string VIEW = "Assets/Prefabs/Models/Ships/Republic/CR70ShipView.prefab";
+    const string DATA = "Assets/Settings/Data/Ship/Republic/CR70ShipData.asset";
+    const string WRECK_DATA = "Assets/Settings/Data/Models/Wrecks/Republic/CR70WreckData.asset";
+    const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/CR70ReinforcementView.prefab";
+
+    public static string Main()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("CR70 construction requires Edit Mode.");
+        Directory.CreateDirectory(TASK);
+        Copy("Assets/Prefabs/Models/Ships/Rebellion/CorellianCorvetteShipView.prefab", VIEW);
+        Copy("Assets/Settings/Data/Ship/Rebellion/CorellianCorvetteShipData.asset", DATA);
+        Copy("Assets/Settings/Data/Models/Wrecks/Rebellion/CorellianCorvetteWreckData.asset", WRECK_DATA);
+        var root = PrefabUtility.LoadPrefabContents(VIEW);
+        Bounds bounds;
+        float bottom, top, radius;
+        string[] sockets = {"HP01", "HP02", "HP03", "HP04", "HP01", "HP02", "HP03", "HP04", "HP05", "HP06", "Engines", "Hull: derived dorsal surface"};
+        try
+        {
+            root.name = "CR70ShipView";
+            var body = (Transform)Config(root, "ShipMoveComponent").FindProperty("bodyTransform").objectReferenceValue;
+            var health = Component(root, "HealthComponent");
+            var shield = (Shield)new SerializedObject(health).FindProperty("shieldView").objectReferenceValue;
+            var weaponComponent = Component(root, "WeaponComponent");
+            var hardpoints = root.GetComponentsInChildren<HardPoint>(true).OrderBy(p => p.Id).ToArray();
+            if (hardpoints.Length != 12 || hardpoints.OfType<WeaponHardPoint>().Count() != 10)
+                throw new InvalidOperationException("CR70 donor must contain ten weapons, engine and shield generator.");
+            // Keep the donor's explicit component/VFX dependencies; replace only its geometry.
+            foreach (var point in hardpoints) point.transform.SetParent(root.transform, true);
+            foreach (var component in new MonoBehaviour[] {shield, weaponComponent, Component(root, "AudioShipComponent")})
+                component.transform.SetParent(root.transform, true);
+            foreach (var child in body.Cast<Transform>().ToArray()) UnityEngine.Object.DestroyImmediate(child.gameObject);
+            body.localPosition = Vector3.zero;
+            body.localRotation = Quaternion.identity;
+            body.localScale = Vector3.one;
+            var visual = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(VISUAL), body);
+            var bones = visual.GetComponentsInChildren<Transform>(true).Where(t => t.parent != null && t.parent.name == "Root").ToArray();
+            // Four paired laser mounts and two PD mounts use this model's six authored HP sockets.
+            for (int i = 0; i < hardpoints.Length; i++)
+            {
+                var point = hardpoints[i];
+                point.transform.SetParent(body, false);
+                point.transform.localScale = Vector3.one;
+                point.transform.localRotation = Quaternion.identity;
+                if (i < 11) point.transform.position = bones.Single(t => t.name == sockets[i]).position;
+            }
+            weaponComponent.transform.SetParent(body, true);
+            var visible = visual.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled).ToArray();
+            var hull = visible.Where(r => r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();
+            var points = hull.SelectMany(r => r.GetComponents<MeshFilter>().Single().sharedMesh.vertices
+                .Select(v => root.transform.InverseTransformPoint(r.transform.TransformPoint(v)))).ToArray();
+            bounds = new Bounds(points[0], Vector3.zero);
+            foreach (var point in points) bounds.Encapsulate(point);
+            // The source has no generator socket. Fit its target to the dorsal hull above the Hull bone.
+            var generatorTarget = root.transform.InverseTransformPoint(bones.Single(t => t.name == "Hull").position);
+            generatorTarget.x = bounds.center.x; generatorTarget.y = bounds.max.y;
+            hardpoints[11].transform.position = root.transform.TransformPoint(points.OrderBy(p => (p - generatorTarget).sqrMagnitude).First());
+            foreach (var point in hardpoints)
+            {
+                var anchor = (Transform)new SerializedObject(point).FindProperty("destroyedVfxAnchor").objectReferenceValue;
+                anchor.position = point.transform.position;
+                anchor.localScale = Vector3.one;
+            }
+            var engineAnchor = (Transform)new SerializedObject(hardpoints[10]).FindProperty("destroyedVfxAnchor").objectReferenceValue;
+            var engineTarget = root.transform.InverseTransformPoint(hardpoints[10].transform.position);
+            engineAnchor.position = root.transform.TransformPoint(points.OrderBy(p => (p - engineTarget).sqrMagnitude).First());
+            var banked = new[] {-15f, 0f, 15f}.SelectMany(angle => points.Select(p => Quaternion.Euler(0, 0, angle) * p)).ToArray();
+            bottom = banked.Min(p => p.y); top = banked.Max(p => p.y);
+            radius = Mathf.Ceil(new Vector2(bounds.extents.x, bounds.extents.z).magnitude) + 2;
+            Assign(health, "<ShipUnits>k__BackingField", hardpoints);
+            Assign(weaponComponent, "hardPoints", hardpoints.OfType<WeaponHardPoint>().ToArray());
+            Assign(Component(root, "EntityBindings"), "<Injectables>k__BackingField", hardpoints.Cast<UnityEngine.Object>().Concat(new[] {Component(root, "UnitRenderStateComponent")}).ToArray());
+            Assign(Component(root, "Ship"), "explosionHullRenderers", hull);
+            ShieldHullBaker.Bake(root.transform, shield);
+            var shieldRenderer = shield.GetComponents<MeshRenderer>().Single();
+            Assign(Component(root, "UnitRenderStateComponent"), "meshRenderers", visual.GetComponentsInChildren<MeshRenderer>(true).Concat(new[] {shieldRenderer}).ToArray());
+            Assign(Component(root, "FogVisibilityComponent"), "renderers", visible.Cast<Renderer>().Concat(new Renderer[] {shieldRenderer, root.GetComponents<LineRenderer>().Single()}).ToArray());
+            var healthConfig = new SerializedObject(health);
+            healthConfig.FindProperty("ionFieldBounds").boundsValue = new Bounds(new Vector3(0, (bottom + top) * .5f, 0), new Vector3(bounds.size.x, top - bottom, bounds.size.z) * 1.05f);
+            healthConfig.ApplyModifiedPropertiesWithoutUndo();
+            var collider = root.GetComponents<BoxCollider>().Single(); collider.center = bounds.center; collider.size = bounds.size;
+            var selection = Config(root, "SelectionComponent"); selection.FindProperty("ringSize").vector2Value = Vector2.one * radius * 2; Save(selection);
+            foreach (var rect in root.GetComponentsInChildren<RectTransform>(true).Where(t => t.name == "SelectedImage")) rect.sizeDelta = Vector2.one * radius * 2;
+            PrefabUtility.SaveAsPrefabAsset(root, VIEW);
+            File.WriteAllText(TASK + "HardpointMapping.json", JsonConvert.SerializeObject(hardpoints.Select(p => new {id = p.Id, name = p.name, type = (int)p.HardPointType, position = new[] {p.transform.position.x, p.transform.position.y, p.transform.position.z}, source = sockets[p.Id]}), Formatting.Indented));
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+        var wreckView = ShipWreckBuilder.Build(VIEW);
+        var wreck = Load(WRECK_DATA); wreck.targetObject.name = "CR70WreckData";
+        wreck.FindProperty("prefab.m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(wreckView)); Save(wreck);
+        var data = Load(DATA); data.targetObject.name = "CR70ShipData";
+        Set(data, "Hull", 750); Set(data, "Shields", 650); Set(data, "ShieldRegenerateValue", 650f / 120f);
+        Set(data, "HullBottom", bottom); Set(data, "HullTop", top); Set(data, "NavigationRadius", radius);
+        data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wreck.targetObject;
+        var abilities = data.FindProperty("abilities"); abilities.arraySize = 1; abilities.GetArrayElementAtIndex(0).intValue = 14;
+        data.FindProperty("hangarBays").arraySize = 0; Save(data);
+        BuildPreview(bounds);
+        AssetDatabase.SaveAssets();
+        File.WriteAllText(TASK + "GameplayBounds.json", JsonConvert.SerializeObject(new {size = new[] {bounds.size.x, bounds.size.y, bounds.size.z}, bottom, top, radius}, Formatting.Indented));
+        return "CR70 saved: eight lasers, two point defense, engine and shield generator; own shield, wreck and placement preview.";
+    }
+
+    static void BuildPreview(Bounds bounds)
+    {
+        Copy("Assets/Prefabs/Ui/Reinforcement/CorellianCorvetteReinforcementView.prefab", PREVIEW);
+        var root = PrefabUtility.LoadPrefabContents(PREVIEW);
+        try
+        {
+            root.name = "CR70ReinforcementView";
+            foreach (var child in root.transform.Cast<Transform>().ToArray()) UnityEngine.Object.DestroyImmediate(child.gameObject);
+            var visual = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(VISUAL), root.transform);
+            var hull = visual.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();
+            foreach (var renderer in visual.GetComponentsInChildren<MeshRenderer>(true)) renderer.enabled = hull.Contains(renderer);
+            var hologram = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Vfx/Hologram.mat");
+            foreach (var renderer in hull) renderer.sharedMaterials = Enumerable.Repeat(hologram, renderer.sharedMaterials.Length).ToArray();
+            var spawn = Component(root, "UnitSpawnView"); Assign(spawn, "meshRenderers", hull);
+            var config = new SerializedObject(spawn); config.FindProperty("hologramMaterial").objectReferenceValue = hologram; Save(config);
+            var collider = root.GetComponents<BoxCollider>().Single(); collider.center = bounds.center; collider.size = bounds.size; collider.isTrigger = true;
+            PrefabUtility.SaveAsPrefabAsset(root, PREVIEW);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+    }
+
+    static void Copy(string source, string target) { if (!File.Exists(target) && !AssetDatabase.CopyAsset(source, target)) throw new InvalidOperationException(target); }
+    static MonoBehaviour Component(GameObject root, string name) => root.GetComponentsInChildren<MonoBehaviour>(true).Single(m => m.GetType().Name == name);
+    static SerializedObject Config(GameObject root, string name) => new SerializedObject(Component(root, name));
+    static SerializedObject Load(string path) => new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>(path));
+    static void Assign(MonoBehaviour component, string field, UnityEngine.Object[] objects)
+    {
+        var config = new SerializedObject(component); var array = config.FindProperty(field); array.arraySize = objects.Length;
+        for (int i = 0; i < objects.Length; i++) array.GetArrayElementAtIndex(i).objectReferenceValue = objects[i];
+        config.ApplyModifiedPropertiesWithoutUndo();
+    }
+    static void Set(SerializedObject data, string name, float value) => data.FindProperty("<" + name + ">k__BackingField").floatValue = value;
+    static void Save(SerializedObject data) { data.ApplyModifiedPropertiesWithoutUndo(); EditorUtility.SetDirty(data.targetObject); }
+}

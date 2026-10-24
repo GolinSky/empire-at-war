@@ -220,6 +220,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 552ac5636e4f65c44994f1337d051b8a,
           type: 3}
+    - key: 13
+      value:
+        matchups: {fileID: 11400000, guid: 46fbf485a22af0146943a56eeafd8780, type: 2}
+        description: 750 hull, 650 shields. Eight laser cannons and two point-defense
+          mounts screen the fleet. Weapons, engines and shield generator are destructible.
+          Power to Engines doubles speed for 20 seconds, triples weapon delay and
+          pauses shield regeneration; 50-second recovery.
+        role: Corvette / Escort
+        iconKey: 7e5117ae6840c8d4a9252e2b589de44f:21300000
+        isHero: 0
+        <Name>k__BackingField: CR70 Corvette
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 1250
+        <BuildTime>k__BackingField: 15
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 7e5117ae6840c8d4a9252e2b589de44f,
+          type: 3}
   squadrons:
     keyValue:
     - key: 2
