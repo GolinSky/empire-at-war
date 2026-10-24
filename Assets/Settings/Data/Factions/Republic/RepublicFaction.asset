@@ -95,22 +95,6 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 003f227a5109a5745879774b3be70886,
           type: 3}
-    - key: 6
-      value:
-        matchups: {fileID: 11400000, guid: f39746bde7f9b514282749a973ba31c5, type: 2}
-        description: Seven laser cannons and three point-defense lasers protect the
-          fleet against light targets.
-        role: "Corvette \xB7 Light screen"
-        iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
-        isHero: 0
-        <Name>k__BackingField: Thranta
-        <MaxCount>k__BackingField: 20
-        <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 1200
-        <BuildTime>k__BackingField: 25
-        <UnitCapacity>k__BackingField: 2
-        <Icon>k__BackingField: {fileID: 21300000, guid: 28476024afa7c5f47bd010e6e4460dc4,
-          type: 3}
     - key: 7
       value:
         matchups: {fileID: 11400000, guid: 522ba884f3c6d224cb19c7a59f5dd39b, type: 2}

@@ -14,7 +14,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class CorvetteLoadoutTests
     {
         private const string RAIDER_DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
-        private const string THRANTA_DATA = "Assets/Settings/Data/Ship/Republic/ThrantaShipData.asset";
+        private const string CARRACK_DATA = "Assets/Settings/Data/Ship/Republic/CarrackShipData.asset";
 
         [Test]
         public void SavedCorvettes_HaveExpectedPointDefenseMountsAndMatchingTargetableLoadouts()
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponsData weapons = BalanceRegistration.One<WeaponsData>();
             BalanceUnit[] corvettes = registry.Units.Where(unit =>
                 unit.Data is ShipData data && data.ShipClass == ShipClass.Corvette).ToArray();
-            Assert.That(corvettes.Length, Is.EqualTo(8));
+            Assert.That(corvettes.Length, Is.EqualTo(9));
 
             foreach (BalanceUnit unit in corvettes)
             {
@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
                 var healthBindings = BalancePrefabBindings.References(
                     unit.Components.OfType<HealthComponent>().Single(), BalanceRegistration.Auto("ShipUnits"));
                 bool isRaider = AssetDatabase.GetAssetPath(data) == RAIDER_DATA;
-                bool isThranta = AssetDatabase.GetAssetPath(data) == THRANTA_DATA;
+                bool isCarrack = AssetDatabase.GetAssetPath(data) == CARRACK_DATA;
 
                 Assert.That(mounts, Is.Not.Empty, unit.Caption);
                 Assert.That(mounts.Distinct().Count(), Is.EqualTo(mounts.Length), unit.Caption);
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
                     .OfType<WeaponHardPoint>()), unit.Caption);
                 Assert.That(mounts.Select(mount => mount.Id).Distinct().Count(), Is.EqualTo(mounts.Length), unit.Caption);
                 Assert.That(mounts.Count(mount => weapons.GetDefinition(mount.WeaponType).Family ==
-                    WeaponFamily.PointDefense), Is.EqualTo(isThranta ? 3 : 2), unit.Caption);
+                    WeaponFamily.PointDefense), Is.EqualTo(isCarrack ? 0 : 2), unit.Caption);
                 Assert.That(data.WeaponLoadout.Select(entry => entry.WeaponType).Distinct().Count(),
                     Is.EqualTo(data.WeaponLoadout.Count), unit.Caption);
                 Assert.That(data.WeaponLoadout.Select(entry => (entry.WeaponType, entry.Count)),
@@ -75,7 +75,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration registry = BalanceInventory.BuildCombat();
             BalanceUnit[] corvettes = registry.Units.Where(unit =>
                 unit.Data is ShipData data && data.ShipClass == ShipClass.Corvette).ToArray();
-            Assert.That(corvettes.Length, Is.EqualTo(8));
+            Assert.That(corvettes.Length, Is.EqualTo(9));
 
             foreach (BalanceUnit unit in corvettes)
             {
