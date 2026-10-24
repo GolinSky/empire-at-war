@@ -1,0 +1,648 @@
+[
+  {
+    "id": 0,
+    "name": "DualHeavyTurboLaser_00",
+    "weapon": 3,
+    "source": "HP_TBL02",
+    "position": [
+      -20.0090466,
+      -23.6746082,
+      13.1400137
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -6.905651,
+      2.55998969,
+      11.8412685
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 1,
+    "name": "DualHeavyTurboLaser_01",
+    "weapon": 3,
+    "source": "HP_TBL11",
+    "position": [
+      19.6875134,
+      -23.6746082,
+      13.1400137
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      6.905651,
+      2.55998969,
+      11.8412685
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 2,
+    "name": "DualHeavyTurboLaser_02",
+    "weapon": 3,
+    "source": "HP_TBL03",
+    "position": [
+      -21.639555,
+      -23.419426,
+      37.15114
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -7.0426054,
+      2.81809568,
+      21.6809
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 3,
+    "name": "DualHeavyTurboLaser_03",
+    "weapon": 3,
+    "source": "HP_TBL12",
+    "position": [
+      21.0639954,
+      -23.419426,
+      37.15114
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      7.0426054,
+      2.81809568,
+      21.6809
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 4,
+    "name": "DualHeavyTurboLaser_04",
+    "weapon": 3,
+    "source": "HP_LC03",
+    "position": [
+      -3.93650818,
+      -6.14388371,
+      77.71412
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -6.33676434,
+      3.60821581,
+      33.6801949
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 5,
+    "name": "DualHeavyTurboLaser_05",
+    "weapon": 3,
+    "source": "HP_LC09",
+    "position": [
+      4.18617773,
+      -6.14388371,
+      77.71412
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      6.33676434,
+      3.60821581,
+      33.6801949
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 6,
+    "name": "DualMediumTurboLaser_06",
+    "weapon": 5,
+    "source": "HP_TBL18",
+    "position": [
+      27.15264,
+      -19.8982964,
+      -78.98934
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      10.1135387,
+      0.305513173,
+      -26.8008785
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 7,
+    "name": "DualMediumTurboLaser_07",
+    "weapon": 5,
+    "source": "HP_LC06",
+    "position": [
+      26.51345,
+      -19.8982964,
+      -28.4844818
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      10.1135387,
+      0.305513173,
+      -3.79257751
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 8,
+    "name": "DualMediumTurboLaser_08",
+    "weapon": 5,
+    "source": "HP_TBL01",
+    "position": [
+      -27.2467117,
+      -19.8982964,
+      -81.25838
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -10.1135387,
+      0.305513173,
+      -26.8008785
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 9,
+    "name": "DualMediumTurboLaser_09",
+    "weapon": 5,
+    "source": "HP_LC05",
+    "position": [
+      -26.4000778,
+      -19.8982964,
+      -28.6168938
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -10.1135387,
+      0.305513173,
+      -3.79257751
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 10,
+    "name": "HeavyIonCannon_10",
+    "weapon": 11,
+    "source": "HP_LC07",
+    "position": [
+      5.916405,
+      -6.16799641,
+      23.0023766
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      2.10698748,
+      5.004095,
+      8.375275
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 11,
+    "name": "HeavyIonCannon_11",
+    "weapon": 11,
+    "source": "HP_LC01",
+    "position": [
+      -6.37731,
+      -6.16799641,
+      23.0023766
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      -2.10698748,
+      5.004095,
+      8.375275
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 12,
+    "name": "MediumTurboLaser_12",
+    "weapon": 4,
+    "source": "HP_LC02",
+    "position": [
+      -2.37846971,
+      -6.262679,
+      52.1559334
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      -2.10698748,
+      5.004095,
+      34.0278473
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 13,
+    "name": "MediumTurboLaser_13",
+    "weapon": 4,
+    "source": "HP_LC08",
+    "position": [
+      2.206798,
+      -6.262679,
+      52.1559334
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      -2.10698748,
+      5.004095,
+      34.0278473
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": true
+  },
+  {
+    "id": 14,
+    "name": "DualHeavyTurboLaser_14",
+    "weapon": 3,
+    "source": "HP_TBL04",
+    "position": [
+      -21.5135231,
+      -23.5609741,
+      65.32455
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -6.905651,
+      2.55998969,
+      11.8412685
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 15,
+    "name": "DualHeavyTurboLaser_15",
+    "weapon": 3,
+    "source": "HP_TBL10",
+    "position": [
+      22.1315441,
+      -23.5609741,
+      65.32455
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      6.905651,
+      2.55998969,
+      11.8412685
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 16,
+    "name": "DualHeavyTurboLaser_16",
+    "weapon": 3,
+    "source": "HP_TBL05",
+    "position": [
+      -19.7668266,
+      -23.5023289,
+      90.6517944
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -7.0426054,
+      2.81809568,
+      21.6809
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 17,
+    "name": "DualHeavyTurboLaser_17",
+    "weapon": 3,
+    "source": "HP_TBL13",
+    "position": [
+      20.6664658,
+      -23.5023289,
+      90.6517944
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      7.0426054,
+      2.81809568,
+      21.6809
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 18,
+    "name": "DualHeavyTurboLaser_18",
+    "weapon": 3,
+    "source": "HP_LC04",
+    "position": [
+      -4.44262838,
+      -5.72676754,
+      101.838089
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -6.33676434,
+      3.60821581,
+      33.6801949
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 19,
+    "name": "DualHeavyTurboLaser_19",
+    "weapon": 3,
+    "source": "HP_LC10",
+    "position": [
+      4.53816843,
+      -5.72676754,
+      101.838089
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      6.33676434,
+      3.60821581,
+      33.6801949
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 20,
+    "name": "DualMediumTurboLaser_20",
+    "weapon": 5,
+    "source": "HP_TBL15",
+    "position": [
+      4.77866745,
+      -1.58404064,
+      -100.469673
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      10.1135387,
+      0.305513173,
+      -26.8008785
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 21,
+    "name": "DualMediumTurboLaser_21",
+    "weapon": 5,
+    "source": "HP_TBL17",
+    "position": [
+      4.316661,
+      2.30798626,
+      -35.9409332
+    ],
+    "yaw": [
+      0.0,
+      160.0
+    ],
+    "donorPosition": [
+      10.1135387,
+      0.305513173,
+      -3.79257751
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 22,
+    "name": "DualMediumTurboLaser_22",
+    "weapon": 5,
+    "source": "HP_TBL07",
+    "position": [
+      -4.95287657,
+      -1.58404064,
+      -100.469673
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -10.1135387,
+      0.305513173,
+      -26.8008785
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 23,
+    "name": "DualMediumTurboLaser_23",
+    "weapon": 5,
+    "source": "HP_TBL09",
+    "position": [
+      -4.553695,
+      2.30798626,
+      -35.9409332
+    ],
+    "yaw": [
+      -160.0,
+      0.0
+    ],
+    "donorPosition": [
+      -10.1135387,
+      0.305513173,
+      -3.79257751
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 24,
+    "name": "HeavyIonCannon_24",
+    "weapon": 11,
+    "source": "HP_TBL16",
+    "position": [
+      4.68490839,
+      -0.104619026,
+      -58.01948
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      2.10698748,
+      5.004095,
+      8.375275
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 25,
+    "name": "HeavyIonCannon_25",
+    "weapon": 11,
+    "source": "HP_TBL08",
+    "position": [
+      -4.339046,
+      -0.104619026,
+      -58.01948
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      -2.10698748,
+      5.004095,
+      8.375275
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 26,
+    "name": "MediumTurboLaser_26",
+    "weapon": 4,
+    "source": "HP_TBL06",
+    "position": [
+      -19.2299118,
+      -23.63176,
+      114.771248
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      -2.10698748,
+      5.004095,
+      34.0278473
+    ],
+    "side": -1.0,
+    "mirroredDonorTarget": false
+  },
+  {
+    "id": 27,
+    "name": "MediumTurboLaser_27",
+    "weapon": 4,
+    "source": "HP_TBL14",
+    "position": [
+      19.13036,
+      -23.63176,
+      114.771248
+    ],
+    "yaw": [
+      -160.0,
+      160.0
+    ],
+    "donorPosition": [
+      -2.10698748,
+      5.004095,
+      34.0278473
+    ],
+    "side": 1.0,
+    "mirroredDonorTarget": true
+  },
+  {
+    "id": 28,
+    "name": "ShieldGenerator",
+    "source": "HP_Shield",
+    "position": [
+      0.00267961412,
+      44.94207,
+      -124.810577
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Engines",
+    "source": "HP_Engine",
+    "position": [
+      0.00267961412,
+      -20.3059959,
+      -153.852371
+    ]
+  },
+  {
+    "id": 30,
+    "name": "HangarUnit",
+    "source": "Spawn_00",
+    "position": [
+      -26.3330631,
+      -19.8988419,
+      -53.2964363
+    ]
+  }
+]

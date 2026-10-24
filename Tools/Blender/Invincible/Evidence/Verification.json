@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "shipType": 109,
+  "hull": 10000.0,
+  "shields": 6000.0,
+  "hardpoints": 31,
+  "weapons": 28,
+  "systemCount": 3,
+  "size": [
+    59.28171,
+    109.3766,
+    318.235657
+  ],
+  "center": [
+    0.0,
+    3.81469727E-06,
+    0.0
+  ],
+  "donorLength": 114.238441,
+  "sizeRatio": 2.78571439,
+  "radius": 162.0,
+  "hullBottom": -54.6882973,
+  "hullTop": 54.6883049,
+  "shieldPlanes": 1024,
+  "maxShieldPlaneViolation": -4.773506,
+  "visibleMeshes": 2,
+  "ownPrefabCount": 4,
+  "separatistRosters": 1
+}

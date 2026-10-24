@@ -1,0 +1,24 @@
+{
+  "size": [
+    59.28171,
+    109.3766,
+    318.235657
+  ],
+  "center": [
+    0.0,
+    3.81469727E-06,
+    0.0
+  ],
+  "donorLength": 114.238441,
+  "targetLength": 318.235657,
+  "sizeRatio": 2.78571439,
+  "modelScale": 8.120045,
+  "sourceBoundsCenter": [
+    0.0,
+    1.82631683,
+    0.179956436
+  ],
+  "visibleMeshes": 2,
+  "teamMask": "Invincible_Hull_TeamMask",
+  "maskConvention": "source albedo alpha, 4.52621% painted stripes"
+}

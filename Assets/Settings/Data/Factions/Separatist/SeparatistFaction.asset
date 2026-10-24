@@ -164,6 +164,22 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: f7655a1be55b2a74aa984b640ec46f5d,
           type: 3}
+    - key: 109
+      value:
+        matchups: {fileID: 11400000, guid: 4a1771d5cec7be245892510aeae56eba, type: 2}
+        description: A larger Providence-class hull with 10,000 hull, 6,000 shields
+          and 28 weapon hardpoints. Retains Providence's abilities and fighter complement.
+        role: Capital / Providence-class dreadnought / carrier
+        iconKey: af913e547595237409f81ee21d82b267:21300000
+        isHero: 0
+        <Name>k__BackingField: Invincible
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 60
+        <UnitCapacity>k__BackingField: 5
+        <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
+          type: 3}
   squadrons:
     keyValue:
     - key: 100

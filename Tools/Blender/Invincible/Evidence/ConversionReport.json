@@ -1,0 +1,1839 @@
+{
+  "before": {
+    "meshes": {
+      "Hull": {
+        "exported_name": "Hull",
+        "vertices": 19131,
+        "triangles": 9810,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "Invincible_Hull_Slot0"
+        ],
+        "slot_triangles": [
+          9810
+        ]
+      },
+      "Lights": {
+        "exported_name": "Lights",
+        "vertices": 1864,
+        "triangles": 836,
+        "hidden": false,
+        "shader": "MeshAdditive.fx",
+        "materials": [
+          "Invincible_Lights_Slot0"
+        ],
+        "slot_triangles": [
+          836
+        ]
+      },
+      "Shadow": {
+        "exported_name": "Shadow",
+        "vertices": 5632,
+        "triangles": 10539,
+        "hidden": true,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "Invincible_Shadow_Slot0"
+        ],
+        "slot_triangles": [
+          10539
+        ]
+      },
+      "HP_TBL03_blast": {
+        "exported_name": "HP_TBL03_blast",
+        "vertices": 12,
+        "triangles": 12,
+        "hidden": true,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "Invincible_HP_TBL03_blast_Slot0"
+        ],
+        "slot_triangles": [
+          12
+        ]
+      },
+      "HP_TBL14_blast": {
+        "exported_name": "HP_TBL14_blast",
+        "vertices": 20,
+        "triangles": 24,
+        "hidden": true,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "Invincible_HP_TBL14_blast_Slot0"
+        ],
+        "slot_triangles": [
+          24
+        ]
+      },
+      "HP_TBL16_blast": {
+        "exported_name": "HP_TBL16_blast",
+        "vertices": 15,
+        "triangles": 16,
+        "hidden": true,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "Invincible_HP_TBL16_blast_Slot0"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "collision": {
+        "exported_name": "collision",
+        "vertices": 104,
+        "triangles": 184,
+        "hidden": true,
+        "shader": "MeshCollision.fx",
+        "materials": [
+          "Invincible_collision_Slot0"
+        ],
+        "slot_triangles": [
+          184
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull": {
+        "parent": "Root",
+        "head": [
+          -6.09933304856082e-23,
+          -6.918776512145996,
+          -286.9560241699219
+        ]
+      },
+      "PI_Damage_elec_SD00": {
+        "parent": "Hull",
+        "head": [
+          -260.7461242675781,
+          375.35467529296875,
+          3.0517578125e-05
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          -6.09933304856082e-23,
+          501.36614990234375,
+          3.327972412109375
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          -6.09933304856082e-23,
+          -6.918776512145996,
+          -286.9560241699219
+        ]
+      },
+      "Spawn_00": {
+        "parent": "Root",
+        "head": [
+          162.1485137939453,
+          319.180419921875,
+          -31.213254928588867
+        ]
+      },
+      "Spawn_00_Emitdamage": {
+        "parent": "Spawn_00",
+        "head": [
+          162.1485137939453,
+          337.7378845214844,
+          -31.213254928588867
+        ]
+      },
+      "P_RB_Station_Damage": {
+        "parent": "Spawn_00_Emitdamage",
+        "head": [
+          163.2801055908203,
+          237.38735961914062,
+          -31.824491500854492
+        ]
+      },
+      "P_RB_Station_Damage.001": {
+        "parent": "Spawn_00_Emitdamage",
+        "head": [
+          163.2801055908203,
+          319.0226135253906,
+          -31.824491500854492
+        ]
+      },
+      "P_RB_Station_Damage.002": {
+        "parent": "Spawn_00_Emitdamage",
+        "head": [
+          163.2801055908203,
+          373.2079162597656,
+          -31.824491500854492
+        ]
+      },
+      "Spawn_01": {
+        "parent": "Root",
+        "head": [
+          -161.6192169189453,
+          319.180419921875,
+          -31.213254928588867
+        ]
+      },
+      "Spawn_01_emitdamage": {
+        "parent": "Spawn_01",
+        "head": [
+          -161.6192169189453,
+          336.3419189453125,
+          -31.213254928588867
+        ]
+      },
+      "P_RB_Station_Damage.003": {
+        "parent": "Spawn_01_emitdamage",
+        "head": [
+          -162.56637573242188,
+          242.6169891357422,
+          -31.833730697631836
+        ]
+      },
+      "P_RB_Station_Damage.004": {
+        "parent": "Spawn_01_emitdamage",
+        "head": [
+          -162.56634521484375,
+          387.7786865234375,
+          -31.833730697631836
+        ]
+      },
+      "P_RB_Station_Damage.005": {
+        "parent": "Spawn_01_emitdamage",
+        "head": [
+          -162.5663604736328,
+          319.13702392578125,
+          -31.833730697631836
+        ]
+      },
+      "HP_Shield": {
+        "parent": "Root",
+        "head": [
+          -0.016499996185302734,
+          759.5360717773438,
+          368.05133056640625
+        ]
+      },
+      "HP_Shield_emitdamage": {
+        "parent": "HP_Shield",
+        "head": [
+          -0.016538750380277634,
+          759.5360717773438,
+          407.9161376953125
+        ]
+      },
+      "P_HP_underworld_Damage_LRG": {
+        "parent": "HP_Shield_emitdamage",
+        "head": [
+          -3.148064136505127,
+          739.9869384765625,
+          381.9840087890625
+        ]
+      },
+      "P_explosion_empire_huge00": {
+        "parent": "HP_Shield_emitdamage",
+        "head": [
+          -3.1480631828308105,
+          779.8475341796875,
+          376.2384033203125
+        ]
+      },
+      "HP_MIS01": {
+        "parent": "Root",
+        "head": [
+          118.15442657470703,
+          329.07440185546875,
+          39.047752380371094
+        ]
+      },
+      "HP_Engine": {
+        "parent": "Root",
+        "head": [
+          -0.016499996185302734,
+          938.364013671875,
+          -33.7203483581543
+        ]
+      },
+      "HP_Engine_emitdamage": {
+        "parent": "HP_Engine",
+        "head": [
+          -22.409944534301758,
+          938.364013671875,
+          -33.7203483581543
+        ]
+      },
+      "P_RB_Station_Damage.006": {
+        "parent": "HP_Engine_emitdamage",
+        "head": [
+          77.24484252929688,
+          937.8614501953125,
+          -35.812599182128906
+        ]
+      },
+      "P_RB_Station_Damage.007": {
+        "parent": "HP_Engine_emitdamage",
+        "head": [
+          3.255281686782837,
+          937.8614501953125,
+          -35.81259536743164
+        ]
+      },
+      "P_RB_Station_Damage.008": {
+        "parent": "HP_Engine_emitdamage",
+        "head": [
+          -78.55493927001953,
+          937.8614501953125,
+          -35.812599182128906
+        ]
+      },
+      "HP_MIS02": {
+        "parent": "Root",
+        "head": [
+          -116.51314544677734,
+          329.07440185546875,
+          39.047752380371094
+        ]
+      },
+      "HP_TBL01": {
+        "parent": "Root",
+        "head": [
+          167.77439880371094,
+          491.35894775390625,
+          -31.209922790527344
+        ]
+      },
+      "HP_TBL02": {
+        "parent": "Root",
+        "head": [
+          123.2077407836914,
+          -89.90879821777344,
+          -54.462982177734375
+        ]
+      },
+      "HP_TBL02_emitdamage": {
+        "parent": "HP_TBL02",
+        "head": [
+          123.2077407836914,
+          -78.03306579589844,
+          -54.462982177734375
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.001": {
+        "parent": "HP_TBL02_emitdamage",
+        "head": [
+          128.77012634277344,
+          -101.98234558105469,
+          -56.36833190917969
+        ]
+      },
+      "HP_TBL03": {
+        "parent": "Root",
+        "head": [
+          133.2477569580078,
+          -237.75975036621094,
+          -52.89168930053711
+        ]
+      },
+      "HP_TBL03_blast": {
+        "parent": "HP_TBL03",
+        "head": [
+          133.89268493652344,
+          -239.61216735839844,
+          -53.97006607055664
+        ]
+      },
+      "HP_TBL04": {
+        "parent": "Root",
+        "head": [
+          132.47171020507812,
+          -411.24041748046875,
+          -53.7632942199707
+        ]
+      },
+      "HP_TBL04_emitdamage": {
+        "parent": "HP_TBL04",
+        "head": [
+          132.4716796875,
+          -424.59893798828125,
+          -53.7632942199707
+        ]
+      },
+      "P_RB_Station_Damage.009": {
+        "parent": "HP_TBL04_emitdamage",
+        "head": [
+          138.0050048828125,
+          -406.07769775390625,
+          -54.733394622802734
+        ]
+      },
+      "HP_TBL05": {
+        "parent": "Root",
+        "head": [
+          121.71624755859375,
+          -567.1954956054688,
+          -53.40221405029297
+        ]
+      },
+      "HP_TBL05_emitdamage": {
+        "parent": "HP_TBL05",
+        "head": [
+          121.71621704101562,
+          -579.7361450195312,
+          -53.40221405029297
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.002": {
+        "parent": "HP_TBL05_emitdamage",
+        "head": [
+          128.80795288085938,
+          -569.3228149414062,
+          -57.33061981201172
+        ]
+      },
+      "HP_TBL06": {
+        "parent": "Root",
+        "head": [
+          118.4101333618164,
+          -715.7135009765625,
+          -54.19920349121094
+        ]
+      },
+      "HP_TBL07": {
+        "parent": "Root",
+        "head": [
+          30.49784278869629,
+          609.6544189453125,
+          81.56202697753906
+        ]
+      },
+      "HP_TBL07_emitdamage": {
+        "parent": "HP_TBL07",
+        "head": [
+          30.49784278869629,
+          595.9742431640625,
+          81.56202697753906
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.003": {
+        "parent": "HP_TBL07_emitdamage",
+        "head": [
+          32.343727111816406,
+          611.6948852539062,
+          76.46224975585938
+        ]
+      },
+      "HP_TBL08": {
+        "parent": "Root",
+        "head": [
+          26.71811866760254,
+          348.2630615234375,
+          90.67169952392578
+        ]
+      },
+      "HP_TBL08_emitdamage": {
+        "parent": "HP_TBL08",
+        "head": [
+          26.71811866760254,
+          360.31671142578125,
+          90.67169952392578
+        ]
+      },
+      "P_RB_Station_Damage.010": {
+        "parent": "HP_TBL08_emitdamage",
+        "head": [
+          35.91267776489258,
+          336.7679443359375,
+          85.89813995361328
+        ]
+      },
+      "HP_TBL09": {
+        "parent": "Root",
+        "head": [
+          28.039838790893555,
+          212.3121337890625,
+          105.52752685546875
+        ]
+      },
+      "HP_TBL10": {
+        "parent": "Root",
+        "head": [
+          -136.27723693847656,
+          -411.24041748046875,
+          -53.7632942199707
+        ]
+      },
+      "HP_TBL11": {
+        "parent": "Root",
+        "head": [
+          -121.22786712646484,
+          -89.90879821777344,
+          -54.462982177734375
+        ]
+      },
+      "HP_TBL12": {
+        "parent": "Root",
+        "head": [
+          -129.7036895751953,
+          -237.75975036621094,
+          -52.89168930053711
+        ]
+      },
+      "HP_TBL12_emitdamage": {
+        "parent": "HP_TBL12",
+        "head": [
+          -129.7036895751953,
+          -251.93882751464844,
+          -52.891685485839844
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.004": {
+        "parent": "HP_TBL12_emitdamage",
+        "head": [
+          -131.27490234375,
+          -237.59495544433594,
+          -55.349143981933594
+        ]
+      },
+      "HP_TBL13": {
+        "parent": "Root",
+        "head": [
+          -127.25585174560547,
+          -567.1954956054688,
+          -53.40221405029297
+        ]
+      },
+      "HP_TBL14": {
+        "parent": "Root",
+        "head": [
+          -117.7971420288086,
+          -715.7135009765625,
+          -54.19920349121094
+        ]
+      },
+      "HP_TBL14_blast": {
+        "parent": "HP_TBL14",
+        "head": [
+          -132.94488525390625,
+          -712.0499267578125,
+          -53.970062255859375
+        ]
+      },
+      "HP_TBL15": {
+        "parent": "Root",
+        "head": [
+          -29.42513084411621,
+          609.6544189453125,
+          81.56202697753906
+        ]
+      },
+      "HP_TBL16": {
+        "parent": "Root",
+        "head": [
+          -28.84779930114746,
+          348.2630615234375,
+          90.67169952392578
+        ]
+      },
+      "HP_TBL16_blast": {
+        "parent": "HP_TBL16",
+        "head": [
+          -65.5167236328125,
+          331.9972839355469,
+          100.03274536132812
+        ]
+      },
+      "HP_TBL17": {
+        "parent": "Root",
+        "head": [
+          -26.580278396606445,
+          212.3121337890625,
+          105.52752685546875
+        ]
+      },
+      "HP_TBL17_emitdamage": {
+        "parent": "HP_TBL17",
+        "head": [
+          -26.580276489257812,
+          200.13031005859375,
+          105.52752685546875
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.005": {
+        "parent": "HP_TBL17_emitdamage",
+        "head": [
+          -29.277982711791992,
+          211.69284057617188,
+          105.2086410522461
+        ]
+      },
+      "HP_TBL18": {
+        "parent": "Root",
+        "head": [
+          -167.19512939453125,
+          477.3871154785156,
+          -31.209922790527344
+        ]
+      },
+      "HP_TBL18_emitdamage": {
+        "parent": "HP_TBL18",
+        "head": [
+          -167.19512939453125,
+          493.23193359375,
+          -31.209924697875977
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.006": {
+        "parent": "HP_TBL18_emitdamage",
+        "head": [
+          -168.18736267089844,
+          489.99658203125,
+          -31.322484970092773
+        ]
+      },
+      "HP_LC01": {
+        "parent": "Root",
+        "head": [
+          39.2689323425293,
+          -150.63731384277344,
+          53.33576202392578
+        ]
+      },
+      "HP_LC02": {
+        "parent": "Root",
+        "head": [
+          14.645669937133789,
+          -330.1533203125,
+          52.75270462036133
+        ]
+      },
+      "HP_LC03": {
+        "parent": "Root",
+        "head": [
+          24.239450454711914,
+          -487.53045654296875,
+          53.48422622680664
+        ]
+      },
+      "HP_LC04": {
+        "parent": "Root",
+        "head": [
+          27.35593605041504,
+          -636.0762939453125,
+          56.0526008605957
+        ]
+      },
+      "HP_LC05": {
+        "parent": "Root",
+        "head": [
+          162.56117248535156,
+          167.213623046875,
+          -31.209922790527344
+        ]
+      },
+      "HP_LC05_emitdamage": {
+        "parent": "HP_LC05",
+        "head": [
+          162.56117248535156,
+          154.62286376953125,
+          -31.209922790527344
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.007": {
+        "parent": "HP_LC05_emitdamage",
+        "head": [
+          163.690673828125,
+          165.88702392578125,
+          -31.32248306274414
+        ]
+      },
+      "HP_LC06": {
+        "parent": "Root",
+        "head": [
+          -163.25926208496094,
+          166.39828491210938,
+          -31.209922790527344
+        ]
+      },
+      "HP_LC07": {
+        "parent": "Root",
+        "head": [
+          -36.43086624145508,
+          -150.63731384277344,
+          53.33576202392578
+        ]
+      },
+      "HP_LC07_emitdamage": {
+        "parent": "HP_LC07",
+        "head": [
+          -36.430870056152344,
+          -163.6896209716797,
+          53.335758209228516
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.008": {
+        "parent": "HP_LC07_emitdamage",
+        "head": [
+          -37.55845642089844,
+          -151.5555877685547,
+          53.56944274902344
+        ]
+      },
+      "HP_LC08": {
+        "parent": "Root",
+        "head": [
+          -13.588582992553711,
+          -330.1533203125,
+          52.75270462036133
+        ]
+      },
+      "HP_LC09": {
+        "parent": "Root",
+        "head": [
+          -25.77681541442871,
+          -487.53045654296875,
+          53.48422622680664
+        ]
+      },
+      "HP_LC10": {
+        "parent": "Root",
+        "head": [
+          -27.94423484802246,
+          -636.0762939453125,
+          56.0526008605957
+        ]
+      },
+      "HP_LC10_emitdamage": {
+        "parent": "HP_LC10",
+        "head": [
+          -27.944238662719727,
+          -651.9024658203125,
+          56.05259704589844
+        ]
+      },
+      "P_RB_Station_Damage.011": {
+        "parent": "HP_LC10_emitdamage",
+        "head": [
+          -27.87417221069336,
+          -635.5032348632812,
+          55.972618103027344
+        ]
+      },
+      "HP_TORP01": {
+        "parent": "Root",
+        "head": [
+          22.079172134399414,
+          -902.9541015625,
+          -52.11840057373047
+        ]
+      },
+      "HP_TORP02": {
+        "parent": "Root",
+        "head": [
+          -20.86714744567871,
+          -902.9541015625,
+          -52.11840057373047
+        ]
+      },
+      "Pe_Providence": {
+        "parent": "Root",
+        "head": [
+          78.08533477783203,
+          925.911376953125,
+          -43.64292526245117
+        ]
+      },
+      "Pe_Providence_S": {
+        "parent": "Root",
+        "head": [
+          0.0018157958984375,
+          944.84326171875,
+          -25.095138549804688
+        ]
+      },
+      "Pe_Providence.001": {
+        "parent": "Root",
+        "head": [
+          -78.01180267333984,
+          925.911376953125,
+          -43.64292526245117
+        ]
+      },
+      "collision": {
+        "parent": "Root",
+        "head": [
+          -1.2345303730398882e-06,
+          377.7229309082031,
+          -37.326148986816406
+        ]
+      }
+    }
+  },
+  "after": {
+    "meshes": {
+      "Hull": {
+        "exported_name": "Hull",
+        "vertices": 19131,
+        "triangles": 9810,
+        "hidden": false,
+        "shader": "MeshBumpColorize.fx",
+        "materials": [
+          "Invincible_Hull_Slot0"
+        ],
+        "slot_triangles": [
+          9810
+        ]
+      },
+      "Lights": {
+        "exported_name": "Lights",
+        "vertices": 1864,
+        "triangles": 836,
+        "hidden": false,
+        "shader": "MeshAdditive.fx",
+        "materials": [
+          "Invincible_Lights_Slot0"
+        ],
+        "slot_triangles": [
+          836
+        ]
+      },
+      "Shadow": {
+        "exported_name": "Shadow",
+        "vertices": 5632,
+        "triangles": 10539,
+        "hidden": true,
+        "shader": "MeshShadowVolume.fx",
+        "materials": [
+          "Invincible_Shadow_Slot0"
+        ],
+        "slot_triangles": [
+          10539
+        ]
+      },
+      "HP_TBL03_blast": {
+        "exported_name": "HP_TBL03_blast",
+        "vertices": 12,
+        "triangles": 12,
+        "hidden": true,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "Invincible_HP_TBL03_blast_Slot0"
+        ],
+        "slot_triangles": [
+          12
+        ]
+      },
+      "HP_TBL14_blast": {
+        "exported_name": "HP_TBL14_blast",
+        "vertices": 20,
+        "triangles": 24,
+        "hidden": true,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "Invincible_HP_TBL14_blast_Slot0"
+        ],
+        "slot_triangles": [
+          24
+        ]
+      },
+      "HP_TBL16_blast": {
+        "exported_name": "HP_TBL16_blast",
+        "vertices": 15,
+        "triangles": 16,
+        "hidden": true,
+        "shader": "MeshAlpha.fx",
+        "materials": [
+          "Invincible_HP_TBL16_blast_Slot0"
+        ],
+        "slot_triangles": [
+          16
+        ]
+      },
+      "collision": {
+        "exported_name": "collision",
+        "vertices": 104,
+        "triangles": 184,
+        "hidden": true,
+        "shader": "MeshCollision.fx",
+        "materials": [
+          "Invincible_collision_Slot0"
+        ],
+        "slot_triangles": [
+          184
+        ]
+      }
+    },
+    "bones": {
+      "Root": {
+        "parent": null,
+        "head": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "Hull": {
+        "parent": "Root",
+        "head": [
+          -6.09933304856082e-23,
+          -6.9188232421875,
+          -286.9560241699219
+        ]
+      },
+      "PI_Damage_elec_SD00": {
+        "parent": "Hull",
+        "head": [
+          -260.7461242675781,
+          375.35467529296875,
+          -3.0635455914307386e-05
+        ]
+      },
+      "Lights": {
+        "parent": "Root",
+        "head": [
+          -6.09933304856082e-23,
+          501.36614990234375,
+          3.327890634536743
+        ]
+      },
+      "Shadow": {
+        "parent": "Root",
+        "head": [
+          -6.09933304856082e-23,
+          -6.9188232421875,
+          -286.9560241699219
+        ]
+      },
+      "Spawn_00": {
+        "parent": "Root",
+        "head": [
+          162.1485137939453,
+          319.180419921875,
+          -31.213306427001953
+        ]
+      },
+      "Spawn_00_Emitdamage": {
+        "parent": "Spawn_00",
+        "head": [
+          162.1485137939453,
+          337.7378845214844,
+          -31.21331024169922
+        ]
+      },
+      "P_RB_Station_Damage": {
+        "parent": "Spawn_00_Emitdamage",
+        "head": [
+          163.2801055908203,
+          237.38735961914062,
+          -31.82452964782715
+        ]
+      },
+      "P_RB_Station_Damage.001": {
+        "parent": "Spawn_00_Emitdamage",
+        "head": [
+          163.2801055908203,
+          319.0226135253906,
+          -31.824542999267578
+        ]
+      },
+      "P_RB_Station_Damage.002": {
+        "parent": "Spawn_00_Emitdamage",
+        "head": [
+          163.2801055908203,
+          373.2079162597656,
+          -31.824552536010742
+        ]
+      },
+      "Spawn_01": {
+        "parent": "Root",
+        "head": [
+          -161.6192169189453,
+          319.180419921875,
+          -31.213306427001953
+        ]
+      },
+      "Spawn_01_emitdamage": {
+        "parent": "Spawn_01",
+        "head": [
+          -161.6192169189453,
+          336.3419189453125,
+          -31.21331024169922
+        ]
+      },
+      "P_RB_Station_Damage.003": {
+        "parent": "Spawn_01_emitdamage",
+        "head": [
+          -162.5663604736328,
+          242.6169891357422,
+          -31.833770751953125
+        ]
+      },
+      "P_RB_Station_Damage.004": {
+        "parent": "Spawn_01_emitdamage",
+        "head": [
+          -162.56634521484375,
+          387.7786865234375,
+          -31.83379364013672
+        ]
+      },
+      "P_RB_Station_Damage.005": {
+        "parent": "Spawn_01_emitdamage",
+        "head": [
+          -162.5663604736328,
+          319.13702392578125,
+          -31.833782196044922
+        ]
+      },
+      "HP_Shield": {
+        "parent": "Root",
+        "head": [
+          -0.016499996185302734,
+          759.5361328125,
+          368.05120849609375
+        ]
+      },
+      "HP_Shield_emitdamage": {
+        "parent": "HP_Shield",
+        "head": [
+          -0.016529245302081108,
+          759.5361328125,
+          407.916015625
+        ]
+      },
+      "P_HP_underworld_Damage_LRG": {
+        "parent": "HP_Shield_emitdamage",
+        "head": [
+          -3.1480607986450195,
+          739.9869995117188,
+          381.98388671875
+        ]
+      },
+      "P_explosion_empire_huge00": {
+        "parent": "HP_Shield_emitdamage",
+        "head": [
+          -3.148061513900757,
+          779.84765625,
+          376.23828125
+        ]
+      },
+      "HP_MIS01": {
+        "parent": "Root",
+        "head": [
+          118.15442657470703,
+          329.07440185546875,
+          39.047698974609375
+        ]
+      },
+      "HP_Engine": {
+        "parent": "Root",
+        "head": [
+          -0.016499996185302734,
+          938.364013671875,
+          -33.72050094604492
+        ]
+      },
+      "HP_Engine_emitdamage": {
+        "parent": "HP_Engine",
+        "head": [
+          -22.409944534301758,
+          938.3640747070312,
+          -33.720497131347656
+        ]
+      },
+      "P_RB_Station_Damage.006": {
+        "parent": "HP_Engine_emitdamage",
+        "head": [
+          77.24484252929688,
+          937.861572265625,
+          -35.81277084350586
+        ]
+      },
+      "P_RB_Station_Damage.007": {
+        "parent": "HP_Engine_emitdamage",
+        "head": [
+          3.2552812099456787,
+          937.861572265625,
+          -35.81275177001953
+        ]
+      },
+      "P_RB_Station_Damage.008": {
+        "parent": "HP_Engine_emitdamage",
+        "head": [
+          -78.55493927001953,
+          937.861572265625,
+          -35.81273651123047
+        ]
+      },
+      "HP_MIS02": {
+        "parent": "Root",
+        "head": [
+          -116.51314544677734,
+          329.07440185546875,
+          39.047698974609375
+        ]
+      },
+      "HP_TBL01": {
+        "parent": "Root",
+        "head": [
+          167.77439880371094,
+          491.35894775390625,
+          -31.210002899169922
+        ]
+      },
+      "HP_TBL02": {
+        "parent": "Root",
+        "head": [
+          123.2077407836914,
+          -89.90880584716797,
+          -54.46296691894531
+        ]
+      },
+      "HP_TBL02_emitdamage": {
+        "parent": "HP_TBL02",
+        "head": [
+          123.2077407836914,
+          -78.03307342529297,
+          -54.46297073364258
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.001": {
+        "parent": "HP_TBL02_emitdamage",
+        "head": [
+          128.77012634277344,
+          -101.98235321044922,
+          -56.368316650390625
+        ]
+      },
+      "HP_TBL03": {
+        "parent": "Root",
+        "head": [
+          133.2477569580078,
+          -237.759765625,
+          -52.89165115356445
+        ]
+      },
+      "HP_TBL03_blast": {
+        "parent": "HP_TBL03",
+        "head": [
+          133.89268493652344,
+          -239.6121826171875,
+          -53.970027923583984
+        ]
+      },
+      "HP_TBL04": {
+        "parent": "Root",
+        "head": [
+          132.47171020507812,
+          -411.24041748046875,
+          -53.76322555541992
+        ]
+      },
+      "HP_TBL04_emitdamage": {
+        "parent": "HP_TBL04",
+        "head": [
+          132.4716796875,
+          -424.59893798828125,
+          -53.76322555541992
+        ]
+      },
+      "P_RB_Station_Damage.009": {
+        "parent": "HP_TBL04_emitdamage",
+        "head": [
+          138.0050048828125,
+          -406.07769775390625,
+          -54.73332977294922
+        ]
+      },
+      "HP_TBL05": {
+        "parent": "Root",
+        "head": [
+          121.71624755859375,
+          -567.1954956054688,
+          -53.402122497558594
+        ]
+      },
+      "HP_TBL05_emitdamage": {
+        "parent": "HP_TBL05",
+        "head": [
+          121.71621704101562,
+          -579.7361450195312,
+          -53.40211868286133
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.002": {
+        "parent": "HP_TBL05_emitdamage",
+        "head": [
+          128.80795288085938,
+          -569.3228149414062,
+          -57.330528259277344
+        ]
+      },
+      "HP_TBL06": {
+        "parent": "Root",
+        "head": [
+          118.4101333618164,
+          -715.7135009765625,
+          -54.1990852355957
+        ]
+      },
+      "HP_TBL07": {
+        "parent": "Root",
+        "head": [
+          30.49784278869629,
+          609.6544189453125,
+          81.56192779541016
+        ]
+      },
+      "HP_TBL07_emitdamage": {
+        "parent": "HP_TBL07",
+        "head": [
+          30.49784278869629,
+          595.9742431640625,
+          81.56192779541016
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.003": {
+        "parent": "HP_TBL07_emitdamage",
+        "head": [
+          32.343727111816406,
+          611.6948852539062,
+          76.46215057373047
+        ]
+      },
+      "HP_TBL08": {
+        "parent": "Root",
+        "head": [
+          26.71811866760254,
+          348.2630615234375,
+          90.67164611816406
+        ]
+      },
+      "HP_TBL08_emitdamage": {
+        "parent": "HP_TBL08",
+        "head": [
+          26.71811866760254,
+          360.31671142578125,
+          90.67163848876953
+        ]
+      },
+      "P_RB_Station_Damage.010": {
+        "parent": "HP_TBL08_emitdamage",
+        "head": [
+          35.91267776489258,
+          336.7679443359375,
+          85.89808654785156
+        ]
+      },
+      "HP_TBL09": {
+        "parent": "Root",
+        "head": [
+          28.039838790893555,
+          212.31214904785156,
+          105.5274887084961
+        ]
+      },
+      "HP_TBL10": {
+        "parent": "Root",
+        "head": [
+          -136.27723693847656,
+          -411.24041748046875,
+          -53.76322555541992
+        ]
+      },
+      "HP_TBL11": {
+        "parent": "Root",
+        "head": [
+          -121.22786712646484,
+          -89.90880584716797,
+          -54.46296691894531
+        ]
+      },
+      "HP_TBL12": {
+        "parent": "Root",
+        "head": [
+          -129.7036895751953,
+          -237.759765625,
+          -52.89165115356445
+        ]
+      },
+      "HP_TBL12_emitdamage": {
+        "parent": "HP_TBL12",
+        "head": [
+          -129.7036895751953,
+          -251.9388427734375,
+          -52.89164352416992
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.004": {
+        "parent": "HP_TBL12_emitdamage",
+        "head": [
+          -131.27490234375,
+          -237.594970703125,
+          -55.34910583496094
+        ]
+      },
+      "HP_TBL13": {
+        "parent": "Root",
+        "head": [
+          -127.25585174560547,
+          -567.1954956054688,
+          -53.402122497558594
+        ]
+      },
+      "HP_TBL14": {
+        "parent": "Root",
+        "head": [
+          -117.7971420288086,
+          -715.7135009765625,
+          -54.1990852355957
+        ]
+      },
+      "HP_TBL14_blast": {
+        "parent": "HP_TBL14",
+        "head": [
+          -132.94488525390625,
+          -712.0499267578125,
+          -53.969947814941406
+        ]
+      },
+      "HP_TBL15": {
+        "parent": "Root",
+        "head": [
+          -29.42513084411621,
+          609.6544189453125,
+          81.56192779541016
+        ]
+      },
+      "HP_TBL16": {
+        "parent": "Root",
+        "head": [
+          -28.84779930114746,
+          348.2630615234375,
+          90.67164611816406
+        ]
+      },
+      "HP_TBL16_blast": {
+        "parent": "HP_TBL16",
+        "head": [
+          -65.5167236328125,
+          331.997314453125,
+          100.0326919555664
+        ]
+      },
+      "HP_TBL17": {
+        "parent": "Root",
+        "head": [
+          -26.580278396606445,
+          212.31214904785156,
+          105.5274887084961
+        ]
+      },
+      "HP_TBL17_emitdamage": {
+        "parent": "HP_TBL17",
+        "head": [
+          -26.580276489257812,
+          200.1303253173828,
+          105.52749633789062
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.005": {
+        "parent": "HP_TBL17_emitdamage",
+        "head": [
+          -29.277982711791992,
+          211.69285583496094,
+          105.20860290527344
+        ]
+      },
+      "HP_TBL18": {
+        "parent": "Root",
+        "head": [
+          -167.19512939453125,
+          477.3871154785156,
+          -31.21000099182129
+        ]
+      },
+      "HP_TBL18_emitdamage": {
+        "parent": "HP_TBL18",
+        "head": [
+          -167.19512939453125,
+          493.23193359375,
+          -31.210002899169922
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.006": {
+        "parent": "HP_TBL18_emitdamage",
+        "head": [
+          -168.18736267089844,
+          489.99658203125,
+          -31.32256507873535
+        ]
+      },
+      "HP_LC01": {
+        "parent": "Root",
+        "head": [
+          39.2689323425293,
+          -150.63729858398438,
+          53.335784912109375
+        ]
+      },
+      "HP_LC02": {
+        "parent": "Root",
+        "head": [
+          14.645669937133789,
+          -330.1533203125,
+          52.75275802612305
+        ]
+      },
+      "HP_LC03": {
+        "parent": "Root",
+        "head": [
+          24.239450454711914,
+          -487.53045654296875,
+          53.48430633544922
+        ]
+      },
+      "HP_LC04": {
+        "parent": "Root",
+        "head": [
+          27.35593605041504,
+          -636.0762939453125,
+          56.052703857421875
+        ]
+      },
+      "HP_LC05": {
+        "parent": "Root",
+        "head": [
+          162.56117248535156,
+          167.213623046875,
+          -31.209949493408203
+        ]
+      },
+      "HP_LC05_emitdamage": {
+        "parent": "HP_LC05",
+        "head": [
+          162.56117248535156,
+          154.62286376953125,
+          -31.20994758605957
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.007": {
+        "parent": "HP_LC05_emitdamage",
+        "head": [
+          163.690673828125,
+          165.88702392578125,
+          -31.322509765625
+        ]
+      },
+      "HP_LC06": {
+        "parent": "Root",
+        "head": [
+          -163.25926208496094,
+          166.39828491210938,
+          -31.209949493408203
+        ]
+      },
+      "HP_LC07": {
+        "parent": "Root",
+        "head": [
+          -36.43086624145508,
+          -150.63729858398438,
+          53.335784912109375
+        ]
+      },
+      "HP_LC07_emitdamage": {
+        "parent": "HP_LC07",
+        "head": [
+          -36.43086624145508,
+          -163.6896209716797,
+          53.33578872680664
+        ]
+      },
+      "P_HP_underworld_Damage_LRG.008": {
+        "parent": "HP_LC07_emitdamage",
+        "head": [
+          -37.558448791503906,
+          -151.55560302734375,
+          53.569461822509766
+        ]
+      },
+      "HP_LC08": {
+        "parent": "Root",
+        "head": [
+          -13.588582992553711,
+          -330.1533203125,
+          52.75275802612305
+        ]
+      },
+      "HP_LC09": {
+        "parent": "Root",
+        "head": [
+          -25.77681541442871,
+          -487.53045654296875,
+          53.48430633544922
+        ]
+      },
+      "HP_LC10": {
+        "parent": "Root",
+        "head": [
+          -27.94423484802246,
+          -636.0762939453125,
+          56.052703857421875
+        ]
+      },
+      "HP_LC10_emitdamage": {
+        "parent": "HP_LC10",
+        "head": [
+          -27.944232940673828,
+          -651.9024658203125,
+          56.05270767211914
+        ]
+      },
+      "P_RB_Station_Damage.011": {
+        "parent": "HP_LC10_emitdamage",
+        "head": [
+          -27.87417221069336,
+          -635.5032348632812,
+          55.972721099853516
+        ]
+      },
+      "HP_TORP01": {
+        "parent": "Root",
+        "head": [
+          22.079172134399414,
+          -902.9541015625,
+          -52.11825180053711
+        ]
+      },
+      "HP_TORP02": {
+        "parent": "Root",
+        "head": [
+          -20.86714744567871,
+          -902.9541015625,
+          -52.11825180053711
+        ]
+      },
+      "Pe_Providence": {
+        "parent": "Root",
+        "head": [
+          78.08533477783203,
+          925.911376953125,
+          -43.6430778503418
+        ]
+      },
+      "Pe_Providence_S": {
+        "parent": "Root",
+        "head": [
+          0.0018157958984375,
+          944.84326171875,
+          -25.095293045043945
+        ]
+      },
+      "Pe_Providence.001": {
+        "parent": "Root",
+        "head": [
+          -78.01180267333984,
+          925.911376953125,
+          -43.6430778503418
+        ]
+      },
+      "collision": {
+        "parent": "Root",
+        "head": [
+          -1.2345303730398882e-06,
+          377.7229309082031,
+          -37.326210021972656
+        ]
+      }
+    }
+  },
+  "materials": [
+    {
+      "name": "Invincible_Hull_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Invincible_Hull_Albedo",
+      "normal": "Invincible_Hull_Normal",
+      "mask": "Invincible_Hull_TeamMask",
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Invincible.tga",
+        "NormalTexture": "SeV_Providence_B.tga"
+      }
+    },
+    {
+      "name": "Invincible_Lights_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Invincible_Lights_Emissive",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "SeV_Providence_L.tga",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Invincible_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Invincible_HP_TBL03_blast_Slot0",
+      "shader": "MeshAlpha.fx",
+      "base": "Invincible_WeaponFlash_Albedo",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "BaseTexture": "W_BLAST00.tga"
+      }
+    },
+    {
+      "name": "Invincible_HP_TBL14_blast_Slot0",
+      "shader": "MeshAlpha.fx",
+      "base": "Invincible_WeaponFlash_Albedo",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "BaseTexture": "W_BLAST00.tga"
+      }
+    },
+    {
+      "name": "Invincible_HP_TBL16_blast_Slot0",
+      "shader": "MeshAlpha.fx",
+      "base": "Invincible_WeaponFlash_Albedo",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "BaseTexture": "W_BLAST00.tga"
+      }
+    },
+    {
+      "name": "Invincible_collision_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    }
+  ],
+  "bone_error": 0.00021063900287290226,
+  "parenting_error": 7.62939453125e-06,
+  "root_restored": true,
+  "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Invincible.ALO",
+  "source_bone_names": [
+    "Root",
+    "Hull",
+    "PI_Damage_elec_SD00",
+    "Lights",
+    "Shadow",
+    "Spawn_00",
+    "Spawn_00_Emitdamage",
+    "P_RB_Station_Damage",
+    "P_RB_Station_Damage.001",
+    "P_RB_Station_Damage.002",
+    "Spawn_01",
+    "Spawn_01_emitdamage",
+    "P_RB_Station_Damage.003",
+    "P_RB_Station_Damage.004",
+    "P_RB_Station_Damage.005",
+    "HP_Shield",
+    "HP_Shield_emitdamage",
+    "P_HP_underworld_Damage_LRG",
+    "P_explosion_empire_huge00",
+    "HP_MIS01",
+    "HP_Engine",
+    "HP_Engine_emitdamage",
+    "P_RB_Station_Damage.006",
+    "P_RB_Station_Damage.007",
+    "P_RB_Station_Damage.008",
+    "HP_MIS02",
+    "HP_TBL01",
+    "HP_TBL02",
+    "HP_TBL02_emitdamage",
+    "P_HP_underworld_Damage_LRG.001",
+    "HP_TBL03",
+    "HP_TBL03_blast",
+    "HP_TBL04",
+    "HP_TBL04_emitdamage",
+    "P_RB_Station_Damage.009",
+    "HP_TBL05",
+    "HP_TBL05_emitdamage",
+    "P_HP_underworld_Damage_LRG.002",
+    "HP_TBL06",
+    "HP_TBL07",
+    "HP_TBL07_emitdamage",
+    "P_HP_underworld_Damage_LRG.003",
+    "HP_TBL08",
+    "HP_TBL08_emitdamage",
+    "P_RB_Station_Damage.010",
+    "HP_TBL09",
+    "HP_TBL10",
+    "HP_TBL11",
+    "HP_TBL12",
+    "HP_TBL12_emitdamage",
+    "P_HP_underworld_Damage_LRG.004",
+    "HP_TBL13",
+    "HP_TBL14",
+    "HP_TBL14_blast",
+    "HP_TBL15",
+    "HP_TBL16",
+    "HP_TBL16_blast",
+    "HP_TBL17",
+    "HP_TBL17_emitdamage",
+    "P_HP_underworld_Damage_LRG.005",
+    "HP_TBL18",
+    "HP_TBL18_emitdamage",
+    "P_HP_underworld_Damage_LRG.006",
+    "HP_LC01",
+    "HP_LC02",
+    "HP_LC03",
+    "HP_LC04",
+    "HP_LC05",
+    "HP_LC05_emitdamage",
+    "P_HP_underworld_Damage_LRG.007",
+    "HP_LC06",
+    "HP_LC07",
+    "HP_LC07_emitdamage",
+    "P_HP_underworld_Damage_LRG.008",
+    "HP_LC08",
+    "HP_LC09",
+    "HP_LC10",
+    "HP_LC10_emitdamage",
+    "P_RB_Station_Damage.011",
+    "HP_TORP01",
+    "HP_TORP02",
+    "Pe_Providence",
+    "Pe_Providence_S",
+    "Pe_Providence.001",
+    "collision"
+  ],
+  "fbx": "F:\\Private\\empire-at-war\\Temp\\InvincibleImport\\Output\\Invincible.fbx"
+}

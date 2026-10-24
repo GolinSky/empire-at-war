@@ -30,6 +30,7 @@ namespace EmpireAtWar.Models.Factions
         PatrolFrigate = 106,
         C9979 = 107,
         Dispatcher = 108,
+        Invincible = 109,
 
         //empire
         Victory = 200,

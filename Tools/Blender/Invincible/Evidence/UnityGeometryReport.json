@@ -1,0 +1,125 @@
+{
+  "success": true,
+  "meshCount": 7,
+  "bones": 85,
+  "maximumBoneError": 5.811071E-06,
+  "tolerance": 1E-05,
+  "sourceCornerSampleStride": 1,
+  "visibleUvsMatchSource": true,
+  "helperUvDifference": "Unity's FBX import changes 83 Shadow-helper corner UVs by at most 0.000995; this helper is absent from runtime visual prefabs.",
+  "meshes": [
+    {
+      "name": "Hull",
+      "vertices": 19138,
+      "triangles": 9810,
+      "sourceCorners": 29430,
+      "checkedCorners": 29430,
+      "runtimeVisible": true,
+      "maximumPositionError": 5.82175971E-06,
+      "maximumUvError": 0.0,
+      "uvTolerance": 1E-05,
+      "uvMatchesSource": true,
+      "uvRemappedCorners": 0,
+      "materials": [
+        "Invincible_Hull_Slot0"
+      ]
+    },
+    {
+      "name": "Lights",
+      "vertices": 1864,
+      "triangles": 836,
+      "sourceCorners": 2508,
+      "checkedCorners": 2508,
+      "runtimeVisible": true,
+      "maximumPositionError": 4.26496126E-06,
+      "maximumUvError": 0.0,
+      "uvTolerance": 1E-05,
+      "uvMatchesSource": true,
+      "uvRemappedCorners": 0,
+      "materials": [
+        "Invincible_Lights_Slot0"
+      ]
+    },
+    {
+      "name": "Shadow",
+      "vertices": 14150,
+      "triangles": 10539,
+      "sourceCorners": 31617,
+      "checkedCorners": 31617,
+      "runtimeVisible": false,
+      "maximumPositionError": 5.82175971E-06,
+      "maximumUvError": 0.0009948103,
+      "uvTolerance": 0.001,
+      "uvMatchesSource": false,
+      "uvRemappedCorners": 83,
+      "materials": [
+        "Invincible_Shadow_Slot0"
+      ]
+    },
+    {
+      "name": "HP_TBL03_blast",
+      "vertices": 12,
+      "triangles": 12,
+      "sourceCorners": 36,
+      "checkedCorners": 36,
+      "runtimeVisible": false,
+      "maximumPositionError": 1.63885682E-06,
+      "maximumUvError": 0.0,
+      "uvTolerance": 1E-05,
+      "uvMatchesSource": true,
+      "uvRemappedCorners": 0,
+      "materials": [
+        "Invincible_HP_TBL03_blast_Slot0"
+      ]
+    },
+    {
+      "name": "HP_TBL14_blast",
+      "vertices": 20,
+      "triangles": 24,
+      "sourceCorners": 72,
+      "checkedCorners": 72,
+      "runtimeVisible": false,
+      "maximumPositionError": 3.132648E-06,
+      "maximumUvError": 0.0,
+      "uvTolerance": 1E-05,
+      "uvMatchesSource": true,
+      "uvRemappedCorners": 0,
+      "materials": [
+        "Invincible_HP_TBL14_blast_Slot0"
+      ]
+    },
+    {
+      "name": "HP_TBL16_blast",
+      "vertices": 15,
+      "triangles": 16,
+      "sourceCorners": 48,
+      "checkedCorners": 48,
+      "runtimeVisible": false,
+      "maximumPositionError": 1.50906908E-06,
+      "maximumUvError": 0.0,
+      "uvTolerance": 1E-05,
+      "uvMatchesSource": true,
+      "uvRemappedCorners": 0,
+      "materials": [
+        "Invincible_HP_TBL16_blast_Slot0"
+      ]
+    },
+    {
+      "name": "collision",
+      "vertices": 218,
+      "triangles": 184,
+      "sourceCorners": 552,
+      "checkedCorners": 552,
+      "runtimeVisible": false,
+      "maximumPositionError": 8.020591E-06,
+      "maximumUvError": 0.0,
+      "uvTolerance": 1E-05,
+      "uvMatchesSource": true,
+      "uvRemappedCorners": 0,
+      "materials": [
+        "Invincible_collision_Slot0"
+      ]
+    }
+  ],
+  "totalTriangles": 21421
+}

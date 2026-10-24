@@ -125,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 411d247048e404b49946bf370840e9f9
+    m_Address: InvincibleShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 413c64af046c0534095a8e92f601bc37
     m_Address: StealthCorvetteShipData
     m_ReadOnly: 0

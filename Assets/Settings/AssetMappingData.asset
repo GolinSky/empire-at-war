@@ -1344,3 +1344,24 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: InvincibleShipView
+      value:
+        m_AssetGUID: b0fbad4b04cbcd54cb40d77de3043a3b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: InvincibleShipData
+      value:
+        m_AssetGUID: 411d247048e404b49946bf370840e9f9
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: InvincibleWreckView
+      value:
+        m_AssetGUID: d24918522da16f44da44f990ffa07168
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
