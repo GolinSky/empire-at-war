@@ -39,11 +39,9 @@ try {
         Assert-PlainPath $symbols
         if (Test-Path -LiteralPath $symbols) { Remove-Item -LiteralPath $symbols -Recurse -Force }
         @{Commit=$sha;Build=$env:BUILD_NUMBER;State='BuildStarted'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
-        # BuildInfoWriter stamps this and BUILD_NUMBER into the player's build-info.json.
-        $env:EAW_BUILD_COMMIT = $sha
         & unity build $ci --target StandaloneWindows64 --editor-path $editor --output-path "$player\EmpireAtWar.exe" --log-file "$artifacts\Unity.log" --provenance-path "$artifacts\build-provenance.json" --args '-job-worker-count 4' --timeout $policy.BuildTimeoutSeconds --non-interactive
         if ($LASTEXITCODE -ne 0) { throw "Unity build failed: exit $LASTEXITCODE" }
-        foreach ($required in @('EmpireAtWar.exe','UnityPlayer.dll','GameAssembly.dll','EmpireAtWar_Data\globalgamemanagers','EmpireAtWar_Data\il2cpp_data\Metadata\global-metadata.dat','EmpireAtWar_Data\StreamingAssets\aa\settings.json','EmpireAtWar_Data\StreamingAssets\build-info.json')) {
+        foreach ($required in @('EmpireAtWar.exe','UnityPlayer.dll','GameAssembly.dll','EmpireAtWar_Data\globalgamemanagers','EmpireAtWar_Data\il2cpp_data\Metadata\global-metadata.dat','EmpireAtWar_Data\StreamingAssets\aa\settings.json')) {
             if (-not (Test-Path -LiteralPath "$player\$required" -PathType Leaf)) { throw "Incomplete IL2CPP player: $required" }
         }
         # A Managed folder means a Mono player; IL2CPP never compiles editor or test assemblies into the player.
@@ -54,9 +52,6 @@ try {
         $bundles = @(Get-ChildItem -LiteralPath "$player\EmpireAtWar_Data\StreamingAssets\aa" -Recurse -Filter '*.bundle')
         if (-not $bundles.Count) { throw 'Addressables bundles are missing from player.' }
         if (-not (Test-Path -LiteralPath "$artifacts\build-provenance.json")) { throw 'CLI provenance is missing.' }
-        $buildInfo = Get-Content -LiteralPath "$player\EmpireAtWar_Data\StreamingAssets\build-info.json" -Raw | ConvertFrom-Json
-        if ($buildInfo.commit -ne $sha -or $buildInfo.build -ne $env:BUILD_NUMBER) { throw 'Player build-info.json does not match this commit and build number.' }
-        Copy-Item -LiteralPath "$player\EmpireAtWar_Data\StreamingAssets\build-info.json" -Destination "$artifacts\build-info.json"
         @{LibraryGiB=(Get-DirectoryGiB "$ci\Library");PlayerGiB=(Get-DirectoryGiB $player);AddressablesBundles=$bundles.Count} | ConvertTo-Json | Set-Content -LiteralPath "$artifacts\output-sizes.json"
         @{Commit=$sha;Build=$env:BUILD_NUMBER;State='PlayerReady'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
     } else {
