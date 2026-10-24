@@ -171,6 +171,8 @@ namespace EmpireAtWar.Editor.Balance
 
         public void FilterCompareFaction(string faction) => State.CompareFaction = faction;
 
+        public void FilterCompareClass(string unitClass) => State.CompareClass = unitClass;
+
         public bool TakeCompareFocus()
         {
             bool pending = State.CompareFocusPending;

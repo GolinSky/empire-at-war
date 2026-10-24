@@ -94,13 +94,13 @@
 .balance-drop-after { border-right-width: 2px; border-right-color: var(--balance-accent); }
 #compare-add-unit { height: 28px; margin-left: 14px; }
 .balance-compare-picker { max-width: 650px; padding: 8px; margin-bottom: 10px; background-color: var(--balance-panel); border-width: 1px; border-color: var(--balance-line); border-radius: 6px; }
-.balance-picker-filters { flex-direction: row; align-items: center; }
+.balance-picker-filters { flex-direction: row; flex-wrap: wrap; align-items: center; }
 .balance-picker-actions { flex-direction: row; align-items: center; margin-top: 6px; }
 #compare-add-selected { margin-left: auto; }
 #picker-select { flex-shrink: 0; margin-right: 6px; }
-#compare-search { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-right: 8px; }
-#compare-faction { width: 210px; flex-shrink: 0; }
-#compare-faction > .unity-base-field__label { min-width: 45px; }
+#compare-search { flex-basis: 100%; flex-grow: 1; flex-shrink: 1; min-width: 0; margin-bottom: 4px; }
+#compare-faction, #compare-class { flex-basis: 210px; flex-grow: 1; flex-shrink: 1; min-width: 170px; }
+#compare-faction > .unity-base-field__label, #compare-class > .unity-base-field__label { min-width: 45px; }
 .balance-picker-list { height: 192px; margin-top: 6px; }
 .balance-picker-row { flex-direction: row; align-items: center; height: 30px; margin: 1px 0; padding: 0 6px; }
 .balance-picker-name { flex-grow: 1; flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }

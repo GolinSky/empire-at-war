@@ -26,6 +26,7 @@ namespace EmpireAtWar.Editor.Balance
         public string CombatSearch = "";
         public string CompareSearch = "";
         public string CompareFaction = "";
+        public string CompareClass = "";
         public BalanceCompareSort CompareSort;
         public bool ComparePickerOpen;
         public bool ShowDetails;

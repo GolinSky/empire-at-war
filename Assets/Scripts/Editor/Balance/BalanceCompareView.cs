@@ -105,6 +105,12 @@ namespace EmpireAtWar.Editor.Balance
             int factionIndex = state.CompareFaction.Length == 0 ? 0 : factions.IndexOf(state.CompareFaction);
             DropdownField faction = new DropdownField("Faction", factions, factionIndex) { name = "compare-faction" };
             filters.Add(faction);
+            List<string> classes = new[] { "All types" }
+                .Concat(registry.Units.Select(unit => unit.Class).Distinct().OrderBy(name => name))
+                .ToList();
+            int classIndex = state.CompareClass.Length == 0 ? 0 : classes.IndexOf(state.CompareClass);
+            DropdownField unitClass = new DropdownField("Type", classes, classIndex) { name = "compare-class" };
+            filters.Add(unitClass);
 
             List<BalanceUnit> units = new List<BalanceUnit>();
             HashSet<string> selected = new HashSet<string>();
@@ -138,6 +144,7 @@ namespace EmpireAtWar.Editor.Balance
                 units.AddRange(registry.Units
                     .Where(unit => !state.Pins.Contains(unit.Id)
                         && (state.CompareFaction.Length == 0 || unit.Faction == state.CompareFaction)
+                        && (state.CompareClass.Length == 0 || unit.Class == state.CompareClass)
                         && unit.Caption.IndexOf(search.value, StringComparison.OrdinalIgnoreCase) >= 0)
                     .OrderBy(unit => unit.Faction)
                     .ThenBy(unit => unit.Name));
@@ -223,6 +230,11 @@ namespace EmpireAtWar.Editor.Balance
             faction.RegisterValueChangedCallback(evt =>
             {
                 controller.FilterCompareFaction(faction.index == 0 ? "" : evt.newValue);
+                Filter();
+            });
+            unitClass.RegisterValueChangedCallback(evt =>
+            {
+                controller.FilterCompareClass(unitClass.index == 0 ? "" : evt.newValue);
                 Filter();
             });
             Filter();
