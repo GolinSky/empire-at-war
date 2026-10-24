@@ -1,0 +1,17 @@
+{
+  "shipId": 16,
+  "targetableHardpoints": 13,
+  "lasers": 8,
+  "protonLaunchers": 2,
+  "dualTurbolaserBatteries": 1,
+  "wreckMeshes": 3,
+  "hull": 2000,
+  "shields": 2000,
+  "shieldRegenerationPerSecond": 62,
+  "skirmishCost": 2600,
+  "population": 2,
+  "level": 2,
+  "abilityId": 20,
+  "allEightOwnerColors": true,
+  "savedReferences": true
+}

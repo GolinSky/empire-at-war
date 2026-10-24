@@ -1330,3 +1330,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CentaxShipView
+      value:
+        m_AssetGUID: 905644e6fcb289a449e3e4da26c9e520
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CentaxShipData
+      value:
+        m_AssetGUID: 40d327f3a210d4c4f8687bfeedf275e3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

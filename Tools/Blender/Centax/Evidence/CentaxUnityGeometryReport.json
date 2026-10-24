@@ -1,0 +1,74 @@
+{
+  "meshes": [
+    {
+      "name": "centax",
+      "triangles": 4528,
+      "vertices": 9250,
+      "maximumPositionError": 2.87093985E-06,
+      "materials": [
+        "Centax_centax_Slot0"
+      ]
+    },
+    {
+      "name": "thrusters",
+      "triangles": 54,
+      "vertices": 64,
+      "maximumPositionError": 1.50906908E-06,
+      "materials": [
+        "Centax_thrusters_Slot0"
+      ]
+    },
+    {
+      "name": "engines",
+      "triangles": 2,
+      "vertices": 4,
+      "maximumPositionError": 1.31130219E-06,
+      "materials": [
+        "Centax_engines_Slot0"
+      ]
+    },
+    {
+      "name": "engine",
+      "triangles": 2,
+      "vertices": 4,
+      "maximumPositionError": 1.39530891E-06,
+      "materials": [
+        "Centax_engine_Slot0"
+      ]
+    },
+    {
+      "name": "collision",
+      "triangles": 192,
+      "vertices": 150,
+      "maximumPositionError": 1.52662381E-06,
+      "materials": [
+        "Centax_collision_Slot0"
+      ]
+    },
+    {
+      "name": "shield",
+      "triangles": 432,
+      "vertices": 294,
+      "maximumPositionError": 1.5312711E-06,
+      "materials": [
+        "Centax_shield_Slot0"
+      ]
+    },
+    {
+      "name": "shadow",
+      "triangles": 16151,
+      "vertices": 11845,
+      "maximumPositionError": 2.52599966E-06,
+      "materials": [
+        "Centax_shadow_Slot0"
+      ]
+    }
+  ],
+  "totalTriangles": 21361,
+  "bones": 55,
+  "maximumBoneError": 1.31130219E-06,
+  "visibleHullTriangles": 4582,
+  "visibleEffectTriangles": 0,
+  "visibleMeshes": 2,
+  "rootIdentity": true
+}

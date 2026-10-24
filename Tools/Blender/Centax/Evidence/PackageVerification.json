@@ -1,0 +1,16 @@
+{
+  "sourceHashesVerified": 12,
+  "iconBounds": [
+    37,
+    64,
+    479,
+    422
+  ],
+  "teamChangedPixels": {
+    "Team": 2967,
+    "WreckTeam": 21015
+  },
+  "assetsWithMeta": 30,
+  "automatedUnityTestsRun": false,
+  "combatPlayModeRun": false
+}

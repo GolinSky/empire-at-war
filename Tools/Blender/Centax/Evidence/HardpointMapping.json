@@ -1,0 +1,145 @@
+[
+  {
+    "id": 0,
+    "name": "Laser01",
+    "type": 0,
+    "position": [
+      -1.178855,
+      1.001055,
+      3.582199
+    ],
+    "source": "HP01"
+  },
+  {
+    "id": 1,
+    "name": "Laser02",
+    "type": 0,
+    "position": [
+      -1.17885506,
+      1.00105453,
+      1.19586039
+    ],
+    "source": "HP02"
+  },
+  {
+    "id": 2,
+    "name": "Laser03",
+    "type": 0,
+    "position": [
+      -1.17885506,
+      1.00105429,
+      -1.187174
+    ],
+    "source": "HP03"
+  },
+  {
+    "id": 3,
+    "name": "Laser04",
+    "type": 0,
+    "position": [
+      -1.17885506,
+      1.001054,
+      -3.54583025
+    ],
+    "source": "HP04"
+  },
+  {
+    "id": 4,
+    "name": "Laser05",
+    "type": 0,
+    "position": [
+      1.19899809,
+      1.001055,
+      3.582199
+    ],
+    "source": "HP05"
+  },
+  {
+    "id": 5,
+    "name": "Laser06",
+    "type": 0,
+    "position": [
+      1.19899786,
+      1.00105453,
+      1.19586039
+    ],
+    "source": "HP06"
+  },
+  {
+    "id": 6,
+    "name": "Laser07",
+    "type": 0,
+    "position": [
+      1.19899774,
+      1.00105429,
+      -1.187174
+    ],
+    "source": "HP07"
+  },
+  {
+    "id": 7,
+    "name": "Laser08",
+    "type": 0,
+    "position": [
+      1.19899774,
+      1.001054,
+      -3.54583025
+    ],
+    "source": "HP08"
+  },
+  {
+    "id": 8,
+    "name": "ProtonTorpedo1",
+    "type": 0,
+    "position": [
+      0.00201091054,
+      1.00105453,
+      2.442006
+    ],
+    "source": "HP09"
+  },
+  {
+    "id": 9,
+    "name": "ProtonTorpedo2",
+    "type": 0,
+    "position": [
+      -0.0007389876,
+      1.001054,
+      -3.51188183
+    ],
+    "source": "HP10"
+  },
+  {
+    "id": 10,
+    "name": "ForwardDualTurbolaser",
+    "type": 0,
+    "position": [
+      -0.0230069757,
+      0.315829754,
+      10.1324339
+    ],
+    "source": "HP11_00 + HP11_01 midpoint"
+  },
+  {
+    "id": 11,
+    "name": "HP_E",
+    "type": 1,
+    "position": [
+      -0.0007389876,
+      1.00105357,
+      -8.560295
+    ],
+    "source": "HP_E"
+  },
+  {
+    "id": 12,
+    "name": "HP_S",
+    "type": 2,
+    "position": [
+      0.00201091054,
+      1.00105429,
+      -0.998764634
+    ],
+    "source": "HP_S"
+  }
+]

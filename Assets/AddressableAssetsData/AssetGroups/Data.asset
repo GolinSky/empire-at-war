@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40d327f3a210d4c4f8687bfeedf275e3
+    m_Address: CentaxShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 413c64af046c0534095a8e92f601bc37
     m_Address: StealthCorvetteShipData
     m_ReadOnly: 0

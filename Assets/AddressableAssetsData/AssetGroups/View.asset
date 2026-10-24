@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17a481d27c6af7747ab7af212434070c
+    m_Address: CentaxWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 196b90063d94ba14f8b483717596ec85
     m_Address: LucrehulkWreckView
     m_ReadOnly: 0
@@ -412,6 +417,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ff700428d31c8f408467005d351c20b
     m_Address: MC50WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 905644e6fcb289a449e3e4da26c9e520
+    m_Address: CentaxShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,0 +1,44 @@
+[
+  {
+    "mesh": "centax",
+    "corners": 13584,
+    "position_error": 0.00008392333984375,
+    "uv_error": 9.834766387939453e-7
+  },
+  {
+    "mesh": "thrusters",
+    "corners": 162,
+    "position_error": 0.0000762939453125,
+    "uv_error": 0
+  },
+  {
+    "mesh": "engines",
+    "corners": 6,
+    "position_error": 0.00005340576171875,
+    "uv_error": 0
+  },
+  {
+    "mesh": "engine",
+    "corners": 6,
+    "position_error": 0.00006103515625,
+    "uv_error": 0
+  },
+  {
+    "mesh": "collision",
+    "corners": 576,
+    "position_error": 0.00006866455078125,
+    "uv_error": 0
+  },
+  {
+    "mesh": "shield",
+    "corners": 1296,
+    "position_error": 0.00006866455078125,
+    "uv_error": 2.9802322387695312e-8
+  },
+  {
+    "mesh": "shadow",
+    "corners": 48453,
+    "position_error": 0.00006866455078125,
+    "uv_error": 9.834766387939453e-7
+  }
+]

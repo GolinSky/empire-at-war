@@ -1,0 +1,20 @@
+{
+  "name": "Centax-class Heavy Frigate",
+  "faction": "Republic",
+  "hull": 2000,
+  "shields": 2000,
+  "shieldRefreshPerSecond": 62,
+  "population": 2,
+  "galacticConquestCost": 2400,
+  "skirmishCost": 2600,
+  "buildTimeSeconds": 25,
+  "techLevel": 2,
+  "requiredStarbaseLevel": 2,
+  "ability": "Power to Weapons",
+  "dualTurbolaserBatteries": 1,
+  "laserCannons": 8,
+  "protonTorpedoLaunchers": 2,
+  "shieldGenerators": 1,
+  "engineSystems": 1,
+  "runtimeLimitations": "The current game exposes one price and one station-level gate; distinct GC pricing and a separate technology gate have no runtime representation."
+}

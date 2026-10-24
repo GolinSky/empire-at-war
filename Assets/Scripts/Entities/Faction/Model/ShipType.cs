@@ -18,6 +18,7 @@ namespace EmpireAtWar.Models.Factions
         CR70 = 13,
         Pelta = 14,
         Carrack = 15,
+        Centax = 16,
 
         //separatist
         Providence = 100,

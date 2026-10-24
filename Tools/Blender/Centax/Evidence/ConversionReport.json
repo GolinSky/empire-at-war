@@ -1,0 +1,1265 @@
+{
+  "models": {
+    "Centax": {
+      "before": {
+        "meshes": {
+          "centax": {
+            "exported_name": "centax",
+            "vertices": 9250,
+            "triangles": 4528,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Centax_centax_Slot0"
+            ],
+            "slot_triangles": [
+              4528
+            ]
+          },
+          "thrusters": {
+            "exported_name": "thrusters",
+            "vertices": 64,
+            "triangles": 54,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Centax_thrusters_Slot0"
+            ],
+            "slot_triangles": [
+              54
+            ]
+          },
+          "engines": {
+            "exported_name": "engines.004",
+            "vertices": 4,
+            "triangles": 2,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_engines_Slot0"
+            ],
+            "slot_triangles": [
+              2
+            ]
+          },
+          "engine": {
+            "exported_name": "engine",
+            "vertices": 4,
+            "triangles": 2,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_engine_Slot0"
+            ],
+            "slot_triangles": [
+              2
+            ]
+          },
+          "collision": {
+            "exported_name": "collision.002",
+            "vertices": 98,
+            "triangles": 192,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_collision_Slot0"
+            ],
+            "slot_triangles": [
+              192
+            ]
+          },
+          "shield": {
+            "exported_name": "shield.002",
+            "vertices": 294,
+            "triangles": 432,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_shield_Slot0"
+            ],
+            "slot_triangles": [
+              432
+            ]
+          },
+          "shadow": {
+            "exported_name": "shadow.004",
+            "vertices": 11623,
+            "triangles": 16151,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Centax_shadow_Slot0"
+            ],
+            "slot_triangles": [
+              16151
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "centax": {
+            "parent": "Root",
+            "head": [
+              -0.01683235354721546,
+              166.4927215576172,
+              64.5570068359375
+            ]
+          },
+          "pi_damage_elec_cap00": {
+            "parent": "centax",
+            "head": [
+              -0.007976504042744637,
+              1.8859100341796875,
+              1.1929092407226562
+            ]
+          },
+          "thrusters": {
+            "parent": "Root",
+            "head": [
+              0.05090545862913132,
+              315.0916748046875,
+              64.33370208740234
+            ]
+          },
+          "engines": {
+            "parent": "Root",
+            "head": [
+              1.879286527633667,
+              321.1322021484375,
+              62.49303436279297
+            ]
+          },
+          "pe_centaxengine_sml": {
+            "parent": "engines",
+            "head": [
+              -12.138216018676758,
+              334.31134033203125,
+              58.526329040527344
+            ]
+          },
+          "engine": {
+            "parent": "Root",
+            "head": [
+              0.2973751425743103,
+              315.4233093261719,
+              69.25062561035156
+            ]
+          },
+          "pe_centaxengine_lrg": {
+            "parent": "engine",
+            "head": [
+              22.291934967041016,
+              337.0906982421875,
+              61.32432556152344
+            ]
+          },
+          "HP01": {
+            "parent": "Root",
+            "head": [
+              30.971139907836914,
+              -52.261070251464844,
+              89.31080627441406
+            ]
+          },
+          "HP01_EMITDAMGE": {
+            "parent": "HP01",
+            "head": [
+              29.210174560546875,
+              -52.26107406616211,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage": {
+            "parent": "HP01_EMITDAMGE",
+            "head": [
+              43.9247932434082,
+              -52.180747985839844,
+              89.52706909179688
+            ]
+          },
+          "HP02": {
+            "parent": "Root",
+            "head": [
+              30.971141815185547,
+              10.467411041259766,
+              89.31080627441406
+            ]
+          },
+          "HP02_EMITDAMAGE": {
+            "parent": "HP02",
+            "head": [
+              29.309629440307617,
+              10.46741008758545,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.001": {
+            "parent": "HP02_EMITDAMAGE",
+            "head": [
+              43.9248046875,
+              11.529545783996582,
+              89.52706909179688
+            ]
+          },
+          "HP03": {
+            "parent": "Root",
+            "head": [
+              30.97114372253418,
+              73.10902404785156,
+              89.31080627441406
+            ]
+          },
+          "HP03_EMITDAMAGE": {
+            "parent": "HP03",
+            "head": [
+              28.866605758666992,
+              73.1090316772461,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.002": {
+            "parent": "HP03_EMITDAMAGE",
+            "head": [
+              43.9247932434082,
+              73.22516632080078,
+              89.52706909179688
+            ]
+          },
+          "HP04": {
+            "parent": "Root",
+            "head": [
+              30.971145629882812,
+              135.10984802246094,
+              89.31080627441406
+            ]
+          },
+          "HP04_EMITDAMAGE": {
+            "parent": "HP04",
+            "head": [
+              29.11357307434082,
+              135.10983276367188,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.003": {
+            "parent": "HP04_EMITDAMAGE",
+            "head": [
+              43.92479705810547,
+              135.27798461914062,
+              89.52706909179688
+            ]
+          },
+          "HP05": {
+            "parent": "Root",
+            "head": [
+              -31.53427505493164,
+              -52.261070251464844,
+              89.31080627441406
+            ]
+          },
+          "HP05_EMITDAMAGE": {
+            "parent": "HP05",
+            "head": [
+              -28.689470291137695,
+              -52.261070251464844,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.004": {
+            "parent": "HP05_EMITDAMAGE",
+            "head": [
+              -40.93348693847656,
+              -52.180747985839844,
+              89.52706909179688
+            ]
+          },
+          "HP06": {
+            "parent": "Root",
+            "head": [
+              -31.534271240234375,
+              10.467411041259766,
+              89.31080627441406
+            ]
+          },
+          "HP06_EMITDAMAGE": {
+            "parent": "HP06",
+            "head": [
+              -28.297176361083984,
+              10.467411041259766,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.005": {
+            "parent": "HP06_EMITDAMAGE",
+            "head": [
+              -40.933475494384766,
+              11.032740592956543,
+              89.52706909179688
+            ]
+          },
+          "HP07": {
+            "parent": "Root",
+            "head": [
+              -31.53426742553711,
+              73.10902404785156,
+              89.31080627441406
+            ]
+          },
+          "HP07_EMITDAMAGE": {
+            "parent": "HP07",
+            "head": [
+              -29.079177856445312,
+              73.10902404785156,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.006": {
+            "parent": "HP07_EMITDAMAGE",
+            "head": [
+              -40.933475494384766,
+              73.43621826171875,
+              89.52706909179688
+            ]
+          },
+          "HP08": {
+            "parent": "Root",
+            "head": [
+              -31.53426742553711,
+              135.10984802246094,
+              89.31080627441406
+            ]
+          },
+          "HP08_EMITDAMAGE": {
+            "parent": "HP08",
+            "head": [
+              -27.609575271606445,
+              135.10983276367188,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.007": {
+            "parent": "HP08_EMITDAMAGE",
+            "head": [
+              -40.93347930908203,
+              135.30929565429688,
+              89.52706909179688
+            ]
+          },
+          "HP09": {
+            "parent": "Root",
+            "head": [
+              -0.06968021392822266,
+              -22.28939437866211,
+              89.31080627441406
+            ]
+          },
+          "HP09_EMITDAMAGE": {
+            "parent": "HP09",
+            "head": [
+              -0.06967809051275253,
+              -18.04726791381836,
+              89.31080627441406
+            ]
+          },
+          "p_fire_big01": {
+            "parent": "HP09_EMITDAMAGE",
+            "head": [
+              0.1785116046667099,
+              -18.118518829345703,
+              118.76290893554688
+            ]
+          },
+          "HP10": {
+            "parent": "Root",
+            "head": [
+              0.002604961395263672,
+              134.21746826171875,
+              89.31080627441406
+            ]
+          },
+          "HP10_EMITDAMAGE": {
+            "parent": "HP10",
+            "head": [
+              0.002580154687166214,
+              137.9481201171875,
+              89.31080627441406
+            ]
+          },
+          "p_fire_big01.001": {
+            "parent": "HP10_EMITDAMAGE",
+            "head": [
+              0.17851321399211884,
+              136.39169311523438,
+              118.76290893554688
+            ]
+          },
+          "HP_S": {
+            "parent": "Root",
+            "head": [
+              -0.06968021392822266,
+              68.15641021728516,
+              89.31080627441406
+            ]
+          },
+          "HP_S_EMITDAMAGE": {
+            "parent": "HP_S",
+            "head": [
+              -0.06966578960418701,
+              73.70004272460938,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.008": {
+            "parent": "HP_S_EMITDAMAGE",
+            "head": [
+              0.184485524892807,
+              73.22515106201172,
+              116.1234130859375
+            ]
+          },
+          "HP_E": {
+            "parent": "Root",
+            "head": [
+              0.002604961395263672,
+              266.92254638671875,
+              89.31080627441406
+            ]
+          },
+          "HP_E_EMITDAMAGE": {
+            "parent": "HP_E",
+            "head": [
+              0.002575833350419998,
+              271.78631591796875,
+              89.31080627441406
+            ]
+          },
+          "p_fire_big01.002": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              0.1784830093383789,
+              274.6408386230469,
+              112.04847717285156
+            ]
+          },
+          "p_fire_big01.003": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              0.1784830093383789,
+              274.6408386230469,
+              22.472549438476562
+            ]
+          },
+          "p_fire_big01.004": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              -17.53388786315918,
+              307.10540771484375,
+              83.18942260742188
+            ]
+          },
+          "p_fire_big01.005": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              17.40999412536621,
+              307.1054992675781,
+              83.18942260742188
+            ]
+          },
+          "HP11": {
+            "parent": "Root",
+            "head": [
+              -0.06968021392822266,
+              -191.849609375,
+              89.31080627441406
+            ]
+          },
+          "HP11_EMITDAMAGE": {
+            "parent": "HP11",
+            "head": [
+              -0.06971348822116852,
+              -184.37661743164062,
+              89.31080627441406
+            ]
+          },
+          "HP11_00": {
+            "parent": "HP11_EMITDAMAGE",
+            "head": [
+              -45.98405075073242,
+              -224.44403076171875,
+              71.29864501953125
+            ]
+          },
+          "HP11_01": {
+            "parent": "HP11_EMITDAMAGE",
+            "head": [
+              47.159976959228516,
+              -224.4435577392578,
+              71.29864501953125
+            ]
+          },
+          "p_fire_big01.006": {
+            "parent": "HP11_EMITDAMAGE",
+            "head": [
+              0.17851665616035461,
+              -191.36831665039062,
+              115.1751708984375
+            ]
+          },
+          "collision": {
+            "parent": "Root",
+            "head": [
+              1.3902997970581055,
+              32.490928649902344,
+              2.1501292703208184e-14
+            ]
+          },
+          "shield": {
+            "parent": "Root",
+            "head": [
+              -0.025656700134277344,
+              39.93101501464844,
+              0.000001017602357933356
+            ]
+          },
+          "shadow": {
+            "parent": "Root",
+            "head": [
+              -0.01683235354721546,
+              166.4927215576172,
+              64.5570068359375
+            ]
+          }
+        },
+        "bounds_min": [
+          -62.432437896728516,
+          -326.1086120605469,
+          2.1413910388946533
+        ],
+        "bounds_max": [
+          62.3987922668457,
+          409.91339111328125,
+          123.85183715820312
+        ]
+      },
+      "after": {
+        "meshes": {
+          "centax": {
+            "exported_name": "centax.001",
+            "vertices": 9250,
+            "triangles": 4528,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Centax_centax_Slot0.001"
+            ],
+            "slot_triangles": [
+              4528
+            ]
+          },
+          "thrusters": {
+            "exported_name": "thrusters.001",
+            "vertices": 64,
+            "triangles": 54,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Centax_thrusters_Slot0.001"
+            ],
+            "slot_triangles": [
+              54
+            ]
+          },
+          "engines": {
+            "exported_name": "engines.005",
+            "vertices": 4,
+            "triangles": 2,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_engines_Slot0.001"
+            ],
+            "slot_triangles": [
+              2
+            ]
+          },
+          "engine": {
+            "exported_name": "engine.001",
+            "vertices": 4,
+            "triangles": 2,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_engine_Slot0.001"
+            ],
+            "slot_triangles": [
+              2
+            ]
+          },
+          "collision": {
+            "exported_name": "collision.003",
+            "vertices": 98,
+            "triangles": 192,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_collision_Slot0.001"
+            ],
+            "slot_triangles": [
+              192
+            ]
+          },
+          "shield": {
+            "exported_name": "shield.003",
+            "vertices": 294,
+            "triangles": 432,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Centax_shield_Slot0.001"
+            ],
+            "slot_triangles": [
+              432
+            ]
+          },
+          "shadow": {
+            "exported_name": "shadow.005",
+            "vertices": 11623,
+            "triangles": 16151,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Centax_shadow_Slot0.001"
+            ],
+            "slot_triangles": [
+              16151
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "centax": {
+            "parent": "Root",
+            "head": [
+              -0.01683235354721546,
+              166.49273681640625,
+              64.55697631835938
+            ]
+          },
+          "pi_damage_elec_cap00": {
+            "parent": "centax",
+            "head": [
+              -0.007976504974067211,
+              1.8859206438064575,
+              1.1928820610046387
+            ]
+          },
+          "thrusters": {
+            "parent": "Root",
+            "head": [
+              0.05090545862913132,
+              315.0916748046875,
+              64.33364868164062
+            ]
+          },
+          "engines": {
+            "parent": "Root",
+            "head": [
+              1.879286527633667,
+              321.1322021484375,
+              62.49298095703125
+            ]
+          },
+          "pe_centaxengine_sml": {
+            "parent": "engines",
+            "head": [
+              -12.138216018676758,
+              334.31134033203125,
+              58.52627182006836
+            ]
+          },
+          "engine": {
+            "parent": "Root",
+            "head": [
+              0.2973751425743103,
+              315.4233093261719,
+              69.25057220458984
+            ]
+          },
+          "pe_centaxengine_lrg": {
+            "parent": "engine",
+            "head": [
+              22.291934967041016,
+              337.0906982421875,
+              61.32426834106445
+            ]
+          },
+          "HP01": {
+            "parent": "Root",
+            "head": [
+              30.971139907836914,
+              -52.26105499267578,
+              89.3108139038086
+            ]
+          },
+          "HP01_EMITDAMGE": {
+            "parent": "HP01",
+            "head": [
+              29.210174560546875,
+              -52.26105880737305,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage": {
+            "parent": "HP01_EMITDAMGE",
+            "head": [
+              43.9247932434082,
+              -52.18073654174805,
+              89.52706146240234
+            ]
+          },
+          "HP02": {
+            "parent": "Root",
+            "head": [
+              30.971141815185547,
+              10.467425346374512,
+              89.31080627441406
+            ]
+          },
+          "HP02_EMITDAMAGE": {
+            "parent": "HP02",
+            "head": [
+              29.309629440307617,
+              10.467424392700195,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.001": {
+            "parent": "HP02_EMITDAMAGE",
+            "head": [
+              43.9248046875,
+              11.529560089111328,
+              89.52706909179688
+            ]
+          },
+          "HP03": {
+            "parent": "Root",
+            "head": [
+              30.97114372253418,
+              73.10903930664062,
+              89.310791015625
+            ]
+          },
+          "HP03_EMITDAMAGE": {
+            "parent": "HP03",
+            "head": [
+              28.866607666015625,
+              73.10904693603516,
+              89.310791015625
+            ]
+          },
+          "p_hp_stardestroyer_damage.002": {
+            "parent": "HP03_EMITDAMAGE",
+            "head": [
+              43.9247932434082,
+              73.22518157958984,
+              89.52705383300781
+            ]
+          },
+          "HP04": {
+            "parent": "Root",
+            "head": [
+              30.971145629882812,
+              135.10986328125,
+              89.31078338623047
+            ]
+          },
+          "HP04_EMITDAMAGE": {
+            "parent": "HP04",
+            "head": [
+              29.11357307434082,
+              135.10984802246094,
+              89.31078338623047
+            ]
+          },
+          "p_hp_stardestroyer_damage.003": {
+            "parent": "HP04_EMITDAMAGE",
+            "head": [
+              43.92479705810547,
+              135.2779998779297,
+              89.52704620361328
+            ]
+          },
+          "HP05": {
+            "parent": "Root",
+            "head": [
+              -31.53427505493164,
+              -52.26105499267578,
+              89.3108139038086
+            ]
+          },
+          "HP05_EMITDAMAGE": {
+            "parent": "HP05",
+            "head": [
+              -28.689470291137695,
+              -52.26105499267578,
+              89.3108139038086
+            ]
+          },
+          "p_hp_stardestroyer_damage.004": {
+            "parent": "HP05_EMITDAMAGE",
+            "head": [
+              -40.93349075317383,
+              -52.18073654174805,
+              89.5270767211914
+            ]
+          },
+          "HP06": {
+            "parent": "Root",
+            "head": [
+              -31.534271240234375,
+              10.467425346374512,
+              89.31080627441406
+            ]
+          },
+          "HP06_EMITDAMAGE": {
+            "parent": "HP06",
+            "head": [
+              -28.297176361083984,
+              10.467425346374512,
+              89.31080627441406
+            ]
+          },
+          "p_hp_stardestroyer_damage.005": {
+            "parent": "HP06_EMITDAMAGE",
+            "head": [
+              -40.933475494384766,
+              11.032755851745605,
+              89.52706909179688
+            ]
+          },
+          "HP07": {
+            "parent": "Root",
+            "head": [
+              -31.53426742553711,
+              73.10903930664062,
+              89.310791015625
+            ]
+          },
+          "HP07_EMITDAMAGE": {
+            "parent": "HP07",
+            "head": [
+              -29.079179763793945,
+              73.10903930664062,
+              89.310791015625
+            ]
+          },
+          "p_hp_stardestroyer_damage.006": {
+            "parent": "HP07_EMITDAMAGE",
+            "head": [
+              -40.93347930908203,
+              73.43623352050781,
+              89.52705383300781
+            ]
+          },
+          "HP08": {
+            "parent": "Root",
+            "head": [
+              -31.53426742553711,
+              135.10986328125,
+              89.31078338623047
+            ]
+          },
+          "HP08_EMITDAMAGE": {
+            "parent": "HP08",
+            "head": [
+              -27.609577178955078,
+              135.10984802246094,
+              89.310791015625
+            ]
+          },
+          "p_hp_stardestroyer_damage.007": {
+            "parent": "HP08_EMITDAMAGE",
+            "head": [
+              -40.9334831237793,
+              135.30931091308594,
+              89.52706146240234
+            ]
+          },
+          "HP09": {
+            "parent": "Root",
+            "head": [
+              -0.06968021392822266,
+              -22.289379119873047,
+              89.31080627441406
+            ]
+          },
+          "HP09_EMITDAMAGE": {
+            "parent": "HP09",
+            "head": [
+              -0.06967832148075104,
+              -18.04725456237793,
+              89.31079864501953
+            ]
+          },
+          "p_fire_big01": {
+            "parent": "HP09_EMITDAMAGE",
+            "head": [
+              0.1785113364458084,
+              -18.118501663208008,
+              118.76289367675781
+            ]
+          },
+          "HP10": {
+            "parent": "Root",
+            "head": [
+              0.002604961395263672,
+              134.2174835205078,
+              89.31078338623047
+            ]
+          },
+          "HP10_EMITDAMAGE": {
+            "parent": "HP10",
+            "head": [
+              0.002579953521490097,
+              137.94813537597656,
+              89.31078338623047
+            ]
+          },
+          "p_fire_big01.001": {
+            "parent": "HP10_EMITDAMAGE",
+            "head": [
+              0.17851293087005615,
+              136.39170837402344,
+              118.76288604736328
+            ]
+          },
+          "HP_S": {
+            "parent": "Root",
+            "head": [
+              -0.06968021392822266,
+              68.15642547607422,
+              89.31079864501953
+            ]
+          },
+          "HP_S_EMITDAMAGE": {
+            "parent": "HP_S",
+            "head": [
+              -0.06966611742973328,
+              73.70006561279297,
+              89.31078338623047
+            ]
+          },
+          "p_hp_stardestroyer_damage.008": {
+            "parent": "HP_S_EMITDAMAGE",
+            "head": [
+              0.1844852864742279,
+              73.22517395019531,
+              116.1233901977539
+            ]
+          },
+          "HP_E": {
+            "parent": "Root",
+            "head": [
+              0.002604961395263672,
+              266.92254638671875,
+              89.31076049804688
+            ]
+          },
+          "HP_E_EMITDAMAGE": {
+            "parent": "HP_E",
+            "head": [
+              0.0025759637355804443,
+              271.78631591796875,
+              89.31076049804688
+            ]
+          },
+          "p_fire_big01.002": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              0.178482785820961,
+              274.6408386230469,
+              112.04843139648438
+            ]
+          },
+          "p_fire_big01.003": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              0.178482785820961,
+              274.64080810546875,
+              22.472505569458008
+            ]
+          },
+          "p_fire_big01.004": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              -17.53388786315918,
+              307.10540771484375,
+              83.18936920166016
+            ]
+          },
+          "p_fire_big01.005": {
+            "parent": "HP_E_EMITDAMAGE",
+            "head": [
+              17.409990310668945,
+              307.1054992675781,
+              83.18936920166016
+            ]
+          },
+          "HP11": {
+            "parent": "Root",
+            "head": [
+              -0.06968021392822266,
+              -191.84959411621094,
+              89.31083679199219
+            ]
+          },
+          "HP11_EMITDAMAGE": {
+            "parent": "HP11",
+            "head": [
+              -0.0697130560874939,
+              -184.37660217285156,
+              89.31082916259766
+            ]
+          },
+          "HP11_00": {
+            "parent": "HP11_EMITDAMAGE",
+            "head": [
+              -45.98405075073242,
+              -224.44400024414062,
+              71.29866790771484
+            ]
+          },
+          "HP11_01": {
+            "parent": "HP11_EMITDAMAGE",
+            "head": [
+              47.159969329833984,
+              -224.4435577392578,
+              71.29866790771484
+            ]
+          },
+          "p_fire_big01.006": {
+            "parent": "HP11_EMITDAMAGE",
+            "head": [
+              0.17851653695106506,
+              -191.3682861328125,
+              115.17518615722656
+            ]
+          },
+          "collision": {
+            "parent": "Root",
+            "head": [
+              1.3902997970581055,
+              32.490928649902344,
+              -0.000005293443791742902
+            ]
+          },
+          "shield": {
+            "parent": "Root",
+            "head": [
+              -0.025656700134277344,
+              39.93101501464844,
+              -0.000005487985617946833
+            ]
+          },
+          "shadow": {
+            "parent": "Root",
+            "head": [
+              -0.01683235354721546,
+              166.49273681640625,
+              64.55697631835938
+            ]
+          }
+        },
+        "bounds_min": [
+          -62.432437896728516,
+          -326.10858154296875,
+          2.1413381099700928
+        ],
+        "bounds_max": [
+          62.3987922668457,
+          409.9134216308594,
+          123.85179901123047
+        ]
+      }
+    }
+  },
+  "materials": [
+    {
+      "name": "Centax_centax_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Centax_ReV_centax_frigate",
+      "normal": "Centax_ReV_centax_frigate_b",
+      "mask": "Centax_ReV_centax_frigate_TeamMask",
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "Colorization": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "UVOffset": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "BaseTexture": "ReV_centax_frigate.dds",
+        "NormalTexture": "ReV_centax_frigate_b.dds"
+      }
+    },
+    {
+      "name": "Centax_thrusters_Slot0",
+      "shader": "MeshGloss.fx",
+      "base": "Centax_ReV_centax_thruster",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "BaseTexture": "ReV_centax_thruster.dds"
+      }
+    },
+    {
+      "name": "Centax_engines_Slot0",
+      "shader": "alDefault.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {}
+    },
+    {
+      "name": "Centax_engine_Slot0",
+      "shader": "alDefault.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {}
+    },
+    {
+      "name": "Centax_collision_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0,
+          0,
+          1,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "Centax_shield_Slot0",
+      "shader": "MeshShield.fx",
+      "base": "Centax_Shield_color",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "EdgeBrightness": [
+          0.5
+        ],
+        "BaseUVScale": [
+          16
+        ],
+        "WaveUVScale": [
+          1
+        ],
+        "DistortUVScale": [
+          1
+        ],
+        "BaseUVScrollRate": [
+          -0.15000000596046448
+        ],
+        "WaveUVScrollRate": [
+          -0.15000000596046448
+        ],
+        "DistortUVScrollRate": [
+          -0.25
+        ],
+        "BaseTexture": "Shield_color.dds",
+        "WaveTexture": "Nb_shieldwave.dds",
+        "DistortionTexture": "Nb_shieldripple.dds"
+      }
+    },
+    {
+      "name": "Centax_shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0,
+          1,
+          1,
+          1
+        ]
+      }
+    }
+  ],
+  "bone_error": 0.000057220458984375,
+  "fbx": "F:/Private/empire-at-war/Temp/CentaxImport/Output/Centax.fbx",
+  "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\ReV_centax_frigate.ALO"
+}

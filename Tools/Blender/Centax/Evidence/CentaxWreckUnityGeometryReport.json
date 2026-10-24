@@ -1,0 +1,38 @@
+{
+  "meshes": [
+    {
+      "name": "brokenship",
+      "triangles": 8196,
+      "vertices": 19300,
+      "maximumPositionError": 1.92311586E-06,
+      "materials": [
+        "CentaxWreck_brokenship_Slot0"
+      ]
+    },
+    {
+      "name": "busted_00",
+      "triangles": 2092,
+      "vertices": 4903,
+      "maximumPositionError": 2.042492E-06,
+      "materials": [
+        "CentaxWreck_busted_00_Slot0"
+      ]
+    },
+    {
+      "name": "busted_01",
+      "triangles": 2812,
+      "vertices": 5976,
+      "maximumPositionError": 1.07288361E-06,
+      "materials": [
+        "CentaxWreck_busted_01_Slot0"
+      ]
+    }
+  ],
+  "totalTriangles": 13100,
+  "bones": 19,
+  "maximumBoneError": 3.43852162E-06,
+  "visibleHullTriangles": 13100,
+  "visibleEffectTriangles": 0,
+  "visibleMeshes": 3,
+  "rootIdentity": true
+}
