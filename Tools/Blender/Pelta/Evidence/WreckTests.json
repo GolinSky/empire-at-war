@@ -1,0 +1,979 @@
+{
+  "status": "completed",
+  "duration": 10.11,
+  "summary": {
+    "total": 138,
+    "passed": 135,
+    "failed": 3,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(\"Assets/Prefabs/Models/Wrecks/AllegianceWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0849396,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleAssetPreloaderTests.Prepare_WithoutRestoreLeavesUnitViewsAndWrecksToTheWarmup(Republic,Separatist)",
+      "Status": "Passed",
+      "Duration": 0.848537,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.BattleAssetPreloaderTests.Prepare_WithoutRestoreLeavesUnitViewsAndWrecksToTheWarmup(Empire,Rebellion)",
+      "Status": "Passed",
+      "Duration": 0.2408261,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.CisStationImportTests.StaticWreck_UsesOnlyTheHighestLevelHull",
+      "Status": "Passed",
+      "Duration": 0.0266139,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0351869,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ISDIIShipTests.SavedPrefab_HasNoMissingScriptsOrUnboundVisibleGeometry(\"Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0108376,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.002444,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck",
+      "Status": "Failed",
+      "Duration": 0.316527,
+      "Message": "System.NullReferenceException : Object reference not set to an instance of an object",
+      "StackTrace": "  at EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck () [0x00137] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\RaiderCorvetteTests.cs:115 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <f713e1c3c5f545ce9b1df47230f4f853>:0 "
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAssetIntegrityTests.Arquitens_UsesItsOwnWreckPrefab",
+      "Status": "Passed",
+      "Duration": 0.0139203,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.StationLevelViewTests.RepublicWreck_UsesOnlyFinalLevelHull",
+      "Status": "Passed",
+      "Duration": 0.0257833,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Wrecks/TartanWreckView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0066868,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck",
+      "Status": "Failed",
+      "Duration": 0.3221719,
+      "Message": "System.NullReferenceException : Object reference not set to an instance of an object",
+      "StackTrace": "  at EmpireAtWar.Tests.Editor.TartanTests.SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck () [0x00137] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TartanTests.cs:128 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <f713e1c3c5f545ce9b1df47230f4f853>:0 "
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.UnitRenderStateComponentTests.WreckTeamValue_DoesNotCarryLiveUnitHighlight",
+      "Status": "Passed",
+      "Duration": 0.0049976,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.UnitWreckAssetDependencyTests.ShipAndStationData_DoNotDependOnWreckPrefabs",
+      "Status": "Passed",
+      "Duration": 0.1518459,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.UnitWreckAssetDependencyTests.WreckData_ReferencesAddressablePrefabsWithoutHardDependencies",
+      "Status": "Passed",
+      "Duration": 0.0597274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckCutPlanTests.Create_MoreThanShaderCutSlots_Throws",
+      "Status": "Passed",
+      "Duration": 0.0011168,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckCutPlanTests.Create_PartCountStaysInRange_CutsAreSortedInsideTheUnit",
+      "Status": "Passed",
+      "Duration": 0.0128479,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckCutPlanTests.Create_TwoParts_BiggerPartIsWithinRatio",
+      "Status": "Passed",
+      "Duration": 0.000814,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.AuthoredDeathWreck_PreservesSourceGeometryAndBoundMaterials(\"Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab\",\"Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx\",35)",
+      "Status": "Passed",
+      "Duration": 0.0372065,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.AuthoredDeathWreck_PreservesSourceGeometryAndBoundMaterials(\"Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab\",\"Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx\",25)",
+      "Status": "Passed",
+      "Duration": 0.0163143,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/DefendStation/AsteroidDefendPlatformView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0075438,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/DefendStation/DefendPlatformView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0047097,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/MiningFacilities/AsteroidMiningFacilityView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0036903,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/MiningFacilities/MiningFacilityView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0026746,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/AcclamatorAssaultShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0086152,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0467211,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.007492,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0432356,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/ImperialVenatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0176922,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/ISDIIIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0147604,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0152642,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0039581,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/TartanShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0074507,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0112264,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/TitanShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.1152909,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/VictoryIIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0097275,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/VictoryIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0060444,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0032122,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkIIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.009892,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/BothanAssaultCruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0045303,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/CD273ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.005807,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/CorellianBattlecruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0096002,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/CorellianCorvetteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0032683,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/DauntlessShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0068385,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0230133,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/HomeOneShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0160784,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/LiberatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0222092,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/MC30cShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.004644,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0051972,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/MC75ProfundityShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0075071,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0127556,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/MonCalCruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0111234,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/NebulaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0156712,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/NebulonBShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0039432,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Rebellion/QuasarFireShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.004498,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/AcclamatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.004993,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/ArquitensShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0037462,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/CR70ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.003166,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/HeavyDreadnoughtShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0124808,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0075518,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/MandatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0062579,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/PeltaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.004357,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/ResoluteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0063795,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/RothanaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0070502,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/StealthCorvetteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0040536,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/ThrantaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.005024,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0043733,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/C9979ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0031406,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/CaptorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0035958,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/DispatcherShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0033948,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/LucrehulkShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0038331,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/MalevolenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0048797,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/MunificentShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0046047,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/PatrolFrigateShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0029962,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/ProvidenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0026608,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Separatist/RecusantShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0034027,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0166134,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0131531,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckedViews_Exist",
+      "Status": "Passed",
+      "Duration": 0.1445664,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/DefendStation/AsteroidDefendPlatformView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0417671,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/DefendStation/DefendPlatformView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0106283,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/MiningFacilities/AsteroidMiningFacilityView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.004505,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/MiningFacilities/MiningFacilityView.prefab\")",
+      "Status": "Failed",
+      "Duration": 0.0056075,
+      "Message": "  Wreck materials are out of sync; run Tools/Empire At War/Rendering/Materials/Sync Wreck Materials.\nRefuelingStation_Hull -> RefuelingStation_Hull_Wreck: _TeamLiveryHue\nRefuelingStation_Hull -> RefuelingStation_Hull_Wreck: _TeamLiveryHueRange\r\n  Expected: <empty>\r\n  But was:  < \"RefuelingStation_Hull -> RefuelingStation_Hull_Wreck: _TeamLiveryHue\", \"RefuelingStation_Hull -> RefuelingStation_Hull_Wreck: _TeamLiveryHueRange\" >\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials (System.String viewPath) [0x00119] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WreckMaterialSyncTests.cs:106\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/AcclamatorAssaultShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0358142,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.3070929,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/ArquitensImperialCruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0838256,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.1487477,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/ImperialVenatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0927444,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/ISDIIIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0914662,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.3719615,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.011256,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/TartanShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.2292985,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.2743753,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/TitanShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.7175382,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/VictoryIIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0810584,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/VictoryIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0502586,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/VictoryShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0197566,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/AssaultFrigateMkIIShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.027508,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/BothanAssaultCruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.013236,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/CD273ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0141352,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/CorellianBattlecruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.099755,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/CorellianCorvetteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0047016,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/DauntlessShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0389402,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.7498215,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/HomeOneShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.005981,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/LiberatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.4075917,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/MC30cShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0412096,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0436393,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/MC75ProfundityShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0217861,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.1516362,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/MonCalCruiserShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0155437,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/NebulaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.9347049,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/NebulonBShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0103297,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Rebellion/QuasarFireShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0103788,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/AcclamatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.007242,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/ArquitensShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0052089,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/CR70ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0183231,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/HeavyDreadnoughtShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0412567,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/ImperatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0261014,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/MandatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0350007,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/PeltaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0347001,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/ResoluteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0124379,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/RothanaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0335302,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/StealthCorvetteShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0144315,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/ThrantaShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0160528,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0039881,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/C9979ShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.027618,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/CaptorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0107008,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/DispatcherShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0149208,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/LucrehulkShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0055767,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/MalevolenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.026018,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/MunificentShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0163958,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/PatrolFrigateShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0049584,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/ProvidenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0573049,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Separatist/RecusantShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0099826,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0440423,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.007448,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Weapon.TargetSelectionCaptureTests.NextBatch_RefreshesGenerationAndWreckState",
+      "Status": "Passed",
+      "Duration": 0.0183821,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

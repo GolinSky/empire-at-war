@@ -1,0 +1,1329 @@
+{
+  "models": {
+    "Pelta": {
+      "before": {
+        "meshes": {
+          "COL": {
+            "exported_name": "COL",
+            "vertices": 8,
+            "triangles": 12,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Pelta_COL_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Hull_Fixed": {
+            "exported_name": "Hull_Fixed",
+            "vertices": 4107,
+            "triangles": 2508,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Hull_Fixed_Slot0"
+            ],
+            "slot_triangles": [
+              2508
+            ]
+          },
+          "shadow": {
+            "exported_name": "shadow",
+            "vertices": 7308,
+            "triangles": 9816,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_shadow_Slot0"
+            ],
+            "slot_triangles": [
+              9816
+            ]
+          },
+          "Lights_Hull": {
+            "exported_name": "Lights_Hull",
+            "vertices": 102,
+            "triangles": 38,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Lights_Hull_Slot0"
+            ],
+            "slot_triangles": [
+              38
+            ]
+          },
+          "Wing_R": {
+            "exported_name": "Wing_R",
+            "vertices": 240,
+            "triangles": 80,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Wing_R_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          },
+          "Shadow_Wing_R": {
+            "exported_name": "Shadow_Wing_R",
+            "vertices": 238,
+            "triangles": 318,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Shadow_Wing_R_Slot0"
+            ],
+            "slot_triangles": [
+              318
+            ]
+          },
+          "SHIELD": {
+            "exported_name": "SHIELD",
+            "vertices": 10632,
+            "triangles": 5632,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Pelta_SHIELD_Slot0"
+            ],
+            "slot_triangles": [
+              5632
+            ]
+          },
+          "Lights_Wing_R": {
+            "exported_name": "Lights_Wing_R",
+            "vertices": 24,
+            "triangles": 8,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Lights_Wing_R_Slot0"
+            ],
+            "slot_triangles": [
+              8
+            ]
+          },
+          "Wing_L": {
+            "exported_name": "Wing_L",
+            "vertices": 240,
+            "triangles": 80,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Wing_L_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          },
+          "Shadow_Wing_L": {
+            "exported_name": "Shadow_Wing_L",
+            "vertices": 238,
+            "triangles": 318,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Shadow_Wing_L_Slot0"
+            ],
+            "slot_triangles": [
+              318
+            ]
+          },
+          "Lights_Wing_L": {
+            "exported_name": "Lights_Wing_L",
+            "vertices": 24,
+            "triangles": 8,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Lights_Wing_L_Slot0"
+            ],
+            "slot_triangles": [
+              8
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "L_Gun": {
+            "parent": "Root",
+            "head": [
+              87.59703063964844,
+              -204.29452514648438,
+              3.6547859849633824e-07
+            ]
+          },
+          "R_Gun": {
+            "parent": "Root",
+            "head": [
+              -87.59703063964844,
+              -204.29452514648438,
+              3.6547859849633824e-07
+            ]
+          },
+          "COL": {
+            "parent": "Root",
+            "head": [
+              0.06997871398925781,
+              131.045166015625,
+              -4.028809547424316
+            ]
+          },
+          "Hull_Fixed": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "shadow": {
+            "parent": "Hull_Fixed",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Pi_damage_elec_SD00": {
+            "parent": "Hull_Fixed",
+            "head": [
+              -131.34814453125,
+              83.74490356445312,
+              8.397294998168945
+            ]
+          },
+          "Pe_pelta2_sml": {
+            "parent": "Root",
+            "head": [
+              40.26900100708008,
+              380.9454345703125,
+              1.6669082641601562
+            ]
+          },
+          "Pe_pelta2_sml.001": {
+            "parent": "Root",
+            "head": [
+              -40.26900100708008,
+              380.9454345703125,
+              1.6669082641601562
+            ]
+          },
+          "Pe_pelta2": {
+            "parent": "Root",
+            "head": [
+              0.020142555236816406,
+              485.86761474609375,
+              -0.21073150634765625
+            ]
+          },
+          "Lights_Hull": {
+            "parent": "Root",
+            "head": [
+              0,
+              54.42720031738281,
+              53.68735885620117
+            ]
+          },
+          "Wing_R": {
+            "parent": "Root",
+            "head": [
+              -110.13946533203125,
+              291.2548828125,
+              -0.025054931640625
+            ]
+          },
+          "Shadow_Wing_R": {
+            "parent": "Wing_R",
+            "head": [
+              -110.13946533203125,
+              291.2548828125,
+              -0.025054931640625
+            ]
+          },
+          "Lights_Wing_R": {
+            "parent": "Wing_R",
+            "head": [
+              -110.13946533203125,
+              290.21575927734375,
+              -0.025054931640625
+            ]
+          },
+          "Wing_L": {
+            "parent": "Root",
+            "head": [
+              110.15198516845703,
+              291.25714111328125,
+              -0.025054931640625
+            ]
+          },
+          "Shadow_Wing_L": {
+            "parent": "Wing_L",
+            "head": [
+              110.15198516845703,
+              291.25714111328125,
+              -0.025054931640625
+            ]
+          },
+          "Lights_Wing_L": {
+            "parent": "Wing_L",
+            "head": [
+              110.15198516845703,
+              290.218017578125,
+              -0.025054931640625
+            ]
+          },
+          "p_blink_medium_white_1_3": {
+            "parent": "Root",
+            "head": [
+              0.00036907196044921875,
+              326.3341064453125,
+              94.23849487304688
+            ]
+          },
+          "P_ship_fire_small_ALT1": {
+            "parent": "Root",
+            "head": [
+              33.71699523925781,
+              -202.02525329589844,
+              26.110206604003906
+            ]
+          },
+          "P_ship_fire_ALT2": {
+            "parent": "Root",
+            "head": [
+              77.08280944824219,
+              -117.5765151977539,
+              6.332275390625
+            ]
+          },
+          "P_ship_fire_ALT3": {
+            "parent": "Root",
+            "head": [
+              -1.7449121475219727,
+              -25.525279998779297,
+              33.417633056640625
+            ]
+          },
+          "P_ship_fire_small_ALT3": {
+            "parent": "Root",
+            "head": [
+              57.76739501953125,
+              168.39878845214844,
+              14.795248031616211
+            ]
+          },
+          "P_ship_fire_ALT3.001": {
+            "parent": "Root",
+            "head": [
+              -24.472579956054688,
+              -141.281982421875,
+              22.306255340576172
+            ]
+          },
+          "P_ship_fire_ALT2.001": {
+            "parent": "Root",
+            "head": [
+              -74.1812973022461,
+              3.8117361068725586,
+              3.156963348388672
+            ]
+          },
+          "P_ship_fire_small_ALT1.001": {
+            "parent": "Root",
+            "head": [
+              -3.4094696044921875,
+              407.75665283203125,
+              22.317398071289062
+            ]
+          },
+          "HP01": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              -74.71101379394531,
+              0
+            ]
+          },
+          "HP02": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              -110.31787109375,
+              0
+            ]
+          },
+          "HP03": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              -24.03911590576172,
+              0
+            ]
+          },
+          "HP04": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              4.486078262329102,
+              0
+            ]
+          },
+          "HP05": {
+            "parent": "Root",
+            "head": [
+              97.36869049072266,
+              242.92803955078125,
+              0
+            ]
+          },
+          "HP06": {
+            "parent": "Root",
+            "head": [
+              -82.19416046142578,
+              -74.63941955566406,
+              0
+            ]
+          },
+          "HP07": {
+            "parent": "Root",
+            "head": [
+              -82.53358459472656,
+              -108.91496276855469,
+              0
+            ]
+          },
+          "HP08": {
+            "parent": "Root",
+            "head": [
+              -82.53358459472656,
+              -26.7659912109375,
+              0
+            ]
+          },
+          "HP09": {
+            "parent": "Root",
+            "head": [
+              -82.53358459472656,
+              4.686286926269531,
+              0
+            ]
+          },
+          "HP10": {
+            "parent": "Root",
+            "head": [
+              -102.23664855957031,
+              243.27099609375,
+              0
+            ]
+          },
+          "HP11": {
+            "parent": "Root",
+            "head": [
+              85.09950256347656,
+              137.61187744140625,
+              0
+            ]
+          },
+          "HP12": {
+            "parent": "Root",
+            "head": [
+              -87.31114196777344,
+              137.61187744140625,
+              0
+            ]
+          },
+          "HP13": {
+            "parent": "Root",
+            "head": [
+              -87.21370697021484,
+              -220.58474731445312,
+              -7.563631942986149e-10
+            ]
+          },
+          "HP14": {
+            "parent": "Root",
+            "head": [
+              87.33783721923828,
+              -220.58474731445312,
+              -7.563631942986149e-10
+            ]
+          },
+          "P_ship_fire_small_ALT2": {
+            "parent": "Root",
+            "head": [
+              33.71699523925781,
+              -202.02525329589844,
+              26.110206604003906
+            ]
+          },
+          "P_ship_fire_small_ALT3.001": {
+            "parent": "Root",
+            "head": [
+              33.71699523925781,
+              -202.02525329589844,
+              26.110206604003906
+            ]
+          },
+          "P_ship_fire_ALT3.002": {
+            "parent": "Root",
+            "head": [
+              77.08280944824219,
+              -117.5765151977539,
+              6.332275390625
+            ]
+          },
+          "P_ship_fire_ALT3.003": {
+            "parent": "Root",
+            "head": [
+              -74.1812973022461,
+              3.8117361068725586,
+              3.156963348388672
+            ]
+          },
+          "P_ship_fire_small_ALT2.001": {
+            "parent": "Root",
+            "head": [
+              -3.4094696044921875,
+              407.75665283203125,
+              22.317398071289062
+            ]
+          },
+          "P_ship_fire_small_ALT3.002": {
+            "parent": "Root",
+            "head": [
+              -3.4094696044921875,
+              407.75665283203125,
+              22.317398071289062
+            ]
+          }
+        },
+        "bounds_min": [
+          -289.4552307128906,
+          -243.34817504882812,
+          -77.1983642578125
+        ],
+        "bounds_max": [
+          289.4552307128906,
+          493.76202392578125,
+          122.5389633178711
+        ]
+      },
+      "after": {
+        "meshes": {
+          "COL": {
+            "exported_name": "COL.001",
+            "vertices": 8,
+            "triangles": 12,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Pelta_COL_Slot0.001"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Hull_Fixed": {
+            "exported_name": "Hull_Fixed.001",
+            "vertices": 4107,
+            "triangles": 2508,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Hull_Fixed_Slot0.001"
+            ],
+            "slot_triangles": [
+              2508
+            ]
+          },
+          "shadow": {
+            "exported_name": "shadow.001",
+            "vertices": 7308,
+            "triangles": 9816,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_shadow_Slot0.001"
+            ],
+            "slot_triangles": [
+              9816
+            ]
+          },
+          "Lights_Hull": {
+            "exported_name": "Lights_Hull.001",
+            "vertices": 102,
+            "triangles": 38,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Lights_Hull_Slot0.001"
+            ],
+            "slot_triangles": [
+              38
+            ]
+          },
+          "Wing_R": {
+            "exported_name": "Wing_R.001",
+            "vertices": 240,
+            "triangles": 80,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Wing_R_Slot0.001"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          },
+          "SHIELD": {
+            "exported_name": "SHIELD.001",
+            "vertices": 10632,
+            "triangles": 5632,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Pelta_SHIELD_Slot0.001"
+            ],
+            "slot_triangles": [
+              5632
+            ]
+          },
+          "Shadow_Wing_R": {
+            "exported_name": "Shadow_Wing_R.001",
+            "vertices": 238,
+            "triangles": 318,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Shadow_Wing_R_Slot0.001"
+            ],
+            "slot_triangles": [
+              318
+            ]
+          },
+          "Lights_Wing_R": {
+            "exported_name": "Lights_Wing_R.001",
+            "vertices": 24,
+            "triangles": 8,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Lights_Wing_R_Slot0.001"
+            ],
+            "slot_triangles": [
+              8
+            ]
+          },
+          "Wing_L": {
+            "exported_name": "Wing_L.001",
+            "vertices": 240,
+            "triangles": 80,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Wing_L_Slot0.001"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          },
+          "Shadow_Wing_L": {
+            "exported_name": "Shadow_Wing_L.001",
+            "vertices": 238,
+            "triangles": 318,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Shadow_Wing_L_Slot0.001"
+            ],
+            "slot_triangles": [
+              318
+            ]
+          },
+          "Lights_Wing_L": {
+            "exported_name": "Lights_Wing_L.001",
+            "vertices": 24,
+            "triangles": 8,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Pelta_Lights_Wing_L_Slot0.001"
+            ],
+            "slot_triangles": [
+              8
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "L_Gun": {
+            "parent": "Root",
+            "head": [
+              87.59703063964844,
+              -204.29452514648438,
+              3.36492812493816e-05
+            ]
+          },
+          "R_Gun": {
+            "parent": "Root",
+            "head": [
+              -87.59703063964844,
+              -204.29452514648438,
+              3.36492812493816e-05
+            ]
+          },
+          "COL": {
+            "parent": "Root",
+            "head": [
+              0.06997871398925781,
+              131.045166015625,
+              -4.0288310050964355
+            ]
+          },
+          "Hull_Fixed": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "shadow": {
+            "parent": "Hull_Fixed",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Pi_damage_elec_SD00": {
+            "parent": "Hull_Fixed",
+            "head": [
+              -131.34814453125,
+              83.74490356445312,
+              8.397281646728516
+            ]
+          },
+          "Pe_pelta2_sml": {
+            "parent": "Root",
+            "head": [
+              40.26900100708008,
+              380.9454345703125,
+              1.6668461561203003
+            ]
+          },
+          "Pe_pelta2_sml.001": {
+            "parent": "Root",
+            "head": [
+              -40.26900100708008,
+              380.9454345703125,
+              1.6668461561203003
+            ]
+          },
+          "Pe_pelta2": {
+            "parent": "Root",
+            "head": [
+              0.020142555236816406,
+              485.86761474609375,
+              -0.21081066131591797
+            ]
+          },
+          "Lights_Hull": {
+            "parent": "Root",
+            "head": [
+              0,
+              54.427207946777344,
+              53.68735122680664
+            ]
+          },
+          "Wing_R": {
+            "parent": "Root",
+            "head": [
+              -110.13946533203125,
+              291.2548828125,
+              -0.02510238252580166
+            ]
+          },
+          "Shadow_Wing_R": {
+            "parent": "Wing_R",
+            "head": [
+              -110.13946533203125,
+              291.2548828125,
+              -0.02510238252580166
+            ]
+          },
+          "Lights_Wing_R": {
+            "parent": "Wing_R",
+            "head": [
+              -110.13946533203125,
+              290.21575927734375,
+              -0.02510221302509308
+            ]
+          },
+          "Wing_L": {
+            "parent": "Root",
+            "head": [
+              110.15198516845703,
+              291.25714111328125,
+              -0.02510238252580166
+            ]
+          },
+          "Shadow_Wing_L": {
+            "parent": "Wing_L",
+            "head": [
+              110.15198516845703,
+              291.25714111328125,
+              -0.02510238252580166
+            ]
+          },
+          "Lights_Wing_L": {
+            "parent": "Wing_L",
+            "head": [
+              110.15198516845703,
+              290.218017578125,
+              -0.025102214887738228
+            ]
+          },
+          "p_blink_medium_white_1_3": {
+            "parent": "Root",
+            "head": [
+              0.00036907196044921875,
+              326.3341369628906,
+              94.23844146728516
+            ]
+          },
+          "P_ship_fire_small_ALT1": {
+            "parent": "Root",
+            "head": [
+              33.71699523925781,
+              -202.02525329589844,
+              26.110239028930664
+            ]
+          },
+          "P_ship_fire_ALT2": {
+            "parent": "Root",
+            "head": [
+              77.08280944824219,
+              -117.5765151977539,
+              6.332294464111328
+            ]
+          },
+          "P_ship_fire_ALT3": {
+            "parent": "Root",
+            "head": [
+              -1.7449121475219727,
+              -25.5252742767334,
+              33.41763687133789
+            ]
+          },
+          "P_ship_fire_small_ALT3": {
+            "parent": "Root",
+            "head": [
+              57.76739501953125,
+              168.39878845214844,
+              14.795220375061035
+            ]
+          },
+          "P_ship_fire_ALT3.001": {
+            "parent": "Root",
+            "head": [
+              -24.472579956054688,
+              -141.281982421875,
+              22.306278228759766
+            ]
+          },
+          "P_ship_fire_ALT2.001": {
+            "parent": "Root",
+            "head": [
+              -74.1812973022461,
+              3.811736583709717,
+              3.1569626331329346
+            ]
+          },
+          "P_ship_fire_small_ALT1.001": {
+            "parent": "Root",
+            "head": [
+              -3.4094696044921875,
+              407.75665283203125,
+              22.317331314086914
+            ]
+          },
+          "HP01": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              -74.71101379394531,
+              1.217196859215619e-05
+            ]
+          },
+          "HP02": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              -110.31787109375,
+              1.797306140360888e-05
+            ]
+          },
+          "HP03": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              -24.03911590576172,
+              3.916468813258689e-06
+            ]
+          },
+          "HP04": {
+            "parent": "Root",
+            "head": [
+              81.95167541503906,
+              4.486078262329102,
+              -7.30874887722166e-07
+            ]
+          },
+          "HP05": {
+            "parent": "Root",
+            "head": [
+              97.36869049072266,
+              242.92803955078125,
+              -3.957800072384998e-05
+            ]
+          },
+          "HP06": {
+            "parent": "Root",
+            "head": [
+              -82.19416046142578,
+              -74.63941955566406,
+              1.2160304322605953e-05
+            ]
+          },
+          "HP07": {
+            "parent": "Root",
+            "head": [
+              -82.53358459472656,
+              -108.91496276855469,
+              1.774449810909573e-05
+            ]
+          },
+          "HP08": {
+            "parent": "Root",
+            "head": [
+              -82.53358459472656,
+              -26.7659912109375,
+              4.360733328212518e-06
+            ]
+          },
+          "HP09": {
+            "parent": "Root",
+            "head": [
+              -82.53358459472656,
+              4.686286926269531,
+              -7.634930057065503e-07
+            ]
+          },
+          "HP10": {
+            "parent": "Root",
+            "head": [
+              -102.23664855957031,
+              243.27099609375,
+              -3.9633872802369297e-05
+            ]
+          },
+          "HP11": {
+            "parent": "Root",
+            "head": [
+              85.09950256347656,
+              137.61187744140625,
+              -2.241981928818859e-05
+            ]
+          },
+          "HP12": {
+            "parent": "Root",
+            "head": [
+              -87.31114196777344,
+              137.61187744140625,
+              -2.241981928818859e-05
+            ]
+          },
+          "HP13": {
+            "parent": "Root",
+            "head": [
+              -87.21370697021484,
+              -220.58474731445312,
+              3.593705696403049e-05
+            ]
+          },
+          "HP14": {
+            "parent": "Root",
+            "head": [
+              87.33783721923828,
+              -220.58474731445312,
+              3.593705696403049e-05
+            ]
+          },
+          "P_ship_fire_small_ALT2": {
+            "parent": "Root",
+            "head": [
+              33.71699523925781,
+              -202.02525329589844,
+              26.110239028930664
+            ]
+          },
+          "P_ship_fire_small_ALT3.001": {
+            "parent": "Root",
+            "head": [
+              33.71699523925781,
+              -202.02525329589844,
+              26.110239028930664
+            ]
+          },
+          "P_ship_fire_ALT3.002": {
+            "parent": "Root",
+            "head": [
+              77.08280944824219,
+              -117.5765151977539,
+              6.332294464111328
+            ]
+          },
+          "P_ship_fire_ALT3.003": {
+            "parent": "Root",
+            "head": [
+              -74.1812973022461,
+              3.811736583709717,
+              3.1569626331329346
+            ]
+          },
+          "P_ship_fire_small_ALT2.001": {
+            "parent": "Root",
+            "head": [
+              -3.4094696044921875,
+              407.75665283203125,
+              22.317331314086914
+            ]
+          },
+          "P_ship_fire_small_ALT3.002": {
+            "parent": "Root",
+            "head": [
+              -3.4094696044921875,
+              407.75665283203125,
+              22.317331314086914
+            ]
+          }
+        },
+        "bounds_min": [
+          -289.4552307128906,
+          -243.34817504882812,
+          -77.19841766357422
+        ],
+        "bounds_max": [
+          289.4552307128906,
+          493.7619934082031,
+          122.53893280029297
+        ]
+      }
+    }
+  },
+  "materials": [
+    {
+      "name": "Pelta_COL_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0,
+          0,
+          1,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "Pelta_Hull_Fixed_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Pelta_Hull_Albedo",
+      "normal": "Pelta_Hull_Normal",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "Colorization": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "UVOffset": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "BaseTexture": "ReV_Pelta.DDS",
+        "NormalTexture": "ReV_Pelta_N.dds"
+      }
+    },
+    {
+      "name": "Pelta_shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "Pelta_Lights_Hull_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Pelta_Lights_Emission",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "ReV_Pelta_Lights.dds",
+        "UVScrollRate": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Color": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "name": "Pelta_Wing_R_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Pelta_Hull_Albedo",
+      "normal": "Pelta_Hull_Normal",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "Colorization": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "UVOffset": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "BaseTexture": "ReV_Pelta.DDS",
+        "NormalTexture": "ReV_Pelta_N.dds"
+      }
+    },
+    {
+      "name": "Pelta_Shadow_Wing_R_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "Pelta_SHIELD_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Pelta_SourceShield_Emission",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "Nb_shieldwave.dds",
+        "UVScrollRate": [
+          0,
+          -0.10000000149011612,
+          0,
+          0
+        ],
+        "Color": [
+          0.5490196347236633,
+          0.8235294818878174,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "name": "Pelta_Lights_Wing_R_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Pelta_Lights_Emission",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "ReV_Pelta_Lights.dds",
+        "UVScrollRate": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Color": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "name": "Pelta_Wing_L_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Pelta_Hull_Albedo",
+      "normal": "Pelta_Hull_Normal",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Diffuse": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Specular": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "Shininess": [
+          32
+        ],
+        "Colorization": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "UVOffset": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "BaseTexture": "ReV_Pelta.DDS",
+        "NormalTexture": "ReV_Pelta_N.dds"
+      }
+    },
+    {
+      "name": "Pelta_Shadow_Wing_L_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "Pelta_Lights_Wing_L_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Pelta_Lights_Emission",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "ReV_Pelta_Lights.dds",
+        "UVScrollRate": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "Color": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    }
+  ],
+  "bone_error": 7.915496826171875e-05,
+  "fbx": "F:/Private/empire-at-war/Temp/PeltaImport/Output/Pelta.fbx",
+  "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\ReV_Pelta.ALO"
+}

@@ -360,6 +360,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9f22e2f3db4d4f43999221f208cce86
+    m_Address: PeltaShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed3478929e387c44ea030eb69f10bf51
     m_Address: Delta7SquadronData
     m_ReadOnly: 0

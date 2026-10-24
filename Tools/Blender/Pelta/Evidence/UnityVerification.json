@@ -1,0 +1,19 @@
+{
+  "sourceModel": "ReV_Pelta.ALO",
+  "opaqueTriangles": 2668,
+  "visibleMeshes": 6,
+  "shipId": 14,
+  "targetableHardpoints": 12,
+  "turbolasers": 4,
+  "lasers": 4,
+  "ionCannons": 2,
+  "hull": 2200,
+  "shields": 1000,
+  "cost": 1800,
+  "population": 2,
+  "buildSeconds": 20,
+  "length": 45.0,
+  "teamUserValues1Through8": true,
+  "liveryAndWreckBindings": true,
+  "savedReferences": true
+}

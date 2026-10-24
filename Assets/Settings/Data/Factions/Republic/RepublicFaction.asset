@@ -238,6 +238,23 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 7e5117ae6840c8d4a9252e2b589de44f,
           type: 3}
+    - key: 14
+      value:
+        matchups: {fileID: 11400000, guid: 35e596b5a19ba5548a9149085202510f, type: 2}
+        description: 2,200 hull and 1,000 shields. Four turbolasers damage larger
+          ships, four laser cannons defend against smaller ships, and two ion cannons
+          weaken shields. Weapons, engines and shield generator are destructible.
+        role: Frigate / Multirole escort
+        iconKey: 8759435b430b0024899c5095289c56b5:21300000
+        isHero: 0
+        <Name>k__BackingField: Pelta-class Frigate
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 1800
+        <BuildTime>k__BackingField: 20
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 8759435b430b0024899c5095289c56b5,
+          type: 3}
     - key: 15
       value:
         matchups: {fileID: 11400000, guid: 5660afec4edee70409f96502d7e05d8c, type: 2}

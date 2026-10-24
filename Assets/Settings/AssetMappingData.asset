@@ -1302,6 +1302,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: PeltaShipView
+      value:
+        m_AssetGUID: d35f36028ee4d9045aa02315c5495eff
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: PeltaShipData
+      value:
+        m_AssetGUID: e9f22e2f3db4d4f43999221f208cce86
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: CarrackShipView
       value:
         m_AssetGUID: 0554626448e8b4148bc58a7027cbcde8

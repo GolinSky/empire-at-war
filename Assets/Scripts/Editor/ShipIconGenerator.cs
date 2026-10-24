@@ -59,6 +59,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.NebulonB, PrefabName = "Rebellion/NebulonBShipView.prefab", IconFileName = "NebulonBIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.CorellianCorvette, PrefabName = "Rebellion/CorellianCorvetteShipView.prefab", IconFileName = "CorellianCorvetteIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.CR70, PrefabName = "Republic/CR70ShipView.prefab", IconFileName = "CR70Icon.png" },
+            new ShipMappingInfo { ShipType = ShipType.Pelta, PrefabName = "Republic/PeltaShipView.prefab", IconFileName = "PeltaIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Carrack, PrefabName = "Republic/CarrackShipView.prefab", IconFileName = "CarrackIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.MonCalCruiser, PrefabName = "Rebellion/MonCalCruiserShipView.prefab", IconFileName = "MonCalCruiserIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.HomeOne, PrefabName = "Rebellion/HomeOneShipView.prefab", IconFileName = "HomeOneIcon.png" },

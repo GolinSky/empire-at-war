@@ -1,0 +1,186 @@
+[
+  {
+    "id": 0,
+    "name": "Turbolaser_1",
+    "type": 0,
+    "weapon": 1,
+    "position": [
+      -5.00308752,
+      -1.384001,
+      13.2917185
+    ],
+    "source": [
+      "HP01",
+      "HP02"
+    ],
+    "pairedEmitterMidpoint": true
+  },
+  {
+    "id": 1,
+    "name": "Turbolaser_2",
+    "type": 0,
+    "weapon": 1,
+    "position": [
+      5.028249,
+      -1.384001,
+      13.24671
+    ],
+    "source": [
+      "HP06",
+      "HP07"
+    ],
+    "pairedEmitterMidpoint": true
+  },
+  {
+    "id": 2,
+    "name": "Turbolaser_3",
+    "type": 0,
+    "weapon": 1,
+    "position": [
+      -5.00308752,
+      -1.38400149,
+      8.240633
+    ],
+    "source": [
+      "HP03",
+      "HP04"
+    ],
+    "pairedEmitterMidpoint": true
+  },
+  {
+    "id": 3,
+    "name": "Turbolaser_4",
+    "type": 0,
+    "weapon": 1,
+    "position": [
+      5.03861,
+      -1.38400149,
+      8.317759
+    ],
+    "source": [
+      "HP08",
+      "HP09"
+    ],
+    "pairedEmitterMidpoint": true
+  },
+  {
+    "id": 4,
+    "name": "Laser_5",
+    "type": 0,
+    "weapon": 8,
+    "position": [
+      -5.19525957,
+      -1.38400233,
+      -0.7573123
+    ],
+    "source": [
+      "HP11"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 5,
+    "name": "Laser_6",
+    "type": 0,
+    "weapon": 8,
+    "position": [
+      5.33027554,
+      -1.38400233,
+      -0.7573123
+    ],
+    "source": [
+      "HP12"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 6,
+    "name": "Laser_7",
+    "type": 0,
+    "weapon": 8,
+    "position": [
+      5.32432747,
+      -1.38400018,
+      21.11031
+    ],
+    "source": [
+      "HP13"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 7,
+    "name": "Laser_8",
+    "type": 0,
+    "weapon": 8,
+    "position": [
+      -5.3319087,
+      -1.38400018,
+      21.11031
+    ],
+    "source": [
+      "HP14"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 8,
+    "name": "IonCannon_9",
+    "type": 0,
+    "weapon": 10,
+    "position": [
+      -5.944284,
+      -1.384003,
+      -7.18678141
+    ],
+    "source": [
+      "HP05"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 9,
+    "name": "IonCannon_10",
+    "type": 0,
+    "weapon": 10,
+    "position": [
+      6.241466,
+      -1.384003,
+      -7.20771933
+    ],
+    "source": [
+      "HP10"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 10,
+    "name": "Engines",
+    "type": 1,
+    "weapon": 0,
+    "position": [
+      2.4612491E-05,
+      -0.172138691,
+      -22.5
+    ],
+    "source": [
+      "derived stern hull surface"
+    ],
+    "pairedEmitterMidpoint": false
+  },
+  {
+    "id": 11,
+    "name": "ShieldGenerator",
+    "type": 2,
+    "weapon": 0,
+    "position": [
+      1.05635059,
+      1.32965577,
+      7.162755
+    ],
+    "source": [
+      "Hull_Fixed: derived dorsal surface"
+    ],
+    "pairedEmitterMidpoint": false
+  }
+]

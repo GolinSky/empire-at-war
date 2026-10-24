@@ -1,0 +1,110 @@
+{
+  "meshes": [
+    {
+      "name": "COL",
+      "triangles": 12,
+      "vertices": 24,
+      "maximumPositionError": 1.215701E-06,
+      "materials": [
+        "Pelta_COL_Slot0"
+      ]
+    },
+    {
+      "name": "Hull_Fixed",
+      "triangles": 2508,
+      "vertices": 4110,
+      "maximumPositionError": 1.97348982E-06,
+      "materials": [
+        "Pelta_Hull_Fixed_Slot0"
+      ]
+    },
+    {
+      "name": "shadow",
+      "triangles": 9816,
+      "vertices": 7322,
+      "maximumPositionError": 1.97348982E-06,
+      "materials": [
+        "Pelta_shadow_Slot0"
+      ]
+    },
+    {
+      "name": "Lights_Hull",
+      "triangles": 38,
+      "vertices": 102,
+      "maximumPositionError": 5.99204554E-07,
+      "materials": [
+        "Pelta_Lights_Hull_Slot0"
+      ]
+    },
+    {
+      "name": "Wing_R",
+      "triangles": 80,
+      "vertices": 240,
+      "maximumPositionError": 1.65610834E-06,
+      "materials": [
+        "Pelta_Wing_R_Slot0"
+      ]
+    },
+    {
+      "name": "Shadow_Wing_R",
+      "triangles": 318,
+      "vertices": 238,
+      "maximumPositionError": 1.65610834E-06,
+      "materials": [
+        "Pelta_Shadow_Wing_R_Slot0"
+      ]
+    },
+    {
+      "name": "SHIELD",
+      "triangles": 5632,
+      "vertices": 11439,
+      "maximumPositionError": 3.17251965E-06,
+      "materials": [
+        "Pelta_SHIELD_Slot0"
+      ]
+    },
+    {
+      "name": "Lights_Wing_R",
+      "triangles": 8,
+      "vertices": 24,
+      "maximumPositionError": 9.702933E-07,
+      "materials": [
+        "Pelta_Lights_Wing_R_Slot0"
+      ]
+    },
+    {
+      "name": "Wing_L",
+      "triangles": 80,
+      "vertices": 240,
+      "maximumPositionError": 1.62689014E-06,
+      "materials": [
+        "Pelta_Wing_L_Slot0"
+      ]
+    },
+    {
+      "name": "Shadow_Wing_L",
+      "triangles": 318,
+      "vertices": 238,
+      "maximumPositionError": 1.62689014E-06,
+      "materials": [
+        "Pelta_Shadow_Wing_L_Slot0"
+      ]
+    },
+    {
+      "name": "Lights_Wing_L",
+      "triangles": 8,
+      "vertices": 24,
+      "maximumPositionError": 9.405454E-07,
+      "materials": [
+        "Pelta_Lights_Wing_L_Slot0"
+      ]
+    }
+  ],
+  "totalTriangles": 18818,
+  "bones": 45,
+  "maximumBoneError": 1.52662381E-06,
+  "visibleHullTriangles": 2668,
+  "visibleEffectTriangles": 54,
+  "visibleMeshes": 6,
+  "rootIdentity": true
+}

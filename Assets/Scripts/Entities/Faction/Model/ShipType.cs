@@ -16,6 +16,7 @@ namespace EmpireAtWar.Models.Factions
         StealthCorvette = 11,
         VenatorII = 12,
         CR70 = 13,
+        Pelta = 14,
         Carrack = 15,
 
         //separatist

@@ -1,0 +1,48 @@
+{
+  "status": "completed",
+  "duration": 0.92,
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.CombatRating_UsesSquadronShieldBonusOnlyForStrikecraftTargets(Laser,0.8f,0.5f)",
+      "Status": "Passed",
+      "Duration": 0.0162802,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.CombatRating_UsesSquadronShieldBonusOnlyForStrikecraftTargets(PointDefense,0.9f,0.0f)",
+      "Status": "Passed",
+      "Duration": 0.0001057,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.EveryArmedUnit_GetsACombatRating",
+      "Status": "Passed",
+      "Duration": 0.0585672,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.ShipLoadouts_MatchViewPrefabs",
+      "Status": "Passed",
+      "Duration": 0.3869232,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WeaponLoadoutBakeTests.SquadronLoadouts_MatchViewPrefabs",
+      "Status": "Passed",
+      "Duration": 0.0613536,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}
