@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 10
   <GuardRadius>k__BackingField: 70
-  <CruiseSpeed>k__BackingField: 19.2
-  <CombatSpeed>k__BackingField: 21.6
+  <CruiseSpeed>k__BackingField: 26.88
+  <CombatSpeed>k__BackingField: 30.24
   <Acceleration>k__BackingField: 18
   <TurnRate>k__BackingField: 65
   <MaxBankAngle>k__BackingField: 35
