@@ -39,7 +39,7 @@ pipeline {
                     steps {
                         deleteDir()
                         copyArtifacts(projectName: 'EmpireAtWar-Windows-Local', selector: specific(params.SOURCE_BUILD),
-                            filter: 'artifacts/EmpireAtWar-Windows.zip,artifacts/commit.txt,artifacts/zip-sha256.json,artifacts/build-provenance.json',
+                            filter: 'artifacts/EmpireAtWar-Windows.zip,artifacts/commit.txt,artifacts/zip-sha256.json,artifacts/build-provenance.json,artifacts/build-info.json',
                             fingerprintArtifacts: true, optional: false)
                         powershell '& "$env:CI_TOOLS/Publish-GitHubRelease.ps1" -ValidateOnly'
                     }

@@ -57,7 +57,7 @@ try {
     if ($tag -cnotmatch '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$') { throw 'Invalid RELEASE_TAG.' }
     if ($env:PRERELEASE -notin @('true','false')) { throw 'PRERELEASE must be true or false.' }
     $prerelease = $env:PRERELEASE -eq 'true'
-    foreach ($name in @('EmpireAtWar-Windows.zip','commit.txt','zip-sha256.json','build-provenance.json')) {
+    foreach ($name in @('EmpireAtWar-Windows.zip','commit.txt','zip-sha256.json','build-provenance.json','build-info.json')) {
         if (-not (Test-Path -LiteralPath (Join-Path $artifacts $name) -PathType Leaf)) { throw "Required archived artifact is missing: $name. It may have expired; choose a retained successful build." }
     }
     $sha = (Get-Content -LiteralPath "$artifacts\commit.txt" -Raw).Trim()
@@ -67,6 +67,9 @@ try {
     if ($provenance.outcome -ne 'success' -or $provenance.exitCode -ne 0 -or $provenance.source.revision -ine $sha -or $provenance.source.dirty -ne $false -or $provenance.build.target -ne 'StandaloneWindows64') {
         throw 'Archived provenance must describe a successful, clean Windows x64 build at the archived commit.'
     }
+    $buildInfo = Get-Content -LiteralPath "$artifacts\build-info.json" -Raw | ConvertFrom-Json
+    if ($buildInfo.commit -ine $sha -or $buildInfo.build -cne $sourceBuild) { throw 'Archived build-info.json does not match the archived commit and source build.' }
+    if ("v$($buildInfo.version)" -cne $tag) { throw "RELEASE_TAG $tag does not match the build's embedded version v$($buildInfo.version). Bump PlayerSettings.bundleVersion and rebuild, or use the matching tag." }
     $files = @(foreach ($name in @('EmpireAtWar-Windows.zip','commit.txt','zip-sha256.json')) {
         $file = Get-Item -LiteralPath (Join-Path $artifacts $name)
         if ($file.Length -le 0 -or $file.Length -ge 2GB) { throw "Release asset must be nonempty and smaller than 2 GiB: $name" }

@@ -8,6 +8,7 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
+using EmpireAtWar.Services.Versioning;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
 {
@@ -46,6 +47,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             {
                 _ui = CreateUi<MainMenuUi>();
                 _ui.AssignPresenter(this);
+                _ui.SetVersion(BuildInfo.LoadCurrent().DisplayText);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover,
                     HandleTooltipHover, _tooltips);

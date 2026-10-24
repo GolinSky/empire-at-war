@@ -39,7 +39,7 @@
 
 ## Artifacts and recovery
 
-- Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
+- Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, `build-info.json`, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
 - Packaging uses .NET `ZipFile` with player files at the archive root; Windows' ZIP handler must recognize `EmpireAtWar.exe` before archiving. `tar -C player .` produced ZIPs that Windows Explorer could not extract.
 - Retention: 10 runs; artifacts from 3 runs. Retention limits counts, not total bytes.
 - Player output and workspace ZIP are deleted only after Jenkins confirms archiving; archived files remain downloadable.
@@ -47,6 +47,14 @@
 - `archive-pending.json` blocks a new snapshot when the only output copy still needs recovery. Recover/archive that output before removing the marker.
 - Cancellation closes the monitor's Job Object and kills only its CI group. Preparation refuses to reuse a worktree with an active CI Editor or held Unity lock.
 - Sign-in startup remains disabled until cold/warm builds, player navigation, cancellation, queued builds and resource rejection pass acceptance.
+
+## Versioning
+
+- Source of truth: `PlayerSettings.bundleVersion` (SemVer, e.g. `0.2.0-beta.1`). Bump it manually in a commit before a release build; CI never commits versions.
+- `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs` writes `EmpireAtWar_Data/StreamingAssets/build-info.json` into the player after every build: `version`, `build` (`BUILD_NUMBER`, else `local`), `commit` (`EAW_BUILD_COMMIT`, else `git rev-parse HEAD`), `builtAtUtc`.
+- The build phase sets `EAW_BUILD_COMMIT`, rejects a player whose stamp does not match the commit/build number, and archives `artifacts/build-info.json`.
+- The main menu shows `v<version> | Build <n> | <short sha>` (Editor: `Build Editor | dev`).
+- Publishing requires `RELEASE_TAG` = `v` + the embedded version. Builds made before stamping existed cannot be published.
 
 ## Updating the installed job
 

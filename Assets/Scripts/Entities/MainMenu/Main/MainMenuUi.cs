@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using EmpireAtWar.Components.Ui.Tooltip;
+using TMPro;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
 {
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         [SerializeField] private Button optionsButton;
         [SerializeField] private Button quitApplicationButton;
         [SerializeField] private TooltipHoverView tooltipHover;
+        [SerializeField] private TMP_Text versionText;
 
         private bool _isInitialized;
 
@@ -26,6 +28,11 @@ namespace EmpireAtWar.Entities.MainMenu.Main
                 throw new InvalidOperationException("MainMenuUi presenter is already assigned.");
             }
             _presenter = presenter;
+        }
+
+        public void SetVersion(string text)
+        {
+            versionText.text = text;
         }
 
         public void Initialize()
