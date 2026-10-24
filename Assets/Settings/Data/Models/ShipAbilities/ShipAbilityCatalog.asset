@@ -34,7 +34,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 1,500 beam damage
+        description: Fire a focused laser beam at an enemy. Deals 3,000 beam damage
           continuously over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
@@ -49,7 +49,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 12,000 beam damage
+        description: Fire a focused laser beam at an enemy. Deals 24,000 beam damage
           continuously over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
@@ -109,7 +109,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Boost Shield Strength
-        description: Increase shield regeneration to 500/s for 15 s; reduce movement
+        description: Increase shield regeneration to 1,000/s for 15 s; reduce movement
           speed by 20% and weapon damage by 50%. Recovers in 60 s.
         duration: 15
         recoveryDelay: 60
@@ -124,7 +124,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Power to Shields
-        description: Increase shield regeneration to 700/s for 15 s; reduce movement
+        description: Increase shield regeneration to 1,400/s for 15 s; reduce movement
           speed by 20% and weapon damage by 50%. Recovers in 40 s.
         duration: 15
         recoveryDelay: 40
@@ -139,8 +139,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Power to Shields
-        description: Shield regeneration rises to 800/s; movement speed becomes 80%
-          and weapon fire delays triple for 15 s. Recovers in 20 s.
+        description: Shield regeneration rises to 1,600/s; movement speed becomes
+          80% and weapon fire delays triple for 15 s. Recovers in 20 s.
         duration: 15
         recoveryDelay: 20
         canCancel: 0
@@ -154,8 +154,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Power to Shields
-        description: Double shield regeneration for 15 seconds; weapon damage and
-          movement speed fall by 25%. Recovers 40 seconds after expiry.
+        description: Quadruple shield regeneration for 15 seconds; weapon damage
+          and movement speed fall by 25%. Recovers 40 seconds after expiry.
         duration: 15
         recoveryDelay: 40
         canCancel: 1
@@ -169,7 +169,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Power to Shields
-        description: +60% shield regeneration, -20% movement speed and weapon damage
+        description: +220% shield regeneration, -20% movement speed and weapon damage
           for 8 seconds; 35-second recovery.
         duration: 8
         recoveryDelay: 35
@@ -200,7 +200,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Coordinated Assault
-        description: Torpedo firing rate +25% for 8 seconds. Recovers 40 seconds
+        description: Torpedo firing rate +150% for 8 seconds. Recovers 40 seconds
           after expiry.
         duration: 8
         recoveryDelay: 40
@@ -215,7 +215,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Boost Shield Power
-        description: Double shield regeneration; reduce damage and movement speed
+        description: Quadruple shield regeneration; reduce damage and movement speed
           by 25%.
         duration: 15
         recoveryDelay: 40
@@ -230,8 +230,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
         displayName: Power to Engines
-        description: Increase movement speed by 35% for 20 seconds. Recovers 50 seconds
-          after expiry.
+        description: Increase movement speed by 170% for 20 seconds. Recovers 50
+          seconds after expiry.
         duration: 20
         recoveryDelay: 50
         canCancel: 0
@@ -245,8 +245,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
         displayName: Power to Engines
-        description: Double speed for 20 s; triple weapon delay and stop shield regeneration.
-          Recovers in 50 s. Use to reposition or escape.
+        description: Quadruple speed for 20 s; triple weapon delay and stop shield
+          regeneration. Recovers in 50 s. Use to reposition or escape.
         duration: 20
         recoveryDelay: 50
         canCancel: 0
@@ -276,7 +276,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
         displayName: Boost Engine Power
-        description: Double speed, quadruple weapon delays and pause shield regeneration
+        description: Quadruple speed, quadruple weapon delays and pause shield regeneration
           for 20 s; 50 s recovery.
         duration: 20
         recoveryDelay: 50
@@ -291,7 +291,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: d56dd5bba26a9424696a4a8b1c8d936b, type: 3}
         displayName: Hit and Run
-        description: 'Movement speed increases by 25% for 8 seconds. Cooldown: 35
+        description: 'Movement speed increases by 150% for 8 seconds. Cooldown: 35
           seconds.'
         duration: 8
         recoveryDelay: 35
@@ -306,7 +306,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
         displayName: Boost Engine Power
-        description: Increase movement speed by 50%; reduce damage by 20%.
+        description: Increase movement speed by 200%; reduce damage by 20%.
         duration: 12
         recoveryDelay: 35
         canCancel: 1
@@ -320,8 +320,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: Double fire rate for 20 s; halve movement speed and stop shield
-          regeneration. Recovers in 60 s.
+        description: Quadruple fire rate for 20 s; halve movement speed and stop
+          shield regeneration. Recovers in 60 s.
         duration: 20
         recoveryDelay: 60
         canCancel: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: Double fire rate for 20 s. Shield regeneration stops, speed
+        description: Quadruple fire rate for 20 s. Shield regeneration stops, speed
           falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
         duration: 20
         recoveryDelay: 60
@@ -350,7 +350,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: Double fire rate for 20 s. Shield regeneration stops, speed
+        description: Quadruple fire rate for 20 s. Shield regeneration stops, speed
           falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
         duration: 20
         recoveryDelay: 60
@@ -365,7 +365,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Power to Main Batteries
-        description: Main-battery shot and reload delays are reduced to 33%. All
+        description: Main-battery shot and reload delays are reduced to 16.5%. All
           other weapons are disabled, shield regeneration stops and movement speed
           is reduced to 25% for 20 s. 60 s recharge.
         duration: 20
@@ -381,7 +381,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: For 20 seconds, double fire rate, stop shield regeneration,
+        description: For 20 seconds, quadruple fire rate, stop shield regeneration,
           take 50% more damage and reduce speed to 25%. Recovers in 60 seconds.
         duration: 20
         recoveryDelay: 60
@@ -396,7 +396,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Overcharge Weapons
-        description: Weapons fire 25% faster; shield regeneration stops for 10 seconds.
+        description: Weapons fire 150% faster; shield regeneration stops for 10 seconds.
           50 second cooldown.
         duration: 10
         recoveryDelay: 50
@@ -412,7 +412,7 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
         description: 'Fire all batteries: double weapon damage and reduce weapon
-          reload time by 70%. Movement speed is unchanged.'
+          reload time by 85%. Movement speed is unchanged.'
         duration: 7
         recoveryDelay: 50
         canCancel: 1
@@ -426,8 +426,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
         displayName: Pursuit
-        description: For 15 s, speed increases to 250%, damage doubles and fire rate
-          doubles. Shield regeneration stops. Recovers in 60 s.
+        description: For 15 s, speed increases to 500%, damage doubles and fire rate
+          quadruples. Shield regeneration stops. Recovers in 60 s.
         duration: 15
         recoveryDelay: 60
         canCancel: 0
@@ -441,8 +441,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
         displayName: Assault
-        description: Charge an enemy target with double weapon damage, double fire
-          rate, and double movement speed.
+        description: Charge an enemy target with double weapon damage, quadruple
+          fire rate, and double movement speed.
         duration: 7
         recoveryDelay: 50
         canCancel: 0
@@ -472,7 +472,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
         displayName: Concentrate Fire
-        description: Nearby allies within 400 units gain 25% damage and 20% shorter
+        description: Nearby allies within 400 units gain 25% damage and 60% shorter
           fire delays.
         duration: 12
         recoveryDelay: 60
@@ -518,9 +518,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 25f606fb36ea77942b60e1c0eca1bf51, type: 3}
         displayName: Intensify Firepower
-        description: Turbolasers, ion cannons and the SPHAT beam fire about three
-          times faster for 15 s. Damage, speed and shield regeneration are unchanged.
-          60 s recovery.
+        description: Turbolasers, ion cannons and the SPHAT beam fire about six times
+          faster for 15 s. Damage, speed and shield regeneration are unchanged. 60
+          s recovery.
         duration: 15
         recoveryDelay: 60
         canCancel: 0
@@ -535,8 +535,8 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 25f606fb36ea77942b60e1c0eca1bf51, type: 3}
         displayName: Full Salvo
         description: 'For 20 seconds, missiles, rockets and torpedoes fire about
-          three times faster, while other weapons fire at one-third their normal
-          rate. Recharge: 60 seconds after the salvo ends.'
+          six times faster, while other weapons fire at one-third their normal rate.
+          Recharge: 60 seconds after the salvo ends.'
         duration: 20
         recoveryDelay: 60
         canCancel: 0
@@ -550,7 +550,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Power to Weapons
-        description: Double fire rate for 10 s. Speed is reduced by 25% and damage
+        description: Quadruple fire rate for 10 s. Speed is reduced by 25% and damage
           taken increases by 50%. 60 s recovery.
         duration: 10
         recoveryDelay: 60
@@ -582,7 +582,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Power to Shields
-        description: For 30 seconds, shield regeneration increases eightfold (640/s),
+        description: For 30 seconds, shield regeneration increases sixteenfold (1,280/s),
           movement falls to 80% and weapon fire delays double. Recovers 60 seconds
           after expiry.
         duration: 30
@@ -598,7 +598,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: ee7b79f13d927674cb535bcd3d3a2042, type: 3}
         displayName: Torpedo Salvo
-        description: Torpedoes fire 50% faster for 6 seconds. 30 second recovery.
+        description: Torpedoes fire 200% faster for 6 seconds. 30 second recovery.
           Other weapons remain unchanged.
         duration: 6
         recoveryDelay: 30
@@ -703,7 +703,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.5
+          fireDelayMultiplier: 0.25
           speedMultiplier: 0.5
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
@@ -715,7 +715,7 @@ MonoBehaviour:
           damageMultiplier: 0.5
           fireDelayMultiplier: 1
           speedMultiplier: 0.8
-          shieldRegenMultiplier: 10
+          shieldRegenMultiplier: 20
           damageTakenMultiplier: 1
     - rid: 6801466898397790287
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -724,7 +724,7 @@ MonoBehaviour:
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 3
-          speedMultiplier: 2
+          speedMultiplier: 4
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
     - rid: 6801466898397790288
@@ -735,7 +735,7 @@ MonoBehaviour:
           damageMultiplier: 0.5
           fireDelayMultiplier: 1
           speedMultiplier: 0.8
-          shieldRegenMultiplier: 10
+          shieldRegenMultiplier: 20
           damageTakenMultiplier: 1
     - rid: 6801466898397790289
       type: {class: ConcentrateFireSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -757,7 +757,7 @@ MonoBehaviour:
           damageMultiplier: 1
           fireDelayMultiplier: 3
           speedMultiplier: 0.8
-          shieldRegenMultiplier: 10
+          shieldRegenMultiplier: 20
           damageTakenMultiplier: 1
     - rid: 6801466898397790291
       type: {class: LockSFoilsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -775,7 +775,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.5
+          fireDelayMultiplier: 0.25
           speedMultiplier: 0.75
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1.5
@@ -783,7 +783,7 @@ MonoBehaviour:
       type: {class: FullSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        projectileFireDelayMultiplier: 0.33
+        projectileFireDelayMultiplier: 0.165
         otherFireDelayMultiplier: 3
     - rid: 6801466921437888596
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -792,7 +792,7 @@ MonoBehaviour:
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 4
-          speedMultiplier: 2
+          speedMultiplier: 4
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
     - rid: 6801466921437888597
@@ -823,7 +823,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.5
+          fireDelayMultiplier: 0.25
           speedMultiplier: 0.25
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1.5
@@ -836,7 +836,7 @@ MonoBehaviour:
       type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.33
+        fireDelayMultiplier: 0.165
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 1
@@ -849,8 +849,8 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 2
-          fireDelayMultiplier: 0.5
-          speedMultiplier: 2.5
+          fireDelayMultiplier: 0.25
+          speedMultiplier: 5
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
     - rid: 6801466944227639373
@@ -861,7 +861,7 @@ MonoBehaviour:
           damageMultiplier: 1
           fireDelayMultiplier: 2
           speedMultiplier: 0.8
-          shieldRegenMultiplier: 8
+          shieldRegenMultiplier: 16
           damageTakenMultiplier: 1
     - rid: 6801466944227639374
       type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -869,7 +869,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.5
+          fireDelayMultiplier: 0.25
           speedMultiplier: 0.25
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1.5
@@ -879,7 +879,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.5
+          fireDelayMultiplier: 0.25
           speedMultiplier: 0.25
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1.5
@@ -888,12 +888,12 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         projectileFireDelayMultiplier: 1
-        otherFireDelayMultiplier: 0.33
+        otherFireDelayMultiplier: 0.165
     - rid: 6801467062609510478
       type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.6666667
+        fireDelayMultiplier: 0.33333334
     - rid: 6801467062609510479
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -901,7 +901,7 @@ MonoBehaviour:
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 1
-          speedMultiplier: 1.35
+          speedMultiplier: 2.7
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
     - rid: 6801467062609510480
@@ -915,7 +915,7 @@ MonoBehaviour:
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 1
-          speedMultiplier: 1.25
+          speedMultiplier: 2.5
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
     - rid: 6801467062609510482
@@ -926,7 +926,7 @@ MonoBehaviour:
           damageMultiplier: 0.8
           fireDelayMultiplier: 1
           speedMultiplier: 0.8
-          shieldRegenMultiplier: 1.6
+          shieldRegenMultiplier: 3.2
           damageTakenMultiplier: 1
     - rid: 6801467062609510483
       type: {class: SensorJammingSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -940,7 +940,7 @@ MonoBehaviour:
       type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.8
+        fireDelayMultiplier: 0.4
     - rid: 6801467062609510488
       type: {class: FighterCoordinationSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -952,7 +952,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.8
+          fireDelayMultiplier: 0.4
           speedMultiplier: 1
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
@@ -980,7 +980,7 @@ MonoBehaviour:
           damageMultiplier: 0.75
           fireDelayMultiplier: 1
           speedMultiplier: 0.75
-          shieldRegenMultiplier: 2
+          shieldRegenMultiplier: 4
           damageTakenMultiplier: 1
     - rid: 7607833764655792206
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -989,7 +989,7 @@ MonoBehaviour:
         statModifier:
           damageMultiplier: 0.8
           fireDelayMultiplier: 1
-          speedMultiplier: 1.5
+          speedMultiplier: 3
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
     - rid: 7607833764655792207
@@ -998,7 +998,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 2
-          fireDelayMultiplier: 0.3
+          fireDelayMultiplier: 0.15
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
@@ -1008,7 +1008,7 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 2
-          fireDelayMultiplier: 0.5
+          fireDelayMultiplier: 0.25
           speedMultiplier: 2
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
@@ -1018,7 +1018,7 @@ MonoBehaviour:
       data:
         allyStatModifier:
           damageMultiplier: 1.25
-          fireDelayMultiplier: 0.8
+          fireDelayMultiplier: 0.4
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
@@ -1029,10 +1029,10 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 12000
+        damage: 24000
     - rid: 7607833764655792234
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 1500
+        damage: 3000
