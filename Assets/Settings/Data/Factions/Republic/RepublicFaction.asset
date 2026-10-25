@@ -190,9 +190,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 2b08713a371fcbd4c98840e4d71f3353, type: 2}
         description: Republic heavy cruiser built to destroy corvettes and frigates.
           Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
-          two concussion missile and one ion cannon battery; fourteen targetable
+          two concussion missile and one ion cannon battery; thirteen targetable
           hardpoints. Boost Weapon Power doubles fire rate for 20 seconds, halves
-          speed and stops shield recovery; 60-second cooldown.
+          speed and stops shield recovery; 60-second cooldown. No hangar or squadron
+          deployment.
         role: Heavy cruiser / Anti-corvette / Anti-frigate
         iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
         isHero: 0

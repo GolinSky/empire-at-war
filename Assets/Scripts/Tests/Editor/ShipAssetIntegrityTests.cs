@@ -33,6 +33,9 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase("Empire", "Victory")]
+        [TestCase("Empire", "VictoryI")]
+        [TestCase("Empire", "VictoryII")]
         [TestCase("Republic", "Arquitens")]
         [TestCase("Republic", "HeavyDreadnought")]
         [TestCase("Separatist", "Munificent")]

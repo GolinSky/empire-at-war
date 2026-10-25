@@ -21,9 +21,9 @@ MonoBehaviour:
         description: 12,000 hull; 8,000 shields; speed 175. Four heavy 4-burst artillery-rocket
           launchers and two 6-burst barrage-rocket launchers. Targetable shield generator,
           two engines and tractor beam. Six light dual turbolasers, four heavy laser
-          cannons and hangar are not separately targetable. Full Salvo accelerates
-          rockets and slows other weapons. Tractor Beam restricts enemy movement.
-          TIE-Interceptor complement.
+          cannons are not separately targetable. Full Salvo accelerates rockets and
+          slows other weapons. Tractor Beam restricts enemy movement. No hangar or
+          squadron deployment.
         role: Artillery / Cruiser
         iconKey: 3896a253ad3c5024b8b7260fb0c214a9:21300000
         isHero: 0
@@ -43,8 +43,8 @@ MonoBehaviour:
           cannons, two medium turbo-ion cannons, three medium three-burst turbolasers,
           five medium turbolasers and six medium laser cannons. Two shield generators,
           two engines, tractor beam and hangar are targetable. Launches TIE Interceptors,
-          TIE Brutes and TIE Punishers. Boost Engine Power doubles speed, quadruples
-          weapon delays and pauses shield regeneration for 20 s. Tractor Beam restricts
+          TIE Brutes and TIE Punishers. Boost Weapon Power doubles weapon damage
+          and reduces reload to 15% for 7 s; 50 s recovery. Tractor Beam restricts
           enemy corvette or frigate movement.'
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
@@ -63,9 +63,9 @@ MonoBehaviour:
         description: 12,000 hull; 10,000 shields; speed 20. Four medium dual turbo-ion
           cannons and two medium turbo-ion cannons. Targetable shield generator,
           two engines and tractor beam. Six medium 3-burst turbolasers, six heavy
-          laser cannons and hangar are not separately targetable. Boost Weapon Power
-          doubles fire rate, stops shield regeneration and halves speed for 20 s.
-          Tractor Beam restricts enemy movement. TIE-Interceptor complement.
+          laser cannons are not separately targetable. Boost Weapon Power doubles
+          fire rate, stops shield regeneration and halves speed for 20 s. Tractor
+          Beam restricts enemy movement. No hangar or squadron deployment.
         role: Ion Support / Cruiser
         iconKey: 73509b3f4bebe5542ba69d62230fff68:21300000
         isHero: 0
