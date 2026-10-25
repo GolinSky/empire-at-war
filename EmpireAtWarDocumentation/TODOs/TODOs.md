@@ -175,7 +175,8 @@
 - [ ] **Rebalance to original Republic at War values; remove range classes; simplify Republic and CIS hardpoints** → [[TODOs/Refactoring/Original_Values_Rebalance|Original Values Rebalance]]; [[TODOs/Refactoring/Original_Values_Rebalance - Research|Original vs live tables and range-removal impact]]
   - **Decided 2026-10-25**: Executor untouched; hull-relative reach for all; hardpoint simplification Republic/CIS only; C-9979 corvette band; capital ≥ Medium rule removed; tests updated with the change.
   - **Mapping 2026-10-25**: turbolaser battery → Medium; quad → Heavy only as capital main battery, else new Medium Quad. Mandator/Invincible/Lucrehulk keep live HP/shields.
-  - **Next**: commit current WIP, then Phase 0 baseline.
+  - **Phase 0 done 2026-10-25** (`2f45f1371`): 260 same-class duels, per-unit DPS and Executor per-gun snapshot in `Logs/Rebalance/2026-10-25-baseline/`.
+  - **Next**: Phase 1 (range-class removal, hull-relative reach, Executor variants). EditMode runs need the untitled dirty scene saved or discarded first.
 
 - [ ] **Migrate Zenject to VContainer** → [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration]]; [[TODOs/Refactoring/Zenject_To_VContainer_Migration - Research|Injection audit, scopes, factories and lifecycle mapping]]; [[Done/Refactoring/UI_Service_Refactoring|UI rework]]
   - **Cleanup 2026-10-22**: removed 24 stale generated projects (Zenject, legacy MCP/framework/samples, Postprocessing and an obsolete URP test player project) and refreshed the IDE solution/editor inventory. `com.script-utils.math` still names its active math assembly `ScriptUtils.Zenject`; upstream naming correction remains.

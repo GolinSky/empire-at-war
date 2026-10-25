@@ -1,6 +1,6 @@
 ---
 category: Refactoring
-status: todo
+status: in-progress
 created: 2026-10-25
 ---
 # Original Values Rebalance
@@ -55,10 +55,12 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 
 ## Implementation
 
-### Phase 0 — Baseline
+### Phase 0 — Baseline ✅ 2026-10-25
 
-1. Battle Logic Simulator matchups for the current roster (per class, cross-faction); save DPS/TTK table.
-2. Snapshot `BalanceDpsEstimator` per-unit DPS and range; record Executor per-gun profiles exactly.
+1. [x] Simulator duels: every same-class, cross-faction ship pair, 1v1, 10 seeds (seed 1), 900 s limit, live assets → 260 matchups.
+2. [x] Per-unit price, HP, shields, radar, `BalanceDpsEstimator` DPS, mount count (56 ships).
+3. [x] Executor per-gun profiles (damage, shots, interval, reload, range, accuracy, DPS).
+- Revision `2f45f1371`, recompile clean, no errors building any unit. Data: `Logs/Rebalance/2026-10-25-baseline/` (`baseline_units.csv`, `baseline_matchups.csv`, `baseline_executor.csv`); rerun with `unity command run_script --file <copy of BaselineDump.cs.txt as .cs> --entry BaselineDump.Run --args '[""]'` (~10 s). Summary: [[TODOs/Refactoring/Original_Values_Rebalance - Research#Baseline 2026-10-25|Research]].
 
 ### Phase 1 — Remove range classes, hull-relative reach
 
@@ -66,7 +68,7 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 2. Drop `WeaponProfile.AccuracyMultiplier` (only fed by range class) from `WeaponComponent`, `WeaponEngagementRange`, `BattleSimulation`.
 3. Merge duplicates: 27→1, 39→4, 49→2, 50→3, 53→5, 44→11, 34→65; Mandator 73–78 → shared twins; quads 20/87/88 → one Heavy Quad. Remap `ShipData` loadouts, prefab hardpoints, `ShipSfxData` overrides; drop "Long-Range" from display names.
 4. Rename 51/67/68 without range wording; keep enum int values (serialized).
-5. Executor: its Long weapons become Executor-scoped variants that keep current expected stats: damage ×1.8 (1.5 × lost 1.2 accuracy), reload ×2, range ×1.5; `reason` = "Executor stays overpowered".
+5. Executor: its Long weapons become Executor-scoped variants that keep current expected stats: damage ×1.8 (1.5 × lost 1.2 accuracy), reload ×2, range ×1.5; `reason` = "Executor stays overpowered". Affected types: 34, 49, 50, 51, 53 (all shared with other ships, so variants are new Executor-only definitions). Heavy Laser and Medium PD are Standard → unchanged.
 6. Hull-relative reach for all ships: add own `NavigationRadius` to engagement distance in `ShipEngagement.GetStandoffPosition`, `WeaponComponent.HasEnoughRange` and `AttackTargetState` close/stop checks.
 7. Remove the Capital/HeavyCapital ≥ Medium class caliber rule.
 8. Update `BalanceWeaponAdapter` (`RegisterRangeClasses`, `rangeClass` field).
@@ -141,9 +143,9 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 
 ## TODO
 
-- [ ] Preconditions
+- [x] Preconditions — WIP committed `d91020e89`, plan `ccd2c259b`. Open scene is untitled + dirty → EditMode test runs blocked (`BLOCKED_DIRTY_UNTITLED_SCENE`) until the user saves or discards it.
 - [x] Decisions answered (2026-10-25)
-- [ ] Phase 0 baseline
+- [x] Phase 0 baseline (2026-10-25, `2f45f1371`)
 - [ ] Phase 1 range-class removal + hull-relative reach + Executor variants
 - [ ] Phase 2 Republic/CIS original values + simplified hardpoints
 - [ ] Phase 3 Empire/Rebellion HP/shields

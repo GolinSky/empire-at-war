@@ -94,3 +94,38 @@ Rule today (`WeaponsData.rangeClasses`): Close ×0.7 range ×1.25 dmg; Long ×1.
 - `Editor/Balance/BalanceWeaponAdapter.cs` (`RegisterRangeClasses`, `rangeClass` field).
 - Tests: `WeaponTaxonomyTests` (range-class rule + `RangeClasses_TradeReachForDamage`), `BoltParticleSimulationTests`, `ShotEffectPoolLifecycleTests`.
 - Variant `rangeMultiplier` on `WeaponDefinition` stays (Imperial heavy dual ×1.15, Composite Beam ×0.625).
+
+## Baseline 2026-10-25
+
+- Revision `2f45f1371`. 56 ships, 260 same-class cross-faction 1v1 duels × 10 seeds. Raw duels, not price-normalised. Data: `Logs/Rebalance/2026-10-25-baseline/`.
+
+### Duel win rate by class and faction
+
+| Class | Empire | Rebellion | Republic | Separatist |
+|---|---|---|---|---|
+| Corvette | 29 % | 71 % | 56 % | 43 % |
+| Frigate | 28 % | 50 % | 49 % | 67 % |
+| Cruiser | 21 % | 80 % | 21 % | 75 % |
+| Capital | 59 % | 51 % | 37 % | 56 % |
+| HeavyCapital | 67 % | — | 80 % | 12 % |
+
+### Outliers (estimator DPS)
+
+- ISD II 1610 and Tector 1538 DPS at 5000–6000 price vs capital median ~460 (ISD II octuple/quad batteries).
+- Home One 30000/40000 at 380 DPS; MC80 30000/40000 at 735 DPS.
+- Republic frigates low DPS: Acclamator 99, Pelta 116 (Separatist Dispatcher 322).
+- Heavy Dreadnought 144 DPS vs cruiser median ~330.
+- Mandator 50000/50000, 1285 DPS; Lucrehulk 12000/6600, 414 DPS → Separatist HeavyCapital 12 %.
+- Executor 200000/200000, 3745 DPS (excluded, stays overpowered).
+
+### Executor per-gun baseline (must survive Phase 1)
+
+| Type | Count | Damage | Shots | Reload | Range | Accuracy × | DPS |
+|---|---|---|---|---|---|---|---|
+| HeavyLaser | 40 | 9.375 | 3 | 1.5 | 390 | 1 | 18.75 |
+| HeavyArtilleryRocket (34) | 10 | 93.75 | 4 | 20 | 1072.5 | 1.2 | 18.75 |
+| HeavyLongRangeTurbolaser (49) | 10 | 37.5 | 3 | 8 | 877.5 | 1.2 | 14.06 |
+| HeavyLongRangeDualTurbolaser (50) | 23 | 75 | 3 | 8 | 877.5 | 1.2 | 28.13 |
+| HeavyLongRangeDualIonCannon (51) | 8 | 140.625 | 2 | 12 | 975 | 1.2 | 23.44 |
+| MediumLongRangeDualTurbolaser (53) | 69 | 60 | 3 | 8 | 776.25 | 1.2 | 22.5 |
+| MediumPointDefense | 14 | 5 | 8 | 2 | 230 | 1 | 20 |
