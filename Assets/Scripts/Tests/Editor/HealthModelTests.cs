@@ -125,16 +125,33 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ApplyDamage_DestroyedHardPointOnlyDamagesHull()
+        public void ApplyDamage_DestroyedHardPointSpreadsDamageOverLiveHardPoints()
         {
-            HealthModel model = CreateModel(0f, out HardPointModel weapon, out _, out _);
+            HealthModel model = CreateModel(0f, out HardPointModel weapon, out HardPointModel engine,
+                out HardPointModel shieldGenerator);
 
             model.ApplyDamage(300f, DamageType.Turbolaser, 0);
             model.ApplyDamage(100f, DamageType.Turbolaser, 0);
 
             Assert.That(weapon.IsDestroyed, Is.True);
-            Assert.That(model.Hull, Is.EqualTo(HULL - 400f * 0.5f));
+            Assert.That(engine.Health, Is.EqualTo(150f));
+            Assert.That(shieldGenerator.Health, Is.EqualTo(100f));
+            Assert.That(model.Hull, Is.EqualTo(HULL - 300f * 0.5f - 50f - 50f));
             Assert.That(model.IsDestroyed, Is.False);
+        }
+
+        [Test]
+        public void ApplyDamage_DestroyedHardPointOnlyDamagesHullOnceAllAreDestroyed()
+        {
+            HealthModel model = CreateModel(0f, out _, out _, out _);
+            model.ApplyDamage(100f, DamageType.Turbolaser, 0);
+            model.ApplyDamage(200f, DamageType.Turbolaser, 1);
+            model.ApplyDamage(150f, DamageType.Turbolaser, 2);
+            float hull = model.Hull;
+
+            model.ApplyDamage(100f, DamageType.Turbolaser, 0);
+
+            Assert.That(model.Hull, Is.EqualTo(hull - 100f * 0.5f));
         }
 
         [Test]
@@ -159,7 +176,7 @@ namespace EmpireAtWar.Tests.Editor
             model.ApplyDamage(HULL - 1f, DamageType.Turbolaser, 1);
             Assert.That(destroyed, Is.False);
 
-            model.ApplyDamage(1f, DamageType.Turbolaser, 1);
+            model.ApplyDamage(1f, DamageType.Turbolaser, 2);
             Assert.That(engine.IsDestroyed, Is.True);
             Assert.That(destroyed, Is.True);
             Assert.That(model.HasUnits, Is.False);

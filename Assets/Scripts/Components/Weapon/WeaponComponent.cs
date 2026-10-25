@@ -768,7 +768,8 @@ namespace EmpireAtWar.Components.Weapon
         public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, float damage,
             DamageType damageType, int targetId)
         {
-            if (hardPointModel.Id != targetId || !IsTargetValid(attackData, hardPointModel))
+            // A hardpoint destroyed mid-flight still takes the hit; the health model spreads it over the live ones.
+            if (hardPointModel.Id != targetId || attackData.IsDestroyed || !attackData.Contains(hardPointModel))
             {
                 return false;
             }

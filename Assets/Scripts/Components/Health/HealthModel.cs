@@ -160,6 +160,10 @@ namespace EmpireAtWar.Models.Health
                 {
                     DamageHull(hullDamage);
                 }
+                else if (HardPointModels[hardPointId].IsDestroyed && HasLiveHardPoints)
+                {
+                    DamageLiveHardPoints(hullDamage);
+                }
                 else
                 {
                     DamageHardPoint(HardPointModels[hardPointId], hullDamage);
@@ -195,6 +199,22 @@ namespace EmpireAtWar.Models.Health
         {
             return !IsDestroyed && HasShields && !IsLostShieldGenerator &&
                    !_damageMatrix.IsShieldPiercing(damageType);
+        }
+
+        // A hit on an already destroyed hardpoint is split evenly between the live ones.
+        private void DamageLiveHardPoints(float damage)
+        {
+            int liveCount = 0;
+            foreach (HardPointModel hardPoint in HardPointModels)
+                if (!hardPoint.IsDestroyed) liveCount++;
+
+            float share = damage / liveCount;
+            foreach (HardPointModel hardPoint in HardPointModels)
+            {
+                if (hardPoint.IsDestroyed) continue;
+                DamageHardPoint(hardPoint, share);
+                if (IsDestroyed) return;
+            }
         }
 
         private void DamageHardPoint(HardPointModel hardPoint, float damage)
