@@ -53,9 +53,9 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 2
     count: 11
-  - weaponType: 28
+  - weaponType: 11
     count: 4
   - weaponType: 50
     count: 2
-  - weaponType: 85
+  - weaponType: 89
     count: 8

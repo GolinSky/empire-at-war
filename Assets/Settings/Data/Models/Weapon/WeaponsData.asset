@@ -1670,6 +1670,25 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 89
+    displayName: Heavy Quad Turbolaser
+    family: 1
+    caliber: 2
+    mount: 4
+    rangeClass: 0
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 85
     displayName: Heavy Octuple Turbolaser
     family: 1

@@ -68,6 +68,7 @@
         LightQuadTurbolaser = 82,
         HeavyPointDefense = 84,
         HeavyOctupleTurbolaser = 85,
+        HeavyQuadTurbolaser = 89,
         TitanQuadHeavyTurbolaser = 88,
         ProcursatorLightTripleTurbolaser = 86,
         ProcursatorQuadHeavyTurbolaser = 87,
