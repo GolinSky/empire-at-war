@@ -172,6 +172,11 @@
 - [ ] **Weapon taxonomy and balance system** → [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]]; [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System - Mapping|Mapping]]
   - **Remaining**: user playtest; balance tuning (stations outranged, ISD II +200 %, missile reach vs radar); resolve existing StrikeFighterProtonTorpedo variant metadata.
 
+- [ ] **Rebalance to original Republic at War values; remove range classes; simplify Republic and CIS hardpoints** → [[TODOs/Refactoring/Original_Values_Rebalance|Original Values Rebalance]]; [[TODOs/Refactoring/Original_Values_Rebalance - Research|Original vs live tables and range-removal impact]]
+  - **Decided 2026-10-25**: Executor untouched; hull-relative reach for all; hardpoint simplification Republic/CIS only; C-9979 corvette band; capital ≥ Medium rule removed; tests updated with the change.
+  - **Mapping 2026-10-25**: turbolaser battery → Medium; quad → Heavy only as capital main battery, else new Medium Quad. Mandator/Invincible/Lucrehulk keep live HP/shields.
+  - **Next**: commit current WIP, then Phase 0 baseline.
+
 - [ ] **Migrate Zenject to VContainer** → [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject to VContainer Migration]]; [[TODOs/Refactoring/Zenject_To_VContainer_Migration - Research|Injection audit, scopes, factories and lifecycle mapping]]; [[Done/Refactoring/UI_Service_Refactoring|UI rework]]
   - **Cleanup 2026-10-22**: removed 24 stale generated projects (Zenject, legacy MCP/framework/samples, Postprocessing and an obsolete URP test player project) and refreshed the IDE solution/editor inventory. `com.script-utils.math` still names its active math assembly `ScriptUtils.Zenject`; upstream naming correction remains.
   - **Remaining**: matched startup/spawn/teardown/frame measurements. `9c072d3c5` facade-lookup allocation fix confirmed (GC median 89 → 27 KB/frame) and per-tickable markers restored. [Capture](<F:/Private/empire-at-war/Logs/BattleAudit/20261013T1854Z-vcontainer/analysis.md>)
