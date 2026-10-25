@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
@@ -10,6 +12,43 @@ namespace EmpireAtWar.Tests.Weapon
 {
     public sealed class ShotEffectPoolLifecycleTests
     {
+        // Prewarm targets cover several salvos in flight, so a pool can hold more shots than it ever fires at once.
+        [TestCase(2)]
+        [TestCase(4)]
+        public void PrewarmedPool_KeepsAllShotsAfterLowConcurrencyUse(int count)
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetRangeClass(WeaponRangeClass.Standard));
+            var pool = new ShotEffectPool(profile, null, _ => { }, null, null);
+            var leased = new List<ShotEffect>();
+            try
+            {
+                while (pool.PrewarmOne(count)) { }
+                int created = AttackSequenceDiagnostics.PoolCreated;
+                int retired = AttackSequenceDiagnostics.PoolRetired;
+
+                for (int i = 0; i < count; i++) Return(pool, Lease(pool));
+                Assert.That(AttackSequenceDiagnostics.PoolRetired, Is.EqualTo(retired),
+                    "Returning a shot must keep it for later salvos.");
+
+                for (int i = 0; i < count; i++) leased.Add(Lease(pool));
+                Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created),
+                    "A full burst must reuse the prewarmed shots.");
+                Assert.That(leased, Is.Unique);
+            }
+            finally
+            {
+                foreach (ShotEffect shot in leased)
+                {
+                    Return(pool, shot);
+                    Object.DestroyImmediate(shot.gameObject);
+                }
+                pool.Release();
+            }
+        }
+
         [TestCase(WeaponFamily.Torpedo)]
         [TestCase(WeaponFamily.IonTorpedo)]
         [TestCase(WeaponFamily.FighterTorpedo)]
@@ -68,23 +107,18 @@ namespace EmpireAtWar.Tests.Weapon
             WeaponProfile profile = new WeaponProfile();
             typeof(WeaponProfile).GetField("shotPrefab", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(profile, source);
-            ShotEffectPool pool = new ShotEffectPool(profile, null, _ => { }, null, null, 1);
+            ShotEffectPool pool = new ShotEffectPool(profile, null, _ => { }, null, null);
             ShotEffect effect = null;
             try
             {
                 pool.Prewarm(1);
-                MethodInfo acquire = typeof(ShotEffectPool).GetMethod("Acquire", BindingFlags.Instance | BindingFlags.NonPublic);
-                effect = (ShotEffect)acquire.Invoke(pool, null);
+                effect = Lease(pool);
                 Assert.That(effect.enabled, Is.True);
                 Assert.That(effect.gameObject.activeInHierarchy, Is.True);
                 foreach (ParticleSystem particles in effect.GetComponentsInChildren<ParticleSystem>(true))
                     particles.Play(true);
 
-                IDictionary active = (IDictionary)typeof(ShotEffectPool)
-                    .GetField("_active", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pool);
-                active.Add(effect, 1);
-                typeof(ShotEffectPool).GetMethod("OnEffectCompleted", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(pool, new object[] { effect, effect.LeaseId });
+                Return(pool, effect);
 
                 Assert.That(effect.gameObject.activeInHierarchy, Is.True);
                 Assert.That(effect.enabled, Is.False);
@@ -95,14 +129,34 @@ namespace EmpireAtWar.Tests.Weapon
                 }
                 foreach (LineRenderer line in effect.GetComponentsInChildren<LineRenderer>(true))
                     Assert.That(line.enabled, Is.False, line.name);
-                Assert.That(acquire.Invoke(pool, null), Is.SameAs(effect));
+                Assert.That(Lease(pool), Is.SameAs(effect));
                 Assert.That(effect.enabled, Is.True);
             }
             finally
             {
-                if (effect != null) Object.DestroyImmediate(effect.gameObject);
+                if (effect != null)
+                {
+                    Return(pool, effect);
+                    Object.DestroyImmediate(effect.gameObject);
+                }
                 pool.Release();
             }
+        }
+
+        // Play needs a live target and a ticking timer to finish a shot, so tests lease and return shots directly.
+        private static ShotEffect Lease(ShotEffectPool pool)
+        {
+            var effect = (ShotEffect)typeof(ShotEffectPool)
+                .GetMethod("Acquire", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(pool, null);
+            ((IDictionary)typeof(ShotEffectPool).GetField("_active", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(pool)).Add(effect, 1);
+            return effect;
+        }
+
+        private static void Return(ShotEffectPool pool, ShotEffect effect)
+        {
+            typeof(ShotEffectPool).GetMethod("OnEffectCompleted", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(pool, new object[] { effect, effect.LeaseId });
         }
     }
 }

@@ -206,9 +206,9 @@ namespace EmpireAtWar.ViewComponents.Health
                 return _effectPool;
             }
 
-            _effectPool = new ShotEffectPool(profile: _profile, owner: transform, maxIdle: _profile.ShotsPerSalvo,
+            _effectPool = new ShotEffectPool(profile: _profile, owner: transform,
                 effectCompleted: OnTurretEffectCompleted, impactPresenter: _impactPresenter, boltFlights: _boltFlights);
-            _effectPool.Prewarm(prewarmEffects);
+            _effectPool.Prewarm(Mathf.Min(prewarmEffects, _profile.ShotsPerSalvo));
             _poolPrewarmer.Enqueue(_effectPool, ExpectedShotsInFlight(_profile));
             return _effectPool;
         }

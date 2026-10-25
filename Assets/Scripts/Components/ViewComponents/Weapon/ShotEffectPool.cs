@@ -24,23 +24,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
         private Action<int> _effectCompleted;
 
-        private readonly int _maxIdle;
-        // Most shots this pool has had in flight at once. Returned shots are kept up to it: dropping them while
-        // the next salvo is already due made the pool instantiate and destroy shots every salvo.
-        private int _peakActive;
-
         private bool _released;
         public event Action<ShotEffectPool> Retired;
 
         public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted, ImpactEffectPresenter impactPresenter,
-            BoltFlightBatch boltFlights, int maxIdle)
+            BoltFlightBatch boltFlights)
         {
             _boltFlights = boltFlights;
             _prefab = profile.ShotPrefab;
             _owner = owner;
             _profile = profile;
             _effectCompleted = effectCompleted;
-            _maxIdle = maxIdle;
             _impactPresenter = impactPresenter;
         }
 
@@ -59,7 +53,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 GetImpactSize(attackData.TargetClass), isHit);
             float duration = effect.Fire(_owner, targetTransform, target.Pivot, aimOffset, _profile, _boltFlights);
             _active.Add(effect, sequenceGeneration);
-            if (_active.Count > _peakActive) _peakActive = _active.Count;
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;
         }
@@ -176,28 +169,20 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (_released)
             {
                 AttackSequenceDiagnostics.RecordOwnerlessActive(-1);
-            }
-
-            if (_released || _availableMembers.Count >= Mathf.Max(_maxIdle, _peakActive))
-            {
                 effect.EffectCompleted -= OnEffectCompleted;
                 effect.EffectDestroyed -= OnEffectDestroyed;
                 effect.RetireAfterCompletion();
                 AttackSequenceDiagnostics.RecordPoolRetired();
-            }
-            else
-            {
-                effect.ResetForPool();
-                _available.Push(effect);
-                _availableMembers.Add(effect);
-                AttackSequenceDiagnostics.RecordPoolAvailable(1);
+                if (_active.Count == 0) Retired?.Invoke(this);
+                return;
             }
 
-            if (!_released)
-            {
-                _effectCompleted(sequenceGeneration);
-            }
-            else if (_active.Count == 0) Retired?.Invoke(this);
+            // Keep prewarmed and demand-created shots for later salvos until the owner releases the pool.
+            effect.ResetForPool();
+            _available.Push(effect);
+            _availableMembers.Add(effect);
+            AttackSequenceDiagnostics.RecordPoolAvailable(1);
+            _effectCompleted(sequenceGeneration);
         }
 
         private void OnEffectDestroyed(ShotEffect effect, int leaseId)
@@ -245,8 +230,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 throw new InvalidOperationException("Cannot prewarm a released pool.");
             }
 
-            int desired = Mathf.Min(count, _maxIdle);
-            while (_availableMembers.Count < desired) AddIdle();
+            while (_availableMembers.Count < count) AddIdle();
         }
 
         private void AddIdle()
