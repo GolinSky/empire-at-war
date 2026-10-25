@@ -30,8 +30,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedUnit_HasRequestedStatsAndNoHangar()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(650));
-            Assert.That(data.Shields, Is.EqualTo(850));
+            Assert.That(data.Hull, Is.EqualTo(400));
+            Assert.That(data.Shields, Is.EqualTo(500));
             Assert.That(data.Speed, Is.EqualTo(70));
             Assert.That(data.ShipClass, Is.EqualTo(ShipClass.Corvette));
             Assert.That(data.Abilities, Is.EqualTo(new[] {ShipAbilityId.TIEAvengerPowerToWeapons}));
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             Assert.That(view.GetComponentsInChildren<MonoBehaviour>(true).Any(m => m.GetType().Name == "HangarComponent"), Is.False);
             var roster = Entry("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset", "ships.keyValue");
-            Assert.That(roster.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(1450));
+            Assert.That(roster.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(1200));
             Assert.That(roster.FindPropertyRelative("<BuildTime>k__BackingField").intValue, Is.EqualTo(28));
             Assert.That(roster.FindPropertyRelative("<AvailableLevel>k__BackingField").intValue, Is.EqualTo(1));
         }

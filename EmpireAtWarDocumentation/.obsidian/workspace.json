@@ -187,6 +187,7 @@
   },
   "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Optimization/Asset_Size_Followup_Plan.md",
     "Done/Features/Invincible_Import.md",
     "TODOs/Features/Invincible_Import.md",
     "TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research.md",
@@ -214,7 +215,6 @@
     "GameDesign/Visibility.md",
     "GameDesign/Capture_And_Structures.md",
     "Tooling/GameDesign_Tools.md",
-    "GameDesign/Production_And_Research.md",
     "Artifacts/History",
     "Artifacts/Audits/Ship_Squadron_2026-09-25",
     "Artifacts/Audits/Scripts_2026-09-12",

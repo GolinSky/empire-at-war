@@ -151,6 +151,10 @@
   - **Editor profile 2026-10-23**: default skirmish reaches Running in 20.723 s after request, no runtime errors. Scope Configure 5.984/9.800 ms; 30 sliced prewarm items, max 41.978 ms. Primary startup/battle peaks 556.749/475.198 ms; confirming asset-load peak 631.154 ms. Editor hitches remain; details in research.
   - **Remaining**: user-deferred Player baseline/matched captures, spinner/transition/leak acceptance; loading-scene async switch and packing changes only if profiling justifies them. Plan stays active.
 
+- [ ] **Shrink remaining build size and runtime memory (textures, UI, music, SFX, Read/Write, player build)** → [[TODOs/Optimization/Asset_Size_Followup_Plan|Asset Size Follow-up]]
+  - Start 2026-10-24: 989.8 MB bundles, payload 2,564 MB (textures 90 %). Top levers: unused alpha → DXT1 (≤ −400 MB est.), texel-density resolution caps, 45 restored sharp-alpha textures, music out of `Model` bundle.
+  - **Next**: item 2 (Providence RGBA32 anomaly) and item 1 (alpha-aware retry).
+
 - [ ] **Remove Addressables bundle duplication and fix asset-mapping tools** → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables Bundle Remediation]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research|Audit 2026-10-24 findings]]
   - Audit 2026-10-24: 962 duplicated assets / 1.31 GiB redundant payload (Model+View 852), 128 identical-source sets, View 1.63 GiB; ReinforcementData hard-refs 78 previews; mapping rebuild drops `VenatorIIShipView`, SO keying overwrites variants.
   - **Phases 0–1 done 2026-10-24**: fresh layout baseline 979 dup assets / 1,430,171,798 B (Model+View 864), Analyze 5,272/25/64 recorded; mapping rebuild keeps aliases (`VenatorIIShipView`, `MenuUi`), Add Selected keys by entry address and refuses foreign-GUID overwrites; 8/8 EditMode tests pass.

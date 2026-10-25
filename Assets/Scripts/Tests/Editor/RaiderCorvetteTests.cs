@@ -31,8 +31,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedUnit_HasCurrentStatsTargetableWeaponsAndNoHangar()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(600));
-            Assert.That(data.Shields, Is.EqualTo(800));
+            Assert.That(data.Hull, Is.EqualTo(300));
+            Assert.That(data.Shields, Is.EqualTo(600));
             Assert.That(data.Speed, Is.EqualTo(17.5f));
             Assert.That(data.Range, Is.EqualTo(500f));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.Pursuit }));
