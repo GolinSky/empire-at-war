@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
@@ -12,6 +14,14 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class ShipAbilityFactoryTests
     {
+        private static readonly HashSet<Type> _statModifierSettings = new HashSet<Type>
+        {
+            typeof(BoostEnginePowerSettings),
+            typeof(BoostShieldPowerSettings),
+            typeof(BoostWeaponPowerSettings),
+            typeof(InvulnerabilitySettings)
+        };
+
         [Test]
         public void EverySettingsType_CreatesANewAbilityEachTime()
         {
@@ -30,7 +40,9 @@ namespace EmpireAtWar.Tests.Editor
                     .SetValue(definition, settings);
                 IShipAbility first = factory.Create(definition);
                 IShipAbility second = factory.Create(definition);
-                Type abilityType = settingsType.Assembly.GetType(settingsType.FullName.Replace("Settings", "Ability"));
+                Type abilityType = _statModifierSettings.Contains(settingsType)
+                    ? typeof(StatModifierAbility)
+                    : settingsType.Assembly.GetType(settingsType.FullName.Replace("Settings", "Ability"));
                 Assert.That(first, Is.TypeOf(abilityType), settingsType.Name);
                 Assert.That(second, Is.TypeOf(abilityType), settingsType.Name);
                 Assert.That(second, Is.Not.SameAs(first), settingsType.Name);

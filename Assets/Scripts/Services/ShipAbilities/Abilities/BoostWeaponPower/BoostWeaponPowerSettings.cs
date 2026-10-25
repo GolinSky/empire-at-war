@@ -12,6 +12,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public CombatStatModifier StatModifier => statModifier;
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new BoostWeaponPowerAbility(this);
+            new StatModifierAbility(statModifier);
     }
 }

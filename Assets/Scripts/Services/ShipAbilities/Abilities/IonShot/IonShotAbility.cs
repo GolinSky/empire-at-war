@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private readonly CombatStatModifier _disable = new CombatStatModifier(1f, 1f, 0f, 1f, 1f);
         private IEntity _target;
         private CombatModifiers _targetModifiers;
+        private CombatModifierHandle _applied;
         private float _remaining;
         private bool _hasHit;
         private bool _disabled;
@@ -71,7 +72,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             }
 
             _hasHit = true;
-            _targetModifiers.Add(_disable);
+            _applied = _targetModifiers.Add(_disable);
             _targetModifiers.AddIonPulseDisable();
             _disabled = true;
             _remaining += _settings.DisableDuration;
@@ -80,7 +81,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public void Stop()
         {
             if (!_disabled) return;
-            _targetModifiers.Remove(_disable);
+            _targetModifiers.Remove(_applied);
             _targetModifiers.RemoveIonPulseDisable();
             _disabled = false;
         }

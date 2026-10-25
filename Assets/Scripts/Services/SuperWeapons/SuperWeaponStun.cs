@@ -9,6 +9,8 @@ namespace EmpireAtWar.Services.SuperWeapons
         public IEntity Target { get; }
         public CombatModifiers Modifiers { get; }
         public CombatStatModifier Modifier { get; }
+        /// <summary>Set when <see cref="Modifier"/> is applied to <see cref="Modifiers"/>.</summary>
+        public CombatModifierHandle Applied { get; set; }
         public float TimeLeft { get; set; }
 
         public SuperWeaponStun(IEntity target, CombatModifiers modifiers, CombatStatModifier modifier, float timeLeft)

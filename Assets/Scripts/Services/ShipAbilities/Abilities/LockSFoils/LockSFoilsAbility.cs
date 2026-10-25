@@ -10,6 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly LockSFoilsSettings _settings;
         private CombatModifiers _modifiers;
+        private CombatModifierHandle _applied;
         private SFoilsModel _model;
 
         public LockSFoilsAbility(LockSFoilsSettings settings) { _settings = settings; }
@@ -18,13 +19,13 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         {
             _modifiers = caster.Modifiers;
             _model = caster.Entity.GetFacade<ISFoilsFacade>().Model;
-            _modifiers.Add(_settings.StatModifier);
+            _applied = _modifiers.Add(_settings.StatModifier);
             _model.SetClosed(true);
         }
 
         public void Stop()
         {
-            _modifiers.Remove(_settings.StatModifier);
+            _modifiers.Remove(_applied);
             _model.SetClosed(false);
         }
     }

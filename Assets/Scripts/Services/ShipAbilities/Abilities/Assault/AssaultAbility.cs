@@ -10,6 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly AssaultSettings _settings;
         private CombatModifiers _modifiers;
+        private CombatModifierHandle _applied;
 
         public AssaultAbility(AssaultSettings settings) { _settings = settings; }
 
@@ -19,10 +20,10 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 throw new InvalidOperationException($"{nameof(AssaultAbility)} requires an {nameof(IAttackFacade)} on the caster.");
 
             _modifiers = caster.Modifiers;
-            _modifiers.Add(_settings.StatModifier);
+            _applied = _modifiers.Add(_settings.StatModifier);
             attack.Attack(target, Vector3.zero);
         }
 
-        public void Stop() => _modifiers.Remove(_settings.StatModifier);
+        public void Stop() => _modifiers.Remove(_applied);
     }
 }

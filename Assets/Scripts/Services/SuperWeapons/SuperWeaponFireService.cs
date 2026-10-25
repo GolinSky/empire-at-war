@@ -44,7 +44,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         public void RestoreStun(SuperWeaponStun stun)
         {
-            stun.Modifiers.Add(stun.Modifier);
+            stun.Applied = stun.Modifiers.Add(stun.Modifier);
             stun.Modifiers.SetIonDisabled(true);
             _stuns.Add(stun);
         }
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             _salvos.Clear();
             foreach (SuperWeaponStun stun in _stuns)
             {
-                stun.Modifiers.Remove(stun.Modifier);
+                stun.Modifiers.Remove(stun.Applied);
                 stun.Modifiers.SetIonDisabled(false);
             }
             _stuns.Clear();
@@ -123,7 +123,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                 SuperWeaponStun stun = _stuns[i];
                 stun.TimeLeft -= deltaTime;
                 if (stun.TimeLeft > 0f) continue;
-                stun.Modifiers.Remove(stun.Modifier);
+                stun.Modifiers.Remove(stun.Applied);
                 stun.Modifiers.SetIonDisabled(false);
                 _stuns.RemoveAt(i);
             }
@@ -250,9 +250,10 @@ namespace EmpireAtWar.Services.SuperWeapons
                 return;
             }
 
-            modifiers.Add(profile.StunModifier);
+            var started = new SuperWeaponStun(target, modifiers, profile.StunModifier, profile.StunDuration);
+            started.Applied = modifiers.Add(profile.StunModifier);
             modifiers.SetIonDisabled(true);
-            _stuns.Add(new SuperWeaponStun(target, modifiers, profile.StunModifier, profile.StunDuration));
+            _stuns.Add(started);
         }
     }
 }

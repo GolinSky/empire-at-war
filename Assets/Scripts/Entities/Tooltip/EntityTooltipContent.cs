@@ -24,6 +24,7 @@ namespace EmpireAtWar.Entities.Tooltip
             {
                 var modifiers = combat.Modifiers;
                 if (modifiers.IsDamageDealtModified()) stats.Add(new TooltipStat(label: "Damage modifier", current: modifiers.DamageMultiplier, format: "0.##'×'"));
+                if (modifiers.IsFireDelayModified()) stats.Add(new TooltipStat(label: "Reload time", current: modifiers.FireDelayMultiplier, format: "0.##'×'"));
                 if (modifiers.IsSpeedModified()) stats.Add(new TooltipStat(label: "Speed modifier", current: modifiers.SpeedMultiplier, format: "0.##'×'"));
                 if (modifiers.IsDamageTakenModified()) stats.Add(new TooltipStat(label: "Damage taken", current: modifiers.DamageTakenMultiplier, format: "0.##'×'"));
             }

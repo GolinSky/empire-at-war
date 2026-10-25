@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly PowerToMainBatteriesSettings _settings;
         private CombatModifiers _modifiers;
+        private CombatModifierHandle _applied;
 
         public PowerToMainBatteriesAbility(PowerToMainBatteriesSettings settings) { _settings = settings; }
 
@@ -15,13 +16,13 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         {
             _modifiers = caster.Modifiers;
             _modifiers.SetMainBatteries(true, _settings.FireDelayMultiplier);
-            _modifiers.Add(_settings.StatModifier);
+            _applied = _modifiers.Add(_settings.StatModifier);
         }
 
         public void Stop()
         {
             _modifiers.SetMainBatteries(false, 1f);
-            _modifiers.Remove(_settings.StatModifier);
+            _modifiers.Remove(_applied);
         }
     }
 }

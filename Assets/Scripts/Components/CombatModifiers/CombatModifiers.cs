@@ -7,8 +7,17 @@ namespace EmpireAtWar.Components.Combat
     public sealed class CombatModifiers
     {
         private const float UNMODIFIED_MULTIPLIER = 1f;
+        private const float FLEET_COMMAND_DAMAGE_MULTIPLIER = 1.1f;
+        private const float FLEET_COMMAND_SPEED_MULTIPLIER = 1.1f;
+        private const float FLEET_COMMAND_DAMAGE_TAKEN_MULTIPLIER = 0.65f;
+        private const float FLEET_COMMAND_HULL_MULTIPLIER = 1.2f;
+        private const float FLEET_COMMAND_SHIELDS_MULTIPLIER = 1.1f;
+        private const float FLEET_COMMAND_VISION_MULTIPLIER = 1.5f;
+        private const float FIGHTER_COORDINATION_SPEED_MULTIPLIER = 1.15f;
+        private const float FIGHTER_COORDINATION_ACCURACY_MULTIPLIER = 1.2f;
+        private const float SENSOR_JAMMING_ACCURACY_MULTIPLIER = 0.8f;
 
-        private readonly List<CombatStatModifier> _active = new List<CombatStatModifier>();
+        private readonly List<CombatModifierHandle> _active = new List<CombatModifierHandle>();
         private bool _fleetCommandActive;
         private IEntity _focusTarget;
         private float _focusDamageMultiplier = 1f;
@@ -24,7 +33,9 @@ namespace EmpireAtWar.Components.Combat
         private int _ionPulseDisables;
         private int _sensorJammers;
         private int _fighterCoordinations;
-        public float AccuracyMultiplier => (_sensorJammers > 0 ? 0.8f : 1f) * (_fighterCoordinations > 0 ? 1.2f : 1f);
+        public float AccuracyMultiplier =>
+            (_sensorJammers > 0 ? SENSOR_JAMMING_ACCURACY_MULTIPLIER : UNMODIFIED_MULTIPLIER) *
+            (_fighterCoordinations > 0 ? FIGHTER_COORDINATION_ACCURACY_MULTIPLIER : UNMODIFIED_MULTIPLIER);
         public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
         /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
         public bool HasTemporaryEffects => _active.Count > 0 || _sensorJammers > 0 || _fighterCoordinations > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
@@ -32,7 +43,11 @@ namespace EmpireAtWar.Components.Combat
                                            _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f;
         public bool IsCloaked { get; private set; }
 
-        public void AddSensorJamming() => _sensorJammers++;
+        public void AddSensorJamming()
+        {
+            _sensorJammers++;
+            Changed?.Invoke();
+        }
 
         public void AddFighterCoordination()
         {
@@ -51,6 +66,7 @@ namespace EmpireAtWar.Components.Combat
         {
             if (_sensorJammers == 0) throw new InvalidOperationException("No sensor jamming is active.");
             _sensorJammers--;
+            Changed?.Invoke();
         }
 
         public void SetCloaked(bool cloaked)
@@ -64,9 +80,9 @@ namespace EmpireAtWar.Components.Combat
         public float SpeedMultiplier { get; private set; } = 1f;
         public float ShieldRegenMultiplier { get; private set; } = 1f;
         public float DamageTakenMultiplier { get; private set; } = 1f;
-        public float HullMultiplier => _fleetCommandActive ? 1.2f : 1f;
-        public float ShieldsMultiplier => _fleetCommandActive ? 1.1f : 1f;
-        public float VisionMultiplier => _fleetCommandActive ? 1.5f : 1f;
+        public float HullMultiplier => _fleetCommandActive ? FLEET_COMMAND_HULL_MULTIPLIER : UNMODIFIED_MULTIPLIER;
+        public float ShieldsMultiplier => _fleetCommandActive ? FLEET_COMMAND_SHIELDS_MULTIPLIER : UNMODIFIED_MULTIPLIER;
+        public float VisionMultiplier => _fleetCommandActive ? FLEET_COMMAND_VISION_MULTIPLIER : UNMODIFIED_MULTIPLIER;
 
         public float GetFullSalvoFireDelayMultiplier(bool interceptable) =>
             interceptable ? _projectileFireDelayMultiplier : _otherFireDelayMultiplier;
@@ -134,41 +150,50 @@ namespace EmpireAtWar.Components.Combat
         {
             _focusTarget = target;
             _focusDamageMultiplier = damageMultiplier;
+            Changed?.Invoke();
         }
 
         public void ClearFocusFire()
         {
             _focusTarget = null;
             _focusDamageMultiplier = 1f;
+            Changed?.Invoke();
         }
+
+        public bool IsFireDelayModified() => FireDelayMultiplier != UNMODIFIED_MULTIPLIER;
 
         public bool IsSpeedModified() => SpeedMultiplier != UNMODIFIED_MULTIPLIER;
 
         public bool IsDamageTakenModified() => DamageTakenMultiplier != UNMODIFIED_MULTIPLIER;
 
-        public void Add(CombatStatModifier modifier)
+        /// <summary>Applies the modifier; pass the returned handle to <see cref="Remove"/> to end this application.</summary>
+        public CombatModifierHandle Add(CombatStatModifier modifier)
         {
-            _active.Add(modifier);
+            var handle = new CombatModifierHandle(modifier);
+            _active.Add(handle);
             Recalculate();
+            return handle;
         }
 
-        public void Remove(CombatStatModifier modifier)
+        public void Remove(CombatModifierHandle handle)
         {
-            if (!_active.Remove(modifier))
+            if (!_active.Remove(handle))
                 throw new InvalidOperationException("Combat modifier was not active.");
             Recalculate();
         }
 
         private void Recalculate()
         {
-            float damage = _fleetCommandActive ? 1.1f : 1f;
-            float fireDelay = 1f;
-            float speed = (_fleetCommandActive ? 1.1f : 1f) * (_fighterCoordinations > 0 ? 1.15f : 1f);
-            float shieldRegen = 1f;
+            float damage = _fleetCommandActive ? FLEET_COMMAND_DAMAGE_MULTIPLIER : UNMODIFIED_MULTIPLIER;
+            float fireDelay = UNMODIFIED_MULTIPLIER;
+            float speed = (_fleetCommandActive ? FLEET_COMMAND_SPEED_MULTIPLIER : UNMODIFIED_MULTIPLIER) *
+                          (_fighterCoordinations > 0 ? FIGHTER_COORDINATION_SPEED_MULTIPLIER : UNMODIFIED_MULTIPLIER);
+            float shieldRegen = UNMODIFIED_MULTIPLIER;
             // Defense is represented by incoming damage reduction in this combat system.
-            float damageTaken = _fleetCommandActive ? 0.65f : 1f;
-            foreach (CombatStatModifier modifier in _active)
+            float damageTaken = _fleetCommandActive ? FLEET_COMMAND_DAMAGE_TAKEN_MULTIPLIER : UNMODIFIED_MULTIPLIER;
+            foreach (CombatModifierHandle handle in _active)
             {
+                CombatStatModifier modifier = handle.Modifier;
                 damage *= modifier.DamageMultiplier;
                 fireDelay *= modifier.FireDelayMultiplier;
                 speed *= modifier.SpeedMultiplier;

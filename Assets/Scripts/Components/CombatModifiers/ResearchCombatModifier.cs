@@ -19,7 +19,7 @@ namespace EmpireAtWar.Components.Combat
         private readonly CombatModifiers _modifiers;
 
         private readonly ShipClass _shipClass;
-        private CombatStatModifier _applied;
+        private CombatModifierHandle _applied;
 
         public ResearchCombatModifier(
             IReadOnlyList<IFactionResearchModelObserver> research,
@@ -33,8 +33,7 @@ namespace EmpireAtWar.Components.Combat
 
         public void Initialize()
         {
-            _applied = CreateModifier();
-            _modifiers.Add(_applied);
+            _applied = _modifiers.Add(CreateModifier());
             foreach (IFactionResearchModelObserver research in _research)
                 research.OnResearchCompleted += HandleResearchCompleted;
         }
@@ -48,8 +47,7 @@ namespace EmpireAtWar.Components.Combat
         private void HandleResearchCompleted(ResearchType researchType)
         {
             _modifiers.Remove(_applied);
-            _applied = CreateModifier();
-            _modifiers.Add(_applied);
+            _applied = _modifiers.Add(CreateModifier());
         }
 
         private CombatStatModifier CreateModifier()

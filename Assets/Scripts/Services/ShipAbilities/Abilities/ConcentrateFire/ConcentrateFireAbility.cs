@@ -12,7 +12,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private readonly IEntityLocator _entities;
 
         private readonly ConcentrateFireSettings _settings;
-        private readonly List<CombatModifiers> _affected = new List<CombatModifiers>();
+        private readonly List<(CombatModifiers Modifiers, CombatModifierHandle Applied)> _affected =
+            new List<(CombatModifiers, CombatModifierHandle)>();
         private CombatModifiers _focusModifiers;
 
         public ConcentrateFireAbility(IEntityLocator entities, ConcentrateFireSettings settings)
@@ -47,8 +48,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                     PlanarGeometry.Distance(caster.WorldPosition, ally.WorldPosition) > _settings.CommandRadius)
                     continue;
 
-                ally.Modifiers.Add(_settings.AllyStatModifier);
-                _affected.Add(ally.Modifiers);
+                _affected.Add((ally.Modifiers, ally.Modifiers.Add(_settings.AllyStatModifier)));
                 attack.Attack(target, Vector3.zero);
             }
         }
@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _focusModifiers.ClearFocusFire();
                 _focusModifiers = null;
             }
-            for (int i = 0; i < _affected.Count; i++) _affected[i].Remove(_settings.AllyStatModifier);
+            for (int i = 0; i < _affected.Count; i++) _affected[i].Modifiers.Remove(_affected[i].Applied);
             _affected.Clear();
         }
     }

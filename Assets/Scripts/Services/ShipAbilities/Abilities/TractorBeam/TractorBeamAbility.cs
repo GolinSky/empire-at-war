@@ -18,6 +18,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private IEntity _target;
         private IHardPointModel _hardPoint;
         private CombatModifiers _targetModifiers;
+        private CombatModifierHandle _applied;
         private Transform _targetTransform;
         private BeamShot _view;
         private float _range;
@@ -48,7 +49,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 .First(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed);
             _targetTransform = target.GetFacade<IEntityTransformFacade>().Transform;
             _targetModifiers = target.GetFacade<ICombatModifiersFacade>().Modifiers;
-            _targetModifiers.Add(_movementPenalty);
+            _applied = _targetModifiers.Add(_movementPenalty);
             _view = (BeamShot)Object.Instantiate(_settings.Beam.ShotPrefab);
             _view.PlayBeam(_hardPoint.Transform, _targetTransform, definition.Duration, _settings.Beam);
         }
@@ -57,7 +58,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Stop()
         {
-            _targetModifiers.Remove(_movementPenalty);
+            _targetModifiers.Remove(_applied);
             if (_view != null)
             {
                 _view.StopBeam();

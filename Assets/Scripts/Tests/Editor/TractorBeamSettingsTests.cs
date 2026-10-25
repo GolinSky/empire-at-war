@@ -18,9 +18,11 @@ namespace EmpireAtWar.Tests.Editor
             modifiers.Add(other);
             var penalty = (CombatStatModifier)typeof(TractorBeamAbility)
                 .GetField("_movementPenalty", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(ability);
-            modifiers.Add(penalty);
+            CombatModifierHandle applied = modifiers.Add(penalty);
             typeof(TractorBeamAbility).GetField("_targetModifiers", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(ability, modifiers);
+            typeof(TractorBeamAbility).GetField("_applied", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(ability, applied);
             Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(2f * settings.SpeedMultiplier));
             ability.Stop();
             Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(2f));

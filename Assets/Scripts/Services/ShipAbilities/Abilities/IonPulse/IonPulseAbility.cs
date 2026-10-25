@@ -15,7 +15,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private readonly IonPulseSettings _settings;
         private readonly IEntityLocator _entities;
         private readonly IPlayerRelations _relations;
-        private readonly List<(CombatModifiers Modifiers, float Remaining)> _stuns = new List<(CombatModifiers, float)>();
+        private readonly List<(CombatModifiers Modifiers, CombatModifierHandle Applied, float Remaining)> _stuns =
+            new List<(CombatModifiers, CombatModifierHandle, float)>();
         private readonly HashSet<IEntity> _hits = new HashSet<IEntity>();
         private readonly CombatStatModifier _disable = new CombatStatModifier(1f, 1f, 0f, 1f, 1f);
         private IShipAbilityFacade _caster;
@@ -85,10 +86,10 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 float remaining = stun.Remaining - deltaTime;
                 if (remaining > 0f)
                 {
-                    _stuns[i] = (stun.Modifiers, remaining);
+                    _stuns[i] = (stun.Modifiers, stun.Applied, remaining);
                     continue;
                 }
-                stun.Modifiers.Remove(_disable);
+                stun.Modifiers.Remove(stun.Applied);
                 stun.Modifiers.RemoveIonPulseDisable();
                 _stuns.RemoveAt(i);
             }
@@ -161,7 +162,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             }
             foreach (var stun in _stuns)
             {
-                stun.Modifiers.Remove(_disable);
+                stun.Modifiers.Remove(stun.Applied);
                 stun.Modifiers.RemoveIonPulseDisable();
             }
             _stuns.Clear();
@@ -169,9 +170,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         private void Disable(CombatModifiers modifiers)
         {
-            modifiers.Add(_disable);
+            CombatModifierHandle applied = modifiers.Add(_disable);
             modifiers.AddIonPulseDisable();
-            _stuns.Add((modifiers, _settings.DisableDuration));
+            _stuns.Add((modifiers, applied, _settings.DisableDuration));
         }
 
         // GetShipUnits falls back to every live hardpoint once no cannon is left, so the type is checked again.

@@ -31,14 +31,14 @@ namespace EmpireAtWar.Tests.Editor
             TestCommand caster = new TestCommand(id: 1, owner: TestPlayers.Human);
             IShipAbility ability = id switch
             {
-                ShipAbilityId.Invulnerability => new InvulnerabilityAbility(
-                    CreateSettings<InvulnerabilitySettings>("statModifier", _testModifier)),
-                ShipAbilityId.BoostShieldPower => new BoostShieldPowerAbility(
-                    CreateSettings<BoostShieldPowerSettings>("statModifier", _testModifier)),
-                ShipAbilityId.BoostEnginePower => new BoostEnginePowerAbility(
-                    CreateSettings<BoostEnginePowerSettings>("statModifier", _testModifier)),
-                ShipAbilityId.BoostWeaponPower => new BoostWeaponPowerAbility(
-                    CreateSettings<BoostWeaponPowerSettings>("statModifier", _testModifier)),
+                ShipAbilityId.Invulnerability =>
+                    CreateSettings<InvulnerabilitySettings>("statModifier", _testModifier).CreateAbility(null),
+                ShipAbilityId.BoostShieldPower =>
+                    CreateSettings<BoostShieldPowerSettings>("statModifier", _testModifier).CreateAbility(null),
+                ShipAbilityId.BoostEnginePower =>
+                    CreateSettings<BoostEnginePowerSettings>("statModifier", _testModifier).CreateAbility(null),
+                ShipAbilityId.BoostWeaponPower =>
+                    CreateSettings<BoostWeaponPowerSettings>("statModifier", _testModifier).CreateAbility(null),
                 ShipAbilityId.Assault => new AssaultAbility(
                     CreateSettings<AssaultSettings>("statModifier", _testModifier)),
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
