@@ -1,14 +1,20 @@
+using EmpireAtWar.Entities.Fade;
 using EmpireAtWar.Entities.MainMenu;
 using EmpireAtWar.Entities.MainMenu.Simulation;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.MainMenu.Main;
+using EmpireAtWar.Entities.MainMenu.Play;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.MainMenu.Survival;
+using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Fade;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
+using SurvivalModel = EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel;
 
 namespace EmpireAtWar.Services.VContainer
 {
@@ -21,13 +27,13 @@ namespace EmpireAtWar.Services.VContainer
             base.Configure(builder);
             TooltipRegistrations.Register(builder, Assets);
             UiRegistrations.Register(builder, Assets, transform);
-            builder.Register<EmpireAtWar.Entities.Fade.FadeUiController>(Lifetime.Singleton)
+            builder.Register<FadeUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Services.Fade.FadeService>(Lifetime.Singleton)
+            builder.Register<FadeService>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController>(Lifetime.Singleton)
+            builder.Register<PlayRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.Saves.LoadGameRouteUiController>(Lifetime.Singleton)
+            builder.Register<LoadGameRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<MainMenuUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MainMenuOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -37,8 +43,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SimulationDraft>(Lifetime.Singleton);
             builder.Register<SimulationMenuLauncher>(Lifetime.Singleton).As<ISimulationLauncher>();
             builder.Register<SimulationSetupUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel>(Lifetime.Singleton);
-            builder.Register<EmpireAtWar.Entities.MainMenu.Survival.SurvivalRouteUiController>(Lifetime.Singleton)
+            builder.Register<SurvivalModel>(Lifetime.Singleton);
+            builder.Register<SurvivalRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<SettingsModel>(Lifetime.Singleton);
             builder.Register<SettingsDraftEditor>(Lifetime.Singleton);
