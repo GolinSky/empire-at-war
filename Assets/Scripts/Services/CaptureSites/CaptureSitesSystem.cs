@@ -1,4 +1,3 @@
-using EmpireAtWar.Utils;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Services.Player;
@@ -45,7 +44,6 @@ namespace EmpireAtWar.Services.CaptureSites
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
         private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
         private float _strengthRefreshCountdown;
-        private IReadOnlyList<CaptureSiteView> _siteViews;
         private CaptureSiteData _data;
         private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
@@ -99,8 +97,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public void UpdateState(BattleMap battleMap)
         {
-            _siteViews = battleMap.SiteViews;
-            foreach (CaptureSiteView view in _siteViews)
+            foreach (CaptureSiteView view in battleMap.SiteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(
                     captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster);
@@ -163,15 +160,15 @@ namespace EmpireAtWar.Services.CaptureSites
                     site.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, site.Center));
                 site.SetVisibility(isVisible, isHovered);
             }
-            if (_selectedSite != null && (!_selectedSite.CanPlayerBuild || !_selectedSite.IsRevealed))
+            if (_selectedSite != null && !IsSelectable(_selectedSite))
                 ClearSelection();
         }
 
         public bool IsPositionInAnySite(Vector3 position, float clearance = 0f)
         {
-            foreach (CaptureSiteView view in _siteViews)
+            foreach (CaptureSitePresenter site in _sites)
             {
-                if (PlanarGeometry.ContainsCircle(position, view.Center, view.Radius + clearance))
+                if (site.Contains(position, clearance))
                 {
                     return true;
                 }
@@ -182,32 +179,8 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
         {
-            CaptureSitePresenter closestSite = null;
-            float closestDistance = float.MaxValue;
-            foreach (CaptureSitePresenter site in _sites)
-            {
-                if (!site.IsCapturable || _playerRoster.IsAllied(site.Owner, owner))
-                {
-                    continue;
-                }
-
-                float distance = (site.Center - origin).sqrMagnitude;
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestSite = site;
-                }
-            }
-
-            if (closestSite == null)
-            {
-                position = default;
-                return false;
-            }
-
-            position = closestSite.Center;
-            position.y = 0f;
-            return true;
+            return TryGetClosestSite(origin,
+                site => site.IsCapturable && !_playerRoster.IsAllied(site.Owner, owner), out position);
         }
 
         public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
@@ -216,8 +189,7 @@ namespace EmpireAtWar.Services.CaptureSites
             {
                 if (site.Owner == owner && HasHostileUnits(site, owner))
                 {
-                    position = site.Center;
-                    position.y = 0f;
+                    position = GroundCenter(site);
                     return true;
                 }
             }
@@ -228,32 +200,8 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
         {
-            CaptureSitePresenter closestSite = null;
-            float closestDistance = float.MaxValue;
-            foreach (CaptureSitePresenter site in _sites)
-            {
-                if (!site.IsOperational || !_playerRoster.IsHostile(attacker, site.Owner))
-                {
-                    continue;
-                }
-
-                float distance = (site.Center - origin).sqrMagnitude;
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestSite = site;
-                }
-            }
-
-            if (closestSite == null)
-            {
-                position = default;
-                return false;
-            }
-
-            position = closestSite.Center;
-            position.y = 0f;
-            return true;
+            return TryGetClosestSite(origin,
+                site => site.IsOperational && _playerRoster.IsHostile(attacker, site.Owner), out position);
         }
 
         public bool TryBuildOnOwnedSite(PlayerId owner)
@@ -286,8 +234,7 @@ namespace EmpireAtWar.Services.CaptureSites
             ClearSelection();
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (site.CanPlayerBuild && site.IsRevealed &&
-                    site.Contains(_cameraService.GetWorldPoint(screenPosition, site.Center)))
+                if (IsSelectable(site) && site.Contains(_cameraService.GetWorldPoint(screenPosition, site.Center)))
                 {
                     _selectedSite = site;
                     SelectionScreenPosition = screenPosition;
@@ -312,7 +259,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public void BuildSelected(SiteFacilityType facilityType)
         {
-            if (_selectedSite != null && _selectedSite.CanPlayerBuild && _selectedSite.IsRevealed)
+            if (_selectedSite != null && IsSelectable(_selectedSite))
             {
                 TryStartConstruction(_selectedSite, facilityType, _localPlayer.Id);
             }
@@ -382,6 +329,34 @@ namespace EmpireAtWar.Services.CaptureSites
                 position => site.Contains(position),
                 squadronOwner => _playerRoster.IsHostile(owner, squadronOwner));
         }
+
+        private bool TryGetClosestSite(Vector3 origin, Predicate<CaptureSitePresenter> isTarget, out Vector3 position)
+        {
+            CaptureSitePresenter closestSite = null;
+            float closestDistance = float.MaxValue;
+            foreach (CaptureSitePresenter site in _sites)
+            {
+                float distance = (site.Center - origin).sqrMagnitude;
+                if (distance < closestDistance && isTarget(site))
+                {
+                    closestDistance = distance;
+                    closestSite = site;
+                }
+            }
+
+            position = closestSite == null ? default : GroundCenter(closestSite);
+            return closestSite != null;
+        }
+
+        private static Vector3 GroundCenter(CaptureSitePresenter site)
+        {
+            Vector3 center = site.Center;
+            center.y = 0f;
+            return center;
+        }
+
+        /// <summary>The local player may open the build menu only on a revealed site it can build on.</summary>
+        private static bool IsSelectable(CaptureSitePresenter site) => site.CanPlayerBuild && site.IsRevealed;
 
         private ISiteFacilityBuilder GetBuilder(PlayerId owner)
         {
