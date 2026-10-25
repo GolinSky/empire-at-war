@@ -66,12 +66,14 @@ namespace EmpireAtWar.Editor.Balance
             VisualElement grid = new VisualElement { name = "combat-grid" };
             grid.AddToClassList("balance-compare-grid");
             scroll.Add(grid);
+            BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
             using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
                 foreach (BalanceUnit unit in units)
-                    Card(grid, unit, estimator.Estimate(unit, state.Draft), registry, controller);
+                    Card(grid, unit, estimator.Estimate(unit, state.Draft), registry, controller, usage);
         }
 
-        private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, BalanceRegistration registry, BalanceEditorController controller)
+        private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, BalanceRegistration registry, BalanceEditorController controller,
+            BalanceDraftUsage usage)
         {
             VisualElement slot = new VisualElement { userData = unit.Id };
             slot.AddToClassList("balance-compare-slot");
@@ -106,7 +108,7 @@ namespace EmpireAtWar.Editor.Balance
             ScrollView mounts = new ScrollView { viewDataKey = "balance-combat-hardpoints-" + unit.Id };
             mounts.AddToClassList("balance-combat-hardpoints");
             card.Add(mounts);
-            BalanceCompareSummary.BuildHardpoints(mounts, unit, registry, controller.State.Draft, controller.Edit);
+            BalanceCompareSummary.BuildHardpoints(mounts, unit, registry, controller.State.Draft, usage, controller.Edit);
             if (unit.Mounts.Count != 0) return;
             Label empty = new Label("No hardpoints on this unit.");
             empty.AddToClassList("balance-muted");

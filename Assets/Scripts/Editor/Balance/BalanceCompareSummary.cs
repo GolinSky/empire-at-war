@@ -122,9 +122,8 @@ namespace EmpireAtWar.Editor.Balance
         }
 
         public static void BuildHardpoints(VisualElement panel, BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft,
-            Action<BalanceField, string> edit)
+            BalanceDraftUsage usage, Action<BalanceField, string> edit)
         {
-            BalanceDraftUsage usage = new BalanceDraftUsage(registry, draft);
             foreach (UnityEngine.Object mount in unit.Mounts.Distinct())
             {
                 VisualElement hardpoint = new VisualElement();

@@ -57,7 +57,8 @@ namespace EmpireAtWar.Editor.Balance
         {
             Vector2 offset = _list.scrollOffset;
             _list.Clear();
-            BalanceCompareSummary.BuildHardpoints(_list, _unit, _registry, _controller.State.Draft, (field, value) =>
+            BalanceDraft draft = _controller.State.Draft;
+            BalanceCompareSummary.BuildHardpoints(_list, _unit, _registry, draft, new BalanceDraftUsage(_registry, draft), (field, value) =>
             {
                 _controller.Edit(field, value);
                 _list.schedule.Execute(BuildList);

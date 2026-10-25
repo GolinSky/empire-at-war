@@ -43,7 +43,6 @@ namespace EmpireAtWar.Editor.Balance
                 }
                 serialized.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(unit.Data);
-                AssetDatabase.SaveAssets();
             }
         }
     }

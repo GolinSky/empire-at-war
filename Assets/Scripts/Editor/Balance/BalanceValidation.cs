@@ -48,7 +48,7 @@ namespace EmpireAtWar.Editor.Balance
             }
             foreach (BalanceField min in current.Fields.Values.Where(field => field.Stat == "MinYaw"))
             {
-                BalanceField max = current.Fields.Values.Single(field => field.Target == min.Target && field.Stat == "MaxYaw");
+                BalanceField max = current.FieldsFor(min.Target).Single(field => field.Stat == "MaxYaw");
                 if (float.Parse(Value(min, draft), System.Globalization.CultureInfo.InvariantCulture) > float.Parse(Value(max, draft), System.Globalization.CultureInfo.InvariantCulture))
                     errors.Add(min.Context + ": minimum yaw exceeds maximum yaw.");
             }
