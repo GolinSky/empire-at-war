@@ -230,7 +230,7 @@ namespace EmpireAtWar.Tests.Weapon
 
         private static WeaponProfile Profile(DamageType damageType = DamageType.Laser) =>
             new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, damageType, 1f, 1, 0f, 1f, 100f,
-                false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 1f, 45f);
+                false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 45f);
 
         private sealed class AttackRunStub : IFighterAttackRunObserver
         {

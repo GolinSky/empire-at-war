@@ -46,7 +46,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (weapon.StrikecraftOnly && !targetClass.IsStrikecraft()) return 0f;
             float hitChance = Mathf.Min(1f, matrix.GetAccuracy(weapon.DamageType, targetClass) *
-                                            weapon.GetAccuracyBias(targetClass) * weapon.AccuracyMultiplier);
+                                            weapon.GetAccuracyBias(targetClass));
             return weapon.DamagePerSecond * hitChance * matrix.GetDamageMultiplier(weapon.DamageType, targetClass) *
                    weapon.GetDamageBias(targetClass);
         }

@@ -20,7 +20,6 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private WeaponFamily family;
         [SerializeField] private WeaponCaliber caliber;
         [SerializeField] private WeaponMount mount = WeaponMount.Single;
-        [SerializeField] private WeaponRangeClass rangeClass;
 
         [Header("Variant")]
         [SerializeField] private WeaponScope scope;
@@ -49,7 +48,6 @@ namespace EmpireAtWar.Components.AttackComponent
         public WeaponFamily Family => family;
         public WeaponCaliber Caliber => caliber;
         public WeaponMount Mount => mount;
-        public WeaponRangeClass RangeClass => rangeClass;
         public WeaponScope Scope => scope;
         public FactionType Faction => faction;
         public string Unit => unit;

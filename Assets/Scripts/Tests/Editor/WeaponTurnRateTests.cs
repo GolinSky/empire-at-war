@@ -169,7 +169,7 @@ namespace EmpireAtWar.Tests.Weapon
 
         private static WeaponProfile Profile(float turnRate) =>
             new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser, 1f, 1, 0f, 1f, 100f,
-                false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 1f, turnRate);
+                false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, turnRate);
 
         private static void SetBound(FloatRange range, string bound, float value) =>
             typeof(Range<float>).GetProperty(bound).GetSetMethod(true).Invoke(range, new object[] { value });

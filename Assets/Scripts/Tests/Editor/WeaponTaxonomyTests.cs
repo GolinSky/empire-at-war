@@ -30,13 +30,10 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(ShipClass.Corvette)]
         [TestCase(ShipClass.Frigate)]
-        [TestCase(ShipClass.Capital)]
-        [TestCase(ShipClass.HeavyCapital)]
         public void SavedShipWeapons_RespectClassCaliberRules(ShipClass shipClass)
         {
             WeaponsData weapons = Weapons;
-            foreach (ShipData data in LoadAll<ShipData>().Where(data => data.ShipClass == shipClass
-                || (shipClass == ShipClass.Capital && data.name == "RecusantShipData")))
+            foreach (ShipData data in LoadAll<ShipData>().Where(data => data.ShipClass == shipClass))
             {
                 foreach (WeaponLoadoutEntry entry in WeaponLoadoutBaker.DeriveLoadout(WeaponLoadoutBaker.LoadShipView(data)))
                 {
@@ -56,9 +53,6 @@ namespace EmpireAtWar.Tests.Editor
                     }
                     else if (shipClass == ShipClass.Frigate && definition.Family == WeaponFamily.Turbolaser)
                         Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), context);
-                    else if ((shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
-                             && definition.Family != WeaponFamily.PointDefense)
-                        Assert.That(definition.Caliber, Is.GreaterThanOrEqualTo(WeaponCaliber.Medium), context);
                 }
             }
         }
@@ -86,13 +80,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EveryFamily_HasExactlyOneRule_AndEveryCaliberAndRangeClassHasOne()
+        public void EveryFamilyAndCaliber_HasExactlyOneRule()
         {
             WeaponsData weapons = Weapons;
             Assert.That(weapons.Families.Select(rule => rule.Family), Is.EquivalentTo(Enum.GetValues(typeof(WeaponFamily))));
             Assert.That(weapons.Calibers.Select(rule => rule.Caliber), Is.EquivalentTo(Enum.GetValues(typeof(WeaponCaliber))));
-            Assert.That(weapons.RangeClasses.Select(rule => rule.RangeClass),
-                Is.EquivalentTo(Enum.GetValues(typeof(WeaponRangeClass))));
+        }
+
+        [Test]
+        public void NoTwoWeaponDefinitionsShareTaxonomy()
+        {
+            foreach (var group in Weapons.Weapons.GroupBy(definition => (definition.Family, definition.Caliber,
+                         definition.Mount, definition.Scope, definition.Faction, definition.Unit,
+                         definition.DamageMultiplier, definition.ReloadMultiplier, definition.RangeMultiplier)))
+                Assert.That(group.Count(), Is.EqualTo(1), string.Join(", ", group.Select(definition => definition.WeaponType)));
         }
 
         [Test]
@@ -148,21 +149,26 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(heavy.AccuracyBias[ShipClass.Fighter], Is.LessThan(light.AccuracyBias[ShipClass.Fighter]));
         }
 
-        [Test]
-        public void RangeClasses_TradeReachForDamage()
+        // Phase 0 baseline (2f45f1371): the former Long range class gave these guns ×1.2 accuracy, now folded into damage.
+        [TestCase(WeaponType.HeavyArtilleryRocket, 93.75f, 4, 20f, 1072.5f)]
+        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 3, 8f, 877.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 3, 8f, 877.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 2, 12f, 975f)]
+        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 3, 8f, 776.25f)]
+        [TestCase(WeaponType.HeavyLaser, 9.375f, 3, 1.5f, 390f)]
+        [TestCase(WeaponType.MediumPointDefense, 5f, 8, 2f, 230f)]
+        public void Executor_WeaponProfilesMatchBaseline(WeaponType type, float baselineDamage, int shots, float reload,
+            float range)
         {
-            WeaponsData weapons = Weapons;
-            WeaponRangeClassRule standard = weapons.GetRangeClass(WeaponRangeClass.Standard);
-            WeaponRangeClassRule close = weapons.GetRangeClass(WeaponRangeClass.Close);
-            WeaponRangeClassRule far = weapons.GetRangeClass(WeaponRangeClass.Long);
+            WeaponDefinition definition = Weapons.GetDefinition(type);
+            WeaponProfile profile = Weapons.GetProfile(type);
+            float accuracy = definition.Scope == WeaponScope.Unit ? 1.2f : 1f;
+            if (definition.Scope == WeaponScope.Unit) Assert.That(definition.Unit, Is.EqualTo(nameof(ShipType.Executor)));
 
-            Assert.That(close.RangeMultiplier, Is.LessThan(standard.RangeMultiplier));
-            Assert.That(far.RangeMultiplier, Is.GreaterThan(standard.RangeMultiplier));
-            Assert.That(close.DamageMultiplier / close.ReloadMultiplier,
-                Is.GreaterThan(standard.DamageMultiplier / standard.ReloadMultiplier));
-            Assert.That(far.DamageMultiplier / far.ReloadMultiplier,
-                Is.LessThan(standard.DamageMultiplier / standard.ReloadMultiplier));
-            Assert.That(far.AccuracyMultiplier, Is.GreaterThan(standard.AccuracyMultiplier));
+            Assert.That(profile.Damage, Is.EqualTo(baselineDamage * accuracy).Within(0.001f));
+            Assert.That(profile.ShotsPerSalvo, Is.EqualTo(shots));
+            Assert.That(profile.Reload, Is.EqualTo(reload).Within(0.001f));
+            Assert.That(profile.Range, Is.EqualTo(range).Within(0.01f));
         }
 
         [TestCase(WeaponMount.Dual, 2)]
@@ -267,10 +273,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     WeaponDefinition definition = weapons.GetDefinition(entry.WeaponType);
                     string context = $"{unit} mounts {definition.WeaponType}";
-                    // Temporary exception until Allegiance's deferred hardpoint/profile review.
-                    bool deferredAllegianceBattery = unit == "Allegiance" &&
-                        entry.WeaponType == WeaponType.QuadTurboLaser && definition.Unit == "Mandator";
-                    if (definition.Scope == WeaponScope.Unit && !deferredAllegianceBattery)
+                    if (definition.Scope == WeaponScope.Unit)
                         Assert.That(unit, Is.EqualTo(definition.Unit), context);
                     if (definition.Scope == WeaponScope.Faction)
                         Assert.That(unitFactions[unit], Is.EqualTo(new[] { definition.Faction }), context);
@@ -338,7 +341,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponDefinition definition = new WeaponDefinition();
             SerializedDefinition.Set(definition, mount);
             return WeaponProfileFactory.Create(definition, weapons.GetFamily(WeaponFamily.Turbolaser),
-                weapons.GetCaliber(WeaponCaliber.Heavy), weapons.GetRangeClass(WeaponRangeClass.Standard));
+                weapons.GetCaliber(WeaponCaliber.Heavy));
         }
 
         private static float LongestGun(WeaponsData weapons, IEnumerable<WeaponLoadoutEntry> loadout) =>

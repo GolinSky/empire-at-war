@@ -20,7 +20,7 @@ namespace EmpireAtWar.Tests.Weapon
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
-                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetRangeClass(WeaponRangeClass.Standard));
+                weapons.GetCaliber(WeaponCaliber.Medium));
             var pool = new ShotEffectPool(profile, null, _ => { }, null, null);
             var leased = new List<ShotEffect>();
             try
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Tests.Weapon
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(family),
-                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetRangeClass(WeaponRangeClass.Standard));
+                weapons.GetCaliber(WeaponCaliber.Medium));
             var shot = Object.Instantiate(profile.ShotPrefab);
             var muzzle = new GameObject("Test muzzle");
             var target = new GameObject("Test target");

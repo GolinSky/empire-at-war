@@ -78,6 +78,6 @@ namespace EmpireAtWar.Tests.Editor
 
         private static WeaponProfile Profile(float damage, int shots, float interval, float reload) =>
             new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser, damage, shots, interval,
-                reload, 100f, false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 1f, 0f);
+                reload, 100f, false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 0f);
     }
 }

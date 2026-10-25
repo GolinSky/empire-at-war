@@ -53,7 +53,7 @@ namespace EmpireAtWar.Tests.Editor
                 CombatModifiers modifiers = new CombatModifiers();
                 weapon.SetData(new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser,
                     1f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white, Vector3.one,
-                    false, false, default, default, 1f, 0f), 100f, 0f, null, null, modifiers, null, null, null, null);
+                    false, false, default, default, 0f), 100f, 0f, null, null, modifiers, null, null, null, null);
                 MethodInfo start = typeof(WeaponHardPoint).GetMethod("TryStartScheduledSequence", PRIVATE_INSTANCE);
                 MethodInfo emitting = typeof(WeaponHardPoint).GetMethod("IsEmitting", PRIVATE_INSTANCE);
                 object[] args = { 0 };
@@ -79,7 +79,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(weapon, true);
                 WeaponProfile profile = new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser,
                     1f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white, Vector3.one,
-                    false, false, default, default, 1f, 0f);
+                    false, false, default, default, 0f);
                 typeof(WeaponProfile).GetField("shotInterval", PRIVATE_INSTANCE).SetValue(profile, 1f);
                 CombatModifiers modifiers = new CombatModifiers();
                 weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, null, null);

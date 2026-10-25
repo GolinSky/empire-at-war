@@ -1,0 +1,57 @@
+id,name,faction,class,price,hull,shields,radar,dps,mounts
+Republic/ships/0,Venator I,Republic,Capital,5800,5000,4500,750,457.4,21
+Republic/ships/12,Venator II,Republic,Capital,7000,6000,5000,750,457.4,21
+Republic/ships/2,Arquitens,Republic,Frigate,3500,2900,1400,540,231.0,11
+Republic/ships/1,Acclamator,Republic,Frigate,3000,4700,2000,600,99.0,10
+Republic/ships/5,Heavy Dreadnought,Republic,Cruiser,4000,3600,2500,650,143.8,8
+Republic/ships/7,Rothana Star Destroyer,Republic,Capital,8000,12000,6000,750,425.0,21
+Republic/ships/8,Resolute — Admiral Yularen,Republic,Capital,6000,7000,5000,750,457.4,21
+Republic/ships/9,Pride of the Core,Republic,HeavyCapital,12000,50000,50000,1500,1713.8,64
+Republic/ships/10,Imperator-class Star Destroyer,Republic,Capital,8000,6000,4000,750,528.8,30
+Republic/ships/11,IPV-2C Stealth Corvette,Republic,Corvette,2150,400,500,300,80.0,8
+Republic/ships/200,Victory-class Star Destroyer,Republic,Cruiser,4200,4800,2000,600,274.5,13
+Republic/ships/13,CR70 Corvette,Republic,Corvette,1250,750,650,300,128.0,12
+Republic/ships/14,Pelta-class Frigate,Republic,Frigate,1800,2200,1000,500,116.0,12
+Republic/ships/15,Carrack-class Cruiser,Republic,Corvette,1600,1600,1000,300,288.0,14
+Republic/ships/16,Centax-class Heavy Frigate,Republic,Frigate,2600,2000,2000,540,156.0,13
+Separatist/ships/100,Providence,Separatist,Capital,6000,6000,5000,750,406.3,17
+Separatist/ships/101,Recusant,Separatist,Cruiser,3500,3800,2600,600,375.0,12
+Separatist/ships/102,Munificent,Separatist,Frigate,3200,2500,2000,540,212.0,14
+Separatist/ships/103,Lucrehulk,Separatist,HeavyCapital,8000,12000,6600,1500,413.8,17
+Separatist/ships/104,Malevolence,Separatist,HeavyCapital,12000,33420,15000,1500,1020.0,73
+Separatist/ships/105,Captor-class Carrier,Separatist,Frigate,3500,3400,800,600,116.0,15
+Separatist/ships/106,Patrol Frigate,Separatist,Corvette,1500,900,700,300,128.0,12
+Separatist/ships/107,C-9979 Lander,Separatist,Corvette,1200,500,600,300,80.0,8
+Separatist/ships/108,Dispatcher-class Frigate,Separatist,Frigate,3400,3500,1000,540,322.0,22
+Separatist/ships/109,Invincible,Separatist,Capital,12000,15000,8000,750,812.5,31
+Rebellion/ships/300,Nebulon-B Frigate,Rebellion,Frigate,2200,3600,2000,540,108.0,10
+Rebellion/ships/301,Corellian Corvette / CR90,Rebellion,Corvette,1250,500,600,300,128.0,12
+Rebellion/ships/302,Mon Calamari Star Cruiser / MC80,Rebellion,Capital,6000,8500,10000,750,280.0,14
+Rebellion/ships/303,Home One / Admiral Ackbar,Rebellion,Capital,25000,30000,40000,750,380.0,19
+Rebellion/ships/304,MC75 Profundity,Rebellion,Cruiser,5500,4500,3500,600,438.2,34
+Rebellion/ships/305,MC80 Independence,Rebellion,Capital,20000,30000,40000,750,735.0,43
+Rebellion/ships/306,Corellian Battlecruiser,Rebellion,Capital,3000,4000,3000,725,295.0,20
+Rebellion/ships/307,MC30c Frigate,Rebellion,Frigate,3500,1800,2400,600,266.9,16
+Rebellion/ships/308,CD-273 Corellian Destroyer,Rebellion,Corvette,2200,2400,1700,300,104.0,10
+Rebellion/ships/320,Quasar Fire,Rebellion,Frigate,2400,1700,1300,450,56.0,10
+Rebellion/ships/311,MC50 Medium Cruiser,Rebellion,Cruiser,3400,4200,3000,600,262.5,16
+Rebellion/ships/309,Assault Frigate Mk II,Rebellion,Frigate,4000,3500,3000,600,263.0,14
+Rebellion/ships/310,Dauntless Heavy Cruiser,Rebellion,Cruiser,5600,10000,5500,650,364.5,23
+Rebellion/ships/321,Liberator Cruiser,Rebellion,Capital,4200,4800,4200,600,217.0,18
+Rebellion/ships/330,Nebula Star Destroyer,Rebellion,Capital,9000,8000,5500,715,554.0,31
+Rebellion/ships/312,Bothan Assault Cruiser,Rebellion,Cruiser,5200,7200,6500,750,342.0,22
+Rebellion/ships/322,Endurance Fleet Carrier,Rebellion,Capital,10000,9000,7000,750,781.3,22
+Empire/ships/202,Victory I Star Destroyer — Advanced Loadout,Empire,Cruiser,4000,3000,2500,1075,351.0,20
+Empire/ships/201,ISD I,Empire,Capital,5000,8400,4500,750,442.8,34
+Empire/ships/203,Victory II Star Destroyer — Advanced Loadout,Empire,Cruiser,4200,4000,4000,600,327.5,22
+Empire/ships/204,ArquitensImperialCruiser,Empire,Frigate,3500,2600,1400,776.25,108.0,10
+Empire/ships/205,ISD II,Empire,Capital,6000,9800,5000,750,1610.0,32
+Empire/ships/207,Executor Star Dreadnought,Empire,HeavyCapital,50000,200000,200000,1500,4288.0,182
+Empire/ships/208,Raider Corvette,Empire,Corvette,1800,300,600,500,156.0,12
+Empire/ships/209,AcclamatorAssault,Empire,Frigate,2500,5000,2500,600,107.0,14
+Empire/ships/210,Tector Star Destroyer,Empire,Capital,5500,12000,8000,877.499939,943.8,31
+Empire/ships/211,Imperial Venator,Empire,Capital,4500,6000,5000,750,497.9,18
+Empire/ships/212,Procursator-class Star Destroyer,Empire,Capital,4500,6500,4000,900,598.0,17
+Empire/ships/214,Titan-class Battlecruiser,Empire,HeavyCapital,20000,28000,18000,877.499939,1174.5,33
+Empire/ships/213,Allegiance-class Battlecruiser,Empire,HeavyCapital,9200,20000,16000,880,817.5,28
+Empire/ships/215,Tartan-class Patrol Cruiser,Empire,Corvette,1200,400,500,300,116.0,11

@@ -390,22 +390,6 @@ MonoBehaviour:
       capital: 1
       heavyCapital: 1
       structure: 1
-  rangeClasses:
-  - rangeClass: 0
-    rangeMultiplier: 1
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    accuracyMultiplier: 1
-  - rangeClass: 1
-    rangeMultiplier: 0.7
-    damageMultiplier: 1.25
-    reloadMultiplier: 1
-    accuracyMultiplier: 1
-  - rangeClass: 2
-    rangeMultiplier: 1.5
-    damageMultiplier: 1.5
-    reloadMultiplier: 2
-    accuracyMultiplier: 1.2
   factionColors:
   - faction: 0
     color: {r: 1, g: 0.31, b: 0, a: 1}
@@ -421,7 +405,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 3
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: Procursator
@@ -441,7 +424,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -460,7 +442,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -479,7 +460,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -498,7 +478,6 @@ MonoBehaviour:
     family: 1
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -517,7 +496,6 @@ MonoBehaviour:
     family: 1
     caliber: 1
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -536,7 +514,6 @@ MonoBehaviour:
     family: 5
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -555,7 +532,6 @@ MonoBehaviour:
     family: 0
     caliber: 0
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -574,7 +550,6 @@ MonoBehaviour:
     family: 0
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -593,7 +568,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    rangeClass: 0
     scope: 1
     faction: 0
     unit: 
@@ -613,7 +587,6 @@ MonoBehaviour:
     family: 2
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -632,7 +605,6 @@ MonoBehaviour:
     family: 2
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -651,7 +623,6 @@ MonoBehaviour:
     family: 8
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -671,7 +642,6 @@ MonoBehaviour:
     family: 4
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -690,7 +660,6 @@ MonoBehaviour:
     family: 7
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -709,7 +678,6 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -728,7 +696,6 @@ MonoBehaviour:
     family: 3
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -742,70 +709,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 87
-    displayName: Procursator Quad Heavy Turbolaser
-    family: 1
-    caliber: 2
-    mount: 4
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Procursator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Procursator main axial battery; heavy long-range quad profile, isolated
-      from Mandator ownership.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 1
-    color: {r: 0.15, g: 1, b: 0.25, a: 1}
-  - weaponType: 88
-    displayName: Titan Heavy Quad Turbolaser
-    family: 1
-    caliber: 2
-    mount: 4
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Titan
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Titan main battery; existing heavy long-range quad tuning retained.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 20
-    displayName: Heavy Long-Range Quad Turbolaser
-    family: 1
-    caliber: 2
-    mount: 4
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator main battery. Heavy caliber, Long range class.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 21
     displayName: Heavy Fighter Laser Cannon
     family: 20
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -824,7 +732,6 @@ MonoBehaviour:
     family: 23
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -843,7 +750,6 @@ MonoBehaviour:
     family: 0
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -862,7 +768,6 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: XWing
@@ -881,26 +786,6 @@ MonoBehaviour:
     family: 6
     caliber: 1
     mount: 1
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 27
-    displayName: Light Close-Range Turbolaser
-    family: 1
-    caliber: 0
-    mount: 1
-    rangeClass: 1
     scope: 0
     faction: 0
     unit: 
@@ -919,7 +804,6 @@ MonoBehaviour:
     family: 0
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -938,7 +822,6 @@ MonoBehaviour:
     family: 22
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -957,7 +840,6 @@ MonoBehaviour:
     family: 2
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -972,18 +854,18 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 34
-    displayName: Heavy Long-Range Missile Launcher
+    displayName: Heavy Missile Launcher
     family: 4
     caliber: 2
     mount: 1
-    rangeClass: 2
-    scope: 0
+    scope: 2
     faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
+    unit: Executor
+    damageMultiplier: 1.8
+    reloadMultiplier: 2
+    rangeMultiplier: 1.5
+    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage).'
     overrideVisual: 1
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
@@ -996,7 +878,6 @@ MonoBehaviour:
     family: 4
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: MC30c
@@ -1016,7 +897,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 4
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1035,7 +915,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1054,26 +933,6 @@ MonoBehaviour:
     family: 2
     caliber: 1
     mount: 2
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 39
-    displayName: Medium Long-Range Turbolaser
-    family: 1
-    caliber: 1
-    mount: 1
-    rangeClass: 2
     scope: 0
     faction: 0
     unit: 
@@ -1092,7 +951,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    rangeClass: 0
     scope: 1
     faction: 3
     unit: 
@@ -1108,32 +966,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 44
-    displayName: Heavy Long-Range Ion Cannon
-    family: 2
-    caliber: 2
-    mount: 1
-    rangeClass: 2
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 1
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 52
-    size: {x: 0.35, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 45
     displayName: Composite Beam
     family: 8
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: ISDIII
@@ -1153,7 +990,6 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1172,7 +1008,6 @@ MonoBehaviour:
     family: 21
     caliber: 2
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1191,7 +1026,6 @@ MonoBehaviour:
     family: 5
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1206,18 +1040,18 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 49
-    displayName: Heavy Long-Range Turbolaser
+    displayName: Heavy Turbolaser
     family: 1
     caliber: 2
     mount: 1
-    rangeClass: 2
-    scope: 0
+    scope: 2
     faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
+    unit: Executor
+    damageMultiplier: 1.8
+    reloadMultiplier: 2
+    rangeMultiplier: 1.5
+    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage).'
     overrideVisual: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
@@ -1226,18 +1060,18 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 50
-    displayName: Heavy Long-Range Dual Turbolaser
+    displayName: Heavy Dual Turbolaser
     family: 1
     caliber: 2
     mount: 2
-    rangeClass: 2
-    scope: 0
+    scope: 2
     faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
+    unit: Executor
+    damageMultiplier: 1.8
+    reloadMultiplier: 2
+    rangeMultiplier: 1.5
+    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage).'
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1246,18 +1080,18 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 51
-    displayName: Heavy Long-Range Dual Ion Cannon
+    displayName: Heavy Dual Ion Cannon
     family: 2
     caliber: 2
     mount: 2
-    rangeClass: 2
-    scope: 0
+    scope: 2
     faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
+    unit: Executor
+    damageMultiplier: 1.8
+    reloadMultiplier: 2
+    rangeMultiplier: 1.5
+    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage).'
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1266,18 +1100,18 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 53
-    displayName: Medium Long-Range Dual Turbolaser
+    displayName: Medium Dual Turbolaser
     family: 1
     caliber: 1
     mount: 2
-    rangeClass: 2
-    scope: 0
+    scope: 2
     faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
+    unit: Executor
+    damageMultiplier: 1.8
+    reloadMultiplier: 2
+    rangeMultiplier: 1.5
+    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage).'
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1290,7 +1124,6 @@ MonoBehaviour:
     family: 1
     caliber: 1
     mount: 2
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: MC80Independence
@@ -1309,7 +1142,6 @@ MonoBehaviour:
     family: 2
     caliber: 1
     mount: 2
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: MC80Independence
@@ -1328,7 +1160,6 @@ MonoBehaviour:
     family: 7
     caliber: 0
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1348,7 +1179,6 @@ MonoBehaviour:
     family: 4
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1367,7 +1197,6 @@ MonoBehaviour:
     family: 5
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1382,11 +1211,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 67
-    displayName: Heavy Long-Range Triple Turbolaser
+    displayName: Heavy Triple Turbolaser
     family: 1
     caliber: 2
     mount: 3
-    rangeClass: 2
     scope: 0
     faction: 0
     unit: 
@@ -1402,11 +1230,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 68
-    displayName: Heavy Long-Range Triple Ion Cannon
+    displayName: Heavy Triple Ion Cannon
     family: 2
     caliber: 2
     mount: 3
-    rangeClass: 2
     scope: 0
     faction: 0
     unit: 
@@ -1426,7 +1253,6 @@ MonoBehaviour:
     family: 0
     caliber: 2
     mount: 2
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1445,7 +1271,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 8
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: ISDII
@@ -1464,7 +1289,6 @@ MonoBehaviour:
     family: 2
     caliber: 2
     mount: 4
-    rangeClass: 0
     scope: 2
     faction: 0
     unit: ISDII
@@ -1483,7 +1307,6 @@ MonoBehaviour:
     family: 23
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1497,127 +1320,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 73
-    displayName: Heavy Long-Range Turbolaser
-    family: 1
-    caliber: 2
-    mount: 1
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator long-range battery. Heavy caliber, Long range class.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 74
-    displayName: Heavy Long-Range Dual Turbolaser
-    family: 1
-    caliber: 2
-    mount: 2
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator long-range battery. Heavy caliber, Long range class.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 75
-    displayName: Heavy Long-Range Proton Torpedo Launcher
-    family: 5
-    caliber: 2
-    mount: 1
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator long-range battery. Heavy caliber, Long range class.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 76
-    displayName: Heavy Long-Range Ion Cannon
-    family: 2
-    caliber: 2
-    mount: 1
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator long-range battery. Heavy caliber, Long range class.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 77
-    displayName: Heavy Long-Range Missile Launcher
-    family: 4
-    caliber: 2
-    mount: 1
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator long-range battery. Heavy caliber, Long range class.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 78
-    displayName: Medium Long-Range Point Defense Laser
-    family: 7
-    caliber: 1
-    mount: 1
-    rangeClass: 2
-    scope: 2
-    faction: 0
-    unit: Mandator
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Mandator long-range point defense. Medium caliber follows the minimum
-      capital-ship caliber rule.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 79
     displayName: Strike Fighter Proton Torpedo
     family: 23
     caliber: 0
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1637,7 +1344,6 @@ MonoBehaviour:
     family: 7
     caliber: 1
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1656,7 +1362,6 @@ MonoBehaviour:
     family: 7
     caliber: 2
     mount: 1
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1675,7 +1380,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 4
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 
@@ -1694,7 +1398,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 8
-    rangeClass: 0
     scope: 0
     faction: 0
     unit: 

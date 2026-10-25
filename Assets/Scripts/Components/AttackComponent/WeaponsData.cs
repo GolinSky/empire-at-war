@@ -6,7 +6,7 @@ using UnityEngine;
 namespace EmpireAtWar.Components.AttackComponent
 {
     /// <summary>
-    /// Single source of weapon balance: family, caliber and range-class rules plus one definition per weapon.
+    /// Single source of weapon balance: family and caliber rules plus one definition per weapon.
     /// Profiles are derived on first use, never stored.
     /// </summary>
     [CreateAssetMenu(fileName = nameof(WeaponsData), menuName = "Data/Weapon/WeaponsData")]
@@ -15,7 +15,6 @@ namespace EmpireAtWar.Components.AttackComponent
         [Header("Rules")]
         [SerializeField] private List<WeaponFamilyRule> families = new List<WeaponFamilyRule>();
         [SerializeField] private List<WeaponCaliberRule> calibers = new List<WeaponCaliberRule>();
-        [SerializeField] private List<WeaponRangeClassRule> rangeClasses = new List<WeaponRangeClassRule>();
         [Tooltip("Bolt color of faction-colored families for each faction.")]
         [SerializeField] private List<FactionBoltColor> factionColors = new List<FactionBoltColor>();
 
@@ -27,7 +26,6 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public IReadOnlyList<WeaponFamilyRule> Families => families;
         public IReadOnlyList<WeaponCaliberRule> Calibers => calibers;
-        public IReadOnlyList<WeaponRangeClassRule> RangeClasses => rangeClasses;
         public IReadOnlyList<WeaponDefinition> Weapons => weapons;
 
         public IReadOnlyList<FactionBoltColor> FactionColors => factionColors;
@@ -82,19 +80,12 @@ namespace EmpireAtWar.Components.AttackComponent
             throw new KeyNotFoundException($"No weapon caliber rule for {caliber}.");
         }
 
-        public WeaponRangeClassRule GetRangeClass(WeaponRangeClass rangeClass)
-        {
-            foreach (WeaponRangeClassRule rule in rangeClasses)
-                if (rule.RangeClass == rangeClass) return rule;
-            throw new KeyNotFoundException($"No weapon range class rule for {rangeClass}.");
-        }
-
         private void BuildProfiles()
         {
             _profiles = new Dictionary<WeaponType, WeaponProfile>();
             foreach (WeaponDefinition definition in weapons)
                 _profiles.Add(definition.WeaponType, WeaponProfileFactory.Create(definition,
-                    GetFamily(definition.Family), GetCaliber(definition.Caliber), GetRangeClass(definition.RangeClass)));
+                    GetFamily(definition.Family), GetCaliber(definition.Caliber)));
         }
 
         // Inspector and balance-editor edits rebuild the derived profiles.

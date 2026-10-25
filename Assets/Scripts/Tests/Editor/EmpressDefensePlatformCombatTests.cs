@@ -41,17 +41,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(400f)]
-        [TestCase(800f)]
-        public void LongRangeBatteries_CanAcquireTargetsFromEveryDirection(float distance)
+        [TestCase(500f)]
+        public void HeavyBatteries_CanAcquireTargetsFromEveryDirection(float distance)
         {
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS);
             var root = PrefabUtility.LoadPrefabContents(VIEW);
             try
             {
                 var weapons = root.GetComponentsInChildren<WeaponHardPoint>(true).Where(point =>
-                    point.WeaponType == WeaponType.HeavyLongRangeTripleTurbolaser ||
-                    point.WeaponType == WeaponType.HeavyLongRangeTripleIonCannon ||
-                    point.WeaponType == WeaponType.MediumLongRangeDualTurbolaser).ToArray();
+                    point.WeaponType == WeaponType.HeavyTripleTurbolaser ||
+                    point.WeaponType == WeaponType.HeavyTripleIonCannon ||
+                    point.WeaponType == WeaponType.DualMediumTurboLaser).ToArray();
                 foreach (float heading in new[] { 0f, 73f })
                 {
                     root.transform.rotation = Quaternion.Euler(0f, heading, 0f);

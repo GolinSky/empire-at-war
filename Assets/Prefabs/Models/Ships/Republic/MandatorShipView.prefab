@@ -149,7 +149,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &337953160153168392
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,7 +383,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 73
+  <WeaponType>k__BackingField: 2
 --- !u!1 &594946451241121722
 GameObject:
   m_ObjectHideFlags: 0
@@ -522,7 +522,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &786850676148138992
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +579,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &787964382344111944
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,7 +710,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &1016771245604808740
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,7 +891,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &1298508092814277753
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,7 +1136,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &1427395475753364354
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,7 +1255,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &1670995935081855087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1312,7 +1312,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &1770420265360530497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,7 +1467,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &1990536117063204046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1555,7 +1555,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &2087466670883335610
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,7 +1612,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &2114338975863437697
 GameObject:
   m_ObjectHideFlags: 0
@@ -2019,7 +2019,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &3011585402347401825
 GameObject:
   m_ObjectHideFlags: 0
@@ -2107,7 +2107,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &3079625504002197366
 GameObject:
   m_ObjectHideFlags: 0
@@ -2164,7 +2164,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 75
+  <WeaponType>k__BackingField: 66
 --- !u!1 &3180306858560448906
 GameObject:
   m_ObjectHideFlags: 0
@@ -2252,7 +2252,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 73
+  <WeaponType>k__BackingField: 2
 --- !u!1 &3237831574307316308
 GameObject:
   m_ObjectHideFlags: 0
@@ -2309,7 +2309,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 73
+  <WeaponType>k__BackingField: 2
 --- !u!1 &3245252539489752892
 GameObject:
   m_ObjectHideFlags: 0
@@ -2366,7 +2366,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &3245262299977260088
 GameObject:
   m_ObjectHideFlags: 0
@@ -2423,7 +2423,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &3399350402868441907
 GameObject:
   m_ObjectHideFlags: 0
@@ -2573,7 +2573,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &3627391047312170004
 GameObject:
   m_ObjectHideFlags: 0
@@ -2661,7 +2661,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &3685353778062936465
 GameObject:
   m_ObjectHideFlags: 0
@@ -2718,7 +2718,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &3783480036832050510
 GameObject:
   m_ObjectHideFlags: 0
@@ -2775,7 +2775,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &3904308099390851292
 GameObject:
   m_ObjectHideFlags: 0
@@ -2832,7 +2832,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &3929042576176418892
 GameObject:
   m_ObjectHideFlags: 0
@@ -2889,7 +2889,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &3944867530292670715
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,7 +2946,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 75
+  <WeaponType>k__BackingField: 66
 --- !u!1 &3994765907491443618
 GameObject:
   m_ObjectHideFlags: 0
@@ -3003,7 +3003,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &4039824016046543607
 GameObject:
   m_ObjectHideFlags: 0
@@ -3060,7 +3060,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &4132386630043196418
 GameObject:
   m_ObjectHideFlags: 0
@@ -3117,7 +3117,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &4248708053889710430
 GameObject:
   m_ObjectHideFlags: 0
@@ -3174,7 +3174,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &4260565461336584024
 GameObject:
   m_ObjectHideFlags: 0
@@ -3231,7 +3231,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 75
+  <WeaponType>k__BackingField: 66
 --- !u!1 &4343310003229123277
 GameObject:
   m_ObjectHideFlags: 0
@@ -3381,7 +3381,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &4528171831581834885
 GameObject:
   m_ObjectHideFlags: 0
@@ -3438,7 +3438,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &4533888550829460090
 GameObject:
   m_ObjectHideFlags: 0
@@ -3627,7 +3627,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 73
+  <WeaponType>k__BackingField: 2
 --- !u!1 &4870637778847728284
 GameObject:
   m_ObjectHideFlags: 0
@@ -3859,7 +3859,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &5515362505822165943
 GameObject:
   m_ObjectHideFlags: 0
@@ -3947,7 +3947,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &5621442758912887768
 GameObject:
   m_ObjectHideFlags: 0
@@ -4035,7 +4035,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &5657752758875404181
 GameObject:
   m_ObjectHideFlags: 0
@@ -4154,7 +4154,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 75
+  <WeaponType>k__BackingField: 66
 --- !u!1 &5917019037206563644
 GameObject:
   m_ObjectHideFlags: 0
@@ -4386,7 +4386,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &6530866159383902880
 GameObject:
   m_ObjectHideFlags: 0
@@ -4443,7 +4443,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &6646226567111547308
 GameObject:
   m_ObjectHideFlags: 0
@@ -4562,7 +4562,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &6751279768105714376
 GameObject:
   m_ObjectHideFlags: 0
@@ -4619,7 +4619,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &6784214612980504380
 GameObject:
   m_ObjectHideFlags: 0
@@ -4738,7 +4738,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &7121280944841253187
 GameObject:
   m_ObjectHideFlags: 0
@@ -4795,7 +4795,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &7365735018722050952
 GameObject:
   m_ObjectHideFlags: 0
@@ -4852,7 +4852,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &7426559904509139676
 GameObject:
   m_ObjectHideFlags: 0
@@ -4940,7 +4940,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &7643483176595089320
 GameObject:
   m_ObjectHideFlags: 0
@@ -5515,7 +5515,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &7767219077549269799
 GameObject:
   m_ObjectHideFlags: 0
@@ -5572,7 +5572,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &7918833310860803908
 GameObject:
   m_ObjectHideFlags: 0
@@ -5629,7 +5629,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &7940162313853147451
 GameObject:
   m_ObjectHideFlags: 0
@@ -5686,7 +5686,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 76
+  <WeaponType>k__BackingField: 11
 --- !u!1 &7947249267454082533
 GameObject:
   m_ObjectHideFlags: 0
@@ -5774,7 +5774,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 78
+  <WeaponType>k__BackingField: 80
 --- !u!1 &8188110726277902881
 GameObject:
   m_ObjectHideFlags: 0
@@ -5831,7 +5831,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &8204036768867724988
 GameObject:
   m_ObjectHideFlags: 0
@@ -5919,7 +5919,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 77
+  <WeaponType>k__BackingField: 65
 --- !u!1 &8230984776964172988
 GameObject:
   m_ObjectHideFlags: 0
@@ -7201,7 +7201,7 @@ MonoBehaviour:
     <Max>k__BackingField: 170
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &8458405084542806772
 GameObject:
   m_ObjectHideFlags: 0
@@ -7413,7 +7413,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 20
+  <WeaponType>k__BackingField: 89
 --- !u!1 &8850113356141500052
 GameObject:
   m_ObjectHideFlags: 0
@@ -7470,7 +7470,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 74
+  <WeaponType>k__BackingField: 3
 --- !u!1 &8972932374430299062
 GameObject:
   m_ObjectHideFlags: 0

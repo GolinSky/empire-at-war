@@ -13877,7 +13877,7 @@ MonoBehaviour:
     <Max>k__BackingField: 145
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 50
+  <WeaponType>k__BackingField: 3
 --- !u!135 &3967795826649748484
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -18964,7 +18964,7 @@ MonoBehaviour:
     <Max>k__BackingField: -35
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 50
+  <WeaponType>k__BackingField: 3
 --- !u!135 &1427953695185130906
 SphereCollider:
   m_ObjectHideFlags: 0

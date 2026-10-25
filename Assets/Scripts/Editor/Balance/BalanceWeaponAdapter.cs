@@ -27,7 +27,6 @@ namespace EmpireAtWar.Editor.Balance
                 RegisterDefinitions(registry, weapons, serialized, users);
                 RegisterFamilies(registry, weapons, serialized, users);
                 RegisterCalibers(registry, weapons, serialized, users);
-                RegisterRangeClasses(registry, weapons, serialized, users);
             }
         }
 
@@ -58,7 +57,6 @@ namespace EmpireAtWar.Editor.Balance
                 Add(registry, weapons, serialized, definition, key, context, consumers, "family", typeof(WeaponFamily));
                 Add(registry, weapons, serialized, definition, key, context, consumers, "caliber", typeof(WeaponCaliber));
                 Add(registry, weapons, serialized, definition, key, context, consumers, "mount", typeof(WeaponMount));
-                Add(registry, weapons, serialized, definition, key, context, consumers, "rangeClass", typeof(WeaponRangeClass));
                 Add(registry, weapons, serialized, definition, key, context, consumers, DEFINITION_MARKER);
                 Add(registry, weapons, serialized, definition, key, context, consumers, "reloadMultiplier", positive: true);
                 Add(registry, weapons, serialized, definition, key, context, consumers, "rangeMultiplier");
@@ -105,22 +103,6 @@ namespace EmpireAtWar.Editor.Balance
                     Add(registry, weapons, serialized, rule, key, context, consumers, "damageBias." + shipClass);
                     Add(registry, weapons, serialized, rule, key, context, consumers, "accuracyBias." + shipClass);
                 }
-            }
-        }
-
-        private static void RegisterRangeClasses(BalanceRegistration registry, WeaponsData weapons, SerializedObject serialized,
-            Dictionary<WeaponType, List<BalanceUnit>> users)
-        {
-            foreach (SerializedProperty rule in BalanceRegistration.Elements(serialized.FindProperty("rangeClasses")))
-            {
-                WeaponRangeClass rangeClass = (WeaponRangeClass)rule.FindPropertyRelative("rangeClass").intValue;
-                List<BalanceUnit> consumers = Users(weapons, users, definition => definition.RangeClass == rangeClass);
-                string key = "weaponrange/" + rangeClass + "/";
-                string context = rangeClass + " range class";
-                Add(registry, weapons, serialized, rule, key, context, consumers, "rangeMultiplier");
-                Add(registry, weapons, serialized, rule, key, context, consumers, "damageMultiplier");
-                Add(registry, weapons, serialized, rule, key, context, consumers, "reloadMultiplier", positive: true);
-                Add(registry, weapons, serialized, rule, key, context, consumers, "accuracyMultiplier");
             }
         }
 

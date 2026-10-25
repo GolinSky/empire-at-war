@@ -10,7 +10,7 @@ namespace EmpireAtWar.Editor.Balance
     public sealed class BalanceDpsEstimator : System.IDisposable
     {
         public const string FORMULA = "Base DPS = mounts × damage × shots per salvo / max(reload, (shots − 1) × shot interval), " +
-                                      "with each weapon's stats derived from its family, caliber, range class, mount, pattern and variant.";
+                                      "with each weapon's stats derived from its family, caliber, mount, pattern and variant.";
 
         private readonly BalanceRegistration _registry;
         private readonly BalanceWeaponPreview _weapons;

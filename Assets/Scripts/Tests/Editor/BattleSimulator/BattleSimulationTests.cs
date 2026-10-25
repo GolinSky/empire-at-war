@@ -216,7 +216,7 @@ namespace EmpireAtWar.Tests.Editor
         public static WeaponProfile Profile(float damage, int shots = 1, float interval = 0, float reload = 1,
             bool pointDefense = false, DamageType type = DamageType.Turbolaser) => new WeaponProfile(WeaponType.TurboLaser,
             "Test", WeaponFamily.Turbolaser, type, damage, shots, interval, reload, 10, pointDefense, false,
-            null, 10, Color.white, Vector3.one, false, false, default, default, 1, 0);
+            null, 10, Color.white, Vector3.one, false, false, default, default, 0);
 
         public static HardPointHealth Health(HardPointType type, float health, float multiplier) => JsonUtility.FromJson<HardPointHealth>(
             "{\"hardPointType\":" + (int)type + ",\"health\":" + health.ToString(System.Globalization.CultureInfo.InvariantCulture) +

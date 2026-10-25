@@ -749,7 +749,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public float GetHitChance(AttackData attackData, WeaponProfile profile) =>
             Model.GetHitChance(profile.DamageType, attackData.TargetClass,
-                profile.AccuracyMultiplier * profile.GetAccuracyBias(attackData.TargetClass) * _modifiers.AccuracyMultiplier);
+                profile.GetAccuracyBias(attackData.TargetClass) * _modifiers.AccuracyMultiplier);
 
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay,
             float damageDuration, IncomingMissile missile)

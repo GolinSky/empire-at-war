@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedLongRangeBatteries_CoverTheirOwnBroadside()
+        public void SavedBroadsideBatteries_CoverTheirOwnBroadside()
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             WeaponHardPoint[] batteries = view.GetComponentsInChildren<WeaponHardPoint>(true)

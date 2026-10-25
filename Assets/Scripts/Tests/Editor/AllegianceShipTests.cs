@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Select(p => p.Id), Is.EquivalentTo(Enumerable.Range(0, 28)));
             Assert.That(guns.Length, Is.EqualTo(21));
             Assert.That(guns.All(health.ShipUnits.Contains), Is.True);
-            foreach (var pair in new[] {(WeaponType.DualHeavyTurboLaser, 3), (WeaponType.QuadTurboLaser, 6),
+            foreach (var pair in new[] {(WeaponType.DualHeavyTurboLaser, 3), (WeaponType.HeavyQuadTurbolaser, 6),
                 (WeaponType.DualMediumTurboLaser, 6), (WeaponType.MediumIonCannon, 6)})
                 Assert.That(guns.Count(g => g.WeaponType == pair.Item1), Is.EqualTo(pair.Item2));
             Assert.That(guns.Count(g => new SerializedObject(g).FindProperty("mainBattery").boolValue), Is.EqualTo(9));

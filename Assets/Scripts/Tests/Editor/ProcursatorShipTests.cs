@@ -47,7 +47,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Select(h => h.Id), Is.EquivalentTo(Enumerable.Range(0, 17)));
             Assert.That(weapons.Length, Is.EqualTo(15));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
-            foreach (var expected in new[] { (WeaponType.ProcursatorQuadHeavyTurbolaser, 3), (WeaponType.DualMediumTurboLaser, 2),
+            foreach (var expected in new[] { (WeaponType.HeavyQuadTurbolaser, 3), (WeaponType.DualMediumTurboLaser, 2),
                 (WeaponType.ProcursatorLightTripleTurbolaser, 8), (WeaponType.MediumIonCannon, 2) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
@@ -74,7 +74,7 @@ namespace EmpireAtWar.Tests.Editor
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             foreach (var weapon in view.GetComponentsInChildren<WeaponHardPoint>(true))
             {
-                float facing = weapon.WeaponType == WeaponType.ProcursatorQuadHeavyTurbolaser || weapon.WeaponType == WeaponType.MediumIonCannon
+                float facing = weapon.WeaponType == WeaponType.HeavyQuadTurbolaser || weapon.WeaponType == WeaponType.MediumIonCannon
                     ? 0 : Mathf.Sign(weapon.transform.localPosition.x) * 90;
                 Assert.That((weapon.MinYaw + weapon.MaxYaw) * .5f, Is.EqualTo(facing).Within(.001f), weapon.name);
                 Assert.That(weapon.MinYaw, Is.GreaterThanOrEqualTo(-180));

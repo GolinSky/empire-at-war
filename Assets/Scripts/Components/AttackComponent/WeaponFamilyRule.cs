@@ -13,7 +13,7 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private DamageType damageType;
 
         [Header("Base Damage")]
-        [Tooltip("Damage of one shot from one barrel, before caliber, range class and mount.")]
+        [Tooltip("Damage of one shot from one barrel, before caliber and mount.")]
         [SerializeField, Min(0f)] private float damage;
         [SerializeField, Min(1)] private int shotsPerSalvo = 1;
         [Tooltip("Seconds between shots of a salvo.")]
