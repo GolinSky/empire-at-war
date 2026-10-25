@@ -747,14 +747,15 @@ namespace EmpireAtWar.Components.Weapon
             return position;
         }
 
-        public bool RollHit(AttackData attackData, WeaponProfile profile) =>
-            Model.RollHit(profile.DamageType, attackData.TargetClass,
-                profile.AccuracyMultiplier * profile.GetAccuracyBias(attackData.TargetClass) * _modifiers.AccuracyMultiplier, UnityEngine.Random.value);
+        public float GetHitChance(AttackData attackData, WeaponProfile profile) =>
+            Model.GetHitChance(profile.DamageType, attackData.TargetClass,
+                profile.AccuracyMultiplier * profile.GetAccuracyBias(attackData.TargetClass) * _modifiers.AccuracyMultiplier);
 
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay,
             float damageDuration, IncomingMissile missile)
         {
-            if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
+            // Shots of a salvo whose hardpoint died after the salvo began still deal damage.
+            if (_isReleased || attackData.IsDestroyed || !attackData.Contains(hardPointModel)) return;
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
                            _modifiers.GetDamageMultiplier(attackData.TargetEntity);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));

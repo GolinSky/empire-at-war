@@ -214,7 +214,7 @@ namespace EmpireAtWar.Tests.Weapon
 
             public RecordingOwner(Action onCommit) => _onCommit = onCommit;
 
-            public bool RollHit(AttackData attackData, WeaponProfile profile) => throw new InvalidOperationException();
+            public float GetHitChance(AttackData attackData, WeaponProfile profile) => throw new InvalidOperationException();
 
             public void ApplyDamage(AttackData attackData, IHardPointModel unitView,
                 WeaponProfile profile, float attackDelay, float damageDuration, IncomingMissile missile) => throw new InvalidOperationException();

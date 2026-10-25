@@ -23,8 +23,8 @@ namespace EmpireAtWar.Components.Weapon
         {
         }
 
-        public bool RollHit(DamageType damageType, ShipClass targetClass, float accuracyMultiplier, float roll) =>
-            roll < _accuracy[(damageType, targetClass)] * accuracyMultiplier;
+        public float GetHitChance(DamageType damageType, ShipClass targetClass, float accuracyMultiplier) =>
+            _accuracy[(damageType, targetClass)] * accuracyMultiplier;
 
         public void SetRanges(float maxWeaponRange, IReadOnlyDictionary<ShipClass, float> engagementRanges)
         {

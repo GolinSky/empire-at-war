@@ -31,6 +31,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private float _maxAttackDistance;
         private float _missSpread;
+        private HitAccumulator _hits;
         // Local yaw the mount points at, inside the firing arc. Turning has no visual; it only delays the salvo.
         private float _mountYaw;
         private float _turnEndTime = float.NegativeInfinity;
@@ -79,6 +80,7 @@ namespace EmpireAtWar.ViewComponents.Health
             _profile = profile;
             _maxAttackDistance = maxAttackDistance;
             _missSpread = missSpread;
+            _hits = new HitAccumulator(Random.value);
             WeaponPresenter = weaponPresenter;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
@@ -167,7 +169,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
         {
-            bool isHit = WeaponPresenter.RollHit(attackData, _profile);
+            bool isHit = _hits.Roll(WeaponPresenter.GetHitChance(attackData, _profile), Random.value);
             Vector3 aimOffset = isHit ? Vector3.zero : Random.onUnitSphere * _missSpread;
             float duration = GetPool().Play(attackData, hardPointModel, aimOffset, sequenceGeneration, isHit,
                 out ShotEffect effect);

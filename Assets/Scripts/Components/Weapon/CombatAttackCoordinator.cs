@@ -424,10 +424,11 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
+            // A salvo started on a live hardpoint finishes even if that hardpoint dies; the health model spreads the hits.
             if (sequence.ShotsRemaining == 0 ||
                 !sequence.TargetGroup.CanAcquireTarget ||
                 sequence.Target.Generation != sequence.TargetGeneration ||
-                !sequence.TargetGroup.CanTarget(sequence.Target) ||
+                sequence.TargetGroup.IsDestroyed ||
                 !sequence.TargetGroup.Contains(sequence.Target))
             {
                 sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);

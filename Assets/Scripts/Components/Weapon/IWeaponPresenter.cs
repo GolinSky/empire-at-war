@@ -5,8 +5,8 @@ namespace EmpireAtWar.Components.Weapon
 {
     public interface IWeaponPresenter
     {
-        /// <summary>Rolls accuracy for one shot. False means the shot is a visual-only miss.</summary>
-        bool RollHit(AttackData attackData, WeaponProfile profile);
+        /// <summary>Chance that one shot of this profile hits the target; a miss is visual only.</summary>
+        float GetHitChance(AttackData attackData, WeaponProfile profile);
 
         /// <param name="damageDuration">Seconds after arrival to spread the damage over in ticks; 0 lands it at once.</param>
         /// <param name="missile">In-flight record when the shot can be intercepted; null otherwise.</param>

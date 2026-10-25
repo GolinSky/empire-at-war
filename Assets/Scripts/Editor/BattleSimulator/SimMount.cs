@@ -1,8 +1,11 @@
+using EmpireAtWar.Components.Weapon;
+
 namespace EmpireAtWar.Editor.BattleSimulator
 {
     public sealed class SimMount
     {
         public SimMountDefinition Definition;
+        public HitAccumulator Hits;
         public double SalvoStart;
         public int Shot;
         public double NextShot => SalvoStart + Shot * Definition.Profile.ShotInterval;

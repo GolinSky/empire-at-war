@@ -108,8 +108,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
             SimUnit selected = _policies[source.Stats.Side].Select(source, _candidates);
             int point = SelectPoint(selected);
             source.Stats.Shots++;
-            if (!_weapons.RollHit(profile.DamageType, selected.Definition.ShipClass,
-                    profile.AccuracyMultiplier * profile.GetAccuracyBias(selected.Definition.ShipClass) * source.Modifiers.AccuracyMultiplier,
+            if (!mount.Hits.Roll(_weapons.GetHitChance(profile.DamageType, selected.Definition.ShipClass,
+                    profile.AccuracyMultiplier * profile.GetAccuracyBias(selected.Definition.ShipClass) * source.Modifiers.AccuracyMultiplier),
                     (float)_random.NextDouble())) return;
             source.Stats.Hits++;
             float distance = _setup.Distance < 0 ? source.Definition.Range : _setup.Distance;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Editor.BattleSimulator
@@ -50,7 +51,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
             {
                 if (mount.UnlockLevel > UNIT_LEVEL || !HardPoints[mount.HardPointId].IsInstalled) continue;
                 Stats.BaseDps += mount.Profile.DamagePerSecond;
-                Mounts.Add(new SimMount { Definition = mount, SalvoStart = alphaStrike ? 0 : random.NextDouble() * mount.Profile.Reload });
+                Mounts.Add(new SimMount { Definition = mount, SalvoStart = alphaStrike ? 0 : random.NextDouble() * mount.Profile.Reload,
+                    Hits = new HitAccumulator((float)random.NextDouble()) });
             }
             Bearing = (int)Math.Round(Mounts.Count * entry.ArcFactor, MidpointRounding.AwayFromZero);
             // A seeded shuffle picks which mounts bear, so a partial arc does not depend on prefab order.
