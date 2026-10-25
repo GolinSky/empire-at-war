@@ -83,6 +83,34 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Flatten_DropsHeightOnly()
+        {
+            Assert.That(PlanarGeometry.Flatten(new Vector3(3f, 100f, -4f)), Is.EqualTo(new Vector3(3f, 0f, -4f)));
+        }
+
+        [Test]
+        public void PointTowards_MovesPlanarDistanceAtZeroHeight()
+        {
+            Assert.That(PlanarGeometry.GetPointTowards(new Vector3(1f, 50f, 1f), new Vector3(4f, -9f, 5f), 10f,
+                Vector3.right), Is.EqualTo(new Vector3(7f, 0f, 9f)));
+        }
+
+        [Test]
+        public void PointTowards_UsesFallbackWhenTargetOverlapsOrigin()
+        {
+            Assert.That(PlanarGeometry.GetPointTowards(new Vector3(1f, 50f, 1f), new Vector3(1f, -9f, 1f), 2f,
+                Vector3.right), Is.EqualTo(new Vector3(3f, 0f, 1f)));
+        }
+
+        [Test]
+        public void CircleBounds_SpanTheDiameterWithNoHeight()
+        {
+            Bounds bounds = PlanarGeometry.GetCircleBounds(new Vector3(2f, 7f, -3f), 4f);
+            Assert.That(bounds.center, Is.EqualTo(new Vector3(2f, 7f, -3f)));
+            Assert.That(bounds.size, Is.EqualTo(new Vector3(8f, 0f, 8f)));
+        }
+
+        [Test]
         public void PlanarDistance_DoesNotIncludeHeight()
         {
             Assert.That(PlanarGeometry.Distance(new Vector3(3f, 100f, 4f), Vector3.zero), Is.EqualTo(5f));

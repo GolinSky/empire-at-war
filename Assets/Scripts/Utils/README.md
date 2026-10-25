@@ -24,6 +24,7 @@
 | `MapGeometry` distance, center, reflection, polyline distance | `PlanarGeometry`; `MapGeometry` removed and callers migrated |
 | `OwnedCircle.Contains`, capture-site and reinforcement-zone presenter/system circle checks | `PlanarGeometry.ContainsCircle`; callers supply radius plus their existing clearance |
 | `ShipBezierPath.GetPlanarDirection`, `ShipRoutePlanner.GetPlanarDirection` | `PlanarGeometry.NormalizeDirection` |
+| `ReinforcementZonesSystem` height flattening, exit-point and circle-bounds math | `PlanarGeometry.Flatten`, `GetPointTowards`, `GetCircleBounds` |
 | `PointerGestures.ToNumerics(Vector2)` | `NumericsConversionExtensions.ToNumerics(Vector2)` |
 
 - Geometry uses XZ and ignores height. Circle boundaries remain inclusive.

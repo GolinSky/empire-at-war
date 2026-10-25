@@ -320,7 +320,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true)]
         [TestCase(false)]
-        public void RelayVision_IsRemovedOnDisposalOrMapReplacement(bool dispose)
+        public void RelayVisionAndBlockers_AreRemovedOnDisposalOrMapReplacement(bool dispose)
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
@@ -328,8 +328,8 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
-                ReinforcementZonesSystem system = CreateSystem(root, data,
-                    new SpawnBlockerService(TestPlayers.CreateTeamGame()), vision, zone);
+                SpawnBlockerService blockers = new SpawnBlockerService(TestPlayers.CreateTeamGame());
+                ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 BattleMap emptyMap = CreateMap();
                 SetField(system, "_battleMap", new ReplayNotifier<BattleMap>(emptyMap));
                 Assert.That(vision.IsVisible(TestPlayers.Human, zone.Center), Is.True);
@@ -340,6 +340,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(vision.Sources, Is.Empty);
                 Assert.That(vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.False);
+                Assert.That(blockers.Blockers, Is.Empty);
             }
             finally
             {

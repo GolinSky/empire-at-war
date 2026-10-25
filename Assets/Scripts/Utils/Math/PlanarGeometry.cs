@@ -14,6 +14,17 @@ namespace EmpireAtWar.Utils
             return new Vector3(center.x, 0f, center.y);
         }
 
+        public static Vector3 Flatten(Vector3 position) => new Vector3(position.x, 0f, position.z);
+
+        /// <summary>The point <paramref name="distance"/> from <paramref name="origin"/> towards
+        /// <paramref name="target"/>, at zero height; <paramref name="fallback"/> when they overlap.</summary>
+        public static Vector3 GetPointTowards(Vector3 origin, Vector3 target, float distance, Vector3 fallback) =>
+            Flatten(origin + NormalizeDirection(target - origin, fallback) * distance);
+
+        /// <summary>Flat XZ bounds enclosing the circle.</summary>
+        public static Bounds GetCircleBounds(Vector3 center, float radius) =>
+            new Bounds(center, new Vector3(radius * 2f, 0f, radius * 2f));
+
         public static Vector3 Reflect(Vector3 position, Vector3 center)
         {
             return new Vector3(2f * center.x - position.x, position.y, 2f * center.z - position.z);

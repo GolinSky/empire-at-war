@@ -21,27 +21,6 @@ using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.ReinforcementZones
 {
-    public interface IReinforcementZonesSystem
-    {
-        event Action OwnershipChanged;
-
-        bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
-
-        void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination);
-
-        int GetOwnedCapturableZoneCount(PlayerId owner);
-
-        bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position);
-
-        bool TryGetDefaultZoneExitPosition(
-            PlayerId owner,
-            Vector3 shipPosition,
-            float shipRadius,
-            out Vector3 position);
-
-        bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position);
-    }
-
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
         IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
     {
@@ -109,12 +88,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void LateDispose()
         {
             _battleMap.RemoveObserver(this);
-            UnregisterVision();
+            UnregisterMap();
         }
 
         public void UpdateState(BattleMap battleMap)
         {
-            UnregisterVision();
+            UnregisterMap();
             _zoneViews = battleMap.ZoneViews;
             _homes.Clear();
             foreach (ZoneSpot spot in battleMap.Layout.Zones)
@@ -124,7 +103,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 // A home lights its whole spawn area so reinforcements can always land there.
                 Transform anchor = new GameObject($"{spot.Owner}_HomeVision").transform;
                 anchor.SetParent(transform, false);
-                anchor.position = new Vector3(spot.Center.x, 0f, spot.Center.z);
+                anchor.position = PlanarGeometry.Flatten(spot.Center);
                 _visionService.Register(spot.Owner, anchor, _data.HomeAreaRadius);
                 _homeVisionAnchors.Add(anchor);
             }
@@ -142,12 +121,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     relations: _playerRoster);
                 _zones.Add(new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer));
                 _strengths.Add(default);
-                // Each zone centre holds a relay: only its owner's team may spawn around it.
-                _spawnBlockerService.Register(view.StartingOwner, view.transform, _data.RelaySpawnBlockRadius);
-                if (view.StartingOwner != PlayerId.None)
-                {
-                    _visionService.Register(view.StartingOwner, view.transform, _data.RelaySpawnBlockRadius);
-                }
+                RegisterRelay(view.transform, view.StartingOwner);
             }
         }
 
@@ -164,11 +138,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             {
                 ReinforcementZoneSave save = saves[i];
                 _zones[i].Restore(save.Owner, save.CapturingPlayer, save.CaptureProgress, save.IsContested);
-                Transform anchor = _zoneViews[i].transform;
-                _spawnBlockerService.Register(save.Owner, anchor, _data.RelaySpawnBlockRadius);
-                _visionService.Unregister(anchor);
-                if (save.Owner != PlayerId.None)
-                    _visionService.Register(save.Owner, anchor, _data.RelaySpawnBlockRadius);
+                RegisterRelay(_zoneViews[i].transform, save.Owner);
             }
 
             foreach (ReinforcementZonePresenter zone in _zones)
@@ -198,8 +168,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
                 if (zone.Tick(deltaTime, _strengths[i]))
                 {
-                    _spawnBlockerService.Register(zone.Owner, _zoneViews[i].transform, _data.RelaySpawnBlockRadius);
-                    _visionService.Register(zone.Owner, _zoneViews[i].transform, _data.RelaySpawnBlockRadius);
+                    RegisterRelay(_zoneViews[i].transform, zone.Owner);
                     OwnershipChanged?.Invoke();
                 }
 
@@ -245,7 +214,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             {
                 if (zone.IsCapturable && zone.Owner == owner)
                 {
-                    destination.Add(new Bounds(zone.Center, new Vector3(zone.Radius * 2f, 0f, zone.Radius * 2f)));
+                    destination.Add(PlanarGeometry.GetCircleBounds(zone.Center, zone.Radius));
                 }
             }
         }
@@ -255,8 +224,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             foreach (ZoneSpot home in _homes)
             {
                 if (home.Owner != owner) continue;
-                position = home.Center;
-                position.y = 0f;
+                position = PlanarGeometry.Flatten(home.Center);
                 return true;
             }
 
@@ -273,24 +241,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
             float homeRadius = _data.HomeAreaRadius;
             foreach (ZoneSpot home in _homes)
             {
-                Vector3 offset = shipPosition - home.Center;
-                if (home.Owner != owner || offset.x * offset.x + offset.z * offset.z > homeRadius * homeRadius)
+                if (home.Owner != owner || !PlanarGeometry.ContainsCircle(shipPosition, home.Center, homeRadius))
                 {
                     continue;
                 }
 
-                Vector3 direction = new Vector3(
-                    (_mapModel.SizeRange.Min.x + _mapModel.SizeRange.Max.x) * 0.5f - home.Center.x,
-                    0f,
-                    (_mapModel.SizeRange.Min.y + _mapModel.SizeRange.Max.y) * 0.5f - home.Center.z);
-                if (direction.sqrMagnitude <= Mathf.Epsilon)
-                {
-                    direction = Vector3.right;
-                }
-
-                position = home.Center + direction.normalized *
-                    (homeRadius + shipRadius + spawnEdgePadding);
-                position.y = 0f;
+                // Leave towards the map centre.
+                position = PlanarGeometry.GetPointTowards(home.Center, PlanarGeometry.GetCenter(_mapModel.SizeRange),
+                    homeRadius + shipRadius + spawnEdgePadding, Vector3.right);
                 return true;
             }
 
@@ -325,15 +283,25 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 return false;
             }
 
-            position = closestZone.Center;
-            position.y = 0f;
+            position = PlanarGeometry.Flatten(closestZone.Center);
             return true;
         }
 
-        private void UnregisterVision()
+        // Each zone centre holds a relay: only its owner's team may spawn around it, and an owned relay gives vision.
+        private void RegisterRelay(Transform relay, PlayerId owner)
+        {
+            _spawnBlockerService.Register(owner, relay, _data.RelaySpawnBlockRadius);
+            if (owner == PlayerId.None)
+                _visionService.Unregister(relay);
+            else
+                _visionService.Register(owner, relay, _data.RelaySpawnBlockRadius);
+        }
+
+        private void UnregisterMap()
         {
             foreach (ReinforcementZoneView view in _zoneViews)
             {
+                _spawnBlockerService.Unregister(view.transform);
                 _visionService.Unregister(view.transform);
             }
 
