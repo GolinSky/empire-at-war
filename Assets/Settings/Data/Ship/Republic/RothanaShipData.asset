@@ -59,11 +59,13 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 4
     count: 2
+  - weaponType: 6
+    count: 1
+  - weaponType: 8
+    count: 4
   - weaponType: 9
     count: 8
-  - weaponType: 23
-    count: 4
-  - weaponType: 32
+  - weaponType: 10
     count: 2
-  - weaponType: 80
+  - weaponType: 14
     count: 2

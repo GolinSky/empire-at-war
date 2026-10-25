@@ -59,6 +59,9 @@
         HeavyPointDefense = 84,
         HeavyOctupleTurbolaser = 85,
         HeavyQuadTurbolaser = 89,
+        MediumQuadTurbolaser = 90,
+        HeavyDualIonCannon = 91,
+        LightDualMissileLauncher = 92,
         ProcursatorLightTripleTurbolaser = 86,
     }
 }

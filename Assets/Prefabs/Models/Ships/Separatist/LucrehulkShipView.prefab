@@ -146,6 +146,114 @@ MonoBehaviour:
   unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 16
+--- !u!1 &113953925192386216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4574985168282660830}
+  - component: {fileID: 6294702515260712211}
+  m_Layer: 0
+  m_Name: HeavyTurboDualProjectileL1_62
+  m_TagString: Untagged
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4574985168282660830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113953925192386216}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -15.991999, y: -0.029499998, z: -3.2559998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5406953671524702264}
+  m_Father: {fileID: 5691611340166247208}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6294702515260712211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113953925192386216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 5406953671524702264}
+  destroyedVfxScale: 5.4779134
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 19
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  prewarmEffects: 0
+  <WeaponType>k__BackingField: 62
+--- !u!1 &1155532787674398810
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8687487546837991091}
+  - component: {fileID: 1841021078175852817}
+  m_Layer: 0
+  m_Name: HangarUnit_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8687487546837991091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155532787674398810}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.049674418, z: 1.9182503}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1756496335679554336}
+  m_Father: {fileID: 6138519191265376664}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1841021078175852817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155532787674398810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 1756496335679554336}
+  destroyedVfxScale: 5.4779134
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 4
+  <Id>k__BackingField: 22
 --- !u!1 &1424789333044179663
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +530,12 @@ MonoBehaviour:
   - {fileID: 9074083328050223109}
   - {fileID: 4194279762422774578}
   - {fileID: 1623831927085006297}
+  - {fileID: 9126595888329768097}
+  - {fileID: 8204941468934276613}
+  - {fileID: 6294702515260712211}
+  - {fileID: 9085686361187355198}
+  - {fileID: 350060869458704868}
+  - {fileID: 1841021078175852817}
 --- !u!114 &7210706146173139904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,6 +618,69 @@ MonoBehaviour:
   - {fileID: 9074083328050223109}
   - {fileID: 4194279762422774578}
   - {fileID: 1623831927085006297}
+  - {fileID: 9126595888329768097}
+  - {fileID: 8204941468934276613}
+  - {fileID: 6294702515260712211}
+  - {fileID: 9085686361187355198}
+  - {fileID: 350060869458704868}
+  - {fileID: 1841021078175852817}
+--- !u!1 &1542133818148398054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3691401979286531225}
+  - component: {fileID: 8204941468934276613}
+  m_Layer: 0
+  m_Name: HeavyTurboDualProjectileR1_62
+  m_TagString: Untagged
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3691401979286531225
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542133818148398054}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 16.456999, y: -0.019499999, z: 4.429}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1617578128542229849}
+  m_Father: {fileID: 5691611340166247208}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8204941468934276613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542133818148398054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 1617578128542229849}
+  destroyedVfxScale: 5.4779134
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 18
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  prewarmEffects: 0
+  <WeaponType>k__BackingField: 62
 --- !u!1 &1635607289996765122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,6 +1301,182 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2430960093338803053}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4223793670820132569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1617578128542229849}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1617578128542229849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4223793670820132569}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.235711, z: 0.00000023841858}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3691401979286531225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5183663463988012197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1727992765594045889}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1727992765594045889
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5183663463988012197}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0000009536743, y: 1.1683294, z: 0.00000047683716}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 912200419147924037}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5840559524658591990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 912200419147924037}
+  - component: {fileID: 350060869458704868}
+  m_Layer: 0
+  m_Name: HeavyTurboDualProjectileR2_13
+  m_TagString: Untagged
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &912200419147924037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5840559524658591990}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 14.886498, y: -0.035, z: 8.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1727992765594045889}
+  m_Father: {fileID: 5691611340166247208}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &350060869458704868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5840559524658591990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 1727992765594045889}
+  destroyedVfxScale: 5.4779134
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 21
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  prewarmEffects: 0
+  <WeaponType>k__BackingField: 13
+--- !u!1 &5883838997376209095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3606541123190911027}
+  - component: {fileID: 9126595888329768097}
+  m_Layer: 0
+  m_Name: HeavyTurboDualProjectileL1_62
+  m_TagString: Untagged
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3606541123190911027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883838997376209095}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -16.456999, y: -0.019499999, z: 4.429}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8464405327365585783}
+  m_Father: {fileID: 5691611340166247208}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9126595888329768097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883838997376209095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 8464405327365585783}
+  destroyedVfxScale: 5.4779134
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 17
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  prewarmEffects: 0
+  <WeaponType>k__BackingField: 62
 --- !u!1 &6021012803749531154
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,6 +1528,125 @@ MonoBehaviour:
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 15
+--- !u!1 &6237566715536962493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9080330955767827425}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9080330955767827425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6237566715536962493}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.235711, z: 0.00000023841858}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4675476397527714239}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6244516301525788915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8464405327365585783}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8464405327365585783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6244516301525788915}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.2357184, z: 0.00000023841858}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3606541123190911027}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6454842179146194545
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4675476397527714239}
+  - component: {fileID: 9085686361187355198}
+  m_Layer: 0
+  m_Name: HeavyTurboDualProjectileR1_13
+  m_TagString: Untagged
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4675476397527714239
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6454842179146194545}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 15.991999, y: -0.029499998, z: -3.2559998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9080330955767827425}
+  m_Father: {fileID: 5691611340166247208}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9085686361187355198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6454842179146194545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 9080330955767827425}
+  destroyedVfxScale: 5.4779134
+  unlockLevel: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 20
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  prewarmEffects: 0
+  <WeaponType>k__BackingField: 13
 --- !u!1 &6469960255237383592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,6 +1730,7 @@ Transform:
   m_Children:
   - {fileID: 5714359777439700284}
   - {fileID: 2430960093338803053}
+  - {fileID: 8687487546837991091}
   m_Father: {fileID: 2940981623831071489}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2508577641956199070
@@ -1308,6 +1781,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6138519191265376664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7312467483563589012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1756496335679554336}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1756496335679554336
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7312467483563589012}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.0092435, y: 0.5833427, z: 1.6606828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8687487546837991091}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7355966087199140568
 GameObject:
   m_ObjectHideFlags: 0
@@ -1352,6 +1856,11 @@ Transform:
   - {fileID: 8254933178906251245}
   - {fileID: 9220663659166504153}
   - {fileID: 1068324511464235681}
+  - {fileID: 3606541123190911027}
+  - {fileID: 3691401979286531225}
+  - {fileID: 4574985168282660830}
+  - {fileID: 4675476397527714239}
+  - {fileID: 912200419147924037}
   m_Father: {fileID: 2940981623831071489}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2375628693682534176
@@ -1381,6 +1890,11 @@ MonoBehaviour:
   - {fileID: 6086846998858921425}
   - {fileID: 6413647430366097125}
   - {fileID: 2892658542979012765}
+  - {fileID: 9126595888329768097}
+  - {fileID: 8204941468934276613}
+  - {fileID: 6294702515260712211}
+  - {fileID: 9085686361187355198}
+  - {fileID: 350060869458704868}
 --- !u!1 &7804568030331737293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,6 +1931,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -8.697357}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &8040981394872850954
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5406953671524702264}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5406953671524702264
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8040981394872850954}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.2357184, z: 0.00000023841858}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4574985168282660830}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8700530332766574060
 GameObject:
   m_ObjectHideFlags: 0
@@ -2689,7 +3234,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -2810,13 +3355,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 3
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -2943,7 +3493,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3075,7 +3625,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3196,6 +3746,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -3207,7 +3762,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 2
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3323,6 +3878,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -3334,7 +3894,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 3
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3466,7 +4026,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3598,7 +4158,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 11
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3624,17 +4184,17 @@ PrefabInstance:
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.1
+      value: -16.1
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: -0.049999997
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.97
+      value: -5.9699993
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3719,6 +4279,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -3730,7 +4295,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 3
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3851,6 +4416,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -3862,7 +4432,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 2
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3978,6 +4548,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -3989,7 +4564,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 3
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4121,7 +4696,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 11
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4355,6 +4930,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -4366,7 +4946,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 3
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4487,6 +5067,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 5.4779134
       objectReference: {fileID: 0}
@@ -4498,7 +5083,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 3
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

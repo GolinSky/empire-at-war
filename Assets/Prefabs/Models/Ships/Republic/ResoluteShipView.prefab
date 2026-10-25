@@ -138,7 +138,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 4
-  <Id>k__BackingField: 17
+  <Id>k__BackingField: 15
 --- !u!1 &882918847468188300
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +195,7 @@ MonoBehaviour:
     <Max>k__BackingField: 160
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 4
 --- !u!1 &884544286267212932
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,7 +376,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 8
 --- !u!1 &2485418469782747275
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,13 +515,13 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 14
+  <Id>k__BackingField: 12
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 48
+  <WeaponType>k__BackingField: 6
 --- !u!1 &2656964153920443378
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,63 +579,6 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
---- !u!1 &2699037020741952242
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 459965291614049167}
-  - component: {fileID: 7305492475153598623}
-  m_Layer: 0
-  m_Name: Weapon_LC03
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &459965291614049167
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2699037020741952242}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.004172, y: -7.8957605, z: 3.8545113}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6220536113325649968}
-  m_Father: {fileID: 876958530588266346}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7305492475153598623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2699037020741952242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 6220536113325649968}
-  destroyedVfxScale: 1.414894
-  unlockLevel: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 13
-  yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
-  mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
 --- !u!1 &2744172195371413333
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,8 +683,6 @@ Transform:
   - {fileID: 3453879484561062850}
   - {fileID: 5284067124268935737}
   - {fileID: 4967354413132587804}
-  - {fileID: 9102541237733630953}
-  - {fileID: 459965291614049167}
   - {fileID: 7231596524075119517}
   - {fileID: 4845459544547126147}
   - {fileID: 181035156288558913}
@@ -1973,7 +1914,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 4
 --- !u!1 &3977062351250388987
 GameObject:
   m_ObjectHideFlags: 0
@@ -2035,37 +1976,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4967354413132587804}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4537526275563189735
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6220536113325649968}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6220536113325649968
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4537526275563189735}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.9365306, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 459965291614049167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4574325545387188949
 GameObject:
@@ -2339,8 +2249,6 @@ MonoBehaviour:
   - {fileID: 8367686816167649294}
   - {fileID: 8494107242430246522}
   - {fileID: 3820739663083661484}
-  - {fileID: 6467999925488969112}
-  - {fileID: 7305492475153598623}
   - {fileID: 2972332168292140794}
   - {fileID: 6417737377622744439}
   - {fileID: 822917991191530380}
@@ -2442,8 +2350,6 @@ MonoBehaviour:
   - {fileID: 8367686816167649294}
   - {fileID: 8494107242430246522}
   - {fileID: 3820739663083661484}
-  - {fileID: 6467999925488969112}
-  - {fileID: 7305492475153598623}
   - {fileID: 2972332168292140794}
   - {fileID: 6417737377622744439}
   - {fileID: 822917991191530380}
@@ -2451,63 +2357,6 @@ MonoBehaviour:
   - {fileID: 8511068470071395606}
   - {fileID: 448995675783031225}
   - {fileID: 1980363719324735094}
---- !u!1 &5024629861998558676
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9102541237733630953}
-  - component: {fileID: 6467999925488969112}
-  m_Layer: 0
-  m_Name: Weapon_LC02
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &9102541237733630953
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5024629861998558676}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.7146, y: -7.8957605, z: 3.8545113}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1446489376444868430}
-  m_Father: {fileID: 876958530588266346}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6467999925488969112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5024629861998558676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 1446489376444868430}
-  destroyedVfxScale: 1.414894
-  unlockLevel: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 12
-  yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
-  mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
 --- !u!1 &5255111023361871465
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,7 +2833,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
-  <Id>k__BackingField: 16
+  <Id>k__BackingField: 14
 --- !u!1 &6449537380243588105
 GameObject:
   m_ObjectHideFlags: 0
@@ -3066,7 +2915,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 18
+  <Id>k__BackingField: 16
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
@@ -3211,7 +3060,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
-  <Id>k__BackingField: 15
+  <Id>k__BackingField: 13
 --- !u!1 &7648094566829919587
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,7 +3117,7 @@ MonoBehaviour:
     <Max>k__BackingField: 180
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 8
 --- !u!1 &7877705475878331758
 GameObject:
   m_ObjectHideFlags: 0
@@ -3350,7 +3199,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 20
+  <Id>k__BackingField: 18
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
@@ -3407,7 +3256,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.414894
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 19
+  <Id>k__BackingField: 17
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
@@ -3444,37 +3293,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7740645217263109903}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8509782358284030123
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1446489376444868430}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1446489376444868430
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8509782358284030123}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.229591, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 9102541237733630953}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8610255565111791850
 GameObject:
@@ -3621,8 +3439,6 @@ MonoBehaviour:
   - {fileID: 8367686816167649294}
   - {fileID: 8494107242430246522}
   - {fileID: 3820739663083661484}
-  - {fileID: 6467999925488969112}
-  - {fileID: 7305492475153598623}
   - {fileID: 2972332168292140794}
   - {fileID: 8511068470071395606}
   - {fileID: 448995675783031225}

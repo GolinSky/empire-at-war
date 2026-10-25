@@ -248,94 +248,6 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
---- !u!1 &2583219102906337175
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3999756879333467296}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3999756879333467296
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2583219102906337175}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6806130673623191983}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3546229283019458655
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6806130673623191983}
-  - component: {fileID: 893084209041021688}
-  m_Layer: 0
-  m_Name: Corvette_PointDefense_2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6806130673623191983
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3546229283019458655}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0034848165, y: 0.99665236, z: 7.6040726}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3999756879333467296}
-  m_Father: {fileID: 5889165115786701736}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &893084209041021688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3546229283019458655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 3999756879333467296}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 9
-  yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
-  mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 14
 --- !u!1 &3602743687401244050
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,94 +305,6 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
---- !u!1 &3664088116409050021
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6000244210800984946}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6000244210800984946
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3664088116409050021}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 208250122682969248}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4133885671454109886
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 208250122682969248}
-  - component: {fileID: 6338819259485000777}
-  m_Layer: 0
-  m_Name: Laser_7
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &208250122682969248
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4133885671454109886}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6451135, y: -1.1745913, z: 0.7860848}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6000244210800984946}
-  m_Father: {fileID: 5889165115786701736}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6338819259485000777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4133885671454109886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 6000244210800984946}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 7
-  yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
-  mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 8
 --- !u!1 &4285772208212704970
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,7 +355,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
-  <Id>k__BackingField: 11
+  <Id>k__BackingField: 8
 --- !u!1 &4443782077016657282
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,7 +406,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
-  <Id>k__BackingField: 10
+  <Id>k__BackingField: 7
 --- !u!1 &4589936472972889740
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,37 +590,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2205670467770035608}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6333977114922457202
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8423367654620476733}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8423367654620476733
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6333977114922457202}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2272117596385702150}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6672146617763140784
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,9 +627,6 @@ Transform:
   - {fileID: 4507706305683169524}
   - {fileID: 5193427118475932811}
   - {fileID: 2706520492254842687}
-  - {fileID: 208250122682969248}
-  - {fileID: 2272117596385702150}
-  - {fileID: 6806130673623191983}
   - {fileID: 4997601611216877348}
   - {fileID: 7043946666788346893}
   - {fileID: 4322667839875151633}
@@ -1191,9 +981,6 @@ MonoBehaviour:
   - {fileID: 5657904625241908718}
   - {fileID: 7452769209951022049}
   - {fileID: 127721561644855024}
-  - {fileID: 6338819259485000777}
-  - {fileID: 7131402893866246344}
-  - {fileID: 893084209041021688}
   - {fileID: 4300745921608918027}
   - {fileID: 2440423994679307886}
 --- !u!114 &4150898646505647277
@@ -1271,9 +1058,6 @@ MonoBehaviour:
   - {fileID: 5657904625241908718}
   - {fileID: 7452769209951022049}
   - {fileID: 127721561644855024}
-  - {fileID: 6338819259485000777}
-  - {fileID: 7131402893866246344}
-  - {fileID: 893084209041021688}
   - {fileID: 4300745921608918027}
   - {fileID: 2440423994679307886}
   - {fileID: 170039148551410930}
@@ -1417,9 +1201,6 @@ MonoBehaviour:
   - {fileID: 5657904625241908718}
   - {fileID: 7452769209951022049}
   - {fileID: 127721561644855024}
-  - {fileID: 6338819259485000777}
-  - {fileID: 7131402893866246344}
-  - {fileID: 893084209041021688}
 --- !u!1 &7322023124588022479
 GameObject:
   m_ObjectHideFlags: 0
@@ -2697,63 +2478,6 @@ MonoBehaviour:
   mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
---- !u!1 &9123751366849248439
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2272117596385702150}
-  - component: {fileID: 7131402893866246344}
-  m_Layer: 0
-  m_Name: Corvette_PointDefense_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2272117596385702150
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9123751366849248439}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0034848028, y: 1.2652107, z: -4.613947}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8423367654620476733}
-  m_Father: {fileID: 5889165115786701736}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7131402893866246344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9123751366849248439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 8423367654620476733}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 8
-  yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
-  mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 14
 --- !u!1001 &8560820192637120144
 PrefabInstance:
   m_ObjectHideFlags: 0

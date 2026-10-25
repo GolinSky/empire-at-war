@@ -1411,3 +1411,57 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 90
+    displayName: Medium Quad Turbolaser
+    family: 1
+    caliber: 1
+    mount: 4
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 91
+    displayName: Heavy Dual Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 92
+    displayName: Light Dual Missile Launcher
+    family: 4
+    caliber: 0
+    mount: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
