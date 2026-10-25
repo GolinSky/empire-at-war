@@ -173,8 +173,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             WeaponsData weapons = Weapons;
             WeaponFamilyRule family = weapons.GetFamily(WeaponFamily.Turbolaser);
-            WeaponProfile single = Build(weapons, WeaponMount.Single, WeaponFirePattern.Standard);
-            WeaponProfile mounted = Build(weapons, mount, WeaponFirePattern.Standard);
+            WeaponProfile single = Build(weapons, WeaponMount.Single);
+            WeaponProfile mounted = Build(weapons, mount);
 
             Assert.That(mounted.Damage, Is.EqualTo(single.Damage * barrels).Within(0.001f));
             Assert.That(mounted.ShotsPerSalvo, Is.EqualTo(single.ShotsPerSalvo));
@@ -190,7 +190,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(WeaponMount.Octuple, 8, "OctupleProjectile")]
         public void MountProjectiles_EmitDistinctBoltsInCompactRows(WeaponMount mount, int count, string prefabName)
         {
-            WeaponProfile profile = Build(Weapons, mount, WeaponFirePattern.Standard);
+            WeaponProfile profile = Build(Weapons, mount);
             Assert.That(profile.ShotPrefab.name, Is.EqualTo(prefabName));
             var shot = UnityEngine.Object.Instantiate(profile.ShotPrefab);
             var muzzle = new GameObject("Test muzzle");
@@ -235,29 +235,6 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(shot.gameObject);
                 UnityEngine.Object.DestroyImmediate(muzzle);
                 UnityEngine.Object.DestroyImmediate(target);
-            }
-        }
-
-        [Test]
-        public void Burst_KeepsDamagePerSecond_AndFiresFastShots()
-        {
-            WeaponsData weapons = Weapons;
-            WeaponProfile standard = Build(weapons, WeaponMount.Single, WeaponFirePattern.Standard);
-            WeaponProfile burst = Build(weapons, WeaponMount.Single, WeaponFirePattern.Burst);
-
-            Assert.That(burst.DamagePerSecond, Is.EqualTo(standard.DamagePerSecond).Within(0.001f));
-            Assert.That(burst.ShotInterval, Is.EqualTo(weapons.GetFamily(WeaponFamily.Turbolaser).BurstInterval));
-        }
-
-        [Test]
-        public void EveryBurstWeapon_FinishesItsBurstBeforeReloading()
-        {
-            WeaponsData weapons = Weapons;
-            foreach (WeaponDefinition definition in weapons.Weapons.Where(d => d.Pattern == WeaponFirePattern.Burst))
-            {
-                WeaponProfile profile = weapons.GetProfile(definition.WeaponType);
-                Assert.That((profile.ShotsPerSalvo - 1) * profile.ShotInterval, Is.LessThan(profile.Reload),
-                    definition.WeaponType.ToString());
             }
         }
 
@@ -356,10 +333,10 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(pointDefense.Range));
         }
 
-        private static WeaponProfile Build(WeaponsData weapons, WeaponMount mount, WeaponFirePattern pattern)
+        private static WeaponProfile Build(WeaponsData weapons, WeaponMount mount)
         {
             WeaponDefinition definition = new WeaponDefinition();
-            SerializedDefinition.Set(definition, mount, pattern);
+            SerializedDefinition.Set(definition, mount);
             return WeaponProfileFactory.Create(definition, weapons.GetFamily(WeaponFamily.Turbolaser),
                 weapons.GetCaliber(WeaponCaliber.Heavy), weapons.GetRangeClass(WeaponRangeClass.Standard));
         }
@@ -399,13 +376,11 @@ namespace EmpireAtWar.Tests.Editor
         // WeaponDefinition has no public setters; tests build one through its serialized fields.
         private static class SerializedDefinition
         {
-            public static void Set(WeaponDefinition definition, WeaponMount mount, WeaponFirePattern pattern)
+            public static void Set(WeaponDefinition definition, WeaponMount mount)
             {
                 const System.Reflection.BindingFlags FIELDS =
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
                 typeof(WeaponDefinition).GetField("mount", FIELDS).SetValue(definition, mount);
-                typeof(WeaponDefinition).GetField("pattern", FIELDS).SetValue(definition, pattern);
-                typeof(WeaponDefinition).GetField("burstShots", FIELDS).SetValue(definition, 6);
             }
         }
     }

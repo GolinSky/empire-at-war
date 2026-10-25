@@ -58,9 +58,7 @@ namespace EmpireAtWar.Editor.Balance
                 Add(registry, weapons, serialized, definition, key, context, consumers, "family", typeof(WeaponFamily));
                 Add(registry, weapons, serialized, definition, key, context, consumers, "caliber", typeof(WeaponCaliber));
                 Add(registry, weapons, serialized, definition, key, context, consumers, "mount", typeof(WeaponMount));
-                Add(registry, weapons, serialized, definition, key, context, consumers, "pattern", typeof(WeaponFirePattern));
                 Add(registry, weapons, serialized, definition, key, context, consumers, "rangeClass", typeof(WeaponRangeClass));
-                Add(registry, weapons, serialized, definition, key, context, consumers, "burstShots", minimum: 2);
                 Add(registry, weapons, serialized, definition, key, context, consumers, DEFINITION_MARKER);
                 Add(registry, weapons, serialized, definition, key, context, consumers, "reloadMultiplier", positive: true);
                 Add(registry, weapons, serialized, definition, key, context, consumers, "rangeMultiplier");
@@ -83,7 +81,6 @@ namespace EmpireAtWar.Editor.Balance
                 Add(registry, weapons, serialized, rule, key, context, consumers, "damage");
                 Add(registry, weapons, serialized, rule, key, context, consumers, "shotsPerSalvo", minimum: 1);
                 Add(registry, weapons, serialized, rule, key, context, consumers, "shotInterval");
-                Add(registry, weapons, serialized, rule, key, context, consumers, "burstInterval");
                 Add(registry, weapons, serialized, rule, key, context, consumers, "reload", positive: true);
                 Add(registry, weapons, serialized, rule, key, context, consumers, "range");
                 Add(registry, weapons, serialized, rule, key, context, consumers, "strikecraftOnly");

@@ -5,7 +5,7 @@ namespace EmpireAtWar.Components.AttackComponent
 {
     /// <summary>
     /// Derives a weapon's stats from its taxonomy:
-    /// family base → caliber → range class → mount → fire pattern → variant multipliers.
+    /// family base → caliber → range class → mount → variant multipliers.
     /// </summary>
     public static class WeaponProfileFactory
     {
@@ -18,13 +18,6 @@ namespace EmpireAtWar.Components.AttackComponent
             float reload = family.Reload * rangeClass.ReloadMultiplier * definition.ReloadMultiplier;
             int shots = family.ShotsPerSalvo;
             float interval = family.ShotInterval;
-            if (definition.Pattern == WeaponFirePattern.Burst)
-            {
-                // A burst trades the standard spread of shots for a fast volley at the same damage per second.
-                reload *= (float)definition.BurstShots / shots;
-                shots = definition.BurstShots;
-                interval = family.BurstInterval;
-            }
 
             float range = family.Range * caliber.RangeMultiplier * rangeClass.RangeMultiplier * definition.RangeMultiplier;
             // Squadrons aim by flying, so their weapons never turn.

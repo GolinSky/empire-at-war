@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
@@ -99,6 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
@@ -107,7 +111,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &510809480702419354
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,6 +157,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
@@ -161,7 +167,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &713526484003616947
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,6 +520,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
@@ -1066,6 +1074,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
@@ -1120,6 +1130,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 23
@@ -1174,6 +1186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
@@ -1182,7 +1196,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &1806314315293629134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1228,6 +1242,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 15
@@ -1589,6 +1605,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
@@ -1597,7 +1615,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &2594884115957681813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1643,6 +1661,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 21
@@ -1651,7 +1671,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &2631313822988706635
 GameObject:
   m_ObjectHideFlags: 0
@@ -1735,6 +1755,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
@@ -1743,7 +1765,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &3233000837216944509
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,6 +2000,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
@@ -2261,6 +2285,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
@@ -2269,7 +2295,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &3651397813315365641
 GameObject:
   m_ObjectHideFlags: 0
@@ -2393,6 +2419,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
@@ -2903,6 +2931,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 20
@@ -2911,7 +2941,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &5096904517579083174
 GameObject:
   m_ObjectHideFlags: 0
@@ -2957,6 +2987,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
@@ -2965,7 +2997,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &5252990171068600069
 GameObject:
   m_ObjectHideFlags: 0
@@ -3011,6 +3043,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
@@ -3019,7 +3053,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &5270509598126337782
 GameObject:
   m_ObjectHideFlags: 0
@@ -3139,6 +3173,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 22
@@ -3193,6 +3229,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
@@ -3247,6 +3285,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
@@ -3255,7 +3295,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &5895619063310318587
 GameObject:
   m_ObjectHideFlags: 0
@@ -3376,6 +3416,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
@@ -4179,6 +4221,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
@@ -4233,6 +4277,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
@@ -4287,6 +4333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
@@ -4295,7 +4343,7 @@ MonoBehaviour:
     <Max>k__BackingField: 22.5
   mainBattery: 0
   prewarmEffects: 8
-  <WeaponType>k__BackingField: 29
+  <WeaponType>k__BackingField: 15
 --- !u!1 &8625910518493719094
 GameObject:
   m_ObjectHideFlags: 0

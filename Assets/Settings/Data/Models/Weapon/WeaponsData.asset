@@ -19,7 +19,6 @@ MonoBehaviour:
     damage: 6
     shotsPerSalvo: 3
     shotInterval: 0.1
-    burstInterval: 0.15
     reload: 1.5
     range: 300
     strikecraftOnly: 0
@@ -45,7 +44,6 @@ MonoBehaviour:
     damage: 16
     shotsPerSalvo: 3
     shotInterval: 0.2
-    burstInterval: 0.25
     reload: 4
     range: 450
     strikecraftOnly: 0
@@ -71,7 +69,6 @@ MonoBehaviour:
     damage: 30
     shotsPerSalvo: 2
     shotInterval: 0.2
-    burstInterval: 0.25
     reload: 6
     range: 500
     strikecraftOnly: 0
@@ -97,7 +94,6 @@ MonoBehaviour:
     damage: 35
     shotsPerSalvo: 3
     shotInterval: 0.5
-    burstInterval: 0.25
     reload: 5
     range: 450
     strikecraftOnly: 0
@@ -120,7 +116,6 @@ MonoBehaviour:
     damage: 40
     shotsPerSalvo: 4
     shotInterval: 0.25
-    burstInterval: 0.4
     reload: 10
     range: 550
     strikecraftOnly: 0
@@ -143,7 +138,6 @@ MonoBehaviour:
     damage: 90
     shotsPerSalvo: 2
     shotInterval: 0.4
-    burstInterval: 0.4
     reload: 12
     range: 350
     strikecraftOnly: 0
@@ -166,7 +160,6 @@ MonoBehaviour:
     damage: 64
     shotsPerSalvo: 1
     shotInterval: 0
-    burstInterval: 0.4
     reload: 15
     range: 350
     strikecraftOnly: 0
@@ -189,7 +182,6 @@ MonoBehaviour:
     damage: 4
     shotsPerSalvo: 8
     shotInterval: 0.08
-    burstInterval: 0.08
     reload: 2
     range: 200
     strikecraftOnly: 1
@@ -215,7 +207,6 @@ MonoBehaviour:
     damage: 640
     shotsPerSalvo: 1
     shotInterval: 0
-    burstInterval: 0
     reload: 30
     range: 460
     strikecraftOnly: 0
@@ -238,7 +229,6 @@ MonoBehaviour:
     damage: 5
     shotsPerSalvo: 2
     shotInterval: 0.08
-    burstInterval: 0.1
     reload: 0.9
     range: 70
     strikecraftOnly: 0
@@ -264,7 +254,6 @@ MonoBehaviour:
     damage: 1.3
     shotsPerSalvo: 2
     shotInterval: 0.08
-    burstInterval: 0.1
     reload: 4.91
     range: 70
     strikecraftOnly: 0
@@ -290,7 +279,6 @@ MonoBehaviour:
     damage: 40
     shotsPerSalvo: 1
     shotInterval: 0.5
-    burstInterval: 0.4
     reload: 15
     range: 80
     strikecraftOnly: 0
@@ -313,7 +301,6 @@ MonoBehaviour:
     damage: 90
     shotsPerSalvo: 1
     shotInterval: 0.4
-    burstInterval: 0.4
     reload: 8
     range: 60
     strikecraftOnly: 0
@@ -434,8 +421,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 3
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -456,8 +441,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -477,8 +460,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -498,8 +479,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -519,8 +498,6 @@ MonoBehaviour:
     family: 1
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -540,8 +517,6 @@ MonoBehaviour:
     family: 1
     caliber: 1
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -561,8 +536,6 @@ MonoBehaviour:
     family: 5
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -582,8 +555,6 @@ MonoBehaviour:
     family: 0
     caliber: 0
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -603,8 +574,6 @@ MonoBehaviour:
     family: 0
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -624,8 +593,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 1
     faction: 0
@@ -646,8 +613,6 @@ MonoBehaviour:
     family: 2
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -667,8 +632,6 @@ MonoBehaviour:
     family: 2
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -688,8 +651,6 @@ MonoBehaviour:
     family: 8
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -710,8 +671,6 @@ MonoBehaviour:
     family: 4
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -731,8 +690,6 @@ MonoBehaviour:
     family: 7
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -752,8 +709,6 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -773,8 +728,6 @@ MonoBehaviour:
     family: 3
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -794,8 +747,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 4
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -816,8 +767,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 4
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -837,8 +786,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 4
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -858,8 +805,6 @@ MonoBehaviour:
     family: 20
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -879,8 +824,6 @@ MonoBehaviour:
     family: 23
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -900,8 +843,6 @@ MonoBehaviour:
     family: 0
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -921,8 +862,6 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -942,8 +881,6 @@ MonoBehaviour:
     family: 6
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -963,8 +900,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 1
     scope: 0
     faction: 0
@@ -979,55 +914,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 90
-    displayName: Light Repeating Laser Cannon
-    family: 0
-    caliber: 0
-    mount: 1
-    pattern: 1
-    burstShots: 6
-    rangeClass: 0
-    scope: 0
-    faction: 3
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Tartan anti-squadron battery; project balance, six-shot source burst.
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 28
     displayName: Heavy Laser Cannon
     family: 0
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 29
-    displayName: Light 8-Burst Fighter Laser Cannon
-    family: 20
-    caliber: 0
-    mount: 1
-    pattern: 1
-    burstShots: 8
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1047,8 +938,6 @@ MonoBehaviour:
     family: 22
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1068,8 +957,6 @@ MonoBehaviour:
     family: 2
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1085,12 +972,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 34
-    displayName: Heavy Long-Range 8-Burst Missile Launcher
+    displayName: Heavy Long-Range Missile Launcher
     family: 4
     caliber: 2
     mount: 1
-    pattern: 1
-    burstShots: 8
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1111,8 +996,6 @@ MonoBehaviour:
     family: 4
     caliber: 0
     mount: 1
-    pattern: 1
-    burstShots: 6
     rangeClass: 0
     scope: 2
     faction: 0
@@ -1128,35 +1011,11 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 35
-    displayName: Light 6-Burst Missile Launcher
-    family: 4
-    caliber: 0
-    mount: 1
-    pattern: 1
-    burstShots: 6
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 117
-    size: {x: 1.2, y: 1.2, z: 1.2}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 82
     displayName: Light Quad Turbolaser
     family: 1
     caliber: 0
     mount: 4
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1176,8 +1035,6 @@ MonoBehaviour:
     family: 1
     caliber: 0
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1197,29 +1054,6 @@ MonoBehaviour:
     family: 2
     caliber: 1
     mount: 2
-    pattern: 0
-    burstShots: 2
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 38
-    displayName: Medium 3-Burst Turbolaser
-    family: 1
-    caliber: 1
-    mount: 1
-    pattern: 1
-    burstShots: 3
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1235,75 +1069,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 39
-    displayName: Medium Long-Range 2-Burst Turbolaser
+    displayName: Medium Long-Range Turbolaser
     family: 1
     caliber: 1
     mount: 1
-    pattern: 1
-    burstShots: 2
-    rangeClass: 2
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 40
-    displayName: Light 2-Burst Laser Cannon
-    family: 0
-    caliber: 0
-    mount: 1
-    pattern: 1
-    burstShots: 2
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 41
-    displayName: Light Long-Range 4-Burst Dual Turbolaser
-    family: 1
-    caliber: 0
-    mount: 2
-    pattern: 1
-    burstShots: 4
-    rangeClass: 2
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 42
-    displayName: Medium Long-Range 2-Burst Ion Cannon
-    family: 2
-    caliber: 1
-    mount: 1
-    pattern: 1
-    burstShots: 2
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1323,8 +1092,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 1
     faction: 3
@@ -1342,12 +1109,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 44
-    displayName: Heavy Long-Range 2-Burst Ion Cannon
+    displayName: Heavy Long-Range Ion Cannon
     family: 2
     caliber: 2
     mount: 1
-    pattern: 1
-    burstShots: 2
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1368,8 +1133,6 @@ MonoBehaviour:
     family: 8
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -1390,8 +1153,6 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1411,8 +1172,6 @@ MonoBehaviour:
     family: 21
     caliber: 2
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1432,8 +1191,6 @@ MonoBehaviour:
     family: 5
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1449,12 +1206,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 49
-    displayName: Heavy Long-Range 2-Burst Turbolaser
+    displayName: Heavy Long-Range Turbolaser
     family: 1
     caliber: 2
     mount: 1
-    pattern: 1
-    burstShots: 2
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1471,12 +1226,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 50
-    displayName: Heavy Long-Range 2-Burst Dual Turbolaser
+    displayName: Heavy Long-Range Dual Turbolaser
     family: 1
     caliber: 2
     mount: 2
-    pattern: 1
-    burstShots: 2
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1493,12 +1246,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 51
-    displayName: Heavy Long-Range 2-Burst Dual Ion Cannon
+    displayName: Heavy Long-Range Dual Ion Cannon
     family: 2
     caliber: 2
     mount: 2
-    pattern: 1
-    burstShots: 2
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1515,12 +1266,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 53
-    displayName: Medium Long-Range 2-Burst Dual Turbolaser
+    displayName: Medium Long-Range Dual Turbolaser
     family: 1
     caliber: 1
     mount: 2
-    pattern: 1
-    burstShots: 2
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1536,35 +1285,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 54
-    displayName: Medium 6-Burst Point Defense Laser
-    family: 7
-    caliber: 1
-    mount: 1
-    pattern: 1
-    burstShots: 6
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 1
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 104
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 55
     displayName: MC80 Medium Dual Turbolaser
     family: 1
     caliber: 1
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -1584,8 +1309,6 @@ MonoBehaviour:
     family: 2
     caliber: 1
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -1600,35 +1323,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 60
-    displayName: Heavy 2-Burst Ion Blaster
-    family: 2
-    caliber: 2
-    mount: 1
-    pattern: 1
-    burstShots: 2
-    rangeClass: 0
-    scope: 2
-    faction: 0
-    unit: RaiderCorvette
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: Raider Corvette ion blaster.
-    overrideVisual: 1
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 172.9
-    size: {x: 0.35, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 62
-    displayName: Light 6-Burst Dual Point Defense Laser
+    displayName: Light Dual Point Defense Laser
     family: 7
     caliber: 0
     mount: 2
-    pattern: 1
-    burstShots: 6
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1644,35 +1343,11 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 64
-    displayName: Heavy 2-Burst Missile Launcher
-    family: 4
-    caliber: 2
-    mount: 1
-    pattern: 1
-    burstShots: 2
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 117
-    size: {x: 1.2, y: 1.2, z: 1.2}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 65
     displayName: Heavy Missile Launcher
     family: 4
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1692,8 +1367,6 @@ MonoBehaviour:
     family: 5
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1709,12 +1382,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 67
-    displayName: Heavy Long-Range 3-Burst Triple Turbolaser
+    displayName: Heavy Long-Range Triple Turbolaser
     family: 1
     caliber: 2
     mount: 3
-    pattern: 1
-    burstShots: 3
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1731,12 +1402,10 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 68
-    displayName: Heavy Long-Range 3-Burst Triple Ion Cannon
+    displayName: Heavy Long-Range Triple Ion Cannon
     family: 2
     caliber: 2
     mount: 3
-    pattern: 1
-    burstShots: 3
     rangeClass: 2
     scope: 0
     faction: 0
@@ -1757,8 +1426,6 @@ MonoBehaviour:
     family: 0
     caliber: 2
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1778,8 +1445,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 8
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -1799,8 +1464,6 @@ MonoBehaviour:
     family: 2
     caliber: 2
     mount: 4
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 2
     faction: 0
@@ -1820,8 +1483,6 @@ MonoBehaviour:
     family: 23
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1841,8 +1502,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -1862,8 +1521,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -1883,8 +1540,6 @@ MonoBehaviour:
     family: 5
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -1904,8 +1559,6 @@ MonoBehaviour:
     family: 2
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -1925,8 +1578,6 @@ MonoBehaviour:
     family: 4
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -1946,8 +1597,6 @@ MonoBehaviour:
     family: 7
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 2
     scope: 2
     faction: 0
@@ -1968,8 +1617,6 @@ MonoBehaviour:
     family: 23
     caliber: 0
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -1990,29 +1637,6 @@ MonoBehaviour:
     family: 7
     caliber: 1
     mount: 1
-    pattern: 0
-    burstShots: 2
-    rangeClass: 0
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 83
-    displayName: Heavy 3-Burst Turbolaser
-    family: 1
-    caliber: 2
-    mount: 1
-    pattern: 1
-    burstShots: 3
     rangeClass: 0
     scope: 0
     faction: 0
@@ -2032,8 +1656,6 @@ MonoBehaviour:
     family: 7
     caliber: 2
     mount: 1
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0
@@ -2053,8 +1675,6 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 8
-    pattern: 0
-    burstShots: 2
     rangeClass: 0
     scope: 0
     faction: 0

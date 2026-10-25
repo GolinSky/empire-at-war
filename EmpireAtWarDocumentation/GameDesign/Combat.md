@@ -26,11 +26,11 @@ verification: source-and-assets
 
 ### Weapon taxonomy
 
-- `WeaponDefinition` selects family, caliber, range class, mount, firing pattern and variant multipliers; `WeaponProfileFactory.Create` builds the runtime profile.
+- `WeaponDefinition` selects family, caliber, range class, mount and variant multipliers; `WeaponProfileFactory.Create` builds the runtime profile.
 - Single-shot damage = family damage × caliber damage × range-class damage × barrel count × definition damage multiplier.
 - Range = family range × caliber range × range-class range × definition range multiplier.
 - Reload = family reload × range-class reload × definition reload multiplier.
-- Burst pattern replaces shot count with `BurstShots`, uses the family's burst interval, and scales reload by `BurstShots / family.ShotsPerSalvo`.
+- Every weapon fires the family's `ShotsPerSalvo` at `ShotInterval`; burst fire patterns were removed 2026-10-25.
 - Mount enum value supplies barrel count. A multi-barrel mount multiplies damage per shot; it does not automatically multiply the salvo's shot count.
 - Squadron-platform weapons have zero turret turn rate because flight provides aiming.
 

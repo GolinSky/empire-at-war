@@ -20,9 +20,6 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private WeaponFamily family;
         [SerializeField] private WeaponCaliber caliber;
         [SerializeField] private WeaponMount mount = WeaponMount.Single;
-        [SerializeField] private WeaponFirePattern pattern;
-        [Tooltip("Shots per burst. Used only by the Burst pattern.")]
-        [SerializeField, Min(2)] private int burstShots = 2;
         [SerializeField] private WeaponRangeClass rangeClass;
 
         [Header("Variant")]
@@ -52,8 +49,6 @@ namespace EmpireAtWar.Components.AttackComponent
         public WeaponFamily Family => family;
         public WeaponCaliber Caliber => caliber;
         public WeaponMount Mount => mount;
-        public WeaponFirePattern Pattern => pattern;
-        public int BurstShots => burstShots;
         public WeaponRangeClass RangeClass => rangeClass;
         public WeaponScope Scope => scope;
         public FactionType Faction => faction;

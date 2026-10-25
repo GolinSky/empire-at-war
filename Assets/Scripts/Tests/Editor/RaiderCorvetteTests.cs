@@ -47,8 +47,8 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EquivalentTo(view.GetComponentsInChildren<HardPoint>(true)));
             Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(10));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            foreach (var expected in new[] { (WeaponType.BurstLaserCannon, 4, 2), (WeaponType.DualRepeatingPointDefense, 2, 6),
-                (WeaponType.IonCannon, 2, 2), (WeaponType.Laser, 2, 3) })
+            foreach (var expected in new[] { (WeaponType.DualRepeatingPointDefense, 2, 8),
+                (WeaponType.IonCannon, 2, 2), (WeaponType.Laser, 6, 3) })
             {
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
                 Assert.That(profiles.GetProfile(expected.Item1).ShotsPerSalvo, Is.EqualTo(expected.Item3));

@@ -49,14 +49,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedWeaponProfiles_HaveRequiredBurstsAndDoNotChangeOtherShips()
+        public void SavedWeaponProfiles_HaveShotPrefabsAndDefenseRoles()
         {
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            foreach (int type in new[] { 49, 50, 51, 53 })
-                Assert.That(profiles.GetProfile((WeaponType)type).ShotsPerSalvo, Is.EqualTo(2));
-            Assert.That(profiles.GetProfile(WeaponType.HeavyArtilleryRocket).ShotsPerSalvo, Is.EqualTo(8));
             Assert.That(profiles.GetProfile(WeaponType.HeavyArtilleryRocket).Interceptable, Is.True);
-            Assert.That(profiles.GetProfile(WeaponType.RepeatingPointDefense).StrikecraftOnly, Is.True);
+            Assert.That(profiles.GetProfile(WeaponType.MediumPointDefense).StrikecraftOnly, Is.True);
             foreach (WeaponHardPoint weapon in AssetDatabase.LoadAssetAtPath<GameObject>(VIEW).GetComponentsInChildren<WeaponHardPoint>(true))
                 Assert.That(profiles.GetProfile(weapon.WeaponType).ShotPrefab, Is.Not.Null, weapon.name);
         }

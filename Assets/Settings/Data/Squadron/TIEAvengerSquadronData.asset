@@ -43,7 +43,7 @@ MonoBehaviour:
   <VisionRange>k__BackingField: 350
   <MemberCount>k__BackingField: 6
   weaponLoadout:
-  - weaponType: 29
+  - weaponType: 15
     count: 12
   - weaponType: 30
     count: 12

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Components.AttackComponent
 {
-    /// <summary>Base stats of one family: a Light, Single, Standard weapon. Every other weapon of the family scales from these.</summary>
+    /// <summary>Base stats of one family: a Light, Single weapon. Every other weapon of the family scales from these.</summary>
     [Serializable]
     public sealed class WeaponFamilyRule
     {
@@ -16,10 +16,8 @@ namespace EmpireAtWar.Components.AttackComponent
         [Tooltip("Damage of one shot from one barrel, before caliber, range class and mount.")]
         [SerializeField, Min(0f)] private float damage;
         [SerializeField, Min(1)] private int shotsPerSalvo = 1;
-        [Tooltip("Seconds between shots of a standard salvo.")]
+        [Tooltip("Seconds between shots of a salvo.")]
         [SerializeField, Min(0f)] private float shotInterval;
-        [Tooltip("Seconds between shots of a burst salvo.")]
-        [SerializeField, Min(0f)] private float burstInterval;
         [Tooltip("Seconds from the start of a salvo until the hardpoint can fire again.")]
         [SerializeField, Min(0.01f)] private float reload = 1f;
         [Tooltip("Firing distance of a Light, Standard weapon in world units.")]
@@ -58,7 +56,6 @@ namespace EmpireAtWar.Components.AttackComponent
         public float Damage => damage;
         public int ShotsPerSalvo => shotsPerSalvo;
         public float ShotInterval => shotInterval;
-        public float BurstInterval => burstInterval;
         public float Reload => reload;
         public float Range => range;
         public bool StrikecraftOnly => strikecraftOnly;
