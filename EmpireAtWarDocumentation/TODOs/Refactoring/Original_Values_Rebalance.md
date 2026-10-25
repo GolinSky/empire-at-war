@@ -62,7 +62,15 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 3. [x] Executor per-gun profiles (damage, shots, interval, reload, range, accuracy, DPS).
 - Revision `2f45f1371`, recompile clean, no errors building any unit. Data: `Logs/Rebalance/2026-10-25-baseline/` (`baseline_units.csv`, `baseline_matchups.csv`, `baseline_executor.csv`); rerun with `unity command run_script --file <copy of BaselineDump.cs.txt as .cs> --entry BaselineDump.Run --args '[""]'` (~10 s). Summary: [[TODOs/Refactoring/Original_Values_Rebalance - Research#Baseline 2026-10-25|Research]].
 
-### Phase 1 — Remove range classes, hull-relative reach
+### Phase 1 — Remove range classes, hull-relative reach (done except step 6, 2026-10-25)
+
+- Done: steps 1–5, 7, 8. Range-class types/rule/field/`AccuracyMultiplier` deleted; merges remapped in prefabs, `ShipData` loadouts, `ShipSfxData` (20 → 89, others dropped).
+- Executor variants reuse ints 34/49/50/51/53 (Unit scope `Executor`, dmg ×1.8, reload ×2, range ×1.5) so `ExecutorShipTests` ints stay. Enum names: `HeavyArtilleryRocket`, `ExecutorHeavyTurbolaser`, `ExecutorHeavyDualTurbolaser`, `ExecutorHeavyDualIonCannon`, `ExecutorMediumDualTurbolaser`.
+- Deviation: 51 is Executor-only → Phase 2 heavy dual ion turret needs a new shared `HeavyDualIonCannon` value.
+- Renamed: 67 `HeavyTripleTurbolaser`, 68 `HeavyTripleIonCannon` (Empress only).
+- **Step 6 dropped (2026-10-25, user asked to complete the plan; dropped as the recommended option).** `HullRelativeEngagement_BigShipsReachTheirTarget` dropped with it. Adding own `NavigationRadius` to standoff parks big ships too far: DPS in reach vs Capital (bow / broadside) old → new: Mandator 34/43 % → 9/0 %, Titan 86/100 % → 0/1 %, MC80 100/100 % → 53/3 %, Malevolence 77/89 % → 25/0 %. Centre-to-centre + contact distance already handles big ships after range removal.
+- Tests: full EditMode 2052 → 2041 pass; own failures fixed (taxonomy guard, Empress 800 → 500). Remaining unrelated: `ExecutorShipTests` (expects type 54), `ISDIIShipTests` (32 vs 28 hardpoints, from `64747b214`), 7 `InputBindingServiceTests`.
+- Snapshot: `Logs/Rebalance/2026-10-25-phase1/` (includes `60d9cf9d0` Tector/ISD II changes, not only Phase 1).
 
 1. Delete `WeaponRangeClass`, `WeaponRangeClassRule`, `WeaponsData.rangeClasses`, `GetRangeClass`, the factory parameter and `WeaponDefinition.rangeClass`.
 2. Drop `WeaponProfile.AccuracyMultiplier` (only fed by range class) from `WeaponComponent`, `WeaponEngagementRange`, `BattleSimulation`.
@@ -73,21 +81,44 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 7. Remove the Capital/HeavyCapital ≥ Medium class caliber rule.
 8. Update `BalanceWeaponAdapter` (`RegisterRangeClasses`, `rangeClass` field).
 
-### Phase 2 — Republic and CIS original values + simplified hardpoints
+### Phase 2 — Republic and CIS original values + simplified hardpoints ✅ 2026-10-25
 
-1. HP/shields from the original column for every mapped ship, except Mandator, Invincible, Lucrehulk (keep live).
+- Script: `ShipHardPointRegistry` retype → add (midpoint of two same-side sockets) → remove → renumber; `ShipHardPointValidator` clean on every ship. Script copy: `Logs/Rebalance/2026-10-25-final/`.
+- New shared weapons: `MediumQuadTurbolaser` 90, `HeavyDualIonCannon` 91, `LightDualMissileLauncher` 92.
+- Republic Victory (`Empire/VictoryShipData`, Republic faction) added: 4900/3100, 4 MQ, 2 Light Quad, 4 Dual Laser, 4 Light Dual Missile, 1 torpedo. No hangar added (ship has no `HangarComponent`).
+- Deviations: Munificent 2 heavy turbolasers → Medium (Frigate no-Heavy rule); Munificent's 8 unregistered `DualProjectile` sockets registered as Light Dual Turbolasers; corvettes CR70, Stealth, Patrol Frigate lose PD (original has none); Lucrehulk `IonCannonL1` moved to port (sat on top of `IonCannonR1`).
+- Systems added: Imperator tractor beam (+ `TractorBeam` ability, health 400); second hangar on Providence, Invincible, Lucrehulk (`bayHardPoints` empty → shared bays).
+- Radar raised to longest gun: Arquitens 540 → 550, Pelta 500 → 520, Stealth Corvette 300 → 550 (concussion missiles).
+
+1. [x] HP/shields from the original column for every mapped ship, except Mandator, Invincible, Lucrehulk (keep live). 2026-10-25: Stealth Corvette 850/900, Centax 2000/1300, Imperator 7500/3500, Rothana 10300/3000, Venator 5000/3000, Munificent 2500/1200, Providence 5000/3000; C-9979 600/600 (corvette band). Thranta, Venator II already in band → unchanged.
 2. Loadouts from original lists via the mapping; simplify: merge same-type batteries into fewer, larger mounts where the hull has fewer sockets (same total barrels).
 3. System hardpoints (engines, shield gens, hangars, tractor) by original counts.
 4. Prefabs: retype existing hardpoint transforms first; delete surplus; add only where needed, placed on the hull.
 5. C-9979: corvette band (550–900 HP, 500–900 shields, 6–8 guns).
 6. Not in catalogue (Thranta, Venator II): scale into class band from nearest sibling.
 
-### Phase 3 — Empire and Rebellion HP/shields to the bands
+### Phase 3 — Empire and Rebellion HP/shields to the bands ✅ 2026-10-25
+
+- Decision: clamp into the Republic/CIS min–max band per class (live exceptions included); in-band values unchanged. Least-squares price fit rejected: 3–7 points per class gave Tector 12000 → 5000, Titan → 50000.
+- Bands HP / shields: Corvette 600–1600 / 600–1000; Frigate 2000–4700 / 800–2000; Cruiser 3600–4900 / 2500–3100; Capital 5000–15000 / 3000–8000; HeavyCapital 12000–50000 / 6600–50000.
+- Changed: Acclamator Assault 4700/2000, Raider 600/600, Tartan 600/600, Victory I 3600/2500, Victory II 4000/3100, Assault Frigate Mk II 3500/2000, Bothan 4900/3100, CD-273 1600/1000, Corellian Battlecruiser 5000/3000, CR90 600/600, Dauntless 4900/3100, Home One 15000/8000, Liberator 5000/4200, MC30c 2000/2000, MC75 4500/3100, MC80 Independence 15000/8000, Mon Cal Cruiser 8500/8000, Quasar Fire 2000/1300.
 
 1. Derive class bands (HP, shields, DPS per price) from Phase 2 data.
 2. Set Empire/Rebellion HP/shields into their band by role and price. No hardpoint changes. Executor excluded.
 
-### Phase 4 — Verify
+### Phase 4 — Verify (automated done 2026-10-25; playtest pending)
+
+- EditMode 2077: 2074 pass. Failing, unrelated to this plan: `ExecutorShipTests` (expects nonexistent type 54), `ISDIIShipTests` (32 vs 28 hardpoints, `64747b214`), `HealthModelTests.PointDefense_WhileCloaked…` (fails only in a long-running Editor; passed headless).
+- Executor 200000/200000; expected per-gun DPS pinned by `Executor_WeaponProfilesMatchBaseline`.
+- Simulator `Logs/Rebalance/2026-10-25-final/`: ±15 % target **not met** — 153/260 matchups within 15 % of baseline TTK; class win rates still uneven (Cruiser: Separatist 12 %, Republic 50 %, Rebellion 76 %; Capital: Separatist 76 %, Republic 27 %). Cause: Empire/Rebellion hardpoints unchanged → DPS gaps remain.
+
+| Class | Empire | Rebellion | Republic | Separatist |
+|---|---|---|---|---|
+| Corvette | 29 → 19 % | 71 → 69 % | 56 → 76 % | 43 → 30 % |
+| Frigate | 28 → 27 % | 50 → 42 % | 49 → 56 % | 67 → 70 % |
+| Cruiser | 21 → 34 % | 80 → 76 % | 21 → 50 % | 75 → 12 % |
+| Capital | 59 → 65 % | 51 → 46 % | 37 → 27 % | 56 → 76 % |
+| HeavyCapital | 67 → 67 % | — | 80 → 80 % | 12 → 12 % |
 
 1. Compile; full EditMode run.
 2. Simulator matchups vs Phase 0: mirrored class matchups within ±15 % TTK cross-faction; Executor DPS/HP identical to baseline.
@@ -146,8 +177,10 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 - [x] Preconditions — WIP committed `d91020e89`, plan `ccd2c259b`. Open scene is untitled + dirty → EditMode test runs blocked (`BLOCKED_DIRTY_UNTITLED_SCENE`) until the user saves or discards it.
 - [x] Decisions answered (2026-10-25)
 - [x] Phase 0 baseline (2026-10-25, `2f45f1371`)
-- [ ] Phase 1 range-class removal + hull-relative reach + Executor variants
-- [ ] Phase 2 Republic/CIS original values + simplified hardpoints
-- [ ] Phase 3 Empire/Rebellion HP/shields
-- [ ] Phase 4 verification + user playtest
+- [x] Phase 1 range-class removal + Executor variants (`38c0a9d4e`); step 6 dropped
+- [x] Phase 2 Republic/CIS original values + simplified hardpoints
+- [x] Phase 3 Empire/Rebellion HP/shields
+- [x] Phase 4 automated verification (compile, EditMode, simulator)
+- [ ] Phase 4 user skirmish playtest
+- [ ] Decide: accept uneven class win rates, or tune Empire/Rebellion DPS (needs their hardpoint simplification)
 - [ ] Later: Empire/Rebellion hardpoint simplification

@@ -30,8 +30,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedUnit_HasRequestedStatsAndNoHangar()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(400));
-            Assert.That(data.Shields, Is.EqualTo(500));
+            Assert.That(data.Hull, Is.EqualTo(600));
+            Assert.That(data.Shields, Is.EqualTo(600));
             Assert.That(data.Speed, Is.EqualTo(70));
             Assert.That(data.ShipClass, Is.EqualTo(ShipClass.Corvette));
             Assert.That(data.Abilities, Is.EqualTo(new[] {ShipAbilityId.TIEAvengerPowerToWeapons}));
