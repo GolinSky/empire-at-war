@@ -318,6 +318,38 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void HomeVisionAnchors_AreReusedWhenTheMapIsReplaced()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
+            try
+            {
+                ReinforcementZonesSystem system = CreateSystem(root, data,
+                    new SpawnBlockerService(TestPlayers.CreateTeamGame()), vision);
+                ZoneSpot[] homes =
+                {
+                    new ZoneSpot(new Vector3(-100f, 0f, 0f), TestPlayers.Human, false),
+                    new ZoneSpot(new Vector3(100f, 0f, 0f), TestPlayers.Enemy, false)
+                };
+
+                system.UpdateState(CreateMap(homes));
+                system.UpdateState(CreateMap(homes));
+                system.UpdateState(CreateMap(new[] { homes[1] }));
+
+                Assert.That(root.transform.childCount, Is.EqualTo(2));
+                Assert.That(vision.Sources.Count, Is.EqualTo(1));
+                Assert.That(vision.IsVisible(TestPlayers.Enemy, homes[1].Center), Is.True);
+                Assert.That(vision.IsVisible(TestPlayers.Human, homes[0].Center), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void RelayVisionAndBlockers_AreRemovedOnDisposalOrMapReplacement(bool dispose)
@@ -403,10 +435,13 @@ namespace EmpireAtWar.Tests.Editor
             return system;
         }
 
-        private static BattleMap CreateMap(params ReinforcementZoneView[] zones) => new BattleMap(
+        private static BattleMap CreateMap(params ReinforcementZoneView[] zones) =>
+            CreateMap(System.Array.Empty<ZoneSpot>(), zones);
+
+        private static BattleMap CreateMap(ZoneSpot[] spots, params ReinforcementZoneView[] zones) => new BattleMap(
                 layout: new MapLayout(
                     stationPositions: new Dictionary<PlayerId, Vector3>(),
-                    zones: System.Array.Empty<ZoneSpot>(),
+                    zones: spots,
                     sites: System.Array.Empty<SiteSpot>(),
                     lanes: System.Array.Empty<MapLane>(),
                     fields: System.Array.Empty<AsteroidField>(),

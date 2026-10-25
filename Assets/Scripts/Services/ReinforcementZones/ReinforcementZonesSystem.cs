@@ -44,6 +44,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly List<Transform> _homeVisionAnchors = new List<Transform>();
         private CaptureStrengthBuilder _captureStrengthBuilder;
         private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
+        // Cached per zone so the strength refresh allocates no delegates.
+        private readonly List<Func<Vector3, bool>> _zoneContains = new List<Func<Vector3, bool>>();
         private float _strengthRefreshCountdown;
 
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
@@ -99,17 +101,25 @@ namespace EmpireAtWar.Services.ReinforcementZones
             foreach (ZoneSpot spot in battleMap.Layout.Zones)
             {
                 if (spot.IsCapturable) continue;
-                _homes.Add(spot);
                 // A home lights its whole spawn area so reinforcements can always land there.
-                Transform anchor = new GameObject($"{spot.Owner}_HomeVision").transform;
-                anchor.SetParent(transform, false);
+                // Anchors are reused across maps so reloading never leaks GameObjects.
+                if (_homeVisionAnchors.Count == _homes.Count)
+                {
+                    Transform created = new GameObject().transform;
+                    created.SetParent(transform, false);
+                    _homeVisionAnchors.Add(created);
+                }
+
+                Transform anchor = _homeVisionAnchors[_homes.Count];
+                anchor.name = $"{spot.Owner}_HomeVision";
                 anchor.position = PlanarGeometry.Flatten(spot.Center);
                 _visionService.Register(spot.Owner, anchor, _data.HomeAreaRadius);
-                _homeVisionAnchors.Add(anchor);
+                _homes.Add(spot);
             }
 
             _zones.Clear();
             _strengths.Clear();
+            _zoneContains.Clear();
             _strengthRefreshCountdown = 0f;
             foreach (ReinforcementZoneView view in _zoneViews)
             {
@@ -119,8 +129,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     captureDuration: view.CaptureDuration,
                     captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
                     relations: _playerRoster);
-                _zones.Add(new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer));
+                ReinforcementZonePresenter zone = new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer);
+                _zones.Add(zone);
                 _strengths.Add(default);
+                _zoneContains.Add(zone.Contains);
                 RegisterRelay(view.transform, view.StartingOwner);
             }
         }
@@ -141,6 +153,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 RegisterRelay(_zoneViews[i].transform, save.Owner);
             }
 
+            // Visibility waits until every relay is registered: one zone's relay can reveal another.
             foreach (ReinforcementZonePresenter zone in _zones)
                 zone.SetVisibility(_visionService.IsVisible(_localPlayer.Id, zone.Center), false);
 
@@ -160,7 +173,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 if (refreshStrength)
                 {
                     _captureStrengthBuilder.Clear();
-                    Func<Vector3, bool> contains = zone.Contains;
+                    Func<Vector3, bool> contains = _zoneContains[i];
                     _shipService.AddShipStrength(contains, _captureStrengthBuilder);
                     _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
                     _strengths[i] = _captureStrengthBuilder.Build();
@@ -309,8 +322,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
             {
                 _visionService.Unregister(anchor);
             }
-
-            _homeVisionAnchors.Clear();
         }
     }
 }
