@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -11,6 +12,28 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class ShipSfxDataCoverageTests
     {
         private const string DATA_PATH = "Assets/Settings/Data/Models/Audio/ShipSfxData.asset";
+
+        [TestCase(ShipAbilityId.Invulnerability)]
+        [TestCase(ShipAbilityId.BoostShieldPower)]
+        [TestCase(ShipAbilityId.NebulonBBoostShieldStrength)]
+        [TestCase(ShipAbilityId.MonCalCruiserPowerToShields)]
+        [TestCase(ShipAbilityId.HomeOnePowerToShields)]
+        [TestCase(ShipAbilityId.MC80IndependencePowerToShields)]
+        [TestCase(ShipAbilityId.CorellianBattlecruiserPowerToShields)]
+        [TestCase(ShipAbilityId.AssaultFrigateMkIIPowerToShields)]
+        public void ShieldAbilityTransitionsUseHighPriorityLocalFeedback(ShipAbilityId ability)
+        {
+            ShipSfxData data = AssetDatabase.LoadAssetAtPath<ShipSfxData>(DATA_PATH);
+            ShipAbilityAudioProfile profile = data.GetAbility(ability);
+            foreach (SfxProfile cue in new[] { profile.Start, profile.End })
+            {
+                Assert.That(cue.LocalFeedback, Is.True);
+                Assert.That(cue.HasClip, Is.True);
+                Assert.That(cue.Volume, Is.EqualTo(1f));
+                Assert.That(cue.Priority, Is.GreaterThan(data.Alarm.Priority));
+                Assert.That(cue.MaxInstances, Is.EqualTo(1));
+            }
+        }
 
         [Test]
         public void EveryUnitResolvesAnEngineAndExplosion()

@@ -16,5 +16,201 @@ MonoBehaviour:
   orbitalAvailable: {fileID: 8300000, guid: 2db2b551884abcb4c86bdc3ec9c12ba7, type: 3}
   orbitalBought: {fileID: 8300000, guid: f0aa3f1fd9a1d224da52aeb0515bb3cf, type: 3}
   orbitalFiring: {fileID: 8300000, guid: e032b15211d618046bf6565e05dcfde7, type: 3}
+  ionCharging: {fileID: 8300000, guid: cc59554f8df7e0f468564a96d93d15cd, type: 3}
+  ionAvailable: {fileID: 8300000, guid: 5d3df017b6bc90b4abf8fd0e4512cade, type: 3}
+  ionFiring: {fileID: 8300000, guid: 69641375bafc28d4ba250c17d070960a, type: 3}
+  hypervelocityCharging: {fileID: 8300000, guid: 15101f285810c1e4a95cc20daa06d2c2,
+    type: 3}
+  hypervelocityAvailable: {fileID: 8300000, guid: ee476c533c62ca341837fcaaad277ba7,
+    type: 3}
+  hypervelocityFiring: {fileID: 8300000, guid: a441e472d0860334a8e200975effec66, type: 3}
   abilityActivated: {fileID: 8300000, guid: 196314a27370f86468e5cf6135952eda, type: 3}
   abilityCanceled: {fileID: 8300000, guid: 95d0fdee13c8aed48aab98861c0c814e, type: 3}
+  factionAnnouncers:
+    keyValue:
+    - key: 0
+      value:
+        upgradeProgress: {fileID: 8300000, guid: 9c5423ac948244f8ad50d764a8b2b298,
+          type: 3}
+        upgradeCanceled: {fileID: 8300000, guid: 980c86fc8ce048a98eb87b64bcb3eb0d,
+          type: 3}
+        techUpgradeProgress: {fileID: 8300000, guid: bedf9095cdfa4d1f8ba9ab10bc9ae15c,
+          type: 3}
+        techUpgradeCanceled: {fileID: 8300000, guid: 870e4077b7574baa8d49c347f6823deb,
+          type: 3}
+        stationUpgraded: {fileID: 8300000, guid: 847454a320344cf6b1a80a6e99127d50,
+          type: 3}
+        enemyStationUpgraded: {fileID: 8300000, guid: 9382f05765864994ac9aedac2ac259ba,
+          type: 3}
+        unitCapReached: {fileID: 8300000, guid: 12fc48e5f25f4a65bc1b1e8eaee35f54,
+          type: 3}
+        upgradeComplete: {fileID: 8300000, guid: afda615d50a8441fbf8199d10c3f0053,
+          type: 3}
+        newConstruction: {fileID: 8300000, guid: d29f5b21931345f9b310a0f153fc988f,
+          type: 3}
+        stationUnderAttack:
+          array:
+          - {fileID: 8300000, guid: 7871d3ca478d428da1b5c952b2296c76, type: 3}
+          - {fileID: 8300000, guid: 1831f096e53e49c888f761a8ff103e54, type: 3}
+          - {fileID: 8300000, guid: 07d574559afa4c5183312546c124d387, type: 3}
+        miningUnderAttack: {fileID: 8300000, guid: 67f8773db4a24cb280f5778ff64cccff,
+          type: 3}
+        miningDestroyed: {fileID: 8300000, guid: ab83601e2a804794b222963af7d7cb19,
+          type: 3}
+        miningCaptured:
+          array:
+          - {fileID: 8300000, guid: fc2cc8ee1d05426682c65124043d3410, type: 3}
+          - {fileID: 8300000, guid: 54bac71a8b0943d58fe3f81333150a1e, type: 3}
+        miningLost: {fileID: 8300000, guid: 39cbb728c88c4c27ba25bd32d48e8d8d, type: 3}
+        reinforcementsEnRoute: {fileID: 8300000, guid: 6b5b6de5d39544e8b92c7573c60be4a9,
+          type: 3}
+        unitDestroyed: {fileID: 8300000, guid: 83b04c23a1c94f66b9db06b7ad5aaae3, type: 3}
+        defeated: {fileID: 8300000, guid: 741afd4f57be492dab27aadd55231a4a, type: 3}
+        enemyFleetApproaching: {fileID: 8300000, guid: e6c99be264d546c0b6482b303730b042,
+          type: 3}
+        constructionComplete: {fileID: 8300000, guid: 7347ac2b4b7b4a7dbb1a2474dc702675,
+          type: 3}
+        unitProduction: {fileID: 8300000, guid: bc1c4d934d2e65c4aa34285e74d198cf,
+          type: 3}
+        buildingStarted: {fileID: 8300000, guid: 3c7d45a1a31da8447949d67f5b216c68,
+          type: 3}
+    - key: 1
+      value:
+        upgradeProgress: {fileID: 8300000, guid: 9c5423ac948244f8ad50d764a8b2b298,
+          type: 3}
+        upgradeCanceled: {fileID: 8300000, guid: 980c86fc8ce048a98eb87b64bcb3eb0d,
+          type: 3}
+        techUpgradeProgress: {fileID: 8300000, guid: bedf9095cdfa4d1f8ba9ab10bc9ae15c,
+          type: 3}
+        techUpgradeCanceled: {fileID: 8300000, guid: 870e4077b7574baa8d49c347f6823deb,
+          type: 3}
+        stationUpgraded: {fileID: 8300000, guid: 847454a320344cf6b1a80a6e99127d50,
+          type: 3}
+        enemyStationUpgraded: {fileID: 8300000, guid: 9382f05765864994ac9aedac2ac259ba,
+          type: 3}
+        unitCapReached: {fileID: 8300000, guid: 12fc48e5f25f4a65bc1b1e8eaee35f54,
+          type: 3}
+        upgradeComplete: {fileID: 8300000, guid: afda615d50a8441fbf8199d10c3f0053,
+          type: 3}
+        newConstruction: {fileID: 8300000, guid: d29f5b21931345f9b310a0f153fc988f,
+          type: 3}
+        stationUnderAttack:
+          array:
+          - {fileID: 8300000, guid: 7871d3ca478d428da1b5c952b2296c76, type: 3}
+          - {fileID: 8300000, guid: 1831f096e53e49c888f761a8ff103e54, type: 3}
+          - {fileID: 8300000, guid: 07d574559afa4c5183312546c124d387, type: 3}
+        miningUnderAttack: {fileID: 8300000, guid: 67f8773db4a24cb280f5778ff64cccff,
+          type: 3}
+        miningDestroyed: {fileID: 8300000, guid: ab83601e2a804794b222963af7d7cb19,
+          type: 3}
+        miningCaptured:
+          array:
+          - {fileID: 8300000, guid: fc2cc8ee1d05426682c65124043d3410, type: 3}
+          - {fileID: 8300000, guid: 54bac71a8b0943d58fe3f81333150a1e, type: 3}
+        miningLost: {fileID: 8300000, guid: 39cbb728c88c4c27ba25bd32d48e8d8d, type: 3}
+        reinforcementsEnRoute: {fileID: 8300000, guid: 6b5b6de5d39544e8b92c7573c60be4a9,
+          type: 3}
+        unitDestroyed: {fileID: 8300000, guid: 83b04c23a1c94f66b9db06b7ad5aaae3, type: 3}
+        defeated: {fileID: 8300000, guid: 741afd4f57be492dab27aadd55231a4a, type: 3}
+        enemyFleetApproaching: {fileID: 8300000, guid: e6c99be264d546c0b6482b303730b042,
+          type: 3}
+        constructionComplete: {fileID: 8300000, guid: 7347ac2b4b7b4a7dbb1a2474dc702675,
+          type: 3}
+        unitProduction: {fileID: 8300000, guid: 2af9581e435518f4dac1f0a37cc02579,
+          type: 3}
+        buildingStarted: {fileID: 8300000, guid: eefc192ead5f87b4898c51832231aafc,
+          type: 3}
+    - key: 2
+      value:
+        upgradeProgress: {fileID: 8300000, guid: 9c5423ac948244f8ad50d764a8b2b298,
+          type: 3}
+        upgradeCanceled: {fileID: 8300000, guid: 980c86fc8ce048a98eb87b64bcb3eb0d,
+          type: 3}
+        techUpgradeProgress: {fileID: 8300000, guid: bedf9095cdfa4d1f8ba9ab10bc9ae15c,
+          type: 3}
+        techUpgradeCanceled: {fileID: 8300000, guid: 870e4077b7574baa8d49c347f6823deb,
+          type: 3}
+        stationUpgraded: {fileID: 8300000, guid: 847454a320344cf6b1a80a6e99127d50,
+          type: 3}
+        enemyStationUpgraded: {fileID: 8300000, guid: 9382f05765864994ac9aedac2ac259ba,
+          type: 3}
+        unitCapReached: {fileID: 8300000, guid: 12fc48e5f25f4a65bc1b1e8eaee35f54,
+          type: 3}
+        upgradeComplete: {fileID: 8300000, guid: afda615d50a8441fbf8199d10c3f0053,
+          type: 3}
+        newConstruction: {fileID: 8300000, guid: d29f5b21931345f9b310a0f153fc988f,
+          type: 3}
+        stationUnderAttack:
+          array:
+          - {fileID: 8300000, guid: 7871d3ca478d428da1b5c952b2296c76, type: 3}
+          - {fileID: 8300000, guid: 1831f096e53e49c888f761a8ff103e54, type: 3}
+          - {fileID: 8300000, guid: 07d574559afa4c5183312546c124d387, type: 3}
+        miningUnderAttack: {fileID: 8300000, guid: 67f8773db4a24cb280f5778ff64cccff,
+          type: 3}
+        miningDestroyed: {fileID: 8300000, guid: ab83601e2a804794b222963af7d7cb19,
+          type: 3}
+        miningCaptured:
+          array:
+          - {fileID: 8300000, guid: fc2cc8ee1d05426682c65124043d3410, type: 3}
+          - {fileID: 8300000, guid: 54bac71a8b0943d58fe3f81333150a1e, type: 3}
+        miningLost: {fileID: 8300000, guid: 39cbb728c88c4c27ba25bd32d48e8d8d, type: 3}
+        reinforcementsEnRoute: {fileID: 8300000, guid: 6b5b6de5d39544e8b92c7573c60be4a9,
+          type: 3}
+        unitDestroyed: {fileID: 8300000, guid: 83b04c23a1c94f66b9db06b7ad5aaae3, type: 3}
+        defeated: {fileID: 8300000, guid: 741afd4f57be492dab27aadd55231a4a, type: 3}
+        enemyFleetApproaching: {fileID: 8300000, guid: e6c99be264d546c0b6482b303730b042,
+          type: 3}
+        constructionComplete: {fileID: 8300000, guid: 7347ac2b4b7b4a7dbb1a2474dc702675,
+          type: 3}
+        unitProduction: {fileID: 8300000, guid: 5d5e989b14172f1418072a6da3a5835c,
+          type: 3}
+        buildingStarted: {fileID: 8300000, guid: eefc192ead5f87b4898c51832231aafc,
+          type: 3}
+    - key: 3
+      value:
+        upgradeProgress: {fileID: 8300000, guid: a91dfc27e7e04c53bb404ebd9e8a8cab,
+          type: 3}
+        upgradeCanceled: {fileID: 8300000, guid: dfff6e509b8546b3b1f45ed6509f2ecc,
+          type: 3}
+        techUpgradeProgress: {fileID: 8300000, guid: f172c8106f1142fd93204556402016fe,
+          type: 3}
+        techUpgradeCanceled: {fileID: 8300000, guid: 4defdb01631b4457a9ca606651354f74,
+          type: 3}
+        stationUpgraded: {fileID: 8300000, guid: d4c89d7c3f534cd2ba09943ec855c54f,
+          type: 3}
+        enemyStationUpgraded: {fileID: 8300000, guid: 6697bdf3a13e42f98d32fdb7c4802af0,
+          type: 3}
+        unitCapReached: {fileID: 8300000, guid: 3df6bc803e49448392a7a3c39374a512,
+          type: 3}
+        upgradeComplete: {fileID: 8300000, guid: 6c19983ab29443cb9534c1ba8cc090f2,
+          type: 3}
+        newConstruction: {fileID: 8300000, guid: 5e091ca793e644daa5b01741d97d06aa,
+          type: 3}
+        stationUnderAttack:
+          array:
+          - {fileID: 8300000, guid: a6157ef8020a422ab7fcb8613793f46e, type: 3}
+          - {fileID: 8300000, guid: 39958e2b122d4c7385a46860bc640dc2, type: 3}
+          - {fileID: 8300000, guid: 56c7c2e16f784e25a8be6040434b9585, type: 3}
+        miningUnderAttack: {fileID: 8300000, guid: f55b1b8766ce4eceb3449150976c65d8,
+          type: 3}
+        miningDestroyed: {fileID: 8300000, guid: b0eaf23f0b19412ba8e549e01c458525,
+          type: 3}
+        miningCaptured:
+          array:
+          - {fileID: 8300000, guid: 00cbc242a7864f8da73f554255b10c81, type: 3}
+          - {fileID: 8300000, guid: 65142368398441afa765ac103a545a0a, type: 3}
+        miningLost: {fileID: 8300000, guid: f42a9b44a2354bf6b11a061103b81dec, type: 3}
+        reinforcementsEnRoute: {fileID: 8300000, guid: bc1cc4d388b045dda9c27d2d17656c9b,
+          type: 3}
+        unitDestroyed: {fileID: 8300000, guid: 38ac2fdec4964bfca46c0aa733888d07, type: 3}
+        defeated: {fileID: 8300000, guid: 8b6ec943be3d4756ad93b8982c6ea259, type: 3}
+        enemyFleetApproaching: {fileID: 8300000, guid: 809e38d389c347eda3b6827a27e26bc9,
+          type: 3}
+        constructionComplete: {fileID: 8300000, guid: cd19043b00954760a55ccfb9b81d24b4,
+          type: 3}
+        unitProduction: {fileID: 8300000, guid: 6ec62e9d1895d454e94b3f5b1b90fc6d,
+          type: 3}
+        buildingStarted: {fileID: 8300000, guid: 3c7d45a1a31da8447949d67f5b216c68,
+          type: 3}
+  empireSelected: {fileID: 8300000, guid: a517c7fe38914bb9bc1092c5e25711da, type: 3}
+  rebellionSelected: {fileID: 8300000, guid: 1562dc272770493dae1fedfad71c3453, type: 3}

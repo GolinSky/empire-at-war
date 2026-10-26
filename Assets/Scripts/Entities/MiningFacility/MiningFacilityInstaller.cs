@@ -29,6 +29,7 @@ namespace EmpireAtWar.MiningFacility
             builder.Register<MiningFacilityModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
                 .WithParameter("baseIncome", Data.Income);
             builder.Register<MiningFacilityTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<MiningFacilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter("kind", StructureKind.MiningFacility).WithParameter("type", (int)_type);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.MiningFacility, SelectionType.MiningFacility);

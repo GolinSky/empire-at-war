@@ -6,6 +6,7 @@ namespace EmpireAtWar.Models.Factions
     public interface IFactionLevelObserver
     {
         event Action<int> OnLevelUpgraded;
+        event Action<int> LevelUpgradeCompleted;
 
         int CurrentLevel { get; }
     }

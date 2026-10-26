@@ -96,13 +96,15 @@ namespace EmpireAtWar.Components.Ship.Audio
                 switch (state)
                 {
                     case ShipAbilityState.Active:
-                        _shipSfxService.TryPlayOneShot(_ship, _sounds[i].Start, _viewTransform.position);
-                        if (previous == ShipAbilityState.Ready)
+                        if (_sounds[i].Start.HasClip)
+                            _shipSfxService.TryPlayOneShot(_ship, _sounds[i].Start, _viewTransform.position);
+                        else if (previous == ShipAbilityState.Ready)
                             _shipSfxService.TryPlayOneShot(_ship, _data.AbilityActivated, _viewTransform.position);
                         break;
                     case ShipAbilityState.Recovering:
-                        _shipSfxService.TryPlayOneShot(_ship, _sounds[i].End, _viewTransform.position);
-                        if (previous == ShipAbilityState.Active)
+                        if (_sounds[i].End.HasClip)
+                            _shipSfxService.TryPlayOneShot(_ship, _sounds[i].End, _viewTransform.position);
+                        else if (previous == ShipAbilityState.Active)
                             _shipSfxService.TryPlayOneShot(_ship, _data.AbilityCanceled, _viewTransform.position);
                         break;
                     case ShipAbilityState.Ready:

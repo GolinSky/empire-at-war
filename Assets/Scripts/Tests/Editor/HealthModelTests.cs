@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
@@ -88,6 +89,33 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(shieldGenerator.Health, Is.EqualTo(150f));
             Assert.That(model.Hull, Is.EqualTo(HULL));
             Assert.That(model.HasUnits, Is.True);
+        }
+
+        [Test]
+        public void DamageFacadeNotifiesOnlyDamageAndSuppressesRestoreAndZeroDamage()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+            GameObject owner = new GameObject("DamageFacadeTest");
+            try
+            {
+                HealthComponent health = owner.AddComponent<HealthComponent>();
+                typeof(HealthComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(health, new object[] { model, new CombatModifiers(), owner.transform, TestPlayers.Human });
+                HealthFacade facade = new HealthFacade(health);
+                int damageEvents = 0;
+                facade.Damaged += () => damageEvents++;
+
+                model.Restore(0.5f, 0.5f, new[] { 1f, 1f, 1f });
+                facade.ApplyDamage(0f, DamageType.Turbolaser, 0);
+                Assert.That(damageEvents, Is.Zero);
+                facade.ApplyDamage(10f, DamageType.Turbolaser, 0);
+
+                Assert.That(damageEvents, Is.EqualTo(1));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
         }
 
         [Test]

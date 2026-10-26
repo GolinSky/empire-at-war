@@ -377,6 +377,7 @@ namespace EmpireAtWar.Tests.Weapon
 
         private sealed class FogStub : IFogVisibilityFacade
         {
+            public event System.Action<bool> VisibilityChanged { add { } remove { } }
             public bool Hidden { get; set; }
             public int Reads { get; private set; }
             public bool IsHiddenByFog { get { Reads++; return Hidden; } }

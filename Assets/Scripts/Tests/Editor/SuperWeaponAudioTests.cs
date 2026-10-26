@@ -13,6 +13,7 @@ using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
@@ -66,6 +67,48 @@ namespace EmpireAtWar.Tests.Editor
         private static Delegate GetEvent(object instance, string name) => (Delegate)instance.GetType()
             .GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(instance);
 
+        [Test]
+        public void AnnouncementPriority_ProtectsWarningsAndAllowsDefeatToInterrupt()
+        {
+            InterfaceSfxData data = ScriptableObject.CreateInstance<InterfaceSfxData>();
+            ShipSfxData shipData = ScriptableObject.CreateInstance<ShipSfxData>();
+            GameObject root = new GameObject("Announcement priority test");
+            AudioClip progress = AudioClip.Create("Progress", 441000, 1, 44100, false);
+            AudioClip warning = AudioClip.Create("Warning", 441000, 1, 44100, false);
+            AudioClip defeat = AudioClip.Create("Defeat", 441000, 1, 44100, false);
+            ShipSfxSources sources = root.AddComponent<ShipSfxSources>();
+            SetField(sources, "voice", root.AddComponent<AudioSource>());
+            InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources,
+                new ShipAbilityService(null, TestPlayers.CreateDuel()),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            service.Initialize();
+            try
+            {
+                Assert.That(service.TryPlayAnnouncement(progress, AnnouncementPriority.Progress), Is.True);
+                Assert.That(service.IsAnnouncing, Is.True);
+                Assert.That(service.TryPlayAnnouncement(warning, AnnouncementPriority.Warning), Is.True);
+                Assert.That(service.TryPlayAnnouncement(progress, AnnouncementPriority.Progress), Is.False);
+                Assert.That(service.TryPlayAnnouncement(progress, AnnouncementPriority.Notification), Is.False);
+                Assert.That(service.TryPlayAnnouncement(warning, AnnouncementPriority.Warning), Is.False);
+                Assert.That(service.TryPlayAnnouncement(defeat, AnnouncementPriority.Defeat), Is.True);
+                Assert.That(service.TryPlayAnnouncement(warning, AnnouncementPriority.Warning), Is.False);
+                Assert.That(service.TryPlayAnnouncement(defeat, AnnouncementPriority.Defeat), Is.False);
+                AudioSource announcer = (AudioSource)typeof(InterfaceSfxService)
+                    .GetField("_announcer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
+                Assert.That(announcer.clip, Is.SameAs(defeat));
+            }
+            finally
+            {
+                service.LateDispose();
+                UnityEngine.Object.DestroyImmediate(root);
+                UnityEngine.Object.DestroyImmediate(data);
+                UnityEngine.Object.DestroyImmediate(shipData);
+                UnityEngine.Object.DestroyImmediate(progress);
+                UnityEngine.Object.DestroyImmediate(warning);
+                UnityEngine.Object.DestroyImmediate(defeat);
+            }
+        }
+
         [TestCase(SuperWeaponType.IonCannon)]
         [TestCase(SuperWeaponType.HypervelocityGun)]
         [TestCase(SuperWeaponType.PlasmaCannon)]
@@ -77,9 +120,27 @@ namespace EmpireAtWar.Tests.Editor
             AudioClip firing = AudioClip.Create("Firing", 1, 1, 44100, false);
             try
             {
-                SetField(data, "orbitalBought", bought);
-                SetField(data, "orbitalAvailable", ready);
-                SetField(data, "orbitalFiring", firing);
+                string chargingField = type switch
+                {
+                    SuperWeaponType.IonCannon => "ionCharging",
+                    SuperWeaponType.HypervelocityGun => "hypervelocityCharging",
+                    _ => "orbitalBought"
+                };
+                string availableField = type switch
+                {
+                    SuperWeaponType.IonCannon => "ionAvailable",
+                    SuperWeaponType.HypervelocityGun => "hypervelocityAvailable",
+                    _ => "orbitalAvailable"
+                };
+                string firingField = type switch
+                {
+                    SuperWeaponType.IonCannon => "ionFiring",
+                    SuperWeaponType.HypervelocityGun => "hypervelocityFiring",
+                    _ => "orbitalFiring"
+                };
+                SetField(data, chargingField, bought);
+                SetField(data, availableField, ready);
+                SetField(data, firingField, firing);
                 SuperWeaponModel model = new SuperWeaponModel();
                 RecordingInterfaceAudio audio = new RecordingInterfaceAudio();
                 FireService fire = new FireService();
@@ -142,6 +203,32 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(SuperWeaponType.IonCannon, "I000_RHD6301_ENG", "I000_RHD2401_ENG", "I000_RHD6302_ENG")]
+        [TestCase(SuperWeaponType.HypervelocityGun, "I000_EHD6303_ENG", "I000_EHD2402_ENG", "I000_EHD6304_ENG")]
+        public void WeaponAnnouncementsUseNamedChargingReadyAndFiringRecordings(
+            SuperWeaponType type, string charging, string ready, string firing)
+        {
+            var data = AssetDatabase.LoadAssetAtPath<InterfaceSfxData>(
+                "Assets/Settings/Data/Models/Audio/InterfaceSfxData.asset");
+            Assert.That(data.GetOrbitalBought(type).name, Is.EqualTo(charging));
+            Assert.That(data.GetOrbitalAvailable(type).name, Is.EqualTo(ready));
+            Assert.That(data.GetOrbitalFiring(type).name, Is.EqualTo(firing));
+        }
+
+        [Test]
+        public void PlasmaRetainsGenericOrbitalAnnouncements()
+        {
+            var data = AssetDatabase.LoadAssetAtPath<InterfaceSfxData>(
+                "Assets/Settings/Data/Models/Audio/InterfaceSfxData.asset");
+            using var serialized = new SerializedObject(data);
+            Assert.That(data.GetOrbitalBought(SuperWeaponType.PlasmaCannon),
+                Is.SameAs(serialized.FindProperty("orbitalBought").objectReferenceValue));
+            Assert.That(data.GetOrbitalAvailable(SuperWeaponType.PlasmaCannon),
+                Is.SameAs(serialized.FindProperty("orbitalAvailable").objectReferenceValue));
+            Assert.That(data.GetOrbitalFiring(SuperWeaponType.PlasmaCannon),
+                Is.SameAs(serialized.FindProperty("orbitalFiring").objectReferenceValue));
+        }
+
         private static void SetField(object target, string field, object value) => target.GetType()
             .GetField(field, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(target, value);
 
@@ -153,6 +240,8 @@ namespace EmpireAtWar.Tests.Editor
             public void PlayRejected() => Rejections++;
             public void PlayAbilityTargetingCanceled() { }
             public void PlayAnnouncement(AudioClip clip) => Clips.Add(clip);
+            public bool TryPlayAnnouncement(AudioClip clip, AnnouncementPriority priority) { Clips.Add(clip); return true; }
+            public bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction) { Clips.Add(clip); return true; }
         }
 
         private sealed class FireService : ISuperWeaponFireService

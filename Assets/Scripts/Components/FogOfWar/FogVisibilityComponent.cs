@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
@@ -35,6 +36,8 @@ namespace EmpireAtWar.Components.FogOfWar
 
         private bool _isHidden;
         private bool _isReleased;
+
+        public event Action<bool> VisibilityChanged;
 
         public bool IsHiddenByFog => _isHidden;
 
@@ -109,6 +112,7 @@ namespace EmpireAtWar.Components.FogOfWar
 
             _isHidden = isHidden;
             ApplyVisibility();
+            VisibilityChanged?.Invoke(!isHidden);
         }
 
         private bool IsCoveredByFog() =>

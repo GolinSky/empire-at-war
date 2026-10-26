@@ -8,5 +8,7 @@ namespace EmpireAtWar.Services.Audio
         void PlayRejected();
         void PlayAbilityTargetingCanceled();
         void PlayAnnouncement(AudioClip clip);
+        bool TryPlayAnnouncement(AudioClip clip, AnnouncementPriority priority);
+        bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction);
     }
 }

@@ -32,6 +32,7 @@ namespace EmpireAtWar.SpaceStation
             builder.Register<PlayerBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationFootprintFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StationLevelFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter("kind", StructureKind.SpaceStation).WithParameter("type", (int)_factionType);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Base, SelectionType.Base);

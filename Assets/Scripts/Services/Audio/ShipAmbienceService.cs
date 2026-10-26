@@ -54,6 +54,7 @@ namespace EmpireAtWar.Services.Audio
             sourceObject.transform.SetParent(sources.transform, false);
             _source = sourceObject.AddComponent<AudioSource>();
             _source.playOnAwake = false;
+            _source.priority = 224;
             _source.outputAudioMixerGroup = sources.Sfx[0].outputAudioMixerGroup;
             _data = data;
             _sfxData = sfxData;

@@ -284,6 +284,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeFogVisibility : IFogVisibilityFacade
         {
+            public event System.Action<bool> VisibilityChanged { add { } remove { } }
             public bool IsHiddenByFog { get; set; }
         }
     }

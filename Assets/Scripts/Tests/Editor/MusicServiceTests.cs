@@ -101,6 +101,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void VoiceDuckingPreservesMusicFadeLevelAndRestoresIt()
+        {
+            _clip = AudioClip.Create("Music duck", 44100, 1, 44100, false);
+            StartTrack(_clip);
+            typeof(MusicService).GetField("_fadeVolume", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(_service, 0.6f);
+            _service.SetVoiceDucking(true);
+            Assert.That(_source.volume, Is.EqualTo(0.12f).Within(0.001f));
+            _service.SetVoiceDucking(false);
+            Assert.That(_source.volume, Is.EqualTo(0.6f).Within(0.001f));
+            Assert.That(_source.priority, Is.GreaterThan(128));
+        }
+
+        [Test]
         public void Tick_DoesNotReplaceClipWhilePlaybackIsWaitingForAudioData()
         {
             AudioClip importedClip = AssetDatabase.LoadAssetAtPath<AudioClip>(

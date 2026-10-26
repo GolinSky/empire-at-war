@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Audio
     public sealed class MusicService : Service, IMusicService, IInitializable, ITickable, ILateDisposable
     {
         private const float MUSIC_FADE_DURATION = 1f;
+        private const float VOICE_DUCK_GAIN = 0.2f;
 
         private const string SOURCE_PATH = "MusicSource";
 
@@ -30,6 +31,8 @@ namespace EmpireAtWar.Services.Audio
 
         private readonly float _volume;
         private float _fadeDuration;
+        private float _fadeVolume;
+        private float _duckGain = 1f;
 
         private bool _playing;
         private bool _started;
@@ -45,7 +48,7 @@ namespace EmpireAtWar.Services.Audio
             _audioSource = Object.Instantiate(assetService.LoadComponent<AudioSource>(SOURCE_PATH));
             _audioSource.outputAudioMixerGroup = mixer.FindMatchingGroups("Music").Single();
             _audioSource.ignoreListenerPause = true;
-            _audioSource.priority = 16;
+            _audioSource.priority = 224;
             _volume = _audioSource.volume;
             if (Application.isPlaying) Object.DontDestroyOnLoad(_audioSource.gameObject);
         }
@@ -85,7 +88,14 @@ namespace EmpireAtWar.Services.Audio
             AudioClip clip = _clips[_random.Next(_clips.Count)];
             _fadeDuration = Mathf.Min(MUSIC_FADE_DURATION, clip.length * 0.5f);
             _audioService.Play(_audioSource, clip, 0f, false);
+            _fadeVolume = 0f;
             _playing = true;
+        }
+
+        public void SetVoiceDucking(bool active)
+        {
+            _duckGain = active ? VOICE_DUCK_GAIN : 1f;
+            _audioSource.volume = _fadeVolume * _duckGain;
         }
 
         public void Tick()
@@ -108,9 +118,10 @@ namespace EmpireAtWar.Services.Audio
             }
             float remaining = (clip.samples - _audioSource.timeSamples) / (float)clip.frequency;
             if (remaining <= _fadeDuration) _fadingOut = true;
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _fadingOut ? 0f : _volume,
+            _fadeVolume = Mathf.MoveTowards(_fadeVolume, _fadingOut ? 0f : _volume,
                 _volume * Time.unscaledDeltaTime / _fadeDuration);
-            if (_fadingOut && _audioSource.volume == 0f) PlayNext();
+            _audioSource.volume = _fadeVolume * _duckGain;
+            if (_fadingOut && _fadeVolume == 0f) PlayNext();
         }
     }
 }

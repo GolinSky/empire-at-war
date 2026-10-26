@@ -322,6 +322,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class NoCaptureSites : ICaptureSitesSystem
         {
+            public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
+            public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
+            public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
             public IReadOnlyList<ICaptureSite> Sites =>
                 Array.Empty<ICaptureSite>();
 

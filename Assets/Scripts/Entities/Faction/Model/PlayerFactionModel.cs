@@ -42,6 +42,13 @@ namespace EmpireAtWar.Models.Factions
         public event Action<UnitRequest> OnUnitCompleted;
 
         public event Action<int> OnLevelUpgraded;
+        public event Action<int> LevelUpgradeCompleted;
+
+        public void CompleteLevelUpgrade()
+        {
+            CurrentLevel++;
+            LevelUpgradeCompleted?.Invoke(CurrentLevel);
+        }
 
         public event Action<SelectionType> OnSelectionTypeChanged;
 

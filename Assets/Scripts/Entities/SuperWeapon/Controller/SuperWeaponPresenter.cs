@@ -208,14 +208,14 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _targeting.Cancel();
             _model.Consume(type);
             _superWeaponFireService.Fire(type, target);
-            _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalFiring);
+            _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalFiring(type));
         }
 
         /// <summary>Warns the local side of an incoming hostile strike; its own firing is announced on submit.</summary>
         private void HandleFired(SuperWeaponType type, IEntity target)
         {
             if (!_isBattleRunning || !_localPlayer.IsFriendly(target.Owner)) return;
-            _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalFiring);
+            _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalFiring(type));
         }
 
         private void HandleStateChanged(SuperWeaponType type, SuperWeaponState state)
@@ -226,9 +226,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (!_model.CanFire(type) && _targeting.Pending == type) _targeting.Cancel();
             if (_model.IsRestoring || !_isBattleRunning) return;
             if (previous == SuperWeaponState.Unavailable && state == SuperWeaponState.Charging)
-                _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalBought);
+                _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalBought(type));
             else if (state == SuperWeaponState.Ready && _model.CanFire(type))
-                _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalAvailable);
+                _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalAvailable(type));
         }
 
         private void HandleUnitTargetingChanged()

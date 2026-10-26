@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
     public class SkirmishRouteUiController : UiController, ISkirmishRoute, ISkirmishPresenter, ILateDisposable
     {
         private readonly IGameCommand _gameCommand;
+        private readonly IMenuFactionSfxService _factionAudio;
         private SkirmishUi _ui;
 
         private readonly TeamColorPalette _teamColorPalette;
@@ -31,9 +33,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IUiCancelRouter cancelRouter,
             IGameCommand gameCommand,
             ITooltipService tooltipService,
-            SkirmishModel model, TeamColorPalette teamColorPalette) : base(uiService, cancelRouter)
+            SkirmishModel model, TeamColorPalette teamColorPalette,
+            IMenuFactionSfxService factionAudio) : base(uiService, cancelRouter)
         {
             _teamColorPalette = teamColorPalette;
+            _factionAudio = factionAudio;
             _gameCommand = gameCommand;
             _model = model;
             _tooltips = new TooltipRequests(tooltipService);
@@ -98,7 +102,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void SelectSlotFaction(int slotIndex, int factionIndex)
         {
+            SkirmishSlotSetup slot = _model.Slots[slotIndex];
+            bool changed = slot.IsHuman && slot.Faction != (FactionType)factionIndex;
             _model.SelectSlotFaction(slotIndex, (FactionType)factionIndex);
+            if (changed) _factionAudio.PlaySelection(slot.Faction);
         }
 
         public void SelectSlotTeam(int slotIndex, int teamIndex)

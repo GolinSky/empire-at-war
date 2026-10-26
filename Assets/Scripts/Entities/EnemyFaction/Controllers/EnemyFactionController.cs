@@ -147,7 +147,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             foreach (EnemyPendingBuild upgrade in _builds.Builds.Where(build => build.Request is LevelUnitRequest))
                 _wallet.Refund(upgrade.Request);
             _builds.RemoveAll(request => request is LevelUnitRequest);
-            Model.CurrentLevel++;
+            Model.CompleteLevelUpgrade();
             return true;
         }
 
@@ -232,7 +232,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
-                    Model.CurrentLevel++;
+                    Model.CompleteLevelUpgrade();
                     // Frees the slot a restored upgrade adopted; a purchased upgrade holds none.
                     ReleaseUnit(levelUnitRequest);
                     break;

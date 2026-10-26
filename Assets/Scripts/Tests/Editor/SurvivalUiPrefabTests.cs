@@ -21,7 +21,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 SurvivalUi view = root.GetComponent<SurvivalUi>();
                 SurvivalModel model = new SurvivalModel();
-                SurvivalRouteUiController presenter = new SurvivalRouteUiController(null, null, model, null);
+                SurvivalRouteUiController presenter = new SurvivalRouteUiController(null, null, model, null, null);
                 view.SetModel(model);
                 view.AssignPresenter(presenter);
                 view.Initialize();

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -220,7 +221,8 @@ namespace EmpireAtWar.Tests.Editor
             SuperWeaponData data = AssetDatabase.LoadAssetAtPath<SuperWeaponData>(
                 "Assets/Settings/Data/Models/SuperWeapons/SuperWeaponData.asset");
             SuperWeaponFireService fire = CreateFireService(entities, data, audio);
-            SuperWeaponFireService restored = CreateFireService(entities, data, audio);
+            RecordingAudio restoredAudio = new RecordingAudio();
+            SuperWeaponFireService restored = CreateFireService(entities, data, audio, restoredAudio);
             try
             {
                 origin.transform.position = new Vector3(3f, 5f, 7f);
@@ -258,6 +260,7 @@ namespace EmpireAtWar.Tests.Editor
                 advance.Invoke(restored, new object[] { loaded, 0.2f });
                 Assert.That(health.HitCount, Is.EqualTo(2));
                 Assert.That(loaded.IsComplete, Is.True);
+                Assert.That(restoredAudio.Clips, Is.Empty, "Restoring and resolving already-fired impacts must not replay launch SFX.");
                 advance.Invoke(restored, new object[] { loaded, 1f });
                 Assert.That(health.HitCount, Is.EqualTo(2), "Loaded impacts must apply exactly once.");
                 health.Destroyed = true;
@@ -325,7 +328,8 @@ namespace EmpireAtWar.Tests.Editor
             new SuperWeaponCombatSaveSource(null, null, null).RestoreAfterUnits(new BattleRestoreContext(save));
         }
 
-        private static SuperWeaponFireService CreateFireService(EntityLocator entities, SuperWeaponData data, GameObject audio)
+        private static SuperWeaponFireService CreateFireService(EntityLocator entities, SuperWeaponData data, GameObject audio,
+            IAudioService audioService = null, EmpireAtWar.ViewComponents.Weapon.BoltFlightBatch boltFlights = null)
         {
             AudioSource audioSource = audio.AddComponent<AudioSource>();
             ShipSfxSources sources = audio.AddComponent<ShipSfxSources>();
@@ -334,7 +338,66 @@ namespace EmpireAtWar.Tests.Editor
             ShipSfxData sfx = AssetDatabase.LoadAssetAtPath<ShipSfxData>(
                 "Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
             return new SuperWeaponFireService(entities, null, TestPlayers.CreateTeamGame(), data,
-                null, null, null, sfx, sources);
+                new ImpactEffectPresenter(null, null), boltFlights, audioService, sfx, sources);
+        }
+
+        private sealed class RecordingAudio : EmpireAtWar.Mvc.Service, IAudioService
+        {
+            public readonly List<AudioClip> Clips = new List<AudioClip>();
+            public readonly List<float> Volumes = new List<float>();
+            public void PlayOneShot(AudioSource source, AudioClip clip, float volume)
+            {
+                Clips.Add(clip);
+                Volumes.Add(volume);
+            }
+            public void Play(AudioSource source, AudioClip clip, float volume, bool loop) { }
+            public void Stop(AudioSource source) { }
+            public void Pause(AudioSource source) { }
+            public void UnPause(AudioSource source) { }
+            public void SetGamePaused(bool paused) { }
+        }
+
+        [TestCase(SuperWeaponType.IonCannon, "GUN_Ion_Cannon_1")]
+        [TestCase(SuperWeaponType.HypervelocityGun, "GUN_HYPERVELOCITY_1")]
+        [TestCase(SuperWeaponType.PlasmaCannon, "GUN_UNDERWORLD_PLASMA_1")]
+        public void ShotPlaysWeaponSpecificRecordingAtConfiguredGain(SuperWeaponType type, string clipName)
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            var existingRoots = new HashSet<GameObject>(scene.GetRootGameObjects());
+            GameObject view = new GameObject("Ion target");
+            GameObject origin = new GameObject("Ion origin");
+            GameObject audio = new GameObject("Ion test audio");
+            var recording = new RecordingAudio();
+            var boltFlights = new EmpireAtWar.ViewComponents.Weapon.BoltFlightBatch();
+            var entities = new EntityLocator();
+            var health = new StationTarget(view.transform);
+            var target = new Entity(health, entities, new IEntityFacade[] { health }, TestPlayers.Human, 123,
+                Array.Empty<IPooledEntityEvents>(), Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+            SuperWeaponData data = LoadData();
+            SuperWeaponFireService fire = CreateFireService(entities, data, audio, recording, boltFlights);
+            try
+            {
+                view.transform.position = Vector3.forward * 100f;
+                SuperWeaponProfile profile = data.GetProfile(type);
+                var salvo = new SuperWeaponSalvo(type, target, profile, origin.transform);
+                MethodInfo advance = typeof(SuperWeaponFireService).GetMethod("AdvanceSalvo",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                salvo.NextShotTime = 1f;
+                advance.Invoke(fire, new object[] { salvo, 0.5f });
+                Assert.That(recording.Clips, Is.Empty, "Warmup must not play the firing sound.");
+                advance.Invoke(fire, new object[] { salvo, 0.5f });
+                Assert.That(salvo.ShotsFired, Is.EqualTo(1));
+                Assert.That(recording.Clips, Has.Count.EqualTo(1));
+                Assert.That(recording.Clips[0].name, Is.EqualTo(clipName));
+                Assert.That(recording.Volumes, Is.EqualTo(new[] { 0.8f }));
+            }
+            finally
+            {
+                fire.LateDispose();
+                boltFlights.Dispose();
+                foreach (GameObject root in scene.GetRootGameObjects())
+                    if (!existingRoots.Contains(root)) UnityEngine.Object.DestroyImmediate(root);
+            }
         }
 
         [Test]

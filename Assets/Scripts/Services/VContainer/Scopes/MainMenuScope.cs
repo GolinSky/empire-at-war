@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Fade;
+using EmpireAtWar.Services.Audio;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.VContainer
     public sealed class MainMenuScope : AssetLifetimeScope
     {
         [SerializeField] private TeamColorPalette teamColorPalette;
+        [SerializeField] private InterfaceSfxData interfaceSfxData;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -38,6 +40,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<MainMenuUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MainMenuOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(teamColorPalette);
+            builder.RegisterInstance(interfaceSfxData);
+            builder.Register<MenuFactionSfxService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishModel>(Lifetime.Singleton);
             builder.RegisterInstance(Assets.Load<FactionCatalog>(nameof(FactionCatalog)));
             builder.Register<SimulationDraft>(Lifetime.Singleton);

@@ -11,6 +11,7 @@ using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.Audio;
 using global::VContainer;
 
 namespace EmpireAtWar.Services.VContainer
@@ -56,6 +57,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ReinforcementSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            if ((features & BattleFeatures.Economy) != 0)
+                builder.Register<FactionAnnouncementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }
 }

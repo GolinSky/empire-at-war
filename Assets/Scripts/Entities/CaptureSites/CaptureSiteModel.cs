@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 
@@ -15,6 +16,9 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
         private float _buildDuration;
+
+        public event Action<PlayerId, PlayerId, SiteFacilityType> Captured;
+        public event Action<PlayerId, SiteFacilityType> Lost;
 
         public PlayerId Owner { get; private set; } = PlayerId.None;
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
@@ -71,10 +75,12 @@ namespace EmpireAtWar.Entities.CaptureSites
             }
 
             // Capturing grants the location only; an unfinished build is lost.
+            PlayerId previousOwner = Owner;
             Owner = capturingPlayer;
             State = CaptureSiteState.Owned;
             ConstructionProgress = 0f;
             ResetCapture();
+            Captured?.Invoke(previousOwner, Owner, FacilityType);
             return true;
         }
 
@@ -120,10 +126,12 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void ReleaseFacility()
         {
+            PlayerId previousOwner = Owner;
             Owner = PlayerId.None;
             State = CaptureSiteState.Neutral;
             ConstructionProgress = 0f;
             ResetCapture();
+            if (previousOwner != PlayerId.None) Lost?.Invoke(previousOwner, FacilityType);
         }
 
         private void ResetCapture()

@@ -27,6 +27,7 @@ namespace EmpireAtWar.Services.Audio
         private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
         private readonly IInterfaceSfxService _interfaceSfx;
+        private readonly IMusicService _music;
 
         private readonly ShipSfxSources _sources;
         private readonly ShipSfxData _data;
@@ -48,7 +49,7 @@ namespace EmpireAtWar.Services.Audio
 
         public ShipSfxService(IAudioService audioService, ICameraService cameraService, IVisionService visionService,
             ILocalPlayer localPlayer, ShipSfxSources sources, ShipSfxData data, CameraData cameraData,
-            IInterfaceSfxService interfaceSfx)
+            IInterfaceSfxService interfaceSfx, IMusicService music)
         {
             _sources = sources;
             _data = data;
@@ -58,9 +59,11 @@ namespace EmpireAtWar.Services.Audio
             _visionService = visionService;
             _localPlayer = localPlayer;
             _interfaceSfx = interfaceSfx;
+            _music = music;
             _mixer = sources.Voice.outputAudioMixerGroup.audioMixer;
             _slots = new VoiceSlot[data.PoolVoices];
             sources.Voice.ignoreListenerPause = true;
+            sources.Voice.priority = 32;
         }
 
         public void Dispose()
@@ -70,6 +73,7 @@ namespace EmpireAtWar.Services.Audio
             for (int i = 0; i < _slots.Length; i++) Stop(i);
             _audioService.Stop(_sources.Voice);
             _mixer.SetFloat("SfxDuckVolume", 0f);
+            _music.SetVoiceDucking(false);
             _audioService.SetGamePaused(false);
         }
 
@@ -97,8 +101,10 @@ namespace EmpireAtWar.Services.Audio
             bool loop, float scale, float pitch, float lease, bool isEngine = false)
         {
             if (_disposed || ship.IsDestroyed) return false;
+            if (sound.LocalFeedback && !_localPlayer.IsLocal(ship.Owner)) return false;
             UpdateTime();
-            float gain = GetGain(ship, position, isEngine, out float pan);
+            float pan = 0f;
+            float gain = sound.LocalFeedback ? 1f : GetGain(ship, position, isEngine, out pan);
             for (int i = 0; loop && i < _slots.Length; i++)
             {
                 if (_slots[i].Owner != ship || _slots[i].Sound != sound || !_slots[i].Loop) continue;
@@ -116,7 +122,7 @@ namespace EmpireAtWar.Services.Audio
             if (Time.timeScale == 0f || gain * scale < MIN_AUDIBLE_GAIN) return false;
             if (_cooldowns.TryGetValue(sound, out float readyAt) && _time < readyAt) return false;
             while (_starts.Count > 0 && _time - _starts.Peek() >= _data.StartWindow) _starts.Dequeue();
-            if (_starts.Count >= _data.StartsPerWindow) return false;
+            if (!sound.LocalFeedback && _starts.Count >= _data.StartsPerWindow) return false;
             int slot = FindSlot(ship, sound, gain, isEngine);
             if (slot < 0) return false;
             AudioClip clip = sound.GetClip();
@@ -129,9 +135,11 @@ namespace EmpireAtWar.Services.Audio
             };
             AudioSource source = _sources.Sfx[slot];
             source.pitch = pitch;
+            source.spatialBlend = 0f;
+            source.priority = sound.LocalFeedback ? 48 : 128;
             _audioService.Play(source, clip, 0f, loop);
             _cooldowns[sound] = _time + sound.Cooldown;
-            _starts.Enqueue(_time);
+            if (!sound.LocalFeedback) _starts.Enqueue(_time);
             _mixDirty = true;
             return true;
         }
@@ -191,7 +199,8 @@ namespace EmpireAtWar.Services.Audio
                     if (_slots[i].Emitter == null) { Stop(i); continue; }
                     _slots[i].Position = _slots[i].Emitter.position;
                 }
-                _slots[i].Gain = GetGain(_slots[i].Owner, _slots[i].Position, _slots[i].IsEngine, out _slots[i].Pan);
+                if (!_slots[i].Sound.LocalFeedback)
+                    _slots[i].Gain = GetGain(_slots[i].Owner, _slots[i].Position, _slots[i].IsEngine, out _slots[i].Pan);
                 if (_time >= _slots[i].EndsAt || _slots[i].Gain * _slots[i].VolumeScale < MIN_AUDIBLE_GAIN)
                     Stop(i);
             }
@@ -221,19 +230,20 @@ namespace EmpireAtWar.Services.Audio
 #endif
             float total = 0f;
             for (int i = 0; i < _slots.Length; i++)
-                if (_slots[i].Sound != null) total += GetVolume(_slots[i]);
+                if (_slots[i].Sound != null && !_slots[i].Sound.LocalFeedback) total += GetVolume(_slots[i]);
             float mix = MAX_MIX_VOLUME / Mathf.Max(MAX_MIX_VOLUME, total);
             bool voiceDucking = _sources.Voice.isPlaying || _interfaceSfx.IsAnnouncing;
             if (!_hasDuckState || voiceDucking != _voiceDucking)
             {
                 _mixer.SetFloat("SfxDuckVolume", voiceDucking ? 20f * Mathf.Log10(_data.VoiceDuckGain) : 0f);
+                _music.SetVoiceDucking(voiceDucking);
                 _voiceDucking = voiceDucking;
                 _hasDuckState = true;
             }
             for (int i = 0; i < _slots.Length; i++)
             {
                 if (_slots[i].Sound == null) continue;
-                _sources.Sfx[i].volume = GetVolume(_slots[i]) * mix;
+                _sources.Sfx[i].volume = GetVolume(_slots[i]) * (_slots[i].Sound.LocalFeedback ? 1f : mix);
                 _sources.Sfx[i].panStereo = _slots[i].Pan;
             }
         }

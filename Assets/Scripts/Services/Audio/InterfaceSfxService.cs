@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
@@ -20,8 +23,12 @@ namespace EmpireAtWar.Services.Audio
         private AudioSource _ui;
         private AudioSource _announcer;
         private float _rejectReadyAt;
+        private AnnouncementPriority _playingPriority;
+        private readonly CancellationTokenSource _lifetime = new();
+        private int _announcementVersion;
 
-        public bool IsAnnouncing => _announcer.isPlaying;
+        public bool IsAnnouncing => _announcer.isPlaying ||
+            _announcer.clip != null && _announcer.clip.loadState == AudioDataLoadState.Loading;
 
         public InterfaceSfxService(InterfaceSfxData data, ShipSfxData shipData, ShipSfxSources sources,
             ShipAbilityService abilities, ILocalPlayer localPlayer)
@@ -43,6 +50,7 @@ namespace EmpireAtWar.Services.Audio
             {
                 source.playOnAwake = false;
                 source.spatialBlend = 0f;
+                source.priority = 32;
                 source.ignoreListenerPause = true;
                 source.outputAudioMixerGroup = _sources.Voice.outputAudioMixerGroup;
                 source.volume = _shipData.VoiceVolume;
@@ -62,9 +70,41 @@ namespace EmpireAtWar.Services.Audio
 
         public void PlayAnnouncement(AudioClip clip)
         {
+            TryPlayAnnouncement(clip, AnnouncementPriority.Warning);
+        }
+
+        public bool TryPlayAnnouncement(AudioClip clip, AnnouncementPriority priority)
+        {
+            if (IsAnnouncing && (priority >= _playingPriority || priority == AnnouncementPriority.Progress))
+                return false;
             _sources.Voice.Stop();
+            _announcementVersion++;
+            _playingPriority = priority;
             _announcer.clip = clip;
             _announcer.Play();
+            return true;
+        }
+
+        public bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction)
+        {
+            if (!TryPlayAnnouncement(clip, AnnouncementPriority.Notification)) return false;
+            if (newConstruction != null)
+                AnnounceConstructionOptions(clip.length, newConstruction, _announcementVersion);
+            return true;
+        }
+
+        private async void AnnounceConstructionOptions(float delay, AudioClip clip, int version)
+        {
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(delay + 0.05f), _lifetime.Token);
+            }
+            catch (OperationCanceledException) when (_lifetime.IsCancellationRequested)
+            {
+                return;
+            }
+            if (version != _announcementVersion) return;
+            TryPlayAnnouncement(clip, AnnouncementPriority.Notification);
         }
 
         private void HandleRejected(IReadOnlyList<IEntity> casters)
@@ -86,10 +126,12 @@ namespace EmpireAtWar.Services.Audio
 
         public void LateDispose()
         {
+            _lifetime.Cancel();
+            _lifetime.Dispose();
             _abilities.TargetRejected -= HandleRejected;
             _abilities.TargetingCanceled -= HandleTargetingCanceled;
-            if (Application.isPlaying) Object.Destroy(_root);
-            else Object.DestroyImmediate(_root);
+            if (Application.isPlaying) UnityEngine.Object.Destroy(_root);
+            else UnityEngine.Object.DestroyImmediate(_root);
         }
     }
 }

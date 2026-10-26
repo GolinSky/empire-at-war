@@ -141,6 +141,43 @@ namespace EmpireAtWar.Tests.Editor
             return system;
         }
 
+        [TestCase(SiteFacilityType.Mining)]
+        [TestCase(SiteFacilityType.BattleAsteroid)]
+        public void ConstructionStartedEmitsOnlyAfterSuccessfulPaymentAndNotRestore(SiteFacilityType type)
+        {
+            CaptureSitesSystem system = CreateSystem();
+            var registry = new EmpireAtWar.Services.Player.PlayerRegistry();
+            var builder = new BuilderStub();
+            registry.RegisterSiteBuilder(TestPlayers.Human, builder);
+            typeof(CaptureSitesSystem).GetField("_playerRegistry", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(system, registry);
+            int starts = 0;
+            system.ConstructionStarted += (payer, facility) =>
+            {
+                Assert.That(payer, Is.EqualTo(TestPlayers.Human));
+                Assert.That(facility, Is.EqualTo(type));
+                Assert.That(_presenter.State, Is.EqualTo(CaptureSiteState.Constructing));
+                starts++;
+            };
+            _presenter.Restore(TestPlayers.Human, CaptureSiteState.Constructing, PlayerId.None, 0, type, 0.5f);
+            Assert.That(starts, Is.Zero);
+            _presenter.Restore(TestPlayers.Human, CaptureSiteState.Owned, PlayerId.None, 0, type, 0);
+            MethodInfo start = typeof(CaptureSitesSystem).GetMethod("TryStartConstruction", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(start.Invoke(system, new object[] { _presenter, type, TestPlayers.Human }), Is.False);
+            Assert.That(starts, Is.Zero);
+            builder.CanSpend = true;
+            Assert.That(start.Invoke(system, new object[] { _presenter, type, TestPlayers.Human }), Is.True);
+            Assert.That(starts, Is.EqualTo(1));
+        }
+
+        private sealed class BuilderStub : ISiteFacilityBuilder
+        {
+            public bool CanSpend;
+            public bool CanAfford(float price) => CanSpend;
+            public bool TrySpend(float price) => CanSpend;
+            public long Build(SiteFacilityType facilityType, Vector3 position, System.Action onDestroyed) => 1;
+        }
+
         private sealed class FixedClock : ITooltipClock
         {
             public float DeltaTime => 0f;

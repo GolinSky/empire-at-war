@@ -49,6 +49,12 @@ namespace EmpireAtWar.Services.Factions
 
         private bool _isInitialized;
 
+        public event System.Action<UnitRequest> PurchaseAccepted;
+        public event System.Action<UnitRequest> PurchaseCanceled;
+        public event System.Action<UnitRequest> UnitProduced;
+        public event System.Action<ResearchType> ResearchCompleted;
+        public event System.Action StationUpgraded;
+
         public float Income => DEFAULT_INCOME * _model.CurrentLevel * _research.StationIncomeMultiplier;
 
         public FactionService(
@@ -145,11 +151,13 @@ namespace EmpireAtWar.Services.Factions
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
-                    _model.CurrentLevel++;
+                    _model.CompleteLevelUpgrade();
                     _economyProvider.RecalculateIncome(this);
+                    StationUpgraded?.Invoke();
                     return;
                 case ResearchUnitRequest researchUnitRequest:
                     _research.Complete(researchUnitRequest.Key);
+                    ResearchCompleted?.Invoke(researchUnitRequest.Key);
                     return;
                 case SuperWeaponUnitRequest superWeaponUnitRequest:
                     _superWeapons.CompleteCharging(superWeaponUnitRequest.Key);
@@ -157,6 +165,7 @@ namespace EmpireAtWar.Services.Factions
             }
 
             _reinforcementPool.Add(unitRequest);
+            UnitProduced?.Invoke(unitRequest);
         }
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
@@ -179,6 +188,7 @@ namespace EmpireAtWar.Services.Factions
             {
                 _superWeapons.StartCharging(purchasedSuperWeapon.Key);
             }
+            PurchaseAccepted?.Invoke(unitRequest);
         }
 
         private bool IsOwnedHero(IEntity entity, out ShipType hero)
@@ -203,6 +213,11 @@ namespace EmpireAtWar.Services.Factions
 
         public void CancelBuilding(string id)
         {
+            CancelBuilding(id, true);
+        }
+
+        private void CancelBuilding(string id, bool notify)
+        {
             if (_model.TryCancelCurrentUnit(id, out UnitRequest unitRequest))
             {
                 if (unitRequest is SuperWeaponUnitRequest superWeapon)
@@ -210,6 +225,7 @@ namespace EmpireAtWar.Services.Factions
                     _superWeapons.CancelCharging(superWeapon.Key);
                 }
                 _wallet.Refund(unitRequest);
+                if (notify) PurchaseCanceled?.Invoke(unitRequest);
             }
         }
 
@@ -225,7 +241,7 @@ namespace EmpireAtWar.Services.Factions
                 if (queued.UnitRequest is LevelUnitRequest)
                 {
                     for (int index = 0; index < queued.Count; index++)
-                        CancelBuilding(queued.UnitRequest.Id);
+                        CancelBuilding(queued.UnitRequest.Id, false);
                 }
             }
 

@@ -155,6 +155,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class EntityStub : IEntity, IEntityHighlightFacade, IFogVisibilityFacade
         {
+            public event System.Action<bool> VisibilityChanged { add { } remove { } }
             public long Id { get; }
             public PlayerId Owner => TestPlayers.Human;
             public HealthStub Health { get; } = new HealthStub();

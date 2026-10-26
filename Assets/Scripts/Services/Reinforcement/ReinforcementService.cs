@@ -45,6 +45,9 @@ namespace EmpireAtWar.Services.Reinforcement
 
         private bool _hasBattleEnded;
 
+        public event Action<UnitRequest> ReinforcementDeployed;
+        public event Action CapacityRejected;
+
         public ReinforcementService(
             IInputLock inputLock,
             IPointerInput pointerInput,
@@ -135,9 +138,15 @@ namespace EmpireAtWar.Services.Reinforcement
         public void TrySpawnReinforcement(UnitRequest request)
         {
             // Units already in the pool stay deployable after the station falls.
-            if (_hasBattleEnded || _inputLock.IsLocked ||
-                !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            if (_hasBattleEnded || _inputLock.IsLocked)
             {
+                _model.InvokeSpawnShipEvent(false);
+                return;
+            }
+
+            if (!_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            {
+                CapacityRejected?.Invoke();
                 _model.InvokeSpawnShipEvent(false);
                 return;
             }
@@ -198,6 +207,12 @@ namespace EmpireAtWar.Services.Reinforcement
             {
                 _placement.Spawn(spawnPosition);
                 _model.ConsumeReinforcement(_currentRequest);
+                ReinforcementDeployed?.Invoke(_currentRequest);
+            }
+            else if (_currentRequest is ShipUnitRequest ship && !_model.CanSpawnUnit(ship.Key) ||
+                _currentRequest is SquadronUnitRequest squadron && !_model.CanSpawnUnit(squadron.Key))
+            {
+                CapacityRejected?.Invoke();
             }
 
             _preview.Destroy();

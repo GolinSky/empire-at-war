@@ -10,10 +10,12 @@ namespace EmpireAtWar.Services.Audio
         [SerializeField] private SfxProfile explosion;
         [SerializeField] private SfxProfile alarm;
         [SerializeField] private bool useAlarmOverride;
+        [SerializeField] private AudioClip ready;
 
         public SfxProfile Engine => engine;
         public SfxProfile Explosion => explosion;
         public SfxProfile Alarm => useAlarmOverride ? alarm : null;
+        public AudioClip Ready => ready;
 
         public ShipUnitAudioProfile(SfxProfile engine, SfxProfile explosion, SfxProfile alarm)
         {

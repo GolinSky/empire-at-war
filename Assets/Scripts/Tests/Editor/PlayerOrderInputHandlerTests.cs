@@ -290,6 +290,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeCaptureSite : ICaptureSite, ICaptureSitesSystem
         {
+            public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
+            public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
+            public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
             public bool Enabled { get; set; }
             public PlayerId Owner => PlayerId.None;
             public CaptureSiteState State => CaptureSiteState.Neutral;

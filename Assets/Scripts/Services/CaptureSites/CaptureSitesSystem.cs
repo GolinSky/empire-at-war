@@ -52,6 +52,9 @@ namespace EmpireAtWar.Services.CaptureSites
         /// <summary>In map layout order, so a seeded rebuild matches saved sites by index.</summary>
         public IReadOnlyList<CaptureSitePresenter> SitePresenters => _sites;
         public event Action SelectionChanged = delegate { };
+        public event Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured;
+        public event Action<PlayerId, SiteFacilityType> SiteLost;
+        public event Action<PlayerId, SiteFacilityType> ConstructionStarted;
         public CaptureSitePresenter SelectedSite => _selectedSite;
         public Vector2 SelectionScreenPosition { get; private set; }
         public bool CanAfford(float price) => GetBuilder(_localPlayer.Id).CanAfford(price);
@@ -101,6 +104,8 @@ namespace EmpireAtWar.Services.CaptureSites
             {
                 CaptureSiteModel model = new CaptureSiteModel(
                     captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster);
+                model.Captured += HandleSiteCaptured;
+                model.Lost += HandleSiteLost;
                 CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
                     tooltipService: _tooltipService);
                 _sites.Add(site);
@@ -163,6 +168,11 @@ namespace EmpireAtWar.Services.CaptureSites
             if (_selectedSite != null && !IsSelectable(_selectedSite))
                 ClearSelection();
         }
+
+        private void HandleSiteCaptured(PlayerId previousOwner, PlayerId owner, SiteFacilityType type) =>
+            SiteCaptured?.Invoke(previousOwner, owner, type);
+
+        private void HandleSiteLost(PlayerId owner, SiteFacilityType type) => SiteLost?.Invoke(owner, type);
 
         public bool IsPositionInAnySite(Vector3 position, float clearance = 0f)
         {
@@ -303,6 +313,7 @@ namespace EmpireAtWar.Services.CaptureSites
             }
 
             site.StartConstruction(facilityType);
+            ConstructionStarted?.Invoke(payer, facilityType);
             return true;
         }
 

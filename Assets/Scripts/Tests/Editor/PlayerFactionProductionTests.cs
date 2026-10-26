@@ -130,6 +130,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.CanQueueUnit(request), Is.True, "A destroyed hero can be rebuilt.");
         }
 
+        [Test]
+        public void IsUnitLimitReached_WhileQueueHoldsMaxCount_UntilCompleted()
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData factionData = CreateFactionData(maxCount: 1, buildTime: 10);
+            LevelUnitRequest levelUp = new LevelUnitRequest(factionData, 1);
+            ResearchUnitRequest research = new ResearchUnitRequest(factionData, default, 1);
+
+            Assert.That(model.IsUnitLimitReached(levelUp), Is.False);
+            model.QueueUnit(levelUp);
+            model.QueueUnit(research);
+
+            Assert.That(model.IsUnitLimitReached(levelUp), Is.True, "A queued station upgrade hides its card.");
+            Assert.That(model.IsUnitLimitReached(research), Is.True, "A queued research tier hides its card.");
+            model.Advance(10f);
+            Assert.That(model.IsUnitLimitReached(levelUp), Is.False);
+        }
+
         private static PlayerFactionModel CreateModel()
         {
             return new PlayerFactionModel(null, null);

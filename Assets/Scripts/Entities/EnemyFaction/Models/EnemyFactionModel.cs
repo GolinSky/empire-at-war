@@ -17,6 +17,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private int _currentLevel = 1;
 
         public event Action<int> OnLevelUpgraded;
+        public event Action<int> LevelUpgradeCompleted;
+
+        public void CompleteLevelUpgrade()
+        {
+            CurrentLevel++;
+            LevelUpgradeCompleted?.Invoke(CurrentLevel);
+        }
 
         public Dictionary<ShipType, FactionData> ShipFactionData => _roster.Ships;
         public Dictionary<SquadronType, FactionData> SquadronFactionData => _roster.Squadrons;

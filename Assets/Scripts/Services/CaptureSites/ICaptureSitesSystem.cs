@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Players;
@@ -7,6 +8,9 @@ namespace EmpireAtWar.Services.CaptureSites
 {
     public interface ICaptureSitesSystem
     {
+        event Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured;
+        event Action<PlayerId, SiteFacilityType> SiteLost;
+        event Action<PlayerId, SiteFacilityType> ConstructionStarted;
         IReadOnlyList<ICaptureSite> Sites { get; }
 
         bool IsPositionInAnySite(Vector3 position, float clearance = 0f);

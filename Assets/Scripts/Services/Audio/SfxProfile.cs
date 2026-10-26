@@ -17,12 +17,15 @@ namespace EmpireAtWar.Services.Audio
         [SerializeField] private int maxInstances = 4;
 
         [SerializeField] private bool loop;
+        [SerializeField] private bool localFeedback;
 
         public float Volume => volume;
         public float Priority => priority;
         public int MaxInstances => maxInstances;
         public bool Loop => loop;
+        public bool LocalFeedback => localFeedback;
         public float Cooldown => cooldown;
+        public bool HasClip => clip != null || clips != null && clips.HasClips;
 
         public AudioClip GetClip() => clip != null ? clip : clips.GetRandom();
     }
