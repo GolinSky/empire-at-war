@@ -496,12 +496,6 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
                 false)).Build());
             MapLayout layout = BuildSaveBattle();
-            // These production pools have unparented roots; keep this probe's instances in its teardown tree.
-            foreach (object pool in new object[] {
-                         _battle.Container.Resolve<EmpireAtWar.Services.Squadrons.FighterExplosionPool>(),
-                         _battle.Container.Resolve<EmpireAtWar.Services.UnitExplosion.HardPointExplosionPool>() })
-                ((Transform)pool.GetType().GetField("_root", System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic).GetValue(pool)).SetParent(_battle.transform);
             LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
             PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
             human.Container.Resolve<SpaceStationFactory>().Create(slot.Id, slot.Faction, layout.GetStationPosition(slot.Id));

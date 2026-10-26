@@ -13,7 +13,7 @@ namespace EmpireAtWar.Services.UnitExplosion
     /// fog; once the unit is destroyed it stops emitting (looping fire included) and finishes where the unit was last
     /// seen before returning to the pool.
     /// </summary>
-    public sealed class HardPointExplosionPool : IHardPointExplosionPool, IInitializable, ITickable
+    public sealed class HardPointExplosionPool : IHardPointExplosionPool, IInitializable, ITickable, ILateDisposable
     {
         private const int PREWARM_COUNT = 16;
 
@@ -36,6 +36,13 @@ namespace EmpireAtWar.Services.UnitExplosion
             {
                 _idle.Add(Object.Instantiate(_prefab, _root));
             }
+        }
+
+        public void LateDispose()
+        {
+            // In play the unloading battle scene destroys the scene-root pool in no guaranteed order; only an edit-mode
+            // scope, which has no scene unload, must remove it.
+            if (!Application.isPlaying) Object.DestroyImmediate(_root.gameObject);
         }
 
         public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale)

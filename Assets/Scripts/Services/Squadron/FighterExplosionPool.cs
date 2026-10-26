@@ -12,7 +12,7 @@ namespace EmpireAtWar.Services.Squadrons
     /// One set of fighter death explosions shared by every squadron, so squadron views no longer carry an
     /// explosion per fighter. An explosion in the local player's fog of war is not drawn.
     /// </summary>
-    public sealed class FighterExplosionPool : IFighterExplosionPool, IInitializable
+    public sealed class FighterExplosionPool : IFighterExplosionPool, IInitializable, ILateDisposable
     {
         private const int PREWARM_COUNT = 16;
         // A fighter's footprint: the explosion is drawn when vision reaches any part of it.
@@ -39,6 +39,13 @@ namespace EmpireAtWar.Services.Squadrons
             {
                 Create();
             }
+        }
+
+        public void LateDispose()
+        {
+            // In play the unloading battle scene destroys the scene-root pool in no guaranteed order; only an edit-mode
+            // scope, which has no scene unload, must remove it.
+            if (!Application.isPlaying) Object.DestroyImmediate(_root.gameObject);
         }
 
         public void Play(Vector3 position)
