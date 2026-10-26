@@ -50,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.GetReserve(0), Is.EqualTo(2));
                 Assert.That(model.GetActive(0), Is.Zero);
                 Assert.That(model.Cooldown, Is.EqualTo(LAUNCH_INTERVAL));
-                Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.True);
+                Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN, out _), Is.True);
                 Assert.That(model.GetReserve(0), Is.EqualTo(1));
                 component.Release();
                 hardPointModel.SetHealth(100f, 1f);
@@ -119,16 +119,57 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SquadronLost_ReplacesFromReserveAfterInterval()
+        public void SquadronLost_ReplacesOnlyOnceTheLostLaunchIsAMinuteOld()
         {
             HangarModel model = CreateModel(reserve: 2, maxActive: 1);
             model.TryLaunch(INITIAL_DELAY, out _);
+            model.TryLaunch(30f, out _);
+
+            model.SquadronLost(0);
+
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False, "A squadron lost 30 s after launch is not replaced at once.");
+            Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN - 30f - LAUNCH_INTERVAL - 0.1f, out _), Is.False);
+            Assert.That(model.TryLaunch(0.2f, out _), Is.True);
+            Assert.That(model.GetReserve(0), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void SquadronLost_LongLivedSquadronIsReplacedAfterTheLaunchInterval()
+        {
+            HangarModel model = CreateModel(reserve: 2, maxActive: 1);
+            model.TryLaunch(INITIAL_DELAY, out _);
+            model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN, out _);
 
             model.SquadronLost(0);
 
             Assert.That(model.TryLaunch(LAUNCH_INTERVAL - 0.1f, out _), Is.False);
             Assert.That(model.TryLaunch(0.2f, out _), Is.True);
-            Assert.That(model.GetReserve(0), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TwoSlotBay_LaunchesBothAtOnce_ThenWaitsAMinuteFromTheOldestLaunch()
+        {
+            HangarModel model = CreateModel(reserve: 5, maxActive: 2);
+            Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.True, "The second slot does not wait for the first launch.");
+
+            model.SquadronLost(0);
+
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False);
+            Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN - 2f * LAUNCH_INTERVAL - 0.1f, out _), Is.False);
+            Assert.That(model.TryLaunch(0.2f, out _), Is.True);
+        }
+
+        [Test]
+        public void AbilityLaunches_IgnoreTheRelaunchCooldown()
+        {
+            HangarModel model = CreateModel(reserve: 3, maxActive: 1);
+            model.TryLaunch(INITIAL_DELAY, out _);
+            model.SquadronLost(0);
+
+            Assert.That(model.TryLaunchImmediately(out _), Is.True);
+            model.SquadronLost(0);
+            Assert.That(model.TryLaunchReplacement(out _), Is.True);
         }
 
         [Test]
@@ -203,7 +244,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Cooldown, Is.EqualTo(1f));
             Assert.That(model.TryLaunch(1f, out _), Is.False, "The bay's one active slot is taken by the adopted squadron.");
             model.SquadronLost(0);
-            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out int bay), Is.True);
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False, "An adopted squadron counts as just launched.");
+            Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN, out int bay), Is.True);
             Assert.That(bay, Is.EqualTo(0));
             Assert.That(model.GetReserve(0), Is.EqualTo(1));
         }
