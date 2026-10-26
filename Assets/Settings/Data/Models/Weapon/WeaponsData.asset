@@ -422,7 +422,8 @@ MonoBehaviour:
     damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Procursator requested eight triple support batteries; medium like every cruiser and capital gun.
+    reason: Procursator requested eight triple support batteries; medium like every
+      cruiser and capital gun.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -581,11 +582,11 @@ MonoBehaviour:
     scope: 1
     faction: 0
     unit: 
-    damageMultiplier: 0.9
+    damageMultiplier: 1.17
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'DBY-827 turret of Republic Venator, Rothana and Resolute: lighter than
-      the shared heavy dual turbolaser.'
+    reason: 'DBY-827 turret of Republic Venator, Rothana and Resolute: damage increased
+      30% from its previous 0.9 multiplier to 1.17.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -730,7 +731,8 @@ MonoBehaviour:
     damageMultiplier: 0.7102273
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'Squadron damage unchanged when the ship caliber multipliers rose (medium 1.35, heavy 2.2).'
+    reason: Squadron damage unchanged when the ship caliber multipliers rose (medium
+      1.35, heavy 2.2).
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1024,7 +1026,8 @@ MonoBehaviour:
     damageMultiplier: 0.7102273
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'Squadron damage unchanged when the ship caliber multipliers rose (medium 1.35, heavy 2.2).'
+    reason: Squadron damage unchanged when the ship caliber multipliers rose (medium
+      1.35, heavy 2.2).
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1326,7 +1329,8 @@ MonoBehaviour:
     damageMultiplier: 0.9259259
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'Squadron damage unchanged when the ship caliber multipliers rose (medium 1.35, heavy 2.2).'
+    reason: Squadron damage unchanged when the ship caliber multipliers rose (medium
+      1.35, heavy 2.2).
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1363,7 +1367,8 @@ MonoBehaviour:
     damageMultiplier: 1.25
     reloadMultiplier: 1
     rangeMultiplier: 1.15
-    reason: 'Executor stays overpowered: keeps its former medium point defense damage and range now that point defense has no caliber.'
+    reason: 'Executor stays overpowered: keeps its former medium point defense damage
+      and range now that point defense has no caliber.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1525,7 +1530,8 @@ MonoBehaviour:
     damageMultiplier: 0.7102273
     reloadMultiplier: 0.75
     rangeMultiplier: 1
-    reason: 'Executor stays overpowered: keeps its heavy laser damage and reload after the heavy caliber and laser reload changes.'
+    reason: 'Executor stays overpowered: keeps its heavy laser damage and reload
+      after the heavy caliber and laser reload changes.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

@@ -28,7 +28,7 @@ MonoBehaviour:
     type: 2}
   <ShipClass>k__BackingField: 4
   <Hull>k__BackingField: 10300
-  <Shields>k__BackingField: 3000
+  <Shields>k__BackingField: 4000
   shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
   <ShieldRegenTier>k__BackingField: 3
   <ShieldRegenerateDelay>k__BackingField: 1
@@ -58,15 +58,15 @@ MonoBehaviour:
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
-  - weaponType: 4
+  - weaponType: 5
     count: 2
   - weaponType: 9
     count: 8
   - weaponType: 14
     count: 2
-  - weaponType: 23
-    count: 4
-  - weaponType: 32
+  - weaponType: 37
     count: 2
   - weaponType: 48
     count: 1
+  - weaponType: 94
+    count: 4
