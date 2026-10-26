@@ -74,7 +74,7 @@ namespace EmpireAtWar.Tests.Editor
             for (int i = 0; i < 2; i++)
             {
                 Transform exit = (Transform)exits.GetArrayElementAtIndex(i).objectReferenceValue;
-                Assert.That(exit.localPosition.y, Is.LessThan(data.HullBottom));
+                Assert.That(exit.position.y - view.transform.position.y, Is.LessThan(data.HullBottom));
             }
             HangarModel model = new HangarModel(data);
             for (int expected = 0; expected < 2; expected++)
@@ -120,7 +120,11 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(string path)
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            Assert.That(prefab.transform.localScale, Is.EqualTo(Vector3.one));
+            Vector3 scale = prefab.transform.localScale;
+            Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
+            Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
+            if (path != VIEW && !path.Contains("Wrecks/"))
+                Assert.That(scale, Is.EqualTo(Vector3.one));
             foreach (Transform t in prefab.GetComponentsInChildren<Transform>(true))
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject), Is.Zero, t.name);
             foreach (MeshRenderer renderer in prefab.GetComponentsInChildren<MeshRenderer>(true))

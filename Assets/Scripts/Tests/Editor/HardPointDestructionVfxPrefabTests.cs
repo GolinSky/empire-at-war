@@ -27,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(anchor, Is.Not.SameAs(hardPoint.transform), context);
                     Assert.That(anchor.root, Is.SameAs(hardPoint.transform.root), context);
                     Assert.That(anchors.Add(anchor), Is.True, context);
-                    Assert.That(serialized.FindProperty("destroyedVfxScale").floatValue,
+                    Assert.That(serialized.FindProperty("destroyedVfxScale").floatValue / prefab.transform.lossyScale.x,
                         Is.InRange(1f, 8f), context);
                     checkedHardPoints++;
                 }
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Tests.Editor
             foreach (HardPoint hardPoint in prefab.GetComponentsInChildren<HardPoint>(true))
             {
                 SerializedObject serialized = new SerializedObject(hardPoint);
-                Assert.That(serialized.FindProperty("destroyedVfxScale").floatValue,
+                Assert.That(serialized.FindProperty("destroyedVfxScale").floatValue / prefab.transform.lossyScale.x,
                     Is.InRange(minimum, maximum), hardPoint.name);
             }
         }

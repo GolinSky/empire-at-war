@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1606058577204528980}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 23
@@ -228,7 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 9170045372993512464}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
@@ -801,7 +801,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6635086, y: 0.6635086, z: 0.6635086}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1646295812109536723}
@@ -1194,7 +1194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7670171287525105803}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 21
@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2091236681449684106}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 15
@@ -1566,7 +1566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5928598827871660776}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 20
@@ -1654,7 +1654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 221266305614041674}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
@@ -1747,7 +1747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1335619556982566385}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 28
@@ -1860,7 +1860,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1504913882913076700}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 27
@@ -1973,7 +1973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6709715205652957915}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 24
@@ -2030,7 +2030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1606809652487034467}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
@@ -2206,7 +2206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6341912599677317577}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
@@ -3395,7 +3395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1892120286450597655}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 29
@@ -3446,7 +3446,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6827935964703281840}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 25
@@ -3534,7 +3534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4603554110302969045}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 22
@@ -3591,7 +3591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8969324814071955917}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
@@ -3826,7 +3826,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 835493973155094644}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.6635086
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 26
@@ -3838,6 +3838,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7138869373556870824}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -3963,6 +3968,11 @@ PrefabInstance:
         type: 3}
       propertyPath: mainBattery
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4092,6 +4102,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -4213,6 +4228,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 13
       objectReference: {fileID: 0}
@@ -4332,6 +4352,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7138869373556870824}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -4460,6 +4485,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <WeaponType>k__BackingField
       value: 90
       objectReference: {fileID: 0}
@@ -4574,6 +4604,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7138869373556870824}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -4783,6 +4818,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 11
       objectReference: {fileID: 0}
@@ -4909,6 +4949,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 4
       objectReference: {fileID: 0}
@@ -5028,6 +5073,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7138869373556870824}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -5156,6 +5206,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -5277,6 +5332,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 7
       objectReference: {fileID: 0}
@@ -5396,6 +5456,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7138869373556870824}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -5521,6 +5586,11 @@ PrefabInstance:
         type: 3}
       propertyPath: mainBattery
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.6635086
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

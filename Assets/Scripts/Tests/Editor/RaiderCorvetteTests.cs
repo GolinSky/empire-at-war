@@ -122,7 +122,11 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(string path)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            Assert.That(view.transform.localScale, Is.EqualTo(Vector3.one));
+            Vector3 scale = view.transform.localScale;
+            Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
+            Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
+            if (path != VIEW && !path.Contains("Wrecks/"))
+                Assert.That(scale, Is.EqualTo(Vector3.one));
             foreach (Transform transform in view.GetComponentsInChildren<Transform>(true))
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject), Is.Zero, transform.name);
             foreach (MeshRenderer renderer in view.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled))

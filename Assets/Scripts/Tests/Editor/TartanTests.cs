@@ -85,11 +85,7 @@ namespace EmpireAtWar.Tests.Editor
             var visible = view.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();
             var bounds = visible[0].bounds;
             foreach (var renderer in visible.Skip(1)) bounds.Encapsulate(renderer.bounds);
-            var reference = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/ImperialVenator.prefab");
-            var referenceRenderers = reference.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled).ToArray();
-            var referenceBounds = referenceRenderers[0].bounds;
-            foreach (var renderer in referenceRenderers.Skip(1)) referenceBounds.Encapsulate(renderer.bounds);
-            Assert.That(bounds.size.z, Is.EqualTo(referenceBounds.size.z * 250f / 1137f).Within(.01f));
+            Assert.That(bounds.size.z, Is.EqualTo(119.383362f * 250f / 1137f).Within(.01f));
             foreach (var collider in view.GetComponents<BoxCollider>())
                 foreach (var renderer in visible)
                 {
@@ -133,7 +129,11 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(string path)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            Assert.That(view.transform.localScale, Is.EqualTo(Vector3.one));
+            Vector3 scale = view.transform.localScale;
+            Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
+            Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
+            if (path != VIEW && !path.Contains("Wrecks/"))
+                Assert.That(scale, Is.EqualTo(Vector3.one));
             foreach (Transform transform in view.GetComponentsInChildren<Transform>(true))
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject), Is.Zero, transform.name);
             foreach (MeshRenderer renderer in view.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled))

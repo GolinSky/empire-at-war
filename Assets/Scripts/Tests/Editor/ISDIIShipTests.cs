@@ -47,7 +47,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(hangarConfig.FindProperty("hangarHardPoint").objectReferenceValue, Is.EqualTo(health.ShipUnits.Single(h => h.HardPointType == HardPointType.Hangar)));
             Transform launch = (Transform)hangarConfig.FindProperty("launchPoint").objectReferenceValue;
             BoxCollider collider = view.GetComponents<BoxCollider>().Single();
-            Assert.That(new Bounds(collider.center, collider.size).Contains(launch.localPosition), Is.False);
+            Assert.That(new Bounds(collider.center, collider.size).Contains(
+                collider.transform.InverseTransformPoint(launch.position)), Is.False);
         }
 
         [Test]
@@ -139,7 +140,11 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedPrefab_HasNoMissingScriptsOrUnboundVisibleGeometry(string path)
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            Assert.That(prefab.transform.localScale, Is.EqualTo(Vector3.one));
+            Vector3 scale = prefab.transform.localScale;
+            Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
+            Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
+            if (path != VIEW && !path.Contains("Wrecks/"))
+                Assert.That(scale, Is.EqualTo(Vector3.one));
             foreach (Transform t in prefab.GetComponentsInChildren<Transform>(true))
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject), Is.Zero, t.name);
             foreach (MeshRenderer renderer in prefab.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled))

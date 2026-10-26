@@ -1,0 +1,338 @@
+[
+  {
+    "id": "AcclamatorAssault",
+    "meters": 752,
+    "baseline": 78.959,
+    "preserve": false
+  },
+  {
+    "id": "Allegiance",
+    "meters": 2200,
+    "baseline": 230.99,
+    "preserve": false
+  },
+  {
+    "id": "ArquitensImperialCruiser",
+    "meters": 325,
+    "baseline": 34.127,
+    "preserve": false
+  },
+  {
+    "id": "Executor",
+    "meters": 19000,
+    "baseline": 1994.973,
+    "preserve": false
+  },
+  {
+    "id": "ImperialVenator",
+    "meters": 1137,
+    "baseline": 119.321,
+    "preserve": false
+  },
+  {
+    "id": "ISDI",
+    "meters": 1600,
+    "baseline": 167.998,
+    "preserve": false
+  },
+  {
+    "id": "ISDII",
+    "meters": 1600,
+    "baseline": 180,
+    "preserve": false
+  },
+  {
+    "id": "Procursator",
+    "meters": 1200,
+    "baseline": 126.546,
+    "preserve": false
+  },
+  {
+    "id": "RaiderCorvette",
+    "meters": 150,
+    "baseline": 15.75,
+    "preserve": false
+  },
+  {
+    "id": "Tartan",
+    "meters": 250,
+    "baseline": 26.385,
+    "preserve": false
+  },
+  {
+    "id": "Tector",
+    "meters": 1600,
+    "baseline": 180,
+    "preserve": false
+  },
+  {
+    "id": "Titan",
+    "meters": 4500,
+    "baseline": 472.494,
+    "preserve": false
+  },
+  {
+    "id": "VictoryI",
+    "meters": 900,
+    "baseline": 95.189,
+    "preserve": false
+  },
+  {
+    "id": "VictoryII",
+    "meters": 900,
+    "baseline": 94.499,
+    "preserve": false
+  },
+  {
+    "id": "AssaultFrigateMkII",
+    "meters": 700,
+    "baseline": 100,
+    "preserve": false
+  },
+  {
+    "id": "BothanAssaultCruiser",
+    "meters": 850,
+    "baseline": 160,
+    "preserve": false
+  },
+  {
+    "id": "CD273",
+    "meters": 500,
+    "baseline": 59.516,
+    "preserve": false
+  },
+  {
+    "id": "CorellianBattlecruiser",
+    "meters": 800,
+    "baseline": 140,
+    "preserve": false
+  },
+  {
+    "id": "CorellianCorvette",
+    "meters": 150,
+    "baseline": 15.75,
+    "preserve": false
+  },
+  {
+    "id": "Dauntless",
+    "meters": 1250,
+    "baseline": 160,
+    "preserve": false
+  },
+  {
+    "id": "Endurance",
+    "meters": 1040,
+    "baseline": 180,
+    "preserve": false
+  },
+  {
+    "id": "HomeOne",
+    "meters": 1300,
+    "baseline": 398.979,
+    "preserve": true
+  },
+  {
+    "id": "Liberator",
+    "meters": 600,
+    "baseline": 160,
+    "preserve": false
+  },
+  {
+    "id": "MC30c",
+    "meters": 380,
+    "baseline": 80,
+    "preserve": false
+  },
+  {
+    "id": "MC50",
+    "meters": 650,
+    "baseline": 109.348,
+    "preserve": false
+  },
+  {
+    "id": "MC75Profundity",
+    "meters": 1204.44,
+    "baseline": 126.565,
+    "preserve": false
+  },
+  {
+    "id": "MC80Independence",
+    "meters": 1300,
+    "baseline": 399.102,
+    "preserve": true
+  },
+  {
+    "id": "MonCalCruiser",
+    "meters": 1200,
+    "baseline": 125.998,
+    "preserve": false
+  },
+  {
+    "id": "Nebula",
+    "meters": 1040,
+    "baseline": 160,
+    "preserve": false
+  },
+  {
+    "id": "NebulonB",
+    "meters": 300,
+    "baseline": 31.5,
+    "preserve": false
+  },
+  {
+    "id": "QuasarFire",
+    "meters": 350,
+    "baseline": 70,
+    "preserve": false
+  },
+  {
+    "id": "Acclamator",
+    "meters": 752,
+    "baseline": 78.959,
+    "preserve": false
+  },
+  {
+    "id": "Arquitens",
+    "meters": 325,
+    "baseline": 34.125,
+    "preserve": false
+  },
+  {
+    "id": "Carrack",
+    "meters": 350,
+    "baseline": 37.009,
+    "preserve": false
+  },
+  {
+    "id": "Centax",
+    "meters": 500,
+    "baseline": 41.784,
+    "preserve": false
+  },
+  {
+    "id": "CR70",
+    "meters": 130,
+    "baseline": 15.75,
+    "preserve": false
+  },
+  {
+    "id": "HeavyDreadnought",
+    "meters": 600,
+    "baseline": 73.007,
+    "preserve": false
+  },
+  {
+    "id": "Imperator",
+    "meters": 1600,
+    "baseline": 167.998,
+    "preserve": false
+  },
+  {
+    "id": "StealthCorvette",
+    "meters": 99.7,
+    "baseline": 10.469,
+    "preserve": false
+  },
+  {
+    "id": "Pelta",
+    "meters": 282,
+    "baseline": 29.846,
+    "preserve": false
+  },
+  {
+    "id": "Mandator",
+    "meters": 8000,
+    "baseline": 839.989,
+    "preserve": false
+  },
+  {
+    "id": "Resolute",
+    "meters": 1137,
+    "baseline": 119.383,
+    "preserve": false
+  },
+  {
+    "id": "Rothana",
+    "meters": 2274,
+    "baseline": 160,
+    "preserve": false
+  },
+  {
+    "id": "Venator",
+    "meters": 1137,
+    "baseline": 119.383,
+    "preserve": false
+  },
+  {
+    "id": "VenatorII",
+    "meters": 1137,
+    "baseline": 119.383,
+    "preserve": false
+  },
+  {
+    "id": "Victory",
+    "meters": 900,
+    "baseline": 94.499,
+    "preserve": false
+  },
+  {
+    "id": "C9979",
+    "meters": 210,
+    "baseline": 22.05,
+    "preserve": false
+  },
+  {
+    "id": "Captor",
+    "meters": 500,
+    "baseline": 140,
+    "preserve": false
+  },
+  {
+    "id": "Dispatcher",
+    "meters": 600,
+    "baseline": 82.568,
+    "preserve": false
+  },
+  {
+    "id": "Invincible",
+    "meters": 2011,
+    "baseline": 318.236,
+    "preserve": false
+  },
+  {
+    "id": "Lucrehulk",
+    "meters": 3170,
+    "baseline": 332.845,
+    "preserve": false
+  },
+  {
+    "id": "Malevolence",
+    "meters": 4845,
+    "baseline": 508.718,
+    "preserve": false
+  },
+  {
+    "id": "Munificent",
+    "meters": 825,
+    "baseline": 86.624,
+    "preserve": false
+  },
+  {
+    "id": "PatrolFrigate",
+    "meters": 210,
+    "baseline": 81.097,
+    "preserve": false
+  },
+  {
+    "id": "Providence",
+    "meters": 1088,
+    "baseline": 114.238,
+    "preserve": false
+  },
+  {
+    "id": "Recusant",
+    "meters": 1187,
+    "baseline": 124.633,
+    "preserve": false
+  }
+]

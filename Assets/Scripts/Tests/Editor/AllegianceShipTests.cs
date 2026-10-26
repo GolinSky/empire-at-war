@@ -122,7 +122,9 @@ namespace EmpireAtWar.Tests.Editor
             var collider = view.GetComponents<BoxCollider>().Single();
             Assert.That(Vector3.Distance(collider.size, bounds.size), Is.LessThan(.001f));
             Assert.That(bounds.size.z, Is.EqualTo(119.3834f * 2200 / 1137).Within(.02f));
-            Assert.That(data.NavigationRadius, Is.GreaterThan(new Vector2(bounds.extents.x, bounds.extents.z).magnitude));
+            Vector3 worldSize = Vector3.Scale(collider.size, collider.transform.lossyScale);
+            Assert.That(worldSize.z, Is.EqualTo(119.383362f * 2200 / 1137).Within(.02f));
+            Assert.That(data.NavigationRadius, Is.GreaterThan(new Vector2(worldSize.x, worldSize.z).magnitude * .5f));
             var transforms = view.GetComponentsInChildren<Transform>(true);
             foreach (var weapon in view.GetComponentsInChildren<WeaponHardPoint>(true))
             {
@@ -149,7 +151,11 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedPrefabs_HaveNoBrokenReferencesOrMissingMeshes(string path)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            Assert.That(prefab.transform.localScale, Is.EqualTo(Vector3.one));
+            Vector3 scale = prefab.transform.localScale;
+            Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
+            Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
+            if (path != VIEW && !path.Contains("Wrecks/"))
+                Assert.That(scale, Is.EqualTo(Vector3.one));
             foreach (var transform in prefab.GetComponentsInChildren<Transform>(true))
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject), Is.Zero, transform.name);
             foreach (var component in prefab.GetComponentsInChildren<Component>(true))

@@ -145,7 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4345973054682592008}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 9
@@ -5032,7 +5032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7718290075684605001}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
@@ -5089,7 +5089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 438322762761618881}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
@@ -5146,7 +5146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 3875066137584863687}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 8
@@ -5197,7 +5197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2742578010874835409}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
@@ -5442,7 +5442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2841930088589418829}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
@@ -5499,7 +5499,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4363393644875806327}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
@@ -5675,7 +5675,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.27189267, y: 0.27189267, z: 0.27189267}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 281359053077017755}
@@ -6033,7 +6033,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4253051294246499443}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
@@ -6151,7 +6151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2934742726140270077}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
@@ -7340,7 +7340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 3490154592975030713}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 0.27189267
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1

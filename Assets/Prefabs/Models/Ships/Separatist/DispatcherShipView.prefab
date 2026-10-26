@@ -78,7 +78,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 682434907214550308}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
@@ -264,7 +264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6454920839972990747}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 20
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7751254214435861724}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 8
   <Id>k__BackingField: 14
@@ -372,7 +372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5278907102963340437}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
@@ -429,7 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6000547284579248671}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 8
   <Id>k__BackingField: 13
@@ -5415,7 +5415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 3161871328640736560}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
@@ -5503,7 +5503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 438894514129211410}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 21
@@ -5585,7 +5585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 3390797015541707561}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
@@ -5642,7 +5642,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8378401958888460637}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
@@ -6181,7 +6181,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7629966, y: 0.7629966, z: 0.7629966}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 281359053077017755}
@@ -6563,7 +6563,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4044548219668698363}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
@@ -6620,7 +6620,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6592358292404351362}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 8
   <Id>k__BackingField: 16
@@ -6708,7 +6708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2349388962913615557}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
@@ -6765,7 +6765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2278828384231616142}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
@@ -6822,7 +6822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1915781419815417097}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
@@ -6944,7 +6944,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6570170119284216891}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
@@ -7001,7 +7001,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5818236851149729427}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
@@ -7058,7 +7058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 536588511086270485}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
@@ -7115,7 +7115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8447573840360970257}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
@@ -7172,7 +7172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1788515647405880370}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
@@ -8361,7 +8361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 9084071715425730891}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
@@ -8418,7 +8418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 793434377305344500}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 8
   <Id>k__BackingField: 15
@@ -8475,7 +8475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5078529237186171311}
-  destroyedVfxScale: 1.1824216
+  destroyedVfxScale: 0.90218365
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0

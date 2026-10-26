@@ -88,9 +88,12 @@ namespace EmpireAtWar.Tests.Editor
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             var collider = view.GetComponents<BoxCollider>().Single();
-            Assert.That(view.transform.localScale, Is.EqualTo(Vector3.one));
-            Assert.That(collider.size.z, Is.EqualTo(126.5464f).Within(.001f));
-            Assert.That(data.NavigationRadius, Is.GreaterThan(new Vector2(collider.size.x, collider.size.z).magnitude * .5f));
+            Vector3 scale = view.transform.localScale;
+            Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
+            Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
+            Vector3 worldSize = Vector3.Scale(collider.size, collider.transform.lossyScale);
+            Assert.That(worldSize.z, Is.EqualTo(119.383362f * 1200 / 1137).Within(.001f));
+            Assert.That(data.NavigationRadius, Is.GreaterThan(new Vector2(worldSize.x, worldSize.z).magnitude * .5f));
             var hull = view.GetComponentsInChildren<Transform>(true).Single(t => t.name == "Procursator" && t.parent.name == "BankingBody");
             foreach (var renderer in hull.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled))
             foreach (var vertex in renderer.GetComponent<MeshFilter>().sharedMesh.vertices)
@@ -98,7 +101,7 @@ namespace EmpireAtWar.Tests.Editor
                 var position = view.transform.InverseTransformPoint(renderer.transform.TransformPoint(vertex));
                 foreach (var angle in new[] { -data.BodyRotationMaxAngle, 0, data.BodyRotationMaxAngle })
                 {
-                    float y = (Quaternion.Euler(0, 0, angle) * position).y;
+                    float y = view.transform.TransformVector(Quaternion.Euler(0, 0, angle) * position).y;
                     Assert.That(y, Is.InRange(data.HullBottom - .001f, data.HullTop + .001f));
                 }
             }

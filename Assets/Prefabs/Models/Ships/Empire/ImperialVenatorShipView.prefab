@@ -59,7 +59,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -11.806186, y: -7.9783688, z: -46.068417}
-  m_LocalScale: {x: 14.400001, y: 14.400001, z: 7.56}
+  m_LocalScale: {x: 14.40748, y: 14.40748, z: 7.5639267}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6288173655347290105}
@@ -4915,7 +4915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1598120365986816163}
-  destroyedVfxScale: 1.4141611
+  destroyedVfxScale: 1.4148955
   unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 17
@@ -4968,7 +4968,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 11.8062315, y: -7.9783688, z: -46.068417}
-  m_LocalScale: {x: 14.400001, y: 14.400001, z: 7.56}
+  m_LocalScale: {x: 14.40748, y: 14.40748, z: 7.5639267}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6288173655347290105}
@@ -9812,7 +9812,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0005194, y: 1.0005194, z: 1.0005194}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6823356564290352850}
@@ -10279,7 +10279,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 6.1200385, y: -8.867893, z: -58.302597}
-  m_LocalScale: {x: 14.400001, y: 14.400001, z: 7.56}
+  m_LocalScale: {x: 14.40748, y: 14.40748, z: 7.5639267}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6288173655347290105}
@@ -15341,7 +15341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 442962276985987735}
-  destroyedVfxScale: 1.4141611
+  destroyedVfxScale: 1.4148955
   unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 15
@@ -16705,7 +16705,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -6.119883, y: -8.867893, z: -58.302597}
-  m_LocalScale: {x: 14.400001, y: 14.400001, z: 7.56}
+  m_LocalScale: {x: 14.40748, y: 14.40748, z: 7.5639267}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6288173655347290105}
@@ -21597,7 +21597,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8542011605834381136}
-  destroyedVfxScale: 1.4141611
+  destroyedVfxScale: 1.4148955
   unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 16
@@ -21638,7 +21638,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -21790,7 +21790,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22084,7 +22084,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22236,7 +22236,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22720,7 +22720,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22872,7 +22872,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23024,7 +23024,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23171,7 +23171,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23323,7 +23323,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23588,7 +23588,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23750,7 +23750,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23902,7 +23902,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -24054,7 +24054,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -24206,7 +24206,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -24368,7 +24368,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: destroyedVfxScale
-      value: 1.4141611
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
