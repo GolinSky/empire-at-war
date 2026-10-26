@@ -170,6 +170,7 @@ Columns: baseline → Phase 4 final → Phase 5.
 - Proposed values (A, saved): Corvette 5, Frigate 25, Cruiser 90, Capital 180, HeavyCapital 400 /s.
 - Simulator `Logs/Rebalance/2026-10-26-regen/` (C 4/15/60/120/250, A, B 5/30/150/300/600): lower class beats higher class — Corvette>Frigate 11/9/7 %, Frigate>Cruiser 6/4/3 %, Cruiser>Capital 6/6/10 %, Capital>Heavy 5/4/4 %. Same-class stalemates 1/2/11 of 2600.
 - Outliers no tier fixes: Munificent and Dispatcher beat Heavy Dreadnought 10–0 in C/A/B (Heavy Dreadnought 144 DPS). Recusant vs Munificent 3–7 (C), 5–5 (A), 10–0 (B); B drops Separatist cruiser same-class win rate 12 → 0 %.
+- Corvette radar (2026-10-26): CR70, Carrack, C-9979, Patrol Frigate 300 → 500 (= Thranta). At 300 they only detected what their lasers already reached, so the kill-retarget (radar contacts) could not find nearby squadrons. Full EditMode 2153: 2150 pass; fails `ISDIIShipTests` (pre-existing), `MapLayoutGeneratorTests` (CLI bridge timeout log; passes 23/23 alone), `LoadingUiIsolationTests` (ran while the user was playtesting; passes 4/4 alone). Simulator `Logs/Rebalance/2026-10-26-radar/` vs `2026-10-26-regen/` A: 21 duel rows changed, wins ±1 run at most, TTK +1 s; class win rates and cross-class results unchanged (duels have no squadrons, so the squadron-detection gain is playtest-only).
 - Tests: `ShieldRegen_FollowsShipClassTiers_AndRisesWithClass`. EditMode 2153: 2151 pass; fails `ISDIIShipTests` (32 vs 28), `HealthModelTests.PointDefense_WhileCloaked…` (pre-existing).
 
 ## Tests
