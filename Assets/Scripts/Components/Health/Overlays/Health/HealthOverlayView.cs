@@ -18,8 +18,8 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
     public sealed class HealthOverlayView : MonoBehaviour, IHealthOverlayView
     {
-        private const float PANEL_WIDTH = 220f;
-        private const float PANEL_HEIGHT = 38f;
+        private const float PANEL_WIDTH = 208f;
+        private const float PANEL_HEIGHT = 24f;
         private const float BAR_WIDTH = 204f;
         private const float BAR_HEIGHT = 8f;
         private const float SCREEN_OFFSET = 44f;
@@ -30,8 +30,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private MPImage _armorFill;
         private MPImage _shieldFill;
 
-        private static readonly Color PANEL_COLOR = new(0.025f, 0.035f, 0.055f, 0.92f);
-        private static readonly Color PANEL_OUTLINE_COLOR = new(0.35f, 0.48f, 0.62f, 0.75f);
+        private static readonly Color PANEL_COLOR = new(0.025f, 0.035f, 0.055f, 0.35f);
         private static readonly Color BAR_BACKGROUND_COLOR = new(0.08f, 0.1f, 0.14f, 0.96f);
         private static readonly Color ARMOR_COLOR = new(0.25f, 0.9f, 0.42f, 1f);
         private static readonly Color SHIELD_COLOR = new(0.2f, 0.72f, 1f, 1f);
@@ -111,9 +110,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 _canvasRect,
                 new Vector2(PANEL_WIDTH, PANEL_HEIGHT),
                 PANEL_COLOR,
-                7f);
-            panelImage.OutlineWidth = 1f;
-            panelImage.OutlineColor = PANEL_OUTLINE_COLOR;
+                4f);
             _panel = panelImage.rectTransform;
 
             CreateBar("Shield", 6f, SHIELD_COLOR, out _shieldFill);
