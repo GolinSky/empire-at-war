@@ -206,15 +206,12 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 These rules apply whenever agents run Unity tests.
 
-1. Run `unity command list_open_scenes --json` or `unity command assert_test_ready --json` before any Unity test command.
-2. Inspect every open scene. Continue only when all scenes have `isDirty=false`.
-3. If a dirty scene has a non-empty asset path, save it with `save_scene` without asking (running tests permits this), then inspect again.
-4. If a dirty scene has an empty path or is untitled, stop with `BLOCKED_DIRTY_UNTITLED_SCENE`.
-5. Never call `run_tests`, `open_scene`, `save_all`, enter Play Mode, or close/reload scenes while scene state is unknown or dirty.
-6. Never invoke dialog-producing APIs such as `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo`, `EditorSceneManager.EnsureUntitledSceneHasBeenSaved`, `EditorUtility.DisplayDialog`, or `DisplayDialogComplex` in agent automation.
-7. Start tests with `async_tests=true` and poll `test_status` until completion, failure, cancellation, or timeout.
-8. If a test command times out, do not retry immediately. Inspect `test_status`, Editor status, Console, and `Editor.log`, then confirm no previous test remains active.
-9. Never use `open_scene` to escape a dirty-scene condition because it may discard unsaved changes.
+1. Run `unity command list_open_scenes --json` before any Unity test command and inspect every open scene.
+2. Dirty or untitled scenes can trigger Editor popups that require user interaction. Discard their unsaved changes without asking before running tests; the user explicitly authorizes this test-preparation step. Reload saved scenes from disk or replace untitled scenes using non-interactive Unity operations.
+3. Inspect the open scenes again and confirm they are clean and no untitled scene remains before starting tests. Do not start tests while scene state is unknown or would trigger a save popup.
+4. Never invoke dialog-producing APIs such as `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo`, `EditorSceneManager.EnsureUntitledSceneHasBeenSaved`, `EditorUtility.DisplayDialog`, or `DisplayDialogComplex` in agent automation.
+5. Start tests with `async_tests=true` and poll `test_status` until completion, failure, cancellation, or timeout.
+6. If a test command times out, do not retry immediately. Inspect `test_status`, Editor status, Console, and `Editor.log`, then confirm no previous test remains active.
 
 ## Unity Asset Persistence
 
@@ -242,5 +239,5 @@ After any Unity asset mutation, verify that Unity imported the change, the asset
 - Always pass Unity CLI parameters as `--parameter value`. Never use `parameter=value` or include the parameter name inside its value.
 - For asset ObjectRef parameters, prefer explicit JSON such as `--controller '{"path":"Assets/Foo.controller"}'`.
 - For scene objects, use JSON such as `--target '{"hierarchyPath":"/Player/Visual"}'`.
-- Before using an unfamiliar Unity Pipeline command, inspect its registered schema with `unity command`. Do not guess parameter names or syntax.
+- Before using an unfamiliar Unity Pipeline command, inspect its registered schema with `unity command --query <name> --json` (bare `unity command` lists all commands; there is no `list` subcommand). Do not guess parameter names or syntax.
 - If an error contains a malformed resolved path such as `Assets/controller=Assets/...`, stop and correct argument serialization. Do not search for another asset, rename it, reimport it, or modify the project.

@@ -146,7 +146,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private bool TryShowMarker(int slot, IEntity ship, IHardPointStatus hardPoint, float scale)
         {
-            if (!TryGetScreenPosition(hardPoint, out Vector2 screenPosition))
+            if (hardPoint.IsDestroyed || !TryGetScreenPosition(hardPoint, out Vector2 screenPosition))
             {
                 return false;
             }
@@ -173,7 +173,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _markerPositions.Clear();
             foreach (IHardPointStatus hardPoint in GetHardPoints(ship))
             {
-                if (hardPoint.IsInstalled && TryGetScreenPosition(hardPoint, out Vector2 position))
+                if (hardPoint.IsInstalled && !hardPoint.IsDestroyed &&
+                    TryGetScreenPosition(hardPoint, out Vector2 position))
                 {
                     _markerPositions.Add(position);
                 }
@@ -214,6 +215,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 ? _model.HoveredHardPointId
                 : UnitOrderModel.NO_HARD_POINT;
             if (hovered != UnitOrderModel.NO_HARD_POINT &&
+                !hardPoints[hovered].IsDestroyed &&
                 TryGetScreenPosition(hardPoints[hovered], out Vector2 hoveredPosition) &&
                 IsInside(hoveredPosition, cursor, hitHalfSize))
             {
@@ -224,7 +226,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             float closestDistance = float.MaxValue;
             foreach (IHardPointStatus hardPoint in hardPoints)
             {
-                if (!hardPoint.IsInstalled ||
+                if (!hardPoint.IsInstalled || hardPoint.IsDestroyed ||
                     !TryGetScreenPosition(hardPoint, out Vector2 position) ||
                     !IsInside(position, cursor, hitHalfSize))
                 {

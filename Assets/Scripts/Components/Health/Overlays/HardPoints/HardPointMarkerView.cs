@@ -1,31 +1,20 @@
-using MPUIKIT;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 {
-    /// <summary>One screen-space hardpoint marker: dark square, symbol, frame, target halo and local HP strip.</summary>
+    /// <summary>One screen-space hardpoint icon tinted by its remaining health.</summary>
     public sealed class HardPointMarkerView : MonoBehaviour
     {
         private const float ICON_BOX_SIZE = 28f;
-        private const float ICON_SIZE = 20f;
-        private const float HEALTH_WIDTH = 32f;
-        private const float HEALTH_HEIGHT = 4f;
-        private const float HEALTH_GAP = 3f;
+        private const float ICON_SIZE = 25f;
         private const float HOVER_SCALE = 1.12f;
-        private const float HEALTHY_THRESHOLD = 0.6f;
-        private const float CRITICAL_THRESHOLD = 0.3f;
+        private const float HEALTH_HUE_RANGE = 1f / 3f;
+        private const float HEALTH_SATURATION = 0.55f;
+        private const float HEALTH_BRIGHTNESS = 0.75f;
 
         private RectTransform _root;
         private Image _icon;
-        private MPImage _healthFill;
-
-        private static readonly Color ICON_COLOR = new(0.97f, 0.98f, 0.99f, 1f);
-        private static readonly Color DESTROYED_ICON_COLOR = new(0.5f, 0.52f, 0.56f, 0.45f);
-        private static readonly Color TRACK_COLOR = new(0f, 0f, 0f, 0.9f);
-        private static readonly Color HEALTHY_COLOR = new(0.25f, 0.9f, 0.42f, 1f);
-        private static readonly Color DAMAGED_COLOR = new(0.96f, 0.7f, 0.2f, 1f);
-        private static readonly Color CRITICAL_COLOR = new(0.94f, 0.27f, 0.27f, 1f);
 
         public static HardPointMarkerView Create(RectTransform parent)
         {
@@ -42,17 +31,18 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         public void Show(Vector2 localPosition, HardPointMarkerData data)
         {
+            if (data.IsDestroyed)
+            {
+                Hide();
+                return;
+            }
+
             _root.anchoredPosition = localPosition;
-            _root.localScale = Vector3.one * (data.Scale * (data.IsHovered && !data.IsDestroyed ? HOVER_SCALE : 1f));
+            _root.localScale = Vector3.one * (data.Scale * (data.IsHovered ? HOVER_SCALE : 1f));
 
             _icon.sprite = data.Icon;
-            _icon.color = data.IsDestroyed ? DESTROYED_ICON_COLOR : ICON_COLOR;
-
-            float health = Mathf.Clamp01(data.HealthPercentage);
-            _healthFill.fillAmount = health;
-            _healthFill.color = health > HEALTHY_THRESHOLD ? HEALTHY_COLOR
-                : health > CRITICAL_THRESHOLD ? DAMAGED_COLOR
-                : CRITICAL_COLOR;
+            _icon.color = Color.HSVToRGB(Mathf.Clamp01(data.HealthPercentage) * HEALTH_HUE_RANGE,
+                HEALTH_SATURATION, HEALTH_BRIGHTNESS);
 
             if (!gameObject.activeSelf)
             {
@@ -77,19 +67,14 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             RectTransform iconRect = (RectTransform)iconObject.transform;
             iconRect.SetParent(root, false);
             iconRect.sizeDelta = new Vector2(ICON_SIZE, ICON_SIZE);
-            _icon = iconObject.AddComponent<Image>();
+            _icon = iconObject.AddComponent<HardPointIconImage>();
             _icon.raycastTarget = false;
             _icon.preserveAspect = true;
 
-            float healthY = -(ICON_BOX_SIZE * 0.5f + HEALTH_GAP + HEALTH_HEIGHT * 0.5f);
-            MPImage track = HardPointOverlayGraphics.CreateImage("HealthTrack", root,
-                new Vector2(HEALTH_WIDTH, HEALTH_HEIGHT), TRACK_COLOR, 1f);
-            track.rectTransform.anchoredPosition = new Vector2(0f, healthY);
-            _healthFill = HardPointOverlayGraphics.CreateImage("HealthFill", track.rectTransform,
-                new Vector2(HEALTH_WIDTH, HEALTH_HEIGHT), HEALTHY_COLOR, 1f);
-            _healthFill.type = Image.Type.Filled;
-            _healthFill.fillMethod = Image.FillMethod.Horizontal;
-            _healthFill.fillOrigin = (int)Image.OriginHorizontal.Left;
+            Outline outline = iconObject.AddComponent<Outline>();
+            outline.effectColor = new Color(0.03f, 0.04f, 0.06f, 0.9f);
+            outline.effectDistance = new Vector2(1f, -1f);
+            outline.useGraphicAlpha = true;
         }
     }
 }
