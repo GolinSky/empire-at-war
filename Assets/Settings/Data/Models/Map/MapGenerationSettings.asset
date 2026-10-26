@@ -51,7 +51,7 @@ MonoBehaviour:
         <PointSpacing>k__BackingField: 120
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
-          <Max>k__BackingField: 720
+          <Max>k__BackingField: 600
         <DefaultZoneGap>k__BackingField: 240
         <PlanetScale>k__BackingField: 8.4
         <LaneWidth>k__BackingField: 1020

@@ -25,6 +25,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string BATTLE_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab";
 
         private const int SEED_COUNT = 20;
+        private const int ROSTER_SEED_COUNT = 10;
 
         private const float TOLERANCE = 0.01f;
 
@@ -358,6 +359,43 @@ namespace EmpireAtWar.Tests.Editor
                         $"{mapSize} seed {seed}");
                 }
             }
+        }
+
+        // Republic, Rebellion and Empire stations share the largest footprint, so all-Republic rosters are the tightest fit.
+        [TestCase(MapSize.Small)]
+        [TestCase(MapSize.Medium)]
+        [TestCase(MapSize.Large)]
+        public void Generate_EveryRosterAndDifficulty_FindsRoom(MapSize mapSize)
+        {
+            for (int playerCount = 2; playerCount <= 4; playerCount++)
+            {
+                foreach (FactionType opponentFaction in new[] { FactionType.Republic, FactionType.Separatist })
+                {
+                    foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
+                    {
+                        PlayerSlot[] players = CreateRoster(playerCount, opponentFaction, difficulty);
+                        for (int seed = 0; seed < ROSTER_SEED_COUNT; seed++)
+                        {
+                            Assert.DoesNotThrow(() => _generator.Generate(mapSize, players, new Random(seed)),
+                                $"{mapSize} {playerCount} players vs {opponentFaction} {difficulty} seed {seed}");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static PlayerSlot[] CreateRoster(int playerCount, FactionType opponentFaction, EnemyAiDifficulty difficulty)
+        {
+            PlayerSlot[] players = new PlayerSlot[playerCount];
+            for (int i = 0; i < playerCount; i++)
+            {
+                bool isHumanTeam = i % 2 == 0;
+                players[i] = new PlayerSlot(new PlayerId(i), new TeamId(i % 2),
+                    isHumanTeam ? FactionType.Republic : opponentFaction,
+                    i == 0 ? PlayerController.Human : PlayerController.Ai, difficulty, i);
+            }
+
+            return players;
         }
 
         private static bool SharesEdge(Vector3 first, Vector3 second)

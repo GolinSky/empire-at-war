@@ -62,14 +62,14 @@ namespace EmpireAtWar.Entities.Map.Generation
             }
 
             int miningPairCount = (size.MiningSiteCount - 2 * _settings.HomeMiningSitesPerStation) / 2;
-            // Contested central mines first, then the larger facility pockets before reinforcement zones.
+            // Contested central mines first, then the largest pockets (reinforcement zones) while room remains.
             return TryAddPairs(MapNodeKind.MiningSite, size.CentralMiningPairCount, _settings.CentralRegionShare,
+                    size, stations, center, random, nodes) &&
+                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes) &&
                 TryAddPairs(MapNodeKind.MiningSite, miningPairCount - size.CentralMiningPairCount, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes) &&
                 TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2, WHOLE_MAP_SHARE,
-                    size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes);
         }
 
