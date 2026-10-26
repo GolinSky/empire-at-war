@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
             yield return Ship("Republic/Pelta", 2200, 1000, (TURBO, 4), (LASER, 4), (ION, 2));
             yield return Ship("Republic/Arquitens", 2900, 1400, (TURBO, 16), (LASER, 4), (MISSILE, 1));
             yield return Ship("Republic/HeavyDreadnought", 3600, 2500, (LASER, 8), (TURBO, 4));
-            yield return Ship("Republic/Acclamator", 4700, 2000, (TORPEDO, 1), (TURBO, 12), (PD, 2));
+            yield return Ship("Republic/Acclamator", 3500, 1500, (TORPEDO, 1), (TURBO, 12), (PD, 2));
             yield return Ship("Empire/Victory", 4900, 3100, (TURBO, 24), (LASER, 8), (MISSILE, 8), (TORPEDO, 1));
             yield return Ship("Republic/Venator", 5000, 3000, (TURBO, 18), (LASER, 2), (PD, 2), (TORPEDO, 1),
                 (WeaponFamily.Beam, 1));
@@ -45,8 +45,8 @@ namespace EmpireAtWar.Tests.Editor
                 (TORPEDO, 4));
             yield return Ship("Republic/Rothana", 10300, 3000, (TURBO, 18), (LASER, 4), (PD, 2), (ION, 2), (TORPEDO, 1));
             yield return Ship("Separatist/PatrolFrigate", 900, 700, (LASER, 8));
-            yield return Ship("Separatist/Munificent", 2500, 1200, (TURBO, 22), (ION, 2), (PD, 4));
-            yield return Ship("Separatist/Captor", 3400, 800, (LASER, 6), (TURBO, 2), (ION, 2));
+            yield return Ship("Separatist/Munificent", 2500, 2000, (TURBO, 22), (ION, 2), (PD, 4));
+            yield return Ship("Separatist/Captor", 3400, 1000, (LASER, 12), (TURBO, 2), (ION, 2));
             yield return Ship("Separatist/Dispatcher", 3500, 1000, (ION, 3), (TURBO, 15), (LASER, 4), (PD, 4));
             yield return Ship("Separatist/Recusant", 3800, 2600, (LASER, 8), (PD, 4), (TURBO, 8));
             yield return Ship("Separatist/Providence", 5000, 3000, (TURBO, 36), (LASER, 10), (MISSILE, 2), (TORPEDO, 2));
