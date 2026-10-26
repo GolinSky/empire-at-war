@@ -17,6 +17,8 @@ namespace EmpireAtWar.Entities.SuperWeapons
         [Tooltip("Seconds the target stays disabled after a hit. Zero disables the effect.")]
         [SerializeField] private float stunDuration;
         [SerializeField] private CombatStatModifier stunModifier;
+        [Tooltip("Damage multiplier against targets disabled by a superweapon, so disable-then-strike combos stay weak.")]
+        [SerializeField, Range(0f, 1f)] private float stunnedTargetDamageMultiplier = 1f;
 
         [Header("Area")]
         [Tooltip("Damage dealt around the impact to the target's side. Zero disables the effect.")]
@@ -28,6 +30,7 @@ namespace EmpireAtWar.Entities.SuperWeapons
         public float FiringDelay => firingDelay;
         public float StunDuration => stunDuration;
         public CombatStatModifier StunModifier => stunModifier;
+        public float StunnedTargetDamageMultiplier => stunnedTargetDamageMultiplier;
         public float AreaDamage => areaDamage;
         public float AreaRadius => areaRadius;
     }

@@ -248,7 +248,7 @@ namespace EmpireAtWar.Tests.Editor
             SuperWeaponModel model = new SuperWeaponModel();
             model.Restore(option.Key, SuperWeaponState.Unavailable, 45f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
-                null, null, null, production, model, faction, economy, owner, new QueuePurchaseProcessor());
+                null, null, null, production, model, faction, economy, owner, new QueuePurchaseProcessor(), null, null);
             typeof(EnemySuperWeaponController).GetMethod("TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(controller, new object[] { option.Key, option.Value });
             controller.AdvanceCharging(option.Value.BuildTime / 2f);
@@ -262,7 +262,7 @@ namespace EmpireAtWar.Tests.Editor
             production.CanProduce = hasStation;
             QueuePurchaseProcessor restoredProduction = new QueuePurchaseProcessor();
             EnemySuperWeaponController restored = new EnemySuperWeaponController(
-                null, null, null, production, restoredModel, faction, restoredEconomy, owner, restoredProduction);
+                null, null, null, production, restoredModel, faction, restoredEconomy, owner, restoredProduction, null, null);
             new AiSuperWeaponSaveSource(new PlayerSaveRegistry(), owner, restoredModel, restored).RestoreBeforeUnits(save);
 
             Assert.That(restored.GetChargeTimeRemaining(option.Key), Is.EqualTo(remaining));
@@ -292,7 +292,7 @@ namespace EmpireAtWar.Tests.Editor
             EconomyModel economy = new EconomyModel(null, 1f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(null, null, null,
                 new ProductionAccess { CanProduce = true }, model, new EnemyFactionModel(null, roster), economy, owner,
-                new QueuePurchaseProcessor());
+                new QueuePurchaseProcessor(), null, null);
             PlayerSave save = PlayerSave.Create(owner.Id);
             save.SuperWeapons = new[] { JsonUtility.FromJson<SuperWeaponSave>(
                 "{\"type\":" + (int)option.Key + ",\"state\":" + (int)SuperWeaponState.Charging + ",\"cooldown\":0}") };
@@ -319,7 +319,7 @@ namespace EmpireAtWar.Tests.Editor
                 production.Queue.Add(new LevelUnitRequest(data, id), 10f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
                 null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,
-                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), production);
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), production, null, null);
             MethodInfo purchase = typeof(EnemySuperWeaponController).GetMethod(
                 "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
 

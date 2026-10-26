@@ -48,7 +48,8 @@ namespace EmpireAtWar.Tests.Editor
                 SuperWeaponModel model = new SuperWeaponModel();
                 // Charging, purchasing and economy are outside this firing regression.
                 EnemySuperWeaponController controller = new EnemySuperWeaponController(
-                    fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy), null);
+                    fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy), null,
+                    LoadData(), roster);
                 MethodInfo tryFire = typeof(EnemySuperWeaponController).GetMethod("TryFire",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 model.StartCharging(type);
@@ -83,16 +84,105 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RecordingSuperWeaponFireService : ISuperWeaponFireService
         {
             public IEntity Target { get; private set; }
+            public event Action<SuperWeaponType, IEntity> Fired { add { } remove { } }
             public bool CanTarget(PlayerId owner, IEntity target) => target.Owner != owner;
             public void Fire(SuperWeaponType type, IEntity target) => Target = target;
         }
+
+        [Test]
+        public void Enemy_WaitsForItsDifficultyDelayBeforeFiring()
+        {
+            GameObject stationView = new GameObject("Station target");
+            GameObject scout = new GameObject("Enemy scout");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateTeamGame();
+                VisionService vision = new VisionService(roster);
+                EntityLocator entities = new EntityLocator();
+                StationTarget health = new StationTarget(stationView.transform);
+                entities.AddEntity(new Entity(health, entities, new IEntityFacade[] { health },
+                    TestPlayers.Human, 1, Array.Empty<IPooledEntityEvents>(),
+                    Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>()));
+                vision.Register(TestPlayers.Enemy, scout.transform, 20f);
+                RecordingSuperWeaponFireService fireService = new RecordingSuperWeaponFireService();
+                SuperWeaponModel model = new SuperWeaponModel();
+                EnemySuperWeaponController controller = new EnemySuperWeaponController(
+                    fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy), null,
+                    LoadData(), roster);
+                MethodInfo tryFire = typeof(EnemySuperWeaponController).GetMethod("TryFireAfterDelay",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                FieldInfo delay = typeof(EnemySuperWeaponController).GetField("_fireDelayLeft",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                model.StartCharging(SuperWeaponType.PlasmaCannon);
+                model.CompleteCharging(SuperWeaponType.PlasmaCannon);
+
+                tryFire.Invoke(controller, new object[] { SuperWeaponType.PlasmaCannon });
+                Assert.That(fireService.Target, Is.Null, "A newly fireable weapon starts the reaction delay.");
+                Assert.That((float)delay.GetValue(controller), Is.GreaterThan(0f));
+                tryFire.Invoke(controller, new object[] { SuperWeaponType.PlasmaCannon });
+                Assert.That(fireService.Target, Is.Null, "The weapon holds until the delay has passed.");
+
+                delay.SetValue(controller, 0f);
+                tryFire.Invoke(controller, new object[] { SuperWeaponType.PlasmaCannon });
+                Assert.That(fireService.Target, Is.Not.Null);
+                Assert.That(model.CanFire(SuperWeaponType.PlasmaCannon), Is.False);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(stationView);
+                UnityEngine.Object.DestroyImmediate(scout);
+            }
+        }
+
+        [Test]
+        public void Fire_DealsReducedDamageToSuperWeaponStunnedTargets()
+        {
+            GameObject view = new GameObject("Stunned target");
+            GameObject audio = new GameObject("Test audio");
+            EntityLocator entities = new EntityLocator();
+            StationTarget health = new StationTarget(view.transform);
+            Entity target = new Entity(health, entities, new IEntityFacade[] { health },
+                TestPlayers.Human, 123, Array.Empty<IPooledEntityEvents>(),
+                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+            entities.AddEntity(target);
+            SuperWeaponData data = LoadData();
+            SuperWeaponFireService fire = CreateFireService(entities, data, audio);
+            try
+            {
+                SuperWeaponProfile profile = data.GetProfile(SuperWeaponType.HypervelocityGun);
+                MethodInfo applyDamage = typeof(SuperWeaponFireService).GetMethod("ApplyDamage",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                applyDamage.Invoke(fire, new object[] { target, 300f, profile });
+                Assert.That(health.LastDamage, Is.EqualTo(300f));
+
+                fire.RestoreStun(new SuperWeaponStun(target, health.Modifiers,
+                    new CombatStatModifier(1f, 1f, 1f, 1f, 1f), 5f));
+                applyDamage.Invoke(fire, new object[] { target, 300f, profile });
+                Assert.That(profile.StunnedTargetDamageMultiplier, Is.LessThan(1f));
+                Assert.That(health.LastDamage, Is.EqualTo(300f * profile.StunnedTargetDamageMultiplier));
+            }
+            finally
+            {
+                fire.LateDispose();
+                UnityEngine.Object.DestroyImmediate(view);
+                UnityEngine.Object.DestroyImmediate(audio);
+            }
+        }
+
+        private static SuperWeaponData LoadData() => AssetDatabase.LoadAssetAtPath<SuperWeaponData>(
+            "Assets/Settings/Data/Models/SuperWeapons/SuperWeaponData.asset");
 
         private sealed class StationTarget : IHealthModelObserver, IEntityTransformFacade, IHealthFacade, ICombatModifiersFacade
         {
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public int HitCount { get; private set; }
+            public float LastDamage { get; private set; }
             public bool Destroyed { get; set; }
-            public void ApplyDamage(float damage, DamageType damageType, int id) => HitCount++;
+            public void ApplyDamage(float damage, DamageType damageType, int id)
+            {
+                HitCount++;
+                LastDamage = damage;
+            }
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
             public Transform Transform { get; }
@@ -283,6 +373,27 @@ namespace EmpireAtWar.Tests.Editor
 
             model.Tick(1f);
             Assert.That(model.CanFire(SuperWeaponType.IonCannon), Is.True);
+        }
+
+        [Test]
+        public void Model_FiringStartsTheSharedCooldownForEveryOtherWeapon()
+        {
+            SuperWeaponModel model = new SuperWeaponModel();
+            model.StartCharging(SuperWeaponType.IonCannon);
+            model.CompleteCharging(SuperWeaponType.IonCannon);
+            model.StartCharging(SuperWeaponType.PlasmaCannon);
+            model.CompleteCharging(SuperWeaponType.PlasmaCannon);
+            model.Consume(SuperWeaponType.IonCannon);
+
+            Assert.That(model.CanFire(SuperWeaponType.PlasmaCannon), Is.False, "Strikes must not stack.");
+            Assert.That(model.GetCooldownRemaining(SuperWeaponType.PlasmaCannon),
+                Is.EqualTo(SuperWeaponModel.SHARED_COOLDOWN_DURATION));
+            Assert.That(model.GetCooldownRemaining(SuperWeaponType.IonCannon),
+                Is.EqualTo(SuperWeaponModel.COOLDOWN_DURATION));
+            model.Tick(SuperWeaponModel.SHARED_COOLDOWN_DURATION);
+            Assert.That(model.CanFire(SuperWeaponType.PlasmaCannon), Is.True);
+            Assert.That(model.GetCooldownRemaining(SuperWeaponType.IonCannon),
+                Is.EqualTo(SuperWeaponModel.COOLDOWN_DURATION - SuperWeaponModel.SHARED_COOLDOWN_DURATION));
         }
 
         [Test]

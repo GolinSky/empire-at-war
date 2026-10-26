@@ -81,10 +81,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         {
             _routeNavigation.RegisterRoute(SkirmishUiRoutePosition.SuperWeapon, this);
             _battleState.AddObserver(this);
+            _superWeaponFireService.Fired += HandleFired;
         }
 
         public void LateDispose()
         {
+            _superWeaponFireService.Fired -= HandleFired;
             _battleState.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.SuperWeapon, this);
             Unbind();
@@ -206,6 +208,13 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _targeting.Cancel();
             _model.Consume(type);
             _superWeaponFireService.Fire(type, target);
+            _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalFiring);
+        }
+
+        /// <summary>Warns the local side of an incoming hostile strike; its own firing is announced on submit.</summary>
+        private void HandleFired(SuperWeaponType type, IEntity target)
+        {
+            if (!_isBattleRunning || !_localPlayer.IsFriendly(target.Owner)) return;
             _interfaceAudio.PlayAnnouncement(_interfaceData.OrbitalFiring);
         }
 

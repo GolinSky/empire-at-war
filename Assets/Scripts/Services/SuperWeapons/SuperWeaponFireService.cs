@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Players;
@@ -12,6 +13,8 @@ using EmpireAtWar.Services.Audio;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using VContainer;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Utils;
 
@@ -36,6 +39,8 @@ namespace EmpireAtWar.Services.SuperWeapons
         private readonly List<SuperWeaponSalvo> _salvos = new List<SuperWeaponSalvo>();
         private readonly List<SuperWeaponStun> _stuns = new List<SuperWeaponStun>();
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
+
+        public event Action<SuperWeaponType, IEntity> Fired;
 
         public IReadOnlyList<SuperWeaponSalvo> Salvos => _salvos;
         public IReadOnlyList<SuperWeaponStun> Stuns => _stuns;
@@ -104,6 +109,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             origin.transform.SetPositionAndRotation(originPosition,
                 Quaternion.LookRotation(targetPosition - originPosition));
             _salvos.Add(new SuperWeaponSalvo(type, target, _data.GetProfile(type), origin.transform));
+            Fired?.Invoke(type, target);
         }
 
         public void Tick()
@@ -211,10 +217,21 @@ namespace EmpireAtWar.Services.SuperWeapons
             }
         }
 
-        private static void ApplyDamage(IEntity entity, float damage, SuperWeaponProfile profile)
+        private void ApplyDamage(IEntity entity, float damage, SuperWeaponProfile profile)
         {
             if (!entity.TryGetFacade(out IHealthFacade health)) return;
+            if (IsStunned(entity)) damage *= profile.StunnedTargetDamageMultiplier;
             health.ApplyDamage(damage, profile.Weapon.DamageType, PickHardPoint(entity.HealthModel));
+        }
+
+        private bool IsStunned(IEntity entity)
+        {
+            foreach (SuperWeaponStun stun in _stuns)
+            {
+                if (stun.Target == entity) return true;
+            }
+
+            return false;
         }
 
         /// <summary>A random live hardpoint; once all are destroyed the wrecks still carry hull damage.</summary>

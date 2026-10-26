@@ -9,13 +9,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public sealed class EnemyAiDifficultyProfile
     {
         private static readonly EnemyAiDifficultyProfile _easy =
-            new EnemyAiDifficultyProfile(decisionInterval: 4f, requiredAttackRatio: 1.6f, huntAdvantage: 1.1f, retreatAdvantage: 0.8f, committedFleetRatio: 0.5f, retreatShieldThreshold: 0.35f, minimumMiningFacilities: 1, minimumControlledZones: 1, shipOrdersPerLevel: 3, defenseThreatRatio: 0.75f, abilityDecisionInterval: 3f, abilityUseChance: 0.35f, abilityTargetPrecision: 0.2f);
+            new EnemyAiDifficultyProfile(decisionInterval: 4f, requiredAttackRatio: 1.6f, huntAdvantage: 1.1f, retreatAdvantage: 0.8f, committedFleetRatio: 0.5f, retreatShieldThreshold: 0.35f, minimumMiningFacilities: 1, minimumControlledZones: 1, shipOrdersPerLevel: 3, defenseThreatRatio: 0.75f, abilityDecisionInterval: 3f, abilityUseChance: 0.35f, abilityTargetPrecision: 0.2f, superWeaponMinFireDelay: 25f, superWeaponMaxFireDelay: 45f, superWeaponTargetChoices: 4);
         private static readonly EnemyAiDifficultyProfile _medium =
-            new EnemyAiDifficultyProfile(decisionInterval: 2.5f, requiredAttackRatio: 1.25f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.65f, retreatShieldThreshold: 0.25f, minimumMiningFacilities: 1, minimumControlledZones: 1, shipOrdersPerLevel: 2, defenseThreatRatio: 1f, abilityDecisionInterval: 2f, abilityUseChance: 0.6f, abilityTargetPrecision: 0.5f);
+            new EnemyAiDifficultyProfile(decisionInterval: 2.5f, requiredAttackRatio: 1.25f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.65f, retreatShieldThreshold: 0.25f, minimumMiningFacilities: 1, minimumControlledZones: 1, shipOrdersPerLevel: 2, defenseThreatRatio: 1f, abilityDecisionInterval: 2f, abilityUseChance: 0.6f, abilityTargetPrecision: 0.5f, superWeaponMinFireDelay: 15f, superWeaponMaxFireDelay: 30f, superWeaponTargetChoices: 3);
         private static readonly EnemyAiDifficultyProfile _hard =
-            new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1f, huntAdvantage: 0.9f, retreatAdvantage: 0.6f, committedFleetRatio: 0.8f, retreatShieldThreshold: 0.18f, minimumMiningFacilities: 2, minimumControlledZones: 2, shipOrdersPerLevel: 2, defenseThreatRatio: 1.25f, abilityDecisionInterval: 1f, abilityUseChance: 0.85f, abilityTargetPrecision: 0.8f);
+            new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1f, huntAdvantage: 0.9f, retreatAdvantage: 0.6f, committedFleetRatio: 0.8f, retreatShieldThreshold: 0.18f, minimumMiningFacilities: 2, minimumControlledZones: 2, shipOrdersPerLevel: 2, defenseThreatRatio: 1.25f, abilityDecisionInterval: 1f, abilityUseChance: 0.85f, abilityTargetPrecision: 0.8f, superWeaponMinFireDelay: 8f, superWeaponMaxFireDelay: 18f, superWeaponTargetChoices: 2);
         private static readonly EnemyAiDifficultyProfile _ultraHard =
-            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 0.75f, huntAdvantage: 0.8f, retreatAdvantage: 0.5f, committedFleetRatio: 1f, retreatShieldThreshold: 0.1f, minimumMiningFacilities: 3, minimumControlledZones: 2, shipOrdersPerLevel: 1, defenseThreatRatio: 1.5f, abilityDecisionInterval: 0.5f, abilityUseChance: 1f, abilityTargetPrecision: 1f);
+            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 0.75f, huntAdvantage: 0.8f, retreatAdvantage: 0.5f, committedFleetRatio: 1f, retreatShieldThreshold: 0.1f, minimumMiningFacilities: 3, minimumControlledZones: 2, shipOrdersPerLevel: 1, defenseThreatRatio: 1.5f, abilityDecisionInterval: 0.5f, abilityUseChance: 1f, abilityTargetPrecision: 1f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1);
 
         public float DecisionInterval { get; }
 
@@ -41,6 +41,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public float AbilityUseChance { get; }
         public float AbilityTargetPrecision { get; }
 
+        /// <summary>Seconds the AI waits after a superweapon becomes fireable, rolled between these bounds.</summary>
+        public float SuperWeaponMinFireDelay { get; }
+        public float SuperWeaponMaxFireDelay { get; }
+
+        /// <summary>How many of the best-scoring superweapon targets the AI picks from at random; 1 always takes the best.</summary>
+        public int SuperWeaponTargetChoices { get; }
+
         public EnemyAiDifficultyProfile(
             float decisionInterval,
             float requiredAttackRatio,
@@ -52,6 +59,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float abilityDecisionInterval,
             float abilityUseChance,
             float abilityTargetPrecision,
+            float superWeaponMinFireDelay,
+            float superWeaponMaxFireDelay,
+            int superWeaponTargetChoices,
             int minimumMiningFacilities,
             int minimumControlledZones,
             int shipOrdersPerLevel)
@@ -69,6 +79,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             AbilityDecisionInterval = abilityDecisionInterval;
             AbilityUseChance = abilityUseChance;
             AbilityTargetPrecision = abilityTargetPrecision;
+            SuperWeaponMinFireDelay = superWeaponMinFireDelay;
+            SuperWeaponMaxFireDelay = superWeaponMaxFireDelay;
+            SuperWeaponTargetChoices = superWeaponTargetChoices;
         }
 
         public static EnemyAiDifficultyProfile Get(EnemyAiDifficulty difficulty)

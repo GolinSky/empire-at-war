@@ -18,12 +18,15 @@ MonoBehaviour:
       value:
         weapon:
           weaponType: 16
+          displayName: 
           damageType: 8
           damage: 15000
           shotsPerSalvo: 3
           shotInterval: 0.5
           reload: 0
           range: 0
+          strikecraftOnly: 0
+          interceptable: 0
           shotPrefab: {fileID: 4236977079676118448, guid: ac79a52f5e9501e42ae04d889fb5a607,
             type: 3}
           projectileSpeed: 0
@@ -31,25 +34,29 @@ MonoBehaviour:
           size: {x: 36, y: 3, z: 3}
         impactSize: 18
         firingDelay: 0.45
-        stunDuration: 30
+        stunDuration: 10
         stunModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 5
           speedMultiplier: 0.001
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
+        stunnedTargetDamageMultiplier: 1
         areaDamage: 0
         areaRadius: 0
     - key: 1
       value:
         weapon:
           weaponType: 17
+          displayName: 
           damageType: 9
           damage: 300
           shotsPerSalvo: 10
           shotInterval: 0.1
           reload: 0
           range: 0
+          strikecraftOnly: 0
+          interceptable: 0
           shotPrefab: {fileID: 6462505677978586642, guid: 59849b416528995498064655e1f43bac,
             type: 3}
           projectileSpeed: 650
@@ -64,18 +71,22 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+        stunnedTargetDamageMultiplier: 0.5
         areaDamage: 0
         areaRadius: 0
     - key: 2
       value:
         weapon:
           weaponType: 18
+          displayName: 
           damageType: 10
           damage: 6000
           shotsPerSalvo: 1
           shotInterval: 0
           reload: 0
           range: 0
+          strikecraftOnly: 0
+          interceptable: 0
           shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
             type: 3}
           projectileSpeed: 220
@@ -90,5 +101,6 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+        stunnedTargetDamageMultiplier: 0.5
         areaDamage: 1000
         areaRadius: 30

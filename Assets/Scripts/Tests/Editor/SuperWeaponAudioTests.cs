@@ -92,7 +92,9 @@ namespace EmpireAtWar.Tests.Editor
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);
-                states[type] = SuperWeaponState.Unavailable;
+                // The shared cooldown re-announces every weapon type when it ends.
+                foreach (SuperWeaponType weapon in Enum.GetValues(typeof(SuperWeaponType)))
+                    states[weapon] = SuperWeaponState.Unavailable;
                 MethodInfo handler = typeof(SuperWeaponPresenter).GetMethod("HandleStateChanged",
                     BindingFlags.NonPublic | BindingFlags.Instance);
                 model.OnStateChanged += (weapon, state) => handler.Invoke(presenter, new object[] { weapon, state });
@@ -122,6 +124,14 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(audio.Clips, Is.EqualTo(new[] { bought, ready, firing }));
                 Assert.That(fire.Shots, Is.EqualTo(1));
                 Assert.That(model.CanFire(type), Is.False);
+
+                MethodInfo fired = typeof(SuperWeaponPresenter).GetMethod("HandleFired",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                fired.Invoke(presenter, new object[] { type, new OwnedEntity(TestPlayers.Enemy) });
+                Assert.That(audio.Clips, Has.Count.EqualTo(3), "Own strikes are announced on submit only.");
+                fired.Invoke(presenter, new object[] { type, new OwnedEntity(TestPlayers.Human) });
+                Assert.That(audio.Clips, Is.EqualTo(new[] { bought, ready, firing, firing }),
+                    "An incoming enemy strike warns the local player.");
             }
             finally
             {
@@ -149,8 +159,20 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool Accept { get; set; }
             public int Shots { get; private set; }
+            public event Action<SuperWeaponType, IEntity> Fired { add { } remove { } }
             public bool CanTarget(PlayerId owner, IEntity target) => Accept;
             public void Fire(SuperWeaponType type, IEntity target) => Shots++;
+        }
+
+        private sealed class OwnedEntity : IEntity
+        {
+            public long Id => 1;
+            public EmpireAtWar.Models.Health.IHealthModelObserver HealthModel => throw new NotSupportedException();
+            public PlayerId Owner { get; }
+            public OwnedEntity(PlayerId owner) => Owner = owner;
+            public bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade =>
+                throw new NotSupportedException();
+            public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade => throw new NotSupportedException();
         }
 
         private sealed class View : ISuperWeaponsView

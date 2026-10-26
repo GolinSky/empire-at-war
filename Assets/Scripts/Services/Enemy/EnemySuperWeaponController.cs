@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
@@ -16,8 +17,8 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Buys superweapon charges from spare money once the station level allows it,
-    /// and fires each ready weapon at the most valuable player target.
+    /// Buys superweapon charges from spare money once the station level allows it, and fires a ready weapon
+    /// after a difficulty-based delay at one of the most valuable visible player targets.
     /// </summary>
     public sealed class EnemySuperWeaponController : ITickable
     {
@@ -30,6 +31,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IVisionService _vision;
         private readonly IProductionAccess _productionAccess;
         private readonly IEnemyPurchaseProcessor _production;
+        private readonly SuperWeaponData _data;
+        private readonly IPlayerRelations _relations;
 
         private readonly SuperWeaponModel _model;
         private readonly PlayerSlot _owner;
@@ -38,14 +41,19 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<SuperWeaponType, float> _chargeTimeLeft =
             new Dictionary<SuperWeaponType, float>();
         private readonly List<SuperWeaponType> _charging = new List<SuperWeaponType>();
+        private readonly List<(IEntity Entity, Vector3 Position, float Score)> _targets =
+            new List<(IEntity, Vector3, float)>();
 
         private float _decisionTimer;
+        private bool _hasFireDelay;
+        private float _fireDelayLeft;
 
         public EnemySuperWeaponController(ISuperWeaponFireService superWeaponFireService, IEntityLocator entities,
             IVisionService vision,
             IProductionAccess productionAccess, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
-            PlayerSlot owner, IEnemyPurchaseProcessor production)
+            PlayerSlot owner, IEnemyPurchaseProcessor production, SuperWeaponData data,
+            IPlayerRelations relations)
         {
             _owner = owner;
             _model = model;
@@ -56,12 +64,15 @@ namespace EmpireAtWar.Services.Enemy
             _vision = vision;
             _productionAccess = productionAccess;
             _production = production;
+            _data = data;
+            _relations = relations;
         }
 
         public void Tick()
         {
             AdvanceCharging(Time.deltaTime);
             _model.Tick(Time.deltaTime);
+            if (_hasFireDelay) _fireDelayLeft -= Time.deltaTime;
 
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer > 0f) return;
@@ -72,7 +83,8 @@ namespace EmpireAtWar.Services.Enemy
                 SuperWeaponState state = _model.GetState(option.Key);
                 if (_model.CanFire(option.Key))
                 {
-                    TryFire(option.Key);
+                    // The shared cooldown after a firing blocks the remaining weapons of this decision.
+                    TryFireAfterDelay(option.Key);
                 }
                 else if (state == SuperWeaponState.Unavailable && TryPurchase(option.Key, option.Value))
                 {
@@ -134,21 +146,39 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        private void TryFire(SuperWeaponType type)
+        /// <summary>Waits like a player who has to notice the ready weapon and pick a target before firing.</summary>
+        private void TryFireAfterDelay(SuperWeaponType type)
+        {
+            if (!_hasFireDelay)
+            {
+                EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(_owner.Difficulty);
+                _fireDelayLeft = Random.Range(profile.SuperWeaponMinFireDelay, profile.SuperWeaponMaxFireDelay);
+                _hasFireDelay = true;
+                return;
+            }
+
+            if (_fireDelayLeft > 0f || !TryFire(type)) return;
+            _hasFireDelay = false;
+        }
+
+        private bool TryFire(SuperWeaponType type)
         {
             IEntity target = SelectTarget(type);
-            if (target == null) return;
+            if (target == null) return false;
 
             _model.Consume(type);
             _superWeaponFireService.Fire(type, target);
             Debug.Log($"[EnemyAI:SuperWeapon] Fired {type} at {target.HealthModel.ShipClass} ({target.Id})");
+            return true;
         }
 
-        /// <summary>The ion cannon strips the strongest shields; the other weapons hit the toughest hull.</summary>
+        /// <summary>
+        /// The ion cannon strips the strongest shields; the other weapons hit the toughest hull, and area weapons
+        /// also count the visible targets inside their blast. The pick is random among the best few by difficulty.
+        /// </summary>
         private IEntity SelectTarget(SuperWeaponType type)
         {
-            IEntity best = null;
-            float bestScore = 0f;
+            _targets.Clear();
             foreach (IEntity entity in _entities.Entities)
             {
                 if (!_superWeaponFireService.CanTarget(_owner.Id, entity)) continue;
@@ -157,12 +187,32 @@ namespace EmpireAtWar.Services.Enemy
                 float score = type == SuperWeaponType.IonCannon
                     ? entity.HealthModel.Shields
                     : entity.HealthModel.Hull;
-                if (best != null && score <= bestScore) continue;
-                best = entity;
-                bestScore = score;
+                _targets.Add((entity, position, score));
             }
 
-            return best;
+            if (_targets.Count == 0) return null;
+            AddAreaScores(_data.GetProfile(type));
+            _targets.Sort((a, b) => b.Score.CompareTo(a.Score));
+            int choices = Mathf.Min(EnemyAiDifficultyProfile.Get(_owner.Difficulty).SuperWeaponTargetChoices,
+                _targets.Count);
+            return _targets[Random.Range(0, choices)].Entity;
+        }
+
+        private void AddAreaScores(SuperWeaponProfile profile)
+        {
+            if (profile.AreaDamage <= 0f) return;
+            for (int i = 0; i < _targets.Count; i++)
+            {
+                (IEntity entity, Vector3 position, float score) = _targets[i];
+                foreach ((IEntity other, Vector3 otherPosition, _) in _targets)
+                {
+                    if (other == entity || !_relations.IsAllied(other.Owner, entity.Owner) ||
+                        PlanarGeometry.Distance(position, otherPosition) > profile.AreaRadius) continue;
+                    score += Mathf.Min(profile.AreaDamage, other.HealthModel.Hull);
+                }
+
+                _targets[i] = (entity, position, score);
+            }
         }
     }
 }
