@@ -154,13 +154,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: AudioDialogSource
-      value:
-        m_AssetGUID: 6a6d31e1dc51bf845b60d21e62b7e673
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: SHIP_ALARM
       value:
         m_AssetGUID: d105f3706327c274db845257a59e3bdf
