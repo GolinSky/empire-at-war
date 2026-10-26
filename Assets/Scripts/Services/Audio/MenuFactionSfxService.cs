@@ -37,7 +37,6 @@ namespace EmpireAtWar.Services.Audio
 
         public void LateDispose()
         {
-            if (_source == null) return;
             if (Application.isPlaying) Object.Destroy(_source.gameObject);
             else Object.DestroyImmediate(_source.gameObject);
         }

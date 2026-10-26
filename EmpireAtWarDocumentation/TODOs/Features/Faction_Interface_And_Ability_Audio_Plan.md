@@ -281,6 +281,14 @@ implemented: 2026-10-26
 5. Low: `FactionAnnouncementService` = 337 lines (> 200 guideline; candidate split: per-entity station/mine/ship/fleet tracking). `HandleUnitProduced` checks request type twice. `MenuFactionSfxService.cs:40` silent `_source == null` guard violates AGENTS null rule.
 6. Test gaps: enemy station upgrade; hosted-player host-station upgrade; new-construction sequencing; research-completed cue; mine lost + destroyed overlap; orbital line during another announcement.
 
+### Review fixes verified — 2026-10-26
+- Findings 1–3 fixed: local mining `SiteLost` emits only `MiningDestroyed` at death; delayed removal only unsubscribes. Orbital speech replaces Warning/orbital speech while Defeat retains precedence. Event, damage, capture and station-upgrade cooldowns start only after accepted playback.
+- Finding 4 fixed: `InterfaceSfxService.ITickable` waits for actual source completion; pending new-construction speech reserves Notification priority between lines. Progress/Notification cannot steal its turn; Warning, orbital or Defeat cancels it. No `async void`/`Task.Delay`.
+- Finding 5 decision: removed duplicate request-type checks and menu disposal's silent null guard. Defer the >200-line service split to a separate refactor: entity subscription ownership remains cohesive; splitting it is unnecessary for these behavior fixes.
+- Finding 6 covered: enemy/hosted station events, research completion, unlock selection/sequencing, mine death/removal and orbital interruption. Added refused-playback regressions for damage, capture, unit loss, mine loss, cap and upgrades.
+- Verification: Unity compilation up to date; EditMode `FactionAnnouncementTests` **49/49**, `SuperWeaponAudioTests` **13/13**, `MenuFactionAudioTests` **9/9**. Reports: `Logs/FactionAudio/tests-review-{faction,superweapon,menu}.json`. Open menu scene clean; no agent Play Mode.
+- Plan remains `in-progress`: listening acceptance, Empire progress wording and optional ready-clip choices remain with the user.
+
 ## Building, shield audibility and orbital ion — 2026-10-26
 - Mining/battle asteroid construction: `CaptureSitesSystem.ConstructionStarted` after successful payment/start; local payer only, Progress priority, 1.5 s cooldown. Failed purchases and restore silent. Empire/Republic → `I000_EHD4616_ENG.wav` (“Building started”); Rebellion/Separatist → `I000_RHD4718_ENG.wav` (“Beginning construction”).
 - Shield ability Start/End IDs `2,3,13,15,17,26,34,45`: local-only centered 2D, gain 1, priority 150, maxInstances 1, cooldown 0.15 s. Bypass weapon burst budget, camera/zoom gain and battle mix normalization. Voices retain precedence.
@@ -348,5 +356,5 @@ implemented: 2026-10-26
 - [x] Evaluate jamming, ability-ready, superweapon-ready and faction-selection effects; distinguish replacement from new behavior.
 - [x] Verify combat-warning cooldowns, neutral-mine wording, production vs carrier spawns, mass-loss throttling, unlock changes, defeat once, fog and restore suppression.
 - [ ] User listening acceptance: volume, priority, timing, duplicate suppression.
-- [ ] Fix code-review findings 1–3 (mine lost/destroyed overlap, orbital equal-tier drop, cooldown on refused playback); see `Code Review — 2026-10-26`.
-- [ ] Decide low-severity review items 4–5 and add the missing tests from finding 6.
+- [x] Fix code-review findings 1–3 (mine lost/destroyed overlap, orbital equal-tier drop, cooldown on refused playback); verified 2026-10-26.
+- [x] Resolve low-severity review items 4–5 (tick-based sequencing, simple cleanup; larger split deferred) and add finding 6 regressions; 71/71 focused EditMode tests pass.

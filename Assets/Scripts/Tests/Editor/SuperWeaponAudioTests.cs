@@ -90,11 +90,16 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(service.TryPlayAnnouncement(progress, AnnouncementPriority.Progress), Is.False);
                 Assert.That(service.TryPlayAnnouncement(progress, AnnouncementPriority.Notification), Is.False);
                 Assert.That(service.TryPlayAnnouncement(warning, AnnouncementPriority.Warning), Is.False);
+                AudioSource announcer = (AudioSource)typeof(InterfaceSfxService)
+                    .GetField("_announcer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
+                service.PlayAnnouncement(progress);
+                Assert.That(announcer.clip, Is.SameAs(progress), "Orbital speech replaces a station warning.");
+                service.PlayAnnouncement(warning);
+                Assert.That(announcer.clip, Is.SameAs(warning), "New orbital speech replaces previous orbital speech.");
                 Assert.That(service.TryPlayAnnouncement(defeat, AnnouncementPriority.Defeat), Is.True);
                 Assert.That(service.TryPlayAnnouncement(warning, AnnouncementPriority.Warning), Is.False);
                 Assert.That(service.TryPlayAnnouncement(defeat, AnnouncementPriority.Defeat), Is.False);
-                AudioSource announcer = (AudioSource)typeof(InterfaceSfxService)
-                    .GetField("_announcer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
+                service.PlayAnnouncement(progress);
                 Assert.That(announcer.clip, Is.SameAs(defeat));
             }
             finally
@@ -106,6 +111,55 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(progress);
                 UnityEngine.Object.DestroyImmediate(warning);
                 UnityEngine.Object.DestroyImmediate(defeat);
+            }
+        }
+
+        [TestCase(AnnouncementPriority.Progress, false)]
+        [TestCase(AnnouncementPriority.Notification, false)]
+        [TestCase(AnnouncementPriority.Warning, false)]
+        [TestCase(AnnouncementPriority.Warning, true)]
+        [TestCase(AnnouncementPriority.Defeat, false)]
+        public void StationUpgradeFollowUp_ReservesItsTurnAndAllowsUrgentInterruption(AnnouncementPriority priority, bool orbital)
+        {
+            InterfaceSfxData data = ScriptableObject.CreateInstance<InterfaceSfxData>();
+            ShipSfxData shipData = ScriptableObject.CreateInstance<ShipSfxData>();
+            GameObject root = new GameObject("Announcement sequence test");
+            AudioClip upgrade = AudioClip.Create("Upgrade", 441000, 1, 44100, false);
+            AudioClip construction = AudioClip.Create("Construction", 441000, 1, 44100, false);
+            AudioClip interrupt = AudioClip.Create("Interrupt", 441000, 1, 44100, false);
+            ShipSfxSources sources = root.AddComponent<ShipSfxSources>();
+            SetField(sources, "voice", root.AddComponent<AudioSource>());
+            InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources,
+                new ShipAbilityService(null, TestPlayers.CreateDuel()),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            service.Initialize();
+            try
+            {
+                AudioSource announcer = (AudioSource)typeof(InterfaceSfxService)
+                    .GetField("_announcer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
+                Assert.That(service.TryPlayStationUpgrade(upgrade, construction), Is.True);
+                service.Tick();
+                Assert.That(announcer.clip, Is.SameAs(upgrade), "Follow-up waits for playback to finish.");
+                announcer.Stop();
+                Assert.That(service.IsAnnouncing, Is.True, "The pending follow-up reserves the inter-line gap.");
+                bool urgent = priority < AnnouncementPriority.Notification;
+                if (orbital) service.PlayAnnouncement(interrupt);
+                else Assert.That(service.TryPlayAnnouncement(interrupt, priority), Is.EqualTo(urgent));
+                service.Tick();
+                Assert.That(announcer.clip, Is.SameAs(urgent ? interrupt : construction));
+                announcer.Stop();
+                service.Tick();
+                Assert.That(service.IsAnnouncing, Is.False, "Follow-up plays once or is cancelled by urgent speech.");
+            }
+            finally
+            {
+                service.LateDispose();
+                UnityEngine.Object.DestroyImmediate(root);
+                UnityEngine.Object.DestroyImmediate(data);
+                UnityEngine.Object.DestroyImmediate(shipData);
+                UnityEngine.Object.DestroyImmediate(upgrade);
+                UnityEngine.Object.DestroyImmediate(construction);
+                UnityEngine.Object.DestroyImmediate(interrupt);
             }
         }
 

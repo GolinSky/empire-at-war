@@ -32,6 +32,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(playback.Source.spatialBlend, Is.Zero);
             }
             finally { menu.LateDispose(); }
+            Assert.That(playback.Source == null, Is.True, "Disposal destroys the initialized audio source.");
         }
 
         [Test]

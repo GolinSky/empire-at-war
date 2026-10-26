@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
@@ -15,6 +16,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -41,6 +43,10 @@ namespace EmpireAtWar.Tests.Editor
             typeof(EmpireAtWar.Utils.Random.RandomFromArray<AudioClip>)
                 .GetField("array", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(capturePool, new[] { Clip("Captured") });
             SetField(_clips, "miningCaptured", capturePool);
+            var attackPool = new EmpireAtWar.Utils.Random.RandomAudioClips();
+            typeof(EmpireAtWar.Utils.Random.RandomFromArray<AudioClip>)
+                .GetField("array", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(attackPool, new[] { Clip("StationUnderAttack") });
+            SetField(_clips, "stationUnderAttack", attackPool);
             ReinforcementData data = ScriptableObject.CreateInstance<ReinforcementData>();
             _created.Add(data);
             SetField(data, "<MaxUnitCapacity>k__BackingField", 20);
@@ -363,6 +369,153 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_audio.Clips, Is.Empty);
         }
 
+        [Test]
+        public void MineDeathAnnouncesDestroyedAtSiteLossAndNotAgainAtRemoval()
+        {
+            var mine = new EntityStub(TestPlayers.Human, new MineFacade(), new DamageEvents());
+            Invoke("HandleEntityAdded", mine);
+            mine.Health.Destroy();
+            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.MiningDestroyed }));
+            Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Warning }));
+            ((Dictionary<AudioClip, float>)GetField(_service, "_readyAt")).Clear();
+            Invoke("HandleEntityRemoved", mine);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.MiningDestroyed }));
+        }
+
+        [Test]
+        public void EnemyMineAndNonMiningSiteLossStaySilent()
+        {
+            Invoke("HandleLost", TestPlayers.Enemy, SiteFacilityType.Mining);
+            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.BattleAsteroid);
+            Assert.That(_audio.Clips, Is.Empty);
+        }
+
+        [TestCase("HandleCapacityRejected")]
+        [TestCase("HandleResearchCompleted")]
+        public void RefusedNotificationCanPlayOnImmediateRetry(string handler)
+        {
+            object[] arguments = handler == "HandleResearchCompleted" ? new object[] { default(ResearchType) } : Array.Empty<object>();
+            _audio.Accept = false;
+            Invoke(handler, arguments);
+            Assert.That(_audio.Clips, Is.Empty);
+            _audio.Accept = true;
+            Invoke(handler, arguments);
+            Invoke(handler, arguments);
+            Assert.That(_audio.Clips, Is.EqualTo(new[]
+            {
+                handler == "HandleResearchCompleted" ? _clips.UpgradeComplete : _clips.UnitCapReached
+            }));
+            Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Notification }));
+        }
+
+        [Test]
+        public void RefusedUnitLossDoesNotSilenceTheNextCasualty()
+        {
+            var first = LocalShip(new Vector3(0.5f, 0.5f, 1f));
+            var second = LocalShip(new Vector3(0.5f, 0.5f, 1f));
+            _audio.Accept = false;
+            first.Health.Destroy();
+            _audio.Accept = true;
+            second.Health.Destroy();
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.UnitDestroyed }));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void RefusedDamageWarningDoesNotConsumeEntityCooldown(bool station)
+        {
+            var damage = new DamageEvents();
+            IEntityFacade facility = station ? new StationEvents() : new MineFacade();
+            var entity = new EntityStub(TestPlayers.Human, facility, damage);
+            Invoke("HandleEntityAdded", entity);
+            _audio.Accept = false;
+            damage.Raise();
+            Assert.That(_audio.Clips, Is.Empty);
+            _audio.Accept = true;
+            damage.Raise();
+            damage.Raise();
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { station ? _clips.StationUnderAttack : _clips.MiningUnderAttack }));
+            Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Warning }));
+        }
+
+        [Test]
+        public void RefusedCaptureDoesNotConsumeCaptureCooldown()
+        {
+            _audio.Accept = false;
+            Invoke("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
+            _audio.Accept = true;
+            Invoke("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
+            Invoke("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
+            Assert.That(_audio.Clips.Count, Is.EqualTo(1));
+            Assert.That(_audio.Clips[0].name, Is.EqualTo("Captured"));
+        }
+
+        [Test]
+        public void RefusedMineDestructionDoesNotSilenceTheNextMine()
+        {
+            _audio.Accept = false;
+            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
+            _audio.Accept = true;
+            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.MiningDestroyed }));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void StationUpgradeRetriesRefusalAndOnlyFollowsWithNewUnlocks(bool unlocks)
+        {
+            SetField(_service, "_roster", CreateRoster(unlocks));
+            _audio.Accept = false;
+            Invoke("AnnounceStationUpgrade", 2);
+            Assert.That(_audio.Clips, Is.Empty);
+            _audio.Accept = true;
+            Invoke("AnnounceStationUpgrade", 2);
+            Invoke("AnnounceStationUpgrade", 2);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.StationUpgraded }));
+            Assert.That(_audio.FollowUps, Is.EqualTo(new[] { unlocks ? _clips.NewConstruction : null }));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void StationUpgradeRoutesEnemyAndHostedProductionHost(bool hosted)
+        {
+            SetField(_service, "_local", TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()));
+            SetField(_service, "_production", new ProductionAccessStub(hosted ? TestPlayers.Ally : TestPlayers.Human));
+            SetField(_service, "_roster", CreateRoster(true));
+            var level = new StationEvents();
+            var station = new EntityStub(hosted ? TestPlayers.Ally : TestPlayers.Enemy, level);
+            Invoke("HandleEntityAdded", station);
+            Assert.That(_audio.Clips, Is.Empty, "Binding a restored station must stay silent.");
+            level.Upgrade(2);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { hosted ? _clips.StationUpgraded : _clips.EnemyStationUpgraded }));
+            Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Notification }));
+            Assert.That(_audio.FollowUps.Count, Is.EqualTo(hosted ? 1 : 0));
+            Invoke("HandleEntityRemoved", station);
+            ((Dictionary<AudioClip, float>)GetField(_service, "_readyAt")).Clear();
+            level.Upgrade(3);
+            Assert.That(_audio.Clips.Count, Is.EqualTo(1), "Removed stations must be unsubscribed.");
+        }
+
+        private FactionRoster CreateRoster(bool unlocks)
+        {
+            var definition = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<FactionDefinition>(
+                "Assets/Settings/Data/Factions/Republic/RepublicFaction.asset"));
+            _created.Add(definition);
+            definition.Ships.Clear();
+            definition.Squadrons.Clear();
+            SetField(definition, "miningFacilities", Array.Empty<MiningFacilityType>());
+            SetField(definition, "defendPlatforms", Array.Empty<EmpireAtWar.Entities.DefendPlatform.DefendPlatformType>());
+            SetField(definition, "superWeapons", Array.Empty<EmpireAtWar.Entities.SuperWeapons.SuperWeaponType>());
+            if (unlocks)
+            {
+                var ship = new FactionData();
+                SetField(ship, "<AvailableLevel>k__BackingField", 2);
+                definition.Ships.Add(default, ship);
+            }
+            return new FactionRoster(definition, null, null, null);
+        }
+
         private AudioClip Clip(string name)
         {
             AudioClip clip = AudioClip.Create(name, 1, 1, 44100, false);
@@ -408,6 +561,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private sealed class MineFacade : IMiningFacilityFacade { }
+        private sealed class StationEvents : IStationLevelFacade
+        {
+            public event Action<int> LevelUpgraded = delegate { };
+            public int CurrentLevel { get; private set; } = 1;
+            public void Upgrade(int level) { CurrentLevel = level; LevelUpgraded(level); }
+        }
+        private sealed class ProductionAccessStub : IProductionAccess
+        {
+            public bool CanProduce => true;
+            public PlayerId ProductionHost { get; }
+            public ProductionAccessStub(PlayerId host) => ProductionHost = host;
+            public bool TryGetProductionBase(out IEntity productionBase) { productionBase = null; return false; }
+        }
         private sealed class TransformFacade : IEntityTransformFacade
         {
             public Transform Transform { get; }
@@ -473,18 +639,25 @@ namespace EmpireAtWar.Tests.Editor
         {
             public readonly List<AudioClip> Clips = new();
             public readonly List<AnnouncementPriority> Priorities = new();
+            public readonly List<AudioClip> FollowUps = new();
+            public bool Accept = true;
             public bool IsAnnouncing => false;
             public void PlayRejected() { }
             public void PlayAbilityTargetingCanceled() { }
             public void PlayAnnouncement(AudioClip clip) => TryPlayAnnouncement(clip, AnnouncementPriority.Warning);
             public bool TryPlayAnnouncement(AudioClip clip, AnnouncementPriority priority)
             {
+                if (!Accept) return false;
                 Clips.Add(clip);
                 Priorities.Add(priority);
                 return true;
             }
-            public bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction) =>
-                TryPlayAnnouncement(clip, AnnouncementPriority.Notification);
+            public bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction)
+            {
+                if (!TryPlayAnnouncement(clip, AnnouncementPriority.Notification)) return false;
+                FollowUps.Add(newConstruction);
+                return true;
+            }
         }
     }
 }

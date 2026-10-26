@@ -121,8 +121,9 @@ namespace EmpireAtWar.Services.Audio
         private bool Announce(AudioClip clip, AnnouncementPriority priority, float cooldown = EVENT_COOLDOWN)
         {
             if (_ended || _readyAt.TryGetValue(clip, out float ready) && Time.unscaledTime < ready) return false;
+            if (!_audio.TryPlayAnnouncement(clip, priority)) return false;
             _readyAt[clip] = Time.unscaledTime + cooldown;
-            return _audio.TryPlayAnnouncement(clip, priority);
+            return true;
         }
 
         private void HandlePurchaseAccepted(UnitRequest request)
@@ -144,13 +145,13 @@ namespace EmpireAtWar.Services.Audio
 
         private void HandleUnitProduced(UnitRequest request)
         {
-            AudioClip clip = request switch
+            AudioClip clip;
+            switch (request)
             {
-                ShipUnitRequest ship => _ships.GetUnit(ship.Key).Ready,
-                SquadronUnitRequest squadron => _ships.GetUnit(squadron.Key).Ready,
-                _ => null
-            };
-            if (!(request is ShipUnitRequest) && !(request is SquadronUnitRequest)) return;
+                case ShipUnitRequest ship: clip = _ships.GetUnit(ship.Key).Ready; break;
+                case SquadronUnitRequest squadron: clip = _ships.GetUnit(squadron.Key).Ready; break;
+                default: return;
+            }
             Announce(clip != null ? clip : _clips.ConstructionComplete, AnnouncementPriority.Progress);
         }
 
@@ -159,9 +160,9 @@ namespace EmpireAtWar.Services.Audio
         private void AnnounceStationUpgrade(int level)
         {
             if (_ended || _readyAt.TryGetValue(_clips.StationUpgraded, out float ready) && Time.unscaledTime < ready) return;
-            _readyAt[_clips.StationUpgraded] = Time.unscaledTime + EVENT_COOLDOWN;
             AudioClip unlocked = HasNewConstruction(level) ? _clips.NewConstruction : null;
-            _audio.TryPlayStationUpgrade(_clips.StationUpgraded, unlocked);
+            if (_audio.TryPlayStationUpgrade(_clips.StationUpgraded, unlocked))
+                _readyAt[_clips.StationUpgraded] = Time.unscaledTime + EVENT_COOLDOWN;
         }
 
         private bool HasNewConstruction(int level)
@@ -203,14 +204,14 @@ namespace EmpireAtWar.Services.Audio
         {
             if (type != SiteFacilityType.Mining || owner != _local.Id || !previous.IsNone ||
                 Time.unscaledTime < _captureReadyAt) return;
-            _captureReadyAt = Time.unscaledTime + EVENT_COOLDOWN;
-            Announce(_clips.MiningCaptured, AnnouncementPriority.Notification);
+            if (Announce(_clips.MiningCaptured, AnnouncementPriority.Notification))
+                _captureReadyAt = Time.unscaledTime + EVENT_COOLDOWN;
         }
 
         private void HandleLost(PlayerId owner, SiteFacilityType type)
         {
             if (type == SiteFacilityType.Mining && owner == _local.Id)
-                Announce(_clips.MiningLost, AnnouncementPriority.Notification);
+                Announce(_clips.MiningDestroyed, AnnouncementPriority.Warning);
         }
 
         private void HandleEntityAdded(IEntity entity)
@@ -250,8 +251,8 @@ namespace EmpireAtWar.Services.Audio
                 subscription.Damaged = () =>
                 {
                     if (entity.HealthModel.IsDestroyed || Time.unscaledTime < subscription.DamageReadyAt) return;
-                    subscription.DamageReadyAt = Time.unscaledTime + DAMAGE_COOLDOWN;
-                    Announce(station ? _clips.StationUnderAttack : _clips.MiningUnderAttack, AnnouncementPriority.Warning);
+                    if (Announce(station ? _clips.StationUnderAttack : _clips.MiningUnderAttack, AnnouncementPriority.Warning))
+                        subscription.DamageReadyAt = Time.unscaledTime + DAMAGE_COOLDOWN;
                 };
                 subscription.Damage.Damaged += subscription.Damaged;
             }
@@ -279,11 +280,6 @@ namespace EmpireAtWar.Services.Audio
 
         private void HandleEntityRemoved(IEntity entity)
         {
-            if (entity.Owner == _local.Id)
-            {
-                if (entity.TryGetFacade(out IMiningFacilityFacade mining) && entity.HealthModel.IsDestroyed)
-                    Announce(_clips.MiningDestroyed, AnnouncementPriority.Warning);
-            }
             if (_subscriptions.Remove(entity, out EntitySubscription subscription)) subscription.Dispose();
             HandleVisibilityChanged(entity, false);
         }
