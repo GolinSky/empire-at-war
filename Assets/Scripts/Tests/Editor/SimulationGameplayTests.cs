@@ -149,7 +149,7 @@ namespace EmpireAtWar.Tests.Editor
             b.Health.Hull = 50;
             foreach (Unit unit in new[] { a, b, destroyed, empty, other }) entities.AddEntity(unit);
             var director = new SimulationDirector(model, state, null, null, null, entities,
-                new SimulationTargeting(new AttackRecorder()), null, null, null, null);
+                new SimulationTargeting(new AttackRecorder()), null, null, null, null, null);
             // Enter the post-spawn tick without creating scene assets or spawning prefabs.
             typeof(SimulationDirector).GetField("_prepared", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(director, true);
             try

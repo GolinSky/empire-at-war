@@ -12,6 +12,7 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Services.Squadrons;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Battle
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IMapModelObserver _map;
         private readonly MapLayoutView _mapView;
         private readonly ICameraService _camera;
+        private readonly SquadronLaunchSlots _launchSlots;
         private readonly CancellationTokenSource _cancellation = new();
         private readonly Queue<(PlayerId Owner, UnitTypeId Unit, Vector3 Position)> _pending = new();
         private readonly List<IEntity> _livingA = new();
@@ -40,11 +42,11 @@ namespace EmpireAtWar.Services.Battle
         public SimulationDirector(SimulationModel model, SkirmishStateModel state, SkirmishOrchestrator flow,
             BattleUnitSpawner spawner, IShipSpawnClearance clearance, IEntityLocator entities,
             SimulationTargeting targeting, SimulationResetService reset,
-            IMapModelObserver map, MapLayoutView mapView, ICameraService camera)
+            IMapModelObserver map, MapLayoutView mapView, ICameraService camera, SquadronLaunchSlots launchSlots)
         {
             _model = model; _state = state; _flow = flow; _spawner = spawner; _clearance = clearance;
             _entities = entities; _targeting = targeting; _reset = reset;
-            _map = map; _mapView = mapView; _camera = camera;
+            _map = map; _mapView = mapView; _camera = camera; _launchSlots = launchSlots;
         }
 
         public void Tick()
@@ -59,6 +61,7 @@ namespace EmpireAtWar.Services.Battle
                 _map.SizeRange.SetValue(layout.SizeRange);
                 _mapView.UpdateBounds(_map.SizeRange);
                 _camera.MoveTo(layout.GetStationPosition(new PlayerId(0)));
+                _launchSlots.IsEnabled = _model.Setup.UseHangars;
                 PrepareFleet(0, _model.Setup.FleetA); PrepareFleet(1, _model.Setup.FleetB);
                 _prepared = true;
                 if ((_state.Speed == GameSpeed.Fast) != _model.Setup.FastSpeed) _flow.ToggleSpeedUp();

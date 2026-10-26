@@ -9,7 +9,10 @@ namespace EmpireAtWar.Services.Squadrons
 
         private float _nextLaunchTime = float.NegativeInfinity;
 
-        public bool IsAvailable => Time.time >= _nextLaunchTime;
+        /// <summary>While false, no hangar launches squadrons.</summary>
+        public bool IsEnabled { get; set; } = true;
+
+        public bool IsAvailable => IsEnabled && Time.time >= _nextLaunchTime;
 
         public void Take() => _nextLaunchTime = Time.time + LAUNCH_INTERVAL;
     }

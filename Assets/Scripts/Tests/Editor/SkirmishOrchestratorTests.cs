@@ -164,7 +164,7 @@ namespace EmpireAtWar.Tests.Editor
             var flow = new SkirmishOrchestrator(_gameCommand, new CompletedStartupStub(), _inputLock,
                 state, SimulationPreset.Create(setup).Build());
             var director = new EmpireAtWar.Services.Battle.SimulationDirector(null, state, flow,
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null, null);
             try
             {
                 state.SetState(BattleState.Ended);
