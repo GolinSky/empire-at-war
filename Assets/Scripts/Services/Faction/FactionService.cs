@@ -121,7 +121,11 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            if (!_productionAccess.CanProduce)
+            // Own queued units still reach the reinforcement pool after the station falls; a hosted
+            // player's queue, station upgrades and super weapons need a living station.
+            if (!_productionAccess.CanProduce &&
+                (_productionAccess.ProductionHost != _owner.Id || unitRequest is LevelUnitRequest ||
+                    unitRequest is SuperWeaponUnitRequest))
             {
                 if (PlayerFactionModel.IsHeroRequest(unitRequest, out ShipType hero))
                     _model.SetHeroReserved(hero, false);
