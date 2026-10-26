@@ -61,6 +61,6 @@ with (ROOT / 'Tools/ShipScale/results.csv').open('w', newline='') as output:
     writer = csv.writer(output)
     writer.writerow(['ship', 'before_units', 'after_units', 'target_meters', 'multiplier'])
     writer.writerows(summary)
-result = {'roster_entries': len(before), 'numeric_checks': checks, 'preserved': ['HomeOne', 'MC80Independence'], 'status': 'passed'}
+result = {'roster_entries': len(before), 'numeric_checks': checks, 'preserved': [name for name, target in targets.items() if target['preserve']], 'status': 'passed'}
 (LOG / 'verification.json').write_text(json.dumps(result, indent=2))
 print(json.dumps(result))

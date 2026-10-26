@@ -285,7 +285,7 @@
     "id": "Captor",
     "meters": 500,
     "baseline": 140,
-    "preserve": false
+    "preserve": true
   },
   {
     "id": "Dispatcher",
@@ -319,7 +319,7 @@
   },
   {
     "id": "PatrolFrigate",
-    "meters": 210,
+    "meters": 400,
     "baseline": 81.097,
     "preserve": false
   },

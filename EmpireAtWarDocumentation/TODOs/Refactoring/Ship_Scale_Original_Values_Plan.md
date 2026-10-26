@@ -26,6 +26,7 @@ created: 2026-10-26
 - Chosen: separate geometry plan from [[TODOs/Refactoring/Original_Values_Rebalance|Original Values Rebalance]].
 - Why: hull size normalization and combat rebalance have different scope and verification.
 - Avoid: changing combat stats to compensate for geometry, replacing models, changing variants, or stretching one axis to force dimensions.
+- Approved revision 2026-10-26: restore Captor to its exact pre-migration size (`140 Unity units`, approximately `1333.35 m`); Patrol Frigate = `400 m`. Historical target table retained.
 - Approved targets: exact meter-derived lengths for all other ships; retain supplied ratios as historical display values. MC30c = 380 m; EST values accepted; C-9979 retains current proportions.
 - Precision: `meters / 1137`; dimensional tolerance 0.01% relative after Unity float serialization. Venator reference remains fixed.
 
@@ -176,3 +177,10 @@ created: 2026-10-26
 - Fresh solid-hull measurement excludes unlit lens/engine-glow meshes; six historical audit extents differ slightly. Historical table retained; current execution measurements in CSV are authoritative. Home One and MC80 Independence preserve exact assets regardless of measurement differences.
 - Unity migration and audit scripts compiled without diagnostics; saved assets reloaded for after-capture. No import/serialization errors identified; shared Editor emitted unrelated test errors.
 - Pending: Unity suites covering Ship, Wreck, Shield, HardPoint, RaiderCorvette, Tartan, MC30c and selection reuse; in-game hardpoint/shield/destruction/engine visual acceptance. No test pass is claimed for updated NUnit tests.
+
+### Captor and Patrol Frigate revision — 2026-10-26
+
+- User override: Captor restored to original `140 Unity units` (approximately `1333.35 m`); Patrol Frigate changed from `210 m` to `400 m` (`41.99942 Unity units`).
+- Ship roots, linked wrecks, hardpoint destruction effects and HullBottom/HullTop/NavigationRadius updated together. Captor ship/wreck/data are byte-identical to the pre-migration snapshot.
+- Re-read all 56 assets: 253324 numeric dimension/alignment checks passed again. No new Unity console errors. Unity tests and in-game acceptance remain pending under the prior user instruction.
+- Final net migration affects 27 ship/wreck/data sets; Home One, MC80 Independence and Captor preserve pre-migration sizes. `Tools/ShipScale/targets.json` and `results.csv` reflect the overrides.
