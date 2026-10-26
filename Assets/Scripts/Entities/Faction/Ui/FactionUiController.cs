@@ -139,7 +139,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         };
 
         public bool IsUnitLimitReached(UnitRequest request) =>
-            PlayerFactionModel.IsHeroRequest(request, out ShipType hero) && _model.IsHeroReserved(hero);
+            _model.IsUnitLimitReached(request);
 
         public void UpdateState(BattleState state)
         {
@@ -203,8 +203,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 ? "Population limit reached: deployment unavailable" : "Click to add to production";
             if (IsUnitLimitReached(request))
             {
-                requirements.Add(new TooltipRequirement($"Only one {data.Name} at a time", false));
-                status = $"{data.Name} is already queued, in reserve or deployed.";
+                requirements.Add(new TooltipRequirement("Purchase limit reached", false));
+                status = $"{data.Name} has reached its purchase limit.";
             }
             var stats = new System.Collections.Generic.List<TooltipStat>
             {

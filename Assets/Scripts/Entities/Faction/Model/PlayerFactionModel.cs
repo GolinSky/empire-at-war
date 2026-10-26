@@ -14,6 +14,7 @@ namespace EmpireAtWar.Models.Factions
 
         SelectionType SelectionType { get; }
         bool IsHeroReserved(ShipType shipType);
+        bool IsUnitLimitReached(UnitRequest unitRequest);
         FactionType FactionType { get; }
 
         FactionData GetCurrentLevelFactionData();
@@ -81,27 +82,31 @@ namespace EmpireAtWar.Models.Factions
 
         public bool CanQueueUnit(UnitRequest unitRequest)
         {
+            if (IsUnitLimitReached(unitRequest)) return false;
+
+            return _productionQueues.ContainsKey(unitRequest.Id) ||
+                _productionQueues.Count < MAX_ACTIVE_PIPELINES;
+        }
+
+        public bool IsUnitLimitReached(UnitRequest unitRequest)
+        {
             if (unitRequest == null)
             {
                 throw new ArgumentNullException(nameof(unitRequest));
             }
 
-            if (IsHeroRequest(unitRequest, out ShipType hero) && _reservedHeroes.Contains(hero)) return false;
+            if (IsHeroRequest(unitRequest, out ShipType hero) && _reservedHeroes.Contains(hero)) return true;
 
             if (IsStructureRequest(unitRequest) &&
                 GetStructureCount(unitRequest.GetType(), unitRequest.Id) >=
                 unitRequest.FactionData.MaxCount)
             {
-                return false;
+                return true;
             }
 
-            if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))
-            {
-                return unitRequest.FactionData.MaxCount > 0 &&
-                    _productionQueues.Count < MAX_ACTIVE_PIPELINES;
-            }
-
-            return queue.Count < unitRequest.FactionData.MaxCount;
+            return unitRequest.FactionData.MaxCount <= 0 ||
+                (_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue) &&
+                    queue.Count >= unitRequest.FactionData.MaxCount);
         }
 
         public void QueueUnit(UnitRequest unitRequest)
