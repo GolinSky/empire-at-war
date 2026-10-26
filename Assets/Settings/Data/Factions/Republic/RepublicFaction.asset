@@ -160,7 +160,7 @@ MonoBehaviour:
         iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
         isHero: 0
         <Name>k__BackingField: Imperator-class Star Destroyer
-        <MaxCount>k__BackingField: 1
+        <MaxCount>k__BackingField: 30
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 8000
         <BuildTime>k__BackingField: 90
