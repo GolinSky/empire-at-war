@@ -48,7 +48,7 @@ source = source[:start] + '''            foreach(var renderer in renderers)
                 if (!renderer.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit")) { renderer.enabled=false; continue; }
                 renderer.sharedMaterials = renderer.sharedMaterials.Select(original =>
                 {
-                    var material = new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Endurance/"+original.name+"_Wreck.mat"));
+                    var material = new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/Endurance/"+original.name+"_Wreck.mat"));
                     wreckMaterials.Add(material);
                     material.SetVector("_WreckAxis",Vector3.forward);
                     material.SetVector("_WreckCenter",Vector3.zero);

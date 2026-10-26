@@ -50,7 +50,7 @@ public static class YWingBomberGameplay
             var sixthData = new SerializedObject(sixthView); sixthData.FindProperty("id").intValue=5; sixthData.ApplyModifiedPropertiesWithoutUndo();
             fighters.Add(sixthView);
             var weapons = new List<WeaponHardPoint>();
-            var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png");
+            var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/YWingBomberIcon.png");
             foreach(var fighter in fighters)
             {
                 var offset = SquadronFormation.GetSlot(fighter.Id,4);

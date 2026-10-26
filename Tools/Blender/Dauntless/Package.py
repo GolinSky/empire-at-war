@@ -13,7 +13,7 @@ for texture in audit['variants']['Dauntless']['textures'].values():
     original=Image.open(texture['source']).convert('RGBA')
     copied=Image.open(task/'Dauntless/Textures'/(texture['stem']+'.png')).convert('RGBA')
     assert original.tobytes()==copied.tobytes(),texture['source']
-icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/DauntlessIcon.png').convert('RGBA')
+icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/DauntlessIcon.png').convert('RGBA')
 assert icon.size==(512,512)
 box=icon.getchannel('A').getbbox()
 assert box and box[0]>0 and box[1]>0 and box[2]<512 and box[3]<512,box

@@ -50,7 +50,7 @@ for path in ['Assets/Prefabs/Models/Squadrons/YWingBomberSquadronView.prefab','A
     assert guid in Read('Assets/Settings/AssetMappingData.asset')
     groups = [p for p in (ROOT/'Assets/AddressableAssetsData/AssetGroups').glob('*.asset') if guid in p.read_text(encoding='utf-8-sig')]
     assert len(groups) == 1,(path,groups)
-icon_path = 'Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png'
+icon_path = 'Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/YWingBomberIcon.png'
 icon_guid = Guid(icon_path)
 for path in ['Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset','Assets/Settings/Data/Models/ShipUi/ShipUiData.asset','Assets/Settings/Data/Tooltip/TooltipIconData.asset']:
     assert icon_guid in Read(path)

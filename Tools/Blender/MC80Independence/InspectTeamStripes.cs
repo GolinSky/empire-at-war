@@ -26,7 +26,7 @@ public static class InspectMC80TeamStripes
             string expected = material.GetTexture("_BaseMap").name + "_TeamMask";
             if (material.GetTexture("_TeamMaskMap").name != expected || material.GetFloat("_TeamMaskStrength") != 1 || material.GetFloat("_TeamLiveryStrength") != 0)
                 throw new InvalidOperationException("Saved hull stripe material differs: " + path);
-            var wreck = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/MC80Independence/" + material.name + "_Wreck.mat");
+            var wreck = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/MC80Independence/" + material.name + "_Wreck.mat");
             if (wreck.GetTexture("_TeamMaskMap") != material.GetTexture("_TeamMaskMap") || wreck.GetFloat("_TeamMaskStrength") != 1)
                 throw new InvalidOperationException("Wreck stripe material differs: " + path);
         }

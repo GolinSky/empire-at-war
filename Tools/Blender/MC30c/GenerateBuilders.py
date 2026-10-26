@@ -69,7 +69,7 @@ for name in ('Persist.cs', 'Render.cs'):
     text=Read(name).replace('Battlecruiser', 'MC30c')
     if name=='Render.cs':
         text=text.replace('orthographicSize=78', 'orthographicSize=45')
-        text=text.replace('var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/MC30c/"+renderer.sharedMaterial.name+"_Wreck.mat"));', 'var replacements=renderer.sharedMaterials.Select(source=>new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/MC30c/"+source.name+"_Wreck.mat"))).ToArray();\n                foreach(var material in replacements)\n                {')
+        text=text.replace('var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/MC30c/"+renderer.sharedMaterial.name+"_Wreck.mat"));', 'var replacements=renderer.sharedMaterials.Select(source=>new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/MC30c/"+source.name+"_Wreck.mat"))).ToArray();\n                foreach(var material in replacements)\n                {')
         text=text.replace('renderer.sharedMaterial=material;', '}\n                renderer.sharedMaterials=replacements;')
         text=text.replace('Corellian icon', 'MC30c icon')
     (ROOT/name).write_text(text)

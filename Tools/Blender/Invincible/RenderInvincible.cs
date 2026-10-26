@@ -14,7 +14,7 @@ public static class RenderInvincible
     const string VISUAL = "Assets/Prefabs/Models/Ships/Separatist/Invincible.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/InvincibleWreckView.prefab";
     const string PLACEMENT = "Assets/Prefabs/Ui/Reinforcement/InvincibleReinforcementView.prefab";
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/InvincibleIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/InvincibleIcon.png";
     const string OUTPUT = "Temp/InvincibleImport/Previews/";
     const int LAYER = 30;
 

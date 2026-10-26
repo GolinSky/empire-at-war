@@ -36,7 +36,7 @@ public static class RenderAllegiance
             RenderSettings.ambientMode=AmbientMode.Flat; RenderSettings.ambientLight=new Color(0.4f,0.42f,0.47f);
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             Directory.CreateDirectory("Temp/AllegianceImport/Previews");
-            Render(camera,target,texture,"Assets/Art/Textures/Ui/Icons/ShipIcon/AllegianceIcon.png");
+            Render(camera,target,texture,"Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AllegianceIcon.png");
             camera.transform.position=new Vector3(0,600,0); camera.transform.rotation=Quaternion.Euler(90,0,0); Render(camera,target,texture,"Temp/AllegianceImport/Previews/Top.png"); camera.transform.position=new Vector3(280,330,-380); camera.transform.LookAt(Vector3.zero); Render(camera,target,texture,"Temp/AllegianceImport/Previews/Stern.png"); camera.transform.position=new Vector3(280,330,380); camera.transform.LookAt(Vector3.zero);
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};
             Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
@@ -48,7 +48,7 @@ public static class RenderAllegiance
             foreach(var renderer in renderers)
             {
                 if(renderer.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit"))
-                    renderer.sharedMaterials=renderer.sharedMaterials.Select(m=>AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Allegiance/"+m.name+"_Wreck.mat")).ToArray();
+                    renderer.sharedMaterials=renderer.sharedMaterials.Select(m=>AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Empire/Allegiance/"+m.name+"_Wreck.mat")).ToArray();
                 else renderer.enabled=false;
             }
             for(int i=0;i<8;i++)
@@ -71,7 +71,7 @@ public static class RenderAllegiance
         AssetDatabase.Refresh();
         foreach(var name in new[]{"AllegianceIcon"})
         {
-            var importer=(TextureImporter)AssetImporter.GetAtPath("Assets/Art/Textures/Ui/Icons/ShipIcon/"+name+".png");
+            var importer=(TextureImporter)AssetImporter.GetAtPath("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/"+name+".png");
             importer.textureType=TextureImporterType.Sprite; importer.spriteImportMode=SpriteImportMode.Single;
             importer.alphaIsTransparency=true; importer.mipmapEnabled=false; importer.textureCompression=TextureImporterCompression.Uncompressed; importer.SaveAndReimport();
         }

@@ -15,7 +15,7 @@ for filename, expected in audit['source_hashes'].items():
 conversion = json.loads((TASK/'ConversionReport.json').read_text())
 verification = json.loads((TASK/'VerificationReport.json').read_text())
 assert len(conversion['models']) == 15
-icon = Path('Assets/Art/Textures/Ui/Icons/ShipIcon/AssaultFrigateMkIIIcon.png')
+icon = Path('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/AssaultFrigateMkIIIcon.png')
 image = Image.open(icon).convert('RGBA')
 assert image.size == (512,512)
 alpha = image.getchannel('A')

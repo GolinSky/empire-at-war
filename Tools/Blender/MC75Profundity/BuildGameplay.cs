@@ -156,7 +156,7 @@ public static class BuildMC75Gameplay
                 foreach(var source in renderers.Select(r=>r.sharedMaterial).Distinct())
                 {
                     var material=new Material(source){shader=Shader.Find("EmpireAtWar/Ship Wreck")};
-                    AssetDatabase.CreateAsset(material,"Assets/Art/Materials/Wrecks/MC75Profundity/"+source.name+"_Wreck.mat");
+                    AssetDatabase.CreateAsset(material,"Assets/Art/Materials/Wrecks/Rebellion/MC75Profundity/"+source.name+"_Wreck.mat");
                     foreach(var renderer in renderers.Where(r=>r.sharedMaterial==source))renderer.sharedMaterial=material;
                 }
                 var view=Component(root,"UnitWreckView");Assign(view,"meshRenderers",renderers);Assign(view,"meshFilters",renderers.Select(r=>r.GetComponent<MeshFilter>()).ToArray());

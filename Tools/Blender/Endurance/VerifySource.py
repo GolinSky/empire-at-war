@@ -40,7 +40,7 @@ for prefix in ('Team', 'WreckTeam'):
     changed = sum(max(abs(a[c]-b[c]) for c in range(3)) > 3 for a,b in opaque)
     coverage[prefix] = changed/len(opaque)
     assert 0 < coverage[prefix] < .2, 'Team paint must preserve neutral hull: '+prefix
-icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png').convert('RGBA')
+icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/EnduranceIcon.png').convert('RGBA')
 assert icon.size == (512,512) and icon.getchannel('A').getextrema() == (0,255)
 bounds = icon.getchannel('A').getbbox()
 assert bounds[0]>0 and bounds[1]>0 and bounds[2]<512 and bounds[3]<512

@@ -36,7 +36,7 @@ public static class RegisterImperialVenator
             int donor = Enumerable.Range(0, audioRows.arraySize).Single(i => audioRows.GetArrayElementAtIndex(i).FindPropertyRelative("abilityId").intValue == 19);
             audioRows.InsertArrayElementAtIndex(donor); audioRows.GetArrayElementAtIndex(donor).FindPropertyRelative("abilityId").intValue = ABILITY_ID; Save(audio);
         }
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ImperialVenatorIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ImperialVenatorIcon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long iconId); string iconKey = iconGuid + ":" + iconId;
         var mapping = Load("Assets/Settings/AssetMappingData.asset"); var settings = AddressableAssetSettingsDefaultObject.Settings;
         foreach (var path in new[] { VIEW, DATA })

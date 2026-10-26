@@ -97,7 +97,7 @@ public static class VerifyPelta
         foreach (var source in hull) Check(preview.GetComponentsInChildren<MeshFilter>(true).Any(f => f.sharedMesh == Mesh(source)), "Placement source mesh " + source.name);
         var faction = Entry(Load("Assets/Settings/Data/Factions/Republic/RepublicFaction.asset").FindProperty("ships.keyValue"), SHIP_ID);
         Check(faction.FindPropertyRelative("<Name>k__BackingField").stringValue == "Pelta-class Frigate" && faction.FindPropertyRelative("<Price>k__BackingField").intValue == 1800 && faction.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue == 2 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue == 20, "Republic roster and requested economy");
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/PeltaIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/PeltaIcon.png");
         Check(icon != null && faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue == icon && Entry(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"), SHIP_ID).objectReferenceValue == icon, "Own roster and HUD icon");
         Check(faction.FindPropertyRelative("matchups").objectReferenceValue == AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Tooltip/Matchups/PeltaMatchups.asset"), "Own matchups asset");
         var tooltip = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");

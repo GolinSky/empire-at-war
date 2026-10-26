@@ -88,7 +88,7 @@ public static class VerifyMC50
         var spawn = Component(AssetDatabase.LoadAssetAtPath<GameObject>(PREVIEW),"UnitSpawnView");
         var hologram = new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/MC50Icon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC50Icon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId);
         string iconKey = iconGuid+":"+iconId;
         var faction = Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),311).FindPropertyRelative("value");

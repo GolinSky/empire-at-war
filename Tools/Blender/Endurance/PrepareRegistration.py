@@ -4,9 +4,9 @@ from pathlib import Path
 source = Path('Tools/Blender/MC75Profundity/Register.cs').read_text()
 source = source.replace('MC75Profundity', 'Endurance').replace('MC75', 'Endurance')
 source = source.replace('SHIP_ID=304', 'SHIP_ID=322').replace('ABILITY_ID=19', 'ABILITY_ID=52')
-source = source.replace('"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIcon.png"', '"Squadrons","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png"')
-source = source.replace('"Frigates","Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensIcon.png"', '"Corvettes","Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianCorvetteIcon.png"')
-source = source.replace('"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png"', '"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIcon.png"')
+source = source.replace('"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/VictoryIcon.png"', '"Squadrons","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png"')
+source = source.replace('"Frigates","Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/ArquitensIcon.png"', '"Corvettes","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianCorvetteIcon.png"')
+source = source.replace('"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png"', '"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/VictoryIcon.png"')
 start = source.index('        value.FindPropertyRelative("description").stringValue=')
 end = source.index('        value.FindPropertyRelative("iconKey")', start)
 source = source[:start] + '''        value.FindPropertyRelative("description").stringValue="Fleet carrier with six active and six replacement X-Wing squadrons, four medium turbolasers, two medium ion cannons and six point-defense mounts. Fighter Coordination boosts nearby allied squadron accuracy and speed.";

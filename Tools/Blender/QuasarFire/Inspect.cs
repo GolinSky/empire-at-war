@@ -79,7 +79,7 @@ public static class InspectQuasarFire
         var faction=new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset"));
         var row=Row(faction.FindProperty("ships.keyValue"),id).FindPropertyRelative("value");
         Check(row.FindPropertyRelative("<Price>k__BackingField").intValue==2400 && row.FindPropertyRelative("<BuildTime>k__BackingField").intValue==35,"Roster balance");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/QuasarFireIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/QuasarFireIcon.png");
         Check(row.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue==icon,"Roster icon");
         var ui=Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");Check(Row(ui.FindProperty("shipIconWrapper.keyValue"),id).FindPropertyRelative("value").objectReferenceValue==icon,"Battle icon");
         var previews=Load("Assets/Settings/Data/Reinforcement/ReinforcementData.asset");

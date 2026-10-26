@@ -38,7 +38,7 @@ public static class RenderVictoryII
             RenderSettings.ambientMode=AmbientMode.Flat; RenderSettings.ambientLight=new Color(0.4f,0.42f,0.47f);
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             Directory.CreateDirectory("Temp/VictoryIIImport/Previews");
-            Render(camera,target,texture,"Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIIcon.png");
+            Render(camera,target,texture,"Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/VictoryIIIcon.png");
             camera.transform.position=new Vector3(0,200,0); camera.transform.rotation=Quaternion.Euler(90,0,0); Render(camera,target,texture,"Temp/VictoryIIImport/Previews/Top.png"); camera.transform.position=new Vector3(120,140,-160); camera.transform.LookAt(Vector3.zero); Render(camera,target,texture,"Temp/VictoryIIImport/Previews/Stern.png"); camera.transform.position=new Vector3(120,140,160); camera.transform.LookAt(Vector3.zero);
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};
             Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
@@ -86,7 +86,7 @@ public static class RenderVictoryII
         AssetDatabase.Refresh();
         foreach(var name in new[]{"VictoryIIIcon"})
         {
-            var importer=(TextureImporter)AssetImporter.GetAtPath("Assets/Art/Textures/Ui/Icons/ShipIcon/"+name+".png");
+            var importer=(TextureImporter)AssetImporter.GetAtPath("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/"+name+".png");
             importer.textureType=TextureImporterType.Sprite; importer.spriteImportMode=SpriteImportMode.Single;
             importer.alphaIsTransparency=true; importer.mipmapEnabled=false; importer.textureCompression=TextureImporterCompression.Uncompressed; importer.SaveAndReimport();
         }

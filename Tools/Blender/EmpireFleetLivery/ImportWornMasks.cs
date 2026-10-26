@@ -32,7 +32,7 @@ public static class ImportWornMasks
         var hull = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Models/EmpireShips/ISDIIReplacement/ISDIIReplacement_ISDII_Hull_Material_HighContrast_MeshBumpColorize.mat");
         var materials = new[] {
             "Assets/Art/Materials/Models/EmpireShips/ISDIIReplacement/ISDII_TeamStripes.mat",
-            "Assets/Art/Materials/Wrecks/ISDII/ISDII_TeamStripes_Wreck.mat"
+            "Assets/Art/Materials/Wrecks/Empire/ISDII/ISDII_TeamStripes_Wreck.mat"
         };
         foreach (string path in materials)
         {

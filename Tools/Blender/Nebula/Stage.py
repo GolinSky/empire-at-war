@@ -9,7 +9,7 @@ NAME = 'Nebula'
 models, materials = {}, []
 for kind in ('Models', 'Textures/Models', 'Materials/Models'):
     Path(f'Assets/Art/{kind}/RebellionShips/{NAME}').mkdir(parents=True, exist_ok=True)
-Path(f'Assets/Art/Materials/Wrecks/{NAME}').mkdir(parents=True, exist_ok=True)
+Path(f'Assets/Art/Materials/Wrecks/Rebellion/{NAME}').mkdir(parents=True, exist_ok=True)
 textures = Path(f'Assets/Art/Textures/Models/RebellionShips/{NAME}')
 for path in TASK.glob('*/ConversionReport.json'):
     report = json.loads(path.read_text())

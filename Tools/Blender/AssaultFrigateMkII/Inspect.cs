@@ -122,7 +122,7 @@ public static class InspectAssaultFrigateMkII
         var spawn=Component(AssetDatabase.LoadAssetAtPath<GameObject>(PREVIEW),"UnitSpawnView");
         var hologram=new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Placement hologram slots");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/"+NAME+"Icon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/"+NAME+"Icon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId); string iconKey=iconGuid+":"+iconId;
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),SHIP_ID).FindPropertyRelative("value");
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==3200 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==40,"Roster reference cost/time");

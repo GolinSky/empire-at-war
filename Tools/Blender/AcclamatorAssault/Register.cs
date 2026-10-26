@@ -37,7 +37,7 @@ public static class RegisterAcclamatorAssault
         modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue = 0;
         modifier.FindPropertyRelative("damageTakenMultiplier").floatValue = 1.5f;
         Save(abilities);
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/AcclamatorAssaultIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AcclamatorAssaultIcon.png");
         if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId)) throw new InvalidOperationException("Missing Acclamator sprite");
         string iconKey = iconGuid + ":" + localId;
         var settings = AddressableAssetSettingsDefaultObject.Settings;

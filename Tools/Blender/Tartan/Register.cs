@@ -22,7 +22,7 @@ public static class RegisterTartan
         profile.FindPropertyRelative("faction").intValue = 3;
         profile.FindPropertyRelative("reason").stringValue = "Tartan anti-squadron battery; project balance, six-shot source burst.";
         Save(weapons);
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/TartanIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/TartanIcon.png");
         if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId)) throw new InvalidOperationException("Missing Tartan sprite");
         string iconKey = iconGuid + ":" + localId;
         var settings = AddressableAssetSettingsDefaultObject.Settings;

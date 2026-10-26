@@ -10,7 +10,7 @@ public static class RegisterEndurance
     const int ABILITY_ID=52;
     const string DATA="Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab";
-    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png";
+    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/EnduranceIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/EnduranceMatchups.asset";
 
     public static string Main()
@@ -21,10 +21,10 @@ public static class RegisterEndurance
             AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/MonCalCruiserMatchups.asset",MATCHUPS);
         var matchups=Load(MATCHUPS);matchups.targetObject.name="EnduranceMatchups";
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=2;
-        Matchup(strong.GetArrayElementAtIndex(0),"Squadrons","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png");
-        Matchup(strong.GetArrayElementAtIndex(1),"Corvettes","Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianCorvetteIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(0),"Squadrons","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(1),"Corvettes","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianCorvetteIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/VictoryIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;

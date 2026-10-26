@@ -105,7 +105,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/Shared/ShipsData.asset").GetShipDataPath(ShipType.RaiderCorvette), Is.EqualTo(AssetDatabase.AssetPathToGUID(DATA)));
             foreach (string path in new[] { VIEW, DATA })
                 Assert.That(AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(path)).address, Is.EqualTo(System.IO.Path.GetFileNameWithoutExtension(path)));
-            Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/RaiderCorvetteIcon.png");
+            Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/RaiderCorvetteIcon.png");
             var faction = Entry("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset", "ships.keyValue");
             Assert.That(faction.FindPropertyRelative("<Name>k__BackingField").stringValue, Is.EqualTo("Raider Corvette"));
             Assert.That(faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue, Is.EqualTo(icon));

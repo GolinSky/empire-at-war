@@ -97,7 +97,7 @@ public static class VerifyTitan
             Check(prefab.transform.localScale==Vector3.one,"Prefab root identity "+path);
             Check(!prefab.GetComponentsInChildren<MeshRenderer>(true).Any(r=>!r.enabled && r.GetComponents<MonoBehaviour>().All(c=>c.GetType().Name!="Shield") && System.Text.RegularExpressions.Regex.IsMatch(r.name,"collis.*ion|shadow|shield|lod_?\\d|^col$",System.Text.RegularExpressions.RegexOptions.IgnoreCase)),"No disabled source helpers "+path);
         }
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/TitanIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/TitanIcon.png");
         var faction=Load("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset");
         var roster=Row(faction.FindProperty("ships.keyValue"),SHIP_ID).FindPropertyRelative("value");
         Check(roster.FindPropertyRelative("<Name>k__BackingField").stringValue=="Titan-class Battlecruiser" && roster.FindPropertyRelative("<Price>k__BackingField").intValue==13000 && roster.FindPropertyRelative("<BuildTime>k__BackingField").intValue==100,"Reference roster name/cost/build time");

@@ -55,13 +55,15 @@ graph TD
   - Path: `Assets/Art/Models/<Category>/<Asset>/<Asset>.<ext>`
 - **Materials/**: External material definitions (`.mat`).
   - Model materials: `Assets/Art/Materials/Models/<Category>/<Asset>/<Asset>_<PartOrSlot>[_Variant].mat`
-  - Wreck materials: `Assets/Art/Materials/Wrecks/<UnitFolder>/<SourceMaterial>_Wreck.mat`
+  - Wreck materials: `Assets/Art/Materials/Wrecks/<Faction>/<UnitFolder>/<SourceMaterial>_Wreck.mat`
   - Shared VFX materials: `Assets/Art/Materials/Vfx/`
   - Retained unclassified: `Assets/Art/Materials/Unclassified/`
 - **Textures/**: Image files (`.png`, `.jpg`, `.jpeg`, `.tga`).
   - Model textures: `Assets/Art/Textures/Models/<Category>/<Asset>/<Asset>_<PartOrSet>_<MapOrSource>[_Variant].<ext>`
   - Shared VFX textures: `Assets/Art/Textures/Vfx/`
   - UI textures & icons: `Assets/Art/Textures/Ui/`
+  - Ship and squadron icons: `Assets/Art/Textures/Ui/Icons/{ShipIcon,SquadronIcon}/<Faction>/`.
+  - Icon and wreck-material factions: `Empire`, `Rebellion`, `Republic`, `Separatist`; shared wreck materials use `Shared`, matching wreck-data categories.
   - Retained unclassified: `Assets/Art/Textures/Unclassified/`
 - **Animation/**: Animator Controllers (`.controller`), Animation Clips (`.anim`), and Avatar Masks.
 - **Shaders/**: Shaders (`.shader`, `.hlsl`) and shader-specific textures.
@@ -130,7 +132,7 @@ graph TD
    - `Cannons`: Turrets and heavy weapons (HeavyTurbolaserCannon).
    - `Other`: Props, scenery, and unclassified models (JediCouncil, SciFiLamps).
 3. **Material Naming**: `<Asset>_<PartOrSlot>[_Variant].mat` (e.g. `AWing_CockpitInside.mat`, `Acclamator_Slot00.mat`, `Arquitens_Hull_Republic.mat`).
-4. **Wreck Material Naming**: `<SourceMaterialName>_Wreck.mat` under `Assets/Art/Materials/Wrecks/<UnitFolder>/`.
+4. **Wreck Material Naming**: `<SourceMaterialName>_Wreck.mat` under `Assets/Art/Materials/Wrecks/<Faction>/<UnitFolder>/`.
 5. **Texture Naming**: `<Asset>_<PartOrSet>_<MapOrSource>[_Variant].<ext>` (e.g. `Asteroid_01_Surface_Albedo.jpg`, `AWing_EngineLeft_BumpSource.jpg`).
 6. **Map Tokens**: Standard tokens include `Albedo`, `Normal`, `Emissive`, `Metallic`, `Roughness`, `Height`, `Specular`, `Opacity`, `AO`, `MetallicSmoothness`, `Occlusion`.
 7. **Neutral Slot / Set Identifiers**: Preserve neutral identifiers (`Slot00`, `Set01`, `Imported`, etc.) when geometry roles are unverified.

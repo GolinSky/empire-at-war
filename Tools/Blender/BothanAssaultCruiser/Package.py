@@ -14,7 +14,7 @@ for path, expected in audit['source_hashes'].items():
 assets = [p for p in Path('Assets').rglob('*') if NAME in p.name and p.is_file() and p.suffix != '.meta']
 for path in assets:
     assert Path(str(path)+'.meta').exists(), path
-icon = Image.open(f'Assets/Art/Textures/Ui/Icons/ShipIcon/{NAME}Icon.png').convert('RGBA')
+icon = Image.open(f'Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/{NAME}Icon.png').convert('RGBA')
 alpha = icon.getchannel('A')
 assert icon.size == (512,512) and alpha.getextrema() == (0,255)
 crop = alpha.getbbox()

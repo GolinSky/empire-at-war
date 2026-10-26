@@ -11,7 +11,7 @@ using EmpireAtWar.Models.Players;
 
 public static class RenderCentax
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/CentaxIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/CentaxIcon.png";
     const string PREVIEWS = "Temp/CentaxImport/Previews/";
     const string VISUAL = "Assets/Prefabs/Models/Ships/Republic/Centax.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/CentaxWreckView.prefab";

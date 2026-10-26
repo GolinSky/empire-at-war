@@ -91,7 +91,7 @@ public static class VerifyBothanAssaultCruiser
         var spawn=Component(AssetDatabase.LoadAssetAtPath<GameObject>(preview),"UnitSpawnView");
         var hologram=new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(Refs(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/"+NAME+"Icon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/"+NAME+"Icon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId);string iconKey=iconGuid+":"+iconId;
         var roster=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),312).FindPropertyRelative("value");
         Check(roster.FindPropertyRelative("<Price>k__BackingField").intValue==5200 && roster.FindPropertyRelative("<BuildTime>k__BackingField").intValue==58,"Price/build time");

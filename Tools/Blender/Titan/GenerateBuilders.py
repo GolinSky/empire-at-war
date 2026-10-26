@@ -3,7 +3,7 @@ from pathlib import Path
 
 ROOT = Path('Tools/Blender/Titan')
 def Read(name):
-    return (Path('Tools/Blender/Nebula')/name).read_text().replace('Nebula', 'Titan').replace('RebellionShips', 'EmpireShips').replace('Ships/Rebellion/Titan', 'Ships/Empire/Titan').replace('Ship/Rebellion/Titan', 'Ship/Empire/Titan').replace('Wrecks/Rebellion/Titan', 'Wrecks/Empire/Titan')
+    return (Path('Tools/Blender/Nebula')/name).read_text().replace('Nebula', 'Titan').replace('RebellionShips', 'EmpireShips').replace('Ships/Rebellion/Titan', 'Ships/Empire/Titan').replace('Ship/Rebellion/Titan', 'Ship/Empire/Titan').replace('Wrecks/Rebellion/Titan', 'Wrecks/Empire/Titan').replace('ShipIcon/Rebellion/Titan', 'ShipIcon/Empire/Titan')
 
 art = Read('BuildArt.cs').replace('const float LENGTH = 160;', '')
 art = art.replace('var bounds=BoundsOf(root); float scale=LENGTH/bounds.size.z;', '''var reference=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab");

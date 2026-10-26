@@ -58,7 +58,7 @@ public static class VerifyImperialVenator
             Check(Entry("Assets/Settings/AssetMappingData.asset", "assetMappings.keyValue", key).FindPropertyRelative("m_AssetGUID").stringValue == guid, "Mapping " + key);
             Check(AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid).address == key, "Addressable " + key);
         }
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ImperialVenatorIcon.png"); Check(icon != null, "Rendered icon");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ImperialVenatorIcon.png"); Check(icon != null, "Rendered icon");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId); string iconKey = iconGuid + ":" + localId;
         var unit = Entry("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset", "ships.keyValue", 211);
         Check(unit.FindPropertyRelative("<Name>k__BackingField").stringValue == "Imperial Venator", "Empire roster");

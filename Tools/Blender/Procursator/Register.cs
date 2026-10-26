@@ -8,7 +8,7 @@ public static class RegisterProcursator
     const int SHIP_ID=212;
     const string DATA="Assets/Settings/Data/Ship/Empire/ProcursatorShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab";
-    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/ProcursatorIcon.png";
+    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ProcursatorIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/ProcursatorMatchups.asset";
 
     public static string Main()
@@ -20,10 +20,10 @@ public static class RegisterProcursator
             AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/MonCalCruiserMatchups.asset",MATCHUPS);
         var matchups=Load(MATCHUPS);matchups.targetObject.name="ProcursatorMatchups";
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=2;
-        Matchup(strong.GetArrayElementAtIndex(0),"Cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianCorvetteIcon.png");
-        Matchup(strong.GetArrayElementAtIndex(1),"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(0),"Cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianCorvetteIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(1),"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/ArquitensIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;

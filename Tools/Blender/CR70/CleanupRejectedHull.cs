@@ -20,7 +20,7 @@ public static class CleanupCR70RejectedHull
             TEXTURES + "CR70_Hull_Albedo.png",
             TEXTURES + "CR70_Hull_Normal.png",
             TEXTURES + "CR70_Hull_TeamMask.png",
-            "Assets/Art/Materials/Wrecks/CR70/RV_Corvette Material.001_Wreck.mat"
+            "Assets/Art/Materials/Wrecks/Republic/CR70/RV_Corvette Material.001_Wreck.mat"
         };
         string[] roots = {
             "Assets/Art/Models/RepublicShips/CR70/CR70.fbx",

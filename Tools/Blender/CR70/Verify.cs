@@ -82,7 +82,7 @@ public static class VerifyCR70
         Check(References(Config(preview, "UnitSpawnView").FindProperty("meshRenderers")).Length == visible.Length && preview.GetComponents<BoxCollider>().Single().isTrigger, "Own placement hull and collider");
         var faction = Entry(Load("Assets/Settings/Data/Factions/Republic/RepublicFaction.asset").FindProperty("ships.keyValue"), SHIP_ID);
         Check(faction.FindPropertyRelative("<Name>k__BackingField").stringValue == "CR70 Corvette" && faction.FindPropertyRelative("<Price>k__BackingField").intValue == 1250 && faction.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue == 2, "Republic roster, cost and population");
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/CR70Icon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/CR70Icon.png");
         Check(icon != null && faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue == icon && Entry(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"), SHIP_ID).objectReferenceValue == icon, "Own roster and HUD icon");
         Check(faction.FindPropertyRelative("matchups").objectReferenceValue == AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Tooltip/Matchups/CR70Matchups.asset"), "Own matchup asset");
         var tooltipIcons = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");

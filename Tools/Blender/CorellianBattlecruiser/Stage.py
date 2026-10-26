@@ -6,7 +6,7 @@ NAME = 'CorellianBattlecruiser'
 TASK = Path('Temp/CorellianBattlecruiserImport')
 model = Path(f'Assets/Art/Models/RebellionShips/{NAME}')
 textures = Path(f'Assets/Art/Textures/Models/RebellionShips/{NAME}')
-for path in (model, textures, Path(f'Assets/Art/Materials/Models/RebellionShips/{NAME}'), Path(f'Assets/Art/Materials/Wrecks/{NAME}')):
+for path in (model, textures, Path(f'Assets/Art/Materials/Models/RebellionShips/{NAME}'), Path(f'Assets/Art/Materials/Wrecks/Rebellion/{NAME}')):
     path.mkdir(parents=True, exist_ok=True)
 for source in TASK.glob('*.fbx'):
     shutil.copy2(source, model/source.name)

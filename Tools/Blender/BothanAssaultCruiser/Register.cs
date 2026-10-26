@@ -10,7 +10,7 @@ public static class RegisterBothanAssaultCruiser
     const int ABILITY_ID=42;
     const string DATA="Assets/Settings/Data/Ship/Rebellion/BothanAssaultCruiserShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/BothanAssaultCruiserShipView.prefab";
-    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/BothanAssaultCruiserIcon.png";
+    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/BothanAssaultCruiserIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/BothanAssaultCruiserMatchups.asset";
 
     public static string Main()
@@ -22,10 +22,10 @@ public static class RegisterBothanAssaultCruiser
             AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/MonCalCruiserMatchups.asset",MATCHUPS);
         var matchups=Load(MATCHUPS);matchups.targetObject.name="BothanAssaultCruiserMatchups";
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=2;
-        Matchup(strong.GetArrayElementAtIndex(0),"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/HomeOneIcon.png");
-        Matchup(strong.GetArrayElementAtIndex(1),"Cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/MonCalCruiserIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(0),"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/HomeOneIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(1),"Cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MonCalCruiserIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;

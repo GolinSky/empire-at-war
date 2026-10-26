@@ -113,7 +113,7 @@ public static class BuildISDIIShip
         var wreckRoot=PrefabUtility.LoadPrefabContents("Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab");
         try
         {
-            foreach(string guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/Art/Materials/Wrecks/ISDII"}))
+            foreach(string guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/Art/Materials/Wrecks/Empire/ISDII"}))
             {
                 string path=AssetDatabase.GUIDToAssetPath(guid), renamed=path.Replace("ISDI","ISDII_Common");
                 if(path==renamed)continue;

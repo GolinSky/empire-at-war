@@ -23,7 +23,7 @@ public static class RegisterExecutor
         foreach(var pair in new[]{new{source=2,target=49},new{source=43,target=50},new{source=44,target=51},new{source=34,target=52},new{source=5,target=53},new{source=14,target=54}})
             CloneRow(audio.FindProperty("weapons"),"weaponType",pair.source,pair.target);
         Save(audio);
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ExecutorIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ExecutorIcon.png");
         if(!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long localId))throw new InvalidOperationException("Missing ship sprite");
         string iconKey=iconGuid+":"+localId;
         var settings=AddressableAssetSettingsDefaultObject.Settings;

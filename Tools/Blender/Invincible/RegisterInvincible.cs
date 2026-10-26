@@ -22,7 +22,7 @@ public static class RegisterInvincible
         if (EditorApplication.isPlayingOrWillChangePlaymode)
             throw new InvalidOperationException("Invincible registration requires Edit Mode.");
 
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/InvincibleIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/InvincibleIcon.png");
         if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId))
             throw new InvalidOperationException("Invincible's rendered sprite must be imported before registration.");
         string iconKey = iconGuid + ":" + localId;

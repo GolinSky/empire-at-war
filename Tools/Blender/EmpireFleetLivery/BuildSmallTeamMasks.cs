@@ -26,7 +26,7 @@ public static class BuildSmallTeamMasks
                 string originalName = material.name.Replace(ship + "_TeamStripes_", "");
                 var original = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Models/EmpireShips/" + ship + "/" + originalName + ".mat");
                 ApplyPaint(material, original, mask);
-                var wreck = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/" + ship + "/" + material.name + "_Wreck.mat");
+                var wreck = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Empire/" + ship + "/" + material.name + "_Wreck.mat");
                 ApplyPaint(wreck, original, mask);
             }
             AssetDatabase.SaveAssets();
@@ -133,7 +133,7 @@ public static class BuildSmallTeamMasks
                 var matrix = source.transform.worldToLocalMatrix * renderer.transform.localToWorldMatrix;
                 go.transform.localPosition = matrix.GetColumn(3); go.transform.localRotation = matrix.rotation; go.transform.localScale = matrix.lossyScale;
                 go.AddComponent<MeshFilter>().sharedMesh = filters[renderer.transform].sharedMesh;
-                string materialPath = "Assets/Art/Materials/Wrecks/" + ship + "/" + renderer.sharedMaterial.name + "_Wreck.mat";
+                string materialPath = "Assets/Art/Materials/Wrecks/Empire/" + ship + "/" + renderer.sharedMaterial.name + "_Wreck.mat";
                 var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
                 if (material == null)
                 {

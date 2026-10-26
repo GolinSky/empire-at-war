@@ -9,9 +9,9 @@ public static class BuildISDIIReplacementStripes
 {
     private const string MESH_PATH = "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDII_TeamStripes.asset";
     private const string MATERIAL_PATH = "Assets/Art/Materials/Models/EmpireShips/ISDIIReplacement/ISDII_TeamStripes.mat";
-    private const string WRECK_MATERIAL_PATH = "Assets/Art/Materials/Wrecks/ISDII/ISDII_TeamStripes_Wreck.mat";
+    private const string WRECK_MATERIAL_PATH = "Assets/Art/Materials/Wrecks/Empire/ISDII/ISDII_TeamStripes_Wreck.mat";
     private const string HULL_MATERIAL_PATH = "Assets/Art/Materials/Models/EmpireShips/ISDIIReplacement/ISDIIReplacement_ISDII_Hull_Material_HighContrast_MeshBumpColorize.mat";
-    private const string HULL_WRECK_PATH = "Assets/Art/Materials/Wrecks/ISDII/ISDIIReplacement_ISDII_Hull_2_SD_MeshBumpColorize_Wreck.mat";
+    private const string HULL_WRECK_PATH = "Assets/Art/Materials/Wrecks/Empire/ISDII/ISDIIReplacement_ISDII_Hull_2_SD_MeshBumpColorize_Wreck.mat";
     private const float SURFACE_OFFSET = 0.1f;
     private const float STRIPE_WIDTH = 2.6f;
     private const float STRIPE_SLOPE = 0.32f;

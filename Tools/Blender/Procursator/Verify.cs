@@ -113,7 +113,7 @@ public static class VerifyProcursator
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Ui/Reinforcement/ProcursatorReinforcementView.prefab");var spawn=Component(preview,"UnitSpawnView");
         var hologram=new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ProcursatorIcon.png");Check(icon!=null && icon.texture.width==512 && icon.texture.height==512,"512 sprite");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ProcursatorIcon.png");Check(icon!=null && icon.texture.width==512 && icon.texture.height==512,"512 sprite");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId);string iconKey=iconGuid+":"+iconId;
         var faction=Row(Load("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset").FindProperty("ships.keyValue"),212);
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==5500 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==55,"Requested economy");

@@ -11,7 +11,7 @@ using EmpireAtWar.Models.Players;
 
 public static class RenderCarrack
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/CarrackIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/CarrackIcon.png";
     const string PREVIEWS = "Temp/CarrackImport/Previews/";
     const string VISUAL = "Assets/Prefabs/Models/Ships/Republic/Carrack.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/CarrackWreckView.prefab";

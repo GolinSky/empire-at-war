@@ -12,7 +12,7 @@ public static class CleanupTectorLegacyArt
     private static readonly string[] _folders = {
         "Assets/Art/Models/EmpireShips/Tector/",
         "Assets/Art/Materials/Models/EmpireShips/Tector/",
-        "Assets/Art/Materials/Wrecks/Tector/",
+        "Assets/Art/Materials/Wrecks/Empire/Tector/",
         "Assets/Art/Textures/Models/EmpireShips/Tector/"
     };
 
@@ -34,7 +34,7 @@ public static class CleanupTectorLegacyArt
                 if (dependencies.Length > 0) references.Add(new JObject { ["consumer"] = path, ["dependencies"] = new JArray(dependencies) });
             }
         var retained = outside.Where(path => _folders.Any(path.StartsWith) || path.StartsWith("Assets/Settings/") || path.StartsWith("Assets/AddressableAssetsData/")
-            || new[] { "Assets/Prefabs/Models/Ships/Empire/Tector.prefab", "Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab", "Assets/Art/Models/Shields/TectorShipViewShield.asset", "Assets/Art/Textures/Ui/Icons/ShipIcon/TectorIcon.png", "Assets/Art/Textures/Ui/Icons/ShipIcon/TectorSilhouette.png" }.Contains(path))
+            || new[] { "Assets/Prefabs/Models/Ships/Empire/Tector.prefab", "Assets/Prefabs/Models/Ships/Empire/TectorShipView.prefab", "Assets/Prefabs/Models/Wrecks/TectorWreckView.prefab", "Assets/Prefabs/Ui/Reinforcement/TectorReinforcementView.prefab", "Assets/Art/Models/Shields/TectorShipViewShield.asset", "Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/TectorIcon.png", "Assets/Art/Textures/Ui/Icons/ShipIcon/TectorSilhouette.png" }.Contains(path))
             .SelectMany(path => new[] { path, path + ".meta" }).Where(File.Exists).Distinct().ToDictionary(path => path, Hash);
         var report = new JObject {
             ["assets"] = new JArray(candidates.Select(path => new JObject { ["path"] = path, ["guid"] = AssetDatabase.AssetPathToGUID(path), ["sha256"] = Hash(path), ["bytes"] = new FileInfo(path).Length })),

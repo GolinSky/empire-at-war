@@ -22,7 +22,7 @@ public static class BuildTectorCircles
         const string ship = "Tector";
         var report = new List<string>();
         AssetDatabase.Refresh();
-        foreach(var guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/Art/Materials/Models/EmpireShips/"+ship,"Assets/Art/Materials/Wrecks/"+ship}))
+        foreach(var guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/Art/Materials/Models/EmpireShips/"+ship,"Assets/Art/Materials/Wrecks/Empire/"+ship}))
         {
             var material=AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
             if(!material.shader.name.StartsWith("EmpireAtWar/Ship"))continue;

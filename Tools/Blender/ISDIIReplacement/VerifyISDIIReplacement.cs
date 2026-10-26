@@ -158,7 +158,7 @@ public static class VerifyISDIIReplacement
             Check(entry!=null && entry.address==Path.GetFileNameWithoutExtension(path),"Addressable: "+path);
             registrations.Add(new JObject{{"path",path},{"guid",guid},{"address",entry.address}});
         }
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIIcon.png");
         Check(Entry("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset","ships.keyValue").FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue==icon,"Faction icon");
         Check(Entry("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset","shipIconWrapper.keyValue").objectReferenceValue==icon,"HUD icon");
         var spawn=Entry("Assets/Settings/Data/Reinforcement/ReinforcementData.asset","spawnShipWrapper.keyValue").objectReferenceValue;

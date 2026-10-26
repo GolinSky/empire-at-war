@@ -107,7 +107,7 @@ public static class VerifyMC30c
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Ui/Reinforcement/MC30cReinforcementView.prefab");var spawn=Component(preview,"UnitSpawnView");
         var hologram=new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/MC30cIcon.png");Check(icon!=null && icon.texture.width==512 && icon.texture.height==512,"512 sprite");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC30cIcon.png");Check(icon!=null && icon.texture.width==512 && icon.texture.height==512,"512 sprite");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId);string iconKey=iconGuid+":"+iconId;
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),307);
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==2500 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==32,"Requested economy");

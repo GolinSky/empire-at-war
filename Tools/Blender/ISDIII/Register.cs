@@ -43,7 +43,7 @@ public static class RegisterISDIII
         ability.FindPropertyRelative("range").floatValue=375;ability.FindPropertyRelative("requiresEnemyTarget").boolValue=true;
         ability.FindPropertyRelative("canCancel").boolValue=false;ability.FindPropertyRelative("isToggle").boolValue=false;
         ability.FindPropertyRelative("aiUse").intValue=2;Save(abilities);
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIIIcon.png");
         if(!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long localId))throw new InvalidOperationException("Missing ship sprite");
         string iconKey=iconGuid+":"+localId;
         var settings=AddressableAssetSettingsDefaultObject.Settings;

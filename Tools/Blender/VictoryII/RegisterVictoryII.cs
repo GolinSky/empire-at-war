@@ -19,7 +19,7 @@ public static class RegisterVictoryII
         foreach(var pair in new[]{new{source=32,target=37},new{source=4,target=38}})
             CloneRow(audio.FindProperty("weapons"),"weaponType",pair.source,pair.target);
         Save(audio);
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/VictoryIIIcon.png");
         if(!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long localId))throw new InvalidOperationException("Missing ship sprite");
         string iconKey=iconGuid+":"+localId;
         var settings=AddressableAssetSettingsDefaultObject.Settings;

@@ -42,7 +42,7 @@ public static class RegisterRaiderCorvette
         modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue = 0;
         modifier.FindPropertyRelative("damageTakenMultiplier").floatValue = 1;
         Save(abilities);
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/RaiderCorvetteIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/RaiderCorvetteIcon.png");
         if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId)) throw new InvalidOperationException("Missing Raider sprite");
         string iconKey = iconGuid + ":" + localId;
         var settings = AddressableAssetSettingsDefaultObject.Settings;

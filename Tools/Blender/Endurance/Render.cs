@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 public static class RenderEndurance
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/EnduranceIcon.png";
     const string PREVIEWS = "Temp/EnduranceImport/Previews/";
     public static string Main()
     {
@@ -62,7 +62,7 @@ public static class RenderEndurance
                 if (!renderer.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit")) { renderer.enabled=false; continue; }
                 renderer.sharedMaterials = renderer.sharedMaterials.Select(original =>
                 {
-                    var material = new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Endurance/"+original.name+"_Wreck.mat"));
+                    var material = new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/Endurance/"+original.name+"_Wreck.mat"));
                     wreckMaterials.Add(material);
                     material.SetVector("_WreckAxis",Vector3.forward);
                     material.SetVector("_WreckCenter",Vector3.zero);

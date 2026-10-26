@@ -98,7 +98,7 @@ public static class VerifyNebula
             Check(prefab.transform.localScale==Vector3.one,"Prefab root identity "+path);
             Check(!prefab.GetComponentsInChildren<MeshRenderer>(true).Any(r=>!r.enabled && r.GetComponents<MonoBehaviour>().All(c=>c.GetType().Name!="Shield") && System.Text.RegularExpressions.Regex.IsMatch(r.name,"collis.*ion|shadow|shield|lod_?\\d|^col$",System.Text.RegularExpressions.RegexOptions.IgnoreCase)),"No disabled source helpers "+path);
         }
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/NebulaIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/NebulaIcon.png");
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var roster=Row(faction.FindProperty("ships.keyValue"),SHIP_ID).FindPropertyRelative("value");
         Check(roster.FindPropertyRelative("<Name>k__BackingField").stringValue=="Nebula Star Destroyer" && roster.FindPropertyRelative("<Price>k__BackingField").intValue==7200 && roster.FindPropertyRelative("<BuildTime>k__BackingField").intValue==72,"Reference roster name/cost/build time");

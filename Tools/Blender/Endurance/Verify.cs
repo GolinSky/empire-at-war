@@ -18,7 +18,7 @@ public static class VerifyEndurance
 {
     private const string SHIP="Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab";
     private const string DATA="Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset";
-    private const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png";
+    private const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/EnduranceIcon.png";
     private static readonly List<string> _checks=new List<string>();
 
     public static string Main()

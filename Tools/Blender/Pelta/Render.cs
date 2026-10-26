@@ -11,7 +11,7 @@ using EmpireAtWar.Models.Players;
 
 public static class RenderPelta
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/PeltaIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/PeltaIcon.png";
     const string PREVIEWS = "Temp/PeltaImport/Previews/";
     const string VISUAL = "Assets/Prefabs/Models/Ships/Republic/Pelta.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/PeltaWreckView.prefab";

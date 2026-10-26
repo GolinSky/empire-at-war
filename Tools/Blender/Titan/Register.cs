@@ -10,7 +10,7 @@ public static class RegisterTitan
     
     const string DATA="Assets/Settings/Data/Ship/Empire/TitanShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Empire/TitanShipView.prefab";
-    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/TitanIcon.png";
+    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/TitanIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/TitanMatchups.asset";
 
     public static string Main()
@@ -22,10 +22,10 @@ public static class RegisterTitan
             AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/MonCalCruiserMatchups.asset",MATCHUPS);
         var matchups=Load(MATCHUPS);matchups.targetObject.name="TitanMatchups";
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=2;
-        Matchup(strong.GetArrayElementAtIndex(0),"Heavy cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianCorvetteIcon.png");
-        Matchup(strong.GetArrayElementAtIndex(1),"Star destroyers","Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(0),"Heavy cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianCorvetteIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(1),"Star destroyers","Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/ArquitensIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;

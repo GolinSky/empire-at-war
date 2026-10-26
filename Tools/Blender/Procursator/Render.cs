@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 public static class RenderProcursator
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/ProcursatorIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ProcursatorIcon.png";
     const string PREVIEWS = "Temp/ProcursatorImport/Previews/";
     public static string Main()
     {
@@ -60,7 +60,7 @@ public static class RenderProcursator
             foreach(var renderer in renderers)
             {
                 if(renderer.sharedMaterial.shader.name!="EmpireAtWar/Ship Lit"){renderer.enabled=false;continue;}
-                var replacements=renderer.sharedMaterials.Select(source=>new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Procursator/"+source.name+"_Wreck.mat"))).ToArray();
+                var replacements=renderer.sharedMaterials.Select(source=>new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Empire/Procursator/"+source.name+"_Wreck.mat"))).ToArray();
                 foreach(var material in replacements)
                 {
                 wreckMaterials.Add(material);

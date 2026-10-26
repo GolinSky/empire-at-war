@@ -95,7 +95,7 @@ public static class InspectLiberator
         var hologram=new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),SHIP_ID).FindPropertyRelative("value");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/LiberatorIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/LiberatorIcon.png");
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==4200 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==48 && faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue==icon,"Roster stats/icon");
         Check(Row(Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset").FindProperty("shipsData.keyValue"),SHIP_ID).FindPropertyRelative("value.m_AssetGUID").stringValue==AssetDatabase.AssetPathToGUID(DATA),"ShipsData");
         Check(Row(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"),SHIP_ID).FindPropertyRelative("value").objectReferenceValue==icon,"ShipUi icon");

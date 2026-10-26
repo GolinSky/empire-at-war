@@ -9,7 +9,7 @@ ART = Path('Assets/Art')
 textures = ART/'Textures/Models/EmpireShips/Titan'
 for kind in ('Models', 'Textures/Models', 'Materials/Models'):
     (ART/kind/'EmpireShips/Titan').mkdir(parents=True, exist_ok=True)
-(ART/'Materials/Wrecks/Titan').mkdir(parents=True, exist_ok=True)
+(ART/'Materials/Wrecks/Empire/Titan').mkdir(parents=True, exist_ok=True)
 Image.new('L', (2, 2), 255).save(textures/'Titan_TeamStripes_TeamMask.png')
 audit = json.loads((TASK/'SourceAudit.json').read_text())
 models, materials = {}, []

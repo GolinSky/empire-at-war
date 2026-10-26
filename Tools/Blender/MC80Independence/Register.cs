@@ -10,7 +10,7 @@ public static class RegisterMC80Independence
     const int ABILITY_ID=26;
     const string DATA="Assets/Settings/Data/Ship/Rebellion/MC80IndependenceShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/MC80IndependenceShipView.prefab";
-    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/MC80IndependenceIcon.png";
+    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80IndependenceIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/MC80IndependenceMatchups.asset";
 
     public static string Main()
@@ -21,10 +21,10 @@ public static class RegisterMC80Independence
             AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/MonCalCruiserMatchups.asset",MATCHUPS);
         var matchups=Load(MATCHUPS);matchups.targetObject.name="MC80IndependenceMatchups";
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=2;
-        Matchup(strong.GetArrayElementAtIndex(0),"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIcon.png");
-        Matchup(strong.GetArrayElementAtIndex(1),"Frigates","Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(0),"Capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/VictoryIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(1),"Frigates","Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/ArquitensIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Bomber strikes","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;

@@ -53,7 +53,7 @@ public static class ApplyAcclamatorAssaultLivery
         importer.SaveAndReimport();
         var stripeMask = AssetDatabase.LoadAssetAtPath<Texture2D>(MASK);
         string[] folders = Enumerable.Range(0, 7).Select(i => "Assets/Art/Materials/Models/EmpireShips/AcclamatorAssault" + (i == 0 ? "" : "Turret" + i.ToString("00")))
-            .Concat(new[] {"Assets/Art/Materials/Wrecks/AcclamatorAssault"}).ToArray();
+            .Concat(new[] {"Assets/Art/Materials/Wrecks/Empire/AcclamatorAssault"}).ToArray();
         int changed = 0;
         foreach (var guid in AssetDatabase.FindAssets("t:Material", folders))
         {

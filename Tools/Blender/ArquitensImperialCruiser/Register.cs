@@ -39,7 +39,7 @@ public static class RegisterArquitensImperialCruiser
         modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue = 0;
         modifier.FindPropertyRelative("damageTakenMultiplier").floatValue = 1.5f;
         Save(abilities);
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensImperialCruiserIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ArquitensImperialCruiserIcon.png");
         if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId)) throw new InvalidOperationException("Missing Arquitens sprite");
         string iconKey = iconGuid + ":" + localId;
         var settings = AddressableAssetSettingsDefaultObject.Settings;

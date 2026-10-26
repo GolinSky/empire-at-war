@@ -11,7 +11,7 @@ using EmpireAtWar.Models.Players;
 
 public static class RenderHeavyDreadnought
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/HeavyDreadnoughtIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/HeavyDreadnoughtIcon.png";
     const string PREVIEWS = "Temp/HeavyDreadnoughtImport/Previews/";
     const string VISUAL = "Assets/Prefabs/Models/Ships/Republic/HeavyDreadnought.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/HeavyDreadnoughtWreckView.prefab";

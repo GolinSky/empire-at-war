@@ -13,7 +13,7 @@ for source,expected in audit['source_hashes'].items():
 assets=[p for p in Path('Assets').rglob('*') if 'CD273' in p.name and p.is_file() and p.suffix!='.meta']
 for path in assets:
     assert Path(str(path)+'.meta').exists(),path
-icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/CD273Icon.png').convert('RGBA')
+icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CD273Icon.png').convert('RGBA')
 assert icon.size==(512,512) and icon.getchannel('A').getextrema()==(0,255)
 crop=icon.getchannel('A').getbbox()
 assert crop[0]>10 and crop[1]>10 and crop[2]<502 and crop[3]<502

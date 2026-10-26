@@ -23,13 +23,13 @@ public static class RenderFleetLivery
         {
             RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.4f,.42f,.47f);
             Render(camera,target,texture,folder+"Unowned.png");
-            string icon="Assets/Art/Textures/Ui/Icons/ShipIcon/"+ship+"Icon.png";File.WriteAllBytes(icon,texture.EncodeToPNG());
+            string icon="Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/"+ship+"Icon.png";File.WriteAllBytes(icon,texture.EncodeToPNG());
             Color[] colors={new Color(.2f,.55f,1),new Color(1,.25f,.2f),new Color(.3f,.9f,.4f),new Color(1,.75f,.2f),new Color(.7f,.35f,1),new Color(.2f,.9f,.9f),new Color(1,.45f,.75f),new Color(.9f,.9f,.9f)};Shader.SetGlobalVectorArray("_TeamColors",colors.Select(c=>(Vector4)c).ToArray());
             for(int i=0;i<8;i++){foreach(var r in renderers)r.SetShaderUserValue((uint)(i+1));Render(camera,target,texture,folder+"Team"+i+".png");}
             foreach(var r in renderers)
             {
                 if(r.sharedMaterials.Any(m=>m.shader.name!="EmpireAtWar/Ship Lit")){r.enabled=false;continue;}
-                r.sharedMaterials=r.sharedMaterials.Select(m=>{var copy=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/"+ship+"/"+m.name+"_Wreck.mat"));copies.Add(copy);copy.SetVector("_WreckAxis",Vector3.forward);copy.SetVector("_WreckCenter",Vector3.zero);copy.SetVector("_WreckCuts",new Vector4(-length*.1f,length*.14f,1000000,1000000));copy.SetVector("_WreckAxisRange",new Vector4(-length,length,0,0));copy.SetFloat("_WreckStartTime",0);copy.SetFloat("_WreckLifetime",1000000000);copy.SetFloat("_WreckGlowDuration",1000000000);copy.SetFloat("_WreckSeparationSpeed",0);copy.SetFloat("_WreckTiltSpeed",0);copy.SetFloat("_WreckSinkSpeed",0);return copy;}).ToArray();
+                r.sharedMaterials=r.sharedMaterials.Select(m=>{var copy=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Empire/"+ship+"/"+m.name+"_Wreck.mat"));copies.Add(copy);copy.SetVector("_WreckAxis",Vector3.forward);copy.SetVector("_WreckCenter",Vector3.zero);copy.SetVector("_WreckCuts",new Vector4(-length*.1f,length*.14f,1000000,1000000));copy.SetVector("_WreckAxisRange",new Vector4(-length,length,0,0));copy.SetFloat("_WreckStartTime",0);copy.SetFloat("_WreckLifetime",1000000000);copy.SetFloat("_WreckGlowDuration",1000000000);copy.SetFloat("_WreckSeparationSpeed",0);copy.SetFloat("_WreckTiltSpeed",0);copy.SetFloat("_WreckSinkSpeed",0);return copy;}).ToArray();
             }
             for(int i=0;i<8;i++){foreach(var r in renderers.Where(r=>r.enabled))r.SetShaderUserValue((uint)(i+1));Render(camera,target,texture,folder+"WreckTeam"+i+".png");}
         }

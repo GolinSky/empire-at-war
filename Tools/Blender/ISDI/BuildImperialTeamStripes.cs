@@ -9,9 +9,9 @@ public static class BuildImperialTeamStripes
 {
     private const string MESH_PATH = "Assets/Art/Models/EmpireShips/ISDI/ISDI_TeamStripes.asset";
     private const string MATERIAL_PATH = "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_TeamStripes.mat";
-    private const string WRECK_MATERIAL_PATH = "Assets/Art/Materials/Wrecks/ISDI/ISDI_TeamStripes_Wreck.mat";
+    private const string WRECK_MATERIAL_PATH = "Assets/Art/Materials/Wrecks/Empire/ISDI/ISDI_TeamStripes_Wreck.mat";
     private const string HULL_MATERIAL_PATH = "Assets/Art/Materials/Models/EmpireShips/ISDI/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize.mat";
-    private const string HULL_WRECK_PATH = "Assets/Art/Materials/Wrecks/ISDI/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat";
+    private const string HULL_WRECK_PATH = "Assets/Art/Materials/Wrecks/Empire/ISDI/ISDI_Hullplates_ISD_diffuse_MeshBumpColorize_Wreck.mat";
     private const float SURFACE_OFFSET = 0.015f;
     private const float STRIPE_WIDTH = 2.6f;
     private const float STRIPE_SLOPE = 0.32f;
@@ -92,7 +92,7 @@ public static class BuildImperialTeamStripes
         }
         var material = CreateMaterial(hullMaterial, MATERIAL_PATH);
         var wreckMaterial = CreateMaterial(AssetDatabase.LoadAssetAtPath<Material>(HULL_WRECK_PATH), WRECK_MATERIAL_PATH);
-        var materialFolders = new[] {"Assets/Art/Materials/Models/EmpireShips/ISDI", "Assets/Art/Materials/Models/EmpireShips/ISDII", "Assets/Art/Materials/Wrecks/ISDI", "Assets/Art/Materials/Wrecks/ISDII"};
+        var materialFolders = new[] {"Assets/Art/Materials/Models/EmpireShips/ISDI", "Assets/Art/Materials/Models/EmpireShips/ISDII", "Assets/Art/Materials/Wrecks/Empire/ISDI", "Assets/Art/Materials/Wrecks/Empire/ISDII"};
         foreach (string path in AssetDatabase.FindAssets("t:Material", materialFolders).Select(AssetDatabase.GUIDToAssetPath))
         {
             if (path == MATERIAL_PATH || path == WRECK_MATERIAL_PATH || path.Contains("_Helper_")) continue;

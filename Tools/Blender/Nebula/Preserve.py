@@ -31,7 +31,7 @@ for name in ('SourceAudit.json','ConversionReport.json','ArtReport.json','Hardpo
     shutil.copy2(TASK/name, OUTPUT/name)
 shutil.copytree(TASK/'Previews', OUTPUT/'Previews', dirs_exist_ok=True)
 shutil.copytree(TASK/'Previews', Path('Tools/Blender/Nebula/Previews'), dirs_exist_ok=True)
-icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/NebulaIcon.png').convert('RGBA')
+icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/NebulaIcon.png').convert('RGBA')
 box = icon.getchannel('A').getbbox()
 assert icon.size == (512,512) and box and min(box[:2]) > 0 and max(box[2:]) < 512
 team_deltas = []

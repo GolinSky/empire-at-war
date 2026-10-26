@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 public static class RenderCorellianBattlecruiser
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/CorellianBattlecruiserIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianBattlecruiserIcon.png";
     const string PREVIEWS = "Temp/CorellianBattlecruiserImport/Previews/";
     public static string Main()
     {
@@ -60,7 +60,7 @@ public static class RenderCorellianBattlecruiser
             foreach(var renderer in renderers)
             {
                 if(renderer.sharedMaterial.shader.name!="EmpireAtWar/Ship Lit"){renderer.enabled=false;continue;}
-                var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/CorellianBattlecruiser/"+renderer.sharedMaterial.name+"_Wreck.mat"));
+                var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/CorellianBattlecruiser/"+renderer.sharedMaterial.name+"_Wreck.mat"));
                 wreckMaterials.Add(material);
                 // Freeze the fresh wreck preview; runtime timing comes from UnitWreckView.Show.
                 material.SetVector("_WreckAxis",Vector3.forward);

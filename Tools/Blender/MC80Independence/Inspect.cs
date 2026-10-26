@@ -110,7 +110,7 @@ public static class InspectMC80Independence
         report["addressables"] = registrations;
         report["dependencies"] = new JArray(AssetDatabase.GetDependencies(new[]{GAMEPLAY,DATA},true).Where(p=>p.Contains("HomeOne")));
         var registrationChecks=new JObject();
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/MC80IndependenceIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80IndependenceIcon.png");
         var ships=Load("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),305).FindPropertyRelative("value");
         var preview=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Ui/Reinforcement/MC80IndependenceReinforcementView.prefab");

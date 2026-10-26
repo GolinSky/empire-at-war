@@ -98,7 +98,7 @@ public static class InspectCorellianBattlecruiser
         var hologram=new SerializedObject(spawn).FindProperty("hologramMaterial").objectReferenceValue;
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Placement hologram slots");
         report["gameplay"]=new JObject{["targetableHardpoints"]=20,["weaponCounts"]=new JObject{["rockets"]=4,["mediumTurbolasers"]=8,["laserCannons"]=5},["squadronTypes"]=new JArray(squadrons),["launchClearance"]=clearance,["shieldRegenerationPerSecond"]=53.333332f/3};
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/"+NAME+"Icon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/"+NAME+"Icon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId); string iconKey=iconGuid+":"+iconId;
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),306).FindPropertyRelative("value");
         Check(faction.FindPropertyRelative("<AvailableLevel>k__BackingField").intValue==2 && faction.FindPropertyRelative("<UnitCapacity>k__BackingField").intValue==3,"Roster level/population");

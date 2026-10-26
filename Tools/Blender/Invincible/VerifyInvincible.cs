@@ -151,7 +151,7 @@ public static class VerifyInvincible
         var wreckData = Load(WRECK_DATA);
         Require(data.FindProperty("<Wreck>k__BackingField").objectReferenceValue == wreckData.targetObject && wreckData.FindProperty("prefab.m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(WRECK), "Own wreck data/prefab.");
         Require(All(prefabs[2]).OfType<MeshRenderer>().Where(r => r.enabled).All(r => r.sharedMaterials.All(m => m.shader.name == "EmpireAtWar/Ship Wreck")), "Wreck must contain only wreck hull surfaces.");
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/InvincibleIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/InvincibleIcon.png");
         Require(icon != null, "Invincible icon missing.");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long iconId); string iconKey = iconGuid + ":" + iconId;
         int shipId = (int)ShipType.Invincible;

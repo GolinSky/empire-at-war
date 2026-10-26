@@ -102,7 +102,7 @@ public static class InspectCD273
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
         var wreckData=new SerializedObject(data.FindProperty("<Wreck>k__BackingField").objectReferenceValue);
         Check(AssetDatabase.GetAssetPath(wreckData.FindProperty("<Prefab>k__BackingField").objectReferenceValue)==WRECK,"Own wreck");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/CD273Icon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CD273Icon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long iconId);string iconKey=iconGuid+":"+iconId;
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),SHIP_ID).FindPropertyRelative("value");
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==2200 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==32,"Roster price/build");

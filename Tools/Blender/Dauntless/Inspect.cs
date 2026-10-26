@@ -89,7 +89,7 @@ public static class InspectDauntless
         Check(References(spawn,"meshRenderers").Cast<MeshRenderer>().All(r=>r.sharedMaterials.All(m=>m==hologram)),"Hologram slots");
         var faction=Row(Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset").FindProperty("ships.keyValue"),310).FindPropertyRelative("value");
         Check(faction.FindPropertyRelative("<Price>k__BackingField").intValue==5600 && faction.FindPropertyRelative("<BuildTime>k__BackingField").intValue==60,"Roster stats");
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/DauntlessIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/DauntlessIcon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string guid,out long localId);string iconKey=guid+":"+localId;
         Check(faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue==icon && faction.FindPropertyRelative("iconKey").stringValue==iconKey,"Roster icon");
         Check(Row(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"),310).FindPropertyRelative("value").objectReferenceValue==icon,"HUD icon");

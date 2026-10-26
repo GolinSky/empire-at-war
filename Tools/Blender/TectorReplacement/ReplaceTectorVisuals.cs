@@ -101,7 +101,7 @@ public static class ReplaceTectorVisuals
                 renderers[i] = part.AddComponent<MeshRenderer>();
                 renderers[i].sharedMaterials = source.sharedMaterials.Select(material =>
                 {
-                    string path = "Assets/Art/Materials/Wrecks/Tector/" + material.name + "_Wreck.mat";
+                    string path = "Assets/Art/Materials/Wrecks/Empire/Tector/" + material.name + "_Wreck.mat";
                     var wreckMaterial = AssetDatabase.LoadAssetAtPath<Material>(path);
                     if (wreckMaterial == null) { wreckMaterial = new Material(template); AssetDatabase.CreateAsset(wreckMaterial, path); }
                     foreach (string property in new[] { "_BaseMap", "_BumpMap", "_TeamMaskMap" }) wreckMaterial.SetTexture(property, material.GetTexture(property));

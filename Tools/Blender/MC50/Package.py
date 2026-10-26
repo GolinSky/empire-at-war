@@ -14,7 +14,7 @@ for source in audit['variants']['MC50']['textures'].values():
     original = Image.open(source['source']).convert('RGBA')
     copied = Image.open(task/'MC50/Textures'/(source['stem']+'.png')).convert('RGBA')
     assert original.tobytes() == copied.tobytes(), source['stem']
-icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/MC50Icon.png').convert('RGBA')
+icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC50Icon.png').convert('RGBA')
 assert icon.size == (512,512)
 box = icon.getchannel('A').getbbox()
 assert box and all(0 < x < 512 for x in box), box
@@ -24,9 +24,9 @@ for prefix in ('Team','WreckTeam'):
     assert len({hashlib.sha256(image.tobytes()).hexdigest() for image in images}) == 8
     palettes[prefix] = [hashlib.sha256(image.tobytes()).hexdigest() for image in images]
 assets = []
-for root in ('Assets/Art/Models/RebellionShips/MC50','Assets/Art/Materials/Models/RebellionShips/MC50','Assets/Art/Textures/Models/RebellionShips/MC50','Assets/Art/Materials/Wrecks/MC50'):
+for root in ('Assets/Art/Models/RebellionShips/MC50','Assets/Art/Materials/Models/RebellionShips/MC50','Assets/Art/Textures/Models/RebellionShips/MC50','Assets/Art/Materials/Wrecks/Rebellion/MC50'):
     assets.extend(p for p in Path(root).rglob('*') if p.is_file() and p.suffix!='.meta')
-assets.extend(Path(p) for p in ('Assets/Prefabs/Models/Ships/Rebellion/MC50.prefab','Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab','Assets/Prefabs/Models/Wrecks/MC50WreckView.prefab','Assets/Prefabs/Ui/Reinforcement/MC50ReinforcementView.prefab','Assets/Settings/Data/Ship/Rebellion/MC50ShipData.asset','Assets/Settings/Data/Models/Wrecks/Rebellion/MC50WreckData.asset','Assets/Settings/Data/Tooltip/Matchups/MC50Matchups.asset','Assets/Art/Models/Shields/MC50Shield.asset','Assets/Art/Textures/Ui/Icons/ShipIcon/MC50Icon.png'))
+assets.extend(Path(p) for p in ('Assets/Prefabs/Models/Ships/Rebellion/MC50.prefab','Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab','Assets/Prefabs/Models/Wrecks/MC50WreckView.prefab','Assets/Prefabs/Ui/Reinforcement/MC50ReinforcementView.prefab','Assets/Settings/Data/Ship/Rebellion/MC50ShipData.asset','Assets/Settings/Data/Models/Wrecks/Rebellion/MC50WreckData.asset','Assets/Settings/Data/Tooltip/Matchups/MC50Matchups.asset','Assets/Art/Models/Shields/MC50Shield.asset','Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC50Icon.png'))
 for asset in assets:
     assert asset.exists() and Path(str(asset)+'.meta').exists(), str(asset)
 output.mkdir(parents=True,exist_ok=True)

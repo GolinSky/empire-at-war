@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 public static class RenderMC30c
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/MC30cIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC30cIcon.png";
     const string PREVIEWS = "Temp/MC30cImport/Previews/";
     public static string Main()
     {
@@ -60,7 +60,7 @@ public static class RenderMC30c
             foreach(var renderer in renderers)
             {
                 if(renderer.sharedMaterial.shader.name!="EmpireAtWar/Ship Lit"){renderer.enabled=false;continue;}
-                var replacements=renderer.sharedMaterials.Select(source=>new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/MC30c/"+source.name+"_Wreck.mat"))).ToArray();
+                var replacements=renderer.sharedMaterials.Select(source=>new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/MC30c/"+source.name+"_Wreck.mat"))).ToArray();
                 foreach(var material in replacements)
                 {
                 wreckMaterials.Add(material);

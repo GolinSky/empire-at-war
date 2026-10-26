@@ -165,7 +165,7 @@ public static class BuildCentaxShip
             {
                 renderer.sharedMaterials = renderer.sharedMaterials.Select(source =>
                 {
-                    string path = "Assets/Art/Materials/Wrecks/Centax/" + source.name + "_Wreck.mat";
+                    string path = "Assets/Art/Materials/Wrecks/Republic/Centax/" + source.name + "_Wreck.mat";
                     var material = AssetDatabase.LoadAssetAtPath<Material>(path);
                     var copy = new Material(source) {shader = wreckShader, name = source.name + "_Wreck"};
                     if (material == null) { material = copy; AssetDatabase.CreateAsset(material, path); }

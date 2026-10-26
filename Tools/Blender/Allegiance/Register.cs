@@ -11,7 +11,7 @@ public static class RegisterAllegiance
     const string DATA="Assets/Settings/Data/Ship/Empire/AllegianceShipData.asset";
     public static string Main()
     {
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/AllegianceIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AllegianceIcon.png");
         if(!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long localId))throw new InvalidOperationException("Missing ship sprite");
         string iconKey=iconGuid+":"+localId;
         var settings=AddressableAssetSettingsDefaultObject.Settings;
@@ -42,7 +42,7 @@ public static class RegisterAllegiance
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=2;
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=2;
         string[] labels={"Cruisers","Capital ships","Bombers","Fighter swarms"};
-        string[] iconPaths={"Assets/Art/Textures/Ui/Icons/ShipIcon/MonCalCruiserIcon.png","Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIcon.png","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png","Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEFighterIcon.png"};
+        string[] iconPaths={"Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MonCalCruiserIcon.png","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIIcon.png","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBomberIcon.png","Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEFighterIcon.png"};
         for(int i=0;i<4;i++){var row=(i<2?strong:weak).GetArrayElementAtIndex(i%2);var sprite=AssetDatabase.LoadAssetAtPath<Sprite>(iconPaths[i]);AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sprite,out string guid,out long fileId);row.FindPropertyRelative("label").stringValue=labels[i];row.FindPropertyRelative("iconKey").stringValue=guid+":"+fileId;}Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset");
         var unit=Entry(faction.FindProperty("ships.keyValue"),213);

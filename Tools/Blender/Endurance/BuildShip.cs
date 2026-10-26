@@ -121,7 +121,7 @@ public static class BuildEnduranceShip
         const string WRECK="Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab";
         const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab";
         const string WRECK_DATA="Assets/Settings/Data/Models/Wrecks/Rebellion/EnduranceWreckData.asset";
-        Directory.CreateDirectory("Assets/Art/Materials/Wrecks/Endurance");AssetDatabase.Refresh();
+        Directory.CreateDirectory("Assets/Art/Materials/Wrecks/Rebellion/Endurance");AssetDatabase.Refresh();
         BuildVariant(PREVIEW,"Assets/Prefabs/Ui/Reinforcement/HomeOneReinforcementView.prefab",false,bounds);
         BuildVariant(WRECK,"Assets/Prefabs/Models/Wrecks/HomeOneWreckView.prefab",true,bounds);
         Copy("Assets/Settings/Data/Models/Wrecks/Rebellion/HomeOneWreckData.asset",WRECK_DATA);
@@ -172,7 +172,7 @@ public static class BuildEnduranceShip
                 renderers=renderers.Where(r=>r.enabled).ToArray();
                 foreach(var source in renderers.SelectMany(r=>r.sharedMaterials).Distinct())
                 {
-                    string materialPath="Assets/Art/Materials/Wrecks/Endurance/"+source.name+"_Wreck.mat";
+                    string materialPath="Assets/Art/Materials/Wrecks/Rebellion/Endurance/"+source.name+"_Wreck.mat";
                     var material=AssetDatabase.LoadAssetAtPath<Material>(materialPath);
                     if(material==null){material=new Material(source){shader=Shader.Find("EmpireAtWar/Ship Wreck")};AssetDatabase.CreateAsset(material,materialPath);}
                     foreach(var renderer in renderers)renderer.sharedMaterials=renderer.sharedMaterials.Select(m=>m==source?material:m).ToArray();

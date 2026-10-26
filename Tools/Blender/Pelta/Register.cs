@@ -15,7 +15,7 @@ public static class RegisterPelta
     public static string Main()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Pelta registration requires Edit Mode.");
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/PeltaIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/PeltaIcon.png");
         if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon, out string iconGuid, out long localId)) throw new InvalidOperationException("Missing Pelta sprite.");
         string iconKey = iconGuid + ":" + localId;
         var settings = AddressableAssetSettingsDefaultObject.Settings;

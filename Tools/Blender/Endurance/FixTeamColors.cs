@@ -6,7 +6,7 @@ public static class FixEnduranceTeamColors
     public static string Main()
     {
         int count=0;
-        foreach(string guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/Art/Materials/Models/RebellionShips/Endurance","Assets/Art/Materials/Wrecks/Endurance"}))
+        foreach(string guid in AssetDatabase.FindAssets("t:Material",new[]{"Assets/Art/Materials/Models/RebellionShips/Endurance","Assets/Art/Materials/Wrecks/Rebellion/Endurance"}))
         {
             var material=AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
             if(material.shader.name!="EmpireAtWar/Ship Lit" && material.shader.name!="EmpireAtWar/Ship Wreck")continue;

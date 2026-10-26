@@ -1075,7 +1075,7 @@
     {
       "id": 201,
       "name": "ISD I \u00e2\u20ac\u201d Advanced Loadout",
-      "icon": "Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png"
+      "icon": "Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIcon.png"
     },
     {
       "path": "Assets/Prefabs/Models/Squadrons/TIEInterceptorSquadronView.prefab",
@@ -1092,7 +1092,7 @@
     {
       "id": 203,
       "name": "TIE Interceptor Squadron",
-      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEInterceptorIcon.png"
+      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEInterceptorIcon.png"
     },
     {
       "path": "Assets/Prefabs/Models/Squadrons/TIEBruteSquadronView.prefab",
@@ -1109,7 +1109,7 @@
     {
       "id": 204,
       "name": "TIE Brute Squadron",
-      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBruteIcon.png"
+      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEBruteIcon.png"
     },
     {
       "path": "Assets/Prefabs/Models/Squadrons/TIEPunisherSquadronView.prefab",
@@ -1126,7 +1126,7 @@
     {
       "id": 205,
       "name": "TIE Punisher Squadron",
-      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEPunisherIcon.png"
+      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEPunisherIcon.png"
     }
   ],
   "punisher_zero_area_triangles_removed": 14,

@@ -10,7 +10,7 @@ using UnityEngine.Rendering;
 public static class RenderTectorReplacement
 {
     private const string OUTPUT = "F:/CodexArtifacts/tector-preview/UnityReplacement/";
-    private const string ICONS = "Assets/Art/Textures/Ui/Icons/ShipIcon/";
+    private const string ICONS = "Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/";
     public static string Main()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Tector rendering requires Edit Mode.");

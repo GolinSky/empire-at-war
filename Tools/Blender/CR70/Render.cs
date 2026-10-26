@@ -11,7 +11,7 @@ using EmpireAtWar.Models.Players;
 
 public static class RenderCR70
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/CR70Icon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/CR70Icon.png";
     const string PREVIEWS = "Temp/CR70ChargerImport/Previews/";
     const string VISUAL = "Assets/Prefabs/Models/Ships/Republic/CR70.prefab";
     const string WRECK = "Assets/Prefabs/Models/Wrecks/CR70WreckView.prefab";

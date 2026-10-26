@@ -14,7 +14,7 @@ for texture in audit['variants']['MC30c']['textures'].values():
     original = Image.open(texture['source']).convert('RGBA')
     for path in (TASK/'MC30c/Textures'/(texture['stem']+'.png'), Path('Assets/Art/Textures/Models/RebellionShips/MC30c')/(texture['stem']+'.png')):
         assert Image.open(path).convert('RGBA').tobytes() == original.tobytes(), path
-icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/MC30cIcon.png').convert('RGBA')
+icon = Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC30cIcon.png').convert('RGBA')
 assert icon.size == (512,512)
 box = icon.getchannel('A').getbbox()
 assert box and box[0]>0 and box[1]>0 and box[2]<512 and box[3]<512, box
@@ -24,7 +24,7 @@ for kind in ('Team', 'WreckTeam'):
     images = [Image.open(TASK/'Previews'/(kind+str(i)+'.png')).convert('RGBA') for i in range(8)]
     assert all(ImageChops.difference(images[0], other).convert('RGB').getbbox() for other in images[1:]), kind
     palettes.append(kind)
-for root in ('Assets/Art/Models/RebellionShips/MC30c', 'Assets/Art/Materials/Models/RebellionShips/MC30c', 'Assets/Art/Textures/Models/RebellionShips/MC30c', 'Assets/Art/Materials/Wrecks/MC30c'):
+for root in ('Assets/Art/Models/RebellionShips/MC30c', 'Assets/Art/Materials/Models/RebellionShips/MC30c', 'Assets/Art/Textures/Models/RebellionShips/MC30c', 'Assets/Art/Materials/Wrecks/Rebellion/MC30c'):
     for path in Path(root).rglob('*'):
         if path.is_file() and path.suffix != '.meta':
             assert Path(str(path)+'.meta').exists(), path

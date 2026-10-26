@@ -15,7 +15,7 @@ assert all(report['registrations'].values())
 for prefab in report['prefabs']:
     assert prefab['missingScripts']==0 and not prefab['brokenReferences']
     assert Path(prefab['path']+'.meta').is_file()
-icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/MC80IndependenceIcon.png').convert('RGBA')
+icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80IndependenceIcon.png').convert('RGBA')
 bounds=icon.getchannel('A').getbbox()
 assert icon.size==(512,512) and bounds and min(bounds[:2])>0 and max(bounds[2:])<512
 differences={}

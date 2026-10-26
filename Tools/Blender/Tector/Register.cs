@@ -30,7 +30,7 @@ public static class RegisterTector
         modifier.FindPropertyRelative("damageMultiplier").floatValue=1;modifier.FindPropertyRelative("fireDelayMultiplier").floatValue=.5f;
         modifier.FindPropertyRelative("speedMultiplier").floatValue=.25f;modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue=0;
         modifier.FindPropertyRelative("damageTakenMultiplier").floatValue=1.5f;Save(abilities);
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/TectorIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/TectorIcon.png");
         if(!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long localId))throw new InvalidOperationException("Missing ship sprite");
         string iconKey=iconGuid+":"+localId;
         var settings=AddressableAssetSettingsDefaultObject.Settings;

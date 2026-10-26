@@ -14,7 +14,7 @@ public static class YWingBomberArt
     private const string TEXTURE_FOLDER = "Assets/Art/Textures/Models/RebellionShips/YWingBomber/";
     private const string MATERIAL_FOLDER = "Assets/Art/Materials/Models/RebellionShips/YWingBomber/";
     private const string VISUAL = "Assets/Prefabs/Models/Squadrons/YWingBomber.prefab";
-    private const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png";
+    private const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/YWingBomberIcon.png";
     private const int RENDER_LAYER = 31;
 
     public static object Main()

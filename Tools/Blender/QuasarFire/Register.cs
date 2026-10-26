@@ -10,7 +10,7 @@ public static class RegisterQuasarFire
     const int ABILITY_ID=(int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.FighterReinforcements;
     const string DATA="Assets/Settings/Data/Ship/Rebellion/QuasarFireShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/QuasarFireShipView.prefab";
-    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/QuasarFireIcon.png";
+    const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/QuasarFireIcon.png";
     const string MATCHUPS="Assets/Settings/Data/Tooltip/Matchups/QuasarFireMatchups.asset";
 
     public static string Main()
@@ -22,9 +22,9 @@ public static class RegisterQuasarFire
             AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/MonCalCruiserMatchups.asset",MATCHUPS);
         var matchups=Load(MATCHUPS);matchups.targetObject.name="QuasarFireMatchups";
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=1;
-        Matchup(strong.GetArrayElementAtIndex(0),"Squadron support","Assets/Art/Textures/Ui/Icons/SquadronIcon/XWingIcon.png");
+        Matchup(strong.GetArrayElementAtIndex(0),"Squadron support","Assets/Art/Textures/Ui/Icons/SquadronIcon/Rebellion/XWingIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;

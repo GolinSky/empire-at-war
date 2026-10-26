@@ -89,7 +89,7 @@ end=register.index('        Save(audio);AssetDatabase.SaveAssets();', start)
 register=register[:start]+'''        var catalog=Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
         var definitions=catalog.FindProperty("definitions.keyValue");
         row=Upsert(definitions,ABILITY_ID); value=row.FindPropertyRelative("value");
-        value.FindPropertyRelative("icon").objectReferenceValue=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/SquadronIcon/XWingIcon.png");
+        value.FindPropertyRelative("icon").objectReferenceValue=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/SquadronIcon/Rebellion/XWingIcon.png");
         value.FindPropertyRelative("displayName").stringValue="Rapid Deployment";
         value.FindPropertyRelative("description").stringValue="Launch up to two available reserve squadrons immediately, within the active capacity. 45 second cooldown.";
         value.FindPropertyRelative("duration").floatValue=0; value.FindPropertyRelative("recoveryDelay").floatValue=45;

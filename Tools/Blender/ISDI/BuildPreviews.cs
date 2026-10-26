@@ -74,7 +74,7 @@ public static class BuildImperialPreviews
             {
                 foreach(var r in renderers.Where(r=>r.enabled))
                 {
-                    var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/ISDI/"+r.sharedMaterial.name+"_Wreck.mat"));temporaryMaterials.Add(material);
+                    var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Empire/ISDI/"+r.sharedMaterial.name+"_Wreck.mat"));temporaryMaterials.Add(material);
                     material.SetVector("_WreckAxis",Vector3.forward);material.SetVector("_WreckCenter",Vector3.zero);material.SetVector("_WreckCuts",new Vector4(1000000,1000000,1000000,1000000));material.SetVector("_WreckAxisRange",new Vector4(-90,90,0,0));
                     material.SetFloat("_WreckStartTime",0);material.SetFloat("_WreckLifetime",1000000000);material.SetFloat("_WreckGlowDuration",1000000000);material.SetFloat("_WreckSeparationSpeed",0);material.SetFloat("_WreckTiltSpeed",0);material.SetFloat("_WreckSinkSpeed",0);r.sharedMaterial=material;r.SetShaderUserValue(1);
                 }

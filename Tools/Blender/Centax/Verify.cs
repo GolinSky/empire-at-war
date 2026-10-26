@@ -118,7 +118,7 @@ public static class VerifyCentax
         Check(roster.FindPropertyRelative("<Name>k__BackingField").stringValue == "Centax-class Heavy Frigate", "Republic roster name");
         foreach (var field in new[] {new {name = "AvailableLevel", value = 2}, new {name = "Price", value = 2600}, new {name = "UnitCapacity", value = 2}, new {name = "BuildTime", value = 25}})
             Check(roster.FindPropertyRelative("<" + field.name + ">k__BackingField").intValue == field.value, "Roster " + field.name);
-        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/CentaxIcon.png");
+        var icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/CentaxIcon.png");
         Check(icon != null && roster.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue == icon
             && Entry(Load("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset").FindProperty("shipIconWrapper.keyValue"), SHIP_ID).objectReferenceValue == icon, "Own roster/HUD sprite");
         var icons = Load("Assets/Settings/Data/Tooltip/TooltipIconData.asset").FindProperty("icons");

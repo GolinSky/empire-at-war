@@ -106,7 +106,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(unit.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(9200));
             Assert.That(unit.FindPropertyRelative("<BuildTime>k__BackingField").intValue, Is.EqualTo(85));
             Assert.That(unit.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue,
-                Is.EqualTo(AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/AllegianceIcon.png")));
+                Is.EqualTo(AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AllegianceIcon.png")));
             var matchups = new SerializedObject(unit.FindPropertyRelative("matchups").objectReferenceValue);
             Assert.That(matchups.FindProperty("strongAgainst").GetArrayElementAtIndex(1).FindPropertyRelative("label").stringValue,
                 Is.EqualTo("Capital ships"));

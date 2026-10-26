@@ -12,7 +12,7 @@ for name,variant in audit['variants'].items():
   for path in (TASK/name/'Textures'/(texture['stem']+'.png'),Path('Assets/Art/Textures/Models/EmpireShips/Procursator')/(texture['stem']+'.png')):
    assert Image.open(path).convert('RGBA').tobytes()==original.tobytes(),path
   textureCount+=1
-icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/ProcursatorIcon.png').convert('RGBA');box=icon.getchannel('A').getbbox()
+icon=Image.open('Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ProcursatorIcon.png').convert('RGBA');box=icon.getchannel('A').getbbox()
 assert icon.size==(512,512) and icon.getchannel('A').getextrema()==(0,255)
 assert box and min(box)>0 and max(box)<512
 for kind in ('Team','WreckTeam'):

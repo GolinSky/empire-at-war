@@ -34,7 +34,7 @@ public static class VerifyTectorCircles
             }
             report.Add(path+": circle material and bindings valid");
         }
-        foreach(var folder in new[]{"Assets/Art/Models/EmpireShips/Tector","Assets/Art/Materials/Models/EmpireShips/Tector","Assets/Art/Materials/Wrecks/Tector"})
+        foreach(var folder in new[]{"Assets/Art/Models/EmpireShips/Tector","Assets/Art/Materials/Models/EmpireShips/Tector","Assets/Art/Materials/Wrecks/Empire/Tector"})
         foreach(var guid in AssetDatabase.FindAssets("Tector_TeamCircles",new[]{folder}))
         {
             var path=AssetDatabase.GUIDToAssetPath(guid);

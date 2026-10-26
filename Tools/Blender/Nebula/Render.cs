@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 public static class RenderNebula
 {
-    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/NebulaIcon.png";
+    const string ICON = "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/NebulaIcon.png";
     const string PREVIEWS = "Temp/NebulaImport/Previews/";
     public static string Main()
     {
@@ -60,7 +60,7 @@ public static class RenderNebula
             foreach(var renderer in renderers)
             {
                 if(renderer.sharedMaterial.shader.name!="EmpireAtWar/Ship Lit"){renderer.enabled=false;continue;}
-                var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Nebula/"+renderer.sharedMaterial.name+"_Wreck.mat"));
+                var material=new Material(AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Wrecks/Rebellion/Nebula/"+renderer.sharedMaterial.name+"_Wreck.mat"));
                 wreckMaterials.Add(material);
                 // Freeze the fresh wreck preview; runtime timing comes from UnitWreckView.Show.
                 material.SetVector("_WreckAxis",Vector3.forward);

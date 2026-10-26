@@ -16,7 +16,7 @@ public static class YWingBomberRegister
 
     public static object Main()
     {
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/YWingBomberIcon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string guid,out long id); string iconKey=guid+":"+id;
         AssetDatabase.CopyAsset("Assets/Settings/Data/Tooltip/Matchups/YWingSquadronMatchups.asset",MATCHUPS);
         var matchups=AssetDatabase.LoadAssetAtPath<ScriptableObject>(MATCHUPS); matchups.name="YWingBomberSquadronMatchups"; EditorUtility.SetDirty(matchups);

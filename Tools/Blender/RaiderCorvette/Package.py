@@ -23,7 +23,7 @@ for prefix in ('Team', 'WreckTeam'):
         if index:
             assert changed > 0, (prefix, index, 'No team-color response')
         previews[f'{prefix}{index}'] = dict(alpha_bounds=box, changed_pixels_from_blue=changed)
-for name, path in [('Icon', 'Assets/Art/Textures/Ui/Icons/ShipIcon/RaiderCorvetteIcon.png'),
+for name, path in [('Icon', 'Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/RaiderCorvetteIcon.png'),
                    ('Placement', str(TASK / 'Previews/Placement.png'))]:
     image = Image.open(path).convert('RGBA')
     box = image.getchannel('A').getbbox()

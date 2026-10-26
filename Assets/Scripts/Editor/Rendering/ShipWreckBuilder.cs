@@ -54,7 +54,7 @@ namespace EmpireAtWar.Editor.Rendering
             foreach (string viewPath in viewPaths)
             {
                 GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
-                string materialFolder = $"{MATERIAL_FOLDER}/{GetUnitName(view)}";
+                string materialFolder = GetMaterialFolder(view);
                 foreach (MeshRenderer source in GetSourceRenderers(view))
                 {
                     CreateWreckMaterials(source.sharedMaterials, wreckShader, materialFolder);
@@ -120,6 +120,22 @@ namespace EmpireAtWar.Editor.Rendering
             return view.name.Substring(0, view.name.Length - suffix.Length);
         }
 
+        private static string GetMaterialFolder(GameObject view)
+        {
+            string unitName = GetUnitName(view);
+            string shipFolder = VIEW_FOLDER + "/Ships/";
+            foreach (string guid in AssetDatabase.FindAssets(unitName + SHIP_VIEW_SUFFIX + " t:Prefab",
+                         new[] { shipFolder.TrimEnd('/') }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (Path.GetFileNameWithoutExtension(path) != unitName + SHIP_VIEW_SUFFIX) continue;
+                string faction = path.Substring(shipFolder.Length).Split('/')[0];
+                return $"{MATERIAL_FOLDER}/{faction}/{unitName}";
+            }
+
+            return $"{MATERIAL_FOLDER}/Shared/{unitName}";
+        }
+
         public static UnitWreckView Build(string viewPrefabPath)
         {
             // In Play Mode AddComponent runs UnitWreckView.Awake before its renderers are assigned.
@@ -129,7 +145,7 @@ namespace EmpireAtWar.Editor.Rendering
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPrefabPath);
             string shipName = GetUnitName(view);
             Shader wreckShader = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_WRECK_SHADER_PATH);
-            string materialFolder = EnsureFolder($"{MATERIAL_FOLDER}/{shipName}");
+            string materialFolder = EnsureFolder(GetMaterialFolder(view));
             EnsureFolder(PREFAB_FOLDER);
 
             GameObject root = new GameObject(shipName + "WreckView");
