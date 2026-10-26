@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
@@ -144,6 +145,73 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             Assert.That(ultraHard, Is.GreaterThan(easy));
+        }
+
+        [Test]
+        public void HomeMining_EachStationKeepsItsSitesNearby()
+        {
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            {
+                foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
+                {
+                    for (int seed = 0; seed < SEED_COUNT; seed++)
+                    {
+                        MapLayout layout = Generate(mapSize, difficulty, seed);
+                        Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
+                        foreach (PlayerId owner in new[] { TestPlayers.Human, TestPlayers.Enemy })
+                        {
+                            Vector3 station = layout.GetStationPosition(owner);
+                            List<float> distances = new List<float>();
+                            foreach (SiteSpot site in layout.Sites)
+                            {
+                                if (site.FacilityType == SiteFacilityType.Mining)
+                                {
+                                    distances.Add(PlanarGeometry.Distance(station, site.Center));
+                                }
+                            }
+
+                            distances.Sort();
+                            // Home mines sit nearer their station than the contested map center.
+                            float limit = PlanarGeometry.Distance(station, center) * 0.5f;
+                            for (int i = 0; i < _settings.HomeMiningSitesPerStation; i++)
+                            {
+                                Assert.That(distances[i], Is.LessThan(limit),
+                                    $"{mapSize} {difficulty} seed {seed} {owner} home mine {i}");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void CentralMining_EverySizePlacesItsPairsNearTheCenter()
+        {
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            {
+                MapSizeSettings size = _settings.GetSize(mapSize);
+                Vector2 regionHalfSize = (size.Bounds.Max - size.Bounds.Min) * _settings.CentralRegionShare;
+                Assert.That(size.CentralMiningPairCount, Is.GreaterThan(0), $"{mapSize}");
+                Assert.That(size.CentralMiningPairCount,
+                    Is.LessThanOrEqualTo((size.MiningSiteCount - 2 * _settings.HomeMiningSitesPerStation) / 2), $"{mapSize}");
+                for (int seed = 0; seed < SEED_COUNT; seed++)
+                {
+                    MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, seed);
+                    Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
+                    int central = 0;
+                    foreach (SiteSpot site in layout.Sites)
+                    {
+                        if (site.FacilityType == SiteFacilityType.Mining &&
+                            Mathf.Abs(site.Center.x - center.x) <= regionHalfSize.x + TOLERANCE &&
+                            Mathf.Abs(site.Center.z - center.z) <= regionHalfSize.y + TOLERANCE)
+                        {
+                            central++;
+                        }
+                    }
+
+                    Assert.That(central, Is.GreaterThanOrEqualTo(size.CentralMiningPairCount * 2), $"{mapSize} seed {seed}");
+                }
+            }
         }
 
         [Test]

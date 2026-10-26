@@ -245,7 +245,8 @@ namespace EmpireAtWar.Tests.Editor
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size);
-            int count = definition.Slots.Count + ((size.MiningSiteCount - 2) / 2) * 2 + (size.BattleSiteCount / 2) * 2;
+            int home = mapSettings.HomeMiningSitesPerStation;
+            int count = definition.Slots.Count * home + ((size.MiningSiteCount - 2 * home) / 2) * 2 + (size.BattleSiteCount / 2) * 2;
             var sites = new CaptureSiteSave[count];
             for (int i = 0; i < count; i++)
                 sites[i] = CaptureSiteSave.Create(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L);

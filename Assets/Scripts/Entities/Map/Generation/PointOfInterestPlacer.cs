@@ -7,7 +7,7 @@ using Random = System.Random;
 namespace EmpireAtWar.Entities.Map.Generation
 {
     /// <summary>
-    /// Places default zones beside the stations, one home mining site per side, and the remaining
+    /// Places default zones beside the stations, the home mining sites of each side, and the remaining
     /// zones and sites as point-symmetric pairs so neither side gets the better map half.
     /// </summary>
     public sealed class PointOfInterestPlacer
@@ -16,6 +16,11 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const int CANDIDATES_PER_PICK = 12;
 
         private const float MIRROR_TOLERANCE = 1f;
+
+        private const float HOME_MINING_SPREAD_DEGREES = 45f;
+        private const float HOME_MINING_STEP = 20f;
+        // A region half as wide as the map side spans the whole map.
+        private const float WHOLE_MAP_SHARE = 0.5f;
 
         private readonly MapGenerationSettings _settings;
 
@@ -56,12 +61,15 @@ namespace EmpireAtWar.Entities.Map.Generation
                 nodes.Add(centralZone);
             }
 
-            // Reserve the larger facility pockets before placing reinforcement zones.
-            return TryAddPairs(MapNodeKind.MiningSite, (size.MiningSiteCount - 2) / 2,
+            int miningPairCount = (size.MiningSiteCount - 2 * _settings.HomeMiningSitesPerStation) / 2;
+            // Contested central mines first, then the larger facility pockets before reinforcement zones.
+            return TryAddPairs(MapNodeKind.MiningSite, size.CentralMiningPairCount, _settings.CentralRegionShare,
                     size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2,
+                TryAddPairs(MapNodeKind.MiningSite, miningPairCount - size.CentralMiningPairCount, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2,
+                TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2, WHOLE_MAP_SHARE,
+                    size, stations, center, random, nodes) &&
+                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes);
         }
 
@@ -116,32 +124,65 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             float gap = Mathf.Lerp(size.HomeMiningGap.Min, size.HomeMiningGap.Max, difficulty);
             float outer = GetOuterRadius(_radii.MiningSite, true, size);
-            // One turn for both sides keeps the pair point-symmetric.
+            // One turn for both sides keeps the pairs point-symmetric.
             float turn = (float)random.NextDouble() * _settings.HomeMiningAngle * Mathf.Deg2Rad;
-            int firstIndex = nodes.Count;
-            foreach (MapStation station in stations)
+            for (int mine = 0; mine < _settings.HomeMiningSitesPerStation; mine++)
             {
-                // The default zone takes the X side, so the mine heads along Z toward the
-                // neighbouring corner and turns at most HomeMiningAngle toward the map center.
-                float xSide = Mathf.Sign(center.x - station.Position.x);
-                float zSide = Mathf.Sign(center.z - station.Position.z);
-                Vector3 direction = new Vector3(xSide * Mathf.Sin(turn), 0f, zSide * Mathf.Cos(turn));
-                Vector3 position = station.Position + direction * (station.Radius + outer + gap);
+                // The default zone takes the X side, so the first mine heads along Z toward the
+                // neighbouring corner; each further mine fans out toward the map center.
+                float angle = turn + mine * HOME_MINING_SPREAD_DEGREES * Mathf.Deg2Rad;
+                int firstIndex = nodes.Count;
+                foreach (MapStation station in stations)
+                {
+                    float xSide = Mathf.Sign(center.x - station.Position.x);
+                    float zSide = Mathf.Sign(center.z - station.Position.z);
+                    Vector3 direction = new Vector3(xSide * Mathf.Sin(angle), 0f, zSide * Mathf.Cos(angle));
+                    if (!TryFindHomeMiningPosition(station, direction, station.Radius + outer + gap, outer,
+                            size, stations, nodes, out Vector3 position))
+                    {
+                        return false;
+                    }
+
+                    nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: position, radius: _radii.MiningSite, owner: PlayerId.None));
+                }
+
+                PairWithMirroredStations(stations, center, firstIndex, nodes);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Walks outward from <paramref name="distance"/> until the mine clears the station's earlier
+        /// home mine and default zone, so it stays as near the station as the pockets allow.
+        /// </summary>
+        private bool TryFindHomeMiningPosition(
+            MapStation station,
+            Vector3 direction,
+            float distance,
+            float outer,
+            MapSizeSettings size,
+            IReadOnlyList<MapStation> stations,
+            IReadOnlyList<MapNode> nodes,
+            out Vector3 position)
+        {
+            float maxDistance = distance + size.Bounds.Max.x - size.Bounds.Min.x;
+            for (; distance < maxDistance; distance += HOME_MINING_STEP)
+            {
+                position = station.Position + direction * distance;
                 // Thick asteroid pockets can outgrow the station's edge distance; pull the mine inside.
                 position = new Vector3(
                     Mathf.Clamp(position.x, size.Bounds.Min.x + outer, size.Bounds.Max.x - outer),
                     0f,
                     Mathf.Clamp(position.z, size.Bounds.Min.y + outer, size.Bounds.Max.y - outer));
-                if (!IsClear(position, outer, size, stations, nodes))
+                if (IsClear(position, outer, size, stations, nodes))
                 {
-                    return false;
+                    return true;
                 }
-
-                nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: position, radius: _radii.MiningSite, owner: PlayerId.None));
             }
 
-            PairWithMirroredStations(stations, center, firstIndex, nodes);
-            return true;
+            position = default;
+            return false;
         }
 
         /// <summary>
@@ -177,6 +218,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         private bool TryAddPairs(
             MapNodeKind kind,
             int pairCount,
+            float regionShare,
             MapSizeSettings size,
             IReadOnlyList<MapStation> stations,
             Vector3 center,
@@ -192,7 +234,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             float outer = GetOuterRadius(radius, true, size);
             for (int pair = 0; pair < pairCount; pair++)
             {
-                if (!TryPickPairPosition(outer, size, stations, center, random, nodes, out Vector3 position))
+                if (!TryPickPairPosition(outer, regionShare, size, stations, center, random, nodes, out Vector3 position))
                 {
                     return false;
                 }
@@ -208,6 +250,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         // Best-candidate sampling: of several valid spots, keep the one farthest from everything placed.
         private bool TryPickPairPosition(
             float outer,
+            float regionShare,
             MapSizeSettings size,
             IReadOnlyList<MapStation> stations,
             Vector3 center,
@@ -215,8 +258,11 @@ namespace EmpireAtWar.Entities.Map.Generation
             List<MapNode> nodes,
             out Vector3 position)
         {
-            Vector2 min = size.Bounds.Min + Vector2.one * outer;
-            Vector2 max = size.Bounds.Max - Vector2.one * outer;
+            // Candidates stay inside the region about the center; the pocket must still fit the map.
+            Vector2 regionHalfSize = (size.Bounds.Max - size.Bounds.Min) * regionShare;
+            Vector2 middle = new Vector2(center.x, center.z);
+            Vector2 min = Vector2.Max(size.Bounds.Min + Vector2.one * outer, middle - regionHalfSize);
+            Vector2 max = Vector2.Min(size.Bounds.Max - Vector2.one * outer, middle + regionHalfSize);
             float bestScore = float.MinValue;
             int validCandidates = 0;
             position = default;

@@ -20,7 +20,8 @@ MonoBehaviour:
           <Min>k__BackingField: {x: -2000, y: -2000}
           <Max>k__BackingField: {x: 2000, y: 2000}
         <CapturableZoneCount>k__BackingField: 2
-        <MiningSiteCount>k__BackingField: 2
+        <MiningSiteCount>k__BackingField: 8
+        <CentralMiningPairCount>k__BackingField: 1
         <BattleSiteCount>k__BackingField: 2
         <PointSpacing>k__BackingField: 0
         <HomeMiningGap>k__BackingField:
@@ -34,7 +35,7 @@ MonoBehaviour:
         <FieldFeatureSize>k__BackingField: 1080
         <FieldThreshold>k__BackingField: 0.5
         <RidgeThreshold>k__BackingField: 0.9
-        <PocketThickness>k__BackingField: 132
+        <PocketThickness>k__BackingField: 100
         <PocketEntranceWidth>k__BackingField: 800
         <MinFieldArea>k__BackingField: 72000
         <RockDensity>k__BackingField: 6
@@ -44,7 +45,8 @@ MonoBehaviour:
           <Min>k__BackingField: {x: -3000, y: -3000}
           <Max>k__BackingField: {x: 3000, y: 3000}
         <CapturableZoneCount>k__BackingField: 3
-        <MiningSiteCount>k__BackingField: 4
+        <MiningSiteCount>k__BackingField: 10
+        <CentralMiningPairCount>k__BackingField: 1
         <BattleSiteCount>k__BackingField: 2
         <PointSpacing>k__BackingField: 120
         <HomeMiningGap>k__BackingField:
@@ -68,9 +70,10 @@ MonoBehaviour:
           <Min>k__BackingField: {x: -4500, y: -4500}
           <Max>k__BackingField: {x: 4500, y: 4500}
         <CapturableZoneCount>k__BackingField: 9
-        <MiningSiteCount>k__BackingField: 8
+        <MiningSiteCount>k__BackingField: 14
+        <CentralMiningPairCount>k__BackingField: 2
         <BattleSiteCount>k__BackingField: 4
-        <PointSpacing>k__BackingField: 420
+        <PointSpacing>k__BackingField: 300
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 240
           <Max>k__BackingField: 1350
@@ -139,6 +142,8 @@ MonoBehaviour:
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 20
   <HomeMiningAngle>k__BackingField: 5
+  <HomeMiningSitesPerStation>k__BackingField: 2
+  <CentralRegionShare>k__BackingField: 0.15
   <PlanetBorderInset>k__BackingField: 0.25
   <ExtraLaneChance>k__BackingField: 0.35
   <LaneBend>k__BackingField: 0.2

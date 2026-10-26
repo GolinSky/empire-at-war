@@ -11,8 +11,10 @@ namespace EmpireAtWar.Entities.Map
     {
         [field: SerializeField] public Vector2Range Bounds { get; private set; }
         [field: SerializeField, Min(0)] public int CapturableZoneCount { get; private set; }
-        [field: SerializeField, Min(2), Tooltip("Includes the home mining site of each side.")]
+        [field: SerializeField, Min(2), Tooltip("Includes the home mining sites of both sides.")]
         public int MiningSiteCount { get; private set; }
+        [field: SerializeField, Min(0), Tooltip("Mirrored mining pairs placed inside the central region; part of MiningSiteCount.")]
+        public int CentralMiningPairCount { get; private set; }
         [field: SerializeField, Min(0)] public int BattleSiteCount { get; private set; }
         [field: SerializeField, Min(0f), Tooltip("Minimum free gap between the asteroid pockets of two points of interest.")]
         public float PointSpacing { get; private set; }

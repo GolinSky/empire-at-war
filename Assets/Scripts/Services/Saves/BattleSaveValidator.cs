@@ -94,7 +94,8 @@ namespace EmpireAtWar.Services.Saves
                 : definition.Map.Type == MapType.Survival
                     ? (definition.HasFeature(BattleFeatures.MiningSites) ? size.MiningSiteCount : 0)
                     : (definition.HasFeature(BattleFeatures.MiningSites)
-                        ? definition.Slots.Count + ((size.MiningSiteCount - 2) / 2) * 2
+                        ? definition.Slots.Count * _mapSettings.HomeMiningSitesPerStation
+                          + ((size.MiningSiteCount - 2 * _mapSettings.HomeMiningSitesPerStation) / 2) * 2
                         : 0) + (size.BattleSiteCount / 2) * 2;
             if (save.CaptureSites.Length != expectedSites)
                 throw new InvalidDataException($"Saved {save.CaptureSites.Length} capture sites; the map has {expectedSites}.");

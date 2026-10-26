@@ -95,6 +95,10 @@
 - [ ] **Implement UI tooltip system** → [[TODOs/Features/Tooltip_System_Plan|Tooltip System Plan]]; [[TODOs/Features/Tooltip_System_Plan - Research|Tooltip coverage catalog and codebase findings]]
   - **Remaining**: in-game acceptance (disabled cards, live refresh/rebind, fog/drag/HUD/route lifecycle, screen edges and teardown). EditMode tests authored; execute only on request.
 
+- [ ] **More mining sites; 2 home mines beside each station + central mines** → [[TODOs/Features/More_Mining_Sites|More Mining Sites]]
+  - **Implemented 2026-10-26**: counts 8/10/14 with 1/1/2 central pairs; second home mine steps outward until clear; Small pocket 100, Large spacing 300 to fit 3–4 players. Map 23/23, save 21/21, survival-spawn 2/2 EditMode pass.
+  - **Remaining**: user in-game check of generated maps and economy/AI feel.
+
 - [ ] **Close settings audit follow-ups** (Wave 1) → [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
   - **Remaining**: remaining settings core EditMode tests; live category/rebind interaction; manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
 
