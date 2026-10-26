@@ -64,6 +64,7 @@
         MediumMissileLauncher = 93,
         MediumDualLaser = 94,
         MediumDualMissileLauncher = 95,
+        ExecutorHeavyLaser = 96,
         ProcursatorMediumTripleTurbolaser = 86,
     }
 }

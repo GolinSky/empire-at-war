@@ -19,7 +19,7 @@ MonoBehaviour:
     damage: 6
     shotsPerSalvo: 3
     shotInterval: 0.1
-    reload: 1.5
+    reload: 2
     range: 300
     strikecraftOnly: 0
     preferredTarget: 1
@@ -343,7 +343,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
   - caliber: 1
-    damageMultiplier: 1.25
+    damageMultiplier: 1.35
     rangeMultiplier: 1.15
     turnRateMultiplier: 0.75
     damageBias:
@@ -367,7 +367,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
   - caliber: 2
-    damageMultiplier: 1.5625
+    damageMultiplier: 2.2
     rangeMultiplier: 1.3
     turnRateMultiplier: 0.5
     damageBias:
@@ -727,10 +727,10 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 1
+    damageMultiplier: 0.7102273
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 
+    reason: 'Squadron damage unchanged when the ship caliber multipliers rose (medium 1.35, heavy 2.2).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -871,7 +871,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 1.8
+    damageMultiplier: 1.2784091
     reloadMultiplier: 2
     rangeMultiplier: 1.5
     reason: 'Executor stays overpowered: keeps its former long-range reach, reload
@@ -1021,10 +1021,10 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 1
+    damageMultiplier: 0.7102273
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 
+    reason: 'Squadron damage unchanged when the ship caliber multipliers rose (medium 1.35, heavy 2.2).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1057,7 +1057,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 1.8
+    damageMultiplier: 1.2784091
     reloadMultiplier: 2
     rangeMultiplier: 1.5
     reason: 'Executor stays overpowered: keeps its former long-range reach, reload
@@ -1077,7 +1077,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 2.25
+    damageMultiplier: 1.5980114
     reloadMultiplier: 2
     rangeMultiplier: 1.5
     reason: "Executor stays overpowered: keeps its former long-range reach, reload
@@ -1098,7 +1098,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 2.25
+    damageMultiplier: 1.5980114
     reloadMultiplier: 2
     rangeMultiplier: 1.5
     reason: "Executor stays overpowered: keeps its former long-range reach, reload
@@ -1119,7 +1119,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 2.25
+    damageMultiplier: 2.0833333
     reloadMultiplier: 2
     rangeMultiplier: 1.5
     reason: "Executor stays overpowered: keeps its former long-range reach, reload
@@ -1323,10 +1323,10 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 1
+    damageMultiplier: 0.9259259
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 
+    reason: 'Squadron damage unchanged when the ship caliber multipliers rose (medium 1.35, heavy 2.2).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1508,6 +1508,24 @@ MonoBehaviour:
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 96
+    displayName: Executor Heavy Laser Cannon
+    family: 0
+    caliber: 2
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: Executor
+    damageMultiplier: 0.7102273
+    reloadMultiplier: 0.75
+    rangeMultiplier: 1
+    reason: 'Executor stays overpowered: keeps its heavy laser damage and reload after the heavy caliber and laser reload changes.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

@@ -156,7 +156,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, 3, 8f, 877.5f)]
         [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 1.2f, 2, 12f, 975f)]
         [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 1.2f, 3, 8f, 776.25f)]
-        [TestCase(WeaponType.HeavyLaser, 9.375f, 1f, 3, 1.5f, 390f)]
+        [TestCase(WeaponType.ExecutorHeavyLaser, 9.375f, 1f, 3, 1.5f, 390f)]
         [TestCase(WeaponType.ExecutorPointDefense, 5f, 1f, 8, 2f, 230f)]
         public void Executor_WeaponProfilesMatchBaseline(WeaponType type, float baselineDamage, float foldedAccuracy,
             int shots, float reload, float range)

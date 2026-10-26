@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Engines), Is.EqualTo(2));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Hangar), Is.EqualTo(2));
             Assert.That(weapons.Length, Is.EqualTo(174));
-            foreach (var expected in new[] { (49, 10), (50, 23), (51, 8), (34, 10), (53, 69), (28, 40), ((int)WeaponType.ExecutorPointDefense, 14) })
+            foreach (var expected in new[] { (49, 10), (50, 23), (51, 8), (34, 10), (53, 69), ((int)WeaponType.ExecutorHeavyLaser, 40), ((int)WeaponType.ExecutorPointDefense, 14) })
             {
                 WeaponHardPoint[] group = weapons.Where(w => (int)w.WeaponType == expected.Item1).ToArray();
                 Assert.That(group.Length, Is.EqualTo(expected.Item2));

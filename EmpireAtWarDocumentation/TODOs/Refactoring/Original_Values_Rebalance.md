@@ -173,6 +173,17 @@ Columns: baseline → Phase 4 final → Phase 5.
 - Corvette radar (2026-10-26): CR70, Carrack, C-9979, Patrol Frigate 300 → 500 (= Thranta). At 300 they only detected what their lasers already reached, so the kill-retarget (radar contacts) could not find nearby squadrons. Full EditMode 2153: 2150 pass; fails `ISDIIShipTests` (pre-existing), `MapLayoutGeneratorTests` (CLI bridge timeout log; passes 23/23 alone), `LoadingUiIsolationTests` (ran while the user was playtesting; passes 4/4 alone). Simulator `Logs/Rebalance/2026-10-26-radar/` vs `2026-10-26-regen/` A: 21 duel rows changed, wins ±1 run at most, TTK +1 s; class win rates and cross-class results unchanged (duels have no squadrons, so the squadron-detection gain is playtest-only).
 - Tests: `ShieldRegen_FollowsShipClassTiers_AndRisesWithClass`. EditMode 2153: 2151 pass; fails `ISDIIShipTests` (32 vs 28), `HealthModelTests.PointDefense_WhileCloaked…` (pre-existing).
 
+### Phase 8 — Heavy caliber beats more barrels; slower lasers ✅ 2026-10-26
+
+- Problem: caliber step ×1.25 vs mount step ×1.6/×2.4 → heavy single turbolaser (20.0 vs capital) ≤ medium dual (20.5) and < light quad (22.2); medium quad ≥ heavy dual vs frigate/cruiser.
+- Caliber damage: Medium 1.25 → 1.35, Heavy 1.5625 → 2.2 (rule: heavy/medium > 1.53 so heavy single > medium dual vs Cruiser).
+- Laser family reload 1.5 → 2 s (laser DPS −25 %; user: let DPS drop). Carrack 230 → 173 raw DPS.
+- Per-mount hull DPS after (vs Cruiser / Capital): Medium Dual TL 22.2 / 22.2; Light Quad 23.4 / 22.2; Heavy TL 23.6 / 28.2; Medium Quad 33.2 / 33.2; Heavy Dual 37.7 / 45.1; Heavy Quad 56.6 / 67.7; Heavy Octuple 94.4 / 112.9. Medium still wins vs Frigate/Corvette.
+- Executor unchanged: 34/49 dmg ×1.2784091, 50/51 ×1.5980114, 53 ×2.0833333; new `ExecutorHeavyLaser` 96 (unit Executor, dmg ×0.7102273, reload ×0.75) replaces its 40 shared Heavy Lasers (28). `Executor_WeaponProfilesMatchBaseline` passes.
+- Squadrons unchanged: 21, 47 dmg ×0.7102273; 72 ×0.9259259.
+- Simulator `Logs/Rebalance/2026-10-26-heavy/` vs `2026-10-26-radar/`: median TTK Capital 50.6 → 40.0 s, HeavyCapital 84.5 → 72.3 s, Corvette 27.1 → 36.3 s. Venator I/II, Resolute now beat Providence (0–10 → 9–1/10–0). Win rates: Capital Sep 58 → 47, Rep 33 → 37; Cruiser Rep 49 → 40, Reb 70 → 78; HeavyCapital Rep 80 → 60, Emp 67 → 78. Lower class beats higher: 9/4/6/4 → 3/7/5/6 %.
+- Tests: EditMode 2227: 2216 pass; failures not from this change: `FactionAudioAssetTests` ×8 and `SquadronIconPrefabTests` (other session's uncommitted audio/UI work), `ISDIIShipTests`, `HealthModelTests.PointDefense_WhileCloaked…` (pre-existing).
+
 ## Tests
 
 ### Update

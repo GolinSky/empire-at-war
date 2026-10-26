@@ -1,0 +1,261 @@
+class,a,b,winsA,winsB,draws,medianTtk
+Capital,Venator I,Providence,9,1,0,40.5
+Capital,Venator I,Invincible,0,10,0,34.9
+Capital,Venator I,Mon Calamari Star Cruiser / MC80,0,10,0,48.2
+Capital,Venator I,Home One / Admiral Ackbar,0,10,0,42.4
+Capital,Venator I,MC80 Independence,0,10,0,30.6
+Capital,Venator I,Corellian Battlecruiser,10,0,0,39.4
+Capital,Venator I,Liberator Cruiser,10,0,0,44.0
+Capital,Venator I,Nebula Star Destroyer,0,10,0,28.4
+Capital,Venator I,Endurance Fleet Carrier,0,10,0,34.8
+Capital,Venator I,ISD I,0,10,0,44.7
+Capital,Venator I,ISD II,0,10,0,14.0
+Capital,Venator I,Tector Star Destroyer,0,10,0,15.7
+Capital,Venator I,Imperial Venator,0,10,0,31.4
+Capital,Venator I,Procursator-class Star Destroyer,0,10,0,31.1
+Capital,Venator II,Providence,10,0,0,40.0
+Capital,Venator II,Invincible,0,10,0,44.4
+Capital,Venator II,Mon Calamari Star Cruiser / MC80,7,3,0,68.5
+Capital,Venator II,Home One / Admiral Ackbar,1,9,0,55.4
+Capital,Venator II,MC80 Independence,0,10,0,36.4
+Capital,Venator II,Corellian Battlecruiser,10,0,0,38.5
+Capital,Venator II,Liberator Cruiser,10,0,0,44.8
+Capital,Venator II,Nebula Star Destroyer,0,10,0,35.7
+Capital,Venator II,Endurance Fleet Carrier,0,10,0,42.6
+Capital,Venator II,ISD I,3,7,0,55.2
+Capital,Venator II,ISD II,0,10,0,17.1
+Capital,Venator II,Tector Star Destroyer,0,10,0,19.7
+Capital,Venator II,Imperial Venator,0,10,0,39.3
+Capital,Venator II,Procursator-class Star Destroyer,1,9,0,40.2
+Capital,Rothana Star Destroyer,Providence,10,0,0,37.9
+Capital,Rothana Star Destroyer,Invincible,0,10,0,61.6
+Capital,Rothana Star Destroyer,Mon Calamari Star Cruiser / MC80,10,0,0,69.6
+Capital,Rothana Star Destroyer,Home One / Admiral Ackbar,4,5,1,103.9
+Capital,Rothana Star Destroyer,MC80 Independence,0,10,0,60.0
+Capital,Rothana Star Destroyer,Corellian Battlecruiser,10,0,0,37.6
+Capital,Rothana Star Destroyer,Liberator Cruiser,10,0,0,41.7
+Capital,Rothana Star Destroyer,Nebula Star Destroyer,0,10,0,50.2
+Capital,Rothana Star Destroyer,Endurance Fleet Carrier,1,9,0,60.3
+Capital,Rothana Star Destroyer,ISD I,9,1,0,57.1
+Capital,Rothana Star Destroyer,ISD II,0,10,0,24.4
+Capital,Rothana Star Destroyer,Tector Star Destroyer,0,10,0,26.8
+Capital,Rothana Star Destroyer,Imperial Venator,0,10,0,60.3
+Capital,Rothana Star Destroyer,Procursator-class Star Destroyer,1,9,0,60.1
+Capital,Resolute — Admiral Yularen,Providence,10,0,0,40.0
+Capital,Resolute — Admiral Yularen,Invincible,0,10,0,49.9
+Capital,Resolute — Admiral Yularen,Mon Calamari Star Cruiser / MC80,10,0,0,80.1
+Capital,Resolute — Admiral Yularen,Home One / Admiral Ackbar,1,9,0,64.3
+Capital,Resolute — Admiral Yularen,MC80 Independence,0,10,0,40.8
+Capital,Resolute — Admiral Yularen,Corellian Battlecruiser,10,0,0,38.5
+Capital,Resolute — Admiral Yularen,Liberator Cruiser,10,0,0,44.8
+Capital,Resolute — Admiral Yularen,Nebula Star Destroyer,0,10,0,40.4
+Capital,Resolute — Admiral Yularen,Endurance Fleet Carrier,0,10,0,47.3
+Capital,Resolute — Admiral Yularen,ISD I,7,3,0,59.1
+Capital,Resolute — Admiral Yularen,ISD II,0,10,0,18.4
+Capital,Resolute — Admiral Yularen,Tector Star Destroyer,0,10,0,21.7
+Capital,Resolute — Admiral Yularen,Imperial Venator,0,10,0,44.4
+Capital,Resolute — Admiral Yularen,Procursator-class Star Destroyer,1,9,0,45.2
+Capital,Imperator-class Star Destroyer,Providence,10,0,0,25.7
+Capital,Imperator-class Star Destroyer,Invincible,0,10,0,44.7
+Capital,Imperator-class Star Destroyer,Mon Calamari Star Cruiser / MC80,10,0,0,44.3
+Capital,Imperator-class Star Destroyer,Home One / Admiral Ackbar,10,0,0,63.8
+Capital,Imperator-class Star Destroyer,MC80 Independence,0,10,0,41.1
+Capital,Imperator-class Star Destroyer,Corellian Battlecruiser,10,0,0,25.3
+Capital,Imperator-class Star Destroyer,Liberator Cruiser,10,0,0,27.6
+Capital,Imperator-class Star Destroyer,Nebula Star Destroyer,3,6,1,35.7
+Capital,Imperator-class Star Destroyer,Endurance Fleet Carrier,3,7,0,41.8
+Capital,Imperator-class Star Destroyer,ISD I,10,0,0,36.9
+Capital,Imperator-class Star Destroyer,ISD II,0,10,0,17.0
+Capital,Imperator-class Star Destroyer,Tector Star Destroyer,0,10,0,19.5
+Capital,Imperator-class Star Destroyer,Imperial Venator,10,0,0,32.5
+Capital,Imperator-class Star Destroyer,Procursator-class Star Destroyer,10,0,0,31.4
+Capital,Providence,Mon Calamari Star Cruiser / MC80,0,10,0,48.5
+Capital,Providence,Home One / Admiral Ackbar,0,10,0,41.7
+Capital,Providence,MC80 Independence,0,10,0,30.4
+Capital,Providence,Corellian Battlecruiser,10,0,0,43.4
+Capital,Providence,Liberator Cruiser,10,0,0,48.4
+Capital,Providence,Nebula Star Destroyer,0,10,0,28.1
+Capital,Providence,Endurance Fleet Carrier,0,10,0,34.5
+Capital,Providence,ISD I,0,10,0,42.2
+Capital,Providence,ISD II,0,10,0,13.3
+Capital,Providence,Tector Star Destroyer,0,10,0,15.5
+Capital,Providence,Imperial Venator,0,10,0,32.2
+Capital,Providence,Procursator-class Star Destroyer,0,10,0,30.4
+Capital,Invincible,Mon Calamari Star Cruiser / MC80,10,0,0,62.9
+Capital,Invincible,Home One / Admiral Ackbar,10,0,0,84.4
+Capital,Invincible,MC80 Independence,0,10,0,82.4
+Capital,Invincible,Corellian Battlecruiser,10,0,0,34.7
+Capital,Invincible,Liberator Cruiser,10,0,0,38.1
+Capital,Invincible,Nebula Star Destroyer,10,0,0,51.2
+Capital,Invincible,Endurance Fleet Carrier,10,0,0,69.1
+Capital,Invincible,ISD I,10,0,0,49.2
+Capital,Invincible,ISD II,0,10,0,34.7
+Capital,Invincible,Tector Star Destroyer,0,10,0,41.8
+Capital,Invincible,Imperial Venator,10,0,0,44.4
+Capital,Invincible,Procursator-class Star Destroyer,10,0,0,41.7
+Capital,Mon Calamari Star Cruiser / MC80,ISD I,0,10,0,75.9
+Capital,Mon Calamari Star Cruiser / MC80,ISD II,0,10,0,25.4
+Capital,Mon Calamari Star Cruiser / MC80,Tector Star Destroyer,0,10,0,28.2
+Capital,Mon Calamari Star Cruiser / MC80,Imperial Venator,0,10,0,53.3
+Capital,Mon Calamari Star Cruiser / MC80,Procursator-class Star Destroyer,0,10,0,59.0
+Capital,Home One / Admiral Ackbar,ISD I,9,1,0,66.9
+Capital,Home One / Admiral Ackbar,ISD II,0,10,0,33.3
+Capital,Home One / Admiral Ackbar,Tector Star Destroyer,0,10,0,37.4
+Capital,Home One / Admiral Ackbar,Imperial Venator,1,9,0,74.5
+Capital,Home One / Admiral Ackbar,Procursator-class Star Destroyer,5,5,0,65.1
+Capital,MC80 Independence,ISD I,10,0,0,43.6
+Capital,MC80 Independence,ISD II,0,10,0,28.9
+Capital,MC80 Independence,Tector Star Destroyer,0,10,0,32.9
+Capital,MC80 Independence,Imperial Venator,10,0,0,36.7
+Capital,MC80 Independence,Procursator-class Star Destroyer,10,0,0,36.4
+Capital,Corellian Battlecruiser,ISD I,0,10,0,42.9
+Capital,Corellian Battlecruiser,ISD II,0,10,0,13.3
+Capital,Corellian Battlecruiser,Tector Star Destroyer,0,10,0,15.2
+Capital,Corellian Battlecruiser,Imperial Venator,0,10,0,31.1
+Capital,Corellian Battlecruiser,Procursator-class Star Destroyer,0,10,0,30.1
+Capital,Liberator Cruiser,ISD I,0,10,0,45.1
+Capital,Liberator Cruiser,ISD II,0,10,0,15.3
+Capital,Liberator Cruiser,Tector Star Destroyer,0,10,0,17.2
+Capital,Liberator Cruiser,Imperial Venator,0,10,0,33.8
+Capital,Liberator Cruiser,Procursator-class Star Destroyer,0,10,0,33.6
+Capital,Nebula Star Destroyer,ISD I,10,0,0,41.1
+Capital,Nebula Star Destroyer,ISD II,0,10,0,18.9
+Capital,Nebula Star Destroyer,Tector Star Destroyer,0,10,0,21.8
+Capital,Nebula Star Destroyer,Imperial Venator,10,0,0,36.7
+Capital,Nebula Star Destroyer,Procursator-class Star Destroyer,10,0,0,34.2
+Capital,Endurance Fleet Carrier,ISD I,10,0,0,49.7
+Capital,Endurance Fleet Carrier,ISD II,0,10,0,22.6
+Capital,Endurance Fleet Carrier,Tector Star Destroyer,0,10,0,26.7
+Capital,Endurance Fleet Carrier,Imperial Venator,10,0,0,43.9
+Capital,Endurance Fleet Carrier,Procursator-class Star Destroyer,10,0,0,41.8
+Frigate,Arquitens,Munificent,0,10,0,27.8
+Frigate,Arquitens,Captor-class Carrier,10,0,0,40.5
+Frigate,Arquitens,Dispatcher-class Frigate,0,10,0,33.1
+Frigate,Arquitens,Nebulon-B Frigate,10,0,0,52.9
+Frigate,Arquitens,MC30c Frigate,10,0,0,39.5
+Frigate,Arquitens,Quasar Fire,10,0,0,35.8
+Frigate,Arquitens,Assault Frigate Mk II,0,10,0,51.0
+Frigate,Arquitens,ArquitensImperialCruiser,10,0,0,40.0
+Frigate,Arquitens,AcclamatorAssault,10,0,0,61.8
+Frigate,Acclamator,Munificent,0,10,0,42.2
+Frigate,Acclamator,Captor-class Carrier,10,0,0,62.4
+Frigate,Acclamator,Dispatcher-class Frigate,0,10,0,50.6
+Frigate,Acclamator,Nebulon-B Frigate,10,0,0,80.1
+Frigate,Acclamator,MC30c Frigate,5,5,0,68.4
+Frigate,Acclamator,Quasar Fire,10,0,0,54.5
+Frigate,Acclamator,Assault Frigate Mk II,0,10,0,75.6
+Frigate,Acclamator,ArquitensImperialCruiser,10,0,0,61.9
+Frigate,Acclamator,AcclamatorAssault,10,0,0,93.5
+Frigate,Pelta-class Frigate,Munificent,0,10,0,20.9
+Frigate,Pelta-class Frigate,Captor-class Carrier,6,4,0,86.9
+Frigate,Pelta-class Frigate,Dispatcher-class Frigate,0,10,0,24.9
+Frigate,Pelta-class Frigate,Nebulon-B Frigate,8,2,0,96.0
+Frigate,Pelta-class Frigate,MC30c Frigate,0,10,0,38.6
+Frigate,Pelta-class Frigate,Quasar Fire,10,0,0,67.3
+Frigate,Pelta-class Frigate,Assault Frigate Mk II,0,10,0,35.7
+Frigate,Pelta-class Frigate,ArquitensImperialCruiser,9,1,0,79.2
+Frigate,Pelta-class Frigate,AcclamatorAssault,5,5,0,131.6
+Frigate,Centax-class Heavy Frigate,Munificent,0,10,0,20.8
+Frigate,Centax-class Heavy Frigate,Captor-class Carrier,1,9,0,85.8
+Frigate,Centax-class Heavy Frigate,Dispatcher-class Frigate,0,10,0,24.6
+Frigate,Centax-class Heavy Frigate,Nebulon-B Frigate,7,3,0,119.7
+Frigate,Centax-class Heavy Frigate,MC30c Frigate,0,10,0,37.3
+Frigate,Centax-class Heavy Frigate,Quasar Fire,10,0,0,80.6
+Frigate,Centax-class Heavy Frigate,Assault Frigate Mk II,0,10,0,36.2
+Frigate,Centax-class Heavy Frigate,ArquitensImperialCruiser,6,4,0,89.4
+Frigate,Centax-class Heavy Frigate,AcclamatorAssault,0,10,0,126.4
+Frigate,Munificent,Nebulon-B Frigate,10,0,0,35.0
+Frigate,Munificent,MC30c Frigate,10,0,0,23.9
+Frigate,Munificent,Quasar Fire,10,0,0,25.1
+Frigate,Munificent,Assault Frigate Mk II,10,0,0,33.0
+Frigate,Munificent,ArquitensImperialCruiser,10,0,0,26.3
+Frigate,Munificent,AcclamatorAssault,10,0,0,40.6
+Frigate,Captor-class Carrier,Nebulon-B Frigate,6,4,0,136.5
+Frigate,Captor-class Carrier,MC30c Frigate,0,10,0,46.0
+Frigate,Captor-class Carrier,Quasar Fire,10,0,0,100.3
+Frigate,Captor-class Carrier,Assault Frigate Mk II,0,10,0,45.7
+Frigate,Captor-class Carrier,ArquitensImperialCruiser,8,2,0,116.7
+Frigate,Captor-class Carrier,AcclamatorAssault,5,5,0,187.0
+Frigate,Dispatcher-class Frigate,Nebulon-B Frigate,10,0,0,40.1
+Frigate,Dispatcher-class Frigate,MC30c Frigate,10,0,0,27.9
+Frigate,Dispatcher-class Frigate,Quasar Fire,10,0,0,28.2
+Frigate,Dispatcher-class Frigate,Assault Frigate Mk II,10,0,0,37.7
+Frigate,Dispatcher-class Frigate,ArquitensImperialCruiser,10,0,0,31.0
+Frigate,Dispatcher-class Frigate,AcclamatorAssault,10,0,0,46.6
+Frigate,Nebulon-B Frigate,ArquitensImperialCruiser,8,2,0,103.2
+Frigate,Nebulon-B Frigate,AcclamatorAssault,0,10,0,174.9
+Frigate,MC30c Frigate,ArquitensImperialCruiser,10,0,0,46.3
+Frigate,MC30c Frigate,AcclamatorAssault,10,0,0,68.0
+Frigate,Quasar Fire,ArquitensImperialCruiser,0,10,0,90.7
+Frigate,Quasar Fire,AcclamatorAssault,0,10,0,131.2
+Frigate,Assault Frigate Mk II,ArquitensImperialCruiser,10,0,0,46.4
+Frigate,Assault Frigate Mk II,AcclamatorAssault,10,0,0,73.1
+Cruiser,Heavy Dreadnought,Recusant,0,10,0,151.4
+Cruiser,Heavy Dreadnought,MC75 Profundity,0,10,0,41.0
+Cruiser,Heavy Dreadnought,MC50 Medium Cruiser,0,10,0,73.2
+Cruiser,Heavy Dreadnought,Dauntless Heavy Cruiser,0,10,0,34.8
+Cruiser,Heavy Dreadnought,Bothan Assault Cruiser,0,10,0,44.7
+Cruiser,Heavy Dreadnought,Victory I Star Destroyer — Advanced Loadout,0,10,0,58.5
+Cruiser,Heavy Dreadnought,Victory II Star Destroyer — Advanced Loadout,0,10,0,57.8
+Cruiser,Victory-class Star Destroyer,Recusant,10,0,0,44.9
+Cruiser,Victory-class Star Destroyer,MC75 Profundity,9,1,0,42.9
+Cruiser,Victory-class Star Destroyer,MC50 Medium Cruiser,10,0,0,41.9
+Cruiser,Victory-class Star Destroyer,Dauntless Heavy Cruiser,0,10,0,38.6
+Cruiser,Victory-class Star Destroyer,Bothan Assault Cruiser,7,3,0,44.5
+Cruiser,Victory-class Star Destroyer,Victory I Star Destroyer — Advanced Loadout,10,0,0,35.4
+Cruiser,Victory-class Star Destroyer,Victory II Star Destroyer — Advanced Loadout,10,0,0,40.1
+Cruiser,Recusant,MC75 Profundity,0,10,0,44.0
+Cruiser,Recusant,MC50 Medium Cruiser,0,10,0,79.2
+Cruiser,Recusant,Dauntless Heavy Cruiser,0,10,0,36.4
+Cruiser,Recusant,Bothan Assault Cruiser,0,10,0,49.2
+Cruiser,Recusant,Victory I Star Destroyer — Advanced Loadout,0,10,0,69.1
+Cruiser,Recusant,Victory II Star Destroyer — Advanced Loadout,0,10,0,67.8
+Cruiser,MC75 Profundity,Victory I Star Destroyer — Advanced Loadout,10,0,0,35.2
+Cruiser,MC75 Profundity,Victory II Star Destroyer — Advanced Loadout,10,0,0,39.2
+Cruiser,MC50 Medium Cruiser,Victory I Star Destroyer — Advanced Loadout,0,10,0,59.7
+Cruiser,MC50 Medium Cruiser,Victory II Star Destroyer — Advanced Loadout,1,9,0,64.3
+Cruiser,Dauntless Heavy Cruiser,Victory I Star Destroyer — Advanced Loadout,10,0,0,30.0
+Cruiser,Dauntless Heavy Cruiser,Victory II Star Destroyer — Advanced Loadout,10,0,0,33.4
+Cruiser,Bothan Assault Cruiser,Victory I Star Destroyer — Advanced Loadout,10,0,0,38.4
+Cruiser,Bothan Assault Cruiser,Victory II Star Destroyer — Advanced Loadout,10,0,0,42.6
+HeavyCapital,Pride of the Core,Lucrehulk,10,0,0,61.0
+HeavyCapital,Pride of the Core,Malevolence,10,0,0,122.4
+HeavyCapital,Pride of the Core,Executor Star Dreadnought,0,10,0,84.5
+HeavyCapital,Pride of the Core,Titan-class Battlecruiser,0,10,0,144.3
+HeavyCapital,Pride of the Core,Allegiance-class Battlecruiser,10,0,0,109.0
+HeavyCapital,Lucrehulk,Executor Star Dreadnought,0,10,0,29.5
+HeavyCapital,Lucrehulk,Titan-class Battlecruiser,0,10,0,33.8
+HeavyCapital,Lucrehulk,Allegiance-class Battlecruiser,0,10,0,49.8
+HeavyCapital,Malevolence,Executor Star Dreadnought,0,10,0,40.8
+HeavyCapital,Malevolence,Titan-class Battlecruiser,0,10,0,72.3
+HeavyCapital,Malevolence,Allegiance-class Battlecruiser,10,0,0,115.7
+Corvette,IPV-2C Stealth Corvette,Patrol Frigate,10,0,0,35.4
+Corvette,IPV-2C Stealth Corvette,C-9979 Lander,10,0,0,27.4
+Corvette,IPV-2C Stealth Corvette,Corellian Corvette / CR90,10,0,0,26.0
+Corvette,IPV-2C Stealth Corvette,CD-273 Corellian Destroyer,10,0,0,51.5
+Corvette,IPV-2C Stealth Corvette,Raider Corvette,10,0,0,26.1
+Corvette,IPV-2C Stealth Corvette,Tartan-class Patrol Cruiser,10,0,0,26.1
+Corvette,CR70 Corvette,Patrol Frigate,0,10,0,41.0
+Corvette,CR70 Corvette,C-9979 Lander,10,0,0,41.9
+Corvette,CR70 Corvette,Corellian Corvette / CR90,0,10,0,39.8
+Corvette,CR70 Corvette,CD-273 Corellian Destroyer,0,10,0,56.3
+Corvette,CR70 Corvette,Raider Corvette,0,10,0,38.1
+Corvette,CR70 Corvette,Tartan-class Patrol Cruiser,10,0,0,42.7
+Corvette,Carrack-class Cruiser,Patrol Frigate,10,0,0,19.4
+Corvette,Carrack-class Cruiser,C-9979 Lander,10,0,0,15.8
+Corvette,Carrack-class Cruiser,Corellian Corvette / CR90,10,0,0,15.8
+Corvette,Carrack-class Cruiser,CD-273 Corellian Destroyer,10,0,0,28.7
+Corvette,Carrack-class Cruiser,Raider Corvette,10,0,0,15.8
+Corvette,Carrack-class Cruiser,Tartan-class Patrol Cruiser,10,0,0,15.9
+Corvette,Patrol Frigate,Corellian Corvette / CR90,10,0,0,36.4
+Corvette,Patrol Frigate,CD-273 Corellian Destroyer,0,10,0,62.8
+Corvette,Patrol Frigate,Raider Corvette,10,0,0,36.3
+Corvette,Patrol Frigate,Tartan-class Patrol Cruiser,10,0,0,36.6
+Corvette,C-9979 Lander,Corellian Corvette / CR90,0,10,0,35.0
+Corvette,C-9979 Lander,CD-273 Corellian Destroyer,0,10,0,49.5
+Corvette,C-9979 Lander,Raider Corvette,0,10,0,32.6
+Corvette,C-9979 Lander,Tartan-class Patrol Cruiser,0,10,0,41.1
+Corvette,Corellian Corvette / CR90,Raider Corvette,1,9,0,31.9
+Corvette,Corellian Corvette / CR90,Tartan-class Patrol Cruiser,10,0,0,35.4
+Corvette,CD-273 Corellian Destroyer,Raider Corvette,10,0,0,49.2
+Corvette,CD-273 Corellian Destroyer,Tartan-class Patrol Cruiser,10,0,0,49.6

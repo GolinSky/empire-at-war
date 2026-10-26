@@ -1,0 +1,95 @@
+using System.Linq;
+using System.Text;
+using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Editor.BattleSimulator;
+using EmpireAtWar.Entities.Ship.Data;
+
+public static class HeavyDump
+{
+    private static readonly (string name, float[] values)[] VARIANTS =
+    {
+        ("A", new[] { 5f, 25f, 90f, 180f, 400f }),
+    };
+    private static readonly string[] FIELDS = { "corvette", "frigate", "cruiser", "capital", "heavyCapital" };
+    private static readonly (string low, string high)[] CROSS =
+        { ("Corvette", "Frigate"), ("Frigate", "Cruiser"), ("Cruiser", "Capital"), ("Capital", "HeavyCapital") };
+
+    public static string Run(string unused)
+    {
+        const string outPath = @"F:/Private/empire-at-war/Logs/Rebalance/2026-10-26-heavy/";
+        var tiers = UnityEditor.AssetDatabase.LoadAssetAtPath<ShipShieldRegenTiersData>(
+            "Assets/Settings/Data/Ship/Shared/ShipShieldRegenTiersData.asset");
+        var summary = new StringBuilder();
+        try
+        {
+            foreach (var variant in VARIANTS)
+            {
+                Set(tiers, variant.values);
+                var registry = BalanceInventory.BuildCombat();
+                var draft = new BalanceDraft();
+                var ships = registry.Units.Where(u => u.Kind == BalanceUnitKind.Ship).ToList();
+                var factory = new SimUnitFactory(registry, draft);
+                var defs = new Dictionary<string, SimUnitDefinition>();
+                foreach (var u in ships) defs[u.Id] = factory.Build(u);
+
+                var same = new StringBuilder("class,a,b,winsA,winsB,draws,medianTtk\n");
+                foreach (var cls in ships.Select(u => u.Class).Distinct())
+                {
+                    var group = ships.Where(u => u.Class == cls).ToList();
+                    for (int i = 0; i < group.Count; i++)
+                    for (int j = i + 1; j < group.Count; j++)
+                        if (group[i].Faction != group[j].Faction)
+                            same.AppendLine(Duel(cls, group[i], group[j], defs, factory));
+                }
+                System.IO.File.WriteAllText(outPath + "heavy_" + variant.name + "_matchups.csv", same.ToString());
+
+                var cross = new StringBuilder("pair,low,high,winsLow,winsHigh,draws,medianTtk\n");
+                foreach (var pair in CROSS)
+                {
+                    int lowWins = 0, total = 0;
+                    foreach (var low in ships.Where(u => u.Class == pair.low && u.Name != "Executor Star Dreadnought"))
+                    foreach (var high in ships.Where(u => u.Class == pair.high && u.Name != "Executor Star Dreadnought"))
+                    {
+                        string line = Duel(pair.low + ">" + pair.high, low, high, defs, factory);
+                        cross.AppendLine(line);
+                        string[] cells = line.Split(',');
+                        lowWins += int.Parse(cells[3]);
+                        total += int.Parse(cells[3]) + int.Parse(cells[4]) + int.Parse(cells[5]);
+                    }
+                    summary.Append($"{variant.name} {pair.low} beats {pair.high}: {100f * lowWins / total:F0}% | ");
+                }
+                System.IO.File.WriteAllText(outPath + "heavy_" + variant.name + "_cross.csv", cross.ToString());
+                summary.AppendLine();
+                factory.Dispose();
+            }
+        }
+        finally
+        {
+            Set(tiers, VARIANTS.First(v => v.name == "A").values);
+        }
+
+        return summary.ToString();
+    }
+
+    private static string Duel(string label, BalanceUnit a, BalanceUnit b, Dictionary<string, SimUnitDefinition> defs,
+        SimUnitFactory factory)
+    {
+        var setup = new BattleSetup { Runs = 10, Seed = 1, TimeLimit = 900 };
+        setup.SideA.Add(new BattleFleetEntry { UnitId = a.Id });
+        setup.SideB.Add(new BattleFleetEntry { UnitId = b.Id });
+        var runner = new MonteCarloRunner(setup, defs, factory.Matrix);
+        while (!runner.IsComplete) runner.Advance(1000);
+        var s = runner.Summary;
+        return string.Join(",", label, a.Name.Replace(",", " "), b.Name.Replace(",", " "), s.WinsA, s.WinsB, s.Draws,
+            s.Median.ToString("F1", System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    private static void Set(ShipShieldRegenTiersData tiers, float[] values)
+    {
+        var so = new UnityEditor.SerializedObject(tiers);
+        for (int i = 0; i < FIELDS.Length; i++) so.FindProperty(FIELDS[i]).floatValue = values[i];
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+}
