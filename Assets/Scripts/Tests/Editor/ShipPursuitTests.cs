@@ -76,6 +76,81 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange()
+        {
+            GameObject deadObject = new GameObject("Dead enemy");
+            GameObject fighterObject = new GameObject("Near fighter");
+            GameObject capitalObject = new GameObject("Far capital");
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+            try
+            {
+                deadObject.transform.position = new Vector3(0f, 0f, 150f);
+                fighterObject.transform.position = new Vector3(0f, 0f, 200f);
+                capitalObject.transform.position = new Vector3(0f, 0f, 900f);
+                Target dead = new Target(deadObject.transform) { Id = 2 };
+                dead.Health.IsDestroyed = true;
+                Target fighter = new Target(fighterObject.transform) { Id = 3 };
+                fighter.Health.ShipClass = ShipClass.Fighter;
+                Target capital = new Target(capitalObject.transform) { Id = 4 };
+                Radar radar = new Radar();
+                radar.Enemies.Add(dead);
+                radar.Enemies.Add(fighter);
+                radar.Enemies.Add(capital);
+                UnitOrderModel orders = new UnitOrderModel();
+                ShipStateMachine machine = new ShipStateMachine();
+                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+                ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar);
+                runner.Start();
+                runner.Attack(_target, Vector3.zero);
+
+                _target.Health.IsDestroyed = true;
+                runner.Tick(0.1f);
+
+                // The weapon prefers ships: the far capital wins over the nearer fighter; the dead contact is skipped.
+                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
+                Assert.That(orders.Target, Is.SameAs(capital));
+                Assert.That(machine.CurrentState, Is.SameAs(attack));
+                // The stub has no health facade, so the new attack plans its approach on the next tick.
+                runner.Tick(0.1f);
+                Assert.That(_movement.IsMoving, Is.True);
+                Assert.That(Vector3.Distance(_movement.Destination, capital.Transform.position), Is.LessThan(100f));
+            }
+            finally
+            {
+                abilities.Clear();
+                Object.DestroyImmediate(deadObject);
+                Object.DestroyImmediate(fighterObject);
+                Object.DestroyImmediate(capitalObject);
+            }
+        }
+
+        [Test]
+        public void Attack_TargetKilled_NoRadarContactGoesIdle()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+            Radar radar = new Radar();
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            IdleState idle = new IdleState(_movement, _weapon, radar);
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                idle, null, new AttackTargetState(null, _weapon, _movement), null, null, null, null, abilities, caster, radar);
+            runner.Start();
+            runner.Attack(_target, Vector3.zero);
+
+            _target.Health.IsDestroyed = true;
+            runner.Tick(0.1f);
+
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
+            Assert.That(machine.CurrentState, Is.SameAs(idle));
+            abilities.Clear();
+        }
+
+        [Test]
         public void Attack_TargetClosesRange_StopsWithoutAnotherPlan()
         {
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
@@ -207,7 +282,7 @@ namespace EmpireAtWar.Tests.Movement
             machine.SetState(idle);
             NavigateState navigate = new NavigateState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null, null);
+                idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null, null, new Radar());
 
             runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
             Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.UseAbility));
@@ -299,7 +374,7 @@ namespace EmpireAtWar.Tests.Movement
             GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
             IdleState idle = new IdleState(_movement, _weapon, new Radar());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster);
+                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster, new Radar());
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
             runner.CastAbility(ShipAbilityId.BoostEnginePower, _target, 100f);
@@ -325,7 +400,8 @@ namespace EmpireAtWar.Tests.Movement
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, new Radar()), null, null, null, guard, null, null, abilities, caster);
+                new IdleState(_movement, _weapon, new Radar()), null, null, null, guard, null, null, abilities, caster,
+                new Radar());
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
             Assert.That(abilities.TryActivate(caster, ShipAbilityId.Cloak, null), Is.True);
@@ -349,7 +425,7 @@ namespace EmpireAtWar.Tests.Movement
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
                 new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, null, attackMove,
-                null, null, null, abilities, caster);
+                null, null, null, abilities, caster, radar);
             runner.Start();
             AttackMoveEngagement first = new AttackMoveEngagement();
             AttackMoveEngagement second = new AttackMoveEngagement();
@@ -437,8 +513,9 @@ namespace EmpireAtWar.Tests.Movement
 
         private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade
         {
-            public long Id => 1;
-            public IHealthModelObserver HealthModel { get; } = new Health();
+            public long Id { get; set; } = 1;
+            public Health Health { get; } = new Health();
+            public IHealthModelObserver HealthModel => Health;
             public PlayerId Owner { get; set; } = EmpireAtWar.Tests.Editor.TestPlayers.Enemy;
             public Transform Transform { get; }
             public float NavigationRadius { get; set; } = 5f;
@@ -459,12 +536,12 @@ namespace EmpireAtWar.Tests.Movement
             public event Action OnValueChanged { add { } remove { } }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public bool HasLiveHardPoints => true;
             public float HullPercentage => 1f;
             public float Shields => 1f;
             public float ShieldPercentage => 1f;
-            public bool IsDestroyed => false;
+            public bool IsDestroyed { get; set; }
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
             public PlayerId Owner => EmpireAtWar.Tests.Editor.TestPlayers.Enemy;

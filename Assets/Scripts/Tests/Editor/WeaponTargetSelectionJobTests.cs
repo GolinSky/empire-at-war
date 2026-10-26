@@ -14,15 +14,27 @@ namespace EmpireAtWar.Tests.Weapon
         [TestCase(7)]
         [TestCase(8)]
         [TestCase(9)]
-        public void ScheduledJob_SelectsFirstEligibleCandidate(int requestCount)
+        public void ScheduledJob_SelectsNearestReachableHardpointOfTheGroup(int requestCount)
         {
             Vector3[] positions = { new Vector3(15f, 0f, 0f), new Vector3(0f, 0f, 5f), new Vector3(0f, 0f, 4f) };
             WeaponTargetSelectionJob.Result result = Run(requestCount, Input(positions.Length), positions);
 
             Assert.That(result.RequiresSerialFallback, Is.Zero);
+            Assert.That(result.CandidateIndex, Is.EqualTo(2));
+            Assert.That(result.Visited, Is.EqualTo(3));
+            Assert.That(Quaternion.Angle(ToQuaternion(result.SelectedAim), Quaternion.identity), Is.LessThan(0.01f));
+        }
+
+        [Test]
+        public void ScheduledJob_KeepsTheFirstGroupInReachOverANearerLaterGroup()
+        {
+            Vector3[] positions = { new Vector3(0f, 0f, 8f), new Vector3(0f, 0f, 6f), new Vector3(0f, 0f, 2f) };
+            WeaponTargetSelectionJob.Result result = Run(8, Input(positions.Length), positions, null,
+                new[] { 0, 0, 1 }, new byte[] { 1, 1 });
+
+            Assert.That(result.RequiresSerialFallback, Is.Zero);
             Assert.That(result.CandidateIndex, Is.EqualTo(1));
             Assert.That(result.Visited, Is.EqualTo(2));
-            Assert.That(Quaternion.Angle(ToQuaternion(result.SelectedAim), Quaternion.identity), Is.LessThan(0.01f));
         }
 
         [Test]

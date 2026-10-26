@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    // Finds the hull yaw turn that brings a target inside the most weapon arcs.
+    // Finds the hull yaw turn that brings a target inside the weapon arcs with the most total weight.
     public sealed class WeaponFacingSolver
     {
         private const int SAMPLE_COUNT = 180;
@@ -15,14 +15,15 @@ namespace EmpireAtWar.Components.Weapon
         private readonly int[] _coverageDeltas = new int[SAMPLE_COUNT + 1];
 
         // Each arc (x = min, y = max) is the range of hull turns in degrees that keeps the
-        // target inside one weapon's yaw limits. Returns the centre of the best-covered turn
-        // range closest to the current heading, so symmetric ships keep their nearer side.
-        public float FindTurn(IReadOnlyList<Vector2> turnArcs)
+        // target inside one weapon's yaw limits; weights[i] is that weapon's share of the score.
+        // Returns the centre of the best-covered turn range closest to the current heading,
+        // so symmetric ships keep their nearer side.
+        public float FindTurn(IReadOnlyList<Vector2> turnArcs, IReadOnlyList<int> weights)
         {
-            // Each arc adds one to the run of samples it covers: arcs + samples work instead of arcs x samples,
-            // which a big ship with hundreds of hardpoints pays on every facing solve.
+            // Each arc adds its weight to the run of samples it covers: arcs + samples work instead of
+            // arcs x samples, which a big ship with hundreds of hardpoints pays on every facing solve.
             System.Array.Clear(_coverageDeltas, 0, _coverageDeltas.Length);
-            for (int a = 0; a < turnArcs.Count; a++) AddCoverage(turnArcs[a]);
+            for (int a = 0; a < turnArcs.Count; a++) AddCoverage(turnArcs[a], weights[a]);
             int best = 0;
             int score = 0;
             for (int i = 0; i < SAMPLE_COUNT; i++)
@@ -64,13 +65,13 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         // Marks the samples whose turn t satisfies Repeat(t - arc.x, 360) <= arc width, wrapping past 360.
-        private void AddCoverage(Vector2 arc)
+        private void AddCoverage(Vector2 arc, int weight)
         {
             float width = arc.y - arc.x;
             if (width < 0f) return;
             if (width >= 360f)
             {
-                AddRange(0, SAMPLE_COUNT);
+                AddRange(0, SAMPLE_COUNT, weight);
                 return;
             }
 
@@ -83,18 +84,18 @@ namespace EmpireAtWar.Components.Weapon
             int end = first + count;
             if (end <= SAMPLE_COUNT)
             {
-                AddRange(first, end);
+                AddRange(first, end, weight);
                 return;
             }
 
-            AddRange(first, SAMPLE_COUNT);
-            AddRange(0, end - SAMPLE_COUNT);
+            AddRange(first, SAMPLE_COUNT, weight);
+            AddRange(0, end - SAMPLE_COUNT, weight);
         }
 
-        private void AddRange(int start, int end)
+        private void AddRange(int start, int end, int weight)
         {
-            _coverageDeltas[start]++;
-            _coverageDeltas[end]--;
+            _coverageDeltas[start] += weight;
+            _coverageDeltas[end] -= weight;
         }
 
         private static float DistanceFromZero(float start, float end)

@@ -78,7 +78,7 @@ namespace EmpireAtWar.Editor.Balance
         {
             Object data = unit.Data;
             bool ship = data is ShipData;
-            string combat = ship ? "Hull Shields ShieldRegenerateValue ShieldRegenerateDelay Range Delay"
+            string combat = ship ? "Hull Shields ShieldRegenerateDelay Range Delay"
                 : "MemberHull MemberShields ShieldRegenerateValue ShieldRegenerateDelay LaserShieldDamageMultiplier HullRepairPerSecond Range Delay VisionRange";
             string movement = ship ? "Speed RotationSpeed TurnAcceleration HyperSpaceDuration BodyRotationMaxAngle NavigationRadius MinMoveCoefficient"
                 : "CruiseSpeed CombatSpeed Acceleration TurnRate MaxBankAngle BankResponse Height FormationSpacing LoiterRadius NavigationRadius GuardRadius BreakDistance ExtendDistance";
@@ -92,6 +92,8 @@ namespace EmpireAtWar.Editor.Balance
             {
                 registry.Add(data, "HeightTier", BalanceRegistration.Auto("HeightTier"), BalanceFieldGroup.Movement, unit.Name,
                     BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipHeightTier));
+                registry.Add(data, "ShieldRegenTier", BalanceRegistration.Auto("ShieldRegenTier"), BalanceFieldGroup.Combat, unit.Name,
+                    BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShieldRegenTier));
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
                     Health(registry, data, serialized.FindProperty("hardPointHealth"), "hardPointHealth", unit);

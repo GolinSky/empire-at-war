@@ -105,6 +105,40 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(lander.WeaponLoadout.Sum(entry => entry.Count), Is.InRange(6, 8));
         }
 
+        // Regeneration is the class lever: each tier out-regenerates the one below. A ship runs on its own class's
+        // tier unless listed here; the Executor keeps its own.
+        private static readonly Dictionary<string, ShieldRegenTier> REGEN_TIER_OVERRIDES =
+            new Dictionary<string, ShieldRegenTier> { { "ExecutorShipData", ShieldRegenTier.Executor } };
+
+        [Test]
+        public void ShieldRegen_FollowsShipClassTiers_AndRisesWithClass()
+        {
+            var classTiers = new Dictionary<ShipClass, ShieldRegenTier>
+            {
+                { ShipClass.Corvette, ShieldRegenTier.Corvette },
+                { ShipClass.Frigate, ShieldRegenTier.Frigate },
+                { ShipClass.Cruiser, ShieldRegenTier.Cruiser },
+                { ShipClass.Capital, ShieldRegenTier.Capital },
+                { ShipClass.HeavyCapital, ShieldRegenTier.HeavyCapital },
+            };
+            foreach (ShipData data in WeaponLoadoutBaker.LoadAll<ShipData>(WeaponLoadoutBaker.SHIP_DATA_FOLDER))
+            {
+                ShieldRegenTier expected = REGEN_TIER_OVERRIDES.TryGetValue(data.name, out ShieldRegenTier tier)
+                    ? tier : classTiers[data.ShipClass];
+                Assert.That(data.ShieldRegenTier, Is.EqualTo(expected), data.name);
+                Assert.That(data.ShieldRegenerateValue, Is.GreaterThan(0f), data.name);
+            }
+
+            ShipShieldRegenTiersData tiers = AssetDatabase.LoadAssetAtPath<ShipShieldRegenTiersData>(
+                "Assets/Settings/Data/Ship/Shared/ShipShieldRegenTiersData.asset");
+            ShieldRegenTier[] ordered =
+                { ShieldRegenTier.Corvette, ShieldRegenTier.Frigate, ShieldRegenTier.Cruiser, ShieldRegenTier.Capital,
+                  ShieldRegenTier.HeavyCapital, ShieldRegenTier.Executor };
+            for (int i = 1; i < ordered.Length; i++)
+                Assert.That(tiers.GetRegenerateValue(ordered[i]), Is.GreaterThan(tiers.GetRegenerateValue(ordered[i - 1])),
+                    ordered[i].ToString());
+        }
+
         private static ShipData Load(string ship) =>
             AssetDatabase.LoadAssetAtPath<ShipData>(SHIPS + ship + "ShipData.asset");
     }

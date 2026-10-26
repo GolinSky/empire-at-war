@@ -1,0 +1,8 @@
+weaponType,count,name,damage,shots,interval,reload,range,dps
+HeavyLaser,40,Heavy Laser Cannon,9.375,3,0.1,1.5,390,18.75
+HeavyArtilleryRocket,10,Heavy Missile Launcher,112.5,4,0.25,20,1072.5,22.5
+ExecutorHeavyTurbolaser,10,Heavy Turbolaser,45,3,0.2,8,877.4999,16.875
+ExecutorHeavyDualTurbolaser,23,Heavy Dual Turbolaser,90,3,0.2,8,877.4999,33.75
+ExecutorHeavyDualIonCannon,8,Heavy Dual Ion Cannon,168.75,2,0.2,12,974.9999,28.125
+ExecutorMediumDualTurbolaser,69,Medium Dual Turbolaser,72,3,0.2,8,776.25,27
+ExecutorPointDefense,14,Executor Point Defense Laser,5,8,0.08,2,230,20

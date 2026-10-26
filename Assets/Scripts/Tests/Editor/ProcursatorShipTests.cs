@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(weapons.Length, Is.EqualTo(15));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
             foreach (var expected in new[] { (WeaponType.HeavyQuadTurbolaser, 3), (WeaponType.DualMediumTurboLaser, 2),
-                (WeaponType.ProcursatorLightTripleTurbolaser, 8), (WeaponType.MediumIonCannon, 2) })
+                (WeaponType.ProcursatorMediumTripleTurbolaser, 8), (WeaponType.MediumIonCannon, 2) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
             var model = new HealthModel(data, matrix, new CombatModifiers());

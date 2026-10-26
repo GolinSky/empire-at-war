@@ -412,9 +412,9 @@ MonoBehaviour:
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
   weapons:
   - weaponType: 86
-    displayName: Light Triple Turbolaser
+    displayName: Medium Triple Turbolaser
     family: 1
-    caliber: 0
+    caliber: 1
     mount: 3
     scope: 2
     faction: 0
@@ -422,8 +422,7 @@ MonoBehaviour:
     damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Procursator requested eight light triple batteries; existing light turbolaser
-      family and triple mount.
+    reason: Procursator requested eight triple support batteries; medium like every cruiser and capital gun.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -667,7 +666,7 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 14
-    displayName: Light Point Defense Laser
+    displayName: Point Defense Laser
     family: 7
     caliber: 0
     mount: 1
@@ -1170,7 +1169,7 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 62
-    displayName: Light Dual Point Defense Laser
+    displayName: Dual Point Defense Laser
     family: 7
     caliber: 0
     mount: 2
@@ -1354,35 +1353,17 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 80
-    displayName: Medium Point Defense Laser
+    displayName: Executor Point Defense Laser
     family: 7
-    caliber: 1
+    caliber: 0
     mount: 1
-    scope: 0
+    scope: 2
     faction: 0
-    unit: 
-    damageMultiplier: 1
+    unit: Executor
+    damageMultiplier: 1.25
     reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 84
-    displayName: Heavy Point Defense Laser
-    family: 7
-    caliber: 2
-    mount: 1
-    scope: 0
-    faction: 0
-    unit: 
-    damageMultiplier: 1
-    reloadMultiplier: 1
-    rangeMultiplier: 1
-    reason: 
+    rangeMultiplier: 1.15
+    reason: 'Executor stays overpowered: keeps its former medium point defense damage and range now that point defense has no caliber.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1465,6 +1446,60 @@ MonoBehaviour:
     displayName: Light Dual Missile Launcher
     family: 4
     caliber: 0
+    mount: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 93
+    displayName: Medium Missile Launcher
+    family: 4
+    caliber: 1
+    mount: 1
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 94
+    displayName: Medium Dual Laser Cannon
+    family: 0
+    caliber: 1
+    mount: 2
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 95
+    displayName: Medium Dual Missile Launcher
+    family: 4
+    caliber: 1
     mount: 2
     scope: 0
     faction: 0

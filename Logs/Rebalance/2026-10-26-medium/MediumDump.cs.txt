@@ -1,0 +1,64 @@
+using System.Linq;
+using System.Text;
+using System.Collections.Generic;
+using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Editor.BattleSimulator;
+
+public static class MediumDump
+{
+    public static string Run(string classFilter)
+    {
+        
+
+        var outPath = @"F:/Private/empire-at-war/Logs/Rebalance/2026-10-26-medium/";
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        var registry = BalanceInventory.BuildCombat();
+        var draft = new BalanceDraft();
+        string Val(BalanceUnit u, string k) => u.Fields.TryGetValue(k, out var key) && registry.Fields.TryGetValue(key, out var f) ? f.DraftValue(draft) : "";
+        var ships = registry.Units.Where(u => u.Kind == BalanceUnitKind.Ship).ToList();
+        var sb = new StringBuilder("id,name,faction,class,price,hull,shields,radar,dps,mounts\n");
+            using (var est = new BalanceDpsEstimator(registry))
+            foreach (var u in ships)
+                sb.AppendLine(string.Join(",", u.Id, u.Name, u.Faction, u.Class, Val(u,"Price"), Val(u,"Hull"), Val(u,"Shields"), Val(u,"Range"), (est.Estimate(u, draft).HasValue ? est.Estimate(u, draft).Value.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) : est.Estimate(u, draft).Problem), u.Mounts.Distinct().Count()));
+        System.IO.File.WriteAllText(outPath + "medium_units.csv", sb.ToString());
+        
+        var weapons = BalanceRegistration.One<EmpireAtWar.Components.AttackComponent.WeaponsData>();
+        var executor = UnityEditor.AssetDatabase.LoadAssetAtPath<EmpireAtWar.Entities.Ship.Data.ShipData>("Assets/Settings/Data/Ship/Empire/ExecutorShipData.asset");
+        var inv = System.Globalization.CultureInfo.InvariantCulture;
+        var eb = new StringBuilder("weaponType,count,name,damage,shots,interval,reload,range,dps" + System.Environment.NewLine);
+        foreach (var entry in executor.WeaponLoadout)
+        {
+            var p = weapons.GetProfile(entry.WeaponType);
+            eb.AppendLine(string.Join(",", entry.WeaponType, entry.Count, p.DisplayName, p.Damage.ToString(inv), p.ShotsPerSalvo, p.ShotInterval.ToString(inv), p.Reload.ToString(inv), p.Range.ToString(inv), p.DamagePerSecond.ToString(inv)));
+        }
+        System.IO.File.WriteAllText(outPath + "medium_executor.csv", eb.ToString());
+        var factory = new SimUnitFactory(registry, draft);
+        var defs = new Dictionary<string, SimUnitDefinition>();
+        var errors = new List<string>();
+        foreach (var u in ships) { try { defs[u.Id] = factory.Build(u); } catch (System.Exception e) { errors.Add(u.Name + ": " + e.Message); } }
+        var mb = new StringBuilder("class,a,b,winsA,winsB,draws,medianTtk\n");
+        int count = 0;
+        foreach (var cls in ships.Select(u => u.Class).Distinct())
+        {
+            if (!string.IsNullOrEmpty(classFilter) && cls != classFilter) continue;
+            var group = ships.Where(u => u.Class == cls && defs.ContainsKey(u.Id)).ToList();
+            for (int i = 0; i < group.Count; i++)
+            for (int j = i + 1; j < group.Count; j++)
+            {
+                if (group[i].Faction == group[j].Faction) continue;
+                var setup = new BattleSetup { Runs = 10, Seed = 1, TimeLimit = 900 };
+                setup.SideA.Add(new BattleFleetEntry { UnitId = group[i].Id });
+                setup.SideB.Add(new BattleFleetEntry { UnitId = group[j].Id });
+                var runner = new MonteCarloRunner(setup, defs, factory.Matrix);
+                while (!runner.IsComplete) runner.Advance(1000);
+                var s = runner.Summary;
+                mb.AppendLine(string.Join(",", cls, group[i].Name, group[j].Name, s.WinsA, s.WinsB, s.Draws, s.Median.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)));
+                count++;
+            }
+        }
+        factory.Dispose();
+        System.IO.File.WriteAllText(outPath + "medium_matchups" + (classFilter ?? "") + ".csv", mb.ToString());
+        return $"units {ships.Count}, matchups {count}, errors {errors.Count}: {string.Join(" | ", errors)}; {watch.Elapsed.TotalSeconds:F1}s";
+        
+    }
+}

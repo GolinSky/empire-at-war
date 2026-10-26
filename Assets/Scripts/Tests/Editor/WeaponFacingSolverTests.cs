@@ -16,9 +16,11 @@ namespace EmpireAtWar.Tests.Editor
             WeaponFacingSolver solver = new WeaponFacingSolver();
             System.Random random = new System.Random(1234);
             List<Vector2> arcs = new List<Vector2>();
+            List<int> weights = new List<int>();
             for (int trial = 0; trial < 2000; trial++)
             {
                 arcs.Clear();
+                weights.Clear();
                 int count = random.Next(0, 60);
                 for (int i = 0; i < count; i++)
                 {
@@ -27,9 +29,10 @@ namespace EmpireAtWar.Tests.Editor
                     float maxYaw = random.Next(0, 4) == 0 ? 180f : random.Next(5, 120);
                     float minYaw = -random.Next(5, 120);
                     arcs.Add(new Vector2(yaw - maxYaw, yaw - minYaw));
+                    weights.Add(random.Next(1, 400));
                 }
 
-                Assert.That(solver.FindTurn(arcs), Is.EqualTo(ReferenceFindTurn(arcs)), $"trial {trial}");
+                Assert.That(solver.FindTurn(arcs, weights), Is.EqualTo(ReferenceFindTurn(arcs, weights)), $"trial {trial}");
             }
         }
 
@@ -38,17 +41,28 @@ namespace EmpireAtWar.Tests.Editor
         {
             WeaponFacingSolver solver = new WeaponFacingSolver();
 
-            Assert.That(solver.FindTurn(new[] { new Vector2(-45f, 45f), new Vector2(-30f, 30f) }), Is.EqualTo(0f));
+            Assert.That(solver.FindTurn(new[] { new Vector2(-45f, 45f), new Vector2(-30f, 30f) }, new[] { 1, 1 }),
+                Is.EqualTo(0f));
+        }
+
+        [Test]
+        public void FindTurn_OneHeavyGunOutweighsSeveralLightOnes()
+        {
+            WeaponFacingSolver solver = new WeaponFacingSolver();
+            // Three light guns cover a starboard turn, one heavier gun a port turn.
+            var arcs = new[] { new Vector2(80f, 100f), new Vector2(80f, 100f), new Vector2(80f, 100f), new Vector2(-100f, -80f) };
+
+            Assert.That(solver.FindTurn(arcs, new[] { 10, 10, 10, 50 }), Is.EqualTo(-90f).Within(1f));
         }
 
         [Test]
         public void FindTurn_NoArcs_KeepsHeading()
         {
-            Assert.That(new WeaponFacingSolver().FindTurn(new List<Vector2>()), Is.EqualTo(0f));
+            Assert.That(new WeaponFacingSolver().FindTurn(new List<Vector2>(), new List<int>()), Is.EqualTo(0f));
         }
 
         // The former per-sample implementation: every sample tested against every arc.
-        private static float ReferenceFindTurn(IReadOnlyList<Vector2> turnArcs)
+        private static float ReferenceFindTurn(IReadOnlyList<Vector2> turnArcs, IReadOnlyList<int> weights)
         {
             int[] scores = new int[SAMPLE_COUNT];
             int best = 0;
@@ -59,7 +73,7 @@ namespace EmpireAtWar.Tests.Editor
                 for (int a = 0; a < turnArcs.Count; a++)
                 {
                     float width = turnArcs[a].y - turnArcs[a].x;
-                    if (width >= 360f || Mathf.Repeat(turn - turnArcs[a].x, 360f) <= width) score++;
+                    if (width >= 360f || Mathf.Repeat(turn - turnArcs[a].x, 360f) <= width) score += weights[a];
                 }
 
                 scores[i] = score;

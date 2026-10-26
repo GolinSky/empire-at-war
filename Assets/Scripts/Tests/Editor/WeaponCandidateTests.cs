@@ -42,6 +42,7 @@ namespace EmpireAtWar.Tests.Weapon
             typeof(WeaponComponent).GetField("_attackCoordinator", PRIVATE_INSTANCE).SetValue(_weapon, _coordinator);
             typeof(WeaponComponent).GetField("_visionService", PRIVATE_INSTANCE)
                 .SetValue(_weapon, new VisionService(TestPlayers.CreateDuel(), false));
+            typeof(WeaponComponent).GetField("_viewTransform", PRIVATE_INSTANCE).SetValue(_weapon, weaponObject.transform);
         }
 
         [TearDown]
@@ -272,6 +273,45 @@ namespace EmpireAtWar.Tests.Weapon
             AssertMatchesRebuild();
             _weapon.ResetTarget();
             AssertMatchesRebuild();
+        }
+
+        [Test]
+        public void ListedGroups_SortNearestFirstBehindTheMainTarget()
+        {
+            AttackData far = Group(1);
+            AttackData near = Group(2);
+            AttackData main = Group(1);
+            far.Units[0].Transform.position = new Vector3(0f, 0f, 50f);
+            near.Units[0].Transform.position = new Vector3(0f, 0f, 10f);
+            main.Units[0].Transform.position = new Vector3(0f, 0f, 90f);
+            _weapon.AddTarget(far, AttackType.Base);
+            _weapon.AddTarget(near, AttackType.Base);
+            _weapon.AddTarget(main, AttackType.MainTarget);
+            Invoke("EnsureCandidates");
+
+            Invoke("SortListedGroupsByDistance");
+
+            Assert.That((List<AttackData>)Field("_candidateGroups"), Is.EqualTo(new[] { main, near, far, main }));
+            AssertMatchesRebuild();
+        }
+
+        [Test]
+        public void ListedGroups_DestroyedTargetSortsLastWithoutReadingItsTransform()
+        {
+            AttackData dead = Group(1);
+            AttackData far = Group(1);
+            AttackData near = Group(1);
+            far.Units[0].Transform.position = new Vector3(0f, 0f, 50f);
+            near.Units[0].Transform.position = new Vector3(0f, 0f, 10f);
+            _weapon.AddTarget(far, AttackType.Base);
+            _weapon.AddTarget(dead, AttackType.Base);
+            _weapon.AddTarget(near, AttackType.Base);
+            Invoke("EnsureCandidates");
+            ((HealthStub)dead.TargetHealth).Destroy();
+            Object.DestroyImmediate(dead.Units[0].Transform.gameObject);
+
+            Assert.DoesNotThrow(() => Invoke("SortListedGroupsByDistance"));
+            Assert.That((List<AttackData>)Field("_candidateGroups"), Is.EqualTo(new[] { near, far, dead }));
         }
 
         private void AssertMatchesRebuild()

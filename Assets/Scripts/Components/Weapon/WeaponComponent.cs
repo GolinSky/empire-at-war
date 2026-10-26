@@ -37,6 +37,10 @@ namespace EmpireAtWar.Components.Weapon
         // so retries spread across frames. Target changes cancel the wait.
         private const float MIN_RETRY_INTERVAL = 0.25f;
         private const float MAX_RETRY_INTERVAL = 0.5f;
+        // How often listed enemies are re-sorted nearest first; ships stagger it so sorts spread across frames.
+        private const float GROUP_SORT_INTERVAL = 1f;
+        // Facing weights are DPS in tenths, so the solver keeps integer scores.
+        private const float FACING_WEIGHT_SCALE = 10f;
 
         private ISelectionModelObserver _selection;
         private IVisionService _visionService;
@@ -70,10 +74,21 @@ namespace EmpireAtWar.Components.Weapon
         private readonly HashSet<AttackData> _liveGroupsAtRebuild = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly List<Vector2> _turnArcs = new List<Vector2>();
+        private readonly List<int> _turnWeights = new List<int>();
+        // Index = hardpoint: its firepower share when choosing the hull facing.
+        private int[] _facingWeights = Array.Empty<int>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private Transform _viewTransform;
+        private float _groupSortAt;
+        // Scratch for re-sorting listed groups by distance.
+        private readonly List<AttackData> _sortedGroups = new List<AttackData>();
+        private readonly List<float> _groupDistances = new List<float>();
+        private int[] _groupStarts = new int[8];
+        private int[] _groupCounts = new int[8];
+        private int[] _sortSlots = new int[16];
+        private int[] _sortGroupIndices = new int[16];
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private DebugRangeCircle _attackRangeCircle;
 #endif
 
@@ -109,9 +124,7 @@ namespace EmpireAtWar.Components.Weapon
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
             _poolPrewarmer = poolPrewarmer;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             _viewTransform = viewTransform;
-#endif
             SetModel(model);
             _visionService = visionService;
             _playerRoster = playerRoster;
@@ -135,16 +148,20 @@ namespace EmpireAtWar.Components.Weapon
         {
             _isInitialized = true;
             _retryAt = new float[hardPoints.Count];
+            _facingWeights = new int[hardPoints.Count];
+            _groupSortAt = Time.time + UnityEngine.Random.Range(0f, GROUP_SORT_INTERVAL);
             _attackCoordinator.Register(this);
 
             // Every hardpoint fires to its own weapon's range; nebulae and other vision effects scale it.
             FactionType faction = _playerRoster.Get(_owner).Faction;
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
-            foreach (WeaponHardPoint hardPoint in hardPoints)
+            for (int i = 0; i < hardPoints.Count; i++)
             {
+                WeaponHardPoint hardPoint = hardPoints[i];
                 WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction)
                     .WithWarheadMultipliers(_warheadDamageMultiplier, _warheadReloadMultiplier);
                 profiles.Add(profile);
+                _facingWeights[i] = Mathf.Max(1, Mathf.RoundToInt(profile.DamagePerSecond * FACING_WEIGHT_SCALE));
                 hardPoint.SetData(profile, profile.Range, _damageMatrix.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer);
                 hardPoint.ShotEmitted += OnShotEmitted;
@@ -285,19 +302,36 @@ namespace EmpireAtWar.Components.Weapon
                 contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
+        /// <summary>
+        /// The hull turn that brings the most firepower to bear. Guns count by DPS; point defense never counts, and
+        /// guns out of reach count only while no gun reaches the target, so the ship still turns sensibly on approach.
+        /// </summary>
         public float GetFiringTurnAngle(Vector3 targetPosition)
         {
             _turnArcs.Clear();
-            foreach (WeaponHardPoint hardPoint in hardPoints)
+            _turnWeights.Clear();
+            bool anyInRange = false;
+            for (int i = 0; i < hardPoints.Count; i++)
             {
-                if (hardPoint.IsDestroyed) continue;
+                WeaponHardPoint hardPoint = hardPoints[i];
+                if (hardPoint.IsDestroyed || hardPoint.StrikecraftOnly) continue;
                 Transform weaponTransform = hardPoint.transform;
+                bool inRange = PlanarGeometry.Distance(targetPosition, weaponTransform.position) <= hardPoint.MaxAttackDistance;
+                if (anyInRange && !inRange) continue;
+                if (inRange && !anyInRange)
+                {
+                    anyInRange = true;
+                    _turnArcs.Clear();
+                    _turnWeights.Clear();
+                }
+
                 Quaternion aim = Quaternion.LookRotation(targetPosition - weaponTransform.position, Vector3.up);
                 float localYaw = Mathf.DeltaAngle(0f, (Quaternion.Inverse(weaponTransform.parent.rotation) * aim).eulerAngles.y);
                 _turnArcs.Add(new Vector2(localYaw - hardPoint.MaxYaw, localYaw - hardPoint.MinYaw));
+                _turnWeights.Add(_facingWeights[i]);
             }
 
-            return _facingSolver.FindTurn(_turnArcs);
+            return _facingSolver.FindTurn(_turnArcs, _turnWeights);
         }
 
         public void ResetTarget()
@@ -377,6 +411,12 @@ namespace EmpireAtWar.Components.Weapon
                 return;
 
             FireTurnedSalvos();
+            if (Time.time >= _groupSortAt)
+            {
+                _groupSortAt = Time.time + GROUP_SORT_INTERVAL;
+                SortListedGroupsByDistance();
+            }
+
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint weapon = hardPoints[i];
@@ -432,12 +472,18 @@ namespace EmpireAtWar.Components.Weapon
             TargetSelectionCapture targets = _attackCoordinator.TargetUnits;
 
             // Preferred targets first, the main target first among them; the rest only when none is in reach.
+            // The first group with a hardpoint in reach is the target; its nearest reachable hardpoint is hit.
             TargetPreference preference = weapon.PreferredTarget;
             int passes = preference == TargetPreference.Any ? 1 : 2;
-            for (int pass = 0; pass < passes; pass++)
+            AttackData bestGroup = null;
+            IHardPointModel bestUnit = null;
+            float bestDistanceSquared = float.PositiveInfinity;
+            for (int pass = 0; pass < passes && bestUnit == null; pass++)
             for (int i = 0; i < _candidateCount; i++)
             {
                 AttackData group = _candidateGroups[_candidateGroupIndices[i]];
+                // A group's candidates are contiguous, so leaving the chosen group ends the search.
+                if (bestUnit != null && !ReferenceEquals(group, bestGroup)) break;
                 if (preference.Prefers(group.TargetClass) != (pass == 0)) continue;
                 IHardPointModel unit = targets.GetUnit(_candidateSlots[i]);
                 if (!CanAcquire(group)) continue;
@@ -451,20 +497,22 @@ namespace EmpireAtWar.Components.Weapon
                     weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw,
                     out _, out _);
 
-                if (canAttack)
-                {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                    AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
-#endif
-                    Engage(weapon, group, unit);
-                    return true;
-                }
+                if (!canAttack) continue;
+                float dx = position.x - origin.x;
+                float dz = position.z - origin.z;
+                float distanceSquared = dx * dx + dz * dz;
+                if (distanceSquared >= bestDistanceSquared) continue;
+                bestGroup = group;
+                bestUnit = unit;
+                bestDistanceSquared = distanceSquared;
             }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
 #endif
-            return false;
+            if (bestUnit == null) return false;
+            Engage(weapon, bestGroup, bestUnit);
+            return true;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
@@ -624,6 +672,79 @@ namespace EmpireAtWar.Components.Weapon
             MoveBlockToStart(_candidateGroupIndices, insertAt, first, _candidateCount);
         }
 
+        /// <summary>
+        /// Orders the listed groups nearest first behind the main target's block, so a ship without orders fires at
+        /// its closest enemy. Candidates keep their slots; only their order changes, so no target is re-acquired.
+        /// </summary>
+        private void SortListedGroupsByDistance()
+        {
+            if (_candidatesDirty) return;
+            int firstListed = _hasMainBlock ? 1 : 0;
+            int groupCount = _candidateGroups.Count;
+            if (groupCount - firstListed < 2) return;
+
+            Vector3 origin = _viewTransform.position;
+            _sortedGroups.Clear();
+            _groupDistances.Clear();
+            bool sorted = true;
+            for (int g = firstListed; g < groupCount; g++)
+            {
+                AttackData group = _candidateGroups[g];
+                // Destroyed groups wait for a lazy rebuild and their transforms may already be gone: sort them last.
+                float distance = float.PositiveInfinity;
+                if (!group.IsDestroyed)
+                {
+                    Vector3 offset = group.TargetEntity.GetFacade<IEntityTransformFacade>().Transform.position - origin;
+                    // Planar, like weapon range: ships on different height tiers sort by map distance.
+                    distance = offset.x * offset.x + offset.z * offset.z;
+                }
+                // Insertion sort: groups are few and usually still in order from the last sort.
+                int at = _groupDistances.Count;
+                while (at > 0 && _groupDistances[at - 1] > distance) at--;
+                if (at != _groupDistances.Count) sorted = false;
+                _groupDistances.Insert(at, distance);
+                _sortedGroups.Insert(at, group);
+            }
+
+            if (sorted) return;
+
+            if (_groupStarts.Length < groupCount)
+            {
+                Array.Resize(ref _groupStarts, groupCount * 2);
+                Array.Resize(ref _groupCounts, groupCount * 2);
+            }
+            Array.Clear(_groupCounts, 0, groupCount);
+            for (int i = _candidateCount - 1; i >= 0; i--)
+            {
+                _groupStarts[_candidateGroupIndices[i]] = i;
+                _groupCounts[_candidateGroupIndices[i]]++;
+            }
+
+            if (_sortSlots.Length < _candidateCount)
+            {
+                Array.Resize(ref _sortSlots, _candidateSlots.Length);
+                Array.Resize(ref _sortGroupIndices, _candidateSlots.Length);
+            }
+
+            int write = firstListed == 1 ? _groupCounts[0] : 0;
+            Array.Copy(_candidateSlots, _sortSlots, write);
+            Array.Copy(_candidateGroupIndices, _sortGroupIndices, write);
+            for (int s = 0; s < _sortedGroups.Count; s++)
+            {
+                int oldIndex = _candidateGroups.IndexOf(_sortedGroups[s], firstListed);
+                int newIndex = firstListed + s;
+                Array.Copy(_candidateSlots, _groupStarts[oldIndex], _sortSlots, write, _groupCounts[oldIndex]);
+                for (int i = 0; i < _groupCounts[oldIndex]; i++) _sortGroupIndices[write + i] = newIndex;
+                write += _groupCounts[oldIndex];
+            }
+
+            (_candidateSlots, _sortSlots) = (_sortSlots, _candidateSlots);
+            (_candidateGroupIndices, _sortGroupIndices) = (_sortGroupIndices, _candidateGroupIndices);
+            for (int s = 0; s < _sortedGroups.Count; s++) _candidateGroups[firstListed + s] = _sortedGroups[s];
+            // Selections captured against the old order fall back at commit.
+            _targetVersion++;
+        }
+
         // Moves values[middle..end) in front of values[start..middle).
         private static void MoveBlockToStart(int[] values, int start, int middle, int end)
         {
@@ -680,6 +801,7 @@ namespace EmpireAtWar.Components.Weapon
                 AddCandidates(group);
             }
 
+            SortListedGroupsByDistance();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             AttackSequenceDiagnostics.RecordCandidateRebuildTime(rebuildStart);
             }

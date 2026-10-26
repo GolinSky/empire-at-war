@@ -255,9 +255,13 @@ namespace EmpireAtWar.Components.Weapon
             NativeArray<float3> positions = _capture.Positions;
             int preference = (int)request.HardPoint.PreferredTarget;
             int passes = preference == (int)TargetPreference.Any ? 1 : 2;
+            int bestGroup = -1;
+            float bestDistanceSquared = float.PositiveInfinity;
             for (int pass = 0; pass < passes && result.CandidateIndex < 0; pass++)
             for (int i = request.CandidateStart; i < request.CandidateStart + request.CandidateCount; i++)
             {
+                // Same choice as WeaponTargetSelectionJob: the nearest reachable hardpoint of the first group in reach.
+                if (result.CandidateIndex >= 0 && _candidateGroups[i] != bestGroup) break;
                 if (_groupEligible[request.GroupStart + _candidateGroups[i]] == 0) continue;
                 int slot = _candidateSlots[i];
                 byte slotFlags = flags[slot];
@@ -269,10 +273,13 @@ namespace EmpireAtWar.Components.Weapon
                 float3 position = positions[slot];
                 result.NearestDistance = Mathf.Min(result.NearestDistance,
                     new Vector2(position.x - request.Origin.x, position.z - request.Origin.z).magnitude);
+                float distanceSquared = math.lengthsq(new float2(position.x - request.Origin.x, position.z - request.Origin.z));
                 bool canAttack = WeaponTargetSelector.TryCalculateAim(
                     new Vector3(position.x, position.y, position.z), request.Origin, request.ParentRotation,
                     request.HardPoint.MaxAttackDistance, request.HardPoint.MinYaw, request.HardPoint.MaxYaw,
                     out Quaternion aim, out bool inRange);
+                // Like the job, a hardpoint no nearer than the current pick is not considered.
+                if (distanceSquared >= bestDistanceSquared) continue;
                 if (inRange)
                 {
                     result.HasInRangeAim = 1;
@@ -282,7 +289,8 @@ namespace EmpireAtWar.Components.Weapon
                 if (!canAttack) continue;
                 result.CandidateIndex = i;
                 result.SelectedAim = new float4(aim.x, aim.y, aim.z, aim.w);
-                break;
+                bestGroup = _candidateGroups[i];
+                bestDistanceSquared = distanceSquared;
             }
 
             return result;

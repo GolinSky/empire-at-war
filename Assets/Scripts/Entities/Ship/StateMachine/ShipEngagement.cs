@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -23,6 +24,37 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// <summary>An enemy the ship's loadout is built for; AI target searches take these before the others.</summary>
         public static bool IsPreferred(IEntity enemy, IWeaponComponent weapon) =>
             weapon.PreferredTarget.Prefers(enemy.HealthModel.ShipClass);
+
+        /// <summary>
+        /// The nearest live radar contact the loadout prefers; the nearest other one only while no preferred contact
+        /// qualifies. With <paramref name="inRangeOnly"/> only contacts the guns already reach count. Null when none.
+        /// </summary>
+        public static IEntity FindNearestEnemy(IRadarComponent radar, IShipMovement movement, IWeaponComponent weapon,
+            bool inRangeOnly)
+        {
+            IEntity nearest = null;
+            bool hasPreferred = false;
+            float nearestDistance = float.PositiveInfinity;
+            // Indexed: ObservableList boxes its enumerator.
+            for (int i = 0; i < radar.Enemies.Count; i++)
+            {
+                IEntity enemy = radar.Enemies[i];
+                if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
+                if (inRangeOnly && !CanEngage(enemy, movement, weapon)) continue;
+
+                bool isPreferred = IsPreferred(enemy, weapon);
+                if (hasPreferred && !isPreferred) continue;
+                float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+                if (distance < nearestDistance || isPreferred && !hasPreferred)
+                {
+                    hasPreferred = isPreferred;
+                    nearestDistance = distance;
+                    nearest = enemy;
+                }
+            }
+
+            return nearest;
+        }
 
         /// <summary>
         /// Closest centre distance navigation allows between the ship and the target.

@@ -13,16 +13,21 @@ namespace EmpireAtWar.Components.AttackComponent
             WeaponCaliberRule caliber, WeaponMountRule mount)
         {
             int barrels = (int)definition.Mount;
+            // Point defense has no caliber: every point defense mount fires the family's own stats.
+            bool hasCaliber = family.Family != WeaponFamily.PointDefense;
+            float caliberDamage = hasCaliber ? caliber.DamageMultiplier : 1f;
+            float caliberRange = hasCaliber ? caliber.RangeMultiplier : 1f;
+            float caliberTurnRate = hasCaliber ? caliber.TurnRateMultiplier : 1f;
             // Squadron weapons keep full damage per barrel; ship mounts follow the mount rule.
             float mountMultiplier = family.Platform == WeaponPlatform.Squadron ? barrels : mount.DamageMultiplier;
-            float damage = family.Damage * caliber.DamageMultiplier * mountMultiplier * definition.DamageMultiplier;
+            float damage = family.Damage * caliberDamage * mountMultiplier * definition.DamageMultiplier;
             float reload = family.Reload * definition.ReloadMultiplier;
             int shots = family.ShotsPerSalvo;
             float interval = family.ShotInterval;
 
-            float range = family.Range * caliber.RangeMultiplier * definition.RangeMultiplier;
+            float range = family.Range * caliberRange * definition.RangeMultiplier;
             // Squadrons aim by flying, so their weapons never turn.
-            float turnRate = family.Platform == WeaponPlatform.Squadron ? 0f : family.TurnRate * caliber.TurnRateMultiplier;
+            float turnRate = family.Platform == WeaponPlatform.Squadron ? 0f : family.TurnRate * caliberTurnRate;
 
             ShotEffect shotPrefab = barrels > 1 && family.MultiBarrelShotPrefab != null
                 ? family.MultiBarrelShotPrefab
@@ -58,7 +63,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
             return new WeaponProfile(definition.WeaponType, definition.DisplayName, family.Family, family.DamageType,
                 damage, shots, interval, reload, range, family.StrikecraftOnly, family.Interceptable, shotPrefab,
-                projectileSpeed, color, size, usesFactionColor, family.TargetSizeBias, caliber.DamageBias,
+                projectileSpeed, color, size, usesFactionColor, family.TargetSizeBias && hasCaliber, caliber.DamageBias,
                 caliber.AccuracyBias, turnRate, family.PreferredTarget);
         }
     }

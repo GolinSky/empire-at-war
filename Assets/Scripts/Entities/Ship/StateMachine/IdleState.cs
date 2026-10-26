@@ -58,28 +58,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (isSearching && Time.time >= _nextSearchTime)
             {
                 _nextSearchTime = Time.time + SEARCH_INTERVAL;
-                bool hasPreferred = false;
-                float nearestDistance = float.PositiveInfinity;
-                // Indexed: ObservableList boxes its enumerator.
-                for (int i = 0; i < _radarComponent.Enemies.Count; i++)
-                {
-                    IEntity enemy = _radarComponent.Enemies[i];
-                    if (enemy.IsCloaked() || !ShipEngagement.CanEngage(enemy, _shipMoveComponent, _weaponComponent))
-                    {
-                        continue;
-                    }
-
-                    // Nearest preferred enemy; the nearest other one only while no preferred enemy is in range.
-                    bool isPreferred = ShipEngagement.IsPreferred(enemy, _weaponComponent);
-                    if (hasPreferred && !isPreferred) continue;
-                    float distance = _shipMoveComponent.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
-                    if (distance < nearestDistance || isPreferred && !hasPreferred)
-                    {
-                        hasPreferred = isPreferred;
-                        nearestDistance = distance;
-                        _engagementTarget = enemy;
-                    }
-                }
+                IEntity found = ShipEngagement.FindNearestEnemy(_radarComponent, _shipMoveComponent, _weaponComponent,
+                    inRangeOnly: true);
+                if (found != null) _engagementTarget = found;
             }
 
             if (_engagementTarget != null)

@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Engines), Is.EqualTo(2));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Hangar), Is.EqualTo(2));
             Assert.That(weapons.Length, Is.EqualTo(174));
-            foreach (var expected in new[] { (49, 10), (50, 23), (51, 8), (34, 10), (53, 69), (28, 40), (54, 14) })
+            foreach (var expected in new[] { (49, 10), (50, 23), (51, 8), (34, 10), (53, 69), (28, 40), ((int)WeaponType.ExecutorPointDefense, 14) })
             {
                 WeaponHardPoint[] group = weapons.Where(w => (int)w.WeaponType == expected.Item1).ToArray();
                 Assert.That(group.Length, Is.EqualTo(expected.Item2));
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             Assert.That(profiles.GetProfile(WeaponType.HeavyArtilleryRocket).Interceptable, Is.True);
-            Assert.That(profiles.GetProfile(WeaponType.MediumPointDefense).StrikecraftOnly, Is.True);
+            Assert.That(profiles.GetProfile(WeaponType.ExecutorPointDefense).StrikecraftOnly, Is.True);
             foreach (WeaponHardPoint weapon in AssetDatabase.LoadAssetAtPath<GameObject>(VIEW).GetComponentsInChildren<WeaponHardPoint>(true))
                 Assert.That(profiles.GetProfile(weapon.WeaponType).ShotPrefab, Is.Not.Null, weapon.name);
         }

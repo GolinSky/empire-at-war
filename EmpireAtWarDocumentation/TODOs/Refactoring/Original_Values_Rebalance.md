@@ -50,7 +50,7 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 ## Preconditions
 
 - [ ] Commit or shelve the current uncommitted WIP (fire-pattern removal, `StatModifierAbility`, 11 ship prefabs/data).
-- [ ] Unity scenes clean (`assert_test_ready`).
+- [ ] Unity scenes clean (`unity command list_open_scenes --json`).
 
 ## Implementation
 
@@ -124,7 +124,7 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 3. Every changed ship spawns (prefab/data contract) — Editor-only check.
 4. User skirmish playtest.
 
-### Phase 5 — Caliber from projectile + sublinear mounts ✅ 2026-10-26 (uncommitted)
+### Phase 5 — Caliber from projectile + sublinear mounts ✅ 2026-10-26 (`ed36e0040`)
 
 - Problem: damage = family × caliber (1 / 1.25 / 1.5625) × barrels → barrels dominated caliber (Medium Quad 80 > Heavy Dual 62.5; Heavy Quad 100).
 - RaW 1.5.5 turbolaser projectile damage, red (CIS) / blue (Republic): single 15/15, twin 25/25, quad 30/40, heavy 20/35. Hardpoints may override damage (Providence).
@@ -144,6 +144,33 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 | HeavyCapital | 67 → 67 → 67 % | — | 80 → 80 → 80 % | 12 → 12 → 12 % |
 
 Columns: baseline → Phase 4 final → Phase 5.
+
+### Phase 6 — Medium guns on big ships, caliber-free point defense, targeting ✅ 2026-10-26
+
+- Rule: Cruiser/Capital/HeavyCapital carry no Light weapons (all factions; Executor untouched). Retype → same family, Medium: 1→4, 6→48, 7→94, 8→23, 10→32, 13→93, 36→5, 82→90, 92→95; Procursator unit triple (86) → Medium caliber, renamed `ProcursatorMediumTripleTurbolaser`.
+- New shared weapons: `MediumMissileLauncher` 93, `MediumDualLaser` 94, `MediumDualMissileLauncher` 95. SFX entry for 94 copied from 7.
+- Point defense has no caliber: `WeaponProfileFactory` skips caliber damage/range/turn/bias for `WeaponFamily.PointDefense`. Shared PD = `PointDefense` 14 (single), `DualRepeatingPointDefense` 62 (dual); `HeavyPointDefense` 84 deleted (Endurance 6 → 14); 80 → Executor-only `ExecutorPointDefense` (dmg ×1.25, range ×1.15; profile identical to baseline).
+- Retyped hardpoints: Victory 11, Victory I 8, MC75 12, MC50 4, Heavy Dreadnought 4, Imperator 5, Mandator 28, Resolute/Venator II 3, Rothana 7, Venator 3, Invincible 9, Lucrehulk 8, Malevolence 20, Providence 9, Recusant 4. Loadouts rebaked (`WeaponLoadoutBaker.BakeAll`). Victory radar 600 → 640 (medium dual missile 632.5).
+- Targeting:
+  - Facing: `WeaponFacingSolver.FindTurn(arcs, weights)`; `WeaponComponent.GetFiringTurnAngle` weights each gun by DPS×10, skips PD, counts only guns in reach while any reach.
+  - Enemy order: listed groups re-sorted nearest first (planar) every 1 s, staggered per ship, and after every rebuild (`SortListedGroupsByDistance`; reorders slots, no re-acquire). Main target block stays first.
+  - Hardpoint: first group in reach is the target; its nearest reachable hardpoint is hit (job, `TargetSelectionBatch` serial, `TryFireWeapon` identical).
+  - `BattleSimulation` keeps its own targeting → simulator does not cover these fixes.
+  - Playtest fix: the sort read destroyed enemies' transforms (`MissingReferenceException` aborted `WeaponComponent.Tick` → ships stopped firing). Destroyed groups now sort last unread; test `ListedGroups_DestroyedTargetSortsLastWithoutReadingItsTransform`.
+  - Playtest fix: a ship that killed its attack target went idle and only faced enemies already in range (corvettes ignored 30 nearby squadrons). `ShipOrderRunner.CompleteOrder` now chains the Attack order to `ShipEngagement.FindNearestEnemy(radar, …, inRangeOnly: false)` — nearest live preferred radar contact, else nearest other; `IdleState` shares the helper (`inRangeOnly: true`). Tests `Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange`, `Attack_TargetKilled_NoRadarContactGoesIdle` — pass (`ShipPursuitTests` 21/21).
+- Tests: EditMode 2086: 2084 pass; fails `ISDIIShipTests` (32 vs 28), `HealthModelTests.PointDefense_WhileCloaked…` (both pre-existing). Fixed stale `ExecutorShipTests` (type 54 → 80). Added `FindTurn_OneHeavyGunOutweighsSeveralLightOnes`, `ScheduledJob_KeepsTheFirstGroupInReachOverANearerLaterGroup`, `ListedGroups_SortNearestFirstBehindTheMainTarget`.
+- Simulator `Logs/Rebalance/2026-10-26-medium/`: big-ship raw DPS +3 to +16 % (Victory 396 → 459, Heavy Dreadnought 125 → 144, Mandator 1009 → 1114); Endurance −11 % (heavy PD → PD). Class win rates unchanged except Cruiser: Empire 36 → 41, Rebellion 82 → 74, Republic 41 → 46 %.
+
+### Phase 7 — Shield regeneration tiers by class ✅ 2026-10-26 (values A approved by user)
+
+- Mechanics (unchanged): every `ShieldRegenerateDelay` (1 s, all ships) shields gain the regen value, also under fire, until all shield generators die → regen cancels that much shield DPS. Damage vs shields: Turbolaser/Beam/IonCannon ×1, Ion ×3, Laser ×0.5, PD ×0.25, FighterLaser ×0.2; missiles, torpedoes, mass drivers pierce shields.
+- Before: per-ship values, no rule (corvette 2–7, frigate 4–31, cruiser 12.5–41, capital flat 50 or 83–167, heavy 50–278); several stale after HP/shield rebalance (Stealth Corvette, Victory, Heavy Dreadnought).
+- Now: `ShipShieldRegenTiersData` (`Assets/Settings/Data/Ship/Shared/`) + `ShipData.ShieldRegenTier` (enum `ShieldRegenTier`); `ShipData.ShieldRegenerateValue` reads the tier. Old per-ship field removed. Same pattern as `ShipHeightTiersData`. Balance editor: `ShieldRegenTier` enum field (Combat).
+- Tier = ship class by default; override = pick another tier. Executor → own `Executor` tier (1111.1111, unchanged).
+- Proposed values (A, saved): Corvette 5, Frigate 25, Cruiser 90, Capital 180, HeavyCapital 400 /s.
+- Simulator `Logs/Rebalance/2026-10-26-regen/` (C 4/15/60/120/250, A, B 5/30/150/300/600): lower class beats higher class — Corvette>Frigate 11/9/7 %, Frigate>Cruiser 6/4/3 %, Cruiser>Capital 6/6/10 %, Capital>Heavy 5/4/4 %. Same-class stalemates 1/2/11 of 2600.
+- Outliers no tier fixes: Munificent and Dispatcher beat Heavy Dreadnought 10–0 in C/A/B (Heavy Dreadnought 144 DPS). Recusant vs Munificent 3–7 (C), 5–5 (A), 10–0 (B); B drops Separatist cruiser same-class win rate 12 → 0 %.
+- Tests: `ShieldRegen_FollowsShipClassTiers_AndRisesWithClass`. EditMode 2153: 2151 pass; fails `ISDIIShipTests` (32 vs 28), `HealthModelTests.PointDefense_WhileCloaked…` (pre-existing).
 
 ## Tests
 
@@ -201,7 +228,9 @@ Columns: baseline → Phase 4 final → Phase 5.
 - [x] Phase 2 Republic/CIS original values + simplified hardpoints
 - [x] Phase 3 Empire/Rebellion HP/shields
 - [x] Phase 4 automated verification (compile, EditMode, simulator)
-- [x] Phase 5 caliber from projectile + mount rules (2026-10-26, uncommitted)
-- [ ] Phase 4 user skirmish playtest (now includes Phase 5)
+- [x] Phase 5 caliber from projectile + mount rules (2026-10-26, `ed36e0040`)
+- [x] Phase 6 medium guns on big ships, caliber-free point defense, targeting fixes (2026-10-26)
+- [x] Phase 7 shield regen tiers — values A (5/25/90/180/400) approved 2026-10-26
+- [ ] Phase 4 user skirmish playtest (now includes Phases 5–7)
 - [ ] Decide: accept uneven class win rates, or tune Empire/Rebellion DPS (needs their hardpoint simplification)
 - [ ] Later: Empire/Rebellion hardpoint simplification

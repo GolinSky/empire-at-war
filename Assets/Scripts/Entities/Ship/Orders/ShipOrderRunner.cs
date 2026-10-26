@@ -1,6 +1,7 @@
 using static EmpireAtWar.Utils.FormationConversion;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly ICameraService _cameraService;
         private readonly ShipAbilityService _abilities;
         private readonly IShipAbilityFacade _abilityCaster;
+        private readonly IRadarComponent _radar;
 
         private readonly UnitOrderModel _orders;
         private readonly ShipStateMachine _stateMachine;
@@ -61,7 +63,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IdleState idleState, NavigateState navigateState,
             AttackTargetState attackTargetState, AttackMoveState attackMoveState, GuardState guardState,
             HuntState huntState, AbilityApproachState abilityApproachState,
-            ShipAbilityService abilities, IShipAbilityFacade abilityCaster)
+            ShipAbilityService abilities, IShipAbilityFacade abilityCaster, IRadarComponent radar)
         {
             _orders = orders;
             _stateMachine = stateMachine;
@@ -77,6 +79,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _abilityApproachState = abilityApproachState;
             _abilities = abilities;
             _abilityCaster = abilityCaster;
+            _radar = radar;
         }
 
         public void Start() => _stateMachine.SetState(_idleState);
@@ -256,6 +259,18 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 _navigateState.SetWorldDestination(ToVector(next));
                 _stateMachine.SetState(_navigateState);
                 return;
+            }
+
+            // A ship that killed its target keeps fighting: it attacks the nearest radar contact its loadout prefers
+            // (fighters for a laser corvette), even one its guns do not reach yet.
+            if (_orders.Current == UnitOrderType.Attack && _orders.Target.HealthModel.IsDestroyed)
+            {
+                IEntity nextTarget = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
+                if (nextTarget != null)
+                {
+                    Issue(UnitOrderType.Attack, target: nextTarget);
+                    return;
+                }
             }
 
             _orders.Clear();

@@ -51,10 +51,15 @@ namespace EmpireAtWar.Components.Weapon
             float farDistanceSquared = farDistance * farDistance;
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
             // Preferred targets first; the rest only when none is in reach. Each candidate is visited once.
+            // The first group with a hardpoint in reach is the target; its nearest reachable hardpoint is hit.
             int passes = input.Preference == (int)TargetPreference.Any ? 1 : 2;
-            for (int pass = 0; pass < passes; pass++)
+            int bestGroup = -1;
+            float bestDistanceSquared = float.PositiveInfinity;
+            for (int pass = 0; pass < passes && result.CandidateIndex < 0; pass++)
             for (int i = input.CandidateStart; i < input.CandidateStart + input.CandidateCount; i++)
             {
+                // A group's candidates are contiguous, so leaving the chosen group ends the search.
+                if (result.CandidateIndex >= 0 && CandidateGroups[i] != bestGroup) break;
                 if (GroupEligible[input.GroupStart + CandidateGroups[i]] == 0) continue;
                 int slot = CandidateSlots[i];
                 byte flags = SlotFlags[slot];
@@ -89,7 +94,7 @@ namespace EmpireAtWar.Components.Weapon
                     Results[index] = result;
                     return;
                 }
-                if (distance > input.MaxDistance) continue;
+                if (distance > input.MaxDistance || distanceSquared >= bestDistanceSquared) continue;
 
                 quaternion aim = quaternion.LookRotationSafe(direction, new float3(0f, 1f, 0f));
                 result.HasInRangeAim = 1;
@@ -119,9 +124,8 @@ namespace EmpireAtWar.Components.Weapon
                 if (localYaw > input.MaxYaw || localYaw < input.MinYaw) continue;
                 result.CandidateIndex = i;
                 result.SelectedAim = aim.value;
-                result.NearestDistance = math.sqrt(nearestDistanceSquared);
-                Results[index] = result;
-                return;
+                bestGroup = CandidateGroups[i];
+                bestDistanceSquared = distanceSquared;
             }
             result.NearestDistance = math.sqrt(nearestDistanceSquared);
             Results[index] = result;

@@ -39,10 +39,10 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     WeaponDefinition definition = weapons.GetDefinition(entry.WeaponType);
                     string context = $"{data.name} mounts {definition.DisplayName}";
-                    // The approved Procursator loadout explicitly includes light triple support batteries.
-                    if (data.name == "ProcursatorShipData" && entry.WeaponType == WeaponType.ProcursatorLightTripleTurbolaser)
+                    // The approved Procursator loadout explicitly includes triple support batteries.
+                    if (data.name == "ProcursatorShipData" && entry.WeaponType == WeaponType.ProcursatorMediumTripleTurbolaser)
                     {
-                        Assert.That(definition.Caliber, Is.EqualTo(WeaponCaliber.Light), context);
+                        Assert.That(definition.Caliber, Is.EqualTo(WeaponCaliber.Medium), context);
                         Assert.That(definition.Mount, Is.EqualTo(WeaponMount.Triple), context);
                         continue;
                     }
@@ -150,23 +150,22 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(heavy.AccuracyBias[ShipClass.Fighter], Is.LessThan(light.AccuracyBias[ShipClass.Fighter]));
         }
 
-        // Phase 0 baseline (2f45f1371): the former Long range class gave these guns ×1.2 accuracy, now folded into damage.
-        [TestCase(WeaponType.HeavyArtilleryRocket, 93.75f, 4, 20f, 1072.5f)]
-        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 3, 8f, 877.5f)]
-        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 3, 8f, 877.5f)]
-        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 2, 12f, 975f)]
-        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 3, 8f, 776.25f)]
-        [TestCase(WeaponType.HeavyLaser, 9.375f, 3, 1.5f, 390f)]
-        [TestCase(WeaponType.MediumPointDefense, 5f, 8, 2f, 230f)]
-        public void Executor_WeaponProfilesMatchBaseline(WeaponType type, float baselineDamage, int shots, float reload,
-            float range)
+        // Phase 0 baseline (2f45f1371): the former Long range class gave the Long guns ×1.2 accuracy, now folded into damage.
+        [TestCase(WeaponType.HeavyArtilleryRocket, 93.75f, 1.2f, 4, 20f, 1072.5f)]
+        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, 3, 8f, 877.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, 3, 8f, 877.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 1.2f, 2, 12f, 975f)]
+        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 1.2f, 3, 8f, 776.25f)]
+        [TestCase(WeaponType.HeavyLaser, 9.375f, 1f, 3, 1.5f, 390f)]
+        [TestCase(WeaponType.ExecutorPointDefense, 5f, 1f, 8, 2f, 230f)]
+        public void Executor_WeaponProfilesMatchBaseline(WeaponType type, float baselineDamage, float foldedAccuracy,
+            int shots, float reload, float range)
         {
             WeaponDefinition definition = Weapons.GetDefinition(type);
             WeaponProfile profile = Weapons.GetProfile(type);
-            float accuracy = definition.Scope == WeaponScope.Unit ? 1.2f : 1f;
             if (definition.Scope == WeaponScope.Unit) Assert.That(definition.Unit, Is.EqualTo(nameof(ShipType.Executor)));
 
-            Assert.That(profile.Damage, Is.EqualTo(baselineDamage * accuracy).Within(0.001f));
+            Assert.That(profile.Damage, Is.EqualTo(baselineDamage * foldedAccuracy).Within(0.001f));
             Assert.That(profile.ShotsPerSalvo, Is.EqualTo(shots));
             Assert.That(profile.Reload, Is.EqualTo(reload).Within(0.001f));
             Assert.That(profile.Range, Is.EqualTo(range).Within(0.01f));

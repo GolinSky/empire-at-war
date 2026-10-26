@@ -180,7 +180,7 @@ MonoBehaviour:
     <Max>k__BackingField: 160
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 6
+  <WeaponType>k__BackingField: 48
 --- !u!1 &569613415812332722
 GameObject:
   m_ObjectHideFlags: 0
@@ -1355,7 +1355,7 @@ MonoBehaviour:
     <Max>k__BackingField: 160
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &1978017726267507501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1663,7 +1663,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &3735371912594470002
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,7 +2039,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &5186667975115718879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,7 +2215,7 @@ MonoBehaviour:
     <Max>k__BackingField: 0
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &5835328743525783257
 GameObject:
   m_ObjectHideFlags: 0
@@ -3543,7 +3543,7 @@ MonoBehaviour:
     <Max>k__BackingField: 160
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 6
+  <WeaponType>k__BackingField: 48
 --- !u!1 &6615462075400444391
 GameObject:
   m_ObjectHideFlags: 0
@@ -3600,7 +3600,7 @@ MonoBehaviour:
     <Max>k__BackingField: 160
   mainBattery: 0
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &7335063008618343219
 GameObject:
   m_ObjectHideFlags: 0
@@ -4340,7 +4340,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 6
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4789,7 +4789,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 6
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
