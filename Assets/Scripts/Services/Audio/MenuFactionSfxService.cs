@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Audio
         private readonly InterfaceSfxData _data;
         private readonly IAudioService _audio;
         private readonly AudioMixer _mixer;
+        private GameObject _root;
         private AudioSource _source;
 
         public MenuFactionSfxService(InterfaceSfxData data, IAudioService audio, AudioMixer mixer)
@@ -22,7 +23,8 @@ namespace EmpireAtWar.Services.Audio
 
         public void Initialize()
         {
-            _source = new GameObject("Menu Faction Audio").AddComponent<AudioSource>();
+            _root = new GameObject("Menu Faction Audio");
+            _source = _root.AddComponent<AudioSource>();
             _source.playOnAwake = false;
             _source.spatialBlend = 0f;
             _source.ignoreListenerPause = true;
@@ -37,8 +39,8 @@ namespace EmpireAtWar.Services.Audio
 
         public void LateDispose()
         {
-            if (Application.isPlaying) Object.Destroy(_source.gameObject);
-            else Object.DestroyImmediate(_source.gameObject);
+            if (Application.isPlaying) Object.Destroy(_root);
+            else Object.DestroyImmediate(_root);
         }
     }
 }

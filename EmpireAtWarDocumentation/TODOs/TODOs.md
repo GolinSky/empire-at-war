@@ -8,6 +8,7 @@
 ### Features
 
 - [ ] **Faction interface and ship ability audio — listening acceptance** → [[TODOs/Features/Faction_Interface_And_Ability_Audio_Plan|Faction Interface and Ship Ability Audio Plan]]
+  - **Menu unload fix 2026-10-26**: cache/destroy the owned GameObject directly; no access through an already-destroyed AudioSource. Exact exception reproduced before fix; compilation clean, menu tests 10/10 after fix. User battle-load acceptance pending.
   - **Review fixes 2026-10-26**: single mine destruction cue, orbital interruption priority, cooldowns only after accepted playback, deterministic construction follow-up; simple cleanup complete, larger class split deferred. Compilation and 71/71 focused EditMode tests pass. Listening/wording acceptance remains open.
   - **Implemented 2026-10-26**: 62 mapped WAV imports (4.91 MB source), 21 ability mappings, faction announcements and priorities, restore-safe hooks, unit-ready/warnings/loss/cap/fog cues, human menu selection sounds. Republic/CIS → Rebellion voices.
   - **Verified**: compilation/import/save; EditMode Audio 63/63, Sfx 10/10, Faction 88/88, fog 1/1; health 23/24 (unrelated unchanged point-defense timer test fails at EditMode time zero). Counts overlap; evidence in `Logs/FactionAudio/`.

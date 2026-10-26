@@ -36,6 +36,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void DisposalAfterSceneDestroysAudioObjectDoesNotAccessDestroyedSource()
+        {
+            var data = AssetDatabase.LoadAssetAtPath<InterfaceSfxData>(AUDIO_DATA_PATH);
+            var mixer = AssetDatabase.LoadAssetAtPath<UnityEngine.Audio.AudioMixer>("Assets/Audio/AudioMixer.mixer");
+            var playback = new RecordingAudio();
+            var menu = new MenuFactionSfxService(data, playback, mixer);
+            menu.Initialize();
+            menu.PlaySelection(FactionType.Empire);
+            UnityEngine.Object.DestroyImmediate(playback.Source.gameObject);
+
+            Assert.DoesNotThrow(menu.LateDispose);
+        }
+
+        [Test]
         public void MainMenuScopeHasItsSerializedAudioDataReference()
         {
             string scopeGuid = AssetDatabase.AssetPathToGUID("Assets/Scripts/Services/VContainer/Scopes/MainMenuScope.cs");

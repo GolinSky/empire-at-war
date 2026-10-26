@@ -289,6 +289,12 @@ implemented: 2026-10-26
 - Verification: Unity compilation up to date; EditMode `FactionAnnouncementTests` **49/49**, `SuperWeaponAudioTests` **13/13**, `MenuFactionAudioTests` **9/9**. Reports: `Logs/FactionAudio/tests-review-{faction,superweapon,menu}.json`. Open menu scene clean; no agent Play Mode.
 - Plan remains `in-progress`: listening acceptance, Empire progress wording and optional ready-clip choices remain with the user.
 
+### Menu unload regression fixed — 2026-10-26
+- Removing the menu disposal guard exposed valid scene teardown ordering: Unity can destroy the scene-owned `AudioSource` before `MainMenuScope.OnDestroy` disposes its services.
+- `MenuFactionSfxService` now caches its created root GameObject and destroys that reference directly; disposal never reads `gameObject` through a destroyed component. Same ownership pattern as `InterfaceSfxService`; no new null guard.
+- Regression test destroys the audio root before `LateDispose`: reproduced the exact `MissingReferenceException` before the fix; passes after it. Unity compilation clean; `MenuFactionAudioTests` **10/10** passed. Evidence: `Logs/FactionAudio/tests-menu-disposal-{before,after}.json`.
+- No agent Play Mode; user battle-load acceptance remains pending.
+
 ## Building, shield audibility and orbital ion — 2026-10-26
 - Mining/battle asteroid construction: `CaptureSitesSystem.ConstructionStarted` after successful payment/start; local payer only, Progress priority, 1.5 s cooldown. Failed purchases and restore silent. Empire/Republic → `I000_EHD4616_ENG.wav` (“Building started”); Rebellion/Separatist → `I000_RHD4718_ENG.wav` (“Beginning construction”).
 - Shield ability Start/End IDs `2,3,13,15,17,26,34,45`: local-only centered 2D, gain 1, priority 150, maxInstances 1, cooldown 0.15 s. Bypass weapon burst budget, camera/zoom gain and battle mix normalization. Voices retain precedence.
