@@ -18,10 +18,10 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
     public sealed class HealthOverlayView : MonoBehaviour, IHealthOverlayView
     {
-        private const float PANEL_WIDTH = 208f;
-        private const float PANEL_HEIGHT = 24f;
-        private const float BAR_WIDTH = 204f;
-        private const float BAR_HEIGHT = 8f;
+        private const float PANEL_WIDTH = 166.4f;
+        private const float PANEL_HEIGHT = 16.8f;
+        private const float BAR_WIDTH = 163.2f;
+        private const float BAR_HEIGHT = 6.4f;
         private const float SCREEN_OFFSET = 44f;
 
         private Canvas _canvas;
@@ -110,11 +110,11 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 _canvasRect,
                 new Vector2(PANEL_WIDTH, PANEL_HEIGHT),
                 PANEL_COLOR,
-                4f);
+                3.2f);
             _panel = panelImage.rectTransform;
 
-            CreateBar("Shield", 6f, SHIELD_COLOR, out _shieldFill);
-            CreateBar("Armor", -6f, ARMOR_COLOR, out _armorFill);
+            CreateBar("Shield", 3.6f, SHIELD_COLOR, out _shieldFill);
+            CreateBar("Armor", -3.6f, ARMOR_COLOR, out _armorFill);
         }
 
         private void CreateBar(string name, float y, Color fillColor, out MPImage fill)
@@ -124,7 +124,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 _panel,
                 new Vector2(BAR_WIDTH, BAR_HEIGHT),
                 BAR_BACKGROUND_COLOR,
-                4f);
+                3.2f);
             background.rectTransform.anchoredPosition = new Vector2(0f, y);
 
             fill = CreateImage(
@@ -132,7 +132,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 background.rectTransform,
                 new Vector2(BAR_WIDTH, BAR_HEIGHT),
                 fillColor,
-                4f);
+                3.2f);
             fill.type = Image.Type.Filled;
             fill.fillMethod = Image.FillMethod.Horizontal;
             fill.fillOrigin = (int)Image.OriginHorizontal.Left;
