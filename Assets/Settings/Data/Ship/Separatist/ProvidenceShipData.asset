@@ -66,7 +66,5 @@ MonoBehaviour:
     count: 5
   - weaponType: 13
     count: 2
-  - weaponType: 89
-    count: 6
   - weaponType: 90
-    count: 3
+    count: 9

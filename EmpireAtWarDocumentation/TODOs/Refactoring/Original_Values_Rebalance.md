@@ -25,9 +25,8 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 ## Weapon Mapping (user, 2026-10-25)
 
 - turbolaser battery → `MediumTurboLaser` (4) on every ship.
-- quad turbolaser battery:
-  - Capital/HeavyCapital and the quads are the ship's main battery (largest turbolaser DPS group) → Heavy Quad (merged 20); set hardpoint `mainBattery` = true.
-  - Otherwise → Medium Quad. No such definition exists → add shared `MediumQuadTurbolaser` (new enum value, Turbolaser / Medium / Quad / Standard).
+- quad turbolaser battery → `MediumQuadTurbolaser` (90) on every ship (Phase 5, 2026-10-26). Superseded rule: Capital main-battery quads → Heavy Quad (89).
+- Caliber source: RaW projectile `Scale_Factor` — 0.1 Light, 0.175 standard/twin/quad → Medium, 0.2 Heavy. Never infer caliber from damage/DPS.
 - Remaining defaults (no size in the name → Light):
   - laser cannon battery → `Laser` (8); "X2" → `DualLaser` (7)
   - heavy turbolaser → `HeavyTurboLaser` (2)
@@ -125,6 +124,27 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 3. Every changed ship spawns (prefab/data contract) — Editor-only check.
 4. User skirmish playtest.
 
+### Phase 5 — Caliber from projectile + sublinear mounts ✅ 2026-10-26 (uncommitted)
+
+- Problem: damage = family × caliber (1 / 1.25 / 1.5625) × barrels → barrels dominated caliber (Medium Quad 80 > Heavy Dual 62.5; Heavy Quad 100).
+- RaW 1.5.5 turbolaser projectile damage, red (CIS) / blue (Republic): single 15/15, twin 25/25, quad 30/40, heavy 20/35. Hardpoints may override damage (Providence).
+- A: Republic/CIS Heavy Quad (89) → Medium Quad (90): Mandator 8, Providence 6 (+3 → 9), Invincible 6, Lucrehulk 8. `mainBattery` kept. Empire Heavy Quads (Allegiance, Tector, Titan, Procursator) wait for their hardpoint pass.
+- B: `WeaponMountRule` + `WeaponsData.mounts`: Single 1, Dual 1.6, Triple 2.0, Quad 2.4, Octuple 4.0. `WeaponProfileFactory` uses it for ship weapons; squadron weapons keep ×barrels.
+- Turbolaser shot damage now: Medium 20, Medium Dual 32, Medium Quad 48, Heavy 25, Heavy Dual 40, Heavy Quad 60.
+- Executor: 50/51/53 `damageMultiplier` 1.8 → 2.25 (×2/1.6); `caliber_executor.csv` identical to `final_executor.csv`.
+- Tests: EditMode 2078: 2075 pass; same 3 unrelated failures (`ExecutorShipTests` type 54, `ISDIIShipTests` 32 vs 28, `HealthModelTests.PointDefense_WhileCloaked…`). Changed: `Mounts_MultiplyShotDamageByMountRule_AndKeepShots`, `EveryFamilyCaliberAndMount_HasExactlyOneRule`, `QuadTurbolasers_AreMediumOnRepublicAndCisShips` (replaces `QuadBatteries_AreHeavyOnlyAsCapitalMainBattery`), ISD II mount asserts; added `SquadronMounts_KeepFullDamagePerBarrel`.
+- Simulator `Logs/Rebalance/2026-10-26-caliber/`: DPS avg Separatist −16 %, Empire −15 %, Republic −15 %, Rebellion −8 %; 17/56 ships unchanged. Biggest: Lucrehulk −42 %, ISD II −41 %, Providence −41 %, Endurance −38 %. Within ±15 % baseline TTK 153 → 121/260 (lower DPS → longer TTK).
+
+| Class | Empire | Rebellion | Republic | Separatist |
+|---|---|---|---|---|
+| Corvette | 29 → 19 → 19 % | 71 → 69 → 69 % | 56 → 76 → 76 % | 43 → 30 → 30 % |
+| Frigate | 28 → 27 → 27 % | 50 → 42 → 45 % | 49 → 56 → 48 % | 67 → 70 → 75 % |
+| Cruiser | 21 → 34 → 36 % | 80 → 76 → 82 % | 21 → 50 → 41 % | 75 → 12 → 12 % |
+| Capital | 59 → 65 → 71 % | 51 → 46 → 49 % | 37 → 27 → 31 % | 56 → 76 → 50 % |
+| HeavyCapital | 67 → 67 → 67 % | — | 80 → 80 → 80 % | 12 → 12 → 12 % |
+
+Columns: baseline → Phase 4 final → Phase 5.
+
 ## Tests
 
 ### Update
@@ -181,6 +201,7 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 - [x] Phase 2 Republic/CIS original values + simplified hardpoints
 - [x] Phase 3 Empire/Rebellion HP/shields
 - [x] Phase 4 automated verification (compile, EditMode, simulator)
-- [ ] Phase 4 user skirmish playtest
+- [x] Phase 5 caliber from projectile + mount rules (2026-10-26, uncommitted)
+- [ ] Phase 4 user skirmish playtest (now includes Phase 5)
 - [ ] Decide: accept uneven class win rates, or tune Empire/Rebellion DPS (needs their hardpoint simplification)
 - [ ] Later: Empire/Rebellion hardpoint simplification

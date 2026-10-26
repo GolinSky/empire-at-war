@@ -80,11 +80,12 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EveryFamilyAndCaliber_HasExactlyOneRule()
+        public void EveryFamilyCaliberAndMount_HasExactlyOneRule()
         {
             WeaponsData weapons = Weapons;
             Assert.That(weapons.Families.Select(rule => rule.Family), Is.EquivalentTo(Enum.GetValues(typeof(WeaponFamily))));
             Assert.That(weapons.Calibers.Select(rule => rule.Caliber), Is.EquivalentTo(Enum.GetValues(typeof(WeaponCaliber))));
+            Assert.That(weapons.Mounts.Select(rule => rule.Mount), Is.EquivalentTo(Enum.GetValues(typeof(WeaponMount))));
         }
 
         [Test]
@@ -171,23 +172,36 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(profile.Range, Is.EqualTo(range).Within(0.01f));
         }
 
-        [TestCase(WeaponMount.Dual, 2)]
-        [TestCase(WeaponMount.Triple, 3)]
-        [TestCase(WeaponMount.Quad, 4)]
-        [TestCase(WeaponMount.Octuple, 8)]
-        public void Mounts_MultiplyShotDamageByBarrels_AndKeepShots(WeaponMount mount, int barrels)
+        // RaW 1.5.5 red/blue turbolaser projectiles: twin 1.67×, quad 2.0–2.67× the single bolt.
+        [TestCase(WeaponMount.Dual, 1.6f)]
+        [TestCase(WeaponMount.Triple, 2f)]
+        [TestCase(WeaponMount.Quad, 2.4f)]
+        [TestCase(WeaponMount.Octuple, 4f)]
+        public void Mounts_MultiplyShotDamageByMountRule_AndKeepShots(WeaponMount mount, float multiplier)
         {
             WeaponsData weapons = Weapons;
             WeaponFamilyRule family = weapons.GetFamily(WeaponFamily.Turbolaser);
             WeaponProfile single = Build(weapons, WeaponMount.Single);
             WeaponProfile mounted = Build(weapons, mount);
 
-            Assert.That(mounted.Damage, Is.EqualTo(single.Damage * barrels).Within(0.001f));
+            Assert.That(weapons.GetMount(mount).DamageMultiplier, Is.EqualTo(multiplier).Within(0.001f));
+            Assert.That(mounted.Damage, Is.EqualTo(single.Damage * multiplier).Within(0.001f));
             Assert.That(mounted.ShotsPerSalvo, Is.EqualTo(single.ShotsPerSalvo));
             var expectedPrefab = mount == WeaponMount.Quad ? family.QuadShotPrefab :
                 mount == WeaponMount.Octuple ? family.OctupleShotPrefab : family.MultiBarrelShotPrefab;
             Assert.That(expectedPrefab, Is.Not.Null);
             Assert.That(mounted.ShotPrefab, Is.EqualTo(expectedPrefab));
+        }
+
+        [Test]
+        public void SquadronMounts_KeepFullDamagePerBarrel()
+        {
+            WeaponsData weapons = Weapons;
+            WeaponDefinition definition = weapons.GetDefinition(WeaponType.LightDualLaser);
+            float single = weapons.GetFamily(definition.Family).Damage * weapons.GetCaliber(definition.Caliber).DamageMultiplier;
+
+            Assert.That(definition.Mount, Is.EqualTo(WeaponMount.Dual));
+            Assert.That(weapons.GetProfile(definition.WeaponType).Damage, Is.EqualTo(single * 2).Within(0.001f));
         }
 
         [TestCase(WeaponMount.Single, 1, "Projectile")]
@@ -341,7 +355,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponDefinition definition = new WeaponDefinition();
             SerializedDefinition.Set(definition, mount);
             return WeaponProfileFactory.Create(definition, weapons.GetFamily(WeaponFamily.Turbolaser),
-                weapons.GetCaliber(WeaponCaliber.Heavy));
+                weapons.GetCaliber(WeaponCaliber.Heavy), weapons.GetMount(mount));
         }
 
         private static float LongestGun(WeaponsData weapons, IEnumerable<WeaponLoadoutEntry> loadout) =>

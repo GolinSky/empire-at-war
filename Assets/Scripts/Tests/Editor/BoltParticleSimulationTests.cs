@@ -313,7 +313,7 @@ namespace EmpireAtWar.Tests.Weapon
                     Object.DestroyImmediate(bolt);
                     bolt = Object.Instantiate(rule.ShotPrefab.gameObject);
                     var profile = WeaponProfileFactory.Create(new WeaponDefinition(), rule,
-                        weapons.GetCaliber(caliber));
+                        weapons.GetCaliber(caliber), weapons.GetMount(WeaponMount.Single));
                     var particles = Fire(bolt, muzzle.transform, target.transform, profile, flights);
                     particles.GetComponent<ParticleSystemRenderer>().BakeMesh(mesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
                     mesh.RecalculateBounds();

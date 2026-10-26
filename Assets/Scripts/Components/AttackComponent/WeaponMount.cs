@@ -1,6 +1,6 @@
 namespace EmpireAtWar.Components.AttackComponent
 {
-    /// <summary>Barrels per hardpoint. The value is the barrel count: every shot deals that many times the single-barrel damage.</summary>
+    /// <summary>Barrels per hardpoint. The value is the barrel count; ship weapon damage per barrel comes from <see cref="WeaponMountRule"/>.</summary>
     public enum WeaponMount
     {
         Single = 1,

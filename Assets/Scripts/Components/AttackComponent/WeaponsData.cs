@@ -6,7 +6,7 @@ using UnityEngine;
 namespace EmpireAtWar.Components.AttackComponent
 {
     /// <summary>
-    /// Single source of weapon balance: family and caliber rules plus one definition per weapon.
+    /// Single source of weapon balance: family, caliber and mount rules plus one definition per weapon.
     /// Profiles are derived on first use, never stored.
     /// </summary>
     [CreateAssetMenu(fileName = nameof(WeaponsData), menuName = "Data/Weapon/WeaponsData")]
@@ -15,6 +15,7 @@ namespace EmpireAtWar.Components.AttackComponent
         [Header("Rules")]
         [SerializeField] private List<WeaponFamilyRule> families = new List<WeaponFamilyRule>();
         [SerializeField] private List<WeaponCaliberRule> calibers = new List<WeaponCaliberRule>();
+        [SerializeField] private List<WeaponMountRule> mounts = new List<WeaponMountRule>();
         [Tooltip("Bolt color of faction-colored families for each faction.")]
         [SerializeField] private List<FactionBoltColor> factionColors = new List<FactionBoltColor>();
 
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public IReadOnlyList<WeaponFamilyRule> Families => families;
         public IReadOnlyList<WeaponCaliberRule> Calibers => calibers;
+        public IReadOnlyList<WeaponMountRule> Mounts => mounts;
         public IReadOnlyList<WeaponDefinition> Weapons => weapons;
 
         public IReadOnlyList<FactionBoltColor> FactionColors => factionColors;
@@ -80,12 +82,19 @@ namespace EmpireAtWar.Components.AttackComponent
             throw new KeyNotFoundException($"No weapon caliber rule for {caliber}.");
         }
 
+        public WeaponMountRule GetMount(WeaponMount mount)
+        {
+            foreach (WeaponMountRule rule in mounts)
+                if (rule.Mount == mount) return rule;
+            throw new KeyNotFoundException($"No weapon mount rule for {mount}.");
+        }
+
         private void BuildProfiles()
         {
             _profiles = new Dictionary<WeaponType, WeaponProfile>();
             foreach (WeaponDefinition definition in weapons)
                 _profiles.Add(definition.WeaponType, WeaponProfileFactory.Create(definition,
-                    GetFamily(definition.Family), GetCaliber(definition.Caliber)));
+                    GetFamily(definition.Family), GetCaliber(definition.Caliber), GetMount(definition.Mount)));
         }
 
         // Inspector and balance-editor edits rebuild the derived profiles.

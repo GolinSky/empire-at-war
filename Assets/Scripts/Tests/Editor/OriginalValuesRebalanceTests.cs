@@ -76,24 +76,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void QuadBatteries_AreHeavyOnlyAsCapitalMainBattery()
+        // RaW quad turbolaser projectiles share the standard bolt scale (0.175): medium caliber, never heavy.
+        public void QuadTurbolasers_AreMediumOnRepublicAndCisShips()
         {
+            WeaponsData weapons = Weapons;
             foreach (string faction in new[] { "Republic", "Separatist" })
             foreach (ShipData data in WeaponLoadoutBaker.LoadAll<ShipData>(SHIPS + faction))
+            foreach (WeaponHardPoint weapon in WeaponLoadoutBaker.LoadShipView(data)
+                         .GetComponentsInChildren<WeaponHardPoint>(true))
             {
-                bool capital = data.ShipClass == ShipClass.Capital || data.ShipClass == ShipClass.HeavyCapital;
-                foreach (WeaponHardPoint weapon in WeaponLoadoutBaker.LoadShipView(data)
-                             .GetComponentsInChildren<WeaponHardPoint>(true))
-                {
-                    string context = $"{data.name} / {weapon.name}";
-                    bool main = new SerializedObject(weapon).FindProperty("mainBattery").boolValue;
-                    bool quad = weapon.WeaponType == WeaponType.HeavyQuadTurbolaser ||
-                                weapon.WeaponType == WeaponType.MediumQuadTurbolaser;
-                    if (weapon.WeaponType == WeaponType.HeavyQuadTurbolaser)
-                        Assert.That(capital && main, Is.True, context);
-                    if (quad && capital && main)
-                        Assert.That(weapon.WeaponType, Is.EqualTo(WeaponType.HeavyQuadTurbolaser), context);
-                }
+                WeaponDefinition definition = weapons.GetDefinition(weapon.WeaponType);
+                if (definition.Family == WeaponFamily.Turbolaser && definition.Mount == WeaponMount.Quad)
+                    Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), $"{data.name} / {weapon.name}");
             }
         }
 

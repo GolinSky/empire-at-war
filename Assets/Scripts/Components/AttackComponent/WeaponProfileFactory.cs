@@ -10,10 +10,12 @@ namespace EmpireAtWar.Components.AttackComponent
     public static class WeaponProfileFactory
     {
         public static WeaponProfile Create(WeaponDefinition definition, WeaponFamilyRule family,
-            WeaponCaliberRule caliber)
+            WeaponCaliberRule caliber, WeaponMountRule mount)
         {
             int barrels = (int)definition.Mount;
-            float damage = family.Damage * caliber.DamageMultiplier * barrels * definition.DamageMultiplier;
+            // Squadron weapons keep full damage per barrel; ship mounts follow the mount rule.
+            float mountMultiplier = family.Platform == WeaponPlatform.Squadron ? barrels : mount.DamageMultiplier;
+            float damage = family.Damage * caliber.DamageMultiplier * mountMultiplier * definition.DamageMultiplier;
             float reload = family.Reload * definition.ReloadMultiplier;
             int shots = family.ShotsPerSalvo;
             float interval = family.ShotInterval;

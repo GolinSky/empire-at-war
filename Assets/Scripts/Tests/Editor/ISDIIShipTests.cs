@@ -120,14 +120,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(definition.Duration, Is.EqualTo(20f));
             Assert.That(definition.RecoveryDelay, Is.EqualTo(60f));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            // Main batteries are Heavy Octuple / Quad mounts: the family's salvo, eight or four barrels per shot.
+            // Main batteries are Heavy Octuple / Quad mounts: the family's salvo, damage scaled by the mount rule.
             WeaponProfile heavyTurbolaser = profiles.GetProfile(WeaponType.HeavyTurboLaser);
             WeaponProfile octuple = profiles.GetProfile(WeaponType.ISDIIOctupleTurbolaser);
             Assert.That(octuple.ShotsPerSalvo, Is.EqualTo(heavyTurbolaser.ShotsPerSalvo));
-            Assert.That(octuple.Damage, Is.EqualTo(heavyTurbolaser.Damage * 8).Within(0.01f));
+            Assert.That(octuple.Damage, Is.EqualTo(heavyTurbolaser.Damage * profiles.GetMount(WeaponMount.Octuple).DamageMultiplier).Within(0.01f));
             Assert.That(octuple.Range, Is.EqualTo(heavyTurbolaser.Range).Within(0.01f));
             Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).Damage,
-                Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Damage * 4).Within(0.01f));
+                Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Damage * profiles.GetMount(WeaponMount.Quad).DamageMultiplier).Within(0.01f));
             Assert.That(profiles.GetProfile(WeaponType.ISDIIQuadIonCannon).Range,
                 Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Range).Within(0.01f));
         }

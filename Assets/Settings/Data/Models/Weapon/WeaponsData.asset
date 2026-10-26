@@ -390,6 +390,17 @@ MonoBehaviour:
       capital: 1
       heavyCapital: 1
       structure: 1
+  mounts:
+  - mount: 1
+    damageMultiplier: 1
+  - mount: 2
+    damageMultiplier: 1.6
+  - mount: 3
+    damageMultiplier: 2
+  - mount: 4
+    damageMultiplier: 2.4
+  - mount: 8
+    damageMultiplier: 4
   factionColors:
   - faction: 0
     color: {r: 1, g: 0.31, b: 0, a: 1}
@@ -1067,11 +1078,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 1.8
+    damageMultiplier: 2.25
     reloadMultiplier: 2
     rangeMultiplier: 1.5
-    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage).'
+    reason: "Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage; \xD72/1.6 offsets the dual
+      mount rule)."
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1087,11 +1099,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 1.8
+    damageMultiplier: 2.25
     reloadMultiplier: 2
     rangeMultiplier: 1.5
-    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage).'
+    reason: "Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage; \xD72/1.6 offsets the dual
+      mount rule)."
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1107,11 +1120,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Executor
-    damageMultiplier: 1.8
+    damageMultiplier: 2.25
     reloadMultiplier: 2
     rangeMultiplier: 1.5
-    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage).'
+    reason: "Executor stays overpowered: keeps its former long-range reach, reload
+      and expected damage (accuracy folded into damage; \xD72/1.6 offsets the dual
+      mount rule)."
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
