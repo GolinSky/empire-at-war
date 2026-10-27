@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 307f0b7a8c1ef47489c641ddd8996aa6
+    m_Address: RecalcitrantWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 35b4f59dbc461a94e93e44211485a393
     m_Address: PelesetWreckView
     m_ReadOnly: 0

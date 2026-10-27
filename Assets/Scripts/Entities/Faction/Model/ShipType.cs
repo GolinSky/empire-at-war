@@ -34,6 +34,7 @@ namespace EmpireAtWar.Models.Factions
         Peleset = 110,
         Wavecrest = 111,
         Bulwark = 112,
+        Recalcitrant = 113,
 
         //empire
         Victory = 200,

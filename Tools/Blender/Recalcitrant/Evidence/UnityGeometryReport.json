@@ -1,0 +1,1005 @@
+{
+  "success": true,
+  "models": {
+    "Recalcitrant": {
+      "meshes": [
+        {
+          "name": "Rear",
+          "triangles": 19342,
+          "vertices": 46675,
+          "checkedCorners": 58026,
+          "maximumPositionError": 1.61507978E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Rear_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Engines",
+          "triangles": 686,
+          "vertices": 1260,
+          "checkedCorners": 2058,
+          "maximumPositionError": 1.18529965E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Engines_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Shadow_Rear",
+          "triangles": 16843,
+          "vertices": 19396,
+          "checkedCorners": 50529,
+          "maximumPositionError": 1.61507978E-06,
+          "maximumUvError": 0.0004339218,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "Recalcitrant_Shadow_Rear_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Rear_Light",
+          "triangles": 356,
+          "vertices": 842,
+          "checkedCorners": 1068,
+          "maximumPositionError": 1.9579802E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Rear_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Front",
+          "triangles": 8418,
+          "vertices": 20908,
+          "checkedCorners": 25254,
+          "maximumPositionError": 1.19929473E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Front_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Shadow_Front",
+          "triangles": 5082,
+          "vertices": 7250,
+          "checkedCorners": 15246,
+          "maximumPositionError": 1.19929473E-06,
+          "maximumUvError": 1.46627426E-05,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Shadow_Front_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Engine_Glow",
+          "triangles": 980,
+          "vertices": 2401,
+          "checkedCorners": 2940,
+          "maximumPositionError": 1.11781219E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Engine_Glow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 9917,
+          "vertices": 13580,
+          "checkedCorners": 29751,
+          "maximumPositionError": 1.81145515E-05,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Bridge_Light",
+          "triangles": 48,
+          "vertices": 96,
+          "checkedCorners": 144,
+          "maximumPositionError": 1.06960067E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Bridge_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Front_Light",
+          "triangles": 28,
+          "vertices": 56,
+          "checkedCorners": 84,
+          "maximumPositionError": 8.62209561E-07,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Front_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Shield",
+          "triangles": 440,
+          "vertices": 316,
+          "checkedCorners": 1320,
+          "maximumPositionError": 1.49011612E-06,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "Recalcitrant_Shield_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 11,
+      "bones": 89,
+      "maximumBoneError": 8.28891757E-07,
+      "tolerance": 2E-05,
+      "totalTriangles": 62140
+    },
+    "RecalcitrantTurret01": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret01_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret01_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret01_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret01_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.19267485E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret01_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret02": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret02_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret02_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret02_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret02_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret02_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret03": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret03_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret03_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret03_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret03_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret03_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret04": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret04_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret04_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret04_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret04_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret04_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret05": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret05_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret05_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret05_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret05_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret05_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret06": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret06_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret06_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret06_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret06_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret06_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret07": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret07_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret07_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret07_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret07_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret07_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    },
+    "RecalcitrantTurret08": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "triangles": 506,
+          "vertices": 1110,
+          "checkedCorners": 1518,
+          "maximumPositionError": 2.42143869E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret08_Turret_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Barrel",
+          "triangles": 140,
+          "vertices": 344,
+          "checkedCorners": 420,
+          "maximumPositionError": 4.889222E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret08_Barrel_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Col",
+          "triangles": 12,
+          "vertices": 24,
+          "checkedCorners": 36,
+          "maximumPositionError": 2.4667294E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret08_Col_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 594,
+          "vertices": 767,
+          "checkedCorners": 1782,
+          "maximumPositionError": 2.24292176E-08,
+          "maximumUvError": 0.000849804142,
+          "uvTolerance": 0.001,
+          "uvMatchesSource": false,
+          "materials": [
+            "RecalcitrantTurret08_Turret_Shadow_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        },
+        {
+          "name": "Light",
+          "triangles": 4,
+          "vertices": 8,
+          "checkedCorners": 12,
+          "maximumPositionError": 1.82501214E-08,
+          "maximumUvError": 0.0,
+          "uvTolerance": 2E-05,
+          "uvMatchesSource": true,
+          "materials": [
+            "RecalcitrantTurret08_Light_Slot0"
+          ],
+          "geometryBasis": "Original imported ALO"
+        }
+      ],
+      "meshCount": 5,
+      "bones": 9,
+      "maximumBoneError": 3.560293E-08,
+      "tolerance": 2E-05,
+      "totalTriangles": 1256
+    }
+  },
+  "visibleMeshes": 31,
+  "visualRootIdentity": true,
+  "visualBakeChecks": [
+    {
+      "name": "Recalcitrant",
+      "meshes": [
+        {
+          "name": "Rear",
+          "checkedVertices": 46675,
+          "maximumBakeDisplacement": 2.665601E-07
+        },
+        {
+          "name": "Engines",
+          "checkedVertices": 1260,
+          "maximumBakeDisplacement": 2.40281224E-07
+        },
+        {
+          "name": "Rear_Light",
+          "checkedVertices": 842,
+          "maximumBakeDisplacement": 2.38883786E-07
+        },
+        {
+          "name": "Front",
+          "checkedVertices": 20908,
+          "maximumBakeDisplacement": 2.4755667E-07
+        },
+        {
+          "name": "Engine_Glow",
+          "checkedVertices": 2401,
+          "maximumBakeDisplacement": 2.40281224E-07
+        },
+        {
+          "name": "Bridge_Light",
+          "checkedVertices": 96,
+          "maximumBakeDisplacement": 2.40389483E-07
+        },
+        {
+          "name": "Front_Light",
+          "checkedVertices": 56,
+          "maximumBakeDisplacement": 2.38534966E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret01",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 6.58947442E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 6.63195863E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 5.311381E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret02",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 1.02217825E-06
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 9.860432E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 7.432701E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret03",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 9.471546E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 9.473931E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 8.94473146E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret04",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 9.32191369E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 9.02997328E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 8.97132E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret05",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 6.600975E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 6.62884531E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 6.32534636E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret06",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 9.27561757E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 9.930258E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 6.318761E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret07",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 9.26396E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 9.360788E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 8.625656E-07
+        }
+      ]
+    },
+    {
+      "name": "RecalcitrantTurret08",
+      "meshes": [
+        {
+          "name": "Turret",
+          "checkedVertices": 1110,
+          "maximumBakeDisplacement": 9.341161E-07
+        },
+        {
+          "name": "Barrel",
+          "checkedVertices": 344,
+          "maximumBakeDisplacement": 9.434114E-07
+        },
+        {
+          "name": "Light",
+          "checkedVertices": 8,
+          "maximumBakeDisplacement": 8.98320366E-07
+        }
+      ]
+    }
+  ],
+  "sourceCornerSampleStride": 1
+}

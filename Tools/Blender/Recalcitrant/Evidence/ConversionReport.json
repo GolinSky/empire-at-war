@@ -1,0 +1,7491 @@
+{
+  "models": {
+    "Recalcitrant": {
+      "before": {
+        "meshes": {
+          "Rear": {
+            "exported_name": "Rear",
+            "vertices": 46675,
+            "triangles": 19342,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Recalcitrant_Rear_Slot0"
+            ],
+            "slot_triangles": [
+              19342
+            ]
+          },
+          "Engines": {
+            "exported_name": "Engines",
+            "vertices": 1260,
+            "triangles": 686,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Engines_Slot0"
+            ],
+            "slot_triangles": [
+              686
+            ]
+          },
+          "Shadow_Rear": {
+            "exported_name": "Shadow_Rear",
+            "vertices": 8587,
+            "triangles": 16843,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Recalcitrant_Shadow_Rear_Slot0"
+            ],
+            "slot_triangles": [
+              16843
+            ]
+          },
+          "Rear_Light": {
+            "exported_name": "Rear_Light",
+            "vertices": 838,
+            "triangles": 356,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Rear_Light_Slot0"
+            ],
+            "slot_triangles": [
+              356
+            ]
+          },
+          "Front": {
+            "exported_name": "Front",
+            "vertices": 20908,
+            "triangles": 8418,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Recalcitrant_Front_Slot0"
+            ],
+            "slot_triangles": [
+              8418
+            ]
+          },
+          "Shadow_Front": {
+            "exported_name": "Shadow_Front",
+            "vertices": 2570,
+            "triangles": 5082,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Recalcitrant_Shadow_Front_Slot0"
+            ],
+            "slot_triangles": [
+              5082
+            ]
+          },
+          "Engine_Glow": {
+            "exported_name": "Engine_Glow",
+            "vertices": 2401,
+            "triangles": 980,
+            "hidden": false,
+            "shader": "MeshShield.fx",
+            "materials": [
+              "Recalcitrant_Engine_Glow_Slot0"
+            ],
+            "slot_triangles": [
+              980
+            ]
+          },
+          "Col": {
+            "exported_name": "Col",
+            "vertices": 4966,
+            "triangles": 9917,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "Recalcitrant_Col_Slot0"
+            ],
+            "slot_triangles": [
+              9917
+            ]
+          },
+          "Bridge_Light": {
+            "exported_name": "Bridge_Light",
+            "vertices": 96,
+            "triangles": 48,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Bridge_Light_Slot0"
+            ],
+            "slot_triangles": [
+              48
+            ]
+          },
+          "Front_Light": {
+            "exported_name": "Front_Light",
+            "vertices": 56,
+            "triangles": 28,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Front_Light_Slot0"
+            ],
+            "slot_triangles": [
+              28
+            ]
+          },
+          "Shield": {
+            "exported_name": "Shield",
+            "vertices": 276,
+            "triangles": 440,
+            "hidden": true,
+            "shader": "MeshShield.fx",
+            "materials": [
+              "Recalcitrant_Shield_Slot0"
+            ],
+            "slot_triangles": [
+              440
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Rear": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "IC_01": {
+            "parent": "Root",
+            "head": [
+              1.053161327035923e-06,
+              -177.2945556640625,
+              -26.397865295410156
+            ]
+          },
+          "IC_01_FP_01": {
+            "parent": "Root",
+            "head": [
+              1.8596556186676025,
+              -203.16603088378906,
+              -24.031457901000977
+            ]
+          },
+          "IC_01_FP_02": {
+            "parent": "Root",
+            "head": [
+              -1.8599998950958252,
+              -203.16603088378906,
+              -24.031457901000977
+            ]
+          },
+          "MuzzleA_00": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -119.29141998291016,
+              21.78730583190918
+            ]
+          },
+          "MuzzleA_01": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -114.57186126708984,
+              21.78730583190918
+            ]
+          },
+          "MuzzleA_02": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -109.86096954345703,
+              21.78730583190918
+            ]
+          },
+          "MuzzleA_03": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -105.13048553466797,
+              21.78730583190918
+            ]
+          },
+          "MuzzleA_04": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -100.41092681884766,
+              21.78730583190918
+            ]
+          },
+          "MuzzleA_05": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -95.70003509521484,
+              21.78730583190918
+            ]
+          },
+          "HP_E": {
+            "parent": "Root",
+            "head": [
+              8.675733056406898e-07,
+              148.54893493652344,
+              -1.9964131116867065
+            ]
+          },
+          "TL_01": {
+            "parent": "Root",
+            "head": [
+              18.145761489868164,
+              -123.21761322021484,
+              -4.160773277282715
+            ]
+          },
+          "TL_02": {
+            "parent": "Root",
+            "head": [
+              15.24130916595459,
+              -139.9982452392578,
+              -4.160773277282715
+            ]
+          },
+          "TL_03": {
+            "parent": "Root",
+            "head": [
+              12.32000732421875,
+              -156.86524963378906,
+              -4.160773277282715
+            ]
+          },
+          "TL_04": {
+            "parent": "Root",
+            "head": [
+              9.405923843383789,
+              -173.70458984375,
+              -4.160773277282715
+            ]
+          },
+          "TL_05": {
+            "parent": "Root",
+            "head": [
+              -18.1460018157959,
+              -123.21761322021484,
+              -4.160773277282715
+            ]
+          },
+          "TL_06": {
+            "parent": "Root",
+            "head": [
+              -15.241000175476074,
+              -139.9982452392578,
+              -4.160773277282715
+            ]
+          },
+          "TL_07": {
+            "parent": "Root",
+            "head": [
+              -12.319999694824219,
+              -156.86524963378906,
+              -4.160773277282715
+            ]
+          },
+          "TL_08": {
+            "parent": "Root",
+            "head": [
+              -9.406000137329102,
+              -173.70458984375,
+              -4.160773277282715
+            ]
+          },
+          "Engines": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Shadow_Rear": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Rear_Light": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Front": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.5146732330322266
+            ]
+          },
+          "Shadow_Front": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.5146732330322266
+            ]
+          },
+          "Engine_Glow": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "PE_Munificent_S": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              -17.10721206665039
+            ]
+          },
+          "PE_Munificent_S.001": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              -6.874680042266846
+            ]
+          },
+          "PE_Munificent_S.002": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              8.436569213867188
+            ]
+          },
+          "PE_Munificent_S.003": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              -1.7959632873535156
+            ]
+          },
+          "P_Blink_Medium_Red_6_15": {
+            "parent": "Root",
+            "head": [
+              0.0006442100275307894,
+              101.41592407226562,
+              65.93630981445312
+            ]
+          },
+          "P_Blink_Medium_White_6_25": {
+            "parent": "Root",
+            "head": [
+              0.0006445168983191252,
+              108.43567657470703,
+              62.97538757324219
+            ]
+          },
+          "P_Blink_Medium_White_6_25.001": {
+            "parent": "Root",
+            "head": [
+              58.904441833496094,
+              108.43568420410156,
+              -38.024715423583984
+            ]
+          },
+          "P_Blink_Medium_Red_6_15.001": {
+            "parent": "Root",
+            "head": [
+              61.32410430908203,
+              101.41593170166016,
+              -39.74209213256836
+            ]
+          },
+          "P_Blink_Medium_Red_6_15.002": {
+            "parent": "Root",
+            "head": [
+              -61.323997497558594,
+              101.41593170166016,
+              -39.74209213256836
+            ]
+          },
+          "P_Blink_Medium_White_6_25.002": {
+            "parent": "Root",
+            "head": [
+              -58.90399932861328,
+              108.43568420410156,
+              -38.024715423583984
+            ]
+          },
+          "P_Blink_Medium_Red_5_35": {
+            "parent": "Root",
+            "head": [
+              41.18913269042969,
+              -85.67427825927734,
+              -1.3445086479187012
+            ]
+          },
+          "P_Blink_Medium_White_5_25": {
+            "parent": "Root",
+            "head": [
+              41.18913269042969,
+              -68.34736633300781,
+              -1.3445086479187012
+            ]
+          },
+          "P_Blink_Medium_White_5_25.001": {
+            "parent": "Root",
+            "head": [
+              -41.188995361328125,
+              -68.34736633300781,
+              -1.3445086479187012
+            ]
+          },
+          "P_Blink_Medium_Red_5_35.001": {
+            "parent": "Root",
+            "head": [
+              -41.188995361328125,
+              -85.67427825927734,
+              -1.3445086479187012
+            ]
+          },
+          "P_Blink_Medium_Red_2_45": {
+            "parent": "Root",
+            "head": [
+              11.966781616210938,
+              -230.64979553222656,
+              -2.0420174598693848
+            ]
+          },
+          "P_Blink_Medium_Red_2_45.001": {
+            "parent": "Root",
+            "head": [
+              -11.966999053955078,
+              -230.64979553222656,
+              -2.0420174598693848
+            ]
+          },
+          "P_Blink_Medium_Red_2_25": {
+            "parent": "Root",
+            "head": [
+              5.455772793538927e-07,
+              -219.1116485595703,
+              13.50053596496582
+            ]
+          },
+          "P_Blink_Medium_White_2_35": {
+            "parent": "Root",
+            "head": [
+              2.021555019382504e-06,
+              -185.34521484375,
+              36.9234504699707
+            ]
+          },
+          "P_Blink_Medium_White_2_35.001": {
+            "parent": "Root",
+            "head": [
+              2.9007726425334113e-06,
+              -165.23106384277344,
+              36.9234504699707
+            ]
+          },
+          "P_Blink_Medium_White_2_55": {
+            "parent": "Root",
+            "head": [
+              8.755468115850817e-06,
+              -31.291240692138672,
+              33.19581985473633
+            ]
+          },
+          "P_Blink_Medium_White_2_55.001": {
+            "parent": "Root",
+            "head": [
+              8.06928892416181e-06,
+              -46.98918533325195,
+              33.17665481567383
+            ]
+          },
+          "P_Blink_Medium_White_1_45": {
+            "parent": "Root",
+            "head": [
+              1.1609409739321563e-05,
+              33.99931716918945,
+              29.419639587402344
+            ]
+          },
+          "P_Blink_Medium_White_1_45.001": {
+            "parent": "Root",
+            "head": [
+              1.1007640750904102e-05,
+              20.232446670532227,
+              29.419639587402344
+            ]
+          },
+          "P_Blink_Medium_White_1_25": {
+            "parent": "Root",
+            "head": [
+              1.1007640750904102e-05,
+              20.23244857788086,
+              -22.37892723083496
+            ]
+          },
+          "P_Blink_Medium_White_1_25.001": {
+            "parent": "Root",
+            "head": [
+              1.1609409739321563e-05,
+              33.99931716918945,
+              -22.37892723083496
+            ]
+          },
+          "P_Blink_Medium_Red_1_35": {
+            "parent": "Root",
+            "head": [
+              1.0325799848942552e-05,
+              4.6337409019470215,
+              21.679737091064453
+            ]
+          },
+          "P_Blink_Medium_Red_1_55": {
+            "parent": "Root",
+            "head": [
+              1.0466374078532681e-05,
+              7.849695205688477,
+              19.373626708984375
+            ]
+          },
+          "Col": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.5146732330322266
+            ]
+          },
+          "Pi_Damage_Elec_Mid_Sparse": {
+            "parent": "Col",
+            "head": [
+              3.0458904802799225e-06,
+              -71.59469604492188,
+              -4.76837158203125e-07
+            ]
+          },
+          "HP_S": {
+            "parent": "Root",
+            "head": [
+              -7.3719265856198035e-06,
+              -39.94886016845703,
+              10.730474472045898
+            ]
+          },
+          "HP_S_Fire": {
+            "parent": "Root",
+            "head": [
+              -7.3719265856198035e-06,
+              -39.94886016845703,
+              4.170003890991211
+            ]
+          },
+          "pf_small_w": {
+            "parent": "HP_S_Fire",
+            "head": [
+              -4.110245704650879,
+              -39.94886779785156,
+              12.243110656738281
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion": {
+            "parent": "HP_S_Fire",
+            "head": [
+              12.54842472076416,
+              -39.94886779785156,
+              -9.211523056030273
+            ]
+          },
+          "IC_01_Fire": {
+            "parent": "Root",
+            "head": [
+              1.053161327035923e-06,
+              -177.2945556640625,
+              -27.954856872558594
+            ]
+          },
+          "pf_small_w.001": {
+            "parent": "IC_01_Fire",
+            "head": [
+              3.3323974609375,
+              -177.29454040527344,
+              -26.36838150024414
+            ]
+          },
+          "TL_01_Fire": {
+            "parent": "Root",
+            "head": [
+              22.806734085083008,
+              -123.21761322021484,
+              -4.160773277282715
+            ]
+          },
+          "TL_02_Fire": {
+            "parent": "Root",
+            "head": [
+              22.564708709716797,
+              -139.9982452392578,
+              -4.160773277282715
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion": {
+            "parent": "TL_02_Fire",
+            "head": [
+              15.24130916595459,
+              -139.9982452392578,
+              -4.160773277282715
+            ]
+          },
+          "TL_03_Fire": {
+            "parent": "Root",
+            "head": [
+              21.640417098999023,
+              -156.86524963378906,
+              -4.160773277282715
+            ]
+          },
+          "TL_04_Fire": {
+            "parent": "Root",
+            "head": [
+              19.759933471679688,
+              -173.70458984375,
+              -4.160773277282715
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.001": {
+            "parent": "TL_04_Fire",
+            "head": [
+              9.405921936035156,
+              -173.70458984375,
+              -4.160774230957031
+            ]
+          },
+          "TL_05_Fire": {
+            "parent": "Root",
+            "head": [
+              -23.21703338623047,
+              -123.21761322021484,
+              -4.160773277282715
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.002": {
+            "parent": "TL_05_Fire",
+            "head": [
+              -18.1460018157959,
+              -123.21761322021484,
+              -4.160773277282715
+            ]
+          },
+          "TL_06_Fire": {
+            "parent": "Root",
+            "head": [
+              -22.501901626586914,
+              -139.9982452392578,
+              -4.160773277282715
+            ]
+          },
+          "TL_07_Fire": {
+            "parent": "Root",
+            "head": [
+              -21.721162796020508,
+              -156.86524963378906,
+              -4.160773277282715
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.003": {
+            "parent": "TL_07_Fire",
+            "head": [
+              -12.320002555847168,
+              -156.86524963378906,
+              -4.160773277282715
+            ]
+          },
+          "TL_08_Fire": {
+            "parent": "Root",
+            "head": [
+              -19.682233810424805,
+              -173.70458984375,
+              -4.160773277282715
+            ]
+          },
+          "HP_E_Fire": {
+            "parent": "Root",
+            "head": [
+              6.819419695602846e-07,
+              144.30218505859375,
+              -0.06501972675323486
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.004": {
+            "parent": "HP_E_Fire",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              13.53283977508545
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion.001": {
+            "parent": "HP_E_Fire",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              -12.004520416259766
+            ]
+          },
+          "P_Ship_Fire_Very_Small": {
+            "parent": "HP_E_Fire",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              3.3067283630371094
+            ]
+          },
+          "PE_Munificent_S.004": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              3.3067283630371094
+            ]
+          },
+          "PE_Munificent_S.005": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              -12.004520416259766
+            ]
+          },
+          "PE_Munificent_S.006": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              13.53283977508545
+            ]
+          },
+          "Bridge_Light": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.5146732330322266
+            ]
+          },
+          "Front_Light": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.5146732330322266
+            ]
+          },
+          "HP_01": {
+            "parent": "Root",
+            "head": [
+              13.500001907348633,
+              -114.53190612792969,
+              12.260615348815918
+            ]
+          },
+          "HP_02": {
+            "parent": "Root",
+            "head": [
+              -13.5,
+              -114.53190612792969,
+              12.260615348815918
+            ]
+          },
+          "HP_03": {
+            "parent": "Root",
+            "head": [
+              13.500003814697266,
+              -74.53983306884766,
+              12.26061725616455
+            ]
+          },
+          "HP_04": {
+            "parent": "Root",
+            "head": [
+              -13.499998092651367,
+              -74.53983306884766,
+              12.26061725616455
+            ]
+          },
+          "HP_05": {
+            "parent": "Root",
+            "head": [
+              17.366323471069336,
+              87.28165435791016,
+              5.423022270202637
+            ]
+          },
+          "HP_06": {
+            "parent": "Root",
+            "head": [
+              -17.366302490234375,
+              87.28165435791016,
+              5.423022270202637
+            ]
+          },
+          "Shield": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              8.140690965774411e-08,
+              -1.8623729944229126
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Rear": {
+            "exported_name": "Rear.001",
+            "vertices": 46675,
+            "triangles": 19342,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Recalcitrant_Rear_Slot0"
+            ],
+            "slot_triangles": [
+              19342
+            ]
+          },
+          "Engines": {
+            "exported_name": "Engines.001",
+            "vertices": 1260,
+            "triangles": 686,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Engines_Slot0"
+            ],
+            "slot_triangles": [
+              686
+            ]
+          },
+          "Shadow_Rear": {
+            "exported_name": "Shadow_Rear.001",
+            "vertices": 8587,
+            "triangles": 16843,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Recalcitrant_Shadow_Rear_Slot0"
+            ],
+            "slot_triangles": [
+              16843
+            ]
+          },
+          "Rear_Light": {
+            "exported_name": "Rear_Light.001",
+            "vertices": 838,
+            "triangles": 356,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Rear_Light_Slot0"
+            ],
+            "slot_triangles": [
+              356
+            ]
+          },
+          "Front": {
+            "exported_name": "Front.001",
+            "vertices": 20908,
+            "triangles": 8418,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Recalcitrant_Front_Slot0"
+            ],
+            "slot_triangles": [
+              8418
+            ]
+          },
+          "Shadow_Front": {
+            "exported_name": "Shadow_Front.001",
+            "vertices": 2570,
+            "triangles": 5082,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Recalcitrant_Shadow_Front_Slot0"
+            ],
+            "slot_triangles": [
+              5082
+            ]
+          },
+          "Engine_Glow": {
+            "exported_name": "Engine_Glow.001",
+            "vertices": 2401,
+            "triangles": 980,
+            "hidden": false,
+            "shader": "MeshShield.fx",
+            "materials": [
+              "Recalcitrant_Engine_Glow_Slot0"
+            ],
+            "slot_triangles": [
+              980
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 4966,
+            "triangles": 9916,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "Recalcitrant_Col_Slot0"
+            ],
+            "slot_triangles": [
+              9916
+            ]
+          },
+          "Bridge_Light": {
+            "exported_name": "Bridge_Light.001",
+            "vertices": 96,
+            "triangles": 48,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Bridge_Light_Slot0"
+            ],
+            "slot_triangles": [
+              48
+            ]
+          },
+          "Front_Light": {
+            "exported_name": "Front_Light.001",
+            "vertices": 56,
+            "triangles": 28,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Recalcitrant_Front_Light_Slot0"
+            ],
+            "slot_triangles": [
+              28
+            ]
+          },
+          "Shield": {
+            "exported_name": "Shield.001",
+            "vertices": 276,
+            "triangles": 440,
+            "hidden": true,
+            "shader": "MeshShield.fx",
+            "materials": [
+              "Recalcitrant_Shield_Slot0"
+            ],
+            "slot_triangles": [
+              440
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Rear": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "IC_01": {
+            "parent": "Root",
+            "head": [
+              1.053161327035923e-06,
+              -177.2945556640625,
+              -26.397836685180664
+            ]
+          },
+          "IC_01_FP_01": {
+            "parent": "Root",
+            "head": [
+              1.8596556186676025,
+              -203.16603088378906,
+              -24.03142547607422
+            ]
+          },
+          "IC_01_FP_02": {
+            "parent": "Root",
+            "head": [
+              -1.8599998950958252,
+              -203.16603088378906,
+              -24.03142547607422
+            ]
+          },
+          "MuzzleA_00": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -119.29141998291016,
+              21.787324905395508
+            ]
+          },
+          "MuzzleA_01": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -114.57186126708984,
+              21.787324905395508
+            ]
+          },
+          "MuzzleA_02": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -109.86096954345703,
+              21.787322998046875
+            ]
+          },
+          "MuzzleA_03": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -105.13048553466797,
+              21.787322998046875
+            ]
+          },
+          "MuzzleA_04": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -100.41092681884766,
+              21.787322998046875
+            ]
+          },
+          "MuzzleA_05": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -95.70003509521484,
+              21.787321090698242
+            ]
+          },
+          "HP_E": {
+            "parent": "Root",
+            "head": [
+              8.675733056406898e-07,
+              148.54893493652344,
+              -1.9964373111724854
+            ]
+          },
+          "TL_01": {
+            "parent": "Root",
+            "head": [
+              18.145761489868164,
+              -123.21761322021484,
+              -4.16075325012207
+            ]
+          },
+          "TL_02": {
+            "parent": "Root",
+            "head": [
+              15.24130916595459,
+              -139.9982452392578,
+              -4.160750389099121
+            ]
+          },
+          "TL_03": {
+            "parent": "Root",
+            "head": [
+              12.32000732421875,
+              -156.86524963378906,
+              -4.160747528076172
+            ]
+          },
+          "TL_04": {
+            "parent": "Root",
+            "head": [
+              9.405923843383789,
+              -173.70458984375,
+              -4.160745143890381
+            ]
+          },
+          "TL_05": {
+            "parent": "Root",
+            "head": [
+              -18.1460018157959,
+              -123.21761322021484,
+              -4.16075325012207
+            ]
+          },
+          "TL_06": {
+            "parent": "Root",
+            "head": [
+              -15.241000175476074,
+              -139.9982452392578,
+              -4.160750389099121
+            ]
+          },
+          "TL_07": {
+            "parent": "Root",
+            "head": [
+              -12.319999694824219,
+              -156.86524963378906,
+              -4.160747528076172
+            ]
+          },
+          "TL_08": {
+            "parent": "Root",
+            "head": [
+              -9.406000137329102,
+              -173.70458984375,
+              -4.160745143890381
+            ]
+          },
+          "Engines": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Shadow_Rear": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Rear_Light": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Front": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.514655590057373
+            ]
+          },
+          "Shadow_Front": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.514655590057373
+            ]
+          },
+          "Engine_Glow": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "PE_Munificent_S": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              -17.107242584228516
+            ]
+          },
+          "PE_Munificent_S.001": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              -6.8747100830078125
+            ]
+          },
+          "PE_Munificent_S.002": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              8.436539649963379
+            ]
+          },
+          "PE_Munificent_S.003": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.1050567626953,
+              -1.7959930896759033
+            ]
+          },
+          "P_Blink_Medium_Red_6_15": {
+            "parent": "Root",
+            "head": [
+              0.0006442100275307894,
+              101.41593170166016,
+              65.93629455566406
+            ]
+          },
+          "P_Blink_Medium_White_6_25": {
+            "parent": "Root",
+            "head": [
+              0.0006445168983191252,
+              108.43568420410156,
+              62.97536849975586
+            ]
+          },
+          "P_Blink_Medium_White_6_25.001": {
+            "parent": "Root",
+            "head": [
+              58.904441833496094,
+              108.43567657470703,
+              -38.02473449707031
+            ]
+          },
+          "P_Blink_Medium_Red_6_15.001": {
+            "parent": "Root",
+            "head": [
+              61.32410430908203,
+              101.41592407226562,
+              -39.74210739135742
+            ]
+          },
+          "P_Blink_Medium_Red_6_15.002": {
+            "parent": "Root",
+            "head": [
+              -61.323997497558594,
+              101.41592407226562,
+              -39.74210739135742
+            ]
+          },
+          "P_Blink_Medium_White_6_25.002": {
+            "parent": "Root",
+            "head": [
+              -58.90399932861328,
+              108.43567657470703,
+              -38.02473449707031
+            ]
+          },
+          "P_Blink_Medium_Red_5_35": {
+            "parent": "Root",
+            "head": [
+              41.18913269042969,
+              -85.67427825927734,
+              -1.3444947004318237
+            ]
+          },
+          "P_Blink_Medium_White_5_25": {
+            "parent": "Root",
+            "head": [
+              41.18913269042969,
+              -68.34736633300781,
+              -1.344497561454773
+            ]
+          },
+          "P_Blink_Medium_White_5_25.001": {
+            "parent": "Root",
+            "head": [
+              -41.188995361328125,
+              -68.34736633300781,
+              -1.344497561454773
+            ]
+          },
+          "P_Blink_Medium_Red_5_35.001": {
+            "parent": "Root",
+            "head": [
+              -41.188995361328125,
+              -85.67427825927734,
+              -1.3444947004318237
+            ]
+          },
+          "P_Blink_Medium_Red_2_45": {
+            "parent": "Root",
+            "head": [
+              11.966781616210938,
+              -230.64979553222656,
+              -2.0419797897338867
+            ]
+          },
+          "P_Blink_Medium_Red_2_45.001": {
+            "parent": "Root",
+            "head": [
+              -11.966999053955078,
+              -230.64979553222656,
+              -2.0419797897338867
+            ]
+          },
+          "P_Blink_Medium_Red_2_25": {
+            "parent": "Root",
+            "head": [
+              5.455772793538927e-07,
+              -219.1116485595703,
+              13.500571250915527
+            ]
+          },
+          "P_Blink_Medium_White_2_35": {
+            "parent": "Root",
+            "head": [
+              2.021555019382504e-06,
+              -185.34521484375,
+              36.92348098754883
+            ]
+          },
+          "P_Blink_Medium_White_2_35.001": {
+            "parent": "Root",
+            "head": [
+              2.9007726425334113e-06,
+              -165.23106384277344,
+              36.92347717285156
+            ]
+          },
+          "P_Blink_Medium_White_2_55": {
+            "parent": "Root",
+            "head": [
+              8.755468115850817e-06,
+              -31.291234970092773,
+              33.195823669433594
+            ]
+          },
+          "P_Blink_Medium_White_2_55.001": {
+            "parent": "Root",
+            "head": [
+              8.06928892416181e-06,
+              -46.98918151855469,
+              33.17666244506836
+            ]
+          },
+          "P_Blink_Medium_White_1_45": {
+            "parent": "Root",
+            "head": [
+              1.1609409739321563e-05,
+              33.99932098388672,
+              29.419633865356445
+            ]
+          },
+          "P_Blink_Medium_White_1_45.001": {
+            "parent": "Root",
+            "head": [
+              1.1007640750904102e-05,
+              20.232452392578125,
+              29.419635772705078
+            ]
+          },
+          "P_Blink_Medium_White_1_25": {
+            "parent": "Root",
+            "head": [
+              1.1007640750904102e-05,
+              20.232444763183594,
+              -22.378931045532227
+            ]
+          },
+          "P_Blink_Medium_White_1_25.001": {
+            "parent": "Root",
+            "head": [
+              1.1609409739321563e-05,
+              33.99931335449219,
+              -22.37893295288086
+            ]
+          },
+          "P_Blink_Medium_Red_1_35": {
+            "parent": "Root",
+            "head": [
+              1.0325799848942552e-05,
+              4.633744239807129,
+              21.679737091064453
+            ]
+          },
+          "P_Blink_Medium_Red_1_55": {
+            "parent": "Root",
+            "head": [
+              1.0466374078532681e-05,
+              7.849698543548584,
+              19.373624801635742
+            ]
+          },
+          "Col": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.514655590057373
+            ]
+          },
+          "Pi_Damage_Elec_Mid_Sparse": {
+            "parent": "Col",
+            "head": [
+              -2.9681341402465478e-06,
+              -71.59469604492188,
+              1.1187418749614153e-05
+            ]
+          },
+          "HP_S": {
+            "parent": "Root",
+            "head": [
+              -7.3719265856198035e-06,
+              -39.94886016845703,
+              10.730481147766113
+            ]
+          },
+          "HP_S_Fire": {
+            "parent": "Root",
+            "head": [
+              -7.3719265856198035e-06,
+              -39.94886016845703,
+              4.170010566711426
+            ]
+          },
+          "pf_small_w": {
+            "parent": "HP_S_Fire",
+            "head": [
+              -4.110245704650879,
+              -39.9488639831543,
+              12.243117332458496
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion": {
+            "parent": "HP_S_Fire",
+            "head": [
+              12.54842472076416,
+              -39.94886779785156,
+              -9.211516380310059
+            ]
+          },
+          "IC_01_Fire": {
+            "parent": "Root",
+            "head": [
+              1.053161327035923e-06,
+              -177.2945556640625,
+              -27.9548282623291
+            ]
+          },
+          "pf_small_w.001": {
+            "parent": "IC_01_Fire",
+            "head": [
+              3.3323974609375,
+              -177.29454040527344,
+              -26.36835289001465
+            ]
+          },
+          "TL_01_Fire": {
+            "parent": "Root",
+            "head": [
+              22.806734085083008,
+              -123.21761322021484,
+              -4.16075325012207
+            ]
+          },
+          "TL_02_Fire": {
+            "parent": "Root",
+            "head": [
+              22.564708709716797,
+              -139.9982452392578,
+              -4.160750389099121
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion": {
+            "parent": "TL_02_Fire",
+            "head": [
+              15.241313934326172,
+              -139.9982452392578,
+              -4.160750389099121
+            ]
+          },
+          "TL_03_Fire": {
+            "parent": "Root",
+            "head": [
+              21.640417098999023,
+              -156.86524963378906,
+              -4.160747528076172
+            ]
+          },
+          "TL_04_Fire": {
+            "parent": "Root",
+            "head": [
+              19.759933471679688,
+              -173.70458984375,
+              -4.160745143890381
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.001": {
+            "parent": "TL_04_Fire",
+            "head": [
+              9.405920028686523,
+              -173.70458984375,
+              -4.1607465744018555
+            ]
+          },
+          "TL_05_Fire": {
+            "parent": "Root",
+            "head": [
+              -23.21703338623047,
+              -123.21761322021484,
+              -4.16075325012207
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.002": {
+            "parent": "TL_05_Fire",
+            "head": [
+              -18.14600372314453,
+              -123.21761322021484,
+              -4.16075325012207
+            ]
+          },
+          "TL_06_Fire": {
+            "parent": "Root",
+            "head": [
+              -22.501901626586914,
+              -139.9982452392578,
+              -4.160750389099121
+            ]
+          },
+          "TL_07_Fire": {
+            "parent": "Root",
+            "head": [
+              -21.721162796020508,
+              -156.86524963378906,
+              -4.160747528076172
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.003": {
+            "parent": "TL_07_Fire",
+            "head": [
+              -12.320009231567383,
+              -156.86524963378906,
+              -4.160747528076172
+            ]
+          },
+          "TL_08_Fire": {
+            "parent": "Root",
+            "head": [
+              -19.682233810424805,
+              -173.70458984375,
+              -4.160745143890381
+            ]
+          },
+          "HP_E_Fire": {
+            "parent": "Root",
+            "head": [
+              6.819419695602846e-07,
+              144.30218505859375,
+              -0.06504323333501816
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.004": {
+            "parent": "HP_E_Fire",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              13.53281021118164
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion.001": {
+            "parent": "HP_E_Fire",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              -12.004549980163574
+            ]
+          },
+          "P_Ship_Fire_Very_Small": {
+            "parent": "HP_E_Fire",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              3.3066985607147217
+            ]
+          },
+          "PE_Munificent_S.004": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              3.3066985607147217
+            ]
+          },
+          "PE_Munificent_S.005": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              -12.004549980163574
+            ]
+          },
+          "PE_Munificent_S.006": {
+            "parent": "Root",
+            "head": [
+              -4.899118266621372e-08,
+              183.10507202148438,
+              13.53281021118164
+            ]
+          },
+          "Bridge_Light": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.514655590057373
+            ]
+          },
+          "Front_Light": {
+            "parent": "Root",
+            "head": [
+              -0.004265306517481804,
+              -108.84864044189453,
+              -3.514655590057373
+            ]
+          },
+          "HP_01": {
+            "parent": "Root",
+            "head": [
+              13.500001907348633,
+              -114.53190612792969,
+              12.260634422302246
+            ]
+          },
+          "HP_02": {
+            "parent": "Root",
+            "head": [
+              -13.5,
+              -114.53190612792969,
+              12.260634422302246
+            ]
+          },
+          "HP_03": {
+            "parent": "Root",
+            "head": [
+              13.500003814697266,
+              -74.53983306884766,
+              12.260629653930664
+            ]
+          },
+          "HP_04": {
+            "parent": "Root",
+            "head": [
+              -13.499998092651367,
+              -74.53983306884766,
+              12.260629653930664
+            ]
+          },
+          "HP_05": {
+            "parent": "Root",
+            "head": [
+              17.366323471069336,
+              87.28165435791016,
+              5.423007965087891
+            ]
+          },
+          "HP_06": {
+            "parent": "Root",
+            "head": [
+              -17.366302490234375,
+              87.28165435791016,
+              5.423007965087891
+            ]
+          },
+          "Shield": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -2.4381441221521527e-07,
+              -1.8623729944229126
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "Recalcitrant_Rear_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Rear",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Rear_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Rear.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Rear_B.dds"
+          }
+        },
+        {
+          "name": "Recalcitrant_Engines_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_Engine_Exhaust",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "Engine_Exhaust.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Shadow_Rear_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Rear_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Front_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Front",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Front_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Front.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Front_B.dds"
+          }
+        },
+        {
+          "name": "Recalcitrant_Shadow_Front_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Engine_Glow_Slot0",
+          "shader": "MeshShield.fx",
+          "base": "Recalcitrant_Engine_Glow_Fancy_Yellow",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "EdgeBrightness": [
+              1.0
+            ],
+            "BaseUVScale": [
+              1.0
+            ],
+            "WaveUVScale": [
+              0.5
+            ],
+            "DistortUVScale": [
+              1.0
+            ],
+            "BaseUVScrollRate": [
+              0.0
+            ],
+            "WaveUVScrollRate": [
+              0.10000000149011612
+            ],
+            "DistortUVScrollRate": [
+              0.30000001192092896
+            ],
+            "BaseTexture": "Engine_Glow_Fancy_Yellow.tga",
+            "WaveTexture": "Engine_Glow_Blue_wave.tga",
+            "DistortionTexture": "Engine_Glow_Blue_dist.tga"
+          }
+        },
+        {
+          "name": "Recalcitrant_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Bridge_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_SeV_Munificent_Lights_4",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "SeV_Munificent_Lights_4.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Front_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_hull_lights_grid_sparse_super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "name": "Recalcitrant_Shield_Slot0",
+          "shader": "MeshShield.fx",
+          "base": "Recalcitrant_Nb_shieldbase_Green",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "EdgeBrightness": [
+              0.5
+            ],
+            "BaseUVScale": [
+              3.0
+            ],
+            "WaveUVScale": [
+              1.0
+            ],
+            "DistortUVScale": [
+              1.0
+            ],
+            "BaseUVScrollRate": [
+              0.30000001192092896
+            ],
+            "WaveUVScrollRate": [
+              0.10000000149011612
+            ],
+            "DistortUVScrollRate": [
+              0.20000000298023224
+            ],
+            "BaseTexture": "Nb_shieldbase_Green.dds",
+            "WaveTexture": "NB_SHIELDWAVE.dds",
+            "DistortionTexture": "Nb_shieldripple.dds"
+          }
+        }
+      ],
+      "bone_error": 3.7670135498046875e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser.ALO",
+      "source_bone_names": [
+        "Root",
+        "Rear",
+        "IC_01",
+        "IC_01_FP_01",
+        "IC_01_FP_02",
+        "MuzzleA_00",
+        "MuzzleA_01",
+        "MuzzleA_02",
+        "MuzzleA_03",
+        "MuzzleA_04",
+        "MuzzleA_05",
+        "HP_E",
+        "TL_01",
+        "TL_02",
+        "TL_03",
+        "TL_04",
+        "TL_05",
+        "TL_06",
+        "TL_07",
+        "TL_08",
+        "Engines",
+        "Shadow_Rear",
+        "Rear_Light",
+        "Front",
+        "Shadow_Front",
+        "Engine_Glow",
+        "PE_Munificent_S",
+        "PE_Munificent_S.001",
+        "PE_Munificent_S.002",
+        "PE_Munificent_S.003",
+        "P_Blink_Medium_Red_6_15",
+        "P_Blink_Medium_White_6_25",
+        "P_Blink_Medium_White_6_25.001",
+        "P_Blink_Medium_Red_6_15.001",
+        "P_Blink_Medium_Red_6_15.002",
+        "P_Blink_Medium_White_6_25.002",
+        "P_Blink_Medium_Red_5_35",
+        "P_Blink_Medium_White_5_25",
+        "P_Blink_Medium_White_5_25.001",
+        "P_Blink_Medium_Red_5_35.001",
+        "P_Blink_Medium_Red_2_45",
+        "P_Blink_Medium_Red_2_45.001",
+        "P_Blink_Medium_Red_2_25",
+        "P_Blink_Medium_White_2_35",
+        "P_Blink_Medium_White_2_35.001",
+        "P_Blink_Medium_White_2_55",
+        "P_Blink_Medium_White_2_55.001",
+        "P_Blink_Medium_White_1_45",
+        "P_Blink_Medium_White_1_45.001",
+        "P_Blink_Medium_White_1_25",
+        "P_Blink_Medium_White_1_25.001",
+        "P_Blink_Medium_Red_1_35",
+        "P_Blink_Medium_Red_1_55",
+        "Col",
+        "Pi_Damage_Elec_Mid_Sparse",
+        "HP_S",
+        "HP_S_Fire",
+        "pf_small_w",
+        "P_Ship_Fire_Small_Explosion",
+        "IC_01_Fire",
+        "pf_small_w.001",
+        "TL_01_Fire",
+        "TL_02_Fire",
+        "P_Ship_Fire_Very_Small_Explosion",
+        "TL_03_Fire",
+        "TL_04_Fire",
+        "P_Ship_Fire_Very_Small_Explosion.001",
+        "TL_05_Fire",
+        "P_Ship_Fire_Very_Small_Explosion.002",
+        "TL_06_Fire",
+        "TL_07_Fire",
+        "P_Ship_Fire_Very_Small_Explosion.003",
+        "TL_08_Fire",
+        "HP_E_Fire",
+        "P_Ship_Fire_Very_Small_Explosion.004",
+        "P_Ship_Fire_Small_Explosion.001",
+        "P_Ship_Fire_Very_Small",
+        "PE_Munificent_S.004",
+        "PE_Munificent_S.005",
+        "PE_Munificent_S.006",
+        "Bridge_Light",
+        "Front_Light",
+        "HP_01",
+        "HP_02",
+        "HP_03",
+        "HP_04",
+        "HP_05",
+        "HP_06",
+        "Shield"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/Recalcitrant.fbx",
+      "geometry_checks": [
+        {
+          "name": "Rear",
+          "corners": 58026,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Engines",
+          "corners": 2058,
+          "position_error": 4.354119300842285e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Shadow_Rear",
+          "corners": 50529,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Rear_Light",
+          "corners": 1068,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Front",
+          "corners": 25254,
+          "position_error": 3.409385681152344e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Shadow_Front",
+          "corners": 15246,
+          "position_error": 3.409385681152344e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Engine_Glow",
+          "corners": 2940,
+          "position_error": 4.436727613210678e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 29751,
+          "position_error": null,
+          "uv_error": null,
+          "verified": false,
+          "exception": "FBX re-tessellates the importer-welded collision helper with one fewer triangle",
+          "fbxCorners": 29748
+        },
+        {
+          "name": "Bridge_Light",
+          "corners": 144,
+          "position_error": 3.24249267578125e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Front_Light",
+          "corners": 84,
+          "position_error": 3.0517578125e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Shield",
+          "corners": 1320,
+          "position_error": 9.775161743164062e-06,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret01": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret01_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret01_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.002",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret01_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret01_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret01_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret01_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret01_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret01_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret01_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.002",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret01_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret01_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret01_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret01_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret01_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret01_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_01.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret01.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 5.960464477539062e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret02": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.002",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret02_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.002",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret02_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.004",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret02_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.002",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret02_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.002",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret02_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret02_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret02_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret02_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret02_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret02_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret02_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret02_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret02_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret02_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret02_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_02.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret02.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret03": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.004",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret03_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.004",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret03_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.006",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret03_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.004",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret03_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.004",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret03_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret03_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret03_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret03_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret03_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret03_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret03_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret03_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret03_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret03_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret03_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_03.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret03.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret04": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.006",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret04_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.006",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret04_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.008",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret04_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.006",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret04_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.006",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret04_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret04_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret04_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret04_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret04_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret04_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret04_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret04_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret04_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret04_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret04_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_04.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret04.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret05": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.008",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret05_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.008",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret05_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.010",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret05_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.008",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret05_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.008",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret05_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret05_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret05_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret05_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret05_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret05_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret05_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret05_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret05_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret05_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret05_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_05.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret05.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret06": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.010",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret06_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.010",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret06_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.012",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret06_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.010",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret06_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.010",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret06_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret06_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret06_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret06_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret06_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret06_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret06_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret06_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret06_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret06_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret06_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_06.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret06.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret07": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.012",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret07_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.012",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret07_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.014",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret07_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.012",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret07_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.012",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret07_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret07_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret07_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret07_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret07_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret07_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret07_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret07_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret07_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret07_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret07_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_07.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret07.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    },
+    "RecalcitrantTurret08": {
+      "before": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.014",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret08_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.014",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret08_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.016",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret08_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.014",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret08_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.014",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret08_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.0073469155468046665,
+              -0.5196072459220886,
+              2.048081874847412
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649134993553162,
+              -4.839262962341309,
+              2.0480804443359375
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409566640853882,
+              -4.839266777038574,
+              2.0480797290802
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007345601916313171,
+              -4.868178844451904,
+              2.0480797290802
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418977864086628,
+              0.6014102697372437,
+              0.012341156601905823
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret": {
+            "exported_name": "Turret.001",
+            "vertices": 1110,
+            "triangles": 506,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret08_Turret_Slot0"
+            ],
+            "slot_triangles": [
+              506
+            ]
+          },
+          "Barrel": {
+            "exported_name": "Barrel.001",
+            "vertices": 344,
+            "triangles": 140,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "RecalcitrantTurret08_Barrel_Slot0"
+            ],
+            "slot_triangles": [
+              140
+            ]
+          },
+          "Col": {
+            "exported_name": "Col.001",
+            "vertices": 8,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "RecalcitrantTurret08_Col_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          },
+          "Turret_Shadow": {
+            "exported_name": "Turret_Shadow.001",
+            "vertices": 321,
+            "triangles": 594,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "RecalcitrantTurret08_Turret_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              594
+            ]
+          },
+          "Light": {
+            "exported_name": "Light.001",
+            "vertices": 8,
+            "triangles": 4,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "RecalcitrantTurret08_Light_Slot0"
+            ],
+            "slot_triangles": [
+              4
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -0.007346990052610636,
+              -0.51960688829422,
+              2.048082113265991
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -0.7649142146110535,
+              -4.83926248550415,
+              2.048081398010254
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              0.7409558892250061,
+              -4.839265823364258,
+              2.0480804443359375
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              -0.007346441503614187,
+              -4.868177890777588,
+              2.0480806827545166
+            ]
+          },
+          "Col": {
+            "parent": "Turret",
+            "head": [
+              -0.0006418392295017838,
+              0.6014102697372437,
+              0.012341058813035488
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Light": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "RecalcitrantTurret08_Turret_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret08_Barrel_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+          "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+            "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+          }
+        },
+        {
+          "name": "RecalcitrantTurret08_Col_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret08_Turret_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "RecalcitrantTurret08_Light_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 1.588677512767441e-06,
+      "parenting_error": 5.960464477539063e-08,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Commerce_Guild_Light_Cruiser_TL_08.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret",
+        "Barrel",
+        "FP_01",
+        "FP_02",
+        "FP_03",
+        "Col",
+        "Turret_Shadow",
+        "Light"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/RecalcitrantImport/Output/RecalcitrantTurret08.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ]
+    }
+  },
+  "materials": [
+    {
+      "name": "Recalcitrant_Rear_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Rear",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Rear_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Rear.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Rear_B.dds"
+      }
+    },
+    {
+      "name": "Recalcitrant_Engines_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_Engine_Exhaust",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "Engine_Exhaust.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Shadow_Rear_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Rear_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Front_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Front",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Front_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Front.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Front_B.dds"
+      }
+    },
+    {
+      "name": "Recalcitrant_Shadow_Front_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Engine_Glow_Slot0",
+      "shader": "MeshShield.fx",
+      "base": "Recalcitrant_Engine_Glow_Fancy_Yellow",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          1.0
+        ],
+        "BaseUVScale": [
+          1.0
+        ],
+        "WaveUVScale": [
+          0.5
+        ],
+        "DistortUVScale": [
+          1.0
+        ],
+        "BaseUVScrollRate": [
+          0.0
+        ],
+        "WaveUVScrollRate": [
+          0.10000000149011612
+        ],
+        "DistortUVScrollRate": [
+          0.30000001192092896
+        ],
+        "BaseTexture": "Engine_Glow_Fancy_Yellow.tga",
+        "WaveTexture": "Engine_Glow_Blue_wave.tga",
+        "DistortionTexture": "Engine_Glow_Blue_dist.tga"
+      }
+    },
+    {
+      "name": "Recalcitrant_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Bridge_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_SeV_Munificent_Lights_4",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "SeV_Munificent_Lights_4.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Front_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_hull_lights_grid_sparse_super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Recalcitrant_Shield_Slot0",
+      "shader": "MeshShield.fx",
+      "base": "Recalcitrant_Nb_shieldbase_Green",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "EdgeBrightness": [
+          0.5
+        ],
+        "BaseUVScale": [
+          3.0
+        ],
+        "WaveUVScale": [
+          1.0
+        ],
+        "DistortUVScale": [
+          1.0
+        ],
+        "BaseUVScrollRate": [
+          0.30000001192092896
+        ],
+        "WaveUVScrollRate": [
+          0.10000000149011612
+        ],
+        "DistortUVScrollRate": [
+          0.20000000298023224
+        ],
+        "BaseTexture": "Nb_shieldbase_Green.dds",
+        "WaveTexture": "NB_SHIELDWAVE.dds",
+        "DistortionTexture": "Nb_shieldripple.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret01_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret01_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret01_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret01_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret01_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret02_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret02_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret02_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret02_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret02_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret03_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret03_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret03_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret03_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret03_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret04_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret04_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret04_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret04_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret04_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret05_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret05_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret05_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret05_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret05_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret06_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret06_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret06_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret06_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret06_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret07_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret07_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret07_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret07_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret07_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret08_Turret_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret08_Barrel_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Recalcitrant_SeV_Commerce_Guild_LC_Turret",
+      "normal": "Recalcitrant_SeV_Commerce_Guild_LC_Turret_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Commerce_Guild_LC_Turret.dds",
+        "NormalTexture": "SeV_Commerce_Guild_LC_Turret_B.dds"
+      }
+    },
+    {
+      "name": "RecalcitrantTurret08_Col_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret08_Turret_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "RecalcitrantTurret08_Light_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Recalcitrant_NV_Hull_Lights_Grid_Sparse_Super",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "NV_Hull_Lights_Grid_Sparse_Super.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "abilities": [
+    "TIEAvengerPowerToWeapons"
+  ],
+  "simulatorHp": [
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    575.0,
+    350.0,
+    350.0
+  ],
+  "shipId": 113,
+  "hardpoints": 17,
+  "weapons": 15,
+  "hull": 2800.0,
+  "shields": 2500.0,
+  "shieldRegen": 90.0,
+  "hardpointHp": [
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    270.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    575.0,
+    350.0,
+    350.0
+  ],
+  "weaponProfiles": [
+    {
+      "type": 5,
+      "caliber": "Medium",
+      "name": "Medium Dual Turbolaser"
+    },
+    {
+      "type": 93,
+      "caliber": "Medium",
+      "name": "Medium Missile Launcher"
+    },
+    {
+      "type": 37,
+      "caliber": "Medium",
+      "name": "Medium Dual Ion Cannon"
+    }
+  ],
+  "passed": true
+}

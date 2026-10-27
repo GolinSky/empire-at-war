@@ -1,0 +1,446 @@
+{
+  "success": true,
+  "models": {
+    "Recalcitrant": {
+      "meshes": [
+        {
+          "name": "Rear",
+          "corners": 58026,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Engines",
+          "corners": 2058,
+          "position_error": 4.354119300842285e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Shadow_Rear",
+          "corners": 50529,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Rear_Light",
+          "corners": 1068,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Front",
+          "corners": 25254,
+          "position_error": 3.409385681152344e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Shadow_Front",
+          "corners": 15246,
+          "position_error": 3.409385681152344e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Engine_Glow",
+          "corners": 2940,
+          "position_error": 4.436727613210678e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 29751,
+          "position_error": null,
+          "uv_error": null,
+          "verified": false,
+          "exception": "FBX re-tessellates the importer-welded collision helper with one fewer triangle",
+          "fbxCorners": 29748
+        },
+        {
+          "name": "Bridge_Light",
+          "corners": 144,
+          "position_error": 3.24249267578125e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Front_Light",
+          "corners": 84,
+          "position_error": 3.0517578125e-05,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Shield",
+          "corners": 1320,
+          "position_error": 9.775161743164062e-06,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 89,
+      "rawSourceBonePositionError": 4.5220183721994545e-06,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": [
+        {
+          "name": "Col",
+          "corners": 29751,
+          "position_error": null,
+          "uv_error": null,
+          "verified": false,
+          "exception": "FBX re-tessellates the importer-welded collision helper with one fewer triangle",
+          "fbxCorners": 29748
+        }
+      ]
+    },
+    "RecalcitrantTurret01": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 5.960464477539062e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret02": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret03": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret04": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret05": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret06": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret07": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    },
+    "RecalcitrantTurret08": {
+      "meshes": [
+        {
+          "name": "Turret",
+          "corners": 1518,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Barrel",
+          "corners": 420,
+          "position_error": 1.3113021850585938e-06,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Col",
+          "corners": 36,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Turret_Shadow",
+          "corners": 1782,
+          "position_error": 8.083879947662354e-07,
+          "uv_error": 0,
+          "verified": true
+        },
+        {
+          "name": "Light",
+          "corners": 12,
+          "position_error": 7.152557373046875e-07,
+          "uv_error": 0,
+          "verified": true
+        }
+      ],
+      "rawSourceBoneCount": 9,
+      "rawSourceBonePositionError": 4.937951487704595e-07,
+      "rawSourceParentsMatch": true,
+      "transportExceptions": []
+    }
+  }
+}

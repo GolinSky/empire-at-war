@@ -235,6 +235,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 6659a938f240057468564cb0ee980865,
           type: 3}
+    - key: 113
+      value:
+        matchups: {fileID: 11400000, guid: 097392c440411f24986bc3e16be0db4e, type: 2}
+        description: 2,800 hull and 2,500 shields with cruiser shield regeneration.
+          Eight dual turbolaser batteries, six concussion missile launchers and one
+          dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
+          including engines and shield generator. Power to Weapons boosts firing
+          rate at the cost of speed and increased incoming damage.
+        role: Frigate / Missile support
+        iconKey: cc08d3ef304a00a4999b7602cc4d17d0:21300000
+        isHero: 0
+        <Name>k__BackingField: Recalcitrant-class Light Cruiser
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 3600
+        <BuildTime>k__BackingField: 40
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: cc08d3ef304a00a4999b7602cc4d17d0,
+          type: 3}
   squadrons:
     keyValue:
     - key: 100

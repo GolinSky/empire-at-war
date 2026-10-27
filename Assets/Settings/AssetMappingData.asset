@@ -1400,3 +1400,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: RecalcitrantShipView
+      value:
+        m_AssetGUID: 685827b325ffd064db3c88a889cc7c42
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: RecalcitrantShipData
+      value:
+        m_AssetGUID: 57ce23ced97e9c24494fcd967c4a2fa0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
