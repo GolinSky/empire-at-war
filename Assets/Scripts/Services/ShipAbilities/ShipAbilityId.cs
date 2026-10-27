@@ -45,5 +45,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         NebulaOverchargeWeapons = 38,
         AssaultFrigateMkIIPowerToShields = 45,
         FighterCoordination = 52,
+        WavecrestPowerToShields = 53,
     }
 }

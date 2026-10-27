@@ -280,10 +280,10 @@
 ### Features
 
 - [x] **Import Wavecrest-class frigate into CIS** → [[Done/Features/Wavecrest_Import|Wavecrest Import]]
-  - 2026-10-27: 17 targetable mounts, Medium weapons, exact HP, 3100 hull/1500 shields/30 regeneration; 2 active Vultures + 1 reserve. Saved asset/reference/geometry checks and renders pass; no automated tests or Play Mode run.
+  - 2026-10-27: 17 mounts and Medium weapons; source art/data integration verified. Power to Shields added:20s active/60s recovery,300 shields/s,20% speed penalty; saved bindings/audio checks pass. No Play Mode or automated Unity tests run.
 
 - [x] **Add Peleset-class Cruiser to CIS** → [[Done/Features/Peleset_Import|Peleset Import]]
-  - Completed 2026-10-27: complete art/roster integration, 15 targetable mounts, Medium weapons, cruiser regeneration and per-mount 500 HP turrets. Follow-up: shared shield/weapon power abilities added and saved references verified.
+  - Completed 2026-10-27: complete art/roster integration, 15 targetable mounts, Medium weapons, cruiser regeneration and per-mount 500 HP turrets.
   - Source round trip, saved asset/HP/reference checks and renders pass; no automated tests or Play Mode run.
 
 - [x] **Import Invincible as a separate Separatist ship** → [[Done/Features/Invincible_Import|Invincible Import]]

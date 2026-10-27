@@ -655,6 +655,22 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801467062609510488
+    - key: 53
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Power to Shields
+        description: Shield regeneration increases tenfold to 300/s and movement
+          speed falls by 20% for 20 seconds. Weapon damage and fire rate are unchanged.
+          Recovers 60 seconds after expiry.
+        duration: 20
+        recoveryDelay: 60
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 6801467404361138251
   references:
     version: 2
     RefIds:
@@ -955,6 +971,16 @@ MonoBehaviour:
           fireDelayMultiplier: 0.4
           speedMultiplier: 1
           shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1
+    - rid: 6801467404361138251
+      type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 10
           damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,

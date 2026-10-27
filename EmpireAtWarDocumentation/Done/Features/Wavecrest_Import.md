@@ -9,6 +9,7 @@ completed: 2026-10-27
 - Added `wavecrest_frigate` to CIS as `ShipType.Wavecrest = 111` with Medium-caliber weapons.
 
 ## Implementation
+- [x] Power to Shields follow-up: dedicated ability53, active20s/recovery60s, regeneration×10 (300/s), speed×0.8, unchanged weapons; shield icon/defensive AI/audio bound. Saved ability verification passed2026-10-27; no Play Mode or automated tests run.
 - [x] Converted original hull, eight attached turret models, hidden engine helper and three textures; source hashes/UVs/hierarchy verified.
 - [x] Built own gameplay, fitted shield/collision/selection, wreck, placement preview and actual-model icon.
 - [x] Registered CIS roster, data, Addressables, reinforcement, audio and tooltip/icon consumers.
@@ -27,7 +28,9 @@ completed: 2026-10-27
 ## Rules
 - Shared Medium profiles govern combat timing/damage/range; source XML values retained in audit.
 - No automated Unity tests or Play Mode run, per import guide; runtime balance remains unverified.
-- Source armor strings and unrequested ability omitted; existing CIS Providence audio reused; matchup claims empty.
+- Source armor strings omitted; existing CIS Providence audio reused; matchup claims empty.
+
+- Source shield regen interval×0.1 maps to continuous regeneration×10; source energy modifiers have no project energy-system equivalent.
 
 ## Files
 - Source: `D:/SteamLibrary/steamapps/workshop/content/32470/1129810972/Data/XML/Units_Space_cis_Wavecrest_Frigate.xml`.

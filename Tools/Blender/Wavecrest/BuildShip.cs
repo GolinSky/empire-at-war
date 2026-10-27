@@ -165,7 +165,8 @@ public static class BuildWavecrestShip
         data.FindProperty("<HeightTier>k__BackingField").intValue = 5;
         Set(data, "Range", 550); Set(data, "HullBottom", bottom); Set(data, "HullTop", top); Set(data, "NavigationRadius", radius);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wreck.targetObject;
-        data.FindProperty("abilities").arraySize = 0;
+        data.FindProperty("abilities").arraySize = 1;
+        data.FindProperty("abilities").GetArrayElementAtIndex(0).intValue = 53;
         var bays = data.FindProperty("hangarBays"); bays.arraySize = 1;
         bays.GetArrayElementAtIndex(0).FindPropertyRelative("squadronType").intValue = 102;
         bays.GetArrayElementAtIndex(0).FindPropertyRelative("reserve").intValue = 3;

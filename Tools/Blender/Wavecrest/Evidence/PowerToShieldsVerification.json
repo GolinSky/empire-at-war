@@ -1,0 +1,10 @@
+{
+  "abilityId": 53,
+  "duration": 20.0,
+  "recovery": 60.0,
+  "shieldRegen": 300,
+  "speedMultiplier": 0.8,
+  "damageMultiplier": 1.0,
+  "fireDelayMultiplier": 1.0,
+  "passed": true
+}

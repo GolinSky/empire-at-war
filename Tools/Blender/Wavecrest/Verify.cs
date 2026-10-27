@@ -59,7 +59,7 @@ public static class VerifyWavecrest
         Check(anchors.Distinct().Count()==17 && anchors.All(a => a.IsChildOf(view.transform)),"Distinct owned destruction anchors for every mount");
         var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
         Check(data.Hull==3100 && data.Shields==1500 && data.ShieldRegenTier==ShieldRegenTier.Frigate && data.ShieldRegenerateValue==30,"Hull/shields/frigate regeneration");
-        Check(data.ShipClass==ShipClass.Frigate && data.Speed==29 && data.RotationSpeed==60 && data.HangarBays.Count==1 && data.Abilities.Count==0,"Frigate movement and hangar");
+        Check(data.ShipClass==ShipClass.Frigate && data.Speed==29 && data.RotationSpeed==60 && data.HangarBays.Count==1 && data.Abilities.Count==1 && (int)data.Abilities.Single()==53,"Frigate movement and hangar");
         var bay = data.HangarBays.Single();
         Check((int)bay.SquadronType==102 && bay.Reserve==3 && bay.MaxActive==2,"Two active Vulture squadrons, three total launches");
         Check(data.HangarInitialDelay==5 && data.HangarLaunchInterval==5,"Source five-second squadron launch interval");
