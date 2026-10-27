@@ -14,6 +14,7 @@ completed: 2026-10-27
 ## Decision
 
 - Hull `7000`; shields `3000`; cruiser regeneration `90 shields/s`.
+- Follow-up 2026-10-27: shared `BoostShieldPower` + `BoostWeaponPower`, matching Rothana. Saved loadout and catalog definitions verified; builder/verifier preserve both abilities.
 - All 13 weapon mounts Medium: six dual turbolasers, two point defense, two ions, two concussion launchers, one proton launcher.
 - Weapon HP `400`; two turret weapons `500`; engine and shield HP `800` each. User approved per-mount HP override; zero retains existing type defaults.
 - Shared weapon-family profiles supply combat balance. Source range/burst/recharge remain provenance; armor strings and planet requirements omitted.

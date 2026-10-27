@@ -31,6 +31,7 @@
 ## Gameplay choices
 
 - Hull `7000`; shields `3000`; cruiser regeneration tier `90 shields/s`.
+- Abilities: shared `BoostShieldPower` and `BoostWeaponPower`, matching Rothana's power abilities.
 - 15 targetable mounts: 6 dual turbolasers, 2 point defense, 2 ion, 2 concussion launchers, 1 proton launcher, engines, shield generator.
 - All weapon calibers Medium. Shared weapon-family profiles define combat balance; source range/burst/recharge values remain provenance, not new weapon profiles.
 - Weapon HP `400`, two attached turrets `500`, engines/shield `800`. Per-mount `healthOverride` preserves default health for other ships.

@@ -55,7 +55,8 @@ public static class VerifyPeleset
         }
         var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
         Check(data.Hull==7000 && data.Shields==3000 && data.ShieldRegenTier==ShieldRegenTier.Cruiser && data.ShieldRegenerateValue==90,"Hull/shields/cruiser regeneration");
-        Check(data.ShipClass==ShipClass.Cruiser && data.Speed==19 && data.HangarBays.Count==0 && data.Abilities.Count==0,"Cruiser movement/no unsupported hangar or abilities");
+        Check(data.ShipClass==ShipClass.Cruiser && data.Speed==19 && data.HangarBays.Count==0,"Cruiser movement/no unsupported hangar");
+        Check(data.Abilities.SequenceEqual(new[] {EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower, EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostWeaponPower}),"Shield and weapon power abilities");
         var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
         var model = new HealthModel(data,matrix,new CombatModifiers());
         var models = hardpoints.Select(p=>new HardPointModel(p.HardPointType,p.Id,p.UnlockLevel,p.HealthOverride)).ToArray();

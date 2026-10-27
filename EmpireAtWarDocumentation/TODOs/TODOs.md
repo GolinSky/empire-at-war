@@ -283,7 +283,7 @@
   - 2026-10-27: 17 targetable mounts, Medium weapons, exact HP, 3100 hull/1500 shields/30 regeneration; 2 active Vultures + 1 reserve. Saved asset/reference/geometry checks and renders pass; no automated tests or Play Mode run.
 
 - [x] **Add Peleset-class Cruiser to CIS** → [[Done/Features/Peleset_Import|Peleset Import]]
-  - Completed 2026-10-27: complete art/roster integration, 15 targetable mounts, Medium weapons, cruiser regeneration and per-mount 500 HP turrets.
+  - Completed 2026-10-27: complete art/roster integration, 15 targetable mounts, Medium weapons, cruiser regeneration and per-mount 500 HP turrets. Follow-up: shared shield/weapon power abilities added and saved references verified.
   - Source round trip, saved asset/HP/reference checks and renders pass; no automated tests or Play Mode run.
 
 - [x] **Import Invincible as a separate Separatist ship** → [[Done/Features/Invincible_Import|Invincible Import]]

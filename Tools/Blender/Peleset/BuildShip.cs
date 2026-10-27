@@ -129,7 +129,10 @@ public static class BuildPelesetShip
         data.FindProperty("<HeightTier>k__BackingField").intValue = 4;
         Set(data, "Range", 650); Set(data, "HullBottom", bottom); Set(data, "HullTop", top); Set(data, "NavigationRadius", radius);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wreck.targetObject;
-        data.FindProperty("abilities").arraySize = 0;
+        var abilities = data.FindProperty("abilities");
+        abilities.arraySize = 2;
+        abilities.GetArrayElementAtIndex(0).intValue = (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower;
+        abilities.GetArrayElementAtIndex(1).intValue = (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostWeaponPower;
         data.FindProperty("hangarBays").arraySize = 0;
         var loadout = data.FindProperty("weaponLoadout");
         var groups = types.GroupBy(t => t).ToArray(); loadout.arraySize = groups.Length;
