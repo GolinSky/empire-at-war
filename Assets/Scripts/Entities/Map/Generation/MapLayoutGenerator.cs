@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 using Random = System.Random;
@@ -34,13 +33,11 @@ namespace EmpireAtWar.Entities.Map.Generation
             Random random)
         {
             MapSizeSettings size = _settings.GetSize(mapSize);
-            float difficultyShare = Mathf.InverseLerp(
-                (int)EnemyAiDifficulty.Easy, (int)EnemyAiDifficulty.UltraHard, (int)GetHardestAi(players));
             List<MapNode> nodes = new List<MapNode>();
             for (int attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt++)
             {
                 MapStation[] stations = _stationPlacer.Place(size.Bounds, players, random);
-                if (!_pointOfInterestPlacer.TryPlace(size, stations, difficultyShare, random, nodes))
+                if (!_pointOfInterestPlacer.TryPlace(size, stations, random, nodes))
                 {
                     continue;
                 }
@@ -58,21 +55,6 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             throw new InvalidOperationException(
                 $"{mapSize} map settings leave no room for its zones and sites after {MAX_LAYOUT_ATTEMPTS} attempts.");
-        }
-
-        // Home mines sit farther from every station the harder the strongest AI is.
-        private static EnemyAiDifficulty GetHardestAi(IReadOnlyList<PlayerSlot> players)
-        {
-            EnemyAiDifficulty hardest = EnemyAiDifficulty.Easy;
-            foreach (PlayerSlot player in players)
-            {
-                if (player.IsAi && player.Difficulty > hardest)
-                {
-                    hardest = player.Difficulty;
-                }
-            }
-
-            return hardest;
         }
 
         private static Dictionary<PlayerId, Vector3> CreateStationPositions(IReadOnlyList<MapStation> stations)

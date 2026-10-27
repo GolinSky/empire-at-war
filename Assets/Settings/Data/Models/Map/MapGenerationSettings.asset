@@ -20,7 +20,7 @@ MonoBehaviour:
           <Min>k__BackingField: {x: -2000, y: -2000}
           <Max>k__BackingField: {x: 2000, y: 2000}
         <CapturableZoneCount>k__BackingField: 2
-        <MiningSiteCount>k__BackingField: 8
+        <MiningPointCount>k__BackingField: 6
         <CentralMiningPairCount>k__BackingField: 1
         <BattleSiteCount>k__BackingField: 2
         <PointSpacing>k__BackingField: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
           <Min>k__BackingField: {x: -3000, y: -3000}
           <Max>k__BackingField: {x: 3000, y: 3000}
         <CapturableZoneCount>k__BackingField: 3
-        <MiningSiteCount>k__BackingField: 10
+        <MiningPointCount>k__BackingField: 8
         <CentralMiningPairCount>k__BackingField: 1
         <BattleSiteCount>k__BackingField: 2
         <PointSpacing>k__BackingField: 120
@@ -70,7 +70,7 @@ MonoBehaviour:
           <Min>k__BackingField: {x: -4500, y: -4500}
           <Max>k__BackingField: {x: 4500, y: 4500}
         <CapturableZoneCount>k__BackingField: 9
-        <MiningSiteCount>k__BackingField: 14
+        <MiningPointCount>k__BackingField: 12
         <CentralMiningPairCount>k__BackingField: 2
         <BattleSiteCount>k__BackingField: 4
         <PointSpacing>k__BackingField: 300
@@ -138,11 +138,9 @@ MonoBehaviour:
         <IsTumbled>k__BackingField: 1
   <FieldFloor>k__BackingField: -150
   <FieldCeiling>k__BackingField: 110
-  <StationEdgeDistance>k__BackingField: 150
+  <StationEdgeDistance>k__BackingField: 300
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 20
-  <HomeMiningAngle>k__BackingField: 5
-  <HomeMiningSitesPerStation>k__BackingField: 2
   <CentralRegionShare>k__BackingField: 0.15
   <PlanetBorderInset>k__BackingField: 0.25
   <ExtraLaneChance>k__BackingField: 0.35

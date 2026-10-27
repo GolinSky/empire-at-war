@@ -29,18 +29,22 @@ namespace EmpireAtWar.Tests.Editor
 
         private const float TOLERANCE = 0.01f;
 
+        // Neighbouring sites of one mining point keep a 15-unit gap; anything wider belongs to another point.
+        private const float MINING_SITE_GAP = 15f;
+
         private MapGenerationSettings _settings;
+        private MapFeatureRadii _radii;
         private MapLayoutGenerator _generator;
 
         [SetUp]
         public void SetUp()
         {
             _settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
-            MapFeatureRadii radii = new MapFeatureRadii(
+            _radii = new MapFeatureRadii(
                 AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH).Radius,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH).Radius);
-            _generator = new MapLayoutGenerator(_settings, radii);
+            _generator = new MapLayoutGenerator(_settings, _radii);
         }
 
         [TestCase(MapSize.Medium, 1.5f)]
@@ -83,7 +87,8 @@ namespace EmpireAtWar.Tests.Editor
                         }
 
                         Assert.That(layout.Zones.Count, Is.EqualTo(size.CapturableZoneCount + 2));
-                        Assert.That(layout.Sites.Count, Is.EqualTo(size.MiningSiteCount + size.BattleSiteCount));
+                        Assert.That(layout.Sites.Count, Is.EqualTo(
+                            size.MiningPointCount * PointOfInterestPlacer.SITES_PER_MINING_POINT + size.BattleSiteCount));
                     }
                 }
             }
@@ -132,54 +137,64 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(MapSize.Small)]
-        [TestCase(MapSize.Medium)]
-        [TestCase(MapSize.Large)]
-        public void HomeMining_IsFartherOnHarderDifficulty(MapSize mapSize)
-        {
-            float easy = 0f;
-            float ultraHard = 0f;
-            for (int seed = 0; seed < SEED_COUNT; seed++)
-            {
-                easy += GetClosestMiningDistance(Generate(mapSize, EnemyAiDifficulty.Easy, seed));
-                ultraHard += GetClosestMiningDistance(Generate(mapSize, EnemyAiDifficulty.UltraHard, seed));
-            }
-
-            Assert.That(ultraHard, Is.GreaterThan(easy));
-        }
-
         [Test]
-        public void HomeMining_EachStationKeepsItsSitesNearby()
+        public void HomeMining_ThreeSitesHugTheBackOfEachStation()
         {
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
-                foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
+                for (int seed = 0; seed < SEED_COUNT; seed++)
                 {
-                    for (int seed = 0; seed < SEED_COUNT; seed++)
+                    PlayerRoster duel = TestPlayers.CreateDuel(EnemyAiDifficulty.Medium);
+                    MapLayout layout = _generator.Generate(mapSize, duel.Players, new Random(seed));
+                    Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
+                    foreach (PlayerSlot player in duel.Players)
                     {
-                        MapLayout layout = Generate(mapSize, difficulty, seed);
-                        Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
-                        foreach (PlayerId owner in new[] { TestPlayers.Human, TestPlayers.Enemy })
+                        Vector3 station = layout.GetStationPosition(player.Id);
+                        station.y = 0f;
+                        List<Vector3> mines = GetMiningSites(layout);
+                        mines.Sort((first, second) =>
+                            PlanarGeometry.Distance(station, first).CompareTo(PlanarGeometry.Distance(station, second)));
+                        float gapLimit = _settings.ZoneClearance + MINING_SITE_GAP + TOLERANCE;
+                        for (int i = 0; i < PointOfInterestPlacer.SITES_PER_MINING_POINT; i++)
                         {
-                            Vector3 station = layout.GetStationPosition(owner);
-                            List<float> distances = new List<float>();
-                            foreach (SiteSpot site in layout.Sites)
+                            string label = $"{mapSize} seed {seed} {player.Id} home mine {i}";
+                            float gap = PlanarGeometry.Distance(station, mines[i]) -
+                                _settings.GetStationRadius(player.Faction) - _radii.MiningSite;
+                            Assert.That(gap, Is.LessThanOrEqualTo(gapLimit), label);
+                            // Behind the station: on the far side from the map center, toward the corner.
+                            Assert.That(Vector3.Dot(mines[i] - station, center - station), Is.LessThan(0f), label);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void MiningSites_ComeInClustersOfThree()
+        {
+            float neighbourDistance = 2f * _radii.MiningSite + MINING_SITE_GAP + TOLERANCE;
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            {
+                for (int seed = 0; seed < SEED_COUNT; seed++)
+                {
+                    List<Vector3> mines = GetMiningSites(Generate(mapSize, EnemyAiDifficulty.Medium, seed));
+                    // Sites chained by neighbour gaps form one point: a triangle, or an arc behind a station.
+                    foreach (Vector3 mine in mines)
+                    {
+                        List<Vector3> cluster = new List<Vector3> { mine };
+                        for (int i = 0; i < cluster.Count; i++)
+                        {
+                            foreach (Vector3 other in mines)
                             {
-                                if (site.FacilityType == SiteFacilityType.Mining)
+                                if (!cluster.Contains(other) && PlanarGeometry.Distance(cluster[i], other) <= neighbourDistance)
                                 {
-                                    distances.Add(PlanarGeometry.Distance(station, site.Center));
+                                    cluster.Add(other);
                                 }
                             }
-
-                            distances.Sort();
-                            // Home mines sit nearer their station than the contested map center.
-                            float limit = PlanarGeometry.Distance(station, center) * 0.5f;
-                            for (int i = 0; i < _settings.HomeMiningSitesPerStation; i++)
-                            {
-                                Assert.That(distances[i], Is.LessThan(limit),
-                                    $"{mapSize} {difficulty} seed {seed} {owner} home mine {i}");
-                            }
                         }
+
+                        Assert.That(cluster.Count, Is.EqualTo(PointOfInterestPlacer.SITES_PER_MINING_POINT),
+                            $"{mapSize} seed {seed} mine at {mine}");
                     }
                 }
             }
@@ -191,10 +206,13 @@ namespace EmpireAtWar.Tests.Editor
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
                 MapSizeSettings size = _settings.GetSize(mapSize);
-                Vector2 regionHalfSize = (size.Bounds.Max - size.Bounds.Min) * _settings.CentralRegionShare;
+                // Point centers stay inside the region; their sites reach out by the site triangle's circumradius.
+                float siteSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) / Mathf.Sqrt(3f);
+                Vector2 regionHalfSize = (size.Bounds.Max - size.Bounds.Min) * _settings.CentralRegionShare +
+                    Vector2.one * siteSpread;
                 Assert.That(size.CentralMiningPairCount, Is.GreaterThan(0), $"{mapSize}");
                 Assert.That(size.CentralMiningPairCount,
-                    Is.LessThanOrEqualTo((size.MiningSiteCount - 2 * _settings.HomeMiningSitesPerStation) / 2), $"{mapSize}");
+                    Is.LessThanOrEqualTo((size.MiningPointCount - 2) / 2), $"{mapSize}");
                 for (int seed = 0; seed < SEED_COUNT; seed++)
                 {
                     MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, seed);
@@ -210,7 +228,8 @@ namespace EmpireAtWar.Tests.Editor
                         }
                     }
 
-                    Assert.That(central, Is.GreaterThanOrEqualTo(size.CentralMiningPairCount * 2), $"{mapSize} seed {seed}");
+                    Assert.That(central, Is.GreaterThanOrEqualTo(
+                        size.CentralMiningPairCount * 2 * PointOfInterestPlacer.SITES_PER_MINING_POINT), $"{mapSize} seed {seed}");
                 }
             }
         }
@@ -463,19 +482,18 @@ namespace EmpireAtWar.Tests.Editor
             return _generator.Generate(mapSize, TestPlayers.CreateDuel(difficulty).Players, new Random(seed));
         }
 
-        private static float GetClosestMiningDistance(MapLayout layout)
+        private static List<Vector3> GetMiningSites(MapLayout layout)
         {
-            Vector3 station = layout.GetStationPosition(TestPlayers.Human);
-            float closest = float.MaxValue;
+            List<Vector3> mines = new List<Vector3>();
             foreach (SiteSpot site in layout.Sites)
             {
                 if (site.FacilityType == SiteFacilityType.Mining)
                 {
-                    closest = Mathf.Min(closest, PlanarGeometry.Distance(station, site.Center));
+                    mines.Add(site.Center);
                 }
             }
 
-            return closest;
+            return mines;
         }
 
         private static bool HasZoneAt(MapLayout layout, Vector3 position)

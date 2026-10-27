@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Data;
@@ -92,10 +93,10 @@ namespace EmpireAtWar.Services.Saves
                 throw new InvalidDataException($"Saved {save.ReinforcementZones.Length} reinforcement zones; the map has {expectedZones}.");
             int expectedSites = !definition.HasFeature(BattleFeatures.CaptureSites) ? 0
                 : definition.Map.Type == MapType.Survival
-                    ? (definition.HasFeature(BattleFeatures.MiningSites) ? size.MiningSiteCount : 0)
+                    ? (definition.HasFeature(BattleFeatures.MiningSites) ? size.MiningPointCount : 0)
                     : (definition.HasFeature(BattleFeatures.MiningSites)
-                        ? definition.Slots.Count * _mapSettings.HomeMiningSitesPerStation
-                          + ((size.MiningSiteCount - 2 * _mapSettings.HomeMiningSitesPerStation) / 2) * 2
+                        ? (definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2)
+                          * PointOfInterestPlacer.SITES_PER_MINING_POINT
                         : 0) + (size.BattleSiteCount / 2) * 2;
             if (save.CaptureSites.Length != expectedSites)
                 throw new InvalidDataException($"Saved {save.CaptureSites.Length} capture sites; the map has {expectedSites}.");

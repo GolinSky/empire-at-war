@@ -7,43 +7,49 @@ using Random = System.Random;
 namespace EmpireAtWar.Entities.Map.Generation
 {
     /// <summary>
-    /// Places default zones beside the stations, the home mining sites of each side, and the remaining
-    /// zones and sites as point-symmetric pairs so neither side gets the better map half.
+    /// Places default zones beside the stations, the home mining point behind each station, and the remaining
+    /// zones and sites as point-symmetric pairs so neither side gets the better map half. Every mining point
+    /// is a cluster of <see cref="SITES_PER_MINING_POINT"/> neighbouring mining sites.
     /// </summary>
     public sealed class PointOfInterestPlacer
     {
+        public const int SITES_PER_MINING_POINT = 3;
+
         private const int MAX_PAIR_ATTEMPTS = 400;
         private const int CANDIDATES_PER_PICK = 12;
 
         private const float MIRROR_TOLERANCE = 1f;
 
-        private const float HOME_MINING_SPREAD_DEGREES = 45f;
-        private const float HOME_MINING_STEP = 20f;
+        // Free gap between neighbouring sites of one mining point and between the home point and its station.
+        private const float MINING_SITE_GAP = 15f;
+        private const float FULL_TURN_DEGREES = 360f;
         // A region half as wide as the map side spans the whole map.
         private const float WHOLE_MAP_SHARE = 0.5f;
 
         private readonly MapGenerationSettings _settings;
 
         private readonly MapFeatureRadii _radii;
+        // Distance from a mining point's center to each site of its equilateral site triangle.
+        private readonly float _miningSiteSpread;
 
         public PointOfInterestPlacer(MapGenerationSettings settings, MapFeatureRadii radii)
         {
             _settings = settings;
             _radii = radii;
+            _miningSiteSpread = (2f * radii.MiningSite + MINING_SITE_GAP) / Mathf.Sqrt(3f);
         }
 
         /// <returns>False when this random draw left no room; the caller retries with new draws.</returns>
         public bool TryPlace(
             MapSizeSettings size,
             IReadOnlyList<MapStation> stations,
-            float difficulty,
             Random random,
             List<MapNode> nodes)
         {
             nodes.Clear();
             Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
             AddDefaultZones(size, stations, center, nodes);
-            if (!TryAddHomeMining(size, stations, center, difficulty, random, nodes))
+            if (!TryAddHomeMining(size, stations, center, nodes))
             {
                 return false;
             }
@@ -61,13 +67,14 @@ namespace EmpireAtWar.Entities.Map.Generation
                 nodes.Add(centralZone);
             }
 
-            int miningPairCount = (size.MiningSiteCount - 2 * _settings.HomeMiningSitesPerStation) / 2;
+            // Each side of a duel owns one home point; the rest are mirrored pairs.
+            int miningPairCount = (size.MiningPointCount - 2) / 2;
             // Contested central mines first, then the largest pockets (reinforcement zones) while room remains.
-            return TryAddPairs(MapNodeKind.MiningSite, size.CentralMiningPairCount, _settings.CentralRegionShare,
+            return TryAddMiningPairs(size.CentralMiningPairCount, _settings.CentralRegionShare,
                     size, stations, center, random, nodes) &&
                 TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.MiningSite, miningPairCount - size.CentralMiningPairCount, WHOLE_MAP_SHARE,
+                TryAddMiningPairs(miningPairCount - size.CentralMiningPairCount, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes) &&
                 TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2, WHOLE_MAP_SHARE,
                     size, stations, center, random, nodes);
@@ -114,31 +121,35 @@ namespace EmpireAtWar.Entities.Map.Generation
             PairWithMirroredStations(stations, center, 0, nodes);
         }
 
+        /// <summary>
+        /// Fans each station's home sites along an arc behind it, on the side facing its map corner,
+        /// as close to the station footprint as the site clearance allows.
+        /// </summary>
         private bool TryAddHomeMining(
             MapSizeSettings size,
             IReadOnlyList<MapStation> stations,
             Vector3 center,
-            float difficulty,
-            Random random,
             List<MapNode> nodes)
         {
-            float gap = Mathf.Lerp(size.HomeMiningGap.Min, size.HomeMiningGap.Max, difficulty);
-            float outer = GetOuterRadius(_radii.MiningSite, true, size);
-            // One turn for both sides keeps the pairs point-symmetric.
-            float turn = (float)random.NextDouble() * _settings.HomeMiningAngle * Mathf.Deg2Rad;
-            for (int mine = 0; mine < _settings.HomeMiningSitesPerStation; mine++)
+            // Home sites reserve no pocket room: their pocket may spill past the border, and the station
+            // clearing keeps its rocks off the footprint.
+            float outer = GetOuterRadius(_radii.MiningSite, false, size);
+            // Sites of one point sit closer than the clearance between points, so only the default zones are checked.
+            List<MapNode> defaultZones = nodes.GetRange(0, nodes.Count);
+            for (int site = 0; site < SITES_PER_MINING_POINT; site++)
             {
-                // The default zone takes the X side, so the first mine heads along Z toward the
-                // neighbouring corner; each further mine fans out toward the map center.
-                float angle = turn + mine * HOME_MINING_SPREAD_DEGREES * Mathf.Deg2Rad;
                 int firstIndex = nodes.Count;
                 foreach (MapStation station in stations)
                 {
-                    float xSide = Mathf.Sign(center.x - station.Position.x);
-                    float zSide = Mathf.Sign(center.z - station.Position.z);
-                    Vector3 direction = new Vector3(xSide * Mathf.Sin(angle), 0f, zSide * Mathf.Cos(angle));
-                    if (!TryFindHomeMiningPosition(station, direction, station.Radius + outer + gap, outer,
-                            size, stations, nodes, out Vector3 position))
+                    float distance = station.Radius + outer + MINING_SITE_GAP;
+                    // Neighbouring sites on the arc keep the same gap as the sites of a contested point.
+                    float step = 2f * Mathf.Asin((_radii.MiningSite + MINING_SITE_GAP * 0.5f) / distance) * Mathf.Rad2Deg;
+                    Vector3 corner = new Vector3(
+                        Mathf.Sign(station.Position.x - center.x), 0f, Mathf.Sign(station.Position.z - center.z)).normalized;
+                    // A rotation commutes with point reflection, so mirrored stations get mirrored arcs.
+                    Vector3 direction = Quaternion.Euler(0f, (site - 1) * step, 0f) * corner;
+                    Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) + direction * distance;
+                    if (!IsClear(position, outer, size, stations, defaultZones))
                     {
                         return false;
                     }
@@ -150,39 +161,6 @@ namespace EmpireAtWar.Entities.Map.Generation
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Walks outward from <paramref name="distance"/> until the mine clears the station's earlier
-        /// home mine and default zone, so it stays as near the station as the pockets allow.
-        /// </summary>
-        private bool TryFindHomeMiningPosition(
-            MapStation station,
-            Vector3 direction,
-            float distance,
-            float outer,
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            IReadOnlyList<MapNode> nodes,
-            out Vector3 position)
-        {
-            float maxDistance = distance + size.Bounds.Max.x - size.Bounds.Min.x;
-            for (; distance < maxDistance; distance += HOME_MINING_STEP)
-            {
-                position = station.Position + direction * distance;
-                // Thick asteroid pockets can outgrow the station's edge distance; pull the mine inside.
-                position = new Vector3(
-                    Mathf.Clamp(position.x, size.Bounds.Min.x + outer, size.Bounds.Max.x - outer),
-                    0f,
-                    Mathf.Clamp(position.z, size.Bounds.Min.y + outer, size.Bounds.Max.y - outer));
-                if (IsClear(position, outer, size, stations, nodes))
-                {
-                    return true;
-                }
-            }
-
-            position = default;
-            return false;
         }
 
         /// <summary>
@@ -215,6 +193,44 @@ namespace EmpireAtWar.Entities.Map.Generation
             return index;
         }
 
+        /// <summary>Adds mirrored mining points, each a randomly turned triangle of neighbouring sites.</summary>
+        private bool TryAddMiningPairs(
+            int pairCount,
+            float regionShare,
+            MapSizeSettings size,
+            IReadOnlyList<MapStation> stations,
+            Vector3 center,
+            Random random,
+            List<MapNode> nodes)
+        {
+            float outer = GetOuterRadius(_miningSiteSpread + _radii.MiningSite, true, size);
+            for (int pair = 0; pair < pairCount; pair++)
+            {
+                if (!TryPickPairPosition(outer, regionShare, size, stations, center, random, nodes, out Vector3 position))
+                {
+                    return false;
+                }
+
+                float turn = (float)random.NextDouble() * FULL_TURN_DEGREES;
+                int index = nodes.Count;
+                for (int site = 0; site < SITES_PER_MINING_POINT; site++)
+                {
+                    Vector3 offset = Quaternion.Euler(0f, turn + site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT, 0f) *
+                        Vector3.forward * _miningSiteSpread;
+                    nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: position + offset, radius: _radii.MiningSite, owner: PlayerId.None)
+                        { Mirror = index + SITES_PER_MINING_POINT + site });
+                }
+
+                for (int site = 0; site < SITES_PER_MINING_POINT; site++)
+                {
+                    nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: PlanarGeometry.Reflect(nodes[index + site].Center, center),
+                        radius: _radii.MiningSite, owner: PlayerId.None) { Mirror = index + site });
+                }
+            }
+
+            return true;
+        }
+
         private bool TryAddPairs(
             MapNodeKind kind,
             int pairCount,
@@ -225,12 +241,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             Random random,
             List<MapNode> nodes)
         {
-            float radius = kind switch
-            {
-                MapNodeKind.MiningSite => _radii.MiningSite,
-                MapNodeKind.BattleSite => _radii.BattleSite,
-                _ => _radii.Zone
-            };
+            float radius = kind == MapNodeKind.BattleSite ? _radii.BattleSite : _radii.Zone;
             float outer = GetOuterRadius(radius, true, size);
             for (int pair = 0; pair < pairCount; pair++)
             {

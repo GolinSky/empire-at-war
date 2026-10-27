@@ -11,14 +11,17 @@ namespace EmpireAtWar.Entities.Map
     {
         [field: SerializeField] public Vector2Range Bounds { get; private set; }
         [field: SerializeField, Min(0)] public int CapturableZoneCount { get; private set; }
-        [field: SerializeField, Min(2), Tooltip("Includes the home mining sites of both sides.")]
-        public int MiningSiteCount { get; private set; }
-        [field: SerializeField, Min(0), Tooltip("Mirrored mining pairs placed inside the central region; part of MiningSiteCount.")]
+        [field: FormerlySerializedAs("<MiningSiteCount>k__BackingField"), SerializeField, Min(2),
+                Tooltip("Mining points of a duel, including one home point per side. A skirmish point is a cluster of " +
+                        "three mining sites; Survival rings its station with one site per point.")]
+        public int MiningPointCount { get; private set; }
+        [field: SerializeField, Min(0), Tooltip("Mirrored mining point pairs placed inside the central region; part of MiningPointCount.")]
         public int CentralMiningPairCount { get; private set; }
         [field: SerializeField, Min(0)] public int BattleSiteCount { get; private set; }
         [field: SerializeField, Min(0f), Tooltip("Minimum free gap between the asteroid pockets of two points of interest.")]
         public float PointSpacing { get; private set; }
-        [field: SerializeField, Tooltip("Gap between the station footprint and its home mining site, Easy (Min) to hardest (Max).")]
+        [field: SerializeField, Tooltip("Gap between the Survival station footprint and its mining ring (Min). " +
+                                        "Skirmish home mining hugs the back of each station instead.")]
         public FloatRange HomeMiningGap { get; private set; }
         [field: SerializeField, Min(0f), Tooltip("Extra gap between the station footprint and its default reinforcement zone.")]
         public float DefaultZoneGap { get; private set; }

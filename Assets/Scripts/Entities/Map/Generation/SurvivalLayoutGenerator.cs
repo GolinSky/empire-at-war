@@ -34,9 +34,9 @@ namespace EmpireAtWar.Entities.Map.Generation
                         player.Slot.Id, false));
             }
             float miningRadius = radius + _radii.MiningSite + size.HomeMiningGap.Min;
-            for (int i = 0; i < size.MiningSiteCount; i++)
+            for (int i = 0; i < size.MiningPointCount; i++)
             {
-                float angle = i * Mathf.PI * 2 / size.MiningSiteCount;
+                float angle = i * Mathf.PI * 2 / size.MiningPointCount;
                 sites.Add(new SiteSpot(new Vector3(middle.x + Mathf.Cos(angle) * miningRadius, 0,
                     middle.y + Mathf.Sin(angle) * miningRadius), SiteFacilityType.Mining));
             }

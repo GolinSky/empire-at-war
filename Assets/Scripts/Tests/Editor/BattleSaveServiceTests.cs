@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -245,8 +246,8 @@ namespace EmpireAtWar.Tests.Editor
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size);
-            int home = mapSettings.HomeMiningSitesPerStation;
-            int count = definition.Slots.Count * home + ((size.MiningSiteCount - 2 * home) / 2) * 2 + (size.BattleSiteCount / 2) * 2;
+            int count = (definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2) * PointOfInterestPlacer.SITES_PER_MINING_POINT
+                + (size.BattleSiteCount / 2) * 2;
             var sites = new CaptureSiteSave[count];
             for (int i = 0; i < count; i++)
                 sites[i] = CaptureSiteSave.Create(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L);
