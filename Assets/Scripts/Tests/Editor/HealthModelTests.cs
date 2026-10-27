@@ -91,6 +91,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.HasUnits, Is.True);
         }
 
+        [TestCase(0f, 100f)]
+        [TestCase(500f, 500f)]
+        public void InitializeHardPoints_UsesMountOverrideAndPreservesItThroughUpgrade(float healthOverride,
+            float expectedHealth)
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+            var mount = new HardPointModel(HardPointType.Weapon, 0, healthOverride: healthOverride);
+            model.InitializeHardPoints(new[] { mount });
+
+            Assert.That(mount.Health, Is.EqualTo(expectedHealth));
+            Assert.That(mount.MaxHealth, Is.EqualTo(expectedHealth));
+            mount.ApplyDamage(50f);
+            model.Upgrade(2, 1f, 1f, 1f);
+            Assert.That(mount.Health, Is.EqualTo(expectedHealth));
+            model.Restore(1f, 1f, new[] { .5f });
+            Assert.That(mount.Health, Is.EqualTo(expectedHealth * .5f));
+        }
+
         [Test]
         public void DamageFacadeNotifiesOnlyDamageAndSuppressesRestoreAndZeroDamage()
         {

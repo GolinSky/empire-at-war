@@ -1,0 +1,5483 @@
+{
+  "models": {
+    "Wavecrest": {
+      "before": {
+        "meshes": {
+          "Hull": {
+            "exported_name": "Hull",
+            "vertices": 5704,
+            "triangles": 3058,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Wavecrest_Hull_Slot0"
+            ],
+            "slot_triangles": [
+              3058
+            ]
+          },
+          "Lights": {
+            "exported_name": "Lights",
+            "vertices": 200,
+            "triangles": 116,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Wavecrest_Lights_Slot0"
+            ],
+            "slot_triangles": [
+              116
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow",
+            "vertices": 1640,
+            "triangles": 3164,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Wavecrest_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              3164
+            ]
+          },
+          "Collision": {
+            "exported_name": "Collision",
+            "vertices": 46,
+            "triangles": 88,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "Wavecrest_Collision_Slot0"
+            ],
+            "slot_triangles": [
+              88
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Hull": {
+            "parent": "Root",
+            "head": [
+              -2.3307998162636068e-06,
+              53.322486877441406,
+              -79.4394302368164
+            ]
+          },
+          "PI_Damage_elec_SD00": {
+            "parent": "Hull",
+            "head": [
+              194.00433349609375,
+              245.88760375976562,
+              -302.50469970703125
+            ]
+          },
+          "HP_Turret_01": {
+            "parent": "Root",
+            "head": [
+              68.60552215576172,
+              -159.18775939941406,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_02": {
+            "parent": "Root",
+            "head": [
+              84.3085708618164,
+              -120.00263977050781,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_03": {
+            "parent": "Root",
+            "head": [
+              86.59788513183594,
+              -78.39444732666016,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_03_emitdamage": {
+            "parent": "HP_Turret_03",
+            "head": [
+              103.62918090820312,
+              -78.39444732666016,
+              -60.197608947753906
+            ]
+          },
+          "P_HP_Underworld_Damage_LRG": {
+            "parent": "HP_Turret_03_emitdamage",
+            "head": [
+              86.26425170898438,
+              -77.90109252929688,
+              -60.15862274169922
+            ]
+          },
+          "HP_Turret_04": {
+            "parent": "Root",
+            "head": [
+              86.5909423828125,
+              -34.94596481323242,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_05": {
+            "parent": "Root",
+            "head": [
+              -68.25775146484375,
+              -159.18775939941406,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_06": {
+            "parent": "Root",
+            "head": [
+              -84.52456665039062,
+              -120.00263977050781,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_06_emitdamage": {
+            "parent": "HP_Turret_06",
+            "head": [
+              -101.73365783691406,
+              -120.00263977050781,
+              -60.197608947753906
+            ]
+          },
+          "P_HP_Underworld_Damage": {
+            "parent": "HP_Turret_06_emitdamage",
+            "head": [
+              -84.19709777832031,
+              -120.355224609375,
+              -60.15593719482422
+            ]
+          },
+          "HP_Turret_07": {
+            "parent": "Root",
+            "head": [
+              -86.86556243896484,
+              -78.39444732666016,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_08": {
+            "parent": "Root",
+            "head": [
+              -86.80323791503906,
+              -34.94596481323242,
+              -60.197608947753906
+            ]
+          },
+          "HP_Turret_08_emitdamage": {
+            "parent": "HP_Turret_08",
+            "head": [
+              -106.1400146484375,
+              -34.94596481323242,
+              -60.197608947753906
+            ]
+          },
+          "P_HP_Underworld_Damage_LRG.001": {
+            "parent": "HP_Turret_08_emitdamage",
+            "head": [
+              -86.7694091796875,
+              -35.05550765991211,
+              -60.478084564208984
+            ]
+          },
+          "Lights": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -4.977653134119464e-06,
+              113.87543487548828
+            ]
+          },
+          "Shadow": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -4.977653134119464e-06,
+              113.87543487548828
+            ]
+          },
+          "HP_LC01": {
+            "parent": "Root",
+            "head": [
+              47.56215286254883,
+              281.66259765625,
+              -121.00131225585938
+            ]
+          },
+          "HP_LC01_emitdamage": {
+            "parent": "HP_LC01",
+            "head": [
+              47.56215286254883,
+              293.97515869140625,
+              -121.00131225585938
+            ]
+          },
+          "P_HP_Underworld_Damage.001": {
+            "parent": "HP_LC01_emitdamage",
+            "head": [
+              51.04251480102539,
+              284.29010009765625,
+              -114.81309509277344
+            ]
+          },
+          "HP_LC02": {
+            "parent": "Root",
+            "head": [
+              47.56216049194336,
+              83.01492309570312,
+              -278.4539794921875
+            ]
+          },
+          "HP_LC02_emitdamage": {
+            "parent": "HP_LC02",
+            "head": [
+              47.56216049194336,
+              94.14021301269531,
+              -278.4539794921875
+            ]
+          },
+          "P_HP_Underworld_Damage.002": {
+            "parent": "HP_LC02_emitdamage",
+            "head": [
+              48.87429428100586,
+              80.57133483886719,
+              -278.56866455078125
+            ]
+          },
+          "HP_IC01": {
+            "parent": "Root",
+            "head": [
+              47.562156677246094,
+              188.2434539794922,
+              -192.8642578125
+            ]
+          },
+          "HP_IC02": {
+            "parent": "Root",
+            "head": [
+              -47.960960388183594,
+              188.2434539794922,
+              -192.8642578125
+            ]
+          },
+          "HP_IC02_emitdamage": {
+            "parent": "HP_IC02",
+            "head": [
+              -47.960960388183594,
+              174.99179077148438,
+              -192.8642578125
+            ]
+          },
+          "P_HP_Underworld_Damage.003": {
+            "parent": "HP_IC02_emitdamage",
+            "head": [
+              -49.018150329589844,
+              191.0557403564453,
+              -193.74081420898438
+            ]
+          },
+          "HP_LC03": {
+            "parent": "Root",
+            "head": [
+              -47.960975646972656,
+              281.66259765625,
+              -121.00131225585938
+            ]
+          },
+          "HP_LC04": {
+            "parent": "Root",
+            "head": [
+              -47.960960388183594,
+              83.01492309570312,
+              -278.4539794921875
+            ]
+          },
+          "HP_MIS01": {
+            "parent": "Root",
+            "head": [
+              0.021436454728245735,
+              -241.193115234375,
+              -350.5904541015625
+            ]
+          },
+          "HP_MIS01_emitdamage": {
+            "parent": "HP_MIS01",
+            "head": [
+              0.021436413750052452,
+              -242.13595581054688,
+              -364.70831298828125
+            ]
+          },
+          "P_HP_Underworld_Damage.004": {
+            "parent": "HP_MIS01_emitdamage",
+            "head": [
+              1.4007545709609985,
+              -244.3184814453125,
+              -352.59832763671875
+            ]
+          },
+          "HP_SPAWN_00": {
+            "parent": "Root",
+            "head": [
+              0.02142559550702572,
+              12.875442504882812,
+              28.866363525390625
+            ]
+          },
+          "HP_SPAWN_00_emitdamage": {
+            "parent": "HP_SPAWN_00",
+            "head": [
+              0.021426549181342125,
+              12.875441551208496,
+              41.1827392578125
+            ]
+          },
+          "P_RB_Station_damage": {
+            "parent": "HP_SPAWN_00_emitdamage",
+            "head": [
+              4.0454789996147156e-05,
+              -2.27691650390625,
+              19.754077911376953
+            ]
+          },
+          "HP_E01": {
+            "parent": "Root",
+            "head": [
+              0.021429866552352905,
+              657.5486450195312,
+              27.67535972595215
+            ]
+          },
+          "HP_E01_emitdamage": {
+            "parent": "HP_E01",
+            "head": [
+              0.021490901708602905,
+              657.5486450195312,
+              9.804311752319336
+            ]
+          },
+          "P_RB_Station_damage.001": {
+            "parent": "HP_E01_emitdamage",
+            "head": [
+              0.0001294054090976715,
+              639.0714721679688,
+              13.49966049194336
+            ]
+          },
+          "P_RB_Station_damage.002": {
+            "parent": "HP_E01_emitdamage",
+            "head": [
+              7.466413080692291e-05,
+              495.0800476074219,
+              -224.6836395263672
+            ]
+          },
+          "Pe_Wavecrest_01": {
+            "parent": "Root",
+            "head": [
+              9.905355909722857e-06,
+              639.4301147460938,
+              26.41204071044922
+            ]
+          },
+          "Pe_Wavecrest_02": {
+            "parent": "Root",
+            "head": [
+              1.3865351320418995e-05,
+              548.8359985351562,
+              -128.71807861328125
+            ]
+          },
+          "Pe_Wavecrest_03": {
+            "parent": "Root",
+            "head": [
+              1.6540687283850275e-05,
+              487.6314392089844,
+              -227.09634399414062
+            ]
+          },
+          "Pe_Wavecrest_04": {
+            "parent": "Root",
+            "head": [
+              1.8627721146913245e-05,
+              439.8856506347656,
+              -302.50469970703125
+            ]
+          },
+          "Collision": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              244.6831512451172,
+              0.0
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Hull": {
+            "exported_name": "Hull.001",
+            "vertices": 5704,
+            "triangles": 3058,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Wavecrest_Hull_Slot0"
+            ],
+            "slot_triangles": [
+              3058
+            ]
+          },
+          "Lights": {
+            "exported_name": "Lights.001",
+            "vertices": 200,
+            "triangles": 116,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Wavecrest_Lights_Slot0"
+            ],
+            "slot_triangles": [
+              116
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 1640,
+            "triangles": 3164,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Wavecrest_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              3164
+            ]
+          },
+          "Collision": {
+            "exported_name": "Collision.001",
+            "vertices": 46,
+            "triangles": 88,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "Wavecrest_Collision_Slot0"
+            ],
+            "slot_triangles": [
+              88
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Hull": {
+            "parent": "Root",
+            "head": [
+              -2.3307998162636068e-06,
+              53.32247543334961,
+              -79.43943786621094
+            ]
+          },
+          "PI_Damage_elec_SD00": {
+            "parent": "Hull",
+            "head": [
+              194.00433349609375,
+              245.88760375976562,
+              -302.50469970703125
+            ]
+          },
+          "HP_Turret_01": {
+            "parent": "Root",
+            "head": [
+              68.60552215576172,
+              -159.18777465820312,
+              -60.19758224487305
+            ]
+          },
+          "HP_Turret_02": {
+            "parent": "Root",
+            "head": [
+              84.3085708618164,
+              -120.00264739990234,
+              -60.19758987426758
+            ]
+          },
+          "HP_Turret_03": {
+            "parent": "Root",
+            "head": [
+              86.59788513183594,
+              -78.39445495605469,
+              -60.19759750366211
+            ]
+          },
+          "HP_Turret_03_emitdamage": {
+            "parent": "HP_Turret_03",
+            "head": [
+              103.62918090820312,
+              -78.39445495605469,
+              -60.19759750366211
+            ]
+          },
+          "P_HP_Underworld_Damage_LRG": {
+            "parent": "HP_Turret_03_emitdamage",
+            "head": [
+              86.26425170898438,
+              -77.9011001586914,
+              -60.15861129760742
+            ]
+          },
+          "HP_Turret_04": {
+            "parent": "Root",
+            "head": [
+              86.5909423828125,
+              -34.94597625732422,
+              -60.19760513305664
+            ]
+          },
+          "HP_Turret_05": {
+            "parent": "Root",
+            "head": [
+              -68.25775146484375,
+              -159.18777465820312,
+              -60.19758224487305
+            ]
+          },
+          "HP_Turret_06": {
+            "parent": "Root",
+            "head": [
+              -84.52456665039062,
+              -120.00264739990234,
+              -60.19758987426758
+            ]
+          },
+          "HP_Turret_06_emitdamage": {
+            "parent": "HP_Turret_06",
+            "head": [
+              -101.73365783691406,
+              -120.00264739990234,
+              -60.19758987426758
+            ]
+          },
+          "P_HP_Underworld_Damage": {
+            "parent": "HP_Turret_06_emitdamage",
+            "head": [
+              -84.19709777832031,
+              -120.35523223876953,
+              -60.15591812133789
+            ]
+          },
+          "HP_Turret_07": {
+            "parent": "Root",
+            "head": [
+              -86.86556243896484,
+              -78.39445495605469,
+              -60.19759750366211
+            ]
+          },
+          "HP_Turret_08": {
+            "parent": "Root",
+            "head": [
+              -86.80323791503906,
+              -34.94597625732422,
+              -60.19760513305664
+            ]
+          },
+          "HP_Turret_08_emitdamage": {
+            "parent": "HP_Turret_08",
+            "head": [
+              -106.1400146484375,
+              -34.94597244262695,
+              -60.19760513305664
+            ]
+          },
+          "P_HP_Underworld_Damage_LRG.001": {
+            "parent": "HP_Turret_08_emitdamage",
+            "head": [
+              -86.7694091796875,
+              -35.055519104003906,
+              -60.47808074951172
+            ]
+          },
+          "Lights": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              1.3545872207032517e-05,
+              113.87543487548828
+            ]
+          },
+          "Shadow": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              1.3545872207032517e-05,
+              113.87543487548828
+            ]
+          },
+          "HP_LC01": {
+            "parent": "Root",
+            "head": [
+              47.56215286254883,
+              281.6625671386719,
+              -121.00135803222656
+            ]
+          },
+          "HP_LC01_emitdamage": {
+            "parent": "HP_LC01",
+            "head": [
+              47.56215286254883,
+              293.9751281738281,
+              -121.00135803222656
+            ]
+          },
+          "P_HP_Underworld_Damage.001": {
+            "parent": "HP_LC01_emitdamage",
+            "head": [
+              51.04251480102539,
+              284.2900695800781,
+              -114.81314086914062
+            ]
+          },
+          "HP_LC02": {
+            "parent": "Root",
+            "head": [
+              47.56216049194336,
+              83.01487731933594,
+              -278.4539794921875
+            ]
+          },
+          "HP_LC02_emitdamage": {
+            "parent": "HP_LC02",
+            "head": [
+              47.56216049194336,
+              94.14016723632812,
+              -278.4540100097656
+            ]
+          },
+          "P_HP_Underworld_Damage.002": {
+            "parent": "HP_LC02_emitdamage",
+            "head": [
+              48.87429428100586,
+              80.5712890625,
+              -278.56866455078125
+            ]
+          },
+          "HP_IC01": {
+            "parent": "Root",
+            "head": [
+              47.562156677246094,
+              188.24342346191406,
+              -192.86428833007812
+            ]
+          },
+          "HP_IC02": {
+            "parent": "Root",
+            "head": [
+              -47.960960388183594,
+              188.24342346191406,
+              -192.86428833007812
+            ]
+          },
+          "HP_IC02_emitdamage": {
+            "parent": "HP_IC02",
+            "head": [
+              -47.960960388183594,
+              174.99176025390625,
+              -192.86428833007812
+            ]
+          },
+          "P_HP_Underworld_Damage.003": {
+            "parent": "HP_IC02_emitdamage",
+            "head": [
+              -49.018150329589844,
+              191.0557098388672,
+              -193.7408447265625
+            ]
+          },
+          "HP_LC03": {
+            "parent": "Root",
+            "head": [
+              -47.960975646972656,
+              281.6625671386719,
+              -121.00135803222656
+            ]
+          },
+          "HP_LC04": {
+            "parent": "Root",
+            "head": [
+              -47.960960388183594,
+              83.01487731933594,
+              -278.4539794921875
+            ]
+          },
+          "HP_MIS01": {
+            "parent": "Root",
+            "head": [
+              0.021436454728245735,
+              -241.19317626953125,
+              -350.5904235839844
+            ]
+          },
+          "HP_MIS01_emitdamage": {
+            "parent": "HP_MIS01",
+            "head": [
+              0.021436301991343498,
+              -242.13601684570312,
+              -364.7082824707031
+            ]
+          },
+          "P_HP_Underworld_Damage.004": {
+            "parent": "HP_MIS01_emitdamage",
+            "head": [
+              1.4007540941238403,
+              -244.31854248046875,
+              -352.5982971191406
+            ]
+          },
+          "HP_SPAWN_00": {
+            "parent": "Root",
+            "head": [
+              0.02142559550702572,
+              12.875447273254395,
+              28.866361618041992
+            ]
+          },
+          "HP_SPAWN_00_emitdamage": {
+            "parent": "HP_SPAWN_00",
+            "head": [
+              0.021426549181342125,
+              12.875448226928711,
+              41.182735443115234
+            ]
+          },
+          "P_RB_Station_damage": {
+            "parent": "HP_SPAWN_00_emitdamage",
+            "head": [
+              3.7934001738904044e-05,
+              -2.2769134044647217,
+              19.754077911376953
+            ]
+          },
+          "HP_E01": {
+            "parent": "Root",
+            "head": [
+              0.021429866552352905,
+              657.5486450195312,
+              27.67525291442871
+            ]
+          },
+          "HP_E01_emitdamage": {
+            "parent": "HP_E01",
+            "head": [
+              0.021490901708602905,
+              657.5486450195312,
+              9.804204940795898
+            ]
+          },
+          "P_RB_Station_damage.001": {
+            "parent": "HP_E01_emitdamage",
+            "head": [
+              0.00013238219253253192,
+              639.0714721679688,
+              13.499556541442871
+            ]
+          },
+          "P_RB_Station_damage.002": {
+            "parent": "HP_E01_emitdamage",
+            "head": [
+              0.00010112431482411921,
+              495.08001708984375,
+              -224.6837158203125
+            ]
+          },
+          "Pe_Wavecrest_01": {
+            "parent": "Root",
+            "head": [
+              9.905355909722857e-06,
+              639.4301147460938,
+              26.411935806274414
+            ]
+          },
+          "Pe_Wavecrest_02": {
+            "parent": "Root",
+            "head": [
+              1.3865351320418995e-05,
+              548.8359985351562,
+              -128.71817016601562
+            ]
+          },
+          "Pe_Wavecrest_03": {
+            "parent": "Root",
+            "head": [
+              1.6540687283850275e-05,
+              487.63140869140625,
+              -227.09642028808594
+            ]
+          },
+          "Pe_Wavecrest_04": {
+            "parent": "Root",
+            "head": [
+              1.8627721146913245e-05,
+              439.8855895996094,
+              -302.5047607421875
+            ]
+          },
+          "Collision": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              244.6831512451172,
+              -3.9863942220108584e-05
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "Wavecrest_Hull_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "Wavecrest_Lights_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Wavecrest_SeV_Wavecrest_L",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "SeV_Wavecrest_L.tga",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "name": "Wavecrest_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "Wavecrest_Collision_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        }
+      ],
+      "bone_error": 0.0001068115234375,
+      "parenting_error": 0,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest.ALO",
+      "source_bone_names": [
+        "Root",
+        "Hull",
+        "PI_Damage_elec_SD00",
+        "HP_Turret_01",
+        "HP_Turret_02",
+        "HP_Turret_03",
+        "HP_Turret_03_emitdamage",
+        "P_HP_Underworld_Damage_LRG",
+        "HP_Turret_04",
+        "HP_Turret_05",
+        "HP_Turret_06",
+        "HP_Turret_06_emitdamage",
+        "P_HP_Underworld_Damage",
+        "HP_Turret_07",
+        "HP_Turret_08",
+        "HP_Turret_08_emitdamage",
+        "P_HP_Underworld_Damage_LRG.001",
+        "Lights",
+        "Shadow",
+        "HP_LC01",
+        "HP_LC01_emitdamage",
+        "P_HP_Underworld_Damage.001",
+        "HP_LC02",
+        "HP_LC02_emitdamage",
+        "P_HP_Underworld_Damage.002",
+        "HP_IC01",
+        "HP_IC02",
+        "HP_IC02_emitdamage",
+        "P_HP_Underworld_Damage.003",
+        "HP_LC03",
+        "HP_LC04",
+        "HP_MIS01",
+        "HP_MIS01_emitdamage",
+        "P_HP_Underworld_Damage.004",
+        "HP_SPAWN_00",
+        "HP_SPAWN_00_emitdamage",
+        "P_RB_Station_damage",
+        "HP_E01",
+        "HP_E01_emitdamage",
+        "P_RB_Station_damage.001",
+        "P_RB_Station_damage.002",
+        "Pe_Wavecrest_01",
+        "Pe_Wavecrest_02",
+        "Pe_Wavecrest_03",
+        "Pe_Wavecrest_04",
+        "Collision"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/Wavecrest.fbx",
+      "geometry_checks": [
+        {
+          "name": "Hull",
+          "corners": 9174,
+          "position_error": 6.103515625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "Lights",
+          "corners": 348,
+          "position_error": 6.103515625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 9492,
+          "position_error": 6.866455078125e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "Collision",
+          "corners": 264,
+          "position_error": 0.00012969970703125,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret01": {
+      "before": {
+        "meshes": {
+          "Turret_01": {
+            "exported_name": "Turret_01",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret01_Turret_01_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.002",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret01_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_01": {
+            "exported_name": "Barrel_01",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret01_Barrel_01_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_01": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_01",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_01": {
+            "parent": "Turret_01",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR01_02": {
+            "parent": "Barrel_01",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR01_01": {
+            "parent": "Barrel_01",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_01": {
+            "exported_name": "Turret_01.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret01_Turret_01_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret01_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_01": {
+            "exported_name": "Barrel_01.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret01_Barrel_01_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_01": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_01",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_01": {
+            "parent": "Turret_01",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR01_02": {
+            "parent": "Barrel_01",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR01_01": {
+            "parent": "Barrel_01",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret01_Turret_01_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret01_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret01_Barrel_01_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_01.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_01",
+        "Shadow",
+        "Barrel_01",
+        "FP_TUR01_02",
+        "FP_TUR01_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret01.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_01",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_01",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret02": {
+      "before": {
+        "meshes": {
+          "Turret_02": {
+            "exported_name": "Turret_02",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret02_Turret_02_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.004",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret02_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_02": {
+            "exported_name": "Barrel_02",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret02_Barrel_02_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_02": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_02",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_02": {
+            "parent": "Turret_02",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR02_02": {
+            "parent": "Barrel_02",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR02_01": {
+            "parent": "Barrel_02",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_02": {
+            "exported_name": "Turret_02.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret02_Turret_02_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret02_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_02": {
+            "exported_name": "Barrel_02.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret02_Barrel_02_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_02": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_02",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_02": {
+            "parent": "Turret_02",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR02_02": {
+            "parent": "Barrel_02",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR02_01": {
+            "parent": "Barrel_02",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret02_Turret_02_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret02_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret02_Barrel_02_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_02.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_02",
+        "Shadow",
+        "Barrel_02",
+        "FP_TUR02_02",
+        "FP_TUR02_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret02.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_02",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_02",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret03": {
+      "before": {
+        "meshes": {
+          "Turret_03": {
+            "exported_name": "Turret_03",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret03_Turret_03_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.006",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret03_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_03": {
+            "exported_name": "Barrel_03",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret03_Barrel_03_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_03": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_03",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_03": {
+            "parent": "Turret_03",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR03_02": {
+            "parent": "Barrel_03",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR03_01": {
+            "parent": "Barrel_03",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_03": {
+            "exported_name": "Turret_03.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret03_Turret_03_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret03_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_03": {
+            "exported_name": "Barrel_03.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret03_Barrel_03_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_03": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_03",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_03": {
+            "parent": "Turret_03",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR03_02": {
+            "parent": "Barrel_03",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR03_01": {
+            "parent": "Barrel_03",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret03_Turret_03_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret03_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret03_Barrel_03_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_03.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_03",
+        "Shadow",
+        "Barrel_03",
+        "FP_TUR03_02",
+        "FP_TUR03_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret03.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_03",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_03",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret04": {
+      "before": {
+        "meshes": {
+          "Turret_04": {
+            "exported_name": "Turret_04",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret04_Turret_04_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.008",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret04_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_04": {
+            "exported_name": "Barrel_04",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret04_Barrel_04_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_04": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_04",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_04": {
+            "parent": "Turret_04",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR04_02": {
+            "parent": "Barrel_04",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR04_01": {
+            "parent": "Barrel_04",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_04": {
+            "exported_name": "Turret_04.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret04_Turret_04_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret04_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_04": {
+            "exported_name": "Barrel_04.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret04_Barrel_04_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_04": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_04",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_04": {
+            "parent": "Turret_04",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR04_02": {
+            "parent": "Barrel_04",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR04_01": {
+            "parent": "Barrel_04",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret04_Turret_04_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret04_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret04_Barrel_04_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_04.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_04",
+        "Shadow",
+        "Barrel_04",
+        "FP_TUR04_02",
+        "FP_TUR04_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret04.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_04",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_04",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret05": {
+      "before": {
+        "meshes": {
+          "Turret_05": {
+            "exported_name": "Turret_05",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret05_Turret_05_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.010",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret05_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_05": {
+            "exported_name": "Barrel_05",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret05_Barrel_05_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_05": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_05",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_05": {
+            "parent": "Turret_05",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR05_02": {
+            "parent": "Barrel_05",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR05_01": {
+            "parent": "Barrel_05",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_05": {
+            "exported_name": "Turret_05.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret05_Turret_05_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret05_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_05": {
+            "exported_name": "Barrel_05.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret05_Barrel_05_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_05": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_05",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_05": {
+            "parent": "Turret_05",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR05_02": {
+            "parent": "Barrel_05",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR05_01": {
+            "parent": "Barrel_05",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret05_Turret_05_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret05_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret05_Barrel_05_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_05.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_05",
+        "Shadow",
+        "Barrel_05",
+        "FP_TUR05_02",
+        "FP_TUR05_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret05.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_05",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_05",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret06": {
+      "before": {
+        "meshes": {
+          "Turret_06": {
+            "exported_name": "Turret_06",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret06_Turret_06_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.012",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret06_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_06": {
+            "exported_name": "Barrel_06",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret06_Barrel_06_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_06": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_06",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_06": {
+            "parent": "Turret_06",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR06_02": {
+            "parent": "Barrel_06",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR06_01": {
+            "parent": "Barrel_06",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_06": {
+            "exported_name": "Turret_06.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret06_Turret_06_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret06_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_06": {
+            "exported_name": "Barrel_06.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret06_Barrel_06_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_06": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_06",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_06": {
+            "parent": "Turret_06",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR06_02": {
+            "parent": "Barrel_06",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR06_01": {
+            "parent": "Barrel_06",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret06_Turret_06_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret06_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret06_Barrel_06_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_06.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_06",
+        "Shadow",
+        "Barrel_06",
+        "FP_TUR06_02",
+        "FP_TUR06_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret06.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_06",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_06",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret07": {
+      "before": {
+        "meshes": {
+          "Turret_07": {
+            "exported_name": "Turret_07",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret07_Turret_07_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.014",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret07_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_07": {
+            "exported_name": "Barrel_07",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret07_Barrel_07_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_07": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_07",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_07": {
+            "parent": "Turret_07",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR07_02": {
+            "parent": "Barrel_07",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR07_01": {
+            "parent": "Barrel_07",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_07": {
+            "exported_name": "Turret_07.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret07_Turret_07_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret07_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_07": {
+            "exported_name": "Barrel_07.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret07_Barrel_07_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_07": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_07",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_07": {
+            "parent": "Turret_07",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR07_02": {
+            "parent": "Barrel_07",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR07_01": {
+            "parent": "Barrel_07",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret07_Turret_07_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret07_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret07_Barrel_07_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_07.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_07",
+        "Shadow",
+        "Barrel_07",
+        "FP_TUR07_02",
+        "FP_TUR07_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret07.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_07",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_07",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestTurret08": {
+      "before": {
+        "meshes": {
+          "Turret_08": {
+            "exported_name": "Turret_08",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret08_Turret_08_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.016",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret08_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_08": {
+            "exported_name": "Barrel_08",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret08_Barrel_08_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_08": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_08",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.00944430660456419
+            ]
+          },
+          "Barrel_08": {
+            "parent": "Turret_08",
+            "head": [
+              -0.20651979744434357,
+              -25.902122497558594,
+              12.045355796813965
+            ]
+          },
+          "FP_TUR08_02": {
+            "parent": "Barrel_08",
+            "head": [
+              -7.02571439743042,
+              -40.567298889160156,
+              11.999184608459473
+            ]
+          },
+          "FP_TUR08_01": {
+            "parent": "Barrel_08",
+            "head": [
+              6.730507850646973,
+              -40.56730270385742,
+              11.999184608459473
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "Turret_08": {
+            "exported_name": "Turret_08.001",
+            "vertices": 94,
+            "triangles": 50,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret08_Turret_08_Slot0"
+            ],
+            "slot_triangles": [
+              50
+            ]
+          },
+          "Shadow": {
+            "exported_name": "Shadow.001",
+            "vertices": 84,
+            "triangles": 144,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "WavecrestTurret08_Shadow_Slot0"
+            ],
+            "slot_triangles": [
+              144
+            ]
+          },
+          "Barrel_08": {
+            "exported_name": "Barrel_08.001",
+            "vertices": 92,
+            "triangles": 80,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "WavecrestTurret08_Barrel_08_Slot0"
+            ],
+            "slot_triangles": [
+              80
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret_08": {
+            "parent": "Root",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Shadow": {
+            "parent": "Turret_08",
+            "head": [
+              -0.20651724934577942,
+              -1.3226661682128906,
+              -0.009444091469049454
+            ]
+          },
+          "Barrel_08": {
+            "parent": "Turret_08",
+            "head": [
+              -0.20652388036251068,
+              -25.90212059020996,
+              12.04535961151123
+            ]
+          },
+          "FP_TUR08_02": {
+            "parent": "Barrel_08",
+            "head": [
+              -7.025721073150635,
+              -40.56729507446289,
+              11.999191284179688
+            ]
+          },
+          "FP_TUR08_01": {
+            "parent": "Barrel_08",
+            "head": [
+              6.730501174926758,
+              -40.567298889160156,
+              11.999191284179688
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestTurret08_Turret_08_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        },
+        {
+          "name": "WavecrestTurret08_Shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "WavecrestTurret08_Barrel_08_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Wavecrest_SeV_Wavecrest",
+          "normal": "Wavecrest_SeV_Wavecrest_B",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Wavecrest.tga",
+            "NormalTexture": "SeV_Wavecrest_B.tga"
+          }
+        }
+      ],
+      "bone_error": 1.0182455303222e-05,
+      "parenting_error": 9.5367431640625e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Wavecrest_Turret_08.ALO",
+      "source_bone_names": [
+        "Root",
+        "Turret_08",
+        "Shadow",
+        "Barrel_08",
+        "FP_TUR08_02",
+        "FP_TUR08_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestTurret08.fbx",
+      "geometry_checks": [
+        {
+          "name": "Turret_08",
+          "corners": 150,
+          "position_error": 6.198883056640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Shadow",
+          "corners": 432,
+          "position_error": 9.5367431640625e-06,
+          "uv_error": 0
+        },
+        {
+          "name": "Barrel_08",
+          "corners": 240,
+          "position_error": 7.62939453125e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "WavecrestEngineHelper": {
+      "before": {
+        "meshes": {
+          "HP_E_Coll": {
+            "exported_name": "HP_E_Coll",
+            "vertices": 24,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "alDefault.fx",
+            "materials": [
+              "WavecrestEngineHelper_HP_E_Coll_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Spot01": {
+            "parent": "Root",
+            "head": [
+              537.6648559570312,
+              194.53826904296875,
+              301.7257995605469
+            ]
+          },
+          "Spot01.Target": {
+            "parent": "Root",
+            "head": [
+              -3.9919891357421875,
+              -93.1778335571289,
+              0.0
+            ]
+          },
+          "Omni01": {
+            "parent": "Root",
+            "head": [
+              -85.13113403320312,
+              332.8726501464844,
+              -21.280670166015625
+            ]
+          },
+          "Omni02": {
+            "parent": "Root",
+            "head": [
+              -85.131103515625,
+              -318.8437194824219,
+              192.03201293945312
+            ]
+          },
+          "HP00_B-L": {
+            "parent": "Root",
+            "head": [
+              55.29762268066406,
+              -3.2383079528808594,
+              17.791942596435547
+            ]
+          },
+          "HP00_F-R": {
+            "parent": "Root",
+            "head": [
+              -24.690446853637695,
+              -94.48100280761719,
+              21.178951263427734
+            ]
+          },
+          "HP00_F-L": {
+            "parent": "Root",
+            "head": [
+              25.21101951599121,
+              -94.16900634765625,
+              19.917400360107422
+            ]
+          },
+          "HP00_B-R": {
+            "parent": "Root",
+            "head": [
+              -53.649662017822266,
+              -4.774181365966797,
+              16.84699821472168
+            ]
+          },
+          "RV_AssaultFrigate05": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          },
+          "AssaultCruiser Hulk": {
+            "parent": "Root",
+            "head": [
+              -0.00096893310546875,
+              17.943382263183594,
+              -19.714595794677734
+            ]
+          },
+          "SHADOW_Hulk": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          },
+          "COLLISION_Hulk": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          },
+          "HP_B-L_Blast01": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              55.26893997192383,
+              -10.902379989624023,
+              25.443710327148438
+            ]
+          },
+          "RV_AssaultFrigate_Hulk": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          },
+          "HP_E_Coll": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "HP_E_MainEngines": {
+            "parent": "HP_E_Coll",
+            "head": [
+              0.39813995361328125,
+              20.388534545898438,
+              2.964336633682251
+            ]
+          },
+          "p_assaultcruiserengine": {
+            "parent": "HP_E_MainEngines",
+            "head": [
+              0.03774261474609375,
+              22.574260711669922,
+              -0.3945119380950928
+            ]
+          },
+          "HP_E_EmitDamage": {
+            "parent": "HP_E_Coll",
+            "head": [
+              0.39813801646232605,
+              20.388534545898438,
+              -6.356898784637451
+            ]
+          },
+          "p_hp_stardestroyer_damage": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              0.13567158579826355,
+              9.583166122436523,
+              -6.493107318878174
+            ]
+          },
+          "HP_F-L_Bone": {
+            "parent": "Root",
+            "head": [
+              23.056297302246094,
+              -90.77142333984375,
+              19.858898162841797
+            ]
+          },
+          "HP_F-L_EmitDamage": {
+            "parent": "HP_F-L_Bone",
+            "head": [
+              25.664531707763672,
+              -93.15410614013672,
+              15.86034107208252
+            ]
+          },
+          "p_hp_stardestroyer_damage.001": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              26.086225509643555,
+              -77.38674926757812,
+              24.8131103515625
+            ]
+          },
+          "p_hp_stardestroyer_damage.002": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              18.33987045288086,
+              -108.2430419921875,
+              18.026172637939453
+            ]
+          },
+          "FP_F-L_00": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              20.864856719970703,
+              -119.2538833618164,
+              19.96139144897461
+            ]
+          },
+          "FP_F-L_01": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              30.434001922607422,
+              -66.10514068603516,
+              19.96139144897461
+            ]
+          },
+          "HP_F-L_Blast": {
+            "parent": "HP_F-L_Bone",
+            "head": [
+              30.20758056640625,
+              -96.9207992553711,
+              26.761940002441406
+            ]
+          },
+          "HP_F-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -24.306306838989258,
+              -93.51925659179688,
+              20.816875457763672
+            ]
+          },
+          "HP_F-R_EmitDamage": {
+            "parent": "HP_F-R_Bone",
+            "head": [
+              -25.18546485900879,
+              -92.869384765625,
+              15.840537071228027
+            ]
+          },
+          "p_hp_stardestroyer_damage.003": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -25.65363311767578,
+              -75.8150863647461,
+              25.33586883544922
+            ]
+          },
+          "p_hp_stardestroyer_damage.004": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -18.22951316833496,
+              -109.86083221435547,
+              18.00636863708496
+            ]
+          },
+          "FP_F-R_01": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -29.462678909301758,
+              -68.15472412109375,
+              19.941587448120117
+            ]
+          },
+          "FP_F-R_00": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -21.6673583984375,
+              -118.8821792602539,
+              19.941587448120117
+            ]
+          },
+          "HP_F-R_Blast": {
+            "parent": "HP_F-R_Bone",
+            "head": [
+              -31.907289505004883,
+              -92.32917785644531,
+              26.761940002441406
+            ]
+          },
+          "HP_B-L_Bone": {
+            "parent": "Root",
+            "head": [
+              53.007713317871094,
+              -3.2147350311279297,
+              15.762264251708984
+            ]
+          },
+          "HP_B-L_EmitDamage": {
+            "parent": "HP_B-L_Bone",
+            "head": [
+              55.97840881347656,
+              -5.097145080566406,
+              12.82251262664795
+            ]
+          },
+          "p_hp_stardestroyer_damage.005": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              48.32678985595703,
+              -15.146672248840332,
+              18.76946258544922
+            ]
+          },
+          "FP_B-L_00": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              49.00419998168945,
+              -33.301490783691406,
+              16.92356300354004
+            ]
+          },
+          "FP_B-L_01": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              57.42763137817383,
+              26.337505340576172,
+              16.92356300354004
+            ]
+          },
+          "HP_B-L_Blast": {
+            "parent": "HP_B-L_Bone",
+            "head": [
+              55.26893997192383,
+              -10.902379989624023,
+              25.443710327148438
+            ]
+          },
+          "HP_B-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -51.40846633911133,
+              -7.896810531616211,
+              17.057693481445312
+            ]
+          },
+          "HP_B-R_EmitDamage": {
+            "parent": "HP_B-R_Bone",
+            "head": [
+              -53.56989288330078,
+              -4.538280963897705,
+              15.840537071228027
+            ]
+          },
+          "p_hp_stardestroyer_damage.006": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -48.64377975463867,
+              -22.238006591796875,
+              18.00636863708496
+            ]
+          },
+          "FP_B-R_01": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -56.66149139404297,
+              25.872589111328125,
+              16.672901153564453
+            ]
+          },
+          "FP_B-R_00": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -47.75236892700195,
+              -36.48522186279297,
+              16.672901153564453
+            ]
+          },
+          "HP_B-R_Blast": {
+            "parent": "HP_B-R_Bone",
+            "head": [
+              -56.38041305541992,
+              -4.901610851287842,
+              23.70170021057129
+            ]
+          },
+          "RV_AssaultFrigate": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          },
+          "COLLISION": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          },
+          "SHADOW": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.722007751464844,
+              32.15962219238281
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "HP_E_Coll": {
+            "exported_name": "HP_E_Coll.001",
+            "vertices": 24,
+            "triangles": 12,
+            "hidden": true,
+            "shader": "alDefault.fx",
+            "materials": [
+              "WavecrestEngineHelper_HP_E_Coll_Slot0"
+            ],
+            "slot_triangles": [
+              12
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Spot01": {
+            "parent": "Root",
+            "head": [
+              537.6648559570312,
+              194.53831481933594,
+              301.72576904296875
+            ]
+          },
+          "Spot01.Target": {
+            "parent": "Root",
+            "head": [
+              -3.9919891357421875,
+              -93.1778335571289,
+              1.5180595255515072e-05
+            ]
+          },
+          "Omni01": {
+            "parent": "Root",
+            "head": [
+              -85.13113403320312,
+              332.8726501464844,
+              -21.280723571777344
+            ]
+          },
+          "Omni02": {
+            "parent": "Root",
+            "head": [
+              -85.131103515625,
+              -318.84368896484375,
+              192.0320587158203
+            ]
+          },
+          "HP00_B-L": {
+            "parent": "Root",
+            "head": [
+              55.29762268066406,
+              -3.23830509185791,
+              17.791942596435547
+            ]
+          },
+          "HP00_F-R": {
+            "parent": "Root",
+            "head": [
+              -24.690446853637695,
+              -94.48100280761719,
+              21.178966522216797
+            ]
+          },
+          "HP00_F-L": {
+            "parent": "Root",
+            "head": [
+              25.21101951599121,
+              -94.16900634765625,
+              19.917415618896484
+            ]
+          },
+          "HP00_B-R": {
+            "parent": "Root",
+            "head": [
+              -53.649662017822266,
+              -4.774178504943848,
+              16.84699821472168
+            ]
+          },
+          "RV_AssaultFrigate05": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          },
+          "AssaultCruiser Hulk": {
+            "parent": "Root",
+            "head": [
+              -0.00096893310546875,
+              17.943378448486328,
+              -19.714599609375
+            ]
+          },
+          "SHADOW_Hulk": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          },
+          "COLLISION_Hulk": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          },
+          "HP_B-L_Blast01": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              55.26893997192383,
+              -10.902376174926758,
+              25.44371223449707
+            ]
+          },
+          "RV_AssaultFrigate_Hulk": {
+            "parent": "AssaultCruiser Hulk",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          },
+          "HP_E_Coll": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "HP_E_MainEngines": {
+            "parent": "HP_E_Coll",
+            "head": [
+              0.39813995361328125,
+              20.388534545898438,
+              2.9643332958221436
+            ]
+          },
+          "p_assaultcruiserengine": {
+            "parent": "HP_E_MainEngines",
+            "head": [
+              0.0377422571182251,
+              22.574260711669922,
+              -0.39451560378074646
+            ]
+          },
+          "HP_E_EmitDamage": {
+            "parent": "HP_E_Coll",
+            "head": [
+              0.39813801646232605,
+              20.388532638549805,
+              -6.356902122497559
+            ]
+          },
+          "p_hp_stardestroyer_damage": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              0.13567334413528442,
+              9.583165168762207,
+              -6.493108749389648
+            ]
+          },
+          "HP_F-L_Bone": {
+            "parent": "Root",
+            "head": [
+              23.056297302246094,
+              -90.77142333984375,
+              19.85891342163086
+            ]
+          },
+          "HP_F-L_EmitDamage": {
+            "parent": "HP_F-L_Bone",
+            "head": [
+              25.664531707763672,
+              -93.15410614013672,
+              15.860356330871582
+            ]
+          },
+          "p_hp_stardestroyer_damage.001": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              26.086223602294922,
+              -77.38673400878906,
+              24.81312370300293
+            ]
+          },
+          "p_hp_stardestroyer_damage.002": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              18.33987045288086,
+              -108.24303436279297,
+              18.02618980407715
+            ]
+          },
+          "FP_F-L_00": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              20.864856719970703,
+              -119.25387573242188,
+              19.961410522460938
+            ]
+          },
+          "FP_F-L_01": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              30.43400001525879,
+              -66.10513305664062,
+              19.961402893066406
+            ]
+          },
+          "HP_F-L_Blast": {
+            "parent": "HP_F-L_Bone",
+            "head": [
+              30.20758056640625,
+              -96.92079162597656,
+              26.76195526123047
+            ]
+          },
+          "HP_F-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -24.306306838989258,
+              -93.51925659179688,
+              20.816890716552734
+            ]
+          },
+          "HP_F-R_EmitDamage": {
+            "parent": "HP_F-R_Bone",
+            "head": [
+              -25.18546485900879,
+              -92.869384765625,
+              15.84055233001709
+            ]
+          },
+          "p_hp_stardestroyer_damage.003": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -25.653640747070312,
+              -75.8150863647461,
+              25.335880279541016
+            ]
+          },
+          "p_hp_stardestroyer_damage.004": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -18.229576110839844,
+              -109.86083984375,
+              18.006383895874023
+            ]
+          },
+          "FP_F-R_01": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -29.462656021118164,
+              -68.15471649169922,
+              19.94159698486328
+            ]
+          },
+          "FP_F-R_00": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -21.667373657226562,
+              -118.88218688964844,
+              19.941604614257812
+            ]
+          },
+          "HP_F-R_Blast": {
+            "parent": "HP_F-R_Bone",
+            "head": [
+              -31.907289505004883,
+              -92.32917022705078,
+              26.76195526123047
+            ]
+          },
+          "HP_B-L_Bone": {
+            "parent": "Root",
+            "head": [
+              53.007713317871094,
+              -3.2147324085235596,
+              15.7622652053833
+            ]
+          },
+          "HP_B-L_EmitDamage": {
+            "parent": "HP_B-L_Bone",
+            "head": [
+              55.97840881347656,
+              -5.097143173217773,
+              12.822513580322266
+            ]
+          },
+          "p_hp_stardestroyer_damage.005": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              48.3267936706543,
+              -15.146669387817383,
+              18.76946449279785
+            ]
+          },
+          "FP_B-L_00": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              49.00420379638672,
+              -33.301483154296875,
+              16.923568725585938
+            ]
+          },
+          "FP_B-L_01": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              57.427635192871094,
+              26.337505340576172,
+              16.923559188842773
+            ]
+          },
+          "HP_B-L_Blast": {
+            "parent": "HP_B-L_Bone",
+            "head": [
+              55.26893997192383,
+              -10.902376174926758,
+              25.44371223449707
+            ]
+          },
+          "HP_B-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -51.40846633911133,
+              -7.896807670593262,
+              17.057695388793945
+            ]
+          },
+          "HP_B-R_EmitDamage": {
+            "parent": "HP_B-R_Bone",
+            "head": [
+              -53.56989288330078,
+              -4.538278579711914,
+              15.840538024902344
+            ]
+          },
+          "p_hp_stardestroyer_damage.006": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -48.64381790161133,
+              -22.238006591796875,
+              18.00637435913086
+            ]
+          },
+          "FP_B-R_01": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -56.6614875793457,
+              25.87259292602539,
+              16.672897338867188
+            ]
+          },
+          "FP_B-R_00": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -47.752403259277344,
+              -36.48522186279297,
+              16.67290687561035
+            ]
+          },
+          "HP_B-R_Blast": {
+            "parent": "HP_B-R_Bone",
+            "head": [
+              -56.38041305541992,
+              -4.901607036590576,
+              23.70170021057129
+            ]
+          },
+          "RV_AssaultFrigate": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          },
+          "COLLISION": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          },
+          "SHADOW": {
+            "parent": "Root",
+            "head": [
+              -0.00014083296991884708,
+              -54.72200393676758,
+              32.159629821777344
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "WavecrestEngineHelper_HP_E_Coll_Slot0",
+          "shader": "alDefault.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DiffuseColor": [
+              0.6705882549285889,
+              0.1725490242242813,
+              0.2549019753932953
+            ]
+          }
+        }
+      ],
+      "bone_error": 6.521347426330093e-05,
+      "parenting_error": 0,
+      "root_restored": true,
+      "source_model": "F:\\Private\\empire-at-war\\output\\eaw-rebel-ships\\DATA\\ART\\MODELS\\RV_ASSAULTFRIGATE_HP00_E.ALO",
+      "source_bone_names": [
+        "Root",
+        "Spot01",
+        "Spot01.Target",
+        "Omni01",
+        "Omni02",
+        "HP00_B-L",
+        "HP00_F-R",
+        "HP00_F-L",
+        "HP00_B-R",
+        "RV_AssaultFrigate05",
+        "AssaultCruiser Hulk",
+        "SHADOW_Hulk",
+        "COLLISION_Hulk",
+        "HP_B-L_Blast01",
+        "RV_AssaultFrigate_Hulk",
+        "HP_E_Coll",
+        "HP_E_MainEngines",
+        "p_assaultcruiserengine",
+        "HP_E_EmitDamage",
+        "p_hp_stardestroyer_damage",
+        "HP_F-L_Bone",
+        "HP_F-L_EmitDamage",
+        "p_hp_stardestroyer_damage.001",
+        "p_hp_stardestroyer_damage.002",
+        "FP_F-L_00",
+        "FP_F-L_01",
+        "HP_F-L_Blast",
+        "HP_F-R_Bone",
+        "HP_F-R_EmitDamage",
+        "p_hp_stardestroyer_damage.003",
+        "p_hp_stardestroyer_damage.004",
+        "FP_F-R_01",
+        "FP_F-R_00",
+        "HP_F-R_Blast",
+        "HP_B-L_Bone",
+        "HP_B-L_EmitDamage",
+        "p_hp_stardestroyer_damage.005",
+        "FP_B-L_00",
+        "FP_B-L_01",
+        "HP_B-L_Blast",
+        "HP_B-R_Bone",
+        "HP_B-R_EmitDamage",
+        "p_hp_stardestroyer_damage.006",
+        "FP_B-R_01",
+        "FP_B-R_00",
+        "HP_B-R_Blast",
+        "RV_AssaultFrigate",
+        "COLLISION",
+        "SHADOW"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/WavecrestImport/Output/WavecrestEngineHelper.fbx",
+      "geometry_checks": [
+        {
+          "name": "HP_E_Coll",
+          "corners": 36,
+          "position_error": 5.7220458984375e-06,
+          "uv_error": 0
+        }
+      ]
+    }
+  },
+  "materials": [
+    {
+      "name": "Wavecrest_Hull_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "Wavecrest_Lights_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Wavecrest_SeV_Wavecrest_L",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "SeV_Wavecrest_L.tga",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Wavecrest_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Wavecrest_Collision_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret01_Turret_01_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret01_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret01_Barrel_01_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret02_Turret_02_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret02_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret02_Barrel_02_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret03_Turret_03_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret03_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret03_Barrel_03_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret04_Turret_04_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret04_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret04_Barrel_04_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret05_Turret_05_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret05_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret05_Barrel_05_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret06_Turret_06_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret06_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret06_Barrel_06_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret07_Turret_07_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret07_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret07_Barrel_07_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret08_Turret_08_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestTurret08_Shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "WavecrestTurret08_Barrel_08_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Wavecrest_SeV_Wavecrest",
+      "normal": "Wavecrest_SeV_Wavecrest_B",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Wavecrest.tga",
+        "NormalTexture": "SeV_Wavecrest_B.tga"
+      }
+    },
+    {
+      "name": "WavecrestEngineHelper_HP_E_Coll_Slot0",
+      "shader": "alDefault.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DiffuseColor": [
+          0.6705882549285889,
+          0.1725490242242813,
+          0.2549019753932953
+        ]
+      }
+    }
+  ]
+}

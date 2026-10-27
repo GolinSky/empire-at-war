@@ -279,6 +279,9 @@
 
 ### Features
 
+- [x] **Import Wavecrest-class frigate into CIS** → [[Done/Features/Wavecrest_Import|Wavecrest Import]]
+  - 2026-10-27: 17 targetable mounts, Medium weapons, exact HP, 3100 hull/1500 shields/30 regeneration; 2 active Vultures + 1 reserve. Saved asset/reference/geometry checks and renders pass; no automated tests or Play Mode run.
+
 - [x] **Import Invincible as a separate Separatist ship** → [[Done/Features/Invincible_Import|Invincible Import]]
   - Providence × `2.785714` size; `10000` hull / `6000` shields; `28` weapons, existing system counts.
   - Source import completed 2026-10-24; saved references/geometry checks pass. No Play Mode combat or automated tests run.

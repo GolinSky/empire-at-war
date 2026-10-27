@@ -1,0 +1,69 @@
+{
+  "simulatorHp": [
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    600.0,
+    600.0,
+    250.0,
+    400.0,
+    250.0
+  ],
+  "shipId": 111,
+  "hardpoints": 17,
+  "weapons": 15,
+  "hull": 3100.0,
+  "shields": 1500.0,
+  "shieldRegen": 30.0,
+  "hardpointHp": [
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    250.0,
+    600.0,
+    600.0,
+    250.0,
+    400.0,
+    250.0
+  ],
+  "weaponProfiles": [
+    {
+      "type": 4,
+      "caliber": "Medium",
+      "name": "Medium Turbolaser"
+    },
+    {
+      "type": 23,
+      "caliber": "Medium",
+      "name": "Medium Laser Cannon"
+    },
+    {
+      "type": 32,
+      "caliber": "Medium",
+      "name": "Medium Ion Cannon"
+    },
+    {
+      "type": 48,
+      "caliber": "Medium",
+      "name": "Medium Proton Torpedo Launcher"
+    }
+  ],
+  "passed": true
+}

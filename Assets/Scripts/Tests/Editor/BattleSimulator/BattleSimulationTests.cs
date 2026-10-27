@@ -24,6 +24,21 @@ namespace EmpireAtWar.Tests.Editor
 
         [TearDown] public void TearDown() => UnityEngine.Object.DestroyImmediate(_matrix);
 
+        [TestCase(0f, 400f)]
+        [TestCase(500f, 500f)]
+        public void SimUnit_UsesMountHealthOverride(float healthOverride, float expectedHealth)
+        {
+            var definition = Unit("A", 7000, 0);
+            definition.HardPointHealth = new[] { Health(HardPointType.Weapon, 400, 1) };
+            definition.HardPoints[0].HealthOverride = healthOverride;
+            var unit = new SimUnit(definition, new BattleFleetEntry { UnitId = "A" }, 0, 0,
+                _matrix, new System.Random(1), true);
+
+            Assert.That(unit.HardPoints[0].MaxHealth, Is.EqualTo(expectedHealth));
+            unit.HardPoints[0].ApplyDamage(450);
+            Assert.That(unit.HardPoints[0].Health, Is.EqualTo(Math.Max(0f, expectedHealth - 450)));
+        }
+
         [Test]
         public void AnalyticTtk_TenTenDamageShots_OneSecondFlight_KillsAtTenSeconds()
         {

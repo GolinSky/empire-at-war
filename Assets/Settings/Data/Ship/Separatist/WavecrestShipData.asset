@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: WavecrestShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  <Speed>k__BackingField: 29
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 5
+  <HullBottom>k__BackingField: -36.632362
+  <HullTop>k__BackingField: 36.632366
+  <RotationSpeed>k__BackingField: 60
+  <TurnAcceleration>k__BackingField: 60
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 15
+  <NavigationRadius>k__BackingField: 49
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 32786d9dac29ff64b8097cef8b7633fc,
+    type: 2}
+  <ShipClass>k__BackingField: 3
+  <Hull>k__BackingField: 3100
+  <Shields>k__BackingField: 1500
+  shieldRegenTiers: {fileID: 11400000, guid: 07be38cb294d4064a90aa3c987e5e491, type: 2}
+  <ShieldRegenTier>k__BackingField: 1
+  <ShieldRegenerateDelay>k__BackingField: 1
+  hardPointHealth:
+  - hardPointType: 0
+    health: 250
+    hullDamageMultiplier: 1
+  - hardPointType: 1
+    health: 400
+    hullDamageMultiplier: 1
+  - hardPointType: 4
+    health: 250
+    hullDamageMultiplier: 1
+  <Range>k__BackingField: 550
+  <Delay>k__BackingField: 0.25
+  abilities: 
+  hangarBays:
+  - squadronType: 102
+    reserve: 3
+    maxActive: 2
+  <HangarInitialDelay>k__BackingField: 5
+  <HangarLaunchInterval>k__BackingField: 5
+  weaponLoadout:
+  - weaponType: 4
+    count: 8
+  - weaponType: 23
+    count: 4
+  - weaponType: 32
+    count: 2
+  - weaponType: 48
+    count: 1

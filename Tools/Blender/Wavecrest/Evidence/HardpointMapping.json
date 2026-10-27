@@ -1,0 +1,189 @@
+[
+  {
+    "id": 0,
+    "name": "HP_Turret_01",
+    "type": 0,
+    "position": [
+      -5.68820524,
+      11.8593674,
+      34.20469
+    ],
+    "source": "HP_Turret_01"
+  },
+  {
+    "id": 1,
+    "name": "HP_Turret_02",
+    "type": 0,
+    "position": [
+      -6.987638,
+      11.8593655,
+      30.9621048
+    ],
+    "source": "HP_Turret_02"
+  },
+  {
+    "id": 2,
+    "name": "HP_Turret_03",
+    "type": 0,
+    "position": [
+      -7.177079,
+      11.8593655,
+      27.5190144
+    ],
+    "source": "HP_Turret_03"
+  },
+  {
+    "id": 3,
+    "name": "HP_Turret_04",
+    "type": 0,
+    "position": [
+      -7.176504,
+      11.8593655,
+      23.92364
+    ],
+    "source": "HP_Turret_04"
+  },
+  {
+    "id": 4,
+    "name": "HP_Turret_05",
+    "type": 0,
+    "position": [
+      5.637275,
+      11.8593674,
+      34.20469
+    ],
+    "source": "HP_Turret_05"
+  },
+  {
+    "id": 5,
+    "name": "HP_Turret_06",
+    "type": 0,
+    "position": [
+      6.98336,
+      11.8593655,
+      30.9621048
+    ],
+    "source": "HP_Turret_06"
+  },
+  {
+    "id": 6,
+    "name": "HP_Turret_07",
+    "type": 0,
+    "position": [
+      7.177078,
+      11.8593655,
+      27.5190144
+    ],
+    "source": "HP_Turret_07"
+  },
+  {
+    "id": 7,
+    "name": "HP_Turret_08",
+    "type": 0,
+    "position": [
+      7.1719203,
+      11.8593655,
+      23.92364
+    ],
+    "source": "HP_Turret_08"
+  },
+  {
+    "id": 8,
+    "name": "HP_LC01",
+    "type": 0,
+    "position": [
+      -3.9468596,
+      6.827838,
+      -2.27582169
+    ],
+    "source": "HP_LC01"
+  },
+  {
+    "id": 9,
+    "name": "HP_LC02",
+    "type": 0,
+    "position": [
+      -3.94686031,
+      -6.20142174,
+      14.1623392
+    ],
+    "source": "HP_LC02"
+  },
+  {
+    "id": 10,
+    "name": "HP_LC03",
+    "type": 0,
+    "position": [
+      3.9577105,
+      6.827838,
+      -2.27582169
+    ],
+    "source": "HP_LC03"
+  },
+  {
+    "id": 11,
+    "name": "HP_LC04",
+    "type": 0,
+    "position": [
+      3.95770931,
+      -6.20142174,
+      14.1623392
+    ],
+    "source": "HP_LC04"
+  },
+  {
+    "id": 12,
+    "name": "HP_IC01",
+    "type": 0,
+    "position": [
+      -3.94686,
+      0.881155,
+      5.454644
+    ],
+    "source": "HP_IC01"
+  },
+  {
+    "id": 13,
+    "name": "HP_IC02",
+    "type": 0,
+    "position": [
+      3.95770931,
+      0.881155,
+      5.454644
+    ],
+    "source": "HP_IC02"
+  },
+  {
+    "id": 14,
+    "name": "HP_MIS01",
+    "type": 0,
+    "position": [
+      -0.0128498552,
+      -12.1707363,
+      40.99066
+    ],
+    "source": "HP_MIS01"
+  },
+  {
+    "id": 15,
+    "name": "HP_E01",
+    "type": 1,
+    "position": [
+      -0.01284931,
+      19.1308727,
+      -33.3805122
+    ],
+    "source": "HP_E01"
+  },
+  {
+    "id": 16,
+    "name": "HP_SPAWN_00",
+    "type": 4,
+    "position": [
+      -0.0128489565,
+      19.2294369,
+      19.9664021
+    ],
+    "source": "HP_SPAWN_00"
+  }
+]

@@ -58,7 +58,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     {
                         bindings.Add(point, definition.HardPoints.Count);
                         definition.HardPoints.Add(new SimHardPointDefinition { Type = point.HardPointType,
-                            UnlockLevel = Integer(point, "unlockLevel"), Name = point.name });
+                            UnlockLevel = Integer(point, "unlockLevel"), HealthOverride = point.HealthOverride, Name = point.name });
                         if (!definition.HardPointHealth.Any(value => value.HardPointType == point.HardPointType))
                             throw new InvalidOperationException($"{unit.Caption}: missing HardPointHealth for {point.HardPointType}.");
                     }

@@ -2210,6 +2210,42 @@ MonoBehaviour:
           localFeedback: 0
         useAlarmOverride: 0
         ready: {fileID: 0}
+    - key: 111
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: bf32b2f7bfb5cce4ba84125ec6a701ca, type: 3}
+          clips:
+            array: []
+          volume: 0.16
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+          localFeedback: 0
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+          localFeedback: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 5
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+          localFeedback: 0
+        useAlarmOverride: 0
+        ready: {fileID: 0}
     - key: 100
       value:
         engine:

@@ -180,6 +180,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
           type: 3}
+    - key: 111
+      value:
+        matchups: {fileID: 11400000, guid: fffdc6b3b73ba8642bdf475bf120e869, type: 2}
+        description: 3,100 hull and 1,500 shields. Eight turbolaser batteries, four
+          laser cannon batteries, two ion cannon batteries and one proton torpedo
+          launcher, all medium caliber. All 17 mounts are targetable, including engines
+          and hangar. Carries two active Vulture Droid squadrons plus one reserve.
+        role: Frigate / Escort
+        iconKey: 6659a938f240057468564cb0ee980865:21300000
+        isHero: 0
+        <Name>k__BackingField: Wavecrest-class Frigate
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 3500
+        <BuildTime>k__BackingField: 45
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 6659a938f240057468564cb0ee980865,
+          type: 3}
   squadrons:
     keyValue:
     - key: 100

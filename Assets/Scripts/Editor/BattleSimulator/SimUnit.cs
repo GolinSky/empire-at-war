@@ -34,7 +34,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
             Definition = definition;
             HardPoints = new HardPointModel[definition.HardPoints.Count];
             for (int i = 0; i < HardPoints.Length; i++)
-                HardPoints[i] = new HardPointModel(definition.HardPoints[i].Type, i, definition.HardPoints[i].UnlockLevel);
+                HardPoints[i] = new HardPointModel(definition.HardPoints[i].Type, i,
+                    definition.HardPoints[i].UnlockLevel, definition.HardPoints[i].HealthOverride);
             if (definition.IsSquadron)
             {
                 _squadron = new SquadronHealthModel(definition, matrix, Modifiers);

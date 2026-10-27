@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c5c117da3372cc4bac3ac26e7813f3b
+    m_Address: WavecrestWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9e4b91ea8a035d94da292e3708a13e78
     m_Address: AotrEmpressDefensePlatformView
     m_ReadOnly: 0

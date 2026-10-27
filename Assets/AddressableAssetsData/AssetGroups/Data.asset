@@ -265,6 +265,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ead31121ca33184d96b18b25235739d
+    m_Address: WavecrestShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9f2a66c2107353d45b494ef0b3bfce46
     m_Address: VenatorIIShipData
     m_ReadOnly: 0

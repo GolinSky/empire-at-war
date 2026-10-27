@@ -92,7 +92,8 @@ namespace EmpireAtWar.Models.Health
                 }
 
                 HardPointHealth health = GetHardPointHealth(hardPoint.HardPointType);
-                hardPoint.SetHealth(health.Health, health.HullDamageMultiplier);
+                hardPoint.SetHealth(hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health,
+                    health.HullDamageMultiplier);
             }
         }
 

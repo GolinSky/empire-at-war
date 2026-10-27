@@ -1358,3 +1358,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: WavecrestShipView
+      value:
+        m_AssetGUID: 83c6db9aaf33ec049a302a589dae90fe
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: WavecrestShipData
+      value:
+        m_AssetGUID: 9ead31121ca33184d96b18b25235739d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

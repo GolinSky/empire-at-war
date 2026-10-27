@@ -243,7 +243,8 @@ namespace EmpireAtWar.Components.Ship.Health
                 hardPointModels[index] = new HardPointModel(
                     id: index,
                     hardPointType: hardPoint.HardPointType,
-                    unlockLevel: hardPoint.UnlockLevel);
+                    unlockLevel: hardPoint.UnlockLevel,
+                    healthOverride: hardPoint.HealthOverride);
             }
 
             Model.InitializeHardPoints(hardPointModels);

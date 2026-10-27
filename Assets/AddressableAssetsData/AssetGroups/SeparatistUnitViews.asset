@@ -70,6 +70,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46b590c1198bac64bb0b5e274a7fc765
+    m_Address: WavecrestReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f4e660fc02c98e47a1538f74fc39ef0
     m_Address: DroidBomberSquadronView
     m_ReadOnly: 0
@@ -107,6 +112,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80484c47f0fde8944b6852594a403c69
     m_Address: ProvidenceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83c6db9aaf33ec049a302a589dae90fe
+    m_Address: WavecrestShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

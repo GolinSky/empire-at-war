@@ -37,11 +37,14 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField, Min(0.01f)] private float destroyedVfxScale = 1f;
         [Tooltip("Upgrade level of the owner that installs this hardpoint; 1 = installed from the start.")]
         [SerializeField, Min(1)] private int unlockLevel = 1;
+        [Tooltip("Maximum health for this mount. Zero uses the ship's health for this hardpoint type.")]
+        [SerializeField, Min(0f)] private float healthOverride;
 
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
         public GameObject GameObject => gameObject;
         public int UnlockLevel => unlockLevel;
+        public float HealthOverride => healthOverride;
 
         public Vector3 Position => Transform.position;
         public Transform Transform => transform;
