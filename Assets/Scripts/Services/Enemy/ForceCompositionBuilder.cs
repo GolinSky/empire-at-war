@@ -55,8 +55,10 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Clears <paramref name="force"/> and fills it with the hostile units the team knows of, each weighted by
-        /// how much its sighting is still trusted. This is how the AI sees hostiles: through intel, not the map.
+        /// Clears <paramref name="force"/> and fills it with the hostile units the team still remembers, at the strength
+        /// they were last seen with. This is how the AI sees hostiles: through intel, not the map. Age makes a sighting's
+        /// position uncertain, not the unit weaker: discounting unseen units made the AI attack fleets it had lost sight of.
+        /// Destroyed units leave the intel at once, and forgotten sightings drop out here.
         /// </summary>
         public void BuildKnown(
             ForceComposition force,
@@ -73,8 +75,7 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                force.Add(_catalog.Get(sighting.UnitTypeId), sighting.Hull * confidence,
-                    sighting.Shields * confidence, sighting.OffenseScale * confidence);
+                force.Add(_catalog.Get(sighting.UnitTypeId), sighting.Hull, sighting.Shields, sighting.OffenseScale);
             }
         }
 

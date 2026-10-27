@@ -36,6 +36,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         /// <summary>A known hostile structure (not a base) has no known hostile ships near it.</summary>
         public bool HasRaidTarget { get; }
+        /// <summary>Every own ship is within <see cref="FleetCohesion.RADIUS"/> of the fleet's anchor ship.</summary>
+        public bool IsRegrouped { get; }
 
         /// <summary>Own fleet strength over the focused enemy team's fleet; 1 is an even fight.</summary>
         public float FleetAdvantage { get; }
@@ -60,7 +62,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasThreatenedSite = false,
             float localAdvantage = Combat.CombatMatchup.MAX_ADVANTAGE,
             bool hasLocalThreat = false,
-            bool hasRaidTarget = false)
+            bool hasRaidTarget = false,
+            bool isRegrouped = true)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -76,6 +79,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasThreatenedSite = hasThreatenedSite;
             HasLocalThreat = hasLocalThreat;
             HasRaidTarget = hasRaidTarget;
+            IsRegrouped = isRegrouped;
         }
     }
 
@@ -101,6 +105,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     {
         /// <summary>Bonus for the current state so near-equal options do not flip every decision.</summary>
         private const float HYSTERESIS = 0.05f;
+        /// <summary>Fleet advantage, as a multiple of the attack ratio, at which attacking outranks capturing.</summary>
+        public const float PRESS_ADVANTAGE_SCALE = 2f;
+        private const string RECOVERING_REASON =
+            "Regrouping after a retreat until the fleet is together and can match the enemy.";
 
         private static readonly EnemyStrategicRule[] _rules =
         {
@@ -115,6 +123,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 "Hostiles near the fleet outmatch it, so the fleet withdraws to its base.",
                 (s, p) => ResponseCurve.When(s.HasOwnBase) *
                           ResponseCurve.AtMost(s.LocalAdvantage, p.RetreatAdvantage)),
+            // A clearly stronger fleet ends the game instead of trading ships over capture sites.
+            new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.75f,
+                "The fleet clearly outmatches the enemy, so it presses the advantage against the base.",
+                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
+                                             s.HasEnemyBaseTarget) *
+                          ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE)),
+            new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.75f,
+                "The fleet clearly outmatches the enemy fleet, so it presses the advantage and hunts it.",
+                (s, p) => ResponseCurve.When(s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
+                                             s.EnemyShipCount > 0) *
+                          ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE)),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.7f,
                 "Enemy ships are contesting an owned capture site.",
                 (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
@@ -162,6 +181,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         private bool _hasLastState;
 
+        /// <summary>
+        /// Set by a retreat. Until the fleet is regrouped and at least an even match again, it stays withdrawn
+        /// instead of walking back into the force that beat it once that force leaves the local check radius.
+        /// </summary>
+        private bool _isRecovering;
+
         public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot)
         {
             if (snapshot.OwnShipCount < 0)
@@ -198,12 +223,32 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 }
             }
 
-            _lastState = best.State;
+            EnemyStrategicState state = best.State;
+            string reason = best.Reason;
+            if (state == EnemyStrategicState.RetreatValue)
+            {
+                _isRecovering = true;
+            }
+            else if (_isRecovering && state != EnemyStrategicState.DefendBase &&
+                     state != EnemyStrategicState.RebuildFleet)
+            {
+                if (snapshot.IsRegrouped && snapshot.FleetAdvantage >= profile.HuntAdvantage)
+                {
+                    _isRecovering = false;
+                }
+                else
+                {
+                    state = EnemyStrategicState.RetreatValue;
+                    reason = RECOVERING_REASON;
+                }
+            }
+
+            _lastState = state;
             _hasLastState = true;
             return new EnemyStrategicDecision(
-                state: best.State,
-                committedShipCount: CalculateCommittedShipCount(best.State, snapshot.OwnShipCount, profile),
-                reason: best.Reason);
+                state: state,
+                committedShipCount: CalculateCommittedShipCount(state, snapshot.OwnShipCount, profile),
+                reason: reason);
         }
 
         private static int CalculateCommittedShipCount(

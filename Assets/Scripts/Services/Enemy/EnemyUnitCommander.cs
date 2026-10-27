@@ -164,6 +164,8 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContext context = _contextBuilder.Build();
             LastSnapshot = context.Snapshot;
             EnemyStrategicDecision decision = _decisionModel.Evaluate(context.Snapshot);
+            int bodyCount = 0;
+            int rallyingCount = 0;
             if (decision.State == EnemyStrategicState.RebuildFleet ||
                 decision.State == EnemyStrategicState.Hold)
             {
@@ -173,8 +175,10 @@ namespace EmpireAtWar.Services.Enemy
             {
                 _zoneExitTargets.Clear();
                 _taskForceExecutor.Execute(decision, context);
+                bodyCount = _taskForceExecutor.BodyCount;
+                rallyingCount = _taskForceExecutor.RallyingCount;
             }
-            PublishDecision(decision);
+            PublishDecision(decision, bodyCount, rallyingCount);
         }
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)
@@ -237,7 +241,7 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private void PublishDecision(EnemyStrategicDecision decision)
+        private void PublishDecision(EnemyStrategicDecision decision, int bodyCount, int rallyingCount)
         {
             bool hasChanged = !_hasDecision ||
                 LastDecision.State != decision.State ||
@@ -245,6 +249,8 @@ namespace EmpireAtWar.Services.Enemy
                 LastDecision.Reason != decision.Reason;
             LastDecision = decision;
             _hasDecision = true;
+            EnemyAiTelemetry.RecordDecision(_owner.Id, _owner.Faction, hasChanged, decision, LastSnapshot,
+                bodyCount, rallyingCount);
             if (!hasChanged)
             {
                 return;

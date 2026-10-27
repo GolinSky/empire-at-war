@@ -86,6 +86,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _focusTeamForce = new ForceComposition();
         private readonly ForceComposition _baseThreatForce = new ForceComposition();
         private readonly ForceComposition _localThreatForce = new ForceComposition();
+        private readonly ForceComposition _localOwnForce = new ForceComposition();
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
@@ -148,6 +149,8 @@ namespace EmpireAtWar.Services.Enemy
             BuildBaseThreat(ownBase);
             // Retreat answers what is actually near the fleet, not the enemy's whole army across the map.
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            // Only units already at the fight count: ships still at the base or crossing the map cannot help it.
+            BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
             _localThreat = FindLocalThreat(origin, now);
             _raidTarget = FindRaidTarget(origin, now);
             GameEntity localThreatTarget = _localThreat;
@@ -168,9 +171,10 @@ namespace EmpireAtWar.Services.Enemy
                 fleetAdvantage: CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
                 baseThreatRatio: baseThreatRatio,
                 hasThreatenedSite: hasThreatenedSite,
-                localAdvantage: CombatMatchup.Advantage(_ownForce, _localThreatForce),
+                localAdvantage: CombatMatchup.Advantage(_localOwnForce, _localThreatForce),
                 hasLocalThreat: localThreatTarget != null,
-                hasRaidTarget: raidTarget != null);
+                hasRaidTarget: raidTarget != null,
+                isRegrouped: IsRegrouped(ownShips));
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
             foreach (IShipEntity ship in ownShips)
@@ -382,6 +386,13 @@ namespace EmpireAtWar.Services.Enemy
             return ships;
         }
 
+        private static bool IsRegrouped(IReadOnlyList<IShipEntity> ships)
+        {
+            List<FormationPoint> positions = new List<FormationPoint>(ships.Count);
+            foreach (IShipEntity ship in ships) positions.Add(ToPoint(ship.WorldPosition));
+            return FleetCohesion.IsTogether(positions, FleetCohesion.RADIUS);
+        }
+
         private static FormationPoint CalculateFleetCenter(IReadOnlyList<IShipEntity> ships)
         {
             if (ships.Count == 0)
@@ -409,6 +420,20 @@ namespace EmpireAtWar.Services.Enemy
 
             BuildHostilesNear(_baseThreatForce,
                 ownBase.GetFacade<IEntityTransformFacade>().Transform.position, BASE_THREAT_RADIUS);
+        }
+
+        /// <summary>Own ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>
+        private void BuildOwnNear(ForceComposition force, Vector3 center, float radius)
+        {
+            PlayerId self = _owner.Id;
+            float radiusSquared = radius * radius;
+            _forceBuilder.Build(force, entity =>
+            {
+                if (entity.Owner != self) return false;
+                Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - center;
+                offset.y = 0f;
+                return offset.sqrMagnitude <= radiusSquared;
+            });
         }
 
         /// <summary>Hostile ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>

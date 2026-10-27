@@ -399,9 +399,10 @@ namespace EmpireAtWar.Entities.Squadrons
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
                     // Fighters orbit one side of the guarded unit, so the whole guard area is
                     // searched in what the team sees rather than in the squadron's own radar.
+                    // The area reaches past the guarded unit's guns, so escorts join the fight it is in.
                     else if (ShouldSearchTargets(elapsed)) DefendArea(_targetSelector.SelectSeen(
                         _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
-                        _guardedRadius + Data.GuardRadius));
+                        Mathf.Max(_guardedRadius + Data.GuardRadius, _orderSettings.SquadronGuardEngageRadius)));
                     break;
                 case UnitOrderType.AttackMove:
                     if (ShouldSearchTargets(elapsed))

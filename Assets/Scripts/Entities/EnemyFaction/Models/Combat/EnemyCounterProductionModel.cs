@@ -8,7 +8,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
     /// Picks the unit that improves the matchup against the hostile force the most per credit.
     /// Counters fall out of the damage matrix: a unit that kills what threatens the fleet, or survives it,
     /// raises the advantage more than one that does not. The designer matchup table and a repeat penalty
-    /// then shape the pick so the fleet stays varied.
+    /// then shape the pick so the fleet stays varied. The penalty grows with the square root of the owned count:
+    /// a linear one pushed the fleet into weak types it did not own yet.
     /// </summary>
     public sealed class EnemyCounterProductionModel : Model
     {
@@ -50,7 +51,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
                 double score = gain / Math.Max(1, candidate.Price) *
                                _matchups.GetPreference(candidate.Profile.ShipClass, hostile) /
-                               (1 + candidate.OwnedCount);
+                               Math.Sqrt(1 + candidate.OwnedCount);
                 if (score > bestScore)
                 {
                     bestScore = score;

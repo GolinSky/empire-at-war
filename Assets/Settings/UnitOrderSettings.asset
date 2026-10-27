@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.UnitOrders.UnitOrderSettings
   guardFollowRadius: 40
   guardChaseDistance: 240
+  squadronGuardEngageRadius: 800
   huntRetargetInterval: 1
   stationClearance: 150

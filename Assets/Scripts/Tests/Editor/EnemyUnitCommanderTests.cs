@@ -50,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             MethodInfo discover = typeof(EnemySquadronCommander).GetMethod("TrackOwnedSquadrons",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             MethodInfo track = typeof(EnemySquadronCommander).GetMethod("Track",
-                BindingFlags.Instance | BindingFlags.NonPublic);
+                BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(ISquadron), typeof(SquadronType) }, null);
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             try
@@ -75,9 +75,48 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(reserve.ReleaseListeners, Is.Zero);
         }
 
-        private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade
+        [Test]
+        public void HangarSquadrons_KeepEscortingTheirCarrier_WhileStationPurchasesTakeOrders()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EntityLocator locator = new EntityLocator();
+            FakeSquadron hangar = new FakeSquadron(1, TestPlayers.Enemy) { CurrentOrder = UnitOrderType.Guard };
+            locator.AddEntity(hangar);
+            UnitCombatProfileCatalog catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            UnitCombatProfile profile = new UnitCombatProfile(ShipClass.Fighter, 1f, 0f,
+                Array.Empty<float>(), Array.Empty<float>(), Array.Empty<float>(), Array.Empty<UnitCombatProfile>());
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), profile);
+            EnemySquadronCommander commander = new EnemySquadronCommander(null, null, locator, roster,
+                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy));
+            var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
+                .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
+            MethodInfo issueOrder = typeof(EnemySquadronCommander).GetMethod("IssueOrder",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            FakeSquadron purchased = new FakeSquadron(2, TestPlayers.Enemy);
+            try
+            {
+                typeof(EnemySquadronCommander).GetMethod("TrackOwnedSquadrons",
+                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(commander, null);
+                typeof(EnemySquadronCommander).GetMethod("Track", BindingFlags.Instance | BindingFlags.NonPublic,
+                        null, new[] { typeof(ISquadron), typeof(SquadronType) }, null)
+                    .Invoke(commander, new object[] { purchased, SquadronType.Vulture });
+
+                Assert.That(tracked[hangar].IsHangarLaunched, Is.True);
+                Assert.That(tracked[purchased].IsHangarLaunched, Is.False);
+
+                issueOrder.Invoke(commander, new object[] { hangar });
+                Assert.That(hangar.OrdersReceived, Is.Zero, "A guarding hangar squadron must stay with its carrier.");
+            }
+            finally { commander.LateDispose(); }
+        }
+
+        private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade, IUnitOrderObserverFacade
         {
             public event Action Released;
+            public UnitOrderType CurrentOrder { get; set; }
+            public int OrdersReceived { get; private set; }
             public int ReleaseListeners => Released == null ? 0 : Released.GetInvocationList().Length;
             public long Id { get; }
             public long EntityId => Id;
@@ -86,9 +125,9 @@ namespace EmpireAtWar.Tests.Editor
             public UnitTypeId UnitTypeId => UnitTypeId.Squadron(SquadronType.Vulture);
             public Vector3 WorldPosition => Vector3.zero;
             public FakeSquadron(long id, PlayerId owner) { Id = id; Owner = owner; }
-            public void Guard(IEntity friendly, Vector3 offset) { }
-            public void AttackMoveTo(Vector3 position) { }
-            public void Hunt() { }
+            public void Guard(IEntity friendly, Vector3 offset) => OrdersReceived++;
+            public void AttackMoveTo(Vector3 position) => OrdersReceived++;
+            public void Hunt() => OrdersReceived++;
             public void Release() => Released();
             public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade => (TFacade)(object)this;
             public bool TryGetFacade<TFacade>(out TFacade facade) where TFacade : IEntityFacade

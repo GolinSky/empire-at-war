@@ -4,7 +4,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     /// <summary>
     /// Per-difficulty AI tuning. Advantage and ratio thresholds compare fleet strength derived from the damage matrix,
-    /// where 1 is an even fight (see <see cref="Combat.CombatMatchup.Advantage"/>).
+    /// where 1 is an even fight (see <see cref="Combat.CombatMatchup.Advantage"/>). Harder AIs decide faster and
+    /// commit more, but never attack at a disadvantage: taking losing fights only throws the fleet away.
     /// </summary>
     public sealed class EnemyAiDifficultyProfile
     {
@@ -13,9 +14,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private static readonly EnemyAiDifficultyProfile _medium =
             new EnemyAiDifficultyProfile(decisionInterval: 2.5f, requiredAttackRatio: 1.25f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.65f, retreatShieldThreshold: 0.25f, minimumMiningFacilities: 1, minimumControlledZones: 1, shipOrdersPerLevel: 2, defenseThreatRatio: 1f, abilityDecisionInterval: 2f, abilityUseChance: 0.6f, abilityTargetPrecision: 0.5f, superWeaponMinFireDelay: 15f, superWeaponMaxFireDelay: 30f, superWeaponTargetChoices: 3);
         private static readonly EnemyAiDifficultyProfile _hard =
-            new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1f, huntAdvantage: 0.9f, retreatAdvantage: 0.6f, committedFleetRatio: 0.8f, retreatShieldThreshold: 0.18f, minimumMiningFacilities: 2, minimumControlledZones: 2, shipOrdersPerLevel: 2, defenseThreatRatio: 1.25f, abilityDecisionInterval: 1f, abilityUseChance: 0.85f, abilityTargetPrecision: 0.8f, superWeaponMinFireDelay: 8f, superWeaponMaxFireDelay: 18f, superWeaponTargetChoices: 2);
+            new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1.15f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.8f, retreatShieldThreshold: 0.18f, minimumMiningFacilities: 2, minimumControlledZones: 2, shipOrdersPerLevel: 2, defenseThreatRatio: 1.25f, abilityDecisionInterval: 1f, abilityUseChance: 0.85f, abilityTargetPrecision: 0.8f, superWeaponMinFireDelay: 8f, superWeaponMaxFireDelay: 18f, superWeaponTargetChoices: 2);
         private static readonly EnemyAiDifficultyProfile _ultraHard =
-            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 0.75f, huntAdvantage: 0.8f, retreatAdvantage: 0.5f, committedFleetRatio: 1f, retreatShieldThreshold: 0.1f, minimumMiningFacilities: 3, minimumControlledZones: 2, shipOrdersPerLevel: 1, defenseThreatRatio: 1.5f, abilityDecisionInterval: 0.5f, abilityUseChance: 1f, abilityTargetPrecision: 1f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1);
+            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 1.1f, huntAdvantage: 1f, retreatAdvantage: 0.8f, committedFleetRatio: 1f, retreatShieldThreshold: 0.1f, minimumMiningFacilities: 3, minimumControlledZones: 2, shipOrdersPerLevel: 1, defenseThreatRatio: 1.5f, abilityDecisionInterval: 0.5f, abilityUseChance: 1f, abilityTargetPrecision: 1f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1);
 
         public float DecisionInterval { get; }
 

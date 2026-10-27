@@ -108,7 +108,11 @@ namespace EmpireAtWar.Tests.Editor
         // Regeneration is the class lever: each tier out-regenerates the one below. A ship runs on its own class's
         // tier unless listed here; the Executor keeps its own.
         private static readonly Dictionary<string, ShieldRegenTier> REGEN_TIER_OVERRIDES =
-            new Dictionary<string, ShieldRegenTier> { { "ExecutorShipData", ShieldRegenTier.Executor } };
+            new Dictionary<string, ShieldRegenTier>
+            {
+                { "ExecutorShipData", ShieldRegenTier.Executor },
+                { "CarrackShipData", ShieldRegenTier.Frigate },
+            };
 
         [Test]
         public void ShieldRegen_FollowsShipClassTiers_AndRisesWithClass()

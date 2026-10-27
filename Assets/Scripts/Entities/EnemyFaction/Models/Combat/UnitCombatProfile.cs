@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 
@@ -9,6 +10,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
     /// </summary>
     public sealed class UnitCombatProfile
     {
+        private static readonly ShipClass[] _warshipClasses =
+            { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser, ShipClass.Capital, ShipClass.HeavyCapital };
+
         private readonly float[] _hullDps;
         private readonly float[] _shieldDps;
         private readonly float[] _piercingDps;
@@ -39,6 +43,25 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _shieldDps = shieldDps;
             _piercingDps = piercingDps;
             Hangar = hangar;
+        }
+
+        /// <summary>
+        /// Standalone fighting value against warships: the square root of durability times average hull damage
+        /// (Lanchester), hangar squadrons included. Divided by price it ranks units by value per credit.
+        /// </summary>
+        public float GetCombatValue()
+        {
+            float durability = 0f;
+            float dps = 0f;
+            AddCombatValue(ref durability, ref dps);
+            return (float)Math.Sqrt(durability * dps / _warshipClasses.Length);
+        }
+
+        private void AddCombatValue(ref float durability, ref float dps)
+        {
+            durability += Hull + Shields;
+            foreach (ShipClass target in _warshipClasses) dps += HullDps(target) + PiercingDps(target);
+            foreach (UnitCombatProfile squadron in Hangar) squadron.AddCombatValue(ref durability, ref dps);
         }
 
         public float HullDps(ShipClass target) => _hullDps[(int)target];

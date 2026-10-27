@@ -67,5 +67,8 @@
         ExecutorHeavyLaser = 96,
         MediumPointDefense = 97,
         ProcursatorMediumTripleTurbolaser = 86,
+        RepublicLightProtonTorpedo = 120,
+        RepublicMediumProtonTorpedo = 121,
+        BelbullabTripleLaser = 122,
     }
 }

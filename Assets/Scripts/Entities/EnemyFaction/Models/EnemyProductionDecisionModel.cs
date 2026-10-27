@@ -102,7 +102,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int reservedCount,
             int buildTime,
             int unitCapacity,
-            int maxCount)
+            int maxCount,
+            float combatValuePerCredit = 1f)
         {
             // Scarce flagship types (e.g. Rothana, Malevolence) never win the balance below,
             // so an established fleet without one builds it first.
@@ -119,8 +120,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 ? Math.Max(1, buildTime)
                 : Math.Max(1, unitCapacity);
 
-            // Balance the active and queued fleet; lower priority values build first.
-            return (reservedCount + 1f) * weight;
+            // Balance the active and queued fleet; lower priority values build first. Value per credit scales the
+            // balance, so strong ships are built more often and a quick but weak unit never wins on build time alone.
+            return (reservedCount + 1f) * weight / combatValuePerCredit;
         }
 
         public EnemyProductionCategory Evaluate(EnemyProductionSnapshot snapshot)

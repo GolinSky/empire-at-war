@@ -6,6 +6,8 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -209,6 +211,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(firstMedium, Is.LessThan(firstHeavy));
             Assert.That(firstHeavy, Is.LessThan(sixthLight));
             Assert.That(firstHeavy, Is.LessThan(thirdMedium));
+        }
+
+        [Test]
+        public void CaptureFleet_DoesNotPreferAQuickShipThatFightsPoorlyForItsPrice()
+        {
+            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
+            // A transport builds faster than a frigate but delivers a third of its value per credit.
+            float transport = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 20, 1, 20, combatValuePerCredit: 0.1f);
+            float frigate = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 30, 3, 40, combatValuePerCredit: 0.3f);
+
+            Assert.That(frigate, Is.LessThan(transport));
         }
 
         [Test]
@@ -620,10 +635,10 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
                     playerRoster: TestPlayers.CreateDuel(difficulty),
-                    // No hostile units exist, so the size-based selection runs and no profile is ever rated.
+                    // No hostile units exist, so the size-based selection runs; every ship rates the same per credit.
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
-                    profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
+                    profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner);
@@ -698,10 +713,10 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
                     playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
-                    // No hostile units exist, so the size-based selection runs and no profile is ever rated.
+                    // No hostile units exist, so the size-based selection runs; every ship rates the same per credit.
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
-                    profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
+                    profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner);
@@ -904,6 +919,27 @@ namespace EmpireAtWar.Tests.Editor
             T data = AssetDatabase.LoadAssetAtPath<T>(SHARED_FACTION_DATA_PATH + typeof(T).Name + ".asset");
             Assert.That(data, Is.Not.Null, typeof(T).Name);
             return data;
+        }
+
+        /// <summary>A catalog where every ship of <paramref name="definition"/> is worth exactly its price.</summary>
+        private static UnitCombatProfileCatalog UniformValueCatalog(FactionDefinition definition)
+        {
+            UnitCombatProfileCatalog catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+            foreach (KeyValuePair<ShipType, FactionData> ship in definition.Ships)
+            {
+                // Combat value is sqrt(durability x average warship damage): price x price gives value = price.
+                float[] rates = new float[ForceComposition.ClassSlots];
+                foreach (ShipClass target in new[] { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser,
+                             ShipClass.Capital, ShipClass.HeavyCapital })
+                    rates[(int)target] = ship.Value.Price;
+                profiles.Add(UnitTypeId.Ship(ship.Key), new UnitCombatProfile(ShipClass.Frigate, ship.Value.Price, 0f,
+                    rates, new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                    Array.Empty<UnitCombatProfile>()));
+            }
+
+            return catalog;
         }
 
         private static void SetBackingField<T>(

@@ -1070,6 +1070,63 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 120
+    displayName: Light Proton Torpedo Launcher
+    family: 5
+    caliber: 0
+    mount: 1
+    scope: 1
+    faction: 0
+    unit: 
+    damageMultiplier: 0.7
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Republic torpedoes pierce shields that CIS ships depend on; 30% less
+      damage keeps Republic launchers from outclassing CIS warships.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 121
+    displayName: Medium Proton Torpedo Launcher
+    family: 5
+    caliber: 1
+    mount: 1
+    scope: 1
+    faction: 0
+    unit: 
+    damageMultiplier: 0.7
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Republic torpedoes pierce shields that CIS ships depend on; 30% less
+      damage keeps Republic launchers from outclassing CIS warships.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 122
+    displayName: Triple Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 3
+    scope: 2
+    faction: 0
+    unit: Belbullab22
+    damageMultiplier: 1.5
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Belbullab-22 carries triple laser cannons; with one gun per fighter it
+      had a fifth of a Vulture squadron's firepower at nearly twice the price.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 49
     displayName: Heavy Turbolaser
     family: 1

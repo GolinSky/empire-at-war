@@ -16,6 +16,8 @@ namespace EmpireAtWar.Services.Enemy
     /// the tactical brain execute it. Capture routes use Attack-Move, base defense uses
     /// Guard, and Hunt is only the fallback when a fleet target is unknown.
     /// Ships already retreating are not re-ordered, so their slots stay stable.
+    /// Offensive orders go only to the task force's main body; stragglers (new builds, slow ships) guard its
+    /// anchor ship until they have joined it, so the fleet arrives together instead of one ship at a time.
     /// </summary>
     public sealed class EnemyTaskForceExecutor
     {
@@ -36,18 +38,35 @@ namespace EmpireAtWar.Services.Enemy
         private bool _hasCaptureTarget;
         private EnemyStrategicState _lastState;
         private readonly HashSet<IShipEntity> _assignedShips = new HashSet<IShipEntity>();
+        private readonly List<IShipEntity> _body = new List<IShipEntity>();
+        private readonly List<IShipEntity> _stragglers = new List<IShipEntity>();
+        private readonly List<FormationPoint> _cohesionPoints = new List<FormationPoint>();
+        private readonly HashSet<IShipEntity> _bodyMembers = new HashSet<IShipEntity>();
+        private readonly Dictionary<IShipEntity, IShipEntity> _rallyAnchors = new Dictionary<IShipEntity, IShipEntity>();
+        private readonly List<IShipEntity> _lostShips = new List<IShipEntity>();
 
         public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) => _unitOrderService = unitOrderService;
+
+        /// <summary>Ships committed with the main body by the last offensive order; 0 for other states.</summary>
+        public int BodyCount => _body.Count;
+
+        /// <summary>Committed ships still rallying to the main body after the last offensive order.</summary>
+        public int RallyingCount => _stragglers.Count;
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
             if (_lastState != decision.State)
             {
                 _assignedShips.Clear();
+                _rallyAnchors.Clear();
                 _hasCaptureTarget = false;
             }
             _lastState = decision.State;
+            _body.Clear();
+            _stragglers.Clear();
             _assignedShips.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
+            _bodyMembers.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
+            ForgetLostRallies(context);
             switch (decision.State)
             {
                 case EnemyStrategicState.CaptureZone:
@@ -65,17 +84,16 @@ namespace EmpireAtWar.Services.Enemy
                     _captureTarget = context.CaptureTarget;
                     _hasCaptureTarget = true;
                     bool captureChanged = !isSameCaptureTarget;
-                    for (int i = 0; i < captureCount; i++)
-                        captureChanged |= !_assignedShips.Contains(_captureShips[i]) ||
-                            (_captureShips[i].CurrentOrder != UnitOrderType.None &&
-                             _captureShips[i].CurrentOrder != UnitOrderType.AttackMove);
-                    if (captureChanged && captureCount > 0)
-                    {
-                        List<GameEntity> captureReceivers = Resolve(context, _captureShips, captureCount);
-                        _unitOrderService.IssueAttackMove(captureReceivers, context.CaptureTarget);
-                    }
+                    IShipEntity captureAnchor = SplitBody(_captureShips, captureCount);
+                    foreach (IShipEntity ship in _body)
+                        captureChanged |= !_assignedShips.Contains(ship) ||
+                            (ship.CurrentOrder != UnitOrderType.None &&
+                             ship.CurrentOrder != UnitOrderType.AttackMove);
+                    if (captureChanged)
+                        _unitOrderService.IssueAttackMove(Resolve(context, _body, _body.Count), context.CaptureTarget);
                     _assignedShips.Clear();
-                    for (int i = 0; i < captureCount; i++) _assignedShips.Add(_captureShips[i]);
+                    _assignedShips.UnionWith(_body);
+                    RallyStragglers(context, captureAnchor);
                     StopRemaining(context, _captureShips, captureCount);
                     return;
                 case EnemyStrategicState.HuntFleet:
@@ -128,16 +146,18 @@ namespace EmpireAtWar.Services.Enemy
             int committed, GameEntity target, bool allowHunt = true)
         {
             int count = Math.Min(committed, context.Ships.Count);
-            List<GameEntity> receivers = Resolve(context, context.Ships, count);
-            if (target != null)
-                _unitOrderService.IssueAttack(receivers, target,
-                    BattleOffsets(context.Ships, count, target));
-            else if (allowHunt) _unitOrderService.IssueHunt(receivers);
-            else
+            if (target == null && !allowHunt)
             {
                 StopRemaining(context, context.Ships, 0);
                 return;
             }
+            IShipEntity anchor = SplitBody(context.Ships, count);
+            List<GameEntity> receivers = Resolve(context, _body, _body.Count);
+            if (target != null)
+                _unitOrderService.IssueAttack(receivers, target,
+                    BattleOffsets(_body, _body.Count, target));
+            else _unitOrderService.IssueHunt(receivers);
+            RallyStragglers(context, anchor);
             StopRemaining(context, context.Ships, count);
         }
 
@@ -172,6 +192,54 @@ namespace EmpireAtWar.Services.Enemy
                 offsets.Add(ToVector(offset));
             }
             return offsets;
+        }
+
+        /// <summary>
+        /// Splits the first <paramref name="count"/> ships into the main body around the anchor and the stragglers.
+        /// Returns the anchor ship.
+        /// </summary>
+        private IShipEntity SplitBody(IReadOnlyList<IShipEntity> ships, int count)
+        {
+            _body.Clear();
+            _stragglers.Clear();
+            _cohesionPoints.Clear();
+            for (int i = 0; i < count; i++) _cohesionPoints.Add(ToPoint(ships[i].WorldPosition));
+            int anchorIndex = FleetCohesion.FindAnchor(_cohesionPoints, FleetCohesion.RADIUS);
+            FormationPoint anchorPoint = _cohesionPoints[anchorIndex];
+            for (int i = 0; i < count; i++)
+            {
+                IShipEntity ship = ships[i];
+                bool inBody = FleetCohesion.IsInBody(anchorPoint, _cohesionPoints[i], FleetCohesion.RADIUS,
+                    _bodyMembers.Contains(ship));
+                (inBody ? _body : _stragglers).Add(ship);
+            }
+            _bodyMembers.Clear();
+            _bodyMembers.UnionWith(_body);
+            return ships[anchorIndex];
+        }
+
+        /// <summary>Stragglers guard the anchor; a guard order is re-issued only when the anchor changes.</summary>
+        private void RallyStragglers(EnemyStrategicContext context, IShipEntity anchor)
+        {
+            foreach (IShipEntity ship in _body) _rallyAnchors.Remove(ship);
+            List<GameEntity> receivers = new List<GameEntity>();
+            foreach (IShipEntity ship in _stragglers)
+            {
+                if (_rallyAnchors.TryGetValue(ship, out IShipEntity current) && current == anchor &&
+                    ship.CurrentOrder == UnitOrderType.Guard) continue;
+                _rallyAnchors[ship] = anchor;
+                receivers.Add(context.Receivers[ship]);
+            }
+            if (receivers.Count > 0) _unitOrderService.IssueGuard(receivers, context.Receivers[anchor]);
+        }
+
+        private void ForgetLostRallies(EnemyStrategicContext context)
+        {
+            _lostShips.Clear();
+            foreach (KeyValuePair<IShipEntity, IShipEntity> rally in _rallyAnchors)
+                if (!context.Receivers.ContainsKey(rally.Key) || !context.Receivers.ContainsKey(rally.Value))
+                    _lostShips.Add(rally.Key);
+            foreach (IShipEntity ship in _lostShips) _rallyAnchors.Remove(ship);
         }
 
         private static List<GameEntity> Resolve(EnemyStrategicContext context,

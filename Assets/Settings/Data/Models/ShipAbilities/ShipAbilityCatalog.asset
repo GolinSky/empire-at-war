@@ -472,9 +472,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
         displayName: Concentrate Fire
-        description: Nearby allies within 400 units gain 25% damage and 60% shorter
+        description: Nearby allies within 400 units gain 15% damage and 40% shorter
           fire delays.
-        duration: 12
+        duration: 8
         recoveryDelay: 60
         canCancel: 0
         isToggle: 0
@@ -1043,8 +1043,8 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         allyStatModifier:
-          damageMultiplier: 1.25
-          fireDelayMultiplier: 0.4
+          damageMultiplier: 1.15
+          fireDelayMultiplier: 0.6
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1

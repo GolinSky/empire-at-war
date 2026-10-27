@@ -261,6 +261,8 @@ namespace EmpireAtWar.Services.Enemy
                 $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
                 $"Cost={request.FactionData.Price}, " +
                 $"Money={_economyModel.Money}");
+            EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState, category,
+                hasCounter, request.Id, request.FactionData.Price, _economyModel.Money);
             _purchaseProcessor.Purchase(request);
         }
 
@@ -433,7 +435,8 @@ namespace EmpireAtWar.Services.Enemy
                     reservedCount,
                     option.Value.BuildTime,
                     option.Value.UnitCapacity,
-                    option.Value.MaxCount);
+                    option.Value.MaxCount,
+                    _profileCatalog.Get(UnitTypeId.Ship(option.Key)).GetCombatValue() / Math.Max(1, option.Value.Price));
                 if (!found || priority < bestPriority ||
                     priority == bestPriority && option.Value.Price < selected.Value.Price)
                 {

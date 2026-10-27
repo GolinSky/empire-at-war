@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Squadrons;
@@ -130,7 +131,9 @@ namespace EmpireAtWar.Services.Enemy
                 if (entity.Owner == _owner.Id && !entity.HealthModel.IsDestroyed &&
                     entity.TryGetFacade(out ISquadron squadron) && !_squadrons.ContainsKey(squadron))
                 {
-                    Track(squadron, entity.GetFacade<IUnitTypeFacade>().UnitTypeId.SquadronType);
+                    // Station purchases arrive through Command; anything else was launched from a ship hangar.
+                    Track(squadron, entity.GetFacade<IUnitTypeFacade>().UnitTypeId.SquadronType,
+                        entity.GetFacade<IUnitOrderObserverFacade>());
                 }
             }
         }
@@ -145,6 +148,19 @@ namespace EmpireAtWar.Services.Enemy
             Action handler = () => Release(squadron);
             _squadrons.Add(squadron, new CommandedSquadron(
                 _profileCatalog.Get(UnitTypeId.Squadron(squadronType)), handler));
+            squadron.Released += handler;
+        }
+
+        private void Track(ISquadron squadron, SquadronType squadronType, IUnitOrderObserverFacade orders)
+        {
+            if (_squadrons.ContainsKey(squadron))
+            {
+                return;
+            }
+
+            Action handler = () => Release(squadron);
+            _squadrons.Add(squadron, new CommandedSquadron(
+                _profileCatalog.Get(UnitTypeId.Squadron(squadronType)), handler, orders));
             squadron.Released += handler;
         }
 
@@ -165,7 +181,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (ISquadron squadron in _squadrons.Keys)
             {
                 float distance = (squadron.WorldPosition - _scoutTarget).sqrMagnitude;
-                if (!_escorts.Contains(squadron) && distance < closest)
+                if (!_escorts.Contains(squadron) && !_squadrons[squadron].IsHangarLaunched && distance < closest)
                 {
                     closest = distance;
                     _scout = squadron;
@@ -236,6 +252,14 @@ namespace EmpireAtWar.Services.Enemy
                 // Guard re-issued to the same ship is ignored by the squadron; escorts spread across threatened ships.
                 squadron.Guard(_escortTargets[_nextEscortTarget % _escortTargets.Count], Vector3.zero);
                 _nextEscortTarget++;
+                return;
+            }
+
+            // Hangar squadrons fight beside the carrier that launched them; only once their guard ends
+            // (the carrier is gone) do they take capture and hunt orders like station purchases.
+            CommandedSquadron commanded = _squadrons[squadron];
+            if (commanded.IsHangarLaunched && commanded.Orders.CurrentOrder == UnitOrderType.Guard)
+            {
                 return;
             }
 

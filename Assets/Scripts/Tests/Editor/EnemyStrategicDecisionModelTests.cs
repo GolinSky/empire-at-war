@@ -35,9 +35,86 @@ namespace EmpireAtWar.Tests.Editor
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
                 CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
                     ownShipCount: 3, enemyShipCount: 3, ownedCapturableZoneCount: 2,
-                    fleetAdvantage: 1f, hasOwnBase: false));
+                    fleetAdvantage: EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio,
+                    hasOwnBase: false));
 
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+        }
+
+        [TestCase(BattleVictoryCondition.DestroyOpponentBase, EnemyStrategicState.AssaultBase)]
+        [TestCase(BattleVictoryCondition.DestroyEnemyFleet, EnemyStrategicState.HuntFleet)]
+        public void ClearAdvantage_AttacksInsteadOfCapturing(
+            BattleVictoryCondition victoryCondition, EnemyStrategicState expected)
+        {
+            float pressAdvantage = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio *
+                                   EnemyStrategicDecisionModel.PRESS_ADVANTAGE_SCALE;
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(victoryCondition, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 12, enemyShipCount: 2, ownedCapturableZoneCount: 0,
+                    fleetAdvantage: pressAdvantage, hasThreatenedSite: true));
+
+            Assert.That(decision.State, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ModestAdvantage_KeepsCapturingTheMapControlFloor()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 8, enemyShipCount: 6, ownedCapturableZoneCount: 0, fleetAdvantage: 1.3f));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.CaptureZone));
+        }
+
+        [Test]
+        public void AfterRetreat_StaysWithdrawnUntilRegroupedAndEvenAgain()
+        {
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            EnemyStrategicDecision Evaluate(float fleetAdvantage, bool hasLocalThreat, float localAdvantage,
+                bool isRegrouped) => model.Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 10, enemyShipCount: 12, ownedCapturableZoneCount: 1,
+                    fleetAdvantage: fleetAdvantage, hasThreatenedSite: true,
+                    hasLocalThreat: hasLocalThreat, localAdvantage: localAdvantage, isRegrouped: isRegrouped));
+
+            Assert.That(Evaluate(0.7f, true, 0.4f, true).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            // The superior force left the local radius, but the fleet is still weaker overall.
+            Assert.That(Evaluate(0.7f, false, CombatMatchup.MAX_ADVANTAGE, true).State,
+                Is.EqualTo(EnemyStrategicState.RetreatValue));
+            // Strong enough again, but ships are still scattered.
+            Assert.That(Evaluate(1.2f, false, CombatMatchup.MAX_ADVANTAGE, false).State,
+                Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(Evaluate(1.2f, false, CombatMatchup.MAX_ADVANTAGE, true).State,
+                Is.EqualTo(EnemyStrategicState.CaptureZone));
+        }
+
+        [Test]
+        public void Recovering_StillDefendsTheBase()
+        {
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard);
+            model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
+                ownShipCount: 10, enemyShipCount: 12, ownedCapturableZoneCount: 1, fleetAdvantage: 0.7f,
+                hasLocalThreat: true, localAdvantage: 0.4f));
+
+            EnemyStrategicDecision decision = model.Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 10, enemyShipCount: 12, ownedCapturableZoneCount: 1, fleetAdvantage: 0.7f,
+                    baseThreatRatio: profile.DefenseThreatRatio * 2f));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.DefendBase));
+        }
+
+        [TestCase(BattleVictoryCondition.DestroyEnemyFleet)]
+        [TestCase(BattleVictoryCondition.DestroyOpponentBase)]
+        public void UltraHard_NeitherAssaultsNorHuntsWhenOutmatched(BattleVictoryCondition victoryCondition)
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(victoryCondition, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 10, enemyShipCount: 12, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: 0.7f, hasCaptureTarget: false, hasOwnBase: false));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.Hold));
         }
 
         [TestCase(BattleVictoryCondition.DestroyEnemyFleet)]
@@ -146,10 +223,11 @@ namespace EmpireAtWar.Tests.Editor
         public void AvailableZone_BelowDifficultyControlFloor_Captures(
             EnemyAiDifficulty difficulty)
         {
+            // Ahead, but not by enough to press the attack (see ClearAdvantage_AttacksInsteadOfCapturing).
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
                 CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, difficulty,
                     ownShipCount: 10, enemyShipCount: 4, ownedCapturableZoneCount: 0,
-                    fleetAdvantage: 2.5f));
+                    fleetAdvantage: 1.2f));
 
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.CaptureZone));
         }
@@ -324,7 +402,8 @@ namespace EmpireAtWar.Tests.Editor
             bool hasThreatenedSite = false,
             float localAdvantage = CombatMatchup.MAX_ADVANTAGE,
             bool hasLocalThreat = false,
-            bool hasRaidTarget = false)
+            bool hasRaidTarget = false,
+            bool isRegrouped = true)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -340,7 +419,8 @@ namespace EmpireAtWar.Tests.Editor
                 hasThreatenedSite: hasThreatenedSite,
                 localAdvantage: localAdvantage,
                 hasLocalThreat: hasLocalThreat,
-                hasRaidTarget: hasRaidTarget);
+                hasRaidTarget: hasRaidTarget,
+                isRegrouped: isRegrouped);
         }
     }
 }

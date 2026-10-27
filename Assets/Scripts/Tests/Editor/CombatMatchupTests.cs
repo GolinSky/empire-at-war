@@ -154,6 +154,24 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CounterProduction_StrongOwnedTypeStillBeatsAMuchWeakerFreshType()
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            UnitCombatProfile weak = Profile(ShipClass.Capital, 3000f, 1000f, (ShipClass.Capital, 10f));
+            List<ProductionCandidate> candidates = new List<ProductionCandidate>
+            {
+                new ProductionCandidate(capital, 4000, ownedCount: 1),
+                new ProductionCandidate(weak, 2000, ownedCount: 0)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int index);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(0));
+        }
+
+        [Test]
         public void CounterProduction_MatchupKnowledgeShiftsThePick()
         {
             UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));

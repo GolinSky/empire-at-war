@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;
@@ -46,6 +47,8 @@ namespace EmpireAtWar.Components.Weapon
         private IVisionService _visionService;
         private IPlayerRoster _playerRoster;
         private PlayerId _owner;
+        private FactionType _faction;
+        private string _telemetryName;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
 
         [SerializeField] private List<WeaponHardPoint> hardPoints;
@@ -154,6 +157,8 @@ namespace EmpireAtWar.Components.Weapon
 
             // Every hardpoint fires to its own weapon's range; nebulae and other vision effects scale it.
             FactionType faction = _playerRoster.Get(_owner).Faction;
+            _faction = faction;
+            _telemetryName = _viewTransform.name.Replace("(Clone)", string.Empty);
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
             for (int i = 0; i < hardPoints.Count; i++)
             {
@@ -234,6 +239,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private void OnShotEmitted(WeaponProfile profile, Transform muzzle)
         {
+            BattleTelemetry.RecordShot(_faction, _telemetryName);
             if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle);
         }
 
@@ -897,7 +903,17 @@ namespace EmpireAtWar.Components.Weapon
                 return false;
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            IHealthModelObserver target = attackData.TargetHealth;
+            float shields = target.Shields, hull = target.Hull;
+#endif
             attackData.ApplyDamage(damage, damageType, targetId);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            BattleTelemetry.RecordImpact(_faction, _telemetryName, damageType, _modifiers.HullMultiplier > 1f,
+                _playerRoster.Get(attackData.TargetEntity.Owner).Faction,
+                attackData.TargetEntity.TryGetFacade(out IUnitTypeFacade type) ? type.UnitTypeId.ToString() : "Structure",
+                damage, shields - target.Shields, hull - target.Hull, target.IsDestroyed);
+#endif
             return true;
         }
 
