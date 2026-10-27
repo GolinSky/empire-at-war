@@ -66,12 +66,16 @@ namespace EmpireAtWar.Tests.Editor
             _selection.SetActive(true);
             Vector3 singleScale = _renderer.transform.localScale;
             Vector3 anchor = _selection.WorldPosition;
+            Assert.That(singleScale.x * _renderer.sprite.bounds.size.x,
+                Is.EqualTo(12f * 0.65f).Within(0.0001f));
+            Assert.That(singleScale.y * _renderer.sprite.bounds.size.y,
+                Is.EqualTo(8f * 0.65f).Within(0.0001f));
 
             _service.SetCount(2);
 
             Assert.That(_renderer.enabled, Is.True);
-            Assert.That(_renderer.transform.localScale.x, Is.EqualTo(singleScale.x * 0.6f).Within(0.0001f));
-            Assert.That(_renderer.transform.localScale.y, Is.EqualTo(singleScale.y * 0.6f).Within(0.0001f));
+            Assert.That(_renderer.transform.localScale.x, Is.EqualTo(singleScale.x * (0.6f / 0.65f)).Within(0.0001f));
+            Assert.That(_renderer.transform.localScale.y, Is.EqualTo(singleScale.y * (0.6f / 0.65f)).Within(0.0001f));
             Assert.That(_renderer.transform.localScale.z, Is.EqualTo(1f));
             Assert.That(_selection.WorldPosition, Is.EqualTo(anchor));
 
@@ -80,6 +84,46 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_renderer.enabled, Is.True);
             Assert.That(_renderer.transform.localScale, Is.EqualTo(singleScale));
             Assert.That(_selection.WorldPosition, Is.EqualTo(anchor));
+        }
+
+        [TestCase(0f, 45f, 0f)]
+        [TestCase(15f, 130f, 10f)]
+        public void SelectedMarker_KeepsWorldRotationWhenRootTurns(float pitch, float yaw, float roll)
+        {
+            _selection.SetActive(true);
+            _root.transform.rotation = Quaternion.Euler(pitch, yaw, roll);
+            Vector3 anchor = _selection.WorldPosition;
+            Vector3 markerPosition = _renderer.transform.position;
+            typeof(SelectionComponent).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_selection, null);
+
+            Assert.That(Quaternion.Angle(_renderer.transform.rotation, Quaternion.Euler(90f, 0f, 0f)),
+                Is.LessThan(0.01f));
+            Assert.That(_selection.WorldPosition, Is.EqualTo(anchor));
+            Assert.That(_renderer.transform.position, Is.EqualTo(markerPosition));
+            Assert.That(Quaternion.Angle(_root.transform.rotation, Quaternion.Euler(pitch, yaw, roll)),
+                Is.LessThan(0.01f));
+
+            _renderer.transform.hasChanged = false;
+            typeof(SelectionComponent).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_selection, null);
+            Assert.That(_renderer.transform.hasChanged, Is.False, "Stationary markers must not rewrite their transform.");
+        }
+
+        [Test]
+        public void HiddenMarker_SkipsRotationWorkAndRealignsImmediatelyWhenSelected()
+        {
+            _selection.SetActive(false);
+            _root.transform.rotation = Quaternion.Euler(0f, 70f, 0f);
+            Quaternion hiddenRotation = _renderer.transform.rotation;
+            typeof(SelectionComponent).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_selection, null);
+            Assert.That(_renderer.transform.rotation, Is.EqualTo(hiddenRotation));
+
+            _selection.SetActive(true);
+
+            Assert.That(Quaternion.Angle(_renderer.transform.rotation, Quaternion.Euler(90f, 0f, 0f)),
+                Is.LessThan(0.01f));
         }
 
         [Test]

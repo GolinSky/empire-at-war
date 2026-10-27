@@ -26,7 +26,9 @@ namespace EmpireAtWar.Components.Ship.Selection
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
         IInitializable, ILateDisposable, IRespawnable, EmpireAtWar.IObserver<ISelectionSubject>
     {
+        private const float SINGLE_SELECTION_SCALE = 0.65f;
         private const float MULTISELECT_SCALE = 0.6f;
+        private static readonly Quaternion _worldRotation = Quaternion.Euler(90f, 0f, 0f);
 
         // A sprite renderer, not a world canvas: a selected unit moves every frame, and a canvas under it
         // would rebuild its batch every frame (one per selected unit).
@@ -38,6 +40,8 @@ namespace EmpireAtWar.Components.Ship.Selection
         private SharedSelectionData _sharedSelectionData;
         private ISelectionService _selectionService;
         private Vector3 _singleSelectionScale;
+        private Transform _markerTransform;
+        private bool _isMarkerVisible;
 
         [SerializeField] private SelectionType selectionType;
 
@@ -60,6 +64,8 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public void Initialize()
         {
+            _markerTransform = selectedRenderer.transform;
+            _markerTransform.rotation = _worldRotation;
             Model.OnSelected += HandleSelection;
             Sprite sprite = _sharedSelectionData.SelectionSprite;
             selectedRenderer.sprite = sprite;
@@ -121,7 +127,21 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void HandleSelection(bool isActive)
         {
+            _isMarkerVisible = isActive;
+            if (isActive)
+            {
+                _markerTransform.rotation = _worldRotation;
+            }
             selectedRenderer.enabled = isActive;
+        }
+
+        private void LateUpdate()
+        {
+            // Keep batching and renderer bounds intact; only visible, turning markers need a write.
+            if (_isMarkerVisible && _markerTransform.rotation != _worldRotation)
+            {
+                _markerTransform.rotation = _worldRotation;
+            }
         }
 
         public void UpdateState(ISelectionSubject subject)
@@ -131,8 +151,8 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void UpdateMarkerScale(int selectedCount)
         {
-            float scale = selectedCount > 1 ? MULTISELECT_SCALE : 1f;
-            selectedRenderer.transform.localScale = new Vector3(
+            float scale = selectedCount > 1 ? MULTISELECT_SCALE : SINGLE_SELECTION_SCALE;
+            _markerTransform.localScale = new Vector3(
                 _singleSelectionScale.x * scale, _singleSelectionScale.y * scale, 1f);
         }
     }
