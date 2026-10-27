@@ -13,10 +13,19 @@ MonoBehaviour:
   m_Name: AssaultFrigateMkIIMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+  - iconKeys:
+    - 7e5117ae6840c8d4a9252e2b589de44f:21300000
+    - c204e9888dc32854493ab00345e38bf4:21300000
+    - 19c7fd1609d6359439e7fb94cbbc0065:21300000
     label: Corvettes
-  - iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+  - iconKeys:
+    - ae699c8c0850c9245b84a34c5fb8d767:21300000
+    - abf3987a701188747b639680e9203c3e:21300000
+    - e54026c071416a845b2d23e814c1e8d5:21300000
     label: Frigates
   weakAgainst:
-  - iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
+  - iconKeys:
+    - 771dbf8529c7a394b864ffcb0bd556d7:21300000
+    - 8128fcc8b8e454e47ab592309d37208e:21300000
+    - ebec4f97ee2c2454883747a62531d2c9:21300000
     label: Heavy capital ships

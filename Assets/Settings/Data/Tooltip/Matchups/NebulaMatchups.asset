@@ -13,10 +13,19 @@ MonoBehaviour:
   m_Name: NebulaMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+  - iconKeys:
+    - 003f227a5109a5745879774b3be70886:21300000
+    - dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+    - 552ac5636e4f65c44994f1337d051b8a:21300000
     label: Heavy cruisers
-  - iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+  - iconKeys:
+    - d899a22bd6d129e46a5aed14df2b81fa:21300000
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    - b8f66d736a9c0a841b8957320119ca55:21300000
     label: Star destroyers
   weakAgainst:
-  - iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
+  - iconKeys:
+    - 8aec8fa8b8581064dbf2721ad11585bb:21300000
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
     label: Bomber strikes

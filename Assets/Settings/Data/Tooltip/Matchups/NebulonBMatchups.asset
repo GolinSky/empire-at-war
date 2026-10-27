@@ -13,12 +13,24 @@ MonoBehaviour:
   m_Name: NebulonBMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+  - iconKeys:
+    - 7e5117ae6840c8d4a9252e2b589de44f:21300000
+    - c204e9888dc32854493ab00345e38bf4:21300000
+    - 19c7fd1609d6359439e7fb94cbbc0065:21300000
     label: Corvettes
-  - iconKey: abf3987a701188747b639680e9203c3e:21300000
+  - iconKeys:
+    - 003f227a5109a5745879774b3be70886:21300000
+    - dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+    - 552ac5636e4f65c44994f1337d051b8a:21300000
     label: Light cruisers
   weakAgainst:
-  - iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
+  - iconKeys:
+    - 8aec8fa8b8581064dbf2721ad11585bb:21300000
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
     label: Bombers
-  - iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
+  - iconKeys:
+    - d899a22bd6d129e46a5aed14df2b81fa:21300000
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    - b8f66d736a9c0a841b8957320119ca55:21300000
     label: Capital ships

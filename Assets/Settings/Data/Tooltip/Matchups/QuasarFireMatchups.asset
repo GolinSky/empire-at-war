@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: QuasarFireMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: ea53c8c126651444aaedb6d6761e02b3:21300000
+  - iconKeys:
+    - 41429e00e6d997249adaf10dc6d292a6:21300000
+    - 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    - 7c8d76c748665eb4f8c008d83b753703:21300000
     label: Squadron support
   weakAgainst:
-  - iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
+  - iconKeys:
+    - 771dbf8529c7a394b864ffcb0bd556d7:21300000
+    - 8128fcc8b8e454e47ab592309d37208e:21300000
+    - ebec4f97ee2c2454883747a62531d2c9:21300000
     label: Heavy capital ships

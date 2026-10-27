@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst: []
   weakAgainst:
-  - iconKey: 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
+  - iconKeys:
+    - 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
     label: Acclamator
-  - iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+  - iconKeys:
+    - ae699c8c0850c9245b84a34c5fb8d767:21300000
     label: Arquitens

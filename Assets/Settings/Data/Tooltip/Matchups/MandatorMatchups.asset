@@ -13,14 +13,23 @@ MonoBehaviour:
   m_Name: MandatorMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+  - iconKeys:
+    - 8128fcc8b8e454e47ab592309d37208e:21300000
     label: Lucrehulk
-  - iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+  - iconKeys:
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
     label: Providence
-  - iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+  - iconKeys:
+    - 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    - 7c8d76c748665eb4f8c008d83b753703:21300000
+    - ea53c8c126651444aaedb6d6761e02b3:21300000
     label: Fighter swarms
   weakAgainst:
-  - iconKey: 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
+  - iconKeys:
+    - 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
     label: Malevolence
-  - iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+  - iconKeys:
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
+    - 793233063a2c3d241ab5dbc0af1a35d4:21300000
     label: Bomber swarms

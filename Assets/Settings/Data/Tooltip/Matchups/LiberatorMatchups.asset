@@ -13,10 +13,19 @@ MonoBehaviour:
   m_Name: LiberatorMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+  - iconKeys:
+    - 7e5117ae6840c8d4a9252e2b589de44f:21300000
+    - c204e9888dc32854493ab00345e38bf4:21300000
+    - 19c7fd1609d6359439e7fb94cbbc0065:21300000
     label: Small ships
-  - iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+  - iconKeys:
+    - ae699c8c0850c9245b84a34c5fb8d767:21300000
+    - abf3987a701188747b639680e9203c3e:21300000
+    - e54026c071416a845b2d23e814c1e8d5:21300000
     label: Frigates
   weakAgainst:
-  - iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
+  - iconKeys:
+    - 8aec8fa8b8581064dbf2721ad11585bb:21300000
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
     label: Bomber strikes

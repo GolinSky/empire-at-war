@@ -40,7 +40,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Recusant
         <MaxCount>k__BackingField: 30
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 29
         <UnitCapacity>k__BackingField: 4
@@ -192,8 +192,8 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Peleset-class Cruiser
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 6000
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 60
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 24f8965bbafc2b848a0264f86b98ec21,
@@ -212,7 +212,7 @@ MonoBehaviour:
         <Name>k__BackingField: Bulwark Mk1
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 6500
+        <Price>k__BackingField: 5000
         <BuildTime>k__BackingField: 85
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 929de4fd7db737646a0df2a72d3404af,
@@ -229,7 +229,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Wavecrest-class Frigate
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 3
@@ -248,7 +248,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Recalcitrant-class Light Cruiser
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3600
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 2

@@ -13,16 +13,32 @@ MonoBehaviour:
   m_Name: NTB630SquadronMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+  - iconKeys:
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    - b8f66d736a9c0a841b8957320119ca55:21300000
+    - b95f55f2e2f204f42a94f0c44c5baa85:21300000
     label: Capital ships
-  - iconKey: abf3987a701188747b639680e9203c3e:21300000
+  - iconKeys:
+    - dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+    - 552ac5636e4f65c44994f1337d051b8a:21300000
+    - 66c1ea9cf4e49774d99aff299b8237ca:21300000
     label: Cruisers
-  - iconKey: 3d8c2c187dbb7c149b2b91ea81cc45fd:21300000
+  - iconKeys:
+    - 3d8c2c187dbb7c149b2b91ea81cc45fd:21300000
     label: Stations
   weakAgainst:
-  - iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+  - iconKeys:
+    - 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    - 7c8d76c748665eb4f8c008d83b753703:21300000
+    - ea53c8c126651444aaedb6d6761e02b3:21300000
     label: Fighters / interceptors
-  - iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+  - iconKeys:
+    - c204e9888dc32854493ab00345e38bf4:21300000
+    - 19c7fd1609d6359439e7fb94cbbc0065:21300000
+    - 68a48dec07691c448a7ed517f75c5a1a:21300000
     label: Anti-fighter weapons
-  - iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+  - iconKeys:
+    - c204e9888dc32854493ab00345e38bf4:21300000
+    - 19c7fd1609d6359439e7fb94cbbc0065:21300000
+    - 68a48dec07691c448a7ed517f75c5a1a:21300000
     label: Corvettes

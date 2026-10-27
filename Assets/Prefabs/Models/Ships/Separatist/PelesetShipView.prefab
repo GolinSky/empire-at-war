@@ -1468,7 +1468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 6985958236384606241}
   selectedRenderer: {fileID: 7859931576942086157}
-  ringSize: {x: 132, y: 132}
+  ringSize: {x: 31.29915, y: 31.29915}
   selectionType: 3
 --- !u!114 &4819417678816631688
 MonoBehaviour:
@@ -1848,14 +1848,14 @@ RectTransform:
   m_GameObject: {fileID: 5790465257638362256}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.79744816, y: 0.79744816, z: 1}
+  m_LocalScale: {x: 2.495945, y: 2.495945, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6985958236384606241}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.00012564659, y: -0.000056266785}
   m_SizeDelta: {x: 132, y: 132}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &7859931576942086157

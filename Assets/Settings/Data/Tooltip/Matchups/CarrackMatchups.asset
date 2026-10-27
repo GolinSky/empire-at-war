@@ -13,12 +13,24 @@ MonoBehaviour:
   m_Name: CarrackMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
+  - iconKeys:
+    - 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    - 7c8d76c748665eb4f8c008d83b753703:21300000
+    - ea53c8c126651444aaedb6d6761e02b3:21300000
     label: Fighters
-  - iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
+  - iconKeys:
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
+    - 793233063a2c3d241ab5dbc0af1a35d4:21300000
     label: Bombers
   weakAgainst:
-  - iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
+  - iconKeys:
+    - abf3987a701188747b639680e9203c3e:21300000
+    - e54026c071416a845b2d23e814c1e8d5:21300000
+    - a5d07dd53c680c6408f3e98f4ce75765:21300000
     label: Frigates
-  - iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
+  - iconKeys:
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    - b8f66d736a9c0a841b8957320119ca55:21300000
+    - b95f55f2e2f204f42a94f0c44c5baa85:21300000
     label: Capital ships

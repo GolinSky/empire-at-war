@@ -1,10 +1,12 @@
+using System.Collections.Generic;
+
 namespace EmpireAtWar.Services.Tooltip
 {
     public readonly struct TooltipIcon
     {
-        public string IconKey { get; }
+        public IReadOnlyList<string> IconKeys { get; }
         public string Label { get; }
 
-        public TooltipIcon(string iconKey, string label) { IconKey = iconKey; Label = label; }
+        public TooltipIcon(IReadOnlyList<string> iconKeys, string label) { IconKeys = iconKeys; Label = label; }
     }
 }

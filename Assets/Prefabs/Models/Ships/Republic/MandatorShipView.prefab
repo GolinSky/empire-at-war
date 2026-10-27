@@ -142,6 +142,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 223287426497205870}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
   yAxisRange:
@@ -207,14 +208,14 @@ RectTransform:
   m_GameObject: {fileID: 403381169738952759}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 77.09755, y: 77.09755, z: 1}
+  m_LocalScale: {x: 106.004456, y: 106.004456, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2886455651691128400}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.000061035156}
   m_SizeDelta: {x: 966.8033, y: 966.8033}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &8291446726096941035
@@ -325,6 +326,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 6504823712634318160}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 56
 --- !u!1 &565947276283767354
@@ -376,6 +378,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1782315468548521282}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
   yAxisRange:
@@ -433,6 +436,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1378124788826005115}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 54
 --- !u!1 &620866531084773307
@@ -515,6 +519,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5952336162853512231}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 27
   yAxisRange:
@@ -572,6 +577,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7147685691366984646}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 43
   yAxisRange:
@@ -703,6 +709,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2849573117434318028}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 47
   yAxisRange:
@@ -884,6 +891,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7762620773286738082}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 36
   yAxisRange:
@@ -1125,6 +1133,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1388944522872438671}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
   yAxisRange:
@@ -1244,6 +1253,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7851194870625171169}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 40
   yAxisRange:
@@ -1301,6 +1311,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5104347475784384176}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 29
   yAxisRange:
@@ -1456,6 +1467,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2890843474107907669}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 31
   yAxisRange:
@@ -1544,6 +1556,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 3243760576882280016}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
@@ -1601,6 +1614,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5729616732401461925}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
@@ -1813,6 +1827,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 558837518037383936}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 60
 --- !u!1 &2824086376750701940
@@ -1957,6 +1972,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2650095098979798806}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 57
 --- !u!1 &2951895197074399649
@@ -2008,6 +2024,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7728597040209632301}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 37
   yAxisRange:
@@ -2096,6 +2113,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 4848522840749065076}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
   yAxisRange:
@@ -2153,6 +2171,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 8276418338030720971}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 50
   yAxisRange:
@@ -2241,6 +2260,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7389808635228334327}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
   yAxisRange:
@@ -2298,6 +2318,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7729480122141732784}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
   yAxisRange:
@@ -2355,6 +2376,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1792712327841500198}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 20
   yAxisRange:
@@ -2412,6 +2434,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 6845692302521477350}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
@@ -2562,6 +2585,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1412372061222561406}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -2650,6 +2674,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 63914010920861873}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 38
   yAxisRange:
@@ -2707,6 +2732,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 536543203309033344}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 34
   yAxisRange:
@@ -2764,6 +2790,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7470862616802180747}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 45
   yAxisRange:
@@ -2821,6 +2848,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7363520030830733669}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 42
   yAxisRange:
@@ -2878,6 +2906,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7957457350060353644}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 24
   yAxisRange:
@@ -2935,6 +2964,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 8808855938373968014}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 51
   yAxisRange:
@@ -2992,6 +3022,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 3319790551459725003}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 23
   yAxisRange:
@@ -3049,6 +3080,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 8197392842953665461}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
@@ -3106,6 +3138,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 8816252742177620333}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 30
   yAxisRange:
@@ -3163,6 +3196,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1108003936879564608}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
@@ -3220,6 +3254,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5647221243212764792}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 53
   yAxisRange:
@@ -3370,6 +3405,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2446084958880713738}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 28
   yAxisRange:
@@ -3427,6 +3463,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5892397508140907521}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 58
 --- !u!1 &4582517948878519515
@@ -3559,6 +3596,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7095992516786072201}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
   yAxisRange:
@@ -3709,6 +3747,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 6708092258849825281}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 55
 --- !u!1 &5060287174541926167
@@ -3791,6 +3830,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1878326986771108488}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -3879,6 +3919,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2090907449068287622}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 26
   yAxisRange:
@@ -3967,6 +4008,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7250366732569957421}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 41
   yAxisRange:
@@ -4086,6 +4128,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 8172463169436630976}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 52
   yAxisRange:
@@ -4236,6 +4279,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7100591475412513975}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 59
 --- !u!1 &6342808905940350531
@@ -4318,6 +4362,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1298545555521669364}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 39
   yAxisRange:
@@ -4375,6 +4420,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5132367827102328125}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 49
   yAxisRange:
@@ -4494,6 +4540,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 576077313461782717}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 33
   yAxisRange:
@@ -4551,6 +4598,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 6874639261612208752}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 48
   yAxisRange:
@@ -4639,6 +4687,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1055509028001367527}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 46
   yAxisRange:
@@ -4696,6 +4745,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7604903406843272189}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
@@ -4784,6 +4834,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 4009018832851840000}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 15
   yAxisRange:
@@ -4841,6 +4892,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7506579511648834357}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 61
 --- !u!1 &7736716621605267874
@@ -5067,7 +5119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 2886455651691128400}
   selectedRenderer: {fileID: 8291446726096941035}
-  ringSize: {x: 966.8033, y: 966.8033}
+  ringSize: {x: 1329.2959, y: 1329.2959}
   selectionType: 3
 --- !u!114 &2482067990767039030
 MonoBehaviour:
@@ -5355,6 +5407,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 3802839623573360833}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 25
   yAxisRange:
@@ -5412,6 +5465,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1060820701374524535}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 22
   yAxisRange:
@@ -5469,6 +5523,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2690489662207659902}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 32
   yAxisRange:
@@ -5526,6 +5581,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1727938555669652947}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 21
   yAxisRange:
@@ -5614,6 +5670,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7435320377099310479}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 35
   yAxisRange:
@@ -5671,6 +5728,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 4171874374513759710}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -5759,6 +5817,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 1204877327411879969}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 44
   yAxisRange:
@@ -7041,6 +7100,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 6490436468725250528}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
@@ -7222,6 +7282,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5447172206918130136}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -7279,6 +7340,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2230248195310312506}
   destroyedVfxScale: 8
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:

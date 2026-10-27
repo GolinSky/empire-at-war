@@ -13,12 +13,20 @@ MonoBehaviour:
   m_Name: PatrolFrigateMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 41429e00e6d997249adaf10dc6d292a6:21300000
+  - iconKeys:
+    - 41429e00e6d997249adaf10dc6d292a6:21300000
+    - 7c8d76c748665eb4f8c008d83b753703:21300000
+    - ea53c8c126651444aaedb6d6761e02b3:21300000
     label: Fighters
-  - iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+  - iconKeys:
+    - 8aec8fa8b8581064dbf2721ad11585bb:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
+    - 793233063a2c3d241ab5dbc0af1a35d4:21300000
     label: Bombers
   weakAgainst:
-  - iconKey: 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
+  - iconKeys:
+    - 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
     label: Acclamator
-  - iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+  - iconKeys:
+    - ae699c8c0850c9245b84a34c5fb8d767:21300000
     label: Arquitens

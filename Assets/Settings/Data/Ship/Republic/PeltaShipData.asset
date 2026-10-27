@@ -44,7 +44,7 @@ MonoBehaviour:
     hullDamageMultiplier: 1
   <Range>k__BackingField: 520
   <Delay>k__BackingField: 0.25
-  abilities: 
+  abilities: 03000000
   hangarBays: []
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8

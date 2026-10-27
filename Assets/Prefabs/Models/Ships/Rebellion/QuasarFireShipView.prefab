@@ -91,6 +91,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 4424092508207508809}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -169,6 +170,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7283892033254474336}
   destroyedVfxScale: 0.52909964
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 9
 --- !u!1 &812034476151289955
@@ -252,6 +254,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5007491334652300828}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -1766,7 +1769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 6421249621682836270}
   selectedRenderer: {fileID: 8679758410883271043}
-  ringSize: {x: 82, y: 82}
+  ringSize: {x: 43.875187, y: 43.875187}
   selectionType: 3
 --- !u!114 &905498400102155206
 MonoBehaviour:
@@ -1944,6 +1947,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 7473772583153656468}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -2054,6 +2058,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2581602094302596673}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 4
 --- !u!135 &3048427496933912062
@@ -2263,14 +2268,14 @@ RectTransform:
   m_GameObject: {fileID: 6019226325323295850}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6.539075, y: 6.539075, z: 1}
+  m_LocalScale: {x: 3.4988186, y: 3.4988186, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6421249621682836270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000005722046}
   m_SizeDelta: {x: 82, y: 82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &8679758410883271043
@@ -2413,6 +2418,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 3831128783397407286}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 5
 --- !u!135 &1043680913621057213
@@ -2517,6 +2523,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 5525104601666458117}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 6
 --- !u!135 &6509224920769139177
@@ -2590,6 +2597,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2835763380654161297}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 7
 --- !u!135 &9211032894375816228
@@ -2663,6 +2671,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 3490073391192071843}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -2822,6 +2831,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 3659398046365575135}
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 8
 --- !u!135 &2597292926432162065

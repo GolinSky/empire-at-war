@@ -187,6 +187,13 @@
   },
   "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Bugs/Enemy_AI_And_Faction_Balance.md",
+    "Tooling/Battle_Telemetry.md",
+    "Done/Features/Wavecrest_Import.md",
+    "TODOs/Features/Wavecrest_Import.md",
+    "AssetPipeline/Imports/Recalcitrant Import.md",
+    "Done/Features/Peleset_Import.md",
+    "TODOs/Features/Peleset_Import.md",
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.eafd188b3532",
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.e21ec1234590",
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.cf7b7f7a69fd",
@@ -200,7 +207,6 @@
     "TODOs/Features/More_Mining_Sites.md.tmp.17780.4a9093669719",
     "TODOs/Features/More_Mining_Sites.md",
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.42756.3f74a6dac229",
-    "TODOs/sedkpoQiJ",
     "TODOs/Refactoring/Original_Values_Rebalance.md",
     "TODOs/Refactoring/Original_Values_Rebalance - Research.md",
     "TODOs/Optimization/Asset_Size_Followup_Plan.md",
@@ -216,12 +222,6 @@
     "TODOs/Optimization/Loading_Freeze_Plan - Research.md",
     "TODOs/Optimization/Loading_Freeze_Plan.md",
     "TODOs/Features/Music_Replacement_Plan - Research.md",
-    "TODOs/Features/Music_Replacement_Plan.md",
-    "TODOs/Optimization/Burst_Jobs_Optimization_Plan.md",
-    "TODOs/Optimization/Burst_Jobs_Optimization_Plan - Research.md",
-    "Done/Features/Unit_Highlight_Plan - Research.md",
-    "Done/Features/Unit_Highlight_Plan.md",
-    "TODOs/Features/Unit_Highlight_Plan.md",
-    "TODOs/Features/Unit_Highlight_Plan - Research.md"
+    "TODOs/Features/Music_Replacement_Plan.md"
   ]
 }

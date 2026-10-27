@@ -80,6 +80,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 2810009142101307952}
   destroyedVfxScale: 1
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 9
 --- !u!1 &857465710727833266
@@ -1468,7 +1469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 8725490585227592445}
   selectedRenderer: {fileID: 1347805941737138892}
-  ringSize: {x: 10, y: 10}
+  ringSize: {x: 7.744732, y: 7.744732}
   selectionType: 3
 --- !u!114 &8268658347014680846
 MonoBehaviour:
@@ -1705,6 +1706,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 834847072846943821}
   destroyedVfxScale: 1
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 10
 --- !u!1 &3212375326661555151
@@ -11428,6 +11430,7 @@ MonoBehaviour:
   destroyedVfxAnchor: {fileID: 199021929882102195}
   destroyedVfxScale: 1
   unlockLevel: 1
+  healthOverride: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
@@ -16397,14 +16400,14 @@ RectTransform:
   m_GameObject: {fileID: 6392916215814024927}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.79744816, y: 0.79744816, z: 1}
+  m_LocalScale: {x: 0.6176022, y: 0.6176022, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8725490585227592445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.30721068}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1347805941737138892

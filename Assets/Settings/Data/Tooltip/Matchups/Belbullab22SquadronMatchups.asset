@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Belbullab22SquadronMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 41429e00e6d997249adaf10dc6d292a6:21300000
+  - iconKeys:
+    - 41429e00e6d997249adaf10dc6d292a6:21300000
+    - 7c8d76c748665eb4f8c008d83b753703:21300000
+    - ea53c8c126651444aaedb6d6761e02b3:21300000
     label: Fighters
   weakAgainst:
-  - iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+  - iconKeys:
+    - 7e5117ae6840c8d4a9252e2b589de44f:21300000
+    - 19c7fd1609d6359439e7fb94cbbc0065:21300000
+    - 68a48dec07691c448a7ed517f75c5a1a:21300000
     label: Corvettes

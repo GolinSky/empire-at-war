@@ -13,16 +13,24 @@ MonoBehaviour:
   m_Name: StealthCorvetteMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 5f8bc4a82cc113244b19a13b489bb0f0:21300000
+  - iconKeys:
+    - 5f8bc4a82cc113244b19a13b489bb0f0:21300000
     label: Captor
-  - iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+  - iconKeys:
+    - c204e9888dc32854493ab00345e38bf4:21300000
     label: Patrol Frigate
-  - iconKey: abf3987a701188747b639680e9203c3e:21300000
+  - iconKeys:
+    - abf3987a701188747b639680e9203c3e:21300000
     label: Munificent
   weakAgainst:
-  - iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+  - iconKeys:
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
     label: Providence
-  - iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+  - iconKeys:
+    - 8128fcc8b8e454e47ab592309d37208e:21300000
     label: Lucrehulk
-  - iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+  - iconKeys:
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
+    - 793233063a2c3d241ab5dbc0af1a35d4:21300000
     label: Bombers

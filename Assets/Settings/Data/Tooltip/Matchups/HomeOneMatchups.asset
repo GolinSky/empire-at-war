@@ -13,10 +13,19 @@ MonoBehaviour:
   m_Name: HomeOneMatchups
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
   strongAgainst:
-  - iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
+  - iconKeys:
+    - d899a22bd6d129e46a5aed14df2b81fa:21300000
+    - 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    - b8f66d736a9c0a841b8957320119ca55:21300000
     label: Capital ships
-  - iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
+  - iconKeys:
+    - ae699c8c0850c9245b84a34c5fb8d767:21300000
+    - abf3987a701188747b639680e9203c3e:21300000
+    - e54026c071416a845b2d23e814c1e8d5:21300000
     label: Frigates
   weakAgainst:
-  - iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
+  - iconKeys:
+    - 8aec8fa8b8581064dbf2721ad11585bb:21300000
+    - 0148d1e047b1c024494b31fb02e655ed:21300000
+    - 6deef1e660f9c3a41b4d343f91418382:21300000
     label: Bomber swarms
