@@ -26,7 +26,7 @@ namespace EmpireAtWar.Components.Ship.Selection
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
         IInitializable, ILateDisposable, IRespawnable, EmpireAtWar.IObserver<ISelectionSubject>
     {
-        private const float SINGLE_SELECTION_SCALE = 0.65f;
+        private const float SINGLE_SELECTION_SCALE = 0.8f;
         private const float MULTISELECT_SCALE = 0.6f;
         private static readonly Quaternion _worldRotation = Quaternion.Euler(90f, 0f, 0f);
 

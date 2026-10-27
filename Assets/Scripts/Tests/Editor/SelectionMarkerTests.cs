@@ -67,15 +67,15 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 singleScale = _renderer.transform.localScale;
             Vector3 anchor = _selection.WorldPosition;
             Assert.That(singleScale.x * _renderer.sprite.bounds.size.x,
-                Is.EqualTo(12f * 0.65f).Within(0.0001f));
+                Is.EqualTo(12f * 0.8f).Within(0.0001f));
             Assert.That(singleScale.y * _renderer.sprite.bounds.size.y,
-                Is.EqualTo(8f * 0.65f).Within(0.0001f));
+                Is.EqualTo(8f * 0.8f).Within(0.0001f));
 
             _service.SetCount(2);
 
             Assert.That(_renderer.enabled, Is.True);
-            Assert.That(_renderer.transform.localScale.x, Is.EqualTo(singleScale.x * (0.6f / 0.65f)).Within(0.0001f));
-            Assert.That(_renderer.transform.localScale.y, Is.EqualTo(singleScale.y * (0.6f / 0.65f)).Within(0.0001f));
+            Assert.That(_renderer.transform.localScale.x, Is.EqualTo(singleScale.x * (0.6f / 0.8f)).Within(0.0001f));
+            Assert.That(_renderer.transform.localScale.y, Is.EqualTo(singleScale.y * (0.6f / 0.8f)).Within(0.0001f));
             Assert.That(_renderer.transform.localScale.z, Is.EqualTo(1f));
             Assert.That(_selection.WorldPosition, Is.EqualTo(anchor));
 
