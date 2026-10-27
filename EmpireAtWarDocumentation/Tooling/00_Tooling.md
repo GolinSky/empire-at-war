@@ -16,6 +16,7 @@ updated: 2026-10-20
 
 - [[Tooling/GRAPHIFY_GUIDE]] — current indexing ownership and source manual.
 - [[Tooling/GameDesign_Tools]] — Balance Editor and Battle Simulator entrypoints.
+- [[Tooling/Battle_Telemetry]] — real-battle damage and AI decision logs; how to read them.
 - `Tools/EditorHub/README.md` — Editor Hub and tool inventory.
 - `Tools/Serena/README.md` — live C# navigation; exact checkout backend.
 - `Tools/Graphify/README.md` — indexing scope, status and recovery.

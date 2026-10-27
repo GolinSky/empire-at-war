@@ -115,6 +115,10 @@
 
 ### Bugs
 
+- [ ] **Fix enemy AI losing battles and CIS vs Republic balance** → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]; logs: [[Tooling/Battle_Telemetry|Battle Telemetry]]
+  - Done (commit `6babee5e1`): Republic torpedo nerf, CIS hangar/squadron buffs, Concentrate Fire nerf, AI squadron escort, strength, rally, production, press-advantage and retreat-memory fixes; AI EditMode tests pass.
+  - Next gate: 2–3 Ultra Hard battles on both factions; confirm AI attack states > 0% and fewer capture ↔ retreat flips in `_ai.csv`.
+
 - [ ] **Fix scene-teardown pool errors and material leaks** (Wave 1) → [[TODOs/Bugs/Scene_Teardown_And_Material_Leaks|Scene Teardown and Material Leaks]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
