@@ -666,6 +666,24 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 97
+    displayName: Medium Point Defense Laser
+    family: 7
+    caliber: 1
+    mount: 1
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 14
     displayName: Point Defense Laser
     family: 7

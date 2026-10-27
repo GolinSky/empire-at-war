@@ -1,0 +1,167 @@
+[
+  {
+    "id": 0,
+    "name": "HP_F-C_Bone",
+    "type": 0,
+    "position": [
+      0.100626856,
+      -0.510711432,
+      55.8290138
+    ],
+    "source": "HP_F-C_Bone"
+  },
+  {
+    "id": 1,
+    "name": "HP_F-L_Bone",
+    "type": 0,
+    "position": [
+      -3.46954966,
+      -0.60717696,
+      28.8714542
+    ],
+    "source": "HP_F-L_Bone"
+  },
+  {
+    "id": 2,
+    "name": "HP_F-R_Bone",
+    "type": 0,
+    "position": [
+      3.76839757,
+      -0.6279861,
+      28.9079132
+    ],
+    "source": "HP_F-R_Bone"
+  },
+  {
+    "id": 3,
+    "name": "HP_B-L_Bone",
+    "type": 8,
+    "position": [
+      -2.631745,
+      -1.13985229,
+      -10.32642
+    ],
+    "source": "HP_B-L_Bone"
+  },
+  {
+    "id": 4,
+    "name": "FP_B-R_Bone",
+    "type": 8,
+    "position": [
+      4.170941,
+      -0.700052559,
+      -11.3449211
+    ],
+    "source": "FP_B-R_Bone"
+  },
+  {
+    "id": 5,
+    "name": "HP_B-C_Bone",
+    "type": 0,
+    "position": [
+      -3.07703328,
+      -1.303457,
+      -17.7361012
+    ],
+    "source": "HP_B-C_Bone"
+  },
+  {
+    "id": 6,
+    "name": "HP_B-D_Bone",
+    "type": 0,
+    "position": [
+      3.943616,
+      -1.303457,
+      -17.69704
+    ],
+    "source": "HP_B-D_Bone"
+  },
+  {
+    "id": 7,
+    "name": "HP_IC_L_Bone",
+    "type": 0,
+    "position": [
+      -3.11678576,
+      2.97095847,
+      12.32026
+    ],
+    "source": "HP_IC_L_Bone"
+  },
+  {
+    "id": 8,
+    "name": "HP_IC_R_Bone",
+    "type": 0,
+    "position": [
+      3.681864,
+      2.97095847,
+      12.32026
+    ],
+    "source": "HP_IC_R_Bone"
+  },
+  {
+    "id": 9,
+    "name": "HP_M_R_Bone",
+    "type": 0,
+    "position": [
+      3.681864,
+      2.97095847,
+      18.7643375
+    ],
+    "source": "HP_M_R_Bone"
+  },
+  {
+    "id": 10,
+    "name": "HP_M_L_Bone",
+    "type": 0,
+    "position": [
+      -3.835225,
+      2.97095847,
+      18.7643375
+    ],
+    "source": "HP_M_L_Bone"
+  },
+  {
+    "id": 11,
+    "name": "T01",
+    "type": 0,
+    "position": [
+      0.09437792,
+      11.9932623,
+      -1.87603271
+    ],
+    "source": "T01"
+  },
+  {
+    "id": 12,
+    "name": "T02",
+    "type": 0,
+    "position": [
+      0.09437792,
+      -11.9948759,
+      -1.87603164
+    ],
+    "source": "T02"
+  },
+  {
+    "id": 13,
+    "name": "HP_E_Bone",
+    "type": 1,
+    "position": [
+      0.09954967,
+      10.5976143,
+      -39.30747
+    ],
+    "source": "HP_E_Bone"
+  },
+  {
+    "id": 14,
+    "name": "HP_S_Bone",
+    "type": 2,
+    "position": [
+      0.0451124,
+      3.13127613,
+      0.563397467
+    ],
+    "source": "HP_S_Bone"
+  }
+]

@@ -1358,6 +1358,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: PelesetShipView
+      value:
+        m_AssetGUID: e699427aaff7c854bbccc6f6ff25a9ed
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: PelesetShipData
+      value:
+        m_AssetGUID: 9cc0c5c00469e694286c3de8d50d2ab0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: BulwarkShipView
       value:
         m_AssetGUID: 4407f4ecd212bba42a0592b29137dff0

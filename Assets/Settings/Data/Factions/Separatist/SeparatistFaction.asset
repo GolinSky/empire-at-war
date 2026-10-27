@@ -180,6 +180,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
           type: 3}
+    - key: 110
+      value:
+        matchups: {fileID: 11400000, guid: 4caf5be368a29b847ad73b04abb8aec1, type: 2}
+        description: 7,000 hull and 3,000 shields. Six dual turbolaser batteries,
+          two ion cannons, two point-defense cannons, two concussion missile launchers
+          and one proton torpedo launcher. All weapons use medium caliber. Engines,
+          shields and every weapon mount can be targeted separately. No hangar.
+        role: Cruiser / Ordnance support
+        iconKey: 24f8965bbafc2b848a0264f86b98ec21:21300000
+        isHero: 0
+        <Name>k__BackingField: Peleset-class Cruiser
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 60
+        <UnitCapacity>k__BackingField: 4
+        <Icon>k__BackingField: {fileID: 21300000, guid: 24f8965bbafc2b848a0264f86b98ec21,
+          type: 3}
     - key: 112
       value:
         matchups: {fileID: 11400000, guid: 4868432cc9a1c1943bac947eb30cc8c1, type: 2}

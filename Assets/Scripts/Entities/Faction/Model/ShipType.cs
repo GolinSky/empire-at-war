@@ -31,6 +31,7 @@ namespace EmpireAtWar.Models.Factions
         C9979 = 107,
         Dispatcher = 108,
         Invincible = 109,
+        Peleset = 110,
         Wavecrest = 111,
         Bulwark = 112,
 

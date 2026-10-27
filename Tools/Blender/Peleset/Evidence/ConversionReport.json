@@ -1,0 +1,3015 @@
+{
+  "models": {
+    "PelesetTurret01": {
+      "before": {
+        "meshes": {
+          "turret_00": {
+            "exported_name": "turret_00",
+            "vertices": 588,
+            "triangles": 492,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret01_turret_00_Slot0"
+            ],
+            "slot_triangles": [
+              492
+            ]
+          },
+          "barrel_00": {
+            "exported_name": "barrel_00",
+            "vertices": 346,
+            "triangles": 268,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret01_barrel_00_Slot0"
+            ],
+            "slot_triangles": [
+              268
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "turret_00": {
+            "parent": "Root",
+            "head": [
+              0.002660757629200816,
+              0.13064740598201752,
+              0.7823249697685242
+            ]
+          },
+          "barrel_00": {
+            "parent": "turret_00",
+            "head": [
+              0.0026609792839735746,
+              -2.447971820831299,
+              0.782325029373169
+            ]
+          },
+          "Turret_01_FP_00": {
+            "parent": "barrel_00",
+            "head": [
+              0.8560828566551208,
+              -8.24431037902832,
+              0.9663658142089844
+            ]
+          },
+          "Turret_01_FP_01": {
+            "parent": "barrel_00",
+            "head": [
+              -0.8420321941375732,
+              -8.244309425354004,
+              0.9663658142089844
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "turret_00": {
+            "exported_name": "turret_00.001",
+            "vertices": 588,
+            "triangles": 492,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret01_turret_00_Slot0"
+            ],
+            "slot_triangles": [
+              492
+            ]
+          },
+          "barrel_00": {
+            "exported_name": "barrel_00.001",
+            "vertices": 346,
+            "triangles": 268,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret01_barrel_00_Slot0"
+            ],
+            "slot_triangles": [
+              268
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "turret_00": {
+            "parent": "Root",
+            "head": [
+              0.002660757629200816,
+              0.13064755499362946,
+              0.7823249697685242
+            ]
+          },
+          "barrel_00": {
+            "parent": "turret_00",
+            "head": [
+              0.0026609792839735746,
+              -2.447971820831299,
+              0.7823254466056824
+            ]
+          },
+          "Turret_01_FP_00": {
+            "parent": "barrel_00",
+            "head": [
+              0.8560841083526611,
+              -8.244308471679688,
+              0.966367244720459
+            ]
+          },
+          "Turret_01_FP_01": {
+            "parent": "barrel_00",
+            "head": [
+              -0.8420307636260986,
+              -8.244307518005371,
+              0.966367244720459
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "PelesetTurret01_turret_00_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+          "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.4117647409439087,
+              0.4117647409439087,
+              0.4117647409439087,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+            "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+          }
+        },
+        {
+          "name": "PelesetTurret01_barrel_00_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+          "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.4117647409439087,
+              0.4117647409439087,
+              0.4117647409439087,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+            "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+          }
+        }
+      ],
+      "bone_error": 2.78041453115716e-06,
+      "parenting_error": 9.610960183499514e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Techno_Union_Ord_Cruiser_Turret_01.ALO",
+      "source_bone_names": [
+        "Root",
+        "turret_00",
+        "barrel_00",
+        "Turret_01_FP_00",
+        "Turret_01_FP_01"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/PelesetImport/Output/PelesetTurret01.fbx",
+      "geometry_checks": [
+        {
+          "name": "turret_00",
+          "corners": 1476,
+          "position_error": 9.5367431640625e-07,
+          "uv_error": 0
+        },
+        {
+          "name": "barrel_00",
+          "corners": 804,
+          "position_error": 2.2649765014648438e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "PelesetTurret02": {
+      "before": {
+        "meshes": {
+          "turret_02": {
+            "exported_name": "turret_02",
+            "vertices": 588,
+            "triangles": 492,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret02_turret_02_Slot0"
+            ],
+            "slot_triangles": [
+              492
+            ]
+          },
+          "barrel_02": {
+            "exported_name": "barrel_02",
+            "vertices": 346,
+            "triangles": 268,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret02_barrel_02_Slot0"
+            ],
+            "slot_triangles": [
+              268
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "turret_02": {
+            "parent": "Root",
+            "head": [
+              0.025655098259449005,
+              0.1306474804878235,
+              -0.7735567688941956
+            ]
+          },
+          "barrel_02": {
+            "parent": "Root",
+            "head": [
+              0.025654859840869904,
+              -2.4479713439941406,
+              -0.7735570073127747
+            ]
+          },
+          "Turret_02_FP_01": {
+            "parent": "Root",
+            "head": [
+              0.8703460693359375,
+              -8.24431037902832,
+              -0.9575985670089722
+            ]
+          },
+          "Turret_02_FP_00": {
+            "parent": "Root",
+            "head": [
+              -0.8277683258056641,
+              -8.244308471679688,
+              -0.9575981497764587
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "turret_02": {
+            "exported_name": "turret_02.001",
+            "vertices": 588,
+            "triangles": 492,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret02_turret_02_Slot0"
+            ],
+            "slot_triangles": [
+              492
+            ]
+          },
+          "barrel_02": {
+            "exported_name": "barrel_02.001",
+            "vertices": 346,
+            "triangles": 268,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "PelesetTurret02_barrel_02_Slot0"
+            ],
+            "slot_triangles": [
+              268
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "turret_02": {
+            "parent": "Root",
+            "head": [
+              0.025655098259449005,
+              0.13064736127853394,
+              -0.7735567688941956
+            ]
+          },
+          "barrel_02": {
+            "parent": "Root",
+            "head": [
+              0.025654859840869904,
+              -2.4479715824127197,
+              -0.7735565900802612
+            ]
+          },
+          "Turret_02_FP_01": {
+            "parent": "Root",
+            "head": [
+              0.8703460693359375,
+              -8.24431037902832,
+              -0.9575971961021423
+            ]
+          },
+          "Turret_02_FP_00": {
+            "parent": "Root",
+            "head": [
+              -0.8277683258056641,
+              -8.244308471679688,
+              -0.9575967788696289
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "PelesetTurret02_turret_02_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+          "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.4117647409439087,
+              0.4117647409439087,
+              0.4117647409439087,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+            "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+          }
+        },
+        {
+          "name": "PelesetTurret02_barrel_02_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+          "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.4117647409439087,
+              0.4117647409439087,
+              0.4117647409439087,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+            "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+          }
+        }
+      ],
+      "bone_error": 1.3709068298339844e-06,
+      "parenting_error": 2.457562461863554e-07,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Techno_Union_Ord_Cruiser_Turret_02.ALO",
+      "source_bone_names": [
+        "Root",
+        "turret_02",
+        "barrel_02",
+        "Turret_02_FP_01",
+        "Turret_02_FP_00"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/PelesetImport/Output/PelesetTurret02.fbx",
+      "geometry_checks": [
+        {
+          "name": "turret_02",
+          "corners": 1476,
+          "position_error": 5.960464477539062e-07,
+          "uv_error": 0
+        },
+        {
+          "name": "barrel_02",
+          "corners": 804,
+          "position_error": 1.6689300537109375e-06,
+          "uv_error": 0
+        }
+      ]
+    },
+    "Peleset": {
+      "before": {
+        "meshes": {
+          "collision": {
+            "exported_name": "collision",
+            "vertices": 98,
+            "triangles": 192,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "Peleset_collision_Slot0"
+            ],
+            "slot_triangles": [
+              192
+            ]
+          },
+          "shadow": {
+            "exported_name": "shadow",
+            "vertices": 1646,
+            "triangles": 3220,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Peleset_shadow_Slot0"
+            ],
+            "slot_triangles": [
+              3220
+            ]
+          },
+          "hull": {
+            "exported_name": "hull",
+            "vertices": 60579,
+            "triangles": 43224,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Peleset_hull_Slot0"
+            ],
+            "slot_triangles": [
+              43224
+            ]
+          },
+          "Greeble": {
+            "exported_name": "Greeble",
+            "vertices": 27181,
+            "triangles": 14166,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Peleset_Greeble_Slot0"
+            ],
+            "slot_triangles": [
+              14166
+            ]
+          },
+          "lights": {
+            "exported_name": "lights",
+            "vertices": 1218,
+            "triangles": 956,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Peleset_lights_Slot0"
+            ],
+            "slot_triangles": [
+              956
+            ]
+          },
+          "lights2": {
+            "exported_name": "lights2",
+            "vertices": 926,
+            "triangles": 760,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Peleset_lights2_Slot0"
+            ],
+            "slot_triangles": [
+              760
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "HP_B-L_Bone": {
+            "parent": "Root",
+            "head": [
+              14.763717651367188,
+              53.6710205078125,
+              -6.236410140991211
+            ]
+          },
+          "HP_B-L_EmitDamage": {
+            "parent": "HP_B-L_Bone",
+            "head": [
+              22.667219161987305,
+              59.15958786010742,
+              -3.8395676612854004
+            ]
+          },
+          "p_fire_med01": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              20.70857810974121,
+              49.55306625366211,
+              -4.299304008483887
+            ]
+          },
+          "FP_B-L_01": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              14.809041976928711,
+              69.3364486694336,
+              -3.793826103210449
+            ]
+          },
+          "FP_B-L_00": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              14.831436157226562,
+              40.1384162902832,
+              -3.718752384185791
+            ]
+          },
+          "HP_E_Bone": {
+            "parent": "Root",
+            "head": [
+              -0.03812408447265625,
+              210.72946166992188,
+              57.373050689697266
+            ]
+          },
+          "HP_E_EmitDamage": {
+            "parent": "HP_E_Bone",
+            "head": [
+              0.16513001918792725,
+              190.43954467773438,
+              58.346527099609375
+            ]
+          },
+          "p_ship_fire": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              17.629655838012695,
+              188.9497833251953,
+              52.058349609375
+            ]
+          },
+          "p_fire_med01.001": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              -47.590145111083984,
+              222.2191619873047,
+              -17.859169006347656
+            ]
+          },
+          "p_ship_fire.001": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              -13.945663452148438,
+              188.94976806640625,
+              52.472686767578125
+            ]
+          },
+          "p_fire_med01.002": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              48.58175277709961,
+              188.94984436035156,
+              -17.05328369140625
+            ]
+          },
+          "p_fire_med01.003": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              0.5469006299972534,
+              271.3350830078125,
+              7.5884857177734375
+            ]
+          },
+          "HP_F-C_Bone": {
+            "parent": "Root",
+            "head": [
+              -0.04396173357963562,
+              -304.84844970703125,
+              -2.8269267082214355
+            ]
+          },
+          "HP_F-C_EmitDamage": {
+            "parent": "HP_F-C_Bone",
+            "head": [
+              0.4092155992984772,
+              -303.52001953125,
+              -5.069285869598389
+            ]
+          },
+          "p_ship_fire.002": {
+            "parent": "HP_F-C_EmitDamage",
+            "head": [
+              0.4194287061691284,
+              -304.0914001464844,
+              6.129798412322998
+            ]
+          },
+          "FP_F-C_00": {
+            "parent": "HP_F-C_EmitDamage",
+            "head": [
+              -1.8631840944290161,
+              -306.7081298828125,
+              -5.562941074371338
+            ]
+          },
+          "FP_F-C_01": {
+            "parent": "HP_F-C_EmitDamage",
+            "head": [
+              2.1058928966522217,
+              -306.8260192871094,
+              -5.497496604919434
+            ]
+          },
+          "HP_F-L_Bone": {
+            "parent": "Root",
+            "head": [
+              19.304073333740234,
+              -158.7559814453125,
+              -3.349684715270996
+            ]
+          },
+          "HP_F-L_EmitDamage": {
+            "parent": "HP_F-L_Bone",
+            "head": [
+              27.54849624633789,
+              -136.1853790283203,
+              -3.124356269836426
+            ]
+          },
+          "p_ship_fire.003": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              17.89804458618164,
+              -165.15516662597656,
+              -3.0845348834991455
+            ]
+          },
+          "FP_F-L_00": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              19.25372314453125,
+              -194.6950225830078,
+              -5.533549785614014
+            ]
+          },
+          "FP_F-L_01": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              18.763534545898438,
+              -129.9072723388672,
+              -6.3076171875
+            ]
+          },
+          "HP_F-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -19.920894622802734,
+              -158.95358276367188,
+              -3.462460517883301
+            ]
+          },
+          "HP_F-R_EmitDamage": {
+            "parent": "HP_F-R_Bone",
+            "head": [
+              -15.68069076538086,
+              -170.84637451171875,
+              -4.985214710235596
+            ]
+          },
+          "p_fire_med01.004": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -14.91229248046875,
+              -172.20851135253906,
+              -2.930722713470459
+            ]
+          },
+          "FP_F-R_01": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -18.657371520996094,
+              -133.4799346923828,
+              -4.098901271820068
+            ]
+          },
+          "FP_F-R_00": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -18.6933536529541,
+              -192.44668579101562,
+              -3.180872917175293
+            ]
+          },
+          "HP_B-C_Bone": {
+            "parent": "Root",
+            "head": [
+              17.176889419555664,
+              93.82667541503906,
+              -7.1230363845825195
+            ]
+          },
+          "HP_B-C_EmitDamage": {
+            "parent": "HP_B-C_Bone",
+            "head": [
+              20.449077606201172,
+              93.63751220703125,
+              -5.648891448974609
+            ]
+          },
+          "p_fire_med01.005": {
+            "parent": "HP_B-C_EmitDamage",
+            "head": [
+              9.543564796447754,
+              93.22625732421875,
+              13.036701202392578
+            ]
+          },
+          "FP_B-C_01": {
+            "parent": "HP_B-C_EmitDamage",
+            "head": [
+              21.730735778808594,
+              88.28868103027344,
+              2.3460850715637207
+            ]
+          },
+          "FP_B-C_00": {
+            "parent": "HP_B-C_EmitDamage",
+            "head": [
+              21.9680118560791,
+              97.08479309082031,
+              2.3460917472839355
+            ]
+          },
+          "FP_B-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -22.1024169921875,
+              59.190635681152344,
+              -3.8529844284057617
+            ]
+          },
+          "HP_B-R_EmitDamage": {
+            "parent": "FP_B-R_Bone",
+            "head": [
+              -25.623273849487305,
+              54.15199661254883,
+              -4.221068382263184
+            ]
+          },
+          "p_fire_med01.006": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -17.391830444335938,
+              60.462135314941406,
+              -4.342174530029297
+            ]
+          },
+          "FP_B-R_00": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -21.578927993774414,
+              43.08134460449219,
+              -3.6705923080444336
+            ]
+          },
+          "FP_B-R_01": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -21.43396759033203,
+              67.03060913085938,
+              -3.6705923080444336
+            ]
+          },
+          "HP_S_Bone": {
+            "parent": "Root",
+            "head": [
+              0.25689053535461426,
+              -5.344714641571045,
+              16.910324096679688
+            ]
+          },
+          "HP_S_EMITDAMAGE": {
+            "parent": "HP_S_Bone",
+            "head": [
+              0.25688934326171875,
+              -8.333667755126953,
+              16.910324096679688
+            ]
+          },
+          "p_ship_fire.004": {
+            "parent": "HP_S_EMITDAMAGE",
+            "head": [
+              0.10660034418106079,
+              -6.910536289215088,
+              17.732139587402344
+            ]
+          },
+          "pe_technounion_lrg": {
+            "parent": "Root",
+            "head": [
+              48.179481506347656,
+              221.63137817382812,
+              -17.538673400878906
+            ]
+          },
+          "pe_technounion_lrg.001": {
+            "parent": "Root",
+            "head": [
+              39.46320343017578,
+              221.63137817382812,
+              -33.151268005371094
+            ]
+          },
+          "pe_technounion_lrg.002": {
+            "parent": "Root",
+            "head": [
+              -39.263633728027344,
+              221.63137817382812,
+              -32.8404655456543
+            ]
+          },
+          "pe_technounion_lrg.003": {
+            "parent": "Root",
+            "head": [
+              -48.19706344604492,
+              221.63137817382812,
+              -17.423877716064453
+            ]
+          },
+          "pe_technounion_lrg.004": {
+            "parent": "Root",
+            "head": [
+              -8.890151977539062,
+              221.63137817382812,
+              50.51327133178711
+            ]
+          },
+          "pe_technounion_lrg.005": {
+            "parent": "Root",
+            "head": [
+              8.903976440429688,
+              221.63137817382812,
+              50.51327133178711
+            ]
+          },
+          "p_blink_medium_red_constant": {
+            "parent": "Root",
+            "head": [
+              60.886749267578125,
+              -97.41603088378906,
+              59.679325103759766
+            ]
+          },
+          "p_blink_medium_red_constant.001": {
+            "parent": "Root",
+            "head": [
+              -61.07066345214844,
+              -97.41603088378906,
+              59.679325103759766
+            ]
+          },
+          "p_blink_medium_red_constant.002": {
+            "parent": "Root",
+            "head": [
+              -60.849205017089844,
+              -97.03044128417969,
+              -59.75601577758789
+            ]
+          },
+          "p_blink_medium_red_constant.003": {
+            "parent": "Root",
+            "head": [
+              61.10126495361328,
+              -97.03044128417969,
+              -59.75601577758789
+            ]
+          },
+          "p_blink_medium_red_constant.004": {
+            "parent": "Root",
+            "head": [
+              -0.09790430217981339,
+              -339.3867492675781,
+              -8.84677505493164
+            ]
+          },
+          "p_blink_medium_red_constant.005": {
+            "parent": "Root",
+            "head": [
+              -7.702566146850586,
+              -339.3689880371094,
+              4.356389999389648
+            ]
+          },
+          "p_blink_medium_red_constant.006": {
+            "parent": "Root",
+            "head": [
+              7.6264238357543945,
+              -339.3689880371094,
+              4.276394367218018
+            ]
+          },
+          "p_blink_medium_white_1_3": {
+            "parent": "Root",
+            "head": [
+              9.500832557678223,
+              -267.65118408203125,
+              -36.3782958984375
+            ]
+          },
+          "p_blink_medium_white_1_3.001": {
+            "parent": "Root",
+            "head": [
+              2.1447949409484863,
+              -239.92849731445312,
+              -64.57865142822266
+            ]
+          },
+          "p_blink_medium_white_1_3.002": {
+            "parent": "Root",
+            "head": [
+              2.1447951793670654,
+              -234.4066162109375,
+              -58.1546630859375
+            ]
+          },
+          "p_blink_medium_red_constant.007": {
+            "parent": "Root",
+            "head": [
+              60.886749267578125,
+              110.9005355834961,
+              59.679325103759766
+            ]
+          },
+          "p_blink_medium_red_constant.008": {
+            "parent": "Root",
+            "head": [
+              -60.88523864746094,
+              110.9005355834961,
+              59.679325103759766
+            ]
+          },
+          "p_blink_medium_red_constant.009": {
+            "parent": "Root",
+            "head": [
+              -60.88523864746094,
+              110.17804718017578,
+              -59.5438117980957
+            ]
+          },
+          "p_blink_medium_red_constant.010": {
+            "parent": "Root",
+            "head": [
+              61.092491149902344,
+              110.17804718017578,
+              -59.5438117980957
+            ]
+          },
+          "HP_B-D_Bone": {
+            "parent": "Root",
+            "head": [
+              -20.870464324951172,
+              93.614990234375,
+              -7.1230363845825195
+            ]
+          },
+          "HP_B-D_EmitDamage": {
+            "parent": "HP_B-D_Bone",
+            "head": [
+              -19.319143295288086,
+              93.42583465576172,
+              -5.648892402648926
+            ]
+          },
+          "FP_B-D_00": {
+            "parent": "HP_B-D_EmitDamage",
+            "head": [
+              -20.823715209960938,
+              89.97225952148438,
+              2.346085786819458
+            ]
+          },
+          "FP_B-D_01": {
+            "parent": "HP_B-D_EmitDamage",
+            "head": [
+              -20.623046875,
+              98.76927947998047,
+              2.3460896015167236
+            ]
+          },
+          "p_fire_med01.007": {
+            "parent": "HP_B-D_EmitDamage",
+            "head": [
+              -8.415430068969727,
+              93.88245391845703,
+              5.172488689422607
+            ]
+          },
+          "HP_IC_L_Bone": {
+            "parent": "Root",
+            "head": [
+              17.392322540283203,
+              -69.05927276611328,
+              16.041500091552734
+            ]
+          },
+          "HP_IC_L_00": {
+            "parent": "HP_IC_L_Bone",
+            "head": [
+              20.87679100036621,
+              -62.62186050415039,
+              16.041501998901367
+            ]
+          },
+          "HP_IC_L_01": {
+            "parent": "HP_IC_L_Bone",
+            "head": [
+              20.876781463623047,
+              -80.92967987060547,
+              16.041484832763672
+            ]
+          },
+          "HP_IC_R_Bone": {
+            "parent": "Root",
+            "head": [
+              -19.45193862915039,
+              -69.05927276611328,
+              16.041500091552734
+            ]
+          },
+          "HP_IC_R_00": {
+            "parent": "HP_IC_R_Bone",
+            "head": [
+              -19.451934814453125,
+              -62.198081970214844,
+              16.0414981842041
+            ]
+          },
+          "HP_IC_R_01": {
+            "parent": "HP_IC_R_Bone",
+            "head": [
+              -19.45194435119629,
+              -79.25965881347656,
+              16.0414981842041
+            ]
+          },
+          "HP_M_R_Bone": {
+            "parent": "Root",
+            "head": [
+              -19.45193862915039,
+              -103.98197937011719,
+              16.041500091552734
+            ]
+          },
+          "HP_M_R_01": {
+            "parent": "HP_M_R_Bone",
+            "head": [
+              -25.902965545654297,
+              -97.0687484741211,
+              12.014016151428223
+            ]
+          },
+          "HP_M_R_00": {
+            "parent": "HP_M_R_Bone",
+            "head": [
+              -19.451923370361328,
+              -97.45238494873047,
+              16.041471481323242
+            ]
+          },
+          "HP_M_L_Bone": {
+            "parent": "Root",
+            "head": [
+              21.285797119140625,
+              -103.98197937011719,
+              16.041500091552734
+            ]
+          },
+          "HP_M_L_00": {
+            "parent": "HP_M_L_Bone",
+            "head": [
+              18.999122619628906,
+              -97.4524154663086,
+              16.041494369506836
+            ]
+          },
+          "HP_M_L_01": {
+            "parent": "HP_M_L_Bone",
+            "head": [
+              26.015684127807617,
+              -97.45240783691406,
+              12.21435546875
+            ]
+          },
+          "T01": {
+            "parent": "Root",
+            "head": [
+              -0.010096549987792969,
+              7.875405311584473,
+              64.93653106689453
+            ]
+          },
+          "Turret_01_EmitDamage": {
+            "parent": "T01",
+            "head": [
+              -0.010096549987792969,
+              7.875405311584473,
+              64.93653106689453
+            ]
+          },
+          "p_fire_big01": {
+            "parent": "Turret_01_EmitDamage",
+            "head": [
+              -0.16045525670051575,
+              7.083636283874512,
+              58.29077911376953
+            ]
+          },
+          "T02": {
+            "parent": "Root",
+            "head": [
+              -0.010096549987792969,
+              7.875411033630371,
+              -65.06359100341797
+            ]
+          },
+          "Turret_02_EmitDamage": {
+            "parent": "T02",
+            "head": [
+              -0.010096549987792969,
+              7.875411033630371,
+              -65.06359100341797
+            ]
+          },
+          "p_fire_big01.001": {
+            "parent": "Turret_02_EmitDamage",
+            "head": [
+              -0.16045527160167694,
+              7.083641529083252,
+              -65.03377532958984
+            ]
+          },
+          "collision": {
+            "parent": "Root",
+            "head": [
+              2.572002410888672,
+              6.4617791175842285,
+              -63.14271926879883
+            ]
+          },
+          "pe_technounion_sml": {
+            "parent": "Root",
+            "head": [
+              0.12291240692138672,
+              239.8871307373047,
+              25.7875919342041
+            ]
+          },
+          "pe_technounion_sml.001": {
+            "parent": "Root",
+            "head": [
+              13.076177597045898,
+              239.8871307373047,
+              22.300262451171875
+            ]
+          },
+          "pe_technounion_sml.002": {
+            "parent": "Root",
+            "head": [
+              22.64117431640625,
+              239.8871307373047,
+              12.637057304382324
+            ]
+          },
+          "pe_technounion_sml.003": {
+            "parent": "Root",
+            "head": [
+              26.04351806640625,
+              239.8871307373047,
+              -0.4187755584716797
+            ]
+          },
+          "pe_technounion_sml.004": {
+            "parent": "Root",
+            "head": [
+              22.695430755615234,
+              239.8871307373047,
+              -13.44314956665039
+            ]
+          },
+          "pe_technounion_sml.005": {
+            "parent": "Root",
+            "head": [
+              12.864545822143555,
+              239.8871307373047,
+              -22.542007446289062
+            ]
+          },
+          "pe_technounion_sml.006": {
+            "parent": "Root",
+            "head": [
+              0.14032554626464844,
+              239.8871307373047,
+              -25.99687385559082
+            ]
+          },
+          "pe_technounion_sml.007": {
+            "parent": "Root",
+            "head": [
+              -12.976330757141113,
+              239.8871307373047,
+              -22.597810745239258
+            ]
+          },
+          "pe_technounion_sml.008": {
+            "parent": "Root",
+            "head": [
+              -22.146997451782227,
+              239.8871307373047,
+              -12.819457054138184
+            ]
+          },
+          "pe_technounion_sml.009": {
+            "parent": "Root",
+            "head": [
+              -26.25248908996582,
+              239.8871307373047,
+              -0.22359848022460938
+            ]
+          },
+          "pe_technounion_sml.010": {
+            "parent": "Root",
+            "head": [
+              -22.48232078552246,
+              239.8871307373047,
+              13.091519355773926
+            ]
+          },
+          "pe_technounion_sml.011": {
+            "parent": "Root",
+            "head": [
+              -13.079019546508789,
+              239.8871307373047,
+              22.664888381958008
+            ]
+          },
+          "shadow": {
+            "parent": "Root",
+            "head": [
+              0.601841926574707,
+              238.83702087402344,
+              -0.046329498291015625
+            ]
+          },
+          "hull": {
+            "parent": "Root",
+            "head": [
+              0.505139172077179,
+              -2.2898025512695312,
+              -0.10221623629331589
+            ]
+          },
+          "Greeble": {
+            "parent": "Root",
+            "head": [
+              7.237632751464844,
+              68.1056137084961,
+              -5.291790008544922
+            ]
+          },
+          "pi_damage_elec_SD00": {
+            "parent": "Root",
+            "head": [
+              -100.6649169921875,
+              -217.9932861328125,
+              -10.2659912109375
+            ]
+          },
+          "pi_damage_elec_SD00.001": {
+            "parent": "Root",
+            "head": [
+              -100.6649169921875,
+              171.6351318359375,
+              -10.2659912109375
+            ]
+          },
+          "lights": {
+            "parent": "Root",
+            "head": [
+              0.505139172077179,
+              -2.2898025512695312,
+              -0.10221623629331589
+            ]
+          },
+          "lights2": {
+            "parent": "Root",
+            "head": [
+              7.237632751464844,
+              68.1056137084961,
+              -5.291790008544922
+            ]
+          }
+        }
+      },
+      "after": {
+        "meshes": {
+          "collision": {
+            "exported_name": "collision.001",
+            "vertices": 98,
+            "triangles": 192,
+            "hidden": true,
+            "shader": "MeshCollision.fx",
+            "materials": [
+              "Peleset_collision_Slot0"
+            ],
+            "slot_triangles": [
+              192
+            ]
+          },
+          "shadow": {
+            "exported_name": "shadow.001",
+            "vertices": 1646,
+            "triangles": 3220,
+            "hidden": true,
+            "shader": "MeshShadowVolume.fx",
+            "materials": [
+              "Peleset_shadow_Slot0"
+            ],
+            "slot_triangles": [
+              3220
+            ]
+          },
+          "hull": {
+            "exported_name": "hull.001",
+            "vertices": 60579,
+            "triangles": 43224,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Peleset_hull_Slot0"
+            ],
+            "slot_triangles": [
+              43224
+            ]
+          },
+          "Greeble": {
+            "exported_name": "Greeble.001",
+            "vertices": 27181,
+            "triangles": 14166,
+            "hidden": false,
+            "shader": "MeshBumpColorize.fx",
+            "materials": [
+              "Peleset_Greeble_Slot0"
+            ],
+            "slot_triangles": [
+              14166
+            ]
+          },
+          "lights": {
+            "exported_name": "lights.001",
+            "vertices": 1218,
+            "triangles": 956,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Peleset_lights_Slot0"
+            ],
+            "slot_triangles": [
+              956
+            ]
+          },
+          "lights2": {
+            "exported_name": "lights2.001",
+            "vertices": 926,
+            "triangles": 760,
+            "hidden": false,
+            "shader": "MeshAdditive.fx",
+            "materials": [
+              "Peleset_lights2_Slot0"
+            ],
+            "slot_triangles": [
+              760
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "HP_B-L_Bone": {
+            "parent": "Root",
+            "head": [
+              14.763717651367188,
+              53.6710205078125,
+              -6.236418724060059
+            ]
+          },
+          "HP_B-L_EmitDamage": {
+            "parent": "HP_B-L_Bone",
+            "head": [
+              22.667221069335938,
+              59.15959167480469,
+              -3.839576482772827
+            ]
+          },
+          "p_fire_med01": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              20.70857810974121,
+              49.553077697753906,
+              -4.299311637878418
+            ]
+          },
+          "FP_B-L_01": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              14.809043884277344,
+              69.33645629882812,
+              -3.7938380241394043
+            ]
+          },
+          "FP_B-L_00": {
+            "parent": "HP_B-L_EmitDamage",
+            "head": [
+              14.83143424987793,
+              40.13843536376953,
+              -3.718759536743164
+            ]
+          },
+          "HP_E_Bone": {
+            "parent": "Root",
+            "head": [
+              -0.03812408447265625,
+              210.72947692871094,
+              57.373016357421875
+            ]
+          },
+          "HP_E_EmitDamage": {
+            "parent": "HP_E_Bone",
+            "head": [
+              0.16513001918792725,
+              190.43955993652344,
+              58.34649658203125
+            ]
+          },
+          "p_ship_fire": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              17.629655838012695,
+              188.94979858398438,
+              52.058319091796875
+            ]
+          },
+          "p_fire_med01.001": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              -47.590152740478516,
+              222.21914672851562,
+              -17.85920524597168
+            ]
+          },
+          "p_ship_fire.001": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              -13.945662498474121,
+              188.9497833251953,
+              52.47265625
+            ]
+          },
+          "p_fire_med01.002": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              48.58175277709961,
+              188.94985961914062,
+              -17.053314208984375
+            ]
+          },
+          "p_fire_med01.003": {
+            "parent": "HP_E_EmitDamage",
+            "head": [
+              0.5468874573707581,
+              271.3350830078125,
+              7.588441371917725
+            ]
+          },
+          "HP_F-C_Bone": {
+            "parent": "Root",
+            "head": [
+              -0.04396173357963562,
+              -304.84844970703125,
+              -2.8268771171569824
+            ]
+          },
+          "HP_F-C_EmitDamage": {
+            "parent": "HP_F-C_Bone",
+            "head": [
+              0.40921729803085327,
+              -303.52001953125,
+              -5.069237232208252
+            ]
+          },
+          "p_ship_fire.002": {
+            "parent": "HP_F-C_EmitDamage",
+            "head": [
+              0.41943061351776123,
+              -304.09136962890625,
+              6.129848003387451
+            ]
+          },
+          "FP_F-C_00": {
+            "parent": "HP_F-C_EmitDamage",
+            "head": [
+              -1.8631818294525146,
+              -306.7080993652344,
+              -5.562891483306885
+            ]
+          },
+          "FP_F-C_01": {
+            "parent": "HP_F-C_EmitDamage",
+            "head": [
+              2.1058943271636963,
+              -306.8260192871094,
+              -5.4974470138549805
+            ]
+          },
+          "HP_F-L_Bone": {
+            "parent": "Root",
+            "head": [
+              19.304073333740234,
+              -158.7559814453125,
+              -3.349658966064453
+            ]
+          },
+          "HP_F-L_EmitDamage": {
+            "parent": "HP_F-L_Bone",
+            "head": [
+              27.54849624633789,
+              -136.18536376953125,
+              -3.1243343353271484
+            ]
+          },
+          "p_ship_fire.003": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              17.89804458618164,
+              -165.15513610839844,
+              -3.0845086574554443
+            ]
+          },
+          "FP_F-L_00": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              19.25372314453125,
+              -194.69500732421875,
+              -5.533518314361572
+            ]
+          },
+          "FP_F-L_01": {
+            "parent": "HP_F-L_EmitDamage",
+            "head": [
+              18.763534545898438,
+              -129.90724182128906,
+              -6.307596683502197
+            ]
+          },
+          "HP_F-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -19.920894622802734,
+              -158.95358276367188,
+              -3.4624345302581787
+            ]
+          },
+          "HP_F-R_EmitDamage": {
+            "parent": "HP_F-R_Bone",
+            "head": [
+              -15.68069076538086,
+              -170.84637451171875,
+              -4.985185623168945
+            ]
+          },
+          "p_fire_med01.004": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -14.912300109863281,
+              -172.20849609375,
+              -2.9306938648223877
+            ]
+          },
+          "FP_F-R_01": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -18.65733528137207,
+              -133.4799041748047,
+              -4.098882675170898
+            ]
+          },
+          "FP_F-R_00": {
+            "parent": "HP_F-R_EmitDamage",
+            "head": [
+              -18.693336486816406,
+              -192.44667053222656,
+              -3.1808438301086426
+            ]
+          },
+          "HP_B-C_Bone": {
+            "parent": "Root",
+            "head": [
+              17.176889419555664,
+              93.82667541503906,
+              -7.123051643371582
+            ]
+          },
+          "HP_B-C_EmitDamage": {
+            "parent": "HP_B-C_Bone",
+            "head": [
+              20.44907569885254,
+              93.63751220703125,
+              -5.648907661437988
+            ]
+          },
+          "p_fire_med01.005": {
+            "parent": "HP_B-C_EmitDamage",
+            "head": [
+              9.54356575012207,
+              93.22624969482422,
+              13.036681175231934
+            ]
+          },
+          "FP_B-C_01": {
+            "parent": "HP_B-C_EmitDamage",
+            "head": [
+              21.730731964111328,
+              88.28868103027344,
+              2.3460693359375
+            ]
+          },
+          "FP_B-C_00": {
+            "parent": "HP_B-C_EmitDamage",
+            "head": [
+              21.968008041381836,
+              97.08479309082031,
+              2.346074104309082
+            ]
+          },
+          "FP_B-R_Bone": {
+            "parent": "Root",
+            "head": [
+              -22.1024169921875,
+              59.190635681152344,
+              -3.852993965148926
+            ]
+          },
+          "HP_B-R_EmitDamage": {
+            "parent": "FP_B-R_Bone",
+            "head": [
+              -25.623275756835938,
+              54.15199661254883,
+              -4.2210774421691895
+            ]
+          },
+          "p_fire_med01.006": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -17.39183235168457,
+              60.46213150024414,
+              -4.342184543609619
+            ]
+          },
+          "FP_B-R_00": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -21.578929901123047,
+              43.08134078979492,
+              -3.6705992221832275
+            ]
+          },
+          "FP_B-R_01": {
+            "parent": "HP_B-R_EmitDamage",
+            "head": [
+              -21.43396759033203,
+              67.03060913085938,
+              -3.6706032752990723
+            ]
+          },
+          "HP_S_Bone": {
+            "parent": "Root",
+            "head": [
+              0.25689053535461426,
+              -5.344711780548096,
+              16.910324096679688
+            ]
+          },
+          "HP_S_EMITDAMAGE": {
+            "parent": "HP_S_Bone",
+            "head": [
+              0.2568897008895874,
+              -8.333664894104004,
+              16.91032600402832
+            ]
+          },
+          "p_ship_fire.004": {
+            "parent": "HP_S_EMITDAMAGE",
+            "head": [
+              0.106600821018219,
+              -6.910533428192139,
+              17.732141494750977
+            ]
+          },
+          "pe_technounion_lrg": {
+            "parent": "Root",
+            "head": [
+              48.179481506347656,
+              221.63137817382812,
+              -17.53870964050293
+            ]
+          },
+          "pe_technounion_lrg.001": {
+            "parent": "Root",
+            "head": [
+              39.46320343017578,
+              221.63137817382812,
+              -33.151302337646484
+            ]
+          },
+          "pe_technounion_lrg.002": {
+            "parent": "Root",
+            "head": [
+              -39.263633728027344,
+              221.63137817382812,
+              -32.84049987792969
+            ]
+          },
+          "pe_technounion_lrg.003": {
+            "parent": "Root",
+            "head": [
+              -48.19706344604492,
+              221.63137817382812,
+              -17.423913955688477
+            ]
+          },
+          "pe_technounion_lrg.004": {
+            "parent": "Root",
+            "head": [
+              -8.890151977539062,
+              221.6313934326172,
+              50.51323699951172
+            ]
+          },
+          "pe_technounion_lrg.005": {
+            "parent": "Root",
+            "head": [
+              8.903976440429688,
+              221.6313934326172,
+              50.51323699951172
+            ]
+          },
+          "p_blink_medium_red_constant": {
+            "parent": "Root",
+            "head": [
+              60.886749267578125,
+              -97.41602325439453,
+              59.67934036254883
+            ]
+          },
+          "p_blink_medium_red_constant.001": {
+            "parent": "Root",
+            "head": [
+              -61.07066345214844,
+              -97.41602325439453,
+              59.67934036254883
+            ]
+          },
+          "p_blink_medium_red_constant.002": {
+            "parent": "Root",
+            "head": [
+              -60.849205017089844,
+              -97.03044891357422,
+              -59.75600051879883
+            ]
+          },
+          "p_blink_medium_red_constant.003": {
+            "parent": "Root",
+            "head": [
+              61.10126495361328,
+              -97.03044891357422,
+              -59.75600051879883
+            ]
+          },
+          "p_blink_medium_red_constant.004": {
+            "parent": "Root",
+            "head": [
+              -0.09790430217981339,
+              -339.3867492675781,
+              -8.846719741821289
+            ]
+          },
+          "p_blink_medium_red_constant.005": {
+            "parent": "Root",
+            "head": [
+              -7.702566146850586,
+              -339.3689880371094,
+              4.3564453125
+            ]
+          },
+          "p_blink_medium_red_constant.006": {
+            "parent": "Root",
+            "head": [
+              7.6264238357543945,
+              -339.3689880371094,
+              4.276449680328369
+            ]
+          },
+          "p_blink_medium_white_1_3": {
+            "parent": "Root",
+            "head": [
+              9.500832557678223,
+              -267.65118408203125,
+              -36.37825393676758
+            ]
+          },
+          "p_blink_medium_white_1_3.001": {
+            "parent": "Root",
+            "head": [
+              2.1447949409484863,
+              -239.9285125732422,
+              -64.57861328125
+            ]
+          },
+          "p_blink_medium_white_1_3.002": {
+            "parent": "Root",
+            "head": [
+              2.1447951793670654,
+              -234.40663146972656,
+              -58.154624938964844
+            ]
+          },
+          "p_blink_medium_red_constant.007": {
+            "parent": "Root",
+            "head": [
+              60.886749267578125,
+              110.90054321289062,
+              59.67930603027344
+            ]
+          },
+          "p_blink_medium_red_constant.008": {
+            "parent": "Root",
+            "head": [
+              -60.88523864746094,
+              110.90054321289062,
+              59.67930603027344
+            ]
+          },
+          "p_blink_medium_red_constant.009": {
+            "parent": "Root",
+            "head": [
+              -60.88523864746094,
+              110.17803955078125,
+              -59.54383087158203
+            ]
+          },
+          "p_blink_medium_red_constant.010": {
+            "parent": "Root",
+            "head": [
+              61.092491149902344,
+              110.17803955078125,
+              -59.54383087158203
+            ]
+          },
+          "HP_B-D_Bone": {
+            "parent": "Root",
+            "head": [
+              -20.870464324951172,
+              93.614990234375,
+              -7.123051643371582
+            ]
+          },
+          "HP_B-D_EmitDamage": {
+            "parent": "HP_B-D_Bone",
+            "head": [
+              -19.319143295288086,
+              93.42584228515625,
+              -5.648909568786621
+            ]
+          },
+          "FP_B-D_00": {
+            "parent": "HP_B-D_EmitDamage",
+            "head": [
+              -20.823711395263672,
+              89.97225952148438,
+              2.345964193344116
+            ]
+          },
+          "FP_B-D_01": {
+            "parent": "HP_B-D_EmitDamage",
+            "head": [
+              -20.623043060302734,
+              98.76927947998047,
+              2.345970392227173
+            ]
+          },
+          "p_fire_med01.007": {
+            "parent": "HP_B-D_EmitDamage",
+            "head": [
+              -8.415427207946777,
+              93.88245391845703,
+              5.17233943939209
+            ]
+          },
+          "HP_IC_L_Bone": {
+            "parent": "Root",
+            "head": [
+              17.392322540283203,
+              -69.05927276611328,
+              16.04151153564453
+            ]
+          },
+          "HP_IC_L_00": {
+            "parent": "HP_IC_L_Bone",
+            "head": [
+              20.876789093017578,
+              -62.62185287475586,
+              16.0415096282959
+            ]
+          },
+          "HP_IC_L_01": {
+            "parent": "HP_IC_L_Bone",
+            "head": [
+              20.876779556274414,
+              -80.9296875,
+              16.0414981842041
+            ]
+          },
+          "HP_IC_R_Bone": {
+            "parent": "Root",
+            "head": [
+              -19.45193862915039,
+              -69.05927276611328,
+              16.04151153564453
+            ]
+          },
+          "HP_IC_R_00": {
+            "parent": "HP_IC_R_Bone",
+            "head": [
+              -19.451936721801758,
+              -62.198081970214844,
+              16.0415096282959
+            ]
+          },
+          "HP_IC_R_01": {
+            "parent": "HP_IC_R_Bone",
+            "head": [
+              -19.451940536499023,
+              -79.25965881347656,
+              16.04151153564453
+            ]
+          },
+          "HP_M_R_Bone": {
+            "parent": "Root",
+            "head": [
+              -19.45193862915039,
+              -103.98197937011719,
+              16.04151725769043
+            ]
+          },
+          "HP_M_R_01": {
+            "parent": "HP_M_R_Bone",
+            "head": [
+              -25.902965545654297,
+              -97.0687484741211,
+              12.014033317565918
+            ]
+          },
+          "HP_M_R_00": {
+            "parent": "HP_M_R_Bone",
+            "head": [
+              -19.451923370361328,
+              -97.452392578125,
+              16.041484832763672
+            ]
+          },
+          "HP_M_L_Bone": {
+            "parent": "Root",
+            "head": [
+              21.285797119140625,
+              -103.98197937011719,
+              16.04151725769043
+            ]
+          },
+          "HP_M_L_00": {
+            "parent": "HP_M_L_Bone",
+            "head": [
+              18.99912452697754,
+              -97.4524154663086,
+              16.041507720947266
+            ]
+          },
+          "HP_M_L_01": {
+            "parent": "HP_M_L_Bone",
+            "head": [
+              26.01568603515625,
+              -97.45240020751953,
+              12.214369773864746
+            ]
+          },
+          "T01": {
+            "parent": "Root",
+            "head": [
+              -0.010096549987792969,
+              7.875415802001953,
+              64.93653106689453
+            ]
+          },
+          "Turret_01_EmitDamage": {
+            "parent": "T01",
+            "head": [
+              -0.010096555575728416,
+              7.875415802001953,
+              64.93653106689453
+            ]
+          },
+          "p_fire_big01": {
+            "parent": "Turret_01_EmitDamage",
+            "head": [
+              -0.1604553908109665,
+              7.083645820617676,
+              58.29077911376953
+            ]
+          },
+          "T02": {
+            "parent": "Root",
+            "head": [
+              -0.010096549987792969,
+              7.875400543212891,
+              -65.06359100341797
+            ]
+          },
+          "Turret_02_EmitDamage": {
+            "parent": "T02",
+            "head": [
+              -0.010096547193825245,
+              7.875400543212891,
+              -65.06359100341797
+            ]
+          },
+          "p_fire_big01.001": {
+            "parent": "Turret_02_EmitDamage",
+            "head": [
+              -0.1604553610086441,
+              7.0836310386657715,
+              -65.03377532958984
+            ]
+          },
+          "collision": {
+            "parent": "Root",
+            "head": [
+              2.572002410888672,
+              6.461768627166748,
+              -63.14271926879883
+            ]
+          },
+          "pe_technounion_sml": {
+            "parent": "Root",
+            "head": [
+              0.12291240692138672,
+              239.8871307373047,
+              25.787553787231445
+            ]
+          },
+          "pe_technounion_sml.001": {
+            "parent": "Root",
+            "head": [
+              13.076177597045898,
+              239.8871307373047,
+              22.30022430419922
+            ]
+          },
+          "pe_technounion_sml.002": {
+            "parent": "Root",
+            "head": [
+              22.64117431640625,
+              239.8871307373047,
+              12.637018203735352
+            ]
+          },
+          "pe_technounion_sml.003": {
+            "parent": "Root",
+            "head": [
+              26.04351806640625,
+              239.8871307373047,
+              -0.41881462931632996
+            ]
+          },
+          "pe_technounion_sml.004": {
+            "parent": "Root",
+            "head": [
+              22.695430755615234,
+              239.8871307373047,
+              -13.443188667297363
+            ]
+          },
+          "pe_technounion_sml.005": {
+            "parent": "Root",
+            "head": [
+              12.864545822143555,
+              239.8871307373047,
+              -22.54204559326172
+            ]
+          },
+          "pe_technounion_sml.006": {
+            "parent": "Root",
+            "head": [
+              0.14032554626464844,
+              239.8871307373047,
+              -25.996912002563477
+            ]
+          },
+          "pe_technounion_sml.007": {
+            "parent": "Root",
+            "head": [
+              -12.976330757141113,
+              239.8871307373047,
+              -22.597848892211914
+            ]
+          },
+          "pe_technounion_sml.008": {
+            "parent": "Root",
+            "head": [
+              -22.146997451782227,
+              239.8871307373047,
+              -12.819496154785156
+            ]
+          },
+          "pe_technounion_sml.009": {
+            "parent": "Root",
+            "head": [
+              -26.25248908996582,
+              239.8871307373047,
+              -0.22363756597042084
+            ]
+          },
+          "pe_technounion_sml.010": {
+            "parent": "Root",
+            "head": [
+              -22.48232078552246,
+              239.8871307373047,
+              13.091480255126953
+            ]
+          },
+          "pe_technounion_sml.011": {
+            "parent": "Root",
+            "head": [
+              -13.079019546508789,
+              239.8871307373047,
+              22.66485023498535
+            ]
+          },
+          "shadow": {
+            "parent": "Root",
+            "head": [
+              0.601841926574707,
+              238.83702087402344,
+              -0.04636840894818306
+            ]
+          },
+          "hull": {
+            "parent": "Root",
+            "head": [
+              0.505139172077179,
+              -2.2898025512695312,
+              -0.10221586376428604
+            ]
+          },
+          "Greeble": {
+            "parent": "Root",
+            "head": [
+              7.237632751464844,
+              68.1056137084961,
+              -5.2918009757995605
+            ]
+          },
+          "pi_damage_elec_SD00": {
+            "parent": "Root",
+            "head": [
+              -100.6649169921875,
+              -217.9932861328125,
+              -10.265955924987793
+            ]
+          },
+          "pi_damage_elec_SD00.001": {
+            "parent": "Root",
+            "head": [
+              -100.6649169921875,
+              171.6351318359375,
+              -10.266018867492676
+            ]
+          },
+          "lights": {
+            "parent": "Root",
+            "head": [
+              0.505139172077179,
+              -2.2898025512695312,
+              -0.10221586376428604
+            ]
+          },
+          "lights2": {
+            "parent": "Root",
+            "head": [
+              7.237632751464844,
+              68.1056137084961,
+              -5.2918009757995605
+            ]
+          }
+        }
+      },
+      "materials": [
+        {
+          "name": "Peleset_collision_Slot0",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        },
+        {
+          "name": "Peleset_shadow_Slot0",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        {
+          "name": "Peleset_hull_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser",
+          "normal": "Peleset_SeV_Techno_Union_Tambor_Cruiser_N",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.49803924560546875,
+              0.49803924560546875,
+              0.49803924560546875,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser.dds",
+            "NormalTexture": "SeV_Techno_Union_Tambor_Cruiser_N.dds"
+          }
+        },
+        {
+          "name": "Peleset_Greeble_Slot0",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser",
+          "normal": "Peleset_SeV_Techno_Union_Tambor_Cruiser_N",
+          "mask": null,
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.49803924560546875,
+              0.49803924560546875,
+              0.49803924560546875,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser.dds",
+            "NormalTexture": "SeV_Techno_Union_Tambor_Cruiser_N.dds"
+          }
+        },
+        {
+          "name": "Peleset_lights_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Lights",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Lights.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "name": "Peleset_lights2_Slot0",
+          "shader": "MeshAdditive.fx",
+          "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Lights",
+          "normal": null,
+          "mask": null,
+          "properties": {
+            "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Lights.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "bone_error": 0.00014927744994410225,
+      "parenting_error": 0,
+      "root_restored": true,
+      "source_model": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\SeV_Techno_Union_Ord_Cruiser.ALO",
+      "source_bone_names": [
+        "Root",
+        "HP_B-L_Bone",
+        "HP_B-L_EmitDamage",
+        "p_fire_med01",
+        "FP_B-L_01",
+        "FP_B-L_00",
+        "HP_E_Bone",
+        "HP_E_EmitDamage",
+        "p_ship_fire",
+        "p_fire_med01.001",
+        "p_ship_fire.001",
+        "p_fire_med01.002",
+        "p_fire_med01.003",
+        "HP_F-C_Bone",
+        "HP_F-C_EmitDamage",
+        "p_ship_fire.002",
+        "FP_F-C_00",
+        "FP_F-C_01",
+        "HP_F-L_Bone",
+        "HP_F-L_EmitDamage",
+        "p_ship_fire.003",
+        "FP_F-L_00",
+        "FP_F-L_01",
+        "HP_F-R_Bone",
+        "HP_F-R_EmitDamage",
+        "p_fire_med01.004",
+        "FP_F-R_01",
+        "FP_F-R_00",
+        "HP_B-C_Bone",
+        "HP_B-C_EmitDamage",
+        "p_fire_med01.005",
+        "FP_B-C_01",
+        "FP_B-C_00",
+        "FP_B-R_Bone",
+        "HP_B-R_EmitDamage",
+        "p_fire_med01.006",
+        "FP_B-R_00",
+        "FP_B-R_01",
+        "HP_S_Bone",
+        "HP_S_EMITDAMAGE",
+        "p_ship_fire.004",
+        "pe_technounion_lrg",
+        "pe_technounion_lrg.001",
+        "pe_technounion_lrg.002",
+        "pe_technounion_lrg.003",
+        "pe_technounion_lrg.004",
+        "pe_technounion_lrg.005",
+        "p_blink_medium_red_constant",
+        "p_blink_medium_red_constant.001",
+        "p_blink_medium_red_constant.002",
+        "p_blink_medium_red_constant.003",
+        "p_blink_medium_red_constant.004",
+        "p_blink_medium_red_constant.005",
+        "p_blink_medium_red_constant.006",
+        "p_blink_medium_white_1_3",
+        "p_blink_medium_white_1_3.001",
+        "p_blink_medium_white_1_3.002",
+        "p_blink_medium_red_constant.007",
+        "p_blink_medium_red_constant.008",
+        "p_blink_medium_red_constant.009",
+        "p_blink_medium_red_constant.010",
+        "HP_B-D_Bone",
+        "HP_B-D_EmitDamage",
+        "FP_B-D_00",
+        "FP_B-D_01",
+        "p_fire_med01.007",
+        "HP_IC_L_Bone",
+        "HP_IC_L_00",
+        "HP_IC_L_01",
+        "HP_IC_R_Bone",
+        "HP_IC_R_00",
+        "HP_IC_R_01",
+        "HP_M_R_Bone",
+        "HP_M_R_01",
+        "HP_M_R_00",
+        "HP_M_L_Bone",
+        "HP_M_L_00",
+        "HP_M_L_01",
+        "T01",
+        "Turret_01_EmitDamage",
+        "p_fire_big01",
+        "T02",
+        "Turret_02_EmitDamage",
+        "p_fire_big01.001",
+        "collision",
+        "pe_technounion_sml",
+        "pe_technounion_sml.001",
+        "pe_technounion_sml.002",
+        "pe_technounion_sml.003",
+        "pe_technounion_sml.004",
+        "pe_technounion_sml.005",
+        "pe_technounion_sml.006",
+        "pe_technounion_sml.007",
+        "pe_technounion_sml.008",
+        "pe_technounion_sml.009",
+        "pe_technounion_sml.010",
+        "pe_technounion_sml.011",
+        "shadow",
+        "hull",
+        "Greeble",
+        "pi_damage_elec_SD00",
+        "pi_damage_elec_SD00.001",
+        "lights",
+        "lights2"
+      ],
+      "fbx": "F:/Private/empire-at-war/Temp/PelesetImport/Output/Peleset.fbx",
+      "geometry_checks": [
+        {
+          "name": "collision",
+          "corners": 576,
+          "position_error": 5.340576171875e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "shadow",
+          "corners": 9660,
+          "position_error": 6.807595491409302e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "hull",
+          "corners": 129672,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "Greeble",
+          "corners": 42498,
+          "position_error": 4.00543212890625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "lights",
+          "corners": 2868,
+          "position_error": 3.814697265625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "lights2",
+          "corners": 2280,
+          "position_error": 4.00543212890625e-05,
+          "uv_error": 0
+        }
+      ]
+    }
+  },
+  "materials": [
+    {
+      "name": "PelesetTurret01_turret_00_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+      "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.4117647409439087,
+          0.4117647409439087,
+          0.4117647409439087,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+        "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+      }
+    },
+    {
+      "name": "PelesetTurret01_barrel_00_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+      "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.4117647409439087,
+          0.4117647409439087,
+          0.4117647409439087,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+        "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+      }
+    },
+    {
+      "name": "PelesetTurret02_turret_02_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+      "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.4117647409439087,
+          0.4117647409439087,
+          0.4117647409439087,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+        "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+      }
+    },
+    {
+      "name": "PelesetTurret02_barrel_02_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret",
+      "normal": "Peleset_SeV_Techno_Union_Ord_Cruiser_Turret_N",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.4117647409439087,
+          0.4117647409439087,
+          0.4117647409439087,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Turret.dds",
+        "NormalTexture": "SeV_Techno_Union_Ord_Cruiser_Turret_N.dds"
+      }
+    },
+    {
+      "name": "Peleset_collision_Slot0",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "Color": [
+          0.0,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "Peleset_shadow_Slot0",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "DebugColor": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Peleset_hull_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser",
+      "normal": "Peleset_SeV_Techno_Union_Tambor_Cruiser_N",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.49803924560546875,
+          0.49803924560546875,
+          0.49803924560546875,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser.dds",
+        "NormalTexture": "SeV_Techno_Union_Tambor_Cruiser_N.dds"
+      }
+    },
+    {
+      "name": "Peleset_Greeble_Slot0",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser",
+      "normal": "Peleset_SeV_Techno_Union_Tambor_Cruiser_N",
+      "mask": null,
+      "properties": {
+        "Emissive": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Diffuse": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "Specular": [
+          0.49803924560546875,
+          0.49803924560546875,
+          0.49803924560546875,
+          0.0
+        ],
+        "Shininess": [
+          32.0
+        ],
+        "Colorization": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "UVOffset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser.dds",
+        "NormalTexture": "SeV_Techno_Union_Tambor_Cruiser_N.dds"
+      }
+    },
+    {
+      "name": "Peleset_lights_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Lights",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Lights.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "Peleset_lights2_Slot0",
+      "shader": "MeshAdditive.fx",
+      "base": "Peleset_SeV_Techno_Union_Ord_Cruiser_Lights",
+      "normal": null,
+      "mask": null,
+      "properties": {
+        "BaseTexture": "SeV_Techno_Union_Ord_Cruiser_Lights.dds",
+        "UVScrollRate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Color": [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    }
+  ]
+}

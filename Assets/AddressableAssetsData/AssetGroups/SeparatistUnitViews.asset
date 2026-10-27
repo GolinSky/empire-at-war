@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55a2d38c45b87e147aadeb5131d180e2
+    m_Address: PelesetReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56bb18bf97f2ecb48acecbafea14543a
     m_Address: C9979ShipView
     m_ReadOnly: 0
@@ -197,6 +202,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
     m_Address: SeparatistSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e699427aaff7c854bbccc6f6ff25a9ed
+    m_Address: PelesetShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

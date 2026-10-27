@@ -260,6 +260,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cc0c5c00469e694286c3de8d50d2ab0
+    m_Address: PelesetShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9e16cf98e4cf4f143a9a1d72d8fdf287
     m_Address: PatrolFrigateShipData
     m_ReadOnly: 0

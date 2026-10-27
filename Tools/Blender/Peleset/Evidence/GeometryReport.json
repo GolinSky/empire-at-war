@@ -1,0 +1,86 @@
+{
+  "success": true,
+  "models": {
+    "PelesetTurret01": {
+      "meshes": [
+        {
+          "name": "turret_00",
+          "corners": 1476,
+          "position_error": 9.5367431640625e-07,
+          "uv_error": 0
+        },
+        {
+          "name": "barrel_00",
+          "corners": 804,
+          "position_error": 2.2649765014648438e-06,
+          "uv_error": 0
+        }
+      ],
+      "rawSourceBoneCount": 5,
+      "rawSourceBonePositionError": 8.381385416811327e-07,
+      "rawSourceParentsMatch": true
+    },
+    "PelesetTurret02": {
+      "meshes": [
+        {
+          "name": "turret_02",
+          "corners": 1476,
+          "position_error": 5.960464477539062e-07,
+          "uv_error": 0
+        },
+        {
+          "name": "barrel_02",
+          "corners": 804,
+          "position_error": 1.6689300537109375e-06,
+          "uv_error": 0
+        }
+      ],
+      "rawSourceBoneCount": 5,
+      "rawSourceBonePositionError": 0,
+      "rawSourceParentsMatch": true
+    },
+    "Peleset": {
+      "meshes": [
+        {
+          "name": "collision",
+          "corners": 576,
+          "position_error": 5.340576171875e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "shadow",
+          "corners": 9660,
+          "position_error": 6.807595491409302e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "hull",
+          "corners": 129672,
+          "position_error": 5.53131103515625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "Greeble",
+          "corners": 42498,
+          "position_error": 4.00543212890625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "lights",
+          "corners": 2868,
+          "position_error": 3.814697265625e-05,
+          "uv_error": 0
+        },
+        {
+          "name": "lights2",
+          "corners": 2280,
+          "position_error": 4.00543212890625e-05,
+          "uv_error": 0
+        }
+      ],
+      "rawSourceBoneCount": 104,
+      "rawSourceBonePositionError": 0.00011937934186878607,
+      "rawSourceParentsMatch": true
+    }
+  }
+}
