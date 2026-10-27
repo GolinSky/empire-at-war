@@ -169,7 +169,10 @@ public static class BuildBulwarkShip
         Set(data, "Hull", 8500); Set(data, "Shields", 2500);
         Set(data, "HullBottom", bottom); Set(data, "HullTop", top); Set(data, "NavigationRadius", radius);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wreck.targetObject;
-        data.FindProperty("abilities").arraySize = 0;
+        var abilities = data.FindProperty("abilities");
+        abilities.arraySize = 2;
+        abilities.GetArrayElementAtIndex(0).intValue = (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower;
+        abilities.GetArrayElementAtIndex(1).intValue = (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostWeaponPower;
         var bays = data.FindProperty("hangarBays"); bays.arraySize = 2;
         int[] squadrons = {102,101}, reserves = {4,2}, active = {2,1};
         for (int i = 0; i < 2; i++)

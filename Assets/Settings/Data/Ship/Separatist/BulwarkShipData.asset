@@ -47,7 +47,7 @@ MonoBehaviour:
     hullDamageMultiplier: 1
   <Range>k__BackingField: 750
   <Delay>k__BackingField: 0.25
-  abilities: 
+  abilities: 0300000005000000
   hangarBays:
   - squadronType: 102
     reserve: 4

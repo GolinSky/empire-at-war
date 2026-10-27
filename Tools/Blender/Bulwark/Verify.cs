@@ -82,6 +82,9 @@ public static class VerifyBulwark
             Require(hardpoints.Count(p => Vector3.Distance(root.transform.InverseTransformPoint(p.transform.position), position) < TOLERANCE) == 1, "Distinct source socket " + socket);
         }
         var data = Load(DATA);
+        Require(Elements(data.FindProperty("abilities")).Select(ability => ability.intValue).SequenceEqual(new[] {
+            (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower,
+            (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostWeaponPower}), "Power to Shields and Power to Weapons abilities.");
         Require(Float(data, "Hull") == 8500 && Float(data, "Shields") == 2500, "8500 hull / 2500 shields.");
         Require(data.FindProperty("<ShipClass>k__BackingField").intValue == 4 && data.FindProperty("<ShieldRegenTier>k__BackingField").intValue == 3, "Capital class and regeneration tier.");
         var hp = Elements(data.FindProperty("hardPointHealth")).ToArray();

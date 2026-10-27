@@ -17,7 +17,7 @@
 - Project capital presets: speed `18 units/s`, turn/acceleration `7.5`, height tier `3`, shield regeneration `180/s`. These replace incompatible XML movement units and XML refresh `50`.
 - Provisional length `114.238441` project units, matching measured saved Providence. Root scale is identity; bow `+Z`.
 - Armor strings, required planets and separate starbase prerequisite have no equivalent in the current ship data. XML tech-threshold switching is represented by the approved fixed complement.
-- No source ability is inferred; ability list is empty. Matchup display uses the existing Providence capital matchup asset as its template.
+- User-requested abilities: Power to Shields (`BoostShieldPower`) and Power to Weapons (`BoostWeaponPower`), using existing shared definitions. Matchup display uses the existing Providence capital matchup asset as its template.
 
 ## Mounts
 
