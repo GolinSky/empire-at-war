@@ -7,7 +7,9 @@ namespace EmpireAtWar.Components.Ship.Selection
     public class SharedSelectionData : Data
     {
         [SerializeField] private Sprite selectionSprite;
+        [SerializeField] private Material selectionMaterial;
 
         public Sprite SelectionSprite => selectionSprite;
+        public Material SelectionMaterial => selectionMaterial;
     }
 }

@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Battle;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -23,8 +24,10 @@ namespace EmpireAtWar.Components.Ship.Selection
     }
 
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
-        IInitializable, ILateDisposable, IRespawnable
+        IInitializable, ILateDisposable, IRespawnable, EmpireAtWar.IObserver<ISelectionSubject>
     {
+        private const float MULTISELECT_SCALE = 0.6f;
+
         // A sprite renderer, not a world canvas: a selected unit moves every frame, and a canvas under it
         // would rebuild its batch every frame (one per selected unit).
         [Tooltip("Flat anchor of the ring; the health overlay is placed from its position.")]
@@ -33,6 +36,8 @@ namespace EmpireAtWar.Components.Ship.Selection
         [Tooltip("Ring width and height in the ring's local units.")]
         [SerializeField] private Vector2 ringSize;
         private SharedSelectionData _sharedSelectionData;
+        private ISelectionService _selectionService;
+        private Vector3 _singleSelectionScale;
 
         [SerializeField] private SelectionType selectionType;
 
@@ -44,11 +49,12 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         [Inject]
         private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData,
-            PlayerId owner, ILocalPlayer localPlayer)
+            PlayerId owner, ILocalPlayer localPlayer, ISelectionService selectionService)
         {
             Owner = owner;
             LocalPlayer = localPlayer;
             _sharedSelectionData = sharedSelectionData;
+            _selectionService = selectionService;
             SetModel(model);
         }
 
@@ -57,9 +63,12 @@ namespace EmpireAtWar.Components.Ship.Selection
             Model.OnSelected += HandleSelection;
             Sprite sprite = _sharedSelectionData.SelectionSprite;
             selectedRenderer.sprite = sprite;
+            selectedRenderer.sharedMaterial = _sharedSelectionData.SelectionMaterial;
             Vector3 spriteSize = sprite.bounds.size;
-            selectedRenderer.transform.localScale =
+            _singleSelectionScale =
                 new Vector3(ringSize.x / spriteSize.x, ringSize.y / spriteSize.y, 1f);
+            UpdateMarkerScale(_selectionService.PlayerSelectionContext.Count);
+            _selectionService.AddObserver(this);
         }
 
         public void LateDispose()
@@ -78,6 +87,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         {
             OnSkipSelection(selectionType);
             Model.OnSelected -= HandleSelection;
+            _selectionService.RemoveObserver(this);
             HandleSelection(false);
             _canBeSelected = false;
         }
@@ -112,6 +122,18 @@ namespace EmpireAtWar.Components.Ship.Selection
         private void HandleSelection(bool isActive)
         {
             selectedRenderer.enabled = isActive;
+        }
+
+        public void UpdateState(ISelectionSubject subject)
+        {
+            UpdateMarkerScale(subject.PlayerSelectionContext.Count);
+        }
+
+        private void UpdateMarkerScale(int selectedCount)
+        {
+            float scale = selectedCount > 1 ? MULTISELECT_SCALE : 1f;
+            selectedRenderer.transform.localScale = new Vector3(
+                _singleSelectionScale.x * scale, _singleSelectionScale.y * scale, 1f);
         }
     }
 }
