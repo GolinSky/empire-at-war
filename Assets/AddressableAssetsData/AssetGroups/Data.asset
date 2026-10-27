@@ -370,6 +370,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e284ab2feb0cac14eaef8a8417e4db74
+    m_Address: BulwarkShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e7ef3854238c3b94fbc301ccdac48bc7
     m_Address: TIEInterceptorSquadronData
     m_ReadOnly: 0

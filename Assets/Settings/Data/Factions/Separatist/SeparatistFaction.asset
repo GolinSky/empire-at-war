@@ -180,6 +180,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
           type: 3}
+    - key: 112
+      value:
+        matchups: {fileID: 11400000, guid: 4868432cc9a1c1943bac947eb30cc8c1, type: 2}
+        description: 8,500 hull and 2,500 shields. Three quad turbolaser batteries,
+          eight turbolaser batteries and two proton torpedo launchers use medium
+          caliber. Sixteen targetable hardpoints include engines, shields and hangar.
+          Deploys two Vulture fighter squadrons and one Advanced Droid Bomber squadron,
+          with matching replacement reserves.
+        role: Capital / Battle line carrier
+        iconKey: 929de4fd7db737646a0df2a72d3404af:21300000
+        isHero: 0
+        <Name>k__BackingField: Bulwark Mk1
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 6500
+        <BuildTime>k__BackingField: 85
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 929de4fd7db737646a0df2a72d3404af,
+          type: 3}
     - key: 111
       value:
         matchups: {fileID: 11400000, guid: fffdc6b3b73ba8642bdf475bf120e869, type: 2}

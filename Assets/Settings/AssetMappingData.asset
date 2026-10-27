@@ -1358,6 +1358,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: BulwarkShipView
+      value:
+        m_AssetGUID: 4407f4ecd212bba42a0592b29137dff0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: BulwarkShipData
+      value:
+        m_AssetGUID: e284ab2feb0cac14eaef8a8417e4db74
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: WavecrestShipView
       value:
         m_AssetGUID: 83c6db9aaf33ec049a302a589dae90fe

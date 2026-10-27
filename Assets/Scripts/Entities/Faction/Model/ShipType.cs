@@ -32,6 +32,7 @@ namespace EmpireAtWar.Models.Factions
         Dispatcher = 108,
         Invincible = 109,
         Wavecrest = 111,
+        Bulwark = 112,
 
         //empire
         Victory = 200,

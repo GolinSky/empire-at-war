@@ -30,6 +30,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78ffcc132d7388a4f8e87c95ec3cf645
+    m_Address: BulwarkWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e8cc926c90c74941b337ad8e673650e
+    m_Address: BulwarkReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7eedc46a86a94114fabe4735b77bdeff
     m_Address: DefendPlatformView
     m_ReadOnly: 0

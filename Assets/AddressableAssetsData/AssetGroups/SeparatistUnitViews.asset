@@ -70,6 +70,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4407f4ecd212bba42a0592b29137dff0
+    m_Address: BulwarkShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 46b590c1198bac64bb0b5e274a7fc765
     m_Address: WavecrestReinforcementView
     m_ReadOnly: 0
