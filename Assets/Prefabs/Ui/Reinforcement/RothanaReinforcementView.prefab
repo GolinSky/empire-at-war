@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.492292, y: 1.492292, z: 1.492292}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1830150362652362899}
@@ -59,7 +59,7 @@ MonoBehaviour:
   - {fileID: 2386006661103823372}
   - {fileID: 7248231407812978730}
   hologramMaterial: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
-  height: -171
+  height: -241
 --- !u!54 &1141208037691818521
 Rigidbody:
   m_ObjectHideFlags: 0
