@@ -223,7 +223,7 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 
 | Changed path | Categories |
 |---|---|
-| `Entities/Map`, `Entities/Planet`, `Services/Hazards`, `Components/Environment`, `Components/Obstacles` | `Map`; also `MapExhaustive` (explicit) when map generation changes |
+| `Entities/Map`, `Entities/Planet`, `Services/Hazards`, `Components/Environment`, `Components/Obstacles` | `Map`; plus `MapGeneration` (explicit) when map generation changes |
 | `Components/Movement`, `Services/ShipNavigation`, `Services/SpawnBlocking`, `Services/StationFacing`, `Services/FleetCommand`, `Entities/SpawnArea` | `Navigation` |
 | `Components/AttackComponent`, `Components/Weapon`, `Components/CombatModifiers`, `Components/ViewComponents`, `Services/Pooling` | `Combat` |
 | `Components/Health`, `Services/UnitExplosion`, `Services/UnitWreck` | `Health` |
@@ -244,12 +244,12 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 
 1. Before a feature, name the categories it touches from the table; add a fixture's own category when a test file changes.
 2. While iterating, run only those categories.
-3. When map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets), run `MapExhaustive` with `--include_explicit true` once before finishing.
+3. `MapLayoutGeneratorTests` is `[Explicit]` and never runs in category or full-suite runs. Only when map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets): iterate with `MapGeneration` (3 seeds) and run `MapExhaustive` (all seeds, minutes) once before finishing, both with `--include_explicit true`.
 4. Run the full EditMode suite only at the end of a large or cross-cutting task, or when the user asks.
 5. Report which categories ran; never imply the full suite passed when only categories ran.
 
 - New fixtures: add one feature `[Category]`; add a new category only for a new feature area and add it to this table.
-- New exhaustive sweeps: keep a quick default case and put the full sweep in an `[Explicit]` case with a `<Area>Exhaustive` category (see `MapLayoutGeneratorTests.CreateSeedSets`).
+- New heavy sweeps: make the fixture explicit with a quick and a full instance, e.g. `[TestFixture(false, Category = "<Area>", Explicit = true)]` + `[TestFixture(true, Category = "<Area>Exhaustive", Explicit = true)]` (see `MapLayoutGeneratorTests`).
 
 ## Unity Asset Persistence
 

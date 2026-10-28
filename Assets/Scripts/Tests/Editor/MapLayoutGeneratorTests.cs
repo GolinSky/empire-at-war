@@ -17,7 +17,10 @@ using Random = System.Random;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    [Category("Map")]
+    // Generating maps is slow, so the suite runs only when asked: MapGeneration checks a few seeds for map work,
+    // MapExhaustive sweeps every seed before finishing a map-generation change (AGENTS.md Test Selection).
+    [TestFixture(false, Category = "MapGeneration", Explicit = true)]
+    [TestFixture(true, Category = "MapExhaustive", Explicit = true)]
     public sealed class MapLayoutGeneratorTests
     {
         private const string SETTINGS_PATH = "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset";
@@ -27,6 +30,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private const int SEED_COUNT = 20;
         private const int ROSTER_SEED_COUNT = 10;
+        // Includes seeds that once broke lanes.
+        private static readonly int[] QUICK_SEEDS = { 0, 7, 19 };
 
         private const float TOLERANCE = 0.01f;
 
@@ -36,6 +41,22 @@ namespace EmpireAtWar.Tests.Editor
         private MapGenerationSettings _settings;
         private MapFeatureRadii _radii;
         private MapLayoutGenerator _generator;
+        private readonly int[] _seeds;
+        private readonly int[] _rosterSeeds;
+
+        public MapLayoutGeneratorTests(bool exhaustive)
+        {
+            _seeds = exhaustive ? CreateSeedRange(SEED_COUNT) : QUICK_SEEDS;
+            _rosterSeeds = exhaustive ? CreateSeedRange(ROSTER_SEED_COUNT) : QUICK_SEEDS;
+        }
+
+        private static int[] CreateSeedRange(int count)
+        {
+            int[] seeds = new int[count];
+            for (int i = 0; i < count; i++)
+                seeds[i] = i;
+            return seeds;
+        }
 
         [Test]
         public void Satellites_FormClearDualTrianglesAcrossSizesRostersDifficultiesAndSeeds()
@@ -43,7 +64,7 @@ namespace EmpireAtWar.Tests.Editor
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
             for (int playerCount = 2; playerCount <= 4; playerCount++)
-            for (int seed = 0; seed < SEED_COUNT; seed++)
+            foreach (int seed in _seeds)
             {
                 MapSizeSettings size = _settings.GetSize(mapSize);
                 Random random = new Random(seed);
@@ -169,7 +190,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
                 {
-                    for (int seed = 0; seed < SEED_COUNT; seed++)
+                    foreach (int seed in _seeds)
                     {
                         MapLayout layout = Generate(mapSize, difficulty, seed);
                         MapSizeSettings size = _settings.GetSize(mapSize);
@@ -202,7 +223,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Stations_SitInDiagonallyOppositeCorners()
         {
-            for (int seed = 0; seed < SEED_COUNT; seed++)
+            foreach (int seed in _seeds)
             {
                 MapLayout layout = Generate(MapSize.Medium, EnemyAiDifficulty.Medium, seed);
                 Vector3 republic = layout.GetStationPosition(TestPlayers.Human);
@@ -247,7 +268,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     PlayerRoster duel = TestPlayers.CreateDuel(EnemyAiDifficulty.Medium);
                     MapLayout layout = _generator.Generate(mapSize, duel.Players, new Random(seed));
@@ -287,7 +308,7 @@ namespace EmpireAtWar.Tests.Editor
                 PointOfInterestPlacer.MINING_SITE_SPACING_SHARE + TOLERANCE;
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     List<Vector3> mines = GetMiningSites(Generate(mapSize, EnemyAiDifficulty.Medium, seed));
                     // Sites chained by neighbour gaps form one point: a triangle, or an arc behind a station.
@@ -326,7 +347,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(size.CentralMiningPairCount, Is.GreaterThan(0), $"{mapSize}");
                 Assert.That(size.CentralMiningPairCount,
                     Is.LessThanOrEqualTo((size.MiningPointCount - 2) / 2), $"{mapSize}");
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, seed);
                     Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
@@ -352,7 +373,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, seed);
                     float inset = GetSide(layout.SizeRange.Max, layout.SizeRange.Min) * _settings.PlanetBorderInset;
@@ -408,7 +429,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerRoster teamGame = TestPlayers.CreateTeamGame();
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed));
                     foreach (PlayerSlot player in teamGame.Players)
@@ -459,7 +480,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerRoster teamGame = TestPlayers.CreateTeamGame();
             foreach (MapSize mapSize in new[] { MapSize.Small, MapSize.Medium, MapSize.Large })
             {
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed));
                     Vector3 human = layout.GetStationPosition(TestPlayers.Human);
@@ -485,7 +506,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerSlot[] threePlayers = { teamGame.Players[0], teamGame.Players[1], teamGame.Players[2] };
             foreach (MapSize mapSize in new[] { MapSize.Small, MapSize.Medium, MapSize.Large })
             {
-                for (int seed = 0; seed < SEED_COUNT; seed++)
+                foreach (int seed in _seeds)
                 {
                     Assert.DoesNotThrow(() => _generator.Generate(mapSize, threePlayers, new Random(seed)),
                         $"{mapSize} seed {seed}");
@@ -506,7 +527,7 @@ namespace EmpireAtWar.Tests.Editor
                     foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
                     {
                         PlayerSlot[] players = CreateRoster(playerCount, opponentFaction, difficulty);
-                        for (int seed = 0; seed < ROSTER_SEED_COUNT; seed++)
+                        foreach (int seed in _rosterSeeds)
                         {
                             Assert.DoesNotThrow(() => _generator.Generate(mapSize, players, new Random(seed)),
                                 $"{mapSize} {playerCount} players vs {opponentFaction} {difficulty} seed {seed}");

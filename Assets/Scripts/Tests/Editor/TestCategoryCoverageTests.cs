@@ -17,7 +17,9 @@ namespace EmpireAtWar.Tests.Editor
                 BindingFlags.Static | BindingFlags.DeclaredOnly;
             string[] untagged = typeof(TestCategoryCoverageTests).Assembly.GetTypes()
                 .Where(type => type.GetMethods(METHODS).Any(IsTest))
-                .Where(type => !type.GetCustomAttributes(typeof(CategoryAttribute), true).Any())
+                .Where(type => !type.GetCustomAttributes(typeof(CategoryAttribute), true).Any() &&
+                    !type.GetCustomAttributes(typeof(TestFixtureAttribute), true).Cast<TestFixtureAttribute>()
+                        .Any(fixture => !string.IsNullOrEmpty(fixture.Category)))
                 .Select(type => type.FullName)
                 .OrderBy(name => name, StringComparer.Ordinal)
                 .ToArray();
