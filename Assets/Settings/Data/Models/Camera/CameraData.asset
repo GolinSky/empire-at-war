@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 60
-    <Max>k__BackingField: 940
+    <Max>k__BackingField: 1175
   <PanSpeed>k__BackingField: 500
   <PanAcceleration>k__BackingField: 1250
   <PanDeceleration>k__BackingField: 1750
-  <ZoomSpeed>k__BackingField: 600
-  <ZoomStepDistance>k__BackingField: 300
-  <ZoomSmoothTime>k__BackingField: 0.1
+  <ZoomSpeed>k__BackingField: 450
+  <ZoomStepDistance>k__BackingField: 150
+  <ZoomSmoothTime>k__BackingField: 0.2
   <TweenSpeed>k__BackingField: 5
