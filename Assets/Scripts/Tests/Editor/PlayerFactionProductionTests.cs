@@ -153,12 +153,10 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Structure_EntersReserveImmediatelyEvenWhenProductionPipelinesAreFull(bool platform)
+        public void Structure_EntersReserveOnlyAfterBuildTime(bool platform)
         {
             PlayerFactionModel model = CreateModel();
             FactionData data = CreateFactionData(maxCount: 1, buildTime: 30);
-            for (int id = 1; id <= PlayerFactionModel.MAX_ACTIVE_PIPELINES; id++)
-                model.QueueUnit(new LevelUnitRequest(data, id));
             UnitRequest structure = platform
                 ? new DefendPlatformUnitRequest(data, DefendPlatformType.Xq6)
                 : new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner);
@@ -167,11 +165,51 @@ namespace EmpireAtWar.Tests.Editor
 
             model.QueueUnit(structure);
 
+            Assert.That(completed, Is.Empty);
+            Assert.That(model.GetProductionQueueSnapshots(), Has.Count.EqualTo(1));
+            Assert.That(model.CanQueueUnit(structure), Is.False, "Queued structures retain their limit slot.");
+            model.Advance(29f);
+            Assert.That(completed, Is.Empty);
+            model.Advance(1f);
             Assert.That(completed, Is.EqualTo(new[] { structure }));
-            Assert.That(model.GetProductionQueueSnapshots(), Has.Count.EqualTo(PlayerFactionModel.MAX_ACTIVE_PIPELINES));
+            Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
             Assert.That(model.CanQueueUnit(structure), Is.False, "Reserve and deployed structures retain their limit slot.");
             Assert.That(model.TryCancelCurrentUnit(structure.Id, out _), Is.False);
             model.ReleaseStructure(structure);
+            Assert.That(model.CanQueueUnit(structure), Is.True);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Structure_RequiresAnAvailableProductionPipeline(bool platform)
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData data = CreateFactionData(maxCount: 1, buildTime: 30);
+            for (int id = 1; id <= PlayerFactionModel.MAX_ACTIVE_PIPELINES; id++)
+                model.QueueUnit(new LevelUnitRequest(data, id));
+            UnitRequest structure = platform
+                ? new DefendPlatformUnitRequest(data, DefendPlatformType.Xq6)
+                : new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner);
+
+            Assert.That(model.CanQueueUnit(structure), Is.False);
+            Assert.Throws<System.InvalidOperationException>(() => model.QueueUnit(structure));
+            Assert.That(model.GetProductionQueueSnapshots(), Has.Count.EqualTo(PlayerFactionModel.MAX_ACTIVE_PIPELINES));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Structure_CancelReleasesLimitSlot(bool platform)
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData data = CreateFactionData(maxCount: 1, buildTime: 30);
+            UnitRequest structure = platform
+                ? new DefendPlatformUnitRequest(data, DefendPlatformType.Xq6)
+                : new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner);
+            model.QueueUnit(structure);
+
+            Assert.That(model.TryCancelCurrentUnit(structure.Id, out UnitRequest cancelled), Is.True);
+            Assert.That(cancelled, Is.SameAs(structure));
+            Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
             Assert.That(model.CanQueueUnit(structure), Is.True);
         }
 

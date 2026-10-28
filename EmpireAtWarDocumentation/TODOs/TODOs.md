@@ -315,6 +315,7 @@
 ### Features
 
 - [x] **Unified on-map structure construction** → [[Done/Features/Structure_Construction_Flow|Structure Construction Flow]]
+  - Follow-up 2026-10-28: restored human structure production delay, added white construction silhouette, disabled construction hardpoint markers/picking; Unity compilation and shader checks clean. Tests not run.
   - Completed 2026-10-28: immediate spawn, shared health, hologram reveal and saved progress; compilation/shader checks and 12 prefab reloads clean. Tests not run.
 
 - [x] **Import Wavecrest-class frigate into CIS** → [[Done/Features/Wavecrest_Import|Wavecrest Import]]

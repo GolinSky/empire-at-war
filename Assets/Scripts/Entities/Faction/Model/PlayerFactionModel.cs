@@ -91,7 +91,7 @@ namespace EmpireAtWar.Models.Factions
         {
             if (IsUnitLimitReached(unitRequest)) return false;
 
-            return IsStructureRequest(unitRequest) || _productionQueues.ContainsKey(unitRequest.Id) ||
+            return _productionQueues.ContainsKey(unitRequest.Id) ||
                 _productionQueues.Count < MAX_ACTIVE_PIPELINES;
         }
 
@@ -132,9 +132,6 @@ namespace EmpireAtWar.Models.Factions
             if (IsStructureRequest(unitRequest))
             {
                 ReserveStructure(unitRequest);
-                OnUnitCompleted?.Invoke(unitRequest);
-                NotifyProductionChanged();
-                return;
             }
 
             if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))

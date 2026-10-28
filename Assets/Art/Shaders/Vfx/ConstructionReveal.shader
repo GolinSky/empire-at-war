@@ -57,15 +57,16 @@ Shader "EmpireAtWar/ConstructionReveal"
             half4 Frag(Varyings input) : SV_Target
             {
                 float height = (input.positionWS.y - _BuildMinY) / max(_BuildMaxY - _BuildMinY, 0.001);
-                clip(_BuildProgress - height);
-                clip(_BuildProgress - 0.00001);
-                half edge = 1.0h - smoothstep(0.0, _EdgeWidth, _BuildProgress - height);
+                half built = step(height, _BuildProgress) * step(0.00001, _BuildProgress);
+                half edge = (1.0h - smoothstep(0.0, _EdgeWidth, _BuildProgress - height)) * built;
                 half3 viewDirection = GetWorldSpaceNormalizeViewDir(input.positionWS);
                 half rim = pow(1.0h - saturate(dot(normalize(input.normalWS), viewDirection)), 2.0h);
                 half scan = 0.75h + 0.25h * sin(input.positionWS.y * 3.0 - _Time.y * 2.0);
                 half3 color = lerp(_Color.rgb * (0.5h + rim) * scan, _EdgeColor.rgb, edge);
                 half alpha = lerp(_Color.a * (0.45h + 0.55h * rim), _EdgeColor.a, edge);
-                return half4(color, alpha);
+                half3 previewColor = half3(1.0h, 1.0h, 1.0h) * (0.65h + 0.35h * rim);
+                half previewAlpha = 0.18h + 0.17h * rim;
+                return half4(lerp(previewColor, color, built), lerp(previewAlpha, alpha, built));
             }
             ENDHLSL
         }

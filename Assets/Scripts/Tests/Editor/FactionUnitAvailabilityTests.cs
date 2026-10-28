@@ -165,16 +165,7 @@ namespace EmpireAtWar.Tests.Editor
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.False, "Reaching the purchase limit must hide the card.");
 
-                if (kind == "Structure")
-                {
-                    Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.False,
-                        "Structures enter placement reserve immediately, without a timed production queue.");
-                    model.ReleaseStructure(request);
-                }
-                else
-                {
-                    Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
-                }
+                Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a purchase must restore the card.");
 

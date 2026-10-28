@@ -258,13 +258,16 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private bool IsTargetStillValid()
         {
             IEntity ship = _model.TargetedShip;
-            return !ship.HealthModel.IsDestroyed && !GetHardPoints(ship)[_model.TargetedHardPointId].IsDestroyed;
+            return !ship.HealthModel.IsDestroyed &&
+                   (!ship.TryGetFacade(out IConstructionFacade construction) || !construction.IsConstructing) &&
+                   !GetHardPoints(ship)[_model.TargetedHardPointId].IsDestroyed;
         }
 
         private bool IsVisible(IEntity ship)
         {
             return !ship.HealthModel.IsDestroyed &&
-                   !ship.IsHiddenByFog();
+                   !ship.IsHiddenByFog() &&
+                   (!ship.TryGetFacade(out IConstructionFacade construction) || !construction.IsConstructing);
         }
 
         private bool TryGetScreenPosition(IHardPointModel hardPoint, out Vector2 screenPosition)
