@@ -14,6 +14,9 @@ namespace EmpireAtWar.Entities.Map.Generation
     public sealed class PointOfInterestPlacer
     {
         public const int SITES_PER_MINING_POINT = 3;
+        // Neighbouring sites of one mining point sit at this share of the spacing that keeps their capture ranges
+        // apart, so the cluster reads as one point; their ranges overlap.
+        public const float MINING_SITE_SPACING_SHARE = 0.5f;
 
         private const int MAX_PAIR_ATTEMPTS = 400;
         private const int CANDIDATES_PER_PICK = 12;
@@ -29,6 +32,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         private readonly MapGenerationSettings _settings;
 
         private readonly MapFeatureRadii _radii;
+        // Center distance between neighbouring sites of one mining point.
+        private readonly float _miningSiteSpacing;
         // Distance from a mining point's center to each site of its equilateral site triangle.
         private readonly float _miningSiteSpread;
 
@@ -36,7 +41,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             _settings = settings;
             _radii = radii;
-            _miningSiteSpread = (2f * radii.MiningSite + MINING_SITE_GAP) / Mathf.Sqrt(3f);
+            _miningSiteSpacing = (2f * radii.MiningSite + MINING_SITE_GAP) * MINING_SITE_SPACING_SHARE;
+            _miningSiteSpread = _miningSiteSpacing / Mathf.Sqrt(3f);
         }
 
         /// <returns>False when this random draw left no room; the caller retries with new draws.</returns>
@@ -143,7 +149,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     float distance = station.Radius + outer + MINING_SITE_GAP;
                     // Neighbouring sites on the arc keep the same gap as the sites of a contested point.
-                    float step = 2f * Mathf.Asin((_radii.MiningSite + MINING_SITE_GAP * 0.5f) / distance) * Mathf.Rad2Deg;
+                    float step = 2f * Mathf.Asin(_miningSiteSpacing * 0.5f / distance) * Mathf.Rad2Deg;
                     Vector3 corner = new Vector3(
                         Mathf.Sign(station.Position.x - center.x), 0f, Mathf.Sign(station.Position.z - center.z)).normalized;
                     // A rotation commutes with point reflection, so mirrored stations get mirrored arcs.

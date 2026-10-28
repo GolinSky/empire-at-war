@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private const float TOLERANCE = 0.01f;
 
-        // Neighbouring sites of one mining point keep a 15-unit gap; anything wider belongs to another point.
+        // Neighbouring sites of one mining point are spaced from a 15-unit gap; anything wider belongs to another point.
         private const float MINING_SITE_GAP = 15f;
 
         private MapGenerationSettings _settings;
@@ -172,7 +172,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void MiningSites_ComeInClustersOfThree()
         {
-            float neighbourDistance = 2f * _radii.MiningSite + MINING_SITE_GAP + TOLERANCE;
+            float neighbourDistance = (2f * _radii.MiningSite + MINING_SITE_GAP) *
+                PointOfInterestPlacer.MINING_SITE_SPACING_SHARE + TOLERANCE;
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
                 for (int seed = 0; seed < SEED_COUNT; seed++)
@@ -207,7 +208,8 @@ namespace EmpireAtWar.Tests.Editor
             {
                 MapSizeSettings size = _settings.GetSize(mapSize);
                 // Point centers stay inside the region; their sites reach out by the site triangle's circumradius.
-                float siteSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) / Mathf.Sqrt(3f);
+                float siteSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) *
+                    PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
                 Vector2 regionHalfSize = (size.Bounds.Max - size.Bounds.Min) * _settings.CentralRegionShare +
                     Vector2.one * siteSpread;
                 Assert.That(size.CentralMiningPairCount, Is.GreaterThan(0), $"{mapSize}");
