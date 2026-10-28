@@ -911,7 +911,7 @@ MonoBehaviour:
   statusText: {fileID: 8295116990790753155}
   tooltipHover: {fileID: 3750406511550428136}
   radius: 60
-  captureDuration: 12
+  captureDuration: 10
   facilityHeightOffset: -60
   screenHeightFraction: 0.24
 --- !u!114 &3750406511550428136

@@ -8933,7 +8933,7 @@ MonoBehaviour:
   statusText: {fileID: 7906514327143189668}
   tooltipHover: {fileID: 687230072245637770}
   radius: 100
-  captureDuration: 12
+  captureDuration: 6
   facilityHeightOffset: 0
   screenHeightFraction: 0.24
 --- !u!114 &687230072245637770
