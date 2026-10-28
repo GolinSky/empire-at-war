@@ -14,6 +14,10 @@ namespace EmpireAtWar.Entities.Capture
         [SerializeField] private bool siteBorder;
         private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
         private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
+        private static readonly int BORDER_WIDTH_ID = Shader.PropertyToID("_BorderWidth");
+        private static readonly int OUTLINE_WIDTH_ID = Shader.PropertyToID("_OutlineWidth");
+        private static readonly int BORDER_OPACITY_ID = Shader.PropertyToID("_BorderOpacity");
+        private static readonly int OUTLINE_OPACITY_ID = Shader.PropertyToID("_OutlineOpacity");
         private MaterialPropertyBlock _propertyBlock;
         private Color _color;
         private bool _blink;
@@ -62,10 +66,10 @@ namespace EmpireAtWar.Entities.Capture
             _propertyBlock.SetColor(COLOR_ID, color);
             if (siteBorder)
             {
-                _propertyBlock.SetFloat("_BorderWidth", 0.003f);
-                _propertyBlock.SetFloat("_OutlineWidth", 0.006f);
-                _propertyBlock.SetFloat("_BorderOpacity", 0.24f * opacity);
-                _propertyBlock.SetFloat("_OutlineOpacity", 0.1f * opacity);
+                _propertyBlock.SetFloat(BORDER_WIDTH_ID, 0.003f);
+                _propertyBlock.SetFloat(OUTLINE_WIDTH_ID, 0.006f);
+                _propertyBlock.SetFloat(BORDER_OPACITY_ID, 0.24f * opacity);
+                _propertyBlock.SetFloat(OUTLINE_OPACITY_ID, 0.1f * opacity);
             }
             ringRenderer.SetPropertyBlock(_propertyBlock);
             ringRenderer.enabled = _visible && !_hidden;

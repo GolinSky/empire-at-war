@@ -119,6 +119,21 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Progress }));
         }
 
+        [TestCase(SiteFacilityType.QuadLaserSatellite)]
+        [TestCase(SiteFacilityType.MissileSatellite)]
+        public void LocalSatelliteCompletionAndLossReuseConstructionAndUnitLossCues(SiteFacilityType type)
+        {
+            Invoke("HandleConstructionCompleted", TestPlayers.Enemy, type);
+            Invoke("HandleLost", TestPlayers.Enemy, type);
+            Invoke("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.Mining);
+            Assert.That(_audio.Clips, Is.Empty);
+            Invoke("HandleConstructionCompleted", TestPlayers.Human, type);
+            Invoke("HandleLost", TestPlayers.Human, type);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.ConstructionComplete, _clips.UnitDestroyed }));
+            Assert.That(_audio.Priorities,
+                Is.EqualTo(new[] { AnnouncementPriority.Progress, AnnouncementPriority.Notification }));
+        }
+
         [Test]
         public void AcceptedResearchAndCancelUseDistinctProgressCuesAndThrottleRepeats()
         {

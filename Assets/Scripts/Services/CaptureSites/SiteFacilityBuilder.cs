@@ -65,6 +65,10 @@ namespace EmpireAtWar.Services.CaptureSites
             return _economyModel.TrySpend(price);
         }
 
+        public static bool IsSatellite(SiteFacilityType type) => type is SiteFacilityType.QuadLaserSatellite or
+            SiteFacilityType.TurbolaserSatellite or SiteFacilityType.IonSatellite or
+            SiteFacilityType.MassDriverSatellite or SiteFacilityType.MissileSatellite;
+
         public static DefendPlatformType SatelliteType(SiteFacilityType type) => type switch
         {
             SiteFacilityType.QuadLaserSatellite => DefendPlatformType.QuadLaserSatellite,

@@ -90,6 +90,7 @@ namespace EmpireAtWar.Services.Audio
             _sites.SiteCaptured += HandleCaptured;
             _sites.SiteLost += HandleLost;
             _sites.ConstructionStarted += HandleConstructionStarted;
+            _sites.ConstructionCompleted += HandleConstructionCompleted;
             _entities.EntityAdded += HandleEntityAdded;
             _entities.EntityRemoved += HandleEntityRemoved;
             _results.AddObserver(this);
@@ -200,6 +201,12 @@ namespace EmpireAtWar.Services.Audio
             if (payer == _local.Id) Announce(_clips.BuildingStarted, AnnouncementPriority.Progress);
         }
 
+        private void HandleConstructionCompleted(PlayerId owner, SiteFacilityType type)
+        {
+            if (owner == _local.Id && SiteFacilityBuilder.IsSatellite(type))
+                Announce(_clips.ConstructionComplete, AnnouncementPriority.Progress);
+        }
+
         private void HandleCaptured(PlayerId previous, PlayerId owner, SiteFacilityType type)
         {
             if (type != SiteFacilityType.Mining || owner != _local.Id || !previous.IsNone ||
@@ -210,8 +217,10 @@ namespace EmpireAtWar.Services.Audio
 
         private void HandleLost(PlayerId owner, SiteFacilityType type)
         {
-            if (type == SiteFacilityType.Mining && owner == _local.Id)
-                Announce(_clips.MiningDestroyed, AnnouncementPriority.Warning);
+            if (owner != _local.Id) return;
+            if (type == SiteFacilityType.Mining) Announce(_clips.MiningDestroyed, AnnouncementPriority.Warning);
+            else if (SiteFacilityBuilder.IsSatellite(type))
+                Announce(_clips.UnitDestroyed, AnnouncementPriority.Notification, LOSS_COOLDOWN);
         }
 
         private void HandleEntityAdded(IEntity entity)
@@ -306,6 +315,7 @@ namespace EmpireAtWar.Services.Audio
             _sites.SiteCaptured -= HandleCaptured;
             _sites.SiteLost -= HandleLost;
             _sites.ConstructionStarted -= HandleConstructionStarted;
+            _sites.ConstructionCompleted -= HandleConstructionCompleted;
             _entities.EntityAdded -= HandleEntityAdded;
             _entities.EntityRemoved -= HandleEntityRemoved;
             _results.RemoveObserver(this);

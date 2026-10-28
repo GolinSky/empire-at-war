@@ -149,6 +149,29 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(system.TryGetRaidTarget(TestPlayers.Enemy, Vector3.zero, out _), Is.False);
         }
 
+        [Test]
+        public void CaptureSystem_RaidsPreferMinesOverCloserSatellites()
+        {
+            CaptureSitesSystem system = CreateSystem();
+            CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+                "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
+            var satellite = new CaptureSitePresenter(new FakeView(_view.TooltipHover, Vector3.right * 100f),
+                TestPlayers.CreateLocalPlayer(_roster), new TooltipService(new FixedClock(), new TooltipModel(),
+                    new TooltipTiming(0.35f, 0.1f)), new CaptureSiteModel(_roster, 10f, 1f), data, CaptureSiteKind.Satellite);
+            ((List<CaptureSitePresenter>)typeof(CaptureSitesSystem)
+                .GetField("_sites", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(system)).Add(satellite);
+            satellite.Restore(TestPlayers.Enemy, CaptureSiteState.Operational, PlayerId.None, 0,
+                SiteFacilityType.TurbolaserSatellite, 0);
+            Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.right * 100f, out Vector3 position), Is.True);
+            Assert.That(position, Is.EqualTo(Vector3.right * 100f), "With no hostile mine, a satellite is still raidable.");
+
+            _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Operational, PlayerId.None, 0,
+                SiteFacilityType.Mining, 0);
+            Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.right * 100f, out position), Is.True);
+            Assert.That(position, Is.EqualTo(Vector3.zero));
+            satellite.Dispose();
+        }
+
         private CaptureSitesSystem CreateSystem()
         {
             var system = new CaptureSitesSystem();
@@ -206,14 +229,18 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeView : ICaptureSiteView
         {
             public TooltipHoverView TooltipHover { get; }
-            public Vector3 Center => Vector3.zero;
+            public Vector3 Center { get; }
             public float Radius => 30f;
             public float CaptureDuration => 10f;
             public Vector3 FacilityPosition => Vector3.zero;
             public bool IsVisible { get; private set; }
             public bool ShowStatus { get; private set; }
 
-            public FakeView(TooltipHoverView tooltipHover) => TooltipHover = tooltipHover;
+            public FakeView(TooltipHoverView tooltipHover, Vector3 center = default)
+            {
+                TooltipHover = tooltipHover;
+                Center = center;
+            }
 
             public void Render(OwnerRelation owner, CaptureSiteState state, SiteFacilityType facilityType,
                 string facilityName, OwnerRelation capturer, float captureProgress,

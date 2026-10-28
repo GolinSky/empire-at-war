@@ -120,6 +120,13 @@
 
 ### Bugs
 
+- [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
+  - **Review 2026-10-28** (commit `ed1b5313b`): Survival mines tripled; AI builds satellites before mines; raids target satellites.
+  - **Fixed 2026-10-28**: #1 Missile radar `600 → 715` (only weapon past 600); #2 AI option range capped at radar range. Contract 7/7, AI strategy 11/11.
+  - **Implemented 2026-10-28**: #4 mines before satellites + fleet gate, #5 raids prefer mines, #6–#9, #10 satellite built/lost cues; #3 kept by user.
+  - **Verified**: `Capture` 91/91, `EnemyAi` 183/183; `Audio` 139/148 (9 unrelated failures, see plan).
+  - **Next**: user in-game check (#4 build order, #5 raids, #10 cues, #11 ring visibility, #12 home mine spacing).
+
 - [ ] **Fix enemy AI losing battles and CIS vs Republic balance** → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]; logs: [[Tooling/Battle_Telemetry|Battle Telemetry]]
   - Done (commit `6babee5e1`): Republic torpedo nerf, CIS hangar/squadron buffs, Concentrate Fire nerf, AI squadron escort, strength, rally, production, press-advantage and retreat-memory fixes; AI EditMode tests pass.
   - Next gate: 2–3 Ultra Hard battles on both factions; confirm AI attack states > 0% and fewer capture ↔ retreat flips in `_ai.csv`.

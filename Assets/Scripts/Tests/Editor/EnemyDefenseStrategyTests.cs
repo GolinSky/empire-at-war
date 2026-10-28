@@ -95,7 +95,7 @@ namespace EmpireAtWar.Tests.Editor
             var strategy = new EnemyDefenseStrategy();
             var snapshot = Snapshot(Force(ShipClass.Frigate, 3000f, 1000f), 10000f, 0f, Pad());
             snapshot = new EnemyDefenseSnapshot(snapshot.Money, snapshot.IncomePerSecond, 0f, snapshot.Strategic,
-                snapshot.Own, snapshot.Hostile, new[] { Pad(), new EnemyDefensePad(7, 10f, 0.8f, 0f, false, true, Array.Empty<SiteFacilityType>()) }, _options);
+                snapshot.Own, snapshot.Hostile, new[] { Pad(), new EnemyDefensePad(7, 1f, 0.8f, 0f, false, true, Array.Empty<SiteFacilityType>()) }, _options);
             Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
             Assert.That(choice.SiteIndex, Is.EqualTo(7));
             Assert.That(strategy.TopChoices.Count, Is.EqualTo(3));
@@ -109,7 +109,7 @@ namespace EmpireAtWar.Tests.Editor
                 new ForceComposition(), hostile, new[] { pad }, _options);
 
         private static EnemyDefensePad Pad(float exposure = 0.5f, bool hostiles = false, bool threatened = false,
-            SiteFacilityType[] existing = null) => new EnemyDefensePad(0, 3f, exposure, float.PositiveInfinity,
+            SiteFacilityType[] existing = null) => new EnemyDefensePad(0, 1f, exposure, float.PositiveInfinity,
             hostiles, threatened, existing ?? Array.Empty<SiteFacilityType>());
 
         private static ForceComposition Force(ShipClass shipClass, float hull, float shields)

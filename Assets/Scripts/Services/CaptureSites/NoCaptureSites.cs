@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public event Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
         public event Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
         public event Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
+        public event Action<PlayerId, SiteFacilityType> ConstructionCompleted { add { } remove { } }
         public IReadOnlyList<ICaptureSite> Sites => Array.Empty<ICaptureSite>();
 
         public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;

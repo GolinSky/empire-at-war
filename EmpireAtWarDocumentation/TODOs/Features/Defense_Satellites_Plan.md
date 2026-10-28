@@ -301,4 +301,5 @@ Score(pad, type) = PadValue(pad) × TypeFit(type) × Affordability(type) × Dive
 - [x] AI `EnemyDefenseStrategy` + capture ordering + telemetry
 - [x] Save/load round trip
 - [x] Satellite EditMode gates pass and Editor compiles clean; unrelated balance-data failure recorded below
+- [ ] Review fixes → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]] (review 2026-10-28)
 - [ ] User in-game acceptance

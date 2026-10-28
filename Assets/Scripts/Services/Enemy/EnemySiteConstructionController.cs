@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Ship;
@@ -38,15 +39,28 @@ namespace EmpireAtWar.Services.Enemy
         {
             if (!_decisionTimer.IsComplete) return;
             _decisionTimer.StartTimer();
+            if (CountOwnShips() < MINIMUM_FLEET_SIZE) return;
+            // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
+            if (HasEmptyOwnedMine())
+            {
+                _captureSites.TryBuildOnOwnedSite(_owner.Id);
+                return;
+            }
+            // Satellite scores read the strategic snapshot, which is empty until the first strategic decision.
+            if (!_snapshotBuilder.IsReady) return;
             var snapshot = _snapshotBuilder.Build();
             if (_defense.TrySelect(snapshot, out var choice) &&
                 _captureSites.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
-            {
                 EnemyAiTelemetry.RecordSatellite(_owner.Id, _owner.Faction, choice, snapshot.Money, _defense.TopChoices);
-                return;
-            }
-            if (CountOwnShips() >= MINIMUM_FLEET_SIZE)
-                _captureSites.TryBuildOnOwnedSite(_owner.Id);
+        }
+
+        private bool HasEmptyOwnedMine()
+        {
+            foreach (ICaptureSite site in _captureSites.Sites)
+                if (site.Kind != CaptureSiteKind.Satellite && site.Owner == _owner.Id &&
+                    site.State == CaptureSiteState.Owned && !_captureSites.HasHostileUnits(site, _owner.Id))
+                    return true;
+            return false;
         }
 
         private int CountOwnShips()

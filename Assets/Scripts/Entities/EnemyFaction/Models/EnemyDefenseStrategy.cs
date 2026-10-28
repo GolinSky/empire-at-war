@@ -40,7 +40,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                         if (existing == option.Type) copies++;
                     float score = GetPadValue(snapshot, pad) * GetFit(snapshot, pad, option) / bestFit *
                                   affordability * (float)Math.Pow(0.6, copies);
-                    string reason = urgent ? "Threatened point" : pad.ProtectedIncome > 0f ? "Protect mining income" : "Secure exposed point";
+                    string reason = urgent ? "Threatened point" : pad.ProtectedMineShare > 0f ? "Protect mining income" : "Secure exposed point";
                     EnemyDefenseChoice candidate = new EnemyDefenseChoice(pad.SiteIndex, option.Type, score, option.Cost, reason);
                     RecordTop(candidate);
                     if (score < threshold || found && score <= choice.Score) continue;
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float homePressure = (1f - pad.Exposure) * snapshot.Strategic.BaseThreatRatio;
             float outmatched = 1f / Math.Max(1f, snapshot.Strategic.FleetAdvantage);
             float localPressure = pad.IsThreatened ? 1f / Math.Max(0.25f, snapshot.Strategic.LocalAdvantage) : 0f;
-            float value = pad.ProtectedIncome + pad.Exposure + 3f * homePressure + recent + localPressure;
+            float value = pad.ProtectedMineShare + pad.Exposure + 3f * homePressure + recent + localPressure;
             return value * (1f + outmatched) / (1f + pad.Existing.Count);
         }
 

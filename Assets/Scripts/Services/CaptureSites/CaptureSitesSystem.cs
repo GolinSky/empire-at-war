@@ -51,6 +51,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public event Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured;
         public event Action<PlayerId, SiteFacilityType> SiteLost;
         public event Action<PlayerId, SiteFacilityType> ConstructionStarted;
+        public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
         public CaptureSitePresenter SelectedSite => _selectedSite;
         public Vector2 SelectionScreenPosition { get; private set; }
         public bool CanAfford(float price) => GetBuilder(_localPlayer.Id).CanAfford(price);
@@ -139,6 +140,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 {
                     site.SetFacility(GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition,
                         site.ReleaseFacility));
+                    ConstructionCompleted?.Invoke(site.Owner, site.FacilityType);
                 }
 
                 bool isVisible = _visionService.IsVisible(_localPlayer.Id, site.Center);
@@ -210,8 +212,11 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
         {
-            return TryGetClosestSite(origin,
-                site => site.IsOperational && _playerRoster.IsHostile(attacker, site.Owner), out position);
+            // Raids hit income; armed satellites are a target only when no hostile mine is left.
+            return TryGetClosestSite(origin, site => site.Kind != CaptureSiteKind.Satellite &&
+                       site.IsOperational && _playerRoster.IsHostile(attacker, site.Owner), out position) ||
+                   TryGetClosestSite(origin,
+                       site => site.IsOperational && _playerRoster.IsHostile(attacker, site.Owner), out position);
         }
 
         public bool TryBuildOnOwnedSite(PlayerId owner)

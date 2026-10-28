@@ -31,6 +31,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Income, Is.Zero);
             Assert.That(data.WeaponLoadout.Sum(entry => entry.Count), Is.EqualTo(6));
             Assert.That(data.WeaponLoadout.All(entry => entry.WeaponType == weapon), Is.True);
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            Assert.That(data.ComponentData.Range, Is.GreaterThanOrEqualTo(weapons.GetProfile(weapon).Range),
+                "Stations only engage radar contacts; a shorter radar wastes weapon reach.");
+            Assert.That(data.ComponentData.VisionRange, Is.EqualTo(data.ComponentData.Range));
             var catalog = AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(
                 "Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset");
             Assert.That(catalog.Entries.ContainsKey(platform), Is.True);
@@ -52,6 +56,8 @@ namespace EmpireAtWar.Tests.Editor
             foreach (var mount in health.ShipUnits)
             {
                 Assert.That(mount, Is.Not.Null);
+                Assert.That(mount.TryGetWeaponType(out WeaponType mounted), Is.True);
+                Assert.That(mounted, Is.EqualTo(weapon), "Prefab mounts must match the data loadout the AI scores.");
                 Assert.That(bindings.Injectables, Contains.Item(mount), "Hardpoint destruction needs injected VFX and fog services.");
                 SerializedObject point = new SerializedObject(mount);
                 if (point.FindProperty("spawnDestroyedExplosion").boolValue)

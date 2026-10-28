@@ -8,7 +8,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
-using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Players;
@@ -70,6 +70,8 @@ namespace EmpireAtWar.Services.Enemy
             _productionAccess = productionAccess;
         }
 
+        public bool IsReady => _strategy.HasDecision;
+
         public EnemyDefenseSnapshot Build()
         {
             float now = Time.time;
@@ -77,19 +79,18 @@ namespace EmpireAtWar.Services.Enemy
             _forces.BuildKnown(_hostile, _intel, now, sighting => _players.IsHostile(_owner.Id, sighting.Owner));
             if (_options.Count == 0) LoadOptions();
             _pads.Clear();
-            float mineIncome = _assets.Load<MiningFacilityData>("AsteroidMiningFacilityData").Income / _economyData.IncomeDelay;
             for (int i = 0; i < _sites.Sites.Count; i++)
             {
                 ICaptureSite site = _sites.Sites[i];
                 if (site.Kind != CaptureSiteKind.Satellite || site.Owner != _owner.Id || site.State != CaptureSiteState.Owned)
                     continue;
-                float protectedIncome = 0f;
+                int protectedMines = 0;
                 bool threatened = false;
                 List<SiteFacilityType> existing = new List<SiteFacilityType>();
                 foreach (ICaptureSite sibling in _sites.Sites)
                 {
                     if (sibling.PointId != site.PointId || sibling.Owner != _owner.Id) continue;
-                    if (sibling.IsOperational && sibling.FacilityType == SiteFacilityType.Mining) protectedIncome += mineIncome;
+                    if (sibling.IsOperational && sibling.FacilityType == SiteFacilityType.Mining) protectedMines++;
                     if (sibling.Kind == CaptureSiteKind.Satellite &&
                         (sibling.State == CaptureSiteState.Constructing || sibling.IsOperational)) existing.Add(sibling.FacilityType);
                     if (_sites.HasHostileUnits(sibling, _owner.Id)) threatened = true;
@@ -112,7 +113,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 float exposure = float.IsPositiveInfinity(enemyDistance) ? 0f : float.IsPositiveInfinity(ownDistance) ? 1f :
                     ownDistance / Mathf.Max(1f, ownDistance + enemyDistance);
-                _pads.Add(new EnemyDefensePad(i, protectedIncome, exposure, lastSeen,
+                _pads.Add(new EnemyDefensePad(i, (float)protectedMines / PointOfInterestPlacer.SITES_PER_MINING_POINT, exposure, lastSeen,
                     _sites.HasHostileUnits(site, _owner.Id), threatened || lastSeen <= 5f,
                     existing));
             }
@@ -131,6 +132,8 @@ namespace EmpireAtWar.Services.Enemy
                 float range = 0f;
                 foreach (WeaponLoadoutEntry entry in data.WeaponLoadout)
                     range = Mathf.Max(range, _weapons.GetProfile(entry.WeaponType).Range);
+                // Stations only engage what their radar detects, so reach past it is never used.
+                range = Mathf.Min(range, components.Range);
                 _options.Add(new EnemyDefenseOption(type, _siteData.GetCost(type).Price, profile, range));
             }
         }

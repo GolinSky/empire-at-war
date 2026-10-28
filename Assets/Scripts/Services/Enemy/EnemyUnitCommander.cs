@@ -25,6 +25,8 @@ namespace EmpireAtWar.Services.Enemy
 
         EnemyStrategicDecision LastDecision { get; }
         EnemyStrategicSnapshot LastSnapshot { get; }
+        /// <summary>False until the first strategic decision fills <see cref="LastSnapshot"/>.</summary>
+        bool HasDecision { get; }
     }
 
     public interface IEnemyAiStateProvider
@@ -62,6 +64,7 @@ namespace EmpireAtWar.Services.Enemy
         public string Id => nameof(EnemyUnitCommander);
         public EnemyStrategicDecision LastDecision { get; private set; }
         public EnemyStrategicSnapshot LastSnapshot { get; private set; }
+        public bool HasDecision => _hasDecision;
         public EnemyStrategicState CurrentState =>
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
         public int ActiveShipCount => LastSnapshot.OwnShipCount;
