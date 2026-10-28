@@ -583,10 +583,10 @@ namespace EmpireAtWar.Services.Enemy
 
                 bool isAffordable = IsAffordable(option.Value);
                 bool isSelectedAffordable = found && IsAffordable(selected.Value);
-                bool isBetter = isAffordable
+                bool isBetter = !found || (isAffordable
                     ? !isSelectedAffordable || option.Value.Price > selected.Value.Price
-                    : !isSelectedAffordable && option.Value.Price < selected.Value.Price;
-                if (!found || isBetter)
+                    : !isSelectedAffordable && option.Value.Price < selected.Value.Price);
+                if (isBetter)
                 {
                     selected = option;
                     found = true;
