@@ -51,6 +51,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         private BattleState _state;
         private GameSpeed _speed;
+        private bool _hasReadyReinforcement;
 
         private bool IsBattleEnded => _state == BattleState.Ended;
 
@@ -96,6 +97,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _ui.ContextualPopup.SetParent(_placement.ContextualSlot, false);
             _ui.AssignPresenter(this);
             _ui.Initialize();
+            _ui.SetReinforcementReady(_hasReadyReinforcement);
             if (_populationCapacity.HasValue)
                 _ui.SetPopulationCapacity(_populationCapacity.Value.current, _populationCapacity.Value.max);
             _battleState.AddObserver(this);
@@ -211,6 +213,12 @@ namespace EmpireAtWar.Entities.CoreGameUi
         {
             _routeStates[position] = isActive;
 
+            if (position == SkirmishUiRoutePosition.Reinforcement && isActive)
+            {
+                _hasReadyReinforcement = false;
+                if (_ui != null) _ui.SetReinforcementReady(false);
+            }
+
             if (position == SkirmishUiRoutePosition.Content && _ui != null)
             {
                 UpdateContentVisibility(_lastSelectionContext);
@@ -240,6 +248,11 @@ namespace EmpireAtWar.Entities.CoreGameUi
         public void UpdateState(BattleState state)
         {
             _state = state;
+            if (IsBattleEnded)
+            {
+                _hasReadyReinforcement = false;
+                _ui.SetReinforcementReady(false);
+            }
             _ui.SetTimeControls(_state != BattleState.Running, _speed);
         }
 
@@ -304,6 +317,13 @@ namespace EmpireAtWar.Entities.CoreGameUi
         {
             _factionName = faction;
             _stationLevel = level;
+        }
+
+        public void NotifyReinforcementReady()
+        {
+            if (IsBattleEnded || IsRouteActive(SkirmishUiRoutePosition.Reinforcement)) return;
+            _hasReadyReinforcement = true;
+            if (_ui != null) _ui.SetReinforcementReady(true);
         }
 
         public void SpeedUp()

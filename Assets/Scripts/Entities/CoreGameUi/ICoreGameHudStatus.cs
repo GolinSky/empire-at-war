@@ -4,5 +4,6 @@ namespace EmpireAtWar.Entities.CoreGameUi
     {
         void SetProductionStatus(string faction, int level);
         void SetPopulationCapacity(int current, int max);
+        void NotifyReinforcementReady();
     }
 }

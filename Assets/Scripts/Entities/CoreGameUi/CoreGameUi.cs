@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
@@ -15,6 +16,10 @@ namespace EmpireAtWar.Entities.CoreGameUi
     public class CoreGameUi : BaseUi
     {
         private ICoreGamePresenter _presenter;
+        private const float REINFORCEMENT_PULSE_DURATION = 0.9f;
+        private const float REINFORCEMENT_PULSE_MIN_ALPHA = 0.4f;
+        private Tween _reinforcementPulse;
+        private Color _reinforcementColor;
 
         [SerializeField] private Button timeButton;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -53,6 +58,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void Initialize()
         {
+            _reinforcementColor = reinforcementButton.targetGraphic.color;
             populationDisplay.SetActive(false);
             timeButton.onClick.AddListener(_presenter.Play);
             speedUpButton.onClick.AddListener(_presenter.SpeedUp);
@@ -76,7 +82,30 @@ namespace EmpireAtWar.Entities.CoreGameUi
             reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
             clearFleetButton.onClick.RemoveListener(_presenter.ClearFleetSelection);
+            SetReinforcementReady(false);
             _isInitialized = false;
+        }
+
+        public void SetReinforcementReady(bool ready)
+        {
+            if (ready)
+            {
+                if (_reinforcementPulse != null) return;
+                reinforcementButton.targetGraphic.color = new Color(56f / 255f, 189f / 255f, 248f / 255f, 1f);
+                _reinforcementPulse = reinforcementButton.targetGraphic
+                    .DOFade(REINFORCEMENT_PULSE_MIN_ALPHA, REINFORCEMENT_PULSE_DURATION)
+                    .SetEase(Ease.InOutSine)
+                    .SetLoops(-1, LoopType.Yoyo)
+                    .SetUpdate(true);
+                return;
+            }
+
+            if (_reinforcementPulse != null)
+            {
+                _reinforcementPulse.Kill();
+                _reinforcementPulse = null;
+            }
+            reinforcementButton.targetGraphic.color = _reinforcementColor;
         }
 
         public void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded)

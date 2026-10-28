@@ -51,6 +51,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         public void Initialize()
         {
             _model.OnCapacityChanged += UpdatePopulationCapacity;
+            _model.OnReinforcementAdded += OnReinforcementAdded;
             UpdatePopulationCapacity(_model.CurrentUnitCapacity);
             _routeNavigation.SetRouteActive(
                 SkirmishUiRoutePosition.Reinforcement,
@@ -65,6 +66,7 @@ namespace EmpireAtWar.Entities.Reinforcement
             if (_isDisposed) return;
             _isDisposed = true;
             _model.OnCapacityChanged -= UpdatePopulationCapacity;
+            _model.OnReinforcementAdded -= OnReinforcementAdded;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.Reinforcement,
                 this);
@@ -84,6 +86,9 @@ namespace EmpireAtWar.Entities.Reinforcement
 
         private void UpdatePopulationCapacity(int current) =>
             _hud.SetPopulationCapacity(current, _model.MaxUnitCapacity);
+
+        private void OnReinforcementAdded(UnitRequest request) =>
+            _hud.NotifyReinforcementReady();
 
         public void Show()
         {
