@@ -12,7 +12,6 @@ namespace EmpireAtWar.Entities.MiningFacility
     {
         private readonly ILocalPlayer _localPlayer;
         private readonly IUniqueIdGenerator _ids;
-        protected virtual string AssetPrefix => "";
 
         public MiningFacilityFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership, ILocalPlayer localPlayer,
             IUniqueIdGenerator ids) : base(assets, scope, ownership)
@@ -27,8 +26,9 @@ namespace EmpireAtWar.Entities.MiningFacility
         /// <summary>Creates a facility with a known id, e.g. one restored from a save.</summary>
         public MiningFacility Create(PlayerId owner, MiningFacilityType type, Vector3 position, long entityId)
         {
-            MiningFacilityData data = Assets.Load<MiningFacilityData>(AssetPrefix + nameof(MiningFacilityData));
-            return Spawn(Assets.LoadComponent<MiningFacility>(AssetPrefix + "MiningFacilityView"), position, Quaternion.identity,
+            string assetName = MiningFacilityAssets.GetName(type);
+            MiningFacilityData data = Assets.Load<MiningFacilityData>(assetName + "Data");
+            return Spawn(Assets.LoadComponent<MiningFacility>(assetName + "View"), position, Quaternion.identity,
                 (builder, view) => new EmpireAtWar.MiningFacility.MiningFacilityInstaller(view, data,
                     _localPlayer, owner, entityId, position, type).Install(builder));
         }

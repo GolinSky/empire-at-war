@@ -1,0 +1,22 @@
+[
+  {
+    "path": "Assets/Prefabs/Models/MiningFacilities/TibannaGasStation.prefab",
+    "renderers": 2,
+    "triangles": 9748
+  },
+  {
+    "path": "Assets/Prefabs/Models/MiningFacilities/TibannaGasStationView.prefab",
+    "renderers": 3,
+    "triangles": 22036
+  },
+  {
+    "path": "Assets/Prefabs/Ui/Reinforcement/TibannaGasStationReinforcementView.prefab",
+    "renderers": 2,
+    "triangles": 9748
+  },
+  {
+    "path": "Assets/Prefabs/Models/Wrecks/TibannaGasStationWreckView.prefab",
+    "renderers": 1,
+    "triangles": 9604
+  }
+]

@@ -5,6 +5,7 @@ using System.Threading;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SpaceStation;
@@ -53,6 +54,12 @@ namespace EmpireAtWar.Tests.Editor
                     foreach (FactionType factionType in new[] { first, second })
                     {
                         FactionDefinition faction = factions.Get(factionType);
+                        foreach (MiningFacilityType mining in faction.MiningFacilities)
+                        {
+                            string assetName = MiningFacilityAssets.GetName(mining);
+                            assets.LoadComponent<EmpireAtWar.Entities.MiningFacility.MiningFacility>(assetName + "View");
+                            assets.Load<MiningFacilityData>(assetName + "Data");
+                        }
                         assets.LoadComponent<EmpireAtWar.Entities.SpaceStation.SpaceStation>(factionType + "SpaceStationView");
                         foreach (ShipType ship in faction.Ships.Keys)
                         {

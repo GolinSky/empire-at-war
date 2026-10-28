@@ -167,7 +167,7 @@ namespace EmpireAtWar.Services.Saves
                          !mineRoster.MiningFacilities.ContainsKey(mineType)))
                         throw new InvalidDataException($"Mining facility {mineType} cannot be restored for {structure.Owner}.");
                     ValidateHardPoints(_assets.LoadComponent<MiningFacilityEntity>(
-                        (mineType == MiningFacilityType.AsteroidMiner ? "Asteroid" : "") + "MiningFacilityView"),
+                        MiningFacilityAssets.GetName(mineType) + "View"),
                         structure.Health, structure.Id);
                     ValidateHangar(structure.Hangar, 0, squadrons, adoptedSquadrons, structure.Id);
                     break;

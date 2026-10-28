@@ -14,6 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MiningFacility.MiningFacilityCatalog
   entries:
     keyValue:
+    - key: 3
+      value:
+        matchups: {fileID: 0}
+        description: A spawnable Tibanna gas mining station that provides recurring
+          credits.
+        role: Mining facility
+        iconKey: 54f42405bb0527345bfb83f05f0d3496:21300000
+        isHero: 0
+        <Name>k__BackingField: Tibanna Gas Station
+        <MaxCount>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 0
+        <Price>k__BackingField: 1000
+        <BuildTime>k__BackingField: 5
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: 54f42405bb0527345bfb83f05f0d3496,
+          type: 3}
     - key: 0
       value:
         matchups: {fileID: 0}

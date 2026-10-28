@@ -5,5 +5,6 @@
         CommonMiner = 0,
         BattleMiner = 1,
         AsteroidMiner = 2,
+        TibannaGasStation = 3,
     }
 }

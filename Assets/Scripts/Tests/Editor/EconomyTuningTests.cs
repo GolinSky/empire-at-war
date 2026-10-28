@@ -124,6 +124,56 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(levels.GetLevelFactionData(4).BuildTime, Is.EqualTo(280));
         }
 
+        [TestCase(MiningFacilityType.CommonMiner, "MiningFacility")]
+        [TestCase(MiningFacilityType.BattleMiner, "MiningFacility")]
+        [TestCase(MiningFacilityType.AsteroidMiner, "AsteroidMiningFacility")]
+        [TestCase(MiningFacilityType.TibannaGasStation, "TibannaGasStation")]
+        public void MiningFacilityAssets_ResolveCanonicalNames(MiningFacilityType type, string expected)
+        {
+            Assert.That(MiningFacilityAssets.GetName(type), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void MiningFacilityAssets_RejectUnknownTypes()
+        {
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+                MiningFacilityAssets.GetName((MiningFacilityType)999));
+        }
+
+        [TestCase("Empire", MiningFacilityType.TibannaGasStation)]
+        [TestCase("Rebellion", MiningFacilityType.TibannaGasStation)]
+        [TestCase("Republic", MiningFacilityType.CommonMiner)]
+        [TestCase("Separatist", MiningFacilityType.CommonMiner)]
+        public void MiningRoster_HasOnlyItsFactionFacility(string faction, MiningFacilityType expected)
+        {
+            Assert.That(CreateRoster(faction).MiningFacilities.Keys, Is.EquivalentTo(new[] { expected }));
+        }
+
+        [Test]
+        public void TibannaGasStation_PreservesMiningEconomyAndHealth()
+        {
+            MiningFacilityCatalog catalog = Load<MiningFacilityCatalog>(SHARED_PATH + "MiningFacilityCatalog.asset");
+            FactionData original = catalog.Get(MiningFacilityType.CommonMiner);
+            FactionData tibanna = catalog.Get(MiningFacilityType.TibannaGasStation);
+            Assert.That(tibanna.Price, Is.EqualTo(original.Price));
+            Assert.That(tibanna.BuildTime, Is.EqualTo(original.BuildTime));
+            Assert.That(tibanna.MaxCount, Is.EqualTo(original.MaxCount));
+            Assert.That(tibanna.AvailableLevel, Is.EqualTo(original.AvailableLevel));
+            Assert.That(tibanna.UnitCapacity, Is.EqualTo(original.UnitCapacity));
+            MiningFacilityData originalData = Load<MiningFacilityData>(
+                "Assets/Settings/Data/Models/MiningFacilities/MiningFacilityData.asset");
+            MiningFacilityData tibannaData = Load<MiningFacilityData>(
+                "Assets/Settings/Data/Models/MiningFacilities/TibannaGasStationData.asset");
+            Assert.That(tibannaData.Income, Is.EqualTo(originalData.Income));
+            Assert.That(tibannaData.ComponentData.Hull, Is.EqualTo(originalData.ComponentData.Hull));
+            Assert.That(tibannaData.ComponentData.Shields, Is.EqualTo(originalData.ComponentData.Shields));
+            Assert.That(tibannaData.ComponentData.ShieldRegenerateValue,
+                Is.EqualTo(originalData.ComponentData.ShieldRegenerateValue));
+            Assert.That(tibannaData.ComponentData.ShieldRegenerateDelay,
+                Is.EqualTo(originalData.ComponentData.ShieldRegenerateDelay));
+            Assert.That(tibannaData.ComponentData.SpawnBlockRadius, Is.EqualTo(originalData.ComponentData.SpawnBlockRadius));
+        }
+
         private static FactionRoster CreateRoster(string faction)
         {
             return new FactionRoster(

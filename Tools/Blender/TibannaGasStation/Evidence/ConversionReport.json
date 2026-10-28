@@ -1,0 +1,714 @@
+[
+  {
+    "name": "TibannaGasStation",
+    "level": 0,
+    "source": {
+      "meshes": {
+        "Hull": {
+          "triangles": 9604,
+          "hidden": false,
+          "materials": [
+            "TibannaGasStationSlot00"
+          ],
+          "parent": "Hull"
+        },
+        "lights": {
+          "triangles": 144,
+          "hidden": false,
+          "materials": [
+            "TibannaGasStationSlot01"
+          ],
+          "parent": "lights"
+        },
+        "Shadow": {
+          "triangles": 37772,
+          "hidden": true,
+          "materials": [
+            "TibannaGasStationSlot02"
+          ],
+          "parent": "Shadow"
+        },
+        "Col_Main": {
+          "triangles": 156,
+          "hidden": true,
+          "materials": [
+            "TibannaGasStationSlot03"
+          ],
+          "parent": "Col_Main"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Hull": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "lights": {
+          "parent": "Hull",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Shadow": {
+          "parent": "Hull",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Col_Main": {
+          "parent": "Hull",
+          "head": [
+            0.05486297234892845,
+            0.0,
+            0.0
+          ]
+        },
+        "P_blink_white_big": {
+          "parent": "Hull",
+          "head": [
+            -14.884005546569824,
+            -2.584040641784668,
+            242.6748809814453
+          ]
+        },
+        "P_blink_white_big.001": {
+          "parent": "Hull",
+          "head": [
+            -0.0749635174870491,
+            151.34046936035156,
+            -93.59613037109375
+          ]
+        },
+        "P_blink_white_big.002": {
+          "parent": "Hull",
+          "head": [
+            -0.4611189067363739,
+            -151.1131134033203,
+            -93.46401977539062
+          ]
+        },
+        "P_blink_white_big.003": {
+          "parent": "Hull",
+          "head": [
+            151.17230224609375,
+            -0.05263619124889374,
+            -93.2486801147461
+          ]
+        },
+        "P_blink_white_big.004": {
+          "parent": "Hull",
+          "head": [
+            -151.1046905517578,
+            0.06803010404109955,
+            -93.3371353149414
+          ]
+        },
+        "B_Hangar": {
+          "parent": "Hull",
+          "head": [
+            1.2811719685146272e-08,
+            -2.8199164603393e-07,
+            -197.31980895996094
+          ]
+        },
+        "B_Hangar_EMITDAMAGE": {
+          "parent": "B_Hangar",
+          "head": [
+            1.2811719685146272e-08,
+            -2.819880080551229e-07,
+            -197.31980895996094
+          ]
+        },
+        "P_FIRE_HUGE00": {
+          "parent": "B_Hangar_EMITDAMAGE",
+          "head": [
+            7.14091630271696e-09,
+            -8.244796845247038e-09,
+            -190.9709014892578
+          ]
+        },
+        "B_Platform_Attach_01": {
+          "parent": "Hull",
+          "head": [
+            0.0,
+            -191.64599609375,
+            -23.659000396728516
+          ]
+        },
+        "B_Platform_Attach_01_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_01",
+          "head": [
+            0.0,
+            -191.64599609375,
+            -23.659000396728516
+          ]
+        },
+        "P_FIRE_MED00": {
+          "parent": "B_Platform_Attach_01_EMITDAMAGE",
+          "head": [
+            0.08290673792362213,
+            -174.47171020507812,
+            -23.311302185058594
+          ]
+        },
+        "B_Platform_Attach_02": {
+          "parent": "Hull",
+          "head": [
+            -1.7468162695877254e-05,
+            191.64599609375,
+            -23.659000396728516
+          ]
+        },
+        "B_Platform_Attach_02_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_02",
+          "head": [
+            -1.746816633385606e-05,
+            191.64599609375,
+            -23.659000396728516
+          ]
+        },
+        "P_FIRE_MED00.001": {
+          "parent": "B_Platform_Attach_02_EMITDAMAGE",
+          "head": [
+            0.08290673792362213,
+            174.47201538085938,
+            -23.311302185058594
+          ]
+        },
+        "B_Platform_Attach_03": {
+          "parent": "Hull",
+          "head": [
+            191.64599609375,
+            1.52587890625e-05,
+            -23.659000396728516
+          ]
+        },
+        "B_Platform_Attach_03_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_03",
+          "head": [
+            191.64599609375,
+            1.5258790881489404e-05,
+            -23.659000396728516
+          ]
+        },
+        "P_FIRE_MED00.002": {
+          "parent": "B_Platform_Attach_03_EMITDAMAGE",
+          "head": [
+            173.363037109375,
+            -2.9786676805088064e-06,
+            -23.311302185058594
+          ]
+        },
+        "B_Platform_Attach_04": {
+          "parent": "Hull",
+          "head": [
+            -191.64599609375,
+            0.0,
+            -23.659000396728516
+          ]
+        },
+        "B_Platform_Attach_04_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_04",
+          "head": [
+            -191.64599609375,
+            0.0,
+            -23.659000396728516
+          ]
+        },
+        "P_FIRE_MED00.003": {
+          "parent": "B_Platform_Attach_04_EMITDAMAGE",
+          "head": [
+            -173.36300659179688,
+            -2.9786765480821487e-06,
+            -23.311302185058594
+          ]
+        },
+        "B_Shield": {
+          "parent": "Hull",
+          "head": [
+            -0.05209541320800781,
+            -6.44868623567163e-06,
+            147.52874755859375
+          ]
+        },
+        "B_Shield_EMITDAMAGE": {
+          "parent": "B_Shield",
+          "head": [
+            -0.05209541320800781,
+            -6.44868623567163e-06,
+            147.52874755859375
+          ]
+        },
+        "P_FIRE_EMPIRE_HUGE00": {
+          "parent": "B_Shield_EMITDAMAGE",
+          "head": [
+            -8.103228569030762,
+            -1.550854358356446e-05,
+            163.63449096679688
+          ]
+        },
+        "P_FIRE_EMPIRE_HUGE00.001": {
+          "parent": "B_Shield_EMITDAMAGE",
+          "head": [
+            5.884851455688477,
+            -1.477934347349219e-05,
+            146.95236206054688
+          ]
+        },
+        "P_FIRE_BIG00": {
+          "parent": "B_Shield_EMITDAMAGE",
+          "head": [
+            15.547104835510254,
+            9.102838516235352,
+            153.56436157226562
+          ]
+        }
+      },
+      "bounds_min": [
+        -174.77450561523438,
+        -174.77450561523438,
+        -192.198486328125
+      ],
+      "bounds_max": [
+        174.77450561523438,
+        174.77450561523438,
+        242.52105712890625
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Hull": {
+          "triangles": 9604,
+          "hidden": false,
+          "materials": [
+            "TibannaGasStationSlot00"
+          ],
+          "parent": "Hull"
+        },
+        "lights": {
+          "triangles": 144,
+          "hidden": false,
+          "materials": [
+            "TibannaGasStationSlot01"
+          ],
+          "parent": "lights"
+        },
+        "Shadow": {
+          "triangles": 37772,
+          "hidden": true,
+          "materials": [
+            "TibannaGasStationSlot02"
+          ],
+          "parent": "Shadow"
+        },
+        "Col_Main": {
+          "triangles": 156,
+          "hidden": true,
+          "materials": [
+            "TibannaGasStationSlot03"
+          ],
+          "parent": "Col_Main"
+        }
+      },
+      "bones": {
+        "Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Hull": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "lights": {
+          "parent": "Hull",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Shadow": {
+          "parent": "Hull",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "Col_Main": {
+          "parent": "Hull",
+          "head": [
+            0.05486297234892845,
+            0.0,
+            0.0
+          ]
+        },
+        "P_blink_white_big": {
+          "parent": "Hull",
+          "head": [
+            -14.884005546569824,
+            -2.584001064300537,
+            242.6748809814453
+          ]
+        },
+        "P_blink_white_big.001": {
+          "parent": "Hull",
+          "head": [
+            -0.0749635174870491,
+            151.3404541015625,
+            -93.59615325927734
+          ]
+        },
+        "P_blink_white_big.002": {
+          "parent": "Hull",
+          "head": [
+            -0.4611189067363739,
+            -151.11312866210938,
+            -93.46399688720703
+          ]
+        },
+        "P_blink_white_big.003": {
+          "parent": "Hull",
+          "head": [
+            151.17230224609375,
+            -0.052651338279247284,
+            -93.2486801147461
+          ]
+        },
+        "P_blink_white_big.004": {
+          "parent": "Hull",
+          "head": [
+            -151.1046905517578,
+            0.06801491230726242,
+            -93.3371353149414
+          ]
+        },
+        "B_Hangar": {
+          "parent": "Hull",
+          "head": [
+            1.2811719685146272e-08,
+            -3.238589488319121e-05,
+            -197.31980895996094
+          ]
+        },
+        "B_Hangar_EMITDAMAGE": {
+          "parent": "B_Hangar",
+          "head": [
+            -1.3818345223626238e-07,
+            -3.2445499527966604e-05,
+            -197.31980895996094
+          ]
+        },
+        "P_FIRE_HUGE00": {
+          "parent": "B_Hangar_EMITDAMAGE",
+          "head": [
+            -1.4385626911916916e-07,
+            -3.11131079797633e-05,
+            -190.9709014892578
+          ]
+        },
+        "B_Platform_Attach_01": {
+          "parent": "Hull",
+          "head": [
+            0.0,
+            -191.64599609375,
+            -23.65896987915039
+          ]
+        },
+        "B_Platform_Attach_01_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_01",
+          "head": [
+            0.0,
+            -191.64599609375,
+            -23.65896987915039
+          ]
+        },
+        "P_FIRE_MED00": {
+          "parent": "B_Platform_Attach_01_EMITDAMAGE",
+          "head": [
+            0.08290673792362213,
+            -174.47171020507812,
+            -23.3112735748291
+          ]
+        },
+        "B_Platform_Attach_02": {
+          "parent": "Hull",
+          "head": [
+            -1.7468162695877254e-05,
+            191.64599609375,
+            -23.65903091430664
+          ]
+        },
+        "B_Platform_Attach_02_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_02",
+          "head": [
+            -1.7619162463233806e-05,
+            191.64599609375,
+            -23.65903091430664
+          ]
+        },
+        "P_FIRE_MED00.001": {
+          "parent": "B_Platform_Attach_02_EMITDAMAGE",
+          "head": [
+            0.08290808647871017,
+            174.47201538085938,
+            -23.311330795288086
+          ]
+        },
+        "B_Platform_Attach_03": {
+          "parent": "Hull",
+          "head": [
+            191.64599609375,
+            1.1404248652979732e-05,
+            -23.659000396728516
+          ]
+        },
+        "B_Platform_Attach_03_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_03",
+          "head": [
+            191.64599609375,
+            1.1404250471969135e-05,
+            -23.659000396728516
+          ]
+        },
+        "P_FIRE_MED00.002": {
+          "parent": "B_Platform_Attach_03_EMITDAMAGE",
+          "head": [
+            173.363037109375,
+            -7.575734343845397e-06,
+            -23.311302185058594
+          ]
+        },
+        "B_Platform_Attach_04": {
+          "parent": "Hull",
+          "head": [
+            -191.64599609375,
+            -3.8545404095202684e-06,
+            -23.659000396728516
+          ]
+        },
+        "B_Platform_Attach_04_EMITDAMAGE": {
+          "parent": "B_Platform_Attach_04",
+          "head": [
+            -191.64599609375,
+            -3.8545404095202684e-06,
+            -23.659000396728516
+          ]
+        },
+        "P_FIRE_MED00.003": {
+          "parent": "B_Platform_Attach_04_EMITDAMAGE",
+          "head": [
+            -173.36300659179688,
+            -7.575744348287117e-06,
+            -23.311302185058594
+          ]
+        },
+        "B_Shield": {
+          "parent": "Hull",
+          "head": [
+            -0.05209541320800781,
+            1.7598180420463905e-05,
+            147.52874755859375
+          ]
+        },
+        "B_Shield_EMITDAMAGE": {
+          "parent": "B_Shield",
+          "head": [
+            -0.05209541320800781,
+            1.7598180420463905e-05,
+            147.52874755859375
+          ]
+        },
+        "P_FIRE_EMPIRE_HUGE00": {
+          "parent": "B_Shield_EMITDAMAGE",
+          "head": [
+            -8.103228569030762,
+            1.1186615665792488e-05,
+            163.63449096679688
+          ]
+        },
+        "P_FIRE_EMPIRE_HUGE00.001": {
+          "parent": "B_Shield_EMITDAMAGE",
+          "head": [
+            5.884851455688477,
+            9.189690899802372e-06,
+            146.95236206054688
+          ]
+        },
+        "P_FIRE_BIG00": {
+          "parent": "B_Shield_EMITDAMAGE",
+          "head": [
+            15.547104835510254,
+            9.102863311767578,
+            153.56436157226562
+          ]
+        }
+      },
+      "bounds_min": [
+        -174.77450561523438,
+        -174.77450561523438,
+        -192.198486328125
+      ],
+      "bounds_max": [
+        174.77450561523438,
+        174.77450561523438,
+        242.52105712890625
+      ]
+    },
+    "source_bone_names": {
+      "Root": "Root",
+      "Hull": "Hull",
+      "lights": "lights",
+      "Shadow": "Shadow",
+      "Col_Main": "Col_Main",
+      "P_blink_white_big": "P_blink_white_big",
+      "P_blink_white_big.001": "P_blink_white_big",
+      "P_blink_white_big.002": "P_blink_white_big",
+      "P_blink_white_big.003": "P_blink_white_big",
+      "P_blink_white_big.004": "P_blink_white_big",
+      "B_Hangar": "B_Hangar",
+      "B_Hangar_EMITDAMAGE": "B_Hangar_EMITDAMAGE",
+      "P_FIRE_HUGE00": "P_FIRE_HUGE00",
+      "B_Platform_Attach_01": "B_Platform_Attach_01",
+      "B_Platform_Attach_01_EMITDAMAGE": "B_Platform_Attach_01_EMITDAMAGE",
+      "P_FIRE_MED00": "P_FIRE_MED00",
+      "B_Platform_Attach_02": "B_Platform_Attach_02",
+      "B_Platform_Attach_02_EMITDAMAGE": "B_Platform_Attach_02_EMITDAMAGE",
+      "P_FIRE_MED00.001": "P_FIRE_MED00",
+      "B_Platform_Attach_03": "B_Platform_Attach_03",
+      "B_Platform_Attach_03_EMITDAMAGE": "B_Platform_Attach_03_EMITDAMAGE",
+      "P_FIRE_MED00.002": "P_FIRE_MED00",
+      "B_Platform_Attach_04": "B_Platform_Attach_04",
+      "B_Platform_Attach_04_EMITDAMAGE": "B_Platform_Attach_04_EMITDAMAGE",
+      "P_FIRE_MED00.003": "P_FIRE_MED00",
+      "B_Shield": "B_Shield",
+      "B_Shield_EMITDAMAGE": "B_Shield_EMITDAMAGE",
+      "P_FIRE_EMPIRE_HUGE00": "P_FIRE_EMPIRE_HUGE00",
+      "P_FIRE_EMPIRE_HUGE00.001": "P_FIRE_EMPIRE_HUGE00",
+      "P_FIRE_BIG00": "P_FIRE_BIG00"
+    },
+    "materials": [
+      {
+        "name": "TibannaGasStationSlot00",
+        "properties": {
+          "Emissive": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Specular": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "Shininess": [
+            0.0
+          ],
+          "Colorization": [
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          "UVOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "BaseTexture": "NB_Tibanna.dds",
+          "NormalTexture": "NB_Tibanna_B.dds"
+        },
+        "shader": "MeshBumpColorize.fx",
+        "vertexCount": 16745,
+        "triangleCount": 9604
+      },
+      {
+        "name": "TibannaGasStationSlot01",
+        "properties": {
+          "BaseTexture": "NB_Tibanna_L.dds",
+          "UVScrollRate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ]
+        },
+        "shader": "MeshAdditive.fx",
+        "vertexCount": 197,
+        "triangleCount": 144
+      },
+      {
+        "name": "TibannaGasStationSlot02",
+        "properties": {
+          "DebugColor": [
+            0.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "shader": "MeshShadowVolume.fx",
+        "vertexCount": 28082,
+        "triangleCount": 37772
+      },
+      {
+        "name": "TibannaGasStationSlot03",
+        "properties": {
+          "Color": [
+            0.0,
+            0.0,
+            1.0,
+            0.5
+          ]
+        },
+        "shader": "MeshCollision.fx",
+        "vertexCount": 163,
+        "triangleCount": 156
+      }
+    ],
+    "source_bone_error": 0.0,
+    "bone_error": 3.9577484130859375e-05,
+    "geometry_error": 3.9577484130859375e-05,
+    "uv_error": 0,
+    "source_geometry_error": 0,
+    "source_uv_error": 0
+  }
+]

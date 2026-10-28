@@ -41,6 +41,8 @@ namespace EmpireAtWar.Repository
             "TooltipUi", "PauseMenuUi", "SettingsUi", "SaveBrowserUi", "EndGameUi", "HeroUi"
         };
         private static readonly string[] STRUCTURE_PREFIXES = { "", "Asteroid" };
+        private static readonly MiningFacilityType[] MINING_FACILITIES =
+            { MiningFacilityType.CommonMiner, MiningFacilityType.AsteroidMiner, MiningFacilityType.TibannaGasStation };
         private static readonly string[] PLATFORMS = { "DefendPlatform", "AotrGolanIIIDefensePlatform", "AotrEmpressDefensePlatform" };
 
         public static async Awaitable LoadAsync(CachedAssetService assets, BattleDefinition battle, bool restoresSave,
@@ -91,11 +93,15 @@ namespace EmpireAtWar.Repository
                 }
                 if (stations.TryGetWreck(faction, out UnitWreckData stationWreck)) AddWreck(wrecks, stationWreck);
             }
+            foreach (MiningFacilityType type in MINING_FACILITIES)
+            {
+                string assetName = MiningFacilityAssets.GetName(type);
+                // The basic facility view is required while the battle scope builds.
+                if (type != MiningFacilityType.CommonMiner) views.Add(assetName + "View");
+                AddWreck(wrecks, assets.Load<MiningFacilityData>(assetName + "Data").Wreck);
+            }
             foreach (string prefix in STRUCTURE_PREFIXES)
             {
-                // The basic facility and platform views are required while the battle scope builds.
-                if (prefix.Length > 0) views.Add(prefix + "MiningFacilityView");
-                AddWreck(wrecks, assets.Load<MiningFacilityData>(prefix + nameof(MiningFacilityData)).Wreck);
                 foreach (string key in PlatformKeys(prefix))
                 {
                     if (key != "DefendPlatform") views.Add(key + "View");
@@ -198,9 +204,10 @@ namespace EmpireAtWar.Repository
         {
             assets.BeginPreload<GameObject>("DefendPlatformView");
             assets.BeginPreload<GameObject>("MiningFacilityView");
+            foreach (MiningFacilityType type in MINING_FACILITIES)
+                assets.BeginPreload<MiningFacilityData>(MiningFacilityAssets.GetName(type) + "Data");
             foreach (string prefix in STRUCTURE_PREFIXES)
             {
-                assets.BeginPreload<MiningFacilityData>(prefix + nameof(MiningFacilityData));
                 foreach (string key in PlatformKeys(prefix)) assets.BeginPreload<DefendPlatformData>(key + "Data");
             }
         }

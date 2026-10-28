@@ -677,6 +677,6 @@ MonoBehaviour:
           - shipClasses: 
             stat: 5
             multiplier: 1.4
-  miningFacilities: 00000000
+  miningFacilities: 03000000
   defendPlatforms: 000000000200000003000000
   superWeapons: 000000000100000002000000

@@ -1414,3 +1414,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: TibannaGasStationData
+      value:
+        m_AssetGUID: 38a0a1d2e8856a54f8fe6d0e0e4ac5a4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TibannaGasStationView
+      value:
+        m_AssetGUID: 851f7ad1dcb950745be911c507ed7756
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

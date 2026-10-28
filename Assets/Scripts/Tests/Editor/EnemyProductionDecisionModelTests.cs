@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -872,14 +873,14 @@ namespace EmpireAtWar.Tests.Editor
             EnemyUnitLimitModel unitLimitModel,
             int minimumMiningFacilities)
         {
-            FactionData miningData =
-                factionModel.MiningFactions[MiningFacilityType.CommonMiner];
+            KeyValuePair<MiningFacilityType, FactionData> mining = factionModel.MiningFactions.First();
+            FactionData miningData = mining.Value;
             for (int i = 0; i < minimumMiningFacilities; i++)
             {
                 Assert.That(
                     unitLimitModel.TryReserve(
                         GetUnitId<MiningFacilityUnitRequest>(
-                            MiningFacilityType.CommonMiner.ToString()),
+                            mining.Key.ToString()),
                         miningData.MaxCount,
                         miningData.UnitCapacity,
                         MAX_UNIT_CAPACITY),
