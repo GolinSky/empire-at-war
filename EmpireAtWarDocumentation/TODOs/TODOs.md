@@ -158,6 +158,11 @@
 
 ### Optimization
 
+- [ ] **Fix decorative asteroid rendering and follow up both performance audits** → [[TODOs/Optimization/Battle_Rendering_Performance_Audit|Battle Rendering Performance Audit]]; [[TODOs/Optimization/Battle_Rendering_Performance_Audit - Research|Both audits, measurements and VFX findings]]
+  - **Audited 2026-10-28**: asteroid on/off/restored = 39.228 → 100.912 → 39.353 FPS; Performant = 19.318 → 48.634 → 19.350 FPS. Camera fixed within each comparison; no cross-preset regression claim.
+  - **Required**: retain verified instanced asteroid materials/draws; reject asteroids wholly outside the camera frustum using transformed bounds. Distance-only filtering is insufficient.
+  - **Remaining**: implement/measure culling and geometry reduction; attribute 128-sample nebula and post-processing cost; review legacy explosion materials/shadow flags; repair Frame Debugger and stale-camera capture errors. No code changes or tests in audit.
+
 - [ ] **Pool ship contexts to remove spawn spikes** → [[TODOs/Optimization/Ship_Pooling_Plan|Ship Pooling]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
