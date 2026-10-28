@@ -221,7 +221,8 @@ namespace EmpireAtWar.Services.CaptureSites
                 // Paying for a site that hostile units are about to take would waste the credits.
                 if (site.Owner == owner && site.CanStartConstruction && !HasHostileUnits(site, owner))
                 {
-                    return TryStartConstruction(site, ChooseFacilityType(owner), owner);
+                    // A mine pays for itself in seconds; a Battle Asteroid costs more and gives up most of the income.
+                    return TryStartConstruction(site, SiteFacilityType.Mining, owner);
                 }
             }
 
@@ -273,31 +274,6 @@ namespace EmpireAtWar.Services.CaptureSites
             {
                 TryStartConstruction(_selectedSite, facilityType, _localPlayer.Id);
             }
-        }
-
-        /// <summary>Keeps a side's facilities balanced: builds whichever type it owns fewer of, mining first.</summary>
-        private SiteFacilityType ChooseFacilityType(PlayerId owner)
-        {
-            int miningCount = 0;
-            int battleAsteroidCount = 0;
-            foreach (CaptureSitePresenter site in _sites)
-            {
-                if (site.Owner != owner || !site.HasFacility)
-                {
-                    continue;
-                }
-
-                if (site.FacilityType == SiteFacilityType.Mining)
-                {
-                    miningCount++;
-                }
-                else
-                {
-                    battleAsteroidCount++;
-                }
-            }
-
-            return battleAsteroidCount < miningCount ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
         }
 
         private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType, PlayerId payer)

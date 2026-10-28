@@ -41,7 +41,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private DefendPlatformData Data { get; set; }
 
         public override string Id => GetType().Name;
-        public float Income => Data.Income * _research.IncomeMultiplier;
+        /// <summary>One team member's share; every allied economy receives this amount.</summary>
+        public float Income => Data.Income * _research.IncomeMultiplier / _teamEconomies.Count;
 
         [Inject]
         private void Construct(
@@ -81,10 +82,13 @@ namespace EmpireAtWar.Entities.DefendPlatform
                 {
                     if (_playerRoster.IsAllied(_owner, player.Id))
                     {
-                        IEconomyProvider economy = _playerRegistry.GetEconomy(player.Id);
-                        economy.AddProvider(this);
-                        _teamEconomies.Add(economy);
+                        _teamEconomies.Add(_playerRegistry.GetEconomy(player.Id));
                     }
+                }
+                // Registered only once the team is known, so every economy totals the final share.
+                foreach (IEconomyProvider economy in _teamEconomies)
+                {
+                    economy.AddProvider(this);
                 }
                 _research.OnResearchCompleted += HandleResearchCompleted;
             }

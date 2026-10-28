@@ -91,6 +91,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     {
         private const int MINIMUM_FLEET_SIZE = 3;
         private const int FLAGSHIP_MAX_COUNT = 3;
+        private const int FLAGSHIP_MIN_CAPACITY = 5;
         private const float FLAGSHIP_PRIORITY = 0f;
 
         /// <summary>Squadrons do not count toward the fleet, so a fleet below the minimum must buy ships.</summary>
@@ -106,9 +107,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float combatValuePerCredit = 1f)
         {
             // Scarce flagship types (e.g. Rothana, Malevolence) never win the balance below,
-            // so an established fleet without one builds it first.
+            // so an established fleet without one builds it first. Scarce small ships (IPV-2C) are not flagships.
             if (shipCount >= MINIMUM_FLEET_SIZE && reservedCount == 0 &&
-                maxCount <= FLAGSHIP_MAX_COUNT)
+                maxCount <= FLAGSHIP_MAX_COUNT && unitCapacity >= FLAGSHIP_MIN_CAPACITY)
             {
                 return FLAGSHIP_PRIORITY;
             }
@@ -200,9 +201,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 }
             }
 
-            if (snapshot.CanBuildShip)
+            // Mining past the floor grows with the fleet; it pays for itself quickly, so it is bought whenever affordable
+            // but never saved for.
+            if (snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.CanBuildMining)
             {
-                return EnemyProductionCategory.Ship;
+                return EnemyProductionCategory.Mining;
+            }
+
+            // The chosen ship is saved for; spending on cheaper categories would keep it out of reach.
+            if (snapshot.HasShipOption)
+            {
+                return snapshot.CanBuildShip
+                    ? EnemyProductionCategory.Ship
+                    : EnemyProductionCategory.None;
             }
 
             if (snapshot.CanBuildDefense)

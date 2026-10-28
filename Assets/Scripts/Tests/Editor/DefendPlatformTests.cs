@@ -49,7 +49,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void BattleAsteroid_PaysAlliesAndRecalculatesResearchUntilReleased()
+        public void BattleAsteroid_SplitsIncomeWithAlliesAndRecalculatesResearchUntilReleased()
         {
             GameObject gameObject = new GameObject(nameof(DefendPlatformTests));
             try
@@ -76,16 +76,17 @@ namespace EmpireAtWar.Tests.Editor
                     .SetValue(platform, data);
 
                 platform.Initialize();
-                Assert.That(owner.Income, Is.EqualTo(10f));
-                Assert.That(ally.Income, Is.EqualTo(10f));
+                // The owner and one ally split the 10 credits evenly.
+                Assert.That(owner.Income, Is.EqualTo(5f));
+                Assert.That(ally.Income, Is.EqualTo(5f));
                 Assert.That(enemy.Income, Is.Zero);
 
                 research.Complete(1.2f);
-                Assert.That(owner.Income, Is.EqualTo(12f));
-                Assert.That(ally.Income, Is.EqualTo(12f));
+                Assert.That(owner.Income, Is.EqualTo(6f));
+                Assert.That(ally.Income, Is.EqualTo(6f));
                 research.Complete(1.4f);
-                Assert.That(owner.Income, Is.EqualTo(14f));
-                Assert.That(ally.Income, Is.EqualTo(14f));
+                Assert.That(owner.Income, Is.EqualTo(7f));
+                Assert.That(ally.Income, Is.EqualTo(7f));
 
                 platform.LateDispose();
                 Assert.That(owner.Income, Is.Zero);

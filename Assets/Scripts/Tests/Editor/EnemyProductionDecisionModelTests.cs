@@ -87,15 +87,50 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void NothingElseAffordable_ResearchesCombat()
+        public void NoShipOptionAndNothingElseAffordable_ResearchesCombat()
         {
             EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
                 new EnemyProductionSnapshot(
                     EnemyStrategicState.CaptureZone, EnemyAiDifficulty.Easy,
                     1, 3, 2, 1, 1, 1, 1,
-                    true, true, false, false, true, false, true, false, false, true));
+                    true, false, false, false, true, false, true, false, false, true));
 
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
+        }
+
+        // Buying platforms or research whenever the chosen ship was unaffordable kept it out of reach for good.
+        [TestCase(EnemyAiDifficulty.Easy)]
+        [TestCase(EnemyAiDifficulty.Medium)]
+        [TestCase(EnemyAiDifficulty.Hard)]
+        public void PreferredShipUnaffordable_SavesInsteadOfBuyingDefenseOrResearch(EnemyAiDifficulty difficulty)
+        {
+            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.CaptureZone, difficulty,
+                    miningFloor, 3, 1, 1, 1, miningFloor, 1,
+                    true, true, false, false, true, true, true, true, false, true));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
+        }
+
+        [TestCase(EnemyAiDifficulty.Easy, true, EnemyProductionCategory.Mining)]
+        [TestCase(EnemyAiDifficulty.Medium, true, EnemyProductionCategory.Mining)]
+        [TestCase(EnemyAiDifficulty.Hard, true, EnemyProductionCategory.Mining)]
+        [TestCase(EnemyAiDifficulty.Medium, false, EnemyProductionCategory.Ship)]
+        public void AboveFloorBelowTarget_BuildsMiningOnlyWhenAffordable(
+            EnemyAiDifficulty difficulty,
+            bool canBuildMining,
+            EnemyProductionCategory expected)
+        {
+            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.CaptureZone, difficulty,
+                    miningFloor, 6, 1, 1, 1, miningFloor + 2, 1,
+                    true, true, true, canBuildMining, true, true, true, false));
+
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         // An unaffordable due level is saved for; spending on research would keep the AI at its level.
@@ -242,6 +277,17 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(flagship, Is.LessThan(firstLight));
             Assert.That(flagshipBeforeFleet, Is.GreaterThan(firstLight));
             Assert.That(secondFlagship, Is.GreaterThan(firstLight));
+        }
+
+        [Test]
+        public void ScarceSmallShip_IsNotTreatedAsFlagship()
+        {
+            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
+            // IPV-2C: limit 1 like a hero ship, but a 2-capacity corvette.
+            float corvette = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 18, 2, 1);
+
+            Assert.That(corvette, Is.GreaterThan(0f));
         }
 
         [TestCase(EnemyAiDifficulty.Easy, 1)]

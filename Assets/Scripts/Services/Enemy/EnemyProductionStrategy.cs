@@ -23,6 +23,10 @@ namespace EmpireAtWar.Services.Enemy
 
         private const int SHIPS_PER_SQUADRON = 2;
 
+        /// <summary>Active ships per mining facility above the difficulty's minimum.</summary>
+        private const int SHIPS_PER_MINING_FACILITY = 3;
+        private const int ULTRA_HARD_SHIPS_PER_MINING_FACILITY = 2;
+
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
         private readonly IEconomyModelObserver _economyModel;
@@ -183,9 +187,8 @@ namespace EmpireAtWar.Services.Enemy
             bool canResearchCombat = TrySelectResearch(false, out ResearchType combatResearch,
                                          out ResearchTierData combatTier) &&
                                      IsAffordable(combatTier.FactionData);
-            int miningFacilityTarget = isUltraHard
-                ? profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount / 2
-                : profile.MinimumMiningFacilities;
+            int miningFacilityTarget = profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount /
+                (isUltraHard ? ULTRA_HARD_SHIPS_PER_MINING_FACILITY : SHIPS_PER_MINING_FACILITY);
             int defensePlatformTarget = isUltraHard
                 ? 1 + _stateProvider.ActiveShipCount / 3
                 : 1;
@@ -558,6 +561,10 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
+        /// <summary>
+        /// Picks the strongest (most expensive) platform the AI can pay for now, so Golan III and Empress are built once
+        /// affordable; with none affordable, the cheapest one is the one to save for.
+        /// </summary>
         private bool TrySelectDefense(
             out KeyValuePair<DefendPlatformType, FactionData> selected)
         {
@@ -574,7 +581,12 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if (!found || option.Value.Price < selected.Value.Price)
+                bool isAffordable = IsAffordable(option.Value);
+                bool isSelectedAffordable = found && IsAffordable(selected.Value);
+                bool isBetter = isAffordable
+                    ? !isSelectedAffordable || option.Value.Price > selected.Value.Price
+                    : !isSelectedAffordable && option.Value.Price < selected.Value.Price;
+                if (!found || isBetter)
                 {
                     selected = option;
                     found = true;
