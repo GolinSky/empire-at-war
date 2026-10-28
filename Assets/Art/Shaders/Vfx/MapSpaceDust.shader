@@ -46,8 +46,9 @@ Shader "EmpireAtWar/Vfx/Map Space Dust"
                 float2 seed = input.seed.xz * _FieldSpan + _Time.y * float2(0.22, -0.13);
                 float3 forward = -UNITY_MATRIX_V[2].xyz;
                 float middleHeight = (_HeightRange.x + _HeightRange.y) * 0.5;
-                float focusDistance = abs(forward.y) > 0.1
-                    ? max(0, (middleHeight - _WorldSpaceCameraPos.y) / forward.y) : 0;
+                // Continuous ray-plane distance: shrinks to the camera as the view levels out instead of snapping.
+                float focusDistance = max(0, (middleHeight - _WorldSpaceCameraPos.y) * forward.y
+                    / max(forward.y * forward.y, 0.01));
                 float2 fieldCenter = _WorldSpaceCameraPos.xz + forward.xz * focusDistance;
                 // Wrapping changes only distant, fully faded cards. Nearby dust stays anchored while panning.
                 float2 offset = (frac((seed - fieldCenter) / _FieldSpan + 0.5) - 0.5) * _FieldSpan;
@@ -56,29 +57,35 @@ Shader "EmpireAtWar/Vfx/Map Space Dust"
                 float edgeFade = 1 - smoothstep(_FieldSpan * 0.35, _FieldSpan * 0.48, max(abs(offset.x), abs(offset.y)));
                 float2 mapEdge = min(center.xz - _MapBounds.xy, _MapBounds.zw - center.xz);
                 edgeFade *= saturate(min(mapEdge.x, mapEdge.y) / 100);
-                float cameraFade = smoothstep(lerp(12, 100, input.data.y), lerp(80, 350, input.data.y),
-                    distance(center, _WorldSpaceCameraPos));
+                float cameraDistance = distance(center, _WorldSpaceCameraPos);
+                float cameraFade = smoothstep(lerp(12, 100, input.data.y), lerp(80, 350, input.data.y), cameraDistance);
+                // Distant dust specks shrink below a pixel and shimmer; fog cards stay visible to the field edge.
+                cameraFade *= 1 - smoothstep(600, 1000, cameraDistance) * (1 - input.data.y);
+                half4 fogColor = lerp(_WispColor, _PocketColor, input.data.w);
+                output.color = lerp(_DustColor, fogColor, input.data.y) * input.color;
+                output.color.a *= edgeFade * cameraFade;
                 float s, c;
                 sincos(input.data.z, s, c);
                 float2 corner = input.uv * 2 - 1;
                 corner.y *= lerp(1, 0.3, input.data.y);
                 corner = float2(c * corner.x - s * corner.y, s * corner.x + c * corner.y) * input.data.x;
-                corner *= step(0.0001, edgeFade * cameraFade);
+                // Collapse cards that cannot change a pixel so they skip rasterization.
+                corner *= step(1.0 / 255, output.color.a);
                 float3 positionWS = center + UNITY_MATRIX_V[0].xyz * corner.x + UNITY_MATRIX_V[1].xyz * corner.y;
                 output.position = TransformWorldToHClip(positionWS);
-                output.eyeDepth = -TransformWorldToView(positionWS).z;
+                // View-axis distance is the eye depth for both perspective and orthographic cameras.
+                output.eyeDepth = dot(positionWS - _WorldSpaceCameraPos, forward);
                 output.uv = input.uv;
                 output.kind = input.data.y;
-                half4 fogColor = lerp(_WispColor, _PocketColor, input.data.w);
-                output.color = lerp(_DustColor, fogColor, input.data.y) * input.color;
-                output.color.a *= edgeFade * cameraFade;
                 return output;
             }
 
             half4 Frag(Varyings input) : SV_Target
             {
                 half2 masks = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv).rg;
-                float sceneDepth = LinearEyeDepth(SampleSceneDepth(GetNormalizedScreenSpaceUV(input.position)), _ZBufferParams);
+                float rawDepth = SampleSceneDepth(GetNormalizedScreenSpaceUV(input.position));
+                float sceneDepth = IsPerspectiveProjection()
+                    ? LinearEyeDepth(rawDepth, _ZBufferParams) : LinearDepthToEyeDepth(rawDepth);
                 // Fade through hulls instead of drawing hard intersections as ships cross a wisp.
                 half softFade = saturate((sceneDepth - input.eyeDepth) / lerp(2, 35, input.kind));
                 return half4(input.color.rgb, input.color.a * lerp(masks.r, masks.g, input.kind) * softFade);
