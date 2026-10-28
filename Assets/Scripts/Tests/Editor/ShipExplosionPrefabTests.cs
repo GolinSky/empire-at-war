@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Health")]
     public sealed class ShipExplosionPrefabTests
     {
         private static IEnumerable<string> ShipPrefabs()

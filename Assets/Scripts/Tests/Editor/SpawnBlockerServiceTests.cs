@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class SpawnBlockerServiceTests
     {
         private GameObject _root;

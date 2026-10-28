@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class HostileIntelModelTests
     {
         [TestCase(0f, 1f)]

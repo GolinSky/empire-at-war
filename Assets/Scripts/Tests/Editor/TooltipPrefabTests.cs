@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class TooltipPrefabTests
     {
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab";

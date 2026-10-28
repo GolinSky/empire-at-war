@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Movement
 {
+    [Category("Navigation")]
     public sealed class ShipRotationKinematicsTests
     {
         [TestCase(0.25f)]

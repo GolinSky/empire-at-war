@@ -5,6 +5,7 @@ using UnityEngine.UI.MPUIKIT;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public class MPImageMeshTests
     {
         [Test]

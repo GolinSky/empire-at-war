@@ -16,6 +16,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class FighterCoordinationModifierTests
     {
         [TestCase(0, 100f, true)]

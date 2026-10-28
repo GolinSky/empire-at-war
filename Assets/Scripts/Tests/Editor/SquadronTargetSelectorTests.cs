@@ -22,6 +22,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class SquadronTargetSelectorTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

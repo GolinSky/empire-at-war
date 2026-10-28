@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Timing
 {
+    [Category("Core")]
     public sealed class BattlePerformanceCaptureReportTests
     {
         [Test]

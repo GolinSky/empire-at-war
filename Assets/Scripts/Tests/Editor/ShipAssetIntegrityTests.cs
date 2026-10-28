@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class ShipAssetIntegrityTests
     {
         [TestCase("AcclamatorAssault")]

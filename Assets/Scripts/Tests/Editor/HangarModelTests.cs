@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class HangarModelTests
     {
         private const float INITIAL_DELAY = 4f;

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public class UiPrefabScaleTests
     {
         private const string UI_PREFAB_FOLDER = "Assets/Prefabs/Ui";

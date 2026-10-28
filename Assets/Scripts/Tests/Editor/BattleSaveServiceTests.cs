@@ -26,6 +26,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class BattleSaveServiceTests
     {
         private GameObject _cameraObject;

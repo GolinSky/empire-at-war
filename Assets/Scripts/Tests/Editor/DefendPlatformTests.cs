@@ -18,6 +18,7 @@ using UnityEngine.Rendering;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class DefendPlatformTests
     {
         [Test]

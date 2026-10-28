@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class ShotEffectPoolLifecycleTests
     {
         // Prewarm targets cover several salvos in flight, so a pool can hold more shots than it ever fires at once.

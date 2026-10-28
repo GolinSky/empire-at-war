@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Movement
 {
+    [Category("Navigation")]
     public sealed class ShipNavigationServiceTests
     {
         private Vector2Range _mapRange;

@@ -15,6 +15,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class SelectionMarkerTests
     {
         private const string SELECTION_DATA_PATH =

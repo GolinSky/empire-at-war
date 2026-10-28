@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public class ReinforcementZoneModelTests
     {
         private static readonly PlayerRoster ROSTER = TestPlayers.CreateDuel();

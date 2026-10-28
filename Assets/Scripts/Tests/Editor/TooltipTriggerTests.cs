@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class TooltipTriggerTests
     {
         private GameObject _target;

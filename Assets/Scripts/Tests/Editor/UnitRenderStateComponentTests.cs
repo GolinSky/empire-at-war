@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class UnitRenderStateComponentTests
     {
         private GameObject _root;

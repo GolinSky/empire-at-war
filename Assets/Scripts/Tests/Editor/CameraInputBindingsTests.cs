@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace EmpireAtWar.Tests.Camera
 {
+    [Category("BattleInput")]
     public sealed class CameraInputBindingsTests
     {
         private const string INPUT_ACTIONS_PATH =

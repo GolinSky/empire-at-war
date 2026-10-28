@@ -11,6 +11,7 @@ using UnityEditor;
 namespace EmpireAtWar.Tests.Editor
 {
     /// <summary>Republic and CIS ships follow Republic at War 1.5.5 HP, shields and weapon barrels.</summary>
+    [Category("Balance")]
     public sealed class OriginalValuesRebalanceTests
     {
         private const string WEAPONS = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";

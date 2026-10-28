@@ -18,6 +18,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Economy")]
     public sealed class ReinforcementSpawnRuleTests
     {
         private const float MAP_HALF_SIZE = 1000f;

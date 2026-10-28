@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class WeaponTargetSelectionJobTests
     {
         [TestCase(1)]

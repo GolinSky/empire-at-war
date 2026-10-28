@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Combat")]
     public sealed class TorpedoSalvoModifierTests
     {
         [Test]

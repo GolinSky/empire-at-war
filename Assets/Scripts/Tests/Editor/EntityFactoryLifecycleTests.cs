@@ -16,6 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class EntityFactoryLifecycleTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

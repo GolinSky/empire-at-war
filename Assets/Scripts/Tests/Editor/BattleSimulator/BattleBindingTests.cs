@@ -9,6 +9,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Simulation")]
     public sealed class BattleBindingTests
     {
         [Test]

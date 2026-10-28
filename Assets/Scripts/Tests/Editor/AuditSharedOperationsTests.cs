@@ -27,6 +27,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class AuditSharedOperationsTests
     {
         [Test]

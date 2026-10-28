@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public sealed class CaptureRingViewTests
     {
         [TestCase(CaptureSiteState.Neutral, OwnerRelation.Neutral, OwnerRelation.Neutral, false, false, true)]

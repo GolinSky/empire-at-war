@@ -24,6 +24,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class SerializedReferenceTests
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs";

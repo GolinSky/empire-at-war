@@ -10,6 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class AddressableHandleLoaderTests
     {
         [Test]

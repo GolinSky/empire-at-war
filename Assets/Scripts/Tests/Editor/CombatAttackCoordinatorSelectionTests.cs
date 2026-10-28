@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class CombatAttackCoordinatorSelectionTests
     {
         [TestCase(7)]

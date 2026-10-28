@@ -8,6 +8,7 @@ using Unity.Mathematics;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Vision")]
     public sealed class FogVisibilityGridModelTests
     {
         [Test]

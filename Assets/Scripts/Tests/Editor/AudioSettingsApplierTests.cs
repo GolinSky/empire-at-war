@@ -9,6 +9,7 @@ using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class AudioSettingsApplierTests
     {
         private AudioMixer _mixer;

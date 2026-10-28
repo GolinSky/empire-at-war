@@ -16,6 +16,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class FactionAudioDomainEventTests
     {
         private const string LEVELS_PATH = "Assets/Settings/Data/Factions/Shared/StationLevelData.asset";

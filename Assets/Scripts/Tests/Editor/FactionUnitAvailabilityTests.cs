@@ -13,6 +13,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Economy")]
     [Category("BattleInput")]
     public sealed class FactionUnitAvailabilityTests
     {

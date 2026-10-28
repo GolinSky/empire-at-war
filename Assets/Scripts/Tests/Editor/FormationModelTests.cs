@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Movement
 {
+    [Category("Navigation")]
     public sealed class FormationModelTests
     {
         [Test]

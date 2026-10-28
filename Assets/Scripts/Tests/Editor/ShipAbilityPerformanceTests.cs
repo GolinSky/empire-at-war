@@ -17,6 +17,7 @@ using TMPro;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     [TestFixture(ShipAbilityId.TractorBeam, HardPointType.TractorBeam)]
     [TestFixture(ShipAbilityId.DauntlessSensorJamming, HardPointType.SensorArray)]
     [TestFixture(ShipAbilityId.FighterCoordination, HardPointType.CommandArray)]

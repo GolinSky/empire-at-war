@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Movement
 {
+    [Category("Navigation")]
     public sealed class ShipBezierRouteTests
     {
         [Test]

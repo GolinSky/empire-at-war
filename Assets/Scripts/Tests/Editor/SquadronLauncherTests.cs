@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class SquadronLauncherTests
     {
         [Test]

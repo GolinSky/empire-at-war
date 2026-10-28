@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class SpawnAreaGridModelTests
     {
         private const int RESOLUTION = 100;

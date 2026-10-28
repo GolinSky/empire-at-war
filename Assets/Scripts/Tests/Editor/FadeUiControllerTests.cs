@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class FadeUiControllerTests
     {
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/Fade/FadeUi.prefab";

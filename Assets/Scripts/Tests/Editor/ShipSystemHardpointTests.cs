@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class ShipSystemHardpointTests
     {
         [TestCase("RecusantShipData")]

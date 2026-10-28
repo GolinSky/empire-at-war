@@ -14,6 +14,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public sealed class DefenseSatelliteContractTests
     {
         [TestCase(SiteFacilityType.QuadLaserSatellite, DefendPlatformType.QuadLaserSatellite, WeaponType.DualRepeatingPointDefense, 300f, 21f)]

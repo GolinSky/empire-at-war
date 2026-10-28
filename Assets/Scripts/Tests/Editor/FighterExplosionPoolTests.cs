@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class FighterExplosionPoolTests
     {
         private const float VISION_RADIUS = 50f;

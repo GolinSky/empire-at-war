@@ -23,6 +23,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class FactionAnnouncementTests
     {
         private const string DATA_PATH = "Assets/Settings/Data/Models/Audio/InterfaceSfxData.asset";

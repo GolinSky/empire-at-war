@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Economy")]
     public sealed class EconomyModelTests
     {
         [Test]

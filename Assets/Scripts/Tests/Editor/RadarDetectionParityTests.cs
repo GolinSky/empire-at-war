@@ -8,6 +8,7 @@ using Unity.Mathematics;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Vision")]
     public sealed class RadarDetectionParityTests
     {
         private const int SLOT_COUNT = 4;

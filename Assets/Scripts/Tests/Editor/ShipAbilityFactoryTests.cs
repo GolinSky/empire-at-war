@@ -12,6 +12,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class ShipAbilityFactoryTests
     {
         private static readonly HashSet<Type> _statModifierSettings = new HashSet<Type>

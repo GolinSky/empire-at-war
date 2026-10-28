@@ -18,6 +18,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Capture")]
     public sealed class TargetSelectionCaptureTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

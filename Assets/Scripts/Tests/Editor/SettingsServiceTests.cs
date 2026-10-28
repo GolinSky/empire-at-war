@@ -8,6 +8,7 @@ using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class SettingsServiceTests
     {
         private FakeRepository _repository;

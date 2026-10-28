@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Health")]
     public sealed class WreckCutPlanTests
     {
         private const float MIN_RATIO = 0.5f;

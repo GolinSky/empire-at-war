@@ -14,6 +14,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     [TestFixture(ShipAbilityId.IonPulse, HardPointType.IonPulseCannon)]
     [TestFixture(ShipAbilityId.TractorBeam, HardPointType.TractorBeam)]
     [TestFixture(ShipAbilityId.DauntlessSensorJamming, HardPointType.SensorArray)]

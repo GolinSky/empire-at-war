@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class UnitOrderModelTests
     {
         [Test]

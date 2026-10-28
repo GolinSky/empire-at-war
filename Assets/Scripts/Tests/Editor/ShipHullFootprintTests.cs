@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class ShipHullFootprintTests
     {
         // A long, narrow hull: 20 wide, 10 tall, 100 long.

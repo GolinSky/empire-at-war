@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class TractorBeamSettingsTests
     {
         [Test]

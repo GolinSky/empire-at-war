@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class ProcursatorShipTests
     {
         private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab";

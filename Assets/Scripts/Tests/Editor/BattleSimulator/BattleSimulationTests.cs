@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Simulation")]
     public sealed class BattleSimulationTests
     {
         private DamageMatrixData _matrix;

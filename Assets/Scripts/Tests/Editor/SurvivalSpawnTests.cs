@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class SurvivalSpawnTests
     {
         [Test]

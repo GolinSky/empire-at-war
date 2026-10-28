@@ -26,6 +26,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Movement
 {
+    [Category("Navigation")]
     public sealed class ShipPursuitTests
     {
         private GameObject _targetObject;

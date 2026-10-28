@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class BoltParticleSimulationTests
     {
         [TestCase("Projectile", 1)]

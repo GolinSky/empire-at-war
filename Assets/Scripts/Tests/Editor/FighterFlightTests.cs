@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class FighterFlightTests
     {
         private const float DELTA_TIME = 0.1f;

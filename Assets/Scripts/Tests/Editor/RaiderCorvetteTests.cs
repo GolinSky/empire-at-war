@@ -22,6 +22,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class RaiderCorvetteTests
     {
         private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab";

@@ -16,6 +16,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class BattleVictoryModelTests
     {
         private static readonly TeamId HUMAN_TEAM = new TeamId(0);

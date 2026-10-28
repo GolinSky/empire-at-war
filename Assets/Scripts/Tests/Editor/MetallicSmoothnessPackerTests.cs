@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Rendering
 {
+    [Category("Core")]
     public sealed class MetallicSmoothnessPackerTests
     {
         [TestCase(0f, 255)]

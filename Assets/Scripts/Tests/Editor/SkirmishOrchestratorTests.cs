@@ -16,6 +16,7 @@ using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class SkirmishOrchestratorTests
     {
         private SkirmishOrchestrator _orchestrator;

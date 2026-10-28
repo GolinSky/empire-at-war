@@ -12,6 +12,7 @@ using IPostTickable = EmpireAtWar.Lifecycle.IPostTickable;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class PostTickLifecycleTests
     {
         [Test]

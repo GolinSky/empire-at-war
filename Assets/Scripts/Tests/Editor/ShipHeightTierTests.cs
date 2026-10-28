@@ -5,6 +5,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class ShipHeightTierTests
     {
         [Test]

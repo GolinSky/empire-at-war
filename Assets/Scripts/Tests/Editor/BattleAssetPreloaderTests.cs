@@ -29,6 +29,7 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class BattleAssetPreloaderTests
     {
         [TestCase(GameMode.Skirmish, FactionType.Republic, FactionType.Separatist)]

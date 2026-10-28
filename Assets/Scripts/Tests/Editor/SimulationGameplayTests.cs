@@ -18,6 +18,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Simulation")]
     public sealed class SimulationGameplayTests
     {
         private static SimulationFleetEntry Entry(int quantity = 1) => new SimulationFleetEntry(UnitTypeId.Ship(ShipType.Venator), quantity);

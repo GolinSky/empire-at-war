@@ -21,6 +21,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class TitanShipTests
     {
         private const string DATA_PATH = "Assets/Settings/Data/Ship/Empire/TitanShipData.asset";

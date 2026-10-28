@@ -18,6 +18,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class ShipSelectionReuseTests
     {
         [Test]

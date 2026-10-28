@@ -7,6 +7,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class ShipMoveModelTests
     {
         [Test]

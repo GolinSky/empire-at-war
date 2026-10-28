@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Health")]
     public sealed class HardPointDestructionVfxPrefabTests
     {
         [Test]

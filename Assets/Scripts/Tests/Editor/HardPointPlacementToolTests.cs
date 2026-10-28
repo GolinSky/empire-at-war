@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class HardPointPlacementToolTests
     {
         private GameObject _root;

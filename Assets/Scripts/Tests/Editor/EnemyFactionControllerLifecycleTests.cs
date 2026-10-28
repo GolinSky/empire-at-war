@@ -24,6 +24,7 @@ using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class EnemyFactionControllerLifecycleTests
     {
         private const BindingFlags PRIVATE_INSTANCE =

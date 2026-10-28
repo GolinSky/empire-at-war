@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public sealed class CaptureControlTests
     {
         [Test]

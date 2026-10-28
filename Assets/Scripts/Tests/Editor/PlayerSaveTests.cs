@@ -19,6 +19,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class PlayerSaveTests
     {
         private const string SHARED_DATA = "Assets/Settings/Data/Factions/Shared/";

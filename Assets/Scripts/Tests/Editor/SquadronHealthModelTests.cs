@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class SquadronHealthModelTests
     {
         private const float MEMBER_HULL = 80f;

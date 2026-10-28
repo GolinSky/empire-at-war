@@ -14,6 +14,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Combat")]
     public sealed class WeaponLoadoutBakeTests
     {
         private const string WEAPONS_DATA = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";

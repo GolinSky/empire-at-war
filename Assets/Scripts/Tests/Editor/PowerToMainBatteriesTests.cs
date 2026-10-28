@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class PowerToMainBatteriesTests
     {
         private const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;

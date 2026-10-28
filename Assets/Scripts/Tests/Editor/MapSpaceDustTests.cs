@@ -12,6 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Map")]
     [Category("MapSpaceDust")]
     public sealed class MapSpaceDustTests
     {

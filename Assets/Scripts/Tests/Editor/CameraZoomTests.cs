@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Camera
 {
+    [Category("BattleInput")]
     public sealed class CameraZoomTests
     {
         private const float PITCH_SINE = 0.5f;

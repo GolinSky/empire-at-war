@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Combat")]
     public sealed class WeaponTaxonomyTests
     {
         private const string WEAPONS = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";

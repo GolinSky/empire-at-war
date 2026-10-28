@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class FleetCohesionTests
     {
         private const float RADIUS = 800f;

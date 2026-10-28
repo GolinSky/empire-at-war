@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class SettingsDataTests
     {
         [Test]

@@ -14,6 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class LifecycleContractTests
     {
         // Everything EntryPointDispatcher drives itself, outside OrderedLifecycleCoordinator.

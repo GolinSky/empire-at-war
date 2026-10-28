@@ -13,6 +13,7 @@ using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class StationLevelViewTests
     {
         private const string PREFABS = "Assets/Prefabs/Models/Stations/";

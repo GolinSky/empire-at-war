@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Health")]
     public sealed class HardPointMarkerViewTests
     {
         private GameObject _root;

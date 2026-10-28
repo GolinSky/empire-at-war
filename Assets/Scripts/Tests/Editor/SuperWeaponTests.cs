@@ -25,6 +25,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class SuperWeaponTests
     {
         [TestCase(SuperWeaponType.IonCannon)]

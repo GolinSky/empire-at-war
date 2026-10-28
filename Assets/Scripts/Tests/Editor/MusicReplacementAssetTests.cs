@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     [Category("MusicReplacement")]
     public sealed class MusicReplacementAssetTests
     {

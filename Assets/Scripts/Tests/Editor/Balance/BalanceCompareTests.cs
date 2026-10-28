@@ -14,6 +14,7 @@ using UnityEngine.UIElements;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalanceCompareTests
     {
         private const string TEST_FOLDER = "Assets/Scripts/Tests/Editor/Balance/TemporaryCompareAssets";

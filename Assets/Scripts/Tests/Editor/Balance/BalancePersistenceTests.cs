@@ -10,6 +10,7 @@ using UnityEngine.UIElements;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalancePersistenceTests
     {
         private const string TEST_FOLDER = "Assets/Scripts/Tests/Editor/Balance/TemporaryBalanceAssets";

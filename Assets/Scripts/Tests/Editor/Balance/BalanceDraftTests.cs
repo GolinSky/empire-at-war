@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalanceDraftTests
     {
         [Test]

@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class SettingsDraftEditorTests
     {
         private SettingsService _settingsService;

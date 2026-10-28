@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class CheatServiceTests
     {
         private EconomyData _economyData;

@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.LowLevel;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class InputBindingServiceTests
     {
         private const int MATCH_WAIT_MILLISECONDS = 150;

@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class HitAccumulatorTests
     {
         [TestCase(0.05f)]

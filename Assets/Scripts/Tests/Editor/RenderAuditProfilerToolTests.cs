@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     [Explicit("Requires the local 2026-09-30 Render Audit recording.")]
     public sealed class RenderAuditProfilerToolTests
     {

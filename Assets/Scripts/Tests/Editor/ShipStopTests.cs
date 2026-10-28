@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class ShipStopTests
     {
         [TestCase(UnitOrderType.WaypointMove)]

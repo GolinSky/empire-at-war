@@ -11,6 +11,7 @@ using UnityEngine.UIElements;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalanceCompareOrderTests
     {
         [TestCase(BalanceCompareSort.Price, "Price", "Hull")]

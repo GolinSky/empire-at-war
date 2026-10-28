@@ -8,6 +8,7 @@ using System.Reflection;
 
 namespace EmpireAtWar.Tests.Movement
 {
+    [Category("Navigation")]
     public sealed class ShipAvoidancePlannerTests
     {
         private Vector2Range _mapRange;

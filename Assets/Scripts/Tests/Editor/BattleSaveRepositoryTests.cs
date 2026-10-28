@@ -18,6 +18,7 @@ using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class BattleSaveRepositoryTests
     {
         private const int MAP_SEED = 4242;

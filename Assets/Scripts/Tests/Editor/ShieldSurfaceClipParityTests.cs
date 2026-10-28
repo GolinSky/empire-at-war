@@ -9,6 +9,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace EmpireAtWar.Tests.Health
 {
+    [Category("Combat")]
     public sealed class ShieldSurfaceClipParityTests
     {
         [TestCase(0)]

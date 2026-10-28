@@ -22,6 +22,7 @@ using VContainer.Unity;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class AllegianceShipTests
     {
         private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab";

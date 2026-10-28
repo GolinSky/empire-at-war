@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class UnitOrderServiceTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

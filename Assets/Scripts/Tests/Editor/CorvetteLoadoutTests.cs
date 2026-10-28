@@ -11,6 +11,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class CorvetteLoadoutTests
     {
         private const string RAIDER_DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";

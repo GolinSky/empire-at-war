@@ -61,6 +61,7 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class RealEntityCompositionTests
     {
         private const string PROJECT_PREFAB_PATH = "Assets/Resources/ProjectContext.prefab";

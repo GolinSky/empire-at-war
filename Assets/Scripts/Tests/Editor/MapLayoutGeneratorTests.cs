@@ -17,6 +17,7 @@ using Random = System.Random;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Map")]
     public sealed class MapLayoutGeneratorTests
     {
         private const string SETTINGS_PATH = "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset";

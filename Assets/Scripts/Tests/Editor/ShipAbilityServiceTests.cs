@@ -25,6 +25,7 @@ using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     [Category("BattleInput")]
     public sealed class ShipAbilityServiceTests
     {

@@ -11,6 +11,7 @@ using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class WeaponTurnRateTests
     {
         private const string WEAPONS = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";

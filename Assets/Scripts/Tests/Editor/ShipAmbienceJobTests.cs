@@ -6,6 +6,7 @@ using Unity.Mathematics;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class ShipAmbienceJobTests
     {
         [Test]

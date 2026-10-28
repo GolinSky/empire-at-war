@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class CisStationImportTests
     {
         private const string PREFABS = "Assets/Prefabs/Models/Stations/";

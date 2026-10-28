@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Entities
 {
+    [Category("Core")]
     public sealed class EntityBindingsTests
     {
         [Test]

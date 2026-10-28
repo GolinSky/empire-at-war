@@ -14,6 +14,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class UiCanvasArchitectureTests
     {
         private const string UI_PREFAB_FOLDER = "Assets/Prefabs/Ui";

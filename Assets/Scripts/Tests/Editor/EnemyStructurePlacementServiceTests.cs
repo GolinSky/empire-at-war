@@ -22,6 +22,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class EnemyStructurePlacementServiceTests
     {
         private const int OBSTACLE_LAYER = 9;

@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class MenuFactionAudioTests
     {
         private const string AUDIO_DATA_PATH = "Assets/Settings/Data/Models/Audio/InterfaceSfxData.asset";

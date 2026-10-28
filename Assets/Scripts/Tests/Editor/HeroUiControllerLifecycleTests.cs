@@ -18,6 +18,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class HeroUiControllerLifecycleTests
     {
         [TestCase(false)]

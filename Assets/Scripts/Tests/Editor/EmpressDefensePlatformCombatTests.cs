@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class EmpressDefensePlatformCombatTests
     {
         private const string DATA = "Assets/Settings/Data/Models/DefendPlatform/AotrEmpressDefensePlatformData.asset";

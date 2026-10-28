@@ -18,6 +18,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class EnemyShipAbilityControllerTests
     {
         [Test]

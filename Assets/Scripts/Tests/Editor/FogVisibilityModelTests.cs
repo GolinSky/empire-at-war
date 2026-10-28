@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Vision")]
     public sealed class FogVisibilityModelTests
     {
         [Test]

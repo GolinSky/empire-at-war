@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class MC30cPrefabTests
     {
         [TestCase("MC30c")]

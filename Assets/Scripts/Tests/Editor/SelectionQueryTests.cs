@@ -17,6 +17,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class SelectionQueryTests
     {
         private static readonly MarqueeRectangle WHOLE_SCREEN =

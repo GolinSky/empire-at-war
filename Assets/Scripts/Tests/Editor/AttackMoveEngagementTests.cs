@@ -11,6 +11,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Combat")]
     public sealed class AttackMoveEngagementTests
     {
         private static readonly Func<IEntity, float> BY_ID = enemy => enemy.Id;

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class PipelineViewLifecycleTests
     {
         private const BindingFlags PRIVATE_INSTANCE =

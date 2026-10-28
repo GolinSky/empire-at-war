@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class UtilityGeometryTests
     {
         [TestCase(3f, 4f, true)]

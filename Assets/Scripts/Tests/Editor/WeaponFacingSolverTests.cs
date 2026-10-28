@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Combat")]
     public sealed class WeaponFacingSolverTests
     {
         private const int SAMPLE_COUNT = 180;

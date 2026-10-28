@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public sealed class CaptureSiteModelTests
     {
         private const float CAPTURE_DURATION = 10f;

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Vision")]
     public sealed class VisionServiceTests
     {
         private GameObject _root;

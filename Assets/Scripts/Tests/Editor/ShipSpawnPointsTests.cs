@@ -19,6 +19,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ships")]
     public sealed class ShipSpawnPointsTests
     {
         private const BindingFlags PRIVATE_INSTANCE =

@@ -14,6 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class CachedAssetServiceTests
     {
         private const string SHIP_KEY = "Ship";

@@ -11,6 +11,7 @@ using VContainer.Unity;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Health")]
     public sealed class HardPointExplosionPoolTests
     {
         private const int PREWARM_COUNT = 16;

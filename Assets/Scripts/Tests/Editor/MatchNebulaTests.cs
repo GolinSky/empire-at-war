@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Map")]
     public sealed class MatchNebulaTests
     {
         private const string PREFAB = "Assets/Prefabs/Vfx/Nebula/SkirmishVolumetricNebulaClouds.prefab";

@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class AssetMappingContextMenuTests
     {
         private const string RESOLUTE_GUID = "d9d6eb346b0497649911724f20048daf";

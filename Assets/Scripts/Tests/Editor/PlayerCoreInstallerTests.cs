@@ -18,6 +18,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class PlayerCoreInstallerTests
     {
         [TestCase(FactionType.Republic)]

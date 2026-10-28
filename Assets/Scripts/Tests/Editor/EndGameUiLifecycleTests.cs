@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class EndGameUiLifecycleTests
     {
         [Test]

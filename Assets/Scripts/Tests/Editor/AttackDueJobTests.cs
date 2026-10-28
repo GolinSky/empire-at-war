@@ -5,6 +5,7 @@ using Unity.Jobs;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class AttackDueJobTests
     {
         [Test]

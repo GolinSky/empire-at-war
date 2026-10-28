@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class SlowTickServiceTests
     {
         private const int TICKABLE_COUNT = 10;

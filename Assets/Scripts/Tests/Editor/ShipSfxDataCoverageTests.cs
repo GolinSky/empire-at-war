@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class ShipSfxDataCoverageTests
     {
         private const string DATA_PATH = "Assets/Settings/Data/Models/Audio/ShipSfxData.asset";

@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class FighterPoseBatchTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

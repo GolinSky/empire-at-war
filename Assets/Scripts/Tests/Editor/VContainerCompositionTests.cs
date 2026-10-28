@@ -19,6 +19,7 @@ using IFixedTickable = EmpireAtWar.Lifecycle.IFixedTickable;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Core")]
     public sealed class VContainerCompositionTests
     {
         [Test]

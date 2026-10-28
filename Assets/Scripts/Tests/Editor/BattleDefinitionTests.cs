@@ -16,6 +16,7 @@ using VContainer;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class BattleDefinitionTests
     {
         [Test]

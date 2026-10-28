@@ -10,6 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class BoltFlightSchedulingTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

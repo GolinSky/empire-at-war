@@ -8,6 +8,7 @@ using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("GameFlow")]
     public sealed class JsonSettingsRepositoryTests
     {
         private const string FILE_NAME = "settings.json";

@@ -12,6 +12,7 @@ using VContainer.Unity;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class FighterViewTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();

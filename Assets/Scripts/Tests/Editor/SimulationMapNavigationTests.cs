@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Camera
 {
+    [Category("Simulation")]
     public sealed class SimulationMapNavigationTests
     {
         [TestCase(1, 2000f, 200f, 1350f)]

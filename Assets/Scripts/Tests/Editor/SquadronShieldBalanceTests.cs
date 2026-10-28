@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class SquadronShieldBalanceTests
     {
         [Test]

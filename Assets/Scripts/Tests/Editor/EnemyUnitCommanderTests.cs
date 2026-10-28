@@ -28,6 +28,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class EnemyUnitCommanderTests
     {
         [Test]

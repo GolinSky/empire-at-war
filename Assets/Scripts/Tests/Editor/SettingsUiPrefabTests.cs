@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class SettingsUiPrefabTests
     {
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/MainMenu/SettingsUi.prefab";

@@ -11,6 +11,7 @@ using UnityCamera = UnityEngine.Camera;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class SliderInteractionTests
     {
         private const string SETTINGS_PATH = "Assets/Prefabs/Ui/MainMenu/SettingsUi.prefab";

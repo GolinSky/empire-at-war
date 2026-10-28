@@ -213,6 +213,44 @@ These rules apply whenever agents run Unity tests.
 5. Start tests with `async_tests=true` and poll `test_status` until completion, failure, cancellation, or timeout.
 6. If a test command times out, do not retry immediately. Inspect `test_status`, Editor status, Console, and `Editor.log`, then confirm no previous test remains active.
 
+## Test Selection
+
+Run the tests for the areas a change touches, not the whole suite. Every EditMode fixture has a feature `[Category]`; `TestCategoryCoverageTests` fails on an untagged fixture.
+
+- Runner: `run_tests --filter_type category --filter <Category>`. One exact category per call; batch the touched categories into consecutive calls.
+- One fixture: `--filter_type testName --filter <FixtureName>`.
+- `[Explicit]` tests run only with `--include_explicit true`.
+
+| Changed path | Categories |
+|---|---|
+| `Entities/Map`, `Entities/Planet`, `Services/Hazards`, `Components/Environment`, `Components/Obstacles` | `Map`; also `MapExhaustive` (explicit) when map generation changes |
+| `Components/Movement`, `Services/ShipNavigation`, `Services/SpawnBlocking`, `Services/StationFacing`, `Services/FleetCommand`, `Entities/SpawnArea` | `Navigation` |
+| `Components/AttackComponent`, `Components/Weapon`, `Components/CombatModifiers`, `Components/ViewComponents`, `Services/Pooling` | `Combat` |
+| `Components/Health`, `Services/UnitExplosion`, `Services/UnitWreck` | `Health` |
+| `Components/Ship`, `Entities/Ship`, `Entities/SpaceStation`, `Entities/DefendPlatform`, `Services/Ship`, `Services/ShipSpawning`, `Services/Station`, `Editor/Ship` | `Ships` |
+| `Components/Squadron`, `Components/Hangar`, `Entities/Squadron`, `Services/Squadron`, `Editor/Squadron` | `Squadrons` |
+| `Services/ShipAbilities`, `Entities/SuperWeapon`, `Services/SuperWeapons`, `Entities/Cheats`, `Services/Cheats` | `Abilities` |
+| `Entities/Capture*`, `Entities/ReinforcementZones`, `Services/CaptureSites`, `Services/ReinforcementZones`, `Services/OwnedAreas`, `Editor/CaptureSites` | `Capture` |
+| `Entities/Economy`, `Entities/MiningFacility`, `Entities/Reinforcement`, `Entities/Faction`, `Services/Economy`, `Services/Reinforcement`, `Services/Faction` | `Economy` |
+| `Entities/EnemyFaction`, `Services/Enemy`, `Editor/AI` | `EnemyAi` |
+| `Components/FogOfWar`, `Components/Radar`, `Entities/FogOfWar`, `Services/FogOfWar`, `Services/Radar`, `Services/Vision` | `Vision` |
+| `Components/Selection`, `Entities/CinematicCamera`, `Entities/UnitActions`, `Entities/UnitOrderFeedback`, `Services/Input`, `Services/Camera`, `Services/Selection`, `Services/UnitOrders`, `Services/UiRouting` | `BattleInput` |
+| `Components/Ui`, `Components/TeamColor`, `Entities/*Ui`, `Entities/Tooltip`, `Entities/MainMenu`, `Entities/Menu`, `Entities/MiniMap`, `Entities/Loading`, `Entities/Fade`, `Entities/Heroes`, `Services/Tooltip`, `Services/Settings`, `Services/Fade` | `Ui` |
+| `Services/Audio` | `Audio` |
+| `Entities/Game`, `Entities/CoreGame`, `Entities/Saves`, `Entities/Players`, `Services/Saves`, `Services/BattleService`, `Services/Player`, `Services/Repository` | `GameFlow` |
+| `Editor/Balance`, ship/squadron balance data in `Assets/Settings` | `Balance` |
+| `Editor/BattleSimulator` | `Simulation` |
+| `BaseSystem`, `Utils`, `Entities/BaseEntity`, `Entities/Units`, `Services/VContainer`, `Services/SceneContext`, `Services/Factory`, `Services/Timing`, other shared infrastructure | `Core` |
+
+1. Before a feature, name the categories it touches from the table; add a fixture's own category when a test file changes.
+2. While iterating, run only those categories.
+3. When map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets), run `MapExhaustive` with `--include_explicit true` once before finishing.
+4. Run the full EditMode suite only at the end of a large or cross-cutting task, or when the user asks.
+5. Report which categories ran; never imply the full suite passed when only categories ran.
+
+- New fixtures: add one feature `[Category]`; add a new category only for a new feature area and add it to this table.
+- New exhaustive sweeps: keep a quick default case and put the full sweep in an `[Explicit]` case with a `<Area>Exhaustive` category (see `MapLayoutGeneratorTests.CreateSeedSets`).
+
 ## Unity Asset Persistence
 
 Unity assets must be fully imported and saved after every agent mutation. Never require the user to focus Unity, open an asset, press Ctrl+S, or manually save the project.

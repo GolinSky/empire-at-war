@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Simulation")]
     public sealed class BattleWorkflowTests
     {
         [Test]

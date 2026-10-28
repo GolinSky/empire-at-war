@@ -7,6 +7,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class ShipAbilityCatalogTests
     {
         private const string CATALOG_PATH =

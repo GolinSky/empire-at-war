@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Ui")]
     public sealed class MiniMapUiLifecycleTests
     {
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/MiniMap/MiniMapUi.prefab";

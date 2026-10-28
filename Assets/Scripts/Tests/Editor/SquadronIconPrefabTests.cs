@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Squadrons")]
     public sealed class SquadronIconPrefabTests
     {
         private const string SQUADRON_PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";

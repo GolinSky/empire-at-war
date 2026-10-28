@@ -16,6 +16,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Abilities")]
     public sealed class ShipAbilitySymmetryTests
     {
         private static readonly CombatStatModifier _testModifier =

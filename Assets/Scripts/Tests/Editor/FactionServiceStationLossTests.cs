@@ -16,6 +16,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Economy")]
     public sealed class FactionServiceStationLossTests
     {
         [Test]

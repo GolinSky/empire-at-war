@@ -8,6 +8,7 @@ using EmpireAtWar.Services.FogOfWar;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class CinemaCameraLayerTests
     {
         private const string LAYER_DATA_PATH = "Assets/Settings/Data/Models/Layer/LayerData.asset";

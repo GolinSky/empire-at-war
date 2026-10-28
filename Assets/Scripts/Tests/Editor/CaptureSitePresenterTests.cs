@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public sealed class CaptureSitePresenterTests
     {
         private GameObject _tooltipObject;

@@ -11,6 +11,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 
 namespace EmpireAtWar.Tests.CinematicCamera
 {
+    [Category("BattleInput")]
     public sealed class CinematicCameraModelTests
     {
         private CinematicCameraData _settings;

@@ -16,6 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Vision")]
     public sealed class RadarScanServiceTests
     {
         private const float RANGE = 100f;

@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalanceDpsEstimatorTests
     {
         [TestCase(1, 0.5f, 2.0f, 2.0f)]

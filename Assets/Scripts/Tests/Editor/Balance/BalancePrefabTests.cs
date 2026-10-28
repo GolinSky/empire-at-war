@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalancePrefabTests
     {
         private const string TEST_FOLDER = "Assets/Scripts/Tests/Editor/Balance/TemporaryPrefabAssets";

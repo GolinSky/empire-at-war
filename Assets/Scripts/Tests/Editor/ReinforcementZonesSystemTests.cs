@@ -21,6 +21,7 @@ using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Capture")]
     public sealed class ReinforcementZonesSystemTests
     {
         private const BindingFlags PRIVATE_INSTANCE =

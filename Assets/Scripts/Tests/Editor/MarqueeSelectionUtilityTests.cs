@@ -13,6 +13,7 @@ using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Tests.Selection
 {
+    [Category("BattleInput")]
     public sealed class MarqueeSelectionUtilityTests
     {
         [Test]

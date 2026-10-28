@@ -14,6 +14,7 @@ namespace EmpireAtWar.Tests.Editor
     /// Ship Lit materials, so they go stale when those are edited.
     /// Fix failures with Tools/Empire At War/Rendering/Materials/Sync Wreck Materials (or rebuild the wreck for mesh/scale failures).
     /// </summary>
+    [Category("Health")]
     public sealed class WreckMaterialSyncTests
     {
         private const float TOLERANCE = 0.0001f;

@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Balance")]
     public sealed class BalanceInventoryTests
     {
         [Test]

@@ -24,6 +24,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class EnemyProductionDecisionModelTests
     {
         [TestCase(EnemyAiDifficulty.Easy, 0)]

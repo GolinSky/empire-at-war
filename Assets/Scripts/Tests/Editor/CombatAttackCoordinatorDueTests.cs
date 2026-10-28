@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class CombatAttackCoordinatorDueTests
     {
         private const int BENCHMARK_SAMPLES = 40;

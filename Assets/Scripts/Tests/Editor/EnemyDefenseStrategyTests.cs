@@ -11,6 +11,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("EnemyAi")]
     public sealed class EnemyDefenseStrategyTests
     {
         private EnemyDefenseOption[] _options;

@@ -5,6 +5,7 @@ using Unity.Mathematics;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Navigation")]
     public sealed class NavigationGridCellsTests
     {
         [Test]

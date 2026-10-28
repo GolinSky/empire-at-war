@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("BattleInput")]
     public sealed class UiCancelRouterTests
     {
         private FakeCancelInput _input;

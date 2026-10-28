@@ -18,6 +18,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Audio")]
     public sealed class SuperWeaponAudioTests
     {
         [Test]

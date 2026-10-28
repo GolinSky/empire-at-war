@@ -10,6 +10,7 @@ using Result = EmpireAtWar.Components.Weapon.WeaponTargetSelectionJob.Result;
 
 namespace EmpireAtWar.Tests.Weapon
 {
+    [Category("Combat")]
     public sealed class WeaponTargetSelectionDistanceParityTests
     {
         [Test]

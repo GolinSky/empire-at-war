@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Camera
 {
+    [Category("Navigation")]
     public sealed class VelocitySmoothingTests
     {
         [Test]

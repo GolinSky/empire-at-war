@@ -16,6 +16,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Economy")]
     public sealed class EconomyTuningTests
     {
         private const string SHARED_PATH = "Assets/Settings/Data/Factions/Shared/";

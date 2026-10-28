@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
+    [Category("Simulation")]
     public sealed class BattleSummaryTests
     {
         [Test]
