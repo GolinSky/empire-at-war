@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Tooltip
         public string IconKey { get; }
         public string Subtitle { get; }
         public string Shortcut { get; }
+        public int PopulationCost { get; }
         public IReadOnlyList<TooltipStat> Stats { get; }
         public IReadOnlyList<TooltipIcon> StrongAgainst { get; }
         public IReadOnlyList<TooltipIcon> WeakAgainst { get; }
@@ -20,13 +21,14 @@ namespace EmpireAtWar.Services.Tooltip
         public TooltipContent(string title, IEnumerable<TooltipStat> stats = null, IEnumerable<TooltipIcon> strongAgainst = null,
             IEnumerable<TooltipIcon> weakAgainst = null, IEnumerable<TooltipRequirement> requirements = null, string description = "",
             string iconKey = "", string subtitle = "",
-            string shortcut = "", string status = "")
+            string shortcut = "", string status = "", int populationCost = 0)
         {
             Title = title;
             Description = description;
             IconKey = iconKey;
             Subtitle = subtitle;
             Shortcut = shortcut;
+            PopulationCost = populationCost;
             Stats = Array.AsReadOnly((stats ?? Array.Empty<TooltipStat>()).ToArray());
             StrongAgainst = Array.AsReadOnly((strongAgainst ?? Array.Empty<TooltipIcon>()).ToArray());
             WeakAgainst = Array.AsReadOnly((weakAgainst ?? Array.Empty<TooltipIcon>()).ToArray());
@@ -37,6 +39,7 @@ namespace EmpireAtWar.Services.Tooltip
         public bool Equals(TooltipContent other) => other != null &&
             Title == other.Title && Description == other.Description && IconKey == other.IconKey &&
             Subtitle == other.Subtitle && Shortcut == other.Shortcut && Status == other.Status &&
+            PopulationCost == other.PopulationCost &&
             Stats.SequenceEqual(other.Stats) && StrongAgainst.SequenceEqual(other.StrongAgainst) &&
             WeakAgainst.SequenceEqual(other.WeakAgainst) && Requirements.SequenceEqual(other.Requirements);
 

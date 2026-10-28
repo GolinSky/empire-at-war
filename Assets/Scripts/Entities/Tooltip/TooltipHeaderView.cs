@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.Tooltip
         [SerializeField] private TextMeshProUGUI title;
         [SerializeField] private TextMeshProUGUI subtitle;
         [SerializeField] private TextMeshProUGUI shortcut;
+        [SerializeField] private TextMeshProUGUI population;
 
         public void Render(TooltipContent content, TooltipIconData icons)
         {
@@ -21,6 +22,8 @@ namespace EmpireAtWar.Entities.Tooltip
             subtitle.gameObject.SetActive(!string.IsNullOrEmpty(content.Subtitle));
             shortcut.text = content.Shortcut;
             shortcut.gameObject.SetActive(!string.IsNullOrEmpty(content.Shortcut));
+            population.text = $"x{content.PopulationCost}";
+            population.gameObject.SetActive(content.PopulationCost > 0);
         }
     }
 }

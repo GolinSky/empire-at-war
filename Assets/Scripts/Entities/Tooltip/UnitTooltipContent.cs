@@ -12,6 +12,6 @@ namespace EmpireAtWar.Entities.Tooltip
                 stats: stats,
                 strongAgainst: data.Matchups != null ? data.Matchups.StrongAgainst : null,
                 weakAgainst: data.Matchups != null ? data.Matchups.WeakAgainst : null,
-                requirements: requirements, status: status);
+                requirements: requirements, status: status, populationCost: data.UnitCapacity);
     }
 }
