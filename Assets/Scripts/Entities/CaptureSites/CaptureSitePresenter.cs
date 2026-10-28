@@ -18,7 +18,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly TooltipHoverSubscription _tooltipHover;
         private SiteFacilityType? _renderedFacilityType;
         private string _facilityName;
-        private bool _hasBeenEntered;
 
         public PlayerId Owner => _model.Owner;
         public CaptureSiteState State => _model.State;
@@ -74,7 +73,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         /// <returns>True when the site changed owner.</returns>
         public bool TickCapture(float deltaTime, CaptureStrength tally)
         {
-            _hasBeenEntered |= tally.HasUnits;
             return _model.TickCapture(deltaTime, tally);
         }
 
@@ -102,7 +100,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         {
             _model.Restore(owner, state, capturingPlayer, captureProgress, facilityType, constructionProgress,
                 _data.GetCost(facilityType).BuildTime);
-            _hasBeenEntered = owner != PlayerId.None || capturingPlayer != PlayerId.None || captureProgress > 0f;
             Render();
         }
 
@@ -121,10 +118,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void SetVisibility(bool isVisible, bool isHovered)
         {
             IsRevealed = isVisible;
-            bool isActive = _model.CapturingPlayer != PlayerId.None || _model.IsContested ||
-                _model.State == CaptureSiteState.Constructing;
-            // Entered sites remain known terrain; ownership details need current vision.
-            _view.SetVisibility(_hasBeenEntered, isVisible && (isHovered || isActive));
+            bool isCapturing = _model.CapturingPlayer != PlayerId.None || _model.IsContested;
+            _view.SetVisibility(isVisible && isCapturing, isCapturing);
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)

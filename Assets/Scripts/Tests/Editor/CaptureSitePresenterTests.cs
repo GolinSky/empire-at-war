@@ -53,20 +53,24 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(1f, 0f)]
         [TestCase(0f, 1f)]
         [TestCase(1f, 1f)]
-        public void FirstEntry_RevealsRingAndDepartureDoesNotHideIt(float human, float enemy)
+        public void Capture_ShowsZoneAndDepartureHidesIt(float human, float enemy)
         {
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, human, enemy));
             _presenter.SetVisibility(true, false);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.True);
 
+            _presenter.SetVisibility(false, true);
+            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.ShowStatus, Is.False);
+
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 0f, 0f));
-            _presenter.SetVisibility(true, false);
-            Assert.That(_view.IsVisible, Is.True);
+            _presenter.SetVisibility(true, true);
+            Assert.That(_view.IsVisible, Is.False);
             Assert.That(_view.ShowStatus, Is.False);
 
             _presenter.SetVisibility(false, true);
-            Assert.That(_view.IsVisible, Is.True);
+            Assert.That(_view.IsVisible, Is.False);
             Assert.That(_view.ShowStatus, Is.False);
             Assert.That(_presenter.IsRevealed, Is.False);
         }
@@ -74,14 +78,28 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(CaptureSiteState.Owned)]
         [TestCase(CaptureSiteState.Constructing)]
         [TestCase(CaptureSiteState.Operational)]
-        public void RestoreOwnedSite_RevealsRingWithoutRevealingStatusInFog(CaptureSiteState state)
+        public void RestoreCapturedSite_HidesZoneEvenWhenHovered(CaptureSiteState state)
         {
             _presenter.Restore(TestPlayers.Human, state, PlayerId.None, 0f,
                 SiteFacilityType.Mining, 0f);
-            _presenter.SetVisibility(false, false);
-            Assert.That(_view.IsVisible, Is.True);
+            _presenter.SetVisibility(true, true);
+            Assert.That(_view.IsVisible, Is.False);
             Assert.That(_view.ShowStatus, Is.False);
-            Assert.That(_presenter.IsRevealed, Is.False);
+            Assert.That(_presenter.IsRevealed, Is.True);
+        }
+
+        [Test]
+        public void CaptureCompleted_HidesZoneEvenWhenHovered()
+        {
+            _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 1f, 0f));
+            _presenter.SetVisibility(true, false);
+            Assert.That(_view.IsVisible, Is.True);
+
+            _presenter.TickCapture(10f, TestPlayers.DuelTally(_roster, 1f, 0f));
+            _presenter.SetVisibility(true, true);
+            Assert.That(_presenter.Owner, Is.EqualTo(TestPlayers.Human));
+            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.ShowStatus, Is.False);
         }
 
         [Test]
