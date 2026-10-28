@@ -207,7 +207,6 @@ namespace EmpireAtWar.Tests.Editor
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);
-                // The shared cooldown re-announces every weapon type when it ends.
                 foreach (SuperWeaponType weapon in Enum.GetValues(typeof(SuperWeaponType)))
                     states[weapon] = SuperWeaponState.Unavailable;
                 MethodInfo handler = typeof(SuperWeaponPresenter).GetMethod("HandleStateChanged",

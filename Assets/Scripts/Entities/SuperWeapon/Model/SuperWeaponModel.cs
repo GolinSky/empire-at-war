@@ -7,13 +7,12 @@ namespace EmpireAtWar.Entities.SuperWeapons
     /// <summary>
     /// Superweapon charges of one faction. One purchase is one shot: a weapon charges, becomes ready,
     /// fires once and must be bought again. After firing, that weapon type cannot fire again for
-    /// <see cref="COOLDOWN_DURATION"/> seconds, but a new charge can be built meanwhile. Every other type
-    /// waits at least <see cref="SHARED_COOLDOWN_DURATION"/> seconds, so strikes cannot be stacked.
+    /// <see cref="COOLDOWN_DURATION"/> seconds, but a new charge can be built meanwhile.
+    /// Other weapon types can fire independently.
     /// </summary>
     public sealed class SuperWeaponModel : Model, ISuperWeaponModelObserver
     {
         public const float COOLDOWN_DURATION = 120f;
-        public const float SHARED_COOLDOWN_DURATION = 45f;
 
         private readonly Dictionary<SuperWeaponType, SuperWeaponState> _states = new();
         private readonly Dictionary<SuperWeaponType, float> _cooldownLeft = new();
@@ -54,9 +53,6 @@ namespace EmpireAtWar.Entities.SuperWeapons
             }
 
             Transition(type, SuperWeaponState.Ready, SuperWeaponState.Unavailable);
-            // Stored per type, so saves and the cooldown display already cover the shared wait.
-            foreach (SuperWeaponType other in Enum.GetValues(typeof(SuperWeaponType)))
-                _cooldownLeft[other] = Math.Max(GetCooldownRemaining(other), SHARED_COOLDOWN_DURATION);
             _cooldownLeft[type] = COOLDOWN_DURATION;
         }
 

@@ -439,24 +439,35 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Model_FiringStartsTheSharedCooldownForEveryOtherWeapon()
+        public void Model_AllThreeWeaponsCanFireWithoutWaitingForEachOther()
         {
             SuperWeaponModel model = new SuperWeaponModel();
-            model.StartCharging(SuperWeaponType.IonCannon);
-            model.CompleteCharging(SuperWeaponType.IonCannon);
-            model.StartCharging(SuperWeaponType.PlasmaCannon);
-            model.CompleteCharging(SuperWeaponType.PlasmaCannon);
-            model.Consume(SuperWeaponType.IonCannon);
+            SuperWeaponType[] weapons = (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
+            foreach (SuperWeaponType type in weapons)
+            {
+                model.StartCharging(type);
+                model.CompleteCharging(type);
+            }
 
-            Assert.That(model.CanFire(SuperWeaponType.PlasmaCannon), Is.False, "Strikes must not stack.");
-            Assert.That(model.GetCooldownRemaining(SuperWeaponType.PlasmaCannon),
-                Is.EqualTo(SuperWeaponModel.SHARED_COOLDOWN_DURATION));
-            Assert.That(model.GetCooldownRemaining(SuperWeaponType.IonCannon),
-                Is.EqualTo(SuperWeaponModel.COOLDOWN_DURATION));
-            model.Tick(SuperWeaponModel.SHARED_COOLDOWN_DURATION);
-            Assert.That(model.CanFire(SuperWeaponType.PlasmaCannon), Is.True);
-            Assert.That(model.GetCooldownRemaining(SuperWeaponType.IonCannon),
-                Is.EqualTo(SuperWeaponModel.COOLDOWN_DURATION - SuperWeaponModel.SHARED_COOLDOWN_DURATION));
+            foreach (SuperWeaponType type in weapons)
+            {
+                Assert.That(model.CanFire(type), Is.True, $"{type} must remain ready when another weapon fires.");
+                Assert.That(model.GetCooldownRemaining(type), Is.Zero);
+                model.Consume(type);
+            }
+
+            foreach (SuperWeaponType type in weapons)
+            {
+                Assert.That(model.GetState(type), Is.EqualTo(SuperWeaponState.Unavailable));
+                Assert.That(model.GetCooldownRemaining(type), Is.EqualTo(SuperWeaponModel.COOLDOWN_DURATION));
+                model.StartCharging(type);
+                model.CompleteCharging(type);
+                Assert.That(model.CanFire(type), Is.False, $"{type} must keep its own cooldown.");
+            }
+
+            model.Tick(SuperWeaponModel.COOLDOWN_DURATION);
+            foreach (SuperWeaponType type in weapons)
+                Assert.That(model.CanFire(type), Is.True);
         }
 
         [Test]

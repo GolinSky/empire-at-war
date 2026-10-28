@@ -83,7 +83,6 @@ namespace EmpireAtWar.Services.Enemy
                 SuperWeaponState state = _model.GetState(option.Key);
                 if (_model.CanFire(option.Key))
                 {
-                    // The shared cooldown after a firing blocks the remaining weapons of this decision.
                     TryFireAfterDelay(option.Key);
                 }
                 else if (state == SuperWeaponState.Unavailable && TryPurchase(option.Key, option.Value))
