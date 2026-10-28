@@ -52,6 +52,8 @@ namespace EmpireAtWar.Services.Saves
             {
                 if (entity.HealthModel.IsDestroyed || !entity.TryGetFacade(out IStructureSaveFacade structure)) continue;
                 StructureSave save = structure.Capture();
+                if (entity.TryGetFacade(out IConstructionFacade construction))
+                    save.WithConstruction(construction.Progress, construction.BuildTime);
                 if (entity.TryGetFacade(out IHangarSaveFacade hangar)) save.WithHangar(hangar.Capture());
                 saves.Add(save);
             }
@@ -76,6 +78,8 @@ namespace EmpireAtWar.Services.Saves
             foreach (StructureSave structure in save.Structures)
             {
                 IEntity entity = _units.GetEntity(structure.Id);
+                if (entity.TryGetFacade(out IConstructionFacade construction))
+                    construction.Restore(structure.ConstructionProgress, structure.ConstructionBuildTime);
                 entity.GetFacade<IStructureSaveFacade>().RestoreHealth(structure.Health);
                 RestoreHangar(entity, structure.Hangar, context);
             }
@@ -89,7 +93,8 @@ namespace EmpireAtWar.Services.Saves
             }
 
             foreach (CaptureSiteSave site in save.CaptureSites)
-                if (site.State == CaptureSiteState.Operational) context.SiteFacilities.Add(site.FacilityId);
+                if (site.State == CaptureSiteState.Operational || site.State == CaptureSiteState.Constructing)
+                    context.SiteFacilities.Add(site.FacilityId);
             foreach (UnitSave unit in save.Units) unit.Order.Apply(_units.GetEntity(unit.Id), _units);
             return context;
         }
@@ -103,11 +108,11 @@ namespace EmpireAtWar.Services.Saves
                     break;
                 case StructureKind.MiningFacility:
                     context.MiningFacilities.Add(structure.Id, _spawner.SpawnRestoredMiningFacility(structure.Owner,
-                        structure.MiningFacilityType, structure.Position, structure.Id));
+                        structure.MiningFacilityType, structure.Position, structure.Id, structure.ConstructionBuildTime));
                     break;
                 case StructureKind.DefendPlatform:
                     context.DefendPlatforms.Add(structure.Id, _spawner.SpawnRestoredDefendPlatform(structure.Owner,
-                        structure.DefendPlatformType, structure.Position, structure.Id));
+                        structure.DefendPlatformType, structure.Position, structure.Id, structure.ConstructionBuildTime));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(structure), structure.Kind, "Unknown structure kind.");

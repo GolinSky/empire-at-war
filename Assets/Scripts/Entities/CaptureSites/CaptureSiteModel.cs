@@ -8,12 +8,11 @@ namespace EmpireAtWar.Entities.CaptureSites
     /// <summary>
     /// Neutral → Owned → Constructing → Operational; the owner picks the facility when construction starts
     /// and losing the facility returns the site to Neutral.
-    /// An operational facility locks the site: it must be destroyed before the site can be captured.
+    /// A facility locks the site from the start of construction until it is destroyed.
     /// </summary>
     public sealed class CaptureSiteModel : Model
     {
         private readonly CaptureControl _capture;
-        private float _buildDuration;
 
         public event Action<PlayerId, PlayerId, SiteFacilityType> Captured;
         public event Action<PlayerId, SiteFacilityType> Lost;
@@ -25,7 +24,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public SiteFacilityType FacilityType { get; private set; }
         public float ConstructionProgress { get; private set; }
         public bool IsContested => IsCapturable && _capture.IsContested;
-        public bool IsCapturable => State != CaptureSiteState.Operational;
+        public bool IsCapturable => State is CaptureSiteState.Neutral or CaptureSiteState.Owned;
         public bool CanStartConstruction => State == CaptureSiteState.Owned;
 
         public CaptureSiteModel(IPlayerRelations relations, float captureDuration, float captureSpeedPerNetShip,
@@ -47,23 +46,23 @@ namespace EmpireAtWar.Entities.CaptureSites
             return true;
         }
 
-        public void StartConstruction(SiteFacilityType facilityType, float buildDuration)
+        public void StartConstruction(SiteFacilityType facilityType)
         {
             FacilityType = facilityType;
-            _buildDuration = buildDuration;
+            _capture.ResetCapture();
             ConstructionProgress = 0f;
             State = CaptureSiteState.Constructing;
         }
 
         /// <returns>True on the frame the construction completes.</returns>
-        public bool TickConstruction(float deltaTime)
+        public bool SetConstructionProgress(float progress)
         {
             if (State != CaptureSiteState.Constructing)
             {
                 return false;
             }
 
-            ConstructionProgress += deltaTime / _buildDuration;
+            ConstructionProgress = progress;
             if (ConstructionProgress < 1f)
             {
                 return false;
@@ -76,13 +75,12 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         /// <summary>Loads a saved site; contested flags are recomputed on the next capture tick.</summary>
         public void Restore(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer, float captureProgress,
-            SiteFacilityType facilityType, float constructionProgress, float buildDuration)
+            SiteFacilityType facilityType, float constructionProgress)
         {
             _capture.Restore(owner, capturingPlayer, captureProgress, false);
             State = state;
             FacilityType = facilityType;
             ConstructionProgress = constructionProgress;
-            _buildDuration = buildDuration;
         }
 
         public void ReleaseFacility()

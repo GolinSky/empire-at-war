@@ -37,13 +37,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void TickConstruction_AfterBuildTime_BecomesOperationalAndLocksCapture()
+        public void ConstructionProgress_CompletedFacility_BecomesOperationalAndLocksCapture()
         {
             CaptureSiteModel model = CreateOwnedSite(TestPlayers.Human);
-            model.StartConstruction(SiteFacilityType.Mining, 20f);
+            model.StartConstruction(SiteFacilityType.Mining);
 
-            Assert.That(model.TickConstruction(10f), Is.False);
-            Assert.That(model.TickConstruction(10f), Is.True);
+            Assert.That(model.SetConstructionProgress(0.5f), Is.False);
+            Assert.That(model.SetConstructionProgress(1f), Is.True);
             Assert.That(model.State, Is.EqualTo(CaptureSiteState.Operational));
 
             Assert.That(model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, 0, 5)), Is.False);
@@ -52,25 +52,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void TickCapture_EnemyTakesSiteUnderConstruction_CancelsBuild()
+        public void TickCapture_EnemyAtSiteUnderConstruction_CannotCaptureFacility()
         {
             CaptureSiteModel model = CreateOwnedSite(TestPlayers.Human);
-            model.StartConstruction(SiteFacilityType.Mining, 20f);
-            model.TickConstruction(10f);
+            model.StartConstruction(SiteFacilityType.Mining);
+            model.SetConstructionProgress(0.5f);
 
-            Assert.That(model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, 0, 1)), Is.True);
+            Assert.That(model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, 0, 1)), Is.False);
 
-            Assert.That(model.Owner, Is.EqualTo(TestPlayers.Enemy));
-            Assert.That(model.State, Is.EqualTo(CaptureSiteState.Owned));
-            Assert.That(model.ConstructionProgress, Is.Zero);
+            Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
+            Assert.That(model.State, Is.EqualTo(CaptureSiteState.Constructing));
+            Assert.That(model.ConstructionProgress, Is.EqualTo(0.5f));
         }
 
-        [Test]
-        public void ReleaseFacility_DestroyedFacility_ReturnsSiteToNeutral()
+        [TestCase(0.5f)]
+        [TestCase(1f)]
+        public void ReleaseFacility_DestroyedFacility_ReturnsSiteToNeutral(float progress)
         {
             CaptureSiteModel model = CreateOwnedSite(TestPlayers.Enemy);
-            model.StartConstruction(SiteFacilityType.Mining, 1f);
-            model.TickConstruction(1f);
+            model.StartConstruction(SiteFacilityType.Mining);
+            model.SetConstructionProgress(progress);
 
             model.ReleaseFacility();
 
@@ -98,7 +99,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f);
             model.Restore(TestPlayers.Human, CaptureSiteState.Operational, TestPlayers.Enemy, 0.4f,
-                SiteFacilityType.Mining, 1f, 20f);
+                SiteFacilityType.Mining, 1f);
             model.TickCapture(1f, TestPlayers.DuelTally(ROSTER, 1, 2));
             Assert.That(model.IsContested, Is.False);
             Assert.That(model.CaptureProgress, Is.Zero);
@@ -122,8 +123,8 @@ namespace EmpireAtWar.Tests.Editor
         public void Satellite_RestoresConstructionAndReleasesAfterDestruction(SiteFacilityType type)
         {
             CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f);
-            model.Restore(TestPlayers.Human, CaptureSiteState.Constructing, PlayerId.None, 0f, type, 0.5f, 20f);
-            Assert.That(model.TickConstruction(10f), Is.True);
+            model.Restore(TestPlayers.Human, CaptureSiteState.Constructing, PlayerId.None, 0f, type, 0.5f);
+            Assert.That(model.SetConstructionProgress(1f), Is.True);
             Assert.That(model.FacilityType, Is.EqualTo(type));
             Assert.That(model.TickCapture(100f, TestPlayers.DuelTally(ROSTER, 0, 5)), Is.False);
             model.ReleaseFacility();
@@ -140,17 +141,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Restore_ConstructingSite_FinishesOnItsSavedProgress()
+        public void Restore_ConstructingSite_TracksFacilityProgress()
         {
             CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
 
             model.Restore(TestPlayers.Human, CaptureSiteState.Constructing, PlayerId.None, 0f,
-                SiteFacilityType.BattleAsteroid, 0.75f, 20f);
+                SiteFacilityType.BattleAsteroid, 0.75f);
 
             Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
             Assert.That(model.FacilityType, Is.EqualTo(SiteFacilityType.BattleAsteroid));
-            Assert.That(model.TickConstruction(4f), Is.False);
-            Assert.That(model.TickConstruction(1f), Is.True, "A quarter of a 20 s build is left.");
+            Assert.That(model.ConstructionProgress, Is.EqualTo(0.75f));
+            Assert.That(model.SetConstructionProgress(0.95f), Is.False);
+            Assert.That(model.SetConstructionProgress(1f), Is.True);
             Assert.That(model.State, Is.EqualTo(CaptureSiteState.Operational));
         }
 
@@ -159,7 +161,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
 
-            model.Restore(PlayerId.None, CaptureSiteState.Neutral, TestPlayers.Human, 0.5f, SiteFacilityType.Mining, 0f, 0f);
+            model.Restore(PlayerId.None, CaptureSiteState.Neutral, TestPlayers.Human, 0.5f, SiteFacilityType.Mining, 0f);
 
             Assert.That(model.TickCapture(CAPTURE_DURATION / 2f, TestPlayers.DuelTally(ROSTER, 1, 0)), Is.True);
             Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));

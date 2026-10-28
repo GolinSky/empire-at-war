@@ -91,7 +91,7 @@ namespace EmpireAtWar.Models.Factions
         {
             if (IsUnitLimitReached(unitRequest)) return false;
 
-            return _productionQueues.ContainsKey(unitRequest.Id) ||
+            return IsStructureRequest(unitRequest) || _productionQueues.ContainsKey(unitRequest.Id) ||
                 _productionQueues.Count < MAX_ACTIVE_PIPELINES;
         }
 
@@ -129,6 +129,14 @@ namespace EmpireAtWar.Models.Factions
                     "The unit request exceeds the production queue capacity.");
             }
 
+            if (IsStructureRequest(unitRequest))
+            {
+                ReserveStructure(unitRequest);
+                OnUnitCompleted?.Invoke(unitRequest);
+                NotifyProductionChanged();
+                return;
+            }
+
             if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))
             {
                 queue = new Queue<ProductionQueueItem>();
@@ -137,10 +145,6 @@ namespace EmpireAtWar.Models.Factions
 
             queue.Enqueue(new ProductionQueueItem(unitRequest));
             if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Add(hero);
-            if (IsStructureRequest(unitRequest))
-            {
-                ReserveStructure(unitRequest);
-            }
             NotifyProductionChanged();
         }
 

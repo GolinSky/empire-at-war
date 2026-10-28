@@ -405,6 +405,44 @@ namespace EmpireAtWar.Tests.Editor
             controller.LateDispose();
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void StructurePurchase_AttemptsPlacementImmediatelyWithoutPendingBuild(bool platform)
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 30);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                var wallet = new TrackingWallet();
+                var limits = new EnemyUnitLimitModel();
+                var controller = new EnemyFactionController(model: new EnemyFactionModel(null, null),
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
+                    unitLimitModel: limits, reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+                UnitRequest request = platform
+                    ? new DefendPlatformUnitRequest(faction, DefendPlatformType.Xq6)
+                    : new MiningFacilityUnitRequest(faction, MiningFacilityType.CommonMiner);
+                LogAssert.Expect(LogType.Error, new Regex(@"^\[EnemyAI:Production\] Build failed for "));
+
+                controller.Purchase(request);
+
+                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                Assert.That(wallet.RefundCount, Is.EqualTo(1), "Placement is attempted during purchase, before any Advance call.");
+                Assert.That(wallet.LastRefunded, Is.SameAs(request));
+                Assert.That(controller.PendingBuilds, Is.Empty);
+                Assert.That(limits.CurrentUnitCapacity, Is.Zero);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
+        }
+
         private static T LoadSharedData<T>() where T : ScriptableObject
         {
             T data = AssetDatabase.LoadAssetAtPath<T>(

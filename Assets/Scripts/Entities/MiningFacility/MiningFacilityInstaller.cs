@@ -16,14 +16,21 @@ namespace EmpireAtWar.MiningFacility
     public class MiningFacilityInstaller : DynamicEntityInstaller<MiningFacilityEntity, MiningFacilityData>
     {
         private readonly MiningFacilityType _type;
+        private readonly float _buildTime;
 
         public MiningFacilityInstaller(MiningFacilityEntity view, MiningFacilityData data, ILocalPlayer localPlayer,
-            PlayerId owner, long entityId, Vector3 position, MiningFacilityType type)
-            : base(view, data, localPlayer, owner, entityId, position) => _type = type;
+            PlayerId owner, long entityId, Vector3 position, MiningFacilityType type, float buildTime = 0f)
+            : base(view, data, localPlayer, owner, entityId, position)
+        {
+            _type = type;
+            _buildTime = buildTime;
+        }
 
         protected override void InstallFeatures(IContainerBuilder builder)
         {
             builder.RegisterInstance(Data);
+            builder.RegisterInstance(_buildTime);
+            EntityFeatureBindings.RegisterComponent(builder, View.Construction);
             builder.RegisterInstance(_type);
             builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
             builder.Register<MiningFacilityModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()

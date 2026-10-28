@@ -185,7 +185,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     return;
             }
 
-            _builds.Add(unitRequest, unitRequest.FactionData.BuildTime);
+            if (unitRequest is MiningFacilityUnitRequest or DefendPlatformUnitRequest)
+                ExecuteBuild(unitRequest);
+            else
+                _builds.Add(unitRequest, unitRequest.FactionData.BuildTime);
         }
 
         public void Tick() => Advance(Time.deltaTime);

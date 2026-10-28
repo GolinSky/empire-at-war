@@ -39,6 +39,7 @@ namespace EmpireAtWar.Entities.Map
         private ICameraService _camera;
         private IFogOfWarSystem _fog;
         private MapGenerationSettings _generationSettings;
+        private CaptureSiteData _siteData;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
         private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
 
@@ -47,18 +48,22 @@ namespace EmpireAtWar.Entities.Map
         private float fogReferenceSide = 600f;
 
         public MapFeatureRadii FeatureRadii =>
-            new MapFeatureRadii(zonePrefab.Radius, miningSitePrefab.Radius, battleSitePrefab.Radius);
+            new MapFeatureRadii(zonePrefab.Radius,
+                _siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSitePrefab.transform.lossyScale.x), Mathf.Abs(miningSitePrefab.transform.lossyScale.z)),
+                _siteData.GetSettings(CaptureSiteKind.Battle).Radius * Mathf.Max(Mathf.Abs(battleSitePrefab.transform.lossyScale.x), Mathf.Abs(battleSitePrefab.transform.lossyScale.z)));
 
         public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
         public CaptureSiteView[] SiteViews { get; private set; }
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
         [Inject]
-        private void Construct(IFogOfWarSystem fog, MapGenerationSettings generationSettings, ICameraService camera)
+        private void Construct(IFogOfWarSystem fog, MapGenerationSettings generationSettings, ICameraService camera,
+            CaptureSiteData siteData)
         {
             _fog = fog;
             _generationSettings = generationSettings;
             _camera = camera;
+            _siteData = siteData;
         }
 
         /// <summary>Spawns the layout over several frames, at most <see cref="FRAME_SLICE_SECONDS"/> per frame.</summary>
@@ -99,6 +104,7 @@ namespace EmpireAtWar.Entities.Map
                 };
                 SiteViews[i] = Instantiate(prefab, site.Center, Quaternion.identity, siteRoot);
                 SiteViews[i].Configure(site.Kind, site.Owner, site.PointId);
+                SiteViews[i].ConfigureSettings(_siteData.GetSettings(site.Kind));
                 _obstacles.AddRange(SiteViews[i].RockObstacles);
                 sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }

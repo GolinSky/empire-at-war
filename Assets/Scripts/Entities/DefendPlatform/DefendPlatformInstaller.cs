@@ -16,15 +16,22 @@ namespace EmpireAtWar
     public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformData>
     {
         private readonly DefendPlatformType _type;
+        private readonly float _buildTime;
 
         public DefendPlatformInstaller(DefendPlatform view, DefendPlatformData data, ILocalPlayer localPlayer,
-            PlayerId owner, long entityId, Vector3 position, DefendPlatformType type)
-            : base(view, data, localPlayer, owner, entityId, position) => _type = type;
+            PlayerId owner, long entityId, Vector3 position, DefendPlatformType type, float buildTime = 0f)
+            : base(view, data, localPlayer, owner, entityId, position)
+        {
+            _type = type;
+            _buildTime = buildTime;
+        }
 
         protected override void InstallFeatures(IContainerBuilder builder)
         {
             bool isProductionBase = _type == DefendPlatformType.GolanIII || _type == DefendPlatformType.Empress;
             builder.RegisterInstance(Data);
+            builder.RegisterInstance(_buildTime);
+            EntityFeatureBindings.RegisterComponent(builder, View.Construction);
             builder.RegisterInstance(_type);
             builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
             builder.Register<DefendPlatformTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();

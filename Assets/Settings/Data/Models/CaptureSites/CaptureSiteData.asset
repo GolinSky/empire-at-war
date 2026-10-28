@@ -78,5 +78,22 @@ MonoBehaviour:
       value: 0000000001000000
     - key: 2
       value: 0200000003000000040000000500000006000000
+  siteSettings:
+    keyValue:
+    - key: 0
+      value:
+        <Radius>k__BackingField: 60
+        <CaptureDuration>k__BackingField: 10
+        <FacilityHeightOffset>k__BackingField: -60
+    - key: 1
+      value:
+        <Radius>k__BackingField: 60
+        <CaptureDuration>k__BackingField: 12
+        <FacilityHeightOffset>k__BackingField: 0
+    - key: 2
+      value:
+        <Radius>k__BackingField: 100
+        <CaptureDuration>k__BackingField: 6
+        <FacilityHeightOffset>k__BackingField: 0
   <CaptureSpeedPerNetShip>k__BackingField: 1
   <SquadronCaptureWeight>k__BackingField: 0.5

@@ -282,10 +282,14 @@ namespace EmpireAtWar.Tests.Editor
         public void SetUp()
         {
             _settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
+            CaptureSiteData siteData = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+                "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
+            CaptureSiteView miningSite = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH);
+            CaptureSiteView battleSite = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH);
             _radii = new MapFeatureRadii(
                 AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
-                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH).Radius,
-                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH).Radius);
+                siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSite.transform.lossyScale.x), Mathf.Abs(miningSite.transform.lossyScale.z)),
+                siteData.GetSettings(CaptureSiteKind.Battle).Radius * Mathf.Max(Mathf.Abs(battleSite.transform.lossyScale.x), Mathf.Abs(battleSite.transform.lossyScale.z)));
             _generator = new MapLayoutGenerator(_settings, _radii);
         }
 

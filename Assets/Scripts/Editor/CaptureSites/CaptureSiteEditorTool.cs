@@ -16,7 +16,6 @@ namespace EmpireAtWar.Editor.CaptureSites
     [EmpireAtWar.Editor.EditorToolInfo("Capture-site authoring and maintenance. Build Sites rebuilds data and prefabs; the other commands rebuild site prefabs or apply obstacles and the mini-map icon.")]
     public static class CaptureSiteEditorTool
     {
-        private const float SITE_RADIUS = 60f;
         private const float SITE_SCALE = 5f;
 
         private const int UI_LAYER = 5;
@@ -29,7 +28,6 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string DATA_FOLDER = "Assets/Settings/Data/Models/CaptureSites";
         private const string DATA_PATH = DATA_FOLDER + "/CaptureSiteData.asset";
         private const string RING_MATERIAL_PATH = "Assets/Art/Materials/ReinforcementZones/ReinforcementZone.mat";
-        private const string HOLOGRAM_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Hologram.mat";
 
         private static readonly Color PANEL_COLOR = new Color32(0x08, 0x0C, 0x14, 0xF5);
         private static readonly Color PANEL_OUTLINE_COLOR = new Color32(0x1F, 0x87, 0xE6, 0xD9);
@@ -55,8 +53,8 @@ namespace EmpireAtWar.Editor.CaptureSites
         public static void BuildSitePrefabs()
         {
             EnsureFolder(PREFAB_FOLDER);
-            BuildSitePrefab(SITE_PREFAB_PATH);
-            BuildSitePrefab(BATTLE_SITE_PREFAB_PATH);
+            BuildSitePrefab(SITE_PREFAB_PATH, CaptureSiteKind.Mining);
+            BuildSitePrefab(BATTLE_SITE_PREFAB_PATH, CaptureSiteKind.Battle);
             AssetDatabase.SaveAssets();
         }
 
@@ -144,9 +142,24 @@ namespace EmpireAtWar.Editor.CaptureSites
             entries.arraySize = Mathf.Max(entries.arraySize, 2);
             SetCost(entries.GetArrayElementAtIndex(0), SiteFacilityType.Mining, "Asteroid Mine", 600f, 25f);
             SetCost(entries.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, "Battle Asteroid", 1600f, 30f);
+            SerializedProperty settings = serializedData.FindProperty("siteSettings").FindPropertyRelative("keyValue");
+            settings.arraySize = 3;
+            SetSettings(settings.GetArrayElementAtIndex(0), CaptureSiteKind.Mining, 60f, 10f, -60f);
+            SetSettings(settings.GetArrayElementAtIndex(1), CaptureSiteKind.Battle, 60f, 12f, 0f);
+            SetSettings(settings.GetArrayElementAtIndex(2), CaptureSiteKind.Satellite, 100f, 6f, 0f);
             serializedData.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(data);
             AsteroidMiningFacilityAssetBuilder.AddAddressable(DATA_PATH, "Model");
+        }
+
+        private static void SetSettings(SerializedProperty entry, CaptureSiteKind kind, float radius,
+            float captureDuration, float heightOffset)
+        {
+            entry.FindPropertyRelative("key").intValue = (int)kind;
+            SerializedProperty settings = entry.FindPropertyRelative("value");
+            settings.FindPropertyRelative("<Radius>k__BackingField").floatValue = radius;
+            settings.FindPropertyRelative("<CaptureDuration>k__BackingField").floatValue = captureDuration;
+            settings.FindPropertyRelative("<FacilityHeightOffset>k__BackingField").floatValue = heightOffset;
         }
 
         private static void SetCost(SerializedProperty entry, SiteFacilityType facilityType, string name, float price,
@@ -159,22 +172,18 @@ namespace EmpireAtWar.Editor.CaptureSites
             cost.FindPropertyRelative("<BuildTime>k__BackingField").floatValue = buildTime;
         }
 
-        private static GameObject BuildSitePrefab(string prefabPath)
+        private static GameObject BuildSitePrefab(string prefabPath, CaptureSiteKind kind)
         {
             GameObject root = new GameObject(System.IO.Path.GetFileNameWithoutExtension(prefabPath));
             root.transform.localScale = Vector3.one * SITE_SCALE;
             GameObject rocks = AsteroidMiningFacilityAssetBuilder.InstantiateModel(
                 root.transform, "AsteroidRocks", keepRocks: true);
-            Transform miningFramework = BuildFramework(root.transform, "MiningFramework",
-                parent => AsteroidMiningFacilityAssetBuilder.InstantiateModel(parent, "Machinery", keepRocks: false));
-            Transform battleFramework = BuildFramework(root.transform, "BattleAsteroidFramework",
-                parent => BattleAsteroidAssetBuilder.InstantiateFacility(parent, "Facility"));
-            MeshRenderer ring = BuildRing(root.transform);
+            CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(DATA_PATH);
+            MeshRenderer ring = BuildRing(root.transform, data.GetSettings(kind).Radius);
             Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status);
 
             CaptureSiteView view = root.AddComponent<CaptureSiteView>();
             SerializedObject serializedView = new SerializedObject(view);
-            serializedView.FindProperty("radius").floatValue = SITE_RADIUS;
             CaptureRingView captureRing = root.AddComponent<CaptureRingView>();
             SerializedObject serializedRing = new SerializedObject(captureRing);
             serializedRing.FindProperty("ringRenderer").objectReferenceValue = ring;
@@ -188,11 +197,6 @@ namespace EmpireAtWar.Editor.CaptureSites
             serializedView.FindProperty("captureRing").objectReferenceValue = captureRing;
             serializedView.FindProperty("tooltipHover").objectReferenceValue = root.AddComponent<TooltipHoverView>();
             serializedView.FindProperty("asteroidRocks").objectReferenceValue = rocks.transform;
-            SerializedProperty frameworks = serializedView.FindProperty("constructionFrameworks")
-                .FindPropertyRelative("keyValue");
-            frameworks.arraySize = 2;
-            SetFramework(frameworks.GetArrayElementAtIndex(0), SiteFacilityType.Mining, miningFramework);
-            SetFramework(frameworks.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, battleFramework);
             serializedView.FindProperty("statusCanvas").objectReferenceValue = canvas;
             serializedView.FindProperty("progressFill").objectReferenceValue = progress;
             serializedView.FindProperty("statusText").objectReferenceValue = status;
@@ -204,48 +208,13 @@ namespace EmpireAtWar.Editor.CaptureSites
             return prefab;
         }
 
-        private static void SetFramework(SerializedProperty entry, SiteFacilityType facilityType, Transform framework)
-        {
-            entry.FindPropertyRelative("key").enumValueIndex = (int)facilityType;
-            entry.FindPropertyRelative("value").objectReferenceValue = framework;
-        }
-
-        private static Transform BuildFramework(Transform parent, string name,
-            System.Func<Transform, GameObject> instantiateFacilityModel)
-        {
-            // Pivot at the facility base so the scaffold rises from the rock as construction progresses.
-            GameObject framework = new GameObject(name);
-            framework.transform.SetParent(parent, false);
-            GameObject facilityModel = instantiateFacilityModel(framework.transform);
-            Renderer[] renderers = facilityModel.GetComponentsInChildren<Renderer>();
-            float baseHeight = AsteroidMiningFacilityAssetBuilder.GetLocalBounds(parent, renderers).min.y;
-            framework.transform.localPosition = new Vector3(0f, baseHeight, 0f);
-            facilityModel.transform.localPosition += new Vector3(0f, -baseHeight, 0f);
-
-            Material hologram = AssetDatabase.LoadAssetAtPath<Material>(HOLOGRAM_MATERIAL_PATH);
-            foreach (Renderer renderer in renderers)
-            {
-                Material[] materials = new Material[renderer.sharedMaterials.Length];
-                for (int i = 0; i < materials.Length; i++)
-                {
-                    materials[i] = hologram;
-                }
-
-                renderer.sharedMaterials = materials;
-                renderer.shadowCastingMode = ShadowCastingMode.Off;
-            }
-
-            framework.SetActive(false);
-            return framework.transform;
-        }
-
-        private static MeshRenderer BuildRing(Transform parent)
+        private static MeshRenderer BuildRing(Transform parent, float radius)
         {
             GameObject ring = new GameObject("CaptureRing");
             ring.transform.SetParent(parent, false);
             ring.transform.localPosition = new Vector3(0f, -2f, 0f);
             ring.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            ring.transform.localScale = new Vector3(SITE_RADIUS * 2f, SITE_RADIUS * 2f, 1f);
+            ring.transform.localScale = new Vector3(radius * 2f, radius * 2f, 1f);
             ring.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
             MeshRenderer renderer = ring.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>(RING_MATERIAL_PATH);

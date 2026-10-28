@@ -1363,6 +1363,7 @@ GameObject:
   - component: {fileID: 4949378780131669032}
   - component: {fileID: 994680405957274432}
   - component: {fileID: 7797009195141853144}
+  - component: {fileID: 4132486548932533169}
   m_Layer: 0
   m_Name: TibannaGasStationView
   m_TagString: Untagged
@@ -1402,6 +1403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bindings: {fileID: 7797009195141853144}
+  construction: {fileID: 4132486548932533169}
   explosionHullRenderers:
   - {fileID: 5833687784471174553}
 --- !u!65 &8153750395777210056
@@ -1539,6 +1541,22 @@ MonoBehaviour:
   <Injectables>k__BackingField:
   - {fileID: 994680405957274432}
   - {fileID: 1754627770004611748}
+--- !u!114 &4132486548932533169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed02b21e6f40e54caa0416438c90a30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Construction.ConstructionComponent
+  renderers:
+  - {fileID: 5833687784471174553}
+  constructionMaterial: {fileID: 2100000, guid: 989fe0bc75d8c1e4c885c52047c791a8,
+    type: 2}
 --- !u!1001 &7643997852747192000
 PrefabInstance:
   m_ObjectHideFlags: 0

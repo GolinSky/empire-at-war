@@ -19,6 +19,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         private SiteFacilityType? _renderedFacilityType;
         private string _facilityName;
 
+        public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
+
         public CaptureSiteKind Kind { get; }
         public int PointId { get; }
         public PlayerId Owner => _model.Owner;
@@ -36,7 +38,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public bool IsOperational => _model.State == CaptureSiteState.Operational;
         public bool HasFacility => _model.State is CaptureSiteState.Constructing or CaptureSiteState.Operational;
         public PlayerId CapturingPlayer => _model.CapturingPlayer;
-        /// <summary>Entity id of the operational facility; 0 while the site has none.</summary>
+        /// <summary>Entity id of the constructing or operational facility; 0 while the site has none.</summary>
         public long FacilityId { get; private set; }
 
         public CaptureSitePresenter(
@@ -81,14 +83,15 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         /// <returns>True on the frame the facility finishes construction.</returns>
-        public bool TickConstruction(float deltaTime)
+        public void SetConstructionProgress(float progress)
         {
-            return _model.TickConstruction(deltaTime);
+            if (_model.SetConstructionProgress(progress))
+                ConstructionCompleted?.Invoke(Owner, FacilityType);
         }
 
         public void StartConstruction(SiteFacilityType facilityType)
         {
-            _model.StartConstruction(facilityType, _data.GetCost(facilityType).BuildTime);
+            _model.StartConstruction(facilityType);
         }
 
         public void SetFacility(long facilityId) => FacilityId = facilityId;
@@ -102,8 +105,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void Restore(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer, float captureProgress,
             SiteFacilityType facilityType, float constructionProgress)
         {
-            _model.Restore(owner, state, capturingPlayer, captureProgress, facilityType, constructionProgress,
-                _data.GetCost(facilityType).BuildTime);
+            _model.Restore(owner, state, capturingPlayer, captureProgress, facilityType, constructionProgress);
             Render();
         }
 

@@ -53,13 +53,13 @@ namespace EmpireAtWar.Services.Battle
 
         // Capture sites build asteroid miners; every other facility uses the standard prefab.
         public MiningFacilityEntity SpawnRestoredMiningFacility(PlayerId owner, MiningFacilityType type, Vector3 position,
-            long entityId) => type == MiningFacilityType.AsteroidMiner
-            ? _structures[owner].AsteroidMiningFacilities.Create(owner, type, position, entityId)
-            : _structures[owner].MiningFacilities.Create(owner, type, position, entityId);
+            long entityId, float buildDuration) => type == MiningFacilityType.AsteroidMiner
+            ? _structures[owner].AsteroidMiningFacilities.Create(owner, type, position, entityId, buildDuration)
+            : _structures[owner].MiningFacilities.Create(owner, type, position, entityId, buildDuration);
 
         public DefendPlatformEntity SpawnRestoredDefendPlatform(PlayerId owner, DefendPlatformType type, Vector3 position,
-            long entityId) => type == DefendPlatformType.BattleAsteroid
-            ? _structures[owner].AsteroidDefendPlatforms.Create(owner, type, position, entityId)
-            : _structures[owner].DefendPlatforms.Create(owner, type, position, entityId);
+            long entityId, float buildDuration) => type == DefendPlatformType.BattleAsteroid
+            ? _structures[owner].AsteroidDefendPlatforms.Create(owner, type, position, entityId, buildDuration)
+            : _structures[owner].DefendPlatforms.Create(owner, type, position, entityId, buildDuration);
     }
 }

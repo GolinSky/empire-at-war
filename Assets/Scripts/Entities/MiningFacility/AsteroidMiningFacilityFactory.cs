@@ -9,6 +9,6 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class AsteroidMiningFacilityFactory : MiningFacilityFactory
     {
         public AsteroidMiningFacilityFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership,
-            ILocalPlayer localPlayer, IUniqueIdGenerator ids) : base(assets, scope, ownership, localPlayer, ids) { }
+            ILocalPlayer localPlayer, IUniqueIdGenerator ids, MiningFacilityCatalog catalog) : base(assets, scope, ownership, localPlayer, ids, catalog) { }
     }
 }

@@ -10,6 +10,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
     {
 
         public SatelliteDefendPlatformFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership,
-            ILocalPlayer localPlayer, IUniqueIdGenerator ids) : base(assets, scope, ownership, localPlayer, ids) { }
+            ILocalPlayer localPlayer, IUniqueIdGenerator ids, DefendPlatformCatalog catalog) : base(assets, scope, ownership, localPlayer, ids, catalog) { }
     }
 }

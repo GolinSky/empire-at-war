@@ -37,6 +37,7 @@ public static class IntegrateMiningFacilities
                 ShieldHullBaker.Bake(root.transform, shield);
                 SetArray(Component(root, "FogVisibilityComponent"), "renderers", hull.Cast<UnityEngine.Object>().Append(shield.GetComponents<MeshRenderer>().Single()).ToArray());
                 SetArray(Component(root, "TeamColorView"), "meshRenderers", hull);
+                SetArray(Component(root, "ConstructionComponent"), "renderers", hull);
                 SetArray(Component(root, battle ? "DefendPlatform" : "MiningFacility"), "explosionHullRenderers", hull.Where(r => r.sharedMaterials.Any(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray());
                 var selection = root.transform.Cast<Transform>().Single(t => t.name == "SelectedCanvas");
                 float diameter = Mathf.Max(bounds.size.x, bounds.size.z) * 1.12f;
@@ -100,22 +101,9 @@ public static class IntegrateMiningFacilities
                     obstacles.GetArrayElementAtIndex(0).objectReferenceValue = obstacle;
                 }
                 config.FindProperty("asteroidRocks").objectReferenceValue = rocks;
-                config.FindProperty("facilityHeightOffset").floatValue = name == "CaptureSite" ? -60 : 0;
-                config.FindProperty("radius").floatValue = 40;
                 Save(config);
-                var frameworks = config.FindProperty("constructionFrameworks.keyValue");
-                for (int i = 0; i < frameworks.arraySize; i++)
-                {
-                    var frame = (Transform)frameworks.GetArrayElementAtIndex(i).FindPropertyRelative("value").objectReferenceValue;
-                    foreach (var child in frame.Cast<Transform>().ToArray()) UnityEngine.Object.DestroyImmediate(child.gameObject);
-                    frame.localScale = Vector3.one;
-                    frame.localPosition = new Vector3(0, (name == "CaptureSite" ? -30 : 0) + 21, 0);
-                    var art = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(VISUALS + "MiningConstruction.prefab"), frame);
-                    art.transform.localScale = Vector3.one * .5f;
-                    frame.gameObject.SetActive(false);
-                }
                 PrefabUtility.SaveAsPrefabAsset(root, path);
-                report.Add(new {path, captureRadius = 80, ringDiameter = 160, constructionTypes = frameworks.arraySize});
+                report.Add(new {path, constructionVisual = "Structure ConstructionComponent"});
             }
             finally { PrefabUtility.UnloadPrefabContents(root); }
         }

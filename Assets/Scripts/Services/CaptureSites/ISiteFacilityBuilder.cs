@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.CaptureSites
         bool TrySpend(float price);
 
         /// <returns>The facility's entity id.</returns>
-        long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed);
+        long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed,
+            Action<float> onConstructionProgress);
     }
 }

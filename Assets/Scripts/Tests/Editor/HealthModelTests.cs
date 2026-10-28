@@ -293,6 +293,78 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(changes, Is.Zero);
         }
 
+        [Test]
+        public void Construction_StartsAtTenPercentWithNoShields()
+        {
+            HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out HardPointModel engine,
+                out HardPointModel generator);
+            model.SetConstructionProgress(0f);
+            model.RegenerateShields(SHIELDS);
+
+            Assert.That(model.MaxHull, Is.EqualTo(HULL * 0.1f).Within(0.001f));
+            Assert.That(model.Hull, Is.EqualTo(model.MaxHull));
+            Assert.That(weapon.MaxHealth, Is.EqualTo(10f).Within(0.001f));
+            Assert.That(engine.MaxHealth, Is.EqualTo(20f).Within(0.001f));
+            Assert.That(generator.MaxHealth, Is.EqualTo(15f).Within(0.001f));
+            Assert.That(model.Shields, Is.Zero);
+            Assert.That(model.AbsorbsDamage(DamageType.Turbolaser), Is.False);
+        }
+
+        [Test]
+        public void Construction_GrowthPreservesHullAndHardPointDamageUntilCompletion()
+        {
+            HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out _, out _);
+            model.SetConstructionProgress(0f);
+            model.ApplyDamage(2f, DamageType.ProtonTorpedo, weapon.Id);
+            model.SetConstructionProgress(0.5f);
+
+            Assert.That(model.MaxHull, Is.EqualTo(550f).Within(0.001f));
+            Assert.That(model.MaxHull - model.Hull, Is.EqualTo(2f).Within(0.001f));
+            Assert.That(weapon.MaxHealth, Is.EqualTo(55f).Within(0.001f));
+            Assert.That(weapon.MaxHealth - weapon.Health, Is.EqualTo(4f).Within(0.001f));
+            Assert.That(model.Shields, Is.Zero);
+
+            model.SetConstructionProgress(1f);
+            Assert.That(model.Hull, Is.EqualTo(HULL - 2f).Within(0.001f));
+            Assert.That(weapon.Health, Is.EqualTo(96f).Within(0.001f));
+            Assert.That(model.Shields, Is.EqualTo(SHIELDS));
+        }
+
+        [Test]
+        public void Construction_DoesNotRebuildDestroyedHardPointsOrShieldGenerator()
+        {
+            HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out _, out HardPointModel generator);
+            model.SetConstructionProgress(0f);
+            model.ApplyDamage(10f, DamageType.Turbolaser, weapon.Id);
+            model.ApplyDamage(15f, DamageType.Turbolaser, generator.Id);
+            model.SetConstructionProgress(1f);
+
+            Assert.That(model.IsDestroyed, Is.False);
+            Assert.That(weapon.MaxHealth, Is.EqualTo(100f).Within(0.001f));
+            Assert.That(weapon.Health, Is.Zero);
+            Assert.That(generator.Health, Is.Zero);
+            Assert.That(model.IsLostShieldGenerator, Is.True);
+            Assert.That(model.Shields, Is.Zero);
+        }
+
+        [Test]
+        public void Construction_RestoreBeforeHealthPreservesDamageAndCompletedShieldFraction()
+        {
+            HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out _, out _);
+            model.SetConstructionProgress(0.5f);
+            model.Restore(0.8f, 1f, new[] { 0.5f, 1f, 1f });
+            float missingHull = model.MaxHull - model.Hull;
+            float missingWeapon = weapon.MaxHealth - weapon.Health;
+            Assert.That(model.Shields, Is.Zero);
+            model.SetConstructionProgress(1f);
+            Assert.That(model.MaxHull - model.Hull, Is.EqualTo(missingHull).Within(0.001f));
+            Assert.That(weapon.MaxHealth - weapon.Health, Is.EqualTo(missingWeapon).Within(0.001f));
+
+            model.Restore(0.8f, 0.4f, new[] { 0.5f, 1f, 1f });
+            model.SetConstructionProgress(1f);
+            Assert.That(model.Shields, Is.EqualTo(SHIELDS * 0.4f));
+        }
+
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,
             out HardPointModel shieldGenerator)
         {

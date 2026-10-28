@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3350890140303717934}
   - component: {fileID: 1741931594841422934}
   - component: {fileID: 3175288273375849023}
+  - component: {fileID: 2519772290421206673}
   m_Layer: 0
   m_Name: AsteroidDefendPlatformView
   m_TagString: Untagged
@@ -56,6 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bindings: {fileID: 3175288273375849023}
+  construction: {fileID: 2519772290421206673}
   explosionHullRenderers:
   - {fileID: 4225004989859197926}
   - {fileID: 4881524578065485804}
@@ -241,6 +243,33 @@ MonoBehaviour:
   - {fileID: 3904722521049085063}
   - {fileID: 4187391721111521243}
   - {fileID: 3007545869417895737}
+--- !u!114 &2519772290421206673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed02b21e6f40e54caa0416438c90a30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Construction.ConstructionComponent
+  renderers:
+  - {fileID: 4225004989859197926}
+  - {fileID: 4881524578065485804}
+  - {fileID: 4923347090509369397}
+  - {fileID: 7735949969365785}
+  - {fileID: 11094621794372391}
+  - {fileID: 4115284948775651647}
+  - {fileID: 2258316472528986846}
+  - {fileID: 2426118187676694519}
+  - {fileID: 4939884448961697640}
+  - {fileID: 2504484784642514934}
+  - {fileID: 373060523890517048}
+  - {fileID: 4810850481389787144}
+  constructionMaterial: {fileID: 2100000, guid: 989fe0bc75d8c1e4c885c52047c791a8,
+    type: 2}
 --- !u!1 &710634910253635708
 GameObject:
   m_ObjectHideFlags: 0

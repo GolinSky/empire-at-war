@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private UnitHealthSave health;
         [SerializeField] private bool hasHangar;
         [SerializeField] private HangarSave hangar;
+        [SerializeField] private float constructionProgress = 1f;
+        [SerializeField] private float constructionBuildTime;
 
         public long Id => id;
         public PlayerId Owner => new PlayerId(owner);
@@ -28,6 +30,8 @@ namespace EmpireAtWar.Services.Saves
         public DefendPlatformType DefendPlatformType => (DefendPlatformType)type;
         public Vector3 Position => position;
         public UnitHealthSave Health => health;
+        public float ConstructionProgress => constructionProgress;
+        public float ConstructionBuildTime => constructionBuildTime;
         /// <summary>Null when the structure has no hangar.</summary>
         public HangarSave Hangar => hasHangar ? hangar : null;
 
@@ -36,6 +40,13 @@ namespace EmpireAtWar.Services.Saves
         {
             id = id, owner = owner.Index, kind = kind, type = type, position = position, health = health
         };
+
+        public StructureSave WithConstruction(float progress, float buildTime)
+        {
+            constructionProgress = progress;
+            constructionBuildTime = buildTime;
+            return this;
+        }
 
         public StructureSave WithHangar(HangarSave save)
         {

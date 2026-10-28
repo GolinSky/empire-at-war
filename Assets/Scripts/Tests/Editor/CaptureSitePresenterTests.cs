@@ -137,12 +137,12 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureSystem_RaidsOnlyOperationalHostileSites()
+        public void CaptureSystem_RaidsConstructingAndOperationalHostileFacilities()
         {
             CaptureSitesSystem system = CreateSystem();
             _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Constructing, PlayerId.None, 0,
                 SiteFacilityType.Mining, 0);
-            Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.zero, out _), Is.False);
+            Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.zero, out _), Is.True);
             _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Operational, PlayerId.None, 0,
                 SiteFacilityType.Mining, 0);
             Assert.That(system.TryGetRaidTarget(TestPlayers.Human, Vector3.zero, out Vector3 position), Is.True);
@@ -209,17 +209,36 @@ namespace EmpireAtWar.Tests.Editor
             MethodInfo start = typeof(CaptureSitesSystem).GetMethod("TryStartConstruction", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(start.Invoke(system, new object[] { _presenter, type, TestPlayers.Human }), Is.False);
             Assert.That(starts, Is.Zero);
+            Assert.That(builder.BuildCount, Is.Zero);
             builder.CanSpend = true;
             Assert.That(start.Invoke(system, new object[] { _presenter, type, TestPlayers.Human }), Is.True);
             Assert.That(starts, Is.EqualTo(1));
+            Assert.That(builder.BuildCount, Is.EqualTo(1));
+            Assert.That(_presenter.FacilityId, Is.EqualTo(1));
+            Assert.That(_presenter.IsCapturable, Is.False);
+            builder.ProgressChanged(0.5f);
+            Assert.That(_presenter.ConstructionProgress, Is.EqualTo(0.5f));
+            builder.Destroyed();
+            Assert.That(_presenter.State, Is.EqualTo(CaptureSiteState.Neutral));
+            Assert.That(_presenter.FacilityId, Is.Zero);
         }
 
         private sealed class BuilderStub : ISiteFacilityBuilder
         {
             public bool CanSpend;
+            public int BuildCount;
+            public System.Action<float> ProgressChanged;
+            public System.Action Destroyed;
             public bool CanAfford(float price) => CanSpend;
             public bool TrySpend(float price) => CanSpend;
-            public long Build(SiteFacilityType facilityType, Vector3 position, System.Action onDestroyed) => 1;
+            public long Build(SiteFacilityType facilityType, Vector3 position, System.Action onDestroyed,
+                System.Action<float> onConstructionProgress)
+            {
+                BuildCount++;
+                ProgressChanged = onConstructionProgress;
+                Destroyed = onDestroyed;
+                return 1;
+            }
         }
 
         private sealed class FixedClock : ITooltipClock

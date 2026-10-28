@@ -154,7 +154,7 @@ namespace EmpireAtWar.Tests.Editor
             };
 
             model.Restore(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f,
-                SiteFacilityType.Mining, 0f, 1f);
+                SiteFacilityType.Mining, 0f);
             Assert.That(captures + losses, Is.Zero);
             model.TickCapture(1f, TestPlayers.DuelTally(roster, 1, 0));
             model.ReleaseFacility();

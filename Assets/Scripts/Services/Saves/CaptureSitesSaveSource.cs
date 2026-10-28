@@ -7,7 +7,7 @@ using EmpireAtWar.Services.CaptureSites;
 namespace EmpireAtWar.Services.Saves
 {
     /// <summary>
-    /// Capture-site ownership, capture and construction progress. An operational site is linked to its restored
+    /// Capture-site ownership, capture and construction progress. An occupied site is linked to its restored
     /// facility again, so losing the facility frees the site as before.
     /// </summary>
     public sealed class CaptureSitesSaveSource : IBattleSaveSource
@@ -42,12 +42,21 @@ namespace EmpireAtWar.Services.Saves
                 CaptureSiteSave save = saves[i];
                 site.Restore(save.Owner, save.State, save.CapturingPlayer, save.CaptureProgress, save.FacilityType,
                     save.ConstructionProgress);
-                if (save.State != CaptureSiteState.Operational) continue;
+                if (!site.HasFacility) continue;
                 site.SetFacility(save.FacilityId);
                 if (context.MiningFacilities.TryGetValue(save.FacilityId, out var facility))
+                {
                     facility.OnRelease += site.ReleaseFacility;
+                    facility.ConstructionProgressChanged += site.SetConstructionProgress;
+                    site.SetConstructionProgress(facility.ConstructionProgress);
+                }
                 else
-                    context.DefendPlatforms[save.FacilityId].OnRelease += site.ReleaseFacility;
+                {
+                    var platform = context.DefendPlatforms[save.FacilityId];
+                    platform.OnRelease += site.ReleaseFacility;
+                    platform.ConstructionProgressChanged += site.SetConstructionProgress;
+                    site.SetConstructionProgress(platform.ConstructionProgress);
+                }
             }
         }
     }

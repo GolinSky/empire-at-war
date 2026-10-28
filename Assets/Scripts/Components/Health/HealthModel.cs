@@ -26,6 +26,7 @@ namespace EmpireAtWar.Models.Health
         private float _levelHullScale = 1f;
         private float _levelShieldsScale = 1f;
         private float _levelShieldRegenerateScale = 1f;
+        private float _constructionScale = 1f;
 
         public event Action OnValueChanged;
 
@@ -35,12 +36,12 @@ namespace EmpireAtWar.Models.Health
 
         public ShipClass ShipClass => _data.ShipClass;
         public float Hull { get; private set; }
-        public float MaxHull => _data.Hull * _hullMultiplier * _levelHullScale;
+        public float MaxHull => _data.Hull * _hullMultiplier * _levelHullScale * _constructionScale;
         public float HullPercentage => MaxHull <= 0f ? 0f : Hull / MaxHull;
         public float Shields { get; private set; }
         public float ShieldPercentage => MaxShields <= 0f ? 0f : Shields / MaxShields;
-        public float MaxShields => _data.Shields * _shieldsMultiplier * _levelShieldsScale;
-        public float ShieldRegenerateValue => _data.ShieldRegenerateValue * _levelShieldRegenerateScale;
+        public float MaxShields => _constructionScale < 1f ? 0f : _data.Shields * _shieldsMultiplier * _levelShieldsScale;
+        public float ShieldRegenerateValue => _constructionScale < 1f ? 0f : _data.ShieldRegenerateValue * _levelShieldRegenerateScale;
         public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
         public HardPointModel[] HardPointModels { get; private set; } = Array.Empty<HardPointModel>();
         public bool IsDestroyed { get; private set; }
@@ -93,9 +94,27 @@ namespace EmpireAtWar.Models.Health
                 }
 
                 HardPointHealth health = GetHardPointHealth(hardPoint.HardPointType);
-                hardPoint.SetHealth(hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health,
+                hardPoint.SetHealth((hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health) * _constructionScale,
                     health.HullDamageMultiplier);
             }
+        }
+
+        /// <summary>Builds new hull and hardpoint capacity without repairing damage already taken.</summary>
+        public void SetConstructionProgress(float progress)
+        {
+            if (IsDestroyed) return;
+            float scale = 0.1f + 0.9f * Math.Clamp(progress, 0f, 1f);
+            if (_constructionScale == scale) return;
+
+            float missingHull = MaxHull - Hull;
+            float previousScale = _constructionScale;
+            _constructionScale = scale;
+            Hull = Math.Max(0f, MaxHull - missingHull);
+            foreach (HardPointModel hardPoint in HardPointModels)
+                hardPoint.SetConstructionMaxHealth(hardPoint.MaxHealth * scale / previousScale);
+
+            Shields = scale < 1f || IsShieldSuppressed || IsLostShieldGenerator ? 0f : MaxShields;
+            OnValueChanged?.Invoke();
         }
 
         /// <summary>

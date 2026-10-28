@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 3350890140303717934}
   - component: {fileID: 4738334751003922498}
   - component: {fileID: 345778069765291551}
+  - component: {fileID: 1722913948406958251}
   m_Layer: 0
   m_Name: MassDriverSatelliteView
   m_TagString: Untagged
@@ -234,6 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bindings: {fileID: 345778069765291551}
+  construction: {fileID: 1722913948406958251}
   explosionHullRenderers:
   - {fileID: 5691565045301404706}
   - {fileID: 2420826816599031612}
@@ -529,6 +531,71 @@ MonoBehaviour:
   - {fileID: 8209512439285726378}
   - {fileID: 499212946749643524}
   - {fileID: 5294651940298756087}
+--- !u!114 &1722913948406958251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed02b21e6f40e54caa0416438c90a30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Construction.ConstructionComponent
+  renderers:
+  - {fileID: 5691565045301404706}
+  - {fileID: 2420826816599031612}
+  - {fileID: 6051921387361903293}
+  - {fileID: 7709960040645979279}
+  - {fileID: 1558257391341058700}
+  - {fileID: 6409469088920076001}
+  - {fileID: 8887954908746927747}
+  - {fileID: 5069017453621380324}
+  - {fileID: 9044440233228450859}
+  - {fileID: 6305912295866394694}
+  - {fileID: 2719983067019195044}
+  - {fileID: 3718759660671570522}
+  - {fileID: 6270926121798369333}
+  - {fileID: 8341862582784492556}
+  - {fileID: 4710686994954873845}
+  - {fileID: 5960718331170596722}
+  - {fileID: 7487922897906714030}
+  - {fileID: 4814637954192368732}
+  - {fileID: 9022070870090956782}
+  - {fileID: 1243333001275396751}
+  - {fileID: 4243621697937797634}
+  - {fileID: 8155957375824280837}
+  - {fileID: 7061067572765844057}
+  - {fileID: 5662891987672061190}
+  - {fileID: 5503423632558672328}
+  - {fileID: 6919246979697044636}
+  - {fileID: 1170668024776800112}
+  - {fileID: 1078683583017213324}
+  - {fileID: 8957315964997778504}
+  - {fileID: 2070008832083524608}
+  - {fileID: 3352554335078003799}
+  - {fileID: 1367457731231705002}
+  - {fileID: 1052807787188387008}
+  - {fileID: 4162352020816700388}
+  - {fileID: 8378268487192173352}
+  - {fileID: 8549548175056616444}
+  - {fileID: 1184504939532393298}
+  - {fileID: 8244547915611004802}
+  - {fileID: 5748854278904027601}
+  - {fileID: 166331915333789197}
+  - {fileID: 7292414030779393381}
+  - {fileID: 1595742606667029574}
+  - {fileID: 7827436595918614077}
+  - {fileID: 6687031511156414685}
+  - {fileID: 1514954397485002986}
+  - {fileID: 4076097895594818346}
+  - {fileID: 2466821125431656332}
+  - {fileID: 5478667079937986947}
+  - {fileID: 4907308623460226964}
+  - {fileID: 8504366514922683207}
+  constructionMaterial: {fileID: 2100000, guid: 989fe0bc75d8c1e4c885c52047c791a8,
+    type: 2}
 --- !u!1 &1201355208584210499
 GameObject:
   m_ObjectHideFlags: 0

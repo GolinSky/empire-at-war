@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private readonly AsteroidDefendPlatformFactory _battleAsteroidFactory;
         private readonly IUniqueIdGenerator _ids;
         private readonly SatelliteDefendPlatformFactory _satellites;
+        private readonly CaptureSiteData _data;
 
         private readonly PlayerId _owner;
 
@@ -34,9 +35,11 @@ namespace EmpireAtWar.Services.CaptureSites
             AsteroidMiningFacilityFactory miningFacilityFactory,
             AsteroidDefendPlatformFactory battleAsteroidFactory,
             IUniqueIdGenerator ids,
-            SatelliteDefendPlatformFactory satellites)
+            SatelliteDefendPlatformFactory satellites,
+            CaptureSiteData data)
         {
             _ids = ids;
+            _data = data;
             _satellites = satellites;
             _owner = owner.Id;
             _playerRegistry = playerRegistry;
@@ -79,28 +82,36 @@ namespace EmpireAtWar.Services.CaptureSites
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
-        public long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed)
+        public long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed,
+            Action<float> onConstructionProgress)
         {
             long entityId = _ids.GenerateUniqueId();
             switch (facilityType)
             {
                 case SiteFacilityType.Mining:
                     MiningFacilityEntity facility = _miningFacilityFactory.Create(
-                        _owner, MiningFacilityType.AsteroidMiner, position, entityId);
+                        _owner, MiningFacilityType.AsteroidMiner, position, entityId, buildDuration: _data.GetCost(facilityType).BuildTime);
                     facility.OnRelease += onDestroyed;
+                    facility.ConstructionProgressChanged += onConstructionProgress;
+                    onConstructionProgress(facility.ConstructionProgress);
                     break;
                 case SiteFacilityType.BattleAsteroid:
                     DefendPlatformEntity battleAsteroid = _battleAsteroidFactory.Create(
-                        _owner, DefendPlatformType.BattleAsteroid, position, entityId);
+                        _owner, DefendPlatformType.BattleAsteroid, position, entityId, buildDuration: _data.GetCost(facilityType).BuildTime);
                     battleAsteroid.OnRelease += onDestroyed;
+                    battleAsteroid.ConstructionProgressChanged += onConstructionProgress;
+                    onConstructionProgress(battleAsteroid.ConstructionProgress);
                     break;
                 case SiteFacilityType.QuadLaserSatellite:
                 case SiteFacilityType.TurbolaserSatellite:
                 case SiteFacilityType.IonSatellite:
                 case SiteFacilityType.MassDriverSatellite:
                 case SiteFacilityType.MissileSatellite:
-                    var satellite = _satellites.Create(_owner, SatelliteType(facilityType), position, entityId);
+                    var satellite = _satellites.Create(_owner, SatelliteType(facilityType), position, entityId,
+                        buildDuration: _data.GetCost(facilityType).BuildTime);
                     satellite.OnRelease += onDestroyed;
+                    satellite.ConstructionProgressChanged += onConstructionProgress;
+                    onConstructionProgress(satellite.ConstructionProgress);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(facilityType), facilityType, null);

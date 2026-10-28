@@ -34,8 +34,8 @@ public static class IntegrateSatelliteSites
         MigrateRing(SITES + "CaptureSite.prefab", true);
         MigrateRing(SITES + "BattleAsteroidCaptureSite.prefab", true);
         MigrateRing("Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab", false);
-        BuildPad();
         ConfigureData();
+        BuildPad();
         ConfigureUi();
         EditPrefab(SCENE, root =>
         {
@@ -98,37 +98,15 @@ public static class IntegrateSatelliteSites
             CaptureSiteView view = Components<CaptureSiteView>(root).Single();
             SerializedObject site = new SerializedObject(view);
             Object.DestroyImmediate(((Transform)site.FindProperty("asteroidRocks").objectReferenceValue).gameObject);
-            SerializedProperty frameworks = site.FindProperty("constructionFrameworks.keyValue");
-            for (int i = 0; i < frameworks.arraySize; i++)
-                Object.DestroyImmediate(((Transform)frameworks.GetArrayElementAtIndex(i).FindPropertyRelative("value").objectReferenceValue).gameObject);
             GameObject model = (GameObject)PrefabUtility.InstantiatePrefab(
                 AssetDatabase.LoadAssetAtPath<GameObject>(MODELS + "SatelliteBase.prefab"), root.transform);
             model.transform.localPosition = Vector3.zero;
             model.transform.localRotation = Quaternion.identity;
             site.FindProperty("asteroidRocks").objectReferenceValue = model.transform;
             site.FindProperty("rockObstacles").arraySize = 0;
-            site.FindProperty("radius").floatValue = 20f;
-            site.FindProperty("facilityHeightOffset").floatValue = 0f;
             MeshRenderer renderer = Components<MeshRenderer>(root).Single(r => r.name == "CaptureRing");
-            renderer.transform.localScale = new Vector3(40f, 40f, 1f);
-            frameworks.arraySize = TYPES.Length;
-            for (int i = 0; i < TYPES.Length; i++)
-            {
-                GameObject framework = (GameObject)PrefabUtility.InstantiatePrefab(
-                    AssetDatabase.LoadAssetAtPath<GameObject>(MODELS + TYPES[i] + "Satellite.prefab"), root.transform);
-                PrefabUtility.UnpackPrefabInstance(framework, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
-                // Keep only the six weapon mounts: the empty pad already renders the shared base during construction.
-                for (int child = framework.transform.childCount - 1; child >= 0; child--)
-                    if (!framework.transform.GetChild(child).name.StartsWith("Turret_", StringComparison.Ordinal))
-                        Object.DestroyImmediate(framework.transform.GetChild(child).gameObject);
-                framework.name = TYPES[i] + "Construction";
-                framework.transform.localPosition = Vector3.zero;
-                framework.transform.localRotation = Quaternion.identity;
-                framework.SetActive(false);
-                SerializedProperty entry = frameworks.GetArrayElementAtIndex(i);
-                entry.FindPropertyRelative("key").intValue = i + 2;
-                entry.FindPropertyRelative("value").objectReferenceValue = framework.transform;
-            }
+            float radius = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(DATA).GetSettings(CaptureSiteKind.Satellite).Radius;
+            renderer.transform.localScale = new Vector3(radius * 2f, radius * 2f, 1f);
             site.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(root, SITES + "SatelliteCaptureSite.prefab");
         }
@@ -170,6 +148,11 @@ public static class IntegrateSatelliteSites
             types.arraySize = kind == 2 ? 5 : 2;
             for (int i = 0; i < types.arraySize; i++) types.GetArrayElementAtIndex(i).intValue = kind == 2 ? i + 2 : i;
         }
+        SerializedProperty satelliteSettings = Entry(serialized.FindProperty("siteSettings.keyValue"), (int)CaptureSiteKind.Satellite)
+            .FindPropertyRelative("value");
+        satelliteSettings.FindPropertyRelative("<Radius>k__BackingField").floatValue = 100f;
+        satelliteSettings.FindPropertyRelative("<CaptureDuration>k__BackingField").floatValue = 6f;
+        satelliteSettings.FindPropertyRelative("<FacilityHeightOffset>k__BackingField").floatValue = 0f;
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(data);
         AssetDatabase.SaveAssets();

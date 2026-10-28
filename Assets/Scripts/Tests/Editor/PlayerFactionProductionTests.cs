@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 
@@ -147,6 +149,30 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.IsUnitLimitReached(research), Is.True, "A queued research tier hides its card.");
             model.Advance(10f);
             Assert.That(model.IsUnitLimitReached(levelUp), Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Structure_EntersReserveImmediatelyEvenWhenProductionPipelinesAreFull(bool platform)
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData data = CreateFactionData(maxCount: 1, buildTime: 30);
+            for (int id = 1; id <= PlayerFactionModel.MAX_ACTIVE_PIPELINES; id++)
+                model.QueueUnit(new LevelUnitRequest(data, id));
+            UnitRequest structure = platform
+                ? new DefendPlatformUnitRequest(data, DefendPlatformType.Xq6)
+                : new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner);
+            var completed = new List<UnitRequest>();
+            model.OnUnitCompleted += completed.Add;
+
+            model.QueueUnit(structure);
+
+            Assert.That(completed, Is.EqualTo(new[] { structure }));
+            Assert.That(model.GetProductionQueueSnapshots(), Has.Count.EqualTo(PlayerFactionModel.MAX_ACTIVE_PIPELINES));
+            Assert.That(model.CanQueueUnit(structure), Is.False, "Reserve and deployed structures retain their limit slot.");
+            Assert.That(model.TryCancelCurrentUnit(structure.Id, out _), Is.False);
+            model.ReleaseStructure(structure);
+            Assert.That(model.CanQueueUnit(structure), Is.True);
         }
 
         private static PlayerFactionModel CreateModel()

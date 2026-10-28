@@ -6,20 +6,15 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Obstacles;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
     public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView
     {
-        private const float MINIMUM_FRAMEWORK_HEIGHT = 0.05f;
-
         [SerializeField] private CaptureRingView captureRing;
         [SerializeField] private Transform asteroidRocks;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
-        [SerializeField] private DictionaryWrapper<SiteFacilityType, Transform> constructionFrameworks;
         [SerializeField] private Canvas statusCanvas;
         [SerializeField] private Image progressFill;
         [SerializeField] private TMP_Text statusText;
@@ -27,11 +22,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         private Camera _camera;
         private RectTransform _canvasTransform;
 
-        [SerializeField, Min(1f)] private float radius = 60f;
-        [SerializeField, Min(1f)] private float captureDuration = 12f;
-        [SerializeField, FormerlySerializedAs("miningFacilityHeightOffset"),
-         Tooltip("World-space height of a built facility relative to the site center; keeps it on the site rocks.")]
-        private float facilityHeightOffset;
+        private CaptureSiteSettings _settings;
         [SerializeField, Range(0.05f, 0.6f), Tooltip("Panel height as a fraction of the screen height.")]
         private float screenHeightFraction = 0.24f;
 
@@ -48,10 +39,12 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
+        public void ConfigureSettings(CaptureSiteSettings settings) => _settings = settings;
+
         public Vector3 Center => transform.position;
-        public float Radius => radius * Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Abs(transform.lossyScale.z));
-        public float CaptureDuration => captureDuration;
-        public Vector3 FacilityPosition => Center + Vector3.up * facilityHeightOffset;
+        public float Radius => _settings.Radius * Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Abs(transform.lossyScale.z));
+        public float CaptureDuration => _settings.CaptureDuration;
+        public Vector3 FacilityPosition => Center + Vector3.up * _settings.FacilityHeightOffset;
         public IReadOnlyList<MapObstacle> RockObstacles => rockObstacles;
 
         private void Awake()
@@ -94,19 +87,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             captureRing.Render(capturer == OwnerRelation.Neutral ? owner : capturer, isContested, blink, hidden);
 
             bool isConstructing = state == CaptureSiteState.Constructing;
-            asteroidRocks.gameObject.SetActive(state != CaptureSiteState.Operational);
-            foreach (KeyValuePair<SiteFacilityType, Transform> framework in constructionFrameworks.Dictionary)
-            {
-                framework.Value.gameObject.SetActive(isConstructing && framework.Key == facilityType);
-            }
-
-            if (isConstructing)
-            {
-                Transform framework = constructionFrameworks.Dictionary[facilityType];
-                Vector3 scale = framework.localScale;
-                scale.y = Mathf.Lerp(MINIMUM_FRAMEWORK_HEIGHT, 1f, constructionProgress);
-                framework.localScale = scale;
-            }
+            asteroidRocks.gameObject.SetActive(!hidden);
 
             bool isCapturing = capturer != OwnerRelation.Neutral;
             float displayedProgress = isCapturing ? captureProgress

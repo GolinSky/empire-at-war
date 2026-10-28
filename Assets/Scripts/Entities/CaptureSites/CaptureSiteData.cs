@@ -10,6 +10,9 @@ namespace EmpireAtWar.Entities.CaptureSites
     {
         [SerializeField] private DictionaryWrapper<SiteFacilityType, SiteFacilityCost> facilityCosts;
         [SerializeField] private DictionaryWrapper<CaptureSiteKind, SiteFacilityType[]> allowedFacilities;
+        [SerializeField] private DictionaryWrapper<CaptureSiteKind, CaptureSiteSettings> siteSettings;
+
+        public CaptureSiteSettings GetSettings(CaptureSiteKind kind) => siteSettings.Dictionary[kind];
 
         public IReadOnlyList<SiteFacilityType> GetAllowedFacilities(CaptureSiteKind kind) => allowedFacilities.Dictionary[kind];
 

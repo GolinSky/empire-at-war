@@ -133,6 +133,9 @@ namespace EmpireAtWar.Tests.Editor
             authored.ApplyModifiedPropertiesWithoutUndo();
             var settings = (MapGenerationSettings)authored.FindProperty("settings").objectReferenceValue;
             var mapView = (MapLayoutView)authored.FindProperty("mapLayoutView").objectReferenceValue;
+            typeof(MapLayoutView).GetField("_siteData", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(mapView,
+                AssetDatabase.LoadAssetAtPath<EmpireAtWar.Entities.CaptureSites.CaptureSiteData>(
+                    "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"));
             var layout = new SurvivalLayoutGenerator(settings, mapView.FeatureRadii).Generate(_project.GameData.Battle);
             using (LifetimeScope.Enqueue(builder =>
             {
@@ -686,6 +689,9 @@ namespace EmpireAtWar.Tests.Editor
             authored.ApplyModifiedPropertiesWithoutUndo();
             MapGenerationSettings settings = (MapGenerationSettings)authored.FindProperty("settings").objectReferenceValue;
             MapLayoutView mapView = (MapLayoutView)authored.FindProperty("mapLayoutView").objectReferenceValue;
+            typeof(MapLayoutView).GetField("_siteData", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(mapView,
+                AssetDatabase.LoadAssetAtPath<EmpireAtWar.Entities.CaptureSites.CaptureSiteData>(
+                    "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"));
             MapLayout layout = new MapLayoutGenerator(settings, mapView.FeatureRadii).Generate(
                 _project.GameData.MapSize, _project.GameData.Players, new System.Random(MAP_SEED), MAP_SEED);
             using (LifetimeScope.Enqueue(builder =>
@@ -861,6 +867,9 @@ namespace EmpireAtWar.Tests.Editor
             authored.ApplyModifiedPropertiesWithoutUndo();
             var settings = (MapGenerationSettings)authored.FindProperty("settings").objectReferenceValue;
             var mapView = (MapLayoutView)authored.FindProperty("mapLayoutView").objectReferenceValue;
+            typeof(MapLayoutView).GetField("_siteData", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(mapView,
+                AssetDatabase.LoadAssetAtPath<EmpireAtWar.Entities.CaptureSites.CaptureSiteData>(
+                    "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"));
             MapLayout layout = _project.GameData.Battle.Map.Type == MapType.Survival
                 ? new SurvivalLayoutGenerator(settings, mapView.FeatureRadii).Generate(_project.GameData.Battle)
                 : new MapLayoutGenerator(settings, mapView.FeatureRadii).Generate(

@@ -30,6 +30,7 @@ namespace EmpireAtWar.Components.Combat
         public event Action Changed;
 
         private bool _superWeaponDisabled;
+        private bool _isConstructing;
         private int _ionPulseDisables;
         private int _sensorJammers;
         private int _fighterCoordinations;
@@ -129,7 +130,9 @@ namespace EmpireAtWar.Components.Combat
             if (Changed != null) Changed.Invoke();
         }
 
-        public bool CanFireWeapon(bool mainBattery) => !_mainBatteriesActive || mainBattery;
+        public bool CanFireWeapon(bool mainBattery) => !_isConstructing && (!_mainBatteriesActive || mainBattery);
+
+        public void SetConstructionActive(bool constructing) => _isConstructing = constructing;
 
         public float GetMainBatteryFireDelayMultiplier(bool mainBattery) =>
             mainBattery ? _mainBatteryFireDelayMultiplier : 1f;

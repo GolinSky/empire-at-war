@@ -25,7 +25,7 @@ namespace EmpireAtWar.Services.Saves
         public float CaptureProgress => captureProgress;
         public SiteFacilityType FacilityType => facilityType;
         public float ConstructionProgress => constructionProgress;
-        /// <summary>The operational facility's entity id; only meaningful when <see cref="State"/> is Operational.</summary>
+        /// <summary>The facility's entity id during construction and operation.</summary>
         public long FacilityId => facilityId;
 
         public static CaptureSiteSave Create(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer,

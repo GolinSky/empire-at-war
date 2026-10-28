@@ -1332,6 +1332,7 @@ GameObject:
   - component: {fileID: 4949378780131669032}
   - component: {fileID: 8122547812603076977}
   - component: {fileID: 7392709377472106082}
+  - component: {fileID: 5139363235180103550}
   m_Layer: 0
   m_Name: AsteroidMiningFacilityView
   m_TagString: Untagged
@@ -1371,6 +1372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bindings: {fileID: 7392709377472106082}
+  construction: {fileID: 5139363235180103550}
   explosionHullRenderers:
   - {fileID: 8779371637988177295}
   - {fileID: 7075607082337425127}
@@ -1539,6 +1541,31 @@ MonoBehaviour:
   <Injectables>k__BackingField:
   - {fileID: 8122547812603076977}
   - {fileID: 1754627770004611748}
+--- !u!114 &5139363235180103550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed02b21e6f40e54caa0416438c90a30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Construction.ConstructionComponent
+  renderers:
+  - {fileID: 8779371637988177295}
+  - {fileID: 7075607082337425127}
+  - {fileID: 1644980215404368497}
+  - {fileID: 1773075813490677368}
+  - {fileID: 3055392994152945061}
+  - {fileID: 4554641389730109831}
+  - {fileID: 5380683864605681715}
+  - {fileID: 1165481267143321820}
+  - {fileID: 5189253648509488234}
+  - {fileID: 5627039604948232819}
+  constructionMaterial: {fileID: 2100000, guid: 989fe0bc75d8c1e4c885c52047c791a8,
+    type: 2}
 --- !u!1 &9215030156598590754
 GameObject:
   m_ObjectHideFlags: 0

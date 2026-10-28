@@ -314,6 +314,9 @@
 
 ### Features
 
+- [x] **Unified on-map structure construction** → [[Done/Features/Structure_Construction_Flow|Structure Construction Flow]]
+  - Completed 2026-10-28: immediate spawn, shared health, hologram reveal and saved progress; compilation/shader checks and 12 prefab reloads clean. Tests not run.
+
 - [x] **Import Wavecrest-class frigate into CIS** → [[Done/Features/Wavecrest_Import|Wavecrest Import]]
   - 2026-10-27: 17 mounts and Medium weapons; source art/data integration verified. Power to Shields added:20s active/60s recovery,300 shields/s,20% speed penalty; saved bindings/audio checks pass. No Play Mode or automated Unity tests run.
 

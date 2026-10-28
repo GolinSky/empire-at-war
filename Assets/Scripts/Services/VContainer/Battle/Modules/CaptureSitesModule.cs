@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureDisabled(IContainerBuilder builder)
         {
+            AssetRegistrations.RegisterShared<CaptureSiteData>(builder, _assets);
             _sites.gameObject.SetActive(false);
             builder.Register<NoCaptureSites>(Lifetime.Singleton).As<ICaptureSitesSystem>();
         }

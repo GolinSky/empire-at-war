@@ -137,7 +137,7 @@ namespace EmpireAtWar.Services.Saves
                     (!site.Owner.IsNone && !players.ContainsKey(site.Owner)) ||
                     (!site.CapturingPlayer.IsNone && !players.ContainsKey(site.CapturingPlayer)))
                     throw new InvalidDataException("Saved capture site state is invalid.");
-                if (site.State == CaptureSiteState.Operational &&
+                if ((site.State == CaptureSiteState.Operational || site.State == CaptureSiteState.Constructing) &&
                     (!facilityIds.Contains(site.FacilityId) || !siteFacilities.Add(site.FacilityId)))
                     throw new InvalidDataException($"Capture site facility {site.FacilityId} is missing from restored structures.");
             }
@@ -150,6 +150,12 @@ namespace EmpireAtWar.Services.Saves
         {
             if (!players.ContainsKey(structure.Owner))
                 throw new InvalidDataException($"Structure {structure.Id} belongs to unknown player {structure.Owner}.");
+            if (structure.Kind != StructureKind.SpaceStation &&
+                (!float.IsFinite(structure.ConstructionProgress) || structure.ConstructionProgress < 0f ||
+                 structure.ConstructionProgress > 1f || !float.IsFinite(structure.ConstructionBuildTime) ||
+                 structure.ConstructionBuildTime < 0f ||
+                 (structure.ConstructionProgress < 1f && structure.ConstructionBuildTime == 0f)))
+                throw new InvalidDataException($"Structure {structure.Id} has invalid construction progress or duration.");
             switch (structure.Kind)
             {
                 case StructureKind.SpaceStation:

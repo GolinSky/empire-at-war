@@ -90,5 +90,16 @@ namespace EmpireAtWar.Models.Health
             Health *= multiplier;
             OnHardPointHealthChanged?.Invoke();
         }
+
+        /// <summary>Added capacity preserves damage; a destroyed hardpoint is not rebuilt.</summary>
+        public void SetConstructionMaxHealth(float maxHealth)
+        {
+            float missingHealth = MaxHealth - Health;
+            bool destroyed = IsDestroyed;
+            _originHealth = maxHealth;
+            Health = destroyed ? 0f : Math.Max(0f, maxHealth - missingHealth);
+            HealthPercentage = maxHealth <= 0f ? 0f : Health / maxHealth;
+            OnHardPointHealthChanged?.Invoke();
+        }
     }
 }
