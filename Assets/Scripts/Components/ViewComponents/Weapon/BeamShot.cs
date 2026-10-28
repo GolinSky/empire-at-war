@@ -9,6 +9,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         [SerializeField] private LineRenderer beam;
         [SerializeField] private ParticleSystem hitEffect;
+        [Tooltip("Optional layered presentation; unassigned beam prefabs retain their existing visuals.")]
+        [SerializeField] private BeamVisuals visuals;
         private Transform _muzzle;
         private Transform _target;
 
@@ -22,6 +24,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private float _currentHoldDuration;
 
         private bool _isHitPlaying;
+        private bool _isStopping;
 
         /// <summary>Plays the beam outside the shot pool, e.g. from an ability.</summary>
         public void PlayBeam(Transform muzzle, Transform target, float holdDuration, WeaponProfile profile)
@@ -60,7 +63,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             beam.SetPosition(1, _lastOrigin);
             beam.enabled = true;
             _isHitPlaying = false;
+            _isStopping = false;
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            if (visuals != null)
+            {
+                visuals.Begin(beam.widthMultiplier, _lastOrigin);
+                visuals.Tick(_lastOrigin, _lastOrigin, false, false);
+            }
         }
 
         protected override void Update()
@@ -69,7 +78,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             using (BattleProfilerMarkers.ProjectileLaserUpdate.Auto())
             {
 #endif
-            if (beam.enabled)
+            if (beam.enabled || (visuals != null && !visuals.IsComplete))
             {
                 UpdateBeam();
             }
@@ -82,6 +91,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void UpdateBeam()
         {
+            if (_isStopping)
+            {
+                visuals.Tick(_lastOrigin, beam.GetPosition(1), false, false);
+                return;
+            }
             // Keep the last known points when the shooter or the target is destroyed mid-beam.
             if (_muzzle != null) _lastOrigin = _muzzle.position;
             if (_target != null && !IsImpactTargetDestroyed)
@@ -113,11 +127,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 StopBeam();
             }
+            if (visuals != null)
+                visuals.Tick(_lastOrigin, end, _isHitPlaying && !IsImpactTargetDestroyed, HasArmorImpact);
         }
 
         public void StopBeam()
         {
-            beam.enabled = false;
+            if (visuals != null)
+            {
+                visuals.Stop();
+                _isStopping = true;
+            }
+            else beam.enabled = false;
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             _muzzle = null;
             _target = null;
@@ -129,9 +150,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
         protected override void ResetVisuals()
         {
             beam.enabled = false;
+            _isStopping = false;
+            if (visuals != null) visuals.ResetVisuals();
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
-        protected override bool IsVisualComplete() => !beam.enabled;
+        protected override bool IsVisualComplete() => !beam.enabled && (visuals == null || visuals.IsComplete);
     }
 }
