@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using Random = System.Random;
@@ -17,10 +18,16 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const float NOISE_OFFSET_RANGE = 10000f;
         private const float SYMMETRY_CONTRAST = 1.41f;
         private const float RIDGE_STRETCH = 1.5f;
+        // Hazard fringes are clumps along part of the outline, not a wall tracing all of it.
+        private const float FRINGE_FEATURE_SHARE = 0.35f;
+        private const float FRINGE_THRESHOLD = 0.55f;
+        // Derived from the ridge offset so the fringe adds no draw to the shared layout random.
+        private static readonly Vector2 FRINGE_OFFSET_SHIFT = new Vector2(371.3f, 113.7f);
 
         private readonly IReadOnlyList<MapStation> _stations;
         private readonly IReadOnlyList<MapNode> _nodes;
         private readonly IReadOnlyList<MapLane> _lanes;
+        private readonly IReadOnlyList<HazardShape> _hazards;
 
         private readonly MapGenerationSettings _settings;
         private readonly MapSizeSettings _size;
@@ -36,13 +43,15 @@ namespace EmpireAtWar.Entities.Map.Generation
             IReadOnlyList<MapLane> lanes,
             MapGenerationSettings settings,
             MapSizeSettings size,
-            Random random)
+            Random random,
+            IReadOnlyList<HazardShape> hazards)
         {
             _settings = settings;
             _size = size;
             _stations = stations;
             _nodes = nodes;
             _lanes = lanes;
+            _hazards = hazards;
             _center = PlanarGeometry.GetCenter(size.Bounds);
             _shapeOffset = RandomOffset(random);
             _chokeOffset = RandomOffset(random);
@@ -62,15 +71,26 @@ namespace EmpireAtWar.Entities.Map.Generation
                 return false;
             }
 
-            return isInPocket ||
-                GetShapeNoise(position) > _size.FieldThreshold ||
-                GetRidgeNoise(position) > _size.RidgeThreshold;
+            foreach (HazardShape hazard in _hazards)
+                if (hazard.Contains(position, _size.FieldCellSize * 2f + _size.HazardFringeWidth, false) &&
+                    GetSymmetricNoise(position, _ridgeOffset + FRINGE_OFFSET_SHIFT,
+                        _size.FieldFeatureSize * FRINGE_FEATURE_SHARE) > FRINGE_THRESHOLD)
+                    return true;
+            return isInPocket || IsNaturalField(position);
+        }
+
+        public bool IsNaturalField(Vector3 position)
+        {
+            return GetShapeNoise(position) > _size.FieldThreshold || GetRidgeNoise(position) > _size.RidgeThreshold;
         }
 
         // Only cell centers are tested, but field volumes and rocks spill up to one cell past them,
         // so the station clearing is widened by a cell to keep its footprint free of asteroids.
         private bool IsInClearing(Vector3 position)
         {
+            foreach (HazardShape hazard in _hazards)
+                if (hazard.Contains(position, _size.FieldCellSize * 2f, false))
+                    return true;
             foreach (MapStation station in _stations)
             {
                 if (PlanarGeometry.Distance(position, station.Position) <

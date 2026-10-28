@@ -98,6 +98,8 @@ namespace EmpireAtWar.Entities.MiniMap
         {
             MapLayout layout = battleMap.Layout;
             _model.MapRange = layout.SizeRange;
+            foreach (var hazard in layout.Hazards)
+                _model.AddHazard(new MiniMapHazard(hazard));
             // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
             Physics.SyncTransforms();
             foreach (IObstacleBoundsSource obstacleSource in battleMap.Obstacles)

@@ -75,7 +75,9 @@ namespace EmpireAtWar.Tests.Editor
                 var label = labelObject.AddComponent<TextMeshProUGUI>();
                 SetViewField(view, "_slots", new[] { slot });
                 SetViewField(view, "button", root.AddComponent<Button>());
-                SetViewField(view, "cooldownFill", root.AddComponent<Image>());
+                Image icon = root.AddComponent<Image>();
+                SetViewField(view, "icon", icon);
+                SetViewField(view, "cooldownFill", icon);
                 SetViewField(view, "activeHighlight", active);
                 SetViewField(view, "targetingHighlight", targeting);
                 SetViewField(view, "cooldownText", label);

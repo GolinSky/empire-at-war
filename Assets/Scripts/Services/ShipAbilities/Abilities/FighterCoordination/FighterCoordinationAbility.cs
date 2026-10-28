@@ -20,7 +20,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private IHardPointModel _commandArray;
         private CombatModifiers _casterModifiers;
 
-        public bool IsComplete => _commandArray.IsDestroyed || _casterModifiers.IsIonDisabled;
+        public bool IsComplete => _commandArray.IsDestroyed || _casterModifiers.AbilitiesSuppressed;
         public bool SurvivesCasterDeath => false;
 
         public FighterCoordinationAbility(IEntityLocator entities, FighterCoordinationSettings settings,

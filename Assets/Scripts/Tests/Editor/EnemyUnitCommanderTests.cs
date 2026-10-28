@@ -25,12 +25,62 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.Map.Hazards;
+using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("EnemyAi")]
     public sealed class EnemyUnitCommanderTests
     {
+        [TestCase("FindClosestKnownShip")]
+        [TestCase("FindLocalThreat")]
+        public void TargetSelection_PrefersSafeShipOverCloserIonStormTarget(string selector)
+        {
+            GameObject view = new GameObject("Hazard target test");
+            SpaceHazardData data = ScriptableObject.CreateInstance<SpaceHazardData>();
+            try
+            {
+                SerializedObject serialized = new SerializedObject(data);
+                serialized.FindProperty("<DisablesShields>k__BackingField").boolValue = true;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                EntityLocator locator = new EntityLocator();
+                FakeEntity hazardous = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 1);
+                FakeEntity safe = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 2);
+                locator.AddEntity(hazardous);
+                locator.AddEntity(safe);
+                TeamIntelRegistry registry = new TeamIntelRegistry();
+                HostileIntelModel intel = registry.Get(owner.Team);
+                intel.Report(new HostileSighting(1, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(10f, 0f), 1f, 0f, 1f, 0f));
+                intel.Report(new HostileSighting(2, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(15f, 0f), 1f, 0f, 1f, 0f));
+                TestHazards hazards = new TestHazards
+                {
+                    Sources = new IHazardSource[]
+                    {
+                        TestHazards.CreateEllipse(data, new Vector3(10f, 0f, 0f), Vector3.right, 2f, 2f)
+                    }
+                };
+                EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
+                    null, null, null, locator, null, roster, null, registry,
+                    new VisionService(roster, fogEnabled: false), owner, null, hazards);
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                typeof(EnemyStrategicContextBuilder).GetField("_localThreat", flags).SetValue(builder, hazardous);
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
+                Assert.That(find.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.SameAs(safe));
+                hazards.Sources = Array.Empty<IHazardSource>();
+                Assert.That(find.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.SameAs(hazardous));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(data);
+                UnityEngine.Object.DestroyImmediate(view);
+            }
+        }
+
         [Test]
         public void ReserveSquadrons_AreTrackedOnceAndRejoinAfterPoolReuse()
         {
@@ -195,7 +245,7 @@ namespace EmpireAtWar.Tests.Editor
                     new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, null, locator, null, roster, null, registry,
-                    new VisionService(roster, fogEnabled: false), owner, null);
+                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards());
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 object[] args = { Vector3.zero, 0f };
@@ -237,7 +287,7 @@ namespace EmpireAtWar.Tests.Editor
                 VisionService vision = new VisionService(roster);
                 vision.Register(owner.Id, scoutView.transform, 20f);
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
-                    null, null, null, locator, null, roster, null, registry, vision, owner, null);
+                    null, null, null, locator, null, roster, null, registry, vision, owner, null, new TestHazards());
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
                 object[] args = { Vector3.zero, 0f };

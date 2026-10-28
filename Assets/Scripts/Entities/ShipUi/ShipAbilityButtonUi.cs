@@ -54,6 +54,7 @@ namespace EmpireAtWar.Entities.ShipUi
             bool active = false;
             bool interactable = false;
             float remaining = float.MaxValue;
+            bool allSuppressed = _slots.Count > 0;
             for (int i = 0; i < _slots.Count; i++)
             {
                 ShipAbilitySlot slot = _slots[i];
@@ -61,11 +62,13 @@ namespace EmpireAtWar.Entities.ShipUi
                 remaining = Mathf.Min(remaining, slot.TimeLeft);
                 active |= slot.State == ShipAbilityState.Active;
                 interactable |= slot.CanPress;
+                allSuppressed &= slot.Owner.Modifiers.IsAbilitySuppressed;
             }
             cooldownFill.fillAmount = lowestProgress;
             activeHighlight.SetActive(active);
             targetingHighlight.SetActive(_waiting);
             button.interactable = interactable;
+            icon.color = allSuppressed ? new Color(0.45f, 0.45f, 0.55f, 1f) : Color.white;
             int seconds = (active || !interactable) && remaining > 0f ? Mathf.CeilToInt(remaining) : 0;
             if (_displayedWaiting != _waiting || _displayedSeconds != seconds)
             {

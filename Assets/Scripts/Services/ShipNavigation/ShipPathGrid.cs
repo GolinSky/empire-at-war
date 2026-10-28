@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Map.Hazards;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Timing;
@@ -29,6 +31,9 @@ namespace EmpireAtWar.Services.ShipNavigation
         private NativeArray<byte> _blocked;
         private NativeArray<int> _regions;
         private NativeArray<float> _costSoFar;
+        private NativeArray<float> _extraCost;
+        private readonly IHazardSource[] _hazards;
+        private bool _hasExtraCost;
         private NativeArray<int> _cameFrom;
         private NativeArray<byte> _closed;
         private NativeArray<uint> _visitedGeneration;
@@ -49,8 +54,11 @@ namespace EmpireAtWar.Services.ShipNavigation
             IReadOnlyList<RadarContact> obstacles,
             Vector2Range mapRange,
             Vector3 origin,
-            float clearance)
+            float clearance,
+            IReadOnlyList<IHazardSource> hazards)
         {
+            _hazards = new IHazardSource[hazards.Count];
+            for (int i = 0; i < hazards.Count; i++) _hazards[i] = hazards[i];
             Vector2 size = mapRange.Max - mapRange.Min;
             float cellSize = Mathf.Max(
                 MINIMUM_CELL_SIZE,
@@ -84,6 +92,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (_blocked.IsCreated) _blocked.Dispose();
             if (_regions.IsCreated) _regions.Dispose();
             if (_costSoFar.IsCreated) _costSoFar.Dispose();
+            if (_extraCost.IsCreated) _extraCost.Dispose();
             if (_cameFrom.IsCreated) _cameFrom.Dispose();
             if (_closed.IsCreated) _closed.Dispose();
             if (_visitedGeneration.IsCreated) _visitedGeneration.Dispose();
@@ -94,8 +103,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (_obstacles.IsCreated) _obstacles.Dispose();
         }
 
-        public bool Matches(IReadOnlyList<RadarContact> obstacles, Vector2Range mapRange, float clearance)
+        public bool Matches(IReadOnlyList<RadarContact> obstacles, Vector2Range mapRange, float clearance,
+            IReadOnlyList<IHazardSource> hazards)
         {
+            if (_hazards.Length != hazards.Count) return false;
+            for (int i = 0; i < hazards.Count; i++)
+                if (!ReferenceEquals(_hazards[i], hazards[i])) return false;
             if (!_mapMin.Equals(mapRange.Min) || !_mapMax.Equals(mapRange.Max) ||
                 _clearance != clearance || _obstacles.Length != obstacles.Count) return false;
             for (int i = 0; i < obstacles.Count; i++)
@@ -117,6 +130,36 @@ namespace EmpireAtWar.Services.ShipNavigation
         public bool ContainsRoute(EmpireAtWar.Components.Ship.Movement.ShipBezierRoute route) =>
             route.IsWithinBounds(_mapMin, _mapMax);
 
+        public bool IsUnpenalizedSegment(Vector3 from, Vector3 to)
+        {
+            if (_hazards.Length == 0) return true;
+            EnsureBuilt();
+            NavigationTravelCost cost = new NavigationTravelCost(_cells, _extraCost);
+            float2 start = new float2(from.x, from.z);
+            float2 end = new float2(to.x, to.z);
+            return cost.Segment(start, end) <= math.distance(start, end) + 0.01f;
+        }
+
+        public bool PreservesTravelCost(ShipBezierRoute route, IReadOnlyList<Vector3> waypoints)
+        {
+            if (_hazards.Length == 0) return true;
+            EnsureBuilt();
+            if (!_hasExtraCost) return true;
+            NavigationTravelCost cost = new NavigationTravelCost(_cells, _extraCost);
+            float originalCost = 0f;
+            for (int i = 1; i < waypoints.Count; i++)
+                originalCost += cost.Segment(new float2(waypoints[i - 1].x, waypoints[i - 1].z),
+                    new float2(waypoints[i].x, waypoints[i].z));
+            int samples = Mathf.Max(1, Mathf.CeilToInt(route.Length / (_cells.CellSize * 0.5f)));
+            float routeCost = 0f;
+            for (int i = 0; i < samples; i++)
+            {
+                Vector3 point = route.EvaluateNormalizedDistance((i + 0.5f) / samples, out _);
+                routeCost += 1f + _extraCost[_cells.GetCell(new float2(point.x, point.z))];
+            }
+            return routeCost * route.Length / samples <= originalCost * 1.05f + 0.01f;
+        }
+
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)
         {
             BeginSearch();
@@ -125,6 +168,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 Blocked = _blocked,
                 Regions = _regions,
+                ExtraCost = _extraCost,
+                HasExtraCost = _hasExtraCost,
                 Obstacles = _obstacles,
                 CostSoFar = _costSoFar,
                 CameFrom = _cameFrom,
@@ -238,6 +283,15 @@ namespace EmpireAtWar.Services.ShipNavigation
             _blocked = new NativeArray<byte>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _regions = new NativeArray<int>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _costSoFar = new NativeArray<float>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            _extraCost = new NativeArray<float>(cellCount, Allocator.Persistent);
+            for (int i = 0; i < cellCount; i++)
+            {
+                float2 point = _cells.GetNodePosition(i);
+                foreach (IHazardSource hazard in _hazards)
+                    if (hazard.Contains(new Vector3(point.x, 0f, point.y), 0f, false))
+                        _extraCost[i] += hazard.Data.PathCost;
+                _hasExtraCost |= _extraCost[i] > 0f;
+            }
             _cameFrom = new NativeArray<int>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _closed = new NativeArray<byte>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             _visitedGeneration = new NativeArray<uint>(cellCount, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);

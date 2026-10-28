@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Timing;
@@ -16,16 +17,16 @@ namespace EmpireAtWar.Services.ShipNavigation
             new Dictionary<IShipNavigationAgent, StationaryEntry>();
 
         public ShipPathGrid GetGrid(IReadOnlyList<RadarContact> contacts, Vector2Range mapRange,
-            Vector3 origin, float clearance)
+            Vector3 origin, float clearance, IReadOnlyList<IHazardSource> hazards)
         {
             for (int i = 0; i < _grids.Count; i++)
             {
                 ShipPathGrid grid = _grids[i];
-                if (!grid.Matches(contacts, mapRange, clearance)) continue;
+                if (!grid.Matches(contacts, mapRange, clearance, hazards)) continue;
                 grid.SetOrigin(origin);
                 return grid;
             }
-            ShipPathGrid created = new ShipPathGrid(contacts, mapRange, origin, clearance);
+            ShipPathGrid created = new ShipPathGrid(contacts, mapRange, origin, clearance, hazards);
             _grids.Add(created);
             return created;
         }

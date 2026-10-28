@@ -8,6 +8,31 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class CombatModifiersTests
     {
         [Test]
+        public void HazardSuppression_StacksWithoutBlockingSquadronRespawn()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            modifiers.AddAbilitySuppression();
+            modifiers.AddAbilitySuppression();
+            modifiers.AddShieldSuppression(3f);
+            modifiers.AddShieldSuppression(2f);
+            Assert.That(modifiers.HasTemporaryEffects, Is.False);
+            Assert.That(modifiers.IsIonDisabled, Is.False);
+            modifiers.RemoveAbilitySuppression();
+            modifiers.RemoveShieldSuppression();
+            Assert.That(modifiers.AbilitiesSuppressed, Is.True);
+            Assert.That(modifiers.IsShieldSuppressed, Is.True);
+            modifiers.RemoveAbilitySuppression();
+            modifiers.RemoveShieldSuppression();
+            Assert.That(modifiers.AbilitiesSuppressed, Is.False);
+            Assert.That(modifiers.IsShieldSuppressed, Is.False);
+            Assert.That(modifiers.ShieldRecoveryDelay, Is.EqualTo(3f));
+            modifiers.AddShieldSuppression(1f);
+            Assert.That(modifiers.ShieldRecoveryDelay, Is.EqualTo(1f));
+            modifiers.SetIonDisabled(true);
+            Assert.That(modifiers.AbilitiesSuppressed, Is.True);
+        }
+
+        [Test]
         public void EmptyModifiers_AreNeutral()
         {
             CombatModifiers modifiers = new CombatModifiers();

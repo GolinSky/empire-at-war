@@ -18,6 +18,10 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Services.Hazards;
+using EmpireAtWar.Entities.Map.Hazards;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -74,6 +78,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceCompositionBuilder _forceBuilder;
         private readonly HostileIntelModel _intel;
         private readonly IVisionService _vision;
+        private readonly IHazardService _hazards;
+        private float _ionRiskWeight = 1f;
         // Targets stay picked while still valid: a new pick re-orders every committed ship, and each order makes
         // the ship's weapons re-sort their candidates.
         private GameEntity _localThreat;
@@ -99,9 +105,11 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             IVisionService vision,
             PlayerSlot owner,
-            IProductionAccess productionAccess)
+            IProductionAccess productionAccess,
+            IHazardService hazards)
         {
             _vision = vision;
+            _hazards = hazards;
             _intel = intelRegistry.Get(owner.Team);
             _forceBuilder = forceBuilder;
             _shipService = shipService;
@@ -118,6 +126,15 @@ namespace EmpireAtWar.Services.Enemy
         {
             PlayerId self = _owner.Id;
             List<IShipEntity> ownShips = GetShips(ship => ship.Owner == self);
+            _ionRiskWeight = 1f;
+            foreach (IShipEntity ship in ownShips)
+            {
+                IHealthModelObserver health = _entityLocator.GetEntity(ship.EntityId).HealthModel;
+                float durability = health.Hull + health.Shields;
+                if (durability <= 0f) continue;
+                float capitalWeight = health.ShipClass == ShipClass.Capital || health.ShipClass == ShipClass.HeavyCapital ? 2f : 1f;
+                _ionRiskWeight = Mathf.Max(_ionRiskWeight, 1f + capitalWeight * health.Shields / durability);
+            }
             FormationPoint fleetCenter = CalculateFleetCenter(ownShips);
             Vector3 origin = ToVector(fleetCenter);
             // Defending an owned site outranks new captures; raiding an operational site is the fallback.
@@ -208,6 +225,7 @@ namespace EmpireAtWar.Services.Enemy
                 Vector3 offset = ToVector(sighting.Position) - origin;
                 offset.y = 0f;
                 float distance = offset.sqrMagnitude;
+                float score = GetTargetScore(origin, ToVector(sighting.Position));
                 bool isShip = sighting.UnitTypeId.IsShip;
                 if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) || entity.IsCloaked() ||
                     !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
@@ -218,13 +236,13 @@ namespace EmpireAtWar.Services.Enemy
                 if (_localThreat != null && sighting.EntityId == _localThreat.Id && distance <= radiusSquared &&
                     _intel.GetConfidence(sighting, now) > 0f)
                 {
-                    keepsPrevious = true;
+                    keepsPrevious = GetIonCost(ToVector(sighting.Position)) == 0f;
                     previousIsShip = isShip;
                 }
 
                 if (distance > radiusSquared ||
                     closestIsShip && !isShip ||
-                    isShip == closestIsShip && distance >= closestDistance ||
+                    isShip == closestIsShip && score >= closestDistance ||
                     _intel.GetConfidence(sighting, now) <= 0f)
                 {
                     continue;
@@ -232,7 +250,7 @@ namespace EmpireAtWar.Services.Enemy
 
                 closest = entity;
                 closestIsShip = isShip;
-                closestDistance = distance;
+                closestDistance = score;
             }
 
             return keepsPrevious && (previousIsShip || !closestIsShip) ? _localThreat : closest;
@@ -260,8 +278,9 @@ namespace EmpireAtWar.Services.Enemy
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (!_vision.IsVisible(_owner.Id, position)) continue;
-                if (ReferenceEquals(entity, _raidTarget) && !IsDefended(position, now)) keepsPrevious = true;
-                float distance = (position - origin).sqrMagnitude;
+                if (ReferenceEquals(entity, _raidTarget) && !IsDefended(position, now) && GetIonCost(position) == 0f)
+                    keepsPrevious = true;
+                float distance = GetTargetScore(origin, position);
                 if (distance >= closestDistance ||
                     IsDefended(position, now))
                 {
@@ -328,7 +347,7 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                float distance = (ToVector(sighting.Position) - origin).sqrMagnitude;
+                float distance = GetTargetScore(origin, ToVector(sighting.Position));
                 if (distance < closestDistance)
                 {
                     closest = entity;
@@ -354,6 +373,20 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return count;
+        }
+
+        private float GetTargetScore(Vector3 origin, Vector3 position)
+        {
+            return (position - origin).sqrMagnitude * (1f + _ionRiskWeight * GetIonCost(position));
+        }
+
+        private float GetIonCost(Vector3 position)
+        {
+            float cost = 0f;
+            foreach (IHazardSource hazard in _hazards.Sources)
+                if (hazard.Data.DisablesShields && hazard.Contains(position, 0f, false))
+                    cost += hazard.Data.PathCost;
+            return cost;
         }
 
         private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)

@@ -4,9 +4,11 @@ using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map.Generation;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Services.Camera;
 using VContainer;
 
 namespace EmpireAtWar.Entities.Map
@@ -32,7 +34,11 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private Transform fieldRoot;
         [SerializeField] private LineRenderer borderLine;
         [SerializeField] private MapSpaceDust spaceDust;
+        [SerializeField] private HazardCloudView hazardPrefab;
+        [SerializeField] private DecorAsteroidRenderer decorRenderer;
+        private ICameraService _camera;
         private IFogOfWarSystem _fog;
+        private MapGenerationSettings _generationSettings;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
         private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
 
@@ -48,14 +54,28 @@ namespace EmpireAtWar.Entities.Map
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
         [Inject]
-        private void Construct(IFogOfWarSystem fog) => _fog = fog;
+        private void Construct(IFogOfWarSystem fog, MapGenerationSettings generationSettings, ICameraService camera)
+        {
+            _fog = fog;
+            _generationSettings = generationSettings;
+            _camera = camera;
+        }
 
         /// <summary>Spawns the layout over several frames, at most <see cref="FRAME_SLICE_SECONDS"/> per frame.</summary>
         public async Awaitable BuildAsync(MapLayout layout, CancellationToken cancellationToken)
         {
             // Fog first: spawned colliders are hover-tested against the fog from their first frame.
             UpdateBounds(layout.SizeRange);
+            spaceDust.Configure(layout.SizeRange.Min, layout.SizeRange.Max, layout.EdgeMargin);
+            decorRenderer.Configure(layout.DecorRocks, _camera.SceneCamera);
             float sliceStart = Time.realtimeSinceStartup;
+
+            foreach (HazardShape hazard in layout.Hazards)
+            {
+                HazardCloudView view = Instantiate(hazardPrefab, fieldRoot);
+                view.Configure(hazard, _generationSettings.HazardFloor, _generationSettings.HazardCeiling);
+                sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
+            }
 
             foreach (ZoneSpot zone in layout.Zones)
             {
@@ -136,7 +156,7 @@ namespace EmpireAtWar.Entities.Map
             _fog.InitializeArea((bounds.Max.x - bounds.Min.x) / fogReferenceSide);
             Vector2 min = bounds.Min;
             Vector2 max = bounds.Max;
-            spaceDust.Configure(min, max);
+            spaceDust.Configure(min, max, 0f);
             borderLine.loop = true;
             borderLine.positionCount = 4;
             borderLine.SetPosition(0, new Vector3(min.x, borderHeight, min.y));

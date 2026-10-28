@@ -32,6 +32,40 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _targetView;
 
         [Test]
+        public void HazardSuppression_StopsAbilityButCooldownStillProgresses()
+        {
+            FakeFactory factory = new FakeFactory();
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            caster.Modifiers.AddAbilitySuppression();
+            service.Advance(0.1f);
+            Assert.That(factory.Created[0].StopCount, Is.EqualTo(1));
+            service.Advance(6f);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.False);
+            caster.Modifiers.RemoveAbilitySuppression();
+            Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.True);
+            service.Clear();
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void HazardSuppression_OnlyAllowsAlreadyFiredPhasedAbilitiesToContinue(bool fired)
+        {
+            RecordingPhasedAbility ability = new RecordingPhasedAbility { SurvivesCasterDeath = fired };
+            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            caster.Modifiers.AddAbilitySuppression();
+            service.Advance(0.1f);
+            Assert.That(ability.AdvanceCount, Is.EqualTo(fired ? 1 : 0));
+            Assert.That(caster.Slots[0].State,
+                Is.EqualTo(fired ? ShipAbilityState.Active : ShipAbilityState.Recovering));
+            service.Clear();
+        }
+
+        [Test]
         public void TargetingFeedback_RejectsInvalidTargetAndOnlyReportsExplicitCancel()
         {
             ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
@@ -504,7 +538,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool CompleteOnAdvance { get; set; }
             public bool CancelOnIonDisable { get; set; } = true;
             public bool IsComplete => _complete || CancelOnIonDisable && _caster.Modifiers.IsIonDisabled;
-            public bool SurvivesCasterDeath => false;
+            public bool SurvivesCasterDeath { get; set; }
 
             public bool CanStart(IShipAbilityFacade caster, IEntity target) => true;
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => _caster = caster;

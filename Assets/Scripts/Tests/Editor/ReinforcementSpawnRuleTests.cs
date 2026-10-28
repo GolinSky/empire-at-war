@@ -31,6 +31,7 @@ namespace EmpireAtWar.Tests.Editor
         private FixedRelays _relays;
         private FixedSites _sites;
         private ReinforcementSpawnRule _rule;
+        private TestHazards _hazards;
 
         [SetUp]
         public void SetUp()
@@ -43,14 +44,27 @@ namespace EmpireAtWar.Tests.Editor
             _structureClearance = new FixedStructureClearance();
             _relays = new FixedRelays();
             _sites = new FixedSites();
+            _hazards = new TestHazards();
             _rule = new ReinforcementSpawnRule(_vision, _blockers, _clearance, _structureClearance, _relays, _sites,
-                new FixedMap());
+                new FixedMap(), _hazards);
             _vision.Register(TestPlayers.Human, CreateTransform(Vector3.zero), 500f);
             _vision.Register(TestPlayers.Enemy, CreateTransform(Vector3.zero), 500f);
         }
 
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_root);
+
+        [Test]
+        public void IsOpen_Hazard_BlocksEveryTeamAndUnitKind()
+        {
+            _hazards.Blocks = true;
+            Assert.That(_rule.IsOpen(TestPlayers.Human, Vector3.zero), Is.False);
+            Assert.That(_rule.IsOpen(TestPlayers.Enemy, Vector3.zero), Is.False);
+            Assert.That(_rule.CanSpawnShip(TestPlayers.Human, ShipType.Arquitens, Vector3.zero), Is.False);
+            Assert.That(_rule.CanSpawnStructure(TestPlayers.Human, Vector3.zero), Is.False);
+            _hazards.Blocks = false;
+            Assert.That(_rule.IsOpen(TestPlayers.Human, Vector3.zero), Is.True);
+        }
 
         [Test]
         public void IsOpen_VisibleAndUnblocked_True()

@@ -19,7 +19,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public ShipAbilityState State { get; private set; } = ShipAbilityState.Ready;
         public float TimeLeft { get; private set; }
         public IShipAbility RunningAbility { get; private set; }
-        public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.IsIonDisabled &&
+        public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.AbilitiesSuppressed &&
             (Id != ShipAbilityId.IonPulse ||
                 HasLiveHardPoint(HardPointType.IonPulseCannon)) &&
             (Id != ShipAbilityId.TractorBeam ||

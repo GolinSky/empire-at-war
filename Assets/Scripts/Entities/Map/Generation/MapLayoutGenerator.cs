@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 using Random = System.Random;
@@ -11,12 +12,14 @@ namespace EmpireAtWar.Entities.Map.Generation
     public sealed class MapLayoutGenerator
     {
         private const int MAX_LAYOUT_ATTEMPTS = 60;
+        private const int DECOR_SALT = 0x4445434F;
 
         private readonly MapGenerationSettings _settings;
         private readonly StationPlacer _stationPlacer;
         private readonly PointOfInterestPlacer _pointOfInterestPlacer;
         private readonly LaneNetworkBuilder _laneNetworkBuilder;
         private readonly AsteroidFieldBuilder _asteroidFieldBuilder;
+        private readonly HazardPlacer _hazardPlacer;
 
         public MapLayoutGenerator(MapGenerationSettings settings, MapFeatureRadii radii)
         {
@@ -25,12 +28,14 @@ namespace EmpireAtWar.Entities.Map.Generation
             _pointOfInterestPlacer = new PointOfInterestPlacer(settings, radii);
             _laneNetworkBuilder = new LaneNetworkBuilder(settings);
             _asteroidFieldBuilder = new AsteroidFieldBuilder(settings);
+            _hazardPlacer = new HazardPlacer(settings, _pointOfInterestPlacer);
         }
 
         public MapLayout Generate(
             MapSize mapSize,
             IReadOnlyList<PlayerSlot> players,
-            Random random)
+            Random random,
+            int hazardSeed)
         {
             MapSizeSettings size = _settings.GetSize(mapSize);
             List<MapNode> nodes = new List<MapNode>();
@@ -43,18 +48,32 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
 
                 List<MapLane> lanes = _laneNetworkBuilder.Build(nodes, stations, random);
+                Vector3 planetPosition = _pointOfInterestPlacer.PlacePlanet(size, random);
+                IReadOnlyList<HazardSpot> spots = _hazardPlacer.Place(size, stations, nodes, hazardSeed + attempt);
+                if (_settings.Hazards.Count > 0 && spots.Count != size.HazardCount)
+                    continue;
+                HazardShape[] hazards = new HazardShape[spots.Count];
+                for (int i = 0; i < hazards.Length; i++)
+                    hazards[i] = new HazardShape(spots[i]);
+                IReadOnlyList<AsteroidField> fields = _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random,
+                    hazards, out FieldDensity density);
+                IReadOnlyList<AsteroidSpot> decor = new DecorAsteroidBuilder(_settings).Build(size, density,
+                    new Random(hazardSeed ^ DECOR_SALT));
                 return new MapLayout(
                     sizeRange: size.Bounds,
                     stationPositions: CreateStationPositions(stations),
-                    planetPosition: _pointOfInterestPlacer.PlacePlanet(size, random),
+                    planetPosition: planetPosition,
                     zones: CreateZones(nodes),
                     sites: CreateSites(nodes),
                     lanes: lanes,
-                    fields: _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random));
+                    fields: fields,
+                    hazards: hazards,
+                    decorRocks: decor,
+                    edgeMargin: size.EdgeMargin);
             }
 
             throw new InvalidOperationException(
-                $"{mapSize} map settings leave no room for its zones and sites after {MAX_LAYOUT_ATTEMPTS} attempts.");
+                $"{mapSize} map settings leave no room for its zones, sites and hazards after {MAX_LAYOUT_ATTEMPTS} attempts.");
         }
 
         private static Dictionary<PlayerId, Vector3> CreateStationPositions(IReadOnlyList<MapStation> stations)

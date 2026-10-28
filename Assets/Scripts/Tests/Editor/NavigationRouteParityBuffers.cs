@@ -17,6 +17,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 Cells = cells, Blocked = blocked, Regions = regions, Obstacles = obstacles,
                 LineOfSightInflation = inflation,
+                ExtraCost = new NativeArray<float>(cells.Count, Allocator.TempJob),
                 CostSoFar = new NativeArray<float>(cells.Count, Allocator.TempJob),
                 CameFrom = new NativeArray<int>(cells.Count, Allocator.TempJob),
                 Closed = new NativeArray<byte>(cells.Count, Allocator.TempJob),
@@ -43,6 +44,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Dispose()
         {
             Job.CostSoFar.Dispose();
+            Job.ExtraCost.Dispose();
             Job.CameFrom.Dispose();
             Job.Closed.Dispose();
             Job.VisitedGeneration.Dispose();

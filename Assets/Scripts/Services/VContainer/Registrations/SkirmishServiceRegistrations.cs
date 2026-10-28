@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health.Overlay;
 using EmpireAtWar.Components.Ship.Selection;
@@ -84,6 +85,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<EmpireAtWar.Services.FleetCommand.FleetCommandService>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<MapObstacleContactProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HazardService>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
+            builder.Register<HazardEffectsPresenter>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             builder.Register<ShipNavigationService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<RadarScanService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitWreckService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

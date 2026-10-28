@@ -23,6 +23,11 @@ MonoBehaviour:
         <MiningPointCount>k__BackingField: 6
         <CentralMiningPairCount>k__BackingField: 1
         <BattleSiteCount>k__BackingField: 2
+        <HazardCount>k__BackingField: 2
+        <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
+        <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
+        <HazardFringeWidth>k__BackingField: 60
+        <EdgeMargin>k__BackingField: 1500
         <PointSpacing>k__BackingField: 0
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
@@ -33,7 +38,7 @@ MonoBehaviour:
         <MinLaneWidth>k__BackingField: 720
         <FieldCellSize>k__BackingField: 90
         <FieldFeatureSize>k__BackingField: 1080
-        <FieldThreshold>k__BackingField: 0.5
+        <FieldThreshold>k__BackingField: 0.56
         <RidgeThreshold>k__BackingField: 0.9
         <PocketThickness>k__BackingField: 100
         <PocketEntranceWidth>k__BackingField: 800
@@ -48,6 +53,11 @@ MonoBehaviour:
         <MiningPointCount>k__BackingField: 8
         <CentralMiningPairCount>k__BackingField: 1
         <BattleSiteCount>k__BackingField: 2
+        <HazardCount>k__BackingField: 4
+        <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
+        <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
+        <HazardFringeWidth>k__BackingField: 90
+        <EdgeMargin>k__BackingField: 1700
         <PointSpacing>k__BackingField: 120
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
@@ -58,7 +68,7 @@ MonoBehaviour:
         <MinLaneWidth>k__BackingField: 720
         <FieldCellSize>k__BackingField: 120
         <FieldFeatureSize>k__BackingField: 1500
-        <FieldThreshold>k__BackingField: 0.5
+        <FieldThreshold>k__BackingField: 0.56
         <RidgeThreshold>k__BackingField: 0.9
         <PocketThickness>k__BackingField: 270
         <PocketEntranceWidth>k__BackingField: 800
@@ -73,6 +83,11 @@ MonoBehaviour:
         <MiningPointCount>k__BackingField: 12
         <CentralMiningPairCount>k__BackingField: 2
         <BattleSiteCount>k__BackingField: 4
+        <HazardCount>k__BackingField: 6
+        <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
+        <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
+        <HazardFringeWidth>k__BackingField: 135
+        <EdgeMargin>k__BackingField: 2000
         <PointSpacing>k__BackingField: 300
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 240
@@ -83,7 +98,7 @@ MonoBehaviour:
         <MinLaneWidth>k__BackingField: 720
         <FieldCellSize>k__BackingField: 120
         <FieldFeatureSize>k__BackingField: 1800
-        <FieldThreshold>k__BackingField: 0.5
+        <FieldThreshold>k__BackingField: 0.56
         <RidgeThreshold>k__BackingField: 0.92
         <PocketThickness>k__BackingField: 270
         <PocketEntranceWidth>k__BackingField: 800
@@ -136,8 +151,13 @@ MonoBehaviour:
         <HeightJitter>k__BackingField: 12
         <DepthShare>k__BackingField: 0.4
         <IsTumbled>k__BackingField: 1
+  hazards:
+  - {fileID: 11400000, guid: bf52bea3dc952974a8feca8683bb5ae6, type: 2}
+  - {fileID: 11400000, guid: 569c6d9ec01ea9646b38df6ce83de3be, type: 2}
   <FieldFloor>k__BackingField: -150
   <FieldCeiling>k__BackingField: 110
+  <HazardFloor>k__BackingField: -650
+  <HazardCeiling>k__BackingField: 180
   <StationEdgeDistance>k__BackingField: 300
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 20

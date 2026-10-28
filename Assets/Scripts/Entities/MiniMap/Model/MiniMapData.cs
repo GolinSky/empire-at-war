@@ -21,6 +21,7 @@ namespace EmpireAtWar.Models.MiniMap
         CameraMarkData CameraMark { get;}
         IReadOnlyList<MiniMapMarker> Markers { get; }
         IReadOnlyList<MiniMapObstacle> Obstacles { get; }
+        IReadOnlyList<MiniMapHazard> Hazards { get; }
         bool IsInputBlocked { get; }
 
         Sprite GetIcon(MarkType markType);
@@ -31,6 +32,7 @@ namespace EmpireAtWar.Models.MiniMap
     {
         private readonly List<MiniMapMarker> _markers = new List<MiniMapMarker>();
         private readonly List<MiniMapObstacle> _obstacles = new List<MiniMapObstacle>();
+        private readonly List<MiniMapHazard> _hazards = new List<MiniMapHazard>();
 
         public event Action<MarkData> OnMarkAdded;
 
@@ -42,6 +44,9 @@ namespace EmpireAtWar.Models.MiniMap
         public CameraMarkData CameraMark { get; } = new CameraMarkData();
         public IReadOnlyList<MiniMapMarker> Markers => _markers;
         public IReadOnlyList<MiniMapObstacle> Obstacles => _obstacles;
+        public IReadOnlyList<MiniMapHazard> Hazards => _hazards;
+
+        public void AddHazard(MiniMapHazard hazard) => _hazards.Add(hazard);
 
         [field:SerializeField] public DictionaryWrapper<MarkType, Sprite> MarkWrapper { get; private set; }
         [field:SerializeField] public MarkView MarkViewPrefab { get; private set; }

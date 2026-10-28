@@ -56,11 +56,13 @@ namespace EmpireAtWar.Tests.Editor
                 var min = new Vector2(-side * 0.5f + 250f, -side * 0.5f - 400f);
                 Vector2 max = min + Vector2.one * side;
 
-                dust.Configure(min, max);
+                const float EDGE_MARGIN = 1500f;
+                dust.Configure(min, max, EDGE_MARGIN);
 
                 var properties = new MaterialPropertyBlock();
                 renderer.GetPropertyBlock(properties);
                 Assert.That(properties.GetVector("_MapBounds"), Is.EqualTo(new Vector4(min.x, min.y, max.x, max.y)));
+                Assert.That(properties.GetFloat("_EdgeMargin"), Is.EqualTo(EDGE_MARGIN));
                 Vector4 altitude = properties.GetVector("_HeightRange");
                 Assert.That(renderer.enabled, Is.True);
                 Assert.That(renderer.bounds.center, Is.EqualTo(new Vector3(
@@ -71,10 +73,10 @@ namespace EmpireAtWar.Tests.Editor
                 float cornerRadius = cards.Max(card => card.x) * Mathf.Sqrt(2f);
                 Assert.That(renderer.bounds.min.y, Is.LessThanOrEqualTo(altitude.x - cornerRadius));
                 Assert.That(renderer.bounds.max.y, Is.GreaterThanOrEqualTo(altitude.y + cornerRadius));
-                Assert.That(renderer.bounds.min.x, Is.LessThanOrEqualTo(min.x - cornerRadius));
-                Assert.That(renderer.bounds.max.z, Is.GreaterThanOrEqualTo(max.y + cornerRadius));
+                Assert.That(renderer.bounds.min.x, Is.LessThanOrEqualTo(min.x - EDGE_MARGIN - cornerRadius));
+                Assert.That(renderer.bounds.max.z, Is.GreaterThanOrEqualTo(max.y + EDGE_MARGIN + cornerRadius));
 
-                dust.Configure(min + Vector2.one * 100f, max + Vector2.one * 100f);
+                dust.Configure(min + Vector2.one * 100f, max + Vector2.one * 100f, EDGE_MARGIN);
                 Assert.That(instance.GetComponent<MeshFilter>().sharedMesh, Is.SameAs(mesh));
                 Assert.That(mesh.vertexCount, Is.LessThanOrEqualTo(MAX_VERTEX_BUDGET));
                 renderer.GetPropertyBlock(properties);

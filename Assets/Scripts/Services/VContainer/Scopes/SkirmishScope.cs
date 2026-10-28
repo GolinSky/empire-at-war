@@ -32,6 +32,7 @@ using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Fade;
@@ -82,6 +83,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private CameraService cameraService;
         [SerializeField] private MapGenerationSettings settings;
         [SerializeField] private MapLayoutView mapLayoutView;
+        [SerializeField] private HazardEffectsView hazardEffectsView;
         [SerializeField] private ReinforcementZonesSystem reinforcementZonesSystem;
         [SerializeField] private CaptureSitesSystem captureSitesSystem;
 
@@ -211,6 +213,7 @@ namespace EmpireAtWar.Services.VContainer
                 unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,
                 shipSfxSourcesPrefab, cameraService);
             MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem);
+            builder.RegisterComponent(hazardEffectsView).AsImplementedInterfaces();
         }
 
         protected override void OnDestroy()

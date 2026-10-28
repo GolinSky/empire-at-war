@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
                 new StructureSpawnClearance(new LayersStub(), new[] { _structurePrefab });
             SpawnBlockerService blockers = new SpawnBlockerService(roster);
             ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, blockers,
-                new OpenShipClearance(), structureClearance, _zones, new NoCaptureSites(), _map);
+                new OpenShipClearance(), structureClearance, _zones, new NoCaptureSites(), _map, new TestHazards());
             return new EnemyStructurePlacementService(
                 mapModel: _map,
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,

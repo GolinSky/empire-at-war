@@ -59,12 +59,13 @@ namespace EmpireAtWar.Entities.Map
             MapLayout layout = _battle.Map.Type == MapType.Survival
                 ? survivalGenerator.Generate(_battle)
                 : _battle.Map.Type == MapType.Empty ? simulationLayout
-                : generator.Generate(mapSize, players, new Random(_battle.Map.Seed));
+                : generator.Generate(mapSize, players, new Random(_battle.Map.Seed), _battle.Map.Seed);
             layout = new MapLayout(players.ToDictionary(player => player.Id, player => layout.GetStationPosition(player.Id)),
                 layout.Zones, layout.Sites.Where(site => _battle.HasFeature(BattleFeatures.CaptureSites) &&
                     (site.Kind == EmpireAtWar.Entities.CaptureSites.CaptureSiteKind.Battle ||
                      _battle.HasFeature(BattleFeatures.MiningSites))).ToArray(),
-                layout.Lanes, layout.Fields, layout.SizeRange, layout.PlanetPosition);
+                layout.Lanes, layout.Fields, layout.SizeRange, layout.PlanetPosition, layout.Hazards,
+                layout.DecorRocks, layout.EdgeMargin);
             await Awaitable.MainThreadAsync();
             cancellationToken.ThrowIfCancellationRequested();
 

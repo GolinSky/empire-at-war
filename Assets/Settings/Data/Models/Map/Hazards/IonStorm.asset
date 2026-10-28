@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba295c4c3a55d724c9991e8443b9f5a3, type: 3}
+  m_Name: IonStorm
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.Hazards.SpaceHazardData
+  <Id>k__BackingField: IonStorm
+  <HazardType>k__BackingField: 1
+  <DisplayName>k__BackingField: Ion Storm
+  <MinimapColor>k__BackingField: {r: 0.28, g: 0.8, b: 0.95, a: 1}
+  <MinimapIcon>k__BackingField: {fileID: 21300000, guid: 384c9dc8214431d47b163e168cf478ee,
+    type: 3}
+  <BlocksSpecialAbilities>k__BackingField: 1
+  <DisablesShields>k__BackingField: 1
+  <BlocksReinforcements>k__BackingField: 1
+  <ShieldRecoveryDelay>k__BackingField: 2
+  <ExitHysteresis>k__BackingField: 10
+  <PathCost>k__BackingField: 8
+  <VisualMaterial>k__BackingField: {fileID: 2100000, guid: 6e23a0974cfab9840ab254096a9a9380,
+    type: 2}

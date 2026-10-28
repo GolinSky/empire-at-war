@@ -18,6 +18,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         [ReadOnly] public NativeArray<byte> Blocked;
         [ReadOnly] public NativeArray<int> Regions;
+        [ReadOnly] public NativeArray<float> ExtraCost;
+        public bool HasExtraCost;
         // Obstacles are packed as (x, z, radius) on the navigation plane.
         [ReadOnly] public NativeArray<float3> Obstacles;
         public NativeArray<float> CostSoFar;
@@ -117,7 +119,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
                         int neighbor = ny * Cells.Width + nx;
                         InitializeCell(neighbor);
-                        float cost = CostSoFar[cell] + (isDiagonal ? DIAGONAL_COST : 1f);
+                        float cost = CostSoFar[cell] + (isDiagonal ? DIAGONAL_COST : 1f) *
+                            (1f + (ExtraCost[cell] + ExtraCost[neighbor]) * 0.5f);
                         if (cost >= CostSoFar[neighbor])
                         {
                             continue;
@@ -155,11 +158,19 @@ namespace EmpireAtWar.Services.ShipNavigation
             int anchor = 0;
             int last = RawPath.Length - 1;
             Waypoints.Add(RawPath[0]);
+            NavigationTravelCost travelCost = new NavigationTravelCost(Cells, ExtraCost);
             while (anchor < last)
             {
                 int next = anchor + 1;
+                float originalCost = HasExtraCost ? travelCost.Segment(RawPath[anchor], RawPath[next]) : 0f;
                 while (next < last && HasLineOfSight(RawPath[anchor], RawPath[next + 1]))
                 {
+                    if (HasExtraCost)
+                    {
+                        originalCost += travelCost.Segment(RawPath[next], RawPath[next + 1]);
+                        if (travelCost.Segment(RawPath[anchor], RawPath[next + 1]) > originalCost + 0.01f)
+                            break;
+                    }
                     next++;
                 }
 

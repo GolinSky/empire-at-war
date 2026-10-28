@@ -47,7 +47,7 @@ namespace EmpireAtWar.Tests.Editor
             _overlay = new FakeOverlay();
             _placementLock = new PlacementLock();
             _service = new ReinforcementService(_inputLock, null, null, null,
-                _overlay, _model, null, null, null, _hitTest, _router);
+                _overlay, _model, null, null, null, _hitTest, _router, null, null);
             SetField("_preview", preview);
             SetField("_placementLock", _placementLock);
             _router.Focus(_service);

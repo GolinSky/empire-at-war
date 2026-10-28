@@ -27,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(PrefabUtility.IsPrefabAssetMissing(surface.gameObject), Is.False);
                 var ui = new SerializedObject(root.GetComponent<MiniMapUi>());
                 foreach (string field in new[] { "miniMapRectTransform", "tooltipHover", "iconParent",
-                             "mapImage", "cameraFootprintView", "obstacleView", "moveTargetView", "fogImage" })
+                             "mapImage", "cameraFootprintView", "obstacleView", "hazardView", "moveTargetView", "fogImage" })
                     Assert.That(ui.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
             }
             finally

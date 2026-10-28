@@ -97,7 +97,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             if (!_model.HasFired)
             {
                 if (_target.HealthModel.IsDestroyed || _target.IsCloaked() || _cannon.IsDestroyed || !_facing.IsAbilityFacing ||
-                    _caster.Modifiers.IsIonDisabled || _model.AlignmentExpired)
+                    _caster.Modifiers.AbilitiesSuppressed || _model.AlignmentExpired)
                 {
                     _cancelled = true;
                     return;

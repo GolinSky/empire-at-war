@@ -1,4 +1,6 @@
 using EmpireAtWar.Entities.Planet;
+using System.Collections.Generic;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
@@ -16,12 +18,17 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private DictionaryWrapper<PlanetType, PlanetScope> planetPrefabs;
         [SerializeField, Tooltip("Visual rock layers; shares are relative weights of the rock count.")]
         private DictionaryWrapper<AsteroidSize, RockLayerSettings> rockLayers;
+        [SerializeField] private SpaceHazardData[] hazards = System.Array.Empty<SpaceHazardData>();
+
+        public IReadOnlyList<SpaceHazardData> Hazards => hazards;
 
         [field: SerializeField, Tooltip("World height of an asteroid field's underside. Sits above the hulls of the " +
                                         "Deep and Lowest ship tiers, so only those pass beneath a field.")]
         public float FieldFloor { get; private set; } = -150f;
         [field: SerializeField, Tooltip("World height of an asteroid field's top. Sits above every ship hull.")]
         public float FieldCeiling { get; private set; } = 110f;
+        [field: SerializeField] public float HazardFloor { get; private set; } = -650f;
+        [field: SerializeField] public float HazardCeiling { get; private set; } = 180f;
         [field: SerializeField, Min(0f), Tooltip("Free gap between each station footprint and both adjacent borders.")]
         public float StationEdgeDistance { get; private set; } = 125f;
         [field: SerializeField] public float StationHeight { get; private set; } = -40f;

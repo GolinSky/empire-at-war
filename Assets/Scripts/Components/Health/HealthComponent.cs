@@ -31,6 +31,8 @@ namespace EmpireAtWar.Components.Ship.Health
         IHealthUpgrade, IIonFieldShape
     {
         private ITimer _refreshShieldsTimer;
+        private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
+        private bool _shieldRecovering;
         private IIonStunView _ionStunView;
 
         [SerializeField] private Shield shieldView;
@@ -75,7 +77,8 @@ namespace EmpireAtWar.Components.Ship.Health
         public ShipClass ShipClass => Model.ShipClass;
         public HardPointModel[] HardPointModels => Model.HardPointModels;
         public float Hull => Model.Hull;
-        public float ShieldRegeneration => Model.IsLostShieldGenerator ? 0f
+        public bool IsShieldRecovering => _shieldRecovering && !_shieldRecoveryTimer.IsComplete;
+        public float ShieldRegeneration => Model.IsLostShieldGenerator || Model.IsShieldSuppressed || IsShieldRecovering ? 0f
             : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier;
         public float ShieldRegenerationInterval => Model.ShieldRegenerateDelay;
         public float HullPercentage => Model.HullPercentage;
@@ -109,6 +112,8 @@ namespace EmpireAtWar.Components.Ship.Health
 
             _modifiers.Changed += HandleIonStateChanged;
             _modifiers.Changed += Model.RefreshStatModifiers;
+            _modifiers.Changed += HandleShieldSuppressionChanged;
+            HandleShieldSuppressionChanged();
 
             if (shieldView != null)
             {
@@ -120,6 +125,15 @@ namespace EmpireAtWar.Components.Ship.Health
         public void LateDispose()
         {
             Release();
+        }
+
+        private void HandleShieldSuppressionChanged()
+        {
+            if (Model.IsShieldSuppressed == _modifiers.IsShieldSuppressed) return;
+            bool suppressed = _modifiers.IsShieldSuppressed;
+            _shieldRecovering = !suppressed;
+            if (!suppressed) _shieldRecoveryTimer.ChangeDelay(_modifiers.ShieldRecoveryDelay).StartTimer();
+            Model.SetShieldSuppressed(suppressed);
         }
 
         private void HandleIonStateChanged()
@@ -146,6 +160,7 @@ namespace EmpireAtWar.Components.Ship.Health
             _isReleased = true;
             _modifiers.Changed -= HandleIonStateChanged;
             _modifiers.Changed -= Model.RefreshStatModifiers;
+            _modifiers.Changed -= HandleShieldSuppressionChanged;
             if (_ionStunView != null) _ionStunView.Release();
 
             if (_shield != null)
@@ -176,7 +191,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void Tick()
         {
-            if (_isReleased || Model.IsDestroyed) return;
+            if (_isReleased || Model.IsDestroyed || Model.IsShieldSuppressed || IsShieldRecovering) return;
             if (!Model.IsLostShieldGenerator && Model.Shields < Model.MaxShields &&
                 _refreshShieldsTimer.IsComplete)
             {

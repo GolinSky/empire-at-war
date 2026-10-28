@@ -1,6 +1,7 @@
 using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Services.Hazards;
 using System.Diagnostics;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
@@ -101,6 +102,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         private static readonly long PLAN_BUDGET_TICKS = (long)(Stopwatch.Frequency * PLAN_BUDGET_MILLISECONDS / 1000.0);
 
         private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
+        private readonly IHazardService _hazards;
 
         private readonly List<RadarContact> _mapObstacleContacts =
             new List<RadarContact>();
@@ -127,9 +129,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         public void Dispose() => _cache.Dispose();
 
         public ShipNavigationService(
-            IMapObstacleContactProvider mapObstacleContactProvider)
+            IMapObstacleContactProvider mapObstacleContactProvider, IHazardService hazards)
         {
             _mapObstacleContactProvider = mapObstacleContactProvider;
+            _hazards = hazards;
         }
 
         public ShipNavigationPlan Plan(
@@ -180,7 +183,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 requestedDestination, mapRange, heightTolerance, clearance, _destinationRegistry.Version);
             if (canReuseStationary && _cache.TryGetStationary(agent, request, _mapObstacleContacts,
                     out ShipNavigationPlan cachedPlan)) return cachedPlan;
-            ShipPathGrid pathGrid = _cache.GetGrid(_mapObstacleContacts, mapRange, origin, clearance);
+            ShipPathGrid pathGrid = _cache.GetGrid(_mapObstacleContacts, mapRange, origin, clearance, _hazards.Sources);
             {
                 // An unreachable order is not a failure: the ship heads for the
                 // reachable spot closest to what was asked for.

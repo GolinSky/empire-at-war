@@ -230,8 +230,10 @@ namespace EmpireAtWar.Services.ShipAbilities
                     continue;
                 }
 
-                if (slot.State == ShipAbilityState.Active && slot.Owner.Modifiers.IsIonDisabled &&
-                    !(slot.RunningAbility is IPhasedShipAbility))
+                if (slot.State == ShipAbilityState.Active && slot.Owner.Modifiers.AbilitiesSuppressed &&
+                    (!(slot.RunningAbility is IPhasedShipAbility) ||
+                     slot.Owner.Modifiers.IsAbilitySuppressed &&
+                     !((IPhasedShipAbility)slot.RunningAbility).SurvivesCasterDeath))
                 {
                     Stop(slot);
                     continue;

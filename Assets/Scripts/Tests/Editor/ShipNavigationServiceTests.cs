@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
@@ -34,6 +35,35 @@ namespace EmpireAtWar.Tests.Movement
         {
             foreach (ShipNavigationService service in _services) service.Dispose();
             _services.Clear();
+        }
+
+        [Test]
+        public void Plan_BendsAroundHazardWithoutBlockingDestinationsInsideIt()
+        {
+            SpaceHazardData data = ScriptableObject.CreateInstance<SpaceHazardData>();
+            try
+            {
+                HazardShape zone = TestHazards.CreateEllipse(data, Vector3.zero, Vector3.forward, 30f, 20f);
+                ShipNavigationService service = new ShipNavigationService(
+                    new FakeMapObstacleContactProvider(System.Array.Empty<RadarContact>()),
+                    new TestHazards { Sources = new IHazardSource[] { zone } });
+                _services.Add(service);
+                FakeAgent agent = new FakeAgent(new Vector3(-80f, 0f, 0f), 0f, 4f, 10f, 30f);
+                ShipNavigationPlan around = Plan(service, agent, new Vector3(80f, 0f, 0f));
+                Assert.That(around.IsStationary, Is.False);
+                Assert.That(around.Route.Length, Is.GreaterThan(160f));
+                for (int i = 0; i <= 100; i++)
+                    Assert.That(zone.Contains(around.Route.EvaluateNormalizedDistance(i / 100f, out _), 0f, false),
+                        Is.False, "Route smoothing must preserve the hazard detour.");
+                ShipNavigationPlan inside = service.Plan(agent, Vector3.right, Vector3.zero,
+                    System.Array.Empty<RadarContact>(), 0.5f, agent.NavigationRadius, _mapRange);
+                Assert.That(inside.IsStationary, Is.False);
+                Assert.That(inside.Destination, Is.EqualTo(Vector3.zero));
+            }
+            finally
+            {
+                Object.DestroyImmediate(data);
+            }
         }
 
         [Test]
@@ -90,11 +120,13 @@ namespace EmpireAtWar.Tests.Movement
             var grids = new object[12];
             for (int i = 0; i < grids.Length; i++)
                 grids[i] = getGrid.Invoke(cache, new object[]
-                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f });
+                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f,
+                        System.Array.Empty<IHazardSource>() });
 
             for (int i = 0; i < grids.Length; i++)
                 Assert.That(getGrid.Invoke(cache, new object[]
-                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f }),
+                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f,
+                        System.Array.Empty<IHazardSource>() }),
                     Is.SameAs(grids[i]));
         }
 
@@ -787,7 +819,7 @@ namespace EmpireAtWar.Tests.Movement
             ShipNavigationService service = new ShipNavigationService(
                 new FakeMapObstacleContactProvider(
                     staticObstacles ??
-                    System.Array.Empty<RadarContact>()));
+                    System.Array.Empty<RadarContact>()), new TestHazards());
             _services.Add(service);
             return service;
         }

@@ -687,7 +687,7 @@ namespace EmpireAtWar.Tests.Editor
             MapGenerationSettings settings = (MapGenerationSettings)authored.FindProperty("settings").objectReferenceValue;
             MapLayoutView mapView = (MapLayoutView)authored.FindProperty("mapLayoutView").objectReferenceValue;
             MapLayout layout = new MapLayoutGenerator(settings, mapView.FeatureRadii).Generate(
-                _project.GameData.MapSize, _project.GameData.Players, new System.Random(MAP_SEED));
+                _project.GameData.MapSize, _project.GameData.Players, new System.Random(MAP_SEED), MAP_SEED);
             using (LifetimeScope.Enqueue(builder =>
             {
                 if (!ReferenceEquals(builder.ApplicationOrigin, _battle)) return;
@@ -864,7 +864,7 @@ namespace EmpireAtWar.Tests.Editor
             MapLayout layout = _project.GameData.Battle.Map.Type == MapType.Survival
                 ? new SurvivalLayoutGenerator(settings, mapView.FeatureRadii).Generate(_project.GameData.Battle)
                 : new MapLayoutGenerator(settings, mapView.FeatureRadii).Generate(
-                    _project.GameData.MapSize, _project.GameData.Players, new System.Random(MAP_SEED));
+                    _project.GameData.MapSize, _project.GameData.Players, new System.Random(MAP_SEED), MAP_SEED);
             using (LifetimeScope.Enqueue(builder =>
             {
                 if (!ReferenceEquals(builder.ApplicationOrigin, _battle)) return;

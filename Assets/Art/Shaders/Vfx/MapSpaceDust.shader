@@ -8,6 +8,7 @@ Shader "EmpireAtWar/Vfx/Map Space Dust"
         _PocketColor ("Dense Fog Pocket Tint", Color) = (0.38, 0.46, 0.55, 0.24)
         _FieldSpan ("Local Field Width", Float) = 3200
         _MapBounds ("Map XZ Bounds", Vector) = (-4500, -4500, 4500, 4500)
+        _EdgeMargin ("Exterior Fade Width", Float) = 1500
         _HeightRange ("Altitude Range", Vector) = (-650, 180, 0, 0)
     }
     SubShader
@@ -33,6 +34,7 @@ Shader "EmpireAtWar/Vfx/Map Space Dust"
                 half4 _PocketColor;
                 float _FieldSpan;
                 float4 _MapBounds;
+                float _EdgeMargin;
                 float4 _HeightRange;
             CBUFFER_END
 
@@ -56,7 +58,7 @@ Shader "EmpireAtWar/Vfx/Map Space Dust"
                     lerp(_HeightRange.x, _HeightRange.y, input.seed.y), fieldCenter.y + offset.y);
                 float edgeFade = 1 - smoothstep(_FieldSpan * 0.35, _FieldSpan * 0.48, max(abs(offset.x), abs(offset.y)));
                 float2 mapEdge = min(center.xz - _MapBounds.xy, _MapBounds.zw - center.xz);
-                edgeFade *= saturate(min(mapEdge.x, mapEdge.y) / 100);
+                edgeFade *= smoothstep(-max(_EdgeMargin, 1), 0, min(mapEdge.x, mapEdge.y));
                 float cameraDistance = distance(center, _WorldSpaceCameraPos);
                 float cameraFade = smoothstep(lerp(12, 100, input.data.y), lerp(80, 350, input.data.y), cameraDistance);
                 // Distant dust specks shrink below a pixel and shimmer; fog cards stay visible to the field edge.

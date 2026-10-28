@@ -13,6 +13,8 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Services.Hazards;
+using EmpireAtWar.Services.Tooltip;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
@@ -44,6 +46,8 @@ namespace EmpireAtWar.Services.Reinforcement
         private UnitRequest _currentRequest;
 
         private bool _hasBattleEnded;
+        private readonly IHazardService _hazards;
+        private readonly TooltipRequests _tooltips;
 
         public event Action<UnitRequest> ReinforcementDeployed;
         public event Action CapacityRejected;
@@ -59,7 +63,9 @@ namespace EmpireAtWar.Services.Reinforcement
             PlayerSlot owner,
             IPlayerRegistry playerRegistry,
             IUiHitTest uiHitTest,
-            IUiCancelRouter cancelRouter)
+            IUiCancelRouter cancelRouter,
+            IHazardService hazards,
+            ITooltipService tooltipService)
         {
             _playerRegistry = playerRegistry;
             _owner = owner;
@@ -72,6 +78,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _spawnAreaOverlay = spawnAreaOverlay;
             _uiHitTest = uiHitTest;
             _cancelRouter = cancelRouter;
+            _hazards = hazards;
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Initialize()
@@ -110,6 +118,13 @@ namespace EmpireAtWar.Services.Reinforcement
             _preview.UpdatePosition(position);
             _preview.SetPlacementValidity(!_uiHitTest.IsOverUi(_pointerInput.Position) &&
                 _placement.IsPositionValid(position));
+            if (_hazards.TryGetHazardAt(position, out var hazard) && hazard.BlocksReinforcements)
+                _tooltips.Show(this, hazard, new TooltipAnchor(TooltipAnchorKind.Cursor,
+                    _pointerInput.Position.x, _pointerInput.Position.y), () => _model.IsTrySpawning,
+                    () => new TooltipContent(title: hazard.DisplayName,
+                        description: "Reinforcements cannot arrive inside this hazard."));
+            else
+                _tooltips.Hide(this);
         }
 
         public void Add(UnitRequest request)
@@ -172,6 +187,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         private void CancelPlacement()
         {
+            _tooltips.HideAll();
             if (!_model.IsTrySpawning)
             {
                 return;

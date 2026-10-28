@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Map.Hazards;
 using Random = System.Random;
 
 namespace EmpireAtWar.Entities.Map.Generation
@@ -25,8 +26,21 @@ namespace EmpireAtWar.Entities.Map.Generation
             IReadOnlyList<MapLane> lanes,
             Random random)
         {
+            return Build(size, stations, nodes, lanes, random, System.Array.Empty<HazardShape>(), out _);
+        }
+
+        public List<AsteroidField> Build(
+            MapSizeSettings size,
+            IReadOnlyList<MapStation> stations,
+            IReadOnlyList<MapNode> nodes,
+            IReadOnlyList<MapLane> lanes,
+            Random random,
+            IReadOnlyList<HazardShape> hazards,
+            out FieldDensity density)
+        {
             FieldGrid grid = new FieldGrid(size.Bounds, size.FieldCellSize);
-            FieldDensity density = new FieldDensity(settings: _settings, size: size, stations: stations, nodes: nodes, lanes: lanes, random: random);
+            density = new FieldDensity(settings: _settings, size: size, stations: stations, nodes: nodes, lanes: lanes,
+                random: random, hazards: hazards);
             for (int index = 0; index < grid.Count; index++)
             {
                 grid.SetField(index, density.IsField(grid.GetCenter(index)));

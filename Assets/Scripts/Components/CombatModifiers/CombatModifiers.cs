@@ -33,6 +33,12 @@ namespace EmpireAtWar.Components.Combat
         private int _ionPulseDisables;
         private int _sensorJammers;
         private int _fighterCoordinations;
+        private int _abilitySuppressions;
+        private int _shieldSuppressions;
+        public bool IsAbilitySuppressed => _abilitySuppressions > 0;
+        public bool AbilitiesSuppressed => IsIonDisabled || IsAbilitySuppressed;
+        public bool IsShieldSuppressed => _shieldSuppressions > 0;
+        public float ShieldRecoveryDelay { get; private set; }
         public float AccuracyMultiplier =>
             (_sensorJammers > 0 ? SENSOR_JAMMING_ACCURACY_MULTIPLIER : UNMODIFIED_MULTIPLIER) *
             (_fighterCoordinations > 0 ? FIGHTER_COORDINATION_ACCURACY_MULTIPLIER : UNMODIFIED_MULTIPLIER);
@@ -46,6 +52,33 @@ namespace EmpireAtWar.Components.Combat
         public void AddSensorJamming()
         {
             _sensorJammers++;
+            Changed?.Invoke();
+        }
+
+        public void AddAbilitySuppression()
+        {
+            _abilitySuppressions++;
+            Changed?.Invoke();
+        }
+
+        public void RemoveAbilitySuppression()
+        {
+            if (_abilitySuppressions == 0) throw new InvalidOperationException("No ability suppression is active.");
+            _abilitySuppressions--;
+            Changed?.Invoke();
+        }
+
+        public void AddShieldSuppression(float recoveryDelay = 2f)
+        {
+            ShieldRecoveryDelay = _shieldSuppressions == 0 ? recoveryDelay : Math.Max(ShieldRecoveryDelay, recoveryDelay);
+            _shieldSuppressions++;
+            Changed?.Invoke();
+        }
+
+        public void RemoveShieldSuppression()
+        {
+            if (_shieldSuppressions == 0) throw new InvalidOperationException("No shield suppression is active.");
+            _shieldSuppressions--;
             Changed?.Invoke();
         }
 

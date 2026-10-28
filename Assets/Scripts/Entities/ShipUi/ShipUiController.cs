@@ -237,6 +237,8 @@ namespace EmpireAtWar.Entities.ShipUi
             _shipUi.SetAbilitySlots(_abilitySlots);
             _shipUi.SetHealth(_model.HasShips && !hasGroup
                 ? _playerSelectionContext.Entity.HealthModel : null);
+            _shipUi.SetModifiers(_model.HasShips && !hasGroup &&
+                _playerSelectionContext.Entity.TryGetFacade(out ICombatModifiersFacade combat) ? combat.Modifiers : null);
 
             AddSelectionGroups(groups, _shipGroupUi.AddGroup);
             AddSelectionGroups(squadrons, _shipGroupUi.AddGroup);

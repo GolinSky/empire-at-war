@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Generation;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
@@ -162,6 +163,121 @@ namespace EmpireAtWar.Tests.Editor
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
         };
 
+        [Test]
+        public void Hazards_AreDeterministicAndCanBeDisabled()
+        {
+            MapGenerationSettings settings = UnityEngine.Object.Instantiate(_settings);
+            try
+            {
+                MapLayoutGenerator generator = new MapLayoutGenerator(settings, _radii);
+                MapLayout enabled = generator.Generate(MapSize.Medium, TestPlayers.CreateTeamGame().Players, new Random(7919), 7919);
+                MapLayout repeated = generator.Generate(MapSize.Medium, TestPlayers.CreateTeamGame().Players, new Random(7919), 7919);
+                Assert.That(Fingerprint(repeated), Is.EqualTo(Fingerprint(enabled)));
+                for (int i = 0; i < enabled.Hazards.Count; i++)
+                    CollectionAssert.AreEqual(enabled.Hazards[i].Spot.Lobes, repeated.Hazards[i].Spot.Lobes);
+                SerializedObject serialized = new SerializedObject(settings);
+                serialized.FindProperty("hazards").arraySize = 0;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                MapLayout disabled = generator.Generate(MapSize.Medium, TestPlayers.CreateTeamGame().Players, new Random(7919), 7919);
+                Assert.That(disabled.Hazards, Is.Empty);
+                Assert.That(enabled.Hazards, Is.Not.Empty);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(settings);
+            }
+        }
+
+        [TestCase(MapSize.Small)]
+        [TestCase(MapSize.Medium)]
+        [TestCase(MapSize.Large)]
+        public void Hazards_AlwaysFitAndAvoidGameplayFeaturesAcrossRosters(MapSize mapSize)
+        {
+            MapSizeSettings size = _settings.GetSize(mapSize);
+            for (int playerCount = 2; playerCount <= 4; playerCount++)
+            {
+                PlayerSlot[] players = CreateRoster(playerCount, FactionType.Separatist, EnemyAiDifficulty.Medium);
+                foreach (int seed in _seeds)
+                {
+                    string context = $"{mapSize}, {playerCount} players, seed {seed}";
+                    MapLayout layout = null;
+                    Assert.DoesNotThrow(() => layout = _generator.Generate(mapSize, players, new Random(seed), seed), context);
+                    Assert.That(layout.Hazards.Count, Is.EqualTo(size.HazardCount), context);
+                    if (size.HazardCount == 2)
+                    {
+                        Assert.That(layout.Hazards[0].Data.HazardType, Is.Not.EqualTo(layout.Hazards[1].Data.HazardType), context);
+                        // Each island sits on the axis equidistant to the teams and is its own mirror image across it.
+                        Vector3 axis = layout.Hazards[0].Spot.Center.normalized;
+                        foreach (HazardShape hazard in layout.Hazards)
+                        {
+                            Vector3 center = hazard.Spot.Center;
+                            Assert.That(Mathf.Abs(axis.x * center.z - axis.z * center.x), Is.LessThan(0.01f), context);
+                            Assert.That(hazard.Spot.Frame.IsFolded, Is.True, context);
+                            Assert.That(Mathf.Abs(Vector3.Dot(hazard.Spot.Frame.Along, axis)), Is.LessThan(0.01f), context);
+                        }
+                    }
+                    for (int i = 0; i < layout.Hazards.Count; i++)
+                    {
+                        HazardShape band = layout.Hazards[i];
+                        HazardSpot spot = band.Spot;
+                        HazardSpot mirror = layout.Hazards[i ^ 1].Spot;
+                        Assert.That(mirror.Lobes.Count, Is.EqualTo(spot.Lobes.Count), context);
+                        for (int p = 0; p < spot.Lobes.Count; p++)
+                        {
+                            Assert.That((spot.Lobes[p].Center + mirror.Lobes[p].Center).sqrMagnitude, Is.LessThan(TOLERANCE), context);
+                            Assert.That(spot.Lobes[p].Width, Is.EqualTo(mirror.Lobes[p].Width), context);
+                            Assert.That(spot.Lobes[p].Length, Is.EqualTo(mirror.Lobes[p].Length), context);
+                        }
+                        Assert.That(band.Bounds.min.x, Is.GreaterThanOrEqualTo(size.Bounds.Min.x), context);
+                        Assert.That(band.Bounds.max.x, Is.LessThanOrEqualTo(size.Bounds.Max.x), context);
+                        Assert.That(band.Bounds.min.z, Is.GreaterThanOrEqualTo(size.Bounds.Min.y), context);
+                        Assert.That(band.Bounds.max.z, Is.LessThanOrEqualTo(size.Bounds.Max.y), context);
+                        for (int j = i + 1; j < layout.Hazards.Count; j++)
+                            Assert.That(spot.GetClearance(layout.Hazards[j].Spot), Is.GreaterThan(0f), context);
+                        foreach (PlayerSlot player in players)
+                            Assert.That(band.Contains(layout.GetStationPosition(player.Id),
+                                _settings.GetStationRadius(player.Faction) + _settings.ZoneClearance, false), Is.False, context);
+                        foreach (ZoneSpot zone in layout.Zones)
+                            Assert.That(band.Contains(zone.Center, _radii.Zone + _settings.ZoneClearance, false), Is.False, context);
+                        foreach (SiteSpot site in layout.Sites)
+                            Assert.That(band.Contains(site.Center, GetSiteRadius(site.Kind), false), Is.False, context);
+                        foreach (AsteroidField field in layout.Fields)
+                        {
+                            foreach (FieldVolume volume in field.Volumes)
+                                Assert.That(band.Contains(volume.Center, volume.Radius, false), Is.False, context);
+                            foreach (AsteroidSpot rock in field.Rocks)
+                                Assert.That(band.Contains(rock.Position, size.FieldCellSize, false), Is.False, context);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void FieldDensity_ClearsBandAndKeepsLaneThroughItsFringeOpen()
+        {
+            MapSizeSettings size = _settings.GetSize(MapSize.Small);
+            FieldDensity original = new FieldDensity(Array.Empty<MapStation>(), Array.Empty<MapNode>(),
+                Array.Empty<MapLane>(), _settings, size, new Random(42), Array.Empty<HazardShape>());
+            FieldGrid grid = new FieldGrid(size.Bounds, size.FieldCellSize);
+            Vector3 center = Vector3.zero;
+            bool found = false;
+            for (int i = 0; i < grid.Count; i++)
+                if (original.IsField(grid.GetCenter(i)))
+                {
+                    center = grid.GetCenter(i);
+                    found = true;
+                    break;
+                }
+            Assert.That(found, Is.True);
+            HazardShape spot = TestHazards.CreateEllipse(_settings.Hazards[0], center, Vector3.right, 500f, 150f, 10f);
+            MapLane lane = new MapLane(new[] { center + Vector3.back * 1000f, center + Vector3.forward * 1000f });
+            FieldDensity withHazard = new FieldDensity(Array.Empty<MapStation>(), Array.Empty<MapNode>(),
+                new[] { lane }, _settings, size, new Random(42), new[] { spot });
+            Assert.That(withHazard.IsField(center), Is.False);
+            Assert.That(withHazard.IsField(center + Vector3.forward * (150f + size.FieldCellSize * 2f + 30f)), Is.False);
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -271,7 +387,7 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (int seed in _seeds)
                 {
                     PlayerRoster duel = TestPlayers.CreateDuel(EnemyAiDifficulty.Medium);
-                    MapLayout layout = _generator.Generate(mapSize, duel.Players, new Random(seed));
+                    MapLayout layout = _generator.Generate(mapSize, duel.Players, new Random(seed), seed);
                     Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
                     foreach (PlayerSlot player in duel.Players)
                     {
@@ -431,7 +547,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (int seed in _seeds)
                 {
-                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed));
+                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed), seed);
                     foreach (PlayerSlot player in teamGame.Players)
                     {
                         Vector3 station = layout.GetStationPosition(player.Id);
@@ -482,7 +598,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (int seed in _seeds)
                 {
-                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed));
+                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed), seed);
                     Vector3 human = layout.GetStationPosition(TestPlayers.Human);
                     Vector3 ally = layout.GetStationPosition(TestPlayers.Ally);
                     Vector3 enemy = layout.GetStationPosition(TestPlayers.Enemy);
@@ -508,7 +624,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (int seed in _seeds)
                 {
-                    Assert.DoesNotThrow(() => _generator.Generate(mapSize, threePlayers, new Random(seed)),
+                    Assert.DoesNotThrow(() => _generator.Generate(mapSize, threePlayers, new Random(seed), seed),
                         $"{mapSize} seed {seed}");
                 }
             }
@@ -529,7 +645,7 @@ namespace EmpireAtWar.Tests.Editor
                         PlayerSlot[] players = CreateRoster(playerCount, opponentFaction, difficulty);
                         foreach (int seed in _rosterSeeds)
                         {
-                            Assert.DoesNotThrow(() => _generator.Generate(mapSize, players, new Random(seed)),
+                            Assert.DoesNotThrow(() => _generator.Generate(mapSize, players, new Random(seed), seed),
                                 $"{mapSize} {playerCount} players vs {opponentFaction} {difficulty} seed {seed}");
                         }
                     }
@@ -582,7 +698,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private MapLayout GenerateFor(BattleDefinition battle)
         {
-            return _generator.Generate(battle.Map.Size, battle.Slots, new Random(battle.Map.Seed));
+            return _generator.Generate(battle.Map.Size, battle.Slots, new Random(battle.Map.Seed), battle.Map.Seed);
         }
 
         private static string Fingerprint(MapLayout layout)
@@ -613,7 +729,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private MapLayout Generate(MapSize mapSize, EnemyAiDifficulty difficulty, int seed)
         {
-            return _generator.Generate(mapSize, TestPlayers.CreateDuel(difficulty).Players, new Random(seed));
+            return _generator.Generate(mapSize, TestPlayers.CreateDuel(difficulty).Players, new Random(seed), seed);
         }
 
         private static List<Vector3> GetMiningSites(MapLayout layout)

@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private float _range;
 
         public bool IsComplete => _hardPoint.IsDestroyed || _target.HealthModel.IsDestroyed || _target.IsCloaked() || _targetTransform == null ||
-            _caster.Modifiers.IsIonDisabled ||
+            _caster.Modifiers.AbilitiesSuppressed ||
             PlanarGeometry.Distance(_caster.WorldPosition, _targetTransform.position) > _range;
         public bool SurvivesCasterDeath => false;
 

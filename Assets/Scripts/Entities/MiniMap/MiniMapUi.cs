@@ -27,6 +27,7 @@ namespace EmpireAtWar.Entities.MiniMap
         [SerializeField] private Image mapImage;
         [SerializeField] private CameraFootprintView cameraFootprintView;
         [SerializeField] private MiniMapObstacleView obstacleView;
+        [SerializeField] private MiniMapHazardView hazardView;
         [SerializeField] private MiniMapMoveTargetView moveTargetView;
         [SerializeField] private RawImage fogImage;
         private List<Image> _mapMarkers = new List<Image>();
@@ -63,6 +64,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _mapRange = _model.MapRange;
             cameraFootprintView.SetData(_model.CameraMark, _model.MapRange);
             obstacleView.SetData(_model.Obstacles, _model.MapRange);
+            hazardView.SetData(_model.Hazards, _model.MapRange);
             foreach (MiniMapMarker marker in _model.Markers)
             {
                 AddMarker(marker);

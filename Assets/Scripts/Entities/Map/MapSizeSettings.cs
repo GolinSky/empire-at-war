@@ -18,6 +18,11 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(0), Tooltip("Mirrored mining point pairs placed inside the central region; part of MiningPointCount.")]
         public int CentralMiningPairCount { get; private set; }
         [field: SerializeField, Min(0)] public int BattleSiteCount { get; private set; }
+        [field: SerializeField, Min(0)] public int HazardCount { get; private set; } = 2;
+        [field: SerializeField] public Vector2 HazardLengthShare { get; private set; } = new Vector2(0.35f, 0.5f);
+        [field: SerializeField] public Vector2 HazardHalfWidthShare { get; private set; } = new Vector2(0.03f, 0.065f);
+        [field: SerializeField, Min(0f)] public float HazardFringeWidth { get; private set; } = 60f;
+        [field: SerializeField, Min(0f)] public float EdgeMargin { get; private set; } = 1500f;
         [field: SerializeField, Min(0f), Tooltip("Minimum free gap between the asteroid pockets of two points of interest.")]
         public float PointSpacing { get; private set; }
         [field: SerializeField, Tooltip("Gap between the Survival station footprint and its mining ring (Min). " +

@@ -304,6 +304,66 @@ namespace EmpireAtWar.Tests.Editor
             return model;
         }
 
+        [Test]
+        public void ShieldSuppression_DropsShieldsWithoutDamagingGeneratorAndPreventsRefills()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers);
+            model.InitializeHardPoints(Array.Empty<HardPointModel>());
+            model.SetShieldSuppressed(true);
+            Assert.That(model.AbsorbsDamage(DamageType.Turbolaser), Is.False);
+            model.ApplyDamage(10f, DamageType.Turbolaser, 0);
+            Assert.That(model.Hull, Is.EqualTo(HULL - 10f));
+            model.RegenerateShields(100f);
+            model.Restore(1f, 1f, Array.Empty<float>());
+            model.Upgrade(2, 1f, 2f, 1f);
+            modifiers.SetFleetCommand(true);
+            model.RefreshStatModifiers();
+            Assert.That(model.Shields, Is.Zero);
+            Assert.That(model.MaxShields, Is.EqualTo(SHIELDS * 2f * 1.1f).Within(0.001f));
+            Assert.That(model.IsLostShieldGenerator, Is.False);
+            model.SetShieldSuppressed(false);
+            Assert.That(model.Shields, Is.Zero);
+            model.RegenerateShields(25f);
+            Assert.That(model.Shields, Is.EqualTo(25f));
+        }
+
+        [Test]
+        public void ShieldSuppression_FinalExitStartsRecoveryDelayAndReentryCancelsRecovery()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers);
+            GameObject owner = new GameObject("ShieldRecoveryTest");
+            try
+            {
+                const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+                HealthComponent health = owner.AddComponent<HealthComponent>();
+                typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(health, new object[] { model, modifiers, owner.transform, TestPlayers.Human });
+                health.ShipUnits = new List<HardPoint>();
+                health.Initialize();
+                modifiers.AddShieldSuppression(3f);
+                modifiers.AddShieldSuppression(2f);
+                modifiers.RemoveShieldSuppression();
+                Assert.That(model.IsShieldSuppressed, Is.True);
+                Assert.That(health.IsShieldRecovering, Is.False);
+                modifiers.RemoveShieldSuppression();
+                Assert.That(model.IsShieldSuppressed, Is.False);
+                Assert.That(health.IsShieldRecovering, Is.True);
+                Assert.That(health.ShieldRegeneration, Is.Zero);
+                var timer = (Utilities.ScriptUtils.Time.ITimer)typeof(HealthComponent)
+                    .GetField("_shieldRecoveryTimer", PRIVATE_INSTANCE).GetValue(health);
+                Assert.That(timer.TimeLeft, Is.EqualTo(3f).Within(0.1f));
+                modifiers.AddShieldSuppression();
+                Assert.That(health.IsShieldRecovering, Is.False);
+                health.Release();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
         private sealed class HealthDataStub : IHealthData
         {
             public ShipClass ShipClass => ShipClass.Capital;

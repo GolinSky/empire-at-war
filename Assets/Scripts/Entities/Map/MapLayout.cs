@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishCamera;
 using UnityEngine;
@@ -17,6 +18,9 @@ namespace EmpireAtWar.Entities.Map
         public IReadOnlyList<SiteSpot> Sites { get; }
         public IReadOnlyList<MapLane> Lanes { get; }
         public IReadOnlyList<AsteroidField> Fields { get; }
+        public IReadOnlyList<HazardShape> Hazards { get; }
+        public IReadOnlyList<AsteroidSpot> DecorRocks { get; }
+        public float EdgeMargin { get; }
 
         public MapLayout(
             IReadOnlyDictionary<PlayerId, Vector3> stationPositions,
@@ -26,6 +30,22 @@ namespace EmpireAtWar.Entities.Map
             IReadOnlyList<AsteroidField> fields,
             Vector2Range sizeRange,
             Vector3 planetPosition)
+            : this(stationPositions, zones, sites, lanes, fields, sizeRange, planetPosition,
+                System.Array.Empty<HazardShape>())
+        {
+        }
+
+        public MapLayout(
+            IReadOnlyDictionary<PlayerId, Vector3> stationPositions,
+            IReadOnlyList<ZoneSpot> zones,
+            IReadOnlyList<SiteSpot> sites,
+            IReadOnlyList<MapLane> lanes,
+            IReadOnlyList<AsteroidField> fields,
+            Vector2Range sizeRange,
+            Vector3 planetPosition,
+            IReadOnlyList<HazardShape> hazards,
+            IReadOnlyList<AsteroidSpot> decorRocks = null,
+            float edgeMargin = 0f)
         {
             SizeRange = sizeRange;
             _stationPositions = stationPositions;
@@ -34,6 +54,9 @@ namespace EmpireAtWar.Entities.Map
             Sites = sites;
             Lanes = lanes;
             Fields = fields;
+            Hazards = hazards;
+            DecorRocks = decorRocks ?? System.Array.Empty<AsteroidSpot>();
+            EdgeMargin = edgeMargin;
         }
 
         public Vector3 GetStationPosition(PlayerId owner)

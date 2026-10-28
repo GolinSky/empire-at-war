@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IReinforcementZonesSystem _relays;
         private readonly ICaptureSitesSystem _captureSites;
         private readonly IMapModelObserver _mapModel;
+        private readonly IHazardService _hazards;
 
         public ReinforcementSpawnRule(
             IVisionService vision,
@@ -27,7 +29,8 @@ namespace EmpireAtWar.Services.Reinforcement
             IStructureSpawnClearance structureClearance,
             IReinforcementZonesSystem relays,
             ICaptureSitesSystem captureSites,
-            IMapModelObserver mapModel)
+            IMapModelObserver mapModel,
+            IHazardService hazards)
         {
             _vision = vision;
             _blockers = blockers;
@@ -36,6 +39,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _relays = relays;
             _captureSites = captureSites;
             _mapModel = mapModel;
+            _hazards = hazards;
         }
 
         public bool IsOpen(PlayerId team, Vector3 position)
@@ -45,7 +49,8 @@ namespace EmpireAtWar.Services.Reinforcement
             return position.x >= min.x && position.x <= max.x &&
                    position.z >= min.y && position.z <= max.y &&
                    _vision.IsVisible(team, position) &&
-                   !_blockers.IsBlocked(team, position);
+                   !_blockers.IsBlocked(team, position) &&
+                   !_hazards.BlocksReinforcement(position);
         }
 
         public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) =>

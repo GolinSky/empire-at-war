@@ -157,6 +157,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.MaxShields, Is.EqualTo(MEMBER_SHIELDS * MEMBER_COUNT));
         }
 
+        [Test]
+        public void InitializeMembers_AfterSuppressedDeath_DoesNotCarrySuppressionIntoRespawn()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            SquadronHealthModel model = new SquadronHealthModel(new TestHealthData(), _matrix, modifiers);
+            model.InitializeMembers(CreateMembers());
+            modifiers.AddShieldSuppression();
+            model.SetShieldSuppressed(true);
+            for (int i = 0; i < MEMBER_COUNT; i++)
+                model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, i);
+            modifiers.RemoveShieldSuppression();
+            // The health component unsubscribes before the hazard service releases a dead entity.
+            model.InitializeMembers(CreateMembers());
+            Assert.That(model.IsShieldSuppressed, Is.False);
+            Assert.That(model.Shields, Is.EqualTo(MEMBER_SHIELDS * MEMBER_COUNT));
+        }
+
         private static HardPointModel[] CreateMembers()
         {
             HardPointModel[] members = new HardPointModel[MEMBER_COUNT];
@@ -189,6 +206,22 @@ namespace EmpireAtWar.Tests.Editor
             SquadronHealthModel model = new SquadronHealthModel(new TestHealthData(), _matrix, new CombatModifiers());
             model.InitializeMembers(members);
             return model;
+        }
+
+        [Test]
+        public void ShieldSuppression_AffectsEveryMemberAndAllowsRecoveryFromZero()
+        {
+            SquadronHealthModel model = CreateModel(out HardPointModel[] members);
+            model.SetShieldSuppressed(true);
+            model.RegenerateShields(100f);
+            Assert.That(model.Shields, Is.Zero);
+            model.ApplyDamage(5f, DamageType.Laser, 0);
+            Assert.That(members[0].Health, Is.LessThan(members[0].MaxHealth));
+            model.SetShieldSuppressed(false);
+            Assert.That(model.Shields, Is.Zero);
+            model.RegenerateShields(1f);
+            Assert.That(model.GetMemberShields(0), Is.EqualTo(1f));
+            Assert.That(model.GetMemberShields(1), Is.EqualTo(1f));
         }
 
         private sealed class TestHealthData : ISquadronHealthData

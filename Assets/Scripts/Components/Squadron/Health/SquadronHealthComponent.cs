@@ -22,6 +22,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
         IHealthModelObserver, IHealthTooltipObserver, IInitializable, ITickable, ILateDisposable
     {
         private ITimer _regenerateShieldsTimer;
+        private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
+        private bool _shieldRecovering;
 
         [SerializeField] private List<FighterView> fighters;
         private readonly List<IHardPointModel> _liveUnits = new List<IHardPointModel>();
@@ -52,7 +54,9 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public ShipClass ShipClass => Model.ShipClass;
         public HardPointModel[] HardPointModels => Model.Members;
         public float Hull => Model.Hull;
-        public float ShieldRegeneration => Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier * Model.AliveCount;
+        public bool IsShieldRecovering => _shieldRecovering && !_shieldRecoveryTimer.IsComplete;
+        public float ShieldRegeneration => Model.IsShieldSuppressed || IsShieldRecovering ? 0f
+            : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier * Model.AliveCount;
         public float ShieldRegenerationInterval => Model.ShieldRegenerateDelay;
         public float HullPercentage => Model.HullPercentage;
         public float Shields => Model.Shields;
@@ -92,6 +96,18 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             _regenerateShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
+            _shieldRecovering = false;
+            _modifiers.Changed += HandleShieldSuppressionChanged;
+            HandleShieldSuppressionChanged();
+        }
+
+        private void HandleShieldSuppressionChanged()
+        {
+            if (Model.IsShieldSuppressed == _modifiers.IsShieldSuppressed) return;
+            bool suppressed = _modifiers.IsShieldSuppressed;
+            _shieldRecovering = !suppressed;
+            if (!suppressed) _shieldRecoveryTimer.ChangeDelay(_modifiers.ShieldRecoveryDelay).StartTimer();
+            Model.SetShieldSuppressed(suppressed);
         }
 
         public void LateDispose() => Release();
@@ -106,7 +122,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         {
             if (_isReleased || Model.IsDestroyed) return;
             Model.RepairHull(Data.HullRepairPerSecond * Time.deltaTime);
-            if (!_regenerateShieldsTimer.IsComplete) return;
+            if (Model.IsShieldSuppressed || IsShieldRecovering || !_regenerateShieldsTimer.IsComplete) return;
 
             Model.RegenerateShields(Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier);
             _regenerateShieldsTimer.StartTimer();
@@ -121,6 +137,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
             _isReleased = true;
             _modifiers.Changed -= Model.RefreshStatModifiers;
+            _modifiers.Changed -= HandleShieldSuppressionChanged;
             foreach (HardPointAdapter adapter in _adapters)
             {
                 adapter.Dispose();

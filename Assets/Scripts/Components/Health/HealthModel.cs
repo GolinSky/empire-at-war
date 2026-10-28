@@ -46,6 +46,7 @@ namespace EmpireAtWar.Models.Health
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0f;
         public bool IsLostShieldGenerator { get; private set; }
+        public bool IsShieldSuppressed { get; private set; }
         public bool HasUnits => !IsDestroyed;
         // Queried per target candidate; a loop avoids the LINQ enumerator allocation.
         public bool HasLiveHardPoints
@@ -74,7 +75,7 @@ namespace EmpireAtWar.Models.Health
             if (_hullMultiplier == _modifiers.HullMultiplier &&
                 _shieldsMultiplier == _modifiers.ShieldsMultiplier) return;
             Hull *= _modifiers.HullMultiplier / _hullMultiplier;
-            Shields *= _modifiers.ShieldsMultiplier / _shieldsMultiplier;
+            Shields = IsShieldSuppressed ? 0f : Shields * _modifiers.ShieldsMultiplier / _shieldsMultiplier;
             _hullMultiplier = _modifiers.HullMultiplier;
             _shieldsMultiplier = _modifiers.ShieldsMultiplier;
             OnValueChanged?.Invoke();
@@ -116,7 +117,7 @@ namespace EmpireAtWar.Models.Health
             _levelShieldsScale = shieldsScale;
             _levelShieldRegenerateScale = shieldRegenerateScale;
             Hull = MaxHull * hullPercentage;
-            Shields = MaxShields * shieldPercentage;
+            Shields = IsShieldSuppressed ? 0f : MaxShields * shieldPercentage;
             IsLostShieldGenerator = false;
             InitializeHardPoints(HardPointModels);
             OnValueChanged?.Invoke();
@@ -137,7 +138,7 @@ namespace EmpireAtWar.Models.Health
                 HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
                     .All(point => point.IsDestroyed);
             Hull = MaxHull * hullPercentage;
-            Shields = IsLostShieldGenerator ? 0f : MaxShields * shieldPercentage;
+            Shields = IsLostShieldGenerator || IsShieldSuppressed ? 0f : MaxShields * shieldPercentage;
             OnRestored?.Invoke();
             OnValueChanged?.Invoke();
         }
@@ -191,15 +192,23 @@ namespace EmpireAtWar.Models.Health
 
         public void RegenerateShields(float value)
         {
-            if (IsDestroyed) return;
+            if (IsDestroyed || IsShieldSuppressed) return;
             Shields = Math.Min(MaxShields, Shields + value);
             OnValueChanged?.Invoke();
         }
 
         public bool AbsorbsDamage(DamageType damageType)
         {
-            return !IsDestroyed && HasShields && !IsLostShieldGenerator &&
+            return !IsDestroyed && HasShields && !IsLostShieldGenerator && !IsShieldSuppressed &&
                    !_damageMatrix.IsShieldPiercing(damageType);
+        }
+
+        public void SetShieldSuppressed(bool suppressed)
+        {
+            if (IsShieldSuppressed == suppressed) return;
+            IsShieldSuppressed = suppressed;
+            if (suppressed) Shields = 0f;
+            OnValueChanged?.Invoke();
         }
 
         // A hit on an already destroyed hardpoint is split evenly between the live ones.

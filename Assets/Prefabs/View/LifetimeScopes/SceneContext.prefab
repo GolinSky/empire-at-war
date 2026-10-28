@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 716290310832380853}
   - component: {fileID: 1561019271551565166}
   - component: {fileID: 5697144160693895753}
+  - component: {fileID: 312690830002158774}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -465,6 +466,9 @@ MonoBehaviour:
   fieldRoot: {fileID: 6769320644097990905}
   borderLine: {fileID: 5965768392532275115}
   spaceDust: {fileID: 6983786195084815462}
+  hazardPrefab: {fileID: 3559053867414749907, guid: 3202db9a050986e41a82a36a62789d27,
+    type: 3}
+  decorRenderer: {fileID: 312690830002158774}
   borderHeight: 0
   fogReferenceSide: 600
 --- !u!114 &1561019271551565166
@@ -492,6 +496,109 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a5d5081594bae46aca6b951a764d75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.CaptureSites.CaptureSitesSystem
+--- !u!114 &312690830002158774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3621292683372797818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0f3e36add6334f48acf884e0bcb37d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Environment.DecorAsteroidRenderer
+  meshes:
+  - <Size>k__BackingField: 0
+    <Mesh>k__BackingField: {fileID: 2942462102123226655, guid: bc2f319e378053f4b9ea18ace01cdfdc,
+      type: 3}
+    <Materials>k__BackingField:
+    - {fileID: 2100000, guid: ff43801ad8a50574db1db7d2a0e86aca, type: 2}
+    <LocalTransform>k__BackingField:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+  - <Size>k__BackingField: 1
+    <Mesh>k__BackingField: {fileID: 6412623515549900752, guid: 3bfdf381e8652d543a4fd74f46116c42,
+      type: 3}
+    <Materials>k__BackingField:
+    - {fileID: 2100000, guid: 2456d64a955fcb8448e4998a3c9aaff2, type: 2}
+    <LocalTransform>k__BackingField:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+  - <Size>k__BackingField: 2
+    <Mesh>k__BackingField: {fileID: 973877516759717424, guid: 3bfdf381e8652d543a4fd74f46116c42,
+      type: 3}
+    <Materials>k__BackingField:
+    - {fileID: 2100000, guid: 2456d64a955fcb8448e4998a3c9aaff2, type: 2}
+    <LocalTransform>k__BackingField:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+  - <Size>k__BackingField: 2
+    <Mesh>k__BackingField: {fileID: -2845505134294023193, guid: 3bfdf381e8652d543a4fd74f46116c42,
+      type: 3}
+    <Materials>k__BackingField:
+    - {fileID: 2100000, guid: 2456d64a955fcb8448e4998a3c9aaff2, type: 2}
+    <LocalTransform>k__BackingField:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+  debrisDistance: 2200
+  mediumDistance: 5000
 --- !u!1 &5707104808345431472
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,6 +671,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5922927045858997487}
   - component: {fileID: 8744064952395461264}
+  - component: {fileID: 2752712332648071711}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -632,8 +740,23 @@ MonoBehaviour:
   cameraService: {fileID: 4348158288540546956}
   settings: {fileID: 11400000, guid: 37f2004615e33a24eb8c4f1fb75c5a3f, type: 2}
   mapLayoutView: {fileID: 716290310832380853}
+  hazardEffectsView: {fileID: 2752712332648071711}
   reinforcementZonesSystem: {fileID: 1561019271551565166}
   captureSitesSystem: {fileID: 5697144160693895753}
+--- !u!114 &2752712332648071711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275563448249933054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f87c0bae28f5a4d9b32f83345b8218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Environment.HazardEffectsView
+  hazardEntryPrefab: {fileID: 365258895351162789, guid: 9b6645cafdb3f0b4998da2663a5e5bd7,
+    type: 3}
 --- !u!1001 &4715110672876300141
 PrefabInstance:
   m_ObjectHideFlags: 0

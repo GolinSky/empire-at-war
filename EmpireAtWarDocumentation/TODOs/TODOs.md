@@ -114,6 +114,25 @@
   - **Verified**: combined map 33/33, save 47/47, relay 23/23, AI strategy 11/11; focused satellite checks recorded in plan.
   - **Remaining**: user in-game acceptance of combat, visuals, capture/build flow and AI behavior; no agent Play Mode.
 
+- [ ] **Space hazards: Nebula / Ion Storm map areas (+ future map-wide events)** → [[TODOs/Features/Space_Hazards_Plan|Space Hazards Plan]]; [[TODOs/Features/Space_Hazards_Plan - Visuals|Visual art direction]]
+  - **Implemented 2026-10-28**: generated zones, suppression/recovery, reinforcement gate, AI costs, MVP visuals and UI/minimap; saved assets wired. Full EditMode: 2,366/2,386 passed; remaining failures recorded in plan.
+  - **Loader fix 2026-10-28**: site filtering discarded generated hazards; preserved the hazard list. Real-loader regression included in 26/26 passing hazard tests. Actual Medium battle seed `73517`: four active areas, both cloud types rendered, no new runtime errors.
+  - **Remaining**: user in-game acceptance + full-suite failure triage; optional full visuals and map-wide events deferred.
+  - **User review 2026-10-28**: bubbles too small, same type on Small, ion visual ≠ gameplay area, hard map edges → rework planned.
+
+- [ ] **Space hazards rework: level-design bands + asteroid/dust edge continuation** → [[TODOs/Features/Space_Hazards_Rework_Plan|Space Hazards Rework Plan]]
+  - **Implemented 2026-10-28**: shared band geometry, center membership, ribbon/minimap rendering, hazard-first fields, decorative asteroid ring and dust continuation; prefab/preset bindings saved.
+  - **Verified**: 29/29 focused hazard tests, including 180 layouts across sizes/player counts and loader integration; visual captures and rock-surface clearance checks saved in `Logs/SpaceHazardsRework/`.
+  - **Integration verified**: deterministic final Small-band candidates fix seed-7 sampling with satellite nodes; combined current map-generator suite `33/33` passes.
+  - **Final hazard rerun**: `29/29` pass after the fallback and satellite integration; saved current-source evidence.
+  - **Acceptance pending**: clean full-suite comparison, matched frame-performance check and user in-game review. Old saves regenerate with the new layout.
+
+- [ ] **Space hazards shape rework: organic lobed clouds + SDF geometry** → [[TODOs/Features/Space_Hazards_Shape_Rework_Plan|Space Hazards Shape Rework Plan]]
+  - **Review 2026-10-28**: spindle profile (`sin` widths, pointed tips), straight collinear Small bands (dashed wall), cut-out shader edge + rim, flat stacked sheets, outline-tracing asteroid fringe, `HazardBand` rebuilt in 6 places.
+  - **Implemented 2026-10-28**: lobe-chain clouds on curved spines, signed-distance grid shared by gameplay/fields/navigation/shader/minimap, Small islands folded across the team-equidistant axis, clumped fringe, 5-sheet noise shader with local ion flashes.
+  - **Verified**: compile clean; focused fixtures 67/67 (zone, service, height, presentation, navigation, AI, decor); captures + boundary overlays in `Logs/SpaceHazardsShapeRework/`.
+  - **Remaining**: `Map` category + `MapExhaustive` runs (lost to bridge disconnects), bake/overdraw measurement, `HazardType` view branches, user in-game review.
+
 - [ ] **Close settings audit follow-ups** (Wave 1) → [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
   - **Remaining**: remaining settings core EditMode tests; live category/rebind interaction; manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
 

@@ -1,4 +1,6 @@
 using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Components.Combat;
+using TMPro;
 using EmpireAtWar.Models.ShipUi;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private IShipIconProvider _icons;
         private IHealthModelObserver _health;
         private IShipUiPresenter _presenter;
+        private CombatModifiers _modifiers;
 
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
@@ -24,6 +27,7 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private Image healthFill;
         [SerializeField] private Image shieldFill;
         [SerializeField] private TooltipHoverView tooltipHover;
+        [SerializeField] private TMP_Text hazardStatus;
         private Action _onSelected;
         private Action _onFocused;
 
@@ -49,6 +53,7 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             if (!_isInitialized) return;
             SetHealth(null);
+            SetModifiers(null);
             if (!_isEntry) _model.OnSelectionChanged -= UpdateVisibility;
             disableSelectionButton.onClick.RemoveListener(HandleSelection);
             focusButton.onClick.RemoveListener(HandleFocus);
@@ -58,6 +63,21 @@ namespace EmpireAtWar.Entities.ShipUi
         }
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
+
+        public void SetModifiers(CombatModifiers modifiers)
+        {
+            if (_modifiers != null) _modifiers.Changed -= UpdateHazardStatus;
+            _modifiers = modifiers;
+            if (_modifiers != null) _modifiers.Changed += UpdateHazardStatus;
+            UpdateHazardStatus();
+        }
+
+        private void UpdateHazardStatus()
+        {
+            hazardStatus.text = _modifiers != null && _modifiers.IsShieldSuppressed ? "Shields Offline" :
+                _modifiers != null && _modifiers.IsAbilitySuppressed ? "Abilities Jammed" :
+                _health is IHealthTooltipObserver tooltip && tooltip.IsShieldRecovering ? "Shields Recovering" : "";
+        }
 
         public void AssignPresenter(IShipUiPresenter presenter)
         {
@@ -103,6 +123,7 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             healthFill.fillAmount = _health != null ? _health.HullPercentage : 0f;
             shieldFill.fillAmount = _health != null ? _health.ShieldPercentage : 0f;
+            UpdateHazardStatus();
         }
 
         private void OnDestroy() => Dispose();

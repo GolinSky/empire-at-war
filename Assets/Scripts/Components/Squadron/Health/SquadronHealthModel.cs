@@ -35,6 +35,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public float ShieldRegenerateValue => _data.ShieldRegenerateValue;
         public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
         public bool IsDestroyed { get; private set; }
+        public bool IsShieldSuppressed { get; private set; }
         public bool HasShields => Shields > 0f;
         public bool HasUnits => !IsDestroyed && Members.Length > 0;
         public bool HasLiveHardPoints => AliveCount > 0;
@@ -54,6 +55,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public void InitializeMembers(IReadOnlyList<HardPointModel> members)
         {
+            IsShieldSuppressed = _modifiers.IsShieldSuppressed;
             _hullMultiplier = _modifiers.HullMultiplier;
             _shieldsMultiplier = _modifiers.ShieldsMultiplier;
             Members = new HardPointModel[members.Count];
@@ -63,7 +65,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             {
                 Members[i] = members[i];
                 Members[i].SetHealth(_data.MemberHull * _hullMultiplier, 1f);
-                _shields[i] = _data.MemberShields * _shieldsMultiplier;
+                _shields[i] = IsShieldSuppressed ? 0f : _data.MemberShields * _shieldsMultiplier;
             }
 
             Recalculate();
@@ -86,7 +88,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             for (int i = 0; i < Members.Length; i++)
             {
                 Members[i].Restore(memberHull[i]);
-                _shields[i] = Members[i].IsDestroyed ? 0f : _data.MemberShields * _shieldsMultiplier * memberShields[i];
+                _shields[i] = Members[i].IsDestroyed || IsShieldSuppressed ? 0f : _data.MemberShields * _shieldsMultiplier * memberShields[i];
             }
 
             Recalculate();
@@ -104,7 +106,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             for (int i = 0; i < Members.Length; i++)
             {
                 Members[i].ScaleHealth(hullRatio);
-                _shields[i] *= shieldRatio;
+                _shields[i] = IsShieldSuppressed ? 0f : _shields[i] * shieldRatio;
             }
             Recalculate();
             OnValueChanged?.Invoke();
@@ -119,7 +121,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             damage *= _modifiers.DamageTakenMultiplier;
-            if (_shields[memberId] > 0f && !_damageMatrix.IsShieldPiercing(damageType))
+            if (!IsShieldSuppressed && _shields[memberId] > 0f && !_damageMatrix.IsShieldPiercing(damageType))
             {
                 if (damageType == DamageType.Laser || damageType == DamageType.FighterLaser)
                     damage *= _data.LaserShieldDamageMultiplier;
@@ -146,6 +148,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public void RegenerateShields(float value)
         {
+            if (IsShieldSuppressed) return;
             for (int i = 0; i < Members.Length; i++)
             {
                 if (!Members[i].IsDestroyed)
@@ -169,6 +172,15 @@ namespace EmpireAtWar.Components.Squadrons.Health
                 changed = true;
             }
             if (!changed) return;
+            Recalculate();
+            OnValueChanged?.Invoke();
+        }
+
+        public void SetShieldSuppressed(bool suppressed)
+        {
+            if (IsShieldSuppressed == suppressed) return;
+            IsShieldSuppressed = suppressed;
+            if (suppressed) Array.Clear(_shields, 0, _shields.Length);
             Recalculate();
             OnValueChanged?.Invoke();
         }
