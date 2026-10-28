@@ -15,8 +15,8 @@ MonoBehaviour:
   <ComponentData>k__BackingField:
     <DestroyDelay>k__BackingField: 0.35
     <ShipClass>k__BackingField: 6
-    <Hull>k__BackingField: 1000
-    <Shields>k__BackingField: 1000
+    <Hull>k__BackingField: 3000
+    <Shields>k__BackingField: 5000
     <ShieldRegenerateValue>k__BackingField: 45
     <ShieldRegenerateDelay>k__BackingField: 3
     hardPointHealth:
@@ -29,7 +29,7 @@ MonoBehaviour:
     <Range>k__BackingField: 600
     <Delay>k__BackingField: 0.25
     <VisionRange>k__BackingField: 600
-    <SpawnBlockRadius>k__BackingField: 30
+    <SpawnBlockRadius>k__BackingField: 90
   <Income>k__BackingField: 0
   weaponLoadout:
   - weaponType: 19

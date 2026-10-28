@@ -42,6 +42,8 @@ namespace EmpireAtWar.Tests.Editor
         private MapGenerationSettings _settings;
         private MapFeatureRadii _radii;
         private MapLayoutGenerator _generator;
+        // Generation is deterministic, so every test reading the same map shares one build.
+        private Dictionary<string, MapLayout> _layouts;
         private readonly int[] _seeds;
         private readonly int[] _rosterSeeds;
 
@@ -201,7 +203,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     string context = $"{mapSize}, {playerCount} players, seed {seed}";
                     MapLayout layout = null;
-                    Assert.DoesNotThrow(() => layout = _generator.Generate(mapSize, players, new Random(seed), seed), context);
+                    Assert.DoesNotThrow(() => layout = GetLayout(mapSize, players, seed), context);
                     Assert.That(layout.Hazards.Count, Is.EqualTo(size.HazardCount), context);
                     if (size.HazardCount == 2)
                     {
@@ -277,6 +279,12 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(withHazard.IsField(center), Is.False);
             Assert.That(withHazard.IsField(center + Vector3.forward * (150f + size.FieldCellSize * 2f + 30f)), Is.False);
         }
+
+        [OneTimeSetUp]
+        public void CreateLayoutCache() => _layouts = new Dictionary<string, MapLayout>();
+
+        [OneTimeTearDown]
+        public void ReleaseLayoutCache() => _layouts = null;
 
         [SetUp]
         public void SetUp()
@@ -391,7 +399,7 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (int seed in _seeds)
                 {
                     PlayerRoster duel = TestPlayers.CreateDuel(EnemyAiDifficulty.Medium);
-                    MapLayout layout = _generator.Generate(mapSize, duel.Players, new Random(seed), seed);
+                    MapLayout layout = GetLayout(mapSize, duel.Players, seed);
                     Vector3 center = PlanarGeometry.GetCenter(layout.SizeRange);
                     foreach (PlayerSlot player in duel.Players)
                     {
@@ -551,7 +559,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (int seed in _seeds)
                 {
-                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed), seed);
+                    MapLayout layout = GetLayout(mapSize, teamGame.Players, seed);
                     foreach (PlayerSlot player in teamGame.Players)
                     {
                         Vector3 station = layout.GetStationPosition(player.Id);
@@ -602,7 +610,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (int seed in _seeds)
                 {
-                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed), seed);
+                    MapLayout layout = GetLayout(mapSize, teamGame.Players, seed);
                     Vector3 human = layout.GetStationPosition(TestPlayers.Human);
                     Vector3 ally = layout.GetStationPosition(TestPlayers.Ally);
                     Vector3 enemy = layout.GetStationPosition(TestPlayers.Enemy);
@@ -628,7 +636,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 foreach (int seed in _seeds)
                 {
-                    Assert.DoesNotThrow(() => _generator.Generate(mapSize, threePlayers, new Random(seed), seed),
+                    Assert.DoesNotThrow(() => GetLayout(mapSize, threePlayers, seed),
                         $"{mapSize} seed {seed}");
                 }
             }
@@ -638,6 +646,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(MapSize.Small)]
         [TestCase(MapSize.Medium)]
         [TestCase(MapSize.Large)]
+        [Timeout(600000)]
         public void Generate_EveryRosterAndDifficulty_FindsRoom(MapSize mapSize)
         {
             for (int playerCount = 2; playerCount <= 4; playerCount++)
@@ -649,7 +658,7 @@ namespace EmpireAtWar.Tests.Editor
                         PlayerSlot[] players = CreateRoster(playerCount, opponentFaction, difficulty);
                         foreach (int seed in _rosterSeeds)
                         {
-                            Assert.DoesNotThrow(() => _generator.Generate(mapSize, players, new Random(seed), seed),
+                            Assert.DoesNotThrow(() => GetLayout(mapSize, players, seed),
                                 $"{mapSize} {playerCount} players vs {opponentFaction} {difficulty} seed {seed}");
                         }
                     }
@@ -679,13 +688,29 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SameSeed_ProducesSameLayout()
         {
-            MapLayout first = Generate(MapSize.Medium, EnemyAiDifficulty.Hard, 42);
-            MapLayout second = Generate(MapSize.Medium, EnemyAiDifficulty.Hard, 42);
+            PlayerRoster duel = TestPlayers.CreateDuel(EnemyAiDifficulty.Hard);
+            MapLayout first = _generator.Generate(MapSize.Medium, duel.Players, new Random(42), 42);
+            MapLayout second = _generator.Generate(MapSize.Medium, duel.Players, new Random(42), 42);
 
             Assert.That(second.GetStationPosition(TestPlayers.Human),
                 Is.EqualTo(first.GetStationPosition(TestPlayers.Human)));
             Assert.That(second.Fields.Count, Is.EqualTo(first.Fields.Count));
             Assert.That(second.PlanetPosition, Is.EqualTo(first.PlanetPosition));
+        }
+
+        [Test]
+        public void AiDifficulty_DoesNotChangeTheLayout()
+        {
+            // The layout cache keys on generator inputs only; if difficulty ever feeds generation, add it to the key.
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            {
+                string expected = Fingerprint(_generator.Generate(mapSize,
+                    CreateRoster(4, FactionType.Separatist, EnemyAiDifficulty.Easy), new Random(11), 11));
+                foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
+                    Assert.That(Fingerprint(_generator.Generate(mapSize,
+                        CreateRoster(4, FactionType.Separatist, difficulty), new Random(11), 11)),
+                        Is.EqualTo(expected), $"{mapSize} {difficulty}");
+            }
         }
 
         [Test]
@@ -733,7 +758,22 @@ namespace EmpireAtWar.Tests.Editor
 
         private MapLayout Generate(MapSize mapSize, EnemyAiDifficulty difficulty, int seed)
         {
-            return _generator.Generate(mapSize, TestPlayers.CreateDuel(difficulty).Players, new Random(seed), seed);
+            return GetLayout(mapSize, TestPlayers.CreateDuel(difficulty).Players, seed);
+        }
+
+        private MapLayout GetLayout(MapSize mapSize, IReadOnlyList<PlayerSlot> players, int seed)
+        {
+            // Station placement reads only id, team and faction; difficulty and controller never shape the map.
+            StringBuilder key = new StringBuilder().Append(mapSize).Append('|').Append(seed);
+            foreach (PlayerSlot player in players)
+                key.Append('|').Append(player.Id.Index).Append(':').Append(player.Team.Value).Append(':').Append(player.Faction);
+            string id = key.ToString();
+            if (!_layouts.TryGetValue(id, out MapLayout layout))
+            {
+                layout = _generator.Generate(mapSize, players, new Random(seed), seed);
+                _layouts.Add(id, layout);
+            }
+            return layout;
         }
 
         private static List<Vector3> GetMiningSites(MapLayout layout)

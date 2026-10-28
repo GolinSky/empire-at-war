@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.StationFacing;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.Reinforcement
@@ -17,11 +18,14 @@ namespace EmpireAtWar.Services.Reinforcement
             _owner = owner;
         }
 
-        public UnitSpawnView Create(UnitSpawnView prefab)
+        public UnitSpawnView Create(UnitSpawnView prefab) =>
+            Create(prefab, _stationFacingService.GetRotation(_owner.Id));
+
+        public UnitSpawnView Create(UnitSpawnView prefab, Quaternion rotation)
         {
             UnitSpawnView preview = Object.Instantiate(prefab);
             preview.UpdatePosition(preview.Position);
-            preview.SetRotation(_stationFacingService.GetRotation(_owner.Id));
+            preview.SetRotation(rotation);
             return preview;
         }
     }

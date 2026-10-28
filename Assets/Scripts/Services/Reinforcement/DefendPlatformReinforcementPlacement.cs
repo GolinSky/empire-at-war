@@ -36,7 +36,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _platformType = platformType;
         }
 
-        public UnitSpawnView CreatePreview() => _previewFactory.Create(_previewPrefab);
+        public UnitSpawnView CreatePreview() => _previewFactory.Create(_previewPrefab, Quaternion.identity);
 
         public bool IsPositionValid(Vector3 position) => _spawnRule.CanSpawnStructure(_owner, position);
 

@@ -281,6 +281,12 @@
 
 ### Tooling
 
+- [ ] **Unify ALO imports with recipe-driven tools and concurrent-agent coordination** → [[TODOs/Tooling/Unified_ALO_Import_Pipeline|Unified ALO Import Pipeline]]; [[TODOs/Tooling/Unified_ALO_Import_Pipeline - Research|Tooling audit and reuse candidates]]
+  - **Planned 2026-10-28**: recipe schema, command contracts, shared Python/C# components, migration gates and Rothana/Endurance/Rebel station acceptance.
+  - **Concurrency**: isolated Blender jobs, exclusive output claims, serialized Unity operations, registry merge, timeout/crash recovery checks.
+  - **In progress 2026-10-28**: source/GUID baselines, Rothana recipe, Python/C# validation, durable `.state` jobs/OS locks/queue, keyed registry baselines, publication journal, candidate checks and existing-ship update/registration adapters implemented. Pipeline C# compiles; tests/test preparation disabled by user and AGENTS.
+  - **Remaining**: production conversion and live Editor acceptance, Endurance/Rebel recipe completion, station/create/render/derivative adapters and concurrent-publication/recovery acceptance. Preserve current tuning; `apply` remains disabled until its acceptance gate passes.
+
 - [ ] **Add Jenkins GitHub draft releases** → [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
   - **Remaining**: user adds `github-releases` credential and selects source build/tag; first live upload and recovery acceptance.
 

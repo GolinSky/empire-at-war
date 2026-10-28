@@ -52,6 +52,17 @@ commit: 6babee5e1
 7. Press advantage (weight 0.75): `FleetAdvantage ≥ 2 × RequiredAttackRatio` → AssaultBase / HuntFleet over capture.
 8. Retreat memory: after `RetreatValue`, stay withdrawn until `IsRegrouped` and `FleetAdvantage ≥ HuntAdvantage`; DefendBase/RebuildFleet still override.
 
+## Implementation — AI Economy (2026-10-28)
+
+- Findings (code read, no battle data): AI below Ultra Hard stopped at 1–2 Mining Facilities; capture sites alternated mine/Battle Asteroid (1600 for 10/s vs 600 for 60/s); unaffordable ship → bought XQ-6 instead (up to 5, 0 income); cheapest platform only; IPV-2C (limit 1, capacity 2) hit the flagship rule.
+- Mining target, all difficulties: `MinimumMiningFacilities + ActiveShipCount / 3` (Ultra Hard `/ 2`, unchanged). Above the floor: bought only when affordable, never saved for.
+- Easy/Medium/Hard: with a ship option, save for the chosen ship (`None`) instead of Defense/Level/Research fallbacks.
+- `TrySelectDefense`: most expensive affordable platform; none affordable → cheapest (what Ultra Hard saves for).
+- Flagship rule also needs `unitCapacity >= 5`.
+- `CaptureSitesSystem.TryBuildOnOwnedSite`: AI always builds `SiteFacilityType.Mining`; `ChooseFacilityType` removed.
+- Team income: Mining Facility / Asteroid Mine / Battle Asteroid income is split evenly between team economies (`Income / _teamEconomies.Count`). Before, every ally received the full amount → team mining ×team size; the human's wallet also got ally-built mines in full.
+- Not changed: hosted AI ally still earns station income `3 + 15 × host level` with no station of its own; station income keeps flowing after the station dies.
+
 ## Verification
 
 - EditMode: all 183 enemy-AI tests, cohesion, intel-strength and counter-production tests pass (2026-10-27).
@@ -65,6 +76,8 @@ commit: 6babee5e1
 - [ ] Check `_ai.csv`: attack states > 0%, capture ↔ retreat flips well below 35, early lead converted.
 - [ ] If the AI turtles at base: lower the recovery exit or press scale (`PRESS_ADVANTAGE_SCALE` = 2).
 - [ ] Watch Droid Bomber torpedo output (104k in one battle) after the ×3 hangar change.
+- [ ] AI economy changes (2026-10-28): compiled only; run EditMode tests (`EnemyProductionDecisionModelTests`, `DefendPlatformTests`) and play a battle.
+- [x] Hosted AI ally station income: kept as is (user decision, 2026-10-28).
 - [ ] Decide on Fleet Command strength (×0.65 damage taken) if Republic still dominates.
 
 ## Files

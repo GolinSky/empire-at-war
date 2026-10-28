@@ -202,6 +202,13 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 - Define one top-level type per C# script and name the file exactly after that type. Do not group multiple classes or interfaces in a differently named `*Contracts.cs` file.
 
+## Local Test Execution Override (Codex and Claude)
+
+- Test execution is disabled for Codex and Claude in this checkout. Do not run tests through Unity, CLI, MCP, scripts, or delegated agents.
+- Do not perform test-preparation operations, including discarding scene changes, while test execution is disabled.
+- This overrides the test-execution requirements below and in other Markdown guidance. Only an explicit user request to run tests overrides this restriction; generic requests to implement, fix, or verify do not.
+- Use source inspection and non-test checks for verification, and report tests as not run. Do not ask to run tests as a routine completion step.
+
 ## Unity Test Safety
 
 These rules apply whenever agents run Unity tests.

@@ -10,26 +10,33 @@ namespace EmpireAtWar.Entities.Map.Generation
     public static class HazardCloudGenerator
     {
         private const int MIN_STREAM_LOBES = 7;
-        private const int MAX_STREAM_LOBES = 10;
+        private const int MAX_STREAM_LOBES = 18;
         private const int MIN_HALF_LOBES = 2;
-        private const int MAX_HALF_LOBES = 4;
+        private const int MAX_HALF_LOBES = 7;
+        // Lobes and noise are sized from this share of the requested half-width, so the lobes plus their
+        // noisy outline (Spread) stay within about the requested half-width instead of exceeding it.
+        private const float CORE_SHARE = 0.6f;
+        // Lobe spacing along the spine in core widths; denser lobes keep the minimum lobe width small.
+        private const float LOBE_SPACING = 1.6f;
         private const float MAX_ASPECT = 1.8f;
         // Each lobe reaches this share of the spacing along the spine, so neighbours always overlap.
         private const float LOBE_REACH = 0.65f;
-        private const float STREAM_BEND = 0.15f;
+        private const float STREAM_BEND = 0.08f;
         private const float ISLAND_BOW = 0.15f;
         private const float NOISE_OFFSET_RANGE = 1000f;
 
         /// <summary>A free cloud: random bends, no symmetry of its own.</summary>
         public static HazardSpot CreateStream(SpaceHazardData data, Vector3 center, Vector3 along,
-            float length, float width, float cellSize, Random random)
+            float length, float halfWidth, float cellSize, Random random)
         {
+            float width = halfWidth * CORE_SHARE;
             float[] bends = new float[5];
             for (int i = 0; i < bends.Length; i++)
                 bends[i] = Range(random, -STREAM_BEND, STREAM_BEND) * length;
             Func<float, float> spine = x => SampleBend(bends, x / length + 0.5f);
             List<LocalLobe> lobes = new List<LocalLobe>();
-            int count = random.Next(MIN_STREAM_LOBES, MAX_STREAM_LOBES + 1);
+            int count = Mathf.Clamp(Mathf.RoundToInt(length / (width * LOBE_SPACING)) + random.Next(2),
+                MIN_STREAM_LOBES, MAX_STREAM_LOBES);
             float spacing = length / count;
             for (int i = 0; i < count; i++)
             {
@@ -45,11 +52,13 @@ namespace EmpireAtWar.Entities.Map.Generation
         /// <summary>A cloud that is mirror-symmetric about the line through <paramref name="center"/>
         /// perpendicular to <paramref name="along"/>, so it is fair to both sides of that line on its own.</summary>
         public static HazardSpot CreateIsland(SpaceHazardData data, Vector3 center, Vector3 along,
-            float length, float width, float cellSize, Random random)
+            float length, float halfWidth, float cellSize, Random random)
         {
+            float width = halfWidth * CORE_SHARE;
             float bow = Range(random, -ISLAND_BOW, ISLAND_BOW) * length;
             Func<float, float> spine = x => bow * (1f - 4f * x * x / (length * length));
-            int count = random.Next(MIN_HALF_LOBES, MAX_HALF_LOBES + 1);
+            int count = Mathf.Clamp(Mathf.RoundToInt(length / (width * LOBE_SPACING * 2f)) + random.Next(2),
+                MIN_HALF_LOBES, MAX_HALF_LOBES);
             float spacing = length / (count * 2 + 1);
             // The middle lobe lies on the mirror line, aligned with the spine there, so it is its own reflection.
             LocalLobe middle = CreateLobe(0f, spine, length, width, spacing, random);

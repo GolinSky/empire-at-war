@@ -30,13 +30,13 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField] public float HazardFloor { get; private set; } = -650f;
         [field: SerializeField] public float HazardCeiling { get; private set; } = 180f;
         [field: SerializeField, Min(0f), Tooltip("Free gap between each station footprint and both adjacent borders.")]
-        public float StationEdgeDistance { get; private set; } = 125f;
+        public float StationEdgeDistance { get; private set; } = 420f;
         [field: SerializeField] public float StationHeight { get; private set; } = -40f;
         [field: SerializeField, Min(0f)] public float ZoneClearance { get; private set; } = 30f;
-        [field: SerializeField, Min(0f)] public float SatellitePadOffset { get; private set; } = 120f;
+        [field: SerializeField, Min(0f)] public float SatellitePadOffset { get; private set; } = 160f;
         [field: SerializeField, Min(0f), Tooltip("Placement radius of a satellite pad. Its capture range comes from " +
                                                  "the satellite prefab and may overlap neighbouring sites.")]
-        public float SatelliteFootprintRadius { get; private set; } = 20f;
+        public float SatelliteFootprintRadius { get; private set; } = 60f;
         [field: SerializeField, Range(0.1f, 0.5f), Tooltip("Half-size of the central mining region as a share of the map side.")]
         public float CentralRegionShare { get; private set; } = 0.15f;
         [field: SerializeField, Range(0f, 0.5f), Tooltip("Share of the map side kept free of the planet at every border.")]

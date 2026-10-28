@@ -1,11 +1,13 @@
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Construction;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.CaptureSites;
 using NUnit.Framework;
@@ -27,8 +29,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That(SiteFacilityBuilder.SatelliteType(facility), Is.EqualTo(platform));
             DefendPlatformData data = LoadData(platform);
-            Assert.That(data.ComponentData.Hull, Is.EqualTo(1000f));
-            Assert.That(data.ComponentData.Shields, Is.EqualTo(1000f));
+            Assert.That(data.ComponentData.Hull, Is.EqualTo(3000f));
+            Assert.That(data.ComponentData.Shields, Is.EqualTo(5000f));
+            Assert.That(data.ComponentData.SpawnBlockRadius, Is.EqualTo(90f));
             Assert.That(data.Income, Is.Zero);
             Assert.That(data.WeaponLoadout.Sum(entry => entry.Count), Is.EqualTo(6));
             Assert.That(data.WeaponLoadout.All(entry => entry.WeaponType == weapon), Is.True);
@@ -41,6 +44,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(catalog.Entries.ContainsKey(platform), Is.True);
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Models/DefendStation/{platform}View.prefab");
             Assert.That(prefab, Is.Not.Null);
+            Assert.That(prefab.transform.localScale, Is.EqualTo(Vector3.one * 3f));
             HealthComponent health = prefab.GetComponentInChildren<HealthComponent>(true);
             Assert.That(health, Is.Not.Null);
             Assert.That(health.ShipUnits.Count, Is.EqualTo(6));
@@ -77,6 +81,66 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(sites.GetCost(facility).BuildTime, Is.EqualTo(buildTime));
         }
 
+        [TestCase(DefendPlatformType.QuadLaserSatellite)]
+        [TestCase(DefendPlatformType.TurbolaserSatellite)]
+        [TestCase(DefendPlatformType.IonSatellite)]
+        [TestCase(DefendPlatformType.MassDriverSatellite)]
+        [TestCase(DefendPlatformType.MissileSatellite)]
+        public void Satellite_ConstructionFitsReservedFootprintAndRestoresMaterials(DefendPlatformType platform)
+        {
+            GameObject instance = PrefabUtility.LoadPrefabContents(
+                $"Assets/Prefabs/Models/DefendStation/{platform}View.prefab");
+            try
+            {
+                instance.transform.position = new Vector3(113f, -40f, 217f);
+                var construction = instance.GetComponent<ConstructionComponent>();
+                Assert.That(construction, Is.Not.Null);
+                var serialized = new SerializedObject(construction);
+                SerializedProperty references = serialized.FindProperty("renderers");
+                Renderer[] renderers = Enumerable.Range(0, references.arraySize)
+                    .Select(i => (Renderer)references.GetArrayElementAtIndex(i).objectReferenceValue).ToArray();
+                Assert.That(renderers, Is.Not.Empty);
+                Assert.That(renderers.All(renderer => renderer != null), Is.True);
+                Material[][] originalMaterials = renderers.Select(renderer => renderer.sharedMaterials).ToArray();
+                var constructionMaterial = (Material)serialized.FindProperty("constructionMaterial").objectReferenceValue;
+                Assert.That(constructionMaterial, Is.Not.Null);
+                Bounds bounds = renderers[0].bounds;
+                foreach (Renderer renderer in renderers) bounds.Encapsulate(renderer.bounds);
+                Vector3 offset = bounds.center - instance.transform.position;
+                float footprint = new Vector2(Mathf.Abs(offset.x) + bounds.extents.x,
+                    Mathf.Abs(offset.z) + bounds.extents.z).magnitude;
+                var settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                    "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+                Assert.That(footprint, Is.LessThanOrEqualTo(settings.SatelliteFootprintRadius));
+
+                int completions = 0;
+                construction.Completed += () => completions++;
+                construction.Begin(30f);
+                Assert.That(construction.Progress, Is.Zero);
+                Assert.That(construction.IsConstructing, Is.True);
+                construction.Restore(0.5f, 30f);
+                var properties = new MaterialPropertyBlock();
+                foreach (Renderer renderer in renderers)
+                {
+                    Assert.That(renderer.sharedMaterials.All(material => material == constructionMaterial), Is.True);
+                    renderer.GetPropertyBlock(properties);
+                    Assert.That(properties.GetFloat("_BuildProgress"), Is.EqualTo(0.5f));
+                    Assert.That(properties.GetFloat("_BuildMinY"), Is.EqualTo(bounds.min.y).Within(0.001f));
+                    Assert.That(properties.GetFloat("_BuildMaxY"), Is.EqualTo(bounds.max.y).Within(0.001f));
+                }
+                Assert.That(completions, Is.Zero);
+                construction.Restore(1f, 30f);
+                Assert.That(construction.IsConstructing, Is.False);
+                Assert.That(completions, Is.EqualTo(1));
+                for (int i = 0; i < renderers.Length; i++)
+                    Assert.That(renderers[i].sharedMaterials, Is.EqualTo(originalMaterials[i]));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(instance);
+            }
+        }
+
         [TestCase(DefendPlatformType.QuadLaserSatellite, HardPointType.PointDefense)]
         [TestCase(DefendPlatformType.TurbolaserSatellite, HardPointType.Weapon)]
         public void DestroyedSatelliteTurret_IsNotRestoredByRepairOrShieldRegeneration(
@@ -96,8 +160,8 @@ namespace EmpireAtWar.Tests.Editor
             }
             Assert.That(turret.IsDestroyed, Is.True);
             Assert.That(turret.Health, Is.Zero);
-            Assert.That(model.Hull, Is.EqualTo(1000f));
-            Assert.That(model.Shields, Is.EqualTo(1000f));
+            Assert.That(model.Hull, Is.EqualTo(3000f));
+            Assert.That(model.Shields, Is.EqualTo(5000f));
         }
 
         private static DefendPlatformData LoadData(DefendPlatformType platform)
