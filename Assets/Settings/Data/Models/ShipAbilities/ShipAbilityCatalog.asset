@@ -34,7 +34,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 3,000 beam damage
+        description: Fire a focused laser beam at an enemy. Deals 1,500 beam damage
           continuously over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
@@ -49,7 +49,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 24,000 beam damage
+        description: Fire a focused laser beam at an enemy. Deals 12,000 beam damage
           continuously over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
@@ -1055,10 +1055,10 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 24000
+        damage: 12000
     - rid: 7607833764655792234
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 3000
+        damage: 1500
