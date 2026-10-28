@@ -18,6 +18,7 @@ namespace EmpireAtWar.Entities.Reinforcement
     {
         private readonly IReinforcementService _reinforcementService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
+        private readonly EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus _hud;
         private ReinforcementUi _ui;
 
         private readonly ReinforcementModel _model;
@@ -36,17 +37,21 @@ namespace EmpireAtWar.Entities.Reinforcement
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltipService,
             ReinforcementModel model,
-            ReinforcementData data) : base(uiService, cancelRouter)
+            ReinforcementData data,
+            EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus hud) : base(uiService, cancelRouter)
         {
             _reinforcementService = reinforcementService;
             _model = model;
             _data = data;
             _routeNavigation = routeNavigation;
+            _hud = hud;
             _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Initialize()
         {
+            _model.OnCapacityChanged += UpdatePopulationCapacity;
+            UpdatePopulationCapacity(_model.CurrentUnitCapacity);
             _routeNavigation.SetRouteActive(
                 SkirmishUiRoutePosition.Reinforcement,
                 false);
@@ -59,6 +64,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         {
             if (_isDisposed) return;
             _isDisposed = true;
+            _model.OnCapacityChanged -= UpdatePopulationCapacity;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.Reinforcement,
                 this);
@@ -75,6 +81,9 @@ namespace EmpireAtWar.Entities.Reinforcement
         {
             _reinforcementService.TrySpawnReinforcement(request);
         }
+
+        private void UpdatePopulationCapacity(int current) =>
+            _hud.SetPopulationCapacity(current, _model.MaxUnitCapacity);
 
         public void Show()
         {

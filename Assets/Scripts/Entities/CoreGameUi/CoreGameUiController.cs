@@ -47,6 +47,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private string _factionName = "";
 
         private int _stationLevel;
+        private (int current, int max)? _populationCapacity;
 
         private BattleState _state;
         private GameSpeed _speed;
@@ -56,6 +57,11 @@ namespace EmpireAtWar.Entities.CoreGameUi
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
         public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
         public void SetMode(string label, bool spectator) => _ui.SetMode(label, spectator);
+        public void SetPopulationCapacity(int current, int max)
+        {
+            _populationCapacity = (current, max);
+            if (_ui != null) _ui.SetPopulationCapacity(current, max);
+        }
 
         public CoreGameUiController(
             IUiService uiService,
@@ -90,6 +96,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _ui.ContextualPopup.SetParent(_placement.ContextualSlot, false);
             _ui.AssignPresenter(this);
             _ui.Initialize();
+            if (_populationCapacity.HasValue)
+                _ui.SetPopulationCapacity(_populationCapacity.Value.current, _populationCapacity.Value.max);
             _battleState.AddObserver(this);
             _gameSpeed.AddObserver(this);
             _tooltipHover = new TooltipHoverSubscription(

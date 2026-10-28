@@ -36,6 +36,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
         [SerializeField] private Button clearFleetButton;
         [SerializeField] private CanvasGroup battleControls;
         [SerializeField] private TMP_Text modeLabel;
+        [SerializeField] private TMP_Text populationText;
+        [SerializeField] private GameObject populationDisplay;
 
         private bool _isInitialized;
         private bool _hasContentLayout;
@@ -51,6 +53,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void Initialize()
         {
+            populationDisplay.SetActive(false);
             timeButton.onClick.AddListener(_presenter.Play);
             speedUpButton.onClick.AddListener(_presenter.SpeedUp);
             reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
@@ -103,6 +106,12 @@ namespace EmpireAtWar.Entities.CoreGameUi
             modeLabel.text = label;
             reinforcementButton.gameObject.SetActive(!spectator);
             unitActionsView.SetAvailable(!spectator);
+        }
+
+        public void SetPopulationCapacity(int current, int max)
+        {
+            populationText.text = $"{current} / {max}";
+            populationDisplay.SetActive(true);
         }
 
         public void AssignPresenter(ICoreGamePresenter presenter)
