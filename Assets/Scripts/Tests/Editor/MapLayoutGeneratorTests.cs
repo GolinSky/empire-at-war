@@ -23,7 +23,6 @@ namespace EmpireAtWar.Tests.Editor
         private const string ZONE_PREFAB_PATH = "Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab";
         private const string MINING_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab";
         private const string BATTLE_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab";
-        private const string SATELLITE_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/SatelliteCaptureSite.prefab";
 
         private const int SEED_COUNT = 20;
         private const int ROSTER_SEED_COUNT = 10;
@@ -124,10 +123,10 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (SiteSpot other in layout.Sites)
                     if (other.Center != site.Center)
                         Assert.That(PlanarGeometry.Distance(site.Center, other.Center),
-                            Is.GreaterThanOrEqualTo(_radii.SatelliteSite + GetSiteRadius(other.Kind) - TOLERANCE));
+                            Is.GreaterThanOrEqualTo(_settings.SatelliteFootprintRadius + GetSiteRadius(other.Kind) - TOLERANCE));
                 foreach (ZoneSpot zone in layout.Zones)
                     Assert.That(PlanarGeometry.Distance(site.Center, zone.Center),
-                        Is.GreaterThanOrEqualTo(_radii.SatelliteSite + _radii.Zone));
+                        Is.GreaterThanOrEqualTo(_settings.SatelliteFootprintRadius + _radii.Zone));
             }
             Assert.That(pads, Is.EqualTo(_settings.GetSize(mapSize).MiningPointCount * 3));
             Assert.That(pads, Is.EqualTo(mines));
@@ -137,7 +136,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             CaptureSiteKind.Mining => _radii.MiningSite,
             CaptureSiteKind.Battle => _radii.BattleSite,
-            CaptureSiteKind.Satellite => _radii.SatelliteSite,
+            CaptureSiteKind.Satellite => _settings.SatelliteFootprintRadius,
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
         };
 
@@ -148,8 +147,7 @@ namespace EmpireAtWar.Tests.Editor
             _radii = new MapFeatureRadii(
                 AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH).Radius,
-                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH).Radius,
-                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(SATELLITE_PREFAB_PATH).Radius);
+                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH).Radius);
             _generator = new MapLayoutGenerator(_settings, _radii);
         }
 
@@ -264,7 +262,7 @@ namespace EmpireAtWar.Tests.Editor
                         float siteSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) *
                             PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
                         float centerDistance = Mathf.Max(_radii.MiningSite + _settings.ZoneClearance +
-                            MINING_SITE_GAP + siteSpread * 0.5f, _radii.SatelliteSite + _settings.ZoneClearance +
+                            MINING_SITE_GAP + siteSpread * 0.5f, _settings.SatelliteFootprintRadius + _settings.ZoneClearance +
                             siteSpread + _settings.SatellitePadOffset + MINING_SITE_GAP);
                         float gapLimit = centerDistance + siteSpread - _radii.MiningSite + TOLERANCE;
                         for (int i = 0; i < PointOfInterestPlacer.SITES_PER_MINING_POINT; i++)

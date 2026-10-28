@@ -41,7 +41,7 @@ namespace EmpireAtWar.Entities.Map
         private float fogReferenceSide = 600f;
 
         public MapFeatureRadii FeatureRadii =>
-            new MapFeatureRadii(zonePrefab.Radius, miningSitePrefab.Radius, battleSitePrefab.Radius, satelliteSitePrefab.Radius);
+            new MapFeatureRadii(zonePrefab.Radius, miningSitePrefab.Radius, battleSitePrefab.Radius);
 
         public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
         public CaptureSiteView[] SiteViews { get; private set; }

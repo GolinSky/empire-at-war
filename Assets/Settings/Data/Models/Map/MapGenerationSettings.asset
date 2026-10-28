@@ -142,6 +142,7 @@ MonoBehaviour:
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 20
   <SatellitePadOffset>k__BackingField: 120
+  <SatelliteFootprintRadius>k__BackingField: 20
   <CentralRegionShare>k__BackingField: 0.15
   <PlanetBorderInset>k__BackingField: 0.25
   <ExtraLaneChance>k__BackingField: 0.35

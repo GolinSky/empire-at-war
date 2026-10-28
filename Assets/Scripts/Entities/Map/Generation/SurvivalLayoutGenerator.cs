@@ -36,7 +36,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             float mineSpread = (2f * _radii.MiningSite + 15f) *
                 PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
             float satelliteSpread = mineSpread + _settings.SatellitePadOffset;
-            float pointExtent = Mathf.Max(mineSpread + _radii.MiningSite, satelliteSpread + _radii.SatelliteSite);
+            float pointExtent = Mathf.Max(mineSpread + _radii.MiningSite, satelliteSpread + _settings.SatelliteFootprintRadius);
             float miningRadius = Mathf.Max(radius + _radii.MiningSite + size.HomeMiningGap.Min,
                 radius + 2f * _radii.Zone + size.DefaultZoneGap + pointExtent + _settings.ZoneClearance);
             miningRadius = Mathf.Max(miningRadius,

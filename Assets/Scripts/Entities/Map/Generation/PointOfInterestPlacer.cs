@@ -137,15 +137,15 @@ namespace EmpireAtWar.Entities.Map.Generation
             float satelliteSpread = _miningSiteSpread + _settings.SatellitePadOffset;
             float nearestMine = Mathf.Sqrt(_miningSiteSpread * _miningSiteSpread +
                 satelliteSpread * satelliteSpread - _miningSiteSpread * satelliteSpread);
-            if (nearestMine < _radii.MiningSite + _radii.SatelliteSite ||
-                satelliteSpread * Mathf.Sqrt(3f) < 2f * _radii.SatelliteSite)
+            if (nearestMine < _radii.MiningSite + _settings.SatelliteFootprintRadius ||
+                satelliteSpread * Mathf.Sqrt(3f) < 2f * _settings.SatelliteFootprintRadius)
                 return false;
 
             List<MapNode> defaultZones = nodes.GetRange(0, nodes.Count);
             for (int triangle = 0; triangle < 2; triangle++)
             {
                 bool satellite = triangle == 1;
-                float radius = satellite ? _radii.SatelliteSite : _radii.MiningSite;
+                float radius = satellite ? _settings.SatelliteFootprintRadius : _radii.MiningSite;
                 float spread = satellite ? satelliteSpread : _miningSiteSpread;
                 float outer = GetOuterRadius(radius, false, size);
                 for (int site = 0; site < SITES_PER_MINING_POINT; site++)
@@ -158,7 +158,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                             Mathf.Sign(station.Position.z - center.z)).normalized;
                         float distance = station.Radius + Mathf.Max(
                             GetOuterRadius(_radii.MiningSite, false, size) + MINING_SITE_GAP + _miningSiteSpread * 0.5f,
-                            GetOuterRadius(_radii.SatelliteSite, false, size) + satelliteSpread + MINING_SITE_GAP);
+                            GetOuterRadius(_settings.SatelliteFootprintRadius, false, size) + satelliteSpread + MINING_SITE_GAP);
                         Vector3 offset = Quaternion.Euler(0f,
                             site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT + (satellite ? 60f : 0f), 0f) *
                             corner * spread;
@@ -223,7 +223,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             float satelliteSpread = _miningSiteSpread + _settings.SatellitePadOffset;
             float outer = Mathf.Max(GetOuterRadius(_miningSiteSpread + _radii.MiningSite, true, size),
-                GetOuterRadius(satelliteSpread + _radii.SatelliteSite, false, size));
+                GetOuterRadius(satelliteSpread + _settings.SatelliteFootprintRadius, false, size));
             for (int pair = 0; pair < pairCount; pair++)
             {
                 if (!TryPickPairPosition(outer, regionShare, size, stations, center, random, nodes, out Vector3 position))
@@ -235,7 +235,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     bool satellite = triangle == 1;
                     MapNodeKind kind = satellite ? MapNodeKind.SatelliteSite : MapNodeKind.MiningSite;
-                    float radius = satellite ? _radii.SatelliteSite : _radii.MiningSite;
+                    float radius = satellite ? _settings.SatelliteFootprintRadius : _radii.MiningSite;
                     float spread = satellite ? satelliteSpread : _miningSiteSpread;
                     int index = nodes.Count;
                     for (int site = 0; site < SITES_PER_MINING_POINT; site++)
