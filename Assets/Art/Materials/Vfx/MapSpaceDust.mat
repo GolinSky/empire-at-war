@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MapSpaceDust
+  m_Shader: {fileID: 4800000, guid: 2679f99ee60f38b41ab609ec4cbbfb0c, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 9c3e74101f7b4e749a107afa3b40e139, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _FieldSpan: 3200
+    m_Colors:
+    - _DustColor: {r: 0.62, g: 0.72, b: 0.82, a: 0.55}
+    - _HeightRange: {r: -650, g: 180, b: 0, a: 0}
+    - _MapBounds: {r: -4500, g: -4500, b: 4500, a: 4500}
+    - _PocketColor: {r: 0.38, g: 0.46, b: 0.55, a: 0.24}
+    - _WispColor: {r: 0.34, g: 0.43, b: 0.52, a: 0.04}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

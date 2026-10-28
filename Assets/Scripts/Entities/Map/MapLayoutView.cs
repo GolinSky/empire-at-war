@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map.Generation;
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private Transform siteRoot;
         [SerializeField] private Transform fieldRoot;
         [SerializeField] private LineRenderer borderLine;
+        [SerializeField] private MapSpaceDust spaceDust;
         private IFogOfWarSystem _fog;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
         private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
@@ -128,6 +130,7 @@ namespace EmpireAtWar.Entities.Map
             _fog.InitializeArea((bounds.Max.x - bounds.Min.x) / fogReferenceSide);
             Vector2 min = bounds.Min;
             Vector2 max = bounds.Max;
+            spaceDust.Configure(min, max);
             borderLine.loop = true;
             borderLine.positionCount = 4;
             borderLine.SetPosition(0, new Vector3(min.x, borderHeight, min.y));
