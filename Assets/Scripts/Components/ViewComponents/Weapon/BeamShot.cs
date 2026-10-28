@@ -20,8 +20,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         [SerializeField] private float growthDuration = 0.3f;
         [SerializeField] private float holdDuration = 0.5f;
+        [SerializeField] private float fadeDuration;
         private float _startTime;
+        private float _stopTime;
+        private Color _beamColor;
         private float _currentHoldDuration;
+
+        public float FadeDuration => fadeDuration;
 
         private bool _isHitPlaying;
         private bool _isStopping;
@@ -44,6 +49,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void ApplyProfile(WeaponProfile profile)
         {
+            _beamColor = profile.Color;
             beam.startColor = profile.Color;
             beam.endColor = profile.Color;
             beam.widthMultiplier = profile.Size.x;
@@ -64,6 +70,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             beam.enabled = true;
             _isHitPlaying = false;
             _isStopping = false;
+            if (fadeDuration > 0f) SetOpacity(0f);
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             if (visuals != null)
             {
@@ -93,7 +100,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if (_isStopping)
             {
-                visuals.Tick(_lastOrigin, beam.GetPosition(1), false, false);
+                if (visuals != null) visuals.Tick(_lastOrigin, beam.GetPosition(1), false, false);
+                else
+                {
+                    float fade = Mathf.Clamp01((Time.time - _stopTime) / fadeDuration);
+                    SetOpacity(1f - fade);
+                    if (fade >= 1f) beam.enabled = false;
+                }
                 return;
             }
             // Keep the last known points when the shooter or the target is destroyed mid-beam.
@@ -102,6 +115,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _lastAimPoint = ResolveAimPoint(_lastOrigin, _target.position + _aimOffset);
 
             float elapsed = Time.time - _startTime;
+            if (fadeDuration > 0f) SetOpacity(Mathf.Clamp01(elapsed / fadeDuration));
             float growth = Mathf.Clamp01(elapsed / growthDuration);
             Vector3 end = Vector3.Lerp(_lastOrigin, _lastAimPoint, growth);
             beam.SetPosition(0, _lastOrigin);
@@ -133,9 +147,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void StopBeam()
         {
+            if (_isStopping) return;
             if (visuals != null)
             {
                 visuals.Stop();
+                _isStopping = true;
+            }
+            else if (fadeDuration > 0f)
+            {
+                _beamColor = beam.startColor;
+                _stopTime = Time.time;
                 _isStopping = true;
             }
             else beam.enabled = false;
@@ -146,6 +167,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         // Beams deal damage continuously while they hold on the target.
         public override float DamageDuration => holdDuration;
+
+        private void SetOpacity(float opacity)
+        {
+            Color color = _beamColor;
+            color.a *= opacity;
+            beam.startColor = color;
+            beam.endColor = color;
+        }
 
         protected override void ResetVisuals()
         {

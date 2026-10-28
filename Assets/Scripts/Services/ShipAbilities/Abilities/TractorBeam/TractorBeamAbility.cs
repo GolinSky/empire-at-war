@@ -62,7 +62,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             if (_view != null)
             {
                 _view.StopBeam();
-                Object.Destroy(_view.gameObject);
+                Object.Destroy(_view.gameObject, _view.FadeDuration);
             }
         }
     }
