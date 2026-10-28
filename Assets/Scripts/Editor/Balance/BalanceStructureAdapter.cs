@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -27,6 +29,23 @@ namespace EmpireAtWar.Editor.Balance
                 foreach (DefendPlatformType id in faction.DefendPlatforms)
                     Buildable(registry, faction, BalanceRegistration.One<DefendPlatformCatalog>(), (int)id,
                         BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(nameof(DefendPlatformData))), "Defense platform", "DefendPlatformView", mapping);
+                CaptureSiteData sites = BalanceRegistration.One<CaptureSiteData>();
+                foreach (SiteFacilityType type in sites.GetAllowedFacilities(CaptureSiteKind.Satellite))
+                {
+                    string key = SiteFacilityBuilder.SatelliteType(type).ToString();
+                    BalanceUnit satellite = Structure(registry, faction,
+                        BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(key + "Data")), key,
+                        sites.GetCost(type).Name, key + "View", mapping);
+                    satellite.Icon = BalanceRegistration.One<DefendPlatformCatalog>().Get(SiteFacilityBuilder.SatelliteType(type)).Icon;
+                    using (SerializedObject serialized = new SerializedObject(sites))
+                    {
+                        SerializedProperty value = BalanceRegistration.Keyed(serialized, "facilityCosts.keyValue")
+                            .Single(row => row.FindPropertyRelative("key").intValue == (int)type).FindPropertyRelative("value");
+                        registry.AutoFields(sites, value.propertyPath + ".", "satellite/" + type + "/",
+                            "Price BuildTime", BalanceFieldGroup.GlobalData, sites.GetCost(type).Name,
+                            BalanceFieldOwner.SharedProfile, true, new[] { satellite });
+                    }
+                }
                 foreach (SuperWeaponType id in faction.SuperWeapons)
                     Buildable(registry, faction, BalanceRegistration.One<SuperWeaponCatalog>(), (int)id, BalanceRegistration.One<SuperWeaponData>(), "Super weapon", "", mapping);
             }

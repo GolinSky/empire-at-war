@@ -87,16 +87,19 @@ namespace EmpireAtWar.Entities.Map.Generation
             List<SiteSpot> sites = new List<SiteSpot>();
             foreach (MapNode node in nodes)
             {
-                if (node.Kind == MapNodeKind.MiningSite)
+                switch (node.Kind)
                 {
-                    sites.Add(new SiteSpot(node.Center, SiteFacilityType.Mining));
-                }
-                else if (node.Kind == MapNodeKind.BattleSite)
-                {
-                    sites.Add(new SiteSpot(node.Center, SiteFacilityType.BattleAsteroid));
+                    case MapNodeKind.MiningSite:
+                        sites.Add(new SiteSpot(node.Center, CaptureSiteKind.Mining, node.Owner, node.PointId));
+                        break;
+                    case MapNodeKind.BattleSite:
+                        sites.Add(new SiteSpot(node.Center, CaptureSiteKind.Battle, node.Owner));
+                        break;
+                    case MapNodeKind.SatelliteSite:
+                        sites.Add(new SiteSpot(node.Center, CaptureSiteKind.Satellite, node.Owner, node.PointId));
+                        break;
                 }
             }
-
             return sites;
         }
     }

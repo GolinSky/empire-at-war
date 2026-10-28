@@ -26,6 +26,7 @@ namespace EmpireAtWar.Entities.Map
         public float StationEdgeDistance { get; private set; } = 125f;
         [field: SerializeField] public float StationHeight { get; private set; } = -40f;
         [field: SerializeField, Min(0f)] public float ZoneClearance { get; private set; } = 30f;
+        [field: SerializeField, Min(0f)] public float SatellitePadOffset { get; private set; } = 120f;
         [field: SerializeField, Range(0.1f, 0.5f), Tooltip("Half-size of the central mining region as a share of the map side.")]
         public float CentralRegionShare { get; private set; } = 0.15f;
         [field: SerializeField, Range(0f, 0.5f), Tooltip("Share of the map side kept free of the planet at every border.")]

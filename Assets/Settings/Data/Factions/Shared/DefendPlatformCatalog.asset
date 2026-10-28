@@ -51,6 +51,86 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 653b257a6a126934d96618b6c8874dae,
           type: 3}
+    - key: 4
+      value:
+        matchups: {fileID: 0}
+        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+          captured satellite pads.
+        role: Stationary mining-point defense
+        iconKey: 4f34eb7cb55a9c24abc10d378515d62e:21300000
+        isHero: 0
+        <Name>k__BackingField: QuadLaser Satellite
+        <MaxCount>k__BackingField: 0
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 300
+        <BuildTime>k__BackingField: 21
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: 4f34eb7cb55a9c24abc10d378515d62e,
+          type: 3}
+    - key: 5
+      value:
+        matchups: {fileID: 0}
+        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+          captured satellite pads.
+        role: Stationary mining-point defense
+        iconKey: 514bfb32fe0d62847bd99758ec3b05bd:21300000
+        isHero: 0
+        <Name>k__BackingField: Turbolaser Satellite
+        <MaxCount>k__BackingField: 0
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 500
+        <BuildTime>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: 514bfb32fe0d62847bd99758ec3b05bd,
+          type: 3}
+    - key: 6
+      value:
+        matchups: {fileID: 0}
+        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+          captured satellite pads.
+        role: Stationary mining-point defense
+        iconKey: ea3a41aea9ac2814f8151acea48c72a0:21300000
+        isHero: 0
+        <Name>k__BackingField: Ion Satellite
+        <MaxCount>k__BackingField: 0
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 400
+        <BuildTime>k__BackingField: 23
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: ea3a41aea9ac2814f8151acea48c72a0,
+          type: 3}
+    - key: 7
+      value:
+        matchups: {fileID: 0}
+        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+          captured satellite pads.
+        role: Stationary mining-point defense
+        iconKey: 26f532f229fa8e64a8505e23c65bd5cf:21300000
+        isHero: 0
+        <Name>k__BackingField: MassDriver Satellite
+        <MaxCount>k__BackingField: 0
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 1600
+        <BuildTime>k__BackingField: 47
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: 26f532f229fa8e64a8505e23c65bd5cf,
+          type: 3}
+    - key: 8
+      value:
+        matchups: {fileID: 0}
+        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+          captured satellite pads.
+        role: Stationary mining-point defense
+        iconKey: 3285d703aec4dab419f58b760f903d38:21300000
+        isHero: 0
+        <Name>k__BackingField: Missile Satellite
+        <MaxCount>k__BackingField: 0
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 1000
+        <BuildTime>k__BackingField: 35
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: 3285d703aec4dab419f58b760f903d38,
+          type: 3}
     - key: 0
       value:
         matchups: {fileID: 0}

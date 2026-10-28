@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e02c33d0d309aa43bae9112e7cbcd9e
+    m_Address: MissileSatelliteData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 10f22eac8c754ca45a75fa878f460d6b
     m_Address: SuperWeaponData
     m_ReadOnly: 0
@@ -95,8 +100,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5be94b7c43f1bed499c701a5644d62cb
+    m_Address: TurbolaserSatelliteData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
     m_Address: ShipUiData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fceb093d6ecffc4095123eb48763422
+    m_Address: IonSatelliteData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6483fc6a53e09fd44bb631513deb9d28
+    m_Address: QuadLaserSatelliteData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -137,6 +157,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8062674d66d079419593e17879a77b8
     m_Address: SceneData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb4245945ffc48245bcc122c425f6e01
+    m_Address: MassDriverSatelliteData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -3,6 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
@@ -21,6 +24,47 @@ namespace EmpireAtWar.Tests.Editor
 
         private string _directory;
         private JsonBattleSaveRepository _repository;
+
+        [TestCase(SiteFacilityType.QuadLaserSatellite, DefendPlatformType.QuadLaserSatellite)]
+        [TestCase(SiteFacilityType.TurbolaserSatellite, DefendPlatformType.TurbolaserSatellite)]
+        [TestCase(SiteFacilityType.IonSatellite, DefendPlatformType.IonSatellite)]
+        [TestCase(SiteFacilityType.MassDriverSatellite, DefendPlatformType.MassDriverSatellite)]
+        [TestCase(SiteFacilityType.MissileSatellite, DefendPlatformType.MissileSatellite)]
+        public void SatellitePad_RoundTripsOwnerConstructionAndFacility(SiteFacilityType type, DefendPlatformType platform)
+        {
+            BattleSave template = CreateSave(Skirmish(), BattleSaveSlot.Quicksave, DateTime.UtcNow);
+            float[] hardPoints = { 0f, 0.2f, 0.4f, 0.6f, 0.8f, 1f };
+            BattleSave save = BattleSave.Create(template.Header, template.Setup, template.Camera,
+                Array.Empty<UnitSave>(), new[] { StructureSave.Create(42L, new PlayerId(0),
+                    StructureKind.DefendPlatform, (int)platform, new Vector3(80f, 0f, 120f),
+                    UnitHealthSave.ForShip(0.6f, 0.8f, hardPoints)) });
+            save.CaptureSites = new[]
+            {
+                CaptureSiteSave.Create(new PlayerId(0), CaptureSiteState.Owned, PlayerId.None, 0f, type, 0f, 0L),
+                CaptureSiteSave.Create(new PlayerId(1), CaptureSiteState.Constructing, new PlayerId(0), 0.3f, type, 0.45f, 0L),
+                CaptureSiteSave.Create(new PlayerId(0), CaptureSiteState.Operational, PlayerId.None, 0f, type, 1f, 42L)
+            };
+            _repository.Save(save);
+            BattleSave restored = _repository.Load(GameMode.Skirmish, BattleSaveSlot.Quicksave);
+            Assert.That(restored.Structures[0].DefendPlatformType, Is.EqualTo(platform));
+            Assert.That(restored.Structures[0].Id, Is.EqualTo(42L));
+            Assert.That(restored.Structures[0].Health.Hull, Is.EqualTo(0.6f));
+            Assert.That(restored.Structures[0].Health.Shields, Is.EqualTo(0.8f));
+            CollectionAssert.AreEqual(hardPoints, restored.Structures[0].Health.HardPoints);
+            Assert.That(restored.CaptureSites.Length, Is.EqualTo(3));
+            for (int i = 0; i < save.CaptureSites.Length; i++)
+            {
+                CaptureSiteSave expected = save.CaptureSites[i];
+                CaptureSiteSave actual = restored.CaptureSites[i];
+                Assert.That(actual.Owner, Is.EqualTo(expected.Owner));
+                Assert.That(actual.State, Is.EqualTo(expected.State));
+                Assert.That(actual.CapturingPlayer, Is.EqualTo(expected.CapturingPlayer));
+                Assert.That(actual.CaptureProgress, Is.EqualTo(expected.CaptureProgress));
+                Assert.That(actual.FacilityType, Is.EqualTo(expected.FacilityType));
+                Assert.That(actual.ConstructionProgress, Is.EqualTo(expected.ConstructionProgress));
+                Assert.That(actual.FacilityId, Is.EqualTo(expected.FacilityId));
+            }
+        }
 
         [SetUp]
         public void SetUp()

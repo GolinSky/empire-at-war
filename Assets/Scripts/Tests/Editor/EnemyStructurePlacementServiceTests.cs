@@ -336,6 +336,8 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => false;
+            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type) => false;
             public bool TryBuildOnOwnedSite(PlayerId owner) => false;
 
             public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)

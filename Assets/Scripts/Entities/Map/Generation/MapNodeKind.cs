@@ -6,5 +6,6 @@ namespace EmpireAtWar.Entities.Map.Generation
         CapturableZone = 1,
         MiningSite = 2,
         BattleSite = 3,
+        SatelliteSite = 4,
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.Capture;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
@@ -24,10 +25,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
         IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
     {
-        private const float STRENGTH_REFRESH_INTERVAL = 0.25f;
-
-        private IShipService _shipService;
-        private ISquadronRegistry _squadronRegistry;
         private IVisionService _visionService;
         private ISpawnBlockerService _spawnBlockerService;
         private ICameraService _cameraService;
@@ -42,11 +39,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IReadOnlyList<ReinforcementZoneView> _zoneViews = Array.Empty<ReinforcementZoneView>();
         private readonly List<ZoneSpot> _homes = new List<ZoneSpot>();
         private readonly List<Transform> _homeVisionAnchors = new List<Transform>();
-        private CaptureStrengthBuilder _captureStrengthBuilder;
-        private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
-        // Cached per zone so the strength refresh allocates no delegates.
-        private readonly List<Func<Vector3, bool>> _zoneContains = new List<Func<Vector3, bool>>();
-        private float _strengthRefreshCountdown;
+        private CaptureStrengthSampler _strengthSampler;
 
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
 
@@ -68,8 +61,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
             INotifier<BattleMap> battleMap,
             ReinforcementZoneData data)
         {
-            _shipService = shipService;
-            _squadronRegistry = squadronRegistry;
             _data = data;
             _mapModel = mapModel;
             _visionService = visionService;
@@ -79,7 +70,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _battleMap = battleMap;
             _playerRoster = playerRoster;
             _localPlayer = localPlayer;
-            _captureStrengthBuilder = new CaptureStrengthBuilder(playerRoster);
+            _strengthSampler = new CaptureStrengthSampler(shipService, squadronRegistry, playerRoster, data.SquadronCaptureWeight);
         }
 
         public void Initialize()
@@ -118,9 +109,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
 
             _zones.Clear();
-            _strengths.Clear();
-            _zoneContains.Clear();
-            _strengthRefreshCountdown = 0f;
+            _strengthSampler.Clear();
             foreach (ReinforcementZoneView view in _zoneViews)
             {
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
@@ -131,8 +120,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     relations: _playerRoster);
                 ReinforcementZonePresenter zone = new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer);
                 _zones.Add(zone);
-                _strengths.Add(default);
-                _zoneContains.Add(zone.Contains);
+                _strengthSampler.Add(zone.Contains);
                 RegisterRelay(view.transform, view.StartingOwner);
             }
         }
@@ -144,7 +132,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             if (saves.Count != _zones.Count)
                 throw new InvalidOperationException($"Saved {saves.Count} reinforcement zones; the map has {_zones.Count}.");
 
-            _strengthRefreshCountdown = 0f;
+            _strengthSampler.Invalidate();
 
             for (int i = 0; i < _zones.Count; i++)
             {
@@ -162,24 +150,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         private void TickZones(float deltaTime)
         {
-            _strengthRefreshCountdown -= deltaTime;
-            bool refreshStrength = _strengthRefreshCountdown <= 0f;
-            if (refreshStrength)
-                _strengthRefreshCountdown = STRENGTH_REFRESH_INTERVAL;
+            _strengthSampler.Tick(deltaTime);
 
             for (int i = 0; i < _zones.Count; i++)
             {
                 ReinforcementZonePresenter zone = _zones[i];
-                if (refreshStrength)
-                {
-                    _captureStrengthBuilder.Clear();
-                    Func<Vector3, bool> contains = _zoneContains[i];
-                    _shipService.AddShipStrength(contains, _captureStrengthBuilder);
-                    _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
-                    _strengths[i] = _captureStrengthBuilder.Build();
-                }
-
-                if (zone.Tick(deltaTime, _strengths[i]))
+                if (zone.Tick(deltaTime, _strengthSampler[i]))
                 {
                     RegisterRelay(_zoneViews[i].transform, zone.Owner);
                     OwnershipChanged?.Invoke();

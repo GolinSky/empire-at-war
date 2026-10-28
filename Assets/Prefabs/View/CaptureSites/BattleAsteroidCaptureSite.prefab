@@ -915,6 +915,7 @@ GameObject:
   - component: {fileID: 4331496685745970303}
   - component: {fileID: 3985789703454499298}
   - component: {fileID: 5501161914677533251}
+  - component: {fileID: 6755407510311393146}
   m_Layer: 0
   m_Name: BattleAsteroidCaptureSite
   m_TagString: Untagged
@@ -954,7 +955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5150a734ff7007b41849bad883282d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
-  ringRenderer: {fileID: 8267043019128734444}
+  captureRing: {fileID: 6755407510311393146}
   asteroidRocks: {fileID: 9027687878264470449}
   rockObstacles:
   - {fileID: 4759595238094809367}
@@ -968,11 +969,6 @@ MonoBehaviour:
   progressFill: {fileID: 4196554380287589507}
   statusText: {fileID: 1013643940011584259}
   tooltipHover: {fileID: 5501161914677533251}
-  neutralColor: {r: 0.58, g: 0.64, b: 0.72, a: 0.04}
-  playerColor: {r: 0.22, g: 0.74, b: 0.97, a: 0.05}
-  allyColor: {r: 0.36, g: 0.9, b: 0.62, a: 0.05}
-  opponentColor: {r: 0.94, g: 0.27, b: 0.27, a: 0.05}
-  contestedColor: {r: 1, g: 0.75, b: 0.1, a: 0.07}
   radius: 60
   captureDuration: 12
   facilityHeightOffset: 0
@@ -991,6 +987,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
   triggers:
   - {fileID: 8165163757318597284}
+--- !u!114 &6755407510311393146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7989754913337272775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c97b68acf59c342ae7c96c70dbf2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Capture.CaptureRingView
+  ringRenderer: {fileID: 8267043019128734444}
+  neutralColor: {r: 0.58, g: 0.64, b: 0.72, a: 0.04}
+  playerColor: {r: 0.22, g: 0.74, b: 0.97, a: 0.05}
+  allyColor: {r: 0.36, g: 0.9, b: 0.62, a: 0.05}
+  opponentColor: {r: 0.94, g: 0.27, b: 0.27, a: 0.05}
+  contestedColor: {r: 1, g: 0.75, b: 0.1, a: 0.07}
+  siteBorder: 1
 --- !u!1 &8608142053723839879
 GameObject:
   m_ObjectHideFlags: 0

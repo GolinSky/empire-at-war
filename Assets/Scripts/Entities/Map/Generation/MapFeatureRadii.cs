@@ -6,12 +6,14 @@ namespace EmpireAtWar.Entities.Map.Generation
         public float Zone { get; }
         public float MiningSite { get; }
         public float BattleSite { get; }
+        public float SatelliteSite { get; }
 
-        public MapFeatureRadii(float zone, float miningSite, float battleSite)
+        public MapFeatureRadii(float zone, float miningSite, float battleSite, float satelliteSite)
         {
             Zone = zone;
             MiningSite = miningSite;
             BattleSite = battleSite;
+            SatelliteSite = satelliteSite;
         }
     }
 }

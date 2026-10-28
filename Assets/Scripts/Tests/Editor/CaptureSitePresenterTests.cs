@@ -42,18 +42,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EmptySite_RemainsHiddenEvenWhenVisibleAndHovered()
+        public void EmptySite_RingRemainsAvailableWithoutCaptureStatus()
         {
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 0f, 0f));
             _presenter.SetVisibility(true, true);
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
         }
 
         [TestCase(1f, 0f)]
         [TestCase(0f, 1f)]
         [TestCase(1f, 1f)]
-        public void Capture_ShowsZoneAndDepartureHidesIt(float human, float enemy)
+        public void Capture_StatusRequiresVision_RingRemainsAvailable(float human, float enemy)
         {
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, human, enemy));
             _presenter.SetVisibility(true, false);
@@ -61,16 +61,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_view.ShowStatus, Is.True);
 
             _presenter.SetVisibility(false, true);
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
 
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 0f, 0f));
             _presenter.SetVisibility(true, true);
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
 
             _presenter.SetVisibility(false, true);
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
             Assert.That(_presenter.IsRevealed, Is.False);
         }
@@ -78,18 +78,18 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(CaptureSiteState.Owned)]
         [TestCase(CaptureSiteState.Constructing)]
         [TestCase(CaptureSiteState.Operational)]
-        public void RestoreCapturedSite_HidesZoneEvenWhenHovered(CaptureSiteState state)
+        public void RestoreCapturedSite_LeavesRingStateToViewAndHidesStatus(CaptureSiteState state)
         {
             _presenter.Restore(TestPlayers.Human, state, PlayerId.None, 0f,
                 SiteFacilityType.Mining, 0f);
             _presenter.SetVisibility(true, true);
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
             Assert.That(_presenter.IsRevealed, Is.True);
         }
 
         [Test]
-        public void CaptureCompleted_HidesZoneEvenWhenHovered()
+        public void CaptureCompleted_KeepsEmptySiteRingAndHidesStatus()
         {
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 1f, 0f));
             _presenter.SetVisibility(true, false);
@@ -98,7 +98,7 @@ namespace EmpireAtWar.Tests.Editor
             _presenter.TickCapture(10f, TestPlayers.DuelTally(_roster, 1f, 0f));
             _presenter.SetVisibility(true, true);
             Assert.That(_presenter.Owner, Is.EqualTo(TestPlayers.Human));
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
         }
 
@@ -113,12 +113,12 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void RestoreUntouchedNeutralSite_KeepsRingHidden()
+        public void RestoreUntouchedNeutralSite_KeepsRingAvailable()
         {
             _presenter.Restore(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f,
                 SiteFacilityType.Mining, 0f);
             _presenter.SetVisibility(true, true);
-            Assert.That(_view.IsVisible, Is.False);
+            Assert.That(_view.IsVisible, Is.True);
         }
 
         [Test]
@@ -152,6 +152,8 @@ namespace EmpireAtWar.Tests.Editor
         private CaptureSitesSystem CreateSystem()
         {
             var system = new CaptureSitesSystem();
+            typeof(CaptureSitesSystem).GetField("_data", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system,
+                AssetDatabase.LoadAssetAtPath<CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"));
             typeof(CaptureSitesSystem).GetField("_playerRoster", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system, _roster);
             var sites = (List<CaptureSitePresenter>)typeof(CaptureSitesSystem)
                 .GetField("_sites", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(system);

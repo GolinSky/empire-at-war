@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.Capture;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -21,18 +22,12 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
     public sealed class ReinforcementZoneView : MonoBehaviour, IReinforcementZoneView
     {
-        [SerializeField, FormerlySerializedAs("_sphereRenderer")] private MeshRenderer sphereRenderer;
+        [SerializeField] private CaptureRingView captureRing;
         [SerializeField, FormerlySerializedAs("_captureCanvas")] private Canvas captureCanvas;
         [SerializeField, FormerlySerializedAs("_captureCanvasScaler")] private CanvasScaler captureCanvasScaler;
         [SerializeField, FormerlySerializedAs("_captureProgress")] private Image captureProgress;
         [SerializeField, FormerlySerializedAs("_statusText")] private TMP_Text statusText;
-        private MaterialPropertyBlock _propertyBlock;
 
-        [SerializeField, FormerlySerializedAs("_neutralColor")] private Color neutralColor = new Color(0.48f, 0.55f, 0.62f, 0.08f);
-        [SerializeField, FormerlySerializedAs("_playerColor")] private Color playerColor = new Color(0.18f, 0.53f, 0.68f, 0.1f);
-        [SerializeField, FormerlySerializedAs("_allyColor")] private Color allyColor = new Color(0.27f, 0.62f, 0.43f, 0.1f);
-        [SerializeField, FormerlySerializedAs("_opponentColor")] private Color opponentColor = new Color(0.68f, 0.27f, 0.29f, 0.1f);
-        [SerializeField, FormerlySerializedAs("_contestedColor")] private Color contestedColor = new Color(0.73f, 0.56f, 0.23f, 0.1f);
         // Assigned by the map builder at runtime; the prefab itself has no owner.
         private PlayerId _startingOwner = PlayerId.None;
 
@@ -55,7 +50,6 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
         private void Awake()
         {
-            _propertyBlock = new MaterialPropertyBlock();
             if (captureCanvas != null)
             {
                 captureCanvas.overrideSorting = true;
@@ -66,14 +60,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
         public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested)
         {
-            if (sphereRenderer != null)
-            {
-                _propertyBlock ??= new MaterialPropertyBlock();
-                sphereRenderer.GetPropertyBlock(_propertyBlock);
-                _propertyBlock.SetColor("_BaseColor", GetColor(owner, isContested));
-                _propertyBlock.SetColor("_Color", GetColor(owner, isContested));
-                sphereRenderer.SetPropertyBlock(_propertyBlock);
-            }
+            captureRing.Render(owner, isContested, false, false);
 
             if (this.captureProgress != null)
             {
@@ -82,7 +69,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
                     : Mathf.Clamp01(captureProgress);
                 // Sprite-free Images display progress through their rect width.
                 this.captureProgress.rectTransform.anchorMax = new Vector2(displayedProgress, 1f);
-                Color progressColor = GetColor(
+                Color progressColor = captureRing.GetColor(
                     capturer == OwnerRelation.Neutral ? owner : capturer, isContested);
                 progressColor.a = 0.95f;
                 this.captureProgress.color = progressColor;
@@ -96,7 +83,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
         public void SetVisibility(bool isVisible, bool showCaptureUi)
         {
-            sphereRenderer.enabled = isVisible;
+            captureRing.SetVisibility(isVisible);
             captureCanvas.gameObject.SetActive(showCaptureUi);
         }
 
@@ -108,22 +95,6 @@ namespace EmpireAtWar.Views.ReinforcementZones
             }
 
             captureCanvas.transform.rotation = Camera.main.transform.rotation;
-        }
-
-        private Color GetColor(OwnerRelation owner, bool isContested)
-        {
-            if (isContested)
-            {
-                return contestedColor;
-            }
-
-            return owner switch
-            {
-                OwnerRelation.Own => playerColor,
-                OwnerRelation.Ally => allyColor,
-                OwnerRelation.Enemy => opponentColor,
-                _ => neutralColor
-            };
         }
 
         private static string GetStatus(

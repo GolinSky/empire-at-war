@@ -1,0 +1,418 @@
+{
+  "source": "AOTR Workshop 1397421866",
+  "models": [
+    {
+      "name": "Turret_Space_Base",
+      "sourceSha256": "f56230ab0b3b5161f2418ccb888aec23ab367e14d236fee2a5a35d5155b7bf31",
+      "meshes": 8,
+      "triangles": 10732,
+      "bones": 14,
+      "boneError": 1.7059844799040144e-05,
+      "geometryError": 8.529922399520072e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_QL_00",
+      "sourceSha256": "5704538e415e239b18582d7d6e2d1a5b3c5817e484653b2813eabf5cae187288",
+      "meshes": 17,
+      "triangles": 9522,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_QL_01",
+      "sourceSha256": "5704538e415e239b18582d7d6e2d1a5b3c5817e484653b2813eabf5cae187288",
+      "meshes": 17,
+      "triangles": 9522,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_QL_02",
+      "sourceSha256": "5704538e415e239b18582d7d6e2d1a5b3c5817e484653b2813eabf5cae187288",
+      "meshes": 17,
+      "triangles": 9522,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_QL_03",
+      "sourceSha256": "5704538e415e239b18582d7d6e2d1a5b3c5817e484653b2813eabf5cae187288",
+      "meshes": 17,
+      "triangles": 9522,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_QL_04",
+      "sourceSha256": "5704538e415e239b18582d7d6e2d1a5b3c5817e484653b2813eabf5cae187288",
+      "meshes": 17,
+      "triangles": 9522,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_QL_05",
+      "sourceSha256": "5704538e415e239b18582d7d6e2d1a5b3c5817e484653b2813eabf5cae187288",
+      "meshes": 17,
+      "triangles": 9522,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_TL_00",
+      "sourceSha256": "5e8a168b9654ef73fc5c9fbd22039f07e8e93c433f947ce9fb158e0286d70267",
+      "meshes": 17,
+      "triangles": 8830,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_TL_01",
+      "sourceSha256": "5e8a168b9654ef73fc5c9fbd22039f07e8e93c433f947ce9fb158e0286d70267",
+      "meshes": 17,
+      "triangles": 8830,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_TL_02",
+      "sourceSha256": "5e8a168b9654ef73fc5c9fbd22039f07e8e93c433f947ce9fb158e0286d70267",
+      "meshes": 17,
+      "triangles": 8830,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_TL_03",
+      "sourceSha256": "5e8a168b9654ef73fc5c9fbd22039f07e8e93c433f947ce9fb158e0286d70267",
+      "meshes": 17,
+      "triangles": 8830,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_TL_04",
+      "sourceSha256": "5e8a168b9654ef73fc5c9fbd22039f07e8e93c433f947ce9fb158e0286d70267",
+      "meshes": 17,
+      "triangles": 8830,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_TL_05",
+      "sourceSha256": "5e8a168b9654ef73fc5c9fbd22039f07e8e93c433f947ce9fb158e0286d70267",
+      "meshes": 17,
+      "triangles": 8830,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Ion_00",
+      "sourceSha256": "b17bc7216fdb9d14d80f7f7da4837fb7cde9c0a8a37f922d3cc13f6cbf292d43",
+      "meshes": 17,
+      "triangles": 7332,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Ion_01",
+      "sourceSha256": "b17bc7216fdb9d14d80f7f7da4837fb7cde9c0a8a37f922d3cc13f6cbf292d43",
+      "meshes": 17,
+      "triangles": 7332,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Ion_02",
+      "sourceSha256": "b17bc7216fdb9d14d80f7f7da4837fb7cde9c0a8a37f922d3cc13f6cbf292d43",
+      "meshes": 17,
+      "triangles": 7332,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Ion_03",
+      "sourceSha256": "b17bc7216fdb9d14d80f7f7da4837fb7cde9c0a8a37f922d3cc13f6cbf292d43",
+      "meshes": 17,
+      "triangles": 7332,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Ion_04",
+      "sourceSha256": "b17bc7216fdb9d14d80f7f7da4837fb7cde9c0a8a37f922d3cc13f6cbf292d43",
+      "meshes": 17,
+      "triangles": 7332,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Ion_05",
+      "sourceSha256": "b17bc7216fdb9d14d80f7f7da4837fb7cde9c0a8a37f922d3cc13f6cbf292d43",
+      "meshes": 17,
+      "triangles": 7332,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Massdriver_00",
+      "sourceSha256": "69f35cd9509142c2dc0b6e27a70d3ebdab2a6fe37f726759efc16b2e52195934",
+      "meshes": 17,
+      "triangles": 8206,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Massdriver_01",
+      "sourceSha256": "69f35cd9509142c2dc0b6e27a70d3ebdab2a6fe37f726759efc16b2e52195934",
+      "meshes": 17,
+      "triangles": 8206,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Massdriver_02",
+      "sourceSha256": "69f35cd9509142c2dc0b6e27a70d3ebdab2a6fe37f726759efc16b2e52195934",
+      "meshes": 17,
+      "triangles": 8206,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Massdriver_03",
+      "sourceSha256": "69f35cd9509142c2dc0b6e27a70d3ebdab2a6fe37f726759efc16b2e52195934",
+      "meshes": 17,
+      "triangles": 8206,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Massdriver_04",
+      "sourceSha256": "69f35cd9509142c2dc0b6e27a70d3ebdab2a6fe37f726759efc16b2e52195934",
+      "meshes": 17,
+      "triangles": 8206,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Massdriver_05",
+      "sourceSha256": "69f35cd9509142c2dc0b6e27a70d3ebdab2a6fe37f726759efc16b2e52195934",
+      "meshes": 17,
+      "triangles": 8206,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Missile_00",
+      "sourceSha256": "c920b3490e7776360c1b23a95085b40f9a744f24e9bcc4f1a1dda135d98ad5f5",
+      "meshes": 17,
+      "triangles": 8030,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Missile_01",
+      "sourceSha256": "c920b3490e7776360c1b23a95085b40f9a744f24e9bcc4f1a1dda135d98ad5f5",
+      "meshes": 17,
+      "triangles": 8030,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Missile_02",
+      "sourceSha256": "c920b3490e7776360c1b23a95085b40f9a744f24e9bcc4f1a1dda135d98ad5f5",
+      "meshes": 17,
+      "triangles": 8030,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Missile_03",
+      "sourceSha256": "c920b3490e7776360c1b23a95085b40f9a744f24e9bcc4f1a1dda135d98ad5f5",
+      "meshes": 17,
+      "triangles": 8030,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Missile_04",
+      "sourceSha256": "c920b3490e7776360c1b23a95085b40f9a744f24e9bcc4f1a1dda135d98ad5f5",
+      "meshes": 17,
+      "triangles": 8030,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    },
+    {
+      "name": "Turret_Space_Missile_05",
+      "sourceSha256": "c920b3490e7776360c1b23a95085b40f9a744f24e9bcc4f1a1dda135d98ad5f5",
+      "meshes": 17,
+      "triangles": 8030,
+      "bones": 13,
+      "boneError": 2.7632240342678274e-06,
+      "geometryError": 6.604022495491286e-06,
+      "uvError": 0
+    }
+  ],
+  "normalPrecision": 1e-05,
+  "textures": [
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hullplates_gey2_diffuse.dds",
+      "name": "DefenseSatellites_Hullplates_gey2_diffuse",
+      "sha256": "80cdea12a02cf819519a06cf2b5d40244974a82a0a8c73c53d173052034d5488",
+      "size": [
+        1024,
+        1024
+      ],
+      "normal": false
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hullplates_grey2_normal_specular.dds",
+      "name": "DefenseSatellites_Hullplates_grey2_normal_specular",
+      "sha256": "20b18404035fe4c86afb33ad8bc0a4d5d76adcbb4a7336b2c7b95d061bc9e617",
+      "size": [
+        1024,
+        1024
+      ],
+      "normal": true
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\SolarPanel_diffuse.dds",
+      "name": "DefenseSatellites_SolarPanel_diffuse",
+      "sha256": "a4773398e8a8bd6555929829187fb04841f3545293d7f03bad06fe96f2a67665",
+      "size": [
+        256,
+        256
+      ],
+      "normal": false
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\SolarPanel_normal_specular.dds",
+      "name": "DefenseSatellites_SolarPanel_normal_specular",
+      "sha256": "5292e7ca685ac7c18f024b3ddeb5fc7475205858ee6699ba5acdfbc14414f638",
+      "size": [
+        256,
+        256
+      ],
+      "normal": true
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hulldetails_diffuse.dds",
+      "name": "DefenseSatellites_Hulldetails_diffuse",
+      "sha256": "d235f277c1098d975e93b598d1ca82b4292d18a3bc2a02e90b524f123bb6e27a",
+      "size": [
+        1024,
+        1024
+      ],
+      "normal": false
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hulldetails_normal_specular.dds",
+      "name": "DefenseSatellites_Hulldetails_normal_specular",
+      "sha256": "21ecf40e147c67c682a409030c046b2608f16d5f370ddb835b9a77f6578ff92e",
+      "size": [
+        1024,
+        1024
+      ],
+      "normal": true
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\NB_SHIELDBASE.DDS",
+      "name": "DefenseSatellites_NB_SHIELDBASE",
+      "sha256": "b7e6acf3a1b9a67687c272e89ef67926da8628569c5e66ea2323fd2f7cbda808",
+      "size": [
+        512,
+        512
+      ],
+      "normal": false
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\NB_SHIELDWAVE.DDS",
+      "name": "DefenseSatellites_NB_SHIELDWAVE",
+      "sha256": "32843cabf00c384e457adb0e80a79c7c382098e89a9e74b3930f608248f40696",
+      "size": [
+        256,
+        256
+      ],
+      "normal": false
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\NB_SHIELDRIPPLE.DDS",
+      "name": "DefenseSatellites_NB_SHIELDRIPPLE",
+      "sha256": "9cde5d0cddc163257d10df5a15855a573fa8f6748b0b4265ff0224635114b5fc",
+      "size": [
+        512,
+        512
+      ],
+      "normal": false
+    },
+    {
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Turret_Space_Glow.dds",
+      "name": "DefenseSatellites_Turret_Space_Glow",
+      "sha256": "8608c4d7fe784922c0b2d668b99bc4e6e46c7ab4bcc621116e7f222bc112776a",
+      "size": [
+        128,
+        128
+      ],
+      "normal": false
+    }
+  ]
+}

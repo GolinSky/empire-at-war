@@ -220,6 +220,15 @@ namespace EmpireAtWar.Tests.Editor
             };
             Assert.Throws<InvalidDataException>(() => validator.Validate(wrongCaptureSites, definition));
 
+            var oldMapSave = BattleSave.Create(header, setup, camera,
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            int oldCount = (definition.Slots.Count + ((mapSettings.GetSize(definition.Map.Size).MiningPointCount - 2) / 2) * 2)
+                * PointOfInterestPlacer.SITES_PER_MINING_POINT + mapSettings.GetSize(definition.Map.Size).BattleSiteCount;
+            oldMapSave.CaptureSites = new CaptureSiteSave[oldCount];
+            oldMapSave.ReinforcementZones = CreateDefaultReinforcementZones(mapSettings, definition);
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(oldMapSave, definition)).Message,
+                Does.Contain("capture sites; the map has"));
+
             var missingFacilitySave = BattleSave.Create(header, setup, camera,
                 Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
             missingFacilitySave.CaptureSites = CreateDefaultCaptureSites(mapSettings, definition);
@@ -246,7 +255,7 @@ namespace EmpireAtWar.Tests.Editor
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size);
-            int count = (definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2) * PointOfInterestPlacer.SITES_PER_MINING_POINT
+            int count = (definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2) * PointOfInterestPlacer.SITES_PER_MINING_POINT * 2
                 + (size.BattleSiteCount / 2) * 2;
             var sites = new CaptureSiteSave[count];
             for (int i = 0; i < count; i++)

@@ -629,6 +629,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4412746819459471117}
   - component: {fileID: 5684982705061600968}
+  - component: {fileID: 5606969476695435217}
   m_Layer: 0
   m_Name: ReinforcementZone
   m_TagString: Untagged
@@ -666,19 +667,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
-  sphereRenderer: {fileID: 5725095360330420120}
+  captureRing: {fileID: 5606969476695435217}
   captureCanvas: {fileID: 1101914148242906406}
   captureCanvasScaler: {fileID: 2685166790453926460}
   captureProgress: {fileID: 8654983422565621743}
   statusText: {fileID: 7261505759188685563}
+  captureDuration: 10
+  radius: 270
+  isCapturable: 1
+--- !u!114 &5606969476695435217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6965980898740266392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c97b68acf59c342ae7c96c70dbf2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Capture.CaptureRingView
+  ringRenderer: {fileID: 5725095360330420120}
   neutralColor: {r: 0.48, g: 0.55, b: 0.62, a: 0.08}
   playerColor: {r: 0.18, g: 0.53, b: 0.68, a: 0.1}
   allyColor: {r: 0.27, g: 0.62, b: 0.43, a: 0.1}
   opponentColor: {r: 0.68, g: 0.27, b: 0.29, a: 0.1}
   contestedColor: {r: 0.73, g: 0.56, b: 0.23, a: 0.1}
-  captureDuration: 10
-  radius: 270
-  isCapturable: 1
+  siteBorder: 0
 --- !u!1 &7804388680199334990
 GameObject:
   m_ObjectHideFlags: 0

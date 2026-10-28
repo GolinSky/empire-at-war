@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
@@ -42,7 +43,11 @@ namespace EmpireAtWar.Services.VContainer
             if (!player.Has(BattleFeatures.Economy)) return;
             builder.Register<SiteFacilityBuilder>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (player.Slot.IsAi)
+            {
+                builder.Register<EnemyDefenseStrategy>(Lifetime.Singleton);
+                builder.Register<EnemyDefenseSnapshotBuilder>(Lifetime.Singleton);
                 builder.Register<EnemySiteConstructionController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            }
         }
     }
 }

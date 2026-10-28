@@ -58,6 +58,8 @@ namespace EmpireAtWar.Services.Enemy
 
         private int _observedReleaseVersion;
 
+        public float DefenseReserve { get; private set; }
+
         public EnemyProductionStrategy(
             IEnemyPurchaseProcessor purchaseProcessor,
             IUnitRequestFactory requestFactory,
@@ -170,6 +172,7 @@ namespace EmpireAtWar.Services.Enemy
                                        TrySelectSquadron(shipCount, true, out squadron);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
+            DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
             FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
                                     !_purchaseProcessor.IsUpgradingStation
@@ -256,6 +259,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 return;
             }
+
+            DefenseReserve = request.FactionData.Price;
 
             Debug.Log(
                 $"[EnemyAI:Production] Player={_owner.Id}:{_owner.Faction}, State={_stateProvider.CurrentState}, " +

@@ -10,16 +10,18 @@ namespace EmpireAtWar.Entities.Map.Generation
         public Vector3 Center { get; }
         public float Radius { get; }
         public PlayerId Owner { get; }
-        public bool HasPocket => Kind != MapNodeKind.DefaultZone;
+        public int PointId { get; }
+        public bool HasPocket => Kind != MapNodeKind.DefaultZone && Kind != MapNodeKind.SatelliteSite;
         /// <summary>Index of the node that point symmetry pairs with this one; its own index at the map center.</summary>
         public int Mirror { get; set; }
 
-        public MapNode(MapNodeKind kind, Vector3 center, PlayerId owner, float radius)
+        public MapNode(MapNodeKind kind, Vector3 center, PlayerId owner, float radius, int pointId = -1)
         {
             Kind = kind;
             Center = center;
             Radius = radius;
             Owner = owner;
+            PointId = pointId;
             Mirror = -1;
         }
     }

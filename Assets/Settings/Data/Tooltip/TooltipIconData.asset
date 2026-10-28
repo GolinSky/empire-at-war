@@ -205,3 +205,13 @@ MonoBehaviour:
     key: cc08d3ef304a00a4999b7602cc4d17d0:21300000
   - sprite: {fileID: 21300000, guid: 54f42405bb0527345bfb83f05f0d3496, type: 3}
     key: 54f42405bb0527345bfb83f05f0d3496:21300000
+  - sprite: {fileID: 21300000, guid: 4f34eb7cb55a9c24abc10d378515d62e, type: 3}
+    key: 4f34eb7cb55a9c24abc10d378515d62e:21300000
+  - sprite: {fileID: 21300000, guid: 514bfb32fe0d62847bd99758ec3b05bd, type: 3}
+    key: 514bfb32fe0d62847bd99758ec3b05bd:21300000
+  - sprite: {fileID: 21300000, guid: ea3a41aea9ac2814f8151acea48c72a0, type: 3}
+    key: ea3a41aea9ac2814f8151acea48c72a0:21300000
+  - sprite: {fileID: 21300000, guid: 26f532f229fa8e64a8505e23c65bd5cf, type: 3}
+    key: 26f532f229fa8e64a8505e23c65bd5cf:21300000
+  - sprite: {fileID: 21300000, guid: 3285d703aec4dab419f58b760f903d38, type: 3}
+    key: 3285d703aec4dab419f58b760f903d38:21300000

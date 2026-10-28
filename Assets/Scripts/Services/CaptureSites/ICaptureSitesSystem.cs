@@ -22,5 +22,9 @@ namespace EmpireAtWar.Services.CaptureSites
         bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position);
 
         bool TryBuildOnOwnedSite(PlayerId owner);
+
+        bool HasHostileUnits(ICaptureSite site, PlayerId owner);
+
+        bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type);
     }
 }

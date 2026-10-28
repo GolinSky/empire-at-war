@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.Capture;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 
@@ -11,75 +12,37 @@ namespace EmpireAtWar.Entities.CaptureSites
     /// </summary>
     public sealed class CaptureSiteModel : Model
     {
-        private readonly IPlayerRelations _relations;
-
-        private readonly float _captureDuration;
-        private readonly float _captureSpeedPerNetShip;
+        private readonly CaptureControl _capture;
         private float _buildDuration;
 
         public event Action<PlayerId, PlayerId, SiteFacilityType> Captured;
         public event Action<PlayerId, SiteFacilityType> Lost;
 
-        public PlayerId Owner { get; private set; } = PlayerId.None;
+        public PlayerId Owner => _capture.Owner;
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
-        public PlayerId CapturingPlayer { get; private set; } = PlayerId.None;
-        public float CaptureProgress { get; private set; }
+        public PlayerId CapturingPlayer => _capture.CapturingPlayer;
+        public float CaptureProgress => _capture.CaptureProgress;
         public SiteFacilityType FacilityType { get; private set; }
         public float ConstructionProgress { get; private set; }
-        public bool IsContested { get; private set; }
+        public bool IsContested => IsCapturable && _capture.IsContested;
         public bool IsCapturable => State != CaptureSiteState.Operational;
         public bool CanStartConstruction => State == CaptureSiteState.Owned;
 
-        public CaptureSiteModel(IPlayerRelations relations, float captureDuration, float captureSpeedPerNetShip)
+        public CaptureSiteModel(IPlayerRelations relations, float captureDuration, float captureSpeedPerNetShip,
+            PlayerId startingOwner = default, SiteFacilityType facilityType = SiteFacilityType.Mining)
         {
-            _captureDuration = captureDuration;
-            _captureSpeedPerNetShip = captureSpeedPerNetShip;
-            _relations = relations;
+            FacilityType = facilityType;
+            _capture = new CaptureControl(relations, startingOwner, captureDuration, captureSpeedPerNetShip);
+            State = startingOwner == PlayerId.None ? CaptureSiteState.Neutral : CaptureSiteState.Owned;
         }
 
-        /// <returns>True when the site changed owner.</returns>
         public bool TickCapture(float deltaTime, CaptureStrength tally)
         {
-            IsContested = IsCapturable && tally.IsContested;
-
-            if (!IsCapturable || !tally.HasUnits)
-            {
-                ResetCapture();
-                return false;
-            }
-
-            if (tally.IsTied)
-            {
-                return false;
-            }
-
-            // Allies never take a site from each other.
-            PlayerId capturingPlayer = tally.LeadingPlayer;
-            if (_relations.IsAllied(capturingPlayer, Owner))
-            {
-                ResetCapture();
-                return false;
-            }
-
-            // Progress carries over while the same team keeps capturing, even if its lead player changes.
-            if (!_relations.IsAllied(CapturingPlayer, capturingPlayer))
-            {
-                CaptureProgress = 0f;
-            }
-
-            CapturingPlayer = capturingPlayer;
-            CaptureProgress += deltaTime / _captureDuration * tally.Advantage * _captureSpeedPerNetShip;
-            if (CaptureProgress < 1f)
-            {
-                return false;
-            }
-
-            // Capturing grants the location only; an unfinished build is lost.
             PlayerId previousOwner = Owner;
-            Owner = capturingPlayer;
+            if (!IsCapturable) _capture.ResetCapture();
+            if (!_capture.Tick(deltaTime, tally, IsCapturable)) return false;
             State = CaptureSiteState.Owned;
             ConstructionProgress = 0f;
-            ResetCapture();
             Captured?.Invoke(previousOwner, Owner, FacilityType);
             return true;
         }
@@ -115,10 +78,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void Restore(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer, float captureProgress,
             SiteFacilityType facilityType, float constructionProgress, float buildDuration)
         {
-            Owner = owner;
+            _capture.Restore(owner, capturingPlayer, captureProgress, false);
             State = state;
-            CapturingPlayer = capturingPlayer;
-            CaptureProgress = captureProgress;
             FacilityType = facilityType;
             ConstructionProgress = constructionProgress;
             _buildDuration = buildDuration;
@@ -127,17 +88,11 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void ReleaseFacility()
         {
             PlayerId previousOwner = Owner;
-            Owner = PlayerId.None;
+            _capture.Release();
             State = CaptureSiteState.Neutral;
             ConstructionProgress = 0f;
-            ResetCapture();
             if (previousOwner != PlayerId.None) Lost?.Invoke(previousOwner, FacilityType);
         }
 
-        private void ResetCapture()
-        {
-            CapturingPlayer = PlayerId.None;
-            CaptureProgress = 0f;
-        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -8,6 +9,16 @@ namespace EmpireAtWar.Entities.CaptureSites
     public sealed class CaptureSiteData : Data
     {
         [SerializeField] private DictionaryWrapper<SiteFacilityType, SiteFacilityCost> facilityCosts;
+        [SerializeField] private DictionaryWrapper<CaptureSiteKind, SiteFacilityType[]> allowedFacilities;
+
+        public IReadOnlyList<SiteFacilityType> GetAllowedFacilities(CaptureSiteKind kind) => allowedFacilities.Dictionary[kind];
+
+        public bool CanBuild(CaptureSiteKind kind, SiteFacilityType type)
+        {
+            foreach (SiteFacilityType allowed in GetAllowedFacilities(kind))
+                if (allowed == type) return true;
+            return false;
+        }
 
         [field: SerializeField, Min(0.01f)]
         public float CaptureSpeedPerNetShip { get; private set; } = 1f;

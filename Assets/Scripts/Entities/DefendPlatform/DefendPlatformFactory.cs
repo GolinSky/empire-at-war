@@ -31,12 +31,18 @@ namespace EmpireAtWar.Entities.DefendPlatform
             {
                 DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformData",
                 DefendPlatformType.Empress => "AotrEmpressDefensePlatformData",
+                DefendPlatformType.QuadLaserSatellite or DefendPlatformType.TurbolaserSatellite or
+                    DefendPlatformType.IonSatellite or DefendPlatformType.MassDriverSatellite or
+                    DefendPlatformType.MissileSatellite => type + "Data",
                 _ => nameof(DefendPlatformData),
             };
             string prefabPath = type switch
             {
                 DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformView",
                 DefendPlatformType.Empress => "AotrEmpressDefensePlatformView",
+                DefendPlatformType.QuadLaserSatellite or DefendPlatformType.TurbolaserSatellite or
+                    DefendPlatformType.IonSatellite or DefendPlatformType.MassDriverSatellite or
+                    DefendPlatformType.MissileSatellite => type + "View",
                 _ => "DefendPlatformView",
             };
             DefendPlatformData data = Assets.Load<DefendPlatformData>(AssetPrefix + dataPath);

@@ -16,13 +16,67 @@ MonoBehaviour:
     keyValue:
     - key: 0
       value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: 288617a7a5fb04cdbaa3bf9ce791ba44,
+          type: 3}
+        <Role>k__BackingField: RESOURCE INCOME
         <Name>k__BackingField: Asteroid Mine
         <Price>k__BackingField: 600
         <BuildTime>k__BackingField: 25
     - key: 1
       value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: f4308d6ba01d34f25bb6e197b56f9bb4,
+          type: 3}
+        <Role>k__BackingField: AREA DEFENSE
         <Name>k__BackingField: Battle Asteroid
         <Price>k__BackingField: 1600
         <BuildTime>k__BackingField: 30
+    - key: 2
+      value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: 4f34eb7cb55a9c24abc10d378515d62e,
+          type: 3}
+        <Role>k__BackingField: ANTI-FIGHTER / BOMBER
+        <Name>k__BackingField: Quad Laser Satellite
+        <Price>k__BackingField: 300
+        <BuildTime>k__BackingField: 21
+    - key: 3
+      value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: 514bfb32fe0d62847bd99758ec3b05bd,
+          type: 3}
+        <Role>k__BackingField: GENERAL ANTI-SHIP
+        <Name>k__BackingField: Turbolaser Satellite
+        <Price>k__BackingField: 500
+        <BuildTime>k__BackingField: 25
+    - key: 4
+      value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: ea3a41aea9ac2814f8151acea48c72a0,
+          type: 3}
+        <Role>k__BackingField: SHIELD STRIPPING
+        <Name>k__BackingField: Ion Satellite
+        <Price>k__BackingField: 400
+        <BuildTime>k__BackingField: 23
+    - key: 5
+      value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: 26f532f229fa8e64a8505e23c65bd5cf,
+          type: 3}
+        <Role>k__BackingField: LONG-RANGE ANTI-CAPITAL
+        <Name>k__BackingField: Mass Driver Satellite
+        <Price>k__BackingField: 1600
+        <BuildTime>k__BackingField: 47
+    - key: 6
+      value:
+        <Icon>k__BackingField: {fileID: 21300000, guid: 3285d703aec4dab419f58b760f903d38,
+          type: 3}
+        <Role>k__BackingField: BURST ANTI-HULL
+        <Name>k__BackingField: Missile Satellite
+        <Price>k__BackingField: 1000
+        <BuildTime>k__BackingField: 35
+  allowedFacilities:
+    keyValue:
+    - key: 0
+      value: 0000000001000000
+    - key: 1
+      value: 0000000001000000
+    - key: 2
+      value: 0200000003000000040000000500000006000000
   <CaptureSpeedPerNetShip>k__BackingField: 1
   <SquadronCaptureWeight>k__BackingField: 0.5

@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Capture;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using System.Reflection;
@@ -282,9 +283,9 @@ namespace EmpireAtWar.Tests.Editor
                     initiallyOwned ? TestPlayers.Human : PlayerId.None, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 CaptureSquadrons squadrons = new CaptureSquadrons { Owner = TestPlayers.Enemy };
-                SetField(system, "_shipService", new ShipService());
-                SetField(system, "_squadronRegistry", squadrons);
-                SetField(system, "_captureStrengthBuilder", new CaptureStrengthBuilder(roster));
+                CaptureStrengthSampler sampler = new CaptureStrengthSampler(new ShipService(), squadrons, roster, data.SquadronCaptureWeight);
+                foreach (var presenter in system.Zones) sampler.Add(presenter.Contains);
+                SetField(system, "_strengthSampler", sampler);
                 Vector3 edge = Vector3.right * data.RelaySpawnBlockRadius;
                 Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.EqualTo(initiallyOwned));
                 Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.False);
@@ -391,9 +392,9 @@ namespace EmpireAtWar.Tests.Editor
                 ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, zone);
                 CaptureSquadrons squadrons = new CaptureSquadrons { Owner = TestPlayers.Enemy };
-                SetField(system, "_shipService", new ShipService());
-                SetField(system, "_squadronRegistry", squadrons);
-                SetField(system, "_captureStrengthBuilder", new CaptureStrengthBuilder(TestPlayers.CreateTeamGame()));
+                CaptureStrengthSampler sampler = new CaptureStrengthSampler(new ShipService(), squadrons, TestPlayers.CreateTeamGame(), data.SquadronCaptureWeight);
+                foreach (var presenter in system.Zones) sampler.Add(presenter.Contains);
+                SetField(system, "_strengthSampler", sampler);
                 MethodInfo tick = typeof(ReinforcementZonesSystem).GetMethod("TickZones", PRIVATE_INSTANCE);
                 tick.Invoke(system, new object[] { 0.1f });
                 float progress = system.Zones[0].CaptureProgress;
@@ -431,6 +432,7 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
             SetField(system, "_spawnBlockerService", blockers);
             SetField(system, "_visionService", vision);
+            SetField(system, "_strengthSampler", new CaptureStrengthSampler(new ShipService(), new CaptureSquadrons(), roster, data.SquadronCaptureWeight));
             system.UpdateState(CreateMap(zones));
             return system;
         }
@@ -462,7 +464,9 @@ namespace EmpireAtWar.Tests.Editor
             gameObject.transform.SetParent(parent);
             gameObject.transform.position = center;
             ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
-            SetField(view, "sphereRenderer", gameObject.AddComponent<MeshRenderer>());
+            CaptureRingView ring = gameObject.AddComponent<CaptureRingView>();
+            SetField(ring, "ringRenderer", gameObject.AddComponent<MeshRenderer>());
+            SetField(view, "captureRing", ring);
             GameObject captureUi = new GameObject("CaptureUi", typeof(RectTransform));
             captureUi.transform.SetParent(gameObject.transform);
             SetField(view, "captureCanvas", captureUi.AddComponent<Canvas>());

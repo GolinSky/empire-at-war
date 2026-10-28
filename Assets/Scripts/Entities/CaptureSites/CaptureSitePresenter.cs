@@ -19,6 +19,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         private SiteFacilityType? _renderedFacilityType;
         private string _facilityName;
 
+        public CaptureSiteKind Kind { get; }
+        public int PointId { get; }
         public PlayerId Owner => _model.Owner;
         public CaptureSiteState State => _model.State;
         public float CaptureProgress => _model.CaptureProgress;
@@ -42,8 +44,10 @@ namespace EmpireAtWar.Entities.CaptureSites
             ILocalPlayer localPlayer,
             ITooltipService tooltipService,
             CaptureSiteModel model,
-            CaptureSiteData data)
+            CaptureSiteData data, CaptureSiteKind kind = CaptureSiteKind.Mining, int pointId = -1)
         {
+            Kind = kind;
+            PointId = pointId;
             _localPlayer = localPlayer;
             _model = model;
             _view = view;
@@ -119,7 +123,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         {
             IsRevealed = isVisible;
             bool isCapturing = _model.CapturingPlayer != PlayerId.None || _model.IsContested;
-            _view.SetVisibility(isVisible && isCapturing, isCapturing);
+            _view.SetVisibility(true, isVisible && isCapturing);
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)

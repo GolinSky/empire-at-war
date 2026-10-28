@@ -134,35 +134,50 @@ namespace EmpireAtWar.Entities.Map.Generation
             Vector3 center,
             List<MapNode> nodes)
         {
-            // Home sites reserve no pocket room: their pocket may spill past the border, and the station
-            // clearing keeps its rocks off the footprint.
-            float outer = GetOuterRadius(_radii.MiningSite, false, size);
-            // Sites of one point sit closer than the clearance between points, so only the default zones are checked.
+            float satelliteSpread = _miningSiteSpread + _settings.SatellitePadOffset;
+            float nearestMine = Mathf.Sqrt(_miningSiteSpread * _miningSiteSpread +
+                satelliteSpread * satelliteSpread - _miningSiteSpread * satelliteSpread);
+            if (nearestMine < _radii.MiningSite + _radii.SatelliteSite ||
+                satelliteSpread * Mathf.Sqrt(3f) < 2f * _radii.SatelliteSite)
+                return false;
+
             List<MapNode> defaultZones = nodes.GetRange(0, nodes.Count);
-            for (int site = 0; site < SITES_PER_MINING_POINT; site++)
+            for (int triangle = 0; triangle < 2; triangle++)
             {
-                int firstIndex = nodes.Count;
-                foreach (MapStation station in stations)
+                bool satellite = triangle == 1;
+                float radius = satellite ? _radii.SatelliteSite : _radii.MiningSite;
+                float spread = satellite ? satelliteSpread : _miningSiteSpread;
+                float outer = GetOuterRadius(radius, false, size);
+                for (int site = 0; site < SITES_PER_MINING_POINT; site++)
                 {
-                    Vector3 corner = new Vector3(
-                        Mathf.Sign(station.Position.x - center.x), 0f, Mathf.Sign(station.Position.z - center.z)).normalized;
-                    // One triangle edge faces the station: its two sites hug the footprint, the third sits behind them.
-                    float distance = station.Radius + outer + MINING_SITE_GAP + _miningSiteSpread * 0.5f;
-                    // A rotation commutes with point reflection, so mirrored stations get mirrored triangles.
-                    Vector3 offset = Quaternion.Euler(0f, site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT, 0f) *
-                        corner * _miningSiteSpread;
-                    Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) + corner * distance + offset;
-                    if (!IsClear(position, outer, size, stations, defaultZones))
+                    int firstIndex = nodes.Count;
+                    for (int stationIndex = 0; stationIndex < stations.Count; stationIndex++)
                     {
-                        return false;
+                        MapStation station = stations[stationIndex];
+                        Vector3 corner = new Vector3(Mathf.Sign(station.Position.x - center.x), 0f,
+                            Mathf.Sign(station.Position.z - center.z)).normalized;
+                        float distance = station.Radius + Mathf.Max(
+                            GetOuterRadius(_radii.MiningSite, false, size) + MINING_SITE_GAP + _miningSiteSpread * 0.5f,
+                            GetOuterRadius(_radii.SatelliteSite, false, size) + satelliteSpread + MINING_SITE_GAP);
+                        Vector3 offset = Quaternion.Euler(0f,
+                            site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT + (satellite ? 60f : 0f), 0f) *
+                            corner * spread;
+                        Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) + corner * distance + offset;
+                        if (!IsClear(position, outer, size, stations, defaultZones))
+                            return false;
+
+                        // The six sites share a point; only other points need the full inter-point clearance.
+                        foreach (MapNode other in nodes)
+                            if (other.PointId >= 0 && other.PointId != stationIndex &&
+                                PlanarGeometry.Distance(position, other.Center) < radius + other.Radius + _settings.ZoneClearance)
+                                return false;
+
+                        nodes.Add(new MapNode(satellite ? MapNodeKind.SatelliteSite : MapNodeKind.MiningSite,
+                            position, PlayerId.None, radius, stationIndex));
                     }
-
-                    nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: position, radius: _radii.MiningSite, owner: PlayerId.None));
+                    PairWithMirroredStations(stations, center, firstIndex, nodes);
                 }
-
-                PairWithMirroredStations(stations, center, firstIndex, nodes);
             }
-
             return true;
         }
 
@@ -206,31 +221,36 @@ namespace EmpireAtWar.Entities.Map.Generation
             Random random,
             List<MapNode> nodes)
         {
-            float outer = GetOuterRadius(_miningSiteSpread + _radii.MiningSite, true, size);
+            float satelliteSpread = _miningSiteSpread + _settings.SatellitePadOffset;
+            float outer = Mathf.Max(GetOuterRadius(_miningSiteSpread + _radii.MiningSite, true, size),
+                GetOuterRadius(satelliteSpread + _radii.SatelliteSite, false, size));
             for (int pair = 0; pair < pairCount; pair++)
             {
                 if (!TryPickPairPosition(outer, regionShare, size, stations, center, random, nodes, out Vector3 position))
-                {
                     return false;
-                }
 
                 float turn = (float)random.NextDouble() * FULL_TURN_DEGREES;
-                int index = nodes.Count;
-                for (int site = 0; site < SITES_PER_MINING_POINT; site++)
+                int pointId = nodes.Count;
+                for (int triangle = 0; triangle < 2; triangle++)
                 {
-                    Vector3 offset = Quaternion.Euler(0f, turn + site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT, 0f) *
-                        Vector3.forward * _miningSiteSpread;
-                    nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: position + offset, radius: _radii.MiningSite, owner: PlayerId.None)
-                        { Mirror = index + SITES_PER_MINING_POINT + site });
-                }
-
-                for (int site = 0; site < SITES_PER_MINING_POINT; site++)
-                {
-                    nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: PlanarGeometry.Reflect(nodes[index + site].Center, center),
-                        radius: _radii.MiningSite, owner: PlayerId.None) { Mirror = index + site });
+                    bool satellite = triangle == 1;
+                    MapNodeKind kind = satellite ? MapNodeKind.SatelliteSite : MapNodeKind.MiningSite;
+                    float radius = satellite ? _radii.SatelliteSite : _radii.MiningSite;
+                    float spread = satellite ? satelliteSpread : _miningSiteSpread;
+                    int index = nodes.Count;
+                    for (int site = 0; site < SITES_PER_MINING_POINT; site++)
+                    {
+                        Vector3 offset = Quaternion.Euler(0f,
+                            turn + site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT + (satellite ? 60f : 0f), 0f) *
+                            Vector3.forward * spread;
+                        nodes.Add(new MapNode(kind, position + offset, PlayerId.None, radius, pointId)
+                            { Mirror = index + SITES_PER_MINING_POINT + site });
+                    }
+                    for (int site = 0; site < SITES_PER_MINING_POINT; site++)
+                        nodes.Add(new MapNode(kind, PlanarGeometry.Reflect(nodes[index + site].Center, center),
+                            PlayerId.None, radius, pointId + 1) { Mirror = index + site });
                 }
             }
-
             return true;
         }
 

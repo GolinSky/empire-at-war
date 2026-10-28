@@ -33,12 +33,29 @@ namespace EmpireAtWar.Entities.Map.Generation
                     zones.Add(new ZoneSpot(center + Vector3.forward * (radius + _radii.Zone + size.DefaultZoneGap),
                         player.Slot.Id, false));
             }
-            float miningRadius = radius + _radii.MiningSite + size.HomeMiningGap.Min;
+            float mineSpread = (2f * _radii.MiningSite + 15f) *
+                PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
+            float satelliteSpread = mineSpread + _settings.SatellitePadOffset;
+            float pointExtent = Mathf.Max(mineSpread + _radii.MiningSite, satelliteSpread + _radii.SatelliteSite);
+            float miningRadius = Mathf.Max(radius + _radii.MiningSite + size.HomeMiningGap.Min,
+                radius + 2f * _radii.Zone + size.DefaultZoneGap + pointExtent + _settings.ZoneClearance);
+            miningRadius = Mathf.Max(miningRadius,
+                (pointExtent + _settings.ZoneClearance) / Mathf.Sin(Mathf.PI / size.MiningPointCount));
+            if (miningRadius + pointExtent > Mathf.Min(size.Bounds.Max.x - middle.x, size.Bounds.Max.y - middle.y))
+                throw new InvalidOperationException("Survival mining points and satellite pads do not fit inside the map.");
+
             for (int i = 0; i < size.MiningPointCount; i++)
             {
-                float angle = i * Mathf.PI * 2 / size.MiningPointCount;
-                sites.Add(new SiteSpot(new Vector3(middle.x + Mathf.Cos(angle) * miningRadius, 0,
-                    middle.y + Mathf.Sin(angle) * miningRadius), SiteFacilityType.Mining));
+                float turn = i * 360f / size.MiningPointCount;
+                Vector3 direction = Quaternion.Euler(0f, turn, 0f) * Vector3.forward;
+                Vector3 point = new Vector3(middle.x, 0f, middle.y) + direction * miningRadius;
+                for (int site = 0; site < PointOfInterestPlacer.SITES_PER_MINING_POINT; site++)
+                {
+                    Vector3 mineOffset = Quaternion.Euler(0f, site * 120f, 0f) * direction * mineSpread;
+                    Vector3 padOffset = Quaternion.Euler(0f, site * 120f + 60f, 0f) * direction * satelliteSpread;
+                    sites.Add(new SiteSpot(point + mineOffset, CaptureSiteKind.Mining, PlayerId.None, i));
+                    sites.Add(new SiteSpot(point + padOffset, CaptureSiteKind.Satellite, battle.Human.Slot.Id, i));
+                }
             }
             return new MapLayout(stations, zones, sites, Array.Empty<MapLane>(), Array.Empty<AsteroidField>(),
                 size.Bounds, new Vector3(middle.x, 0, middle.y));

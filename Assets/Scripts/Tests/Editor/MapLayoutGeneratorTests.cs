@@ -23,6 +23,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string ZONE_PREFAB_PATH = "Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab";
         private const string MINING_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab";
         private const string BATTLE_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab";
+        private const string SATELLITE_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/SatelliteCaptureSite.prefab";
 
         private const int SEED_COUNT = 20;
         private const int ROSTER_SEED_COUNT = 10;
@@ -36,6 +37,110 @@ namespace EmpireAtWar.Tests.Editor
         private MapFeatureRadii _radii;
         private MapLayoutGenerator _generator;
 
+        [Test]
+        public void Satellites_FormClearDualTrianglesAcrossSizesRostersDifficultiesAndSeeds()
+        {
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            foreach (EnemyAiDifficulty difficulty in Enum.GetValues(typeof(EnemyAiDifficulty)))
+            for (int playerCount = 2; playerCount <= 4; playerCount++)
+            for (int seed = 0; seed < SEED_COUNT; seed++)
+            {
+                MapSizeSettings size = _settings.GetSize(mapSize);
+                Random random = new Random(seed);
+                PlayerSlot[] players = CreateRoster(playerCount, FactionType.Separatist, difficulty);
+                MapStation[] stations = new StationPlacer(_settings).Place(size.Bounds, players, random);
+                PointOfInterestPlacer placer = new PointOfInterestPlacer(_settings, _radii);
+                List<MapNode> nodes = new List<MapNode>();
+                bool placed = false;
+                for (int attempt = 0; attempt < 60 && !placed; attempt++)
+                    placed = placer.TryPlace(size, stations, random, nodes);
+                string context = $"{mapSize}, {difficulty}, {playerCount} players, seed {seed}";
+                Assert.That(placed, Is.True, context);
+                int mines = 0;
+                int pads = 0;
+                foreach (MapNode pad in nodes)
+                {
+                    if (pad.Kind == MapNodeKind.MiningSite) mines++;
+                    if (pad.Kind != MapNodeKind.SatelliteSite) continue;
+                    pads++;
+                    Assert.That(pad.Owner, Is.EqualTo(PlayerId.None), context);
+                    Vector3 point = Vector3.zero;
+                    int pointMines = 0;
+                    int pointPads = 0;
+                    foreach (MapNode other in nodes)
+                    {
+                        if (other.PointId == pad.PointId && other.Kind == MapNodeKind.MiningSite)
+                        {
+                            point += other.Center;
+                            pointMines++;
+                        }
+                        if (other.PointId == pad.PointId && other.Kind == MapNodeKind.SatelliteSite) pointPads++;
+                        if (!ReferenceEquals(other, pad))
+                            Assert.That(PlanarGeometry.Distance(pad.Center, other.Center) + TOLERANCE,
+                                Is.GreaterThanOrEqualTo(pad.Radius + other.Radius), context);
+                    }
+                    Assert.That(pointMines, Is.EqualTo(3), context);
+                    Assert.That(pointPads, Is.EqualTo(3), context);
+                    point /= 3f;
+                    float mineSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) *
+                        PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
+                    Assert.That(PlanarGeometry.Distance(pad.Center, point),
+                        Is.EqualTo(mineSpread + _settings.SatellitePadOffset).Within(TOLERANCE), context);
+                    foreach (MapStation station in stations)
+                        Assert.That(PlanarGeometry.Distance(pad.Center, station.Position) + TOLERANCE,
+                            Is.GreaterThanOrEqualTo(pad.Radius + station.Radius + _settings.ZoneClearance), context);
+                    if (nodes[pad.Mirror] != pad)
+                        Assert.That(PlanarGeometry.Distance(nodes[pad.Mirror].Center,
+                            PlanarGeometry.Reflect(pad.Center, PlanarGeometry.GetCenter(size.Bounds))),
+                            Is.LessThan(TOLERANCE), context);
+                }
+                Assert.That(pads, Is.EqualTo(mines), context);
+            }
+        }
+
+        [TestCase(MapSize.Small)]
+        [TestCase(MapSize.Medium)]
+        [TestCase(MapSize.Large)]
+        public void Survival_SatellitePadsBelongToPlayerAndSurroundEachMiningPoint(MapSize mapSize)
+        {
+            BattleDefinition battle = SurvivalPreset.Create(new SurvivalSettings(FactionType.Empire, null,
+                FactionType.Rebellion, mapSize, EnemyAiDifficulty.Medium, true)).Build();
+            MapLayout layout = new SurvivalLayoutGenerator(_settings, _radii).Generate(battle);
+            int pads = 0;
+            int mines = 0;
+            foreach (SiteSpot site in layout.Sites)
+            {
+                AssertInside(site.Center, layout, "Survival capture site");
+                Assert.That(site.PointId, Is.InRange(0, _settings.GetSize(mapSize).MiningPointCount - 1));
+                if (site.Kind == CaptureSiteKind.Mining)
+                {
+                    mines++;
+                    Assert.That(site.Owner, Is.EqualTo(PlayerId.None));
+                    continue;
+                }
+                pads++;
+                Assert.That(site.Kind, Is.EqualTo(CaptureSiteKind.Satellite));
+                Assert.That(site.Owner, Is.EqualTo(battle.Human.Slot.Id));
+                foreach (SiteSpot other in layout.Sites)
+                    if (other.Center != site.Center)
+                        Assert.That(PlanarGeometry.Distance(site.Center, other.Center),
+                            Is.GreaterThanOrEqualTo(_radii.SatelliteSite + GetSiteRadius(other.Kind) - TOLERANCE));
+                foreach (ZoneSpot zone in layout.Zones)
+                    Assert.That(PlanarGeometry.Distance(site.Center, zone.Center),
+                        Is.GreaterThanOrEqualTo(_radii.SatelliteSite + _radii.Zone));
+            }
+            Assert.That(pads, Is.EqualTo(_settings.GetSize(mapSize).MiningPointCount * 3));
+            Assert.That(pads, Is.EqualTo(mines));
+        }
+
+        private float GetSiteRadius(CaptureSiteKind kind) => kind switch
+        {
+            CaptureSiteKind.Mining => _radii.MiningSite,
+            CaptureSiteKind.Battle => _radii.BattleSite,
+            CaptureSiteKind.Satellite => _radii.SatelliteSite,
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+        };
+
         [SetUp]
         public void SetUp()
         {
@@ -43,7 +148,8 @@ namespace EmpireAtWar.Tests.Editor
             _radii = new MapFeatureRadii(
                 AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH).Radius,
-                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH).Radius);
+                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(BATTLE_PREFAB_PATH).Radius,
+                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(SATELLITE_PREFAB_PATH).Radius);
             _generator = new MapLayoutGenerator(_settings, _radii);
         }
 
@@ -88,7 +194,7 @@ namespace EmpireAtWar.Tests.Editor
 
                         Assert.That(layout.Zones.Count, Is.EqualTo(size.CapturableZoneCount + 2));
                         Assert.That(layout.Sites.Count, Is.EqualTo(
-                            size.MiningPointCount * PointOfInterestPlacer.SITES_PER_MINING_POINT + size.BattleSiteCount));
+                            size.MiningPointCount * PointOfInterestPlacer.SITES_PER_MINING_POINT * 2 + size.BattleSiteCount));
                     }
                 }
             }
@@ -130,7 +236,7 @@ namespace EmpireAtWar.Tests.Editor
 
             foreach (SiteSpot site in layout.Sites)
             {
-                if (site.FacilityType == SiteFacilityType.BattleAsteroid)
+                if (site.Kind == CaptureSiteKind.Battle)
                 {
                     Assert.That(HasSiteAt(layout, -site.Center), Is.True, $"Site at {site.Center} has no mirror.");
                 }
@@ -157,7 +263,10 @@ namespace EmpireAtWar.Tests.Editor
                         // The two sites facing the station hug it; the third sits one triangle height behind them.
                         float siteSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) *
                             PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
-                        float gapLimit = _settings.ZoneClearance + MINING_SITE_GAP + 1.5f * siteSpread + TOLERANCE;
+                        float centerDistance = Mathf.Max(_radii.MiningSite + _settings.ZoneClearance +
+                            MINING_SITE_GAP + siteSpread * 0.5f, _radii.SatelliteSite + _settings.ZoneClearance +
+                            siteSpread + _settings.SatellitePadOffset + MINING_SITE_GAP);
+                        float gapLimit = centerDistance + siteSpread - _radii.MiningSite + TOLERANCE;
                         for (int i = 0; i < PointOfInterestPlacer.SITES_PER_MINING_POINT; i++)
                         {
                             string label = $"{mapSize} seed {seed} {player.Id} home mine {i}";
@@ -225,7 +334,7 @@ namespace EmpireAtWar.Tests.Editor
                     int central = 0;
                     foreach (SiteSpot site in layout.Sites)
                     {
-                        if (site.FacilityType == SiteFacilityType.Mining &&
+                        if (site.Kind == CaptureSiteKind.Mining &&
                             Mathf.Abs(site.Center.x - center.x) <= regionHalfSize.x + TOLERANCE &&
                             Mathf.Abs(site.Center.z - center.z) <= regionHalfSize.y + TOLERANCE)
                         {
@@ -465,7 +574,7 @@ namespace EmpireAtWar.Tests.Editor
             foreach (ZoneSpot zone in layout.Zones)
                 text.Append(zone.Center.ToString("R")).Append(zone.Owner).Append(zone.IsCapturable).Append(';');
             foreach (SiteSpot site in layout.Sites)
-                text.Append(site.Center.ToString("R")).Append(site.FacilityType).Append(';');
+                text.Append(site.Center.ToString("R")).Append(site.Kind).Append(site.Owner).Append(site.PointId).Append(';');
             foreach (MapLane lane in layout.Lanes)
                 foreach (Vector3 point in lane.Points)
                     text.Append(point.ToString("R")).Append(';');
@@ -492,7 +601,7 @@ namespace EmpireAtWar.Tests.Editor
             List<Vector3> mines = new List<Vector3>();
             foreach (SiteSpot site in layout.Sites)
             {
-                if (site.FacilityType == SiteFacilityType.Mining)
+                if (site.Kind == CaptureSiteKind.Mining)
                 {
                     mines.Add(site.Center);
                 }

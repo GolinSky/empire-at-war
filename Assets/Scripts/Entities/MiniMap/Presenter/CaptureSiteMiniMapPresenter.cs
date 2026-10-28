@@ -48,7 +48,8 @@ namespace EmpireAtWar.Presenters.MiniMap
             _hasMarkers = true;
             foreach (ICaptureSite site in _captureSitesSystem.Sites)
             {
-                MiniMapMarker marker = new MiniMapMarker(MarkType.CaptureSite, site.Owner);
+                MiniMapMarker marker = new MiniMapMarker(site.Kind == CaptureSiteKind.Satellite
+                    ? MarkType.SatelliteSite : MarkType.CaptureSite, site.Owner);
                 marker.SetPosition(site.Center.x, site.Center.z);
                 marker.SetVisible(true);
                 _markers.Add(site, marker);

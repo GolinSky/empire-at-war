@@ -5,6 +5,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 {
     public interface ICaptureSite
     {
+        CaptureSiteKind Kind { get; }
+        int PointId { get; }
         PlayerId Owner { get; }
         CaptureSiteState State { get; }
         SiteFacilityType FacilityType { get; }

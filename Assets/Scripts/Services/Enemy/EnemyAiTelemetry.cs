@@ -27,6 +27,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private static readonly StringBuilder _lines = new StringBuilder();
         private static readonly Dictionary<PlayerId, float> _nextSample = new Dictionary<PlayerId, float>();
+        private static readonly Dictionary<(PlayerId, Entities.CaptureSites.SiteFacilityType), int> _satelliteCounts = new();
         private static string _path;
         private static float _nextFlush;
 
@@ -51,6 +52,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             _lines.Clear();
             _nextSample.Clear();
+            _satelliteCounts.Clear();
             _nextFlush = Time.unscaledTime + FLUSH_INTERVAL;
             _path = Path.Combine(Application.persistentDataPath, FOLDER,
                 $"{sceneName}_{System.DateTime.Now:yyyyMMdd_HHmmss}_ai.csv");
@@ -84,6 +86,25 @@ namespace EmpireAtWar.Services.Enemy
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
                 "{0:F1},purchase,{1},{2},{3},,,,,,,,,,{4},{5},{6},{7},{8:F0},",
                 Time.time, player, faction, state, category, counter ? 1 : 0, unit, price, money));
+            FlushIfDue();
+#endif
+        }
+
+        public static void RecordSatellite(PlayerId player, FactionType faction, EnemyDefenseChoice choice,
+            float money, IReadOnlyList<EnemyDefenseChoice> topChoices)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!Application.isPlaying) return;
+            var key = (player, choice.Type);
+            _satelliteCounts.TryGetValue(key, out int count);
+            _satelliteCounts[key] = ++count;
+            StringBuilder reason = new StringBuilder(choice.Reason);
+            reason.AppendFormat(CultureInfo.InvariantCulture, "; pad={0}; built={1}; top=", choice.SiteIndex, count);
+            foreach (EnemyDefenseChoice candidate in topChoices)
+                reason.AppendFormat(CultureInfo.InvariantCulture, " {0}/{1}:{2:F3}", candidate.SiteIndex, candidate.Type, candidate.Score);
+            _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
+                "{0:F1},satellite,{1},{2},,,,,,,,,,,Defense,,{3},{4:F0},{5:F0},\"{6}\"",
+                Time.time, player, faction, choice.Type, choice.Cost, money, reason));
             FlushIfDue();
 #endif
         }

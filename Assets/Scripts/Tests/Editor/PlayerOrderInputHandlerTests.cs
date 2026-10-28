@@ -290,6 +290,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeCaptureSite : ICaptureSite, ICaptureSitesSystem
         {
+            public CaptureSiteKind Kind => CaptureSiteKind.Mining;
+            public int PointId => -1;
+
             public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
             public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
             public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
@@ -314,6 +317,8 @@ namespace EmpireAtWar.Tests.Editor
             { position = default; return false; }
             public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
             { position = default; return false; }
+            public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => false;
+            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type) => false;
             public bool TryBuildOnOwnedSite(PlayerId owner) => false;
         }
 

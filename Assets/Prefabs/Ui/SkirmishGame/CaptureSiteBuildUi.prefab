@@ -633,6 +633,8 @@ MonoBehaviour:
   button: {fileID: 112001720821851573}
   nameText: {fileID: 4385419519338876912}
   costText: {fileID: 8573884330949305567}
+  icon: {fileID: 8697982271307541112}
+  roleText: {fileID: 696214133578507999}
   tooltipTrigger: {fileID: 6601838513561308141}
   facilityType: 1
 --- !u!114 &6601838513561308141
@@ -1597,6 +1599,8 @@ MonoBehaviour:
   button: {fileID: 2956430843736163378}
   nameText: {fileID: 8278593601164796475}
   costText: {fileID: 8136606762506542112}
+  icon: {fileID: 2520136955316386531}
+  roleText: {fileID: 383962970700920429}
   tooltipTrigger: {fileID: 1225375169434630335}
   facilityType: 0
 --- !u!114 &1225375169434630335

@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Capture;
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace EmpireAtWar.Entities.CaptureSites
     {
         private const float MINIMUM_FRAMEWORK_HEIGHT = 0.05f;
 
-        [SerializeField] private MeshRenderer ringRenderer;
+        [SerializeField] private CaptureRingView captureRing;
         [SerializeField] private Transform asteroidRocks;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private DictionaryWrapper<SiteFacilityType, Transform> constructionFrameworks;
@@ -23,15 +24,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField] private Image progressFill;
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TooltipHoverView tooltipHover;
-        private MaterialPropertyBlock _propertyBlock;
         private Camera _camera;
         private RectTransform _canvasTransform;
-
-        [SerializeField] private Color neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.04f);
-        [SerializeField] private Color playerColor = new Color(0.22f, 0.74f, 0.97f, 0.05f);
-        [SerializeField] private Color allyColor = new Color(0.36f, 0.9f, 0.62f, 0.05f);
-        [SerializeField] private Color opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.05f);
-        [SerializeField] private Color contestedColor = new Color(1f, 0.75f, 0.1f, 0.07f);
 
         [SerializeField, Min(1f)] private float radius = 60f;
         [SerializeField, Min(1f)] private float captureDuration = 12f;
@@ -41,12 +35,16 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField, Range(0.05f, 0.6f), Tooltip("Panel height as a fraction of the screen height.")]
         private float screenHeightFraction = 0.24f;
 
-        private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
-        private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
-        private static readonly int BORDER_WIDTH_ID = Shader.PropertyToID("_BorderWidth");
-        private static readonly int OUTLINE_WIDTH_ID = Shader.PropertyToID("_OutlineWidth");
-        private static readonly int BORDER_OPACITY_ID = Shader.PropertyToID("_BorderOpacity");
-        private static readonly int OUTLINE_OPACITY_ID = Shader.PropertyToID("_OutlineOpacity");
+        public CaptureSiteKind Kind { get; private set; }
+        public PlayerId StartingOwner { get; private set; }
+        public int PointId { get; private set; } = -1;
+
+        public void Configure(CaptureSiteKind kind, PlayerId owner, int pointId = -1)
+        {
+            Kind = kind;
+            StartingOwner = owner;
+            PointId = pointId;
+        }
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
@@ -58,8 +56,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private void Awake()
         {
-            ringRenderer.enabled = false;
-            _propertyBlock = new MaterialPropertyBlock();
+            captureRing.SetVisibility(false);
             _camera = Camera.main;
             _canvasTransform = (RectTransform)statusCanvas.transform;
             statusCanvas.worldCamera = _camera;
@@ -91,15 +88,10 @@ namespace EmpireAtWar.Entities.CaptureSites
             float constructionProgress,
             bool isContested)
         {
-            Color ownerColor = GetColor(owner, isContested);
-            ringRenderer.GetPropertyBlock(_propertyBlock);
-            _propertyBlock.SetColor(BASE_COLOR_ID, ownerColor);
-            _propertyBlock.SetColor(COLOR_ID, ownerColor);
-            _propertyBlock.SetFloat(BORDER_WIDTH_ID, 0.003f);
-            _propertyBlock.SetFloat(OUTLINE_WIDTH_ID, 0.006f);
-            _propertyBlock.SetFloat(BORDER_OPACITY_ID, 0.24f);
-            _propertyBlock.SetFloat(OUTLINE_OPACITY_ID, 0.1f);
-            ringRenderer.SetPropertyBlock(_propertyBlock);
+            bool hidden = state is CaptureSiteState.Constructing or CaptureSiteState.Operational;
+            bool blink = state == CaptureSiteState.Owned && owner == OwnerRelation.Own &&
+                capturer == OwnerRelation.Neutral && !isContested;
+            captureRing.Render(capturer == OwnerRelation.Neutral ? owner : capturer, isContested, blink, hidden);
 
             bool isConstructing = state == CaptureSiteState.Constructing;
             asteroidRocks.gameObject.SetActive(state != CaptureSiteState.Operational);
@@ -123,7 +115,7 @@ namespace EmpireAtWar.Entities.CaptureSites
                 : 1f;
             // Sprite-free Images display progress through their rect width.
             progressFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(displayedProgress), 1f);
-            Color progressColor = GetColor(isCapturing ? capturer : owner, isContested);
+            Color progressColor = captureRing.GetColor(isCapturing ? capturer : owner, isContested);
             progressColor.a = 0.95f;
             progressFill.color = progressColor;
 
@@ -133,24 +125,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void SetVisibility(bool isVisible, bool showStatus)
         {
-            ringRenderer.enabled = isVisible;
+            captureRing.SetVisibility(isVisible);
             statusCanvas.gameObject.SetActive(isVisible && showStatus);
-        }
-
-        private Color GetColor(OwnerRelation owner, bool isContested)
-        {
-            if (isContested)
-            {
-                return contestedColor;
-            }
-
-            return owner switch
-            {
-                OwnerRelation.Own => playerColor,
-                OwnerRelation.Ally => allyColor,
-                OwnerRelation.Enemy => opponentColor,
-                _ => neutralColor
-            };
         }
 
         private static string GetStatus(

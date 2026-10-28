@@ -109,6 +109,11 @@
   - **Implemented 2026-10-26**: counts 8/10/14 with 1/1/2 central pairs; second home mine steps outward until clear; Small pocket 100, Large spacing 300 to fit 3–4 players. Map 23/23, save 21/21, survival-spawn 2/2 EditMode pass.
   - **Remaining**: user in-game check of generated maps and economy/AI feel.
 
+- [ ] **Defense satellites: capturable pads around mining points, 5 satellite types, AI use** → [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
+  - **Implemented 2026-10-28**: shared capture, 3 pads per mining point, five satellite types with six targetable turrets, imported models/icons, dynamic build menu, AI strategy and save/load.
+  - **Verified**: combined map 33/33, save 47/47, relay 23/23, AI strategy 11/11; focused satellite checks recorded in plan.
+  - **Remaining**: user in-game acceptance of combat, visuals, capture/build flow and AI behavior; no agent Play Mode.
+
 - [ ] **Close settings audit follow-ups** (Wave 1) → [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
   - **Remaining**: remaining settings core EditMode tests; live category/rebind interaction; manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
 

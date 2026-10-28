@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Capture;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Obstacles;
@@ -145,7 +146,9 @@ namespace EmpireAtWar.Tests.Editor
             gameObject.transform.SetParent(_root.transform);
             gameObject.transform.position = center;
             ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
-            SetField(view, "sphereRenderer", gameObject.AddComponent<MeshRenderer>());
+            CaptureRingView ring = gameObject.AddComponent<CaptureRingView>();
+            SetField(ring, "ringRenderer", gameObject.AddComponent<MeshRenderer>());
+            SetField(view, "captureRing", ring);
             GameObject captureUi = new GameObject("CaptureUi", typeof(RectTransform));
             captureUi.transform.SetParent(gameObject.transform);
             SetField(view, "captureCanvas", captureUi.AddComponent<Canvas>());

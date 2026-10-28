@@ -1428,3 +1428,73 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: QuadLaserSatelliteView
+      value:
+        m_AssetGUID: 617bd2f4ff1b56d4986dbd9342e06f0d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: QuadLaserSatelliteData
+      value:
+        m_AssetGUID: 6483fc6a53e09fd44bb631513deb9d28
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TurbolaserSatelliteView
+      value:
+        m_AssetGUID: e47308abb82d4934a82b90e6d0f4163d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TurbolaserSatelliteData
+      value:
+        m_AssetGUID: 5be94b7c43f1bed499c701a5644d62cb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: IonSatelliteView
+      value:
+        m_AssetGUID: 0849c959e994aaa4b9149473907641b2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: IonSatelliteData
+      value:
+        m_AssetGUID: 5fceb093d6ecffc4095123eb48763422
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MassDriverSatelliteView
+      value:
+        m_AssetGUID: b05df5e5e84b7834891dca67992a72b6
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MassDriverSatelliteData
+      value:
+        m_AssetGUID: bb4245945ffc48245bcc122c425f6e01
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MissileSatelliteView
+      value:
+        m_AssetGUID: 496b266af08a4d14095a8cf797575d90
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MissileSatelliteData
+      value:
+        m_AssetGUID: 0e02c33d0d309aa43bae9112e7cbcd9e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

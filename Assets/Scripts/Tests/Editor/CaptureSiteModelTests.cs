@@ -79,6 +79,57 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
         }
 
+        [Test]
+        public void Tie_PreservesProgress_EmptyAreaResetsIt()
+        {
+            CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f);
+            model.TickCapture(4f, TestPlayers.DuelTally(ROSTER, 1, 0));
+            model.TickCapture(2f, TestPlayers.DuelTally(ROSTER, 1, 1));
+            Assert.That(model.CaptureProgress, Is.EqualTo(0.4f).Within(0.001f));
+            Assert.That(model.IsContested, Is.True);
+            model.TickCapture(1f, TestPlayers.DuelTally(ROSTER, 0, 0));
+            Assert.That(model.CaptureProgress, Is.Zero);
+            Assert.That(model.CapturingPlayer, Is.EqualTo(PlayerId.None));
+        }
+
+        [Test]
+        public void OperationalSite_ResetsCaptureAndContestedState()
+        {
+            CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f);
+            model.Restore(TestPlayers.Human, CaptureSiteState.Operational, TestPlayers.Enemy, 0.4f,
+                SiteFacilityType.Mining, 1f, 20f);
+            model.TickCapture(1f, TestPlayers.DuelTally(ROSTER, 1, 2));
+            Assert.That(model.IsContested, Is.False);
+            Assert.That(model.CaptureProgress, Is.Zero);
+            Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
+        }
+
+        [Test]
+        public void StartingOwner_ProducesEmptyOwnedSite()
+        {
+            CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f, TestPlayers.Human);
+            Assert.That(model.Owner, Is.EqualTo(TestPlayers.Human));
+            Assert.That(model.State, Is.EqualTo(CaptureSiteState.Owned));
+            Assert.That(model.CanStartConstruction, Is.True);
+        }
+
+        [TestCase(SiteFacilityType.QuadLaserSatellite)]
+        [TestCase(SiteFacilityType.TurbolaserSatellite)]
+        [TestCase(SiteFacilityType.IonSatellite)]
+        [TestCase(SiteFacilityType.MassDriverSatellite)]
+        [TestCase(SiteFacilityType.MissileSatellite)]
+        public void Satellite_RestoresConstructionAndReleasesAfterDestruction(SiteFacilityType type)
+        {
+            CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f);
+            model.Restore(TestPlayers.Human, CaptureSiteState.Constructing, PlayerId.None, 0f, type, 0.5f, 20f);
+            Assert.That(model.TickConstruction(10f), Is.True);
+            Assert.That(model.FacilityType, Is.EqualTo(type));
+            Assert.That(model.TickCapture(100f, TestPlayers.DuelTally(ROSTER, 0, 5)), Is.False);
+            model.ReleaseFacility();
+            Assert.That(model.State, Is.EqualTo(CaptureSiteState.Neutral));
+            Assert.That(model.Owner, Is.EqualTo(PlayerId.None));
+        }
+
         private static CaptureSiteModel CreateOwnedSite(PlayerId owner)
         {
             CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);

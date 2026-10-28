@@ -12,6 +12,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text costText;
+        [SerializeField] private Image icon;
+        [SerializeField] private TMP_Text roleText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
 
         [SerializeField] private SiteFacilityType facilityType;
@@ -38,6 +40,14 @@ namespace EmpireAtWar.Entities.CaptureSites
             nameText.text = displayName;
             costText.text = costLabel;
             tooltipTrigger.SetKey(facilityType);
+        }
+
+        public void Configure(SiteFacilityType type, SiteFacilityCost cost)
+        {
+            facilityType = type;
+            icon.sprite = cost.Icon;
+            roleText.text = cost.Role;
+            Configure(cost.Name.ToUpperInvariant(), $"{cost.Price:0} CR   {cost.BuildTime:0}s");
         }
 
         public void SetInteractable(bool isInteractable)

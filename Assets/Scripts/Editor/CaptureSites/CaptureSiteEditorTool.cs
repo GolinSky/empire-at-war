@@ -1,4 +1,6 @@
 using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Capture;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.MiniMap;
 using MPUIKIT;
@@ -139,7 +141,7 @@ namespace EmpireAtWar.Editor.CaptureSites
 
             SerializedObject serializedData = new SerializedObject(data);
             SerializedProperty entries = serializedData.FindProperty("facilityCosts").FindPropertyRelative("keyValue");
-            entries.arraySize = 2;
+            entries.arraySize = Mathf.Max(entries.arraySize, 2);
             SetCost(entries.GetArrayElementAtIndex(0), SiteFacilityType.Mining, "Asteroid Mine", 600f, 25f);
             SetCost(entries.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, "Battle Asteroid", 1600f, 30f);
             serializedData.ApplyModifiedPropertiesWithoutUndo();
@@ -173,7 +175,18 @@ namespace EmpireAtWar.Editor.CaptureSites
             CaptureSiteView view = root.AddComponent<CaptureSiteView>();
             SerializedObject serializedView = new SerializedObject(view);
             serializedView.FindProperty("radius").floatValue = SITE_RADIUS;
-            serializedView.FindProperty("ringRenderer").objectReferenceValue = ring;
+            CaptureRingView captureRing = root.AddComponent<CaptureRingView>();
+            SerializedObject serializedRing = new SerializedObject(captureRing);
+            serializedRing.FindProperty("ringRenderer").objectReferenceValue = ring;
+            serializedRing.FindProperty("siteBorder").boolValue = true;
+            serializedRing.FindProperty("neutralColor").colorValue = new Color(.58f, .64f, .72f, .04f);
+            serializedRing.FindProperty("playerColor").colorValue = new Color(.22f, .74f, .97f, .05f);
+            serializedRing.FindProperty("allyColor").colorValue = new Color(.36f, .9f, .62f, .05f);
+            serializedRing.FindProperty("opponentColor").colorValue = new Color(.94f, .27f, .27f, .05f);
+            serializedRing.FindProperty("contestedColor").colorValue = new Color(1f, .75f, .1f, .07f);
+            serializedRing.ApplyModifiedPropertiesWithoutUndo();
+            serializedView.FindProperty("captureRing").objectReferenceValue = captureRing;
+            serializedView.FindProperty("tooltipHover").objectReferenceValue = root.AddComponent<TooltipHoverView>();
             serializedView.FindProperty("asteroidRocks").objectReferenceValue = rocks.transform;
             SerializedProperty frameworks = serializedView.FindProperty("constructionFrameworks")
                 .FindPropertyRelative("keyValue");

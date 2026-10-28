@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.Factory
             builder.Register<AsteroidMiningFacilityFactory>(Lifetime.Singleton);
             builder.Register<DefendPlatformFactory>(Lifetime.Singleton);
             builder.Register<AsteroidDefendPlatformFactory>(Lifetime.Singleton);
+            builder.Register<SatelliteDefendPlatformFactory>(Lifetime.Singleton);
         }
     }
 }

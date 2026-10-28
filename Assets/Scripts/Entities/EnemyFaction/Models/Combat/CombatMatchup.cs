@@ -84,7 +84,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         /// Shields absorb shield-blocked weapons while piercing weapons already strip the hull;
         /// once shields fall, every weapon hits the hull.
         /// </summary>
-        private static float TimeToDestroyClass(
+        public static float TimeToDestroyClass(
             float hull,
             float shields,
             float hullDps,

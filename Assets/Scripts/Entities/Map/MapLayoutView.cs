@@ -21,6 +21,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private ReinforcementZoneView zonePrefab;
         [SerializeField] private CaptureSiteView miningSitePrefab;
         [SerializeField] private CaptureSiteView battleSitePrefab;
+        [SerializeField] private CaptureSiteView satelliteSitePrefab;
         [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
         private MapObstacle fieldVolumePrefab;
         [SerializeField] private GameObject largeRockPrefab;
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Entities.Map
         private float fogReferenceSide = 600f;
 
         public MapFeatureRadii FeatureRadii =>
-            new MapFeatureRadii(zonePrefab.Radius, miningSitePrefab.Radius, battleSitePrefab.Radius);
+            new MapFeatureRadii(zonePrefab.Radius, miningSitePrefab.Radius, battleSitePrefab.Radius, satelliteSitePrefab.Radius);
 
         public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
         public CaptureSiteView[] SiteViews { get; private set; }
@@ -69,10 +70,15 @@ namespace EmpireAtWar.Entities.Map
             for (int i = 0; i < SiteViews.Length; i++)
             {
                 SiteSpot site = layout.Sites[i];
-                CaptureSiteView prefab = site.FacilityType == SiteFacilityType.Mining
-                    ? miningSitePrefab
-                    : battleSitePrefab;
+                CaptureSiteView prefab = site.Kind switch
+                {
+                    CaptureSiteKind.Mining => miningSitePrefab,
+                    CaptureSiteKind.Battle => battleSitePrefab,
+                    CaptureSiteKind.Satellite => satelliteSitePrefab,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(site.Kind), site.Kind, "Unknown capture site kind.")
+                };
                 SiteViews[i] = Instantiate(prefab, site.Center, Quaternion.identity, siteRoot);
+                SiteViews[i].Configure(site.Kind, site.Owner, site.PointId);
                 _obstacles.AddRange(SiteViews[i].RockObstacles);
                 sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }

@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Capture;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Services.Player;
@@ -25,9 +26,6 @@ namespace EmpireAtWar.Services.CaptureSites
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
         ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection
     {
-        // Strength scans every ship and squadron per site; capture progress still ticks every frame.
-        private const float STRENGTH_REFRESH_INTERVAL = 0.25f;
-
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
         private IVisionService _visionService;
@@ -42,10 +40,8 @@ namespace EmpireAtWar.Services.CaptureSites
         private INotifier<BattleMap> _battleMap;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
-        private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
-        private float _strengthRefreshCountdown;
+        private CaptureStrengthSampler _strengthSampler;
         private CaptureSiteData _data;
-        private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
@@ -88,7 +84,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _playerRegistry = playerRegistry;
             _playerRoster = playerRoster;
             _localPlayer = localPlayer;
-            _captureStrengthBuilder = new CaptureStrengthBuilder(playerRoster);
+            _strengthSampler = new CaptureStrengthSampler(shipService, squadronRegistry, playerRoster, data.SquadronCaptureWeight);
         }
 
         public void Initialize()
@@ -103,13 +99,14 @@ namespace EmpireAtWar.Services.CaptureSites
             foreach (CaptureSiteView view in battleMap.SiteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(
-                    captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster);
+                    captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster, startingOwner: view.StartingOwner,
+                    facilityType: _data.GetAllowedFacilities(view.Kind)[0]);
                 model.Captured += HandleSiteCaptured;
                 model.Lost += HandleSiteLost;
                 CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
-                    tooltipService: _tooltipService);
+                    tooltipService: _tooltipService, kind: view.Kind, pointId: view.PointId);
                 _sites.Add(site);
-                _strengths.Add(default);
+                _strengthSampler.Add(position => site.Contains(position));
             }
         }
 
@@ -126,28 +123,18 @@ namespace EmpireAtWar.Services.CaptureSites
             }
 
             _sites.Clear();
-            _strengths.Clear();
+            _strengthSampler.Clear();
         }
 
         public void Tick()
         {
             float deltaTime = Time.deltaTime;
-            _strengthRefreshCountdown -= deltaTime;
-            bool refreshStrength = _strengthRefreshCountdown <= 0f;
-            if (refreshStrength)
-            {
-                _strengthRefreshCountdown = STRENGTH_REFRESH_INTERVAL;
-            }
+            _strengthSampler.Tick(deltaTime);
 
             for (int i = 0; i < _sites.Count; i++)
             {
                 CaptureSitePresenter site = _sites[i];
-                if (refreshStrength)
-                {
-                    _strengths[i] = CalculateCaptureStrength(site);
-                }
-
-                site.TickCapture(deltaTime, _strengths[i]);
+                site.TickCapture(deltaTime, _strengthSampler[i]);
                 if (site.TickConstruction(deltaTime))
                 {
                     site.SetFacility(GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition,
@@ -190,7 +177,20 @@ namespace EmpireAtWar.Services.CaptureSites
         public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
         {
             return TryGetClosestSite(origin,
-                site => site.IsCapturable && !_playerRoster.IsAllied(site.Owner, owner), out position);
+                site => site.IsCapturable && !_playerRoster.IsAllied(site.Owner, owner) &&
+                    (site.Kind != CaptureSiteKind.Satellite || OwnsPointMines(site.PointId, owner)), out position);
+        }
+
+        private bool OwnsPointMines(int pointId, PlayerId owner)
+        {
+            bool hasMine = false;
+            foreach (CaptureSitePresenter site in _sites)
+            {
+                if (site.Kind != CaptureSiteKind.Mining || site.PointId != pointId) continue;
+                if (site.Owner != owner) return false;
+                hasMine = true;
+            }
+            return hasMine;
         }
 
         public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
@@ -219,7 +219,7 @@ namespace EmpireAtWar.Services.CaptureSites
             foreach (CaptureSitePresenter site in _sites)
             {
                 // Paying for a site that hostile units are about to take would waste the credits.
-                if (site.Owner == owner && site.CanStartConstruction && !HasHostileUnits(site, owner))
+                if (site.Kind != CaptureSiteKind.Satellite && site.Owner == owner && site.CanStartConstruction && !HasHostileUnits(site, owner))
                 {
                     // A mine pays for itself in seconds; a Battle Asteroid costs more and gives up most of the income.
                     return TryStartConstruction(site, SiteFacilityType.Mining, owner);
@@ -276,9 +276,16 @@ namespace EmpireAtWar.Services.CaptureSites
             }
         }
 
+        public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type)
+        {
+            CaptureSitePresenter site = _sites[siteIndex];
+            return site.Owner == owner && !HasHostileUnits(site, owner) && TryStartConstruction(site, type, owner);
+        }
+
         private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType, PlayerId payer)
         {
-            if (!GetBuilder(payer).TrySpend(site.GetCost(facilityType).Price))
+            if (!site.CanStartConstruction || !_playerRoster.IsAllied(site.Owner, payer) ||
+                !_data.CanBuild(site.Kind, facilityType) || !GetBuilder(payer).TrySpend(site.GetCost(facilityType).Price))
             {
                 return false;
             }
@@ -293,16 +300,7 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        private CaptureStrength CalculateCaptureStrength(CaptureSitePresenter site)
-        {
-            Func<Vector3, bool> contains = position => site.Contains(position);
-            _captureStrengthBuilder.Clear();
-            _shipService.AddShipStrength(contains, _captureStrengthBuilder);
-            _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
-            return _captureStrengthBuilder.Build();
-        }
-
-        private bool HasHostileUnits(CaptureSitePresenter site, PlayerId owner)
+        public bool HasHostileUnits(ICaptureSite site, PlayerId owner)
         {
             foreach (IShipEntity ship in _shipService.Ships)
             {

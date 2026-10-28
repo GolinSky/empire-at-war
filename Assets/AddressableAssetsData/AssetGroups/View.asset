@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: View
   m_GUID: c76d02dd69a34cb44abaf1b9048349ba
   m_SerializeEntries:
+  - m_GUID: 0849c959e994aaa4b9149473907641b2
+    m_Address: IonSatelliteView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b435acd8bada324bbff5dafa541fb29
     m_Address: DefendPlatformWreckView
     m_ReadOnly: 0
@@ -30,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 496b266af08a4d14095a8cf797575d90
+    m_Address: MissileSatelliteView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5090c0e719bb54042924eb52ef50793a
     m_Address: TibannaGasStationWreckView
     m_ReadOnly: 0
@@ -42,6 +52,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 545b0f416ed9ad74ca4d2877cd15a76d
     m_Address: AotrGolanIIIDefensePlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 617bd2f4ff1b56d4986dbd9342e06f0d
+    m_Address: QuadLaserSatelliteView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -95,6 +110,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b05df5e5e84b7834891dca67992a72b6
+    m_Address: MassDriverSatelliteView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c90c026a3e39ede4aa839f3f104bb1f8
     m_Address: MiningFacilityWreckView
     m_ReadOnly: 0
@@ -112,6 +132,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d84a981dd98ca8d469ba6d297ddf571d
     m_Address: CommonMiningReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e47308abb82d4934a82b90e6d0f4163d
+    m_Address: TurbolaserSatelliteView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

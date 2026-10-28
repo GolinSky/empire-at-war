@@ -91,13 +91,12 @@ namespace EmpireAtWar.Services.Saves
             int expectedZones = definition.Map.Type == MapType.Full ? size.CapturableZoneCount : 0;
             if (save.ReinforcementZones.Length != expectedZones)
                 throw new InvalidDataException($"Saved {save.ReinforcementZones.Length} reinforcement zones; the map has {expectedZones}.");
-            int expectedSites = !definition.HasFeature(BattleFeatures.CaptureSites) ? 0
-                : definition.Map.Type == MapType.Survival
-                    ? (definition.HasFeature(BattleFeatures.MiningSites) ? size.MiningPointCount : 0)
-                    : (definition.HasFeature(BattleFeatures.MiningSites)
-                        ? (definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2)
-                          * PointOfInterestPlacer.SITES_PER_MINING_POINT
-                        : 0) + (size.BattleSiteCount / 2) * 2;
+            int points = definition.Map.Type == MapType.Survival ? size.MiningPointCount
+                : definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2;
+            int miningSites = definition.HasFeature(BattleFeatures.MiningSites)
+                ? points * PointOfInterestPlacer.SITES_PER_MINING_POINT : 0;
+            int battleSites = definition.Map.Type == MapType.Full ? (size.BattleSiteCount / 2) * 2 : 0;
+            int expectedSites = definition.HasFeature(BattleFeatures.CaptureSites) ? miningSites * 2 + battleSites : 0;
             if (save.CaptureSites.Length != expectedSites)
                 throw new InvalidDataException($"Saved {save.CaptureSites.Length} capture sites; the map has {expectedSites}.");
         }
@@ -181,6 +180,11 @@ namespace EmpireAtWar.Services.Saves
                     {
                         DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformView",
                         DefendPlatformType.Empress => "AotrEmpressDefensePlatformView",
+                        DefendPlatformType.QuadLaserSatellite => "QuadLaserSatelliteView",
+                        DefendPlatformType.TurbolaserSatellite => "TurbolaserSatelliteView",
+                        DefendPlatformType.IonSatellite => "IonSatelliteView",
+                        DefendPlatformType.MassDriverSatellite => "MassDriverSatelliteView",
+                        DefendPlatformType.MissileSatellite => "MissileSatelliteView",
                         _ => "DefendPlatformView"
                     });
                     ValidateHardPoints(_assets.LoadComponent<DefendPlatformEntity>(prefab), structure.Health, structure.Id);

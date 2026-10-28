@@ -780,8 +780,18 @@ namespace EmpireAtWar.Tests.Editor
                 EntityLifetimeScope asteroidPlatform = AssertEntity(player.Container.Resolve<AsteroidDefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.BattleAsteroid, origin + Vector3.forward * 350f), player, slot);
                 AssertDecoratedHealth(asteroidPlatform, asteroidPlatform.Container.Resolve<DefendPlatformData>().ComponentData);
+                foreach (DefendPlatformType type in new[] { DefendPlatformType.QuadLaserSatellite,
+                    DefendPlatformType.TurbolaserSatellite, DefendPlatformType.IonSatellite,
+                    DefendPlatformType.MassDriverSatellite, DefendPlatformType.MissileSatellite })
+                {
+                    EntityLifetimeScope satellite = AssertEntity(player.Container.Resolve<SatelliteDefendPlatformFactory>()
+                        .Create(slot.Id, type, origin + Vector3.forward * (400f + (int)type * 30f)), player, slot);
+                    AssertDecoratedHealth(satellite, satellite.Container.Resolve<DefendPlatformData>().ComponentData);
+                    Assert.That(satellite.Container.Resolve<HealthModel>().HardPointModels.Length, Is.EqualTo(6));
+                    Assert.That(satellite.Container.Resolve<DefendPlatformType>(), Is.EqualTo(type));
+                }
             }
-            Assert.That(_entityIds.Count, Is.EqualTo(14));
+            Assert.That(_entityIds.Count, Is.EqualTo(24));
             CombatModifiers first = shipScopes[0].Container.Resolve<CombatModifiers>();
             CombatModifiers second = shipScopes[1].Container.Resolve<CombatModifiers>();
             first.SetCloaked(true);

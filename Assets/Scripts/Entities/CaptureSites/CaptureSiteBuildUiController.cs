@@ -67,6 +67,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             if (_selection.SelectedSite == null) _ui.Hide();
             else
             {
+                _ui.SetFacilities(_data.GetAllowedFacilities(_selection.SelectedSite.Kind));
                 _ui.SetPosition(_selection.SelectionScreenPosition);
                 Tick();
                 _ui.Show();
@@ -76,8 +77,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void Tick()
         {
             if (_selection.SelectedSite == null) return;
-            _ui.SetAvailable(SiteFacilityType.Mining, _selection.CanAfford(_data.GetCost(SiteFacilityType.Mining).Price));
-            _ui.SetAvailable(SiteFacilityType.BattleAsteroid, _selection.CanAfford(_data.GetCost(SiteFacilityType.BattleAsteroid).Price));
+            foreach (SiteFacilityType type in _data.GetAllowedFacilities(_selection.SelectedSite.Kind))
+                _ui.SetAvailable(type, _selection.CanAfford(_data.GetCost(type).Price));
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
