@@ -102,7 +102,8 @@ namespace EmpireAtWar.Entities.SpaceStation
                 _ionField.SetIonFieldBounds(levelView.CurrentModel.HullBounds);
             }
             StationLevelStats stats = Data.GetLevelStats(level);
-            _healthUpgrade.Upgrade(level, stats.HullMultiplier, stats.ShieldsMultiplier, stats.ShieldRegenerateMultiplier);
+            _healthUpgrade.Upgrade(level, stats.HullMultiplier, stats.ShieldsMultiplier, stats.ShieldRegenerateMultiplier,
+                stats.HullMultiplier);
         }
 
         private void Release(bool playDeathAnimation)

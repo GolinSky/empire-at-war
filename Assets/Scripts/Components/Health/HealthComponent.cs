@@ -277,9 +277,9 @@ namespace EmpireAtWar.Components.Ship.Health
             }
         }
 
-        public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale)
+        public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale, float hardPointScale = 1f)
         {
-            Model.Upgrade(level, hullScale, shieldsScale, shieldRegenerateScale);
+            Model.Upgrade(level, hullScale, shieldsScale, shieldRegenerateScale, hardPointScale);
             SyncInstalledHardPoints();
         }
 

@@ -9,6 +9,22 @@ unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.c
 
 Run it after the faction's art, attachment and view builders. It saves every asset it changes.
 
+## Gameplay armament
+
+After `BuildStationLevels`, apply the expanded armament and inspect the saved prefabs:
+
+```powershell
+./Tools/Blender/SpaceStations/Update-StationArmament.ps1 -Faction Empire
+./Tools/Blender/SpaceStations/Update-StationArmament.ps1 -Faction Empire -Inspect
+```
+
+- Repeat for `Rebellion`, `Republic`, and `Separatist`.
+- Every weapon type has `1 / 2 / 4 / 6 / 8` installed mounts at levels 1–5; shield generator remains one.
+- Original IDs and source art bindings remain. Additional mounts use exposed hull triangles near existing weapons, with `4–10` units of clearance. Separate source weapon art is copied where available; Republic/CIS retain their embedded-art convention.
+- `BuildStationLevels` restores authored mounts; always run the armament step afterward. Both steps save assets automatically.
+- Inspection reloads saved assets, checks mount/unlock counts and health/weapon/injection bindings, measures new anchor distance to hull geometry, and renders top/side previews with colored hardpoint markers.
+- Evidence: `Temp/StationArmament/<Faction>.json` and `<Faction>Level<N>{Top,Side}.png`. This inspection does not run Unity tests.
+
 ## `<Faction>.json`
 
 - `view`: gameplay prefab; `levels`: visual prefabs for levels 1–5; `artPrefix`: attached source artwork name prefix.

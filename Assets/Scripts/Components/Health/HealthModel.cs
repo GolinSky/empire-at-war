@@ -26,6 +26,7 @@ namespace EmpireAtWar.Models.Health
         private float _levelHullScale = 1f;
         private float _levelShieldsScale = 1f;
         private float _levelShieldRegenerateScale = 1f;
+        private float _levelHardPointScale = 1f;
         private float _constructionScale = 1f;
 
         public event Action OnValueChanged;
@@ -94,7 +95,7 @@ namespace EmpireAtWar.Models.Health
                 }
 
                 HardPointHealth health = GetHardPointHealth(hardPoint.HardPointType);
-                hardPoint.SetHealth((hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health) * _constructionScale,
+                hardPoint.SetHealth((hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health) * _levelHardPointScale * _constructionScale,
                     health.HullDamageMultiplier);
             }
         }
@@ -122,7 +123,7 @@ namespace EmpireAtWar.Models.Health
         /// (current hull and shields keep their percentage), hardpoints unlocked by the level are installed
         /// and every installed hardpoint, the shield generator included, is restored to full health.
         /// </summary>
-        public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale)
+        public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale, float hardPointScale = 1f)
         {
             if (IsDestroyed)
             {
@@ -135,6 +136,7 @@ namespace EmpireAtWar.Models.Health
             _levelHullScale = hullScale;
             _levelShieldsScale = shieldsScale;
             _levelShieldRegenerateScale = shieldRegenerateScale;
+            _levelHardPointScale = hardPointScale;
             Hull = MaxHull * hullPercentage;
             Shields = IsShieldSuppressed ? 0f : MaxShields * shieldPercentage;
             IsLostShieldGenerator = false;

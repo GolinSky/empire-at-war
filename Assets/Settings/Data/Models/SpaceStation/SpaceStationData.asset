@@ -15,26 +15,25 @@ MonoBehaviour:
   <ComponentData>k__BackingField:
     <DestroyDelay>k__BackingField: 0.35
     <ShipClass>k__BackingField: 6
-    <Hull>k__BackingField: 12000
-    <Shields>k__BackingField: 8000
+    <Hull>k__BackingField: 36000
+    <Shields>k__BackingField: 24000
     <ShieldRegenerateValue>k__BackingField: 240
     <ShieldRegenerateDelay>k__BackingField: 3
     hardPointHealth:
     - hardPointType: 0
-      health: 500
+      health: 1500
       hullDamageMultiplier: 1
     - hardPointType: 1
       health: 1000
       hullDamageMultiplier: 1
     - hardPointType: 2
-      health: 1000
+      health: 3000
       hullDamageMultiplier: 1
     - hardPointType: 4
       health: 500
       hullDamageMultiplier: 1
     <Range>k__BackingField: 900
     <Delay>k__BackingField: 0.25
-    <WeaponRange>k__BackingField: 900
     <VisionRange>k__BackingField: 900
     <SpawnBlockRadius>k__BackingField: 1200
   wrecks:

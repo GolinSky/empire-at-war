@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.Ship.Health
         /// <param name="hullScale">Multiplier of the base hull.</param>
         /// <param name="shieldsScale">Multiplier of the base shields.</param>
         /// <param name="shieldRegenerateScale">Multiplier of the base shield regeneration.</param>
-        void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale);
+        /// <param name="hardPointScale">Multiplier of each installed hardpoint's base health.</param>
+        void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale, float hardPointScale = 1f);
     }
 }

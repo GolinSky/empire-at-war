@@ -365,7 +365,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public int Level { get; private set; }
             public float HullScale { get; private set; }
-            public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale)
+            public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale, float hardPointScale = 1f)
             {
                 Level = level;
                 HullScale = hullScale;

@@ -28,12 +28,13 @@ public static class BuildStationLevels
         string artPrefix = (string)config["artPrefix"];
         string alignmentAnchor = (string)config["alignmentAnchor"];
         var viewAsset = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
-        var hardPoints = viewAsset.GetComponentsInChildren<HardPoint>(true).ToDictionary(h => h.Id);
+        var authoredIds = config["mounts"].Select(m => (int)m["hardPoint"]).ToArray();
+        var hardPoints = viewAsset.GetComponentsInChildren<HardPoint>(true).Where(h => authoredIds.Contains(h.Id)).ToDictionary(h => h.Id);
         var mounts = config["mounts"].Select(m => (Id: (int)m["hardPoint"], EmbeddedArt: m["art"] != null && m["art"].Type == JTokenType.Null,
             MissileSubstitution: (bool?)m["missileSubstitution"] ?? false,
             Anchors: ((JObject)m["anchors"]).Properties().ToDictionary(p => int.Parse(p.Name), p => (string)p.Value))).ToArray();
         if (!mounts.Select(m => m.Id).OrderBy(i => i).SequenceEqual(hardPoints.Keys.OrderBy(i => i)))
-            throw new InvalidOperationException(faction + ": mount table must list every gameplay hardpoint exactly once.");
+            throw new InvalidOperationException(faction + ": mount table must resolve every authored hardpoint exactly once.");
         foreach (var mount in mounts)
             if (mount.Anchors.Keys.Min() != hardPoints[mount.Id].UnlockLevel)
                 throw new InvalidOperationException($"{faction}: hardpoint {mount.Id} unlocks at {hardPoints[mount.Id].UnlockLevel} but is first mounted at {mount.Anchors.Keys.Min()}.");
