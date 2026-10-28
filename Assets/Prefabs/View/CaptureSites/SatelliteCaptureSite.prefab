@@ -8932,7 +8932,7 @@ MonoBehaviour:
   progressFill: {fileID: 8152691365133480005}
   statusText: {fileID: 7906514327143189668}
   tooltipHover: {fileID: 687230072245637770}
-  radius: 20
+  radius: 100
   captureDuration: 12
   facilityHeightOffset: 0
   screenHeightFraction: 0.24
