@@ -15,8 +15,8 @@ namespace EmpireAtWar.Entities.Map.Generation
     {
         public const int SITES_PER_MINING_POINT = 3;
         // Neighbouring sites of one mining point sit at this share of the spacing that keeps their capture ranges
-        // apart, so the cluster reads as one point; their ranges overlap.
-        public const float MINING_SITE_SPACING_SHARE = 0.5f;
+        // apart, so the cluster reads as one tight point; their ranges overlap.
+        public const float MINING_SITE_SPACING_SHARE = 1f / 6f;
 
         private const int MAX_PAIR_ATTEMPTS = 400;
         private const int CANDIDATES_PER_PICK = 12;
@@ -32,8 +32,6 @@ namespace EmpireAtWar.Entities.Map.Generation
         private readonly MapGenerationSettings _settings;
 
         private readonly MapFeatureRadii _radii;
-        // Center distance between neighbouring sites of one mining point.
-        private readonly float _miningSiteSpacing;
         // Distance from a mining point's center to each site of its equilateral site triangle.
         private readonly float _miningSiteSpread;
 
@@ -41,8 +39,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             _settings = settings;
             _radii = radii;
-            _miningSiteSpacing = (2f * radii.MiningSite + MINING_SITE_GAP) * MINING_SITE_SPACING_SHARE;
-            _miningSiteSpread = _miningSiteSpacing / Mathf.Sqrt(3f);
+            _miningSiteSpread = (2f * radii.MiningSite + MINING_SITE_GAP) * MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
         }
 
         /// <returns>False when this random draw left no room; the caller retries with new draws.</returns>
@@ -128,8 +125,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         }
 
         /// <summary>
-        /// Fans each station's home sites along an arc behind it, on the side facing its map corner,
-        /// as close to the station footprint as the site clearance allows.
+        /// Groups each station's home sites into the same tight triangle as a contested point, behind the station
+        /// on the side facing its map corner, as close to the station footprint as the site clearance allows.
         /// </summary>
         private bool TryAddHomeMining(
             MapSizeSettings size,
@@ -147,14 +144,14 @@ namespace EmpireAtWar.Entities.Map.Generation
                 int firstIndex = nodes.Count;
                 foreach (MapStation station in stations)
                 {
-                    float distance = station.Radius + outer + MINING_SITE_GAP;
-                    // Neighbouring sites on the arc keep the same gap as the sites of a contested point.
-                    float step = 2f * Mathf.Asin(_miningSiteSpacing * 0.5f / distance) * Mathf.Rad2Deg;
                     Vector3 corner = new Vector3(
                         Mathf.Sign(station.Position.x - center.x), 0f, Mathf.Sign(station.Position.z - center.z)).normalized;
-                    // A rotation commutes with point reflection, so mirrored stations get mirrored arcs.
-                    Vector3 direction = Quaternion.Euler(0f, (site - 1) * step, 0f) * corner;
-                    Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) + direction * distance;
+                    // One triangle edge faces the station: its two sites hug the footprint, the third sits behind them.
+                    float distance = station.Radius + outer + MINING_SITE_GAP + _miningSiteSpread * 0.5f;
+                    // A rotation commutes with point reflection, so mirrored stations get mirrored triangles.
+                    Vector3 offset = Quaternion.Euler(0f, site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT, 0f) *
+                        corner * _miningSiteSpread;
+                    Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) + corner * distance + offset;
                     if (!IsClear(position, outer, size, stations, defaultZones))
                     {
                         return false;

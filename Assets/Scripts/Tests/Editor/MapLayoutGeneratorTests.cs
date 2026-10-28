@@ -154,7 +154,10 @@ namespace EmpireAtWar.Tests.Editor
                         List<Vector3> mines = GetMiningSites(layout);
                         mines.Sort((first, second) =>
                             PlanarGeometry.Distance(station, first).CompareTo(PlanarGeometry.Distance(station, second)));
-                        float gapLimit = _settings.ZoneClearance + MINING_SITE_GAP + TOLERANCE;
+                        // The two sites facing the station hug it; the third sits one triangle height behind them.
+                        float siteSpread = (2f * _radii.MiningSite + MINING_SITE_GAP) *
+                            PointOfInterestPlacer.MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
+                        float gapLimit = _settings.ZoneClearance + MINING_SITE_GAP + 1.5f * siteSpread + TOLERANCE;
                         for (int i = 0; i < PointOfInterestPlacer.SITES_PER_MINING_POINT; i++)
                         {
                             string label = $"{mapSize} seed {seed} {player.Id} home mine {i}";
