@@ -598,6 +598,7 @@ namespace EmpireAtWar.Tests.Editor
         }
     }
 
+    [Category("EnemyAi")]
     public sealed class EnemyProductionStrategyTests
     {
         private const string SHARED_FACTION_DATA_PATH = "Assets/Settings/Data/Factions/Shared/";
