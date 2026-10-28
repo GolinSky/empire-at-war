@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         public const int SITES_PER_MINING_POINT = 3;
         // Neighbouring sites of one mining point sit at this share of the spacing that keeps their capture ranges
         // apart, so the cluster reads as one tight point; their ranges overlap.
-        public const float MINING_SITE_SPACING_SHARE = 1f / 6f;
+        public const float MINING_SITE_SPACING_SHARE = 0.25f;
 
         private const int MAX_PAIR_ATTEMPTS = 400;
         private const int CANDIDATES_PER_PICK = 12;
