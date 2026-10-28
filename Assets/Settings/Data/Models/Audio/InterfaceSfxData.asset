@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: InterfaceSfxData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Audio.InterfaceSfxData
   rejected: {fileID: 8300000, guid: d634144eb1f5f57498c477083bf793ee, type: 3}
-  orbitalAvailable: {fileID: 8300000, guid: 2db2b551884abcb4c86bdc3ec9c12ba7, type: 3}
+  orbitalAvailable: {fileID: 8300000, guid: 6f9720e195153ab4d8607e630a0c95f2, type: 3}
   orbitalBought: {fileID: 8300000, guid: f0aa3f1fd9a1d224da52aeb0515bb3cf, type: 3}
   orbitalFiring: {fileID: 8300000, guid: e032b15211d618046bf6565e05dcfde7, type: 3}
   ionCharging: {fileID: 8300000, guid: cc59554f8df7e0f468564a96d93d15cd, type: 3}

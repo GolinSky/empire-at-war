@@ -309,9 +309,13 @@ implemented: 2026-10-26
 - Ion purchase/ready/fire speech: `I000_RHD6301_ENG.wav` (“Ion Cannon Charging”), `I000_RHD2401_ENG.wav` (“Ion Cannon Available”), `I000_RHD6302_ENG.wav` (“Ion Cannon Firing”).
 - Hypervelocity purchase/ready/fire speech: `I000_EHD6303_ENG.wav` (“Hypervelocity Cannon Charging”), `I000_EHD2402_ENG.wav` (“Hypervelocity Gun Available”), `I000_EHD6304_ENG.wav` (“Hypervelocity Cannon Firing”).
 - `InterfaceSfxData.GetOrbitalBought/Available/Firing(SuperWeaponType)` selects each weapon's speech; same routes handle incoming warnings, preserve priority, restore silence and duplicate suppression.
-- No verified plasma-specific announcer set found in EaW/RaW catalogs. Plasma explicitly retains the existing generic PlanetaryAttack trio; RaW `I000_RHD9000/9001/9002` are those same recordings, not new alternatives.
+- Corrected 2026-10-28: plasma's existing PlanetaryAttack trio is the RaW **Planetary Turbolaser** set: `I000_RHD9000/9001/9002` = Available/Charging/Firing. Source XML event names plus local speech transcription confirm the wording; SHA-256 matches all three project clips. Earlier “generic” description was inaccurate. No literal plasma-named set found. UHD9000–9002 are distinct recordings with unreliable subtitle associations; do not conflate them with RHD.
 - Six speech clips + plasma effect imported mono Vorbis 0.5, CompressedInMemory, preload enabled; Unity saved both data assets.
 - Verification: compile/import/save passed; superweapon tests 44/44 (`Logs/FactionAudio/tests-orbital-effects-and-voices.json`), including real shot SFX for all three types, typed speech mappings and restore behavior.
+
+## Plasma ready voice — 2026-10-28
+- User-selected `I000_EHD2403_ENG.wav` (“Magnepulse Cannon Available”) replaces plasma ready/available speech only; Planetary Turbolaser charging/firing remain.
+- Imported mono Vorbis 0.5, CompressedInMemory, preload enabled; Unity saved `InterfaceSfxData.orbitalAvailable` and verified ready routing plus unchanged charging/firing references.
 
 ## Implementation
 1. Decided 2026-10-26: generic-cue dedupe (yes), Republic/Separatist borrow Empire/Rebellion voices, enemy upgrade always plays, unit cap = reach max + refused placement. Republic/Separatist → Rebellion voices. Still open: listen-verify `I000_EHD5503_ENG.wav`.
