@@ -49,6 +49,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -106,6 +107,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
@@ -163,6 +165,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -645,6 +648,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -678,7 +682,7 @@ RectTransform:
   m_GameObject: {fileID: 5334382664052385171}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -0.54}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5484777550926794194}
@@ -738,6 +742,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -2054,6 +2059,7 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
@@ -2113,6 +2119,7 @@ MonoBehaviour:
   - {fileID: 8209512439285726378}
   - {fileID: 499212946749643524}
   - {fileID: 5294651940298756087}
+  rangeMultiplier: 1
 --- !u!1001 &4914010401096829529
 PrefabInstance:
   m_ObjectHideFlags: 0

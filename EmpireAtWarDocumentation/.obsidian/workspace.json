@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Done/Features/Battle_Session_Save.md",
+                "file": "TODOs/Optimization/Battle_FPS_Recovery_Plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Battle_Session_Save"
+              "title": "Battle_FPS_Recovery_Plan"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "Battle_FPS_Recovery_Plan",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -76,7 +76,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -185,43 +186,43 @@
       "bases:Create new base": false
     }
   },
-  "active": "1261212fe2167d70",
+  "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
-    "TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research.md",
-    "TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan.md",
-    "TODOs/Documentation/Vault_Guidance_And_Backlog_Cleanup.md",
-    "TODOs/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research.md",
+    "Done/Features/Battle_Session_Save.md",
+    "Done/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research.md",
+    "Done/Documentation/Vault_Guidance_And_Backlog_Cleanup.md",
+    "TODOs/Documentation/sedEi1wmg",
+    "TODOs/Documentation/sedJUugEI",
+    "AssetPipeline/Imports/sedAFtn17",
+    "AssetPipeline/Imports/sedrPbomK",
+    "Rules/AGENTS.md.tmp.10036.941724027e1d",
+    "Done/Optimization/Projectile_VFX_PC_Optimization_Plan - Research.md",
+    "Done/Optimization/Projectile_VFX_PC_Optimization_Plan.md",
+    "Done/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research.md",
+    "Done/Optimization/Battle_Particle_Rendering_Optimization_Plan.md",
+    "Done/Optimization/Battle_Rendering_Performance_Audit - Research.md",
+    "Done/Optimization/Battle_Rendering_Performance_Audit.md",
+    "Done/Optimization/Burst_Jobs_Optimization_Plan - Research.md",
+    "Done/Optimization/Burst_Jobs_Optimization_Plan.md",
+    "Done/Optimization/Battle_Attack_Optimization_Plan - Research.md",
+    "Done/Optimization/Battle_Attack_Optimization_Plan.md",
+    "Done/Optimization/Battle_CPU_Fixes_Plan - Research.md",
+    "Done/Optimization/Battle_CPU_Fixes_Plan.md",
+    "Done/Features/Space_Hazards_Shape_Rework_Plan.md",
+    "Done/Features/Space_Hazards_Rework_Plan.md",
+    "Done/Refactoring/SkirmishOrchestrator_Refactoring_Plan - Research.md",
+    "Done/Refactoring/SkirmishOrchestrator_Refactoring_Plan.md",
+    "Done/Features/Ship_Abilities_Plan - Research.md",
+    "Done/Features/Ship_Abilities_Plan.md",
+    "Done/Refactoring/Ship_Movement_Simplification_Plan - Research.md",
+    "Done/Refactoring/Ship_Movement_Simplification_Plan.md",
+    "Done/Refactoring/Audit_Remediation_Coordination.md",
+    "Done/Features/sedgp5bGS",
+    "TODOs/User_Acceptance_Queue.md",
+    "Done/Optimization/Squadron_Pooling_Plan.md",
+    "Done/Optimization",
+    "Done/Bugs",
     "TODOs/Documentation",
-    "Done/Features/Structure_Construction_Flow.md",
-    "TODOs/Features/Structure_Construction_Flow.md",
-    "TODOs/Tooling/Unified_ALO_Import_Pipeline - Research.md",
-    "TODOs/Tooling/Unified_ALO_Import_Pipeline.md",
-    "TODOs/Bugs/Defense_Satellites_Review_Fixes.md",
-    "TODOs/Features/Space_Hazards_Shape_Rework_Plan.md",
-    "TODOs/Features/Defense_Satellites_Plan.md",
-    "TODOs/Features/Space_Hazards_Rework_Plan.md",
-    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.4577b7ad24c9",
-    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.a3b33f88e911",
-    "TODOs/Features/Space_Hazards_Plan - Visuals.md",
-    "TODOs/TODOs.md.tmp.44224.3776755caf3d",
-    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.bd608bfd9f91",
-    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.e25d73996c93",
-    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.7cea3a4a14fc",
-    "TODOs/Features/Space_Hazards_Plan.md",
-    "TODOs/Bugs/Enemy_AI_And_Faction_Balance.md",
-    "Tooling/Battle_Telemetry.md",
-    "Done/Features/Wavecrest_Import.md",
-    "TODOs/Features/Wavecrest_Import.md",
-    "AssetPipeline/Imports/Recalcitrant Import.md",
-    "Done/Features/Peleset_Import.md",
-    "TODOs/Features/Peleset_Import.md",
-    "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.eafd188b3532",
-    "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.e21ec1234590",
-    "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.cf7b7f7a69fd",
-    "TODOs/Refactoring/Ship_Scale_Original_Values_Plan.md",
-    "TODOs/Features/Faction_Interface_And_Ability_Audio_Plan.md",
-    "TODOs/Features/More_Mining_Sites.md",
-    "TODOs/Refactoring/Original_Values_Rebalance.md",
-    "TODOs/Refactoring/Original_Values_Rebalance - Research.md"
+    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.4577b7ad24c9"
   ]
 }

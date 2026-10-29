@@ -211,3 +211,16 @@ created: 2026-10-29
 - Rechecked: nebula samples 48/64/96/128; Performant bloom Quarter/3/HQ off and motion blur 0; particle URP compatibility path and teardown; asynchronous fog scheduling and disposal synchronization.
 - Verification this execution: source/serialized-asset inspection and scoped diff whitespace check. Existing capture numbers remain historical; no new FPS claim.
 - Plan stays active: absorbed navigation attribution, effect-specific isolation, material/texture experiments and matched performance acceptance remain unfinished. Do not treat unchecked investigations as permission for speculative optimization.
+
+## Verification — 2026-10-29 (commit `76e7222f8`)
+
+- Implementation is committed in `76e7222f8` "Optimize battle rendering and add reusable ablation capture"; the working tree has no pending changes to plan files.
+- Phase 0: `RenderAuditAblationCapture` 21 phases; input lock + `SetPose` pin; `fieldRoot` discovery; seed in metadata; `CultureInfo.InvariantCulture` JSON.
+- Phase 1: `DecorAsteroidCell` 1,000-unit cells, transformed AABB (abs-matrix extents), cell `IsInside` fast path; SceneContext 2,200/5,000/12,000, LOD 1,000; size→LOD mesh mapping correct (Large/Medium/Debris A/B); all LOD meshes 1 submesh = 1 material each.
+- Phase 2: both field prefabs have `LODGroup` 0.08 → 0 (final LOD stays visible); medium + large use `Asteroid_01_Surface`.
+- Phase 3: `MatchNebula` MPB `_Samples` 48 (Performant/Low) / 64 (Balanced) / 96 (High Fidelity) / 128 (Ultra/Cinematic); quality indices match `QualitySettings.asset`.
+- Phase 4: `PerformantVolumeProfile` motion blur 0, bloom HQ off / Quarter / 3 mips; `PerformantPostProcessing` volume global priority 100, toggled only at quality 0.
+- Phase 5: 0 particle shadow casters in `Assets/Prefabs`; 29 remaining legacy-shader materials are unreferenced by prefabs/scenes; 7 materials on `ParticleLegacyUnlit`, `explosion03` on URP particles.
+- Phase 6: fog schedule `Update` → complete/`Apply` `LateUpdate`; every grid accessor and `Dispose` completes pending work first; music gain applied only in `Tick`; pool skips destroyed effects.
+- Note: `RenderAuditAblationCapture.cs` is 238 lines (> 200 guideline); Editor-only, split only if extended.
+- Not run: tests, Play Mode, builds, captures (repo override + user deferral). No new FPS claim.
