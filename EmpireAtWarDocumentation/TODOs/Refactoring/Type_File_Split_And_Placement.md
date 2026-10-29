@@ -8,7 +8,9 @@ tags:
 ---
 # Type File Split and Placement
 
-[[TODOs/Refactoring/Audit_Remediation_Coordination|← Coordination]] · **Wave 2** (after all Wave 1 merges) · Unity lane: yes
+> Prerequisite: [[TODOs/Bugs/Fail_Fast_Null_Returns]] lands first — Wave 2 touches Wave 1 files (`Squadron.cs`, ship states, `ReinforcementUi.cs`, `ReinforcementZonesSystem.cs`). From closed tracker [[Done/Refactoring/Audit_Remediation_Coordination]].
+
+[[Done/Refactoring/Audit_Remediation_Coordination|← Coordination]] · **Wave 2** (after all Wave 1 merges) · Unity lane: yes
 
 ## Goal
 - One top-level type per file, named after the type (AGENTS "C# File Organization").

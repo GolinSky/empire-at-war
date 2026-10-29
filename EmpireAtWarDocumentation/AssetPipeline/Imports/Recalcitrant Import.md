@@ -8,6 +8,8 @@ tags:
 ---
 # Recalcitrant Import
 
+> Plan: none — historical provenance only; no tracked open work (2026-10-29 review).
+
 ## Decision
 
 - Added `ShipType.Recalcitrant = 113` to CIS; source unit `Recalcitrant_Light_Cruiser`, RaW workshop `1129810972`.

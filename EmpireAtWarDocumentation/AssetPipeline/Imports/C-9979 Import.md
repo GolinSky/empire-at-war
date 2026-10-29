@@ -20,7 +20,7 @@ reviewed: 2026-10-20
 ## Goal
 
 - Static space/skirmish transport from RaW 1.2.1 `SeV_c9979.ALO`; [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
-- Remaining acceptance: [[TODOs/Features/C9979_Import]].
+- Remaining acceptance: [[Done/Features/C9979_Import]].
 
 ## Rules
 

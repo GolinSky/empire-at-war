@@ -44,7 +44,7 @@ tags:
   - Avoid: re-packing bundles first (LZ4 already reads only needed chunks; change unproven).
 - Keep `IAssetService.Load<T>` synchronous for consumers; make the *cache miss* the exception by preloading.
   - Why: VContainer `Configure` and constructors are synchronous; converting all call sites to async is out of scope.
-- Async via Unity 6 `Awaitable` (matches [[TODOs/Refactoring/Battle_Startup_Sequence_Plan]]); no UniTask.
+- Async via Unity 6 `Awaitable` (matches [[Done/Refactoring/Battle_Startup_Sequence_Plan]]); no UniTask.
 
 ## Progress (2026-10-23)
 
@@ -147,7 +147,7 @@ tags:
 - Exit during loading → cancel preload; release completed handles.
 - Battle save restore uses `SpawnRestored` (no pool take) → unaffected by prewarm slicing.
 - Prewarmed squadrons stowed at `PREWARM_POSITION (0,-10000,0)`; sliced build must keep them stowed in the frame they are built.
-- Transition unload (133–222 ms) is `Resources.UnloadUnusedAssets` + scene unload; separate from load path. Track in [[TODOs/Bugs/Scene_Teardown_And_Material_Leaks]] if it persists after step 7.
+- Transition unload (133–222 ms) is `Resources.UnloadUnusedAssets` + scene unload; separate from load path. Track in [[Done/Bugs/Scene_Teardown_And_Material_Leaks]] if it persists after step 7.
 
 ## Files
 
@@ -160,7 +160,7 @@ tags:
 
 ## Related
 
-- [[TODOs/Refactoring/Battle_Startup_Sequence_Plan]] — `BattleState.Loading` sequence hosts step 3.
-- [[TODOs/Optimization/Squadron_Pooling_Plan]] — origin of prewarm.
+- [[Done/Refactoring/Battle_Startup_Sequence_Plan]] — `BattleState.Loading` sequence hosts step 3.
+- [[Done/Optimization/Squadron_Pooling_Plan]] — origin of prewarm.
 - [[TODOs/Optimization/Desktop_Asset_Compression_Plan]] — loading captures overlap.
 - Hangar launch-point exception: separate bug, not in scope.

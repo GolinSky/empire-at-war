@@ -101,13 +101,9 @@ unity command run_script --file Temp/RepublicStationImport/Verify.cs --json
 uv run --with pillow python Temp/RepublicStationImport/VerifyGeometry.py
 unity command run_script --file Tools/Blender/RepublicSpaceStation/VerifyMapping.cs --args '[false]' --json
 unity command run_script --file Temp/RepublicStationImport/Render.cs --json
-unity command list_open_scenes --json
-unity command run_tests --mode editor --filter StationLevelViewTests --async_tests true --json
-unity command test_status --json
 ```
 
-- Before tests, every open scene must be clean. Save dirty named scenes and recheck; dirty untitled scenes → `BLOCKED_DIRTY_UNTITLED_SCENE`.
-- Poll tests to completion. Do not mutate/import assets while tests run.
+- `StationLevelViewTests`: Tests only on explicit user request (root `AGENTS.md` → Local Test Execution Override); then follow Unity Test Safety there.
 - Inspect all five models and contrasting team colors. Preview images: `Temp/RepublicStationImport/Previews/LevelNTeam-1..7.png`.
 - 2026-10-07: all five FBXs pass original binary hierarchy, geometry, UV, and normal comparison. Six prefabs reload without missing scripts or broken references.
 - Maximum raw Unity displacement: vertices `0.000003556` units; bones `0.000002218` units. Maximum UV delta `0.000000061`; normal vector delta `0.000000299`.

@@ -72,4 +72,4 @@ reviewed: 2026-10-20
 - `output/aotr-empire-units/VictoryII-Converted/` — packed blends, FBXs, textures and verification evidence.
 - `Assets/Prefabs/Models/Ships/VictoryIIShipView.prefab`
 - `Assets/Settings/Data/Ship/VictoryIIShipData.asset`
-- [[TODOs/Features/VictoryII_Import]] — runtime acceptance.
+- [[Done/Features/VictoryII_Import]] — runtime acceptance.

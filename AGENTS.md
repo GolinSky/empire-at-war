@@ -87,12 +87,16 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
 2. When creating or touching a plan, categorize it and place it in the matching active or completed folder. Use frontmatter `category` matching the folder and `status`: `todo`, `in-progress`, `blocked`, or `done`; preserve unrelated metadata.
 3. During work, check off completed steps and record remaining work, blockers, and relevant verification evidence. Keep partially completed or unverified plans active; do not mark an entire plan done because one phase is finished.
 4. Mark a plan `done` only when all agreed scope is complete and applicable verification is satisfied. Record `completed` as `YYYY-MM-DD` using the user's local date, plus a concise outcome and verification result. Never claim unrun tests passed.
+   - User-only gates (in-game, listening, visual approval, tests blocked by the local override) do not keep a plan active. When implementation is complete and source-verified, mark it `done` with frontmatter `acceptance: pending-user`, add one line per open gate to `TODOs/User_Acceptance_Queue.md` linking the plan, and close it.
+   - A plan with unimplemented scope (missing ability, phase, asset or decision) stays active regardless of acceptance state.
+   - When the user confirms a gate, remove its queue line and set `acceptance: passed` once no lines for that plan remain.
 5. Before the final response, move the completed plan and its companions to `Done/<Category>/` using the vault MCP move tool. Move the entire backlog entry, including nested details, from the active section to `Done`; retain its checked checkbox and update its plan/research links. Do not leave an active duplicate or delete the completed record.
 6. Search for links to moved paths and repair affected backlog, dashboard, and note links; do not assume a move rewrites links automatically. Read back the moved notes and index, confirm the old paths are absent, and verify affected links resolve.
 
 ### Edge Cases
 
 - If work is reopened, move the plan and companions back to `TODOs/<Category>/`, restore an unchecked active backlog entry, update status, and remove the current `completed` field; preserve useful completion history in the note.
+- A failed acceptance gate → reopen the plan, or open a `Bugs` plan when the defect is narrow; remove the queue line and link the follow-up.
 - Cancelled or superseded work is not completed work. Record that disposition explicitly and remove it from active tasks without claiming success.
 - If completion is uncertain, keep the plan active and record what must be verified. Only reconcile plans related to the current task unless the user requests a broader backlog cleanup.
 - If a vault write or move fails, report the exact unfinished maintenance in the final response. Never claim the plan was archived when only its checkbox or status changed.
@@ -124,7 +128,7 @@ MVP is optional. Use it where it fits, such as UI with real state and user inter
 
 - **Model:** Pure C# classes with no `UnityEngine` references. Own data, state, and business rules.
 - **View:** `MonoBehaviour` implementations responsible only for rendering state and capturing input. Views contain no business logic.
-- **Presenter:** Coordinates Model and View, subscribes to Model events, updates the View, handles user actions, and owns their lifecycle coordination.
+- **Presenter:** Coordinates Model and View, handles user actions, and owns their lifecycle coordination. By default the View subscribes to Model events through a read-only observer interface; the Presenter (or a service) subscribes only when the reaction exceeds the View's scope.
 
 ##  SOLID and GRASP Standards
 

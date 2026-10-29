@@ -8,7 +8,9 @@ tags:
 ---
 # Injection and Guard Conventions
 
-[[TODOs/Refactoring/Audit_Remediation_Coordination|← Coordination]] · **Wave 2** (after Type File Split lane 2c/2d for the same files) · Unity lane: no
+> Prerequisite: [[TODOs/Bugs/Fail_Fast_Null_Returns]] lands first — Wave 2 touches Wave 1 files (`Squadron.cs`, ship states, `ReinforcementUi.cs`, `ReinforcementZonesSystem.cs`). From closed tracker [[Done/Refactoring/Audit_Remediation_Coordination]].
+
+[[Done/Refactoring/Audit_Remediation_Coordination|← Coordination]] · **Wave 2** (after Type File Split lane 2c/2d for the same files) · Unity lane: no
 
 ## Goal
 - Explicit dependencies on entity classes and data; no routine method-argument null guards (AGENTS "Code Simplicity").

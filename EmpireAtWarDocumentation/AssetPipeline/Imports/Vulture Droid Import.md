@@ -46,7 +46,7 @@ reviewed: 2026-10-20
 - Lore designation supplied by user: Variable Geometry Self-Propelled Battle Droid, Mark I; lore lists blaster cannons, concussion/Discord missiles. The imported gameplay loadout uses the supplied laser role.
 - Saved asset/reference, geometry, icon/silhouette/palette/squadron and compilation checks complete. Missing scripts `0`; no new Console import/serialization errors; main scene remains clean.
 - No automated tests or Play Mode run. Flight, combat, placement interactions, fog and destruction remain unverified in battle; movement/size/limit tuning is provisional.
-- User selected Captor complement replacement: `11` Vulture + `8` Droid Bomber total squadron launches, `1` active per type (`2` overall), first delay `4 s`, shared interval `8 s`. Saved data and resolved squadron views verified; runtime launch acceptance remains in [[TODOs/Features/Captor_Import]].
+- User selected Captor complement replacement: `11` Vulture + `8` Droid Bomber total squadron launches, `1` active per type (`2` overall), first delay `4 s`, shared interval `8 s`. Saved data and resolved squadron views verified; runtime launch acceptance remains in [[Done/Features/Captor_Import]].
 
 ## Files
 - Exporter: `Tools/Blender/export_vulture.py`; repeatable conversion details: `Tools/Blender/README.md`.

@@ -8,7 +8,7 @@ tags:
 ---
 # Fail-Fast Null Returns
 
-[[TODOs/Refactoring/Audit_Remediation_Coordination|← Coordination]] · Wave 1 · Unity lane: no
+[[Done/Refactoring/Audit_Remediation_Coordination|← Coordination]] · Wave 1 · Unity lane: no
 
 ## Goal
 - Mandatory lookups throw with a clear message; optional lookups use the `TryX(out …)` shape. Nothing returns a silent `null` (AGENTS "Avoid Silent Null References").

@@ -62,8 +62,7 @@ reviewed: 2026-10-20
 6. Run `Stage.py` → generated `BuildArt.cs` → generated `BuildView.cs` → shared `BuildStationLevels.cs` with `["Separatist"]`.
 7. Rebuild the fixed CIS wreck with `ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab")`; the shared builder explicitly selects level 5.
 8. Run `Verify.cs` → `VerifyGeometry.py` → `VerifyNormals.py` → `VerifyCisStationMapping.cs` → `Render.cs`; inspect every level and contrasting team colors.
-9. Inspect all open scenes before tests. Save named dirty scenes and inspect again; dirty untitled scene → `BLOCKED_DIRTY_UNTITLED_SCENE`.
-10. Start station Edit Mode tests asynchronously; poll until complete. Avoid Editor automation while long synchronous tests occupy its main thread.
+9. Station Edit Mode tests (`--filter Station`): Tests only on explicit user request (root `AGENTS.md` → Local Test Execution Override); then follow Unity Test Safety there.
 
 - Exact PowerShell commands: `Tools/Blender/CisSpaceStation/README.md`.
 - `Prepare.py` generates CIS adapters from the established Rebel audit/converter/builders; no new conversion backend.

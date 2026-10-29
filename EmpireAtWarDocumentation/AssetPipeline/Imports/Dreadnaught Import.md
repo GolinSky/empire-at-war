@@ -11,6 +11,8 @@ system:
 ---
 # Dreadnaught-class Heavy Cruiser Import
 
+> Plan: none — historical provenance only; no tracked open work (2026-10-29 review).
+
 ## Decision
 
 - Replace existing Republic `HeavyDreadnought` art; retain its identity, asset GUIDs, six logical weapons, abilities and gameplay tuning.

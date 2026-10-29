@@ -104,7 +104,7 @@ completed: 2026-10-13
 - UI regressions: `Assets/Scripts/Tests/Editor/UiCanvasArchitectureTests.cs`, `UiCancelRouterTests.cs`, `UiPrefabScaleTests.cs`, `SettingsUiPrefabTests.cs`, `PauseMenuUiPrefabTests.cs`, `SkirmishUiPrefabTests.cs`.
 - Ownership/reuse: `HeroUiControllerLifecycleTests.cs`, `PipelineViewLifecycleTests.cs`, `ShipSelectionReuseTests.cs`, `ShipReinforcementUiPrefabTests.cs`, `SerializedReferenceTests.cs`, tooltip tests.
 - Read in full for planning: [[Rules/UI_UX_GUIDELINES]], [[Rules/UI_CODE_BUILD_GUIDE]], [[Architecture/PROJECT_ORGANIZATION]].
-- Existing [[TODOs/Refactoring/Explicit_Component_Binding]] already removed UiInstaller's old post-instantiation GetComponent; do not repeat that outdated finding.
+- Existing [[Done/Refactoring/Explicit_Component_Binding]] already removed UiInstaller's old post-instantiation GetComponent; do not repeat that outdated finding.
 - [[TODOs/Refactoring/Injection_And_Guard_Conventions]] is broader than this UI plan; only take ownership of the dependencies touched here.
 
 ## TODO

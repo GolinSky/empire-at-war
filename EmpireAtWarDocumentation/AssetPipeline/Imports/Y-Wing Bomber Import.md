@@ -78,4 +78,4 @@ reviewed: 2026-10-20
 
 ## TODO
 
-- [[TODOs/Features/YWingBomber_Import|Clean-skirmish acceptance and provisional balance/source-difference review]].
+- [[Done/Features/YWingBomber_Import|Clean-skirmish acceptance and provisional balance/source-difference review]].

@@ -15,8 +15,8 @@ updated: 2026-10-12
 - Current baseline: 2026-10-11 15:25 Kyiv, 78 frames / 10.143 s, 4× speed, High Fidelity, 2560×1440; median 123.010 ms / 8.1 FPS.
 - Fresh 15:31 sample: 12 frames; median CPU 96.584 ms, GPU 2.965 ms. Short diagnostic sample, not a benchmark.
 - Radar: live source now has centralized `RadarScanService`; latest battle marker average 8.581 ms versus historical 656.729 ms. Different workloads/marker coverage → observational improvement, not controlled speedup.
-- Fix execution plan: [[TODOs/Optimization/Battle_CPU_Fixes_Plan]].
-- Attack implementation remains in [[TODOs/Optimization/Battle_Attack_Optimization_Plan]]; rendering in [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan]].
+- Fix execution plan: [[Done/Optimization/Battle_CPU_Fixes_Plan]].
+- Attack implementation remains in [[Done/Optimization/Battle_Attack_Optimization_Plan]]; rendering in [[Done/Optimization/Battle_Particle_Rendering_Optimization_Plan]].
 - Already analyzed: capture comparison, main-thread hotspot ranking, attack/radar source paths; rendering agent verified 949 events, shader/texture groups, squadron indicators and adjacent GPU scopes.
 - Not established: exact allocation callers, current audio share, causes of every spike, matched implementation gains or final radar parity.
 - Current request: analyze existing captures and related files; skip another battle run. Source review completed at `74368d81`; implementation, raw Profiler replay and runtime acceptance remain pending.
@@ -92,7 +92,7 @@ updated: 2026-10-12
   - Plugin patches: `UnityAssemblyResolver` skips in-memory assemblies (empty `Location` → "Invalid path"); weaver writes `<Name>k__BackingField` for get-only `[Inject]` properties (23 in project; previously NRE).
   - Editor baking drops PDB line numbers in Assembly-CSharp stack traces; decide editor on/off after spawn re-measure.
   - **Removed 2026-10-12** (settings asset deleted): weaver reflects on the *loaded* assembly → after code changes the woven DLL references itself ("Assembly-CSharp references itself"), Unity silently keeps the stale domain. Also wove `Zenject-ReflectionBaking-Editor`. Release builds at risk: `[Inject]` fields under `#if UNITY_EDITOR || DEVELOPMENT_BUILD`. Recovery: delete affected DLLs in `Library/ScriptAssemblies` + clean compile. Plugin patches remain, dormant.
-- Squadron pooling → [[TODOs/Optimization/Squadron_Pooling_Plan]].
+- Squadron pooling → [[Done/Optimization/Squadron_Pooling_Plan]].
 - Capture 4 (baked, all changes; editor, profiler on, 2000 frames): median 49.7 ms; TargetBatch 4.9 ms (Capture 3.8); nav plan max 5.7 ms.
   - Squadron spawns: 49 frames, median 13.8 ms, max 26 ms. Spawn frame 448: Instantiate 4.0, `GameObjectContext.Construct` 1.86 (was 3.3), HangarComponent self 7.16 (was 7.85) → baking saves ~1.5–2 ms/spawn.
   - Live counters (profiler off): ~68 requests/frame, 1.6 candidate rebuilds/frame (0.13 ms), post-capture batch 0.34 ms, **2060 slots refreshed/frame** of ~2.9k → used-slot filter barely helps; capture cost = hardpoint position reads (`HardPointAdapter.Position` → view transform).
@@ -200,7 +200,7 @@ updated: 2026-10-12
 - [x] Re-capture after `c22653fd5` (2026-10-12 23:38 Kyiv; 280 ships / 122 squadrons; not matched): median 54.5 ms, max 88. 178-ship attack-move 4.69 ms/frame median (0.026 ms/ship), 28.5 ms on order frame; `IdleState` max 20.9 → 3.0 ms. [Report](<F:/Private/empire-at-war/Logs/BattleAudit/20261012T203856Z-idle-check/analysis.md>)
 - [x] Attack-move order frame (28 ms / 178 ships): `AttackMoveState` searches every 0.25 s with random first delay; completes only after a search found nothing. `adbca6b3c`. In-game re-measure pending.
 - [ ] Projectile misses at 400+ ships; AI raid scan cost; radar + squadron upkeep at 400+ ships; ship pooling ([[TODOs/Optimization/Ship_Pooling_Plan]]).
-- [ ] If `Battle.Enemy.Build` ≈ timer spikes → enemy ship pooling plan (like [[TODOs/Optimization/Squadron_Pooling_Plan]]).
+- [ ] If `Battle.Enemy.Build` ≈ timer spikes → enemy ship pooling plan (like [[Done/Optimization/Squadron_Pooling_Plan]]).
 - [ ] `com.script-utils.time` (git package, GolinSky/ScriptUtilities): `TimerPoolService.Update` removes finished coroutines inside a forward loop → next coroutine skipped one frame. Fix upstream (iterate backwards); cannot edit in PackageCache.
 
 ### Radar acceptance and capture reliability
@@ -209,6 +209,62 @@ updated: 2026-10-12
 - [ ] Repair/reconfigure bounded Frame Debugger export so a complete current battle frame saves; 15:25 capture timed out at event 799 with zero saved frames.
 - [ ] Investigate unreadable Rendering Debugger camera selector separately; partial panel export is not gameplay failure.
 - [ ] Final acceptance: matched sustained and spike metrics, no new errors, full relevant behavior checks; confirm major gains in a Development Player.
+
+## Absorbed Open Items (2026-10-29)
+
+- This plan is the single owner of these obligations. Source plans are closed history; read them for evidence before acting.
+- Shared gate for all items: matched before/after captures (same seed, camera, preset, population) and Development Player confirmation.
+
+### From [[Done/Optimization/Battle_CPU_Fixes_Plan]]
+
+- [ ] Confirm via Phase 0 counters that tilt is the leading reason.
+- [ ] EditMode parity test: random tilted/rolled parents, ranges and arcs → job and serial return the same `CandidateIndex` and aim.
+- [ ] Check first-frame audibility: new voices start at volume 0 in `_audioService.Play(..., 0f, ...)`; flushing in the same frame keeps them audible without a one-frame gap.
+- [ ] From Phase 0 counters, find the requesters of burst plans (stationary pursuit retries suspected).
+- [ ] `AttackSequenceState`: remove `_activeEffects`, `WaitingForEffects`, `RegisterEffect`, `TryCompleteEffect`; `StopEmitting` → `Ready`.
+- [ ] `WeaponHardPoint`: drop `RegisterEffect` in `EmitScheduledShot` and `OnTurretEffectCompleted`; fire rate = salvo + `_reloadTimer` only.
+- [ ] `ShotEffectPool`: remove the `effectCompleted` callback; pool still owns leases, drain and retirement.
+- [ ] Size `maxIdle` for overlapping salvos (measured active high-water, not just `ShotsPerSalvo`) so overlap does not add Instantiate/Destroy churn (current 462 creations / 78 frames).
+- [ ] Update attack plan contract: "Busy means emitting or waiting for leased effects" → superseded.
+- [ ] Matched captures vs Phase 0 baseline: ≥3 × 10 s per variant at 1× and separately 4×, fixed scenario/camera/population/settings; CPU/frame median/p95/p99, bytes/frame, GC stalls.
+- [ ] Behavior: target priority, range/arc/tilt edges, shot counts, impact timing, pause, owner/hardpoint death, pool drain, first-frame audio/ducking, routes/reservations and squadron formations/member loss.
+- [ ] Phase 7 prerequisite for whole-plan acceptance: live source still has `WaitingForEffects`, effect-completion callbacks and `ShotsPerSalvo` pool cap. Finish its fire-rate/overlap gates, or explicitly limit acceptance to phases 0–6.
+- [ ] Development Player confirmation of the largest gains. Tests/builds/scenario resets were not run against the protected live session.
+- [ ] Remove unused `StringBuilder` and vertex/UV formatting in `MPImageHelper.AddQuad` (`Assets/ThirdParty/MPUIKit/Runtime/Scripts/Utility/MPImageHelper.cs:240`): **656,712 B / 40 frames**, 16.4 KB/frame (21.4% of captured allocation). Inspect material-update strings and subscription churn afterward; no fix in this audit.
+- [ ] UI canvas routing follow-up (2026-10-12): [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan|dedicated plan]] + [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan - Research|investigation]]. Historical selected UI self samples total **7.695 ms/frame**, including **3.490 ms/frame** Canvas update/batching/clipping; no per-Canvas attribution or measured gain. Service-owned placement, route/layout migration and capture-site UI extraction are pending; keep MPImage allocation cleanup owned here.
+- [ ] Reduce navigation fallback after normal candidate planning fails: **223 plans/90 frames**, 219 preserve-course, 174 nearest-reachable searches; Plan **8.89 inclusive ms/frame**, flood **4.315 self**, `TryFindNearestReachableCell` full-grid scan **3.892 self**. ≤4 plans/frame holds. Attribute originating queued order before changing pursuit behavior; this is separate from the fixed nearest-walkable ring search.
+- [ ] Reproduce Profiler frame 1202 asset-loading hitch: **629.74 ms raw main thread**, **499.79 ms File.Read** mainly below GPU Resident Drawer `InstanceCullingBatcher.BuildBatch`; outside CSV window. Identify assets/renderer introduction and verify preload/warm-up in Player.
+- [ ] Matched target/effect/particle recaptures and controlled warm-selection repeats remain open. CSV pool misses: **160 projectile creations / 10 s**, 0.527 inclusive ms/frame; inspect per-weapon capacity/retirement before resizing. Exact 11.3 ms CSV ship-order spike and combat visual acceptance remain unverified.
+- [ ] Attribute projectile pool misses/retirement by owner and prefab before resizing; slow CSV instantiation **1.826 ms/frame**, one **31.881 ms** spike. UI batching and fog refresh remain measured costs.
+- [ ] Attribute slow CSV **778.534 ms / 72,440,805 B** frame and subsequent **62.700 ms impact processing**; source unknown, allocation stacks absent. Saved Profiler binary retained; short 120-frame summary covers a later window. Keep matched Player acceptance open.
+- [ ] Fix observed removed-caster exception: `EnemyShipAbilityController.UseNextCasters` dereferences `caster.Entity` after EntityLocator removal, before checking destroyed health. Separate later Lucrehulk production failure/refund: no open spawn position.
+- [ ] `ClipperRegistry.Cull` **1.58 ms/frame** (UI RectMask2D) in 19:18 capture; route to UI canvas routing plan. Projectile pool misses 210 / 90 frames remain. Also `WeaponComponent.UnsubscribeIfUnused` delegate removal 227 KB / 40 frames; `CanvasUpdate.PreRender` 4.8 ms UI spike.
+- [ ] Unattributed: 5 MB CSV allocation frames and a 9-frame squadron-order streak (~12.3 ms); neither reproduced under Profiler.
+
+### From [[Done/Optimization/Battle_Attack_Optimization_Plan]]
+
+- [ ] Target preparation first: latest 21.118 ms/frame, ~200 requests / 34,144 candidate records; split eligibility, position snapshot and span-copy costs.
+- [ ] Measure duplicate targets across hardpoints; test shared snapshots only with explicit movement/commit ordering and generation/version invalidation.
+- [ ] Attribute 9,864 fallback events / 15,579 requests by reason; preserve exact serial targeting parity before reducing fallbacks.
+- [ ] Split DueBatch.Apply into collect/sort, event lookup, shot emission, impact/damage and resulting effects; latest mean 16.864 ms, maximum 287.191 ms.
+- [ ] Profile linear TryFindEvent searches before replacing them; preserve stable due order, cancellation, generations and reentrant record changes.
+- [ ] Diagnose projectile acquisition/creation under warmed firing and deaths: 462 instances / 78 frames, 1.325 ms/frame instantiate; measure active/idle/retired/high-water counts.
+- [ ] Split BoltShot.Update into flight/tracking, impact completion and effect maintenance; current marker is not turret aiming.
+- [ ] Coordinate allocation stacks with [[TODOs/Optimization/Battle_CPU_Performance_Plan]]; do not double-count GC or projectile work inside due apply.
+
+### From [[Done/Optimization/Burst_Jobs_Optimization_Plan]]
+
+- [ ] Record per-job baseline with existing markers (`TargetBatchSchedule/Complete`, `DueBatchSchedule/Complete`, nav, fog, `Projectile.Track`) in a Development Player at fixed workload.
+- [ ] Profiler timeline: note `WaitForJobGroupID` on main thread per job; which jobs run on workers vs inline in `Complete()`.
+- [ ] Player run: Test Runner → PlayMode → `PlayerBranchVariant*` → Run All Tests (Player), Development build. ≥3 runs, median/p95. **User step** (agent Play Mode/Player runs not allowed).
+- [ ] Measure real battle ratios before choosing: share of detectable ∧ hostile radar targets (2 players → ~50 % hostile = unpredictable), share of candidates passing the target filter.
+- [ ] Keep the winner only where it is measurably faster; record "no difference" results too.
+- [ ] Choose due inline vs job/batch ≥1024 from Phase 0 schedule/complete measurements.
+- [ ] Batch-size sweep: `TARGET_JOB_BATCH_SIZE` 1/4/8, `DETECTION_BATCH_SIZE` 4/8/16, `REVEAL_ROWS_PER_BATCH` 8/16/32.
+- [ ] `ShieldSurfaceClipJob`: evaluate batching all frame clip queries into one `IJobParallelFor` — needs deferred results; **design decision before implementation**.
+- [ ] `Hint.Unlikely` on `RequiresSerialFallback` paths if mispredicts show.
+- [ ] `FloatMode.Fast` on fog jobs only; pixel diff must be visually acceptable.
+- [ ] Minor: `FighterBankJob` `quaternion.RotateZ` remains under Phase 6 measurement gate.
 
 ## Files
 - [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]]

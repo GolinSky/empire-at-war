@@ -128,7 +128,7 @@ completed: 2026-10-13
 - Reused: `Assets/Scripts/Components/Health/HealthModel.cs`, `Components/Health/HardPoints/HardPointModel.cs`, `Components/Squadron/Health/SquadronHealthModel.cs`, `Components/CombatModifiers/CombatModifiers.cs`, `Components/Weapon/WeaponModel.cs`, `Components/AttackComponent/{WeaponProfile,WeaponsData,DamageMatrixData}.cs`.
 - Reused Editor: `Editor/Balance/{BalanceRegistration,BalanceUnit,BalancePrefabBindings,BalanceWeaponPreview,BalanceDpsEstimator}.cs`.
 - Hub: `Editor/EditorToolCatalog.cs`, `EditorToolInfoAttribute.cs`, `Tools/EditorHub/README.md`.
-- Related: [[Done/Tooling/GameDesign_Balance_Editor]], [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System]], [[TODOs/Features/AI_Composition_Counters]] (`UnitCombatProfileFactory` analytic DPS — compare against sim).
+- Related: [[Done/Tooling/GameDesign_Balance_Editor]], [[Done/Refactoring/Weapon_Taxonomy_Balance_System]], [[Done/Features/AI_Composition_Counters]] (`UnitCombatProfileFactory` analytic DPS — compare against sim).
 
 ## TODO
 

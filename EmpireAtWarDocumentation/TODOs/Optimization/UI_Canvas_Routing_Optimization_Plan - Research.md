@@ -111,7 +111,7 @@ updated: 2026-10-12
 - Global Canvas markers do not identify a specific Canvas. The 3.490 ms is not all attributable to UiService and is not a predicted saving.
 - Minimap marker/fog work totals **2.086 ms/frame**; splitting canvases alone does not remove those scripts.
 - Allocation capture: **656,712 B / 40 frames** in unused `MPImageHelper.AddQuad` StringBuilder/vertex-UV formatting, **16,418 B/frame**, **21.4%** of captured main-thread bytes.
-- Live source still contains the unused builder and AppendLine at `Assets/ThirdParty/MPUIKit/Runtime/Scripts/Utility/MPImageHelper.cs:240–244`. Track its small cleanup separately in [[TODOs/Optimization/Battle_CPU_Fixes_Plan]] so canvas benefit is measured independently.
+- Live source still contains the unused builder and AppendLine at `Assets/ThirdParty/MPUIKit/Runtime/Scripts/Utility/MPImageHelper.cs:240–244`. Track its small cleanup separately in [[Done/Optimization/Battle_CPU_Fixes_Plan]] so canvas benefit is measured independently.
 - No fresh battle was started. Current Unity inspection was stopped/read-only; no new capture, allocation recording, compilation, tests or production changes.
 
 ## Files

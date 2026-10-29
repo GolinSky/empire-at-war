@@ -71,7 +71,7 @@ reviewed: 2026-10-20
 - Roster, icons, placement, mapping and Addressables resolve to X-Wing assets; ability settings resolve to `LockSFoilsSettings`.
 - Eight distinct palettes rendered; blue/green inspected. Transparent 512 × 512 actual-model icon/silhouette are uncropped; alpha bounds `(34,80)..(457,414)`.
 - Final script compilation clean; no new console import/serialization errors. Dirty `MainMenuScene` preserved.
-- No automated tests or Play Mode executed. Runtime combat/toggle/placement/destruction and balance acceptance remain in [[TODOs/Features/XWing_Import]].
+- No automated tests or Play Mode executed. Runtime combat/toggle/placement/destruction and balance acceptance remain in [[Done/Features/XWing_Import]].
 
 ## Edge Cases
 

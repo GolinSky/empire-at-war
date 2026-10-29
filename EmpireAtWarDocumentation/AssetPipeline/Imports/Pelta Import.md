@@ -9,6 +9,8 @@ tags:
 ---
 # Pelta-class Frigate Import
 
+> Plan: none — historical provenance only; no tracked open work (2026-10-29 review).
+
 ## Files
 
 - Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; layout: [[Architecture/PROJECT_ORGANIZATION]].

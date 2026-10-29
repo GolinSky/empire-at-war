@@ -16,7 +16,7 @@
 | Part | Responsibility | Must not contain |
 | --- | --- | --- |
 | `<Feature>Data : Data` | Serialized configuration, prefab mappings, read-only lookup API | Runtime state, event subscriptions, gameplay flow |
-| `<Feature>Model : PureModel` | Runtime state, rules, and C# events | `UnityEngine`, `[SerializeField]`, `ScriptableObject`, prefab creation |
+| `<Feature>Model : Model` | Runtime state, rules, and C# events | `UnityEngine`, `[SerializeField]`, `ScriptableObject`, prefab creation |
 | `<Feature>Ui : BaseUi` | Render state and forward user input | Gameplay rules, service orchestration, implicit container feature dependencies |
 | `I<Feature>Presenter` | UI intent API | `ICommand` unless it is a real command object |
 | `<Feature>UiController` | Create the UI, pass all dependencies through methods, initialize and dispose it | Gameplay implementation |
@@ -38,7 +38,7 @@
 ```mermaid
 flowchart LR
     Installer["Owning VContainer scope"] --> Data["FeatureData asset"]
-    Installer --> Model["FeatureModel : PureModel"]
+    Installer --> Model["FeatureModel : Model"]
     Installer --> Service["FeatureService"]
     Installer --> Presenter["FeatureUiController / Presenter"]
     Data --> Model
@@ -124,12 +124,12 @@ public class FeatureData : Data
 
 - Stop the migration if any field, list element, dictionary key, object reference, GUID mapping, or Addressables entry cannot be verified.
 
-### 4. Refactor the model to `PureModel`
+### 4. Refactor the model to plain C# `Model`
 
 - The model becomes a constructor-injected pure C# object:
 
 ```csharp
-public class FeatureModel : PureModel, IFeatureModelObserver
+public class FeatureModel : Model, IFeatureModelObserver
 {
     private readonly FeatureData _data;
 
@@ -142,7 +142,7 @@ public class FeatureModel : PureModel, IFeatureModelObserver
 
 - Rules:
 
-- It inherits `PureModel`.
+- It inherits `EmpireAtWar.Mvc.Model` (`Assets/Scripts/BaseSystem/Model.cs`; plain C#, no Unity base).
 - It has no `[CreateAssetMenu]` and no `[SerializeField]` members.
 - It is not instantiated as a Unity asset.
 - Dependencies are supplied through the constructor.
@@ -150,7 +150,7 @@ public class FeatureModel : PureModel, IFeatureModelObserver
 - Its public observer interface exposes only what the view needs to observe or query.
 
 - `Data` inherits `ScriptableObject`.
-- Constructor-injected data is allowed; `PureModel` owns no Unity lifecycle or serialization.
+- Constructor-injected data is allowed; `Model` owns no Unity lifecycle or serialization.
 - Do not call Unity APIs from the model.
 
 ### 5. Split gameplay from UI
@@ -271,7 +271,6 @@ builder.Register<FeatureUiController>(Lifetime.Singleton).AsImplementedInterface
 ```
 
 - Use the project binding extensions that match the type.
-- A `PureModel` may not satisfy a helper constrained to the old Unity `Model` base, so bind it directly when required.
 
 - The owning VContainer scope registers data, model, service, and UI controller.
 - `IInitializable` / `ILateDisposable` come from `EmpireAtWar.Lifecycle`; ordered lifecycle dispatch owns callbacks.
@@ -282,7 +281,7 @@ builder.Register<FeatureUiController>(Lifetime.Singleton).AsImplementedInterface
 | Before | After |
 | --- | --- |
 | Serialized `ReinforcementModel` asset | `ReinforcementData : Data` asset under `Assets/Settings/Data/Reinforcement` |
-| Model mixed configuration and runtime state | `ReinforcementModel : PureModel` with constructor-injected `ReinforcementData` |
+| Model mixed configuration and runtime state | `ReinforcementModel : Model` with constructor-injected `ReinforcementData` |
 | `ReinforcementController` mixed responsibilities | `ReinforcementService` for gameplay flow |
 | `IReinforcementCommand : ICommand` | `IReinforcementPresenter` without `ICommand` |
 | Generic injected `ReinforcementUi` | `ReinforcementUi : BaseUi` with explicit setup methods |
@@ -316,7 +315,7 @@ LocalPlayerScope
 - [ ] The new data asset exists before the old model asset is removed.
 - [ ] Every serialized field and object reference matches the old asset.
 - [ ] Repository and Addressables mappings point to the new data asset.
-- [ ] `<Feature>Model` inherits `PureModel` and contains no Unity serialization attributes.
+- [ ] `<Feature>Model` inherits `Model` and contains no Unity serialization attributes.
 - [ ] `<Feature>Service` has no UI dependency or UI creation code.
 - [ ] `I<Feature>Presenter` does not inherit `ICommand`.
 - [ ] `<Feature>Ui` inherits non-generic `BaseUi`.

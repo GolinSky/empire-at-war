@@ -66,7 +66,7 @@ updated: 2026-10-12
 - Current sort orders: Feedback −10, Default 0, Dynamic 10, Popup 20. Popup sibling slots: Contextual → EndGame → Modal → Tooltip → Fade; saved-asset order verified.
 - Historical 2026-10-11 CSV median: **51.99 ms/frame**. Selected UI-related Profiler self samples: **7.695 ms/frame**, including **3.490 ms/frame** in Canvas update/batching/clipping.
 - These are historical Editor attribution numbers, not promised savings. World-space UI and per-frame marker work are included in the wider UI total.
-- Separate known allocation issue: unused `MPImageHelper.AddQuad` debug formatting → **656,712 B / 40 frames**, ~16.4 KB/frame. Fix/recapture ownership remains [[TODOs/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]].
+- Separate known allocation issue: unused `MPImageHelper.AddQuad` debug formatting → **656,712 B / 40 frames**, ~16.4 KB/frame. Fix/recapture ownership remains [[Done/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]].
 
 ## Files
 - `Assets/Scripts/BaseSystem/Ui/{UiService,BaseUi,UiType,UiInstaller}.cs`; `Assets/Prefabs/Ui/UiService.prefab`.

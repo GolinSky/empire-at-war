@@ -36,7 +36,7 @@ graph TD
     Prefabs --> P5["Light/ - Light setup prefabs"]
 
     Scripts --> S1["Components/ - Logic and presentation components"]
-    Scripts --> S2["Entities/ - Pure C# state models and business rules"]
+    Scripts --> S2["Entities/ - Entity/feature models, states, rules + colocated feature UI triplets"]
     Scripts --> S3["Services/ - Global systems and VContainer scopes"]
     Scripts --> S4["Editor/ - Editor tooling and maintenance scripts"]
     Scripts --> S5["Tests/ - Automated unit and integration tests"]

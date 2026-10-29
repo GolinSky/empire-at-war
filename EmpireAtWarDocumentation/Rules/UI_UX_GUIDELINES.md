@@ -38,11 +38,11 @@
 
 ### Color 1: Dominant Dark Base (Low-Luminance Canvas & Containers)
 
-- **Root Panel Background**: Deep Dark Space Navy (`#080C14` / `rgba(3, 5, 8, 0.96)`).
+- **Root Panel Background**: Deep Dark Space Navy (`#080C14` / `rgba(8, 12, 20, 0.96)`).
   - Low-brightness dark canvas.
-- **Field Cards / Section Containers**: Dark Slate Navy (`#0F172A` / `rgba(6, 9, 16, 0.85)`).
-- **Control Boxes & Dropdowns**: Dark Control Box (`#182232` / `rgba(9, 13, 20, 0.95)`).
-- **Dropdown List Item Popups (`Template` & `Item Background`)**: Dark Slate Item Row (`#141E2C` / `rgba(8, 12, 17, 0.95)`).
+- **Field Cards / Section Containers**: Dark Slate Navy (`#0F172A` / `rgba(15, 23, 42, 0.85)`).
+- **Control Boxes & Dropdowns**: Dark Control Box (`#182232` / `rgba(24, 34, 50, 0.95)`).
+- **Dropdown List Item Popups (`Template` & `Item Background`)**: Dark Slate Item Row (`#141E2C` / `rgba(20, 30, 44, 0.95)`).
   - **Never leave item backgrounds bright grey!**
 
 ### Color 2: Structural Accents & Secondary Labels
@@ -85,7 +85,7 @@
 
 ## 6. Class Inheritance & Serialized Image Binding Safety
 
-- **BaseUi Inheritance**: Only top-level MVP view containers (such as `CoreGameUi`, `EconomyUi`, `FactionUi`, `MenuUi`, `MiniMapUi`, `ReinforcementUi`, `ShipUi`, `SkirmishPopupUi`) inherit from `BaseUi<TModel, TCommand>` or `BaseUi`.
+- **BaseUi Inheritance**: Only top-level MVP view containers (such as `CoreGameUi`, `EconomyUi`, `FactionUi`, `MenuUi`, `MiniMapUi`, `ReinforcementUi`, `ShipUi`, `SkirmishPopupUi`) inherit from the non-generic `BaseUi` (generic `BaseUi<TModel, TCommand>` no longer exists).
   - Sub-item components (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) MUST inherit directly from `MonoBehaviour` to keep feature dependency setup owned by the top-level view controller.
 - **Serialized Image & DOTween Safety**: Do NOT replace standard `UnityEngine.UI.Image` components with `MPImage` on GameObjects where C# scripts have serialized `[SerializeField] private Image ...` fields (e.g. `ReinforcementUi.signalImage`, `CoreGameUi.timeImage`, `ShipUi.shipIconImage`) or DOTween animation calls (`signalImage.DOColor(...)`).
   - Replacing serialized `Image` components breaks script inspector references and causes `NullReferenceException` at runtime.
@@ -109,4 +109,4 @@
 - [ ] Does `HeaderBanner` look like a clean title label with a divider line (and not a button box)?
 - [ ] Does `CloseButton` have a clear ASCII `"X"` text icon visual?
 - [ ] Is `fontSizeMin` set to less than 12 (e.g. 6) on all auto-sized text objects?
-- [ ] Do all EditMode unit tests pass cleanly?
+- [ ] If the user requested tests: do the relevant EditMode categories pass? Otherwise report tests as not run.

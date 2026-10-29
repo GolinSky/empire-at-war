@@ -9,6 +9,8 @@ tags:
 ---
 # CR70 Charger Corvette Import
 
+> Plan: none — historical provenance only; no tracked open work (2026-10-29 review).
+
 ## Decision
 
 - Correct source: Republic at War Workshop `1129810972`, installed `1.5.5`; `Data/Art/Models/ReV_light_frigate.ALO`.

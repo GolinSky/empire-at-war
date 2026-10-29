@@ -14,7 +14,7 @@ created: 2026-10-11
 - Chosen: category-based import settings, small representative pilot, then bounded batches.
 - Why: enable useful compression without broad quality reductions or added battle CPU pressure.
 - Avoid: global low-resolution limits, mesh decimation, High mesh compression, blanket audio streaming, Crunch, new streaming systems, and global vertex-compression changes.
-- Asset compression is separate from [[TODOs/Optimization/Battle_CPU_Fixes_Plan|battle CPU fixes]]; no FPS improvement is promised.
+- Asset compression is separate from [[Done/Optimization/Battle_CPU_Fixes_Plan|battle CPU fixes]]; no FPS improvement is promised.
 
 ## Important Values
 ### Current evidence — 2026-10-11
@@ -140,5 +140,5 @@ created: 2026-10-11
 
 ## Files
 - Backlog: [[TODOs/TODOs]].
-- Existing material work: [[TODOs/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan]]; preserve shader/channel contracts.
+- Existing material work: [[Done/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan]]; preserve shader/channel contracts.
 - Unity references: [Audio import settings](https://docs.unity3d.com/6000.4/Documentation/Manual/class-AudioClip.html), [mesh compression](https://docs.unity3d.com/6000.4/Documentation/Manual/compressing-mesh-data-optimization.html), [texture formats](https://docs.unity3d.com/6000.4/Documentation/Manual/texture-formats-reference.html).

@@ -38,7 +38,7 @@ created: 2026-10-28
 
 - **No shared capture zone component.** Shared today:
   - `CaptureStrength` / `CaptureStrengthBuilder` (`Entities/Players/`) — tally.
-  - `IShipService.AddShipStrength(contains, builder)`, `ISquadronRegistry.AddSquadronStrength(contains, weight, builder)` (from [[TODOs/Refactoring/Capture_Reinforcement_Tally_Dedup|Tally Dedup]]).
+  - `IShipService.AddShipStrength(contains, builder)`, `ISquadronRegistry.AddSquadronStrength(contains, weight, builder)` (from [[Done/Refactoring/Capture_Reinforcement_Tally_Dedup|Tally Dedup]]).
 - **Duplicated** between relays and capture sites:
 
 | Concern | Relay | Mining/battle site |
@@ -195,7 +195,7 @@ Score(pad, type) = PadValue(pad) × TypeFit(type) × Affordability(type) × Dive
   - `+` recent hostile presence / `HasThreatenedSite` at this point.
   - `−` existing satellites in the point (diminishing: `1 / (1 + count)`); cap per point = 3 pads.
 - **TypeFit** — expected effectiveness vs the threat, minus what the fleet already covers:
-  - `Effect(type) = Σ_class threatWeight[class] × satelliteDps(type → class)` using the satellite's combat profile vs known enemy hull/shields (same math as [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]]).
+  - `Effect(type) = Σ_class threatWeight[class] × satelliteDps(type → class)` using the satellite's combat profile vs known enemy hull/shields (same math as [[Done/Features/AI_Composition_Counters|AI Composition Counters]]).
   - `threatWeight` = enemy hull+shields share per class; squadrons as their own class.
   - `Gap` boost: if own fleet anti-class DPS is low for a high-threat class, × `(1 + gap)`.
   - Per cost: `TypeFit = Effect / cost`, normalized across the 5 types.
@@ -285,7 +285,7 @@ Score(pad, type) = PadValue(pad) × TypeFit(type) × Affordability(type) × Dive
 - Minimap: `Assets/Scripts/Entities/MiniMap/Presenter/{CaptureSiteMiniMapPresenter,ReinforcementZoneMiniMapPresenter}.cs`
 - AI: `Assets/Scripts/Services/Enemy/{EnemySiteConstructionController,EnemyProductionStrategy,ForceCompositionBuilder,UnitCombatProfileFactory,TeamIntelRegistry}.cs`, `Assets/Scripts/Entities/EnemyFaction/Models/{EnemyStrategicDecisionModel,Combat/ForceComposition}.cs`
 - Saves: `Assets/Scripts/Services/Saves/{BattleSaveValidator,CaptureSiteSave,StructureSave,ReinforcementZoneSave}.cs`
-- Related: [[TODOs/Features/More_Mining_Sites|More Mining Sites]], [[TODOs/Features/AI_Composition_Counters|AI Composition Counters]], [[TODOs/Refactoring/Capture_Reinforcement_Tally_Dedup|Tally Dedup]]
+- Related: [[Done/Features/More_Mining_Sites|More Mining Sites]], [[Done/Features/AI_Composition_Counters|AI Composition Counters]], [[Done/Refactoring/Capture_Reinforcement_Tally_Dedup|Tally Dedup]]
 
 ## TODO
 

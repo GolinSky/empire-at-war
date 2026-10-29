@@ -16,6 +16,7 @@ reviewed: 2026-10-20
 
 > [!info] Import record
 > Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Plan: none — historical provenance only; no tracked open work (2026-10-29 review).
 
 ## Decision
 

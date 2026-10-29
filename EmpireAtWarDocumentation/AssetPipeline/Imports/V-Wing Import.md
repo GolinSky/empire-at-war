@@ -20,7 +20,7 @@ reviewed: 2026-10-20
 ## Goal
 
 - Republic fighter/interceptor; `VWing = 6`, five craft. Local model supplied; ALO/Blender steps skipped.
-- Plan: [[TODOs/Features/VWing_Import]]. Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
+- Plan: [[Done/Features/VWing_Import]]. Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 
 ## Important Values
 

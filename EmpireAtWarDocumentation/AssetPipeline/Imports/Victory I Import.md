@@ -93,7 +93,7 @@ reviewed: 2026-10-20
 - Saved health/weapon/hangar/selection/fog/team-color/explosion bindings inspected. Collider/shield/ion bounds fit new geometry; preview dimensions match.
 - Ship data, Empire roster, Addressables, view/data mappings, all three icon consumers, own preview/wreck and Interceptor references resolve.
 - Saved assets: no missing scripts or broken object references. Unity imported/saved assets; no new import, serialization or production compile errors.
-- No automated tests or Play Mode run. Runtime acceptance remains in [[TODOs/Features/VictoryI_Import]].
+- No automated tests or Play Mode run. Runtime acceptance remains in [[Done/Features/VictoryI_Import]].
 
 ## Files
 

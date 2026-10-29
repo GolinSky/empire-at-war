@@ -14,7 +14,7 @@ reviewed: 2026-10-20
 
 ## Decision
 
-- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; acceptance: [[TODOs/Features/Dispatcher_Import]].
+- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; acceptance: [[Done/Features/Dispatcher_Import]].
 - Unit: CIS Dispatcher-class Frigate, formerly Techno Union Frigate. `Tecno Destroyer` remains source provenance, not another roster unit.
 - Size: user requested existing Munificent length → `82.56805` project units.
 - Source ALOs: `CIS_TecnoDestroyer.ALO` and `CIS_TecnoDestroyer_D.ALO`; static damaged model supplies the wreck.

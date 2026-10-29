@@ -13,7 +13,7 @@ completed: 2026-09-30
 # Codebase audit — implementation status
 
 > [!success] Closed 2026-09-30
-> - Outcome: the original 17 fixes are implemented (see 09). The open follow-up findings (notes 10–11) are superseded by the per-group plans in [[TODOs/Refactoring/Audit_Remediation_Coordination|Audit Remediation Coordination]].
+> - Outcome: the original 17 fixes are implemented (see 09). The open follow-up findings (notes 10–11) are superseded by the per-group plans in [[Done/Refactoring/Audit_Remediation_Coordination|Audit Remediation Coordination]].
 > - Input findings (IN1, IN5–IN8) are deferred at the user's request. IN2–IN4 were closed by settings commit `5ae00d3b` (not re-verified).
 > - Verification: the source checks are recorded in 09–11. No tests were run in the re-audit passes.
 

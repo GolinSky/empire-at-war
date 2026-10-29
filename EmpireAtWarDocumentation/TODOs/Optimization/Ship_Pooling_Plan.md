@@ -8,7 +8,7 @@ updated: 2026-10-12
 
 ## Goal
 - Remove ship spawn spikes: enemy builds cost **13.4–15.8 ms** each (stress capture 2026-10-12 22:46 Kyiv, `Battle.Enemy.Build` ≈ `TimerPoolTick`).
-- Same pattern as [[TODOs/Optimization/Squadron_Pooling_Plan]]: reuse built contexts keyed by (PlayerId, ShipType).
+- Same pattern as [[Done/Optimization/Squadron_Pooling_Plan]]: reuse built contexts keyed by (PlayerId, ShipType).
 
 ## Important Values
 - Spawn frame cost: mostly build-callback self time (Zenject install/resolve, component init); `Instantiate` 2.5–4.7 ms of it.

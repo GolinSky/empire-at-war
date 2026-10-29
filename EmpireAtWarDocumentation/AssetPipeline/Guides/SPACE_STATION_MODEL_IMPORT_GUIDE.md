@@ -140,8 +140,7 @@ reviewed: 2026-10-20
 - `Verify.cs`: reload all six prefabs, reject missing scripts/broken references, verify imported bone counts/parents and export raw Unity vertices/UVs.
 - `VerifyGeometry.py`: compare original binary bone transforms and every non-shadow triangle corner with Unity; verify source hashes and exact decoded texture pixels.
 - `Render.cs`: generate `Temp/RebelStationImport/Previews/LevelNTeam0..7.png` and `LevelNCloseup.png` from geometry-only preview scenes.
-- Before tests: inspect all open scenes; save named dirty scenes and inspect again. Untitled dirty scene → `BLOCKED_DIRTY_UNTITLED_SCENE`.
-- Run `unity command run_tests --mode editor --filter Station --async_tests true --json`; poll `test_status` to completion. Capture results immediately when sharing an Editor.
+- Station tests (`--filter Station`): Tests only on explicit user request (root `AGENTS.md` → Local Test Execution Override); then follow Unity Test Safety there.
 - Inspect compilation and Console import/serialization errors after asset persistence.
 
 ### Recorded verification — 2026-10-07

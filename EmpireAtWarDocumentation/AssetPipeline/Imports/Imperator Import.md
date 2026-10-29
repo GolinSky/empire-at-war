@@ -20,7 +20,7 @@ reviewed: 2026-10-20
 
 ## Goal
 - Import Republic RaW `EV_StarDestroyer_MKI.ALO` with intact/damaged visuals, 27 weapons and Laser Beam replacing Tractor Beam.
-- Acceptance plan: [[TODOs/Features/Imperator_Import]]. Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
+- Acceptance plan: [[Done/Features/Imperator_Import]]. Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 
 ## Decision
 - User values override local RaW XML: build limit `1` (XML `3`), Y-Wings (XML ARC-170 bombers).

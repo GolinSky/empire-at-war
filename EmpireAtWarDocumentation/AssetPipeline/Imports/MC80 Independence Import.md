@@ -53,7 +53,7 @@ reviewed: 2026-10-20
 - Gameplay: `Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab`; data: `Assets/Settings/Data/Ship/MC80IndependenceShipData.asset`.
 - Separate shield, wreck, placement, transparent icon/silhouette and matchup assets use `MC80Independence` names.
 - Editable conversion, textures, previews, reports, scripts and supplied credits: `output/aotr-rebel-units/MC80Independence-Converted/`.
-- Acceptance plan: [[TODOs/Features/MC80Independence_Import]].
+- Acceptance plan: [[Done/Features/MC80Independence_Import]].
 
 ## Rules
 

@@ -5,7 +5,7 @@ created: 2026-10-25
 ---
 # Original Values Rebalance
 
-Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Research|Research]]. Builds on [[TODOs/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]].
+Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Research|Research]]. Builds on [[Done/Refactoring/Weapon_Taxonomy_Balance_System|Weapon Taxonomy and Balance System]].
 
 ## Goal
 

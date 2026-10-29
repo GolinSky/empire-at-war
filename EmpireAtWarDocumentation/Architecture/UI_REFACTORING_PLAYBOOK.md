@@ -9,7 +9,7 @@
 ## Responsibilities
 
 - `<Feature>Data` → serialized configuration.
-- `<Feature>Model : PureModel` → runtime state, rules, C# events.
+- `<Feature>Model : Model` (`EmpireAtWar.Mvc`, plain C#) → runtime state, rules, C# events; exposes `I<Feature>ModelObserver`.
 - `<Feature>Service` → gameplay requests; no UI dependencies.
 - `<Feature>UiController` → presenter, UI factory/setup/disposal.
 - `<Feature>Ui : BaseUi` → rendering and input forwarding.
@@ -19,7 +19,7 @@
 1. Record failure, dependencies, asset paths/GUIDs, repository and Addressables mappings.
 2. Create `<Feature>Data`; copy and compare every serialized value/reference through Unity tooling.
 3. Remap repository/Addressables; verify import before deleting the old model asset.
-4. Convert model to constructor-injected `PureModel`.
+4. Convert model to a constructor-injected plain C# `Model`.
 5. Move gameplay into service; rename UI-only `I<Feature>Command` to `I<Feature>Presenter`.
 6. Use non-generic `BaseUi`; supply model/presenter/data before `Initialize()`.
 7. Bind data/model/service/controller in the feature scope; verify creation, input, events, disposal.
@@ -30,7 +30,7 @@
 - Concrete `<Feature>Ui`, intent-only `I<Feature>Presenter`, and owning `<Feature>UiController` colocate in the feature folder; normalize their namespaces.
 - `UiPlacement` owns the type-to-parent map; `UiService` uses `typeof(TUi).Name` with the existing asset mapping.
 - No screen interfaces/casts, screen subcontainers or feature property injection during UI prefab construction.
-- Controllers own model subscriptions and explicit view lifecycle. View teardown removes control listeners; account for scene destruction before controller disposal.
+- Model-event subscription ownership → [[Rules/UI_CODE_BUILD_GUIDE#2. Wire the view lifecycle]] (default: the view observes the model). Controllers own explicit view lifecycle. View teardown removes its listeners; account for scene destruction before controller disposal.
 - Passive screens have no presenter; route controllers use `IUiRoute` and `<Feature>RouteUiController`.
 - Subscribe in `Initialize`; unsubscribe symmetrically in `Dispose`; call `Dispose` from `OnDestroy`.
 - Disposal must be safe more than once; do not initialize in `Awake`/`Start`.

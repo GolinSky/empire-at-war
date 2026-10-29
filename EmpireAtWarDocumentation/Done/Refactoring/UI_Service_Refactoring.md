@@ -8,7 +8,7 @@ completed: 2026-10-13
 
 ## Goal
 
-- Complete under Zenject before [[TODOs/Refactoring/Zenject_To_VContainer_Migration|Zenject → VContainer migration]].
+- Complete under Zenject before [[Done/Refactoring/Zenject_To_VContainer_Migration|Zenject → VContainer migration]].
 - Every screen = concrete `<Feature>Ui` + `I<Feature>Presenter` + `<Feature>UiController`, colocated in one feature folder.
 - Remove `UiType`, screen-interface casts and per-screen Zenject subcontainers; preserve current UI behavior.
 
@@ -127,7 +127,7 @@ completed: 2026-10-13
 - Infrastructure: `Assets/Scripts/BaseSystem/Ui/`; host prefab `Assets/Prefabs/Ui/UiService.prefab`.
 - Inventory and tests: [[Done/Refactoring/UI_Service_Refactoring - Research]].
 - Reference (read-only): `F:/Private/SoulsLikeTemplate/Assets/Scripts/Ui/{Base/BaseUi,Base/UiController,MainMenu/*,Navigation/IUiRoute,Navigation/UiRouteStack,Grace/*}.cs`.
-- Related: [[TODOs/Refactoring/Explicit_Component_Binding]], [[TODOs/Features/Tooltip_System_Plan]], [[TODOs/Refactoring/Battle_Startup_Sequence_Plan]]; preserve their unfinished acceptance work.
+- Related: [[Done/Refactoring/Explicit_Component_Binding]], [[Done/Features/Tooltip_System_Plan]], [[Done/Refactoring/Battle_Startup_Sequence_Plan]]; preserve their unfinished acceptance work.
 
 ## TODO
 

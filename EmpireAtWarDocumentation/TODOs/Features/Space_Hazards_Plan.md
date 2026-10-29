@@ -15,7 +15,7 @@ created: 2026-10-28
 - Placement: `MapType.Full` only; none on `Survival`/`Empty`. Mirrored pairs (point symmetry) plus an optional central hazard.
 - Avoid (soft, best effort): stations, mining sites, default zones, capturable relays, asteroid fields. If there is no room, place fewer hazards; never throw.
 - An already-fired ability (`SurvivesCasterDeath == true`, e.g. IonShot, fired IonPulse) finishes inside a hazard.
-- Shapes: superseded by [[TODOs/Features/Space_Hazards_Rework_Plan|band rework]] (2026-10-28): generated centerline + tapered widths; one sampled polygon for gameplay, ribbon rendering and minimap.
+- Shapes: superseded by [[Done/Features/Space_Hazards_Rework_Plan|band rework]] (2026-10-28): generated centerline + tapered widths; one sampled polygon for gameplay, ribbon rendering and minimap.
 - Membership check: linear scan with bounds reject. Why: 2–6 zones × N ships every 0.1 s is cheap. Avoid: spatial partitioning.
 - Immunity flags: not now. Add one bool per effect to unit data when a unit needs it.
 - Minimap: hazards always visible, like obstacles; not fogged.
@@ -59,7 +59,7 @@ created: 2026-10-28
 - **Rule:** hazards avoid the mining point node (`MapNode` circle via `PointOfInterestPlacer.GetOuterRadius`), not single sites and not rock meshes. Why: capture range (60) is the gameplay area; rocks are now half size and inside it.
 - **Avoid:** recomputing cluster size in `HazardPlacer`; it must call the placer's radius so future spacing changes carry over.
 - Effect: mining points take ~40% less radius → more free room for hazards → re-tune hazard counts per size.
-- Interacts with [[TODOs/Features/More_Mining_Sites|More Mining Sites]] (8/10/14 sites): run the hazard fit test on 3–4 player maps too.
+- Interacts with [[Done/Features/More_Mining_Sites|More Mining Sites]] (8/10/14 sites): run the hazard fit test on 3–4 player maps too.
 
 ## Hazard Sources (zones now, events later)
 
@@ -170,7 +170,15 @@ Detailed art direction: [[TODOs/Features/Space_Hazards_Plan - Visuals|Space Haza
 9. [x] **UI.** Selected-ship status line ("Abilities Jammed" / "Shields Offline"); ability button override tooltip ("Special abilities disabled by nebula" / "Shields and special abilities disabled"); shield bar zero + recovery state; minimap area fill + generated icons (see Visual Spec → Minimap). Read `UI_UX_GUIDELINES` and `UI_CODE_BUILD_GUIDE` first.
 10. [x] **AI.** Per-cell extra cost in `NavigationRouteJob` (never blocked); ion-storm avoidance in `EnemyUnitCommander` target picking, weighted for shield-dependent capitals.
    - Verify: existing navigation tests + route bends around a costly cell.
-11. [ ] **Final.** Compile, full EditMode suite, seeded map spawns hazards; user checks in game.
+11. **Final** → tests on request and user review moved to [[TODOs/User_Acceptance_Queue]] (2026-10-29).
+
+## Merged Open Work (2026-10-29)
+
+- Single owner of space-hazard work. [[Done/Features/Space_Hazards_Rework_Plan]] (bands, decor ring, dust) and [[Done/Features/Space_Hazards_Shape_Rework_Plan]] (lobed SDF clouds, current geometry) are closed history; current geometry = Shape Rework.
+- [ ] Move remaining `HazardType.IonStorm` branches (`HazardCloudView`, `HazardEntryCue`, editor builders) onto data/material (from Shape Rework).
+- [ ] Measure SDF bake time per map; target `< 20 ms` total on Large (from Shape Rework step 8).
+- Decor ring frame time and 5-sheet overdraw → [[TODOs/Optimization/Battle_FPS_Recovery_Plan]].
+- Tests on request (`Map`, `MapExhaustive`, clean full-suite comparison) and user review → [[TODOs/User_Acceptance_Queue]].
 
 ## Files (expected)
 
@@ -192,5 +200,5 @@ Detailed art direction: [[TODOs/Features/Space_Hazards_Plan - Visuals|Space Haza
 - Fixed full-suite integration findings: dependency cycle moved to `HazardEffectsPresenter`; both ship-card prefabs have status bindings; ability icon fixture and navigation-cache reflection fixture updated. Those listed failures pass in the rerun.
 - Final hazard-focused rerun: **25/25 passed**. `Logs/SpaceHazards/hazard-tests-final.json`. Covers seeded generation/type variety, geometry, hull-height coverage, source overlaps/death/removal, reinforcement gating, ability cancellation/cooldowns/persistent fired effects, navigation detours and saved UI/visual bindings.
 - Editor-only min/max/medium captures reviewed: `Logs/SpaceHazards/`; types distinguishable and ships/team colors readable. Outer-sheet opacity reduced to 0.015 to limit parallax.
-- 2026-10-28 user review: hazards too small (240×160 on ±2000–4500 maps), same type on Small, ion visual edge ≈ 70–80% of gameplay ellipse + hull-radius padding. Shape decision superseded → [[TODOs/Features/Space_Hazards_Rework_Plan|Space Hazards Rework Plan]].
+- 2026-10-28 user review: hazards too small (240×160 on ±2000–4500 maps), same type on Small, ion visual edge ≈ 70–80% of gameplay ellipse + hull-radius padding. Shape decision superseded → [[Done/Features/Space_Hazards_Rework_Plan|Space Hazards Rework Plan]].
 - Remaining: user in-game acceptance (effects, regen delay, fog/UI readability) and full-suite failures above. Step 8 optional full visuals and map-wide events deferred.

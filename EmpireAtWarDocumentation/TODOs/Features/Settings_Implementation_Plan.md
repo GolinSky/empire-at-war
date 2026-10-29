@@ -19,14 +19,14 @@ status: in-progress
 
 ## Implementation
 
-- `SettingsService` (`ISettingsService`, `ICameraPreferences`): Saved / Draft, `IsDirty` = JSON compare, `Apply` / `KeepDisplay` / `RevertDisplay` / `Discard` / `ResetDraftToDefaults`.
+- `SettingsService` (`ISettingsService`, `ICameraPreferences`): Saved / Draft, `IsDirty => !Draft.Matches(Saved)` (`SettingsService.cs:23`), `Apply` / `KeepDisplay` / `RevertDisplay` / `Discard` / `ResetDraftToDefaults`.
 - `JsonSettingsRepository`: `persistentDataPath/settings.json`; temp write → `File.Replace` + `.bak`; unreadable file → `.corrupt` copy + backup load.
 - First run imports legacy PlayerPrefs `QualityPreset`, `InputBindingOverrides`.
 - Applier order = `ProjectContextInstaller` binding order: `DisplaySettingsApplier` → `GraphicsSettingsApplier` → `InputBindingService`.
 - Display change → 15 s Keep/Revert prompt (`Time.unscaledTime`); timeout / Escape → revert.
 - `InputBindingService`: suspends all enabled maps during capture, Escape cancels, cross-map chord conflicts (`BindingConflicts`), Replace / Swap / Cancel.
 - Camera: `CameraService` (pan/zoom multipliers, invert zoom), `CameraInput` (edge scrolling).
-- UI: `SettingsRouteController` + `SettingsDraftEditor` + `KeyBindingEditor`; views `SettingsUi`, row views, `SettingsPromptView`.
+- UI: `SettingsRouteUiController` + `SettingsDraftEditor` + `KeyBindingEditor`; views `SettingsUi`, row views, `SettingsPromptView`.
 
 ## Files
 
@@ -63,6 +63,6 @@ status: in-progress
 - Display crash-recovery marker; monitor selection; refresh rate.
 - Texture / shadow / AA / render scale rows (needs owned runtime URP asset copies).
 - Required-action protection on Replace; reset-page / profile presets.
-- `SettingsRouteController` ≈ 250 lines → consider extracting display countdown.
+- `SettingsRouteUiController` 324 lines; display countdown already extracted to `DisplayConfirmationCountdown` (2026-10-09). Further simplification optional.
 - Verify display change + Keep/Revert in a Windows standalone build.
-- Audit follow-ups (tests, per-edit allocations, mutable preferences, I/O failure policy): [[TODOs/Features/Settings_Audit_Followups]].
+- Audit follow-ups (tests, per-edit allocations, mutable preferences, I/O failure policy): [[Done/Features/Settings_Audit_Followups]].

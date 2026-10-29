@@ -20,7 +20,7 @@ reviewed: 2026-10-20
 ## Goal
 
 - Five Republic BTL-B heavy bombers / anti-capital strikecraft, imported through [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
-- Runtime and balance acceptance: [[TODOs/Features/YWing_Import]].
+- Runtime and balance acceptance: [[Done/Features/YWing_Import]].
 
 ## Important Values
 

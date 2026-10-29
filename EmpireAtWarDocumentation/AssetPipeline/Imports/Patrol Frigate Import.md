@@ -84,4 +84,4 @@ reviewed: 2026-10-20
 - Saved asset inspections: no missing scripts/references or old donor-model dependencies; all remaps, registrations, dimensions and palette renders checked; Unity compilation/import completed without new errors.
 - No Play Mode or automated tests run. Verify movement, eight laser fire arcs/targeting, Power to Engines, shields, selection/fog, placement and wreck behavior in-game.
 - Resize inspection: all four prefabs have length ratio 0.6; zero hardpoint/engine attachment error; fitted volumes and saved references verified. Existing UI teardown Console exceptions predate the resize; MainMenuScene's dirty state preserved.
-- Review provisional movement, limits and hardpoint balance. Track acceptance in [[TODOs/Features/Patrol_Frigate_Import]].
+- Review provisional movement, limits and hardpoint balance. Track acceptance in [[Done/Features/Patrol_Frigate_Import]].

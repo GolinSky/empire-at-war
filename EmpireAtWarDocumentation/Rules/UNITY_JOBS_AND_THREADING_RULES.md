@@ -74,12 +74,12 @@ Main thread: gather snapshot (+ stable ids / generation)
 
 ## 6. Project-specific adaptations (differences from the external pack)
 
-- The pack's example code uses constructor `ArgumentNullException` guards — **not allowed here** (see [[Rules/AGENTS]]: no constructor null guards).
+- The pack's example code uses constructor `ArgumentNullException` guards — **not allowed here** (root `AGENTS.md` → Unity Constraints & Error Handling: no constructor null guards).
   - Assign injected dependencies directly.
 - The owner service is registered in its VContainer scope; ordered project cleanup uses `EmpireAtWar.Lifecycle.IOrderedDisposable` / `ILateDisposable`.
 - Collections here is `6.4.0` (Unity 6 versioning), not `2.5`; allocator semantics referenced above are unchanged, but check the package docs for API details.
 - Keep job structs `internal`, one type per file, named after the file; `const` fields in `UPPER_SNAKE_CASE`.
-- Tests that exercise jobs run through the Unity Test Framework only when the user explicitly asks (see Unity Test Safety in [[Rules/AGENTS]]).
+- Tests that exercise jobs run through the Unity Test Framework only when the user explicitly asks (root `AGENTS.md` → Local Test Execution Override and Unity Test Safety).
 
 ## 7. Audit checklist (for reviewing an existing Jobs feature)
 

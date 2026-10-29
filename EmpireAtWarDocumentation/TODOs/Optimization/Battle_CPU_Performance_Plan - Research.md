@@ -124,5 +124,5 @@ updated: 2026-10-11
 
 ## Files
 - [[TODOs/Optimization/Battle_CPU_Performance_Plan]]
-- [[TODOs/Optimization/Battle_Attack_Optimization_Plan]]
-- [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research]] — rendering agent's detailed verified asset/event analysis.
+- [[Done/Optimization/Battle_Attack_Optimization_Plan]]
+- [[Done/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research]] — rendering agent's detailed verified asset/event analysis.

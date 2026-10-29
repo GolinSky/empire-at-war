@@ -9,6 +9,8 @@ tags:
 ---
 # Carrack Import
 
+> Plan: none — historical provenance only; no tracked open work (2026-10-29 review).
+
 ## Goal
 
 - Add Carrack-class Cruiser to Republic level 2 from Workshop mod `1129810972`.

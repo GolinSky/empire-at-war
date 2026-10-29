@@ -19,7 +19,7 @@ reviewed: 2026-10-20
 
 ## Goal
 - Republic IPV-2C Stealth Corvette: imported model, four weapons, cloaking, roster, own placement/wreck/icons and team colors.
-- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; acceptance: [[TODOs/Features/StealthCorvette_Import]].
+- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; acceptance: [[Done/Features/StealthCorvette_Import]].
 
 ## Important Values
 - User/local RaW XML: hull `850`, shields `900`, regeneration `15/s`; cost `2150`, build `18 s`, tech `3`, population `2`, limit `1`.

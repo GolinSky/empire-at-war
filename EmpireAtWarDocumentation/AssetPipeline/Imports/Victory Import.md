@@ -69,7 +69,7 @@ reviewed: 2026-10-20
 
 ## Files
 
-- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; active acceptance plan: [[TODOs/Features/Victory_Import|Victory Import]].
+- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; active acceptance plan: [[Done/Features/Victory_Import|Victory Import]].
 - Victory art: `Assets/Art/{Models,Materials/Models,Textures/Models}/EmpireShips/Victory/`.
 - TIE art: corresponding `EmpireShips/TIEFighter/` and `EmpireShips/TIEBomber/` folders.
 - Main prefab/data: `Assets/Prefabs/Models/Ships/VictoryShipView.prefab`, `Assets/Settings/Data/Ship/VictoryShipData.asset`.
