@@ -16,6 +16,9 @@ namespace EmpireAtWar.ViewComponents.Health
         /// <summary>The weapon mounted on this hardpoint; false for hardpoints that carry no weapon.</summary>
         bool TryGetWeaponType(out WeaponType weaponType);
 
+        /// <summary>The profile this hardpoint fires, with the unit's own modifiers; false for hardpoints that carry no weapon.</summary>
+        bool TryGetWeaponProfile(out WeaponProfile profile);
+
         void UpdateData(float healthPercentage);
 
         void RestoreData(float healthPercentage) => UpdateData(healthPercentage);

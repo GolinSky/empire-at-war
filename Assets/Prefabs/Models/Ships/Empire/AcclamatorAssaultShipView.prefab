@@ -1787,6 +1787,7 @@ MonoBehaviour:
   - {fileID: 8597300158050278440}
   - {fileID: 2019781109428345338}
   - {fileID: 7151180205343548959}
+  rangeMultiplier: 1
 --- !u!1 &3243367813209381354
 GameObject:
   m_ObjectHideFlags: 0

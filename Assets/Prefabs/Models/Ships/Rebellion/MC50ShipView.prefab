@@ -3198,6 +3198,7 @@ MonoBehaviour:
   - {fileID: 1214161956953323253}
   - {fileID: 4094968816380332624}
   - {fileID: 8226411556259639489}
+  rangeMultiplier: 1
 --- !u!1001 &904863212960355956
 PrefabInstance:
   m_ObjectHideFlags: 0

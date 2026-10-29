@@ -105,6 +105,19 @@ namespace EmpireAtWar.Components.AttackComponent
             projectileSpeed, boltColor, size, false, _hasTargetSizeBias, _damageBias, _accuracyBias, _turnRate,
             _preferredTarget);
 
+        public WeaponProfile WithRangeMultiplier(float multiplier)
+        {
+            // Point defense guards its own hull, so a ship's longer reach never extends it.
+            if (multiplier == 1f || Family == WeaponFamily.PointDefense)
+                return this;
+
+            return new WeaponProfile(weaponType, displayName, Family, damageType,
+                damage, shotsPerSalvo, shotInterval, reload, range * multiplier,
+                strikecraftOnly, interceptable, shotPrefab, projectileSpeed, color, size,
+                _usesFactionColor, _hasTargetSizeBias, _damageBias, _accuracyBias, _turnRate,
+                _preferredTarget);
+        }
+
         public WeaponProfile WithWarheadMultipliers(float damageMultiplier, float reloadMultiplier)
         {
             if (Family != WeaponFamily.FighterTorpedo && Family != WeaponFamily.FighterMissile)

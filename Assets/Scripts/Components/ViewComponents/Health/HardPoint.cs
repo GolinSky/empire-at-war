@@ -102,6 +102,12 @@ namespace EmpireAtWar.ViewComponents.Health
             return false;
         }
 
+        public virtual bool TryGetWeaponProfile(out WeaponProfile profile)
+        {
+            profile = null;
+            return false;
+        }
+
         protected virtual void OnInit(){}
 
         protected virtual void OnRelease(){}

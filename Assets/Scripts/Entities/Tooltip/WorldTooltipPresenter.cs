@@ -30,7 +30,6 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly ICameraService _cameraService;
 
         private readonly HardPointOverlayData _hardPointData;
-        private readonly WeaponsData _weaponsData;
         private readonly INotifier<BattleMap> _battleMap;
         private readonly List<IObstacleBoundsSource> _obstacles = new List<IObstacleBoundsSource>();
 
@@ -41,11 +40,11 @@ namespace EmpireAtWar.Entities.Tooltip
         public WorldTooltipPresenter(IHoveredEntityObserver hover, IPointerInput pointerInput,
             ITooltipService tooltipService, IVisionService visionService, ILocalPlayer local,
             ICaptureSitesSystem sites, ICameraService cameraService, HardPointOverlayData hardPointData,
-            WeaponsData weaponsData, INotifier<BattleMap> battleMap)
+            INotifier<BattleMap> battleMap)
         {
             _hover = hover; _pointerInput = pointerInput; _tooltipService = tooltipService;
             _visionService = visionService; _local = local;
-            _hardPointData = hardPointData; _weaponsData = weaponsData; _sites = sites; _cameraService = cameraService;
+            _hardPointData = hardPointData; _sites = sites; _cameraService = cameraService;
             _battleMap = battleMap;
         }
 
@@ -114,10 +113,9 @@ namespace EmpireAtWar.Entities.Tooltip
             HardPointOverlayEntry entry = _hardPointData.Get(hardPoint.HardPointType);
             var stats = new List<TooltipStat>();
             string status = hardPoint.IsDestroyed ? "Destroyed" : "Operational";
-            if (!hardPoint.TryGetWeaponType(out WeaponType weaponType))
+            if (!hardPoint.TryGetWeaponProfile(out WeaponProfile weapon))
                 return new TooltipContent(title: entry.DisplayName, description: entry.Description, stats: stats, status: status);
 
-            WeaponProfile weapon = _weaponsData.GetProfile(weaponType);
             stats.Add(new TooltipStat(label: "Salvo damage", current: weapon.Damage * weapon.ShotsPerSalvo));
             stats.Add(new TooltipStat(label: "Range", current: weapon.Range, format: "0"));
             return new TooltipContent(title: weapon.DisplayName, subtitle: entry.DisplayName, description: entry.Description,

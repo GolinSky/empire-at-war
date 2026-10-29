@@ -33,6 +33,8 @@ namespace EmpireAtWar.Models.Health
 
         public bool TryGetWeaponType(out WeaponType weaponType) => _view.TryGetWeaponType(out weaponType);
 
+        public bool TryGetWeaponProfile(out WeaponProfile profile) => _view.TryGetWeaponProfile(out profile);
+
         public HardPointAdapter(IHardPoint view, HardPointModel model, Transform pivot)
         {
             _model = model;

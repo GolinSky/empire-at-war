@@ -65,6 +65,12 @@ namespace EmpireAtWar.ViewComponents.Health
             return true;
         }
 
+        public override bool TryGetWeaponProfile(out WeaponProfile profile)
+        {
+            profile = _profile;
+            return true;
+        }
+
         public void SetData(FloatRange floatRange)
         {
             yAxisRange.SetValue(floatRange);

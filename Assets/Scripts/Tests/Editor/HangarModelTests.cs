@@ -81,6 +81,11 @@ namespace EmpireAtWar.Tests.Editor
                 weaponType = default;
                 return false;
             }
+            public bool TryGetWeaponProfile(out WeaponProfile profile)
+            {
+                profile = null;
+                return false;
+            }
             public void UpdateData(float healthPercentage) { }
         }
 

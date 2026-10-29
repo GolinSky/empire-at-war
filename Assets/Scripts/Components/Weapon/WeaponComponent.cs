@@ -52,6 +52,7 @@ namespace EmpireAtWar.Components.Weapon
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
 
         [SerializeField] private List<WeaponHardPoint> hardPoints;
+        [SerializeField] private float rangeMultiplier = 1f;
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private WeaponsData _weaponsData;
@@ -164,6 +165,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 WeaponHardPoint hardPoint = hardPoints[i];
                 WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction)
+                    .WithRangeMultiplier(rangeMultiplier)
                     .WithWarheadMultipliers(_warheadDamageMultiplier, _warheadReloadMultiplier);
                 profiles.Add(profile);
                 _facingWeights[i] = Mathf.Max(1, Mathf.RoundToInt(profile.DamagePerSecond * FACING_WEIGHT_SCALE));
