@@ -67,8 +67,8 @@ namespace EmpireAtWar.Entities.CaptureSites
             if (_selection.SelectedSite == null) _ui.Hide();
             else
             {
-                _ui.SetFacilities(_data.GetAllowedFacilities(_selection.SelectedSite.Kind));
                 _ui.SetPosition(_selection.SelectionScreenPosition);
+                _ui.SetFacilities(_data.GetAllowedFacilities(_selection.SelectedSite.Kind));
                 Tick();
                 _ui.Show();
             }
@@ -77,6 +77,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void Tick()
         {
             if (_selection.SelectedSite == null) return;
+            // Follows the structure while the camera moves.
+            _ui.SetPosition(_selection.SelectionScreenPosition);
             foreach (SiteFacilityType type in _data.GetAllowedFacilities(_selection.SelectedSite.Kind))
                 _ui.SetAvailable(type, _selection.CanAfford(_data.GetCost(type).Price));
         }

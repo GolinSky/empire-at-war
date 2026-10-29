@@ -53,7 +53,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public event Action<PlayerId, SiteFacilityType> ConstructionStarted;
         public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
         public CaptureSitePresenter SelectedSite => _selectedSite;
-        public Vector2 SelectionScreenPosition { get; private set; }
+        public Vector2 SelectionScreenPosition => _cameraService.WorldToScreenPoint(_selectedSite.FacilityPosition);
         public bool CanAfford(float price) => GetBuilder(_localPlayer.Id).CanAfford(price);
 
         [Inject]
@@ -91,7 +91,6 @@ namespace EmpireAtWar.Services.CaptureSites
         public void Initialize()
         {
             _gestures.WorldPressed += HandleWorldPressed;
-            _gestures.WorldCommanded += HandleWorldPressed;
             _battleMap.AddObserver(this);
         }
 
@@ -117,7 +116,6 @@ namespace EmpireAtWar.Services.CaptureSites
             ClearSelection();
             _battleMap.RemoveObserver(this);
             _gestures.WorldPressed -= HandleWorldPressed;
-            _gestures.WorldCommanded -= HandleWorldPressed;
             _cancelRouter.Unfocus(this);
             foreach (CaptureSitePresenter site in _sites)
             {
@@ -252,7 +250,6 @@ namespace EmpireAtWar.Services.CaptureSites
                 if (IsSelectable(site) && site.Contains(_cameraService.GetWorldPoint(screenPosition, site.Center)))
                 {
                     _selectedSite = site;
-                    SelectionScreenPosition = screenPosition;
                     SelectionChanged.Invoke();
                     _cancelRouter.Focus(this);
                     return;

@@ -10,6 +10,9 @@ namespace EmpireAtWar.Entities.CaptureSites
     {
         private const float CARD_WIDTH = 280f;
         private const float CARD_HEIGHT = 360f;
+        // Canvas units between the structure's screen point and the panel's near edge and bottom.
+        private const float SIDE_OFFSET = 64f;
+        private const float VERTICAL_OFFSET = 24f;
 
         [SerializeField] private RectTransform panel;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -85,11 +88,13 @@ namespace EmpireAtWar.Entities.CaptureSites
                 option.Configure(types[i], _data.GetCost(types[i]));
             }
             LayoutOptions();
+            ApplyPosition();
         }
 
         private void LayoutOptions()
         {
             Vector2 available = ((RectTransform)panel.parent).rect.size;
+            _lastParentSize = available;
             int columns = Mathf.Clamp(Mathf.FloorToInt(available.x / (CARD_WIDTH * _panelScale.x)),
                 1, _visibleOptionCount);
             int rows = Mathf.CeilToInt((float)_visibleOptionCount / columns);
@@ -111,18 +116,27 @@ namespace EmpireAtWar.Entities.CaptureSites
             }
         }
 
+        /// <summary>Places the panel above the structure's screen point, to its right or, if that does not fit, its left.</summary>
         public void SetPosition(Vector2 screenPosition)
         {
-            LayoutOptions();
-            RectTransform parent = (RectTransform)panel.parent;
+            if (screenPosition == _screenPosition) return;
             _screenPosition = screenPosition;
-            _lastParentSize = parent.rect.size;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, screenPosition, null,
-                out Vector2 position);
+            ApplyPosition();
+        }
+
+        private void ApplyPosition()
+        {
+            RectTransform parent = (RectTransform)panel.parent;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, _screenPosition, null,
+                out Vector2 anchor);
             Rect bounds = parent.rect;
             Vector2 size = Vector2.Scale(panel.rect.size, panel.localScale);
-            position.x = Mathf.Clamp(position.x, bounds.xMin + size.x * .5f, bounds.xMax - size.x * .5f);
-            position.y = Mathf.Clamp(position.y + 24f, bounds.yMin, bounds.yMax - size.y);
+            float halfWidth = size.x * .5f;
+            float x = anchor.x + SIDE_OFFSET + halfWidth;
+            if (x + halfWidth > bounds.xMax) x = anchor.x - SIDE_OFFSET - halfWidth;
+            Vector2 position;
+            position.x = Mathf.Clamp(x, bounds.xMin + halfWidth, bounds.xMax - halfWidth);
+            position.y = Mathf.Clamp(anchor.y + VERTICAL_OFFSET, bounds.yMin, bounds.yMax - size.y);
             panel.anchoredPosition = position;
         }
 
@@ -136,8 +150,9 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private void LateUpdate()
         {
-            if (IsVisible && ((RectTransform)panel.parent).rect.size != _lastParentSize)
-                SetPosition(_screenPosition);
+            if (!IsVisible || ((RectTransform)panel.parent).rect.size == _lastParentSize) return;
+            LayoutOptions();
+            ApplyPosition();
         }
     }
 }
