@@ -6,11 +6,13 @@ system:
   - quality
   - fog-of-war
 verified: 2026-10-29
-verification: Current nebula/hazard/settings implementations source-reviewed;
-  Unity recompile completed without errors; saved bindings/import and isolated
-  non-Play-Mode nebula render comparison verified. Prior decor/fog evidence
-  retained. No automated tests, battle baseline, Player build or Mac operations
-  in this rollout.
+verification: Nebula/hazard/settings source, Unity compilation, saved
+  bindings/import and isolated nebula render comparison verified. ARM64 IL2CPP
+  Development Player build succeeded; BuildInfo, repaired ad-hoc signature and
+  M2/Metal launch checked. Xcode 27.1 Metal System Trace and XML export analyzed
+  for one user-prepared hazard workload. Matched capture conditions, isolated
+  per-draw budgets and acceptance remain unverified. Prior decor/fog evidence
+  retained. No automated tests run.
 tags:
   - flag/important
 ---
@@ -81,7 +83,11 @@ tags:
 
 ### Open issues and ownership
 
-- Fixed implementation 2026-10-29: `BuildInfoWriter` writes Windows `<Name>_Data/StreamingAssets` or macOS `<Name>.app/Contents/Resources/Data/StreamingAssets`; unsupported targets throw. Actual Mac player build remains unverified; owner [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]].
+- Mac build verified 2026-10-29: `BuildInfoWriter` writes Windows `<Name>_Data/StreamingAssets` or macOS `<Name>.app/Contents/Resources/Data/StreamingAssets`; ARM64 IL2CPP Development Player built with 0 errors / 4 warnings, packaged JSON checked and player launched on M2/Metal. Its post-build JSON addition invalidates Unity's existing resource seal → for local development artifacts run `codesign --force --sign - <Name>.app`, then `codesign --verify --deep --strict <Name>.app`. Verified on `Builds/MacGPU/EmpireAtWar.app`; automatic signing-order fix remains open in [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]].
+- Mac module installation: platform support alone does not prove IL2CPP is installed. Check `MacStandaloneSupport/Variations/macos_arm64_player_development_il2cpp`; install official `mac-il2cpp` if absent. Reload scripts after installing into an open Editor: cached build-window support otherwise rejects Addressables/SBP configuration. Rechecked `EnabledBuildButton()` and successful Player build establish this recovery.
+- Mac tooling verified 2026-10-29: Xcode `27.1 (27A9275)` with completed first-run license/setup records the existing IL2CPP Development Player via `xcrun xctrace record --template 'Metal System Trace' --attach <PID> --time-limit 10s --output <capture>.trace`. Wait for successful file-save completion before `xctrace export --input <capture>.trace --toc` / `--xpath`; recording finalization/export can take minutes. Earlier Instruments 15.0.1 incompatibility and license exit 69 are resolved on this host.
+- Metal export analysis: `metal-gpu-intervals` identifies process, GPU frame ID, start/duration, channel and formatted pass label. Filter to the Player and merge overlapping/nested active intervals; never add parallel Vertex/Fragment/Compute or pass durations. Object labels may be blank while formatted execution labels retain Unity pass names. GPU execution-start cadence is not display cadence or unprofiled FPS. Verified analyzer/evidence: `Logs/RenderAudit/20261029-Mac-GPU-Profiling/{analyze_trace.py,hazard-summary.json}`.
+- Instrumented hazard sample: GPU active union median `12.42 ms` / p95 `17.90 ms`, Fragment median `11.55 ms`; no fixed-condition acceptance or isolated nebula/hazard cost established. Trace workload seed/preset/render scale were not independently verified; Player log reports `2940×1846`, not requested `2560×1440`. Per-draw frame capture and matched on/off/restored runs remain in [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]]. The Editor-only ablation tool and disabled optional Player bridge do not provide those matched Player toggles.
 - Historical Mac live-volume cost ≈7.03 ms at 48 samples; pan p99 73.54 ms / max 404.51 ms. PC bake/H1/H2 implementation is compiled/import-verified, with isolated nebula render comparison; no current battle speedup or Mac acceptance claimed. Matched captures and hitch attribution remain in [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]].
 - Mac capture limitations: GPU counters exceed frame intervals; Screen reports 642×1156 while camera is 2560×1440; camera-render screenshots omit decor/HUD; startup counter spikes are not steady combat latency. Use recorded frame intervals/camera metadata/composited evidence; tooling fixes remain under the recovery plan.
 - Full faction/mount/effect reuse/impact/scene-exit matrix, rendered LOD silhouettes, PC historical comparisons, navigation attribution and absorbed experiments remain unfinished in [[TODOs/Optimization/Battle_FPS_Recovery_Plan]]. Guidance extraction does not close or authorize them.

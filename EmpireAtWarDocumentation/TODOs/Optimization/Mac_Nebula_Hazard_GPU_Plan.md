@@ -222,6 +222,41 @@ created: 2026-10-29
 
 ### Part 2 — Mac
 
-- [ ] [Mac] Phase 6 — Development player build (IL2CPP, Apple Silicon).
+- [x] [Mac] Phase 6 — Development player build (IL2CPP, Apple Silicon); BuildInfo/signature and launch verified below.
 - [ ] [Mac] Phase 7 — player captures, Xcode GPU capture, pan-hitch check.
 - [ ] [Mac] Phase 8 — H3 if needed, Mac defaults, visual acceptance, close plan.
+
+## Mac Execution — 2026-10-29
+
+- Scope: Part 2 only; clean checkout already contained PC fixes at `2aa218c52`. No code, shader, preset or gameplay changes.
+- Host: Apple M2 / Metal; Unity `6000.4.7f1`; macOS `27.0 (26A428)`; Xcode `15.0.1 (15A507)`; IL2CPP.
+- [x] Phase 6 prerequisites: installed missing official `mac-il2cpp` module; verified ARM64 development IL2CPP support. Local Editor architecture `OSXUniversal/ARM64` (previous `x64ARM64`).
+- Initial builds failed Addressables/SBP configuration validation before producing an app. Script reload after module installation refreshed the build-window extension; `EnabledBuildButton()` then returned true. No Addressables group/schema edits.
+- [x] Development + DetailedBuildReport build succeeded: `Builds/MacGPU/EmpireAtWar.app`; ARM64 Mach-O; `3,161,995,381 B`; report duration `1,555,027 ms`; `0` errors / `4` warnings.
+- Warnings: disabled optional Pipeline runtime bridge; empty Heathen UX assembly; Metal vector truncation in URP `DebugOccluder`; incomplete vertex initialization in MPUIKit `MPImageBasic`. None is a build failure.
+- [x] BuildInfo verified: `Contents/Resources/Data/StreamingAssets/build-info.json` → version `0.1.0`, build `local`, full source commit `2aa218c52a51b93fa72e4f32d9cd3a9cd8d39458`.
+- [x] Local signing repaired: `BuildInfoWriter` adds JSON after Unity signs the app, invalidating its resource seal. `codesign --force --sign - Builds/MacGPU/EmpireAtWar.app` → `codesign --verify --deep --strict` passes, including nested native libraries. This repairs this artifact; automatic signing order remains a packaging follow-up.
+- [x] Player launched on M2/Metal; UI inspection showed a running Republic skirmish, rendered nebula, Development Build label and debug overlay with zero errors. Main-menu version label was not inspected. Battle seed/preset/render scale/pose were not verified, so its visible FPS is not a matched performance result.
+- Player bake log: `4096×2048`, `128` samples, `51.6 ms` CPU submission. This is initialization evidence, not GPU bake duration or per-frame cost.
+- [ ] Phase 7 matched Player A/B/hazard/combat and pan captures: not recorded. Existing `render_audit_ablation` is Editor-only and the optional Player Pipeline bridge is disabled in this artifact; a Player capture route remains necessary.
+- Phase 7 GPU frame capture / Metal System Trace deferred by user: Instruments `15.0.1` fails to launch on macOS `27.0` (`kLSIncompatibleApplicationVersionErr`, OSStatus `-10664`); `xcrun xctrace list templates` exits `137`. Update Xcode before resuming. Clang and Metal compiler version probes succeed.
+- [ ] Phase 8 H3 decision / defaults / visual acceptance: pending measurements and user review. No H3 mesh or default upscaler/resolution change is justified by current evidence. No new nebula/hazard GPU cost or ≥60 FPS acceptance claimed.
+- Cleanup verified through Unity: restored build-generated font/preloaded-asset changes; removed generated Addressables OSX/link.xml output; fallback font loads; importing/compiling false. Only vault documentation differs. No automated tests or Editor Play Mode run.
+- Evidence: `Logs/RenderAudit/20261029-Mac-Nebula-Hazard/{environment.json,first-build-failure.log,build-report.json,build-summary.json,player-startup.log}`; app above. UI inspection is recorded in this conversation.
+- Reusable guidance: Mac module/reload/signing rules updated in [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]. Plan remains active because matched measurements, tuning decisions and earlier PC capture scope are unfinished.
+
+## GPU Profiling Retry — 2026-10-29
+
+- User resumed GPU profiling after updating Xcode; the earlier profiling deferral is superseded by this request.
+- Verified Xcode `27.1 (27A9275)`. Initial `xctrace` exit `69` (unaccepted license) resolved after user completed first-run setup. `xcrun xctrace list templates` and attached Metal System Trace captures now succeed.
+- Existing development app signature still passes `codesign --verify --deep --strict`; relaunched successfully. Main-menu version label verified: `v0.1.0 | Build local | 2aa218c`.
+
+- [x] GPU profiling route verified: attached `Metal System Trace` to development Player PID `90514`; 5 s menu connection-check and requested 10 s user-prepared hazard-battle recording saved successfully. Recording completion/export took minutes; no game restart or pause.
+- Hazard trace actual run duration `17.485275 s`; analysis window `14.912472 s` after excluding first/last two GPU frame IDs → `861` frames / `81,822` player GPU intervals. Trace setup/stop overhead means this is not an exact 10 s steady combat acceptance window.
+- Method: use Metal execution intervals attributed to `EmpireAtWar`; exclude WindowServer; merge overlaps/nesting per frame across Vertex/Fragment/Compute. Per-channel/pass times overlap and must not be added. GPU execution-start cadence is not display cadence or unprofiled FPS.
+- Player GPU active union: median `12.421748 ms/frame`, p95 `17.897297 ms`, p99 `19.954326 ms`, max `24.834039 ms`; union busy fraction `70.62%` of analyzed window.
+- GPU channel medians: Fragment `11.552584 ms`, Vertex `1.024836 ms`, Compute `0.357625 ms`. Fragment work dominates GPU activity; this alone does not establish the overall frame bottleneck.
+- Named GPU-pass medians: `RenderLoop.DrawSRPBatcher` `3.4589 ms`; `RenderLoop.Draw` `3.4093 ms`; final post-processing `1.9277 ms`; post-processing `0.9492 ms`; CopyDepth `0.8391 ms`. Raw object labels are blank; formatted execution labels provide pass names.
+- Limitations: exact seed/preset/render scale/camera coordinates were not independently verified; last Player-log surface size `2940×1846` differs from requested `2560×1440`. Workload was the user's prepared hazard skirmish, not a verified standard combat scenario. No before/off/restored comparison or ≥60 FPS acceptance claim.
+- Per-draw nebula and individual hazard-sheet costs remain unresolved: shared Unity encoder groups do not isolate those draws. Native UI automation failed player clicks (`noWindowsAvailable`) and Xcode screenshot/debugger control; no `.gputrace` frame capture produced. Do not choose H3 or new defaults from these aggregate pass values.
+- Evidence: `Logs/RenderAudit/20261029-Mac-GPU-Profiling/{menu-connection-check.trace,hazard-battle.trace,hazard-toc.xml,hazard-gpu.xml,hazard-summary.json,analyze_trace.py}`. Tests not run; source/presets unchanged. Next: verified fixed-resolution A/B/hazard/combat captures plus Xcode per-draw frame capture.

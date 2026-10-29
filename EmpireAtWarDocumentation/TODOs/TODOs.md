@@ -64,7 +64,7 @@
 - [ ] **Nebula + hazard GPU optimization and upscaler settings** → [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan|Mac Nebula and Hazard GPU Plan]]
   - 2026-10-29 PC implementation: nebula bake/toggle, hazard H1/H2, resolution + Bilinear/FSR 1/STP, hazard audit pose and BuildInfo path. DLSS/FSR 2 rejected with reasons in plan.
   - 2026-10-29 PC fixes complete: both hazard `_Noise` bindings saved; builder loads textures after both imports; live nebula restored to 48/48/64/96/128/128 with bake-only 128 override. Unity compilation, builder execution and saved bindings verified; no tests or Play Mode run.
-  - Tests not run. Prepared-battle PC captures pending; all Mac tasks skipped by user and left untouched.
+  - 2026-10-29 Mac: installed IL2CPP support; ARM64 Development player built (0 errors / 4 warnings), BuildInfo/signature verified after local re-sign, running battle inspected. Matched Player captures/tuning remain open; Xcode 27.1 Metal trace captured: instrumented hazard GPU median 12.42 ms / p95 17.90 ms, fragment-dominated. Fixed-condition acceptance and per-draw attribution remain open; see capture limitations in plan. PC capture gates remain; tests not run.
 
 - [ ] **Pool ship contexts to remove spawn spikes** → [[TODOs/Optimization/Ship_Pooling_Plan|Ship Pooling]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
