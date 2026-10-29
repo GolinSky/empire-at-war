@@ -9,8 +9,10 @@
 
 ### Features
 
+
 - [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan** → [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
+
 
 - [ ] **Finish V-19 Torrent integration acceptance** → [[TODOs/Features/V19Torrent_Import|V-19 Torrent Import]]
   - **Remaining**: Hunt ability decision/implementation, clean-skirmish acceptance and provisional balance review; deployed wing pose is static.
@@ -202,6 +204,13 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Main relay map layout adjustments: exact-center main relay, edge additional zones, no straight shortcuts, home sites behind station, main mines at half relay radius** → [[Done/Features/Main_Relay_Map_Layout_Adjustments|Main Relay Map Layout Adjustments]]
+  - Planned 2026-10-29 from in-game review of [[Done/Features/Main_Relay_Zone_Map_Rework|Main Relay Zone Map Rework]].
+  - Decided: main relay only gets range `540` (mines at half radius); additional zones on free map edges; random station corner offset with home mine + pad close behind; no straight line main ↔ additional.
+  - Completed 2026-10-29: placement, separate main prefab, edge fill and blockers/lane detours; Unity compilation/import and source checks passed. Tests not run; user-only gates → [[TODOs/User_Acceptance_Queue]].
+  - Review fixes completed: 1250–1275-wide connected fields, local-width obstacle checks, preferred hazard placement, behind-site jitter clearance and even-ring validation. Unity compilation passed; tests not run.
+
 
 - [x] **Main relay zone map rework: central contested relay (4 mines + 6 satellites), 1 home mine + 1 satellite, additional relay zones S2/M4/L6** → [[Done/Features/Main_Relay_Zone_Map_Rework|Main Relay Zone Map Rework]]
   - Status: implemented 2026-10-29; generation, capture-site merge, settings, prefab migration, save validation and test expectations complete.

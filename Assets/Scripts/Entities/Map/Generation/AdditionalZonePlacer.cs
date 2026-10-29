@@ -37,10 +37,26 @@ namespace EmpireAtWar.Entities.Map.Generation
                 int pointId = stations.Count + 1 + pair * 2;
                 for (int attempt = 0; attempt < MAX_ATTEMPTS && valid < CANDIDATES_PER_PICK; attempt++)
                 {
-                    Vector3 candidate = new Vector3(
-                        Mathf.Lerp(size.Bounds.Min.x, size.Bounds.Max.x, (float)random.NextDouble()), 0f,
-                        Mathf.Lerp(size.Bounds.Min.y, size.Bounds.Max.y, (float)random.NextDouble()));
+                    float outer = _radii.Zone + _settings.ZoneClearance + size.PocketThickness;
+                    float edgeDepth = Mathf.Lerp(outer, size.AdditionalZoneEdgeBand,
+                        (float)random.NextDouble());
+                    bool vertical = random.Next(2) == 0;
+                    bool low = random.Next(2) == 0;
+                    Vector3 candidate = vertical
+                        ? new Vector3(low ? size.Bounds.Min.x + edgeDepth : size.Bounds.Max.x - edgeDepth, 0f,
+                            Mathf.Lerp(size.Bounds.Min.y + outer, size.Bounds.Max.y - outer,
+                                (float)random.NextDouble()))
+                        : new Vector3(Mathf.Lerp(size.Bounds.Min.x + outer, size.Bounds.Max.x - outer,
+                            (float)random.NextDouble()), 0f,
+                            low ? size.Bounds.Min.y + edgeDepth : size.Bounds.Max.y - edgeDepth);
                     Vector3 mirror = PlanarGeometry.Reflect(candidate, center);
+                    bool nearStation = false;
+                    foreach (MapStation station in stations)
+                        if (PlanarGeometry.Distance(candidate, station.Position) < size.AdditionalZoneStationDistance ||
+                            PlanarGeometry.Distance(mirror, station.Position) < size.AdditionalZoneStationDistance)
+                            nearStation = true;
+                    if (nearStation)
+                        continue;
                     if (PlanarGeometry.Distance(candidate, mainPosition) < size.AdditionalZoneMainDistance ||
                         PlanarGeometry.Distance(mirror, mainPosition) < size.AdditionalZoneMainDistance ||
                         MainZonePlacer.GetNearestTeam(candidate, stations, players) ==

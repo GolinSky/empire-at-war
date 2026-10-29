@@ -188,6 +188,9 @@
   },
   "active": "1b8f675cc8021f42",
   "lastOpenFiles": [
+    "Done/Features/Main_Relay_Map_Layout_Adjustments.md",
+    "TODOs/Features/Main_Relay_Map_Layout_Adjustments.md",
+    "Architecture/Map_Generation.md",
     "TODOs/sed2g2Anb",
     "Done/Documentation/Note_Flags_And_Durable_Guidance_Plan.md",
     "Rules/BATTLE_PERFORMANCE_GUIDELINES.md",
@@ -218,11 +221,8 @@
     "Done/Optimization/Battle_CPU_Fixes_Plan - Research.md",
     "Done/Optimization/Battle_CPU_Fixes_Plan.md",
     "Done/Features/Space_Hazards_Shape_Rework_Plan.md",
-    "Done/Features/Space_Hazards_Rework_Plan.md",
-    "Done/Refactoring/SkirmishOrchestrator_Refactoring_Plan - Research.md",
     "Done/Features/sedgp5bGS",
     "Done/Optimization",
-    "Done/Bugs",
-    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.4577b7ad24c9"
+    "Done/Bugs"
   ]
 }

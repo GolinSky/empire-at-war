@@ -27,6 +27,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string SETTINGS_PATH = "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset";
         private const string ZONE_PREFAB_PATH = "Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab";
+        private const string MAIN_ZONE_PREFAB_PATH = "Assets/Prefabs/View/ReinforcementZones/MainReinforcementZone.prefab";
         private const string MINING_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab";
 
         private const int SEED_COUNT = 20;
@@ -69,7 +70,7 @@ namespace EmpireAtWar.Tests.Editor
                 MapSizeSettings size = _settings.GetSize(mapSize);
                 Random random = new Random(seed);
                 PlayerSlot[] players = CreateRoster(playerCount, FactionType.Separatist, difficulty);
-                MapStation[] stations = new StationPlacer(_settings).Place(size.Bounds, players, random);
+                MapStation[] stations = new StationPlacer(_settings, _radii).Place(size, players, random);
                 PointOfInterestPlacer placer = new PointOfInterestPlacer(_settings, _radii);
                 List<MapNode> nodes = new List<MapNode>();
                 bool placed = false;
@@ -80,9 +81,10 @@ namespace EmpireAtWar.Tests.Editor
                 MapNode main = nodes[0];
                 Assert.That(main.Kind, Is.EqualTo(MapNodeKind.CapturableZone), context);
                 Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
-                Vector2 halfRegion = (size.Bounds.Max - size.Bounds.Min) * _settings.MainZoneRegionShare;
-                Assert.That(Mathf.Abs(main.Center.x - center.x), Is.LessThanOrEqualTo(halfRegion.x), context);
-                Assert.That(Mathf.Abs(main.Center.z - center.z), Is.LessThanOrEqualTo(halfRegion.y), context);
+                Assert.That(main.IsMain, Is.True, context);
+                Assert.That(main.Center, Is.EqualTo(center), context);
+                Assert.That(main.Radius, Is.EqualTo(_radii.MainZone), context);
+                float miningRadius = _radii.MainZone * _settings.MainZoneMiningRadiusShare;
                 MapNode[] mainMines = nodes.Where(node => node.PointId == main.PointId &&
                     node.Kind == MapNodeKind.MiningSite).ToArray();
                 MapNode[] mainPads = nodes.Where(node => node.PointId == main.PointId &&
@@ -92,15 +94,17 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (MapNode mine in mainMines)
                 {
                     Assert.That(PlanarGeometry.Distance(mine.Center, main.Center),
-                        Is.EqualTo(_radii.Zone).Within(TOLERANCE), context);
+                        Is.EqualTo(miningRadius).Within(TOLERANCE), context);
+                    Assert.That(miningRadius + mine.Radius, Is.LessThan(_radii.MainZone), context);
                     float nearest = mainMines.Where(other => other != mine)
                         .Min(other => PlanarGeometry.Distance(mine.Center, other.Center));
-                    Assert.That(nearest, Is.EqualTo(Mathf.Sqrt(2f) * _radii.Zone).Within(TOLERANCE), context);
+                    Assert.That(nearest, Is.EqualTo(Mathf.Sqrt(2f) * miningRadius).Within(TOLERANCE), context);
+                    Assert.That(nearest, Is.GreaterThan(2f * mine.Radius), context);
                 }
                 foreach (MapNode pad in mainPads)
                 {
                     float radius = PlanarGeometry.Distance(pad.Center, main.Center);
-                    Assert.That(radius - pad.Radius, Is.GreaterThanOrEqualTo(_radii.Zone - TOLERANCE), context);
+                    Assert.That(radius - pad.Radius, Is.GreaterThanOrEqualTo(_radii.MainZone - TOLERANCE), context);
                     float nearest = mainPads.Where(other => other != pad)
                         .Min(other => PlanarGeometry.Distance(pad.Center, other.Center));
                     Assert.That(nearest, Is.EqualTo(radius).Within(TOLERANCE), context);
@@ -110,6 +114,15 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(additional.Length, Is.EqualTo(2 * size.AdditionalZonePairCount), context);
                 foreach (MapNode zone in additional)
                 {
+                    Assert.That(zone.IsMain, Is.False, context);
+                    Assert.That(zone.Radius, Is.EqualTo(_radii.Zone), context);
+                    float edgeDistance = Mathf.Min(zone.Center.x - size.Bounds.Min.x,
+                        size.Bounds.Max.x - zone.Center.x, zone.Center.z - size.Bounds.Min.y,
+                        size.Bounds.Max.y - zone.Center.z);
+                    Assert.That(edgeDistance, Is.LessThanOrEqualTo(size.AdditionalZoneEdgeBand), context);
+                    foreach (MapStation station in stations)
+                        Assert.That(PlanarGeometry.Distance(zone.Center, station.Position) + TOLERANCE,
+                            Is.GreaterThanOrEqualTo(size.AdditionalZoneStationDistance), context);
                     Assert.That(PlanarGeometry.Distance(zone.Center, main.Center) + TOLERANCE,
                         Is.GreaterThanOrEqualTo(size.AdditionalZoneMainDistance), context);
                     Assert.That(nodes.Count(node => node.PointId == zone.PointId &&
@@ -133,18 +146,28 @@ namespace EmpireAtWar.Tests.Editor
                     MapNode homeMine = homeMines.OrderBy(mine =>
                         PlanarGeometry.Distance(mine.Center, station.Position)).First();
                     Assert.That(homeForStations.Add(homeMine), Is.True, context);
-                    Assert.That(PlanarGeometry.Distance(homeMine.Center, station.Position) + TOLERANCE,
-                        Is.GreaterThanOrEqualTo(station.Radius + homeMine.Radius + _settings.ZoneClearance), context);
+                    foreach (MapNode home in nodes.Where(node => node.PointId == homeMine.PointId))
+                    {
+                        Assert.That(home.IsHomeSite, Is.True, context);
+                        Assert.That(home.HasPocket, Is.False, context);
+                        Assert.That(PlanarGeometry.Distance(home.Center, station.Position),
+                            Is.EqualTo(station.Radius + home.Radius + 15f).Within(TOLERANCE), context);
+                        Assert.That(home.Center.x - home.Radius, Is.GreaterThanOrEqualTo(size.Bounds.Min.x), context);
+                        Assert.That(home.Center.x + home.Radius, Is.LessThanOrEqualTo(size.Bounds.Max.x), context);
+                        Assert.That(home.Center.z - home.Radius, Is.GreaterThanOrEqualTo(size.Bounds.Min.y), context);
+                        Assert.That(home.Center.z + home.Radius, Is.LessThanOrEqualTo(size.Bounds.Max.y), context);
+                    }
                 }
                 for (int i = 0; i < nodes.Count; i++)
                 {
                     MapNode node = nodes[i];
                     Assert.That(node.Mirror, Is.InRange(0, nodes.Count - 1), context);
-                    if (node.PointId == main.PointId)
-                        Assert.That(node.Mirror, Is.EqualTo(i), context);
-                    else if (node.Mirror != i)
+                    if (node.PointId == main.PointId && node != main)
+                        Assert.That(node.Mirror, Is.Not.EqualTo(i), context);
+                    if (node.Mirror != i)
                     {
                         Assert.That(nodes[node.Mirror].Mirror, Is.EqualTo(i), context);
+                        Assert.That(nodes[node.Mirror].Kind, Is.EqualTo(node.Kind), context);
                         Assert.That(PlanarGeometry.Distance(nodes[node.Mirror].Center,
                             PlanarGeometry.Reflect(node.Center, center)), Is.LessThan(TOLERANCE), context);
                     }
@@ -156,8 +179,216 @@ namespace EmpireAtWar.Tests.Editor
                                 Is.GreaterThanOrEqualTo(node.Radius + other.Radius), context);
                     foreach (MapStation station in stations)
                         Assert.That(PlanarGeometry.Distance(node.Center, station.Position) + TOLERANCE,
-                            Is.GreaterThanOrEqualTo(node.Radius + station.Radius + _settings.ZoneClearance), context);
+                            Is.GreaterThanOrEqualTo(node.Radius + station.Radius +
+                                (node.IsHomeSite ? 15f : _settings.ZoneClearance)), context);
                 }
+            }
+        }
+
+        [Test, Category("Capture")]
+        public void MainRelayPrefab_UsesLargerRangeWithoutChangingOrdinaryRelays()
+        {
+            ReinforcementZoneView ordinary = AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH);
+            ReinforcementZoneView main = AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(MAIN_ZONE_PREFAB_PATH);
+            Assert.That(ordinary, Is.Not.Null);
+            Assert.That(main, Is.Not.Null);
+            Assert.That(ordinary.Radius, Is.EqualTo(270f));
+            Assert.That(main.Radius, Is.EqualTo(540f));
+            Assert.That(PrefabUtility.GetPrefabAssetType(main.gameObject), Is.EqualTo(PrefabAssetType.Variant));
+            Assert.That(_radii.Zone, Is.EqualTo(ordinary.Radius));
+            Assert.That(_radii.MainZone, Is.EqualTo(main.Radius));
+        }
+
+        [TestCase(MapSize.Small)]
+        [TestCase(MapSize.Medium)]
+        [TestCase(MapSize.Large)]
+        public void MainRelay_ToEveryAdditionalZone_HasBlockedStraightLine(MapSize mapSize)
+        {
+            MapSizeSettings size = _settings.GetSize(mapSize);
+            for (int playerCount = 2; playerCount <= 4; playerCount++)
+            foreach (int seed in _seeds)
+            {
+                PlayerSlot[] players = CreateRoster(playerCount, FactionType.Separatist, EnemyAiDifficulty.Medium);
+                MapLayout layout = GetLayout(mapSize, players, seed);
+                ZoneSpot main = layout.Zones.Single(zone => zone.IsMain);
+                Assert.That(main.Center, Is.EqualTo(PlanarGeometry.GetCenter(size.Bounds)));
+                foreach (ZoneSpot zone in layout.Zones.Where(zone => zone.IsCapturable && !zone.IsMain))
+                {
+                    Vector3 direction = (zone.Center - main.Center).normalized;
+                    float mainPocket = _radii.MainZone + _settings.ZoneClearance + size.PocketThickness;
+                    float zonePocket = _radii.Zone + _settings.ZoneClearance + size.PocketThickness;
+                    Assert.That(PlanarGeometry.Distance(main.Center, zone.Center),
+                        Is.GreaterThan(mainPocket + zonePocket), "The relay pockets must leave a route between them.");
+                    // Endpoint pocket rings cannot satisfy the requirement to obstruct the route between relays.
+                    Vector3 routeStart = main.Center + direction * mainPocket;
+                    Vector3 routeEnd = zone.Center - direction * zonePocket;
+                    Vector2 start = new Vector2(routeStart.x, routeStart.z);
+                    Vector2 end = new Vector2(routeEnd.x, routeEnd.z);
+                    Vector3 across = new Vector3(-direction.z, 0f, direction.x);
+                    bool blocked = layout.Fields.Any(field =>
+                        field.Volumes.Max(volume => Vector3.Dot(volume.Center, across) + volume.Radius) -
+                        field.Volumes.Min(volume => Vector3.Dot(volume.Center, across) - volume.Radius) >= size.LaneWidth &&
+                        field.Volumes.Any(volume => PlanarGeometry.DistanceToSegmentSquared(
+                            new Vector2(volume.Center.x, volume.Center.z), start, end) <= volume.Radius * volume.Radius));
+                    int steps = Mathf.CeilToInt(PlanarGeometry.Distance(routeStart, routeEnd) /
+                        (size.FieldCellSize * 0.5f));
+                    for (int i = 0; i <= steps && !blocked; i++)
+                    {
+                        Vector3 sample = Vector3.Lerp(routeStart, routeEnd, i / (float)steps);
+                        blocked = layout.Hazards.Any(hazard => hazard.Contains(sample, 0f, false) &&
+                            Mathf.Abs(across.x) * hazard.Bounds.size.x + Mathf.Abs(across.z) * hazard.Bounds.size.z >= size.LaneWidth);
+                    }
+                    Assert.That(blocked, Is.True,
+                        $"{mapSize}, {playerCount} players, seed {seed}: straight route to {zone.Center} is clear.");
+                }
+            }
+        }
+
+        [TestCase("<MainZoneMiningCount>k__BackingField", 3)]
+        [TestCase("<MainZoneSatelliteCount>k__BackingField", 5)]
+        [TestCase("<MainZoneMiningCount>k__BackingField", 0)]
+        public void MainRelay_RejectsRingCountsThatCannotMirror(string property, int count)
+        {
+            MapGenerationSettings settings = UnityEngine.Object.Instantiate(_settings);
+            try
+            {
+                SerializedObject serialized = new SerializedObject(settings);
+                serialized.FindProperty(property).intValue = count;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                MainZonePlacer placer = new MainZonePlacer(settings, _radii,
+                    new PointOfInterestPlacer(settings, _radii));
+                InvalidOperationException error = Assert.Throws<InvalidOperationException>(() =>
+                    placer.TryPlace(settings.GetSize(MapSize.Small), Array.Empty<MapStation>(),
+                        Array.Empty<PlayerSlot>(), new Random(0), new List<MapNode>()));
+                Assert.That(error.Message, Does.Contain("even count"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(settings);
+            }
+        }
+
+        [TestCase(MapSize.Small)]
+        [TestCase(MapSize.Medium)]
+        [TestCase(MapSize.Large)]
+        public void MainRelayBlocker_HasLaneScaleWidthDenseRocksAndPassableMirroredDetours(MapSize mapSize)
+        {
+            MapSizeSettings size = _settings.GetSize(mapSize);
+            float zoneDistance = Mathf.Min(3000f, size.Bounds.Max.x - 600f);
+            List<MapNode> nodes = new List<MapNode>
+            {
+                new MapNode(MapNodeKind.CapturableZone, Vector3.zero, PlayerId.None, _radii.MainZone)
+                    { IsMain = true, Mirror = 0 },
+                new MapNode(MapNodeKind.CapturableZone, Vector3.right * zoneDistance, PlayerId.None, _radii.Zone)
+                    { Mirror = 2 },
+                new MapNode(MapNodeKind.CapturableZone, Vector3.left * zoneDistance, PlayerId.None, _radii.Zone)
+                    { Mirror = 1 }
+            };
+            List<MapLane> lanes = new List<MapLane>
+            {
+                new MapLane(new[] { Vector3.zero, nodes[1].Center }),
+                new MapLane(new[] { Vector3.zero, nodes[2].Center })
+            };
+            MainLineBlocker blocker = new MainLineBlocker(_settings);
+            Assert.That(blocker.TryReserve(size, Array.Empty<MapStation>(), nodes, lanes,
+                Array.Empty<HazardShape>(), out List<FieldVolume> reserved), Is.True);
+            // A tiny existing natural cluster must not suppress the meaningful fallback field.
+            List<AsteroidField> fields = new List<AsteroidField>
+            {
+                new AsteroidField(new[] { new FieldVolume(Vector3.right * (zoneDistance * 0.65f), 45f) },
+                    Array.Empty<AsteroidSpot>(), _settings.FieldFloor, _settings.FieldCeiling)
+            };
+            blocker.Fill(size, nodes, Array.Empty<HazardShape>(), reserved, fields, new Random(17));
+            Assert.That(fields.Count, Is.EqualTo(3));
+            foreach (MapNode zone in nodes.Skip(1))
+                Assert.That(MainLineBlocker.IsBlocked(nodes[0].Center, zone.Center,
+                    _radii.MainZone + _settings.ZoneClearance + size.PocketThickness,
+                    _radii.Zone + _settings.ZoneClearance + size.PocketThickness,
+                    size.LaneWidth, fields, Array.Empty<HazardShape>()), Is.True,
+                    "The fallback wall must provide continuous lane-scale cover across each relay line.");
+            AsteroidField first = fields[1];
+            AsteroidField mirror = fields[2];
+            Assert.That(first.Volumes.Count, Is.GreaterThan(1));
+            float width = first.Volumes.Max(volume => volume.Center.z + volume.Radius) -
+                first.Volumes.Min(volume => volume.Center.z - volume.Radius);
+            Assert.That(width, Is.GreaterThanOrEqualTo(size.LaneWidth));
+            FieldVolume[] ordered = first.Volumes.OrderBy(volume => volume.Center.z).ToArray();
+            for (int i = 1; i < ordered.Length; i++)
+                Assert.That(PlanarGeometry.Distance(ordered[i - 1].Center, ordered[i].Center),
+                    Is.LessThan(ordered[i - 1].Radius + ordered[i].Radius), "The wall must form one connected obstacle.");
+            Assert.That(first.Rocks.Count, Is.GreaterThan(5), "The field must use area-based rock scatter.");
+            foreach (AsteroidSpot rock in first.Rocks)
+                Assert.That(first.Volumes.Any(volume =>
+                    PlanarGeometry.Distance(rock.Position, volume.Center) <= volume.Radius), Is.True);
+            Assert.That(mirror.Volumes.Count, Is.EqualTo(first.Volumes.Count));
+            Assert.That(mirror.Rocks.Count, Is.EqualTo(first.Rocks.Count));
+            foreach (FieldVolume volume in first.Volumes)
+                Assert.That(mirror.Volumes.Any(other =>
+                    PlanarGeometry.Distance(other.Center, -volume.Center) < TOLERANCE &&
+                    Mathf.Abs(other.Radius - volume.Radius) < TOLERANCE), Is.True);
+            foreach (AsteroidField field in fields.Skip(1))
+                foreach (FieldVolume volume in field.Volumes)
+                    foreach (MapLane lane in lanes)
+                        Assert.That(PlanarGeometry.DistanceToPolyline(volume.Center, lane.Points) - volume.Radius,
+                            Is.GreaterThanOrEqualTo(size.MinLaneWidth * 0.5f - TOLERANCE));
+            Assert.That(lanes.All(lane => lane.Points.Count > 2), Is.True, "Crossing lanes must bend around the field.");
+        }
+
+        [Test]
+        public void MainRelayBlocker_DistantFieldMassCannotMakeATinyIntersectionCountAsBroadCover()
+        {
+            MapSizeSettings size = _settings.GetSize(MapSize.Large);
+            AsteroidField disconnected = new AsteroidField(new[]
+                {
+                    new FieldVolume(Vector3.zero, 45f),
+                    new FieldVolume(Vector3.forward * 1200f, 600f)
+                }, Array.Empty<AsteroidSpot>(), _settings.FieldFloor, _settings.FieldCeiling);
+            Assert.That(MainLineBlocker.IsBlocked(Vector3.left * 2000f, Vector3.right * 2000f,
+                0f, 0f, size.LaneWidth, new[] { disconnected }, Array.Empty<HazardShape>()), Is.False);
+            AsteroidField broad = new AsteroidField(new[] { new FieldVolume(Vector3.zero, 600f) },
+                Array.Empty<AsteroidSpot>(), _settings.FieldFloor, _settings.FieldCeiling);
+            Assert.That(MainLineBlocker.IsBlocked(Vector3.left * 2000f, Vector3.right * 2000f,
+                0f, 0f, size.LaneWidth, new[] { broad }, Array.Empty<HazardShape>()), Is.True);
+        }
+
+        [Test]
+        public void Hazards_PreferMainToAdditionalRelayLinesWhenThereIsRoom()
+        {
+            MapGenerationSettings settings = UnityEngine.Object.Instantiate(_settings);
+            try
+            {
+                SerializedObject serialized = new SerializedObject(settings);
+                SerializedProperty value = serialized.FindProperty("sizes.keyValue").GetArrayElementAtIndex(2)
+                    .FindPropertyRelative("value");
+                value.FindPropertyRelative("<HazardCount>k__BackingField").intValue = 2;
+                value.FindPropertyRelative("<HazardLengthShare>k__BackingField").vector2Value = new Vector2(0.1f, 0.1f);
+                value.FindPropertyRelative("<HazardHalfWidthShare>k__BackingField").vector2Value = new Vector2(0.01f, 0.01f);
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                MapNode[] nodes =
+                {
+                    new MapNode(MapNodeKind.CapturableZone, Vector3.zero, PlayerId.None, _radii.MainZone)
+                        { IsMain = true, Mirror = 0 },
+                    new MapNode(MapNodeKind.CapturableZone, Vector3.right * 3000f, PlayerId.None, _radii.Zone)
+                        { Mirror = 2 },
+                    new MapNode(MapNodeKind.CapturableZone, Vector3.left * 3000f, PlayerId.None, _radii.Zone)
+                        { Mirror = 1 }
+                };
+                PlayerSlot[] players = CreateRoster(2, FactionType.Separatist, EnemyAiDifficulty.Medium);
+                MapSizeSettings size = settings.GetSize(MapSize.Large);
+                MapStation[] stations = new StationPlacer(settings, _radii).Place(size, players, new Random(11));
+                HazardPlacer placer = new HazardPlacer(settings, new PointOfInterestPlacer(settings, _radii));
+                IReadOnlyList<HazardSpot> spots = placer.Place(size, stations, nodes, 11);
+                Assert.That(spots.Count, Is.EqualTo(2));
+                foreach (HazardSpot spot in spots)
+                {
+                    Assert.That(Mathf.Abs(spot.Center.z), Is.LessThan(TOLERANCE));
+                    Assert.That(Mathf.Abs(spot.Center.x), Is.InRange(1050f, 1950f));
+                    Assert.That(Mathf.Abs(Vector3.Dot(spot.Frame.Along, Vector3.right)), Is.LessThan(TOLERANCE));
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(settings);
             }
         }
 
@@ -246,7 +477,7 @@ namespace EmpireAtWar.Tests.Editor
                     if (size.HazardCount == 2)
                     {
                         Assert.That(layout.Hazards[0].Data.HazardType, Is.Not.EqualTo(layout.Hazards[1].Data.HazardType), context);
-                        // Each island sits on the axis equidistant to the teams and is its own mirror image across it.
+                        // Preferred islands fold across the relay line; fallback islands use the team split.
                         Vector3 axis = layout.Hazards[0].Spot.Center.normalized;
                         foreach (HazardShape hazard in layout.Hazards)
                         {
@@ -278,7 +509,8 @@ namespace EmpireAtWar.Tests.Editor
                             Assert.That(band.Contains(layout.GetStationPosition(player.Id),
                                 _settings.GetStationRadius(player.Faction) + _settings.ZoneClearance, false), Is.False, context);
                         foreach (ZoneSpot zone in layout.Zones)
-                            Assert.That(band.Contains(zone.Center, _radii.Zone + _settings.ZoneClearance, false), Is.False, context);
+                            Assert.That(band.Contains(zone.Center,
+                                (zone.IsMain ? _radii.MainZone : _radii.Zone) + _settings.ZoneClearance, false), Is.False, context);
                         foreach (SiteSpot site in layout.Sites)
                             Assert.That(band.Contains(site.Center, GetSiteRadius(site.Kind), false), Is.False, context);
                         foreach (AsteroidField field in layout.Fields)
@@ -333,7 +565,8 @@ namespace EmpireAtWar.Tests.Editor
             CaptureSiteView miningSite = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH);
             _radii = new MapFeatureRadii(
                 AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
-                siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSite.transform.lossyScale.x), Mathf.Abs(miningSite.transform.lossyScale.z)));
+                siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSite.transform.lossyScale.x), Mathf.Abs(miningSite.transform.lossyScale.z)),
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(MAIN_ZONE_PREFAB_PATH).Radius);
             _generator = new MapLayoutGenerator(_settings, _radii);
         }
 
@@ -388,21 +621,42 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Stations_SitInDiagonallyOppositeCorners()
         {
-            foreach (int seed in _seeds)
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
             {
-                MapLayout layout = Generate(MapSize.Medium, EnemyAiDifficulty.Medium, seed);
-                Vector3 republic = layout.GetStationPosition(TestPlayers.Human);
-                Vector3 separatist = layout.GetStationPosition(TestPlayers.Enemy);
-
-                // Each station is inset by its own footprint, so mixed factions mirror only by corner.
-                Assert.That(Mathf.Sign(separatist.x), Is.EqualTo(-Mathf.Sign(republic.x)));
-                Assert.That(Mathf.Sign(separatist.z), Is.EqualTo(-Mathf.Sign(republic.z)));
-                Assert.That(Mathf.Abs(republic.x), Is.EqualTo(layout.SizeRange.Max.x -
-                    _settings.GetStationRadius(FactionType.Republic) - _settings.StationEdgeDistance).Within(TOLERANCE));
-                Assert.That(Mathf.Abs(separatist.x), Is.EqualTo(layout.SizeRange.Max.x -
-                    _settings.GetStationRadius(FactionType.Separatist) - _settings.StationEdgeDistance).Within(TOLERANCE));
-                Assert.That(Mathf.Abs(republic.x), Is.GreaterThan(layout.SizeRange.Max.x * 0.5f));
-                Assert.That(Mathf.Abs(republic.z), Is.GreaterThan(layout.SizeRange.Max.y * 0.5f));
+                MapSizeSettings size = _settings.GetSize(mapSize);
+                Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
+                HashSet<Vector3> positions = new HashSet<Vector3>();
+                foreach (int seed in _seeds)
+                {
+                    PlayerSlot[] players = CreateRoster(2, FactionType.Rebellion, EnemyAiDifficulty.Medium);
+                    MapStation[] stations = new StationPlacer(_settings, _radii).Place(size, players, new Random(seed));
+                    Assert.That(PlanarGeometry.Distance(stations[1].Position,
+                        PlanarGeometry.Reflect(stations[0].Position, center)), Is.LessThan(TOLERANCE));
+                    float insetRadius = Mathf.Max(stations[0].Radius, stations[1].Radius);
+                    Vector2 baseOffset = (size.Bounds.Max - size.Bounds.Min) * 0.5f -
+                        Vector2.one * (insetRadius + _settings.StationEdgeDistance);
+                    foreach (MapStation station in stations)
+                    {
+                        Vector3 offset = station.Position - center;
+                        Assert.That(Mathf.Abs(Mathf.Abs(offset.x) - baseOffset.x),
+                            Is.LessThanOrEqualTo(size.StationCornerJitter + TOLERANCE));
+                        Assert.That(Mathf.Abs(Mathf.Abs(offset.z) - baseOffset.y),
+                            Is.LessThanOrEqualTo(size.StationCornerJitter + TOLERANCE));
+                        Assert.That(Mathf.Abs(offset.x), Is.GreaterThan((size.Bounds.Max.x - center.x) * 0.5f));
+                        Assert.That(Mathf.Abs(offset.z), Is.GreaterThan((size.Bounds.Max.y - center.z) * 0.5f));
+                        float mineReach = (station.Radius + _radii.MiningSite + 15f) *
+                            Mathf.Cos(15f * Mathf.Deg2Rad) + _radii.MiningSite;
+                        float padReach = (station.Radius + _settings.SatelliteFootprintRadius + 15f) *
+                            Mathf.Cos(15f * Mathf.Deg2Rad) + _settings.SatelliteFootprintRadius;
+                        float homeReach = Mathf.Max(mineReach, padReach);
+                        Assert.That(size.Bounds.Max.x - center.x - Mathf.Abs(offset.x),
+                            Is.GreaterThanOrEqualTo(homeReach - TOLERANCE), "Outward jitter must retain behind-site room.");
+                        Assert.That(size.Bounds.Max.y - center.z - Mathf.Abs(offset.z),
+                            Is.GreaterThanOrEqualTo(homeReach - TOLERANCE), "Outward jitter must retain behind-site room.");
+                        positions.Add(new Vector3(Mathf.Abs(offset.x), 0f, Mathf.Abs(offset.z)));
+                    }
+                }
+                Assert.That(positions.Count, Is.GreaterThan(1), "Stations must vary within their corner across seeds.");
             }
         }
 

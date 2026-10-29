@@ -446,6 +446,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.MapLayoutView
   zonePrefab: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
     type: 3}
+  mainZonePrefab: {fileID: 7772250203631713746, guid: 6c97584c8e7090946a8c84d0e19728a0,
+    type: 3}
   miningSitePrefab: {fileID: 6637528760554246965, guid: 0f332f34959cd7a4888c408770bff249,
     type: 3}
   satelliteSitePrefab: {fileID: 6961083398161393621, guid: a5c4fff5efaea9845ae7522d3e22f6dc,

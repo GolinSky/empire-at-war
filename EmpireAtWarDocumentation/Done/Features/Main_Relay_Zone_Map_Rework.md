@@ -176,3 +176,8 @@ acceptance: pending-user
 - `CaptureSiteEditorTool.SITE_SCALE` 5 → 2 matches `CaptureSite.prefab` root scale `2`.
 - `RelayGroups_HaveExpectedCountsGeometryAndMirrorsAcrossRosters` covers counts, geometry, mirrors, halves, home sites for 2–4 players.
 - Not run: EditMode tests (local override), Play Mode. Gates remain in [[TODOs/User_Acceptance_Queue]].
+
+## In-Game Review (2026-10-29)
+
+- Gate failed on layout: main relay must be at exact center, additional zones at corners, no straight shortcuts, home sites behind station, main mines at half relay radius.
+- Follow-up: [[Done/Features/Main_Relay_Map_Layout_Adjustments|Main Relay Map Layout Adjustments]]. In-game queue line moved there.

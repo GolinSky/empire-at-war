@@ -4,11 +4,13 @@ namespace EmpireAtWar.Entities.Map.Generation
     public readonly struct MapFeatureRadii
     {
         public float Zone { get; }
+        public float MainZone { get; }
         public float MiningSite { get; }
 
-        public MapFeatureRadii(float zone, float miningSite)
+        public MapFeatureRadii(float zone, float miningSite, float mainZone)
         {
             Zone = zone;
+            MainZone = mainZone;
             MiningSite = miningSite;
         }
     }
