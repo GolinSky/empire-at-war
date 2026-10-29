@@ -1,7 +1,7 @@
-using EmpireAtWar.Entities.Capture;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Entities.Capture;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
@@ -119,6 +119,7 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(_roster));
             SetField(system, "_spawnBlockerService", new SpawnBlockerService(_roster));
             SetField(system, "_visionService", _vision);
+            SetField(system, "_strengthSampler", new CaptureStrengthSampler(null, null, _roster, _data.SquadronCaptureWeight));
             system.UpdateState(new BattleMap(
                 layout: CreateLayout(new ZoneSpot(HOME, TestPlayers.Human, false),
                     new ZoneSpot(RELAY, relayOwner, true)),

@@ -61,7 +61,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(300f, false)]
-        [TestCase(0f, true)]
+        [TestCase(-50f, true)]
         public void Hyperspace_CrossingHazardOnlyAppliesEffectsAfterArrival(float landingX, bool inside)
         {
             int entries = 0;

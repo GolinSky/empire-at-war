@@ -25,21 +25,22 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_HasRequestedStatsWeaponsAndTargetableSystems()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(9800));
-            Assert.That(data.Shields, Is.EqualTo(5000));
+            Assert.That(data.Hull, Is.EqualTo(14700));
+            Assert.That(data.Shields, Is.EqualTo(10000));
             Assert.That(data.Speed, Is.EqualTo(25));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             HardPoint[] hardPoints = view.GetComponentsInChildren<HardPoint>(true);
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();
-            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(28));
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(28));
+            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(32));
+            Assert.That(health.ShipUnits.Count, Is.EqualTo(32));
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.EqualTo(1));
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
-            Assert.That(weapons.Length, Is.EqualTo(24));
+            Assert.That(weapons.Length, Is.EqualTo(28));
             foreach (var expected in new[] { (WeaponType.ISDIIOctupleTurbolaser, 8), (WeaponType.ISDIIQuadIonCannon, 2),
-                (WeaponType.MediumTurboLaser, 6), (WeaponType.DualMediumTurboLaser, 2), (WeaponType.MediumIonCannon, 6) })
+                (WeaponType.MediumTurboLaser, 6), (WeaponType.DualMediumTurboLaser, 2), (WeaponType.MediumIonCannon, 6),
+                (WeaponType.MediumLaser, 4) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             Assert.That(weapons.Count(w => new SerializedObject(w).FindProperty("mainBattery").boolValue), Is.EqualTo(8));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);

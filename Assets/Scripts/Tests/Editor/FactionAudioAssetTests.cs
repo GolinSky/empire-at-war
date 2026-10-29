@@ -23,8 +23,8 @@ namespace EmpireAtWar.Tests.Editor
         public void ShieldAbilitiesUseShieldCues(ShipAbilityId ability)
         {
             var profile = Data().GetAbility(ability);
-            AssertClip(profile.Start, "GUI_SHIELDS_UP_1", 0.25f);
-            AssertClip(profile.End, "GUI_SHIELDS_DOWN_1", 0.25f);
+            AssertClip(profile.Start, "GUI_SHIELDS_UP_1", 0.15f);
+            AssertClip(profile.End, "GUI_SHIELDS_DOWN_1", 0.15f);
         }
 
         [TestCase(ShipAbilityId.BoostEnginePower)]

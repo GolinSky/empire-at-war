@@ -5,6 +5,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Construction;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -35,6 +37,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 SetField(platform, "_healthComponent", healthComponent);
                 SetField(platform, "_startPosition", startPosition);
+                AttachCompletedConstruction(platform);
                 typeof(DefendPlatform).GetProperty("Data", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(platform, data);
 
@@ -73,6 +76,7 @@ namespace EmpireAtWar.Tests.Editor
                 SetField(platform, "_owner", TestPlayers.Human);
                 SetField(platform, "_research", research);
                 SetField(platform, "_componentLifecycle", new EntityComponentLifecycle(Array.Empty<IMonoComponent>()));
+                AttachCompletedConstruction(platform);
                 typeof(DefendPlatform).GetProperty("Data", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(platform, data);
 
@@ -138,6 +142,18 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        // A zero build time completes construction on Begin, so the platform runs at full health.
+        private static void AttachCompletedConstruction(DefendPlatform platform)
+        {
+            ConstructionComponent construction = platform.gameObject.AddComponent<ConstructionComponent>();
+            typeof(ConstructionComponent).GetField("renderers", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(construction, Array.Empty<Renderer>());
+            CombatModifiers modifiers = new CombatModifiers();
+            SetField(platform, "construction", construction);
+            SetField(platform, "_combatModifiers", modifiers);
+            SetField(platform, "_healthModel", new HealthModel(new HealthDataStub(), null, modifiers, new HardPointHealthBudget()));
+        }
+
         private static void SetField<T>(DefendPlatform platform, string fieldName, T value)
         {
             FieldInfo field = typeof(DefendPlatform).GetField(
@@ -145,6 +161,17 @@ namespace EmpireAtWar.Tests.Editor
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             field.SetValue(platform, value);
+        }
+
+        private sealed class HealthDataStub : IHealthData
+        {
+            public ShipClass ShipClass => ShipClass.Structure;
+            public float Hull => 100f;
+            public float Shields => 100f;
+            public float ShieldRegenerateValue => 1f;
+            public float ShieldRegenerateDelay => 1f;
+            public bool UsesHullHardPointBudget => false;
+            public IReadOnlyList<HardPointHealth> HardPointHealth => Array.Empty<HardPointHealth>();
         }
 
         private sealed class HealthComponentStub : IHealthComponent

@@ -47,7 +47,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("RaiderCorvetteShipData", ShipHeightTier.Highest, 80f)]
         [TestCase("RecusantShipData", ShipHeightTier.Mid, -22f)]
         [TestCase("ResoluteShipData", ShipHeightTier.LowMid, -68f)]
-        [TestCase("RothanaShipData", ShipHeightTier.Low, -154f)]
+        [TestCase("RothanaShipData", ShipHeightTier.Lowest, -241f)]
         [TestCase("StealthCorvetteShipData", ShipHeightTier.Highest, 80f)]
         [TestCase("TectorShipData", ShipHeightTier.Low, -154f)]
         [TestCase("ThrantaShipData", ShipHeightTier.Highest, 80f)]

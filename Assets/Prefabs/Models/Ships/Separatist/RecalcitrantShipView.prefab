@@ -2382,11 +2382,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: healthOverride
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
       propertyPath: <Id>k__BackingField
       value: 9
       objectReference: {fileID: 0}
@@ -2758,11 +2753,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
       propertyPath: <Id>k__BackingField
       value: 5
       objectReference: {fileID: 0}
@@ -2884,11 +2874,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
       propertyPath: <Id>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -3005,11 +2990,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
       propertyPath: <Id>k__BackingField
       value: 2
       objectReference: {fileID: 0}
@@ -3124,11 +3104,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6911527422113049242}
     m_Modifications:
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -3252,11 +3227,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
       propertyPath: <Id>k__BackingField
       value: 7
       objectReference: {fileID: 0}
@@ -3376,11 +3346,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6911527422113049242}
     m_Modifications:
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: healthOverride
-      value: 300
-      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
@@ -3684,11 +3649,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
       propertyPath: <Id>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -3798,11 +3758,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6911527422113049242}
     m_Modifications:
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
@@ -4022,11 +3977,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6911527422113049242}
     m_Modifications:
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: healthOverride
-      value: 270
-      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField

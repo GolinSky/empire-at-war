@@ -280,6 +280,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     "Window mode" => "Choose fullscreen or windowed display mode.",
                     "Resolution" => "Choose the display resolution.",
                     "Quality" => "Choose the graphics quality preset.",
+                    "Nebula" => $"Render volumetric nebula clouds. Currently {(_model.NebulaEnabled ? "On" : "Off")}.",
+                    "Render resolution" => $"Render the 3D scene at {_model.RenderResolution:P0} of the display resolution; the interface stays sharp.",
+                    "Upscaler" => "Choose how a reduced render resolution is upscaled to the display.",
                     "Frame rate" => "Set the frame rate limit. VSync may override it.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))
                 }));

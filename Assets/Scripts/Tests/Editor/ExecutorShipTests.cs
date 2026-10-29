@@ -24,8 +24,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_MatchesRequestedStatsAndTargetability()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(200000));
-            Assert.That(data.Shields, Is.EqualTo(200000));
+            Assert.That(data.Hull, Is.EqualTo(300000));
+            Assert.That(data.Shields, Is.EqualTo(400000));
             Assert.That(data.Speed, Is.EqualTo(15));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.ExecutorLaserBeam, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
@@ -45,7 +45,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(group.Length, Is.EqualTo(expected.Item2));
                 Assert.That(group.All(health.ShipUnits.Contains), Is.True);
                 foreach (WeaponHardPoint weapon in group)
-                    Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.InRange(179f, 180f), weapon.name);
+                    // Heavy capitals turn every gun through a full circle.
+                    Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.EqualTo(360f), weapon.name);
             }
         }
 

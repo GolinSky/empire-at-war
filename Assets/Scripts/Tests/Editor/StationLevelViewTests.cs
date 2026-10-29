@@ -38,12 +38,15 @@ namespace EmpireAtWar.Tests.Editor
         public void RebelLevel_UsesItsOriginalHullWithCompleteArt(int level, int triangles)
         {
             var model = LoadModel("Rebellion", level);
-            var hull = model.HullRenderers.Single(r => r.name == "Level_0" + level);
+            // Copied weapon art for the extra armament lives under AdditionalWeaponMounts; only source art is counted.
+            Transform generated = model.transform.Find("AdditionalWeaponMounts");
+            var source = model.HullRenderers.Where(r => !r.transform.IsChildOf(generated)).ToArray();
+            var hull = source.Single(r => r.name == "Level_0" + level);
             var mesh = hull.GetComponent<MeshFilter>().sharedMesh;
-            Assert.That(model.HullRenderers, Has.Length.EqualTo(ART_PIECES[level - 1] + 1));
+            Assert.That(source, Has.Length.EqualTo(ART_PIECES[level - 1] + 1));
             Assert.That(mesh.triangles.Length / 3, Is.EqualTo(triangles));
             Assert.That(AssetDatabase.GetAssetPath(mesh), Does.EndWith("/Level" + level + "/RebelSpaceStationLevel" + level + "Hull.asset"));
-            foreach (var renderer in model.HullRenderers.Where(r => r != hull))
+            foreach (var renderer in source.Where(r => r != hull))
             {
                 Assert.That(AssetDatabase.GetAssetPath(renderer.GetComponent<MeshFilter>().sharedMesh), Does.Contain("/RebelSpaceStation/Attachments/"));
                 Assert.That(renderer.transform.parent.parent.name.ToUpperInvariant(), Is.EqualTo(renderer.name.ToUpperInvariant() + "_BONE"));
@@ -341,7 +344,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(repaired.tangents.All(t => !float.IsNaN(t.x) && !float.IsNaN(t.y) && !float.IsNaN(t.z)), Is.True);
         }
 
-        // Anchor names carry the source weapon class: FPnn_TYPE_00, or HPnn_SHG_Bone for the shield generator.
+        // Anchor names carry the source weapon class: FPnn_TYPE_00, HPnn_SHG_Bone for the shield generator, or GPnn_TYPE_00 for added mounts.
         private static bool MountTypeMatches(string anchor, HardPoint hardPoint)
         {
             hardPoint.TryGetWeaponType(out WeaponType weapon);

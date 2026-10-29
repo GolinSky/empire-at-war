@@ -119,10 +119,10 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset")
                 .GetCost(SiteFacilityType.BattleAsteroid).Price, Is.EqualTo(1600));
             StationLevelData levels = Load<StationLevelData>(SHARED_PATH + "StationLevelData.asset");
-            Assert.That(levels.GetLevelFactionData(1).BuildTime, Is.EqualTo(160));
-            Assert.That(levels.GetLevelFactionData(2).BuildTime, Is.EqualTo(200));
-            Assert.That(levels.GetLevelFactionData(3).BuildTime, Is.EqualTo(240));
-            Assert.That(levels.GetLevelFactionData(4).BuildTime, Is.EqualTo(280));
+            Assert.That(levels.GetLevelFactionData(1).BuildTime, Is.EqualTo(80));
+            Assert.That(levels.GetLevelFactionData(2).BuildTime, Is.EqualTo(120));
+            Assert.That(levels.GetLevelFactionData(3).BuildTime, Is.EqualTo(180));
+            Assert.That(levels.GetLevelFactionData(4).BuildTime, Is.EqualTo(220));
         }
 
         [TestCase(MiningFacilityType.CommonMiner, "MiningFacility")]

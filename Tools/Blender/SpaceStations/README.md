@@ -20,7 +20,8 @@ After `BuildStationLevels`, apply the expanded armament and inspect the saved pr
 
 - Repeat for `Rebellion`, `Republic`, and `Separatist`.
 - Every weapon type has `1 / 2 / 4 / 6 / 8` installed mounts at levels 1–5; shield generator remains one.
-- Original IDs and source art bindings remain. Additional mounts use exposed hull triangles near existing weapons, with `4–10` units of clearance. Separate source weapon art is copied where available; Republic/CIS retain their embedded-art convention.
+- Original IDs, source art bindings and authored unlock levels remain; clones fill each level up to the installed count.
+- Additional mounts use exposed hull triangles near existing weapons, with `4–10` units of clearance. A mount is placed once at its unlock level on a point that is hull surface on every later level, then keeps that position; anchors are named `GPnn_TYPE_00`. Separate source weapon art is copied where available; Republic/CIS retain their embedded-art convention.
 - `BuildStationLevels` restores authored mounts; always run the armament step afterward. Both steps save assets automatically.
 - Inspection reloads saved assets, checks mount/unlock counts and health/weapon/injection bindings, measures new anchor distance to hull geometry, and renders top/side previews with colored hardpoint markers.
 - Evidence: `Temp/StationArmament/<Faction>.json` and `<Faction>Level<N>{Top,Side}.png`. This inspection does not run Unity tests.

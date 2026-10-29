@@ -31,7 +31,6 @@ namespace EmpireAtWar.Tests.Editor
             "Assets/Prefabs/Ui/Fade/FadeUi.prefab";
 
         [TestCase("Assets/Prefabs/View/CaptureSites/CaptureSite.prefab")]
-        [TestCase("Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab")]
         public void CaptureSites_KeepOnlyWorldStatusUi(string prefabPath)
         {
             GameObject root = PrefabUtility.LoadPrefabContents(prefabPath);

@@ -48,8 +48,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 540041806706744983}
   destroyedVfxScale: 6.362159
-  unlockLevel: 5
+  unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 29
   yAxisRange:
@@ -108,6 +109,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 5
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 20
   yAxisRange:
@@ -197,6 +199,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 33
   yAxisRange:
@@ -255,6 +258,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 28
   yAxisRange:
@@ -342,8 +346,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6425791128069794243}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
   yAxisRange:
@@ -464,6 +469,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 5
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 25
   yAxisRange:
@@ -582,8 +588,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4189958049890009420}
   destroyedVfxScale: 6.362159
-  unlockLevel: 5
+  unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
   yAxisRange:
@@ -642,6 +649,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 5
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 35
   yAxisRange:
@@ -707,7 +715,7 @@ Transform:
   m_GameObject: {fileID: 2313037274747864819}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15.729963, y: 5.9, z: 9.118301}
+  m_LocalPosition: {x: -4.932596, y: 2.177916, z: 5.1289783}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -729,8 +737,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5658975652564130389}
   destroyedVfxScale: 6.362159
-  unlockLevel: 3
+  unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 36
   yAxisRange:
@@ -818,8 +827,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 866542048786734704}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 2
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 37
   yAxisRange:
@@ -907,8 +917,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8635867972691344489}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 38
   yAxisRange:
@@ -998,6 +1009,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 23
   yAxisRange:
@@ -1054,8 +1066,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4293595476047949270}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 27
   yAxisRange:
@@ -1176,6 +1189,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 5
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 24
   yAxisRange:
@@ -1232,8 +1246,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4060969714162838907}
   destroyedVfxScale: 6.362159
-  unlockLevel: 5
+  unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 34
   yAxisRange:
@@ -1449,6 +1464,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 5
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 40
   yAxisRange:
@@ -1567,8 +1583,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8544066547241176703}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 22
   yAxisRange:
@@ -1689,6 +1706,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 5
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 30
   yAxisRange:
@@ -1812,8 +1830,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 872506524566432274}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 32
   yAxisRange:
@@ -1872,6 +1891,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 21
   yAxisRange:
@@ -3153,8 +3173,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8308265318926631214}
   destroyedVfxScale: 6.362159
-  unlockLevel: 5
+  unlockLevel: 4
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 39
   yAxisRange:
@@ -3211,8 +3232,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5820723544500618890}
   destroyedVfxScale: 6.362159
-  unlockLevel: 3
+  unlockLevel: 2
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 26
   yAxisRange:
@@ -3377,6 +3399,7 @@ MonoBehaviour:
   - {fileID: 491043950258032262}
   - {fileID: 8670349936995612678}
   - {fileID: 6833279731345796817}
+  rangeMultiplier: 1
 --- !u!1 &8242181691556626149
 GameObject:
   m_ObjectHideFlags: 0
@@ -3403,7 +3426,7 @@ Transform:
   m_GameObject: {fileID: 8242181691556626149}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.168303, y: 5.9, z: -15.743362}
+  m_LocalPosition: {x: -4.3078723, y: 5.1935086, z: 1.9397137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3425,8 +3448,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 176348867605655703}
   destroyedVfxScale: 6.362159
-  unlockLevel: 3
+  unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 31
   yAxisRange:
@@ -3483,8 +3507,9 @@ MonoBehaviour:
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5238550236663516282}
   destroyedVfxScale: 6.362159
-  unlockLevel: 4
+  unlockLevel: 3
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
   yAxisRange:
@@ -3636,6 +3661,7 @@ MonoBehaviour:
   destroyedVfxScale: 6.362159
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
 --- !u!1 &8914769984232844324
@@ -4120,7 +4146,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4241,7 +4267,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4644,7 +4670,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4775,7 +4801,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -5059,7 +5085,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -5464,7 +5490,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -5982,7 +6008,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -6224,7 +6250,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -6345,7 +6371,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -6466,7 +6492,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -6592,7 +6618,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: unlockLevel
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

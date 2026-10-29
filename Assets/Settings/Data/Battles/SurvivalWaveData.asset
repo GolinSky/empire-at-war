@@ -190,10 +190,16 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 102
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 105
-        quantity: 5
+        quantity: 3
+      - isSquadron: 0
+        unitId: 111
+        quantity: 2
+      - isSquadron: 0
+        unitId: 113
+        quantity: 2
       - isSquadron: 1
         unitId: 101
         quantity: 3
@@ -207,15 +213,21 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 102
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 105
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
-        unitId: 101
-        quantity: 6
+        unitId: 111
+        quantity: 2
+      - isSquadron: 0
+        unitId: 113
+        quantity: 2
       - isSquadron: 0
         unitId: 108
+        quantity: 6
+      - isSquadron: 0
+        unitId: 110
         quantity: 6
       - isSquadron: 1
         unitId: 100
@@ -230,19 +242,31 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 102
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 105
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
-        unitId: 101
-        quantity: 6
+        unitId: 111
+        quantity: 2
+      - isSquadron: 0
+        unitId: 113
+        quantity: 2
       - isSquadron: 0
         unitId: 108
         quantity: 6
       - isSquadron: 0
-        unitId: 100
+        unitId: 110
         quantity: 6
+      - isSquadron: 0
+        unitId: 100
+        quantity: 2
+      - isSquadron: 0
+        unitId: 101
+        quantity: 2
+      - isSquadron: 0
+        unitId: 112
+        quantity: 2
       - isSquadron: 1
         unitId: 102
         quantity: 5
@@ -256,19 +280,31 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 102
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 105
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
-        unitId: 101
-        quantity: 6
+        unitId: 111
+        quantity: 2
+      - isSquadron: 0
+        unitId: 113
+        quantity: 2
       - isSquadron: 0
         unitId: 108
         quantity: 6
       - isSquadron: 0
-        unitId: 100
+        unitId: 110
         quantity: 6
+      - isSquadron: 0
+        unitId: 100
+        quantity: 2
+      - isSquadron: 0
+        unitId: 101
+        quantity: 2
+      - isSquadron: 0
+        unitId: 112
+        quantity: 2
       - isSquadron: 0
         unitId: 103
         quantity: 3

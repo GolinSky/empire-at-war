@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    /// <summary>Republic and CIS ships follow Republic at War 1.5.5 HP, shields and weapon barrels.</summary>
+    /// <summary>Republic and CIS ships keep Republic at War 1.5.5 weapon barrels; capitals carry the +50% hull / +100% shield buff.</summary>
     [Category("Balance")]
     public sealed class OriginalValuesRebalanceTests
     {
@@ -34,27 +34,27 @@ namespace EmpireAtWar.Tests.Editor
             yield return Ship("Republic/Centax", 2000, 1300, (TURBO, 2), (LASER, 8), (TORPEDO, 2));
             yield return Ship("Republic/Pelta", 2200, 1000, (TURBO, 4), (LASER, 4), (ION, 2));
             yield return Ship("Republic/Arquitens", 2900, 1400, (TURBO, 16), (LASER, 4), (MISSILE, 1));
-            yield return Ship("Republic/HeavyDreadnought", 3600, 2500, (LASER, 8), (TURBO, 4));
+            yield return Ship("Republic/HeavyDreadnought", 3600, 3000, (LASER, 8), (TURBO, 8));
             yield return Ship("Republic/Acclamator", 3500, 1500, (TORPEDO, 1), (TURBO, 12), (PD, 2));
             yield return Ship("Empire/Victory", 4900, 3100, (TURBO, 24), (LASER, 8), (MISSILE, 8), (TORPEDO, 1));
-            yield return Ship("Republic/Venator", 5000, 4000, (TURBO, 20), (LASER, 4), (PD, 2), (TORPEDO, 1),
+            yield return Ship("Republic/Venator", 7500, 8000, (TURBO, 20), (LASER, 4), (PD, 2), (TORPEDO, 1),
                 (WeaponFamily.Beam, 1));
-            yield return Ship("Republic/Resolute", 7000, 5000, (TURBO, 20), (LASER, 4), (PD, 2), (TORPEDO, 1),
+            yield return Ship("Republic/Resolute", 10500, 10000, (TURBO, 20), (LASER, 4), (PD, 2), (TORPEDO, 1),
                 (WeaponFamily.Beam, 1));
-            yield return Ship("Republic/Imperator", 7500, 3500, (TURBO, 26), (ION, 9));
-            yield return Ship("Republic/Mandator", 50000, 50000, (TURBO, 52), (PD, 14), (ION, 8), (MISSILE, 8),
+            yield return Ship("Republic/Imperator", 11250, 7000, (TURBO, 26), (ION, 9));
+            yield return Ship("Republic/Mandator", 75000, 100000, (TURBO, 52), (PD, 14), (ION, 8), (MISSILE, 8),
                 (TORPEDO, 4));
-            yield return Ship("Republic/Rothana", 10300, 4000, (TURBO, 20), (LASER, 8), (PD, 2), (ION, 4), (TORPEDO, 1));
+            yield return Ship("Republic/Rothana", 15450, 8000, (TURBO, 20), (LASER, 8), (PD, 2), (ION, 4), (TORPEDO, 1));
             yield return Ship("Separatist/PatrolFrigate", 900, 700, (LASER, 8));
-            yield return Ship("Separatist/Munificent", 2500, 2000, (TURBO, 22), (ION, 2), (PD, 4));
+            yield return Ship("Separatist/Munificent", 2000, 2000, (TURBO, 22), (ION, 2), (PD, 4));
             yield return Ship("Separatist/Captor", 3400, 1000, (LASER, 12), (TURBO, 2), (ION, 2));
             yield return Ship("Separatist/Dispatcher", 3500, 1000, (ION, 3), (TURBO, 15), (LASER, 4), (PD, 4));
-            yield return Ship("Separatist/Recusant", 3800, 2600, (LASER, 8), (PD, 4), (TURBO, 8));
-            yield return Ship("Separatist/Providence", 5000, 5000, (TURBO, 32), (LASER, 8), (ION, 2), (TORPEDO, 2));
-            yield return Ship("Separatist/Invincible", 15000, 8000, (TURBO, 35), (LASER, 10), (TORPEDO, 4));
-            yield return Ship("Separatist/Lucrehulk", 20000, 15000, (TURBO, 32), (ION, 4), (PD, 6), (LASER, 4),
+            yield return Ship("Separatist/Recusant", 3800, 5000, (LASER, 8), (PD, 4), (TURBO, 9));
+            yield return Ship("Separatist/Providence", 7500, 10000, (TURBO, 32), (LASER, 8), (ION, 2), (TORPEDO, 2));
+            yield return Ship("Separatist/Invincible", 22500, 24000, (TURBO, 35), (LASER, 10), (TORPEDO, 4));
+            yield return Ship("Separatist/Lucrehulk", 30000, 30000, (TURBO, 32), (ION, 4), (PD, 6), (LASER, 4),
                 (MISSILE, 2));
-            yield return Ship("Separatist/Malevolence", 33420, 15000, (TURBO, 36), (LASER, 20),
+            yield return Ship("Separatist/Malevolence", 50130, 30000, (TURBO, 36), (LASER, 20),
                 (WeaponFamily.MassDriver, 8));
         }
 

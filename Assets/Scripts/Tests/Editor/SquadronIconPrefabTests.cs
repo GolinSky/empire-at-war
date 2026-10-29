@@ -43,8 +43,9 @@ namespace EmpireAtWar.Tests.Editor
                 string iconFolder = unitName == "YWingBomber" || unitName == "TIEAvenger"
                     ? "ShipIcon"
                     : "SquadronIcon";
+                // Icons are grouped by faction: <iconFolder>/<Faction>/<Unit>Icon.png.
                 Assert.That(AssetDatabase.GetAssetPath(unitIcon.sprite),
-                    Is.EqualTo($"Assets/Art/Textures/Ui/Icons/{iconFolder}/{unitName}Icon.png"), path);
+                    Does.StartWith($"Assets/Art/Textures/Ui/Icons/{iconFolder}/").And.EndWith($"/{unitName}Icon.png"), path);
                 Assert.That(unitIcon.preserveAspect, Is.True, path);
                 Assert.That(unitIcon.rectTransform.sizeDelta, Is.EqualTo(new Vector2(-13.5f, -13.5f)), path);
                 Assert.That(unitIcon.rectTransform.anchoredPosition, Is.EqualTo(new Vector2(0f, -1.5f)), path);
