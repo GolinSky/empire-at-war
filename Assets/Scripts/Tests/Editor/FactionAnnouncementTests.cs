@@ -52,7 +52,8 @@ namespace EmpireAtWar.Tests.Editor
             _created.Add(data);
             SetField(data, "<MaxUnitCapacity>k__BackingField", 20);
             _capacity = new ReinforcementModel(data);
-            _service = new FactionAnnouncementService(_audio, null, null, null, null, null,
+            ShipSfxData ships = AssetDatabase.LoadAssetAtPath<ShipSfxData>("Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
+            _service = new FactionAnnouncementService(_audio, null, ships, null, null, null,
                 null, _capacity, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), null, null, null, null,
                 new CameraStub());
             SetField(_service, "_clips", _clips);
@@ -168,6 +169,28 @@ namespace EmpireAtWar.Tests.Editor
             ((Dictionary<AudioClip, float>)GetField(_service, "_readyAt"))[_clips.UnitProduction] = Time.unscaledTime;
             Invoke("HandlePurchaseAccepted", new SquadronUnitRequest(new FactionData(), default));
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.UnitProduction, _clips.UnitProduction }));
+        }
+
+        [Test]
+        public void SquadronConstructionCompletionSharesEightSecondCooldownWithStructures()
+        {
+            var request = new SquadronUnitRequest(new FactionData(), default);
+            Invoke("HandleUnitProduced", request);
+            var readyAt = (Dictionary<AudioClip, float>)GetField(_service, "_readyAt");
+            Assert.That(readyAt[_clips.ConstructionComplete], Is.EqualTo(Time.unscaledTime + 8f));
+            Invoke("HandleUnitProduced", request);
+            Invoke("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.QuadLaserSatellite);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.ConstructionComplete }));
+
+            readyAt[_clips.ConstructionComplete] = Time.unscaledTime;
+            Invoke("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.QuadLaserSatellite);
+            Assert.That(readyAt[_clips.ConstructionComplete], Is.EqualTo(Time.unscaledTime + 8f));
+            Invoke("HandleUnitProduced", request);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.ConstructionComplete, _clips.ConstructionComplete }));
+
+            readyAt[_clips.ConstructionComplete] = Time.unscaledTime;
+            Invoke("HandleUnitProduced", request);
+            Assert.That(_audio.Clips.Count, Is.EqualTo(3));
         }
 
         [Test]

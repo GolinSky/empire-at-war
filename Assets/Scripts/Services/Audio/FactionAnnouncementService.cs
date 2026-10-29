@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Audio
     public sealed class FactionAnnouncementService : IInitializable, ITickable, ILateDisposable, IObserver<BattleResult>
     {
         private const float EVENT_COOLDOWN = 1.5f;
+        private const float CONSTRUCTION_COOLDOWN = 8f;
         private const float CAP_COOLDOWN = 3f;
         private const float DAMAGE_COOLDOWN = 20f;
         private const float LOSS_COOLDOWN = 8f;
@@ -153,7 +154,8 @@ namespace EmpireAtWar.Services.Audio
                 case SquadronUnitRequest squadron: clip = _ships.GetUnit(squadron.Key).Ready; break;
                 default: return;
             }
-            Announce(clip != null ? clip : _clips.ConstructionComplete, AnnouncementPriority.Progress);
+            Announce(clip != null ? clip : _clips.ConstructionComplete, AnnouncementPriority.Progress,
+                clip != null ? EVENT_COOLDOWN : CONSTRUCTION_COOLDOWN);
         }
 
         private void HandleStationUpgraded() => AnnounceStationUpgrade(_model.CurrentLevel);
@@ -204,7 +206,7 @@ namespace EmpireAtWar.Services.Audio
         private void HandleConstructionCompleted(PlayerId owner, SiteFacilityType type)
         {
             if (owner == _local.Id && SiteFacilityBuilder.IsSatellite(type))
-                Announce(_clips.ConstructionComplete, AnnouncementPriority.Progress);
+                Announce(_clips.ConstructionComplete, AnnouncementPriority.Progress, CONSTRUCTION_COOLDOWN);
         }
 
         private void HandleCaptured(PlayerId previous, PlayerId owner, SiteFacilityType type)
