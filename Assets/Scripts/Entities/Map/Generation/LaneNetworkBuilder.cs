@@ -133,9 +133,10 @@ namespace EmpireAtWar.Entities.Map.Generation
             Random random,
             List<MapLane> lanes)
         {
-            // Point reflection flips the lane's normal together with its direction,
-            // so the same signed bend yields the mirrored shape.
-            float bend = ((float)random.NextDouble() * 2f - 1f) * _settings.LaneBend;
+            // Point reflection flips the normal with the direction, preserving the signed bend.
+            float sign = random.Next(2) == 0 ? -1f : 1f;
+            float bend = sign * Mathf.Lerp(_settings.LaneBendMin, _settings.LaneBend,
+                (float)random.NextDouble());
             AddLane(from, to, bend, nodes, isConnected, degree, lanes);
             AddLane(nodes[from].Mirror, nodes[to].Mirror, bend, nodes, isConnected, degree, lanes);
         }

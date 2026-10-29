@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Models.SkirmishCamera;
 using UnityEngine;
 using Random = System.Random;
 
@@ -24,16 +23,18 @@ namespace EmpireAtWar.Entities.Map.Generation
             new Vector2(-1f, 1f)
         };
         private readonly MapGenerationSettings _settings;
+        private readonly MapFeatureRadii _radii;
 
-        public StationPlacer(MapGenerationSettings settings)
+        public StationPlacer(MapGenerationSettings settings, MapFeatureRadii radii)
         {
             _settings = settings;
+            _radii = radii;
         }
 
-        public MapStation[] Place(Vector2Range bounds, IReadOnlyList<PlayerSlot> players, Random random)
+        public MapStation[] Place(MapSizeSettings size, IReadOnlyList<PlayerSlot> players, Random random)
         {
-            Vector2 center = (bounds.Min + bounds.Max) * 0.5f;
-            Vector2 halfSize = (bounds.Max - bounds.Min) * 0.5f;
+            Vector2 center = (size.Bounds.Min + size.Bounds.Max) * 0.5f;
+            Vector2 halfSize = (size.Bounds.Max - size.Bounds.Min) * 0.5f;
             int startCorner = random.Next(CORNER_SIGNS.Length);
             int cornerStep = players.Count == DUEL_PLAYER_COUNT ? OPPOSITE_CORNER_STEP : 1;
 
@@ -44,13 +45,34 @@ namespace EmpireAtWar.Entities.Map.Generation
                 : first.Id.Index.CompareTo(second.Id.Index));
 
             MapStation[] stations = new MapStation[teamOrder.Count];
+            Vector2[] offsets = new Vector2[teamOrder.Count];
             for (int i = 0; i < teamOrder.Count; i++)
             {
-                Vector2 sign = CORNER_SIGNS[(startCorner + i * cornerStep) % CORNER_SIGNS.Length];
-                // Each station keeps its own footprint's inset, so mixed factions are not exactly point-symmetric.
+                int corner = (startCorner + i * cornerStep) % CORNER_SIGNS.Length;
+                int opposite = -1;
+                for (int j = 0; j < teamOrder.Count; j++)
+                    if ((startCorner + j * cornerStep) % CORNER_SIGNS.Length ==
+                        (corner + OPPOSITE_CORNER_STEP) % CORNER_SIGNS.Length)
+                        opposite = j;
+
                 float radius = _settings.GetStationRadius(teamOrder[i].Faction);
-                Vector2 cornerOffset = halfSize - Vector2.one * (radius + _settings.StationEdgeDistance);
-                Vector2 position = center + Vector2.Scale(sign, cornerOffset);
+                float insetRadius = opposite < 0 ? radius :
+                    Mathf.Max(radius, _settings.GetStationRadius(teamOrder[opposite].Faction));
+                // The middle behind orientation puts sites 15 degrees from each border's normal.
+                // Reserve its largest footprint on both axes before sampling outward jitter.
+                float homeRadius = Mathf.Max(_radii.MiningSite, _settings.SatelliteFootprintRadius);
+                float homeInset = (insetRadius + homeRadius + PointOfInterestPlacer.HOME_SITE_GAP) *
+                    Mathf.Cos(15f * Mathf.Deg2Rad) + homeRadius;
+                float outwardJitter = Mathf.Min(size.StationCornerJitter,
+                    insetRadius + _settings.StationEdgeDistance - homeInset);
+                float inwardJitter = Mathf.Min(-size.StationCornerJitter, outwardJitter);
+                Vector2 jitter = new Vector2(
+                    Mathf.Lerp(inwardJitter, outwardJitter, (float)random.NextDouble()),
+                    Mathf.Lerp(inwardJitter, outwardJitter, (float)random.NextDouble()));
+                Vector2 cornerOffset = opposite >= 0 && opposite < i ? offsets[opposite] :
+                    halfSize - Vector2.one * (insetRadius + _settings.StationEdgeDistance) + jitter;
+                offsets[i] = cornerOffset;
+                Vector2 position = center + Vector2.Scale(CORNER_SIGNS[corner], cornerOffset);
                 stations[i] = CreateStation(teamOrder[i], position, radius);
             }
 

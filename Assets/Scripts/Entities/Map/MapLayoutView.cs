@@ -21,6 +21,7 @@ namespace EmpireAtWar.Entities.Map
         private const float FIELD_VOLUME_MESH_HEIGHT = 2f;
 
         [SerializeField] private ReinforcementZoneView zonePrefab;
+        [SerializeField] private ReinforcementZoneView mainZonePrefab;
         [SerializeField] private CaptureSiteView miningSitePrefab;
         [SerializeField] private CaptureSiteView satelliteSitePrefab;
         [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
@@ -48,7 +49,7 @@ namespace EmpireAtWar.Entities.Map
 
         public MapFeatureRadii FeatureRadii =>
             new MapFeatureRadii(zonePrefab.Radius,
-                _siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSitePrefab.transform.lossyScale.x), Mathf.Abs(miningSitePrefab.transform.lossyScale.z)));
+                _siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSitePrefab.transform.lossyScale.x), Mathf.Abs(miningSitePrefab.transform.lossyScale.z)), mainZonePrefab.Radius);
 
         public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
         public CaptureSiteView[] SiteViews { get; private set; }
@@ -83,7 +84,8 @@ namespace EmpireAtWar.Entities.Map
             foreach (ZoneSpot zone in layout.Zones)
             {
                 if (!zone.IsCapturable) continue;
-                ReinforcementZoneView relay = Instantiate(zonePrefab, zone.Center, Quaternion.identity, zoneRoot);
+                ReinforcementZoneView relay = Instantiate(zone.IsMain ? mainZonePrefab : zonePrefab,
+                    zone.Center, Quaternion.identity, zoneRoot);
                 relay.Configure(zone.Owner, zone.IsCapturable);
                 _zoneViews.Add(relay);
                 sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);

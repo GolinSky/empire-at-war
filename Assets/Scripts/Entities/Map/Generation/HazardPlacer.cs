@@ -12,6 +12,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const int SINGLE_PAIR_ATTEMPTS = 600;
         private const int SINGLE_PAIR_SWEEP_ATTEMPTS = 128;
         private const int MAX_CANDIDATE_PAIRS = 64;
+        private const float RELAY_SEGMENT_MIN_SHARE = 0.35f;
+        private const float RELAY_SEGMENT_MAX_SHARE = 0.65f;
         // Small-map islands are shorter and fuller than streams so they fit between the team lanes.
         private const float ISLAND_LENGTH_SCALE = 0.7f;
         private const float ISLAND_WIDTH_SCALE = 1.4f;
@@ -46,8 +48,12 @@ namespace EmpireAtWar.Entities.Map.Generation
             float cellSize = Mathf.Clamp(side * CELL_SHARE, MIN_CELL_SIZE, MAX_CELL_SIZE);
             Vector3 splitAxis = GetSplitAxis(stations, center);
             Vector3 teamAxis = new Vector3(splitAxis.z, 0f, -splitAxis.x);
-            // One pair: each cloud sits on the axis equidistant to the teams and is its own mirror image across it.
+            // Relay-facing islands fold across the relay line; fallback islands retain the fair team axis.
             bool islands = size.HazardCount == 2;
+            List<MapNode> relayTargets = new List<MapNode>();
+            for (int i = 0; i < nodes.Count; i++)
+                if (nodes[i].Kind == MapNodeKind.CapturableZone && !nodes[i].IsMain && nodes[i].Mirror >= i)
+                    relayTargets.Add(nodes[i]);
             SpaceHazardData data = _settings.Hazards[firstPreset];
             List<HazardSpot> candidates = new List<HazardSpot>();
             List<int> selected = new List<int>();
@@ -58,10 +64,25 @@ namespace EmpireAtWar.Entities.Map.Generation
                 // Search the smallest configured island explicitly when random candidates miss a narrow gap.
                 int sweepIndex = attempt - (SINGLE_PAIR_ATTEMPTS - SINGLE_PAIR_SWEEP_ATTEMPTS);
                 bool sweep = islands && sweepIndex >= 0;
+                bool preferRelay = relayTargets.Count > 0 && attempt < attempts / 2 &&
+                    candidates.Count < MAX_CANDIDATE_PAIRS;
                 float length = side * (sweep ? size.HazardLengthShare.x : Range(random, size.HazardLengthShare));
                 float width = side * (sweep ? size.HazardHalfWidthShare.x : Range(random, size.HazardHalfWidthShare));
                 HazardSpot first;
-                if (islands)
+                if (preferRelay)
+                {
+                    Vector3 direction = (relayTargets[attempt % relayTargets.Count].Center - center).normalized;
+                    Vector3 along = new Vector3(-direction.z, 0f, direction.x);
+                    float progress = Mathf.Lerp(RELAY_SEGMENT_MIN_SHARE, RELAY_SEGMENT_MAX_SHARE,
+                        (float)random.NextDouble());
+                    Vector3 position = Vector3.Lerp(center, relayTargets[attempt % relayTargets.Count].Center,
+                        progress);
+                    first = islands
+                        ? HazardCloudGenerator.CreateIsland(data, position, along,
+                            length * ISLAND_LENGTH_SCALE, width * ISLAND_WIDTH_SCALE, cellSize, random)
+                        : HazardCloudGenerator.CreateStream(data, position, along, length, width, cellSize, random);
+                }
+                else if (islands)
                 {
                     float offset = side * Mathf.Lerp(ISLAND_MIN_OFFSET, ISLAND_MAX_OFFSET, sweep
                         ? sweepIndex / (float)(SINGLE_PAIR_SWEEP_ATTEMPTS - 1) : (float)random.NextDouble());

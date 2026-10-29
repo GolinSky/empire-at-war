@@ -113,6 +113,15 @@ namespace EmpireAtWar.Entities.Menu
             UpdateState(UserNotifierState.ExitGame);
         }
 
+        public void RestartBattle()
+        {
+            _tooltips.HideAll();
+            ReleaseInputLock();
+            _ui.SetMenuVisible(false);
+            Unfocus();
+            UpdateState(UserNotifierState.RestartBattle);
+        }
+
         // Unconsumed Escape opens the menu; the open menu is focused, so the next Escape closes it.
         protected override bool HandleCancel()
         {
@@ -150,6 +159,7 @@ namespace EmpireAtWar.Entities.Menu
                 new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Resume" => "Close the pause menu and resume the battle.",
+                    "Restart Battle" => "Start this battle again with the same setup and map. Current progress will be lost.",
                     "Options" => "Edit display, camera and key-binding settings.",
                     "Exit" => "Exit this battle and return to the main menu.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))

@@ -11,8 +11,10 @@ namespace EmpireAtWar.Entities.Map.Generation
         public float Radius { get; }
         public PlayerId Owner { get; }
         public int PointId { get; }
-        public bool HasPocket => Kind != MapNodeKind.DefaultZone && Kind != MapNodeKind.SatelliteSite;
-        /// <summary>Index of the paired node; asymmetric main-zone nodes and unpaired homes use their own index.</summary>
+        public bool IsMain { get; set; }
+        public bool IsHomeSite { get; set; }
+        public bool HasPocket => !IsHomeSite && Kind != MapNodeKind.DefaultZone && Kind != MapNodeKind.SatelliteSite;
+        /// <summary>Index of the paired node; the central relay and unpaired homes use their own index.</summary>
         public int Mirror { get; set; }
 
         public MapNode(MapNodeKind kind, Vector3 center, PlayerId owner, float radius, int pointId = -1)

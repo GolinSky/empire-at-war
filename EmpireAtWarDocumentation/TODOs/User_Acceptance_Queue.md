@@ -159,9 +159,14 @@ created: 2026-10-29
 - [[AssetPipeline/Imports/Quasar Fire Import]]
   - [ ] Runtime launch/replacement, tractor beam, fog/selection, death.
 
+## Main Relay Map Layout
+
+- [[Done/Features/Main_Relay_Map_Layout_Adjustments]] — Fresh Small/Medium/Large 2p/4p gameplay: confirm the 1250–1275-wide asteroid fields and preferred hazards create meaningful detours, zones remain reachable, and home sites stay behind stations when unobstructed.
+- [[Done/Features/Main_Relay_Map_Layout_Adjustments]] — Run updated Map, MapGeneration, MapExhaustive, Capture and Core checks only on explicit request. No tests or Play Mode run by agents.
+
+
 ## Main Relay Zone Map Rework
 
-- [[Done/Features/Main_Relay_Zone_Map_Rework]] — In-game check all sizes, 2p/4p: home economy, relay rings/mesh, capture/build options, AI expansion, lane access.
 - [[Done/Features/Main_Relay_Zone_Map_Rework]] — Run updated Map, MapGeneration, MapExhaustive, GameFlow, Capture and Core checks on explicit request; no tests run by agents.
 - [[Done/Features/Main_Relay_Zone_Map_Rework]] — After gameplay acceptance, update GameDesign map/economy references.
 

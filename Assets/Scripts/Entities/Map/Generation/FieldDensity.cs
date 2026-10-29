@@ -81,7 +81,25 @@ namespace EmpireAtWar.Entities.Map.Generation
 
         public bool IsNaturalField(Vector3 position)
         {
-            return GetShapeNoise(position) > _size.FieldThreshold || GetRidgeNoise(position) > _size.RidgeThreshold;
+            float edgeDistance = Mathf.Min(position.x - _size.Bounds.Min.x, _size.Bounds.Max.x - position.x,
+                position.z - _size.Bounds.Min.y, _size.Bounds.Max.y - position.z);
+            bool isZoneEdge = false;
+            if (edgeDistance <= _size.AdditionalZoneEdgeBand)
+            {
+                foreach (MapNode node in _nodes)
+                    if (node.Kind == MapNodeKind.CapturableZone && !node.IsMain &&
+                        PlanarGeometry.Distance(position, node.Center) <
+                        node.Radius + _size.PocketThickness + _size.LaneWidth)
+                    {
+                        isZoneEdge = true;
+                        break;
+                    }
+            }
+
+            // Keep sparse clumps along occupied edges while retaining pockets and route blockers.
+            float shapeThreshold = _size.FieldThreshold + (isZoneEdge ? 0.12f : 0f);
+            float ridgeThreshold = _size.RidgeThreshold + (isZoneEdge ? 0.04f : 0f);
+            return GetShapeNoise(position) > shapeThreshold || GetRidgeNoise(position) > ridgeThreshold;
         }
 
         // Only cell centers are tested, but field volumes and rocks spill up to one cell past them,
@@ -102,7 +120,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             foreach (MapNode node in _nodes)
             {
-                if (PlanarGeometry.Distance(position, node.Center) < node.Radius + _settings.ZoneClearance)
+                if (PlanarGeometry.Distance(position, node.Center) < node.Radius + _settings.ZoneClearance +
+                    (node.IsHomeSite ? _size.FieldCellSize : 0f))
                 {
                     return true;
                 }

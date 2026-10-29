@@ -46,6 +46,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SkirmishUi), "startingMoneySlider"),
             new SerializedReference(typeof(SkirmishUi), "mapSizeDropdown"),
             new SerializedReference(typeof(MapLayoutView), "zonePrefab"),
+            new SerializedReference(typeof(MapLayoutView), "mainZonePrefab"),
             new SerializedReference(typeof(MapLayoutView), "miningSitePrefab"),
             new SerializedReference(typeof(MapLayoutView), "fieldVolumePrefab"),
             new SerializedReference(typeof(MapLayoutView), "largeRockPrefab"),

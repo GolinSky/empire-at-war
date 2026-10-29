@@ -12,6 +12,9 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField] public Vector2Range Bounds { get; private set; }
         [field: SerializeField, Min(0)] public int AdditionalZonePairCount { get; private set; }
         [field: SerializeField, Min(0f)] public float AdditionalZoneMainDistance { get; private set; }
+        [field: SerializeField, Min(0f)] public float AdditionalZoneEdgeBand { get; private set; } = 800f;
+        [field: SerializeField, Min(0f)] public float AdditionalZoneStationDistance { get; private set; } = 1100f;
+        [field: SerializeField, Min(0f)] public float StationCornerJitter { get; private set; } = 180f;
         [field: FormerlySerializedAs("<MiningPointCount>k__BackingField"),
                 FormerlySerializedAs("<MiningSiteCount>k__BackingField"), SerializeField, Min(2),
                 Tooltip("Mining points in the unchanged Survival ring; each has three mines and satellite pads.")]
@@ -24,7 +27,7 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(0f), Tooltip("Minimum free gap between the asteroid pockets of two points of interest.")]
         public float PointSpacing { get; private set; }
         [field: SerializeField, Tooltip("Gap between the Survival station footprint and its mining ring (Min). " +
-                                        "Skirmish home mining sits on each station's inward Z side instead.")]
+                                        "Skirmish home mining prefers the corner behind its station.")]
         public FloatRange HomeMiningGap { get; private set; }
         [field: SerializeField, Min(0f), Tooltip("Extra gap between the station footprint and its default reinforcement zone.")]
         public float DefaultZoneGap { get; private set; }

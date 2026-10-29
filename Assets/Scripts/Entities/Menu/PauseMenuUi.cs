@@ -10,6 +10,7 @@ namespace EmpireAtWar.Entities.Menu
         private IPauseMenuPresenter _presenter;
 
         [SerializeField] private Button resumeButton;
+        [SerializeField] private Button restartButton;
         [SerializeField] private Button optionsButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject menuPanel;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Entities.Menu
             }
 
             resumeButton.onClick.AddListener(_presenter.Close);
+            restartButton.onClick.AddListener(_presenter.RestartBattle);
             optionsButton.onClick.AddListener(_presenter.OpenSettings);
             exitButton.onClick.AddListener(_presenter.ExitSkirmish);
             saveButton.onClick.AddListener(_presenter.OpenSaveGame);
@@ -48,6 +50,7 @@ namespace EmpireAtWar.Entities.Menu
             }
 
             resumeButton.onClick.RemoveListener(_presenter.Close);
+            restartButton.onClick.RemoveListener(_presenter.RestartBattle);
             optionsButton.onClick.RemoveListener(_presenter.OpenSettings);
             exitButton.onClick.RemoveListener(_presenter.ExitSkirmish);
             saveButton.onClick.RemoveListener(_presenter.OpenSaveGame);

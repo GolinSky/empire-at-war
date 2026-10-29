@@ -89,6 +89,14 @@ namespace EmpireAtWar.Controllers.Game
 
         public void UpdateState(UserNotifierState notifierState)
         {
+            if (notifierState == UserNotifierState.RestartBattle)
+            {
+                Time.timeScale = NORMAL_TIME_SCALE;
+                _startupCancellation.Cancel();
+                _gameCommand.StartBattle(_battle);
+                return;
+            }
+
             if (notifierState == UserNotifierState.ExitGame)
             {
                 ExitSkirmish();

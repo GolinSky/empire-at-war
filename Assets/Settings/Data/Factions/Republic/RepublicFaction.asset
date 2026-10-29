@@ -92,7 +92,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 20
-        <UnitCapacity>k__BackingField: 4
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 003f227a5109a5745879774b3be70886,
           type: 3}
     - key: 7
@@ -182,7 +182,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2150
         <BuildTime>k__BackingField: 18
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 2556b3b94de26234e872c9e6cc31a730,
           type: 3}
     - key: 200
@@ -202,7 +202,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 4200
         <BuildTime>k__BackingField: 25
-        <UnitCapacity>k__BackingField: 4
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 552ac5636e4f65c44994f1337d051b8a,
           type: 3}
     - key: 13
@@ -220,7 +220,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1250
         <BuildTime>k__BackingField: 15
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 7e5117ae6840c8d4a9252e2b589de44f,
           type: 3}
     - key: 14
@@ -255,7 +255,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 1600
         <BuildTime>k__BackingField: 20
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: ee8c2cac9ed92d8499f6b865153f7ff3,
           type: 3}
     - key: 16

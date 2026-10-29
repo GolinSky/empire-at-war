@@ -15,7 +15,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         public const int SITES_PER_MINING_POINT = 3;
         public const float MINING_SITE_SPACING_SHARE = 0.25f;
         private const float MIRROR_TOLERANCE = 1f;
-        private const float HOME_SITE_GAP = 15f;
+        internal const float HOME_SITE_GAP = 15f;
 
         private readonly MapGenerationSettings _settings;
         private readonly MapFeatureRadii _radii;
@@ -52,7 +52,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 
         public float GetOuterRadius(MapNode node, MapSizeSettings size)
         {
-            return node.Radius + _settings.ZoneClearance + (node.HasPocket ? size.PocketThickness : 0f);
+            return node.IsHomeSite ? node.Radius :
+                node.Radius + _settings.ZoneClearance + (node.HasPocket ? size.PocketThickness : 0f);
         }
 
         internal bool IsClear(MapNode candidate, MapSizeSettings size,
@@ -122,28 +123,42 @@ namespace EmpireAtWar.Entities.Map.Generation
         private bool TryAddHomeMining(MapSizeSettings size, IReadOnlyList<MapStation> stations,
             Vector3 center, List<MapNode> nodes)
         {
-            float separation = _radii.MiningSite + _settings.SatelliteFootprintRadius + HOME_SITE_GAP;
-            for (int type = 0; type < 2; type++)
+            int first = nodes.Count;
+            for (int i = 0; i < stations.Count; i++)
             {
-                int first = nodes.Count;
-                for (int i = 0; i < stations.Count; i++)
+                MapStation station = stations[i];
+                Vector3 outward = new Vector3(Mathf.Sign(station.Position.x - center.x), 0f,
+                    Mathf.Sign(station.Position.z - center.z)).normalized;
+                bool placed = false;
+                for (int side = 0; side < 2 && !placed; side++)
                 {
-                    MapStation station = stations[i];
-                    // Default relays use the inward X side; home mining uses the inward Z side.
-                    Vector3 inward = new Vector3(0f, 0f, Mathf.Sign(center.z - station.Position.z));
-                    Vector3 beside = new Vector3(Mathf.Sign(center.x - station.Position.x), 0f, 0f);
-                    float radius = type == 0 ? _radii.MiningSite : _settings.SatelliteFootprintRadius;
-                    float distance = station.Radius + Mathf.Max(_radii.MiningSite + size.PocketThickness,
-                        _settings.SatelliteFootprintRadius) + _settings.ZoneClearance + HOME_SITE_GAP;
-                    Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) +
-                        inward * distance + beside * (type == 0 ? 0f : separation);
-                    MapNode node = new MapNode(type == 0 ? MapNodeKind.MiningSite : MapNodeKind.SatelliteSite,
-                        position, PlayerId.None, radius, i);
-                    if (!IsClear(node, size, stations, nodes))
-                        return false;
-                    nodes.Add(node);
+                    Vector3 direction = side == 0 ? outward : -outward;
+                    for (int orientation = 0; orientation < 3 && !placed; orientation++)
+                    {
+                        float turn = (orientation - 1) * 30f;
+                        Vector3 mineDirection = Quaternion.Euler(0f, turn - 30f, 0f) * direction;
+                        Vector3 padDirection = Quaternion.Euler(0f, turn + 30f, 0f) * direction;
+                        Vector3 origin = new Vector3(station.Position.x, 0f, station.Position.z);
+                        MapNode mine = new MapNode(MapNodeKind.MiningSite,
+                            origin + mineDirection * (station.Radius + _radii.MiningSite + HOME_SITE_GAP),
+                            PlayerId.None, _radii.MiningSite, i) { IsHomeSite = true };
+                        MapNode pad = new MapNode(MapNodeKind.SatelliteSite,
+                            origin + padDirection * (station.Radius + _settings.SatelliteFootprintRadius + HOME_SITE_GAP),
+                            PlayerId.None, _settings.SatelliteFootprintRadius, i) { IsHomeSite = true };
+                        placed = TryAddGroup(new[] { mine, pad }, size, stations, nodes);
+                    }
                 }
-                PairWithMirroredStations(stations, center, first, nodes);
+                if (!placed)
+                    return false;
+            }
+            for (int i = first; i < nodes.Count; i++)
+            {
+                nodes[i].Mirror = i;
+                Vector3 reflected = PlanarGeometry.Reflect(nodes[i].Center, center);
+                for (int j = first; j < nodes.Count; j++)
+                    if (nodes[i].Kind == nodes[j].Kind &&
+                        PlanarGeometry.Distance(reflected, nodes[j].Center) < MIRROR_TOLERANCE)
+                        nodes[i].Mirror = j;
             }
             return true;
         }

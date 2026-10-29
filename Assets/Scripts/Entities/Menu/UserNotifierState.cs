@@ -5,5 +5,6 @@ namespace EmpireAtWar.Entities.Menu
         InGame = 0,
         InMenu = 1,
         ExitGame = 2,
+        RestartBattle = 3,
     }
 }

@@ -21,6 +21,9 @@ MonoBehaviour:
           <Max>k__BackingField: {x: 2000, y: 2000}
         <AdditionalZonePairCount>k__BackingField: 1
         <AdditionalZoneMainDistance>k__BackingField: 900
+        <AdditionalZoneEdgeBand>k__BackingField: 800
+        <AdditionalZoneStationDistance>k__BackingField: 1100
+        <StationCornerJitter>k__BackingField: 180
         <SurvivalMiningSiteCount>k__BackingField: 6
         <HazardCount>k__BackingField: 2
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
@@ -50,6 +53,9 @@ MonoBehaviour:
           <Max>k__BackingField: {x: 3000, y: 3000}
         <AdditionalZonePairCount>k__BackingField: 2
         <AdditionalZoneMainDistance>k__BackingField: 1400
+        <AdditionalZoneEdgeBand>k__BackingField: 1100
+        <AdditionalZoneStationDistance>k__BackingField: 1300
+        <StationCornerJitter>k__BackingField: 240
         <SurvivalMiningSiteCount>k__BackingField: 8
         <HazardCount>k__BackingField: 4
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
@@ -79,6 +85,9 @@ MonoBehaviour:
           <Max>k__BackingField: {x: 4500, y: 4500}
         <AdditionalZonePairCount>k__BackingField: 3
         <AdditionalZoneMainDistance>k__BackingField: 2000
+        <AdditionalZoneEdgeBand>k__BackingField: 1400
+        <AdditionalZoneStationDistance>k__BackingField: 1500
+        <StationCornerJitter>k__BackingField: 360
         <SurvivalMiningSiteCount>k__BackingField: 12
         <HazardCount>k__BackingField: 6
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
@@ -160,11 +169,11 @@ MonoBehaviour:
   <ZoneClearance>k__BackingField: 20
   <SatellitePadOffset>k__BackingField: 160
   <SatelliteFootprintRadius>k__BackingField: 60
-  <MainZoneRegionShare>k__BackingField: 0.25
+  <MainZoneMiningRadiusShare>k__BackingField: 0.5
   <MainZoneMiningCount>k__BackingField: 4
   <MainZoneSatelliteCount>k__BackingField: 6
   <AdditionalZoneSatelliteCount>k__BackingField: 2
-  <MainZoneFairnessTolerance>k__BackingField: 300
   <PlanetBorderInset>k__BackingField: 0.25
   <ExtraLaneChance>k__BackingField: 0.35
   <LaneBend>k__BackingField: 0.2
+  <LaneBendMin>k__BackingField: 0.15

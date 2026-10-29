@@ -24,7 +24,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         public MapLayoutGenerator(MapGenerationSettings settings, MapFeatureRadii radii)
         {
             _settings = settings;
-            _stationPlacer = new StationPlacer(settings);
+            _stationPlacer = new StationPlacer(settings, radii);
             _pointOfInterestPlacer = new PointOfInterestPlacer(settings, radii);
             _laneNetworkBuilder = new LaneNetworkBuilder(settings);
             _asteroidFieldBuilder = new AsteroidFieldBuilder(settings);
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             List<MapNode> nodes = new List<MapNode>();
             for (int attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt++)
             {
-                MapStation[] stations = _stationPlacer.Place(size.Bounds, players, random);
+                MapStation[] stations = _stationPlacer.Place(size, players, random);
                 if (!_pointOfInterestPlacer.TryPlace(size, stations, players, random, nodes))
                 {
                     continue;
@@ -55,8 +55,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                 HazardShape[] hazards = new HazardShape[spots.Count];
                 for (int i = 0; i < hazards.Length; i++)
                     hazards[i] = new HazardShape(spots[i]);
-                IReadOnlyList<AsteroidField> fields = _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random,
+                MainLineBlocker blocker = new MainLineBlocker(_settings);
+                if (!blocker.TryReserve(size, stations, nodes, lanes, hazards, out List<FieldVolume> reserved))
+                    continue;
+                List<AsteroidField> fields = _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random,
                     hazards, out FieldDensity density);
+                blocker.Fill(size, nodes, hazards, reserved, fields, random);
                 IReadOnlyList<AsteroidSpot> decor = new DecorAsteroidBuilder(_settings).Build(size, density,
                     new Random(hazardSeed ^ DECOR_SALT));
                 return new MapLayout(
@@ -94,7 +98,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             {
                 if (node.Kind == MapNodeKind.DefaultZone || node.Kind == MapNodeKind.CapturableZone)
                 {
-                    zones.Add(new ZoneSpot(node.Center, node.Owner, node.Kind == MapNodeKind.CapturableZone));
+                    zones.Add(new ZoneSpot(node.Center, node.Owner, node.Kind == MapNodeKind.CapturableZone,
+                        node.IsMain));
                 }
             }
 
