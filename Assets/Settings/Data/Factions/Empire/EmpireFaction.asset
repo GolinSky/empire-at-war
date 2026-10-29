@@ -32,7 +32,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 30
-        <UnitCapacity>k__BackingField: 4
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 3896a253ad3c5024b8b7260fb0c214a9,
           type: 3}
     - key: 201
@@ -74,7 +74,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4200
         <BuildTime>k__BackingField: 50
-        <UnitCapacity>k__BackingField: 7
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 73509b3f4bebe5542ba69d62230fff68,
           type: 3}
     - key: 204
@@ -153,7 +153,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1800
         <BuildTime>k__BackingField: 25
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 19c7fd1609d6359439e7fb94cbbc0065,
           type: 3}
     - key: 209
@@ -286,7 +286,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1200
         <BuildTime>k__BackingField: 28
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: a18de04525e87254ebd6a359e39a58ba,
           type: 3}
   squadrons:

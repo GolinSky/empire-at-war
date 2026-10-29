@@ -50,7 +50,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1250
         <BuildTime>k__BackingField: 25
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 68a48dec07691c448a7ed517f75c5a1a,
           type: 3}
     - key: 302
@@ -111,7 +111,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 5500
         <BuildTime>k__BackingField: 40
-        <UnitCapacity>k__BackingField: 4
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a,
           type: 3}
     - key: 305
@@ -186,7 +186,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2200
         <BuildTime>k__BackingField: 32
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 2e88496bcd539524c9cf43ae79b88a88,
           type: 3}
     - key: 320
@@ -221,7 +221,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3400
         <BuildTime>k__BackingField: 42
-        <UnitCapacity>k__BackingField: 4
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696,
           type: 3}
     - key: 309
@@ -259,7 +259,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 5600
         <BuildTime>k__BackingField: 60
-        <UnitCapacity>k__BackingField: 3
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 66c1ea9cf4e49774d99aff299b8237ca,
           type: 3}
     - key: 321
@@ -317,7 +317,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 5200
         <BuildTime>k__BackingField: 58
-        <UnitCapacity>k__BackingField: 8
+        <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81,
           type: 3}
     - key: 322
