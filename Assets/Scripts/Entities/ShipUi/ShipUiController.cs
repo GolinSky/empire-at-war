@@ -285,7 +285,7 @@ namespace EmpireAtWar.Entities.ShipUi
                         focus: () => FocusEntity(entity), entity: entity));
                 }
                 List<IEntity> casters = group.Value;
-                addGroup(group.Key, entries, id => _shipAbilityService.Press(casters, id));
+                addGroup(group.Key, entries, id => _shipAbilityService.Press(casters, id, allowCancel: false));
             }
         }
 

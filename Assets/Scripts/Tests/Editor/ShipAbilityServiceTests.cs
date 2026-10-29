@@ -319,6 +319,69 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void GroupPress_PreservesActiveAbilityAndActivatesReadyShip()
+        {
+            FakeFactory factory = new FakeFactory();
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            FakeCommand first = CreateCaster();
+            FakeCommand second = CreateCaster();
+            service.TryActivate(first, ShipAbilityId.BoostEnginePower, null);
+            service.Advance(1f);
+
+            service.Press(new IEntity[] { first.Entity, second.Entity },
+                ShipAbilityId.BoostEnginePower);
+
+            Assert.That(first.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(first.Slots[0].TimeLeft, Is.EqualTo(4f));
+            Assert.That(factory.Created[0].StopCount, Is.Zero);
+            Assert.That(second.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(factory.Created.Count, Is.EqualTo(2));
+            service.LateDispose();
+        }
+
+        [Test]
+        public void GroupPress_WhenAllAbilitiesActive_PreservesThem()
+        {
+            FakeFactory factory = new FakeFactory();
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            FakeCommand first = CreateCaster();
+            FakeCommand second = CreateCaster();
+            IEntity[] casters = { first.Entity, second.Entity };
+            service.Press(casters, ShipAbilityId.BoostEnginePower);
+            service.Advance(1f);
+
+            service.Press(casters, ShipAbilityId.BoostEnginePower);
+
+            Assert.That(first.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(second.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(first.Slots[0].TimeLeft, Is.EqualTo(4f));
+            Assert.That(second.Slots[0].TimeLeft, Is.EqualTo(4f));
+            Assert.That(factory.Created.Count, Is.EqualTo(2));
+            Assert.That(factory.Created[0].StopCount, Is.Zero);
+            Assert.That(factory.Created[1].StopCount, Is.Zero);
+            service.LateDispose();
+        }
+
+        [Test]
+        public void GroupPress_SingleShipGroup_PreservesActiveAbility()
+        {
+            FakeFactory factory = new FakeFactory();
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            service.Advance(1f);
+
+            service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower,
+                allowCancel: false);
+
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(4f));
+            Assert.That(factory.Created.Count, Is.EqualTo(1));
+            Assert.That(factory.Created[0].StopCount, Is.Zero);
+            service.LateDispose();
+        }
+
+        [Test]
         public void GroupPress_ActivatesOnlyReadySlots()
         {
             FakeFactory factory = new FakeFactory();

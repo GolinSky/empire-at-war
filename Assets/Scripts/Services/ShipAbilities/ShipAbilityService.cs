@@ -48,29 +48,11 @@ namespace EmpireAtWar.Services.ShipAbilities
             _running.Clear();
         }
 
-        public void Press(IReadOnlyList<IEntity> casters, ShipAbilityId id)
+        public void Press(IReadOnlyList<IEntity> casters, ShipAbilityId id, bool allowCancel = true)
         {
-            bool cancel = false;
-            for (int i = 0; i < casters.Count; i++)
+            if (allowCancel && casters.Count == 1 &&
+                casters[0].TryGetFacade(out IShipAbilityFacade caster) && TryCancel(caster, id))
             {
-                if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                    TryFindSlot(command, id, out ShipAbilitySlot slot) &&
-                    slot.State == ShipAbilityState.Active && slot.Definition.CanCancel)
-                {
-                    cancel = true;
-                    break;
-                }
-            }
-
-            if (cancel)
-            {
-                for (int i = 0; i < casters.Count; i++)
-                {
-                    if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                        TryFindSlot(command, id, out ShipAbilitySlot slot) &&
-                        slot.State == ShipAbilityState.Active && slot.Definition.CanCancel)
-                        Stop(slot);
-                }
                 CancelTargeting();
                 return;
             }
