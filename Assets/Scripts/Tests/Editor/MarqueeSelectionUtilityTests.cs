@@ -97,6 +97,9 @@ namespace EmpireAtWar.Tests.Selection
             public bool IsSelected { get; private set; }
             public int ChangeCount { get; private set; }
 
+            public void PlayAttackFeedback(UnityEngine.Transform target) => throw new System.NotSupportedException();
+            public void StopAttackFeedback() => throw new System.NotSupportedException();
+
             public FakeSelectionCommand(SelectionType selectionType)
             {
                 SelectionType = selectionType;

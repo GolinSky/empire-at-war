@@ -270,6 +270,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public SelectionType SelectionType { get; set; } = SelectionType.MiningFacility;
             public void Select(bool isSelected) { }
+            public void PlayAttackFeedback(UnityEngine.Transform target) => throw new NotSupportedException();
+            public void StopAttackFeedback() => throw new NotSupportedException();
         }
 
         private sealed class RecordingOrderInput : IPlayerOrderInputHandler

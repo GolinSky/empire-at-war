@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
@@ -21,6 +22,9 @@ namespace EmpireAtWar.Components.Ship.Selection
         Vector3 WorldPosition { get; }
 
         void SetActive(bool isActive);
+
+        void PlayAttackFeedback(Transform target);
+        void StopAttackFeedback();
     }
 
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
@@ -28,6 +32,9 @@ namespace EmpireAtWar.Components.Ship.Selection
     {
         private const float SINGLE_SELECTION_SCALE = 0.8f;
         private const float MULTISELECT_SCALE = 0.6f;
+        private const float ATTACK_HOLD = 0.1f;
+        private const float ATTACK_LOCK = 0.55f;
+        private const float ATTACK_FADE = 0.2f;
         private static readonly Quaternion _worldRotation = Quaternion.Euler(90f, 0f, 0f);
 
         // A sprite renderer, not a world canvas: a selected unit moves every frame, and a canvas under it
@@ -42,6 +49,12 @@ namespace EmpireAtWar.Components.Ship.Selection
         private Vector3 _singleSelectionScale;
         private Transform _markerTransform;
         private bool _isMarkerVisible;
+        private Sequence _attackSequence;
+        private Transform _attackTarget;
+        private Vector3 _markerLocalPosition;
+        private Vector3 _attackStartScale;
+        private Color _markerColor;
+        private float _attackProgress;
 
         [SerializeField] private SelectionType selectionType;
 
@@ -91,6 +104,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public override void Release()
         {
+            StopAttackFeedback();
             OnSkipSelection(selectionType);
             Model.OnSelected -= HandleSelection;
             _selectionService.RemoveObserver(this);
@@ -137,6 +151,17 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void LateUpdate()
         {
+            if (_attackSequence != null)
+            {
+                _markerTransform.position = Vector3.Lerp(
+                    _markerTransform.parent.TransformPoint(_markerLocalPosition),
+                    _attackTarget.position, _attackProgress);
+                _markerTransform.rotation = _worldRotation *
+                    Quaternion.Euler(0f, 0f, 180f * _attackProgress);
+                _markerTransform.localScale = Vector3.Lerp(
+                    _attackStartScale, _attackStartScale * 0.2f, _attackProgress);
+                return;
+            }
             // Keep batching and renderer bounds intact; only visible, turning markers need a write.
             if (_isMarkerVisible && _markerTransform.rotation != _worldRotation)
             {
@@ -151,9 +176,46 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void UpdateMarkerScale(int selectedCount)
         {
+            if (_attackSequence != null) return;
             float scale = selectedCount > 1 ? MULTISELECT_SCALE : SINGLE_SELECTION_SCALE;
             _markerTransform.localScale = new Vector3(
                 _singleSelectionScale.x * scale, _singleSelectionScale.y * scale, 1f);
         }
+
+        public void PlayAttackFeedback(Transform target)
+        {
+            StopAttackFeedback();
+            _attackTarget = target;
+            _markerLocalPosition = _markerTransform.localPosition;
+            _attackStartScale = _markerTransform.localScale;
+            _markerColor = selectedRenderer.color;
+            _attackProgress = 0f;
+            _markerTransform.rotation = _worldRotation;
+            selectedRenderer.color = Color.red;
+            selectedRenderer.enabled = true;
+            _attackSequence = DOTween.Sequence()
+                .AppendInterval(ATTACK_HOLD)
+                .Append(DOTween.To(() => _attackProgress, value => _attackProgress = value,
+                    1f, ATTACK_LOCK).SetEase(Ease.InOutCubic))
+                .AppendInterval(0.12f)
+                .Append(selectedRenderer.DOFade(0f, ATTACK_FADE))
+                .SetUpdate(true)
+                .OnComplete(StopAttackFeedback);
+        }
+
+        public void StopAttackFeedback()
+        {
+            if (_attackSequence == null) return;
+            _attackSequence.Kill();
+            _attackSequence = null;
+            _attackTarget = null;
+            _markerTransform.localPosition = _markerLocalPosition;
+            _markerTransform.rotation = _worldRotation;
+            selectedRenderer.color = _markerColor;
+            UpdateMarkerScale(_selectionService.PlayerSelectionContext.Count);
+            HandleSelection(Model.IsSelected);
+        }
+
+        private void OnDisable() => StopAttackFeedback();
     }
 }

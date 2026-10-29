@@ -23,5 +23,9 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades.Selection
             _selectionComponent.SetActive(isSelected);
             // invoke selection components -> last one change model - model invokes event - view updates visuals
         }
+
+        public void PlayAttackFeedback(Transform target) => _selectionComponent.PlayAttackFeedback(target);
+
+        public void StopAttackFeedback() => _selectionComponent.StopAttackFeedback();
     }
 }
