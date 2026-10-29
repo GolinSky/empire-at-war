@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var root = new GameObject("Hangar repair test");
             var data = new TestHangarData(new HangarBay(SquadronType.Delta7, 3, 1));
-            var health = new HealthModel(data, null, new CombatModifiers());
+            var health = new HealthModel(data, null, new CombatModifiers(), new HardPointHealthBudget());
             var hardPointModel = new HardPointModel(HardPointType.Hangar, 0);
             health.InitializeHardPoints(new[] { hardPointModel });
             var adapter = new HardPointAdapter(new HardPointViewStub(root.transform), hardPointModel, root.transform);

@@ -89,7 +89,7 @@ namespace EmpireAtWar.Tests.Editor
                 ShipMoveModel move = new ShipMoveModel(new MoveDataStub(), new CombatModifiers());
                 move.ConfigureSpawnPose(landingSpot.ToNumerics(), rotation.ToNumerics());
                 view.transform.SetPositionAndRotation(move.JumpPosition.ToUnity(), rotation);
-                HealthModel health = new HealthModel(new HealthDataStub(), null, new CombatModifiers());
+                HealthModel health = new HealthModel(new HealthDataStub(), null, new CombatModifiers(), new HardPointHealthBudget());
                 ShipSaveFacade facade = new ShipSaveFacade(42L, new PlayerId(0), ShipType.Venator,
                     view.transform, move, health, new UnitOrderModel());
 

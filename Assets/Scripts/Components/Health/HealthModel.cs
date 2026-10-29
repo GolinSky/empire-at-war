@@ -5,7 +5,6 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
-using VContainer;
 
 namespace EmpireAtWar.Models.Health
 {
@@ -63,10 +62,6 @@ namespace EmpireAtWar.Models.Health
             }
         }
 
-        public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers)
-            : this(data, damageMatrix, modifiers, new HardPointHealthBudget()) { }
-
-        [Inject]
         public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers,
             HardPointHealthBudget hardPointHealthBudget)
         {

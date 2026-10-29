@@ -397,7 +397,7 @@ namespace EmpireAtWar.Tests.Editor
         public void HullBudget_ModifierChangePreservesMountHealthFractions()
         {
             var modifiers = new CombatModifiers();
-            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, modifiers);
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, modifiers, new HardPointHealthBudget());
             var mount = new HardPointModel(HardPointType.Weapon, 0);
             model.InitializeHardPoints(new[] { mount });
             mount.ApplyDamage(100f);
@@ -414,7 +414,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HullBudget_DestroyingAllMountsCannotLeaveHullAlive()
         {
-            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers());
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers(), new HardPointHealthBudget());
             var mounts = new[]
             {
                 new HardPointModel(HardPointType.Weapon, 0),
@@ -445,7 +445,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HullBudget_UpgradeInstallsNewMountAndRedistributesAndRestoresHealth()
         {
-            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers());
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers(), new HardPointHealthBudget());
             var weapon = new HardPointModel(HardPointType.Weapon, 0);
             var lockedWeapon = new HardPointModel(HardPointType.Weapon, 1, unlockLevel: 2);
             model.InitializeHardPoints(new[] { weapon, lockedWeapon });
@@ -466,7 +466,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HullBudget_ConstructionRecomputesFloorAndPreservesDamageAndLockedMounts()
         {
-            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers());
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers(), new HardPointHealthBudget());
             var weapon = new HardPointModel(HardPointType.Weapon, 0);
             var lockedWeapon = new HardPointModel(HardPointType.Weapon, 1, unlockLevel: 2);
             model.InitializeHardPoints(new[] { weapon, lockedWeapon });
@@ -485,7 +485,7 @@ namespace EmpireAtWar.Tests.Editor
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,
             out HardPointModel shieldGenerator)
         {
-            HealthModel model = new HealthModel(new HealthDataStub(shields), _matrix, new CombatModifiers());
+            HealthModel model = new HealthModel(new HealthDataStub(shields), _matrix, new CombatModifiers(), new HardPointHealthBudget());
             weapon = new HardPointModel(id: 0, hardPointType: HardPointType.Weapon);
             engine = new HardPointModel(id: 1, hardPointType: HardPointType.Engines);
             shieldGenerator = new HardPointModel(id: 2, hardPointType: HardPointType.ShieldGenerator);
@@ -497,7 +497,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ShieldSuppression_DropsShieldsWithoutDamagingGeneratorAndPreventsRefills()
         {
             CombatModifiers modifiers = new CombatModifiers();
-            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers);
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers, new HardPointHealthBudget());
             model.InitializeHardPoints(Array.Empty<HardPointModel>());
             model.SetShieldSuppressed(true);
             Assert.That(model.AbsorbsDamage(DamageType.Turbolaser), Is.False);
@@ -521,7 +521,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ShieldSuppression_FinalExitStartsRecoveryDelayAndReentryCancelsRecovery()
         {
             CombatModifiers modifiers = new CombatModifiers();
-            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers);
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers, new HardPointHealthBudget());
             GameObject owner = new GameObject("ShieldRecoveryTest");
             try
             {

@@ -148,7 +148,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             DefendPlatformData data = LoadData(platform);
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
-            var model = new HealthModel(data.ComponentData, matrix, new CombatModifiers());
+            var model = new HealthModel(data.ComponentData, matrix, new CombatModifiers(), new HardPointHealthBudget());
             var turret = new HardPointModel(type, 0);
             model.InitializeHardPoints(new[] { turret });
             turret.ApplyDamage(turret.MaxHealth);

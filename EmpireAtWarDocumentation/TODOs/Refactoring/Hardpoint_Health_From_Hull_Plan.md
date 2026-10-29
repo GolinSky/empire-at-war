@@ -111,3 +111,17 @@ created: 2026-10-29
 - Regression coverage added for weighting, class floor, hull modifier fractions, unlock rebudgeting, construction damage preservation, hull-death guarantee and saved fleet budget. Tests not run under local policy.
 - Existing untracked `Tools/AloImport/Recipes/Rothana.json` contains old numeric HP baselines. Import verification correctly requires refreshing those baselines to computed HP; unrelated in-progress import work preserved.
 - Remaining: user skirmish/final tuning acceptance. Keep plan active; do not archive as fully accepted.
+
+## Verification Review — 2026-10-29
+- Commit `08ca1d8f6` reviewed against plan steps 1–8: all present. Uncommitted ship prefab/data edits (`rangeMultiplier`, `Range`) are unrelated work.
+- Runtime: `ProjectScope` registers `HardPointHealthSettings.CreateBudget()`; `ProjectContext.prefab` references the asset; `HealthModel` ctor receives it. Ships → budget, multiplier `1`; structures → flat path unchanged.
+- Settings asset: `R = 1.15`, weights and class minimums match plan; arrays indexed by `HardPointType` (12) / `ShipClass` (9).
+- Data: 0 ship assets keep `hardPointHealth`; 0 ship mounts keep `healthOverride > 0`; 1256 mounts have `healthWeight` (9 non-1 weights from the 11 old overrides).
+- Independent recompute from assets: 61/61 ships Σ/hull ≥ `1.15` (range `1.15`–`2.00`; corvettes at floor: CR90/Raider `2.00`, Tartan `1.83`). Matches `Logs/Rebalance/2026-10-29-hardpoint-health/health.csv`.
+- Unity: Editor ready, not compiling, no compile errors; 2 console exceptions unrelated (MusicService teardown, `DefendPlatformCatalog` `BattleAsteroid`).
+- Tests: 11 new tests authored; not run (local policy).
+- Minor findings:
+  - Fixed 2026-10-29: removed `HealthModel` 3-arg code-default ctor (and now-unneeded `[Inject]`); 13 test constructions pass `new HardPointHealthBudget()` (same values).
+  - Fixed 2026-10-29: `ShipHardPointValidator` reports ship mounts with `healthOverride > 0` (ignored by ships → use `healthWeight`).
+  - Fixes verified: Unity recompile clean, 0 console errors. Tests not run (local policy).
+  - Open: mid-battle hull research increase: floor-bound mounts scale by less than the hull factor; guarantee holds in practice but is not strictly proven for that case.

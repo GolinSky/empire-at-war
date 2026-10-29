@@ -76,6 +76,8 @@ namespace EmpireAtWar.Editor.Ship.HardPoints
             HardPoint[] invalidWeights = units.Where(unit => unit != null && (!(unit.HealthWeight > 0f) || !float.IsFinite(unit.HealthWeight))).ToArray();
             foreach (HardPoint unit in invalidWeights)
                 issues.Add($"{unit.name} has an invalid health weight.");
+            foreach (HardPoint unit in units.Where(unit => unit != null && unit.HealthOverride > 0f))
+                issues.Add($"{unit.name} has healthOverride {unit.HealthOverride}; ships ignore it, use healthWeight instead.");
             if (models.Any(model => model.UnlockLevel <= 1) && invalidWeights.Length == 0)
             {
                 float total = BalanceRegistration.One<HardPointHealthSettings>().CreateBudget().Calculate(data.Hull, data.ShipClass, models).Sum();

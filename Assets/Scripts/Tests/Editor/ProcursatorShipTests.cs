@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
                 (WeaponType.ProcursatorMediumTripleTurbolaser, 8), (WeaponType.MediumIonCannon, 2) })
                 Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
-            var model = new HealthModel(data, matrix, new CombatModifiers());
+            var model = new HealthModel(data, matrix, new CombatModifiers(), new HardPointHealthBudget());
             var targets = health.ShipUnits.Select(h => new HardPointModel(h.HardPointType, h.Id)).ToArray();
             model.InitializeHardPoints(targets);
             Assert.That(targets.All(h => h.Health > 0), Is.True);

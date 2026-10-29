@@ -63,7 +63,7 @@ namespace EmpireAtWar.Tests.Editor
             var points = view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits
                 .Select(point => new HardPointModel(point.HardPointType, point.Id, point.UnlockLevel)).ToArray();
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
-            var health = new HealthModel(data, matrix, new CombatModifiers());
+            var health = new HealthModel(data, matrix, new CombatModifiers(), new HardPointHealthBudget());
             health.InitializeHardPoints(points);
             Assert.That(points.Length, Is.EqualTo(33));
             foreach (var point in points)
