@@ -34,7 +34,7 @@ MonoBehaviour:
           size: {x: 36, y: 3, z: 3}
         impactSize: 18
         firingDelay: 0.45
-        stunDuration: 10
+        stunDuration: 3
         stunModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 5

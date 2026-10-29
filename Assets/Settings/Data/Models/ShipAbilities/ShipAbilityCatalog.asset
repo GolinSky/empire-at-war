@@ -686,7 +686,7 @@ MonoBehaviour:
         waveSpeed: 35
         waveRadius: 60
         waveThickness: 8
-        disableDuration: 12
+        disableDuration: 1.5
         malfunctionChance: 0.1
     - rid: 6801466898397790283
       type: {class: IonShotSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -708,7 +708,7 @@ MonoBehaviour:
           projectileSpeed: 35
           color: {r: 1, g: 1, b: 1, a: 1}
           size: {x: 1.2, y: 1.2, z: 1.2}
-        disableDuration: 3
+        disableDuration: 1.5
     - rid: 6801466898397790284
       type: {class: CloakSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

@@ -8,7 +8,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     public sealed class IonShotSettings : ShipAbilitySettings
     {
         [SerializeField] private WeaponProfile projectile;
-        [SerializeField] private float disableDuration = 3f;
+        [SerializeField] private float disableDuration = 1.5f;
 
         public WeaponProfile Projectile => projectile;
         public float DisableDuration => disableDuration;
