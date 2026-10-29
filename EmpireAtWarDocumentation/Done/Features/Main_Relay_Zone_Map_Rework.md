@@ -163,3 +163,16 @@ acceptance: pending-user
 - AI consumers use live sites/relays and existing expansion/construction priorities; no count-dependent changes needed. Empty layout unchanged.
 - Verification: source/reference review and Unity compilation/import; EditMode tests updated, not run under local override. In-game all-size 2p/4p acceptance and requested test runs are user-only gates.
 - After user acceptance: update GameDesign map/economy reference notes.
+
+## Verification Review (2026-10-29, source only)
+
+- Commit `0da1f8e73` matches the plan: `MainZonePlacer` (first, region ±0.25 side, 4 mines on relay edge 90° apart, 6 pads outside capture radius, fairness tolerance 300 with fallback), home 1 mine + 1 pad per station, `AdditionalZonePlacer` (S/M/L 1/2/3 pairs, `AdditionalZoneMainDistance` 900/1400/2000, opposite team halves).
+- Settings/asset values match; `CaptureSiteKind.Satellite` keeps explicit value `2` → `CaptureSiteData.asset` keys stay valid.
+- Duplicate Battle kind removed: no remaining code/asset references to `CaptureSiteKind.Battle`, `MapNodeKind.BattleSite`, `battleSitePrefab` or prefab GUID `069e7efc…`. Battle Asteroid build option kept (`allowedFacilities` Mining → `0,1`).
+- Validator Full: `2 × slots + 4 + 6 + 2 × pairs × 3` sites, `1 + 2 × pairs` zones → matches generator.
+- Self-mirrored off-center main nodes are safe for `LaneNetworkBuilder` (`AddLane` skips `from == to`; lanes use real node centers).
+- Additional relay + mine share one center → zero-length spanning lane; `DistanceToSegmentSquared` handles it.
+- `BattleMapLoader` now drops all sites without `MiningSites`; no current preset has `CaptureSites` without `MiningSites` (All / None only).
+- `CaptureSiteEditorTool.SITE_SCALE` 5 → 2 matches `CaptureSite.prefab` root scale `2`.
+- `RelayGroups_HaveExpectedCountsGeometryAndMirrorsAcrossRosters` covers counts, geometry, mirrors, halves, home sites for 2–4 players.
+- Not run: EditMode tests (local override), Play Mode. Gates remain in [[TODOs/User_Acceptance_Queue]].

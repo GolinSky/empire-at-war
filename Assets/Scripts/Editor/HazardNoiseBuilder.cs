@@ -17,8 +17,10 @@ namespace EmpireAtWar.Editor
             var material = new Material(Shader.Find("Hidden/EmpireAtWar/HazardNoiseBake"));
             try
             {
-                Texture2D noise = Bake(material, NOISE_PATH, false);
-                Texture2D warp = Bake(material, WARP_PATH, true);
+                Bake(material, NOISE_PATH, false);
+                Bake(material, WARP_PATH, true);
+                Texture2D noise = AssetDatabase.LoadAssetAtPath<Texture2D>(NOISE_PATH);
+                Texture2D warp = AssetDatabase.LoadAssetAtPath<Texture2D>(WARP_PATH);
                 foreach (string name in new[] { "NebulaHazard", "IonStormHazard" })
                 {
                     Material cloud = AssetDatabase.LoadAssetAtPath<Material>(MATERIAL_FOLDER + name + ".mat");
@@ -31,7 +33,7 @@ namespace EmpireAtWar.Editor
             finally { Object.DestroyImmediate(material); }
         }
 
-        private static Texture2D Bake(Material material, string path, bool warp)
+        private static void Bake(Material material, string path, bool warp)
         {
             RenderTexture previous = RenderTexture.active;
             bool previousSrgb = GL.sRGBWrite;
@@ -65,7 +67,6 @@ namespace EmpireAtWar.Editor
             importer.alphaIsTransparency = false;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
             importer.SaveAndReimport();
-            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace EmpireAtWar.Components.Environment
 
         private MaterialPropertyBlock _properties;
         private NebulaImpostor _impostor;
+        private int _qualityLevel = -1;
 
         public static bool NebulaEnabled { get; set; } = true;
         public int SelectedVariant { get; private set; } = -1;
@@ -32,6 +33,11 @@ namespace EmpireAtWar.Components.Environment
         {
             _impostor = new NebulaImpostor(volumeRenderer, impostorShader);
             Bake();
+        }
+
+        private void LateUpdate()
+        {
+            if (_qualityLevel != QualitySettings.GetQualityLevel()) ApplyQuality();
         }
 
         private void OnEnable()
@@ -55,21 +61,35 @@ namespace EmpireAtWar.Components.Environment
         {
             volumeRenderer.sharedMaterial = variants[index];
             SelectedVariant = index;
-            _properties ??= new MaterialPropertyBlock();
-            _properties.SetFloat(_samplesId, 128);
-            volumeRenderer.SetPropertyBlock(_properties);
+            ApplyQuality();
             if (_impostor != null) Bake();
+        }
+
+        private void ApplyQuality()
+        {
+            _qualityLevel = QualitySettings.GetQualityLevel();
+            int samples = _qualityLevel switch
+            {
+                0 or 1 => 48,
+                2 => 64,
+                3 => 96,
+                _ => 128
+            };
+            _properties ??= new MaterialPropertyBlock();
+            _properties.SetFloat(_samplesId, samples);
+            volumeRenderer.SetPropertyBlock(_properties);
         }
 
         private void Bake()
         {
+            _properties.SetFloat(_samplesId, 128);
             _properties.SetFloat(_bakingId, 1);
             volumeRenderer.SetPropertyBlock(_properties);
             try { _impostor.Bake(); }
             finally
             {
                 _properties.SetFloat(_bakingId, 0);
-                volumeRenderer.SetPropertyBlock(_properties);
+                ApplyQuality();
             }
         }
 

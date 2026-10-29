@@ -241,6 +241,7 @@ tags:
 
 ### TODO
 
+- Follow-up for Mac nebula/hazard GPU cost, Mac Player build blocker and pan hitches: [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]].
 - [ ] Investigate camera-sweep hitches: p99 73.54 ms, one 404.51 ms interval. One sweep; cause unassigned. No corrective change made.
 - [ ] Mac Development Player: source blocker `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs:28` throws for every non-Windows target. Build dry-run passed but omits post-build callbacks; actual build not attempted because this known callback would fail. Requires separately authorized implementation.
 - [ ] Validate Mac GPU timing interpretation: FrameTimingManager/Profiler GPU values exceed actual frame intervals; retain as asynchronous Editor counters, never derive FPS from them.

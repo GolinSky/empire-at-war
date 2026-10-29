@@ -22,11 +22,34 @@ created: 2026-10-29
 - Settings shipped: Nebula On/Off, Render resolution 50–100% (default 100%), Bilinear / FSR 1 / STP filtered by support. Runtime pipeline copies leave preset assets unchanged; unsupported saved selection is normalized before Draft clone and persisted when readable.
 - STP correction: installed URP 17.4 consumes `renderScale` for STP; keep resolution slider visible. Only experimental IUpscaler negotiates input dimensions.
 - DLSS / FSR 2 rejected for this rollout: Context7 quota exhausted, local documentation index empty, no official 6000.4 activation guidance confirmed. Installed source requires undocumented defines, exposes only a getter for asset selection, uses internal pipeline state and resets selection every frame. No modules, defines or private serialization workaround added.
-- Verification: official Unity recompile completed `failed=false, errors=[]`; shader import messages empty; hazard GPU bake succeeded; saved shader/material/UI bindings verified. No automated tests or Mac target switch.
+- Verification: official Unity recompile completed `failed=false, errors=[]`; shader import messages empty; hazard GPU bake succeeded; saved shader/UI bindings checked. Material verification was incomplete: PC source review below found `_Noise` unassigned in both hazard materials. No automated tests or Mac target switch.
 - Isolated non-Play-Mode nebula comparison: live mean RGB 0.0127621, baked 0.0127357, mean absolute RGB error 0.00255812 across 921600 pixels; composition/framing inspected. Local evidence: `Logs/RenderAudit/nebula-preview-live.png`, `nebula-preview-baked.png`, `nebula-preview-qa.json`.
 - Isolated non-Play-Mode settings preview: all three controls bound/visible in scroll content; corrected render-resolution label/track spacing. Screenshot: `Logs/RenderAudit/settings-preview.png`. Runtime pipeline cleanup supports both Play Mode and Editor disposal.
 - PC performance/visual capture gates remain: seed -802094515, A/B/hazard/combat, full-map pan, zoom/cinematic fallback, preset switching, STP ghosting/resize. Editor had only a clean untitled stopped scene; BattleAudit policy requires a user-started battle. No baseline or performance gain claimed.
 - Reusable guidance updated: [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]. No companion research note created.
+
+## PC Source Verification — 2026-10-29
+
+- Source review of commit `9ae2d4313`; no Play Mode, no tests.
+- OK: bake direction = `Main Camera.prefab` rotation (x quat 0.46174863 = 55°) = nebula volume rotation → impostor path is used in normal play; far clip 200000 covers quad (~84000 away).
+- OK: `BuildInfoWriter` macOS path, settings data/Sanitize/Matches, UI row bindings in `SettingsUi.prefab`, `impostorShader` bound, ablation hazard pose + nebula toggle via `MatchNebula.NebulaEnabled`.
+- OK: H1 sheet counts 2/2/3/5/5/5 match quality order Performant/Low/Balanced/High Fidelity/Ultra/Cinematic.
+- **BUG:** `_Noise` unassigned (`fileID: 0`) in `NebulaHazard.mat` and `IonStormHazard.mat`; only `_WarpNoise` bound → shader default "gray" → cloud n/fine/ridge/sparkle constant 0.5, hazards look flat. Cause likely `HazardNoiseBuilder.Build` holding the first texture across the second import; load both after both bakes. Fix: assign `HazardNoise.png` (guid `735fa15d82b717f469685568e1b55e87`).
+- **Regression:** `MatchNebula.cs` now always uses 128 samples (was 48/48/64/96/128/128 by quality). Cinematic fallback and any camera >1° off the bake direction (including Editor Scene view during Play) pay ~2.7× the old Performant sample cost → estimated Mac cost ≈18 ms in cinematic shots, not a new measurement. Restore per-quality samples for live rendering; keep 128 for bake only.
+- OK: baked noise reproduces the old procedural noise and repeats without visible seams.
+- OK: saved settings, out-of-range cleanup, change detection and all three new settings rows are wired up; upscaler choices are filtered by machine support and URP preset assets remain untouched.
+- OK: audit tool includes hazard pose, hazard screen coverage and nebula on/off toggles.
+- Findings supplied in the PC review; no additional runtime checks or tests performed for this documentation update.
+
+## PC Fixes — 2026-10-29
+
+- Resolved both defects from PC source verification above; original findings retained as history.
+- `HazardNoiseBuilder.Build`: complete both bakes/imports before loading either texture; `Bake` no longer returns a texture reference held across imports.
+- Ran corrected builder; `NebulaHazard.mat` and `IonStormHazard.mat` now persist `_Noise` GUID `735fa15d82b717f469685568e1b55e87` and retain `_WarpNoise`. Restored original noise PNG bytes after regeneration; texture content/import settings unchanged in final diff.
+- `MatchNebula`: live samples 48/48/64/96/128/128; `LateUpdate` reapplies on quality change without rebaking. `Bake` overrides to 128, then clears `_Baking` and restores current quality in `finally`.
+- Verification: official Unity recompile `completed`, `failed=false`, `errors=[]`; corrected builder completed; Unity reports correct cloud/warp paths and both materials clean after refresh/save. Serialized material GUIDs and `git diff --check` verified; no new Console warnings/errors after asset operations. Existing unrelated Console history retained.
+- No tests, Play Mode, performance captures or Mac operations run. PC runtime visual/cinematic gates and all Mac phases remain open; plan stays `in-progress`.
+- Reusable rules updated in [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Quality and post-processing]].
 
 ## Execution Order — PC first, then Mac
 
@@ -100,7 +123,7 @@ created: 2026-10-29
 
 1. Bake at battle load: temporary orthographic camera with battle pitch/rotation, culling mask = nebula layer only, framing the volume footprint; render `Nebula Volume` at 128 samples into an RT (start 4096×2048, ARGB32 or RGB111110; tune).
 2. Impostor: quad at the volume's mid-depth, perpendicular to the bake view direction, sized to the bake frustum; unlit background material sampling the RT; render queue before opaques (behaves as backdrop).
-3. Disable the raymarch `MeshRenderer` after bake. `MatchNebula` keeps variant selection; remove per-quality sample switching only if nothing else needs it.
+3. Disable the raymarch `MeshRenderer` after bake while the impostor is active. `MatchNebula` keeps variant selection and per-quality live samples (48/48/64/96/128/128) for off-angle fallback; bake at 128 samples only.
 4. Release RT on battle exit. No per-frame allocations.
 5. Hide the bake under the loading screen; log bake time.
 6. Graphics setting **Nebula On/Off** (`GraphicsSettingsData`) → toggles the impostor.
@@ -188,6 +211,8 @@ created: 2026-10-29
 ### Part 1 — PC
 
 - [x] [PC] Phase 1 implementation — `BuildInfoWriter` macOS path and hazard pose/coverage in ablation tool.
+- [x] [PC] Fix hazard cloud noise: `HazardNoiseBuilder.Build` loads both textures after both bakes/imports; both saved materials bind `_Noise` to `HazardNoise.png`. Builder execution, Unity bindings and serialized GUIDs verified; in-game cloud appearance remains part of visual capture acceptance.
+- [x] [PC] Restore live nebula quality samples 48/48/64/96/128/128, including quality-change handling; bake temporarily uses 128 and restores current quality in `finally`. Compilation and source review complete; cinematic/off-angle runtime capture remains pending.
 - [ ] [PC] Prepared-battle baseline and matched captures (see PC implementation gates above).
 - [x] [PC] Phase 2 implementation — nebula impostor bake + Nebula On/Off setting; isolated render comparison verified.
 - [x] [PC] Phase 3 implementation — hazards H1 + H2; H3 deferred to Mac result.
