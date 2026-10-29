@@ -1,8 +1,10 @@
 using System;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using VContainer;
 
 namespace EmpireAtWar.Components.Construction
 {
@@ -11,6 +13,8 @@ namespace EmpireAtWar.Components.Construction
         private static readonly int BUILD_PROGRESS = Shader.PropertyToID("_BuildProgress");
         private static readonly int BUILD_MIN_Y = Shader.PropertyToID("_BuildMinY");
         private static readonly int BUILD_MAX_Y = Shader.PropertyToID("_BuildMaxY");
+        private static readonly int COLOR = Shader.PropertyToID("_Color");
+        private static readonly int EDGE_COLOR = Shader.PropertyToID("_EdgeColor");
 
         [SerializeField] private Renderer[] renderers;
         [SerializeField] private Material constructionMaterial;
@@ -18,12 +22,19 @@ namespace EmpireAtWar.Components.Construction
         private MaterialPropertyBlock _properties;
         private bool _started;
         private bool _released;
+        private bool _isEnemy;
 
         public float Progress { get; private set; }
         public float BuildTime { get; private set; }
         public bool IsConstructing => Progress < 1f;
         public event Action<float> ProgressChanged;
         public event Action Completed;
+
+        [Inject]
+        private void Construct(ILocalPlayer localPlayer, PlayerId owner)
+        {
+            _isEnemy = localPlayer.IsHostile(owner);
+        }
 
         public void Begin(float buildTime)
         {
@@ -80,6 +91,11 @@ namespace EmpireAtWar.Components.Construction
                 foreach (Renderer renderer in renderers)
                 {
                     renderer.GetPropertyBlock(_properties);
+                    if (_isEnemy)
+                    {
+                        _properties.SetColor(COLOR, new Color(1f, 0.1f, 0.3f, 0.55f));
+                        _properties.SetColor(EDGE_COLOR, new Color(3f, 0.6f, 1f, 1f));
+                    }
                     _properties.SetFloat(BUILD_PROGRESS, Progress);
                     _properties.SetFloat(BUILD_MIN_Y, bounds.min.y);
                     _properties.SetFloat(BUILD_MAX_Y, bounds.max.y);
