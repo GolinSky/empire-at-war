@@ -4,6 +4,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor.BattleSimulator;
+using EmpireAtWar.Models.Health;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -25,19 +26,20 @@ namespace EmpireAtWar.Tests.Editor
 
         [TearDown] public void TearDown() => UnityEngine.Object.DestroyImmediate(_matrix);
 
-        [TestCase(0f, 400f)]
-        [TestCase(500f, 500f)]
-        public void SimUnit_UsesMountHealthOverride(float healthOverride, float expectedHealth)
+        [TestCase(1f)]
+        [TestCase(2f)]
+        public void SimUnit_UsesHullBudgetAndMountWeight(float healthWeight)
         {
             var definition = Unit("A", 7000, 0);
-            definition.HardPointHealth = new[] { Health(HardPointType.Weapon, 400, 1) };
-            definition.HardPoints[0].HealthOverride = healthOverride;
+            definition.HardPoints[0].HealthWeight = healthWeight;
+            definition.HardPoints.Add(new SimHardPointDefinition { Type = HardPointType.Weapon });
+            float expectedHealth = 7000f * 1.15f * healthWeight / (healthWeight + 1f);
             var unit = new SimUnit(definition, new BattleFleetEntry { UnitId = "A" }, 0, 0,
                 _matrix, new System.Random(1), true);
 
-            Assert.That(unit.HardPoints[0].MaxHealth, Is.EqualTo(expectedHealth));
+            Assert.That(unit.HardPoints[0].MaxHealth, Is.EqualTo(expectedHealth).Within(0.001f));
             unit.HardPoints[0].ApplyDamage(450);
-            Assert.That(unit.HardPoints[0].Health, Is.EqualTo(Math.Max(0f, expectedHealth - 450)));
+            Assert.That(unit.HardPoints[0].Health, Is.EqualTo(Math.Max(0f, expectedHealth - 450)).Within(0.001f));
         }
 
         [Test]
@@ -110,8 +112,8 @@ namespace EmpireAtWar.Tests.Editor
             var a = Unit("A", 100, 10, type: DamageType.ProtonTorpedo);
             var b = Unit("B", 100, 0); b.Shields = 30; b.ShieldRegenerateValue = 5;
             b.HardPoints[0].Type = HardPointType.ShieldGenerator;
-            b.HardPointHealth = new[] { Health(HardPointType.ShieldGenerator, 10, 1) };
-            var setup = Setup(); setup.TimeLimit = 0.05f;
+            FragilePoints(b);
+            var setup = Setup(); setup.TimeLimit = 0.05f; setup.HardPointFocus = HardPointType.ShieldGenerator;
             BattleResult result = Run(setup, a, b);
             Assert.That(result.Units[1].Hull, Is.EqualTo(90));
             Assert.That(result.Units[1].Shields, Is.Zero);
@@ -121,8 +123,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void DestroyedMount_StopsSubsequentShots()
         {
-            var b = Unit("B", 1000, 1); b.HardPointHealth = new[] { Health(HardPointType.Weapon, 10, 1) };
-            var setup = Setup(); setup.TimeLimit = 3;
+            var b = Unit("B", 1000, 1); FragilePoints(b);
+            var setup = Setup(); setup.TimeLimit = 3; setup.HardPointFocus = HardPointType.Weapon;
             var result = Run(setup, Unit("A", 1000, 10), b);
             Assert.That(result.Units[1].Shots, Is.EqualTo(1));
             Assert.That(result.Units[1].Hull, Is.EqualTo(960));
@@ -142,7 +144,7 @@ namespace EmpireAtWar.Tests.Editor
             var a = Unit("A", 1000, 0); a.Mounts.Add(new SimMountDefinition { HardPointId = 0, Profile = Profile(10, shots: 2) });
             var b = Unit("B", 1000, 0);
             b.HardPoints.Insert(0, new SimHardPointDefinition { Name = "Generator", Type = HardPointType.ShieldGenerator });
-            b.HardPointHealth = new[] { Health(HardPointType.ShieldGenerator, 10, 1), Health(HardPointType.Weapon, 10000, 1) };
+            FragilePoints(b, 1);
             var setup = Setup(); setup.Distance = 10; setup.TimeLimit = 1; setup.HardPointFocus = HardPointType.ShieldGenerator;
             BattleResult result = Run(setup, a, b);
             // Both shots leave at 0 s for the generator; the first destroys it on arrival, the second is dropped.
@@ -164,8 +166,8 @@ namespace EmpireAtWar.Tests.Editor
             var a = Unit("A", 1000, 1);
             a.HardPoints.Add(new SimHardPointDefinition { Name = "Weapon 2", Type = HardPointType.Weapon });
             a.Mounts.Add(new SimMountDefinition { HardPointId = 1, Profile = Profile(1) });
-            a.HardPointHealth = new[] { Health(HardPointType.Weapon, 10, 1) };
-            var setup = Setup(); setup.TimeLimit = 1.5f; setup.SideA[0].ArcFactor = 0.5f;
+            FragilePoints(a);
+            var setup = Setup(); setup.TimeLimit = 1.5f; setup.SideA[0].ArcFactor = 0.5f; setup.HardPointFocus = HardPointType.Weapon;
             // B destroys one of A's two mounts at 0 s; the surviving mount must fire at 1 s whichever one bore first.
             for (int seed = 1; seed <= 10; seed++)
             {
@@ -223,7 +225,7 @@ namespace EmpireAtWar.Tests.Editor
         public static SimUnitDefinition Unit(string id, float hull, float damage, bool pointDefense = false, DamageType type = DamageType.Turbolaser)
         {
             var unit = new SimUnitDefinition { Id = id, Name = id, Hull = hull, ShipClass = ShipClass.Capital,
-                ShieldRegenerateDelay = 1, HardPointHealth = new[] { Health(HardPointType.Weapon, 10000, 1) } };
+                ShieldRegenerateDelay = 1 };
             unit.HardPoints.Add(new SimHardPointDefinition { Name = "Weapon", Type = HardPointType.Weapon });
             if (damage > 0) unit.Mounts.Add(new SimMountDefinition { HardPointId = 0, Profile = Profile(damage, pointDefense: pointDefense, type: type) });
             return unit;
@@ -234,8 +236,15 @@ namespace EmpireAtWar.Tests.Editor
             "Test", WeaponFamily.Turbolaser, type, damage, shots, interval, reload, 10, pointDefense, false,
             null, 10, Color.white, Vector3.one, false, false, default, default, 0);
 
-        public static HardPointHealth Health(HardPointType type, float health, float multiplier) => JsonUtility.FromJson<HardPointHealth>(
-            "{\"hardPointType\":" + (int)type + ",\"health\":" + health.ToString(System.Globalization.CultureInfo.InvariantCulture) +
-            ",\"hullDamageMultiplier\":" + multiplier.ToString(System.Globalization.CultureInfo.InvariantCulture) + "}");
+        private static void FragilePoints(SimUnitDefinition unit, int count = -1)
+        {
+            if (count < 0) count = unit.HardPoints.Count;
+            // Keep the hull budget while giving the targeted mounts 10 HP and the remaining capacity to engines.
+            unit.HealthBudget = new HardPointHealthBudget(1f, Enumerable.Repeat(1f, HardPointHealthBudget.DefaultTypeWeights.Length).ToArray(),
+                new float[HardPointHealthBudget.DefaultClassMinimums.Length]);
+            if (unit.HardPoints.Count == count)
+                unit.HardPoints.Add(new SimHardPointDefinition { Type = HardPointType.Engines, Name = "Engines" });
+            unit.HardPoints[count].HealthWeight = unit.Hull / 10f - count;
+        }
     }
 }

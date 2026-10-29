@@ -92,6 +92,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -171,6 +172,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.52909964
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 9
 --- !u!1 &812034476151289955
@@ -255,6 +257,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -1948,6 +1951,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -2059,6 +2063,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 4
 --- !u!135 &3048427496933912062
@@ -2419,6 +2424,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 5
 --- !u!135 &1043680913621057213
@@ -2524,6 +2530,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 6
 --- !u!135 &6509224920769139177
@@ -2598,6 +2605,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 7
 --- !u!135 &9211032894375816228
@@ -2672,6 +2680,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -2832,6 +2841,7 @@ MonoBehaviour:
   destroyedVfxScale: 0.53043765
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 8
 --- !u!135 &2597292926432162065

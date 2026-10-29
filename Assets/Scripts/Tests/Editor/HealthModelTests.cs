@@ -365,6 +365,123 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Shields, Is.EqualTo(SHIELDS * 0.4f));
         }
 
+        [Test]
+        public void HullBudget_WeightsInstalledMountsAndExcludesLockedMounts()
+        {
+            var mounts = new[]
+            {
+                new HardPointModel(HardPointType.Weapon, 0),
+                new HardPointModel(HardPointType.Engines, 1),
+                new HardPointModel(HardPointType.Weapon, 2, unlockLevel: 2)
+            };
+            float[] health = new HardPointHealthBudget().Calculate(10000f, ShipClass.Capital, mounts);
+
+            Assert.That(health[0], Is.EqualTo(4600f).Within(0.01f));
+            Assert.That(health[1], Is.EqualTo(6900f).Within(0.01f));
+            Assert.That(health[2], Is.Zero);
+        }
+
+        [Test]
+        public void HullBudget_ClassFloorProtectsSmallShipMounts()
+        {
+            var mounts = new HardPointModel[12];
+            for (int i = 0; i < mounts.Length; i++)
+                mounts[i] = new HardPointModel(HardPointType.Weapon, i);
+
+            float[] health = new HardPointHealthBudget().Calculate(600f, ShipClass.Corvette, mounts);
+
+            Assert.That(health, Is.All.EqualTo(100f));
+        }
+
+        [Test]
+        public void HullBudget_ModifierChangePreservesMountHealthFractions()
+        {
+            var modifiers = new CombatModifiers();
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, modifiers);
+            var mount = new HardPointModel(HardPointType.Weapon, 0);
+            model.InitializeHardPoints(new[] { mount });
+            mount.ApplyDamage(100f);
+            float fraction = mount.HealthPercentage;
+            modifiers.SetFleetCommand(true);
+            model.RefreshStatModifiers();
+
+            Assert.That(mount.MaxHealth, Is.EqualTo(model.MaxHull * 1.15f).Within(0.01f));
+            Assert.That(mount.HealthPercentage, Is.EqualTo(fraction).Within(0.0001f));
+            Assert.That(mount.Health / mount.MaxHealth, Is.EqualTo(fraction).Within(0.0001f));
+            Assert.That(mount.HullDamageMultiplier, Is.EqualTo(1f));
+        }
+
+        [Test]
+        public void HullBudget_DestroyingAllMountsCannotLeaveHullAlive()
+        {
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers());
+            var mounts = new[]
+            {
+                new HardPointModel(HardPointType.Weapon, 0),
+                new HardPointModel(HardPointType.Engines, 1)
+            };
+            model.InitializeHardPoints(mounts);
+            foreach (HardPointModel mount in mounts)
+                model.ApplyDamage(mount.MaxHealth, DamageType.Turbolaser, mount.Id);
+
+            Assert.That(model.IsDestroyed, Is.True);
+            Assert.That(model.Hull, Is.Zero);
+        }
+
+        [Test]
+        public void HullBudget_CustomMountWeightRedistributesBudgetWithoutChangingTotal()
+        {
+            var mounts = new[]
+            {
+                new HardPointModel(HardPointType.Weapon, 0),
+                new HardPointModel(HardPointType.Weapon, 1, healthWeight: 2f)
+            };
+            float[] health = new HardPointHealthBudget().Calculate(10000f, ShipClass.Capital, mounts);
+
+            Assert.That(health[1], Is.EqualTo(health[0] * 2f).Within(0.01f));
+            Assert.That(health[0] + health[1], Is.EqualTo(11500f).Within(0.01f));
+        }
+
+        [Test]
+        public void HullBudget_UpgradeInstallsNewMountAndRedistributesAndRestoresHealth()
+        {
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers());
+            var weapon = new HardPointModel(HardPointType.Weapon, 0);
+            var lockedWeapon = new HardPointModel(HardPointType.Weapon, 1, unlockLevel: 2);
+            model.InitializeHardPoints(new[] { weapon, lockedWeapon });
+            model.ApplyDamage(100f, DamageType.Turbolaser, weapon.Id);
+            float hullFraction = model.HullPercentage;
+
+            Assert.That(lockedWeapon.IsInstalled, Is.False);
+            model.Upgrade(2, 1f, 1f, 1f, hardPointScale: 10f);
+
+            Assert.That(lockedWeapon.IsInstalled, Is.True);
+            Assert.That(weapon.MaxHealth, Is.EqualTo(575f).Within(0.01f));
+            Assert.That(lockedWeapon.MaxHealth, Is.EqualTo(575f).Within(0.01f));
+            Assert.That(weapon.Health, Is.EqualTo(weapon.MaxHealth));
+            Assert.That(lockedWeapon.Health, Is.EqualTo(lockedWeapon.MaxHealth));
+            Assert.That(model.HullPercentage, Is.EqualTo(hullFraction).Within(0.0001f));
+        }
+
+        [Test]
+        public void HullBudget_ConstructionRecomputesFloorAndPreservesDamageAndLockedMounts()
+        {
+            var model = new HealthModel(new HealthDataStub(0f, true), _matrix, new CombatModifiers());
+            var weapon = new HardPointModel(HardPointType.Weapon, 0);
+            var lockedWeapon = new HardPointModel(HardPointType.Weapon, 1, unlockLevel: 2);
+            model.InitializeHardPoints(new[] { weapon, lockedWeapon });
+            model.SetConstructionProgress(0f);
+            Assert.That(weapon.MaxHealth, Is.EqualTo(250f));
+            model.ApplyDamage(20f, DamageType.Turbolaser, weapon.Id);
+            model.SetConstructionProgress(1f);
+
+            Assert.That(model.Hull, Is.EqualTo(HULL - 20f).Within(0.01f));
+            Assert.That(weapon.MaxHealth, Is.EqualTo(HULL * 1.15f).Within(0.01f));
+            Assert.That(weapon.MaxHealth - weapon.Health, Is.EqualTo(20f).Within(0.01f));
+            Assert.That(lockedWeapon.IsInstalled, Is.False);
+            Assert.That(lockedWeapon.MaxHealth, Is.Zero);
+        }
+
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,
             out HardPointModel shieldGenerator)
         {
@@ -444,6 +561,7 @@ namespace EmpireAtWar.Tests.Editor
             public float ShieldRegenerateValue => 0f;
             public float ShieldRegenerateDelay => 0f;
 
+            public bool UsesHullHardPointBudget { get; }
             public IReadOnlyList<HardPointHealth> HardPointHealth { get; } = new[]
             {
                 CreateHealth(HardPointType.Weapon, 100f, 0.5f),
@@ -451,9 +569,10 @@ namespace EmpireAtWar.Tests.Editor
                 CreateHealth(HardPointType.ShieldGenerator, 150f, 1f),
             };
 
-            public HealthDataStub(float shields)
+            public HealthDataStub(float shields, bool usesHullHardPointBudget = false)
             {
                 Shields = shields;
+                UsesHullHardPointBudget = usesHullHardPointBudget;
             }
 
             private static HardPointHealth CreateHealth(HardPointType type, float health, float hullMultiplier) =>

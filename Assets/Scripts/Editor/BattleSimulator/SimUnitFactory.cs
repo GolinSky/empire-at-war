@@ -9,6 +9,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -50,7 +51,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     definition.Shields = ship.Shields;
                     definition.ShieldRegenerateDelay = ship.ShieldRegenerateDelay;
                     definition.ShieldRegenerateValue = ship.ShieldRegenerateValue;
-                    definition.HardPointHealth = ship.HardPointHealth.ToArray();
+                    definition.HealthBudget = BalanceRegistration.One<HardPointHealthSettings>().CreateBudget();
                     definition.Range = ship.Range;
                     if (ship.HangarBays.Count > 0) definition.Warning = "Hangar not simulated";
                     var health = unit.Components.OfType<HealthComponent>().Single();
@@ -58,9 +59,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     {
                         bindings.Add(point, definition.HardPoints.Count);
                         definition.HardPoints.Add(new SimHardPointDefinition { Type = point.HardPointType,
-                            UnlockLevel = Integer(point, "unlockLevel"), HealthOverride = point.HealthOverride, Name = point.name });
-                        if (!definition.HardPointHealth.Any(value => value.HardPointType == point.HardPointType))
-                            throw new InvalidOperationException($"{unit.Caption}: missing HardPointHealth for {point.HardPointType}.");
+                            UnlockLevel = Integer(point, "unlockLevel"), HealthWeight = Number(point, "healthWeight"), Name = point.name });
                     }
                 }
                 else if (copy is SquadronData squadron)
@@ -133,6 +132,9 @@ namespace EmpireAtWar.Editor.BattleSimulator
         };
 
         private int Integer(Object target, string stat) => int.Parse(_registry.FieldsFor(target)
+            .Single(field => field.Stat == stat && !field.SharedMountSource).DraftValue(_draft), CultureInfo.InvariantCulture);
+
+        private float Number(Object target, string stat) => float.Parse(_registry.FieldsFor(target)
             .Single(field => field.Stat == stat && !field.SharedMountSource).DraftValue(_draft), CultureInfo.InvariantCulture);
 
         private T Copy<T>(T source) where T : Object

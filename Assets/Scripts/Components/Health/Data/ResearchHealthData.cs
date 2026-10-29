@@ -16,6 +16,7 @@ namespace EmpireAtWar.Models.Health
         private readonly IReadOnlyList<IFactionResearchModelObserver> _research;
 
         public ShipClass ShipClass => _healthData.ShipClass;
+        public bool UsesHullHardPointBudget => _healthData.UsesHullHardPointBudget;
         public float Hull => _healthData.Hull;
         public float Shields
         {

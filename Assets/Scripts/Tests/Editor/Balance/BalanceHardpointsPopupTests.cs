@@ -13,6 +13,24 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Balance")]
     public sealed class BalanceHardpointsPopupTests
     {
+        [TestCase("0")]
+        [TestCase("-1")]
+        [TestCase("NaN")]
+        public void InvalidHealthWeight_ShowsIssueAndKeepsWeightEditable(string value)
+        {
+            BalanceRegistration registry = BalanceInventory.BuildCombat();
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship && entry.Mounts.Count > 0);
+            BalanceField weight = registry.FieldsFor(unit.Mounts.First()).Single(field => field.Stat == "healthWeight" && !field.SharedMountSource);
+            BalanceDraft draft = new BalanceDraft();
+            draft.Set(weight.Snapshot(), value);
+            VisualElement panel = new VisualElement();
+            Assert.DoesNotThrow(() => BalanceCompareSummary.BuildHardpoints(panel, unit, registry, draft,
+                new BalanceDraftUsage(registry, draft), (_, _) => { }));
+            Assert.That(panel.Query<HelpBox>().ToList().Any(box => box.text.Contains("Computed hardpoint health unavailable")), Is.True);
+            VisualElement row = panel.Query<VisualElement>(className: "balance-compare-edit").ToList().Single(element => (string)element.userData == weight.Key);
+            Assert.That(row.Q<FloatField>().enabledSelf, Is.True);
+        }
+
         [UnityTest]
         public IEnumerator Popup_ShowsAllHardpointsAndKeepsDraftEditingOpen()
         {

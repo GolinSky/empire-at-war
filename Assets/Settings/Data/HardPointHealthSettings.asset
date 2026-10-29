@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6e4629dfd64ade9bc157f694475094, type: 3}
+  m_Name: HardPointHealthSettings
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Health.HardPointHealthSettings
+  budgetRatio: 1.15
+  typeWeights:
+  - 1
+  - 1.5
+  - 1.5
+  - 1
+  - 1.2
+  - 1.2
+  - 1.2
+  - 1.2
+  - 0.7
+  - 0.7
+  - 1.2
+  - 1.2
+  classMinimums:
+  - 0
+  - 0
+  - 100
+  - 150
+  - 250
+  - 300
+  - 0
+  - 0
+  - 200

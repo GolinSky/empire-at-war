@@ -35,9 +35,6 @@ namespace EmpireAtWar.Editor.Balance
                 if (field.Stat == "WeaponType")
                 {
                     if (!current.Fields.Values.Any(profile => profile.Stat == "weapon/" + change.After + "/" + BalanceWeaponAdapter.DEFINITION_MARKER)) errors.Add("Weapon profile missing: " + change.After);
-                    foreach (BalanceUnit unit in field.Users.Where(unit => unit.Data is ShipData))
-                        if (!((ShipData)unit.Data).HardPointHealth.Any(health => health.HardPointType == ((HardPoint)field.Target).HardPointType))
-                            errors.Add(unit.Name + ": assignment requires existing hardpoint health data.");
                 }
             }
             if (errors.Count != 0) return errors;
@@ -87,7 +84,6 @@ namespace EmpireAtWar.Editor.Balance
         }
 
         private static bool HasIonPulseCannon(BalanceUnit unit) =>
-            unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == HardPointType.IonPulseCannon)
-            && ((ShipData)unit.Data).HardPointHealth.Any(health => health.HardPointType == HardPointType.IonPulseCannon);
+            unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == HardPointType.IonPulseCannon);
     }
 }

@@ -32,16 +32,6 @@ MonoBehaviour:
   shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
   <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 1
-  hardPointHealth:
-  - hardPointType: 0
-    health: 300
-    hullDamageMultiplier: 1
-  - hardPointType: 1
-    health: 700
-    hullDamageMultiplier: 1
-  - hardPointType: 2
-    health: 600
-    hullDamageMultiplier: 1
   <Range>k__BackingField: 600
   <Delay>k__BackingField: 0.25
   abilities: 28000000

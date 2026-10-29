@@ -38,7 +38,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Range, Is.EqualTo(500f));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.Pursuit }));
             Assert.That(data.HangarBays, Is.Empty);
-            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth").arraySize, Is.EqualTo(3));
+            Assert.That(data.UsesHullHardPointBudget, Is.True);
+            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth"), Is.Null);
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
 
             Assert.That(view.GetComponentsInChildren<MonoBehaviour>(true).Any(m => m.GetType().Name == "HangarComponent"), Is.False);

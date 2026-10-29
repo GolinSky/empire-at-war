@@ -3,6 +3,8 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -51,6 +53,10 @@ namespace EmpireAtWar.Editor.AloImport
             if (recipe["gameplay"]["values"].Any()) throw new InvalidOperationException("UNSUPPORTED_CAPABILITY: existing-assets-v1 preserves gameplay values; rebalance requires a separate adapter.");
             EntityBindings bindings = objects.All("view").OfType<EntityBindings>().Single();
             var health = bindings.Health.Single();
+            HardPoint[] points = health.ShipUnits.ToArray();
+            HardPointModel[] models = points.Select((point, index) => new HardPointModel(point.HardPointType, index,
+                point.UnlockLevel, healthWeight: point.HealthWeight)).ToArray();
+            float[] hardpointHealth = BalanceRegistration.One<HardPointHealthSettings>().CreateBudget().Calculate(data.Hull, data.ShipClass, models);
             HardPoint[] declared = recipe["hardpoints"].Select(point =>
             {
                 if (point["component"] == null) throw new InvalidOperationException("Existing hardpoint requires canonical component role/fileId.");
@@ -58,8 +64,11 @@ namespace EmpireAtWar.Editor.AloImport
                 if (component == null || component.Id != (int)point["id"]) throw new InvalidOperationException("Hardpoint identity differs: " + point["id"]);
                 bool targetable = health.ShipUnits.Contains(component);
                 if (targetable != (bool)point["targetable"] || !bindings.Injectables.Contains(component)) throw new InvalidOperationException("Hardpoint targeting/injection differs: " + component.Id);
-                float expectedHealth = component.HealthOverride > 0 ? component.HealthOverride : data.HardPointHealth.Single(entry => entry.HardPointType == component.HardPointType).Health;
-                if (Mathf.Abs(expectedHealth - (float)point["health"]) > TRANSFORM_TOLERANCE) throw new InvalidOperationException("Hardpoint health differs: " + component.Id);
+                if (targetable)
+                {
+                    float expectedHealth = hardpointHealth[Array.IndexOf(points, component)];
+                    if (Mathf.Abs(expectedHealth - (float)point["health"]) > TRANSFORM_TOLERANCE) throw new InvalidOperationException("Hardpoint health differs: " + component.Id);
+                }
                 if (point["anchor"]["localPosition"] == null) throw new InvalidOperationException("UNSUPPORTED_CAPABILITY: existing-assets-v1 requires authored local anchors.");
                 if (Vector3.Distance(component.transform.localPosition, Vector(point["anchor"]["localPosition"])) > TRANSFORM_TOLERANCE ||
                     Quaternion.Angle(component.transform.localRotation, Quaternion.Euler(Vector(point["anchor"]["localEulerDegrees"]))) > TRANSFORM_TOLERANCE)

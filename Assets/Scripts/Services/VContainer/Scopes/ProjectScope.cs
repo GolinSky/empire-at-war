@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Graphics;
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private CoroutineHost coroutineService;
         [SerializeField] private AudioMixer audioMixer;
         [SerializeField] private MapGenerationSettings mapGenerationSettings;
+        [SerializeField] private HardPointHealthSettings hardPointHealthSettings;
 
         private AddressableHandleLoader _assetLoader;
 
@@ -85,6 +87,7 @@ namespace EmpireAtWar.Services.VContainer
         {
             using var marker = CONFIGURE_MARKER.Auto();
             builder.RegisterInstance(Assets);
+            builder.RegisterInstance(hardPointHealthSettings.CreateBudget());
             builder.RegisterInstance(GameData).AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<SceneData>(builder, Assets);
             builder.RegisterComponent(coroutineService).AsImplementedInterfaces().AsSelf();

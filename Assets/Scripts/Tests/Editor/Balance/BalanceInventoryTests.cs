@@ -44,6 +44,25 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ShipHardpointHealth_UsesDraftHullAndWeightsWithoutFlatHealthFields()
+        {
+            BalanceRegistration inventory = BalanceInventory.BuildCombat();
+            Assert.That(inventory.Errors, Is.Empty);
+            BalanceDraft draft = new BalanceDraft();
+            BalanceUnit unit = inventory.Units.Single(entry => entry.Data.name == "ExecutorShipData");
+            var before = BalanceUnitAdapter.HardPointHealth(unit, inventory, draft);
+            BalanceField hull = inventory.Fields[unit.Fields["Hull"]];
+            float savedHull = float.Parse(hull.Read(), System.Globalization.CultureInfo.InvariantCulture);
+            draft.Set(hull.Snapshot(), (savedHull * 2f).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            var after = BalanceUnitAdapter.HardPointHealth(unit, inventory, draft);
+            foreach (var point in before.Keys) Assert.That(after[point], Is.EqualTo(before[point] * 2f).Within(0.01f), point.name);
+            Assert.That(after.Values.Sum(), Is.GreaterThanOrEqualTo(savedHull * 2f));
+            Assert.That(inventory.FieldsFor(unit.Data).Any(field => field.Stat.StartsWith("hardPointHealth/")), Is.False);
+            Assert.That(inventory.FieldsFor(before.Keys.First()).Any(field => field.Stat == "healthWeight"), Is.True);
+            Assert.That(float.Parse(hull.Read(), System.Globalization.CultureInfo.InvariantCulture), Is.EqualTo(savedHull));
+        }
+
+        [Test]
         public void RepeatedSquadrons_HaveIndependentHangarBayFields()
         {
             BalanceRegistration inventory = BalanceInventory.Build();

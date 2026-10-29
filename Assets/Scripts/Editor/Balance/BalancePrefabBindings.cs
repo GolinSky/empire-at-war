@@ -59,6 +59,9 @@ namespace EmpireAtWar.Editor.Balance
                 string context = unit.Name + " / " + ((Component)mount).gameObject.name;
                 registry.Add(mount, "unlockLevel", "unlockLevel", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false,
                     new[] { unit }, minimum: 1, dependency: topology);
+                if (unit.Kind == BalanceUnitKind.Ship)
+                    registry.Add(mount, "healthWeight", "healthWeight", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false,
+                        new[] { unit }, positive: true, dependency: topology);
                 if (mount is WeaponHardPoint)
                 {
                     registry.Add(mount, "WeaponType", BalanceRegistration.Auto("WeaponType"), BalanceFieldGroup.Hardpoints, context,

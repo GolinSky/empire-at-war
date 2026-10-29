@@ -1,6 +1,8 @@
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
@@ -11,6 +13,30 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class ShipAssetIntegrityTests
     {
+        [Test]
+        public void SavedShips_InstalledHardpointsCoverHullBudgetWithoutFlatOverrides()
+        {
+            string settingsPath = AssetDatabase.GUIDToAssetPath(
+                AssetDatabase.FindAssets("t:HardPointHealthSettings").Single());
+            HardPointHealthBudget budget = AssetDatabase.LoadAssetAtPath<HardPointHealthSettings>(settingsPath).CreateBudget();
+            foreach (BalanceUnit unit in BalanceInventory.BuildCombat().Units.Where(unit => unit.Data is ShipData))
+            {
+                ShipData data = (ShipData)unit.Data;
+                Assert.That(new SerializedObject(data).FindProperty("hardPointHealth"), Is.Null, unit.Caption);
+                HardPoint[] mounts = unit.Components.OfType<HealthComponent>().Single().ShipUnits.ToArray();
+                if (mounts.Length == 0) continue;
+                Assert.That(mounts.All(point => point.HealthOverride == 0f), Is.True, unit.Caption);
+                HardPointModel[] models = mounts.Select(point => new HardPointModel(point.HardPointType,
+                    point.Id, point.UnlockLevel, healthWeight: point.HealthWeight)).ToArray();
+                float[] health = budget.Calculate(data.Hull, data.ShipClass, models);
+                Assert.That(health.Sum(), Is.GreaterThanOrEqualTo(data.Hull * HardPointHealthBudget.DEFAULT_BUDGET_RATIO - 0.1f),
+                    unit.Caption);
+                for (int i = 0; i < models.Length; i++)
+                    if (models[i].UnlockLevel <= 1)
+                        Assert.That(health[i], Is.GreaterThan(0f), unit.Caption + " / " + mounts[i].name);
+            }
+        }
+
         [TestCase("AcclamatorAssault")]
         [TestCase("VictoryI")]
         [TestCase("VictoryII")]
@@ -29,8 +55,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Distinct().Count(), Is.EqualTo(health.ShipUnits.Count));
             foreach (HardPoint hardPoint in hardPoints)
             {
-                HardPointHealth entry = data.HardPointHealth.Single(h => h.HardPointType == hardPoint.HardPointType);
-                Assert.That(entry.Health, Is.GreaterThan(0), hardPoint.name);
+                Assert.That(hardPoint.HealthWeight, Is.GreaterThan(0f), hardPoint.name);
+                Assert.That(hardPoint.HealthOverride, Is.Zero, hardPoint.name);
             }
         }
 
@@ -49,7 +75,7 @@ namespace EmpireAtWar.Tests.Editor
                 $"Assets/Prefabs/Models/Ships/{faction}/{ship}ShipView.prefab");
 
             Assert.That(data.HangarBays, Is.Empty);
-            Assert.That(data.HardPointHealth.Any(h => h.HardPointType == HardPointType.Hangar), Is.False);
+            Assert.That(data.UsesHullHardPointBudget, Is.True);
             Assert.That(view.GetComponentsInChildren<HardPoint>(true)
                 .Any(h => h.HardPointType == HardPointType.Hangar), Is.False);
         }

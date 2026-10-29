@@ -82,6 +82,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -193,6 +194,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 20
 --- !u!135 &7886516113678255987
@@ -298,6 +300,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 15
 --- !u!135 &8660536783661866644
@@ -403,6 +406,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
@@ -483,6 +487,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
@@ -594,6 +599,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -674,6 +680,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
@@ -754,6 +761,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
@@ -834,6 +842,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 13
 --- !u!135 &8729315864171695380
@@ -1215,6 +1224,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
@@ -2458,6 +2468,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:
@@ -2538,6 +2549,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 14
 --- !u!135 &5625721143919121828
@@ -2643,6 +2655,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 19
 --- !u!135 &2737664805299942392
@@ -3244,6 +3257,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -3386,6 +3400,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 12
 --- !u!135 &3479299075477509100
@@ -3460,6 +3475,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 11
   <Id>k__BackingField: 17
 --- !u!135 &7291939097769789757
@@ -3696,6 +3712,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -3776,6 +3793,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 16
 --- !u!135 &9149239056534073015
@@ -3912,6 +3930,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
@@ -4023,6 +4042,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 21
 --- !u!135 &8872785178322612577
@@ -4097,6 +4117,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
@@ -4296,6 +4317,7 @@ MonoBehaviour:
   destroyedVfxScale: 1.3770032
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 18
 --- !u!135 &3010134460876039242

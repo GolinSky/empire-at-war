@@ -107,10 +107,8 @@ namespace EmpireAtWar.Tests.Editor
                         Is.EquivalentTo(hardPoints), context);
                     Assert.That(injectables.OfType<HardPoint>().Where(point => point.HardPointType == type),
                         Is.EquivalentTo(hardPoints), context);
-                    Assert.That(data.HardPointHealth.Count(health => health.HardPointType == type),
-                        Is.EqualTo(1), context);
-                    Assert.That(data.HardPointHealth.Single(health => health.HardPointType == type).Health,
-                        Is.GreaterThan(0f), context);
+                    Assert.That(data.UsesHullHardPointBudget, Is.True, context);
+                    Assert.That(hardPoints.All(point => point.HealthWeight > 0f), Is.True, context);
                     Assert.That(hardPoints.All(point => point.UnlockLevel == 1), Is.True, context);
                 }
             }

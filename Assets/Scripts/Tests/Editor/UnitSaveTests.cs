@@ -133,6 +133,7 @@ namespace EmpireAtWar.Tests.Editor
             public float Shields => 100f;
             public float ShieldRegenerateValue => 1f;
             public float ShieldRegenerateDelay => 1f;
+            public bool UsesHullHardPointBudget => false;
             public IReadOnlyList<HardPointHealth> HardPointHealth => System.Array.Empty<HardPointHealth>();
         }
     }

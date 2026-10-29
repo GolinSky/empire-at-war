@@ -3,14 +3,16 @@ using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.AI;
+using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 
 namespace EmpireAtWar.Editor.Ship.HardPoints
 {
-    /// <summary>Reports hardpoint wiring problems in a ship view: list mismatches, ID gaps and missing health data.</summary>
+    /// <summary>Reports hardpoint wiring problems and hull health budget violations in a ship view.</summary>
     public static class ShipHardPointValidator
     {
         private const string SHIP_VIEW_FOLDER = "Assets/Prefabs/Models/Ships/";
@@ -65,14 +67,19 @@ namespace EmpireAtWar.Editor.Ship.HardPoints
 
             if (data == null)
             {
-                issues.Add("No matching ShipData found; hardPointHealth was not checked.");
+                issues.Add("No matching ShipData found; hardpoint health budget was not checked.");
                 return issues;
             }
 
-            foreach (HardPointType type in units.Where(unit => unit != null).Select(unit => unit.HardPointType).Distinct())
+            HardPointModel[] models = units.Where(unit => unit != null).Select((point, index) =>
+                new HardPointModel(point.HardPointType, index, point.UnlockLevel, healthWeight: point.HealthWeight)).ToArray();
+            HardPoint[] invalidWeights = units.Where(unit => unit != null && (!(unit.HealthWeight > 0f) || !float.IsFinite(unit.HealthWeight))).ToArray();
+            foreach (HardPoint unit in invalidWeights)
+                issues.Add($"{unit.name} has an invalid health weight.");
+            if (models.Any(model => model.UnlockLevel <= 1) && invalidWeights.Length == 0)
             {
-                if (data.HardPointHealth.All(health => health.HardPointType != type))
-                    issues.Add($"{data.name}.hardPointHealth has no entry for {type}.");
+                float total = BalanceRegistration.One<HardPointHealthSettings>().CreateBudget().Calculate(data.Hull, data.ShipClass, models).Sum();
+                if (total < data.Hull) issues.Add($"{data.name} hardpoint HP / hull is {total / data.Hull:0.###}, below 1.0.");
             }
             return issues;
         }

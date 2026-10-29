@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Repository.Data;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -96,7 +100,6 @@ namespace EmpireAtWar.Editor.Balance
                     BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShieldRegenTier));
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
-                    Health(registry, data, serialized.FindProperty("hardPointHealth"), "hardPointHealth", unit);
                     if (!combatOnly) Hangar(registry, data, serialized.FindProperty("hangarBays"), "hangarBays", unit);
                 }
             }
@@ -115,6 +118,18 @@ namespace EmpireAtWar.Editor.Balance
                         BalanceFieldGroup.Hardpoints, unit.Name + " / " + ((EmpireAtWar.Components.Ship.Health.HardPointType)id), BalanceFieldOwner.UnitData,
                         unit.Kind == BalanceUnitKind.Structure, new[] { unit }, positive: name == "health");
             }
+        }
+
+        public static Dictionary<HardPoint, float> HardPointHealth(BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft)
+        {
+            var data = (ShipData)unit.Data;
+            HardPoint[] points = unit.Components.OfType<HealthComponent>().Single().ShipUnits.ToArray();
+            float hull = float.Parse(registry.Fields[unit.Fields["Hull"]].DraftValue(draft), CultureInfo.InvariantCulture);
+            HardPointModel[] models = points.Select((point, index) => new HardPointModel(point.HardPointType, index,
+                int.Parse(registry.FieldsFor(point).Single(field => field.Stat == "unlockLevel" && !field.SharedMountSource).DraftValue(draft), CultureInfo.InvariantCulture),
+                healthWeight: float.Parse(registry.FieldsFor(point).Single(field => field.Stat == "healthWeight" && !field.SharedMountSource).DraftValue(draft), CultureInfo.InvariantCulture))).ToArray();
+            float[] values = BalanceRegistration.One<HardPointHealthSettings>().CreateBudget().Calculate(hull, data.ShipClass, models);
+            return points.Select((point, index) => (point, value: values[index])).ToDictionary(entry => entry.point, entry => entry.value);
         }
 
         public static void Hangar(BalanceRegistration registry, Object data, SerializedProperty entries, string key, BalanceUnit unit)

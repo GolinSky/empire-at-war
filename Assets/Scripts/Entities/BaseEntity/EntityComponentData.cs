@@ -25,6 +25,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
         public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
+        public bool UsesHullHardPointBudget => false;
 
         [Header("Radar Settings")]
         [Tooltip("Radius in which the structure detects enemies. Matches VisionRange.")]

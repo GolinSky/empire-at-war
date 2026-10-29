@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine.UIElements;
 
 namespace EmpireAtWar.Editor.Balance
@@ -124,12 +125,43 @@ namespace EmpireAtWar.Editor.Balance
         public static void BuildHardpoints(VisualElement panel, BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft,
             BalanceDraftUsage usage, Action<BalanceField, string> edit)
         {
+            Dictionary<HardPoint, float> health = null;
+            if (unit.Kind == BalanceUnitKind.Ship)
+            {
+                BalanceField hullField = registry.Fields[unit.Fields["Hull"]];
+                IEnumerable<BalanceField> inputs = unit.Mounts.Distinct().SelectMany(registry.FieldsFor)
+                    .Where(field => !field.SharedMountSource && (field.Stat == "healthWeight" || field.Stat == "unlockLevel"))
+                    .Append(hullField);
+                string[] issues = inputs.Select(field => (field, error: field.Validate(field.DraftValue(draft))))
+                    .Where(entry => entry.error.Length > 0).Select(entry => entry.field.Context + ": " + entry.error).ToArray();
+                if (issues.Length > 0)
+                    panel.Add(new HelpBox("Computed hardpoint health unavailable until draft values are valid.\n" + string.Join("\n", issues), HelpBoxMessageType.Error));
+                else if (float.Parse(hullField.DraftValue(draft), CultureInfo.InvariantCulture) <= 0f)
+                    panel.Add(new HelpBox("Computed hardpoint health requires hull greater than zero.", HelpBoxMessageType.Error));
+                else health = BalanceUnitAdapter.HardPointHealth(unit, registry, draft);
+            }
+            if (health != null && health.Count > 0)
+            {
+                float hull = float.Parse(registry.Fields[unit.Fields["Hull"]].DraftValue(draft), CultureInfo.InvariantCulture);
+                float total = health.Values.Sum();
+                Metric(panel, "Total hardpoint HP", total.ToString(CultureInfo.InvariantCulture), "HP");
+                Metric(panel, "Hardpoint HP / hull", (total / hull).ToString(CultureInfo.InvariantCulture), "×");
+                if (total < hull) panel.Add(new HelpBox("Total hardpoint HP is below hull; every subsystem can be lost before the ship dies.", HelpBoxMessageType.Warning));
+            }
             foreach (UnityEngine.Object mount in unit.Mounts.Distinct())
             {
                 VisualElement hardpoint = new VisualElement();
                 hardpoint.AddToClassList("balance-compare-hardpoint");
                 panel.Add(hardpoint);
                 Text(hardpoint, mount.name, "balance-compare-hardpoint-name");
+                if (mount is HardPoint point && health != null && health.TryGetValue(point, out float hitPoints))
+                {
+                    Metric(hardpoint, "Computed health (level 1)", hitPoints.ToString(CultureInfo.InvariantCulture), "HP");
+                }
+                if (unit.Kind == BalanceUnitKind.Ship)
+                {
+                    Editable(hardpoint, "Health weight", registry.FieldsFor(mount).Single(field => field.Stat == "healthWeight" && !field.SharedMountSource), draft, usage, edit);
+                }
                 BalanceField weapon = registry.FieldsFor(mount).FirstOrDefault(field => !field.SharedMountSource && field.Stat == "WeaponType");
                 if (weapon != null) Editable(hardpoint, "Weapon type", weapon, draft, usage, edit);
                 else Text(hardpoint, ((EmpireAtWar.ViewComponents.Health.HardPoint)mount).HardPointType.ToString(), "balance-muted");

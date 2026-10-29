@@ -108,12 +108,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(targets.Length, Is.EqualTo(33));
             Assert.That(targets.Select(point => point.Id).Distinct().Count(), Is.EqualTo(33));
             Assert.That(targets.OfType<WeaponHardPoint>().Count(), Is.EqualTo(24));
-            var data = new SerializedObject(AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH));
-            var health = data.FindProperty("hardPointHealth");
-            foreach (var type in targets.Select(point => point.HardPointType).Distinct())
-                Assert.That(Enumerable.Range(0, health.arraySize).Any(index =>
-                    health.GetArrayElementAtIndex(index).FindPropertyRelative("hardPointType").intValue == (int)type &&
-                    health.GetArrayElementAtIndex(index).FindPropertyRelative("health").floatValue > 0), Is.True, type.ToString());
+            var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH);
+            Assert.That(data.UsesHullHardPointBudget, Is.True);
+            Assert.That(new SerializedObject(data).FindProperty("hardPointHealth"), Is.Null);
+            Assert.That(targets.All(point => point.HealthWeight > 0f && point.HealthOverride == 0f), Is.True);
         }
 
         [Test]

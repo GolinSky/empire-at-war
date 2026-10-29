@@ -6,7 +6,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
     {
         public HardPointType Type;
         public int UnlockLevel = 1;
-        public float HealthOverride;
+        public float HealthWeight = 1f;
         public string Name;
     }
 }

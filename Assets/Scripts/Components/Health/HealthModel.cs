@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
+using VContainer;
 
 namespace EmpireAtWar.Models.Health
 {
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Models.Health
 
         private readonly DamageMatrixData _damageMatrix;
         private readonly CombatModifiers _modifiers;
+        private readonly HardPointHealthBudget _hardPointHealthBudget;
         private float _hullMultiplier;
         private float _shieldsMultiplier;
         private int _level = 1;
@@ -62,10 +64,16 @@ namespace EmpireAtWar.Models.Health
         }
 
         public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers)
+            : this(data, damageMatrix, modifiers, new HardPointHealthBudget()) { }
+
+        [Inject]
+        public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers,
+            HardPointHealthBudget hardPointHealthBudget)
         {
             _data = data;
             _damageMatrix = damageMatrix;
             _modifiers = modifiers;
+            _hardPointHealthBudget = hardPointHealthBudget;
             _hullMultiplier = modifiers.HullMultiplier;
             _shieldsMultiplier = modifiers.ShieldsMultiplier;
             Hull = MaxHull;
@@ -80,23 +88,39 @@ namespace EmpireAtWar.Models.Health
             Shields = IsShieldSuppressed ? 0f : Shields * _modifiers.ShieldsMultiplier / _shieldsMultiplier;
             _hullMultiplier = _modifiers.HullMultiplier;
             _shieldsMultiplier = _modifiers.ShieldsMultiplier;
+            if (_data.UsesHullHardPointBudget)
+            {
+                float[] health = _hardPointHealthBudget.Calculate(MaxHull, ShipClass, HardPointModels, _level);
+                for (int i = 0; i < HardPointModels.Length; i++)
+                    if (HardPointModels[i].IsInstalled)
+                        HardPointModels[i].ScaleHealth(health[i] / HardPointModels[i].MaxHealth);
+            }
             OnValueChanged?.Invoke();
         }
 
         public void InitializeHardPoints(IReadOnlyList<HardPointModel> hardPointModels)
         {
             HardPointModels = hardPointModels.ToArray();
-            foreach (HardPointModel hardPoint in HardPointModels)
+            float[] budget = _data.UsesHullHardPointBudget
+                ? _hardPointHealthBudget.Calculate(MaxHull, ShipClass, HardPointModels, _level)
+                : Array.Empty<float>();
+            for (int i = 0; i < HardPointModels.Length; i++)
             {
+                HardPointModel hardPoint = HardPointModels[i];
                 if (hardPoint.UnlockLevel > _level)
                 {
                     hardPoint.Uninstall();
                     continue;
                 }
 
-                HardPointHealth health = GetHardPointHealth(hardPoint.HardPointType);
-                hardPoint.SetHealth((hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health) * _levelHardPointScale * _constructionScale,
-                    health.HullDamageMultiplier);
+                if (_data.UsesHullHardPointBudget)
+                    hardPoint.SetHealth(budget[i], 1f);
+                else
+                {
+                    HardPointHealth health = GetHardPointHealth(hardPoint.HardPointType);
+                    hardPoint.SetHealth((hardPoint.HealthOverride > 0f ? hardPoint.HealthOverride : health.Health) * _levelHardPointScale * _constructionScale,
+                        health.HullDamageMultiplier);
+                }
             }
         }
 
@@ -111,8 +135,13 @@ namespace EmpireAtWar.Models.Health
             float previousScale = _constructionScale;
             _constructionScale = scale;
             Hull = Math.Max(0f, MaxHull - missingHull);
-            foreach (HardPointModel hardPoint in HardPointModels)
-                hardPoint.SetConstructionMaxHealth(hardPoint.MaxHealth * scale / previousScale);
+            float[] budget = _data.UsesHullHardPointBudget
+                ? _hardPointHealthBudget.Calculate(MaxHull, ShipClass, HardPointModels, _level)
+                : Array.Empty<float>();
+            for (int i = 0; i < HardPointModels.Length; i++)
+                HardPointModels[i].SetConstructionMaxHealth(_data.UsesHullHardPointBudget
+                    ? budget[i]
+                    : HardPointModels[i].MaxHealth * scale / previousScale);
 
             Shields = scale < 1f || IsShieldSuppressed || IsLostShieldGenerator ? 0f : MaxShields;
             OnValueChanged?.Invoke();

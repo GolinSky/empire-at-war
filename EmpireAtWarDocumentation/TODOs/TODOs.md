@@ -215,6 +215,11 @@
 
 ### Refactoring
 
+- [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
+  - **Implemented 2026-10-29**: ships-only runtime budget `R = 1.15`, weights/class floors, 62 ship data / 61 prefab migration, shared simulator and draft-aware Balance Editor. Unity compilation/import/save clean; regression test source updated, tests not run.
+  - **Simulator**: 305 matchups × 10 seeds, zero definition errors; historical comparison retained in research. Starting values retained because intervening balance changes confound isolated tuning.
+  - **Remaining**: user skirmish/final tuning acceptance; refresh existing ALO recipe numeric HP baselines before their next verify/import.
+
 - [ ] **Normalize ship scales from original length targets (Venator = 1137 m)** → [[TODOs/Refactoring/Ship_Scale_Original_Values_Plan|Ship Scale Original Values Plan]]
   - **Implemented 2026-10-26**: 27 ship/wreck pairs and geometry data normalized; Home One/MC80 Independence unchanged, Captor restored, Patrol Frigate 400 m. All 56 dimensions and 253324 dependency checks passed; engine particle geometry 98/98 passed.
   - **Remaining**: Unity tests and in-game visual acceptance. User requested commit with Unity tests pending; plan stays active.

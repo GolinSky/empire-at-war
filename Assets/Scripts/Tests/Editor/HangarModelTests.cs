@@ -266,6 +266,7 @@ namespace EmpireAtWar.Tests.Editor
             public float Shields => 0f;
             public float ShieldRegenerateValue => 0f;
             public float ShieldRegenerateDelay => 0f;
+            public bool UsesHullHardPointBudget => false;
             public IReadOnlyList<HardPointHealth> HardPointHealth { get; } = new[]
             {
                 JsonUtility.FromJson<HardPointHealth>($"{{\"hardPointType\":{(int)HardPointType.Hangar},\"health\":100,\"hullDamageMultiplier\":1}}")

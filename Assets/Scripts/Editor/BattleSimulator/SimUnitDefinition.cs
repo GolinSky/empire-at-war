@@ -23,7 +23,9 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public float MemberHull { get; set; }
         public float MemberShields { get; set; }
         public float LaserShieldDamageMultiplier { get; set; }
-        public IReadOnlyList<HardPointHealth> HardPointHealth { get; set; } = Array.Empty<HardPointHealth>();
+        public bool UsesHullHardPointBudget => !IsSquadron;
+        public HardPointHealthBudget HealthBudget { get; set; } = new HardPointHealthBudget();
+        IReadOnlyList<HardPointHealth> IHealthData.HardPointHealth => Array.Empty<HardPointHealth>();
         public readonly List<SimHardPointDefinition> HardPoints = new List<SimHardPointDefinition>();
         public readonly List<SimMountDefinition> Mounts = new List<SimMountDefinition>();
     }

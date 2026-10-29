@@ -56,8 +56,8 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public ShieldRegenTier ShieldRegenTier { get; private set; }
         public float ShieldRegenerateValue => shieldRegenTiers.GetRegenerateValue(ShieldRegenTier);
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
-        [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
-        public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
+        public bool UsesHullHardPointBudget => true;
+        public IReadOnlyList<HardPointHealth> HardPointHealth => System.Array.Empty<HardPointHealth>();
 
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }

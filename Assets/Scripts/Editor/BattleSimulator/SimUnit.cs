@@ -35,7 +35,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
             HardPoints = new HardPointModel[definition.HardPoints.Count];
             for (int i = 0; i < HardPoints.Length; i++)
                 HardPoints[i] = new HardPointModel(definition.HardPoints[i].Type, i,
-                    definition.HardPoints[i].UnlockLevel, definition.HardPoints[i].HealthOverride);
+                    definition.HardPoints[i].UnlockLevel, healthWeight: definition.HardPoints[i].HealthWeight);
             if (definition.IsSquadron)
             {
                 _squadron = new SquadronHealthModel(definition, matrix, Modifiers);
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
             }
             else
             {
-                _ship = new HealthModel(definition, matrix, Modifiers);
+                _ship = new HealthModel(definition, matrix, Modifiers, definition.HealthBudget);
                 _ship.InitializeHardPoints(HardPoints);
             }
             Stats = new UnitCombatStats { Name = definition.Name, UnitId = definition.Id, Side = side,

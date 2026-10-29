@@ -259,7 +259,7 @@ namespace EmpireAtWar.Components.Ship.Health
                     id: index,
                     hardPointType: hardPoint.HardPointType,
                     unlockLevel: hardPoint.UnlockLevel,
-                    healthOverride: hardPoint.HealthOverride);
+                    healthOverride: hardPoint.HealthOverride, healthWeight: hardPoint.HealthWeight);
             }
 
             Model.InitializeHardPoints(hardPointModels);
