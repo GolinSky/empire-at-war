@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "render_audit_profiler",
+    "parameters": {
+      "frames": "24",
+      "timeout_seconds": "120"
+    },
+    "result": {
+      "status": "running",
+      "message": "Profiler capture started.",
+      "captured_at_utc": "2026-10-29T21:39:12.1200620Z",
+      "unity_frame": 105711,
+      "phase": "profiler",
+      "capture_directory": "Logs/RenderAudit/20261029T213912116Z-profiler",
+      "status_path": "Logs/RenderAudit/20261029T213912116Z-profiler/capture-status.json"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "editor_status",
+    "parameters": {},
+    "result": {
+      "status": "playing",
+      "compiling": false,
+      "domainReloadInProgress": false,
+      "playMode": "playing",
+      "lastHeartbeat": "2026-10-29T21:40:58.68276Z",
+      "projectPath": "/Users/golinsky/Projects/empire-at-war",
+      "unityVersion": "6000.4.7f1"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

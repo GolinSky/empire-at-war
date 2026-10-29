@@ -1,0 +1,45 @@
+// GC.Alloc on the main thread, frames 617-640: bytes per frame and by first resolved managed method.
+var perFrame = new System.Collections.Generic.List<string>();
+var byMethod = new System.Collections.Generic.Dictionary<string, long[]>();
+var methods = new System.Collections.Generic.Dictionary<ulong, string>();
+var stack = new System.Collections.Generic.List<ulong>();
+long totalBytes = 0, totalCalls = 0;
+for (int frame = 617; frame <= 640; frame++)
+{
+    using (var view = UnityEditorInternal.ProfilerDriver.GetRawFrameDataView(frame, 0))
+    {
+        if (!view.valid) continue;
+        long frameBytes = 0;
+        for (int i = 0; i < view.sampleCount; i++)
+        {
+            if (view.GetSampleName(i) != "GC.Alloc") continue;
+            long size = view.GetSampleMetadataAsLong(i, 0);
+            frameBytes += size;
+            totalCalls++;
+            stack.Clear();
+            view.GetSampleCallstack(i, stack);
+            string key = "<no resolved stack>";
+            foreach (ulong address in stack)
+            {
+                if (!methods.TryGetValue(address, out string name))
+                {
+                    var info = view.ResolveMethodInfo(address);
+                    name = string.IsNullOrEmpty(info.methodName) ? null : info.methodName + ":" + info.sourceFileLine;
+                    methods[address] = name;
+                }
+                if (name != null) { key = name; break; }
+            }
+            if (!byMethod.TryGetValue(key, out long[] total)) byMethod[key] = total = new long[2];
+            total[0] += size;
+            total[1]++;
+        }
+        totalBytes += frameBytes;
+        perFrame.Add(frame + ":" + frameBytes / 1024 + "KB");
+    }
+}
+var top = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Take(System.Linq.Enumerable.Select(
+    System.Linq.Enumerable.OrderByDescending(byMethod, p => p.Value[0]),
+    p => new { method = p.Key, bytes = p.Value[0], calls = p.Value[1] }), 30));
+var result = new { first = 617, last = 640, totalBytes, totalCalls, perFrame, top };
+System.IO.File.WriteAllText("/Users/golinsky/Projects/empire-at-war/Docs/Audits/2026-10-29-Live-Battle-CPU/allocation-stacks.json", Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
+return new { totalBytes, totalCalls, top = System.Linq.Enumerable.Take(top, 15) };

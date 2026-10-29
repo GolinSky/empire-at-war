@@ -1,0 +1,184 @@
+{
+  "first": 617,
+  "last": 640,
+  "totalBytes": 4239756,
+  "totalCalls": 80730,
+  "perFrame": [
+    "617:198KB",
+    "618:92KB",
+    "619:99KB",
+    "620:140KB",
+    "621:121KB",
+    "622:87KB",
+    "623:92KB",
+    "624:85KB",
+    "625:168KB",
+    "626:62KB",
+    "627:105KB",
+    "628:75KB",
+    "629:1498KB",
+    "630:133KB",
+    "631:105KB",
+    "632:79KB",
+    "633:141KB",
+    "634:184KB",
+    "635:145KB",
+    "636:114KB",
+    "637:94KB",
+    "638:160KB",
+    "639:54KB",
+    "640:97KB"
+  ],
+  "top": [
+    {
+      "method": "mscorlib.dll!System.Text::StringBuilder.ToString():0",
+      "bytes": 581986,
+      "calls": 1923
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115",
+      "bytes": 479488,
+      "calls": 15334
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Hazards::HazardService.RefreshMemberships():60",
+      "bytes": 464136,
+      "calls": 11581
+    },
+    {
+      "method": "mscorlib.dll!System::Enum.GetValue():0",
+      "bytes": 285040,
+      "calls": 14252
+    },
+    {
+      "method": "mscorlib.dll!System.Text::StringBuilder.ExpandByABlock():0",
+      "bytes": 265798,
+      "calls": 50
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetIonCost():385",
+      "bytes": 193640,
+      "calls": 4841
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22",
+      "bytes": 179600,
+      "calls": 8107
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Models.Health::ResearchHealthData.get_Shields():25",
+      "bytes": 140736,
+      "calls": 4398
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0",
+      "bytes": 122840,
+      "calls": 703
+    },
+    {
+      "method": "UnityEngine.IMGUIModule.dll!UnityEngine::GUIStyle.GetMeshInfo():506",
+      "bytes": 99040,
+      "calls": 40
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.CollectHardPoints():238",
+      "bytes": 87264,
+      "calls": 473
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.CaptureSites::CaptureSitesSystem.HasHostileUnits():0",
+      "bytes": 82320,
+      "calls": 980
+    },
+    {
+      "method": "mscorlib.dll!System::MulticastDelegate.CombineImpl():0",
+      "bytes": 75544,
+      "calls": 328
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Movement::ShipBezierRoute.BuildSamples():127",
+      "bytes": 72928,
+      "calls": 339
+    },
+    {
+      "method": "mscorlib.dll!System::String.Concat():0",
+      "bytes": 71026,
+      "calls": 872
+    },
+    {
+      "method": "UnityEngine.CoreModule.dll!UnityEngine::Object.Internal_CloneSingle():0",
+      "bytes": 70716,
+      "calls": 794
+    },
+    {
+      "method": "mscorlib.dll!System::MulticastDelegate.RemoveImpl():0",
+      "bytes": 49008,
+      "calls": 152
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models.Combat::CombatMatchup.TimeToDestroy():24",
+      "bytes": 43392,
+      "calls": 1356
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.AttackComponent::AttackData..ctor():37",
+      "bytes": 40968,
+      "calls": 348
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.Subscribe():614",
+      "bytes": 39056,
+      "calls": 308
+    },
+    {
+      "method": "UnityEngine.IMGUIModule.dll!UnityEngine::GUILayoutUtility.Begin():146",
+      "bytes": 34560,
+      "calls": 240
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Weapon::ShotEffectPool.AddIdle():238",
+      "bytes": 34288,
+      "calls": 329
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.Tooltip::WorldTooltipPresenter.Tick():0",
+      "bytes": 32256,
+      "calls": 960
+    },
+    {
+      "method": "Assembly-CSharp-Editor.dll!EmpireAtWar.Editor::RenderAuditProfilerTool.CaptureRenderingStats():181",
+      "bytes": 30544,
+      "calls": 506
+    },
+    {
+      "method": "mscorlib.dll!System::String.CreateStringFromEncoding():0",
+      "bytes": 27962,
+      "calls": 9
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Models.Players::CaptureStrengthBuilder.Build():38",
+      "bytes": 27520,
+      "calls": 860
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Models.Players::CaptureStrengthBuilder.FindStrongestPlayer():76",
+      "bytes": 27520,
+      "calls": 860
+    },
+    {
+      "method": "Assembly-CSharp.dll!::SegmentArcLength..ctor():153",
+      "bytes": 26796,
+      "calls": 203
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetShips():407",
+      "bytes": 25456,
+      "calls": 222
+    },
+    {
+      "method": "UnityEngine.CoreModule.dll!UnityEngine::DebugLogHandler.Internal_Log():0",
+      "bytes": 22572,
+      "calls": 18
+    }
+  ]
+}

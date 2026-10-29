@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "command": "command get_performance_stats",
+  "data": {
+    "command": "get_performance_stats",
+    "parameters": {},
+    "result": {
+      "render": {
+        "drawCalls": 1670,
+        "batches": 418,
+        "setPassCalls": 1226,
+        "triangles": 1424924,
+        "vertices": 1702515
+      },
+      "memory": {
+        "totalAllocatedBytes": 4424639046,
+        "totalReservedBytes": 6224166912,
+        "monoUsedBytes": 1742458880,
+        "monoHeapBytes": 2000551936
+      },
+      "frameTiming": {
+        "available": true,
+        "cpuFrameTimeMs": 139.828042,
+        "gpuFrameTimeMs": 17.413041670806706,
+        "cpuMainThreadFrameTimeMs": 105.234083
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

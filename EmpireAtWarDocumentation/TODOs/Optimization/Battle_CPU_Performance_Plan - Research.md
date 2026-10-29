@@ -122,6 +122,14 @@ updated: 2026-10-11
 - Rendering snapshot at old frame 59289 is adjacent to Frame Debugger frame 59290, not the same timed frame.
 - Tool timeouts/partial panel errors are capture reliability issues; never label their incomplete output a successful frame capture.
 
+### Live match capture — 2026-10-29
+- Evidence: [Committed audit evidence](../../../Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md); source `21d64a927629da94d8bc8ca310b48e978a983233`. Match remained playing/unpaused; audit only, no tests.
+- Main CSV `battle_20261029_213712_952`: 38 frames, conventional frame median 264.521 ms / p95 411.922, CPU main mean 202.655 ms, GPU counter mean 18.482 ms. Performant/1×/M2/Metal; camera 2560×1440 differs from Screen 642×1156.
+- Regular Profiler 525–614: prewarm Awake 2452.0 ms / 91 calls; squadron order self 19.529 ms/frame; target Copy self 10.086 ms/frame. Capture-site Tick max 283.327 ms remains unattributed below the parent scope. EditorLoop/memory-counter/export overhead separated.
+- Allocation Profiler 617–640: 4,239,756 main-thread bytes / 80,730 calls; full ancestry groups exported. Telemetry flush ≥1,379,952 B; hazard refresh 464,136 B; AI scoring/queues and shield getters appear. GC stacks restored to None at 21:39:49Z.
+- Project Auditor says completed/0 but warns no registered modules → no usable coverage. Rendering Debugger stale CameraSelector → partial; Render Graph complete. Native sample covers profiler export, not gameplay.
+- Raw profiler.data files remain in local Logs/RenderAudit; committed compressed summaries, decoder scripts, outputs and SHA-256 manifest preserve portable evidence. No matched Player or historical comparison claimed.
+
 ## Files
 - [[TODOs/Optimization/Battle_CPU_Performance_Plan]]
 - [[Done/Optimization/Battle_Attack_Optimization_Plan]]

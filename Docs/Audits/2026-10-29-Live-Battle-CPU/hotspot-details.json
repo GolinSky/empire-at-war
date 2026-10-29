@@ -1,0 +1,56 @@
+{
+  "Battle.Squadron.UpdateOrder": {
+    "inclusive_ms_per_frame_lower_bound": 19.529116192935586,
+    "calls_total_lower_bound": 28837,
+    "max_inclusive_ms": 37.156752888266055,
+    "frames_listed": 90
+  },
+  "Battle.Attack.TargetBatch.Capture.Copy": {
+    "inclusive_ms_per_frame_lower_bound": 10.156589354409112,
+    "calls_total_lower_bound": 91,
+    "max_inclusive_ms": 26.58099937438965,
+    "frames_listed": 90
+  },
+  "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()": {
+    "inclusive_ms_per_frame_lower_bound": 12.631964072585106,
+    "calls_total_lower_bound": 76,
+    "max_inclusive_ms": 283.3270568847656,
+    "frames_listed": 75
+  },
+  "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()": {
+    "inclusive_ms_per_frame_lower_bound": 0.4417536841498481,
+    "calls_total_lower_bound": 1,
+    "max_inclusive_ms": 39.75783157348633,
+    "frames_listed": 1
+  },
+  "GC.Collect": {
+    "inclusive_ms_per_frame_lower_bound": 0.0,
+    "calls_total_lower_bound": 0,
+    "max_inclusive_ms": 0,
+    "frames_listed": 0
+  },
+  "GC.Alloc": {
+    "inclusive_ms_per_frame_lower_bound": 0.0,
+    "calls_total_lower_bound": 0,
+    "max_inclusive_ms": 0,
+    "frames_listed": 0
+  },
+  "Instantiate.Awake": {
+    "inclusive_ms_per_frame_lower_bound": 31.363995185897995,
+    "calls_total_lower_bound": 230,
+    "max_inclusive_ms": 111.35929329693317,
+    "frames_listed": 87
+  },
+  "Profiler.FlushMemoryCounters": {
+    "inclusive_ms_per_frame_lower_bound": 12.817449368370903,
+    "calls_total_lower_bound": 90,
+    "max_inclusive_ms": 89.2772445678711,
+    "frames_listed": 90
+  },
+  "EditorLoop": {
+    "inclusive_ms_per_frame_lower_bound": 59.62373177972105,
+    "calls_total_lower_bound": 364,
+    "max_inclusive_ms": 1171.2390177249908,
+    "frames_listed": 90
+  }
+}

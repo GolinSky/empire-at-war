@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "get_console_logs",
+    "parameters": {
+      "severity": "warning",
+      "limit": "100"
+    },
+    "result": {
+      "total": 1,
+      "returned": 1,
+      "logs": [
+        {
+          "type": "Warning",
+          "message": "[Project Auditor] Could not find any registered modules.",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object)\nUnity.ProjectAuditor.Editor.ProjectAuditor:AuditAsync (Unity.ProjectAuditor.Editor.AnalysisParams,Unity.ProjectAuditor.Editor.IProgress) (at /Users/bokken/build/output/unity/unity/Modules/ProjectAuditorEditor/API/ProjectAuditor.cs:133)\nSystem.Reflection.MethodBase:Invoke (object,object[])\nUnity.Pipeline.Editor.Commands.ProjectAudit.ProjectAuditCommands:RunAudit (object) (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Editor/Commands/ProjectAudit/ProjectAuditCommands.cs:211)\nUnity.Pipeline.Editor.Commands.ProjectAudit.ProjectAuditCommands:OnUpdate () (at ./Library/PackageCache/com.unity.pipeline@9bb4172c603c/Editor/Commands/ProjectAudit/ProjectAuditCommands.cs:160)\nUnityEditor.EditorApplication:Internal_CallUpdateFunctions () (at /Users/bokken/build/output/unity/unity/Editor/Mono/EditorApplication.cs:401)\n",
+          "timestampUtc": "2026-10-29T21:38:39.8509620Z"
+        }
+      ]
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,39 @@
+// "Instantiate.Awake" samples on the main thread, frames 525-614: per-frame count/time and enclosing markers.
+var callers = new System.Collections.Generic.Dictionary<string, double[]>();
+var frames = new System.Collections.Generic.List<string>();
+for (int frame = 525; frame <= 614; frame++)
+{
+    using (var view = UnityEditorInternal.ProfilerDriver.GetRawFrameDataView(frame, 0))
+    {
+        if (!view.valid) continue;
+        var parents = new System.Collections.Generic.List<(int End, string Name)>();
+        int count = 0;
+        double ms = 0;
+        for (int i = 0; i < view.sampleCount; i++)
+        {
+            while (parents.Count > 0 && parents[parents.Count - 1].End < i) parents.RemoveAt(parents.Count - 1);
+            string name = view.GetSampleName(i);
+            if (name == "Instantiate.Awake")
+            {
+                count++;
+                double sampleMs = view.GetSampleTimeMs(i);
+                ms += sampleMs;
+                string key = (parents.Count > 0 ? parents[parents.Count - 1].Name : "<root>") + " <- " +
+                    (parents.Count > 1 ? parents[parents.Count - 2].Name : "<root>");
+                if (!callers.TryGetValue(key, out double[] total)) callers[key] = total = new double[2];
+                total[0]++;
+                total[1] += sampleMs;
+            }
+            int descendants = view.GetSampleChildrenCountRecursive(i);
+            if (descendants > 0) parents.Add((i + descendants, name));
+        }
+        if (count > 0) frames.Add(frame + ":" + count + "/" + ms.ToString("F1") + "ms");
+    }
+}
+return new
+{
+    callers = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(
+        System.Linq.Enumerable.OrderByDescending(callers, p => p.Value[1]),
+        p => p.Value[0] + " calls, " + p.Value[1].ToString("F1") + " ms : " + p.Key)),
+    frames
+};

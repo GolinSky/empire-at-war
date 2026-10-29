@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command audit",
+  "data": {
+    "command": "audit",
+    "parameters": {
+      "categories": "ProjectSetting",
+      "output": "Docs/Audits/2026-10-29-Live-Battle-CPU/project-auditor.csv"
+    },
+    "result": {
+      "status": "scanning",
+      "scanId": "8bb38602",
+      "csvPath": "/Users/golinsky/Projects/empire-at-war/Docs/Audits/2026-10-29-Live-Battle-CPU/project-auditor.csv"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

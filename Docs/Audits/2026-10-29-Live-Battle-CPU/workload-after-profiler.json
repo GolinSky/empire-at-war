@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "return new { utc = System.DateTime.UtcNow, playing = UnityEditor.EditorApplication.isPlaying, paused = UnityEditor.EditorApplication.isPaused, timeScale = UnityEngine.Time.timeScale, time = UnityEngine.Time.time, frame = UnityEngine.Time.frameCount, profilerEnabled = UnityEditorInternal.ProfilerDriver.enabled, profileEditor = UnityEditorInternal.ProfilerDriver.profileEditor, deepProfiling = UnityEditorInternal.ProfilerDriver.deepProfiling, ships = UnityEngine.Object.FindObjectsByType<EmpireAtWar.Ship.Ship>(UnityEngine.FindObjectsSortMode.None).Length, squadrons = UnityEngine.Object.FindObjectsByType<EmpireAtWar.Entities.Squadrons.Squadron>(UnityEngine.FindObjectsSortMode.None).Length, weapons = UnityEngine.Object.FindObjectsByType<EmpireAtWar.Components.Weapon.WeaponComponent>(UnityEngine.FindObjectsSortMode.None).Length, cameras = System.Linq.Enumerable.Select(UnityEngine.Camera.allCameras, c => new { c.name, c.pixelWidth, c.pixelHeight, c.fieldOfView, position = c.transform.position.ToString(), rotation = c.transform.eulerAngles.ToString() }).ToArray() };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "utc": "2026-10-29T21:38:52.636647Z",
+        "playing": true,
+        "paused": false,
+        "timeScale": 1,
+        "time": 2301.13525,
+        "frame": 105654,
+        "profilerEnabled": false,
+        "profileEditor": false,
+        "deepProfiling": false,
+        "ships": 83,
+        "squadrons": 321,
+        "weapons": 454,
+        "cameras": [
+          {
+            "name": "Main Camera",
+            "pixelWidth": 2560,
+            "pixelHeight": 1440,
+            "fieldOfView": 29.8755035,
+            "position": "(-684.78, 1175.00, 2552.26)",
+            "rotation": "(55.00, 0.00, 0.00)"
+          }
+        ]
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

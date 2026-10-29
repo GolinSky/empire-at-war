@@ -1,0 +1,184 @@
+{
+  "first": 617,
+  "last": 640,
+  "totalBytes": 4239756,
+  "totalCalls": 80730,
+  "perFrame": [
+    "617:198KB",
+    "618:92KB",
+    "619:99KB",
+    "620:140KB",
+    "621:121KB",
+    "622:87KB",
+    "623:92KB",
+    "624:85KB",
+    "625:168KB",
+    "626:62KB",
+    "627:105KB",
+    "628:75KB",
+    "629:1498KB",
+    "630:133KB",
+    "631:105KB",
+    "632:79KB",
+    "633:141KB",
+    "634:184KB",
+    "635:145KB",
+    "636:114KB",
+    "637:94KB",
+    "638:160KB",
+    "639:54KB",
+    "640:97KB"
+  ],
+  "top": [
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Touch():109 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.RecordShot():80 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.OnShotEmitted():244 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.EmitScheduledShot():178 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::CombatAttackCoordinator.BeginSequence():100 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.TryAttack():125 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.Attack():121 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.FireTurnedSalvos():578 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.Tick():409",
+      "bytes": 479488,
+      "calls": 15334
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Hazards::HazardService.RefreshMemberships():60 <- Assembly-CSharp.dll!EmpireAtWar.Services.Hazards::HazardService.Tick():52 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 464136,
+      "calls": 11581
+    },
+    {
+      "method": "mscorlib.dll!System.Text::StringBuilder.ToString():0 <- mscorlib.dll!System.Text::StringBuilderCache.GetStringAndRelease():0 <- mscorlib.dll!System::String.FormatHelper():0 <- mscorlib.dll!System::String.Format():0 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Touch():109 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.RecordShot():80 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.OnShotEmitted():244 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.EmitScheduledShot():178 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::CombatAttackCoordinator.BeginSequence():100",
+      "bytes": 289904,
+      "calls": 1426
+    },
+    {
+      "method": "mscorlib.dll!System.Text::StringBuilder.ExpandByABlock():0 <- mscorlib.dll!System.Text::StringBuilder.Append():0 <- mscorlib.dll!System.Text::StringBuilder.AppendHelper():0 <- mscorlib.dll!System.Text::StringBuilder.Append():0 <- mscorlib.dll!System.Text::StringBuilder.AppendLine():0 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Touch():109 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.RecordShot():80 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.OnShotEmitted():244 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.EmitScheduledShot():178",
+      "bytes": 265312,
+      "calls": 48
+    },
+    {
+      "method": "mscorlib.dll!System.Text::StringBuilder.ToString():0 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Touch():109 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.RecordShot():80 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.OnShotEmitted():244 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.EmitScheduledShot():178 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::CombatAttackCoordinator.BeginSequence():100 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.TryAttack():125 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.Attack():121 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.FireTurnedSalvos():578",
+      "bytes": 261708,
+      "calls": 1
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetIonCost():385 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetTargetScore():380 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.FindLocalThreat():217 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.EvaluateAndExecute():164 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.Tick():117 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 159640,
+      "calls": 3991
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.EvaluateAndExecute():164 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.Tick():117 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 122840,
+      "calls": 703
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Models.Health::ResearchHealthData.get_Shields():25 <- Assembly-CSharp.dll!EmpireAtWar.Models.Health::HealthModel.get_MaxShields():45 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.Tick():194 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 120576,
+      "calls": 3768
+    },
+    {
+      "method": "UnityEngine.IMGUIModule.dll!UnityEngine::GUIStyle.GetMeshInfo():506 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUIStyle.Internal_DrawContent():0 <- UnityEditor.CoreModule.dll!UnityEditor.StyleSheets::StylePainter.DrawBlock():245 <- UnityEditor.CoreModule.dll!UnityEditor.StyleSheets::StylePainter.DrawStyle():19 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUIStyle.Draw():283 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUIStyle.Draw():262 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUI.DoLabel():1003 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUI.Label():132 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUI.Label():106 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyEconomyDebugView.OnGUI():35",
+      "bytes": 99040,
+      "calls": 40
+    },
+    {
+      "method": "mscorlib.dll!System::Enum.GetValue():0 <- mscorlib.dll!System::Enum.ToString():0 <- mscorlib.dll!System::Enum.ToString():0 <- mscorlib.dll!System::Enum.ToString():0 <- mscorlib.dll!System.Text::StringBuilder.AppendFormatHelper():0 <- mscorlib.dll!System::String.FormatHelper():0 <- mscorlib.dll!System::String.Format():0 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Touch():109 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.RecordShot():80",
+      "bytes": 83540,
+      "calls": 4177
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.CaptureSites::CaptureSitesSystem.HasHostileUnits():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.CaptureSites::CaptureSitesSystem.TryGetThreatenedSite():197 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.EvaluateAndExecute():164 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.Tick():117 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 74928,
+      "calls": 892
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Controllers::EnemyFactionController.CanQueue():66 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.TrySelectCounterUnit():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.EvaluateProduction():142 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.Tick():110 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyService.Tick():76 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 72600,
+      "calls": 3310
+    },
+    {
+      "method": "mscorlib.dll!System::Enum.GetValue():0 <- mscorlib.dll!System::Enum.ToString():0 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Controllers::EnemyFactionController.CanQueue():66 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.TrySelectCounterUnit():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.EvaluateProduction():142 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.Tick():110 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyService.Tick():76 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166",
+      "bytes": 59800,
+      "calls": 2990
+    },
+    {
+      "method": "mscorlib.dll!System::MulticastDelegate.CombineImpl():0 <- mscorlib.dll!System::Delegate.Combine():0 <- Assembly-CSharp.dll!EmpireAtWar.Models.Health::HealthModel.add_OnDestroy():0 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.EmpireAtWar.Models.Health.IHealthModelObserver.add_OnDestroy():69 <- Assembly-CSharp.dll!EmpireAtWar.Components.AttackComponent::AttackData.add_Destroyed():23 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.Subscribe():614 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.AddTarget():250 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.StateMachine::AttackTargetState.Enter():104 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.StateMachine::ShipStateMachine.SetState():18 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.Orders::ShipOrderRunner.StartOrder():199",
+      "bytes": 52080,
+      "calls": 156
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Controllers::EnemyFactionController.CanQueue():66 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.CanOrderAnyShip():500 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.EvaluateProduction():142 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.Tick():110 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyService.Tick():76 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 50440,
+      "calls": 2286
+    },
+    {
+      "method": "mscorlib.dll!System::MulticastDelegate.RemoveImpl():0 <- mscorlib.dll!System::Delegate.Remove():0 <- Assembly-CSharp.dll!EmpireAtWar.Models.Health::HealthModel.remove_OnDestroy():0 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.EmpireAtWar.Models.Health.IHealthModelObserver.remove_OnDestroy():70 <- Assembly-CSharp.dll!EmpireAtWar.Components.AttackComponent::AttackData.remove_Destroyed():24 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.UnsubscribeIfUnused():621 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.ResetTarget():347 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.StateMachine::AttackTargetState.Exit():139 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.StateMachine::ShipStateMachine.SetState():18 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.Orders::ShipOrderRunner.StartOrder():199",
+      "bytes": 45616,
+      "calls": 124
+    },
+    {
+      "method": "UnityEngine.CoreModule.dll!UnityEngine::Object.Internal_CloneSingle():0 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Weapon::ShotEffectPool.AddIdle():238 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Weapon::ShotEffectPool.Prewarm():228 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.GetPool():210 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.EmitScheduledShot():178 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::CombatAttackCoordinator.BeginSequence():100 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.TryAttack():125 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.Attack():121 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.Engage():558 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.CommitTargetSelection():532",
+      "bytes": 41440,
+      "calls": 444
+    },
+    {
+      "method": "mscorlib.dll!System::Enum.GetValue():0 <- mscorlib.dll!System::Enum.ToString():0 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Controllers::EnemyFactionController.CanQueue():66 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.CanOrderAnyShip():500 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.EvaluateProduction():142 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.Tick():110 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyService.Tick():76 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166",
+      "bytes": 41000,
+      "calls": 2050
+    },
+    {
+      "method": "UnityEngine.IMGUIModule.dll!UnityEngine::GUILayoutUtility.Begin():146 <- UnityEngine.IMGUIModule.dll!UnityEngine::GUIUtility.BeginGUI():244 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::ScriptableRenderContext.Submit():145 <- Unity.RenderPipelines.Universal.Runtime.dll!UnityEngine.Rendering.Universal::UniversalRenderPipeline.RenderSingleCamera():732 <- Unity.RenderPipelines.Universal.Runtime.dll!UnityEngine.Rendering.Universal::UniversalRenderPipeline.RenderCameraStack():904 <- Unity.RenderPipelines.Universal.Runtime.dll!UnityEngine.Rendering.Universal::UniversalRenderPipeline.Render():428 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipeline.InternalRender():55 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal():146 <- UnityEditor.CoreModule.dll!UnityEditor::EditorGUIUtility.RenderPlayModeViewCamerasInternal():0 <- UnityEditor.CoreModule.dll!UnityEditor::PlayModeView.RenderView():216",
+      "bytes": 34560,
+      "calls": 240
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Movement::ShipBezierRoute.BuildSamples():127 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Movement::ShipBezierRoute..ctor():76 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Movement::ShipBezierPath.BuildWaypointRoute():117 <- Assembly-CSharp.dll!EmpireAtWar.Services.ShipNavigation::ShipRoutePlanner.BuildSmoothRoute():122 <- Assembly-CSharp.dll!EmpireAtWar.Services.ShipNavigation::ShipRoutePlanner.Build():47 <- Assembly-CSharp.dll!EmpireAtWar.Services.ShipNavigation::ShipNavigationService.TryPlanNearCandidates():287 <- Assembly-CSharp.dll!EmpireAtWar.Services.ShipNavigation::ShipNavigationService.TryPlanNear():268 <- Assembly-CSharp.dll!EmpireAtWar.Services.ShipNavigation::ShipNavigationService.PlanRoute():177 <- Assembly-CSharp.dll!EmpireAtWar.Services.ShipNavigation::ShipNavigationService.Plan():149 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Movement::ShipMoveComponent.Plan():0",
+      "bytes": 33856,
+      "calls": 78
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.Tooltip::WorldTooltipPresenter.Tick():0 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 32256,
+      "calls": 960
+    },
+    {
+      "method": "Assembly-CSharp-Editor.dll!EmpireAtWar.Editor::RenderAuditProfilerTool.CaptureRenderingStats():181 <- Assembly-CSharp-Editor.dll!::CaptureOperation.HandleEndFrameRendering():247 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.EndContextRendering():61 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipeline.EndContextRendering():31 <- Unity.RenderPipelines.Universal.Runtime.dll!::ContextRenderingScope.Dispose():418 <- Unity.RenderPipelines.Universal.Runtime.dll!UnityEngine.Rendering.Universal::UniversalRenderPipeline.Render():428 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipeline.InternalRender():55 <- UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal():146 <- UnityEditor.CoreModule.dll!UnityEditor::EditorGUIUtility.RenderPlayModeViewCamerasInternal():0 <- UnityEditor.CoreModule.dll!UnityEditor::PlayModeView.RenderView():216",
+      "bytes": 30544,
+      "calls": 506
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22 <- Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Controllers::EnemyFactionController.CanQueue():66 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.TrySelectShip():423 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.EvaluateProduction():142 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyProductionStrategy.Tick():110 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyService.Tick():76 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 30200,
+      "calls": 1320
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.CollectHardPoints():238 <- Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.GetShipUnits():209 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Squadrons::SquadronPilot.TickEngage():223 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Squadrons::SquadronPilot.Tick():125 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Squadrons::Squadron.Tick():231 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 28392,
+      "calls": 188
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Components.AttackComponent::AttackData..ctor():37 <- Assembly-CSharp.dll!EmpireAtWar.Components.AttackComponent::AttackDataFactory.ConstructData():18 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.StateMachine::AttackTargetState.Enter():104 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.StateMachine::ShipStateMachine.SetState():18 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.Orders::ShipOrderRunner.StartOrder():199 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.Orders::ShipOrderRunner.Issue():191 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.Orders::ShipOrderRunner.Attack():115 <- Assembly-CSharp.dll!EmpireAtWar.Entities.Ship.EntityFacades::ShipOrderFacade.Attack():43 <- Assembly-CSharp.dll!EmpireAtWar.Services.UnitOrders::UnitOrderService.IssueAttack():94 <- Assembly-CSharp.dll!EmpireAtWar.Services.UnitOrders::UnitOrderService.IssueAttack():68",
+      "bytes": 28272,
+      "calls": 156
+    },
+    {
+      "method": "mscorlib.dll!System::String.CreateStringFromEncoding():0 <- mscorlib.dll!System.Text::Encoding.GetString():0 <- mscorlib.dll!System.Text::Encoding.GetString():0 <- mscorlib.dll!System::String.Ctor():0 <- mscorlib.dll!System::String.CreateString():0 <- UnityEngine.CoreModule.dll!UnityEngine::StackTraceUtility.ExtractStackTrace():32 <- UnityEngine.CoreModule.dll!UnityEngine::DebugLogHandler.Internal_Log():0 <- UnityEngine.CoreModule.dll!UnityEngine::DebugLogHandler.LogFormat():9 <- UnityEngine.CoreModule.dll!UnityEngine::Logger.Log():59 <- UnityEngine.CoreModule.dll!UnityEngine::Debug.Log():123",
+      "bytes": 27962,
+      "calls": 9
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetIonCost():385 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetTargetScore():380 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.FindClosestKnownShip():337 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.EvaluateAndExecute():164 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.Tick():117 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 27760,
+      "calls": 694
+    },
+    {
+      "method": "mscorlib.dll!System::String.Concat():0 <- Assembly-CSharp.dll!EmpireAtWar.Entities.CaptureSites::CaptureSiteView.GetStatus():122 <- Assembly-CSharp.dll!EmpireAtWar.Entities.CaptureSites::CaptureSiteView.Render():84 <- Assembly-CSharp.dll!EmpireAtWar.Entities.CaptureSites::CaptureSitePresenter.Render():114 <- Assembly-CSharp.dll!EmpireAtWar.Services.CaptureSites::CaptureSitesSystem.Tick():132 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 27456,
+      "calls": 384
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Weapon::ShotEffectPool.AddIdle():238 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Weapon::ShotEffectPool.Prewarm():228 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.GetPool():210 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.EmitScheduledShot():178 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::CombatAttackCoordinator.BeginSequence():100 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.TryAttack():125 <- Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Health::WeaponHardPoint.Attack():121 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.Engage():558 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::WeaponComponent.CommitTargetSelection():532 <- Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::TargetSelectionBatch.ApplyTargetSelection():301",
+      "bytes": 25900,
+      "calls": 259
+    },
+    {
+      "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetShips():407 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.EvaluateAndExecute():164 <- Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyUnitCommander.Tick():117 <- Assembly-CSharp.dll!EmpireAtWar.Lifecycle::OrderedLifecycleCoordinator.Tick():67 <- VContainer.dll!VContainer.Unity::TickableLoopItem.MoveNext():166 <- VContainer.dll!VContainer.Unity::PlayerLoopRunner.Run():23",
+      "bytes": 25456,
+      "calls": 222
+    }
+  ]
+}

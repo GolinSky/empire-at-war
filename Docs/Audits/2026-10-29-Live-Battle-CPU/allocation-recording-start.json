@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p = typeof(UnityEditorInternal.ProfilerDriver).GetProperty(\"memoryRecordMode\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static); var previous = p.GetValue(null).ToString(); p.SetValue(null, System.Enum.Parse(p.PropertyType, \"GCAlloc\")); return new { previous, current = p.GetValue(null).ToString(), utc = System.DateTime.UtcNow };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "previous": "None",
+        "current": "GCAlloc",
+        "utc": "2026-10-29T21:39:11.766429Z"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

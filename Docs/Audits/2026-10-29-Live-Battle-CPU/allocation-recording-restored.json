@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p = typeof(UnityEditorInternal.ProfilerDriver).GetProperty(\"memoryRecordMode\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static); p.SetValue(null, System.Enum.Parse(p.PropertyType, \"None\")); return new { current = p.GetValue(null).ToString(), playing = UnityEditor.EditorApplication.isPlaying, paused = UnityEditor.EditorApplication.isPaused, utc = System.DateTime.UtcNow };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "current": "None",
+        "playing": true,
+        "paused": false,
+        "utc": "2026-10-29T21:39:49.135148Z"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

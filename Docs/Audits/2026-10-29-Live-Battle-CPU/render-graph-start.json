@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "render_audit_render_graph",
+    "parameters": {
+      "frames": "2",
+      "timeout_seconds": "30"
+    },
+    "result": {
+      "status": "running",
+      "message": "Render Graph capture started.",
+      "captured_at_utc": "2026-10-29T21:40:14.1130980Z",
+      "unity_frame": 105904,
+      "phase": "render_graph",
+      "capture_directory": "Logs/RenderAudit/20261029T214013896Z-render-graph",
+      "status_path": "Logs/RenderAudit/20261029T214013896Z-render-graph/capture-status.json"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

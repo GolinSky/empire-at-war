@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "audit_status",
+    "parameters": {},
+    "result": "{\"status\":\"completed\",\"scanId\":\"8bb38602\",\"csvPath\":\"/Users/golinsky/Projects/empire-at-war/Docs/Audits/2026-10-29-Live-Battle-CPU/project-auditor.csv\",\"issueCount\":0}",
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

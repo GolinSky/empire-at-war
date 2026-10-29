@@ -1,0 +1,171 @@
+﻿Battle performance capture
+started_utc=2026-10-29T21:36:52.7042140Z
+frames=18
+duration_seconds=10.079
+stop_reason=duration_complete
+unity=6000.4.7f1
+runtime=Editor
+quality=Performant
+resolution=2940x1514
+time_scale=1.000
+vsync_count=0
+target_frame_rate=-1
+graphics_device=Apple M2
+processor=Apple M2
+source_revision=21d64a927629da94d8bc8ca310b48e978a983233
+source_state=dirty
+build_guid=00000000000000000000000000000000
+scenario=unspecified
+target_variant=automatic
+target_job_threshold=8
+target_job_batch_size=1
+due_variant=automatic
+due_job_threshold=64
+due_job_batch_size=32
+Job schedule and completion markers measure main-thread dispatch and wait; inspect CPU Timeline for worker execution.
+CSV rows sample the preceding completed Unity frame; completed_unity_frame identifies its combat workload.
+cpu_main_thread and cpu_render_thread include waits. GPU values can arrive later than CPU values.
+unavailable means the recorder or its sample was not collected; it is never a measured zero.
+Editor Play Mode adds profiling and editor overhead. Repeat important captures in a Development Player before changing architecture.
+
+frame_duration_ns recorder=available sample_frames=18/18 avg=472.279ms p95=4138.345ms p99=4138.345ms max=4138.345ms
+main_thread_ns recorder=available sample_frames=17/18 avg=258.493ms p95=761.710ms p99=761.710ms max=761.710ms
+render_thread_ns recorder=available sample_frames=17/18 avg=8.254ms p95=18.634ms p99=18.634ms max=18.634ms
+gpu_frame_ns recorder=available sample_frames=17/18 avg=141.753ms p95=1932.218ms p99=1932.218ms max=1932.218ms
+gc_allocated_bytes recorder=available sample_frames=18/18 avg=1162377.39 p95=5601895.00 p99=5601895.00 max=5601895.00
+draw_calls recorder=unavailable sample_frames=0/18
+setpass_calls recorder=available sample_frames=18/18 avg=1064.33 p95=1103.00 p99=1103.00 max=1103.00
+batches recorder=unavailable sample_frames=0/18
+triangles recorder=available sample_frames=18/18 avg=1432907.33 p95=1483280.00 p99=1483280.00 max=1483280.00
+ship_tick_ns recorder=available sample_frames=18/18 avg=1.308ms p95=3.974ms p99=3.974ms max=3.974ms total_sample_count=1394
+weapon_tick_ns recorder=available sample_frames=18/18 avg=10.633ms p95=77.776ms p99=77.776ms max=77.776ms total_sample_count=7862
+weapon_try_fire_ns recorder=available sample_frames=18/18 avg=0.163ms p95=1.202ms p99=1.202ms max=1.202ms total_sample_count=9
+projectile_get_or_create_ns recorder=available sample_frames=18/18 avg=5.899ms p95=33.653ms p99=33.653ms max=33.653ms total_sample_count=1371
+projectile_instantiate_ns recorder=available sample_frames=18/18 avg=4.562ms p95=28.828ms p99=28.828ms max=28.828ms total_sample_count=12
+projectile_turret_update_ns recorder=available sample_frames=18/18 avg=2.734ms p95=9.606ms p99=9.606ms max=9.606ms total_sample_count=17
+projectile_laser_update_ns recorder=available sample_frames=18/18 avg=0.054ms p95=0.276ms p99=0.276ms max=0.276ms total_sample_count=17
+radar_scan_ns recorder=available sample_frames=18/18 avg=12.522ms p95=62.517ms p99=62.517ms max=62.517ms total_sample_count=201
+target_batch_ns recorder=available sample_frames=18/18 avg=27.055ms p95=130.771ms p99=130.771ms max=130.771ms total_sample_count=17
+target_batch_capture_ns recorder=available sample_frames=18/18 avg=14.200ms p95=45.516ms p99=45.516ms max=45.516ms total_sample_count=17
+target_batch_prepare_ns recorder=available sample_frames=18/18 avg=1.087ms p95=2.577ms p99=2.577ms max=2.577ms total_sample_count=17
+target_batch_serial_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+target_batch_job_ns recorder=available sample_frames=18/18 avg=0.198ms p95=0.737ms p99=0.737ms max=0.737ms total_sample_count=17
+target_batch_schedule_ns recorder=available sample_frames=18/18 avg=0.009ms p95=0.034ms p99=0.034ms max=0.034ms total_sample_count=17
+target_batch_complete_ns recorder=available sample_frames=18/18 avg=0.188ms p95=0.702ms p99=0.702ms max=0.702ms total_sample_count=17
+target_batch_apply_ns recorder=available sample_frames=18/18 avg=11.537ms p95=81.825ms p99=81.825ms max=81.825ms total_sample_count=17
+due_batch_ns recorder=available sample_frames=18/18 avg=7.097ms p95=20.446ms p99=20.446ms max=20.446ms total_sample_count=17
+due_batch_prepare_ns recorder=available sample_frames=18/18 avg=0.011ms p95=0.027ms p99=0.027ms max=0.027ms total_sample_count=17
+due_batch_serial_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+due_batch_job_ns recorder=available sample_frames=18/18 avg=0.019ms p95=0.052ms p99=0.052ms max=0.052ms total_sample_count=17
+due_batch_schedule_ns recorder=available sample_frames=18/18 avg=0.003ms p95=0.010ms p99=0.010ms max=0.010ms total_sample_count=17
+due_batch_complete_ns recorder=available sample_frames=18/18 avg=0.016ms p95=0.041ms p99=0.041ms max=0.041ms total_sample_count=17
+due_batch_apply_ns recorder=available sample_frames=18/18 avg=7.066ms p95=20.411ms p99=20.411ms max=20.411ms total_sample_count=17
+navigation_plan_ns recorder=available sample_frames=18/18 avg=2.208ms p95=11.140ms p99=11.140ms max=11.140ms total_sample_count=54
+navigation_candidates_ns recorder=available sample_frames=18/18 avg=1.436ms p95=10.192ms p99=10.192ms max=10.192ms total_sample_count=54
+navigation_route_build_ns recorder=available sample_frames=18/18 avg=1.377ms p95=10.175ms p99=10.175ms max=10.175ms total_sample_count=54
+navigation_flood_ns recorder=available sample_frames=18/18 avg=0.320ms p95=1.571ms p99=1.571ms max=1.571ms total_sample_count=22
+navigation_nearest_reachable_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+radar_snapshot_ns recorder=available sample_frames=18/18 avg=6.899ms p95=41.939ms p99=41.939ms max=41.939ms total_sample_count=402
+radar_job_ns recorder=available sample_frames=18/18 avg=0.507ms p95=2.055ms p99=2.055ms max=2.055ms total_sample_count=603
+radar_apply_ns recorder=available sample_frames=18/18 avg=4.509ms p95=25.480ms p99=25.480ms max=25.480ms total_sample_count=7570
+ship_order_tick_ns recorder=available sample_frames=18/18 avg=0.778ms p95=2.357ms p99=2.357ms max=2.357ms total_sample_count=1394
+ship_audio_ns recorder=available sample_frames=18/18 avg=0.522ms p95=1.596ms p99=1.596ms max=1.596ms total_sample_count=1394
+squadron_order_ns recorder=available sample_frames=18/18 avg=14.858ms p95=45.289ms p99=45.289ms max=45.289ms total_sample_count=5580
+squadron_pilot_ns recorder=available sample_frames=18/18 avg=3.377ms p95=11.918ms p99=11.918ms max=11.918ms total_sample_count=5580
+squadron_flight_ns recorder=available sample_frames=18/18 avg=1.819ms p95=5.913ms p99=5.913ms max=5.913ms total_sample_count=5580
+due_sort_ns recorder=available sample_frames=18/18 avg=0.022ms p95=0.061ms p99=0.061ms max=0.061ms total_sample_count=17
+due_lookup_ns recorder=available sample_frames=18/18 avg=0.019ms p95=0.069ms p99=0.069ms max=0.069ms total_sample_count=2473
+due_emission_ns recorder=available sample_frames=18/18 avg=5.899ms p95=19.518ms p99=19.518ms max=19.518ms total_sample_count=1374
+due_impact_ns recorder=available sample_frames=18/18 avg=1.104ms p95=3.174ms p99=3.174ms max=3.174ms total_sample_count=1098
+sfx_apply_mix_ns recorder=available sample_frames=18/18 avg=0.007ms p95=0.023ms p99=0.023ms max=0.023ms total_sample_count=17
+navigation_grid_build_ns recorder=available sample_frames=18/18 avg=0.552ms p95=9.936ms p99=9.936ms max=9.936ms total_sample_count=1
+navigation_preserve_course_ns recorder=available sample_frames=18/18 avg=0.765ms p95=2.522ms p99=2.522ms max=2.522ms total_sample_count=28
+navigation_new_course_ns recorder=available sample_frames=18/18 avg=1.476ms p95=11.399ms p99=11.399ms max=11.399ms total_sample_count=26
+navigation_arrival_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+target_fallback_non_finite_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+target_fallback_parent_tilt_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+target_fallback_range_boundary_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.002ms p99=0.002ms max=0.002ms total_sample_count=10
+target_fallback_yaw_boundary_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=1
+target_fallback_degenerate_direction_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+target_fallback_target_version_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+target_fallback_invalid_candidate_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=9
+target_fallback_out_of_span_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+navigation_stationary_reuse_ns recorder=available sample_frames=18/18 avg=0.000ms p95=0.000ms p99=0.000ms max=0.000ms total_sample_count=0
+completed_unity_frame first=105354 last=105371
+target_requests total=51851 max=4345
+target_candidates total=240650 max=15317
+target_serial_calls total=0 max=0
+target_job_calls total=18 max=1
+target_fallbacks total=24 max=4
+target_input_capacity total=147456 max=8192
+target_position_capacity total=73728 max=4096
+target_result_capacity total=147456 max=8192
+target_buffer_growths total=0 max=0
+due_records total=10749 max=666
+due_flagged total=2650 max=209
+due_committed total=2649 max=209
+due_serial_calls total=0 max=0
+due_job_calls total=18 max=1
+due_input_capacity total=73728 max=4096
+due_result_capacity total=73728 max=4096
+due_buffer_growths total=0 max=0
+pending_sequences total=1715 max=122
+pending_impacts total=7938 max=486
+frame_pacing median=186.800ms p95=4138.345ms p99=4138.345ms max=4138.345ms
+fps_at_frame_pacing median=5.4 p95=0.2 p99=0.2 max=0.2
+
+Custom marker order:
+ship_tick_ns=Battle.Ship.Tick
+weapon_tick_ns=Battle.Weapon.Tick
+weapon_try_fire_ns=Battle.Weapon.TryFire
+projectile_get_or_create_ns=Battle.Projectile.GetOrCreate
+projectile_instantiate_ns=Battle.Projectile.Instantiate
+projectile_turret_update_ns=Battle.Projectile.TurretUpdate
+projectile_laser_update_ns=Battle.Projectile.LaserUpdate
+radar_scan_ns=Battle.Radar.Scan
+target_batch_ns=Battle.Attack.TargetBatch
+target_batch_capture_ns=Battle.Attack.TargetBatch.Capture
+target_batch_prepare_ns=Battle.Attack.TargetBatch.Prepare
+target_batch_serial_ns=Battle.Attack.TargetBatch.Serial
+target_batch_job_ns=Battle.Attack.TargetBatch.Job
+target_batch_schedule_ns=Battle.Attack.TargetBatch.Schedule
+target_batch_complete_ns=Battle.Attack.TargetBatch.Complete
+target_batch_apply_ns=Battle.Attack.TargetBatch.Apply
+due_batch_ns=Battle.Attack.DueBatch
+due_batch_prepare_ns=Battle.Attack.DueBatch.Prepare
+due_batch_serial_ns=Battle.Attack.DueBatch.Serial
+due_batch_job_ns=Battle.Attack.DueBatch.Job
+due_batch_schedule_ns=Battle.Attack.DueBatch.Schedule
+due_batch_complete_ns=Battle.Attack.DueBatch.Complete
+due_batch_apply_ns=Battle.Attack.DueBatch.Apply
+navigation_plan_ns=Battle.Navigation.Plan
+navigation_candidates_ns=Battle.Navigation.Candidates
+navigation_route_build_ns=Battle.Navigation.RouteBuild
+navigation_flood_ns=Battle.Navigation.PathSearch
+navigation_nearest_reachable_ns=Battle.Navigation.NearestReachable
+radar_snapshot_ns=Battle.Radar.Snapshot
+radar_job_ns=Battle.Radar.Job
+radar_apply_ns=Battle.Radar.Apply
+ship_order_tick_ns=Battle.Ship.OrderTick
+ship_audio_ns=Battle.Ship.Audio
+squadron_order_ns=Battle.Squadron.UpdateOrder
+squadron_pilot_ns=Battle.Squadron.Pilot
+squadron_flight_ns=Battle.Squadron.Flight
+due_sort_ns=Battle.Attack.DueBatch.Sort
+due_lookup_ns=Battle.Attack.DueBatch.Lookup
+due_emission_ns=Battle.Attack.DueBatch.Emission
+due_impact_ns=Battle.Attack.DueBatch.Impact
+sfx_apply_mix_ns=Battle.Audio.ApplyMix
+navigation_grid_build_ns=Battle.Navigation.GridBuild
+navigation_preserve_course_ns=Battle.Navigation.PreserveCourse
+navigation_new_course_ns=Battle.Navigation.NewCourse
+navigation_arrival_ns=Battle.Navigation.Arrival
+target_fallback_non_finite_ns=Battle.Attack.TargetFallback.NonFinite
+target_fallback_parent_tilt_ns=Battle.Attack.TargetFallback.ParentTilt
+target_fallback_range_boundary_ns=Battle.Attack.TargetFallback.RangeBoundary
+target_fallback_yaw_boundary_ns=Battle.Attack.TargetFallback.YawBoundary
+target_fallback_degenerate_direction_ns=Battle.Attack.TargetFallback.DegenerateDirection
+target_fallback_target_version_ns=Battle.Attack.TargetFallback.TargetVersion
+target_fallback_invalid_candidate_ns=Battle.Attack.TargetFallback.InvalidCandidate
+target_fallback_out_of_span_ns=Battle.Attack.TargetFallback.OutOfSpan
+navigation_stationary_reuse_ns=Battle.Navigation.StationaryReuse

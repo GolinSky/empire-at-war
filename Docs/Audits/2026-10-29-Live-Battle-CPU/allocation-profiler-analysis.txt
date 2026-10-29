@@ -1,0 +1,24 @@
+frames 617-640 (24)
+CPU Main Thread Frame Time: median 241.88 ms, p95 386.24 ms
+GPU Frame Time: median 16.29 ms, p95 23.39 ms
+self ms/frame | frames in top-40 | calls/frame | marker
+  49.380 |  24 |      4.0 | EditorLoop
+  48.403 |  24 |   3363.8 | Profiler.Callstack
+  32.714 |  23 |      5.4 | Instantiate.Awake
+  24.032 |  24 |    320.2 | Battle.Squadron.UpdateOrder
+  14.717 |  24 |      1.0 | Profiler.FlushMemoryCounters
+  12.424 |  24 |      4.0 | Idle
+  11.926 |  20 |      0.8 | EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()
+  11.892 |  24 |      1.0 | Battle.Attack.TargetBatch.Capture.Copy
+   8.322 |  20 |      2.5 | EmpireAtWar.Services.Enemy.EnemyUnitCommander.Tick()
+   6.535 |  24 |     28.2 | Battle.Radar.Snapshot
+   5.623 |  23 |      5.4 | Instantiate.Copy
+   5.546 |  24 |    452.5 | Battle.Weapon.Tick
+   4.863 |  24 |     37.2 | UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]
+   3.376 |  24 |      1.0 | EmpireAtWar.Services.UnitExplosion.HardPointExplosionPool.Tick()
+   3.328 |  24 |    320.2 | Battle.Squadron.Pilot
+   2.969 |  24 |      3.0 | EmpireAtWar.Services.Enemy.EnemyShipAbilityController.Tick()
+   2.906 |  24 |      1.0 | Battle.Attack.TargetBatch.Capture.Owners
+   2.662 |  12 |      1.5 | EmpireAtWar.Services.Enemy.EnemyService.Tick()
+   2.403 |  24 |    321.2 | Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Weapon::ShotEffect.Update() [Invoke]
+   2.330 |  22 |      0.9 | EmpireAtWar.Services.Timing.SlowTickService.Tick()

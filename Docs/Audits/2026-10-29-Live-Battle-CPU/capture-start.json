@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "EmpireAtWar.Services.Timing.BattlePerformanceCapture.StartCapture(); return new { paused = UnityEditor.EditorApplication.isPaused, timeScale = UnityEngine.Time.timeScale, time = UnityEngine.Time.time, profilerEnabled = UnityEditorInternal.ProfilerDriver.enabled, utc = System.DateTime.UtcNow };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "paused": false,
+        "timeScale": 1,
+        "time": 2250.288,
+        "profilerEnabled": false,
+        "utc": "2026-10-29T21:37:12.957697Z"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "render_audit_rendering_debugger",
+    "parameters": {},
+    "result": {
+      "status": "partial",
+      "message": "Captured panels with 1 unreadable values; see value_errors.",
+      "captured_at_utc": "2026-10-29T21:39:55.7242950Z",
+      "unity_frame": 105814,
+      "phase": "standalone",
+      "artifact": "rendering-debugger.json",
+      "panel_count": 6,
+      "value_errors": [
+        {
+          "path": "Volume -> Camera",
+          "display_name": "Camera",
+          "widget_type": "UnityEngine.Rendering.DebugUI+CameraSelector",
+          "value_type": "UnityEngine.Camera",
+          "value_error": "The object of type 'UnityEngine.Camera' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object."
+        }
+      ]
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

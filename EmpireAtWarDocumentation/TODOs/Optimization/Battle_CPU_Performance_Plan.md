@@ -266,6 +266,15 @@ updated: 2026-10-12
 - [ ] `FloatMode.Fast` on fog jobs only; pixel diff must be visually acceptable.
 - [ ] Minor: `FighterBankJob` `quaternion.RotateZ` remains under Phase 6 measurement gate.
 
+### Live CPU evidence — 2026-10-29
+- [x] Audit-only capture in existing running match at `21d64a92`; no stop/pause/reload, tests or gameplay edits. Evidence: [Committed audit evidence](../../../Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md).
+- 38 frames / 10.024 s, Apple M2/Metal Editor, Performant, 1×: conventional median 264.521 ms, p95 411.922 ms; recorder nearest-rank median 256.985 ms. Unmatched evolving workload; no isolated regression/speedup claim.
+- 90-frame raw ancestry: ShotPoolPrewarmer → Instantiate.Awake 91 calls / 2452.0 ms (27.244 ms/frame); 0.5 ms source budget checks only between creations. Squadron orders self 19.529 ms/frame; target Copy 10.086; capture-site Tick max inclusive 283.327 ms.
+- 24-frame GC stacks: main-thread 4,239,756 B / 80,730 calls; telemetry flush ancestry ≥1,379,952 B, hazard refresh 464,136 B. Restored GC recording to None while playing/unpaused.
+- Project Auditor zero-result invalid as coverage: no registered modules. Rendering Debugger partial (destroyed CameraSelector); Render Graph two executions complete. Profiler export main-thread stall separately identified as tool overhead.
+- [ ] Attribute individual prewarm Awake, capture-site spike descendants and telemetry/hazard/AI allocation expressions; validate fixes only in matched captures. Existing broader scope stays in progress.
+- Guidance extraction: no new universal production rule; workload-specific findings remain with this plan/research and repository evidence.
+
 ## Files
 - [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]]
 - `Assets/Scripts/Services/Timing/BattlePerformanceCapture.cs`

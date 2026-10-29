@@ -81,6 +81,7 @@
 - [ ] **Attribute and reduce remaining battle CPU cost** → [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]; [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
   - **Next**: fixed-camera matched workload + Development Player acceptance and longer repair/respawn coverage. Current frame median **33.76 ms** vs 36.10, with more squadrons and different rendering workload; no isolated speedup claim. Broader attribution remains open.
   - Single CPU owner since 2026-10-29: absorbed open items of Battle CPU Fixes, Battle Attack and Burst Jobs plans.
+  - 2026-10-29 live audit: M2 Editor/Performant/1× conventional median 264.521 ms, p95 411.922 ms; prewarm Awake 27.244 ms/frame in later Profiler window. CSV + CPU/allocation ancestry + graph/debug evidence → repository `Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md`. No stop/pause, tests or gameplay edits; broader optimization remains active.
 
 - [ ] **Remove startup/loading-screen freezes (sync Addressables loads, squadron prewarm)** → [[TODOs/Optimization/Loading_Freeze_Plan|Loading Freeze Plan]]
   - Status: async loads, deferred warm-up, additive scene load, CRC off implemented 2026-10-23; Editor freezes remain.

@@ -1,0 +1,57 @@
+[
+  {
+    "path": "Logs/RenderAudit/20261029T213731043Z-profiler/capture-status.json",
+    "bytes": 11007214,
+    "sha256": "193645b66010d54c3786734e022c0661bcb273aa0e6195de40ff5ac8bd093b54"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T213731043Z-profiler/profiler-summary.json",
+    "bytes": 11007214,
+    "sha256": "193645b66010d54c3786734e022c0661bcb273aa0e6195de40ff5ac8bd093b54"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T213731043Z-profiler/profiler.data",
+    "bytes": 332833620,
+    "sha256": "435b0ed98b0314d99909e8ffc8619e177d9a31bad8a013adf1e0c1040815e058"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T213912116Z-profiler/capture-status.json",
+    "bytes": 2930682,
+    "sha256": "cba347927a4371ec6c9369bf6b7669681e67371ab5dd8154fd18df61aeab9711"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T213912116Z-profiler/profiler-summary.json",
+    "bytes": 2930682,
+    "sha256": "cba347927a4371ec6c9369bf6b7669681e67371ab5dd8154fd18df61aeab9711"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T213912116Z-profiler/profiler.data",
+    "bytes": 455720200,
+    "sha256": "32a936287dedbfe8d85bc33d7f0f8d212611c657fc9147d7cd58879d6723c763"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T213955706Z-rendering-debugger/rendering-debugger.json",
+    "bytes": 238762,
+    "sha256": "4b5217cee5a648442aff5f583b172b73fcf1efb4c58abf2aec6f455e0b23956b"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T214013896Z-render-graph/capture-status.json",
+    "bytes": 678,
+    "sha256": "575319a04ac400f7df7932afea1bdb4d2e8a8953e295f712095f9ac391b65fa5"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T214013896Z-render-graph/render-graph-frame-01.json",
+    "bytes": 94567,
+    "sha256": "f9848ade3265aca5a8e2cc8509bff3105d84236ce549b4b6a119d7afb3ebb508"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T214013896Z-render-graph/render-graph-frame-02.json",
+    "bytes": 100371,
+    "sha256": "12cbf244dad3db3cf4e5cce7dbfbd407f650132ecbbc06adc0008c6e4353163d"
+  },
+  {
+    "path": "Logs/RenderAudit/20261029T214013896Z-render-graph/render-graph-summary.json",
+    "bytes": 678,
+    "sha256": "575319a04ac400f7df7932afea1bdb4d2e8a8953e295f712095f9ac391b65fa5"
+  }
+]

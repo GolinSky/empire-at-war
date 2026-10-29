@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var scope = UnityEngine.Object.FindObjectsByType<EmpireAtWar.Services.VContainer.SkirmishScope>(UnityEngine.FindObjectsSortMode.None).Single(); return new { utc = System.DateTime.UtcNow, seed = scope.Battle.Map.Seed, battleMode = scope.Battle.Map.Type.ToString(), api = UnityEngine.SystemInfo.graphicsDeviceType.ToString(), nebula = UnityEngine.Object.FindObjectsByType<EmpireAtWar.Components.Environment.MatchNebula>(UnityEngine.FindObjectsSortMode.None).Select(n => n.SelectedVariant).ToArray(), quality = UnityEngine.QualitySettings.names[UnityEngine.QualitySettings.GetQualityLevel()] };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "utc": "2026-10-29T21:40:46.327145Z",
+        "seed": 1875278133,
+        "battleMode": "Full",
+        "api": "Metal",
+        "nebula": [
+          2
+        ],
+        "quality": "Performant"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

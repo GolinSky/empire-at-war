@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "eval_file",
+    "parameters": {
+      "file": "/tmp/battle-decode-allocations.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "totalBytes": 4239756,
+        "totalCalls": 80730,
+        "top": [
+          {
+            "method": "mscorlib.dll!System.Text::StringBuilder.ToString():0",
+            "bytes": 581986,
+            "calls": 1923
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Weapon::BattleTelemetry.Flush():115",
+            "bytes": 479488,
+            "calls": 15334
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Hazards::HazardService.RefreshMemberships():60",
+            "bytes": 464136,
+            "calls": 11581
+          },
+          {
+            "method": "mscorlib.dll!System::Enum.GetValue():0",
+            "bytes": 285040,
+            "calls": 14252
+          },
+          {
+            "method": "mscorlib.dll!System.Text::StringBuilder.ExpandByABlock():0",
+            "bytes": 265798,
+            "calls": 50
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.GetIonCost():385",
+            "bytes": 193640,
+            "calls": 4841
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Entities.EnemyFaction.Models::EnemyBuildQueue.CanAdd():22",
+            "bytes": 179600,
+            "calls": 8107
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Models.Health::ResearchHealthData.get_Shields():25",
+            "bytes": 140736,
+            "calls": 4398
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyStrategicContextBuilder.Build():0",
+            "bytes": 122840,
+            "calls": 703
+          },
+          {
+            "method": "UnityEngine.IMGUIModule.dll!UnityEngine::GUIStyle.GetMeshInfo():506",
+            "bytes": 99040,
+            "calls": 40
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Health::HealthComponent.CollectHardPoints():238",
+            "bytes": 87264,
+            "calls": 473
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Services.CaptureSites::CaptureSitesSystem.HasHostileUnits():0",
+            "bytes": 82320,
+            "calls": 980
+          },
+          {
+            "method": "mscorlib.dll!System::MulticastDelegate.CombineImpl():0",
+            "bytes": 75544,
+            "calls": 328
+          },
+          {
+            "method": "Assembly-CSharp.dll!EmpireAtWar.Components.Ship.Movement::ShipBezierRoute.BuildSamples():127",
+            "bytes": 72928,
+            "calls": 339
+          },
+          {
+            "method": "mscorlib.dll!System::String.Concat():0",
+            "bytes": 71026,
+            "calls": 872
+          }
+        ]
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

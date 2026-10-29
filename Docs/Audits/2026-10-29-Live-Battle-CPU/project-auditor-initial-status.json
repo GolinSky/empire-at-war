@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "command": "command audit_status",
+  "data": {
+    "command": "audit_status",
+    "parameters": {},
+    "result": "{\"status\":\"idle\"}",
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/golinsky/Projects/empire-at-war"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
