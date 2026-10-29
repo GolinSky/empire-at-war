@@ -8,6 +8,8 @@
 - [[AssetPipeline/00_AssetPipeline]] — import guides, integrations and provenance.
 - [[Tooling/00_Tooling]] — operational manuals and authoring tools.
 - [[Rules/DOCUMENTATION_ORGANIZATION]] — note placement, status and verification conventions.
+- [[Rules/NOTE_FLAGS]] — searchable important, revisit, issue, broken and delayed notes.
+- [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]], [[Rules/BATTLE_PERFORMANCE_GUIDELINES]] — current bundle ownership and rendering guidance.
 - [[Rules/AGENTS]], [[Rules/UI_UX_GUIDELINES]], [[Rules/UI_CODE_BUILD_GUIDE]], [[Rules/UNITY_JOBS_AND_THREADING_RULES]] — engineering rules.
 - [[TODOs/TODOs#Active Tasks]] — active work and next gates.
 - [[TODOs/TODOs#Done]] — completed plans and evidence.

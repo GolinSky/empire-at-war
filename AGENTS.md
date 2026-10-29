@@ -20,6 +20,13 @@ Apply project guidance in this order:
 - `.agents/mcp_config.json`, `.antigravity/mcp_config.json`, and `.gemini/mcp_config.json` mirror local MCP access for their respective agents.
 - `graphify-out/` is generated local state and is never authoritative documentation.
 
+## Engineering Guidance Routing
+
+- Before asset imports or Addressables changes, read `AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE` through `empire-vault`.
+- Before rendering, VFX, quality or profiling changes, read `Rules/BATTLE_PERFORMANCE_GUIDELINES` through `empire-vault`.
+- Verify relevant guidance against live source, serialized assets and current output before applying it. Notes preserve dated evidence and scoped exceptions; the authority order above still applies.
+- Attention flags and discovery: read `Rules/NOTE_FLAGS` and `Rules/DOCUMENTATION_ORGANIZATION`. Use vault `manage_tags` for tag changes; discover literal flags with `search_notes` and `searchFrontmatter: true`, then inspect actual tags.
+
 ## Penpot Project Scope
 
 - Penpot work for this repository is restricted to the default project in the `EmpireAtWar` workspace. The verified workspace/project IDs and link are recorded in `Tools/Penpot/README.md` under `Allowed project`.
@@ -90,7 +97,7 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
    - User-only gates (in-game, listening, visual approval, tests blocked by the local override) do not keep a plan active. When implementation is complete and source-verified, mark it `done` with frontmatter `acceptance: pending-user`, add one line per open gate to `TODOs/User_Acceptance_Queue.md` linking the plan, and close it.
    - A plan with unimplemented scope (missing ability, phase, asset or decision) stays active regardless of acceptance state.
    - When the user confirms a gate, remove its queue line and set `acceptance: passed` once no lines for that plan remain.
-5. Before the final response, move the completed plan and its companions to `Done/<Category>/` using the vault MCP move tool. Move the entire backlog entry, including nested details, from the active section to `Done`; retain its checked checkbox and update its plan/research links. Do not leave an active duplicate or delete the completed record.
+5. Before closure, extract or update reusable rules, known issues and verified solutions in canonical guidance; record destination links or an explicit “no reusable guidance” reason in the plan. A verified result may be extracted from an active plan; leave pending work with its owner. Before the final response, move the completed plan and its companions to `Done/<Category>/` using the vault MCP move tool. Move the entire backlog entry, including nested details, from the active section to `Done`; retain its checked checkbox and update its plan/research links. Do not leave an active duplicate or delete the completed record.
 6. Search for links to moved paths and repair affected backlog, dashboard, and note links; do not assume a move rewrites links automatically. Read back the moved notes and index, confirm the old paths are absent, and verify affected links resolve.
 
 ### Edge Cases

@@ -2,6 +2,9 @@
 category: Optimization
 status: in-progress
 created: 2026-10-24
+tags:
+  - flag/important
+  - flag/issue
 ---
 # Addressables Bundle Remediation
 
@@ -152,3 +155,10 @@ created: 2026-10-24
 - Code: `Assets/Scripts/Entities/Reinforcement/ReinforcementData.cs`, `Assets/Scripts/Services/Repository/BattleAssetPreload.cs`, `Assets/Scripts/Services/Reinforcement/ReinforcementPlacementFactory.cs`, `Assets/Scripts/Editor/AssetMappingContextMenu.cs`, `Assets/Scripts/Services/Repository/CachedAssetService.cs`
 - Data: `Assets/Settings/Data/Reinforcement/ReinforcementData.asset`, `Assets/Settings/AssetMappingData.asset`, `Assets/AddressableAssetsData/AssetGroups/{View,Model,Data}.asset`
 - Backlog: [[TODOs/TODOs]]
+
+## Guidance extraction — 2026-10-29
+
+- `flag/important`: bundle ownership, alias preservation and preview loading decisions prevent cross-faction dependency regressions.
+- Canonical guidance: [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]]. Selected ownership, alias, preview, mixer and overlap lessons reconciled against live source/assets and dated reports; extraction revisit resolved.
+- `flag/issue`: current `View.asset` holds Recalcitrant/Peleset/Wavecrest wrecks and Bulwark wreck/preview while their main views are in `SeparatistUnitViews`. Serialized drift confirmed; impact unmeasured. Review lifetime intent and reconcile ownership with a matching layout here; no assets moved in this documentation task.
+- Source verification 2026-10-29: 608 address rows, zero duplicate addresses; four faction schemas PackTogether/CRC off; VenatorII alias intact. Historical build totals remain dated evidence; no tests/builds/Play Mode run. Existing Phase 7 runtime gates and plan status remain open.

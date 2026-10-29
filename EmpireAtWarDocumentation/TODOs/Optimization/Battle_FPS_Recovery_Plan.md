@@ -1,7 +1,10 @@
 ---
 category: Optimization
 status: in-progress
-created: 2026-10-29
+created: "2026-10-29"
+tags:
+  - flag/important
+  - flag/broken
 ---
 # Battle FPS Recovery Plan
 
@@ -245,3 +248,12 @@ created: 2026-10-29
 - [ ] Full visual LOD/edge/pan acceptance, gameplay parity, effect-family isolation, faction/mount/lifecycle matrix, PC historical comparisons and remaining absorbed work are still open. Existing Frame Debugger exception was not retested.
 
 - [ ] Scene-transition warning: 3 × `There can be only one active Event System.` at 13:30:52, 13:31:00 and 13:34:32 UTC during menu/battle transitions. Final error log remains empty; warning ownership/cause not investigated or fixed. Evidence: `Logs/BattleAudit/20261029-Mac-FPS-Recovery/warnings-final.json`.
+
+
+## Durable Guidance — 2026-10-29
+
+- Canonical reference: [[Rules/BATTLE_PERFORMANCE_GUIDELINES]] — source-verified culling/LOD, quality, particle and fog lifecycle rules; scoped fixes, current issues and capture constraints.
+- `flag/important`: preserves decor-submission, blend-parity and teardown regression evidence; retain while this history supports the canonical guide.
+- `flag/broken`: live `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs` rejects every non-Windows target; Mac Player acceptance cannot complete through that callback. No verified workaround; next action → this plan's Mac follow-up handoff. Remove after implementation and actual build verification.
+- Selected guidance reconciled against live source, saved assets and existing PC preset/profiler JSON; extraction-only `flag/revisit` removed. Raw Mac reports are unavailable in this checkout; Mac metrics remain research-recorded history.
+- Plan remains `in-progress`: unfinished investigations, experiments, matched Player comparisons and visual/VFX acceptance keep their existing owners. No tests, builds, Play Mode or profiling run for extraction.

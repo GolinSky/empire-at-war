@@ -15,6 +15,8 @@ updated: 2026-10-20
 
 ## Implementation
 
+- [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]] — bundle ownership, assignment and layout verification.
+
 - [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]
 - [[AssetPipeline/Guides/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]]
 - [[AssetPipeline/Guides/REPUBLIC_SPACE_STATION_MODEL_IMPORT_GUIDE]]

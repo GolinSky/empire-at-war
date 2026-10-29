@@ -123,10 +123,6 @@
 
 ### Documentation
 
-- [ ] **Add searchable note flags and extract durable guidance from high-impact plans** → [[TODOs/Documentation/Note_Flags_And_Durable_Guidance_Plan|Note Flags and Durable Guidance]]
-  - Planned 2026-10-29: five native flags; Addressables and battle FPS pilots; known issues/solutions; shared AGENTS.md routing and plan-close handoff.
-  - Next: implement flag contract/dashboard, source-verify guidance and connect agent instructions. Implementation not started.
-
 ## Architecture Backlog
 
 - [ ] Audit gameplay services for direct `IUiService` or `BaseUi` references.
@@ -182,6 +178,10 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Documentation
+
+- [x] **Add searchable note flags and extract durable guidance from high-impact plans** → [[Done/Documentation/Note_Flags_And_Durable_Guidance_Plan|Note Flags and Durable Guidance]]
+  - Planned 2026-10-29: five native flags; Addressables and battle FPS pilots; known issues/solutions; shared AGENTS.md routing and plan-close handoff.
+  - Completed 2026-10-29: flag contract/dashboard, source-verified pilot guides and shared routing/handoff; pilot plans retain unfinished scope. Dashboard visual gate → [[TODOs/User_Acceptance_Queue]]. No tests/builds/captures run.
 
 - [x] **Triage backlog (close code-complete plans), then fix vault guidance and navigation** → [[Done/Documentation/Vault_Guidance_And_Backlog_Cleanup|Cleanup plan]]; [[Done/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research|Audit + triage 2026-10-29]]
   - Done 2026-10-29: active plans 80 → 30, acceptance queue added, guidance G1–G8 and navigation N1–N3 fixed.
