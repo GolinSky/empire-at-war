@@ -23,19 +23,18 @@ namespace EmpireAtWar.Editor.Versioning
 
         public void OnPostprocessBuild(BuildReport report)
         {
-            BuildTarget target = report.summary.platform;
-            if (target != BuildTarget.StandaloneWindows64 && target != BuildTarget.StandaloneWindows)
-            {
-                throw new BuildFailedException($"BuildInfo stamping supports Windows players only, not {target}.");
-            }
-
-            Write(report.summary.outputPath);
+            Write(report.summary.outputPath, report.summary.platform);
         }
 
-        public static void Write(string outputPath)
+        public static void Write(string outputPath, BuildTarget target = BuildTarget.StandaloneWindows64)
         {
-            string dataFolder = Path.Combine(Path.GetDirectoryName(outputPath),
-                Path.GetFileNameWithoutExtension(outputPath) + "_Data", "StreamingAssets");
+            string dataFolder = target switch
+            {
+                BuildTarget.StandaloneWindows or BuildTarget.StandaloneWindows64 => Path.Combine(
+                    Path.GetDirectoryName(outputPath), Path.GetFileNameWithoutExtension(outputPath) + "_Data", "StreamingAssets"),
+                BuildTarget.StandaloneOSX => Path.Combine(outputPath, "Contents", "Resources", "Data", "StreamingAssets"),
+                _ => throw new BuildFailedException($"BuildInfo stamping does not support {target}.")
+            };
             Directory.CreateDirectory(dataFolder);
             File.WriteAllText(Path.Combine(dataFolder, BuildInfo.FILE_NAME), Create().ToJson());
         }

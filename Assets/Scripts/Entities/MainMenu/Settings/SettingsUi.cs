@@ -26,6 +26,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private SettingsDropdownRow qualityRow;
         [SerializeField] private SettingsDropdownRow frameRateLimitRow;
         [SerializeField] private SettingsToggleRow vSyncRow;
+        [SerializeField] private SettingsToggleRow nebulaRow;
+        [SerializeField] private SettingsSliderRow renderResolutionRow;
+        [SerializeField] private SettingsDropdownRow upscalerRow;
         [SerializeField] private SettingsSliderRow masterVolumeRow;
         [SerializeField] private SettingsSliderRow musicVolumeRow;
         [SerializeField] private SettingsSliderRow voiceVolumeRow;
@@ -102,6 +105,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             qualityRow.Render(_model.Quality);
             frameRateLimitRow.Render(_model.FrameRateLimit);
             vSyncRow.Render(_model.VSync);
+            nebulaRow.Render(_model.NebulaEnabled);
+            renderResolutionRow.Render(_model.RenderResolution);
+            upscalerRow.Render(_model.Upscaler);
 
             masterVolumeRow.Render(_model.MasterVolume);
             musicVolumeRow.Render(_model.MusicVolume);
@@ -135,6 +141,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             qualityRow.ValueChanged += _presenter.SelectQualityPreset;
             frameRateLimitRow.Initialize();
             frameRateLimitRow.ValueChanged += _presenter.SelectFrameRateLimit;
+            nebulaRow.Initialize();
+            nebulaRow.ValueChanged += _presenter.SetNebulaEnabled;
+            renderResolutionRow.Initialize();
+            renderResolutionRow.ValueChanged += _presenter.SetRenderResolution;
+            upscalerRow.Initialize();
+            upscalerRow.ValueChanged += _presenter.SelectUpscaler;
             vSyncRow.Initialize();
             vSyncRow.ValueChanged += _presenter.SetVSync;
 
@@ -169,6 +181,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             qualityRow.Dispose();
             frameRateLimitRow.ValueChanged -= _presenter.SelectFrameRateLimit;
             frameRateLimitRow.Dispose();
+            nebulaRow.ValueChanged -= _presenter.SetNebulaEnabled;
+            nebulaRow.Dispose();
+            renderResolutionRow.ValueChanged -= _presenter.SetRenderResolution;
+            renderResolutionRow.Dispose();
+            upscalerRow.ValueChanged -= _presenter.SelectUpscaler;
+            upscalerRow.Dispose();
             vSyncRow.ValueChanged -= _presenter.SetVSync;
             vSyncRow.Dispose();
 

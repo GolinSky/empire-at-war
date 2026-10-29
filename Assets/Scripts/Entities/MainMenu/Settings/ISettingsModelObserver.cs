@@ -12,6 +12,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         SettingsChoice Resolution { get; }
         SettingsChoice FrameRateLimit { get; }
         bool VSync { get; }
+        bool NebulaEnabled { get; }
+        float RenderResolution { get; }
+        SettingsChoice Upscaler { get; }
 
         float MasterVolume { get; }
         float MusicVolume { get; }

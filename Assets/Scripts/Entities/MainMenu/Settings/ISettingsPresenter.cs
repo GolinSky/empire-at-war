@@ -19,6 +19,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         void SelectFrameRateLimit(int index);
 
         void SetVSync(bool isOn);
+        void SetNebulaEnabled(bool isOn);
+        void SetRenderResolution(float resolution);
+        void SelectUpscaler(int index);
 
         void SetMasterVolume(float volume);
 

@@ -173,6 +173,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void SelectFrameRateLimit(int index) => _draftEditor.SelectFrameRateLimit(index);
 
+        public void SetNebulaEnabled(bool isOn) => _draftEditor.SetNebulaEnabled(isOn);
+
+        public void SetRenderResolution(float resolution) => _draftEditor.SetRenderResolution(resolution);
+
+        public void SelectUpscaler(int index) => _draftEditor.SelectUpscaler(index);
+
         public void SetVSync(bool isOn) => _draftEditor.SetVSync(isOn);
 
         public void SetMasterVolume(float volume) => _draftEditor.SetMasterVolume(volume);

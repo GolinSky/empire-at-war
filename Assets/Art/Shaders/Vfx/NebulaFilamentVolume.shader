@@ -11,6 +11,7 @@ Shader "EmpireAtWar/Vfx/Nebula Filament Volume"
         _Extinction ("Dust Extinction", Range(0,40)) = 18
         _Samples ("Ray Samples", Range(48,160)) = 112
         _Flow ("Internal Drift", Range(0,0.02)) = 0.002
+        [HideInInspector] _Baking ("Baking", Float) = 0
     }
     SubShader
     {
@@ -34,7 +35,7 @@ Shader "EmpireAtWar/Vfx/Nebula Filament Volume"
             TEXTURE3D(_DetailTex); SAMPLER(sampler_DetailTex);
             CBUFFER_START(UnityPerMaterial)
                 float4 _CoolColor, _WarmColor, _DustColor;
-                float _Emission, _Extinction, _Samples, _Flow;
+                float _Emission, _Extinction, _Samples, _Flow, _Baking;
             CBUFFER_END
 
             struct Varyings
@@ -70,9 +71,12 @@ Shader "EmpireAtWar/Vfx/Nebula Filament Volume"
                 float3 nearBounds = min(a,b), farBounds = max(a,b);
                 float first = max(0, max(nearBounds.x, max(nearBounds.y, nearBounds.z)));
                 float last = min(farBounds.x, min(farBounds.y, farBounds.z));
-                float depth = SampleSceneDepth(GetNormalizedScreenSpaceUV(input.positionCS));
-                float sceneDepth = unity_OrthoParams.w > 0.5 ? LinearDepthToEyeDepth(depth) : LinearEyeDepth(depth, _ZBufferParams);
-                last = min(last, sceneDepth * localLength / input.rayEyeDepth);
+                if (_Baking < 0.5)
+                {
+                    float depth = SampleSceneDepth(GetNormalizedScreenSpaceUV(input.positionCS));
+                    float sceneDepth = unity_OrthoParams.w > 0.5 ? LinearDepthToEyeDepth(depth) : LinearEyeDepth(depth, _ZBufferParams);
+                    last = min(last, sceneDepth * localLength / input.rayEyeDepth);
+                }
                 if (first >= last) discard;
 
                 int count = clamp((int)_Samples,48,160);

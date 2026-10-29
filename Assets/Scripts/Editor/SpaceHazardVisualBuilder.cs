@@ -24,6 +24,7 @@ namespace EmpireAtWar.Editor
             AssetDatabase.Refresh();
             Material nebula = CloudMaterial("NebulaHazard", false);
             Material ion = CloudMaterial("IonStormHazard", true);
+            HazardNoiseBuilder.Build();
             Material arc = AssetDatabase.LoadAssetAtPath<Material>(MATERIAL_FOLDER + "/SpaceHazardArc.mat");
             if (arc == null)
             {

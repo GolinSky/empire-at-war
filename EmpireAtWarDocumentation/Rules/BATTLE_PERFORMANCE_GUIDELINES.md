@@ -6,13 +6,11 @@ system:
   - quality
   - fog-of-war
 verified: 2026-10-29
-verification: Read live DecorAsteroidRenderer/Cell, MatchNebula,
-  PerformantPostProcessing, FogOfWarSystem/GridModel, particle
-  recovery/compatibility shader, teardown and BuildInfoWriter source; inspected
-  saved field prefabs, SceneContext and PerformantVolumeProfile; read existing
-  PC preset/profiler JSON. Mac capture claims are research-note history; raw Mac
-  reports are absent on this checkout. No tests, builds, Play Mode, profiling or
-  shader compilation run.
+verification: Current nebula/hazard/settings implementations source-reviewed;
+  Unity recompile completed without errors; saved bindings/import and isolated
+  non-Play-Mode nebula render comparison verified. Prior decor/fog evidence
+  retained. No automated tests, battle baseline, Player build or Mac operations
+  in this rollout.
 tags:
   - flag/important
 ---
@@ -46,7 +44,11 @@ tags:
 
 ### Quality and post-processing
 
-- `MatchNebula` caches per-renderer `_Samples` in a MaterialPropertyBlock: quality 0/1 → 48; 2 → 64; 3 → 96; 4/5 → 128. Applies to filament variants bound to that component.
+- `MatchNebula` bakes the selected variant at 128 samples into a 4096×2048 ARGBHalf RT; normal battle views draw a depth-tested impostor after the skybox (`Transparent-440`). Camera angles >1° from the bake direction use the live volume; verify cinematic cost separately.
+- `NebulaImpostor` owns and disposes its RT, mesh, material and quad; temporary bake camera isolates the volume on layer 31 and restores its original layer. Bake log measures CPU submission, not GPU duration.
+- `HazardCloudView` uses 2/2/3/5/5/5 sheets for quality levels 0–5 with redistributed opacity. Cloud/warp textures are linear, repeat-wrapped and mipmapped; regenerate via `HazardNoiseBuilder`, preserve SDF edge math.
+- Graphics settings expose nebula visibility, 50–100% render resolution and supported Bilinear/FSR 1/STP. Apply scale/filter to owned runtime pipeline copies; restore originals on disposal. Do not save user scaling into preset assets.
+- STP uses `renderScale` in installed URP 17.4; retain its resolution slider. DLSS/FSR 2 remain unshipped until supported activation/configuration is established; do not assume internal `Upscaling` selection is a public pipeline API.
 - Quality names in current project: 0 Performant, 1 Low, 2 Balanced, 3 High Fidelity, 4 Ultra, 5 Cinematic.
 - `PerformantPostProcessing` enables its serialized Volume only at index 0; other quality levels and component disable turn it off.
 - `SceneContext` binds a global priority-100 sparse `PerformantVolumeProfile`: bloom Quarter / max 3 iterations / HQ false; motion-blur intensity override 0.
@@ -62,7 +64,7 @@ tags:
 ## Important Values
 
 - Measurement protocol: record source revision + dirty paths, hardware/API, Editor versus Player, map seed + nebula variant, camera pose/FOV, preset, actual camera resolution/render scale/MSAA, population/orders/effects, time scale and capture tooling.
-- Existing `RenderAuditAblationCapture`: pinned camera/input, invariant JSON, 21 phases with 2 s settle + 6 s sample; use enabled/off/restored brackets and restore toggles on completion/cancellation.
+- Existing `RenderAuditAblationCapture`: pinned camera/input, invariant JSON, 21 base phases plus 5 largest-hazard phases when hazards exist, with 2 s settle + 6 s sample; use enabled/off/restored brackets and restore toggles on completion/cancellation.
 - Match workload across before/after runs; report changing ship/squadron counts. Evolving combat windows are not deterministic matched repeats.
 - Compare median/p95/p99 and run variation; validate meaningful broad claims in a Development Player. Do not add nested/parallel profiler durations or infer FPS from inconsistent GPU counters.
 - Existing PC report `fog-decor-attribution.json` confirms worker fog execution; its 0.07546 ms/frame main marker and 0.87314 ms/frame combined workers are dated capture results, not a current budget.
@@ -79,8 +81,8 @@ tags:
 
 ### Open issues and ownership
 
-- Non-Windows Player stamping is source-confirmed broken: `BuildInfoWriter.OnPostprocessBuild` throws for all targets except Windows/Windows64. No verified workaround; proposed fix is platform-aware output placement, then actual Mac build verification. Owner: [[TODOs/Optimization/Battle_FPS_Recovery_Plan]]; see its Mac follow-up handoff.
-- Mac research records residual nebula frame cost ≈7.03 ms at 48 samples and pan p99 73.54 ms / max 404.51 ms; hitch cause unassigned. Proposed optimization needs attribution and matched acceptance, not blanket sample/density reductions. Owner: [[TODOs/Optimization/Battle_FPS_Recovery_Plan]] and its Mac follow-up handoff; raw Mac reports were not available here.
+- Fixed implementation 2026-10-29: `BuildInfoWriter` writes Windows `<Name>_Data/StreamingAssets` or macOS `<Name>.app/Contents/Resources/Data/StreamingAssets`; unsupported targets throw. Actual Mac player build remains unverified; owner [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]].
+- Historical Mac live-volume cost ≈7.03 ms at 48 samples; pan p99 73.54 ms / max 404.51 ms. PC bake/H1/H2 implementation is compiled/import-verified, with isolated nebula render comparison; no current battle speedup or Mac acceptance claimed. Matched captures and hitch attribution remain in [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan]].
 - Mac capture limitations: GPU counters exceed frame intervals; Screen reports 642×1156 while camera is 2560×1440; camera-render screenshots omit decor/HUD; startup counter spikes are not steady combat latency. Use recorded frame intervals/camera metadata/composited evidence; tooling fixes remain under the recovery plan.
 - Full faction/mount/effect reuse/impact/scene-exit matrix, rendered LOD silhouettes, PC historical comparisons, navigation attribution and absorbed experiments remain unfinished in [[TODOs/Optimization/Battle_FPS_Recovery_Plan]]. Guidance extraction does not close or authorize them.
 

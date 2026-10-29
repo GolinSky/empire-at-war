@@ -61,6 +61,10 @@
   - Remaining: Player/build-support fix, PC matched historical captures, full visual/VFX acceptance and absorbed attribution/experiments; see plan/research. No historical Player build resumed.
   - Single rendering owner since 2026-10-29: absorbed Rendering Audit, Particle Rendering and Projectile VFX plans, plus hazard decor/overdraw measurement; newly absorbed items remain outside this execution's listed phases.
 
+- [ ] **Nebula + hazard GPU optimization and upscaler settings** → [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan|Mac Nebula and Hazard GPU Plan]]
+  - 2026-10-29 PC implementation: nebula bake/toggle, hazard H1/H2, resolution + Bilinear/FSR 1/STP, hazard audit pose and BuildInfo path. DLSS/FSR 2 rejected with reasons in plan.
+  - Compile/import/saved bindings and isolated nebula render comparison verified; tests not run. Prepared-battle PC captures pending; all Mac tasks skipped by user and left untouched.
+
 - [ ] **Pool ship contexts to remove spawn spikes** → [[TODOs/Optimization/Ship_Pooling_Plan|Ship Pooling]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 

@@ -31,6 +31,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         };
         private readonly SettingsModel _model;
         private static readonly string[] FRAME_RATE_LIMIT_LABELS = FormatFrameRateLimits();
+        private GraphicsUpscaler[] _upscalers = GraphicsUpscalerSupport.Available;
+        private string[] _upscalerLabels = Array.ConvertAll(GraphicsUpscalerSupport.Available, GraphicsUpscalerSupport.Label);
         private string[] _resolutionLabels = new string[0];
 
         private SettingsData Draft => _settingsService.Draft;
@@ -77,6 +79,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     Math.Max(0, Array.IndexOf(FRAME_RATE_LIMITS, graphics.FrameRateLimit)),
                     !graphics.VSync),
                 graphics.VSync);
+            _model.SetRendering(graphics.NebulaEnabled, graphics.RenderResolution,
+                new SettingsChoice(_upscalerLabels, Math.Max(0, Array.IndexOf(_upscalers, graphics.Upscaler)), true));
 
             AudioSettingsData audio = Draft.Audio;
             _model.SetAudio(
@@ -117,6 +121,24 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void SelectFrameRateLimit(int index)
         {
             Draft.Graphics.FrameRateLimit = FRAME_RATE_LIMITS[index];
+            Refresh();
+        }
+
+        public void SetNebulaEnabled(bool isOn)
+        {
+            Draft.Graphics.NebulaEnabled = isOn;
+            Refresh();
+        }
+
+        public void SetRenderResolution(float resolution)
+        {
+            Draft.Graphics.RenderResolution = resolution;
+            Refresh();
+        }
+
+        public void SelectUpscaler(int index)
+        {
+            Draft.Graphics.Upscaler = _upscalers[index];
             Refresh();
         }
 

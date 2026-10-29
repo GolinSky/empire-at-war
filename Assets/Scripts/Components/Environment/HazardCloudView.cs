@@ -36,6 +36,7 @@ namespace EmpireAtWar.Components.Environment
         private float _nextFlash;
         private float _flashEnd;
         private float _height;
+        private int _qualityLevel = -1;
 
         public void Configure(HazardShape shape, float floor, float ceiling)
         {
@@ -61,7 +62,6 @@ namespace EmpireAtWar.Components.Environment
                 properties.SetVector(FLOW_DIRECTION, new Vector4(flow.x, flow.z, 0f, 0f));
                 properties.SetFloat(NOISE_SCALE, 1f / Mathf.Max(1f, shape.Spot.Roughness * NOISE_SIZE_SHARE));
                 // The top sheet is the full gameplay outline; the rest add depth without moving the edge.
-                properties.SetFloat(LAYER_OPACITY, Mathf.Lerp(0.6f, 0.3f, i / Mathf.Max(1f, layers.Length - 1f)));
                 properties.SetFloat(NOISE_OFFSET, i * 17.31f);
                 properties.SetFloat(INSET, i * SHEET_INSET);
                 properties.SetFloat(SOFTNESS, 1f + i * 0.75f);
@@ -69,6 +69,7 @@ namespace EmpireAtWar.Components.Environment
                 layers[i].SetPropertyBlock(properties);
                 _properties[i] = properties;
             }
+            ApplyQuality();
             arc.enabled = false;
             _flashing = false;
             _flashEnd = 0f;
@@ -141,6 +142,32 @@ namespace EmpireAtWar.Components.Environment
             for (int i = 0; i < layers.Length; i++)
             {
                 _properties[i].SetVector(FLASH, Vector4.zero);
+                layers[i].SetPropertyBlock(_properties[i]);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (_properties != null && _qualityLevel != QualitySettings.GetQualityLevel()) ApplyQuality();
+        }
+
+        private void ApplyQuality()
+        {
+            _qualityLevel = QualitySettings.GetQualityLevel();
+            int count = Mathf.Min(layers.Length, _qualityLevel <= 1 ? 2 : _qualityLevel == 2 ? 3 : 5);
+            float totalOpacity = 0f;
+            float activeOpacity = 0f;
+            for (int i = 0; i < layers.Length; i++)
+            {
+                float opacity = Mathf.Lerp(0.6f, 0.3f, i / Mathf.Max(1f, layers.Length - 1f));
+                totalOpacity += opacity;
+                if (i < count) activeOpacity += opacity;
+            }
+            for (int i = 0; i < layers.Length; i++)
+            {
+                layers[i].enabled = i < count;
+                float opacity = Mathf.Lerp(0.6f, 0.3f, i / Mathf.Max(1f, layers.Length - 1f));
+                _properties[i].SetFloat(LAYER_OPACITY, opacity * totalOpacity / activeOpacity);
                 layers[i].SetPropertyBlock(_properties[i]);
             }
         }

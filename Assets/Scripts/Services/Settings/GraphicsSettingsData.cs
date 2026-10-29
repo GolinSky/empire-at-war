@@ -14,6 +14,13 @@ namespace EmpireAtWar.Services.Settings
         [SerializeField] private int frameRateLimit = UNLIMITED_FRAME_RATE;
 
         [SerializeField] private bool vSync;
+        [SerializeField] private bool nebulaEnabled = true;
+        [SerializeField] private float renderResolution = 1f;
+        [SerializeField] private GraphicsUpscaler upscaler;
+
+        public bool NebulaEnabled { get => nebulaEnabled; set => nebulaEnabled = value; }
+        public float RenderResolution { get => renderResolution; set => renderResolution = value; }
+        public GraphicsUpscaler Upscaler { get => upscaler; set => upscaler = value; }
 
         public string QualityPreset
         {
@@ -37,12 +44,15 @@ namespace EmpireAtWar.Services.Settings
         public bool Matches(GraphicsSettingsData other)
         {
             return qualityPreset == other.qualityPreset && vSync == other.vSync &&
-                   frameRateLimit == other.frameRateLimit;
+                   frameRateLimit == other.frameRateLimit && nebulaEnabled == other.nebulaEnabled &&
+                   renderResolution == other.renderResolution && upscaler == other.upscaler;
         }
 
         public void Sanitize()
         {
             qualityPreset ??= string.Empty;
+            renderResolution = float.IsNaN(renderResolution) ? 1f : Mathf.Clamp(renderResolution, 0.5f, 1f);
+            if (!Enum.IsDefined(typeof(GraphicsUpscaler), upscaler)) upscaler = GraphicsUpscaler.Bilinear;
             if (frameRateLimit < UNLIMITED_FRAME_RATE)
             {
                 frameRateLimit = UNLIMITED_FRAME_RATE;

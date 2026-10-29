@@ -6,14 +6,17 @@ namespace EmpireAtWar.Components.Environment
     {
         [SerializeField] private MeshRenderer volumeRenderer;
         [SerializeField] private Material[] variants;
+        [SerializeField] private Shader impostorShader;
 
         private static readonly int _samplesId = Shader.PropertyToID("_Samples");
+        private static readonly int _bakingId = Shader.PropertyToID("_Baking");
         private static int _previousVariant = -1;
         private static readonly System.Random _random = new System.Random();
 
         private MaterialPropertyBlock _properties;
-        private int _qualityLevel = -1;
+        private NebulaImpostor _impostor;
 
+        public static bool NebulaEnabled { get; set; } = true;
         public int SelectedVariant { get; private set; } = -1;
 
         private void Awake()
@@ -25,32 +28,58 @@ namespace EmpireAtWar.Components.Environment
             _previousVariant = index;
         }
 
-        private void LateUpdate()
+        private void Start()
         {
-            if (_qualityLevel != QualitySettings.GetQualityLevel()) ApplyQuality();
+            _impostor = new NebulaImpostor(volumeRenderer, impostorShader);
+            Bake();
+        }
+
+        private void OnEnable()
+        {
+            UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+        }
+
+        private void OnDisable()
+        {
+            UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
+            if (_impostor != null) _impostor.SetVisible(false);
+            volumeRenderer.enabled = false;
+        }
+
+        private void OnDestroy()
+        {
+            if (_impostor != null) _impostor.Dispose();
         }
 
         public void ApplyVariant(int index)
         {
             volumeRenderer.sharedMaterial = variants[index];
             SelectedVariant = index;
-            ApplyQuality();
+            _properties ??= new MaterialPropertyBlock();
+            _properties.SetFloat(_samplesId, 128);
+            volumeRenderer.SetPropertyBlock(_properties);
+            if (_impostor != null) Bake();
         }
 
-        private void ApplyQuality()
+        private void Bake()
         {
-            _qualityLevel = QualitySettings.GetQualityLevel();
-            int samples = _qualityLevel switch
-            {
-                0 or 1 => 48,
-                2 => 64,
-                3 => 96,
-                _ => 128
-            };
-            _properties ??= new MaterialPropertyBlock();
-            volumeRenderer.GetPropertyBlock(_properties);
-            _properties.SetFloat(_samplesId, samples);
+            _properties.SetFloat(_bakingId, 1);
             volumeRenderer.SetPropertyBlock(_properties);
+            try { _impostor.Bake(); }
+            finally
+            {
+                _properties.SetFloat(_bakingId, 0);
+                volumeRenderer.SetPropertyBlock(_properties);
+            }
+        }
+
+        private void OnBeginCameraRendering(UnityEngine.Rendering.ScriptableRenderContext context, Camera camera)
+        {
+            if (_impostor == null || _impostor.IsBaking) return;
+            // Cinematic shots change yaw/pitch; retain the volume for those views.
+            bool useVolume = Vector3.Angle(camera.transform.forward, _impostor.Forward) > 1f;
+            volumeRenderer.enabled = NebulaEnabled && useVolume;
+            _impostor.SetVisible(NebulaEnabled && !useVolume);
         }
     }
 }

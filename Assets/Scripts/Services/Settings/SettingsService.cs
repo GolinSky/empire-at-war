@@ -37,7 +37,8 @@ namespace EmpireAtWar.Services.Settings
 
         public void Initialize()
         {
-            switch (_repository.Load(out SettingsData loaded))
+            SettingsLoadStatus loadStatus = _repository.Load(out SettingsData loaded);
+            switch (loadStatus)
             {
                 case SettingsLoadStatus.Missing:
                     loaded = ImportLegacySettings();
@@ -50,8 +51,11 @@ namespace EmpireAtWar.Services.Settings
             }
 
             Saved = loaded;
-            Draft = loaded.Clone();
+            GraphicsUpscaler requestedUpscaler = Saved.Graphics.Upscaler;
             ApplyAll(Saved);
+            if (requestedUpscaler != Saved.Graphics.Upscaler && loadStatus != SettingsLoadStatus.Unreadable)
+                TrySave(Saved);
+            Draft = Saved.Clone();
         }
 
         public SettingsApplyResult Apply()

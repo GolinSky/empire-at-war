@@ -14,6 +14,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public SettingsChoice Resolution { get; private set; } = SettingsChoice.Empty;
         public SettingsChoice FrameRateLimit { get; private set; } = SettingsChoice.Empty;
         public bool VSync { get; private set; }
+        public bool NebulaEnabled { get; private set; }
+        public float RenderResolution { get; private set; } = 1f;
+        public SettingsChoice Upscaler { get; private set; } = SettingsChoice.Empty;
 
         public float MasterVolume { get; private set; }
         public float MusicVolume { get; private set; }
@@ -44,6 +47,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             Resolution = resolution;
             FrameRateLimit = frameRateLimit;
             VSync = vSync;
+            Changed?.Invoke();
+        }
+
+        public void SetRendering(bool nebulaEnabled, float renderResolution, SettingsChoice upscaler)
+        {
+            NebulaEnabled = nebulaEnabled;
+            RenderResolution = renderResolution;
+            Upscaler = upscaler;
             Changed?.Invoke();
         }
 

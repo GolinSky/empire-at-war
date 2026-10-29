@@ -25,7 +25,7 @@ namespace EmpireAtWar.Editor
             };
         }
 
-        [MenuItem("Tools/Empire At War/Diagnostics/Performance/Rendering Ablation (168 Seconds)")]
+        [MenuItem("Tools/Empire At War/Diagnostics/Performance/Rendering Ablation (Up to 208 Seconds)")]
         [CliCommand("render_audit_ablation", "Run camera-pinned rendering ablation in an existing battle.")]
         public static object Start()
         {

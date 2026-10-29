@@ -50,6 +50,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 93e11ffd1d0341a4b9d2f3298f16ef2a, type: 2}
   - {fileID: 2100000, guid: ba00d9f6117135c42a2478fd523b2912, type: 2}
   - {fileID: 2100000, guid: a1e4ba8c064942d4ab8380baf2710d11, type: 2}
+  impostorShader: {fileID: 4800000, guid: acf93349876c1cd4daf2b7d681af7227, type: 3}
 --- !u!1 &8915766256092184136
 GameObject:
   m_ObjectHideFlags: 0

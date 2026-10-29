@@ -22,8 +22,10 @@ How to measure a running battle, find what costs CPU or allocates, and where res
 ### Rendering ablation
 
 1. Start a battle. Use the same map seed, nebula variant, camera pose, preset, resolution and battle workload for comparisons. Close Scene view (triangle counters are Editor-wide).
-2. Run `unity command render_audit_ablation --json`, or **Tools → Empire At War → Diagnostics → Performance → Rendering Ablation (168 Seconds)**.
+2. Run `unity command render_audit_ablation --json`, or **Tools → Empire At War → Diagnostics → Performance → Rendering Ablation (Up to 208 Seconds)**. Requires an existing running, unpaused battle; finish any other Render Audit capture first.
 3. Each phase settles for 2 s and samples for 6 s. Baseline then ten off/restored pairs: decor, field rocks, all rocks, nebula, stars, hazards/dust, fog, post-processing, directional shadows and combined. Each restored sample brackets its toggle with the preceding enabled sample.
+   - Maps with hazards append five phases over the largest hazard at the current gameplay camera height: baseline, nebula off/restored, hazards/dust off/restored. Maps without hazards retain the original 168 s capture.
+   - Each result records `hazard_screen_coverage` (0–1): a 32×18 viewport ray grid against the gameplay SDF at the top sheet height. This estimates body coverage, excluding wisps and occlusion; metadata records the hazard camera position. The original camera pose is restored after capture.
 4. Read `Logs/RenderAudit/<timestamp>-ablation/ablation.json` and `capture-status.json`. Metadata includes actual map seed, source revision/dirty and untracked paths, nebula variant, camera, quality, resolution, graphics API and device. JSON numbers use invariant culture. Missing GPU timing is `null`, never zero cost.
 5. Cancel with `unity command render_audit_ablation_cancel --json`. The tool leaves Play Mode running. A paused battle or 20 s without advancing a phase interrupts the capture and restores its toggles.
 
