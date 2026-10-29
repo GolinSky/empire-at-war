@@ -63,6 +63,8 @@ namespace EmpireAtWar.Services.Hazards
                     !entity.TryGetFacade(out ICombatModifiersFacade combat) ||
                     !entity.TryGetFacade(out IUnitTypeFacade type) ||
                     !(type.UnitTypeId.IsShip || type.UnitTypeId.IsSquadron)) continue;
+                // The animated hyperspace approach can cross hazards before reaching a clear landing point.
+                if (entity.TryGetFacade(out IShipArrivalFacade arrival) && arrival.IsArriving) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 CombatModifiers modifiers = combat.Modifiers;
                 _memberships.TryGetValue(modifiers, out List<IHazardSource> membership);

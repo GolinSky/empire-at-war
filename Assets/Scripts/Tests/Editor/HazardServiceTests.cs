@@ -60,6 +60,27 @@ namespace EmpireAtWar.Tests.Editor
             Object.DestroyImmediate(_data);
         }
 
+        [TestCase(300f, false)]
+        [TestCase(0f, true)]
+        public void Hyperspace_CrossingHazardOnlyAppliesEffectsAfterArrival(float landingX, bool inside)
+        {
+            int entries = 0;
+            _service.Entered += (_, __) => entries++;
+            _ship.IsArriving = true;
+            _root.transform.position = Vector3.zero;
+            _service.RefreshMemberships();
+            Assert.That(_ship.Modifiers.AbilitiesSuppressed, Is.False);
+            Assert.That(_ship.Modifiers.IsShieldSuppressed, Is.False);
+            Assert.That(entries, Is.Zero);
+
+            _root.transform.position = new Vector3(landingX, 0f, 0f);
+            _ship.IsArriving = false;
+            _service.RefreshMemberships();
+            Assert.That(_ship.Modifiers.AbilitiesSuppressed, Is.EqualTo(inside));
+            Assert.That(_ship.Modifiers.IsShieldSuppressed, Is.EqualTo(inside));
+            Assert.That(entries, Is.EqualTo(inside ? 1 : 0));
+        }
+
         [Test]
         public void Overlap_LeavingOneSourceDoesNotRestoreEffects()
         {
@@ -173,7 +194,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private sealed class TestEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade,
-            IEntityTransformFacade, IMoveFacade
+            IEntityTransformFacade, IMoveFacade, IShipArrivalFacade
         {
             public long Id => 1;
             public PlayerId Owner => TestPlayers.Human;
@@ -184,6 +205,7 @@ namespace EmpireAtWar.Tests.Editor
             public Transform Transform { get; }
             public Vector3 WorldPosition => Transform.position;
             public float NavigationRadius => 1f;
+            public bool IsArriving { get; set; }
             public TestEntity(Transform transform) => Transform = transform;
             public void MoveTo(Vector2 screenPosition) => throw new NotSupportedException();
             public void MoveTo(Vector3 worldPosition) => Transform.position = worldPosition;

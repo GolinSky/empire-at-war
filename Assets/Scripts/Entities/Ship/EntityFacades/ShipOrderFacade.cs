@@ -12,24 +12,27 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
     public sealed class ShipOrderFacade : IMoveFacade, IAttackFacade, IHardPointAttackFacade,
         IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
         IHuntFacade, IRetreatFacade, IUnitOrderObserverFacade, IAbilityFacingFacade,
-        IShipAbilityCastFacade, INavigationFootprintFacade
+        IShipAbilityCastFacade, INavigationFootprintFacade, IShipArrivalFacade
     {
         private readonly IShipMovement _movement;
+        private readonly ShipMoveModel _moveModel;
 
         private readonly ShipOrderRunner _orders;
 
         public Vector3 WorldPosition => _movement.CurrentPosition;
         public float NavigationRadius => _movement.NavigationRadius;
+        public bool IsArriving => _moveModel.Phase == MovementPhase.Arriving;
         public bool IsAbilityFacing => _orders.IsAbilityFacing;
         public void BeginAbilityFacing() => _orders.BeginAbilityFacing();
         public void FaceAbility(Vector3 direction) => _orders.FaceAbility(direction);
         public void EndAbilityFacing() => _orders.EndAbilityFacing();
         public EmpireAtWar.Entities.BaseEntity.Orders.UnitOrderType CurrentOrder => _orders.CurrentOrder;
 
-        public ShipOrderFacade(IShipMovement movement, ShipOrderRunner orders)
+        public ShipOrderFacade(IShipMovement movement, ShipOrderRunner orders, ShipMoveModel moveModel)
         {
             _orders = orders;
             _movement = movement;
+            _moveModel = moveModel;
         }
 
         public void MoveTo(Vector2 screenPosition) => _orders.MoveTo(screenPosition);
