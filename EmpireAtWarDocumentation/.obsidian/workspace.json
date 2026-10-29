@@ -188,6 +188,9 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "TODOs/Documentation/Note_Flags_And_Durable_Guidance_Plan.md",
+    "TODOs/Documentation",
+    "Done/Features/Main_Relay_Zone_Map_Rework.md",
     "Done/Features/Battle_Session_Save.md",
     "Done/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research.md",
     "Done/Documentation/Vault_Guidance_And_Backlog_Cleanup.md",
@@ -218,11 +221,8 @@
     "Done/Refactoring/Ship_Movement_Simplification_Plan.md",
     "Done/Refactoring/Audit_Remediation_Coordination.md",
     "Done/Features/sedgp5bGS",
-    "TODOs/User_Acceptance_Queue.md",
-    "Done/Optimization/Squadron_Pooling_Plan.md",
     "Done/Optimization",
     "Done/Bugs",
-    "TODOs/Documentation",
     "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.4577b7ad24c9"
   ]
 }

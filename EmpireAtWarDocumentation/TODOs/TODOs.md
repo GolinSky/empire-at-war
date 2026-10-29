@@ -118,6 +118,12 @@
 - [ ] **Set up Jenkins local Windows builds**
   - Ownership/acceptance gate remains unassigned; retained as an open backlog item.
 
+### Documentation
+
+- [ ] **Add searchable note flags and extract durable guidance from high-impact plans** → [[TODOs/Documentation/Note_Flags_And_Durable_Guidance_Plan|Note Flags and Durable Guidance]]
+  - Planned 2026-10-29: five native flags; Addressables and battle FPS pilots; known issues/solutions; shared AGENTS.md routing and plan-close handoff.
+  - Next: implement flag contract/dashboard, source-verify guidance and connect agent instructions. Implementation not started.
+
 ## Architecture Backlog
 
 - [ ] Audit gameplay services for direct `IUiService` or `BaseUi` references.
