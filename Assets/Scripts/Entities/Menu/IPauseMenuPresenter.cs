@@ -4,6 +4,8 @@ namespace EmpireAtWar.Entities.Menu
     {
         void Close();
 
+        void RestartBattle();
+
         void OpenSettings();
 
         void ExitSkirmish();
