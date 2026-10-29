@@ -35,9 +35,6 @@
   - Status: implemented; single hazards owner since 2026-10-29 (Rework + Shape Rework merged; current geometry = Shape Rework).
   - Next: IonStorm branches → data/material; SDF bake timing. User review/tests → queue; decor perf → FPS Recovery.
 
-- [ ] **Main relay zone map rework: central contested relay (4 mines + 6 satellites), 1 home mine + 1 satellite, additional relay zones S2/M4/L6** → [[TODOs/Features/Main_Relay_Zone_Map_Rework|Main Relay Zone Map Rework]]
-  - Status: planned 2026-10-29; all design questions answered.
-  - Next: implementation.
 
 
 ### Bugs
@@ -191,6 +188,12 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Main relay zone map rework: central contested relay (4 mines + 6 satellites), 1 home mine + 1 satellite, additional relay zones S2/M4/L6** → [[Done/Features/Main_Relay_Zone_Map_Rework|Main Relay Zone Map Rework]]
+  - Status: implemented 2026-10-29; generation, capture-site merge, settings, prefab migration, save validation and test expectations complete.
+  - Verification: Unity compilation/import and source review; tests not run. User gameplay/tests and post-acceptance GameDesign update → [[TODOs/User_Acceptance_Queue]].
+
+
 
 - [x] **Review ship abilities implementation** → [[Done/Features/Ship_Abilities_Plan|Ship Abilities Plan]]
   - **Remaining**: implementation review and acceptance evidence; commit `dc869bbb` recorded review as needed.

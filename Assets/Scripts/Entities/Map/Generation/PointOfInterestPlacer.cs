@@ -7,80 +7,37 @@ using Random = System.Random;
 namespace EmpireAtWar.Entities.Map.Generation
 {
     /// <summary>
-    /// Places default zones beside the stations, the home mining point behind each station, and the remaining
-    /// zones and sites as point-symmetric pairs so neither side gets the better map half. Every mining point
-    /// is a cluster of <see cref="SITES_PER_MINING_POINT"/> neighbouring mining sites.
+    /// Places the main relay first, then home sites and mirrored additional relay groups.
     /// </summary>
     public sealed class PointOfInterestPlacer
     {
+        // Survival keeps its existing three-site clusters.
         public const int SITES_PER_MINING_POINT = 3;
-        // Neighbouring sites of one mining point sit at this share of the spacing that keeps their capture ranges
-        // apart, so the cluster reads as one tight point; their ranges overlap.
         public const float MINING_SITE_SPACING_SHARE = 0.25f;
-
-        private const int MAX_PAIR_ATTEMPTS = 400;
-        private const int CANDIDATES_PER_PICK = 12;
-
         private const float MIRROR_TOLERANCE = 1f;
-
-        // Free gap between neighbouring sites of one mining point and between the home point and its station.
-        private const float MINING_SITE_GAP = 15f;
-        private const float FULL_TURN_DEGREES = 360f;
-        // A region half as wide as the map side spans the whole map.
-        private const float WHOLE_MAP_SHARE = 0.5f;
+        private const float HOME_SITE_GAP = 15f;
 
         private readonly MapGenerationSettings _settings;
-
         private readonly MapFeatureRadii _radii;
-        // Distance from a mining point's center to each site of its equilateral site triangle.
-        private readonly float _miningSiteSpread;
 
         public PointOfInterestPlacer(MapGenerationSettings settings, MapFeatureRadii radii)
         {
             _settings = settings;
             _radii = radii;
-            _miningSiteSpread = (2f * radii.MiningSite + MINING_SITE_GAP) * MINING_SITE_SPACING_SHARE / Mathf.Sqrt(3f);
         }
 
-        /// <returns>False when this random draw left no room; the caller retries with new draws.</returns>
-        public bool TryPlace(
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            Random random,
-            List<MapNode> nodes)
+        public bool TryPlace(MapSizeSettings size, IReadOnlyList<MapStation> stations,
+            IReadOnlyList<PlayerSlot> players, Random random, List<MapNode> nodes)
         {
             nodes.Clear();
             Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
-            AddDefaultZones(size, stations, center, nodes);
-            if (!TryAddHomeMining(size, stations, center, nodes))
-            {
+            if (!new MainZonePlacer(_settings, _radii, this).TryPlace(size, stations, players, random, nodes))
                 return false;
-            }
-
-            if (size.CapturableZoneCount % 2 == 1)
-            {
-                MapNode centralZone = new MapNode(
-                    kind: MapNodeKind.CapturableZone, center: center, radius: _radii.Zone, owner: PlayerId.None);
-                if (!IsClear(center, GetOuterRadius(centralZone, size), size, stations, nodes))
-                {
-                    return false;
-                }
-
-                centralZone.Mirror = nodes.Count;
-                nodes.Add(centralZone);
-            }
-
-            // Each side of a duel owns one home point; the rest are mirrored pairs.
-            int miningPairCount = (size.MiningPointCount - 2) / 2;
-            // Contested central mines first, then the largest pockets (reinforcement zones) while room remains.
-            return TryAddMiningPairs(size.CentralMiningPairCount, _settings.CentralRegionShare,
-                    size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2, WHOLE_MAP_SHARE,
-                    size, stations, center, random, nodes) &&
-                TryAddMiningPairs(miningPairCount - size.CentralMiningPairCount, WHOLE_MAP_SHARE,
-                    size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2, WHOLE_MAP_SHARE,
-                    size, stations, center, random, nodes);
+            Vector3 mainPosition = nodes[0].Center;
+            return TryAddDefaultZones(size, stations, center, nodes) &&
+                TryAddHomeMining(size, stations, center, nodes) &&
+                new AdditionalZonePlacer(_settings, _radii, this).TryPlace(
+                    size, stations, players, center, mainPosition, random, nodes);
         }
 
         public Vector3 PlacePlanet(MapSizeSettings size, Random random)
@@ -88,288 +45,121 @@ namespace EmpireAtWar.Entities.Map.Generation
             Vector2 min = size.Bounds.Min;
             Vector2 max = size.Bounds.Max;
             Vector2 inset = (max - min) * _settings.PlanetBorderInset;
-            // The tilted battle camera sees more of the planet in the forward half of the map.
             return new Vector3(
-                Mathf.Lerp(min.x + inset.x, max.x - inset.x, (float)random.NextDouble()),
-                0f,
+                Mathf.Lerp(min.x + inset.x, max.x - inset.x, (float)random.NextDouble()), 0f,
                 Mathf.Lerp((min.y + max.y) * 0.5f, max.y - inset.y, (float)random.NextDouble()));
         }
 
-        /// <summary>Node radius plus the clearance and, for pocketed nodes, room for the asteroid pocket.</summary>
         public float GetOuterRadius(MapNode node, MapSizeSettings size)
         {
-            return GetOuterRadius(node.Radius, node.HasPocket, size);
+            return node.Radius + _settings.ZoneClearance + (node.HasPocket ? size.PocketThickness : 0f);
         }
 
-        private float GetOuterRadius(float radius, bool hasPocket, MapSizeSettings size)
+        internal bool IsClear(MapNode candidate, MapSizeSettings size,
+            IReadOnlyList<MapStation> stations, IReadOnlyList<MapNode> nodes)
         {
-            return radius + _settings.ZoneClearance + (hasPocket ? size.PocketThickness : 0f);
-        }
-
-        private void AddDefaultZones(
-            MapSizeSettings size, IReadOnlyList<MapStation> stations, Vector3 center, List<MapNode> nodes)
-        {
-            foreach (MapStation station in stations)
-            {
-                // The zone sits beside its station on the side facing the map center.
-                float side = station.Position.x < center.x ? 1f : -1f;
-                float offset = station.Radius + _radii.Zone + _settings.ZoneClearance + size.DefaultZoneGap;
-                Vector3 position = new Vector3(
-                    station.Position.x + side * offset,
-                    0f,
-                    station.Position.z);
-                nodes.Add(new MapNode(kind: MapNodeKind.DefaultZone, center: position, radius: _radii.Zone, owner: station.Owner));
-            }
-
-            PairWithMirroredStations(stations, center, 0, nodes);
-        }
-
-        /// <summary>
-        /// Groups each station's home sites into the same tight triangle as a contested point, behind the station
-        /// on the side facing its map corner, as close to the station footprint as the site clearance allows.
-        /// </summary>
-        private bool TryAddHomeMining(
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            Vector3 center,
-            List<MapNode> nodes)
-        {
-            float satelliteSpread = _miningSiteSpread + _settings.SatellitePadOffset;
-            float nearestMine = Mathf.Sqrt(_miningSiteSpread * _miningSiteSpread +
-                satelliteSpread * satelliteSpread - _miningSiteSpread * satelliteSpread);
-            if (nearestMine < _radii.MiningSite + _settings.SatelliteFootprintRadius ||
-                satelliteSpread * Mathf.Sqrt(3f) < 2f * _settings.SatelliteFootprintRadius)
+            float outer = GetOuterRadius(candidate, size);
+            Vector3 position = candidate.Center;
+            if (position.x - outer < size.Bounds.Min.x || position.x + outer > size.Bounds.Max.x ||
+                position.z - outer < size.Bounds.Min.y || position.z + outer > size.Bounds.Max.y)
                 return false;
-
-            List<MapNode> defaultZones = nodes.GetRange(0, nodes.Count);
-            for (int triangle = 0; triangle < 2; triangle++)
-            {
-                bool satellite = triangle == 1;
-                float radius = satellite ? _settings.SatelliteFootprintRadius : _radii.MiningSite;
-                float spread = satellite ? satelliteSpread : _miningSiteSpread;
-                float outer = GetOuterRadius(radius, false, size);
-                for (int site = 0; site < SITES_PER_MINING_POINT; site++)
-                {
-                    int firstIndex = nodes.Count;
-                    for (int stationIndex = 0; stationIndex < stations.Count; stationIndex++)
-                    {
-                        MapStation station = stations[stationIndex];
-                        Vector3 corner = new Vector3(Mathf.Sign(station.Position.x - center.x), 0f,
-                            Mathf.Sign(station.Position.z - center.z)).normalized;
-                        float distance = station.Radius + Mathf.Max(
-                            GetOuterRadius(_radii.MiningSite, false, size) + MINING_SITE_GAP + _miningSiteSpread * 0.5f,
-                            GetOuterRadius(_settings.SatelliteFootprintRadius, false, size) + satelliteSpread + MINING_SITE_GAP);
-                        Vector3 offset = Quaternion.Euler(0f,
-                            site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT + (satellite ? 60f : 0f), 0f) *
-                            corner * spread;
-                        Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) + corner * distance + offset;
-                        if (!IsClear(position, outer, size, stations, defaultZones))
-                            return false;
-
-                        // The six sites share a point; only other points need the full inter-point clearance.
-                        foreach (MapNode other in nodes)
-                            if (other.PointId >= 0 && other.PointId != stationIndex &&
-                                PlanarGeometry.Distance(position, other.Center) < radius + other.Radius + _settings.ZoneClearance)
-                                return false;
-
-                        nodes.Add(new MapNode(satellite ? MapNodeKind.SatelliteSite : MapNodeKind.MiningSite,
-                            position, PlayerId.None, radius, stationIndex));
-                    }
-                    PairWithMirroredStations(stations, center, firstIndex, nodes);
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Links the per-station nodes starting at <paramref name="firstIndex"/> the same way point
-        /// symmetry links their stations. A station without a reflected twin (three players) mirrors itself.
-        /// </summary>
-        private static void PairWithMirroredStations(
-            IReadOnlyList<MapStation> stations,
-            Vector3 center,
-            int firstIndex,
-            List<MapNode> nodes)
-        {
-            for (int i = 0; i < stations.Count; i++)
-            {
-                nodes[firstIndex + i].Mirror = firstIndex + FindMirroredStation(stations, center, i);
-            }
-        }
-
-        private static int FindMirroredStation(IReadOnlyList<MapStation> stations, Vector3 center, int index)
-        {
-            Vector3 reflected = PlanarGeometry.Reflect(stations[index].Position, center);
-            for (int i = 0; i < stations.Count; i++)
-            {
-                if (i != index && PlanarGeometry.Distance(stations[i].Position, reflected) < MIRROR_TOLERANCE)
-                {
-                    return i;
-                }
-            }
-
-            return index;
-        }
-
-        /// <summary>Adds mirrored mining points, each a randomly turned triangle of neighbouring sites.</summary>
-        private bool TryAddMiningPairs(
-            int pairCount,
-            float regionShare,
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            Vector3 center,
-            Random random,
-            List<MapNode> nodes)
-        {
-            float satelliteSpread = _miningSiteSpread + _settings.SatellitePadOffset;
-            float outer = Mathf.Max(GetOuterRadius(_miningSiteSpread + _radii.MiningSite, true, size),
-                GetOuterRadius(satelliteSpread + _settings.SatelliteFootprintRadius, false, size));
-            for (int pair = 0; pair < pairCount; pair++)
-            {
-                if (!TryPickPairPosition(outer, regionShare, size, stations, center, random, nodes, out Vector3 position))
-                    return false;
-
-                float turn = (float)random.NextDouble() * FULL_TURN_DEGREES;
-                int pointId = nodes.Count;
-                for (int triangle = 0; triangle < 2; triangle++)
-                {
-                    bool satellite = triangle == 1;
-                    MapNodeKind kind = satellite ? MapNodeKind.SatelliteSite : MapNodeKind.MiningSite;
-                    float radius = satellite ? _settings.SatelliteFootprintRadius : _radii.MiningSite;
-                    float spread = satellite ? satelliteSpread : _miningSiteSpread;
-                    int index = nodes.Count;
-                    for (int site = 0; site < SITES_PER_MINING_POINT; site++)
-                    {
-                        Vector3 offset = Quaternion.Euler(0f,
-                            turn + site * FULL_TURN_DEGREES / SITES_PER_MINING_POINT + (satellite ? 60f : 0f), 0f) *
-                            Vector3.forward * spread;
-                        nodes.Add(new MapNode(kind, position + offset, PlayerId.None, radius, pointId)
-                            { Mirror = index + SITES_PER_MINING_POINT + site });
-                    }
-                    for (int site = 0; site < SITES_PER_MINING_POINT; site++)
-                        nodes.Add(new MapNode(kind, PlanarGeometry.Reflect(nodes[index + site].Center, center),
-                            PlayerId.None, radius, pointId + 1) { Mirror = index + site });
-                }
-            }
-            return true;
-        }
-
-        private bool TryAddPairs(
-            MapNodeKind kind,
-            int pairCount,
-            float regionShare,
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            Vector3 center,
-            Random random,
-            List<MapNode> nodes)
-        {
-            float radius = kind == MapNodeKind.BattleSite ? _radii.BattleSite : _radii.Zone;
-            float outer = GetOuterRadius(radius, true, size);
-            for (int pair = 0; pair < pairCount; pair++)
-            {
-                if (!TryPickPairPosition(outer, regionShare, size, stations, center, random, nodes, out Vector3 position))
-                {
-                    return false;
-                }
-
-                int index = nodes.Count;
-                nodes.Add(new MapNode(kind: kind, center: position, radius: radius, owner: PlayerId.None) { Mirror = index + 1 });
-                nodes.Add(new MapNode(kind: kind, center: PlanarGeometry.Reflect(position, center), radius: radius, owner: PlayerId.None) { Mirror = index });
-            }
-
-            return true;
-        }
-
-        // Best-candidate sampling: of several valid spots, keep the one farthest from everything placed.
-        private bool TryPickPairPosition(
-            float outer,
-            float regionShare,
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            Vector3 center,
-            Random random,
-            List<MapNode> nodes,
-            out Vector3 position)
-        {
-            // Candidates stay inside the region about the center; the pocket must still fit the map.
-            Vector2 regionHalfSize = (size.Bounds.Max - size.Bounds.Min) * regionShare;
-            Vector2 middle = new Vector2(center.x, center.z);
-            Vector2 min = Vector2.Max(size.Bounds.Min + Vector2.one * outer, middle - regionHalfSize);
-            Vector2 max = Vector2.Min(size.Bounds.Max - Vector2.one * outer, middle + regionHalfSize);
-            float bestScore = float.MinValue;
-            int validCandidates = 0;
-            position = default;
-            for (int attempt = 0; attempt < MAX_PAIR_ATTEMPTS && validCandidates < CANDIDATES_PER_PICK; attempt++)
-            {
-                Vector3 candidate = new Vector3(
-                    Mathf.Lerp(min.x, max.x, (float)random.NextDouble()),
-                    0f,
-                    Mathf.Lerp(min.y, max.y, (float)random.NextDouble()));
-                Vector3 mirror = PlanarGeometry.Reflect(candidate, center);
-                if (PlanarGeometry.Distance(candidate, mirror) < outer * 2f + size.PointSpacing ||
-                    !IsClear(candidate, outer, size, stations, nodes) ||
-                    !IsClear(mirror, outer, size, stations, nodes))
-                {
-                    continue;
-                }
-
-                validCandidates++;
-                float score = PlanarGeometry.Distance(candidate, mirror);
-                foreach (MapNode node in nodes)
-                {
-                    score = Mathf.Min(score, PlanarGeometry.Distance(candidate, node.Center));
-                }
-
-                foreach (MapStation station in stations)
-                {
-                    score = Mathf.Min(score, PlanarGeometry.Distance(candidate, station.Position) - station.Radius);
-                }
-
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    position = candidate;
-                }
-            }
-
-            return validCandidates > 0;
-        }
-
-        private bool IsClear(
-            Vector3 position,
-            float outer,
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            IReadOnlyList<MapNode> nodes)
-        {
-            Vector2 min = size.Bounds.Min;
-            Vector2 max = size.Bounds.Max;
-            if (position.x - outer < min.x || position.x + outer > max.x ||
-                position.z - outer < min.y || position.z + outer > max.y)
-            {
-                return false;
-            }
-
             foreach (MapStation station in stations)
-            {
                 if (PlanarGeometry.Distance(position, station.Position) < station.Radius + outer)
-                {
                     return false;
-                }
-            }
-
             foreach (MapNode node in nodes)
             {
-                // Point spacing leaves lane room between two asteroid pockets; default zones have none.
-                float spacing = node.HasPocket ? size.PointSpacing : 0f;
-                if (PlanarGeometry.Distance(position, node.Center) < outer + GetOuterRadius(node, size) + spacing)
+                // A relay's own capture sites deliberately overlap its capture area.
+                if (candidate.PointId >= 0 && candidate.PointId == node.PointId)
                 {
+                    if (candidate.Kind == MapNodeKind.CapturableZone || node.Kind == MapNodeKind.CapturableZone)
+                        continue;
+                    if (PlanarGeometry.Distance(position, node.Center) < candidate.Radius + node.Radius)
+                        return false;
+                    continue;
+                }
+                float spacing = candidate.HasPocket && node.HasPocket ? size.PointSpacing : 0f;
+                if (PlanarGeometry.Distance(position, node.Center) < outer + GetOuterRadius(node, size) + spacing)
+                    return false;
+            }
+            return true;
+        }
+
+        internal bool TryAddGroup(IReadOnlyList<MapNode> group, MapSizeSettings size,
+            IReadOnlyList<MapStation> stations, List<MapNode> nodes)
+        {
+            int first = nodes.Count;
+            foreach (MapNode node in group)
+            {
+                if (!IsClear(node, size, stations, nodes))
+                {
+                    nodes.RemoveRange(first, nodes.Count - first);
                     return false;
                 }
+                nodes.Add(node);
             }
-
             return true;
+        }
+
+        private bool TryAddDefaultZones(MapSizeSettings size, IReadOnlyList<MapStation> stations,
+            Vector3 center, List<MapNode> nodes)
+        {
+            int first = nodes.Count;
+            foreach (MapStation station in stations)
+            {
+                float side = station.Position.x < center.x ? 1f : -1f;
+                float offset = station.Radius + _radii.Zone + _settings.ZoneClearance + size.DefaultZoneGap;
+                MapNode node = new MapNode(MapNodeKind.DefaultZone,
+                    new Vector3(station.Position.x + side * offset, 0f, station.Position.z),
+                    station.Owner, _radii.Zone);
+                if (!IsClear(node, size, stations, nodes))
+                    return false;
+                nodes.Add(node);
+            }
+            PairWithMirroredStations(stations, center, first, nodes);
+            return true;
+        }
+
+        private bool TryAddHomeMining(MapSizeSettings size, IReadOnlyList<MapStation> stations,
+            Vector3 center, List<MapNode> nodes)
+        {
+            float separation = _radii.MiningSite + _settings.SatelliteFootprintRadius + HOME_SITE_GAP;
+            for (int type = 0; type < 2; type++)
+            {
+                int first = nodes.Count;
+                for (int i = 0; i < stations.Count; i++)
+                {
+                    MapStation station = stations[i];
+                    // Default relays use the inward X side; home mining uses the inward Z side.
+                    Vector3 inward = new Vector3(0f, 0f, Mathf.Sign(center.z - station.Position.z));
+                    Vector3 beside = new Vector3(Mathf.Sign(center.x - station.Position.x), 0f, 0f);
+                    float radius = type == 0 ? _radii.MiningSite : _settings.SatelliteFootprintRadius;
+                    float distance = station.Radius + Mathf.Max(_radii.MiningSite + size.PocketThickness,
+                        _settings.SatelliteFootprintRadius) + _settings.ZoneClearance + HOME_SITE_GAP;
+                    Vector3 position = new Vector3(station.Position.x, 0f, station.Position.z) +
+                        inward * distance + beside * (type == 0 ? 0f : separation);
+                    MapNode node = new MapNode(type == 0 ? MapNodeKind.MiningSite : MapNodeKind.SatelliteSite,
+                        position, PlayerId.None, radius, i);
+                    if (!IsClear(node, size, stations, nodes))
+                        return false;
+                    nodes.Add(node);
+                }
+                PairWithMirroredStations(stations, center, first, nodes);
+            }
+            return true;
+        }
+
+        private static void PairWithMirroredStations(IReadOnlyList<MapStation> stations,
+            Vector3 center, int firstIndex, List<MapNode> nodes)
+        {
+            for (int i = 0; i < stations.Count; i++)
+            {
+                int mirror = i;
+                Vector3 reflected = PlanarGeometry.Reflect(stations[i].Position, center);
+                for (int j = 0; j < stations.Count; j++)
+                    if (i != j && PlanarGeometry.Distance(stations[j].Position, reflected) < MIRROR_TOLERANCE)
+                        mirror = j;
+                nodes[firstIndex + i].Mirror = firstIndex + mirror;
+            }
         }
     }
 }

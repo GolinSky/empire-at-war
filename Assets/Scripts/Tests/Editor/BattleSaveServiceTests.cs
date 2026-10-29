@@ -10,7 +10,6 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -223,8 +222,14 @@ namespace EmpireAtWar.Tests.Editor
 
             var oldMapSave = BattleSave.Create(header, setup, camera,
                 Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
-            int oldCount = (definition.Slots.Count + ((mapSettings.GetSize(definition.Map.Size).MiningPointCount - 2) / 2) * 2)
-                * PointOfInterestPlacer.SITES_PER_MINING_POINT + mapSettings.GetSize(definition.Map.Size).BattleSiteCount;
+            // The previous map layout had three mines plus three satellites per mining point.
+            int oldCount = definition.Map.Size switch
+            {
+                MapSize.Small => 38,
+                MapSize.Medium => 50,
+                MapSize.Large => 76,
+                _ => throw new ArgumentOutOfRangeException()
+            };
             oldMapSave.CaptureSites = new CaptureSiteSave[oldCount];
             oldMapSave.ReinforcementZones = CreateDefaultReinforcementZones(mapSettings, definition);
             Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(oldMapSave, definition)).Message,
@@ -253,11 +258,52 @@ namespace EmpireAtWar.Tests.Editor
                 Does.Contain("Saved research"));
         }
 
+        [TestCase(MapSize.Small, 2, 20, 3)]
+        [TestCase(MapSize.Medium, 2, 26, 5)]
+        [TestCase(MapSize.Large, 2, 32, 7)]
+        [TestCase(MapSize.Small, 4, 24, 3)]
+        [TestCase(MapSize.Medium, 4, 30, 5)]
+        [TestCase(MapSize.Large, 4, 36, 7)]
+        public void Validator_AcceptsRelayLayoutCountsAndRejectsOldZoneCounts(
+            MapSize size, int playerCount, int expectedSites, int expectedZones)
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            BattleDefinition defaults = SkirmishPreset.Default();
+            IReadOnlyList<PlayerSlot> players = playerCount == 2
+                ? defaults.Slots : TestPlayers.CreateTeamGame().Players;
+            BattleDefinition definition = SkirmishPreset.Create(players, defaults.Map.Planet, size,
+                defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 10f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(definition),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f),
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            save.CaptureSites = CreateDefaultCaptureSites(settings, definition);
+            save.ReinforcementZones = CreateDefaultReinforcementZones(settings, definition);
+            Assert.That(save.CaptureSites.Length, Is.EqualTo(expectedSites));
+            Assert.That(save.ReinforcementZones.Length, Is.EqualTo(expectedZones));
+            BattleSaveValidator validator = new BattleSaveValidator(assets, settings);
+            Assert.DoesNotThrow(() => validator.Validate(save, definition));
+            int oldZoneCount = size switch
+            {
+                MapSize.Small => 2,
+                MapSize.Medium => 3,
+                MapSize.Large => 9,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            save.ReinforcementZones = new ReinforcementZoneSave[oldZoneCount];
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, definition)).Message,
+                Does.Contain("reinforcement zones; the map has"));
+        }
+
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size);
-            int count = (definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2) * PointOfInterestPlacer.SITES_PER_MINING_POINT * 2
-                + (size.BattleSiteCount / 2) * 2;
+            int count = definition.Slots.Count * 2 + mapSettings.MainZoneMiningCount +
+                mapSettings.MainZoneSatelliteCount + 2 * size.AdditionalZonePairCount *
+                (1 + mapSettings.AdditionalZoneSatelliteCount);
             var sites = new CaptureSiteSave[count];
             for (int i = 0; i < count; i++)
                 sites[i] = CaptureSiteSave.Create(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L);
@@ -266,7 +312,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static ReinforcementZoneSave[] CreateDefaultReinforcementZones(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
-            int count = mapSettings.GetSize(definition.Map.Size).CapturableZoneCount;
+            int count = 1 + 2 * mapSettings.GetSize(definition.Map.Size).AdditionalZonePairCount;
             var zones = new ReinforcementZoneSave[count];
             for (int i = 0; i < count; i++)
                 zones[i] = ReinforcementZoneSave.Create(PlayerId.None, PlayerId.None, 0f, false);

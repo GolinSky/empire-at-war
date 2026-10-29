@@ -448,8 +448,6 @@ MonoBehaviour:
     type: 3}
   miningSitePrefab: {fileID: 6637528760554246965, guid: 0f332f34959cd7a4888c408770bff249,
     type: 3}
-  battleSitePrefab: {fileID: 3985789703454499298, guid: 069e7efc0ad60934d87d3b1c4b8dfb91,
-    type: 3}
   satelliteSitePrefab: {fileID: 6961083398161393621, guid: a5c4fff5efaea9845ae7522d3e22f6dc,
     type: 3}
   fieldVolumePrefab: {fileID: 5619553855839390232, guid: 5af77b7930af4364d87f6f5f18dfc96d,

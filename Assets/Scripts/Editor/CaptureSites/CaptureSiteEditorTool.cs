@@ -16,7 +16,7 @@ namespace EmpireAtWar.Editor.CaptureSites
     [EmpireAtWar.Editor.EditorToolInfo("Capture-site authoring and maintenance. Build Sites rebuilds data and prefabs; the other commands rebuild site prefabs or apply obstacles and the mini-map icon.")]
     public static class CaptureSiteEditorTool
     {
-        private const float SITE_SCALE = 5f;
+        private const float SITE_SCALE = 2f;
 
         private const int UI_LAYER = 5;
         private const int OBSTACLE_LAYER = 9;
@@ -24,7 +24,6 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string MINI_MAP_DATA_PATH = "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset";
         private const string PREFAB_FOLDER = "Assets/Prefabs/View/CaptureSites";
         private const string SITE_PREFAB_PATH = PREFAB_FOLDER + "/CaptureSite.prefab";
-        private const string BATTLE_SITE_PREFAB_PATH = PREFAB_FOLDER + "/BattleAsteroidCaptureSite.prefab";
         private const string DATA_FOLDER = "Assets/Settings/Data/Models/CaptureSites";
         private const string DATA_PATH = DATA_FOLDER + "/CaptureSiteData.asset";
         private const string RING_MATERIAL_PATH = "Assets/Art/Materials/ReinforcementZones/ReinforcementZone.mat";
@@ -47,14 +46,13 @@ namespace EmpireAtWar.Editor.CaptureSites
         }
 
         /// <summary>
-        /// Rebuilds only the site prefabs. Both map slots share one layout: the owner picks the facility after capture.
+        /// Rebuilds the asteroid site prefab; the owner picks either facility after capture.
         /// </summary>
         [MenuItem("Tools/Empire At War/World/Capture Sites/Rebuild Site Prefabs")]
         public static void BuildSitePrefabs()
         {
             EnsureFolder(PREFAB_FOLDER);
             BuildSitePrefab(SITE_PREFAB_PATH, CaptureSiteKind.Mining);
-            BuildSitePrefab(BATTLE_SITE_PREFAB_PATH, CaptureSiteKind.Battle);
             AssetDatabase.SaveAssets();
         }
 
@@ -143,10 +141,9 @@ namespace EmpireAtWar.Editor.CaptureSites
             SetCost(entries.GetArrayElementAtIndex(0), SiteFacilityType.Mining, "Asteroid Mine", 600f, 25f);
             SetCost(entries.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, "Battle Asteroid", 1600f, 30f);
             SerializedProperty settings = serializedData.FindProperty("siteSettings").FindPropertyRelative("keyValue");
-            settings.arraySize = 3;
+            settings.arraySize = 2;
             SetSettings(settings.GetArrayElementAtIndex(0), CaptureSiteKind.Mining, 60f, 10f, -60f);
-            SetSettings(settings.GetArrayElementAtIndex(1), CaptureSiteKind.Battle, 60f, 12f, 0f);
-            SetSettings(settings.GetArrayElementAtIndex(2), CaptureSiteKind.Satellite, 100f, 6f, 0f);
+            SetSettings(settings.GetArrayElementAtIndex(1), CaptureSiteKind.Satellite, 100f, 6f, 0f);
             serializedData.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(data);
             AsteroidMiningFacilityAssetBuilder.AddAddressable(DATA_PATH, "Model");

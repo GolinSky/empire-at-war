@@ -40,13 +40,13 @@ namespace EmpireAtWar.Entities.Map.Generation
             float miningRadius = Mathf.Max(radius + _radii.MiningSite + size.HomeMiningGap.Min,
                 radius + 2f * _radii.Zone + size.DefaultZoneGap + pointExtent + _settings.ZoneClearance);
             miningRadius = Mathf.Max(miningRadius,
-                (pointExtent + _settings.ZoneClearance) / Mathf.Sin(Mathf.PI / size.MiningPointCount));
+                (pointExtent + _settings.ZoneClearance) / Mathf.Sin(Mathf.PI / size.SurvivalMiningSiteCount));
             if (miningRadius + pointExtent > Mathf.Min(size.Bounds.Max.x - middle.x, size.Bounds.Max.y - middle.y))
                 throw new InvalidOperationException("Survival mining points and satellite pads do not fit inside the map.");
 
-            for (int i = 0; i < size.MiningPointCount; i++)
+            for (int i = 0; i < size.SurvivalMiningSiteCount; i++)
             {
-                float turn = i * 360f / size.MiningPointCount;
+                float turn = i * 360f / size.SurvivalMiningSiteCount;
                 Vector3 direction = Quaternion.Euler(0f, turn, 0f) * Vector3.forward;
                 Vector3 point = new Vector3(middle.x, 0f, middle.y) + direction * miningRadius;
                 for (int site = 0; site < PointOfInterestPlacer.SITES_PER_MINING_POINT; site++)

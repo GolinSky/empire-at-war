@@ -158,3 +158,9 @@ created: 2026-10-29
   - [ ] Beam timing/armor/shields, class restriction, moving-target rendering, tractor cancellation, AI ability use, hangar clearance, banking, explosions, wreck.
 - [[AssetPipeline/Imports/Quasar Fire Import]]
   - [ ] Runtime launch/replacement, tractor beam, fog/selection, death.
+
+## Main Relay Zone Map Rework
+
+- [[Done/Features/Main_Relay_Zone_Map_Rework]] — In-game check all sizes, 2p/4p: home economy, relay rings/mesh, capture/build options, AI expansion, lane access.
+- [[Done/Features/Main_Relay_Zone_Map_Rework]] — Run updated Map, MapGeneration, MapExhaustive, GameFlow, Capture and Core checks on explicit request; no tests run by agents.
+- [[Done/Features/Main_Relay_Zone_Map_Rework]] — After gameplay acceptance, update GameDesign map/economy references.

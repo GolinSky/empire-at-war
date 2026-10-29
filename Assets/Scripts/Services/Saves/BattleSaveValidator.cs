@@ -88,15 +88,19 @@ namespace EmpireAtWar.Services.Saves
         {
             if (_mapSettings == null) return;
             MapSizeSettings size = _mapSettings.GetSize(definition.Map.Size);
-            int expectedZones = definition.Map.Type == MapType.Full ? size.CapturableZoneCount : 0;
+            int expectedZones = definition.Map.Type == MapType.Full ? 1 + 2 * size.AdditionalZonePairCount : 0;
             if (save.ReinforcementZones.Length != expectedZones)
                 throw new InvalidDataException($"Saved {save.ReinforcementZones.Length} reinforcement zones; the map has {expectedZones}.");
-            int points = definition.Map.Type == MapType.Survival ? size.MiningPointCount
-                : definition.Slots.Count + ((size.MiningPointCount - 2) / 2) * 2;
-            int miningSites = definition.HasFeature(BattleFeatures.MiningSites)
-                ? points * PointOfInterestPlacer.SITES_PER_MINING_POINT : 0;
-            int battleSites = definition.Map.Type == MapType.Full ? (size.BattleSiteCount / 2) * 2 : 0;
-            int expectedSites = definition.HasFeature(BattleFeatures.CaptureSites) ? miningSites * 2 + battleSites : 0;
+            int expectedSites = 0;
+            if (definition.HasFeature(BattleFeatures.CaptureSites) && definition.HasFeature(BattleFeatures.MiningSites))
+            {
+                if (definition.Map.Type == MapType.Survival)
+                    expectedSites = size.SurvivalMiningSiteCount * PointOfInterestPlacer.SITES_PER_MINING_POINT * 2;
+                else if (definition.Map.Type == MapType.Full)
+                    expectedSites = definition.Slots.Count * 2 + _mapSettings.MainZoneMiningCount +
+                        _mapSettings.MainZoneSatelliteCount + 2 * size.AdditionalZonePairCount *
+                        (1 + _mapSettings.AdditionalZoneSatelliteCount);
+            }
             if (save.CaptureSites.Length != expectedSites)
                 throw new InvalidDataException($"Saved {save.CaptureSites.Length} capture sites; the map has {expectedSites}.");
         }

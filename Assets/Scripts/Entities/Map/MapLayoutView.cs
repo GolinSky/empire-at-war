@@ -22,7 +22,6 @@ namespace EmpireAtWar.Entities.Map
 
         [SerializeField] private ReinforcementZoneView zonePrefab;
         [SerializeField] private CaptureSiteView miningSitePrefab;
-        [SerializeField] private CaptureSiteView battleSitePrefab;
         [SerializeField] private CaptureSiteView satelliteSitePrefab;
         [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
         private MapObstacle fieldVolumePrefab;
@@ -49,8 +48,7 @@ namespace EmpireAtWar.Entities.Map
 
         public MapFeatureRadii FeatureRadii =>
             new MapFeatureRadii(zonePrefab.Radius,
-                _siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSitePrefab.transform.lossyScale.x), Mathf.Abs(miningSitePrefab.transform.lossyScale.z)),
-                _siteData.GetSettings(CaptureSiteKind.Battle).Radius * Mathf.Max(Mathf.Abs(battleSitePrefab.transform.lossyScale.x), Mathf.Abs(battleSitePrefab.transform.lossyScale.z)));
+                _siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSitePrefab.transform.lossyScale.x), Mathf.Abs(miningSitePrefab.transform.lossyScale.z)));
 
         public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
         public CaptureSiteView[] SiteViews { get; private set; }
@@ -98,7 +96,6 @@ namespace EmpireAtWar.Entities.Map
                 CaptureSiteView prefab = site.Kind switch
                 {
                     CaptureSiteKind.Mining => miningSitePrefab,
-                    CaptureSiteKind.Battle => battleSitePrefab,
                     CaptureSiteKind.Satellite => satelliteSitePrefab,
                     _ => throw new System.ArgumentOutOfRangeException(nameof(site.Kind), site.Kind, "Unknown capture site kind.")
                 };

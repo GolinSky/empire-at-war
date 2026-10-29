@@ -10,14 +10,12 @@ namespace EmpireAtWar.Entities.Map
     public sealed class MapSizeSettings
     {
         [field: SerializeField] public Vector2Range Bounds { get; private set; }
-        [field: SerializeField, Min(0)] public int CapturableZoneCount { get; private set; }
-        [field: FormerlySerializedAs("<MiningSiteCount>k__BackingField"), SerializeField, Min(2),
-                Tooltip("Mining points of a duel, including one home point per side. A skirmish point is a cluster of " +
-                        "three mining sites; Survival rings its station with one site per point.")]
-        public int MiningPointCount { get; private set; }
-        [field: SerializeField, Min(0), Tooltip("Mirrored mining point pairs placed inside the central region; part of MiningPointCount.")]
-        public int CentralMiningPairCount { get; private set; }
-        [field: SerializeField, Min(0)] public int BattleSiteCount { get; private set; }
+        [field: SerializeField, Min(0)] public int AdditionalZonePairCount { get; private set; }
+        [field: SerializeField, Min(0f)] public float AdditionalZoneMainDistance { get; private set; }
+        [field: FormerlySerializedAs("<MiningPointCount>k__BackingField"),
+                FormerlySerializedAs("<MiningSiteCount>k__BackingField"), SerializeField, Min(2),
+                Tooltip("Mining points in the unchanged Survival ring; each has three mines and satellite pads.")]
+        public int SurvivalMiningSiteCount { get; private set; }
         [field: SerializeField, Min(0)] public int HazardCount { get; private set; } = 2;
         [field: SerializeField] public Vector2 HazardLengthShare { get; private set; } = new Vector2(0.35f, 0.5f);
         [field: SerializeField] public Vector2 HazardHalfWidthShare { get; private set; } = new Vector2(0.03f, 0.065f);
@@ -26,7 +24,7 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(0f), Tooltip("Minimum free gap between the asteroid pockets of two points of interest.")]
         public float PointSpacing { get; private set; }
         [field: SerializeField, Tooltip("Gap between the Survival station footprint and its mining ring (Min). " +
-                                        "Skirmish home mining hugs the back of each station instead.")]
+                                        "Skirmish home mining sits on each station's inward Z side instead.")]
         public FloatRange HomeMiningGap { get; private set; }
         [field: SerializeField, Min(0f), Tooltip("Extra gap between the station footprint and its default reinforcement zone.")]
         public float DefaultZoneGap { get; private set; }

@@ -37,8 +37,12 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(0f), Tooltip("Placement radius of a satellite pad. Its capture range comes from " +
                                                  "the satellite prefab and may overlap neighbouring sites.")]
         public float SatelliteFootprintRadius { get; private set; } = 60f;
-        [field: SerializeField, Range(0.1f, 0.5f), Tooltip("Half-size of the central mining region as a share of the map side.")]
-        public float CentralRegionShare { get; private set; } = 0.15f;
+        [field: SerializeField, Range(0.1f, 0.5f), Tooltip("Half-size of the main relay region as a share of the map side.")]
+        public float MainZoneRegionShare { get; private set; } = 0.25f;
+        [field: SerializeField, Min(1)] public int MainZoneMiningCount { get; private set; } = 4;
+        [field: SerializeField, Min(1)] public int MainZoneSatelliteCount { get; private set; } = 6;
+        [field: SerializeField, Min(1)] public int AdditionalZoneSatelliteCount { get; private set; } = 2;
+        [field: SerializeField, Min(0f)] public float MainZoneFairnessTolerance { get; private set; } = 300f;
         [field: SerializeField, Range(0f, 0.5f), Tooltip("Share of the map side kept free of the planet at every border.")]
         public float PlanetBorderInset { get; private set; } = 0.25f;
         [field: FormerlySerializedAs("<ExtraRoadChance>k__BackingField"), SerializeField, Range(0f, 1f)]

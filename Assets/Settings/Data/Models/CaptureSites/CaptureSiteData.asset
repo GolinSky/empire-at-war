@@ -74,8 +74,6 @@ MonoBehaviour:
     keyValue:
     - key: 0
       value: 0000000001000000
-    - key: 1
-      value: 0000000001000000
     - key: 2
       value: 0200000003000000040000000500000006000000
   siteSettings:
@@ -85,11 +83,6 @@ MonoBehaviour:
         <Radius>k__BackingField: 60
         <CaptureDuration>k__BackingField: 10
         <FacilityHeightOffset>k__BackingField: -60
-    - key: 1
-      value:
-        <Radius>k__BackingField: 60
-        <CaptureDuration>k__BackingField: 12
-        <FacilityHeightOffset>k__BackingField: 0
     - key: 2
       value:
         <Radius>k__BackingField: 100

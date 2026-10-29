@@ -12,7 +12,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         public PlayerId Owner { get; }
         public int PointId { get; }
         public bool HasPocket => Kind != MapNodeKind.DefaultZone && Kind != MapNodeKind.SatelliteSite;
-        /// <summary>Index of the node that point symmetry pairs with this one; its own index at the map center.</summary>
+        /// <summary>Index of the paired node; asymmetric main-zone nodes and unpaired homes use their own index.</summary>
         public int Mirror { get; set; }
 
         public MapNode(MapNodeKind kind, Vector3 center, PlayerId owner, float radius, int pointId = -1)

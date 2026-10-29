@@ -42,7 +42,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             for (int attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt++)
             {
                 MapStation[] stations = _stationPlacer.Place(size.Bounds, players, random);
-                if (!_pointOfInterestPlacer.TryPlace(size, stations, random, nodes))
+                if (!_pointOfInterestPlacer.TryPlace(size, stations, players, random, nodes))
                 {
                     continue;
                 }
@@ -110,9 +110,6 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     case MapNodeKind.MiningSite:
                         sites.Add(new SiteSpot(node.Center, CaptureSiteKind.Mining, node.Owner, node.PointId));
-                        break;
-                    case MapNodeKind.BattleSite:
-                        sites.Add(new SiteSpot(node.Center, CaptureSiteKind.Battle, node.Owner));
                         break;
                     case MapNodeKind.SatelliteSite:
                         sites.Add(new SiteSpot(node.Center, CaptureSiteKind.Satellite, node.Owner, node.PointId));
