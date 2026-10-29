@@ -31,7 +31,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic
     public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IEnemyStationCheat, IInitializable, ILateDisposable, IIncomeProvider,
-        IEnemyReinforcementObserver, ITickable
+        ITickable
     {
         private const float DEFAULT_INCOME = 15f;
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
@@ -117,7 +117,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
             Model.OnLevelUpgraded += RecalculateIncome;
-            _playerRegistry.RegisterAiReinforcement(Owner, this);
             _playerRegistry.RegisterAiStationCheat(Owner, this);
             _isInitialized = true;
         }
@@ -133,7 +132,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             _economyProvider.RemoveProvider(this);
             Model.OnLevelUpgraded -= RecalculateIncome;
-            _playerRegistry.UnregisterAiReinforcement(Owner);
             _playerRegistry.UnregisterAiStationCheat(Owner);
             _isInitialized = false;
         }

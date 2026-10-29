@@ -15,8 +15,6 @@ namespace EmpireAtWar.Services.Player
     {
         void RegisterSiteBuilder(PlayerId owner, ISiteFacilityBuilder builder);
 
-        void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement);
-
         void RegisterReinforcementReserve(PlayerId owner, ReinforcementModel reserve);
 
         void UnregisterReinforcementReserve(PlayerId owner);
@@ -30,8 +28,6 @@ namespace EmpireAtWar.Services.Player
         void RegisterEconomy(PlayerId owner, IEconomyProvider economy);
 
         void UnregisterSiteBuilder(PlayerId owner);
-
-        void UnregisterAiReinforcement(PlayerId owner);
 
         void UnregisterAiStationCheat(PlayerId owner);
 
@@ -51,7 +47,7 @@ namespace EmpireAtWar.Services.Player
 
         IEnemyStationCheat GetAiStationCheat(PlayerId owner);
 
-        /// <summary>Builds still arriving or purchased units waiting for deployment.</summary>
+        /// <summary>Purchased units waiting for deployment; builds still in production do not count.</summary>
         bool HasPendingReinforcement(PlayerId owner);
     }
 }

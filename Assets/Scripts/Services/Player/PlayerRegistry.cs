@@ -14,8 +14,6 @@ namespace EmpireAtWar.Services.Player
             new Dictionary<PlayerId, ReinforcementModel>();
         private readonly Dictionary<PlayerId, ISiteFacilityBuilder> _siteBuilders =
             new Dictionary<PlayerId, ISiteFacilityBuilder>();
-        private readonly Dictionary<PlayerId, IEnemyReinforcementObserver> _aiReinforcements =
-            new Dictionary<PlayerId, IEnemyReinforcementObserver>();
         private readonly Dictionary<PlayerId, IEnemyStationCheat> _aiStationCheats =
             new Dictionary<PlayerId, IEnemyStationCheat>();
         private readonly Dictionary<PlayerId, IStationSpawner> _stationSpawners =
@@ -28,11 +26,6 @@ namespace EmpireAtWar.Services.Player
         public void RegisterSiteBuilder(PlayerId owner, ISiteFacilityBuilder builder)
         {
             _siteBuilders.Add(owner, builder);
-        }
-
-        public void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement)
-        {
-            _aiReinforcements.Add(owner, reinforcement);
         }
 
         public void RegisterAiStationCheat(PlayerId owner, IEnemyStationCheat station)
@@ -58,11 +51,6 @@ namespace EmpireAtWar.Services.Player
         public void UnregisterSiteBuilder(PlayerId owner)
         {
             _siteBuilders.Remove(owner);
-        }
-
-        public void UnregisterAiReinforcement(PlayerId owner)
-        {
-            _aiReinforcements.Remove(owner);
         }
 
         public void UnregisterAiStationCheat(PlayerId owner)
@@ -112,9 +100,7 @@ namespace EmpireAtWar.Services.Player
 
         public bool HasPendingReinforcement(PlayerId owner)
         {
-            return (_aiReinforcements.TryGetValue(owner, out IEnemyReinforcementObserver reinforcement) &&
-                reinforcement.HasPendingReinforcement) ||
-                (_reinforcementReserves.TryGetValue(owner, out ReinforcementModel reserve) && reserve.HasReserve);
+            return _reinforcementReserves.TryGetValue(owner, out ReinforcementModel reserve) && reserve.HasReserve;
         }
 
         public void RegisterReinforcementReserve(PlayerId owner, ReinforcementModel reserve) =>
