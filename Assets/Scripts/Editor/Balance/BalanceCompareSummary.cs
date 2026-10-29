@@ -79,6 +79,7 @@ namespace EmpireAtWar.Editor.Balance
             Editable(card, "Speed (u/s)", Field(unit, registry, "Speed", "CruiseSpeed"), draft, usage, edit);
             Editable(card, "Height level", Field(unit, registry, "HeightTier", "Height"), draft, usage, edit);
             Editable(card, "Cost (credits)", Field(unit, registry, "Price"), draft, usage, edit);
+            Editable(card, "Population cap", Field(unit, registry, "UnitCapacity"), draft, usage, edit);
             Editable(card, "Build time (s)", Field(unit, registry, "BuildTime"), draft, usage, edit);
             Editable(card, "Available level", Field(unit, registry, "AvailableLevel"), draft, usage, edit);
 
