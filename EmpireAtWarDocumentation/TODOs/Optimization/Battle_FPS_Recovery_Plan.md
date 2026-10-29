@@ -103,7 +103,7 @@ created: 2026-10-29
 
 - [x] Phase 0 tool: `render_audit_ablation` / Editor menu; fixed camera + input lock; invariant JSON; actual seed, quality, resolution, source revision/dirty paths and nebula variant. Runtime acceptance passed: all 21 phases completed; actual field-root discovery, cancellation/restoration, pinned camera and invariant numeric JSON verified.
 - [ ] Phase 0 PC: matched Development Players `b19830c53^` / `b19830c53` / current changes. Deferred by current user instruction: no builds or performance runs; do not resume the historical build.
-- Mac measurement deferred by explicit user request on 2026-10-29; do not run in this execution.
+- [x] Mac Editor measurements completed 2026-10-29 under new explicit user authorization: two 21-phase ablations, culling sweep, camera pan, three combat CSVs and lifecycle smoke checks. See Mac Validation below. Development Player remains blocked.
 - [x] Phase 1 implementation: 1,000-unit cells + transformed AABB frustum tests; large distance 12,000; decor LOD distance 1,000. Meshes: medium 1,496; large 1,196; debris 196 each.
 - [x] Phase 2 implementation: large/medium field LODGroups (8% screen height transition; final LOD stays visible); medium uses `Asteroid_01_Surface`. Colliders/gameplay retained.
 - [x] Phase 3 implementation: cached per-renderer samples — Performant/Low 48, Balanced 64, High Fidelity 96, Ultra/Cinematic 128. Reduced resolution/bake reserved for unmet GPU target.
@@ -111,7 +111,7 @@ created: 2026-10-29
 - [x] Phase 5 implementation: 131 source-prefab particle renderer occurrences, 32 shadow casters → 0; nine shared legacy materials migrated. Eight use a compact URP-compatible pass preserving legacy alpha/premultiply formulas; double-multiply uses standard URP settings. Explosion pool expires destroyed effects during teardown; required `Play` references still fail fast.
 - [x] Phase 5 measurement: Simulator 10.001 s / 1,895-frame running capture (Cinematic, 2560×1440, 1×): average frame 5.276 ms, GPU 2.211 ms, 1.307 M triangles; live snapshot 11,319 particles, 0 shadow casters and 0 legacy particle materials. No pre-migration combat baseline; appearance remains a user gate.
 - [x] Phase 6 implementation: schedule fog write in `Update`, complete/upload in `LateUpdate`; synchronize grid access/disposal before releasing texture data. 120-frame profiler confirms worker execution (frames 10–119: workers 0.87314 ms/frame combined; main marker 0.07546 ms/frame). Music ducking gain now applies in normal `Tick`, avoiding teardown access to a destroyed AudioSource.
-- [ ] Final: matched before/after on PC; Development Player confirmation. Mac measurement explicitly deferred by user for this execution.
+- [ ] Final: matched before/after on PC; Development Player confirmation. Mac Editor evidence is recorded below; historical Mac seed is unavailable, so camera matching alone is not complete before/after acceptance.
 
 ## Absorbed Open Items (2026-10-29)
 
@@ -203,24 +203,45 @@ created: 2026-10-29
 - `Assets/Settings/Data/Models/Map/MapGenerationSettings.asset` (`RockDensity`, `EdgeMargin`)
 - `Assets/Scripts/Services/UnitExplosion/HardPointExplosionPool.cs`, `Assets/Scripts/Components/ViewComponents/Health/ExplosionVfx.cs`
 
-## Current Execution — 2026-10-29
+## Previous Source-Review Execution — 2026-10-29
 
-- User instruction: no builds or similar execution. Do not resume historical Player builds, launch Play Mode, run tests, or collect new performance measurements in this execution.
+- Historical instruction for that execution: no builds, Play Mode, tests or new performance measurements. Later user authorization permits the Mac validation recorded below; PC work remains outside scope.
 - Source review confirms Phase 0 tool and Phases 1–6 implementations already exist; no duplicate code or asset changes needed.
 - Rechecked: camera pin + invariant JSON + actual seed; 1,000-unit decor cells, transformed AABBs, 12,000-unit large cap, 1,000-unit LOD threshold; field LODGroups and asteroid surface material.
 - Rechecked: nebula samples 48/64/96/128; Performant bloom Quarter/3/HQ off and motion blur 0; particle URP compatibility path and teardown; asynchronous fog scheduling and disposal synchronization.
 - Verification this execution: source/serialized-asset inspection and scoped diff whitespace check. Existing capture numbers remain historical; no new FPS claim.
 - Plan stays active: absorbed navigation attribution, effect-specific isolation, material/texture experiments and matched performance acceptance remain unfinished. Do not treat unchecked investigations as permission for speculative optimization.
 
-## Verification — 2026-10-29 (commit `76e7222f8`)
+## Mac Validation — 2026-10-29
 
-- Implementation is committed in `76e7222f8` "Optimize battle rendering and add reusable ablation capture"; the working tree has no pending changes to plan files.
-- Phase 0: `RenderAuditAblationCapture` 21 phases; input lock + `SetPose` pin; `fieldRoot` discovery; seed in metadata; `CultureInfo.InvariantCulture` JSON.
-- Phase 1: `DecorAsteroidCell` 1,000-unit cells, transformed AABB (abs-matrix extents), cell `IsInside` fast path; SceneContext 2,200/5,000/12,000, LOD 1,000; size→LOD mesh mapping correct (Large/Medium/Debris A/B); all LOD meshes 1 submesh = 1 material each.
-- Phase 2: both field prefabs have `LODGroup` 0.08 → 0 (final LOD stays visible); medium + large use `Asteroid_01_Surface`.
-- Phase 3: `MatchNebula` MPB `_Samples` 48 (Performant/Low) / 64 (Balanced) / 96 (High Fidelity) / 128 (Ultra/Cinematic); quality indices match `QualitySettings.asset`.
-- Phase 4: `PerformantVolumeProfile` motion blur 0, bloom HQ off / Quarter / 3 mips; `PerformantPostProcessing` volume global priority 100, toggled only at quality 0.
-- Phase 5: 0 particle shadow casters in `Assets/Prefabs`; 29 remaining legacy-shader materials are unreferenced by prefabs/scenes; 7 materials on `ParticleLegacyUnlit`, `explosion03` on URP particles.
-- Phase 6: fog schedule `Update` → complete/`Apply` `LateUpdate`; every grid accessor and `Dispose` completes pending work first; music gain applied only in `Tick`; pool skips destroyed effects.
-- Note: `RenderAuditAblationCapture.cs` is 238 lines (> 200 guideline); Editor-only, split only if extended.
-- Not run: tests, Play Mode, builds, captures (repo override + user deferral). No new FPS claim.
+### Decision
+
+- Scope: measurement and issue collection only; user superseded the earlier Mac deferral. No implementation, material experiments or PC work.
+- Evidence: [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research#Mac Validation — 2026-10-29|Mac validation data]]; local report `Logs/BattleAudit/20261029-Mac-FPS-Recovery/results.json`.
+- Plan remains `in-progress`: Player confirmation, matched historical acceptance and absorbed implementation/investigation items remain unfinished.
+
+### Implementation
+
+- [x] Two full 21-phase on/off/restored ablations; same seed `-802094515`, nebula variant 2, exact historical A/B camera poses, Performant, camera 2560×1440, render scale 1, MSAA 2×, 1× speed.
+- [x] Performant stack: nebula 48 samples; bloom Quarter / 3 mips / HQ false; motion blur 0. Live particle shadow casters 0; legacy particle renderers 0.
+- [x] Runtime bounds checks: 15,000 decor instances, 13,793 rotated/scaled; 169 camera poses, 1,243 edge-visible instances; 0 false rejections/acceptances vs direct AABB selection; 0 escaped transformed corners/cell bounds (0.01-unit tolerance).
+- [x] Decor-heavy 10 s CSV: 63.5 FPS mean, 2.117 M triangles mean; 12 s camera sweep: 50.3 FPS mean, p95 30.27 ms / p99 73.54 ms / max 404.51 ms, peak 2.169 M triangles.
+- [x] Combat: 2 Venator + 4 Arquitens vs 2 Providence + 4 Munificent; hangars on, distance 500, normal speed; three consecutive ≥10 s captures, 2 s gaps. FPS 71.1 / 67.4 / 74.1; p99 26.27 / 27.70 / 25.09 ms. Running combat and deaths recorded; not fixed-population repeats.
+- [x] Simulation restart, pause/resume and 4× transition smoke checks; skirmish and combat exit; 0 recorded console errors, including no recurrence of the two teardown exceptions. These checks do not certify the full VFX matrix.
+- [x] Cleanup verified: input released, MainMenuScene clean, Play Mode stopped, Performant retained, time scale 1, Profiler/Frame Debugger off. No production code/assets changed; no automated test suite run.
+
+### Important Values
+
+- B enabled/restored phases: 77.1–91.4 FPS, ~0.110 M triangles; exceeds 45 FPS target in this run. A enabled/restored: 68.2–138.2 FPS, ~0.095 M triangles; ≥90 FPS is not sustained across every sample.
+- B nebula: enabled 12.033 ms → off 5.110 ms → restored 12.243 ms; bracketed frame delta ≈7.03 ms at 48 samples. Largest isolated residual cost; not a validated GPU scope duration.
+- Historical map seed unavailable; Audit A historical preset unknown. Current battle grew from 4 ships/6 squadrons after B to 27/55 after A. Do not claim fully matched historical speedup or a universal 100+ FPS result.
+
+### TODO
+
+- [ ] Investigate camera-sweep hitches: p99 73.54 ms, one 404.51 ms interval. One sweep; cause unassigned. No corrective change made.
+- [ ] Mac Development Player: source blocker `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs:28` throws for every non-Windows target. Build dry-run passed but omits post-build callbacks; actual build not attempted because this known callback would fail. Requires separately authorized implementation.
+- [ ] Validate Mac GPU timing interpretation: FrameTimingManager/Profiler GPU values exceed actual frame intervals; retain as asynchronous Editor counters, never derive FPS from them.
+- [ ] Capture metadata/tool defects: CSV reads `Screen` 642×1156 despite camera 2560×1440; camera-render `screenshot` omits instanced decor/HUD, while composited `ScreenCapture` includes them; combat main-thread counter row 3 includes capture-start setup spikes.
+- [ ] Full visual LOD/edge/pan acceptance, gameplay parity, effect-family isolation, faction/mount/lifecycle matrix, PC historical comparisons and remaining absorbed work are still open. Existing Frame Debugger exception was not retested.
+
+- [ ] Scene-transition warning: 3 × `There can be only one active Event System.` at 13:30:52, 13:31:00 and 13:34:32 UTC during menu/battle transitions. Final error log remains empty; warning ownership/cause not investigated or fixed. Evidence: `Logs/BattleAudit/20261029-Mac-FPS-Recovery/warnings-final.json`.

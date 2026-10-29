@@ -169,9 +169,138 @@ if (FrameTimingManager.GetLatestTimings(1, timings) > 0) gpu.Add(timings[0].gpuF
 - Returned to MainMenu and stopped the agent-owned Play session. Only saved/clean `MainMenuScene` remained. Primary Editor closed through Unity API to free RAM for sequential historical builds; reopen the original project after comparisons.
 - Temporary screenshot imported by Pipeline into `Assets/Logs` was copied to `Logs/RenderAudit/combat-screen.png`; verified the folder contained only this capture and deleted it through AssetDatabase. No temporary capture assets remain under Assets.
 
-## Source Review — 2026-10-29
+## Previous Source Review — 2026-10-29
 
-- Current user instruction defers all builds and performance runs; historical-build import/resume notes above describe earlier work, not the current execution.
+- That execution deferred builds and performance runs. The later Mac-only authorization and fresh measurements are recorded below; PC comparisons remain outside this execution.
 - Live source/assets confirm the Phase 0 tool and Phase 1–6 implementations. No code/assets changed in this execution.
 - Existing research tables and capture numbers preserved. No fresh benchmark, build, Play Mode session, test or shader compilation run.
 - Remaining absorbed investigations need attribution/visual evidence before selecting additional optimizations; plan remains active.
+
+## Mac Validation — 2026-10-29
+
+### Goal
+
+- Current user scope: Mac measurement and issue collection; no fixes or unrelated plan execution.
+- Local report: `Logs/BattleAudit/20261029-Mac-FPS-Recovery/results.json`; CSVs, diagnostic scripts, screenshots, snapshots and lifecycle records share that directory.
+- Source `76e7222f85f6da5d38c2dd0688d38166868a7ed7`; source identity/dirty paths recorded per ablation. Existing Obsidian workspace changes retained; Graphify automatically refreshed generated files.
+
+### Implementation
+
+- MacBook Air, Apple M2 (10 GPU cores), 8 GB RAM; Unity 6000.4.7f1, Metal, OSXEditor; AC power, low-power mode off. No thermal/performance warning reported by `pmset`; no claim that throttling was excluded.
+- Performant 0; camera 2560×1440, render scale 1, MSAA 2×, shadow distance 50, VSync 0, target FPS -1, 1× simulation.
+- Effective stack: filament MPB 48 samples; bloom Quarter / 3 mips / HQ false; motion blur 0. Both skirmish and combat snapshots: 0 particle shadow casters, 0 legacy particle-material renderers.
+- Seed `-802094515`, nebula variant 2; field-renderer count 10,870 includes LOD renderers. Both 21-phase captures completed: 2 s settle + 6 s sample; camera/input pinned; toggles restored after each isolation.
+- Historical seed unavailable; Audit A historical preset unknown. Same historical camera poses do not establish a matched pre/post optimization benchmark.
+- Workload evolved: after B, 4 ships / 6 squadrons / 139 particle systems; after A, 27 ships / 55 squadrons / 729 systems. The large A drift is not isolated to one cause.
+
+### Important Values
+
+#### Audit B pose — first capture
+
+- `Logs/RenderAudit/20261029T132151885Z-ablation/ablation.json`.
+- Pose `(1198.28711,500,724.2209)`, quaternion `(0.46174863,0,0,0.8870109)`, FOV 29.8755°.
+- Enabled/restored 77.15–91.40 FPS; ~0.110 M triangles. 45 FPS gate met in this run; no universal 100+ FPS claim.
+- Nebula bracket: 12.033 → 5.110 → 12.243 ms; ≈7.03 ms mean enabled-minus-off frame cost. Largest residual isolation result at 48 samples.
+- Post-FX bracket ≈0.68 ms; sun shadows/hazards/stars/decor deltas are smaller or confounded by variation. No confident fine-grained GPU ranking.
+
+| Phase | FPS | Mean ms | p95 ms | GPU counter median ms* | Median triangles |
+|---|---:|---:|---:|---:|---:|
+| baseline | 91.40 | 10.941 | 12.165 | 28.567 | 110683 |
+| decor_off | 89.70 | 11.148 | 12.485 | 29.977 | 110641 |
+| decor_restored | 89.98 | 11.114 | 12.236 | 29.448 | 110603 |
+| field_rocks_off | 88.32 | 11.323 | 12.773 | 31.154 | 110603 |
+| field_rocks_restored | 81.40 | 12.285 | 13.610 | 34.333 | 110403 |
+| all_rocks_off | 83.74 | 11.941 | 13.157 | 32.945 | 110481 |
+| all_rocks_restored | 83.10 | 12.033 | 13.602 | 32.228 | 110483 |
+| nebula_off | 195.69 | 5.110 | 5.667 | 6.018 | 113831 |
+| nebula_restored | 81.68 | 12.243 | 13.920 | 34.037 | 110405 |
+| stars_off | 88.49 | 11.301 | 12.704 | 30.574 | 97483 |
+| stars_restored | 85.81 | 11.653 | 12.944 | 31.990 | 110523 |
+| hazard_dust_off | 81.33 | 12.295 | 13.430 | 34.344 | 102023 |
+| hazard_dust_restored | 79.76 | 12.538 | 13.741 | 34.888 | 110363 |
+| fog_off | 82.79 | 12.079 | 13.343 | 32.062 | 110243 |
+| fog_restored | 85.00 | 11.765 | 12.892 | 30.956 | 110521 |
+| postfx_off | 88.20 | 11.338 | 12.466 | 30.513 | 110556 |
+| postfx_restored | 81.50 | 12.270 | 13.335 | 34.230 | 110407 |
+| sun_shadows_off | 79.34 | 12.604 | 13.795 | 35.104 | 110367 |
+| sun_shadows_restored | 82.60 | 12.106 | 13.208 | 33.663 | 110447 |
+| rocks_nebula_postfx_shadows_off | 253.38 | 3.947 | 4.781 | 5.283 | 114706 |
+| restored | 77.15 | 12.962 | 14.703 | 35.519 | 110327 |
+
+
+#### Audit A pose — second capture
+
+- `Logs/RenderAudit/20261029T132603232Z-ablation/ablation.json`.
+- Pose `(-1141.30347,664.9882,-1838.10327)`, same rotation/FOV. Later zoom returns to the prior 500-unit zoom target after pin release.
+- Enabled/restored 68.19–138.16 FPS; ~0.095 M triangles. Final restored 91.03 FPS; sustained ≥90 FPS not proved.
+
+| Phase | FPS | Mean ms | p95 ms | GPU counter median ms* | Median triangles |
+|---|---:|---:|---:|---:|---:|
+| baseline | 138.16 | 7.238 | 8.987 | 18.231 | 94653 |
+| decor_off | 133.13 | 7.511 | 9.856 | 19.236 | 94653 |
+| decor_restored | 91.42 | 10.938 | 12.996 | 29.856 | 94653 |
+| field_rocks_off | 77.37 | 12.924 | 14.682 | 36.218 | 60225 |
+| field_rocks_restored | 68.19 | 14.664 | 16.644 | 41.921 | 94653 |
+| all_rocks_off | 67.39 | 14.839 | 17.157 | 41.162 | 60225 |
+| all_rocks_restored | 69.92 | 14.302 | 16.941 | 40.706 | 94655 |
+| nebula_off | 118.58 | 8.433 | 10.682 | 21.956 | 94645 |
+| nebula_restored | 85.52 | 11.694 | 13.965 | 31.879 | 94651 |
+| stars_off | 92.94 | 10.759 | 12.364 | 27.440 | 81531 |
+| stars_restored | 94.32 | 10.603 | 12.704 | 29.179 | 94651 |
+| hazard_dust_off | 101.10 | 9.891 | 11.873 | 26.255 | 86275 |
+| hazard_dust_restored | 100.66 | 9.934 | 11.971 | 26.262 | 94655 |
+| fog_off | 107.55 | 9.298 | 11.533 | 24.535 | 94455 |
+| fog_restored | 101.28 | 9.873 | 12.077 | 26.384 | 94651 |
+| postfx_off | 108.18 | 9.244 | 11.336 | 24.077 | 94642 |
+| postfx_restored | 91.77 | 10.897 | 13.001 | 28.857 | 94657 |
+| sun_shadows_off | 93.76 | 10.666 | 12.564 | 28.647 | 94649 |
+| sun_shadows_restored | 94.28 | 10.606 | 12.303 | 27.765 | 94649 |
+| rocks_nebula_postfx_shadows_off | 170.78 | 5.856 | 7.511 | 9.918 | 60202 |
+| restored | 91.03 | 10.986 | 13.003 | 28.732 | 94651 |
+
+- *GPU values are preserved FrameTimingManager counters. They exceed rendered frame intervals, also in the Profiler/CSV. Treat as unresolved asynchronous Editor telemetry; never infer FPS or add CPU/GPU values. Frame intervals are the primary performance evidence.*
+
+#### Decor and camera sweep
+
+- Runtime diagnostic `culling-check.json`: 15,000 instances; 13,793 rotated/scaled; 169 camera poses; 2,535,000 instance/pose checks; 1,243 edge-visible cases.
+- Accelerated cell selection vs direct AABB selection: 0 false negatives / 0 false positives. Transformed source/LOD bounds: 0 corner escapes / 0 cell-bound escapes, tolerance 0.01 units.
+- Bounds/math evidence only; full rendered LOD silhouettes, transitions and gameplay parity remain open.
+- Decor-heavy pose `(2250,500,-750)`: CSV `battle_20261029_132932_850.csv`, 634 frames / 10.003 s; mean 15.745 ms (~63.5 FPS), median 15.906, p95 27.053, p99 30.876, max 34.007 ms. Mean 2.117 M / max 2.121 M triangles.
+- CSV percentiles here use sorted floor(q×(N−1)); recorder summary uses its own quantile convention. Raw CSV/summary retained.
+- `camera-pan.json`: 12 s path, first 2 s excluded, 503 intervals; mean 50.34 FPS, median 16.751 ms, p95 30.271, p99 73.543, max 404.508 ms at elapsed 4.060 s. Peak 2.169 M triangles. One sweep; cause of hitches unassigned.
+- Live decor verified in composited `decor-heavy-live.png`. Camera-render `decor-heavy.png` omits the instanced rocks and HUD despite the live view containing them; reject that image as culling evidence.
+
+#### Combat
+
+- Simulation: 2 Venator + 4 Arquitens vs 2 Providence + 4 Munificent; hangars on, distance 500, normal speed; fixed camera `(0,700,-650)`, pitch 55°, 2560×1440.
+- Three consecutive captures, 2 s gaps, no Profiler recording during CSVs. These are evolving workload windows, not three deterministic matched repeats.
+
+| CSV suffix | Frames / duration | Mean ms / FPS | Median ms | p95 / p99 ms | Mean triangles |
+|---|---:|---:|---:|---:|---:|
+| 133128_205 | 710 / 10.001 s | 14.055 / 71.15 | 14.195 | 21.637 / 26.272 | 897,564 |
+| 133140_488 | 673 / 10.005 s | 14.847 / 67.35 | 14.881 | 20.767 / 27.699 | 636,353 |
+| 133152_786 | 741 / 10.006 s | 13.488 / 74.14 | 13.889 | 15.061 / 25.090 | 359,089 |
+
+- Boundary snapshots: ships 10 → 9, squadrons 8 → 3, particles 13,571–17,269. Deaths and ongoing combat recorded; no frame-duration sample >50 ms, navigation >10 ms or GC allocation >1 MB.
+- Main-thread recorder maxima 487.59 / 226.81 / 241.61 ms occur at CSV row/frame 3; simultaneous frame-duration samples are 11.39 / 13.44 / 11.11 ms. Capture-start/setup counter lag is not steady combat latency.
+- CSV `resolution=642x1156` comes from `Screen`; independent Camera dimensions are 2560×1440. Metadata defect preserved, not corrected by editing raw files.
+- No matched pre-migration Mac combat baseline; no isolated VFX speedup claim. Full faction/mount/ability/impact/reuse matrix remains outside this pass.
+
+#### Profiler and lifecycle
+
+- B attribution: `Logs/RenderAudit/20261029T132510026Z-profiler/`, 120 frames, completed.
+- Combat attribution: `Logs/RenderAudit/20261029T133232329Z-profiler/`, 90 frames, completed. Heavy capture/export overhead; use CSVs for unprofiled timing.
+- B exported frames 10–119: decor LateUpdate self 0.02217 ms/frame; fog main marker 0.2130 ms/frame, worker 1.1184 ms/frame. Worker execution confirmed; top-40 truncation makes these exported-marker totals, not complete raw timeline bounds.
+- Combat top main self markers: wait 6.018 ms/frame, EditorLoop 2.557, Profiler.FlushMemoryCounters 0.875, particle geometry scheduling 0.118, ParticleSystem.Update 0.062. Do not add parallel/nested durations or attribute Editor waits to gameplay computation.
+- Restarted the simulation with the same setup; new running model observed. Pause 1→0→1 and speed 1→4 observed across frames; later battle end could pause automatically. Exiting restored MainMenu time scale 1.
+- 0 recorded console errors after skirmish, combat, restart and teardown; neither historical MissingReferenceException recurred. No claim that all effect lifecycle cases passed.
+- Final: clean saved MainMenuScene, Play Mode stopped, Performant 0, time scale 1, Profiler/Frame Debugger off, input lock released. No production code/assets modified; no automated test suite run.
+
+### TODO
+
+- Mac Player blocker: `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs:28` throws `BuildFailedException` for every non-Windows target. macOS module is installed; dry-run validation passes but skips this callback. Actual build not attempted because the source guarantees callback failure. Reported; no fix performed.
+- Investigate the pan hitches and nebula residual cost in a separate implementation task; retain all current settings.
+- Validate GPU counters, fix screenshot/CSV metadata and capture-start counter interpretation separately. Existing Frame Debugger exception not retested.
+- PC historical/matched Player comparisons, full VFX isolation/variation matrix, visual acceptance and absorbed experiments/navigation investigation remain open.
+
+- Final warning readback: 3 × `There can be only one active Event System.` at 13:30:52.062, 13:31:00.249 and 13:34:32.181 UTC, corresponding to scene transitions. `warnings-final.json` preserves stacks; `errors-after-stop.json` confirms 0 errors after stopping Play Mode. Cause not attributed; no fix performed.
