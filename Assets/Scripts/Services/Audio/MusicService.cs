@@ -95,7 +95,7 @@ namespace EmpireAtWar.Services.Audio
         public void SetVoiceDucking(bool active)
         {
             _duckGain = active ? VOICE_DUCK_GAIN : 1f;
-            _audioSource.volume = _fadeVolume * _duckGain;
+            // Tick applies the gain. Scope teardown can reset ducking after Unity destroyed the source.
         }
 
         public void Tick()

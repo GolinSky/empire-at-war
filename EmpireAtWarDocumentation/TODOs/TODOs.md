@@ -56,7 +56,9 @@
 ### Optimization
 
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]
-  - Single rendering owner since 2026-10-29: absorbed Rendering Audit, Particle Rendering and Projectile VFX plans, plus hazard decor/overdraw measurement.
+  - 2026-10-29: Phase 0 tool and Phases 1–6 implementations source-verified. Builds/performance runs deferred by user; absorbed attribution/experiments and visual/performance acceptance remain open.
+  - In progress 2026-10-29: decor cell/frustum culling + 12,000-unit limit; meshes 1,496/1,196/196 tris; field LOD/material fix; per-quality nebula 48/64/96/128; Performant bloom/motion profile; asynchronous fog and VFX migration. Source/asset verification and exact legacy blend correction complete; live capture and historical Development Player comparison ongoing. No tests run; Mac measurement explicitly skipped by user.
+  - Single rendering owner since 2026-10-29: absorbed Rendering Audit, Particle Rendering and Projectile VFX plans, plus hazard decor/overdraw measurement; newly absorbed items remain outside this execution's listed phases.
 
 - [ ] **Pool ship contexts to remove spawn spikes** → [[TODOs/Optimization/Ship_Pooling_Plan|Ship Pooling]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.

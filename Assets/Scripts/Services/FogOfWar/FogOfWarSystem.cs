@@ -106,10 +106,10 @@ namespace EmpireAtWar.Services.FogOfWar
         // Renderer.material returns an instance this component owns; the mask texture is created here too.
         private void OnDestroy()
         {
+            // A scheduled write owns the texture's pixel data until it completes.
+            if (_grid != null) _grid.Dispose();
             Destroy(_fogMaterial);
             Destroy(_fogTexture);
-            // The grid exists only once InitializeArea has run.
-            if (_grid != null) _grid.Dispose();
         }
 
         private void Update()
@@ -124,8 +124,13 @@ namespace EmpireAtWar.Services.FogOfWar
                 UpdateFogTargets();
             }
 
-            if (_grid.UpdateAndWriteBytes(fadeSpeed * Time.deltaTime, _fogTexture.GetPixelData<byte>(0),
-                    rebuildTargets, keepHistory, edgeSoftness, 1f))
+            _grid.ScheduleUpdateAndWriteBytes(fadeSpeed * Time.deltaTime, _fogTexture.GetPixelData<byte>(0),
+                rebuildTargets, keepHistory, edgeSoftness, 1f);
+        }
+
+        private void LateUpdate()
+        {
+            if (_grid.CompleteWrite())
             {
                 _fogTexture.Apply();
             }

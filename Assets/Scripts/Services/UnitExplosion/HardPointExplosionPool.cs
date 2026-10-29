@@ -66,9 +66,11 @@ namespace EmpireAtWar.Services.UnitExplosion
         private void FadeAt(int index)
         {
             ExplosionVfx explosion = _active[index].Explosion;
+            _active.RemoveAt(index);
+            // Scene unload may destroy the pool's particle objects before the hardpoint disables.
+            if (explosion == null || explosion.HasExpired) return;
             explosion.StopEmitting();
             _fading.Add(explosion);
-            _active.RemoveAt(index);
         }
 
         public void Tick()
@@ -76,6 +78,11 @@ namespace EmpireAtWar.Services.UnitExplosion
             for (int i = _active.Count - 1; i >= 0; i--)
             {
                 ActiveExplosion active = _active[i];
+                if (active.Explosion == null || active.Explosion.HasExpired)
+                {
+                    _active.RemoveAt(i);
+                    continue;
+                }
                 if (active.Anchor == null || !active.Anchor.gameObject.activeInHierarchy)
                 {
                     FadeAt(i);
@@ -94,6 +101,11 @@ namespace EmpireAtWar.Services.UnitExplosion
 
             for (int i = _fading.Count - 1; i >= 0; i--)
             {
+                if (_fading[i] == null || _fading[i].HasExpired)
+                {
+                    _fading.RemoveAt(i);
+                    continue;
+                }
                 if (!_fading[i].IsPlaying)
                 {
                     _idle.Add(_fading[i]);

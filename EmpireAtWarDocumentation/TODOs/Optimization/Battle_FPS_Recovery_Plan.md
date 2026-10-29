@@ -101,16 +101,17 @@ created: 2026-10-29
 
 ## TODO
 
-- [x] Phase 0 tool: `render_audit_ablation` / Editor menu; fixed camera + input lock; invariant JSON; actual seed, quality, resolution, source revision/dirty paths and nebula variant. Runtime capture acceptance in progress.
-- [ ] Phase 0 PC: matched Development Players `b19830c53^` / `b19830c53` / current changes. Isolated baseline build importing.
+- [x] Phase 0 tool: `render_audit_ablation` / Editor menu; fixed camera + input lock; invariant JSON; actual seed, quality, resolution, source revision/dirty paths and nebula variant. Runtime acceptance passed: all 21 phases completed; actual field-root discovery, cancellation/restoration, pinned camera and invariant numeric JSON verified.
+- [ ] Phase 0 PC: matched Development Players `b19830c53^` / `b19830c53` / current changes. Deferred by current user instruction: no builds or performance runs; do not resume the historical build.
 - Mac measurement deferred by explicit user request on 2026-10-29; do not run in this execution.
 - [x] Phase 1 implementation: 1,000-unit cells + transformed AABB frustum tests; large distance 12,000; decor LOD distance 1,000. Meshes: medium 1,496; large 1,196; debris 196 each.
 - [x] Phase 2 implementation: large/medium field LODGroups (8% screen height transition; final LOD stays visible); medium uses `Asteroid_01_Surface`. Colliders/gameplay retained.
 - [x] Phase 3 implementation: cached per-renderer samples — Performant/Low 48, Balanced 64, High Fidelity 96, Ultra/Cinematic 128. Reduced resolution/bake reserved for unmet GPU target.
-- [x] Phase 4 implementation: Performant bloom quarter resolution, max 3 mips, HQ filtering off; motion blur intensity 0. Profile saved/read back; runtime stack verification pending.
-- [ ] Phase 5: particle shadows off, legacy → URP particle materials, combat measurement, explosion pool exception.
-- [ ] Phase 6: FogFadeWriteJob off main thread.
-- [ ] Final: matched before/after on PC and Mac; Development Player confirmation.
+- [x] Phase 4 implementation: Performant bloom quarter resolution, max 3 mips, HQ filtering off; motion blur intensity 0. Saved/read back and verified in the actual camera stack: Performant (index 0) 48 samples / 3 bloom mips / Quarter / HQ false / motion blur 0. A priority-100 sparse volume is active only on Performant; Cinematic restores original effects.
+- [x] Phase 5 implementation: 131 source-prefab particle renderer occurrences, 32 shadow casters → 0; nine shared legacy materials migrated. Eight use a compact URP-compatible pass preserving legacy alpha/premultiply formulas; double-multiply uses standard URP settings. Explosion pool expires destroyed effects during teardown; required `Play` references still fail fast.
+- [x] Phase 5 measurement: Simulator 10.001 s / 1,895-frame running capture (Cinematic, 2560×1440, 1×): average frame 5.276 ms, GPU 2.211 ms, 1.307 M triangles; live snapshot 11,319 particles, 0 shadow casters and 0 legacy particle materials. No pre-migration combat baseline; appearance remains a user gate.
+- [x] Phase 6 implementation: schedule fog write in `Update`, complete/upload in `LateUpdate`; synchronize grid access/disposal before releasing texture data. 120-frame profiler confirms worker execution (frames 10–119: workers 0.87314 ms/frame combined; main marker 0.07546 ms/frame). Music ducking gain now applies in normal `Tick`, avoiding teardown access to a destroyed AudioSource.
+- [ ] Final: matched before/after on PC; Development Player confirmation. Mac measurement explicitly deferred by user for this execution.
 
 ## Absorbed Open Items (2026-10-29)
 
@@ -120,18 +121,19 @@ created: 2026-10-29
 
 ### From [[Done/Optimization/Battle_Rendering_Performance_Audit]]
 
-- [ ] Implement and verify camera-frustum culling with instanced asteroid materials.
+- [x] Implement camera-frustum culling with instanced asteroid materials; source rechecked 2026-10-29. Runtime edge/pan acceptance remains below.
 - [ ] Verify offscreen rejection, frustum-edge visibility, rotated/scaled bounds, camera movement and unchanged gameplay.
 - [ ] Repeat fixed-camera on/off/restored and before/after captures with matched quality, workload and actual render resolution.
 - [ ] Measure nebula/post-processing GPU cost and representative explosion/projectile load.
-- [ ] Review mesh LOD/distance policy, legacy particle materials, shadow flags and culling behavior.
+- [x] Review mesh LOD/distance policy, legacy particle materials, shadow flags and culling implementation against live source/assets (2026-10-29); visual acceptance remains open.
 - [ ] Fix audit-tool exceptions and validate GPU-counter interpretation; confirm results in a Development Player.
 
 ### From [[Done/Optimization/Battle_Particle_Rendering_Optimization_Plan]]
 
 - [ ] Isolate smokeSheet03 (247 draws), BlasterBolt (183), BlasterBolt_Tiled (111) independently; record visible effects, vertices, material/state groups, submission CPU and GPU scope time.
 - [ ] Separate batching/submission experiments from smoke size/lifetime/density/overdraw experiments; change one variable, restore diagnostic toggles.
-- [ ] Test shadows only after higher-priority groups: old scope 0.218 ms GPU; 347 ship + 7 wreck draws, no combat-particle ShadowCaster draws. Measure caster distance/LOD/wreck lifetime; no blanket particle-shadow change.
+- [x] Particle-shadow policy reconciled: the active 2026-10-29 user request explicitly disables all particle casters, superseding the historical no-blanket-change restriction. Historical evidence retained: 0.218 ms GPU scope; 347 ship + 7 wreck draws; no combat-particle ShadowCaster draws in that old capture.
+- [ ] Separately measure ship/wreck caster distance, LOD and wreck lifetime after higher-priority groups; ship/wreck shadow settings were not changed by this execution.
 - [ ] Obtain usable motion-blur timing with matched variants. Bloom 0.046 ms and SSAO 0.055 ms in the old adjacent snapshot → low priority; 16 bloom passes are mostly reduced resolution.
 - [ ] Record matched baseline and isolate cost.
   - Compare battle start (~200 FPS / 5 ms) with mid-battle (~12 FPS / 83.3 ms); values are user observations, not recorded benchmarks.
@@ -200,3 +202,12 @@ created: 2026-10-29
 - `Assets/Settings/Render Pipelines/URP-*.asset`
 - `Assets/Settings/Data/Models/Map/MapGenerationSettings.asset` (`RockDensity`, `EdgeMargin`)
 - `Assets/Scripts/Services/UnitExplosion/HardPointExplosionPool.cs`, `Assets/Scripts/Components/ViewComponents/Health/ExplosionVfx.cs`
+
+## Current Execution — 2026-10-29
+
+- User instruction: no builds or similar execution. Do not resume historical Player builds, launch Play Mode, run tests, or collect new performance measurements in this execution.
+- Source review confirms Phase 0 tool and Phases 1–6 implementations already exist; no duplicate code or asset changes needed.
+- Rechecked: camera pin + invariant JSON + actual seed; 1,000-unit decor cells, transformed AABBs, 12,000-unit large cap, 1,000-unit LOD threshold; field LODGroups and asteroid surface material.
+- Rechecked: nebula samples 48/64/96/128; Performant bloom Quarter/3/HQ off and motion blur 0; particle URP compatibility path and teardown; asynchronous fog scheduling and disposal synchronization.
+- Verification this execution: source/serialized-asset inspection and scoped diff whitespace check. Existing capture numbers remain historical; no new FPS claim.
+- Plan stays active: absorbed navigation attribution, effect-specific isolation, material/texture experiments and matched performance acceptance remain unfinished. Do not treat unchecked investigations as permission for speculative optimization.

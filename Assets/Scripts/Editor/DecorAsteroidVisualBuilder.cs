@@ -10,6 +10,7 @@ namespace EmpireAtWar.Editor
     public static class DecorAsteroidVisualBuilder
     {
         private const string SCENE_CONTEXT_PATH = "Assets/Prefabs/View/LifetimeScopes/SceneContext.prefab";
+        private const string LOD_FOLDER = "Assets/Art/Models/Asteroids/BattleRockLods/";
 
         public static void Build()
         {
@@ -46,14 +47,16 @@ namespace EmpireAtWar.Editor
 
         private static void Add(List<DecorAsteroidMesh> meshes, GameObject prefab, AsteroidSize size)
         {
-            MeshFilter[] filters = prefab.GetComponentsInChildren<MeshFilter>(true);
-            if (filters.Length != 1)
-                throw new InvalidOperationException($"Decor rock {prefab.name} must contain one mesh.");
-            MeshFilter filter = filters[0];
+            MeshFilter filter = prefab.GetComponent<MeshFilter>();
+            if (filter == null)
+                throw new InvalidOperationException($"Decor rock {prefab.name} must contain a root mesh.");
             MeshRenderer renderer = filter.GetComponent<MeshRenderer>();
             Matrix4x4 local = Matrix4x4.Scale(prefab.transform.localScale) *
                 prefab.transform.worldToLocalMatrix * filter.transform.localToWorldMatrix;
-            meshes.Add(new DecorAsteroidMesh(size, filter.sharedMesh, renderer.sharedMaterials, local));
+            Mesh lowDetail = AssetDatabase.LoadAssetAtPath<Mesh>(LOD_FOLDER + prefab.name + "_LOD1.asset");
+            if (lowDetail == null)
+                throw new InvalidOperationException($"Decor rock {prefab.name} is missing its LOD mesh.");
+            meshes.Add(new DecorAsteroidMesh(size, filter.sharedMesh, renderer.sharedMaterials, local, lowDetail));
         }
     }
 }

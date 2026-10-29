@@ -10,6 +10,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public IReadOnlyList<Renderer> Renderers => renderers;
         public bool IsPlaying => particles.IsAlive(true);
+        public bool HasExpired => particles == null;
 
         public void Play() => particles.Play();
 

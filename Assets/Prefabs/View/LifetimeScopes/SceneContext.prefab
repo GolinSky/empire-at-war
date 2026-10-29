@@ -512,6 +512,8 @@ MonoBehaviour:
   - <Size>k__BackingField: 0
     <Mesh>k__BackingField: {fileID: 2942462102123226655, guid: bc2f319e378053f4b9ea18ace01cdfdc,
       type: 3}
+    <LowDetailMesh>k__BackingField: {fileID: 4300000, guid: 470465c6dd6039c4dafdea7d1a5942a3,
+      type: 2}
     <Materials>k__BackingField:
     - {fileID: 2100000, guid: ff43801ad8a50574db1db7d2a0e86aca, type: 2}
     <LocalTransform>k__BackingField:
@@ -534,8 +536,10 @@ MonoBehaviour:
   - <Size>k__BackingField: 1
     <Mesh>k__BackingField: {fileID: 6412623515549900752, guid: 3bfdf381e8652d543a4fd74f46116c42,
       type: 3}
+    <LowDetailMesh>k__BackingField: {fileID: 4300000, guid: 861ff7dee2edca64d99c085d7af1c6e0,
+      type: 2}
     <Materials>k__BackingField:
-    - {fileID: 2100000, guid: 2456d64a955fcb8448e4998a3c9aaff2, type: 2}
+    - {fileID: 2100000, guid: ff43801ad8a50574db1db7d2a0e86aca, type: 2}
     <LocalTransform>k__BackingField:
       e00: 1
       e01: 0
@@ -556,6 +560,8 @@ MonoBehaviour:
   - <Size>k__BackingField: 2
     <Mesh>k__BackingField: {fileID: 973877516759717424, guid: 3bfdf381e8652d543a4fd74f46116c42,
       type: 3}
+    <LowDetailMesh>k__BackingField: {fileID: 4300000, guid: 1cb91959555d1b4478e7bc7bc4638eff,
+      type: 2}
     <Materials>k__BackingField:
     - {fileID: 2100000, guid: 2456d64a955fcb8448e4998a3c9aaff2, type: 2}
     <LocalTransform>k__BackingField:
@@ -578,6 +584,8 @@ MonoBehaviour:
   - <Size>k__BackingField: 2
     <Mesh>k__BackingField: {fileID: -2845505134294023193, guid: 3bfdf381e8652d543a4fd74f46116c42,
       type: 3}
+    <LowDetailMesh>k__BackingField: {fileID: 4300000, guid: 9d258a267e03a344d947258eeea6c0d7,
+      type: 2}
     <Materials>k__BackingField:
     - {fileID: 2100000, guid: 2456d64a955fcb8448e4998a3c9aaff2, type: 2}
     <LocalTransform>k__BackingField:
@@ -599,6 +607,71 @@ MonoBehaviour:
       e33: 1
   debrisDistance: 2200
   mediumDistance: 5000
+  largeDistance: 12000
+  lodDistance: 1000
+--- !u!1 &5548649388298642683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7583294571638639192}
+  - component: {fileID: 7672256169675434142}
+  - component: {fileID: 4630274831160471991}
+  m_Layer: 0
+  m_Name: Performant Post Processing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7583294571638639192
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548649388298642683}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5922927045858997487}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7672256169675434142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548649388298642683}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 100
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 242ca60e55820be46a5d8ef032b493ec, type: 2}
+--- !u!114 &4630274831160471991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548649388298642683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9f75b1d4aafd7498b732824a979cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Environment.PerformantPostProcessing
+  volume: {fileID: 7672256169675434142}
 --- !u!1 &5707104808345431472
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,6 +770,7 @@ Transform:
   - {fileID: 662069581004455885}
   - {fileID: 1369556255246066554}
   - {fileID: 4655082402915932404}
+  - {fileID: 7583294571638639192}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8744064952395461264
