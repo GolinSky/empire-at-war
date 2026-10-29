@@ -5,6 +5,12 @@
 
 ## Active Tasks
 
+### Documentation
+
+- [ ] **Clean up vault guidance, duplicate ownership and navigation** → [[TODOs/Documentation/Vault_Guidance_And_Backlog_Cleanup|Cleanup plan]]; [[TODOs/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research|Audit report 2026-10-29]]
+  - Audit complete: 249 notes, no identical bodies, one unresolved wikilink; current guidance conflicts, six unindexed imports and 25 import ownership reviews identified.
+  - Next: correct source-verified guidance, reconcile plan ownership and repair navigation. Cleanup not started; protected Obsidian configuration excluded.
+
 ### Features
 
 - [ ] **Faction interface and ship ability audio — listening acceptance** → [[TODOs/Features/Faction_Interface_And_Ability_Audio_Plan|Faction Interface and Ship Ability Audio Plan]]

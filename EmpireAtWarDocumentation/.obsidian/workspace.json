@@ -187,6 +187,11 @@
   },
   "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research.md",
+    "TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan.md",
+    "TODOs/Documentation/Vault_Guidance_And_Backlog_Cleanup.md",
+    "TODOs/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research.md",
+    "TODOs/Documentation",
     "Done/Features/Structure_Construction_Flow.md",
     "TODOs/Features/Structure_Construction_Flow.md",
     "TODOs/Tooling/Unified_ALO_Import_Pipeline - Research.md",
@@ -213,15 +218,10 @@
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.eafd188b3532",
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.e21ec1234590",
     "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.cf7b7f7a69fd",
-    "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.2e21017c04a3",
     "TODOs/Refactoring/Ship_Scale_Original_Values_Plan.md",
     "TODOs/Features/Faction_Interface_And_Ability_Audio_Plan.md",
     "TODOs/Features/More_Mining_Sites.md",
     "TODOs/Refactoring/Original_Values_Rebalance.md",
-    "TODOs/Refactoring/Original_Values_Rebalance - Research.md",
-    "TODOs/Optimization/Asset_Size_Followup_Plan.md",
-    "Done/Features/Invincible_Import.md",
-    "TODOs/Features/Invincible_Import.md",
-    "TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research.md"
+    "TODOs/Refactoring/Original_Values_Rebalance - Research.md"
   ]
 }
