@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f990ceaa94092c8469af7f1754a3976e, type: 3}
   m_Name: HardPointOverlayData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Health.HardPointOverlay.HardPointOverlayData
+  <MaxVisibleDistance>k__BackingField: 1000
   entries:
   - icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
     displayName: Ion Pulse Cannon

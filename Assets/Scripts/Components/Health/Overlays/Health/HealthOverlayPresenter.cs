@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private readonly IPointerInput _pointerInput;
         private readonly ICameraService _cameraService;
         private readonly IHudVisibilityObserver _hud;
+        private readonly IHardPointOverlayLayout _hardPointOverlay;
         private IEntity _target;
         private ISelectionPositionProvider _targetPositionProvider;
 
@@ -28,8 +30,10 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             ISelectionQuery selectionQuery,
             IPointerInput pointerInput,
             ICameraService cameraService,
-            IHudVisibilityObserver hud)
+            IHudVisibilityObserver hud,
+            IHardPointOverlayLayout hardPointOverlay)
         {
+            _hardPointOverlay = hardPointOverlay;
             _hud = hud;
             _view = view;
             _selectionQuery = selectionQuery;
@@ -83,7 +87,13 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 return;
             }
 
-            _view.Show(_cameraService.WorldToScreenPoint(worldPosition));
+            Vector2 screenPosition = _cameraService.WorldToScreenPoint(worldPosition);
+            if (_hardPointOverlay.TryGetMarkerTop(_target, out float markerTop))
+            {
+                screenPosition.y = Mathf.Max(screenPosition.y, markerTop);
+            }
+
+            _view.Show(screenPosition);
         }
 
         private IEntity GetHoveredEntity()

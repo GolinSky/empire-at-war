@@ -7,6 +7,9 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
     [CreateAssetMenu(fileName = nameof(HardPointOverlayData), menuName = "Data/Hard Point Overlay Data")]
     public sealed class HardPointOverlayData : ScriptableObject
     {
+        [field: SerializeField, Min(0f), Tooltip("Maximum camera-to-unit distance for hardpoint markers, in world units.")]
+        public float MaxVisibleDistance { get; private set; } = 1000f;
+
         [SerializeField] private List<HardPointOverlayEntry> entries = new List<HardPointOverlayEntry>();
 
         public HardPointOverlayEntry Get(HardPointType hardPointType)

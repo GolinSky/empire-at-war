@@ -19,7 +19,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
     /// Reveals the hardpoints of the ship under the cursor, resolves which marker is hovered
     /// and keeps the player's explicitly targeted hardpoint highlighted.
     /// </summary>
-    public sealed class HardPointOverlayPresenter : IInitializable, ILateDisposable, ITickable
+    public sealed class HardPointOverlayPresenter : IInitializable, ILateDisposable, ITickable, IHardPointOverlayLayout
     {
         private const float HIT_HALF_SIZE = 20f;
         /// <summary>Reference pixels between neighbouring marker centres at which markers keep their full size.</summary>
@@ -142,6 +142,29 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             }
 
             _view.HideMarkersFrom(slot);
+        }
+
+        public bool TryGetMarkerTop(IEntity ship, out float screenTop)
+        {
+            screenTop = float.MinValue;
+            if (_cinematicCamera.IsActive || !ship.TryGetFacade(out IHardPointsFacade _) || !IsVisible(ship))
+            {
+                return false;
+            }
+
+            float halfSize = HIT_HALF_SIZE * _view.ScaleFactor * GetMarkerScale(ship);
+            bool hasMarkers = false;
+            foreach (IHardPointStatus hardPoint in GetHardPoints(ship))
+            {
+                if (hardPoint.IsInstalled && !hardPoint.IsDestroyed &&
+                    TryGetScreenPosition(hardPoint, out Vector2 position))
+                {
+                    screenTop = Mathf.Max(screenTop, position.y + halfSize);
+                    hasMarkers = true;
+                }
+            }
+
+            return hasMarkers;
         }
 
         private bool TryShowMarker(int slot, IEntity ship, IHardPointStatus hardPoint, float scale)
@@ -267,6 +290,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         {
             return !ship.HealthModel.IsDestroyed &&
                    !ship.IsHiddenByFog() &&
+                   (ship.GetFacade<IEntityTransformFacade>().Transform.position - _cameraService.CameraPosition)
+                   .sqrMagnitude <= _data.MaxVisibleDistance * _data.MaxVisibleDistance &&
                    (!ship.TryGetFacade(out IConstructionFacade construction) || !construction.IsConstructing);
         }
 
