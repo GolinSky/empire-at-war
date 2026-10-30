@@ -367,7 +367,7 @@ MonoBehaviour:
       heavyCapital: 1
       structure: 1
   - caliber: 2
-    damageMultiplier: 2.2
+    damageMultiplier: 2.86
     rangeMultiplier: 1.3
     turnRateMultiplier: 0.5
     damageBias:
