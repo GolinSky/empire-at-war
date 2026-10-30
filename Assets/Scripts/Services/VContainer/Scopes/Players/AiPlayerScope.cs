@@ -48,7 +48,9 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<DirectCombatAiState>(Lifetime.Singleton).AsImplementedInterfaces();
             else
                 builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EnemyShipAbilityController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EnemyShipAbilityController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter<SimulationModel>(resolver => battleScope.Battle.Mode == GameMode.BattleSimulation
+                    ? resolver.Resolve<SimulationModel>() : null);
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (player.Has(BattleFeatures.SuperWeapons) && player.Has(BattleFeatures.Economy))
                 builder.Register<AiSuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();

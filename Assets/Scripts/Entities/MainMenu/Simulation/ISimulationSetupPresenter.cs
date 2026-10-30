@@ -11,5 +11,6 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         void SetTimeLimit(float value);
         void SetFastSpeed(bool value);
         void SetUseHangars(bool value);
+        void SetUseAbilities(bool value);
     }
 }

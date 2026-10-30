@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyAiStateProvider _state;
         private readonly IPlayerRelations _relations;
         private readonly IVisionService _vision;
+        private readonly SimulationModel _simulation;
 
         private readonly PlayerSlot _owner;
         private readonly ShipAbilityService _shipAbilityService;
@@ -42,7 +44,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyShipAbilityController(IEntityLocator entities,
             IEnemyAiStateProvider state, IPlayerRelations relations,
             ShipAbilityService shipAbilityService, IVisionService vision,
-            PlayerSlot owner)
+            PlayerSlot owner, SimulationModel simulation = null)
         {
             _owner = owner;
             _entities = entities;
@@ -50,10 +52,12 @@ namespace EmpireAtWar.Services.Enemy
             _relations = relations;
             _shipAbilityService = shipAbilityService;
             _vision = vision;
+            _simulation = simulation;
         }
 
         public void Tick()
         {
+            if (_simulation != null && !_simulation.Setup.UseAbilities) return;
             _timeLeft -= Time.deltaTime;
             if (_timeLeft <= 0f) StartDecision();
             UseNextCasters();

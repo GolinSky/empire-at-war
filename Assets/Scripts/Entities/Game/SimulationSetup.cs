@@ -16,10 +16,11 @@ namespace EmpireAtWar.Entities.Game
         public bool FastSpeed { get; }
         /// <summary>When false, hangars never launch squadrons.</summary>
         public bool UseHangars { get; }
+        public bool UseAbilities { get; }
 
         public SimulationSetup(FactionType factionA, FactionType factionB,
             IEnumerable<SimulationFleetEntry> fleetA, IEnumerable<SimulationFleetEntry> fleetB,
-            float distance, float timeLimit, bool fastSpeed, bool useHangars = true)
+            float distance, float timeLimit, bool fastSpeed, bool useHangars = true, bool useAbilities = true)
         {
             FactionA = factionA; FactionB = factionB;
             FleetA = Array.AsReadOnly(fleetA.ToArray()); FleetB = Array.AsReadOnly(fleetB.ToArray());
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Entities.Game
             if (!float.IsFinite(distance) || distance <= 0) throw new ArgumentOutOfRangeException(nameof(distance));
             if (!float.IsFinite(timeLimit) || timeLimit <= 0) throw new ArgumentOutOfRangeException(nameof(timeLimit));
             Distance = distance; TimeLimit = timeLimit; FastSpeed = fastSpeed; UseHangars = useHangars;
+            UseAbilities = useAbilities;
         }
     }
 }

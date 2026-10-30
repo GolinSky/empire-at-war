@@ -58,6 +58,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         public void SetTimeLimit(float value) { _draft.TimeLimit = value; RenderValues(); }
         public void SetFastSpeed(bool value) => _draft.FastSpeed = value;
         public void SetUseHangars(bool value) => _draft.UseHangars = value;
+        public void SetUseAbilities(bool value) => _draft.UseAbilities = value;
         private void Render()
         {
             for (int side = 0; side < 2; side++)
@@ -74,7 +75,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         }
         private static string Name(UnitTypeId unit) => unit.IsShip ? unit.ShipType.ToString() : unit.SquadronType.ToString();
         private void RenderValues() =>
-            _ui.RenderValues(_draft.Distance, _draft.TimeLimit, _draft.FastSpeed, _draft.UseHangars, _draft.CanStart);
+            _ui.RenderValues(_draft.Distance, _draft.TimeLimit, _draft.FastSpeed, _draft.UseHangars, _draft.CanStart, _draft.UseAbilities);
         public void LateDispose() { if (_ui != null) _ui.Dispose(); Unfocus(); }
     }
 }

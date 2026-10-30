@@ -22,6 +22,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         [SerializeField] private TMP_Text timeLabel;
         [SerializeField] private Toggle fastSpeed;
         [SerializeField] private Toggle useHangars;
+        [SerializeField] private Toggle useAbilities;
         [SerializeField] private Button startButton;
         [SerializeField] private Button closeButton;
         private ISimulationSetupPresenter _presenter;
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             timeLimit.onValueChanged.AddListener(_presenter.SetTimeLimit);
             fastSpeed.onValueChanged.AddListener(_presenter.SetFastSpeed);
             useHangars.onValueChanged.AddListener(_presenter.SetUseHangars);
+            useAbilities.onValueChanged.AddListener(_presenter.SetUseAbilities);
             startButton.onClick.AddListener(_presenter.StartBattle); closeButton.onClick.AddListener(_presenter.Close);
             QuantityA(quantities[0].value); QuantityB(quantities[1].value); _initialized = true;
         }
@@ -64,11 +66,12 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
                 _fleetRows[side].Add(row);
             }
         }
-        public void RenderValues(float separation, float seconds, bool fast, bool hangars, bool canStart)
+        public void RenderValues(float separation, float seconds, bool fast, bool hangars, bool canStart, bool abilities = true)
         {
             distance.SetValueWithoutNotify(separation); timeLimit.SetValueWithoutNotify(seconds);
             distanceLabel.text = $"Separation: {separation:0} m"; timeLabel.text = $"Time limit: {seconds:0} s";
             fastSpeed.SetIsOnWithoutNotify(fast); useHangars.SetIsOnWithoutNotify(hangars);
+            useAbilities.SetIsOnWithoutNotify(abilities);
             startButton.interactable = canStart;
         }
         private void FactionA(int index) => _presenter.SelectFaction(0, index);
@@ -88,6 +91,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             distance.onValueChanged.RemoveListener(_presenter.SetDistance); timeLimit.onValueChanged.RemoveListener(_presenter.SetTimeLimit);
             fastSpeed.onValueChanged.RemoveListener(_presenter.SetFastSpeed);
             useHangars.onValueChanged.RemoveListener(_presenter.SetUseHangars);
+            useAbilities.onValueChanged.RemoveListener(_presenter.SetUseAbilities);
             startButton.onClick.RemoveListener(_presenter.StartBattle); closeButton.onClick.RemoveListener(_presenter.Close);
             _initialized = false;
         }
