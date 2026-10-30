@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "command": "command get_console_logs",
+  "data": {
+    "command": "get_console_logs",
+    "parameters": {
+      "severity": "error",
+      "limit": 20
+    },
+    "result": {
+      "total": 0,
+      "returned": 0,
+      "logs": []
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

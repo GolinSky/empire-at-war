@@ -1,0 +1,4823 @@
+{
+  "captured_at_utc": "2026-10-30T09:04:35.8404284Z",
+  "first_frame": 0,
+  "last_frame": 363,
+  "thread_index": 0,
+  "thread_name": "Main Thread",
+  "maximum_frame": 243,
+  "maximum_sample": 2045,
+  "maximum_inclusive_ms": 2.1854000091552734,
+  "maximum_self_ms": 2.1730000092720729,
+  "frame_time_ms": 16.6896,
+  "note": "Raw sample ancestry, unlike top-40 summaries. Inclusive parent/child times overlap; do not add them. Self time can contain uninstrumented managed/native work or OS suspension; absent GC markers do not prove zero GC activity.",
+  "capture_samples": [
+    {
+      "frame": 0,
+      "sample": 565,
+      "inclusive_ms": 0.23109999299049377,
+      "self_ms": 0.22889999304607045
+    },
+    {
+      "frame": 1,
+      "sample": 312,
+      "inclusive_ms": 0.11659999936819077,
+      "self_ms": 0.11599999938334804
+    },
+    {
+      "frame": 2,
+      "sample": 132,
+      "inclusive_ms": 0.10840000212192535,
+      "self_ms": 0.10750000214466127
+    },
+    {
+      "frame": 3,
+      "sample": 298,
+      "inclusive_ms": 0.097499996423721313,
+      "self_ms": 0.096699996443931013
+    },
+    {
+      "frame": 4,
+      "sample": 132,
+      "inclusive_ms": 0.09830000251531601,
+      "self_ms": 0.097400002538051922
+    },
+    {
+      "frame": 5,
+      "sample": 298,
+      "inclusive_ms": 0.088399998843669891,
+      "self_ms": 0.087399998868932016
+    },
+    {
+      "frame": 6,
+      "sample": 132,
+      "inclusive_ms": 0.083399996161460876,
+      "self_ms": 0.082299996189249214
+    },
+    {
+      "frame": 7,
+      "sample": 132,
+      "inclusive_ms": 0.081000000238418579,
+      "self_ms": 0.080200000258628279
+    },
+    {
+      "frame": 8,
+      "sample": 299,
+      "inclusive_ms": 0.19380000233650208,
+      "self_ms": 0.19030000242491951
+    },
+    {
+      "frame": 9,
+      "sample": 132,
+      "inclusive_ms": 0.13050000369548798,
+      "self_ms": 0.1295000037207501
+    },
+    {
+      "frame": 10,
+      "sample": 132,
+      "inclusive_ms": 0.079400002956390381,
+      "self_ms": 0.0784000029816525
+    },
+    {
+      "frame": 11,
+      "sample": 132,
+      "inclusive_ms": 0.078999996185302734,
+      "self_ms": 0.078099996208038647
+    },
+    {
+      "frame": 12,
+      "sample": 298,
+      "inclusive_ms": 0.10450000315904617,
+      "self_ms": 0.10380000317672966
+    },
+    {
+      "frame": 13,
+      "sample": 132,
+      "inclusive_ms": 0.10180000215768814,
+      "self_ms": 0.10060000218800269
+    },
+    {
+      "frame": 14,
+      "sample": 132,
+      "inclusive_ms": 0.080700002610683441,
+      "self_ms": 0.079800002633419354
+    },
+    {
+      "frame": 15,
+      "sample": 299,
+      "inclusive_ms": 0.083399996161460876,
+      "self_ms": 0.082799996176618151
+    },
+    {
+      "frame": 16,
+      "sample": 132,
+      "inclusive_ms": 0.1273999959230423,
+      "self_ms": 0.12639999594830442
+    },
+    {
+      "frame": 17,
+      "sample": 132,
+      "inclusive_ms": 0.079300001263618469,
+      "self_ms": 0.078600001281301957
+    },
+    {
+      "frame": 18,
+      "sample": 320,
+      "inclusive_ms": 0.080099999904632568,
+      "self_ms": 0.079199999927368481
+    },
+    {
+      "frame": 19,
+      "sample": 132,
+      "inclusive_ms": 0.1096000000834465,
+      "self_ms": 0.10890000010112999
+    },
+    {
+      "frame": 20,
+      "sample": 132,
+      "inclusive_ms": 0.079700000584125519,
+      "self_ms": 0.078700000609387644
+    },
+    {
+      "frame": 21,
+      "sample": 132,
+      "inclusive_ms": 0.08020000159740448,
+      "self_ms": 0.079100001625192817
+    },
+    {
+      "frame": 22,
+      "sample": 310,
+      "inclusive_ms": 0.08020000159740448,
+      "self_ms": 0.079600001612561755
+    },
+    {
+      "frame": 23,
+      "sample": 132,
+      "inclusive_ms": 0.078599996864795685,
+      "self_ms": 0.07759999689005781
+    },
+    {
+      "frame": 24,
+      "sample": 132,
+      "inclusive_ms": 0.082099996507167816,
+      "self_ms": 0.081599996519798879
+    },
+    {
+      "frame": 25,
+      "sample": 298,
+      "inclusive_ms": 0.0811999961733818,
+      "self_ms": 0.08019999619864393
+    },
+    {
+      "frame": 26,
+      "sample": 132,
+      "inclusive_ms": 0.082099996507167816,
+      "self_ms": 0.081299996527377516
+    },
+    {
+      "frame": 27,
+      "sample": 132,
+      "inclusive_ms": 0.078400000929832458,
+      "self_ms": 0.077900000942463521
+    },
+    {
+      "frame": 28,
+      "sample": 298,
+      "inclusive_ms": 0.086300000548362732,
+      "self_ms": 0.085400000571098644
+    },
+    {
+      "frame": 29,
+      "sample": 132,
+      "inclusive_ms": 0.081299997866153717,
+      "self_ms": 0.080199997893942054
+    },
+    {
+      "frame": 30,
+      "sample": 132,
+      "inclusive_ms": 0.079700000584125519,
+      "self_ms": 0.078600000611913856
+    },
+    {
+      "frame": 31,
+      "sample": 132,
+      "inclusive_ms": 0.12060000002384186,
+      "self_ms": 0.11980000004405156
+    },
+    {
+      "frame": 32,
+      "sample": 290,
+      "inclusive_ms": 0.081799998879432678,
+      "self_ms": 0.081299998892063741
+    },
+    {
+      "frame": 33,
+      "sample": 132,
+      "inclusive_ms": 0.079199999570846558,
+      "self_ms": 0.078399999591056257
+    },
+    {
+      "frame": 34,
+      "sample": 132,
+      "inclusive_ms": 0.07850000262260437,
+      "self_ms": 0.077400002650392707
+    },
+    {
+      "frame": 35,
+      "sample": 298,
+      "inclusive_ms": 0.08150000125169754,
+      "self_ms": 0.080800001269381028
+    },
+    {
+      "frame": 36,
+      "sample": 132,
+      "inclusive_ms": 0.079999998211860657,
+      "self_ms": 0.079299998229544144
+    },
+    {
+      "frame": 37,
+      "sample": 132,
+      "inclusive_ms": 0.079300001263618469,
+      "self_ms": 0.078600001281301957
+    },
+    {
+      "frame": 38,
+      "sample": 311,
+      "inclusive_ms": 0.08060000091791153,
+      "self_ms": 0.079700000940647442
+    },
+    {
+      "frame": 39,
+      "sample": 132,
+      "inclusive_ms": 0.085100002586841583,
+      "self_ms": 0.084100002612103708
+    },
+    {
+      "frame": 40,
+      "sample": 132,
+      "inclusive_ms": 0.0868000015616417,
+      "self_ms": 0.086000001581851393
+    },
+    {
+      "frame": 41,
+      "sample": 290,
+      "inclusive_ms": 0.082299999892711639,
+      "self_ms": 0.081299999917973764
+    },
+    {
+      "frame": 42,
+      "sample": 132,
+      "inclusive_ms": 0.084200002253055573,
+      "self_ms": 0.083400002273265272
+    },
+    {
+      "frame": 43,
+      "sample": 132,
+      "inclusive_ms": 0.088600002229213715,
+      "self_ms": 0.087800002249423414
+    },
+    {
+      "frame": 44,
+      "sample": 132,
+      "inclusive_ms": 0.083800002932548523,
+      "self_ms": 0.082600002962863073
+    },
+    {
+      "frame": 45,
+      "sample": 302,
+      "inclusive_ms": 0.08060000091791153,
+      "self_ms": 0.079800000938121229
+    },
+    {
+      "frame": 46,
+      "sample": 132,
+      "inclusive_ms": 0.082299999892711639,
+      "self_ms": 0.081599999910395127
+    },
+    {
+      "frame": 47,
+      "sample": 132,
+      "inclusive_ms": 0.081000000238418579,
+      "self_ms": 0.080600000248523429
+    },
+    {
+      "frame": 48,
+      "sample": 294,
+      "inclusive_ms": 0.089800000190734863,
+      "self_ms": 0.088900000213470776
+    },
+    {
+      "frame": 49,
+      "sample": 132,
+      "inclusive_ms": 0.19370000064373016,
+      "self_ms": 0.18970000074477866
+    },
+    {
+      "frame": 50,
+      "sample": 132,
+      "inclusive_ms": 0.079899996519088745,
+      "self_ms": 0.07929999653424602
+    },
+    {
+      "frame": 51,
+      "sample": 298,
+      "inclusive_ms": 0.081399999558925629,
+      "self_ms": 0.081299999561451841
+    },
+    {
+      "frame": 52,
+      "sample": 132,
+      "inclusive_ms": 0.11760000139474869,
+      "self_ms": 0.11650000142253703
+    },
+    {
+      "frame": 53,
+      "sample": 132,
+      "inclusive_ms": 0.11829999834299088,
+      "self_ms": 0.11759999836067436
+    },
+    {
+      "frame": 54,
+      "sample": 132,
+      "inclusive_ms": 0.082299999892711639,
+      "self_ms": 0.081199999920499977
+    },
+    {
+      "frame": 55,
+      "sample": 295,
+      "inclusive_ms": 0.083800002932548523,
+      "self_ms": 0.0832000029477058
+    },
+    {
+      "frame": 56,
+      "sample": 132,
+      "inclusive_ms": 0.0794999971985817,
+      "self_ms": 0.078299997228896245
+    },
+    {
+      "frame": 57,
+      "sample": 132,
+      "inclusive_ms": 0.080300003290176392,
+      "self_ms": 0.079600003307859879
+    },
+    {
+      "frame": 58,
+      "sample": 287,
+      "inclusive_ms": 0.1185000017285347,
+      "self_ms": 0.11780000174621819
+    },
+    {
+      "frame": 59,
+      "sample": 132,
+      "inclusive_ms": 0.078999996185302734,
+      "self_ms": 0.078399996200460009
+    },
+    {
+      "frame": 60,
+      "sample": 132,
+      "inclusive_ms": 0.093299999833107,
+      "self_ms": 0.0924999998533167
+    },
+    {
+      "frame": 61,
+      "sample": 307,
+      "inclusive_ms": 0.082900002598762512,
+      "self_ms": 0.082200002616446
+    },
+    {
+      "frame": 62,
+      "sample": 132,
+      "inclusive_ms": 0.0892999991774559,
+      "self_ms": 0.088599999195139389
+    },
+    {
+      "frame": 63,
+      "sample": 132,
+      "inclusive_ms": 0.12389999628067017,
+      "self_ms": 0.12319999629835365
+    },
+    {
+      "frame": 64,
+      "sample": 314,
+      "inclusive_ms": 0.08190000057220459,
+      "self_ms": 0.081600000579783227
+    },
+    {
+      "frame": 65,
+      "sample": 132,
+      "inclusive_ms": 0.0786999985575676,
+      "self_ms": 0.078299998567672446
+    },
+    {
+      "frame": 66,
+      "sample": 132,
+      "inclusive_ms": 0.079700000584125519,
+      "self_ms": 0.079200000596756581
+    },
+    {
+      "frame": 67,
+      "sample": 132,
+      "inclusive_ms": 0.078599996864795685,
+      "self_ms": 0.077799996885005385
+    },
+    {
+      "frame": 68,
+      "sample": 290,
+      "inclusive_ms": 0.081699997186660767,
+      "self_ms": 0.080899997206870466
+    },
+    {
+      "frame": 69,
+      "sample": 132,
+      "inclusive_ms": 0.080899998545646667,
+      "self_ms": 0.080099998565856367
+    },
+    {
+      "frame": 70,
+      "sample": 132,
+      "inclusive_ms": 0.12330000102519989,
+      "self_ms": 0.12190000106056686
+    },
+    {
+      "frame": 71,
+      "sample": 298,
+      "inclusive_ms": 0.083099998533725739,
+      "self_ms": 0.082199998556461651
+    },
+    {
+      "frame": 72,
+      "sample": 132,
+      "inclusive_ms": 0.08060000091791153,
+      "self_ms": 0.080100000930542592
+    },
+    {
+      "frame": 73,
+      "sample": 132,
+      "inclusive_ms": 0.11760000139474869,
+      "self_ms": 0.11600000143516809
+    },
+    {
+      "frame": 74,
+      "sample": 297,
+      "inclusive_ms": 0.080899998545646667,
+      "self_ms": 0.080299998560803942
+    },
+    {
+      "frame": 75,
+      "sample": 132,
+      "inclusive_ms": 0.12620000541210175,
+      "self_ms": 0.12550000542978523
+    },
+    {
+      "frame": 76,
+      "sample": 132,
+      "inclusive_ms": 0.080300003290176392,
+      "self_ms": 0.079200003317964729
+    },
+    {
+      "frame": 77,
+      "sample": 132,
+      "inclusive_ms": 0.079400002956390381,
+      "self_ms": 0.0784000029816525
+    },
+    {
+      "frame": 78,
+      "sample": 302,
+      "inclusive_ms": 0.0811999961733818,
+      "self_ms": 0.080099996201170143
+    },
+    {
+      "frame": 79,
+      "sample": 132,
+      "inclusive_ms": 0.099299997091293335,
+      "self_ms": 0.09829999711655546
+    },
+    {
+      "frame": 80,
+      "sample": 132,
+      "inclusive_ms": 0.080700002610683441,
+      "self_ms": 0.080100002625840716
+    },
+    {
+      "frame": 81,
+      "sample": 312,
+      "inclusive_ms": 0.081000000238418579,
+      "self_ms": 0.080300000256102066
+    },
+    {
+      "frame": 82,
+      "sample": 132,
+      "inclusive_ms": 0.11959999799728394,
+      "self_ms": 0.11879999801749364
+    },
+    {
+      "frame": 83,
+      "sample": 132,
+      "inclusive_ms": 0.11389999836683273,
+      "self_ms": 0.11309999838704243
+    },
+    {
+      "frame": 84,
+      "sample": 298,
+      "inclusive_ms": 0.081100001931190491,
+      "self_ms": 0.080300001951400191
+    },
+    {
+      "frame": 85,
+      "sample": 132,
+      "inclusive_ms": 0.084200002253055573,
+      "self_ms": 0.082900002285896335
+    },
+    {
+      "frame": 86,
+      "sample": 132,
+      "inclusive_ms": 0.078999996185302734,
+      "self_ms": 0.078099996208038647
+    },
+    {
+      "frame": 87,
+      "sample": 132,
+      "inclusive_ms": 0.080099999904632568,
+      "self_ms": 0.078799999937473331
+    },
+    {
+      "frame": 88,
+      "sample": 298,
+      "inclusive_ms": 0.11829999834299088,
+      "self_ms": 0.11699999837583164
+    },
+    {
+      "frame": 89,
+      "sample": 132,
+      "inclusive_ms": 0.079300001263618469,
+      "self_ms": 0.078400001286354382
+    },
+    {
+      "frame": 90,
+      "sample": 132,
+      "inclusive_ms": 0.080799996852874756,
+      "self_ms": 0.0796999968806631
+    },
+    {
+      "frame": 91,
+      "sample": 285,
+      "inclusive_ms": 0.19949999451637268,
+      "self_ms": 0.19799999455426587
+    },
+    {
+      "frame": 92,
+      "sample": 132,
+      "inclusive_ms": 0.07980000227689743,
+      "self_ms": 0.078900002299633343
+    },
+    {
+      "frame": 93,
+      "sample": 132,
+      "inclusive_ms": 0.11980000138282776,
+      "self_ms": 0.11880000140808988
+    },
+    {
+      "frame": 94,
+      "sample": 294,
+      "inclusive_ms": 0.08020000159740448,
+      "self_ms": 0.07940000161761418
+    },
+    {
+      "frame": 95,
+      "sample": 132,
+      "inclusive_ms": 0.08190000057220459,
+      "self_ms": 0.08070000060251914
+    },
+    {
+      "frame": 96,
+      "sample": 132,
+      "inclusive_ms": 0.0786999985575676,
+      "self_ms": 0.078399998565146234
+    },
+    {
+      "frame": 97,
+      "sample": 132,
+      "inclusive_ms": 0.081299997866153717,
+      "self_ms": 0.0805999978838372
+    },
+    {
+      "frame": 98,
+      "sample": 302,
+      "inclusive_ms": 0.080700002610683441,
+      "self_ms": 0.079900002630893141
+    },
+    {
+      "frame": 99,
+      "sample": 132,
+      "inclusive_ms": 0.0794999971985817,
+      "self_ms": 0.078799997216265183
+    },
+    {
+      "frame": 100,
+      "sample": 132,
+      "inclusive_ms": 0.079700000584125519,
+      "self_ms": 0.079200000596756581
+    },
+    {
+      "frame": 101,
+      "sample": 299,
+      "inclusive_ms": 0.08060000091791153,
+      "self_ms": 0.080200000928016379
+    },
+    {
+      "frame": 102,
+      "sample": 132,
+      "inclusive_ms": 0.079599998891353607,
+      "self_ms": 0.078499998919141944
+    },
+    {
+      "frame": 103,
+      "sample": 132,
+      "inclusive_ms": 0.0794999971985817,
+      "self_ms": 0.078399997226370033
+    },
+    {
+      "frame": 104,
+      "sample": 132,
+      "inclusive_ms": 0.078400000929832458,
+      "self_ms": 0.077500000952568371
+    },
+    {
+      "frame": 105,
+      "sample": 320,
+      "inclusive_ms": 0.081699997186660767,
+      "self_ms": 0.080899997206870466
+    },
+    {
+      "frame": 106,
+      "sample": 132,
+      "inclusive_ms": 0.10719999670982361,
+      "self_ms": 0.10609999673761195
+    },
+    {
+      "frame": 107,
+      "sample": 132,
+      "inclusive_ms": 0.078599996864795685,
+      "self_ms": 0.077499996892584022
+    },
+    {
+      "frame": 108,
+      "sample": 311,
+      "inclusive_ms": 0.079400002956390381,
+      "self_ms": 0.078300002984178718
+    },
+    {
+      "frame": 109,
+      "sample": 132,
+      "inclusive_ms": 0.078199997544288635,
+      "self_ms": 0.07719999756955076
+    },
+    {
+      "frame": 110,
+      "sample": 132,
+      "inclusive_ms": 0.079300001263618469,
+      "self_ms": 0.078400001286354382
+    },
+    {
+      "frame": 111,
+      "sample": 298,
+      "inclusive_ms": 0.080300003290176392,
+      "self_ms": 0.079300003315438516
+    },
+    {
+      "frame": 112,
+      "sample": 132,
+      "inclusive_ms": 0.081000000238418579,
+      "self_ms": 0.079900000266206916
+    },
+    {
+      "frame": 113,
+      "sample": 132,
+      "inclusive_ms": 0.079999998211860657,
+      "self_ms": 0.079499998224491719
+    },
+    {
+      "frame": 114,
+      "sample": 132,
+      "inclusive_ms": 0.12080000340938568,
+      "self_ms": 0.12020000342454296
+    },
+    {
+      "frame": 115,
+      "sample": 294,
+      "inclusive_ms": 0.081100001931190491,
+      "self_ms": 0.080300001951400191
+    },
+    {
+      "frame": 116,
+      "sample": 132,
+      "inclusive_ms": 0.084100000560283661,
+      "self_ms": 0.083400000577967148
+    },
+    {
+      "frame": 117,
+      "sample": 132,
+      "inclusive_ms": 0.079700000584125519,
+      "self_ms": 0.078900000604335219
+    },
+    {
+      "frame": 118,
+      "sample": 298,
+      "inclusive_ms": 0.080300003290176392,
+      "self_ms": 0.079600003307859879
+    },
+    {
+      "frame": 119,
+      "sample": 132,
+      "inclusive_ms": 0.098799996078014374,
+      "self_ms": 0.097999996098224074
+    },
+    {
+      "frame": 120,
+      "sample": 132,
+      "inclusive_ms": 0.0786999985575676,
+      "self_ms": 0.0778999985777773
+    },
+    {
+      "frame": 121,
+      "sample": 1353,
+      "inclusive_ms": 0.2937999963760376,
+      "self_ms": 0.2905999964568764
+    },
+    {
+      "frame": 122,
+      "sample": 1782,
+      "inclusive_ms": 1.6649999618530273,
+      "self_ms": 1.6550999621322262
+    },
+    {
+      "frame": 123,
+      "sample": 2419,
+      "inclusive_ms": 1.4832999706268311,
+      "self_ms": 1.4755999708213494
+    },
+    {
+      "frame": 124,
+      "sample": 518,
+      "inclusive_ms": 0.29670000076293945,
+      "self_ms": 0.29250000086904038
+    },
+    {
+      "frame": 125,
+      "sample": 504,
+      "inclusive_ms": 0.20370000600814819,
+      "self_ms": 0.20060000608646078
+    },
+    {
+      "frame": 126,
+      "sample": 774,
+      "inclusive_ms": 0.12870000302791595,
+      "self_ms": 0.12690000307338778
+    },
+    {
+      "frame": 127,
+      "sample": 139,
+      "inclusive_ms": 0.10920000076293945,
+      "self_ms": 0.10860000077809673
+    },
+    {
+      "frame": 128,
+      "sample": 363,
+      "inclusive_ms": 0.10289999842643738,
+      "self_ms": 0.10209999844664708
+    },
+    {
+      "frame": 129,
+      "sample": 533,
+      "inclusive_ms": 1.0032999515533447,
+      "self_ms": 0.997999951687234
+    },
+    {
+      "frame": 130,
+      "sample": 1702,
+      "inclusive_ms": 1.086899995803833,
+      "self_ms": 1.0775999960824265
+    },
+    {
+      "frame": 131,
+      "sample": 1588,
+      "inclusive_ms": 0.12839999794960022,
+      "self_ms": 0.12659999799507204
+    },
+    {
+      "frame": 132,
+      "sample": 348,
+      "inclusive_ms": 0.19009999930858612,
+      "self_ms": 0.18749999937426765
+    },
+    {
+      "frame": 133,
+      "sample": 139,
+      "inclusive_ms": 0.11389999836683273,
+      "self_ms": 0.11289999839209486
+    },
+    {
+      "frame": 134,
+      "sample": 779,
+      "inclusive_ms": 1.0166000127792358,
+      "self_ms": 1.0113000129131251
+    },
+    {
+      "frame": 135,
+      "sample": 912,
+      "inclusive_ms": 0.18129999935626984,
+      "self_ms": 0.17869999942195136
+    },
+    {
+      "frame": 136,
+      "sample": 140,
+      "inclusive_ms": 0.12200000137090683,
+      "self_ms": 0.12050000140880002
+    },
+    {
+      "frame": 137,
+      "sample": 348,
+      "inclusive_ms": 0.10599999874830246,
+      "self_ms": 0.1048999987760908
+    },
+    {
+      "frame": 138,
+      "sample": 139,
+      "inclusive_ms": 0.14959999918937683,
+      "self_ms": 0.14879999920958653
+    },
+    {
+      "frame": 139,
+      "sample": 419,
+      "inclusive_ms": 0.17049999535083771,
+      "self_ms": 0.16819999540894059
+    },
+    {
+      "frame": 140,
+      "sample": 353,
+      "inclusive_ms": 0.14219999313354492,
+      "self_ms": 0.14099999316385947
+    },
+    {
+      "frame": 141,
+      "sample": 139,
+      "inclusive_ms": 0.30259999632835388,
+      "self_ms": 0.30029999638645677
+    },
+    {
+      "frame": 142,
+      "sample": 350,
+      "inclusive_ms": 0.19050000607967377,
+      "self_ms": 0.18830000613525044
+    },
+    {
+      "frame": 143,
+      "sample": 710,
+      "inclusive_ms": 1.4097000360488892,
+      "self_ms": 1.4019000362095539
+    },
+    {
+      "frame": 144,
+      "sample": 340,
+      "inclusive_ms": 0.25310000777244568,
+      "self_ms": 0.24950000786338933
+    },
+    {
+      "frame": 145,
+      "sample": 139,
+      "inclusive_ms": 0.23819999396800995,
+      "self_ms": 0.23559999404096743
+    },
+    {
+      "frame": 146,
+      "sample": 518,
+      "inclusive_ms": 0.30210000276565552,
+      "self_ms": 0.29760000288661104
+    },
+    {
+      "frame": 147,
+      "sample": 351,
+      "inclusive_ms": 0.25699999928474426,
+      "self_ms": 0.25299999938579276
+    },
+    {
+      "frame": 148,
+      "sample": 139,
+      "inclusive_ms": 0.23569999635219574,
+      "self_ms": 0.2327999964254559
+    },
+    {
+      "frame": 149,
+      "sample": 344,
+      "inclusive_ms": 0.27219998836517334,
+      "self_ms": 0.26869998845359078
+    },
+    {
+      "frame": 150,
+      "sample": 347,
+      "inclusive_ms": 0.29989999532699585,
+      "self_ms": 0.29599999542551814
+    },
+    {
+      "frame": 151,
+      "sample": 340,
+      "inclusive_ms": 0.26840001344680786,
+      "self_ms": 0.26460001354280394
+    },
+    {
+      "frame": 152,
+      "sample": 139,
+      "inclusive_ms": 0.25760000944137573,
+      "self_ms": 0.25450000951968832
+    },
+    {
+      "frame": 153,
+      "sample": 417,
+      "inclusive_ms": 0.26629999279975891,
+      "self_ms": 0.26259999289322877
+    },
+    {
+      "frame": 154,
+      "sample": 356,
+      "inclusive_ms": 0.23399999737739563,
+      "self_ms": 0.23169999743549852
+    },
+    {
+      "frame": 155,
+      "sample": 139,
+      "inclusive_ms": 0.23939999938011169,
+      "self_ms": 0.23669999944831943
+    },
+    {
+      "frame": 156,
+      "sample": 314,
+      "inclusive_ms": 0.14589999616146088,
+      "self_ms": 0.14419999620440649
+    },
+    {
+      "frame": 157,
+      "sample": 139,
+      "inclusive_ms": 1.5634000301361084,
+      "self_ms": 1.5573000303120352
+    },
+    {
+      "frame": 158,
+      "sample": 350,
+      "inclusive_ms": 0.11450000107288361,
+      "self_ms": 0.11320000110572437
+    },
+    {
+      "frame": 159,
+      "sample": 139,
+      "inclusive_ms": 0.156700000166893,
+      "self_ms": 0.15540000019973377
+    },
+    {
+      "frame": 160,
+      "sample": 139,
+      "inclusive_ms": 0.11270000040531158,
+      "self_ms": 0.11140000043815235
+    },
+    {
+      "frame": 161,
+      "sample": 308,
+      "inclusive_ms": 0.10939999669790268,
+      "self_ms": 0.10849999672063859
+    },
+    {
+      "frame": 162,
+      "sample": 510,
+      "inclusive_ms": 0.11840000003576279,
+      "self_ms": 0.11690000007365597
+    },
+    {
+      "frame": 163,
+      "sample": 139,
+      "inclusive_ms": 0.16159999370574951,
+      "self_ms": 0.16079999372595921
+    },
+    {
+      "frame": 164,
+      "sample": 139,
+      "inclusive_ms": 0.10440000146627426,
+      "self_ms": 0.1025000015142723
+    },
+    {
+      "frame": 165,
+      "sample": 620,
+      "inclusive_ms": 0.1809999942779541,
+      "self_ms": 0.17889999433100456
+    },
+    {
+      "frame": 166,
+      "sample": 498,
+      "inclusive_ms": 0.1835000067949295,
+      "self_ms": 0.18220000682777027
+    },
+    {
+      "frame": 167,
+      "sample": 139,
+      "inclusive_ms": 0.11140000075101852,
+      "self_ms": 0.11020000078133307
+    },
+    {
+      "frame": 168,
+      "sample": 631,
+      "inclusive_ms": 0.14569999277591705,
+      "self_ms": 0.14439999280875782
+    },
+    {
+      "frame": 169,
+      "sample": 139,
+      "inclusive_ms": 0.92979997396469116,
+      "self_ms": 0.92509997408342315
+    },
+    {
+      "frame": 170,
+      "sample": 139,
+      "inclusive_ms": 0.10270000249147415,
+      "self_ms": 0.10180000251421006
+    },
+    {
+      "frame": 171,
+      "sample": 566,
+      "inclusive_ms": 0.1574999988079071,
+      "self_ms": 0.15579999885085272
+    },
+    {
+      "frame": 172,
+      "sample": 563,
+      "inclusive_ms": 0.32910001277923584,
+      "self_ms": 0.32360001292545348
+    },
+    {
+      "frame": 173,
+      "sample": 340,
+      "inclusive_ms": 0.22750000655651093,
+      "self_ms": 0.22470000662724487
+    },
+    {
+      "frame": 174,
+      "sample": 139,
+      "inclusive_ms": 0.15639999508857727,
+      "self_ms": 0.15489999512647046
+    },
+    {
+      "frame": 175,
+      "sample": 317,
+      "inclusive_ms": 0.14620000123977661,
+      "self_ms": 0.144600001280196
+    },
+    {
+      "frame": 176,
+      "sample": 139,
+      "inclusive_ms": 0.19169999659061432,
+      "self_ms": 0.19019999662850751
+    },
+    {
+      "frame": 177,
+      "sample": 339,
+      "inclusive_ms": 0.18629999458789825,
+      "self_ms": 0.1842999946384225
+    },
+    {
+      "frame": 178,
+      "sample": 139,
+      "inclusive_ms": 0.17890000343322754,
+      "self_ms": 0.17710000347869936
+    },
+    {
+      "frame": 179,
+      "sample": 308,
+      "inclusive_ms": 0.20819999277591705,
+      "self_ms": 0.20609999282896752
+    },
+    {
+      "frame": 180,
+      "sample": 139,
+      "inclusive_ms": 0.28619998693466187,
+      "self_ms": 0.28419998698518611
+    },
+    {
+      "frame": 181,
+      "sample": 519,
+      "inclusive_ms": 1.0441000461578369,
+      "self_ms": 1.0387000462942524
+    },
+    {
+      "frame": 182,
+      "sample": 354,
+      "inclusive_ms": 0.12849999964237213,
+      "self_ms": 0.12709999967773911
+    },
+    {
+      "frame": 183,
+      "sample": 139,
+      "inclusive_ms": 0.10920000076293945,
+      "self_ms": 0.10810000079072779
+    },
+    {
+      "frame": 184,
+      "sample": 139,
+      "inclusive_ms": 0.10899999737739563,
+      "self_ms": 0.10809999740013154
+    },
+    {
+      "frame": 185,
+      "sample": 351,
+      "inclusive_ms": 0.10759999603033066,
+      "self_ms": 0.10639999606064521
+    },
+    {
+      "frame": 186,
+      "sample": 139,
+      "inclusive_ms": 0.12569999694824219,
+      "self_ms": 0.12459999697603052
+    },
+    {
+      "frame": 187,
+      "sample": 435,
+      "inclusive_ms": 0.14839999377727509,
+      "self_ms": 0.14289999391621677
+    },
+    {
+      "frame": 188,
+      "sample": 139,
+      "inclusive_ms": 0.12229999899864197,
+      "self_ms": 0.12099999903148273
+    },
+    {
+      "frame": 189,
+      "sample": 349,
+      "inclusive_ms": 0.1096000000834465,
+      "self_ms": 0.10870000010618242
+    },
+    {
+      "frame": 190,
+      "sample": 784,
+      "inclusive_ms": 0.18610000610351563,
+      "self_ms": 0.183100006179302
+    },
+    {
+      "frame": 191,
+      "sample": 139,
+      "inclusive_ms": 0.18960000574588776,
+      "self_ms": 0.18810000578378094
+    },
+    {
+      "frame": 192,
+      "sample": 351,
+      "inclusive_ms": 0.15979999303817749,
+      "self_ms": 0.1580999930811231
+    },
+    {
+      "frame": 193,
+      "sample": 139,
+      "inclusive_ms": 0.10750000178813934,
+      "self_ms": 0.10640000181592768
+    },
+    {
+      "frame": 194,
+      "sample": 139,
+      "inclusive_ms": 0.1046999990940094,
+      "self_ms": 0.10399999911169289
+    },
+    {
+      "frame": 195,
+      "sample": 352,
+      "inclusive_ms": 0.10220000147819519,
+      "self_ms": 0.1005000015211408
+    },
+    {
+      "frame": 196,
+      "sample": 139,
+      "inclusive_ms": 0.953000009059906,
+      "self_ms": 0.94900000916095451
+    },
+    {
+      "frame": 197,
+      "sample": 432,
+      "inclusive_ms": 0.15639999508857727,
+      "self_ms": 0.1545999951340491
+    },
+    {
+      "frame": 198,
+      "sample": 360,
+      "inclusive_ms": 0.11710000038146973,
+      "self_ms": 0.11590000041178428
+    },
+    {
+      "frame": 199,
+      "sample": 139,
+      "inclusive_ms": 0.12049999833106995,
+      "self_ms": 0.11989999834622722
+    },
+    {
+      "frame": 200,
+      "sample": 139,
+      "inclusive_ms": 0.16079999506473541,
+      "self_ms": 0.15979999508999754
+    },
+    {
+      "frame": 201,
+      "sample": 439,
+      "inclusive_ms": 0.19460000097751617,
+      "self_ms": 0.19230000103561906
+    },
+    {
+      "frame": 202,
+      "sample": 339,
+      "inclusive_ms": 0.12060000002384186,
+      "self_ms": 0.11940000005415641
+    },
+    {
+      "frame": 203,
+      "sample": 139,
+      "inclusive_ms": 0.10939999669790268,
+      "self_ms": 0.10779999673832208
+    },
+    {
+      "frame": 204,
+      "sample": 139,
+      "inclusive_ms": 0.10949999839067459,
+      "self_ms": 0.10879999840835808
+    },
+    {
+      "frame": 205,
+      "sample": 349,
+      "inclusive_ms": 0.10429999977350235,
+      "self_ms": 0.10269999981392175
+    },
+    {
+      "frame": 206,
+      "sample": 431,
+      "inclusive_ms": 0.1429000049829483,
+      "self_ms": 0.13910000497708097
+    },
+    {
+      "frame": 207,
+      "sample": 139,
+      "inclusive_ms": 0.16650000214576721,
+      "self_ms": 0.16540000217355555
+    },
+    {
+      "frame": 208,
+      "sample": 350,
+      "inclusive_ms": 0.10689999908208847,
+      "self_ms": 0.1058999991073506
+    },
+    {
+      "frame": 209,
+      "sample": 139,
+      "inclusive_ms": 0.10319999605417252,
+      "self_ms": 0.102499996071856
+    },
+    {
+      "frame": 210,
+      "sample": 425,
+      "inclusive_ms": 0.133200004696846,
+      "self_ms": 0.13200000472716056
+    },
+    {
+      "frame": 211,
+      "sample": 352,
+      "inclusive_ms": 0.93479996919631958,
+      "self_ms": 0.9282999692222802
+    },
+    {
+      "frame": 212,
+      "sample": 139,
+      "inclusive_ms": 0.10339999943971634,
+      "self_ms": 0.10229999946750468
+    },
+    {
+      "frame": 213,
+      "sample": 139,
+      "inclusive_ms": 0.10649999976158142,
+      "self_ms": 0.10549999978684355
+    },
+    {
+      "frame": 214,
+      "sample": 341,
+      "inclusive_ms": 0.10419999808073044,
+      "self_ms": 0.10299999811104499
+    },
+    {
+      "frame": 215,
+      "sample": 139,
+      "inclusive_ms": 0.10159999877214432,
+      "self_ms": 0.10029999880498508
+    },
+    {
+      "frame": 216,
+      "sample": 417,
+      "inclusive_ms": 0.13089999556541443,
+      "self_ms": 0.12989999559067655
+    },
+    {
+      "frame": 217,
+      "sample": 987,
+      "inclusive_ms": 0.12890000641345978,
+      "self_ms": 0.12730000645387918
+    },
+    {
+      "frame": 218,
+      "sample": 139,
+      "inclusive_ms": 0.10809999704360962,
+      "self_ms": 0.10699999707139796
+    },
+    {
+      "frame": 219,
+      "sample": 352,
+      "inclusive_ms": 0.10729999840259552,
+      "self_ms": 0.10589999843796249
+    },
+    {
+      "frame": 220,
+      "sample": 139,
+      "inclusive_ms": 0.10109999775886536,
+      "self_ms": 0.10039999777654884
+    },
+    {
+      "frame": 221,
+      "sample": 139,
+      "inclusive_ms": 0.15889999270439148,
+      "self_ms": 0.15779999273217982
+    },
+    {
+      "frame": 222,
+      "sample": 139,
+      "inclusive_ms": 0.10279999673366547,
+      "self_ms": 0.10189999675640138
+    },
+    {
+      "frame": 223,
+      "sample": 554,
+      "inclusive_ms": 2.0787999629974365,
+      "self_ms": 2.0675999632803723
+    },
+    {
+      "frame": 224,
+      "sample": 139,
+      "inclusive_ms": 0.29440000653266907,
+      "self_ms": 0.29080000662361272
+    },
+    {
+      "frame": 225,
+      "sample": 375,
+      "inclusive_ms": 0.25630000233650208,
+      "self_ms": 0.25240000243502436
+    },
+    {
+      "frame": 226,
+      "sample": 535,
+      "inclusive_ms": 0.27660000324249268,
+      "self_ms": 0.27230000335111981
+    },
+    {
+      "frame": 227,
+      "sample": 139,
+      "inclusive_ms": 0.2231999933719635,
+      "self_ms": 0.22089999343006639
+    },
+    {
+      "frame": 228,
+      "sample": 534,
+      "inclusive_ms": 0.26429998874664307,
+      "self_ms": 0.25979998886032263
+    },
+    {
+      "frame": 229,
+      "sample": 139,
+      "inclusive_ms": 0.21680000424385071,
+      "self_ms": 0.21350000432721572
+    },
+    {
+      "frame": 230,
+      "sample": 333,
+      "inclusive_ms": 0.24029999971389771,
+      "self_ms": 0.23779999977705302
+    },
+    {
+      "frame": 231,
+      "sample": 1843,
+      "inclusive_ms": 1.6893999576568604,
+      "self_ms": 1.6798999578968505
+    },
+    {
+      "frame": 232,
+      "sample": 369,
+      "inclusive_ms": 0.31839999556541443,
+      "self_ms": 0.31379999568889616
+    },
+    {
+      "frame": 233,
+      "sample": 372,
+      "inclusive_ms": 0.26210001111030579,
+      "self_ms": 0.25930001119559165
+    },
+    {
+      "frame": 234,
+      "sample": 139,
+      "inclusive_ms": 0.18719999492168427,
+      "self_ms": 0.1852999949696823
+    },
+    {
+      "frame": 235,
+      "sample": 357,
+      "inclusive_ms": 0.12259999662637711,
+      "self_ms": 0.12119999666174408
+    },
+    {
+      "frame": 236,
+      "sample": 139,
+      "inclusive_ms": 0.11069999635219574,
+      "self_ms": 0.10979999637493165
+    },
+    {
+      "frame": 237,
+      "sample": 139,
+      "inclusive_ms": 0.11020000278949738,
+      "self_ms": 0.10900000281981193
+    },
+    {
+      "frame": 238,
+      "sample": 340,
+      "inclusive_ms": 0.10639999806880951,
+      "self_ms": 0.10479999810922891
+    },
+    {
+      "frame": 239,
+      "sample": 139,
+      "inclusive_ms": 0.10300000011920929,
+      "self_ms": 0.10230000013689278
+    },
+    {
+      "frame": 240,
+      "sample": 139,
+      "inclusive_ms": 0.10109999775886536,
+      "self_ms": 0.10029999777907506
+    },
+    {
+      "frame": 241,
+      "sample": 351,
+      "inclusive_ms": 0.18979999423027039,
+      "self_ms": 0.18799999427574221
+    },
+    {
+      "frame": 242,
+      "sample": 139,
+      "inclusive_ms": 0.17280000448226929,
+      "self_ms": 0.1719000045050052
+    },
+    {
+      "frame": 243,
+      "sample": 2045,
+      "inclusive_ms": 2.1854000091552734,
+      "self_ms": 2.1730000092720729
+    }
+  ],
+  "direct_children": [
+    {
+      "sample": 2046,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2047,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2048,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2049,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2050,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2051,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2052,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2053,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2054,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2055,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2056,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2057,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2058,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2059,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2060,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2061,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2062,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2063,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0023,
+      "self_ms": 0.0023000000510364771,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2064,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2065,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2066,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2067,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2068,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2069,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2070,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2071,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2072,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2073,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2074,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2075,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2076,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2077,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2078,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.000299999985,
+      "self_ms": 0.00029999998514540493,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2079,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2080,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2081,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2082,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2083,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2084,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2085,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2086,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2087,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2088,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2089,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2090,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2091,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2092,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2093,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2094,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2095,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2096,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0005,
+      "self_ms": 0.00050000002374872565,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2097,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2098,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2099,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2100,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2101,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2102,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2103,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2104,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2105,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2106,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2107,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2108,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2109,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2110,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2111,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2112,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0005,
+      "self_ms": 0.00050000002374872565,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2113,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2114,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2115,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2116,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2117,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2118,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2119,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2120,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2121,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2122,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2123,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2124,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.000299999985,
+      "self_ms": 0.00029999998514540493,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2125,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2126,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2127,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2128,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0002,
+      "self_ms": 0.00019999999494757503,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2129,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2130,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2131,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2132,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.000299999985,
+      "self_ms": 0.00029999998514540493,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2133,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2134,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0005,
+      "self_ms": 0.00050000002374872565,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2135,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2136,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2137,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2138,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2139,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2140,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2141,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2142,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2143,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2144,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2145,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2146,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0002,
+      "self_ms": 0.00019999999494757503,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2147,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0002,
+      "self_ms": 0.00019999999494757503,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2148,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2149,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2150,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2151,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2152,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2153,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2154,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2155,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2156,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2157,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2158,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2159,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2160,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2161,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2162,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2163,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2164,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2165,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2166,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2167,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2168,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2169,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2170,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2171,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2172,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2173,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2174,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2175,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2176,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2177,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2178,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2179,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2180,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2181,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2182,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2183,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2184,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2185,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2186,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2187,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2188,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2189,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2190,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2191,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2192,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2193,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2194,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2195,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    }
+  ],
+  "full_subtree": [
+    {
+      "sample": 2045,
+      "depth": 0,
+      "marker_id": 4585,
+      "marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "inclusive_ms": 2.1854,
+      "self_ms": 2.1730000092720729,
+      "direct_child_count": 150,
+      "descendant_count": 150
+    },
+    {
+      "sample": 2046,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2047,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2048,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2049,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2050,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2051,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2052,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2053,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2054,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2055,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2056,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2057,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2058,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2059,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2060,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2061,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2062,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2063,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0023,
+      "self_ms": 0.0023000000510364771,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2064,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2065,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2066,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2067,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2068,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2069,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2070,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2071,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2072,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2073,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2074,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2075,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2076,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2077,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2078,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.000299999985,
+      "self_ms": 0.00029999998514540493,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2079,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2080,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2081,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2082,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2083,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2084,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2085,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2086,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2087,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2088,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2089,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2090,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2091,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2092,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2093,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2094,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2095,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2096,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0005,
+      "self_ms": 0.00050000002374872565,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2097,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2098,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2099,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2100,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2101,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2102,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2103,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2104,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2105,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2106,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2107,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2108,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2109,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2110,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2111,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2112,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0005,
+      "self_ms": 0.00050000002374872565,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2113,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2114,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2115,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2116,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2117,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2118,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2119,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2120,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2121,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2122,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2123,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2124,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.000299999985,
+      "self_ms": 0.00029999998514540493,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2125,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2126,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2127,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2128,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0002,
+      "self_ms": 0.00019999999494757503,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2129,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2130,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2131,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2132,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.000299999985,
+      "self_ms": 0.00029999998514540493,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2133,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2134,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0005,
+      "self_ms": 0.00050000002374872565,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2135,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2136,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2137,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2138,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2139,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2140,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2141,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2142,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2143,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2144,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2145,
+      "depth": 1,
+      "marker_id": 780,
+      "marker": "GC.Alloc",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2146,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0002,
+      "self_ms": 0.00019999999494757503,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2147,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0002,
+      "self_ms": 0.00019999999494757503,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2148,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2149,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2150,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2151,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2152,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2153,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2154,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2155,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2156,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2157,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2158,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2159,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2160,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2161,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2162,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2163,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2164,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2165,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2166,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2167,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2168,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2169,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2170,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2171,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2172,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2173,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2174,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2175,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2176,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2177,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2178,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2179,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2180,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2181,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2182,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2183,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2184,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2185,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2186,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2187,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2188,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2189,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2190,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2191,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2192,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2193,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0001,
+      "self_ms": 9.9999997473787516E-05,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2194,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    },
+    {
+      "sample": 2195,
+      "depth": 1,
+      "marker_id": 33,
+      "marker": "GameObject.Deactivate",
+      "inclusive_ms": 0.0,
+      "self_ms": 0.0,
+      "direct_child_count": 0,
+      "descendant_count": 0
+    }
+  ],
+  "nested_marker_totals": [
+    {
+      "MarkerId": 780,
+      "Marker": "GC.Alloc",
+      "Calls": 100,
+      "InclusiveMs": 0.008599999979196582,
+      "SelfMs": 0.008599999979196582
+    },
+    {
+      "MarkerId": 33,
+      "Marker": "GameObject.Deactivate",
+      "Calls": 50,
+      "InclusiveMs": 0.0037999999040039256,
+      "SelfMs": 0.0037999999040039256
+    }
+  ],
+  "frame_top_markers_by_self": [
+    {
+      "MarkerId": 4585,
+      "Marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 2.1854000091552734,
+      "SelfMs": 2.1730000092720729
+    },
+    {
+      "MarkerId": 2577,
+      "Marker": "EditorLoop",
+      "Calls": 3,
+      "InclusiveMs": 2.1019999980926514,
+      "SelfMs": 2.1019999980926514
+    },
+    {
+      "MarkerId": 4702,
+      "Marker": "Battle.Radar.Snapshot",
+      "Calls": 34,
+      "InclusiveMs": 0.71189999720081687,
+      "SelfMs": 0.71189999720081687
+    },
+    {
+      "MarkerId": 484,
+      "Marker": "WaitForJobGroupID",
+      "Calls": 76,
+      "InclusiveMs": 1.6837999928975478,
+      "SelfMs": 0.68630000422854209
+    },
+    {
+      "MarkerId": 562,
+      "Marker": "Profiler.FlushMemoryCounters",
+      "Calls": 1,
+      "InclusiveMs": 0.50059998035430908,
+      "SelfMs": 0.50059998035430908
+    },
+    {
+      "MarkerId": 4013,
+      "Marker": "Inl_On Record Render Graph",
+      "Calls": 1,
+      "InclusiveMs": 0.6007000207901001,
+      "SelfMs": 0.49940002500079572
+    },
+    {
+      "MarkerId": 1680,
+      "Marker": "SoundManager.Update",
+      "Calls": 1,
+      "InclusiveMs": 0.51609998941421509,
+      "SelfMs": 0.49439998902380466
+    },
+    {
+      "MarkerId": 4679,
+      "Marker": "Battle.Attack.TargetBatch.Capture.Copy",
+      "Calls": 1,
+      "InclusiveMs": 0.45419999957084656,
+      "SelfMs": 0.45419999957084656
+    },
+    {
+      "MarkerId": 4965,
+      "Marker": "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+      "Calls": 44,
+      "InclusiveMs": 7.5322000154119451,
+      "SelfMs": 0.42310002490557963
+    },
+    {
+      "MarkerId": 4686,
+      "Marker": "Battle.Attack.TargetBatch.Apply",
+      "Calls": 1,
+      "InclusiveMs": 0.35010001063346863,
+      "SelfMs": 0.35010001063346863
+    },
+    {
+      "MarkerId": 489,
+      "Marker": "Idle",
+      "Calls": 1,
+      "InclusiveMs": 0.34999999403953552,
+      "SelfMs": 0.34999999403953552
+    },
+    {
+      "MarkerId": 5072,
+      "Marker": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::BatchRendererGroup.InvokeOnPerformCulling() [Invoke]",
+      "Calls": 2,
+      "InclusiveMs": 0.39909999072551727,
+      "SelfMs": 0.23749999701976776
+    },
+    {
+      "MarkerId": 4590,
+      "Marker": "EmpireAtWar.Services.Battle.UnitHoverService.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 0.22689999639987946,
+      "SelfMs": 0.22309999633580446
+    },
+    {
+      "MarkerId": 4673,
+      "Marker": "Battle.Weapon.Tick",
+      "Calls": 27,
+      "InclusiveMs": 0.18520000018179417,
+      "SelfMs": 0.18520000018179417
+    },
+    {
+      "MarkerId": 635,
+      "Marker": "TransformChangeSystem",
+      "Calls": 234,
+      "InclusiveMs": 0.51559999995515682,
+      "SelfMs": 0.18240000189689454
+    },
+    {
+      "MarkerId": 4703,
+      "Marker": "Battle.Radar.Job",
+      "Calls": 51,
+      "InclusiveMs": 0.32649999973364174,
+      "SelfMs": 0.14939999883063138
+    },
+    {
+      "MarkerId": 4651,
+      "Marker": "Battle.Squadron.UpdateOrder",
+      "Calls": 9,
+      "InclusiveMs": 0.13790000102017075,
+      "SelfMs": 0.13790000102017075
+    },
+    {
+      "MarkerId": 3200,
+      "Marker": "BuildDrawListsJob (Burst)",
+      "Calls": 1,
+      "InclusiveMs": 0.13619999587535858,
+      "SelfMs": 0.13619999587535858
+    },
+    {
+      "MarkerId": 598,
+      "Marker": "Material.SetPassFast",
+      "Calls": 37,
+      "InclusiveMs": 0.12049999984446913,
+      "SelfMs": 0.11739999992278172
+    },
+    {
+      "MarkerId": 4006,
+      "Marker": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera",
+      "Calls": 1,
+      "InclusiveMs": 2.0144999027252197,
+      "SelfMs": 0.11319991631899029
+    },
+    {
+      "MarkerId": 2609,
+      "Marker": "PxScene.simulate",
+      "Calls": 17,
+      "InclusiveMs": 0.18529999584279722,
+      "SelfMs": 0.10999999569321517
+    },
+    {
+      "MarkerId": 4610,
+      "Marker": "EmpireAtWar.Services.Hazards.HazardService.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 0.10509999841451645,
+      "SelfMs": 0.10359999845240964
+    },
+    {
+      "MarkerId": 4591,
+      "Marker": "EmpireAtWar.Entities.Tooltip.WorldTooltipPresenter.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 0.10319999605417252,
+      "SelfMs": 0.099699996098934207
+    },
+    {
+      "MarkerId": 4653,
+      "Marker": "Battle.Squadron.Flight",
+      "Calls": 9,
+      "InclusiveMs": 0.09879999840632081,
+      "SelfMs": 0.09879999840632081
+    },
+    {
+      "MarkerId": 4613,
+      "Marker": "EmpireAtWar.Services.ReinforcementZones.ReinforcementZonesSystem.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 0.096699997782707214,
+      "SelfMs": 0.096199997795338277
+    },
+    {
+      "MarkerId": 3424,
+      "Marker": "FogFadeWriteJob (Burst)",
+      "Calls": 1,
+      "InclusiveMs": 0.09009999781847,
+      "SelfMs": 0.09009999781847
+    },
+    {
+      "MarkerId": 4609,
+      "Marker": "EmpireAtWar.Services.FleetCommand.FleetCommandService.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 0.089500002562999725,
+      "SelfMs": 0.089000002539251
+    },
+    {
+      "MarkerId": 2090,
+      "Marker": "UpdateScene",
+      "Calls": 1,
+      "InclusiveMs": 10.651700019836426,
+      "SelfMs": 0.0876000330390525
+    },
+    {
+      "MarkerId": 4751,
+      "Marker": "EmpireAtWar.Components.Ship.Movement.ShipMoveComponent.Tick()",
+      "Calls": 11,
+      "InclusiveMs": 0.083699999959208071,
+      "SelfMs": 0.083699999959208071
+    },
+    {
+      "MarkerId": 4589,
+      "Marker": "EmpireAtWar.Components.Ship.Health.HardPointOverlay.HardPointOverlayPresenter.Tick()",
+      "Calls": 1,
+      "InclusiveMs": 0.086999997496604919,
+      "SelfMs": 0.079799997620284557
+    },
+    {
+      "MarkerId": 263,
+      "Marker": "LateBehaviourUpdate",
+      "Calls": 1,
+      "InclusiveMs": 0.675599992275238,
+      "SelfMs": 0.07940000274538761
+    },
+    {
+      "MarkerId": 5078,
+      "Marker": "Assembly-CSharp.dll!EmpireAtWar.Services.Enemy::EnemyEconomyDebugView.OnGUI() [Invoke]",
+      "Calls": 2,
+      "InclusiveMs": 0.12469999864697456,
+      "SelfMs": 0.07839999946008902
+    },
+    {
+      "MarkerId": 4678,
+      "Marker": "Battle.Attack.TargetBatch.Capture.Owners",
+      "Calls": 1,
+      "InclusiveMs": 0.069099999964237213,
+      "SelfMs": 0.069099999964237213
+    },
+    {
+      "MarkerId": 4084,
+      "Marker": "Inl_NRPRGComp_ExecuteBeginRenderpassCommand",
+      "Calls": 10,
+      "InclusiveMs": 0.067499998491257429,
+      "SelfMs": 0.067499998491257429
+    },
+    {
+      "MarkerId": 3848,
+      "Marker": "Inl_Forward+ Setup",
+      "Calls": 1,
+      "InclusiveMs": 0.065799996256828308,
+      "SelfMs": 0.065799996256828308
+    },
+    {
+      "MarkerId": 5033,
+      "Marker": "Assembly-CSharp.dll!EmpireAtWar.Services.FogOfWar::FogOfWarSystem.Update() [Invoke]",
+      "Calls": 1,
+      "InclusiveMs": 0.06589999794960022,
+      "SelfMs": 0.065699997954652645
+    },
+    {
+      "MarkerId": 5049,
+      "Marker": "Assembly-CSharp.dll!EmpireAtWar.Components.Environment::DecorAsteroidRenderer.LateUpdate() [Invoke]",
+      "Calls": 1,
+      "InclusiveMs": 0.063599996268749237,
+      "SelfMs": 0.063599996268749237
+    },
+    {
+      "MarkerId": 3391,
+      "Marker": "RadarPositionJob (Burst)",
+      "Calls": 5,
+      "InclusiveMs": 0.062300001038238406,
+      "SelfMs": 0.062300001038238406
+    },
+    {
+      "MarkerId": 2467,
+      "Marker": "AssetDatabase.GetAssetPathToGUIDV2",
+      "Calls": 14,
+      "InclusiveMs": 0.0618999995640479,
+      "SelfMs": 0.0618999995640479
+    },
+    {
+      "MarkerId": 4682,
+      "Marker": "Battle.Attack.TargetBatch.Prepare",
+      "Calls": 1,
+      "InclusiveMs": 0.061400000005960464,
+      "SelfMs": 0.061400000005960464
+    }
+  ],
+  "frame_gc_markers": [
+    {
+      "MarkerId": 343,
+      "Marker": "RenderTexture.GarbageCollectTemporary",
+      "Calls": 2,
+      "InclusiveMs": 0.0023999999975785613,
+      "SelfMs": 0.0023999999975785613
+    },
+    {
+      "MarkerId": 4279,
+      "Marker": "CleanUp.TextRenderingGarbageCollect",
+      "Calls": 1,
+      "InclusiveMs": 0.00059999997029080987,
+      "SelfMs": 0.00059999997029080987
+    },
+    {
+      "MarkerId": 780,
+      "Marker": "GC.Alloc",
+      "Calls": 287,
+      "InclusiveMs": 0.020199999693431892,
+      "SelfMs": 0.020199999693431892
+    },
+    {
+      "MarkerId": 4370,
+      "Marker": "TextRendering.CollectGarbage",
+      "Calls": 1,
+      "InclusiveMs": 0.00050000002374872565,
+      "SelfMs": 0.00050000002374872565
+    }
+  ],
+  "capture_gc_alloc_bytes": 3200,
+  "frame_gc_alloc_bytes": 10826
+}

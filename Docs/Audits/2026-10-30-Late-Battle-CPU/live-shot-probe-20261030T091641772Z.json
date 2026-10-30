@@ -1,0 +1,770 @@
+{
+  "capturedUtc": "2026-10-30T09:16:41.7727486Z",
+  "unityVersion": "6000.4.7f1",
+  "processor": "AMD Ryzen 7 9800X3D 8-Core Processor ",
+  "operatingSystem": "Windows 11  (10.0.26200)",
+  "scene": "Battle",
+  "firstFrame": 71490,
+  "lastFrame": 71575,
+  "mode": "Live battle; actual prefab including scripts; one unfired clone per frame after NextFrameAsync; ResetForPool then deferred Destroy",
+  "note": "NextFrameAsync resumes at Unity's awaitable continuation point, not the service's exact ordered Tick slot. Probe markers distinguish these samples from genuine cache prewarm and on-demand samples.",
+  "samplesPerPrefab": 12,
+  "rows": [
+    {
+      "frame": 71491,
+      "gameTime": 389.996674,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.7029,
+      "resetMs": 0.0089
+    },
+    {
+      "frame": 71492,
+      "gameTime": 390.029724,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3646,
+      "resetMs": 0.0046
+    },
+    {
+      "frame": 71493,
+      "gameTime": 390.054169,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5916,
+      "resetMs": 0.0059
+    },
+    {
+      "frame": 71494,
+      "gameTime": 390.079834,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.6403,
+      "resetMs": 0.0058
+    },
+    {
+      "frame": 71495,
+      "gameTime": 390.106049,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3596,
+      "resetMs": 0.0037
+    },
+    {
+      "frame": 71496,
+      "gameTime": 390.134125,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.6234,
+      "resetMs": 0.0081
+    },
+    {
+      "frame": 71497,
+      "gameTime": 390.158936,
+      "sample": 0,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3846,
+      "resetMs": 0.0019
+    },
+    {
+      "frame": 71498,
+      "gameTime": 390.1826,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5775,
+      "resetMs": 0.0064
+    },
+    {
+      "frame": 71499,
+      "gameTime": 390.2068,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3361,
+      "resetMs": 0.0017
+    },
+    {
+      "frame": 71500,
+      "gameTime": 390.230835,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5838,
+      "resetMs": 0.0051
+    },
+    {
+      "frame": 71501,
+      "gameTime": 390.257446,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3945,
+      "resetMs": 0.0043
+    },
+    {
+      "frame": 71502,
+      "gameTime": 390.282166,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3289,
+      "resetMs": 0.0028
+    },
+    {
+      "frame": 71503,
+      "gameTime": 390.308777,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5684,
+      "resetMs": 0.0032
+    },
+    {
+      "frame": 71504,
+      "gameTime": 390.333374,
+      "sample": 1,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3746,
+      "resetMs": 0.0044
+    },
+    {
+      "frame": 71505,
+      "gameTime": 390.3565,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5616,
+      "resetMs": 0.0061
+    },
+    {
+      "frame": 71506,
+      "gameTime": 390.3796,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3208,
+      "resetMs": 0.0015
+    },
+    {
+      "frame": 71507,
+      "gameTime": 390.400635,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5307,
+      "resetMs": 0.0047
+    },
+    {
+      "frame": 71508,
+      "gameTime": 390.421783,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.38,
+      "resetMs": 0.0021
+    },
+    {
+      "frame": 71509,
+      "gameTime": 390.443085,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3309,
+      "resetMs": 0.0018
+    },
+    {
+      "frame": 71510,
+      "gameTime": 390.465149,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5592,
+      "resetMs": 0.0047
+    },
+    {
+      "frame": 71511,
+      "gameTime": 390.486328,
+      "sample": 2,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3748,
+      "resetMs": 0.0022
+    },
+    {
+      "frame": 71512,
+      "gameTime": 390.508575,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5815,
+      "resetMs": 0.0044
+    },
+    {
+      "frame": 71513,
+      "gameTime": 390.533417,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3624,
+      "resetMs": 0.0035
+    },
+    {
+      "frame": 71514,
+      "gameTime": 390.558319,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.556,
+      "resetMs": 0.0055
+    },
+    {
+      "frame": 71515,
+      "gameTime": 390.5809,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3821,
+      "resetMs": 0.0042
+    },
+    {
+      "frame": 71516,
+      "gameTime": 390.6051,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3192,
+      "resetMs": 0.0047
+    },
+    {
+      "frame": 71517,
+      "gameTime": 390.628967,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.583,
+      "resetMs": 0.0038
+    },
+    {
+      "frame": 71518,
+      "gameTime": 390.655243,
+      "sample": 3,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.4714,
+      "resetMs": 0.0057
+    },
+    {
+      "frame": 71519,
+      "gameTime": 390.683838,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.6062,
+      "resetMs": 0.0048
+    },
+    {
+      "frame": 71520,
+      "gameTime": 390.711121,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3693,
+      "resetMs": 0.002
+    },
+    {
+      "frame": 71521,
+      "gameTime": 390.737152,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5718,
+      "resetMs": 0.005
+    },
+    {
+      "frame": 71522,
+      "gameTime": 390.765778,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.4351,
+      "resetMs": 0.0058
+    },
+    {
+      "frame": 71523,
+      "gameTime": 390.7937,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3551,
+      "resetMs": 0.0047
+    },
+    {
+      "frame": 71524,
+      "gameTime": 390.8212,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5805,
+      "resetMs": 0.0046
+    },
+    {
+      "frame": 71525,
+      "gameTime": 390.848053,
+      "sample": 4,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.4217,
+      "resetMs": 0.0052
+    },
+    {
+      "frame": 71526,
+      "gameTime": 390.873322,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5907,
+      "resetMs": 0.0056
+    },
+    {
+      "frame": 71527,
+      "gameTime": 390.89917,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.4152,
+      "resetMs": 0.0038
+    },
+    {
+      "frame": 71528,
+      "gameTime": 390.9268,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.543,
+      "resetMs": 0.0049
+    },
+    {
+      "frame": 71529,
+      "gameTime": 390.952332,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3893,
+      "resetMs": 0.0041
+    },
+    {
+      "frame": 71530,
+      "gameTime": 391.0659,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3656,
+      "resetMs": 0.0025
+    },
+    {
+      "frame": 71531,
+      "gameTime": 391.103058,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.7205,
+      "resetMs": 0.0049
+    },
+    {
+      "frame": 71532,
+      "gameTime": 391.134369,
+      "sample": 5,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.4903,
+      "resetMs": 0.0039
+    },
+    {
+      "frame": 71533,
+      "gameTime": 391.165649,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.6698,
+      "resetMs": 0.0068
+    },
+    {
+      "frame": 71534,
+      "gameTime": 391.198,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.373,
+      "resetMs": 0.0025
+    },
+    {
+      "frame": 71535,
+      "gameTime": 391.229156,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.6325,
+      "resetMs": 0.005
+    },
+    {
+      "frame": 71536,
+      "gameTime": 391.254639,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.4023,
+      "resetMs": 0.0036
+    },
+    {
+      "frame": 71537,
+      "gameTime": 391.2818,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.325,
+      "resetMs": 0.0019
+    },
+    {
+      "frame": 71538,
+      "gameTime": 391.3053,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5933,
+      "resetMs": 0.0079
+    },
+    {
+      "frame": 71539,
+      "gameTime": 391.333,
+      "sample": 6,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3855,
+      "resetMs": 0.0027
+    },
+    {
+      "frame": 71540,
+      "gameTime": 391.358734,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5714,
+      "resetMs": 0.005
+    },
+    {
+      "frame": 71541,
+      "gameTime": 391.383331,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3333,
+      "resetMs": 0.004
+    },
+    {
+      "frame": 71542,
+      "gameTime": 391.407043,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5585,
+      "resetMs": 0.0069
+    },
+    {
+      "frame": 71543,
+      "gameTime": 391.431824,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3831,
+      "resetMs": 0.0048
+    },
+    {
+      "frame": 71544,
+      "gameTime": 391.4547,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3168,
+      "resetMs": 0.0023
+    },
+    {
+      "frame": 71545,
+      "gameTime": 391.478241,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5641,
+      "resetMs": 0.0037
+    },
+    {
+      "frame": 71546,
+      "gameTime": 391.501678,
+      "sample": 7,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3839,
+      "resetMs": 0.0043
+    },
+    {
+      "frame": 71547,
+      "gameTime": 391.52478,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.544,
+      "resetMs": 0.0041
+    },
+    {
+      "frame": 71548,
+      "gameTime": 391.5553,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3291,
+      "resetMs": 0.0046
+    },
+    {
+      "frame": 71549,
+      "gameTime": 391.579742,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5185,
+      "resetMs": 0.0053
+    },
+    {
+      "frame": 71550,
+      "gameTime": 391.603149,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3795,
+      "resetMs": 0.0025
+    },
+    {
+      "frame": 71551,
+      "gameTime": 391.628265,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.331,
+      "resetMs": 0.0022
+    },
+    {
+      "frame": 71552,
+      "gameTime": 391.652954,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5437,
+      "resetMs": 0.005
+    },
+    {
+      "frame": 71553,
+      "gameTime": 391.676666,
+      "sample": 8,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3804,
+      "resetMs": 0.0044
+    },
+    {
+      "frame": 71554,
+      "gameTime": 391.700775,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5481,
+      "resetMs": 0.0041
+    },
+    {
+      "frame": 71555,
+      "gameTime": 391.732452,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3448,
+      "resetMs": 0.0032
+    },
+    {
+      "frame": 71556,
+      "gameTime": 391.758118,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5444,
+      "resetMs": 0.0075
+    },
+    {
+      "frame": 71557,
+      "gameTime": 391.7816,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3824,
+      "resetMs": 0.003
+    },
+    {
+      "frame": 71558,
+      "gameTime": 391.806427,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.315,
+      "resetMs": 0.0051
+    },
+    {
+      "frame": 71559,
+      "gameTime": 391.836334,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.569,
+      "resetMs": 0.0069
+    },
+    {
+      "frame": 71560,
+      "gameTime": 391.8636,
+      "sample": 9,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3863,
+      "resetMs": 0.0026
+    },
+    {
+      "frame": 71561,
+      "gameTime": 391.894623,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5475,
+      "resetMs": 0.0048
+    },
+    {
+      "frame": 71562,
+      "gameTime": 391.92038,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3434,
+      "resetMs": 0.0021
+    },
+    {
+      "frame": 71563,
+      "gameTime": 391.945648,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5507,
+      "resetMs": 0.0071
+    },
+    {
+      "frame": 71564,
+      "gameTime": 391.9728,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3804,
+      "resetMs": 0.0032
+    },
+    {
+      "frame": 71565,
+      "gameTime": 391.999634,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3497,
+      "resetMs": 0.0053
+    },
+    {
+      "frame": 71566,
+      "gameTime": 392.024048,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5367,
+      "resetMs": 0.0075
+    },
+    {
+      "frame": 71567,
+      "gameTime": 392.048523,
+      "sample": 10,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.4024,
+      "resetMs": 0.005
+    },
+    {
+      "frame": 71568,
+      "gameTime": 392.0738,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "instantiateMs": 0.5781,
+      "resetMs": 0.0083
+    },
+    {
+      "frame": 71569,
+      "gameTime": 392.0991,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "instantiateMs": 0.3381,
+      "resetMs": 0.0021
+    },
+    {
+      "frame": 71570,
+      "gameTime": 392.123962,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "instantiateMs": 0.5266,
+      "resetMs": 0.0049
+    },
+    {
+      "frame": 71571,
+      "gameTime": 392.150452,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "instantiateMs": 0.3976,
+      "resetMs": 0.0032
+    },
+    {
+      "frame": 71572,
+      "gameTime": 392.17923,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "instantiateMs": 0.3061,
+      "resetMs": 0.0055
+    },
+    {
+      "frame": 71573,
+      "gameTime": 392.207947,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "instantiateMs": 0.5312,
+      "resetMs": 0.0078
+    },
+    {
+      "frame": 71574,
+      "gameTime": 392.233582,
+      "sample": 11,
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "instantiateMs": 0.3735,
+      "resetMs": 0.0022
+    }
+  ]
+}

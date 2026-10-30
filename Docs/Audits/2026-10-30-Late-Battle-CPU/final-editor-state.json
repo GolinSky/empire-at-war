@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "return new { compilationFailed = UnityEditor.EditorUtility.scriptCompilationFailed, compiling = UnityEditor.EditorApplication.isCompiling, updating = UnityEditor.EditorApplication.isUpdating, playing = UnityEditor.EditorApplication.isPlaying, profilerEnabled = UnityEngine.Profiling.Profiler.enabled, scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "compilationFailed": false,
+        "compiling": false,
+        "updating": false,
+        "playing": false,
+        "profilerEnabled": false,
+        "scene": "MainMenuScene"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

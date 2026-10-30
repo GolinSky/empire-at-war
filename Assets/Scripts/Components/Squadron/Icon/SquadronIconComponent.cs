@@ -2,7 +2,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,9 +18,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     /// The marker lives on the shared <see cref="ISquadronIconLayer"/> canvas; it is hidden while off screen.
     /// </summary>
     public sealed class SquadronIconComponent : MonoComponent<SelectionModel>, ISquadronIconCommand,
-        IInitializable, ILateTickable, ILateDisposable, IRespawnable
+        IInitializable, ILateDisposable, IRespawnable
     {
-        private ICameraService _cameraService;
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
         private IPlayerColors _playerColors;
@@ -31,7 +29,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField] private RectTransform iconRoot;
         [SerializeField] private Image frameImage;
         [SerializeField] private Image iconImage;
-        private CameraData _cameraData;
 
         private PlayerId _owner;
         private Vector3 _anchor;
@@ -49,15 +46,14 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         private bool _isReleased;
         private bool _isShown;
+        private bool _isRegistered;
 
         [Inject]
-        private void Construct(ICameraService cameraService, IVisionService visionService, ILocalPlayer localPlayer,
-            SelectionModel model, CameraData cameraData, PlayerId owner, IPlayerColors playerColors,
+        private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
+            SelectionModel model, PlayerId owner, IPlayerColors playerColors,
             ISquadronIconLayer iconLayer)
         {
             SetModel(model);
-            _cameraService = cameraService;
-            _cameraData = cameraData;
             _visionService = visionService;
             _owner = owner;
             _localPlayer = localPlayer;
@@ -75,7 +71,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _anchor = transform.position;
             Model.OnSelected += UpdateColor;
             UpdateColor(Model.IsSelected);
-            LateTick();
+            _iconLayer.Register(this);
+            _isRegistered = true;
         }
 
         public void LateDispose() => Release();
@@ -86,40 +83,37 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             Initialize();
         }
 
-        public void LateTick()
+        public void Project(Matrix4x4 worldToClip, Vector3 cameraPosition, Vector3 cameraForward,
+            int screenWidth, int screenHeight, float zoomScale, float deltaTime)
         {
-            if (_isReleased)
+            Vector3 position = transform.position;
+            _anchor = Vector3.Lerp(_anchor, position, 1f - Mathf.Exp(-followSharpness * deltaTime));
+            Vector4 clip = worldToClip * new Vector4(_anchor.x, _anchor.y, _anchor.z, 1f);
+            bool inFront = Vector3.Dot(_anchor - cameraPosition, cameraForward) > 0f;
+            if (!inFront)
             {
+                SetShown(false);
                 return;
             }
-
-            _anchor = Vector3.Lerp(_anchor, transform.position, 1f - Mathf.Exp(-followSharpness * Time.deltaTime));
-            Vector3 viewport = _cameraService.WorldToViewportPoint(_anchor);
-            float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max,
-                _cameraService.CameraPosition.y);
-            float zoomScale = Mathf.Lerp(1.5f, 0.5f, zoom);
-            _screenPosition = new Vector2(viewport.x * Screen.width,
-                viewport.y * Screen.height + screenOffset * zoomScale);
+            _screenPosition = new Vector2((clip.x / clip.w * 0.5f + 0.5f) * screenWidth,
+                (clip.y / clip.w * 0.5f + 0.5f) * screenHeight + screenOffset * zoomScale);
             // Off-screen markers are hidden first: the vision query is the costly check.
             float margin = clickSize * zoomScale;
-            bool show = viewport.z > 0f &&
-                        _screenPosition.x > -margin && _screenPosition.x < Screen.width + margin &&
-                        _screenPosition.y > -margin && _screenPosition.y < Screen.height + margin &&
+            bool show = _screenPosition.x > -margin && _screenPosition.x < screenWidth + margin &&
+                        _screenPosition.y > -margin && _screenPosition.y < screenHeight + margin &&
                         (_localPlayer.IsFriendly(_owner) ||
-                         _visionService.IsVisible(_localPlayer.Id, transform.position));
+                         _visionService.IsVisible(_localPlayer.Id, position));
+            bool wasShown = _isShown;
             SetShown(show);
             if (!show)
-            {
                 return;
-            }
-
             if (zoomScale != _zoomScale)
             {
                 _zoomScale = zoomScale;
                 iconRoot.localScale = Vector3.one * zoomScale;
             }
-
-            iconRoot.anchoredPosition = _screenPosition;
+            if (!wasShown || (_screenPosition - iconRoot.anchoredPosition).sqrMagnitude > 0.25f)
+                iconRoot.anchoredPosition = _screenPosition;
         }
 
         public bool ContainsScreenPoint(Vector2 screenPoint)
@@ -142,6 +136,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             }
 
             _isReleased = true;
+            _iconLayer.Unregister(this);
+            _isRegistered = false;
             Model.OnSelected -= UpdateColor;
             SetShown(false);
         }
@@ -161,6 +157,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         // with the squadron. During scene unload the layer may already be gone and took the marker with it.
         private void OnDestroy()
         {
+            if (_isRegistered)
+                _iconLayer.Unregister(this);
             if (iconRoot != null)
             {
                 Destroy(iconRoot.gameObject);

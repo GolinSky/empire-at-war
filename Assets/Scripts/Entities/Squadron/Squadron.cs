@@ -23,6 +23,7 @@ using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
@@ -46,9 +47,6 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         // Idle and guarding squadrons scan every enemy in range; spacing those scans keeps large air battles cheap.
         private const float TARGET_SEARCH_INTERVAL = 0.25f;
-        // Order upkeep (target checks, arrivals, searches) runs about seven times a second, each squadron on its own
-        // phase; the pilot and flight model still step every frame.
-        private const float ORDER_UPDATE_INTERVAL = 0.15f;
 
         private ISquadronFlightComponent _flight;
         private ISquadronHealthComponent _health;
@@ -69,6 +67,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private UnitOrderModel _orders;
         private SquadronPilot _pilot;
         private SquadronTargetSelector _targetSelector;
+        private SquadronOrderScheduler _orderScheduler;
         private UnitOrderSettings _orderSettings;
         private LifetimeScope _scope;
         private LifecycleTickGate _tickGate;
@@ -86,8 +85,6 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private float _huntRetargetTimer;
         private float _targetSearchTimer;
-        private float _orderTimer;
-        private float _orderElapsed;
         private float _pendingAbilityRange;
         private float _guardedRadius;
 
@@ -136,7 +133,7 @@ namespace EmpireAtWar.Entities.Squadrons
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
-            long entityId, FighterPoseBatch poseBatch)
+            long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler)
         {
             EntityId = entityId;
             _flight = flight;
@@ -154,6 +151,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _orders = orders;
             _pilot = pilot;
             _targetSelector = targetSelector;
+            _orderScheduler = orderScheduler;
             _attackDataFactory = attackDataFactory;
             _cameraService = cameraService;
             _layerService = layerService;
@@ -185,8 +183,7 @@ namespace EmpireAtWar.Entities.Squadrons
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
             // Staggered so squadrons launched together do not all search in the same frame.
             _targetSearchTimer = UnityEngine.Random.Range(0f, TARGET_SEARCH_INTERVAL);
-            _orderTimer = UnityEngine.Random.Range(0f, ORDER_UPDATE_INTERVAL);
-            _orderElapsed = 0f;
+            _orderScheduler.Register(UpdateOrder);
         }
 
         public void LateDispose() => Release(false);
@@ -233,7 +230,16 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
-            TickOrder(Time.deltaTime);
+            // Order searches are budgeted, but the pilot reads target views every frame.
+            // Retire dead targets before their cached hardpoint transforms can be read.
+            if ((_orders.Current == UnitOrderType.Attack || _orders.Current == UnitOrderType.Guard) &&
+                !SquadronTargetSelector.IsAlive(_orders.Target))
+                Stop();
+            else if (_engaged != null && !SquadronTargetSelector.IsAlive(_engaged))
+            {
+                Disengage();
+                ResumeCourse();
+            }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronPilot.Auto())
@@ -250,22 +256,6 @@ namespace EmpireAtWar.Entities.Squadrons
                 if (speed > 0f)
                     _shipSfxService.TryHoldEngine(_audioHandle, _engineSound, _flight.Centroid,
                         Mathf.Clamp01(speed / _flight.Data.CruiseSpeed), 1f);
-            }
-        }
-
-        private void TickOrder(float deltaTime)
-        {
-            _orderElapsed += deltaTime;
-            _orderTimer -= deltaTime;
-            if (_orderTimer <= 0f)
-            {
-                // Preserve the phase through hitches, skipping missed checks instead of catching up in a burst.
-                _orderTimer = _orderTimer % ORDER_UPDATE_INTERVAL + ORDER_UPDATE_INTERVAL;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.SquadronOrder.Auto())
-#endif
-                UpdateOrder(_orderElapsed);
-                _orderElapsed = 0f;
             }
         }
 
@@ -406,7 +396,7 @@ namespace EmpireAtWar.Entities.Squadrons
                     break;
                 case UnitOrderType.AttackMove:
                     if (ShouldSearchTargets(elapsed))
-                        DefendArea(_targetSelector.SelectNear(_radar.Enemies, _flight.Centroid, Data.GuardRadius));
+                        DefendArea(_targetSelector.SelectNear(_radar, _flight.Centroid, Data.GuardRadius));
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();
                     break;
                 case UnitOrderType.Move:
@@ -420,7 +410,7 @@ namespace EmpireAtWar.Entities.Squadrons
                     break;
                 default:
                     if (ShouldSearchTargets(elapsed))
-                        DefendArea(_targetSelector.SelectNear(_radar.Enemies, _pilot.LoiterCenter, Data.GuardRadius));
+                        DefendArea(_targetSelector.SelectNear(_radar, _pilot.LoiterCenter, Data.GuardRadius));
                     break;
             }
         }
@@ -531,6 +521,7 @@ namespace EmpireAtWar.Entities.Squadrons
             }
 
             _isReleased = true;
+            _orderScheduler.Unregister(UpdateOrder);
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;
             _weaponFireEvents.ShotEmitted -= HandleShotEmitted;
             _sFoils.Changed -= HandleSFoilsChanged;

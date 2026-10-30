@@ -4,7 +4,6 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Services.Timing;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Weapon
@@ -14,28 +13,34 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const float MIN_IMPACT_SIZE = 0.75f;
         private const float STRIKECRAFT_IMPACT_SCALE = 0.3f;
 
-        private readonly ShotEffect _prefab;
         private readonly Transform _owner;
         private readonly WeaponProfile _profile;
         private readonly ImpactEffectPresenter _impactPresenter;
         private readonly BoltFlightBatch _boltFlights;
-        private readonly Stack<ShotEffect> _available = new Stack<ShotEffect>();
-        private readonly HashSet<ShotEffect> _availableMembers = new HashSet<ShotEffect>();
+        private readonly ShotEffectCache _cache;
+        private readonly bool _ownsCache;
         private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
         private Action<int> _effectCompleted;
-
         private bool _released;
+
         public event Action<ShotEffectPool> Retired;
 
-        public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted, ImpactEffectPresenter impactPresenter,
-            BoltFlightBatch boltFlights)
+        public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted,
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights)
+            : this(profile, owner, effectCompleted, impactPresenter, boltFlights, new ShotEffectCache(profile.ShotPrefab))
         {
-            _boltFlights = boltFlights;
-            _prefab = profile.ShotPrefab;
-            _owner = owner;
+            _ownsCache = true;
+        }
+
+        internal ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted,
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotEffectCache cache)
+        {
             _profile = profile;
+            _owner = owner;
             _effectCompleted = effectCompleted;
             _impactPresenter = impactPresenter;
+            _boltFlights = boltFlights;
+            _cache = cache;
         }
 
         /// <returns>Seconds until the shot reaches the target.</returns>
@@ -43,117 +48,47 @@ namespace EmpireAtWar.ViewComponents.Weapon
             int sequenceGeneration, bool isHit, out ShotEffect effect)
         {
             if (_released)
-            {
                 throw new InvalidOperationException("Cannot play an effect from a released pool.");
-            }
 
-            Transform targetTransform = target.Transform;
             effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType, _profile.Damage,
                 GetImpactSize(attackData.TargetClass), isHit);
-            float duration = effect.Fire(_owner, targetTransform, target.Pivot, aimOffset, _profile, _boltFlights);
+            float duration = effect.Fire(_owner, target.Transform, target.Pivot, aimOffset, _profile, _boltFlights);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;
         }
 
-        // Impacts on strikecraft shrink so a flash never dwarfs the fighter it hits.
         private float GetImpactSize(ShipClass targetClass)
         {
             float size = Mathf.Max(_profile.Size.x, MIN_IMPACT_SIZE);
-            return targetClass.IsStrikecraft()
-                ? size * STRIKECRAFT_IMPACT_SCALE
-                : size;
+            return targetClass.IsStrikecraft() ? size * STRIKECRAFT_IMPACT_SCALE : size;
         }
 
         private ShotEffect Acquire()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileGetOrCreate.Auto())
-            {
-#endif
-            while (_available.Count > 0)
-            {
-                ShotEffect effect = _available.Pop();
-                if (!_availableMembers.Remove(effect))
-                {
-                    continue;
-                }
-
-                AttackSequenceDiagnostics.RecordPoolAvailable(-1);
-                if (!effect)
-                {
-                    AttackSequenceDiagnostics.RecordPoolRetired();
-                    continue;
-                }
-
-                AttackSequenceDiagnostics.RecordPoolReused();
-                effect.enabled = true;
-                return effect;
-            }
-
-            ShotEffect created;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileInstantiate.Auto())
-            {
-#endif
-            created = UnityEngine.Object.Instantiate(_prefab);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
-            created.EffectCompleted += OnEffectCompleted;
-            created.EffectDestroyed += OnEffectDestroyed;
-            AttackSequenceDiagnostics.RecordPoolCreated(true);
-            return created;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
+            ShotEffect effect = _cache.Acquire();
+            effect.EffectCompleted += OnEffectCompleted;
+            effect.EffectDestroyed += OnEffectDestroyed;
+            return effect;
         }
 
         public void Release()
         {
-            if (_released)
-            {
-                return;
-            }
-
+            if (_released) return;
             _released = true;
             _effectCompleted = null;
             AttackSequenceDiagnostics.RecordOwnerlessActive(_active.Count);
-
-            while (_available.Count > 0)
-            {
-                ShotEffect effect = _available.Pop();
-                if (!_availableMembers.Remove(effect))
-                {
-                    continue;
-                }
-
-                AttackSequenceDiagnostics.RecordPoolAvailable(-1);
-                if (!effect)
-                {
-                    AttackSequenceDiagnostics.RecordPoolRetired();
-                    continue;
-                }
-
-                effect.EffectCompleted -= OnEffectCompleted;
-                effect.EffectDestroyed -= OnEffectDestroyed;
-                effect.RetireAfterCompletion();
-                AttackSequenceDiagnostics.RecordPoolRetired();
-            }
-
-            foreach (ShotEffect effect in _active.Keys)
-            {
-                effect.RetireAfterCompletion();
-            }
-            if (_active.Count == 0) Retired?.Invoke(this);
+            // Shared storage keeps idle shots and accepts these active leases after they finish.
+            if (_ownsCache) _cache.Release();
+            if (_active.Count == 0) NotifyRetired();
         }
 
         public void DestroyAll()
         {
             Release();
             foreach (ShotEffect effect in new List<ShotEffect>(_active.Keys))
-                if (effect != null) effect.CancelAndDestroy();
+                if (effect) effect.CancelAndDestroy();
         }
 
         private void OnEffectCompleted(ShotEffect effect, int leaseId)
@@ -163,86 +98,52 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 AttackSequenceDiagnostics.RecordUnmatchedCompletion();
                 return;
             }
-
             _active.Remove(effect);
+            Detach(effect);
             AttackSequenceDiagnostics.RecordPoolReturned();
-            if (_released)
-            {
-                AttackSequenceDiagnostics.RecordOwnerlessActive(-1);
-                effect.EffectCompleted -= OnEffectCompleted;
-                effect.EffectDestroyed -= OnEffectDestroyed;
-                effect.RetireAfterCompletion();
-                AttackSequenceDiagnostics.RecordPoolRetired();
-                if (_active.Count == 0) Retired?.Invoke(this);
-                return;
-            }
-
-            // Keep prewarmed and demand-created shots for later salvos until the owner releases the pool.
-            effect.ResetForPool();
-            _available.Push(effect);
-            _availableMembers.Add(effect);
-            AttackSequenceDiagnostics.RecordPoolAvailable(1);
-            _effectCompleted(sequenceGeneration);
+            _cache.Return(effect);
+            CompleteOwner(sequenceGeneration);
         }
 
         private void OnEffectDestroyed(ShotEffect effect, int leaseId)
         {
-            if (_availableMembers.Remove(effect))
-            {
-                AttackSequenceDiagnostics.RecordPoolAvailable(-1);
-                AttackSequenceDiagnostics.RecordPoolRetired();
-                return;
-            }
-
-            if (!_active.TryGetValue(effect, out int sequenceGeneration))
-            {
-                return;
-            }
-
+            if (!_active.TryGetValue(effect, out int sequenceGeneration)) return;
             _active.Remove(effect);
+            Detach(effect);
             AttackSequenceDiagnostics.RecordPoolReturned();
-            AttackSequenceDiagnostics.RecordPoolRetired();
+            CompleteOwner(sequenceGeneration);
+        }
+
+        private void Detach(ShotEffect effect)
+        {
+            effect.EffectCompleted -= OnEffectCompleted;
+            effect.EffectDestroyed -= OnEffectDestroyed;
+        }
+
+        private void CompleteOwner(int sequenceGeneration)
+        {
             if (_released)
             {
                 AttackSequenceDiagnostics.RecordOwnerlessActive(-1);
+                if (_active.Count == 0) NotifyRetired();
             }
-
-            if (!_released)
+            else
             {
                 _effectCompleted(sequenceGeneration);
             }
-            else if (_active.Count == 0) Retired?.Invoke(this);
         }
 
-        /// <summary>Adds one idle shot while the pool holds fewer than <paramref name="target"/> shots.</summary>
-        /// <returns>False once the pool is full or released.</returns>
-        public bool PrewarmOne(int target)
+        private void NotifyRetired()
         {
-            if (_released || _availableMembers.Count + _active.Count >= target) return false;
-            AddIdle();
-            return true;
+            if (Retired != null) Retired(this);
         }
+
+        public bool PrewarmOne(int target) => !_released && _cache.PrewarmOne(target);
 
         public void Prewarm(int count)
         {
-            if (_released)
-            {
-                throw new InvalidOperationException("Cannot prewarm a released pool.");
-            }
-
-            while (_availableMembers.Count < count) AddIdle();
-        }
-
-        private void AddIdle()
-        {
-            ShotEffect effect = UnityEngine.Object.Instantiate(_prefab);
-            effect.EffectCompleted += OnEffectCompleted;
-            effect.EffectDestroyed += OnEffectDestroyed;
-            effect.ResetForPool();
-            _available.Push(effect);
-            _availableMembers.Add(effect);
-            AttackSequenceDiagnostics.RecordPoolCreated(false);
-            AttackSequenceDiagnostics.RecordPoolAvailable(1);
+            if (_released) throw new InvalidOperationException("Cannot prewarm a released pool.");
+            while (_cache.PrewarmOne(count)) { }
         }
     }
 }

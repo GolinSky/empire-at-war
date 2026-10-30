@@ -5,14 +5,22 @@ system:
   - vfx
   - quality
   - fog-of-war
-verified: 2026-10-29
-verification: Nebula/hazard/settings source, Unity compilation, saved
+  - battle-cpu
+verified: 2026-10-30
+verification: "Nebula/hazard/settings source, Unity compilation, saved
   bindings/import and isolated nebula render comparison verified. ARM64 IL2CPP
   Development Player build succeeded; BuildInfo, repaired ad-hoc signature and
   M2/Metal launch checked. Xcode 27.1 Metal System Trace and XML export analyzed
   for one user-prepared hazard workload. Matched capture conditions, isolated
   per-draw budgets and acceptance remain unverified. Prior decor/fog evidence
-  retained. No automated tests run.
+  retained. No automated tests run. CPU changes source-reviewed and Unity
+  6000.4.7f1 Windows compilation/import checked 2026-10-30; selection shader
+  messages/binding checked. Tests, Play Mode and matched CPU captures not run.
+  Follow-up: user-authorized crowded Windows Editor battle and actual prewarm
+  capture, paired capture-geometry scans with identical tallies, geometry
+  snapshot and target-lifetime source/import/compile checks; post-fix Console 0
+  errors, Editor stopped on clean MainMenuScene. Automated tests not run;
+  historical M2 causes unreproduced."
 tags:
   - flag/important
 ---
@@ -62,6 +70,23 @@ tags:
 - Compatibility shader preserves legacy premultiply vertex-alpha multiplication and alpha/additive output-alpha clamping; retain texture transform, tint, queue and soft-particle behavior.
 - `FogOfWarSystem.Update` schedules the write; `LateUpdate` completes it before texture Apply. `FogVisibilityGridModel` completes pending work before direct access and disposal.
 - A synchronous grid read between scheduling/upload forces completion and can reduce worker overlap; preserve correctness and measure callers before changing scheduling.
+
+### CPU scheduling and snapshots
+
+- Capture-strength predicates snapshot center/radius once per due area via the sampler preparation callback. Refresh on each scan so moved/resized geometry remains correct; do not repeat Unity site-transform reads per unit.
+- Budget target searches, but validate model target lifetime before every pilot tick. Dead Attack/Guard targets stop; dead opportunistic engagements disengage and resume their course, including Hunt. Cached view transforms must not outlive their target.
+- Profiler frame indices accumulate across captures. Use exact ranges or explicitly clear an idle buffer after saving; top-40 summaries cannot recover uninstrumented descendants. Reproduction/verified CPU evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`.
+
+- Source/Editor compile verified 2026-10-30; runtime speedup unmeasured. Owner and open investigations → [[TODOs/Optimization/Late_Battle_CPU_Fix_Plan]].
+- Interval timers alone do not bound overloaded-frame work. Squadron orders cap 64 visits / 32 updates per frame; capture strength caps 4 visits / 2 area refreshes. Preserve elapsed time without replaying missed intervals; validate order/capture latency under overload.
+- Shot storage is battle-scoped per prefab; mount leases retain profile/color/callback state. Owner release lets in-flight shots return; battle teardown cancels them. Loading warms roster/live station demand; runtime prewarm creates ≤1 shot/frame.
+- A 0.5 ms prewarm budget checked between creations cannot interrupt one expensive Awake. Use `Battle.Projectile.Prewarm.<prefab>` / `Instantiate.<prefab>` markers before changing native prefab components.
+- Selection sprites use the existing world-aligned `SelectionBrackets.shader`, `DisableBatching=true`, conservative bounds and attack-only CPU updates. Keep the saved shared material binding; validate yaw/pitch/culling/spin visually.
+- `TargetOriginCapture` registers mount transforms once and completes `TargetOriginReadJob` before snapshot consumption or disposal. Parent rotation = world × inverse(local); unregister/remap slots before destroying or pooling owners.
+- `SquadronIconLayer` centrally caches camera/screen/zoom and skips position changes ≤0.5 px; retain dedicated canvas isolation, vision and click behavior.
+- Per-iteration captured locals can allocate even when the lambda branch is skipped. Hazard subscriptions allocate in a separate helper only on membership entry; use indexed iteration over interface lists to avoid boxed enumerators.
+- `EnemyStrategicContextBuilder.Build` lends per-player collections until the next Build; current commander consumes them synchronously. Do not retain or asynchronously consume these collections.
+- `BattleTelemetry` performs full CSV serialization only on tracked combat-scene exit/quit. Auxiliary additive unloads do not flush combat telemetry; data since the previous exit is not crash-persistent.
 
 ## Important Values
 

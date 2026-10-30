@@ -22,6 +22,7 @@ using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.ShipUi;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitWreck;
@@ -135,7 +136,7 @@ namespace EmpireAtWar.Repository
 
         // Squadrons the factions can build plus every type a ship or station hangar launches; SquadronPool
         // prewarms them during startup.
-        private static HashSet<SquadronType> Squadrons(CachedAssetService assets, BattleDefinition battle)
+        internal static HashSet<SquadronType> Squadrons(IAssetService assets, BattleDefinition battle)
         {
             FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
             ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
@@ -199,6 +200,12 @@ namespace EmpireAtWar.Repository
                 if (prefix.Length == 0 || platform == "DefendPlatform") yield return prefix + platform;
         }
 
+        internal static IEnumerable<string> PlatformDataKeys()
+        {
+            foreach (string prefix in STRUCTURE_PREFIXES)
+                foreach (string key in PlatformKeys(prefix)) yield return key + "Data";
+        }
+
         // SkirmishScope reads the basic platform and facility colliders while it builds.
         private static void BeginStructureData(CachedAssetService assets)
         {
@@ -206,10 +213,7 @@ namespace EmpireAtWar.Repository
             assets.BeginPreload<GameObject>("MiningFacilityView");
             foreach (MiningFacilityType type in MINING_FACILITIES)
                 assets.BeginPreload<MiningFacilityData>(MiningFacilityAssets.GetName(type) + "Data");
-            foreach (string prefix in STRUCTURE_PREFIXES)
-            {
-                foreach (string key in PlatformKeys(prefix)) assets.BeginPreload<DefendPlatformData>(key + "Data");
-            }
+            foreach (string key in PlatformDataKeys()) assets.BeginPreload<DefendPlatformData>(key);
         }
 
         private static void AddWreck(List<string> keys, UnitWreckData wreck)

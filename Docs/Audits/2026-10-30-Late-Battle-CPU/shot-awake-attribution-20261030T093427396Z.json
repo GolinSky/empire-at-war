@@ -1,0 +1,1092 @@
+{
+  "capturedUtc": "2026-10-30T09:34:27.3969235Z",
+  "unityVersion": "6000.4.7f1",
+  "firstProfilerFrame": 0,
+  "lastProfilerFrame": 301,
+  "validFrames": 302,
+  "note": "Read-only main-thread raw profiler-history decoder. Instantiate stages are siblings; do not add their parent Instantiate duration. Captures remain evolving battle windows.",
+  "summary": [
+    {
+      "key": "unattributed | no-prefab-marker | Instantiate.Awake",
+      "calls": 34,
+      "inclusiveMs": 8.6258999761193991,
+      "meanMs": 0.25370294047409997,
+      "medianMs": 0.19494999945163727,
+      "maximumMs": 2.2818000316619873
+    },
+    {
+      "key": "unattributed | no-prefab-marker | Instantiate.Copy",
+      "calls": 34,
+      "inclusiveMs": 7.0262999627739191,
+      "meanMs": 0.20665588125805645,
+      "medianMs": 0.26995000243186951,
+      "maximumMs": 0.38999998569488525
+    },
+    {
+      "key": "unattributed | no-prefab-marker | Instantiate.Produce",
+      "calls": 34,
+      "inclusiveMs": 5.8096000030636787,
+      "meanMs": 0.17087058832540231,
+      "medianMs": 0.0832500010728836,
+      "maximumMs": 0.89259999990463257
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.ProtonTorpedoShot | Instantiate.Copy",
+      "calls": 12,
+      "inclusiveMs": 4.0676000416278839,
+      "meanMs": 0.338966670135657,
+      "medianMs": 0.329350009560585,
+      "maximumMs": 0.38830000162124634
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.ConcussionMissileShot | Instantiate.Copy",
+      "calls": 12,
+      "inclusiveMs": 3.8953999876976013,
+      "meanMs": 0.3246166656414668,
+      "medianMs": 0.32529999315738678,
+      "maximumMs": 0.3312000036239624
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.LaserProjectile | Instantiate.Copy",
+      "calls": 12,
+      "inclusiveMs": 3.8550999760627747,
+      "meanMs": 0.32125833133856457,
+      "medianMs": 0.31819999217987061,
+      "maximumMs": 0.35539999604225159
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.QuadProjectile | Instantiate.Awake",
+      "calls": 12,
+      "inclusiveMs": 2.6342000067234039,
+      "meanMs": 0.21951666722695032,
+      "medianMs": 0.21900000423192978,
+      "maximumMs": 0.23569999635219574
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.Projectile | Instantiate.Awake",
+      "calls": 12,
+      "inclusiveMs": 2.143899992108345,
+      "meanMs": 0.17865833267569542,
+      "medianMs": 0.17689999938011169,
+      "maximumMs": 0.19679999351501465
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.DualProjectile | Instantiate.Awake",
+      "calls": 12,
+      "inclusiveMs": 2.1091999858617783,
+      "meanMs": 0.17576666548848152,
+      "medianMs": 0.17539999634027481,
+      "maximumMs": 0.18580000102519989
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.ProtonTorpedoShot | Instantiate.Produce",
+      "calls": 12,
+      "inclusiveMs": 1.3866999968886375,
+      "meanMs": 0.11555833307405312,
+      "medianMs": 0.11339999735355377,
+      "maximumMs": 0.12470000237226486
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.ConcussionMissileShot | Instantiate.Produce",
+      "calls": 12,
+      "inclusiveMs": 1.3271000012755394,
+      "meanMs": 0.11059166677296162,
+      "medianMs": 0.11115000024437904,
+      "maximumMs": 0.1185000017285347
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.LaserProjectile | Instantiate.Produce",
+      "calls": 12,
+      "inclusiveMs": 1.3178999945521355,
+      "meanMs": 0.10982499954601128,
+      "medianMs": 0.10954999923706055,
+      "maximumMs": 0.11500000208616257
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.Projectile | Instantiate.Copy",
+      "calls": 12,
+      "inclusiveMs": 1.289000004529953,
+      "meanMs": 0.10741666704416275,
+      "medianMs": 0.10544999688863754,
+      "maximumMs": 0.11490000039339066
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.DualProjectile | Instantiate.Copy",
+      "calls": 12,
+      "inclusiveMs": 1.2834999933838844,
+      "meanMs": 0.10695833278199036,
+      "medianMs": 0.10464999824762344,
+      "maximumMs": 0.11980000138282776
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.QuadProjectile | Instantiate.Copy",
+      "calls": 12,
+      "inclusiveMs": 1.2080999910831451,
+      "meanMs": 0.10067499925692876,
+      "medianMs": 0.1002500019967556,
+      "maximumMs": 0.10620000213384628
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.DualProjectile | Instantiate.Produce",
+      "calls": 12,
+      "inclusiveMs": 0.85300000011920929,
+      "meanMs": 0.071083333343267441,
+      "medianMs": 0.069849997758865356,
+      "maximumMs": 0.081100001931190491
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.Projectile | Instantiate.Produce",
+      "calls": 12,
+      "inclusiveMs": 0.83899998664855957,
+      "meanMs": 0.069916665554046631,
+      "medianMs": 0.068399999290704727,
+      "maximumMs": 0.087300002574920654
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.QuadProjectile | Instantiate.Produce",
+      "calls": 12,
+      "inclusiveMs": 0.80010000243783,
+      "meanMs": 0.066675000203152493,
+      "medianMs": 0.067650001496076584,
+      "maximumMs": 0.072800002992153168
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.LaserProjectile | Instantiate.Awake",
+      "calls": 12,
+      "inclusiveMs": 0.33619999885559082,
+      "meanMs": 0.028016666571299236,
+      "medianMs": 0.028250000439584255,
+      "maximumMs": 0.02930000051856041
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.ProtonTorpedoShot | Instantiate.Awake",
+      "calls": 12,
+      "inclusiveMs": 0.29029999673366547,
+      "meanMs": 0.024191666394472122,
+      "medianMs": 0.023699999786913395,
+      "maximumMs": 0.027300000190734863
+    },
+    {
+      "key": "shared-prewarm | Battle.Projectile.Instantiate.ConcussionMissileShot | Instantiate.Awake",
+      "calls": 12,
+      "inclusiveMs": 0.27830000221729279,
+      "meanMs": 0.023191666851441067,
+      "medianMs": 0.02350000012665987,
+      "maximumMs": 0.024399999529123306
+    }
+  ],
+  "slowestAwake": [
+    {
+      "frame": 202,
+      "sample": 11296,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 2.2818000316619873,
+      "selfMs": 0.019200017173716333,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 9.9999997473787516E-05
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 9.9999997473787516E-05
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 0.0
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 0.0
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 9.9999997473787516E-05
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 0.0
+        },
+        {
+          "marker": "Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Wreck::UnitWreckView.Awake() [Invoke]",
+          "inclusiveMs": 2.2623000144958496
+        }
+      ]
+    },
+    {
+      "frame": 55,
+      "sample": 14434,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 1.7110999822616577,
+      "selfMs": 0.029199974444054533,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 9.9999997473787516E-05
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 0.0
+        },
+        {
+          "marker": "Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Wreck::UnitWreckView.Awake() [Invoke]",
+          "inclusiveMs": 1.6818000078201294
+        }
+      ]
+    },
+    {
+      "frame": 289,
+      "sample": 8744,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.65880000591278076,
+      "selfMs": 0.015800015833519865,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 9.9999997473787516E-05
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 0.0
+        },
+        {
+          "marker": "SortingGroup.UpdateRenderer",
+          "inclusiveMs": 0.0
+        },
+        {
+          "marker": "Assembly-CSharp.dll!EmpireAtWar.ViewComponents.Wreck::UnitWreckView.Awake() [Invoke]",
+          "inclusiveMs": 0.64289999008178711
+        }
+      ]
+    },
+    {
+      "frame": 170,
+      "sample": 5613,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.27820000052452087,
+      "selfMs": 0.2701000003144145,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Hangar.HangarComponent.Tick()",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SpriteRenderer.AwakeFromLoad",
+          "inclusiveMs": 0.0081000002101063728
+        }
+      ]
+    },
+    {
+      "frame": 278,
+      "sample": 7012,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.27399998903274536,
+      "selfMs": 0.26549998950213194,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Hangar.HangarComponent.Tick()",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SpriteRenderer.AwakeFromLoad",
+          "inclusiveMs": 0.0084999995306134224
+        }
+      ]
+    },
+    {
+      "frame": 192,
+      "sample": 4819,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.26989999413490295,
+      "selfMs": 0.26169999409466982,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Hangar.HangarComponent.Tick()",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SpriteRenderer.AwakeFromLoad",
+          "inclusiveMs": 0.0082000000402331352
+        }
+      ]
+    },
+    {
+      "frame": 67,
+      "sample": 8568,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.26159998774528503,
+      "selfMs": 0.25289998762309551,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Hangar.HangarComponent.Tick()",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "SpriteRenderer.AwakeFromLoad",
+          "inclusiveMs": 0.0087000001221895218
+        }
+      ]
+    },
+    {
+      "frame": 101,
+      "sample": 3116,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.23569999635219574,
+      "selfMs": 0.23169999648234807,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0013000000035390258
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0023999998811632395
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 112,
+      "sample": 3206,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.22550000250339508,
+      "selfMs": 0.22220000249217264,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0010999999940395355
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0019000000320374966
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 103,
+      "sample": 3006,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.22470000386238098,
+      "selfMs": 0.22170000392361544,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.00089999998454004526
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0017999999690800905
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 105,
+      "sample": 3051,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.22310000658035278,
+      "selfMs": 0.21980000651092269,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0010000000474974513
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0019000000320374966
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00039999998989515007
+        }
+      ]
+    },
+    {
+      "frame": 109,
+      "sample": 2887,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.22280000150203705,
+      "selfMs": 0.21950000137439929,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0010000000474974513
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0020000000949949026
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 102,
+      "sample": 2955,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.22030000388622284,
+      "selfMs": 0.21720000382629223,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.00079999997979030013
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0020000000949949026
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 108,
+      "sample": 2739,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.21770000457763672,
+      "selfMs": 0.21420000461512245,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0013000000035390258
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0017999999690800905
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00039999998989515007
+        }
+      ]
+    },
+    {
+      "frame": 104,
+      "sample": 3029,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.21719999611377716,
+      "selfMs": 0.2142999961215537,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.00089999998454004526
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0017000000225380063
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 106,
+      "sample": 2262,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.21660000085830688,
+      "selfMs": 0.21330000084708445,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0010999999940395355
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0019000000320374966
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 206,
+      "sample": 9072,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.21449999511241913,
+      "selfMs": 0.21409999512252398,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00039999998989515007
+        }
+      ]
+    },
+    {
+      "frame": 107,
+      "sample": 2448,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.2125999927520752,
+      "selfMs": 0.20909999278956093,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0011999999405816197
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0019000000320374966
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00039999998989515007
+        }
+      ]
+    },
+    {
+      "frame": 111,
+      "sample": 3567,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.21089999377727509,
+      "selfMs": 0.20789999378030188,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.00089999998454004526
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0017000000225380063
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00039999998989515007
+        }
+      ]
+    },
+    {
+      "frame": 110,
+      "sample": 2790,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.QuadProjectile",
+      "inclusiveMs": 0.20710000395774841,
+      "selfMs": 0.20410000401898287,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.QuadProjectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.QuadProjectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0010999999940395355
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.0015999999595806003
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00029999998514540493
+        }
+      ]
+    },
+    {
+      "frame": 128,
+      "sample": 11249,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.2070000022649765,
+      "selfMs": 0.20650000224122778,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 178,
+      "sample": 9686,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.20669999718666077,
+      "selfMs": 0.20629999719676562,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00039999998989515007
+        }
+      ]
+    },
+    {
+      "frame": 125,
+      "sample": 11550,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.20649999380111694,
+      "selfMs": 0.20599999377736822,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 154,
+      "sample": 10052,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.20530000329017639,
+      "selfMs": 0.20480000326642767,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 182,
+      "sample": 10066,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.20489999651908875,
+      "selfMs": 0.20439999649534002,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 194,
+      "sample": 8945,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.20430000126361847,
+      "selfMs": 0.20380000123986974,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 133,
+      "sample": 11066,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.20389999449253082,
+      "selfMs": 0.20329999452224,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00059999997029080987
+        }
+      ]
+    },
+    {
+      "frame": 160,
+      "sample": 10877,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.2004999965429306,
+      "selfMs": 0.19999999651918188,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 147,
+      "sample": 10926,
+      "source": "unattributed",
+      "prefabMarker": null,
+      "inclusiveMs": 0.19730000197887421,
+      "selfMs": 0.19680000195512548,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerLateUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick()",
+        "Battle.Attack.DueBatch",
+        "Battle.Attack.DueBatch.Apply",
+        "Battle.Attack.DueBatch.Impact",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    },
+    {
+      "frame": 65,
+      "sample": 2817,
+      "source": "shared-prewarm",
+      "prefabMarker": "Battle.Projectile.Instantiate.Projectile",
+      "inclusiveMs": 0.19679999351501465,
+      "selfMs": 0.19529999344376847,
+      "ancestors": [
+        "Main Thread",
+        "PlayerLoop",
+        "UpdateScene",
+        "VContainerUpdate",
+        "UnityEngine.CoreModule.dll!::UpdateFunction.Invoke() [Invoke]",
+        "EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer.Tick()",
+        "Battle.Projectile.Prewarm.Projectile",
+        "Battle.Projectile.Instantiate",
+        "Battle.Projectile.Instantiate.Projectile",
+        "Instantiate"
+      ],
+      "children": [
+        {
+          "marker": "gameObjectChangedScene.Invoke",
+          "inclusiveMs": 0.0010000000474974513
+        },
+        {
+          "marker": "AssetDatabase.GetAssetPathToGUIDV2",
+          "inclusiveMs": 0.00050000002374872565
+        }
+      ]
+    }
+  ]
+}

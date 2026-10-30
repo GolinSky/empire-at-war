@@ -1,0 +1,68 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Performance/SetupCrowdedBattle.cs",
+      "entry": "SetupCrowdedBattle.Prepare",
+      "timeout_ms": 30000
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 189,
+      "executeMs": 464,
+      "assemblyName": "PipelineRunScript_SetupCrowdedBattle_a69ad1e8fe7b4406aa1624b145ed5799",
+      "success": true,
+      "result": {
+        "population": 120,
+        "spawned": [
+          "Arquitens",
+          "Pelta",
+          "Centax",
+          "Acclamator",
+          "StealthCorvette",
+          "CR70",
+          "Carrack",
+          "Venator",
+          "VenatorII",
+          "HeavyDreadnought",
+          "Resolute",
+          "Imperator",
+          "Victory",
+          "Rothana",
+          "Mandator",
+          "Arquitens",
+          "Pelta",
+          "Centax",
+          "Acclamator",
+          "StealthCorvette",
+          "CR70",
+          "Carrack",
+          "Venator",
+          "VenatorII",
+          "HeavyDreadnought",
+          "Arquitens"
+        ],
+        "status": {
+          "scene": "Battle",
+          "state": "Running",
+          "time": 129.305527,
+          "ships": 27,
+          "squadrons": 4,
+          "weapons": 33,
+          "local": true,
+          "enemy": true
+        }
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

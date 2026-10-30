@@ -11,12 +11,11 @@ namespace EmpireAtWar.Components.Weapon
 {
     /// <summary>
     /// Dev-only record of what each unit type really fired, dealt and lost in a battle, for comparison with the Battle Simulator.
-    /// Rewrites persistentDataPath/BattleTelemetry/&lt;scene&gt;_&lt;time&gt;.csv every few seconds and starts a new file on every scene load.
+    /// Writes persistentDataPath/BattleTelemetry/&lt;scene&gt;_&lt;time&gt;.csv on battle scene exit or quit.
     /// </summary>
     public static class BattleTelemetry
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private const float FLUSH_INTERVAL = 10f;
         private const string FOLDER = "BattleTelemetry";
 
         private sealed class ShooterRow
@@ -41,25 +40,38 @@ namespace EmpireAtWar.Components.Weapon
         private static readonly Dictionary<(FactionType, string, DamageType, FactionType, string), ImpactRow> _impacts =
             new Dictionary<(FactionType, string, DamageType, FactionType, string), ImpactRow>();
         private static string _path;
+        private static int _sceneHandle;
         private static float _startTime;
-        private static float _nextFlush;
         private static bool _dirty;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Install()
         {
-            Reset(SceneManager.GetActiveScene().name);
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            _shooters.Clear();
+            _impacts.Clear();
+            _dirty = false;
+            _path = null;
+            _sceneHandle = -1;
             Application.quitting -= Flush;
             Application.quitting += Flush;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
-        private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private static void EnsureSession()
         {
-            if (mode != LoadSceneMode.Single) return;
-            Flush();
+            if (_path != null) return;
+            Scene scene = SceneManager.GetActiveScene();
             Reset(scene.name);
+            _sceneHandle = scene.handle;
+        }
+
+        private static void OnSceneUnloaded(Scene scene)
+        {
+            if (scene.handle != _sceneHandle) return;
+            Flush();
+            _path = null;
+            _sceneHandle = -1;
         }
 
         private static void Reset(string sceneName)
@@ -68,7 +80,6 @@ namespace EmpireAtWar.Components.Weapon
             _impacts.Clear();
             _dirty = false;
             _startTime = Time.unscaledTime;
-            _nextFlush = _startTime + FLUSH_INTERVAL;
             _path = Path.Combine(Application.persistentDataPath, FOLDER,
                 $"{sceneName}_{System.DateTime.Now:yyyyMMdd_HHmmss}.csv");
         }
@@ -77,6 +88,7 @@ namespace EmpireAtWar.Components.Weapon
         public static void RecordShot(FactionType faction, string unit)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            EnsureSession();
             if (!_shooters.TryGetValue((faction, unit), out ShooterRow row))
                 _shooters.Add((faction, unit), row = new ShooterRow());
             row.Shots++;
@@ -91,6 +103,7 @@ namespace EmpireAtWar.Components.Weapon
             FactionType targetFaction, string target, float raw, float shieldLoss, float hullLoss, bool killed)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            EnsureSession();
             var key = (faction, unit, damageType, targetFaction, target);
             if (!_impacts.TryGetValue(key, out ImpactRow row)) _impacts.Add(key, row = new ImpactRow());
             row.Impacts++;
@@ -107,12 +120,10 @@ namespace EmpireAtWar.Components.Weapon
         private static void Touch()
         {
             _dirty = true;
-            if (Time.unscaledTime >= _nextFlush) Flush();
         }
 
         private static void Flush()
         {
-            _nextFlush = Time.unscaledTime + FLUSH_INTERVAL;
             if (!_dirty) return;
             _dirty = false;
             CultureInfo invariant = CultureInfo.InvariantCulture;

@@ -1,0 +1,1940 @@
+{
+  "capturedUtc": "2026-10-30T09:03:57.9535430Z",
+  "unityVersion": "6000.4.7f1",
+  "processor": "AMD Ryzen 7 9800X3D 8-Core Processor ",
+  "mode": "EditMode isolated preview scene; native-only disposable templates; no battle load; timings include full Instantiate, not only Awake",
+  "warmSamples": 12,
+  "rows": [
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.3833,
+      "warmMedianMs": 0.38355,
+      "warmMeanMs": 0.38985833333333336,
+      "warmMinimumMs": 0.366,
+      "warmMaximumMs": 0.4598,
+      "rawInstantiateMs": [
+        0.3833,
+        0.3872,
+        0.366,
+        0.3724,
+        0.4598,
+        0.3799,
+        0.3723,
+        0.3966,
+        0.369,
+        0.3664,
+        0.3928,
+        0.3877,
+        0.4282
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.3921,
+      "warmMedianMs": 0.4514,
+      "warmMeanMs": 0.46001666666666674,
+      "warmMinimumMs": 0.4211,
+      "warmMaximumMs": 0.558,
+      "rawInstantiateMs": [
+        0.3921,
+        0.4706,
+        0.4869,
+        0.558,
+        0.4579,
+        0.4501,
+        0.4512,
+        0.4324,
+        0.441,
+        0.4211,
+        0.4371,
+        0.4516,
+        0.4623
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0435,
+      "warmMedianMs": 0.0187,
+      "warmMeanMs": 0.024791666666666667,
+      "warmMinimumMs": 0.0169,
+      "warmMaximumMs": 0.039,
+      "rawInstantiateMs": [
+        0.0435,
+        0.02,
+        0.039,
+        0.019,
+        0.0169,
+        0.0374,
+        0.018,
+        0.0183,
+        0.0377,
+        0.0184,
+        0.0183,
+        0.0365,
+        0.018
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.3857,
+      "warmMedianMs": 0.4676,
+      "warmMeanMs": 0.48100833333333332,
+      "warmMinimumMs": 0.4246,
+      "warmMaximumMs": 0.5705,
+      "rawInstantiateMs": [
+        0.3857,
+        0.5587,
+        0.527,
+        0.4752,
+        0.4677,
+        0.4509,
+        0.5705,
+        0.4829,
+        0.4528,
+        0.4504,
+        0.4246,
+        0.4675,
+        0.4439
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.3834,
+      "warmMedianMs": 0.4546,
+      "warmMeanMs": 0.4563,
+      "warmMinimumMs": 0.4232,
+      "warmMaximumMs": 0.4783,
+      "rawInstantiateMs": [
+        0.3834,
+        0.4722,
+        0.4487,
+        0.4538,
+        0.4488,
+        0.4746,
+        0.4554,
+        0.4646,
+        0.4408,
+        0.4465,
+        0.4687,
+        0.4783,
+        0.4232
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.0318,
+      "warmMedianMs": 0.011449999999999998,
+      "warmMeanMs": 0.012633333333333331,
+      "warmMinimumMs": 0.0089,
+      "warmMaximumMs": 0.0303,
+      "rawInstantiateMs": [
+        0.0318,
+        0.0113,
+        0.0105,
+        0.0101,
+        0.0097,
+        0.0303,
+        0.0125,
+        0.0119,
+        0.012,
+        0.0116,
+        0.0127,
+        0.0101,
+        0.0089
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.3802,
+      "warmMedianMs": 0.44599999999999995,
+      "warmMeanMs": 0.44955000000000006,
+      "warmMinimumMs": 0.414,
+      "warmMaximumMs": 0.477,
+      "rawInstantiateMs": [
+        0.3802,
+        0.4477,
+        0.4409,
+        0.4412,
+        0.4372,
+        0.4692,
+        0.4635,
+        0.4443,
+        0.45,
+        0.4701,
+        0.414,
+        0.4395,
+        0.477
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.1483,
+      "warmMedianMs": 0.10650000000000001,
+      "warmMeanMs": 0.10644166666666666,
+      "warmMinimumMs": 0.0935,
+      "warmMaximumMs": 0.1246,
+      "rawInstantiateMs": [
+        0.1483,
+        0.1246,
+        0.1137,
+        0.1068,
+        0.1029,
+        0.0943,
+        0.1087,
+        0.108,
+        0.1019,
+        0.1053,
+        0.0935,
+        0.1114,
+        0.1062
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.0828,
+      "warmMedianMs": 0.086850000000000011,
+      "warmMeanMs": 0.093033333333333343,
+      "warmMinimumMs": 0.085,
+      "warmMaximumMs": 0.113,
+      "rawInstantiateMs": [
+        0.0828,
+        0.106,
+        0.0868,
+        0.085,
+        0.0994,
+        0.0953,
+        0.0989,
+        0.0857,
+        0.0866,
+        0.0861,
+        0.0867,
+        0.0869,
+        0.113
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0106,
+      "warmMedianMs": 0.0093999999999999986,
+      "warmMeanMs": 0.012241666666666666,
+      "warmMinimumMs": 0.0075,
+      "warmMaximumMs": 0.0307,
+      "rawInstantiateMs": [
+        0.0106,
+        0.0107,
+        0.0096,
+        0.0098,
+        0.0307,
+        0.0092,
+        0.008,
+        0.0075,
+        0.0078,
+        0.0078,
+        0.027,
+        0.0111,
+        0.0077
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.0858,
+      "warmMedianMs": 0.08985,
+      "warmMeanMs": 0.095508333333333348,
+      "warmMinimumMs": 0.0859,
+      "warmMaximumMs": 0.1201,
+      "rawInstantiateMs": [
+        0.0858,
+        0.1018,
+        0.0898,
+        0.0956,
+        0.0899,
+        0.1015,
+        0.0889,
+        0.0859,
+        0.1124,
+        0.1201,
+        0.0861,
+        0.0876,
+        0.0865
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.0665,
+      "warmMedianMs": 0.0979,
+      "warmMeanMs": 0.10120833333333334,
+      "warmMinimumMs": 0.0875,
+      "warmMaximumMs": 0.1324,
+      "rawInstantiateMs": [
+        0.0665,
+        0.094,
+        0.0915,
+        0.1048,
+        0.1181,
+        0.1058,
+        0.1039,
+        0.0921,
+        0.1018,
+        0.1324,
+        0.0875,
+        0.0923,
+        0.0903
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.006,
+      "warmMedianMs": 0.0047500000000000007,
+      "warmMeanMs": 0.0065916666666666667,
+      "warmMinimumMs": 0.0041,
+      "warmMaximumMs": 0.0256,
+      "rawInstantiateMs": [
+        0.006,
+        0.0062,
+        0.0059,
+        0.0054,
+        0.0256,
+        0.0055,
+        0.0051,
+        0.0044,
+        0.0043,
+        0.0041,
+        0.0042,
+        0.0043,
+        0.0041
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.088,
+      "warmMedianMs": 0.10065,
+      "warmMeanMs": 0.10179166666666667,
+      "warmMinimumMs": 0.09,
+      "warmMaximumMs": 0.1431,
+      "rawInstantiateMs": [
+        0.088,
+        0.1016,
+        0.1013,
+        0.1034,
+        0.0914,
+        0.0906,
+        0.1431,
+        0.1032,
+        0.0924,
+        0.09,
+        0.0902,
+        0.1143,
+        0.1
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.3994,
+      "warmMedianMs": 0.4585,
+      "warmMeanMs": 0.46845833333333337,
+      "warmMinimumMs": 0.427,
+      "warmMaximumMs": 0.6066,
+      "rawInstantiateMs": [
+        0.3994,
+        0.4596,
+        0.4642,
+        0.4847,
+        0.4404,
+        0.6066,
+        0.5047,
+        0.4617,
+        0.4346,
+        0.4423,
+        0.4574,
+        0.4383,
+        0.427
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        },
+        {
+          "type": "LineRenderer",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "Light",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.3687,
+      "warmMedianMs": 0.44235,
+      "warmMeanMs": 0.44053333333333339,
+      "warmMinimumMs": 0.4195,
+      "warmMaximumMs": 0.4534,
+      "rawInstantiateMs": [
+        0.3687,
+        0.4342,
+        0.4325,
+        0.453,
+        0.4439,
+        0.4345,
+        0.4495,
+        0.4259,
+        0.4195,
+        0.4522,
+        0.4534,
+        0.4408,
+        0.447
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        },
+        {
+          "type": "LineRenderer",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "Light",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0482,
+      "warmMedianMs": 0.0238,
+      "warmMeanMs": 0.027208333333333334,
+      "warmMinimumMs": 0.0191,
+      "warmMaximumMs": 0.0432,
+      "rawInstantiateMs": [
+        0.0482,
+        0.0265,
+        0.0384,
+        0.0237,
+        0.0191,
+        0.0222,
+        0.0359,
+        0.0245,
+        0.0432,
+        0.0239,
+        0.0236,
+        0.0219,
+        0.0236
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        },
+        {
+          "type": "LineRenderer",
+          "count": 2
+        },
+        {
+          "type": "Light",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.3825,
+      "warmMedianMs": 0.4572,
+      "warmMeanMs": 0.47421666666666668,
+      "warmMinimumMs": 0.437,
+      "warmMaximumMs": 0.6004,
+      "rawInstantiateMs": [
+        0.3825,
+        0.4696,
+        0.4402,
+        0.4496,
+        0.437,
+        0.4543,
+        0.6004,
+        0.512,
+        0.4601,
+        0.4846,
+        0.4468,
+        0.4527,
+        0.4833
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "Light",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.3783,
+      "warmMedianMs": 0.4916,
+      "warmMeanMs": 0.49910000000000004,
+      "warmMinimumMs": 0.4368,
+      "warmMaximumMs": 0.5673,
+      "rawInstantiateMs": [
+        0.3783,
+        0.4971,
+        0.4595,
+        0.4861,
+        0.4692,
+        0.5504,
+        0.4368,
+        0.4819,
+        0.5673,
+        0.4741,
+        0.5423,
+        0.5264,
+        0.4981
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        },
+        {
+          "type": "LineRenderer",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.0123,
+      "warmMedianMs": 0.014950000000000001,
+      "warmMeanMs": 0.016733333333333333,
+      "warmMinimumMs": 0.0137,
+      "warmMaximumMs": 0.0345,
+      "rawInstantiateMs": [
+        0.0123,
+        0.0148,
+        0.0137,
+        0.0143,
+        0.0174,
+        0.0146,
+        0.0154,
+        0.0146,
+        0.014,
+        0.0171,
+        0.0153,
+        0.0345,
+        0.0151
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.3921,
+      "warmMedianMs": 0.46775,
+      "warmMeanMs": 0.482175,
+      "warmMinimumMs": 0.365,
+      "warmMaximumMs": 0.811,
+      "rawInstantiateMs": [
+        0.3921,
+        0.5081,
+        0.4748,
+        0.4607,
+        0.4565,
+        0.475,
+        0.4572,
+        0.4782,
+        0.811,
+        0.5328,
+        0.3879,
+        0.3789,
+        0.365
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 8
+        },
+        {
+          "type": "LineRenderer",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "Light",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.1066,
+      "warmMedianMs": 0.08745,
+      "warmMeanMs": 0.099508333333333351,
+      "warmMinimumMs": 0.084,
+      "warmMaximumMs": 0.1804,
+      "rawInstantiateMs": [
+        0.1066,
+        0.0937,
+        0.0872,
+        0.0863,
+        0.0858,
+        0.0849,
+        0.084,
+        0.0938,
+        0.0877,
+        0.0853,
+        0.1804,
+        0.1285,
+        0.0965
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.0742,
+      "warmMedianMs": 0.08405,
+      "warmMeanMs": 0.086474999999999982,
+      "warmMinimumMs": 0.0823,
+      "warmMaximumMs": 0.0964,
+      "rawInstantiateMs": [
+        0.0742,
+        0.0877,
+        0.0837,
+        0.0847,
+        0.0838,
+        0.0964,
+        0.096,
+        0.0899,
+        0.0843,
+        0.0826,
+        0.0836,
+        0.0823,
+        0.0827
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0097,
+      "warmMedianMs": 0.00935,
+      "warmMeanMs": 0.0094,
+      "warmMinimumMs": 0.0089,
+      "warmMaximumMs": 0.0108,
+      "rawInstantiateMs": [
+        0.0097,
+        0.0108,
+        0.0097,
+        0.0093,
+        0.0095,
+        0.0096,
+        0.0094,
+        0.0089,
+        0.0094,
+        0.0091,
+        0.0092,
+        0.009,
+        0.0089
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.0757,
+      "warmMedianMs": 0.08735,
+      "warmMeanMs": 0.0866,
+      "warmMinimumMs": 0.0769,
+      "warmMaximumMs": 0.0934,
+      "rawInstantiateMs": [
+        0.0757,
+        0.087,
+        0.0845,
+        0.0877,
+        0.0882,
+        0.0862,
+        0.0932,
+        0.0816,
+        0.0819,
+        0.0769,
+        0.0904,
+        0.0882,
+        0.0934
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.0791,
+      "warmMedianMs": 0.09145,
+      "warmMeanMs": 0.094458333333333311,
+      "warmMinimumMs": 0.0887,
+      "warmMaximumMs": 0.1097,
+      "rawInstantiateMs": [
+        0.0791,
+        0.0976,
+        0.0918,
+        0.0952,
+        0.0894,
+        0.0905,
+        0.0911,
+        0.1015,
+        0.0904,
+        0.0887,
+        0.1097,
+        0.0979,
+        0.0897
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.0089,
+      "warmMedianMs": 0.0055499999999999994,
+      "warmMeanMs": 0.0056416666666666672,
+      "warmMinimumMs": 0.0054,
+      "warmMaximumMs": 0.0064,
+      "rawInstantiateMs": [
+        0.0089,
+        0.0064,
+        0.0059,
+        0.0055,
+        0.0056,
+        0.0059,
+        0.0054,
+        0.0057,
+        0.0056,
+        0.0054,
+        0.0055,
+        0.0054,
+        0.0054
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.0737,
+      "warmMedianMs": 0.09345,
+      "warmMeanMs": 0.0933,
+      "warmMinimumMs": 0.0843,
+      "warmMaximumMs": 0.1055,
+      "rawInstantiateMs": [
+        0.0737,
+        0.0944,
+        0.091,
+        0.1,
+        0.1055,
+        0.0991,
+        0.098,
+        0.0898,
+        0.0858,
+        0.0843,
+        0.0843,
+        0.0925,
+        0.0949
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.0677,
+      "warmMedianMs": 0.088100000000000012,
+      "warmMeanMs": 0.090483333333333346,
+      "warmMinimumMs": 0.0763,
+      "warmMaximumMs": 0.1218,
+      "rawInstantiateMs": [
+        0.0677,
+        0.0899,
+        0.0913,
+        0.1121,
+        0.1218,
+        0.0872,
+        0.0874,
+        0.0787,
+        0.0766,
+        0.0763,
+        0.0905,
+        0.0888,
+        0.0852
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.064,
+      "warmMedianMs": 0.07685,
+      "warmMeanMs": 0.078766666666666665,
+      "warmMinimumMs": 0.0737,
+      "warmMaximumMs": 0.0875,
+      "rawInstantiateMs": [
+        0.064,
+        0.0875,
+        0.083,
+        0.0859,
+        0.0763,
+        0.0751,
+        0.0742,
+        0.0738,
+        0.0761,
+        0.0833,
+        0.0774,
+        0.0737,
+        0.0789
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0079,
+      "warmMedianMs": 0.00945,
+      "warmMeanMs": 0.009541666666666667,
+      "warmMinimumMs": 0.009,
+      "warmMaximumMs": 0.0107,
+      "rawInstantiateMs": [
+        0.0079,
+        0.0107,
+        0.0097,
+        0.009,
+        0.0092,
+        0.0094,
+        0.0092,
+        0.0092,
+        0.0094,
+        0.0098,
+        0.0098,
+        0.0095,
+        0.0096
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.0712,
+      "warmMedianMs": 0.07435,
+      "warmMeanMs": 0.076125,
+      "warmMinimumMs": 0.0725,
+      "warmMaximumMs": 0.0867,
+      "rawInstantiateMs": [
+        0.0712,
+        0.079,
+        0.0739,
+        0.0735,
+        0.0742,
+        0.0725,
+        0.074,
+        0.0731,
+        0.0745,
+        0.0757,
+        0.0748,
+        0.0867,
+        0.0816
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.0676,
+      "warmMedianMs": 0.0857,
+      "warmMeanMs": 0.087500000000000008,
+      "warmMinimumMs": 0.08,
+      "warmMaximumMs": 0.1154,
+      "rawInstantiateMs": [
+        0.0676,
+        0.08,
+        0.082,
+        0.0806,
+        0.0868,
+        0.0862,
+        0.0864,
+        0.0804,
+        0.1154,
+        0.0953,
+        0.0907,
+        0.0852,
+        0.081
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.0069,
+      "warmMedianMs": 0.0039,
+      "warmMeanMs": 0.00425,
+      "warmMinimumMs": 0.0037,
+      "warmMaximumMs": 0.0064,
+      "rawInstantiateMs": [
+        0.0069,
+        0.0057,
+        0.0064,
+        0.0039,
+        0.0038,
+        0.0039,
+        0.0041,
+        0.0039,
+        0.004,
+        0.0039,
+        0.0037,
+        0.0039,
+        0.0038
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.0708,
+      "warmMedianMs": 0.0775,
+      "warmMeanMs": 0.0786,
+      "warmMinimumMs": 0.075,
+      "warmMaximumMs": 0.0865,
+      "rawInstantiateMs": [
+        0.0708,
+        0.0842,
+        0.0777,
+        0.075,
+        0.0762,
+        0.0803,
+        0.0791,
+        0.0804,
+        0.0865,
+        0.0773,
+        0.0756,
+        0.0759,
+        0.075
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.2796,
+      "warmMedianMs": 0.37334999999999996,
+      "warmMeanMs": 0.37494999999999995,
+      "warmMinimumMs": 0.3567,
+      "warmMaximumMs": 0.4125,
+      "rawInstantiateMs": [
+        0.2796,
+        0.3636,
+        0.372,
+        0.3659,
+        0.3684,
+        0.4125,
+        0.376,
+        0.3567,
+        0.3623,
+        0.3779,
+        0.3878,
+        0.3816,
+        0.3747
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.2899,
+      "warmMedianMs": 0.36365000000000003,
+      "warmMeanMs": 0.37241666666666667,
+      "warmMinimumMs": 0.3526,
+      "warmMaximumMs": 0.4132,
+      "rawInstantiateMs": [
+        0.2899,
+        0.4084,
+        0.3769,
+        0.3815,
+        0.3595,
+        0.4132,
+        0.3744,
+        0.3566,
+        0.3593,
+        0.3593,
+        0.3637,
+        0.3636,
+        0.3526
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0157,
+      "warmMedianMs": 0.01525,
+      "warmMeanMs": 0.015,
+      "warmMinimumMs": 0.0118,
+      "warmMaximumMs": 0.0182,
+      "rawInstantiateMs": [
+        0.0157,
+        0.0182,
+        0.0161,
+        0.0153,
+        0.0132,
+        0.0174,
+        0.0163,
+        0.0118,
+        0.0137,
+        0.0167,
+        0.0152,
+        0.0133,
+        0.0128
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.2899,
+      "warmMedianMs": 0.39295,
+      "warmMeanMs": 0.3946,
+      "warmMinimumMs": 0.3675,
+      "warmMaximumMs": 0.4449,
+      "rawInstantiateMs": [
+        0.2899,
+        0.3675,
+        0.4449,
+        0.4041,
+        0.4056,
+        0.3947,
+        0.3912,
+        0.3993,
+        0.3847,
+        0.3959,
+        0.3834,
+        0.3904,
+        0.3735
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.3146,
+      "warmMedianMs": 0.3788,
+      "warmMeanMs": 0.37656666666666666,
+      "warmMinimumMs": 0.3621,
+      "warmMaximumMs": 0.3853,
+      "rawInstantiateMs": [
+        0.3146,
+        0.3853,
+        0.3715,
+        0.3694,
+        0.3621,
+        0.3759,
+        0.3845,
+        0.3807,
+        0.3624,
+        0.3839,
+        0.3847,
+        0.3769,
+        0.3815
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.0109,
+      "warmMedianMs": 0.011349999999999999,
+      "warmMeanMs": 0.011549999999999998,
+      "warmMinimumMs": 0.011,
+      "warmMaximumMs": 0.0129,
+      "rawInstantiateMs": [
+        0.0109,
+        0.0129,
+        0.0121,
+        0.0115,
+        0.0122,
+        0.0114,
+        0.0111,
+        0.0115,
+        0.0112,
+        0.011,
+        0.0113,
+        0.0113,
+        0.0111
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.3018,
+      "warmMedianMs": 0.3809,
+      "warmMeanMs": 0.38552499999999995,
+      "warmMinimumMs": 0.3696,
+      "warmMaximumMs": 0.4243,
+      "rawInstantiateMs": [
+        0.3018,
+        0.3797,
+        0.3779,
+        0.3852,
+        0.375,
+        0.389,
+        0.3821,
+        0.3744,
+        0.3772,
+        0.3696,
+        0.4243,
+        0.402,
+        0.3899
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 7
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 5
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 5
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-all",
+      "firstInstantiateMs": 0.1148,
+      "warmMedianMs": 0.1011,
+      "warmMeanMs": 0.10191666666666667,
+      "warmMinimumMs": 0.0897,
+      "warmMaximumMs": 0.1386,
+      "rawInstantiateMs": [
+        0.1148,
+        0.1136,
+        0.1386,
+        0.1078,
+        0.1007,
+        0.1043,
+        0.0928,
+        0.0909,
+        0.1015,
+        0.1023,
+        0.0901,
+        0.0907,
+        0.0897
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-no-particle-renderers",
+      "firstInstantiateMs": 0.0785,
+      "warmMedianMs": 0.09425,
+      "warmMeanMs": 0.10067500000000001,
+      "warmMinimumMs": 0.0877,
+      "warmMaximumMs": 0.1392,
+      "rawInstantiateMs": [
+        0.0785,
+        0.0943,
+        0.0965,
+        0.0882,
+        0.0893,
+        0.1368,
+        0.1392,
+        0.0996,
+        0.0897,
+        0.1014,
+        0.0942,
+        0.0877,
+        0.0912
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-no-particles",
+      "firstInstantiateMs": 0.0101,
+      "warmMedianMs": 0.00895,
+      "warmMeanMs": 0.0090583333333333332,
+      "warmMinimumMs": 0.0086,
+      "warmMaximumMs": 0.0106,
+      "rawInstantiateMs": [
+        0.0101,
+        0.0106,
+        0.0093,
+        0.0091,
+        0.0091,
+        0.0087,
+        0.0087,
+        0.0091,
+        0.0089,
+        0.0089,
+        0.009,
+        0.0086,
+        0.0087
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-no-lines",
+      "firstInstantiateMs": 0.0724,
+      "warmMedianMs": 0.0863,
+      "warmMeanMs": 0.087241666666666676,
+      "warmMinimumMs": 0.0818,
+      "warmMaximumMs": 0.0968,
+      "rawInstantiateMs": [
+        0.0724,
+        0.0968,
+        0.0902,
+        0.0926,
+        0.0864,
+        0.0862,
+        0.0857,
+        0.0861,
+        0.0867,
+        0.0865,
+        0.0825,
+        0.0854,
+        0.0818
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-no-lights",
+      "firstInstantiateMs": 0.0816,
+      "warmMedianMs": 0.08835,
+      "warmMeanMs": 0.089358333333333331,
+      "warmMinimumMs": 0.0836,
+      "warmMaximumMs": 0.1014,
+      "rawInstantiateMs": [
+        0.0816,
+        0.094,
+        0.0863,
+        0.1014,
+        0.0904,
+        0.0906,
+        0.089,
+        0.0877,
+        0.0875,
+        0.0911,
+        0.0867,
+        0.084,
+        0.0836
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-transforms-only",
+      "firstInstantiateMs": 0.007,
+      "warmMedianMs": 0.00475,
+      "warmMeanMs": 0.0050333333333333341,
+      "warmMinimumMs": 0.0042,
+      "warmMaximumMs": 0.0066,
+      "rawInstantiateMs": [
+        0.007,
+        0.0059,
+        0.0046,
+        0.005,
+        0.0049,
+        0.0044,
+        0.0043,
+        0.0044,
+        0.0046,
+        0.0042,
+        0.0066,
+        0.0056,
+        0.0059
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "variant": "native-inactive",
+      "firstInstantiateMs": 0.0781,
+      "warmMedianMs": 0.098099999999999993,
+      "warmMeanMs": 0.10575000000000001,
+      "warmMinimumMs": 0.0848,
+      "warmMaximumMs": 0.1569,
+      "rawInstantiateMs": [
+        0.0781,
+        0.0994,
+        0.1128,
+        0.1151,
+        0.1569,
+        0.1464,
+        0.1074,
+        0.0968,
+        0.0885,
+        0.0852,
+        0.0862,
+        0.0848,
+        0.0895
+      ],
+      "remainingComponents": [
+        {
+          "type": "Transform",
+          "count": 2
+        },
+        {
+          "type": "ParticleSystem",
+          "count": 1
+        },
+        {
+          "type": "ParticleSystemRenderer",
+          "count": 1
+        },
+        {
+          "type": "LineRenderer",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

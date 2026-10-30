@@ -174,6 +174,7 @@ namespace EmpireAtWar.Components.Weapon
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
 
+            _poolPrewarmer.RequestPrewarm(profiles);
             Dictionary<ShipClass, float> engagementRanges = new Dictionary<ShipClass, float>();
             float maxRange = 0f;
             foreach (ShipClass targetClass in (ShipClass[])Enum.GetValues(typeof(ShipClass)))

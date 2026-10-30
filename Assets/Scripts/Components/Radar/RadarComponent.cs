@@ -19,6 +19,7 @@ namespace EmpireAtWar.Components.Radar
     public interface IRadarComponent : IComponent
     {
         ObservableList<IEntity> Enemies { get; }
+        bool HasEnemy(IEntity entity);
     }
     public class RadarComponent : MonoComponent<RadarModel>, IInitializable, ITickable, IOrderedDisposable, IRadarComponent, IRadarScanner,
         IRespawnable
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Components.Radar
         private bool _isReleased;
 
         public ObservableList<IEntity> Enemies => Model.Enemies;
+        public bool HasEnemy(IEntity entity) => _currentEnemies.Contains(entity);
 
         PlayerId IRadarScanner.Owner => Model.Owner;
         float IRadarScanner.Range => Model.Range;

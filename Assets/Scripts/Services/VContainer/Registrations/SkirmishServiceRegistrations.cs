@@ -14,6 +14,7 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Radar;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.UnitWreck;
@@ -51,6 +52,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BoltFlightBatch>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShotPoolPrewarmer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FighterPoseBatch>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SquadronOrderScheduler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SquadronTargetIndex>(Lifetime.Singleton);
             builder.Register<CombatAttackCoordinator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<IncomingMissileRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<RangeDebugModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

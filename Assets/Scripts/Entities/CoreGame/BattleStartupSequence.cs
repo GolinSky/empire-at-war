@@ -8,6 +8,8 @@ using EmpireAtWar.Services.Player;
 using UnityEngine;
 using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents.Weapon;
 
 namespace EmpireAtWar.Controllers.Game
 {
@@ -26,6 +28,8 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IFadeService _fadeService;
         private readonly BattleDefinition _battle;
         private readonly BattleRestoreStep _restore;
+        private readonly ShotPoolPrewarmer _shots;
+        private readonly IAssetService _assets;
 
         public BattleStartupSequence(
             IBattleMapLoader mapLoader,
@@ -35,7 +39,8 @@ namespace EmpireAtWar.Controllers.Game
             ILocalPlayer localPlayer,
             ICameraService cameraService,
             IFogOfWarSystem fogOfWarSystem,
-            IFadeService fadeService, BattleDefinition battle, BattleRestoreStep restore)
+            IFadeService fadeService, BattleDefinition battle, BattleRestoreStep restore,
+            ShotPoolPrewarmer shots, IAssetService assets)
         {
             _mapLoader = mapLoader;
             _mapModel = mapModel;
@@ -47,6 +52,8 @@ namespace EmpireAtWar.Controllers.Game
             _fadeService = fadeService;
             _battle = battle;
             _restore = restore;
+            _shots = shots;
+            _assets = assets;
         }
 
         public async Awaitable RunAsync(CancellationToken cancellationToken)
@@ -56,6 +63,7 @@ namespace EmpireAtWar.Controllers.Game
             // Player contexts register their station spawners in their own kernels' Start this frame.
             await Awaitable.NextFrameAsync(cancellationToken);
             await _mapLoader.LoadAsync(cancellationToken);
+            await _shots.PrewarmRosterAsync(_assets, _battle, cancellationToken);
             foreach (PlayerSlot player in _playerRoster.Players)
                 await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
             if (!_restore.TryRestore())
@@ -70,6 +78,7 @@ namespace EmpireAtWar.Controllers.Game
             // Spawned stations register their fog vision in their contexts' Start.
             await Awaitable.NextFrameAsync(cancellationToken);
             await Awaitable.NextFrameAsync(cancellationToken);
+            await _shots.CompletePrewarmAsync(cancellationToken);
             _fogOfWarSystem.RevealImmediately();
             // Warm loaded battle variants while the loading cover is still visible. Metal can still
             // compile pipeline states later when vertex layouts or render targets differ.

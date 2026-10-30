@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var camera = UnityEngine.Camera.main; return new { utc = System.DateTime.UtcNow, quality = UnityEngine.QualitySettings.names[UnityEngine.QualitySettings.GetQualityLevel()], api = UnityEngine.SystemInfo.graphicsDeviceType.ToString(), timeScale = UnityEngine.Time.timeScale, paused = UnityEditor.EditorApplication.isPaused, cameraWidth = camera.pixelWidth, cameraHeight = camera.pixelHeight, nebula = UnityEngine.Object.FindAnyObjectByType<EmpireAtWar.Components.Environment.MatchNebula>().SelectedVariant };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "utc": "2026-10-30T09:35:17.9727491Z",
+        "quality": "Cinematic",
+        "api": "Direct3D11",
+        "timeScale": 0,
+        "paused": false,
+        "cameraWidth": 2560,
+        "cameraHeight": 1440,
+        "nebula": 1
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

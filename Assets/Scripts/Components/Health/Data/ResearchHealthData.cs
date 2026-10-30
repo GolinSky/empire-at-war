@@ -23,8 +23,8 @@ namespace EmpireAtWar.Models.Health
             get
             {
                 float shields = _healthData.Shields;
-                foreach (IFactionResearchModelObserver research in _research)
-                    shields *= research.GetMultiplier(ResearchStat.ShieldCapacity, ShipClass);
+                for (int i = 0; i < _research.Count; i++)
+                    shields *= _research[i].GetMultiplier(ResearchStat.ShieldCapacity, ShipClass);
                 return shields;
             }
         }

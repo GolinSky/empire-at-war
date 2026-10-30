@@ -1,0 +1,130 @@
+{
+  "source": "Docs/Audits/2026-10-29-Live-Battle-CPU/profiler-summary.json.gz",
+  "source_sha256": "6f0d409db84222044681d569c04e4f35230157109a6d99dd12b35120edf99bbf",
+  "source_capture_utc": "2026-10-29T21:38:36.4641160Z",
+  "source_schema": "Top 40 marker-ID totals per thread by self time; no raw sample ancestry retained.",
+  "recorded_range": [
+    525,
+    614
+  ],
+  "capture_marker_frames_in_top40": 75,
+  "top_capture_frames": [
+    {
+      "profiler_frame": 535,
+      "marker_id": 4604,
+      "marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "calls": 1,
+      "inclusive_ms": 283.3270568847656,
+      "self_ms": 283.32071888471546,
+      "instrumented_children_ms_aggregate": 0.006338000050163828,
+      "thread_frame_ms": 583.661743
+    },
+    {
+      "profiler_frame": 596,
+      "marker_id": 4604,
+      "marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "calls": 1,
+      "inclusive_ms": 59.43058395385742,
+      "self_ms": 59.42145295377122,
+      "instrumented_children_ms_aggregate": 0.009131000086199492,
+      "thread_frame_ms": 309.884125
+    },
+    {
+      "profiler_frame": 526,
+      "marker_id": 4604,
+      "marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "calls": 1,
+      "inclusive_ms": 23.4114990234375,
+      "self_ms": 23.402337023355358,
+      "instrumented_children_ms_aggregate": 0.009162000082142185,
+      "thread_frame_ms": 548.86676
+    },
+    {
+      "profiler_frame": 605,
+      "marker_id": 4604,
+      "marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "calls": 1,
+      "inclusive_ms": 16.33529281616211,
+      "self_ms": 16.32124981580273,
+      "instrumented_children_ms_aggregate": 0.01404300035937922,
+      "thread_frame_ms": 207.976044
+    },
+    {
+      "profiler_frame": 539,
+      "marker_id": 4604,
+      "marker": "EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick()",
+      "calls": 1,
+      "inclusive_ms": 16.14441680908203,
+      "self_ms": 16.141662809102854,
+      "instrumented_children_ms_aggregate": 0.002753999979177024,
+      "thread_frame_ms": 209.444046
+    }
+  ],
+  "native_recording": {
+    "path": "Logs/RenderAudit/20261029T213731043Z-profiler/profiler.data",
+    "capture_host_project": "/Users/golinsky/Projects/empire-at-war",
+    "bytes": 332833620,
+    "sha256": "435b0ed98b0314d99909e8ffc8619e177d9a31bad8a013adf1e0c1040815e058",
+    "present_in_current_checkout": false
+  },
+  "conclusion": "Frame 535 has one capture Tick; inclusive-self is only 0.006338 ms. Almost all recorded time is uninstrumented self time. The summary cannot identify the managed method responsible, raw descendants, GC causality or an OS suspension. No historical spike fix established.",
+  "source_verified_followup": [
+    "CaptureStrengthSampler now caps visits=4 and refreshes=2 per frame and marks Ships/Squadrons/Build.",
+    "CaptureSitesSystem now marks Site.Model/Render/Visibility.",
+    "CaptureSitePresenter.Contains rereads site center and Radius for each unit; CaptureSiteView.Radius rereads lossyScale twice. This is a baseline-cost optimization candidate, not proven cause of frame535.",
+    "VisionService uses cached OwnedCircleSet snapshots and does not synchronize fog jobs."
+  ],
+  "next_capture": {
+    "workload": "Full seed1875278133, late battle near83ships/321squadrons/454weapons; preserve camera, preset, time scale and hardware metadata.",
+    "protocol": "Profile existing battle after startup, DeepProfile off, capture enough late battle frames, retain profiler.data; do not infer ancestry from top40 aggregates.",
+    "decoder": "Docs/Audits/2026-10-30-Late-Battle-CPU/CaptureSiteRawDecoder.cs",
+    "entry": "CaptureSiteRawDecoder.Run",
+    "args": [
+      "Logs/CaptureSites/raw-descendants.json",
+      525,
+      614
+    ],
+    "input": "Already-loaded native Profiler recording; caller must load correct profiler.data separately. Frame indices come from the new recording, not necessarily525-614.",
+    "scope": "Decoder is read-only toward Unity state and writes only its specified JSON report. It does not enter Play Mode, run tests or load scenes."
+  },
+  "available_pc_raw_comparison": {
+    "recording": "Logs/RenderAudit/20261029T122831775Z-profiler/profiler.data",
+    "decoder_report": "Logs/LateBattleCpu/capture-site-pc-122831.json",
+    "range": [
+      0,
+      363
+    ],
+    "maximum_frame": 243,
+    "inclusive_ms": 2.1854000091552734,
+    "self_ms": 2.173000009272073,
+    "descendant_marker_totals": [
+      {
+        "MarkerId": 780,
+        "Marker": "GC.Alloc",
+        "Calls": 100,
+        "InclusiveMs": 0.008599999979196582,
+        "SelfMs": 0.008599999979196582
+      },
+      {
+        "MarkerId": 33,
+        "Marker": "GameObject.Deactivate",
+        "Calls": 50,
+        "InclusiveMs": 0.0037999999040039256,
+        "SelfMs": 0.0037999999040039256
+      }
+    ],
+    "capture_gc_alloc_bytes": 3200,
+    "scope": "Different PC capture, not reproduction or matched comparison with the historical M2 spike."
+  },
+  "pending_job_source_review": {
+    "unverified_hypothesis": "ShipAmbienceService Tick1000 schedules its position-reader job with writable Schedule(_transforms), retains the handle across frames until IsCompleted, and completes it after default capture Tick. A cross-frame transform fence is possible; no captured capture-site wait establishes it as spike cause.",
+    "event_path": "SiteCaptured only subscribes FactionAnnouncementService: filter/cooldown -> InterfaceSfxService.StartAnnouncement -> AudioSource.Play. Existing Site.Model marker encloses the callback.",
+    "no_cause_claim": "Neither the PC raw descendants nor M2 top40 aggregate establishes which source path consumed the historical283ms.",
+    "verified_completion_and_ordering": [
+      "FighterPoseBatch schedules PostTick, completes LateTick(-2000).",
+      "RadarScanService completes position/detection jobs within FixedTick.",
+      "Combat target position/origin jobs complete inside combat LateTick.",
+      "CaptureSites module registers before BoltFlightBatch, so default capture Tick precedes bolt Tick."
+    ]
+  }
+}

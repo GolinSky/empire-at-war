@@ -6,10 +6,11 @@ Shader "EmpireAtWar/UI/Selection Brackets"
         _Color ("Bracket Color", Color) = (0.63, 0.89, 1, 1)
         _LineWidth ("Line Width (Pixels)", Float) = 1.5
         _OutlineWidth ("Dark Edge (Pixels)", Float) = 0.75
+        [PerRendererData] _AttackAngle ("Attack Angle (Radians)", Float) = 0
     }
     SubShader
     {
-        Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
+        Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True" }
         Cull Off
         ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
@@ -26,11 +27,20 @@ Shader "EmpireAtWar/UI/Selection Brackets"
             fixed4 _Color;
             float _LineWidth;
             float _OutlineWidth;
+            float _AttackAngle;
 
             v2f vert(appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                float2 scale = float2(length(unity_ObjectToWorld._m00_m10_m20),
+                    length(unity_ObjectToWorld._m01_m11_m21));
+                float2 offset = v.vertex.xy * scale;
+                float sine, cosine;
+                sincos(_AttackAngle, sine, cosine);
+                offset = float2(cosine * offset.x - sine * offset.y,
+                    sine * offset.x + cosine * offset.y);
+                float3 origin = unity_ObjectToWorld._m03_m13_m23;
+                o.vertex = mul(UNITY_MATRIX_VP, float4(origin + float3(offset.x, 0, offset.y), 1));
                 o.uv = v.uv;
                 o.color = v.color * _Color;
                 return o;

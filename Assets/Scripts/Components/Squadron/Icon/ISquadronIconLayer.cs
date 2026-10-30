@@ -7,5 +7,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     {
         /// <summary>Moves <paramref name="icon"/> under the layer; its anchored position is then in screen pixels.</summary>
         void Attach(RectTransform icon);
+        void Register(SquadronIconComponent icon);
+        void Unregister(SquadronIconComponent icon);
     }
 }

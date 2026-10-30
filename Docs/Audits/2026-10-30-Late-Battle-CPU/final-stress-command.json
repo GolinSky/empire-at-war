@@ -1,0 +1,41 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Performance/SetupCrowdedBattle.cs",
+      "entry": "SetupCrowdedBattle.StressFleets",
+      "timeout_ms": 30000
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 75,
+      "executeMs": 7177,
+      "assemblyName": "PipelineRunScript_SetupCrowdedBattle_e2a5273cb37b40888b3ae1fb2a2e40ea",
+      "success": true,
+      "result": {
+        "shipsAdded": 54,
+        "squadronsAdded": 283,
+        "status": {
+          "scene": "Battle",
+          "state": "Running",
+          "time": 44.9043579,
+          "ships": 80,
+          "squadrons": 320,
+          "weapons": 402,
+          "local": true,
+          "enemy": true
+        }
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

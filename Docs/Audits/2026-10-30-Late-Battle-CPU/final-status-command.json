@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Performance/SetupCrowdedBattle.cs",
+      "entry": "SetupCrowdedBattle.Status"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 95,
+      "executeMs": 21,
+      "assemblyName": "PipelineRunScript_SetupCrowdedBattle_931f6c0044bf410dbe1c860be6666a51",
+      "success": true,
+      "result": {
+        "scene": "Battle",
+        "state": "Ended",
+        "time": 188.751419,
+        "ships": 40,
+        "squadrons": 473,
+        "weapons": 519,
+        "local": true,
+        "enemy": true
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -79,6 +79,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HostileIntelModel _intel;
         private readonly IVisionService _vision;
         private readonly IHazardService _hazards;
+        private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
+        private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
+        private readonly Dictionary<IShipEntity, GameEntity> _receivers = new Dictionary<IShipEntity, GameEntity>();
         private float _ionRiskWeight = 1f;
         // Targets stay picked while still valid: a new pick re-orders every committed ship, and each order makes
         // the ship's weapons re-sort their candidates.
@@ -122,10 +125,11 @@ namespace EmpireAtWar.Services.Enemy
             _playerRoster = playerRoster;
         }
 
+        /// <summary>The returned collections are borrowed until the next Build on this player's builder.</summary>
         public EnemyStrategicContext Build()
         {
             PlayerId self = _owner.Id;
-            List<IShipEntity> ownShips = GetShips(ship => ship.Owner == self);
+            List<IShipEntity> ownShips = GetShips(self);
             _ionRiskWeight = 1f;
             foreach (IShipEntity ship in ownShips)
             {
@@ -192,10 +196,9 @@ namespace EmpireAtWar.Services.Enemy
                 hasLocalThreat: localThreatTarget != null,
                 hasRaidTarget: raidTarget != null,
                 isRegrouped: IsRegrouped(ownShips));
-            Dictionary<IShipEntity, GameEntity> receivers =
-                new Dictionary<IShipEntity, GameEntity>();
+            _receivers.Clear();
             foreach (IShipEntity ship in ownShips)
-                receivers.Add(ship, _entityLocator.GetEntity(ship.EntityId));
+                _receivers.Add(ship, _entityLocator.GetEntity(ship.EntityId));
             return new EnemyStrategicContext(
                 snapshot: snapshot,
                 ships: ownShips,
@@ -203,7 +206,7 @@ namespace EmpireAtWar.Services.Enemy
                 enemyFleetTarget: enemyFleetTarget,
                 enemyBaseTarget: enemyBaseTarget,
                 ownBase: ownBase,
-                receivers: receivers,
+                receivers: _receivers,
                 localThreatTarget: localThreatTarget,
                 raidTarget: raidTarget);
         }
@@ -383,9 +386,13 @@ namespace EmpireAtWar.Services.Enemy
         private float GetIonCost(Vector3 position)
         {
             float cost = 0f;
-            foreach (IHazardSource hazard in _hazards.Sources)
+            IReadOnlyList<IHazardSource> hazards = _hazards.Sources;
+            for (int i = 0; i < hazards.Count; i++)
+            {
+                IHazardSource hazard = hazards[i];
                 if (hazard.Data.DisablesShields && hazard.Contains(position, 0f, false))
                     cost += hazard.Data.PathCost;
+            }
             return cost;
         }
 
@@ -402,44 +409,37 @@ namespace EmpireAtWar.Services.Enemy
             return hasZone || hasSite;
         }
 
-        private List<IShipEntity> GetShips(Predicate<IShipEntity> include)
+        private List<IShipEntity> GetShips(PlayerId owner)
         {
-            List<IShipEntity> ships = new List<IShipEntity>();
+            _ownShips.Clear();
             foreach (IShipEntity ship in _shipService.Ships)
             {
-                // A ship joins IShipService before its entity registers; the
-                // registration raises EntityAdded, which re-evaluates the AI.
-                if (include(ship) &&
-                    _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
-                {
-                    ships.Add(ship);
-                }
+                // Ships join the service before their entity is registered.
+                if (ship.Owner == owner && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
+                    _ownShips.Add(ship);
             }
-
-            return ships;
+            return _ownShips;
         }
 
-        private static bool IsRegrouped(IReadOnlyList<IShipEntity> ships)
+        private bool IsRegrouped(IReadOnlyList<IShipEntity> ships)
         {
-            List<FormationPoint> positions = new List<FormationPoint>(ships.Count);
-            foreach (IShipEntity ship in ships) positions.Add(ToPoint(ship.WorldPosition));
-            return FleetCohesion.IsTogether(positions, FleetCohesion.RADIUS);
+            _formationPositions.Clear();
+            for (int i = 0; i < ships.Count; i++) _formationPositions.Add(ToPoint(ships[i].WorldPosition));
+            return FleetCohesion.IsTogether(_formationPositions, FleetCohesion.RADIUS);
         }
 
         private static FormationPoint CalculateFleetCenter(IReadOnlyList<IShipEntity> ships)
         {
-            if (ships.Count == 0)
+            if (ships.Count == 0) return new FormationPoint(0f, 0f);
+            float x = 0f;
+            float z = 0f;
+            for (int i = 0; i < ships.Count; i++)
             {
-                return new FormationPoint(0f, 0f);
+                FormationPoint position = ToPoint(ships[i].WorldPosition);
+                x += position.X;
+                z += position.Z;
             }
-
-            List<FormationPoint> positions = new List<FormationPoint>(ships.Count);
-            foreach (IShipEntity ship in ships)
-            {
-                positions.Add(ToPoint(ship.WorldPosition));
-            }
-
-            return FormationModel.CalculateCenter(positions);
+            return new FormationPoint(x / ships.Count, z / ships.Count);
         }
 
         /// <summary>Hostile ships and squadrons within <see cref="BASE_THREAT_RADIUS"/> of the own base.</summary>

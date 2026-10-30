@@ -68,7 +68,9 @@ namespace EmpireAtWar.Services.VContainer
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             GameObject debugRoot = new GameObject(nameof(EnemyEconomyDebugView));
             debugRoot.transform.SetParent(playerRoot, false);
-            builder.RegisterComponent(debugRoot.AddComponent<EnemyEconomyDebugView>()).AsImplementedInterfaces().AsSelf();
+            EnemyEconomyDebugView debugView = debugRoot.AddComponent<EnemyEconomyDebugView>();
+            debugView.enabled = false;
+            builder.RegisterComponent(debugView).AsImplementedInterfaces().AsSelf();
 #endif
         }
     }

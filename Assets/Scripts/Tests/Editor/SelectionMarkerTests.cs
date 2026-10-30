@@ -89,42 +89,45 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(0f, 45f, 0f)]
         [TestCase(15f, 130f, 10f)]
-        public void SelectedMarker_KeepsWorldRotationWhenRootTurns(float pitch, float yaw, float roll)
+        public void SelectedMarker_UsesShaderAlignmentWithoutPerFrameComponent(float pitch, float yaw, float roll)
         {
             _selection.SetActive(true);
             _root.transform.rotation = Quaternion.Euler(pitch, yaw, roll);
             Vector3 anchor = _selection.WorldPosition;
-            Vector3 markerPosition = _renderer.transform.position;
-            typeof(SelectionComponent).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_selection, null);
+            Quaternion markerRotation = _renderer.transform.rotation;
+            _renderer.transform.hasChanged = false;
 
-            Assert.That(Quaternion.Angle(_renderer.transform.rotation, Quaternion.Euler(90f, 0f, 0f)),
-                Is.LessThan(0.01f));
+            _service.SetCount(3);
+            _renderer.transform.hasChanged = false;
+            _service.SetCount(4);
+
+            Assert.That(_selection.enabled, Is.False, "Steady markers must have no Unity update callback.");
+            Assert.That(_renderer.enabled, Is.True);
+            Assert.That(_renderer.sharedMaterial.GetTag("DisableBatching", false), Is.EqualTo("True"));
+            Assert.That(_renderer.transform.hasChanged, Is.False,
+                "Changing a multi-selection count must not resize the marker again.");
+            Assert.That(_renderer.transform.rotation, Is.EqualTo(markerRotation));
             Assert.That(_selection.WorldPosition, Is.EqualTo(anchor));
-            Assert.That(_renderer.transform.position, Is.EqualTo(markerPosition));
             Assert.That(Quaternion.Angle(_root.transform.rotation, Quaternion.Euler(pitch, yaw, roll)),
                 Is.LessThan(0.01f));
-
-            _renderer.transform.hasChanged = false;
-            typeof(SelectionComponent).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_selection, null);
-            Assert.That(_renderer.transform.hasChanged, Is.False, "Stationary markers must not rewrite their transform.");
         }
 
         [Test]
-        public void HiddenMarker_SkipsRotationWorkAndRealignsImmediatelyWhenSelected()
+        public void HiddenMarker_HasNoCountSubscriptionOrTransformWrites()
         {
             _selection.SetActive(false);
             _root.transform.rotation = Quaternion.Euler(0f, 70f, 0f);
-            Quaternion hiddenRotation = _renderer.transform.rotation;
-            typeof(SelectionComponent).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_selection, null);
-            Assert.That(_renderer.transform.rotation, Is.EqualTo(hiddenRotation));
+            _renderer.transform.hasChanged = false;
 
+            _service.SetCount(2);
+
+            Assert.That(_service.ObserverCount, Is.Zero);
+            Assert.That(_selection.enabled, Is.False);
+            Assert.That(_renderer.transform.hasChanged, Is.False);
             _selection.SetActive(true);
-
-            Assert.That(Quaternion.Angle(_renderer.transform.rotation, Quaternion.Euler(90f, 0f, 0f)),
-                Is.LessThan(0.01f));
+            Assert.That(_service.ObserverCount, Is.EqualTo(1));
+            Assert.That(_renderer.enabled, Is.True);
+            Assert.That(_selection.enabled, Is.False);
         }
 
         [Test]
@@ -133,7 +136,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 singleScale = _renderer.transform.localScale;
             for (int cycle = 0; cycle < 3; cycle++)
             {
-                Assert.That(_service.ObserverCount, Is.EqualTo(1));
+                Assert.That(_service.ObserverCount, Is.Zero);
                 _selection.SetActive(true);
                 _service.SetCount(2);
                 _selection.Release();
@@ -145,7 +148,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 _selection.Respawn();
 
-                Assert.That(_service.ObserverCount, Is.EqualTo(1));
+                Assert.That(_service.ObserverCount, Is.Zero);
                 Assert.That(_renderer.enabled, Is.False);
                 Assert.That(_renderer.transform.localScale, Is.EqualTo(singleScale));
             }

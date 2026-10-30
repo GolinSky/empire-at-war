@@ -1,0 +1,662 @@
+{
+  "capturedUtc": "2026-10-30T09:01:12.7735882Z",
+  "unityVersion": "6000.4.7f1",
+  "processor": "AMD Ryzen 7 9800X3D 8-Core Processor ",
+  "operatingSystem": "Windows 11  (10.0.26200)",
+  "mode": "EditMode isolated preview scene; one clone at a time; no battle load; first call is not an asset-cache reset",
+  "warmSamples": 12,
+  "rows": [
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ConcussionMissileShot.prefab",
+      "name": "ConcussionMissileShot",
+      "weaponTypes": [
+        "ConcussionMissile",
+        "FighterConcussionMissile",
+        "HeavyArtilleryRocket",
+        "MC30cClusterBombLauncher",
+        "HeavyAssaultMissile",
+        "LightDualMissileLauncher",
+        "MediumMissileLauncher",
+        "MediumDualMissileLauncher"
+      ],
+      "gameObjects": 7,
+      "particleSystems": [
+        {
+          "name": "Head",
+          "maximumParticles": 1,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "Trail",
+          "maximumParticles": 300,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "InterceptExplosion",
+          "maximumParticles": 1000,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "PauseAndCatchup"
+        },
+        {
+          "name": "thickSmoke",
+          "maximumParticles": 1000,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "PauseAndCatchup"
+        },
+        {
+          "name": "fireball",
+          "maximumParticles": 1000,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "PauseAndCatchup"
+        }
+      ],
+      "lights": 0,
+      "renderers": [
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "LineRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.MissileShot",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView",
+        "EmpireAtWar.ViewComponents.Health.ExplosionVfx",
+        "PPFXRendererLayer",
+        "PPFXRendererLayer"
+      ],
+      "firstInstantiateMs": 0.9553,
+      "firstResetMs": 0.2569,
+      "warmInstantiateMs": {
+        "mean": 0.40104999999999996,
+        "median": 0.39225,
+        "minimum": 0.3718,
+        "maximum": 0.4584
+      },
+      "warmResetMs": {
+        "mean": 0.002225,
+        "median": 0.0018,
+        "minimum": 0.0013,
+        "maximum": 0.0043
+      },
+      "rawInstantiateMs": [
+        0.9553,
+        0.4331,
+        0.3893,
+        0.3919,
+        0.3926,
+        0.3805,
+        0.4223,
+        0.4584,
+        0.381,
+        0.415,
+        0.4005,
+        0.3762,
+        0.3718
+      ],
+      "rawResetMs": [
+        0.2569,
+        0.0034,
+        0.0018,
+        0.0019,
+        0.0019,
+        0.0015,
+        0.0043,
+        0.0042,
+        0.0015,
+        0.0018,
+        0.0017,
+        0.0014,
+        0.0013
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/DualProjectile.prefab",
+      "name": "DualProjectile",
+      "weaponTypes": [
+        "ProcursatorMediumTripleTurbolaser",
+        "DualHeavyTurboLaser",
+        "DualMediumTurboLaser",
+        "DualLaser",
+        "DualHeavyTurboLaserDby827",
+        "LightDualTurbolaser",
+        "MediumDualIonCannon",
+        "HeavyDualTurbolaser",
+        "LightDualLaser",
+        "HeavyDualIonStunner",
+        "BelbullabTripleLaser",
+        "ExecutorHeavyDualTurbolaser",
+        "ExecutorHeavyDualIonCannon",
+        "ExecutorMediumDualTurbolaser",
+        "MC80MediumDualTurbolaser",
+        "MC80MediumDualIonCannon",
+        "DualRepeatingPointDefense",
+        "HeavyTripleTurbolaser",
+        "HeavyTripleIonCannon",
+        "HeavyDualLaser",
+        "HeavyDualIonCannon",
+        "MediumDualLaser"
+      ],
+      "gameObjects": 2,
+      "particleSystems": [
+        {
+          "name": "DualProjectile",
+          "maximumParticles": 2,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        }
+      ],
+      "lights": 0,
+      "renderers": [
+        "ParticleSystemRenderer",
+        "LineRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.BoltShot",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView"
+      ],
+      "firstInstantiateMs": 0.2225,
+      "firstResetMs": 0.1,
+      "warmInstantiateMs": {
+        "mean": 0.08965,
+        "median": 0.08655,
+        "minimum": 0.0849,
+        "maximum": 0.1167
+      },
+      "warmResetMs": {
+        "mean": 0.0005,
+        "median": 0.00045,
+        "minimum": 0.0004,
+        "maximum": 0.001
+      },
+      "rawInstantiateMs": [
+        0.2225,
+        0.1167,
+        0.0938,
+        0.0901,
+        0.087,
+        0.0874,
+        0.0855,
+        0.0858,
+        0.0857,
+        0.0868,
+        0.0863,
+        0.0858,
+        0.0849
+      ],
+      "rawResetMs": [
+        0.1,
+        0.001,
+        0.0006,
+        0.0005,
+        0.0004,
+        0.0004,
+        0.0004,
+        0.0004,
+        0.0004,
+        0.0005,
+        0.0005,
+        0.0004,
+        0.0005
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/LaserProjectile.prefab",
+      "name": "LaserProjectile",
+      "weaponTypes": [
+        "LaserBeam",
+        "CompositeBeam"
+      ],
+      "gameObjects": 8,
+      "particleSystems": [
+        {
+          "name": "HullHotMetal",
+          "maximumParticles": 48,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "ChargeEnergy",
+          "maximumParticles": 48,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "MuzzleEnergy",
+          "maximumParticles": 48,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "ContactEnergy",
+          "maximumParticles": 48,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "HullSparks",
+          "maximumParticles": 48,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        }
+      ],
+      "lights": 1,
+      "renderers": [
+        "LineRenderer",
+        "LineRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.BeamShot",
+        "EmpireAtWar.ViewComponents.Weapon.BeamVisuals",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView"
+      ],
+      "firstInstantiateMs": 0.4601,
+      "firstResetMs": 0.2405,
+      "warmInstantiateMs": {
+        "mean": 0.39040000000000008,
+        "median": 0.3691,
+        "minimum": 0.3632,
+        "maximum": 0.482
+      },
+      "warmResetMs": {
+        "mean": 0.0026999999999999997,
+        "median": 0.0018,
+        "minimum": 0.0015,
+        "maximum": 0.0067
+      },
+      "rawInstantiateMs": [
+        0.4601,
+        0.4032,
+        0.4252,
+        0.482,
+        0.432,
+        0.3774,
+        0.3672,
+        0.3652,
+        0.3632,
+        0.3679,
+        0.3703,
+        0.3667,
+        0.3645
+      ],
+      "rawResetMs": [
+        0.2405,
+        0.0026,
+        0.0067,
+        0.0048,
+        0.0046,
+        0.0018,
+        0.0019,
+        0.0017,
+        0.0018,
+        0.0018,
+        0.0017,
+        0.0015,
+        0.0015
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/OctupleProjectile.prefab",
+      "name": "OctupleProjectile",
+      "weaponTypes": [
+        "ISDIIOctupleTurbolaser",
+        "HeavyOctupleTurbolaser"
+      ],
+      "gameObjects": 2,
+      "particleSystems": [
+        {
+          "name": "OctupleProjectile",
+          "maximumParticles": 8,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        }
+      ],
+      "lights": 0,
+      "renderers": [
+        "ParticleSystemRenderer",
+        "LineRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.BoltShot",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView"
+      ],
+      "firstInstantiateMs": 0.4896,
+      "firstResetMs": 0.0039,
+      "warmInstantiateMs": {
+        "mean": 0.11737500000000001,
+        "median": 0.10095000000000001,
+        "minimum": 0.0981,
+        "maximum": 0.2236
+      },
+      "warmResetMs": {
+        "mean": 0.0009999999999999998,
+        "median": 0.0007,
+        "minimum": 0.0006,
+        "maximum": 0.0026
+      },
+      "rawInstantiateMs": [
+        0.4896,
+        0.2236,
+        0.1658,
+        0.1097,
+        0.1069,
+        0.1049,
+        0.1014,
+        0.0993,
+        0.0985,
+        0.1005,
+        0.0993,
+        0.0981,
+        0.1005
+      ],
+      "rawResetMs": [
+        0.0039,
+        0.0026,
+        0.0025,
+        0.0009,
+        0.0007,
+        0.0006,
+        0.0006,
+        0.0006,
+        0.0006,
+        0.0007,
+        0.0007,
+        0.0006,
+        0.0009
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab",
+      "name": "Projectile",
+      "weaponTypes": [
+        "TurboLaser",
+        "HeavyTurboLaser",
+        "MediumTurboLaser",
+        "Laser",
+        "IonCannon",
+        "HeavyIonCannon",
+        "MediumPointDefense",
+        "PointDefense",
+        "FighterLaser",
+        "MassDriver",
+        "HeavyFighterLaser",
+        "MediumLaser",
+        "XWingLaser",
+        "HeavyLaser",
+        "MediumIonCannon",
+        "ExecutorHeavyTurbolaser",
+        "ExecutorPointDefense",
+        "ExecutorHeavyLaser"
+      ],
+      "gameObjects": 2,
+      "particleSystems": [
+        {
+          "name": "Projectile",
+          "maximumParticles": 1,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "AlwaysSimulate"
+        }
+      ],
+      "lights": 0,
+      "renderers": [
+        "ParticleSystemRenderer",
+        "LineRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.BoltShot",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView"
+      ],
+      "firstInstantiateMs": 0.1049,
+      "firstResetMs": 0.0013,
+      "warmInstantiateMs": {
+        "mean": 0.091650000000000009,
+        "median": 0.0863,
+        "minimum": 0.0843,
+        "maximum": 0.1397
+      },
+      "warmResetMs": {
+        "mean": 0.00098333333333333324,
+        "median": 0.0006,
+        "minimum": 0.0005,
+        "maximum": 0.0038
+      },
+      "rawInstantiateMs": [
+        0.1049,
+        0.0893,
+        0.0868,
+        0.0854,
+        0.0849,
+        0.0868,
+        0.0844,
+        0.0843,
+        0.0849,
+        0.0964,
+        0.1397,
+        0.0911,
+        0.0858
+      ],
+      "rawResetMs": [
+        0.0013,
+        0.0006,
+        0.0006,
+        0.0005,
+        0.0007,
+        0.0005,
+        0.0005,
+        0.0005,
+        0.0006,
+        0.0038,
+        0.0023,
+        0.0007,
+        0.0005
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/ProtonTorpedoShot.prefab",
+      "name": "ProtonTorpedoShot",
+      "weaponTypes": [
+        "ProtonTorpedo",
+        "FighterProtonTorpedo",
+        "MediumIonTorpedo",
+        "MediumProtonTorpedo",
+        "RepublicLightProtonTorpedo",
+        "RepublicMediumProtonTorpedo",
+        "HeavyProtonTorpedo",
+        "MediumFighterProtonTorpedo",
+        "StrikeFighterProtonTorpedo"
+      ],
+      "gameObjects": 7,
+      "particleSystems": [
+        {
+          "name": "Head",
+          "maximumParticles": 1,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "Trail",
+          "maximumParticles": 300,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        },
+        {
+          "name": "InterceptExplosion",
+          "maximumParticles": 1000,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "PauseAndCatchup"
+        },
+        {
+          "name": "thickSmoke",
+          "maximumParticles": 1000,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "PauseAndCatchup"
+        },
+        {
+          "name": "fireball",
+          "maximumParticles": 1000,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "PauseAndCatchup"
+        }
+      ],
+      "lights": 0,
+      "renderers": [
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "LineRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer",
+        "ParticleSystemRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.MissileShot",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView",
+        "EmpireAtWar.ViewComponents.Health.ExplosionVfx",
+        "PPFXRendererLayer",
+        "PPFXRendererLayer"
+      ],
+      "firstInstantiateMs": 0.356,
+      "firstResetMs": 0.0026,
+      "warmInstantiateMs": {
+        "mean": 0.39790833333333336,
+        "median": 0.3798,
+        "minimum": 0.3732,
+        "maximum": 0.4957
+      },
+      "warmResetMs": {
+        "mean": 0.0021416666666666667,
+        "median": 0.0015,
+        "minimum": 0.0013,
+        "maximum": 0.0067
+      },
+      "rawInstantiateMs": [
+        0.356,
+        0.3804,
+        0.388,
+        0.375,
+        0.4957,
+        0.4642,
+        0.3988,
+        0.3785,
+        0.3732,
+        0.376,
+        0.3748,
+        0.3911,
+        0.3792
+      ],
+      "rawResetMs": [
+        0.0026,
+        0.0015,
+        0.0015,
+        0.0015,
+        0.0067,
+        0.0043,
+        0.0018,
+        0.0015,
+        0.0014,
+        0.0014,
+        0.0014,
+        0.0013,
+        0.0014
+      ]
+    },
+    {
+      "prefab": "Assets/Prefabs/Vfx/Projectiles/QuadProjectile.prefab",
+      "name": "QuadProjectile",
+      "weaponTypes": [
+        "LightQuadTurbolaser",
+        "ISDIIQuadIonCannon",
+        "HeavyQuadTurbolaser",
+        "MediumQuadTurbolaser"
+      ],
+      "gameObjects": 2,
+      "particleSystems": [
+        {
+          "name": "QuadProjectile",
+          "maximumParticles": 4,
+          "playOnAwake": false,
+          "prewarm": false,
+          "cullingMode": "Automatic"
+        }
+      ],
+      "lights": 0,
+      "renderers": [
+        "ParticleSystemRenderer",
+        "LineRenderer"
+      ],
+      "scripts": [
+        "EmpireAtWar.ViewComponents.Weapon.BoltShot",
+        "EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView"
+      ],
+      "firstInstantiateMs": 0.1866,
+      "firstResetMs": 0.0016,
+      "warmInstantiateMs": {
+        "mean": 0.12745833333333334,
+        "median": 0.11215,
+        "minimum": 0.1019,
+        "maximum": 0.185
+      },
+      "warmResetMs": {
+        "mean": 0.0014416666666666666,
+        "median": 0.0009,
+        "minimum": 0.0006,
+        "maximum": 0.0034
+      },
+      "rawInstantiateMs": [
+        0.1866,
+        0.1108,
+        0.1106,
+        0.1033,
+        0.1019,
+        0.1022,
+        0.102,
+        0.127,
+        0.185,
+        0.1625,
+        0.1409,
+        0.1698,
+        0.1135
+      ],
+      "rawResetMs": [
+        0.0016,
+        0.0009,
+        0.0007,
+        0.0006,
+        0.0007,
+        0.0006,
+        0.0007,
+        0.0034,
+        0.0029,
+        0.0019,
+        0.0015,
+        0.0025,
+        0.0009
+      ]
+    }
+  ]
+}

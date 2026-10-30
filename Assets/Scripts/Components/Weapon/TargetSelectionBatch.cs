@@ -18,8 +18,10 @@ namespace EmpireAtWar.Components.Weapon
 
         private readonly Func<IWeaponPresenter, int, bool> _isRegistered;
         private readonly List<TargetSelectionRequest> _targetSelectionRequests = new List<TargetSelectionRequest>();
-        private readonly Dictionary<WeaponComponent, TargetSelectionRequest> _capturedOwners = new Dictionary<WeaponComponent, TargetSelectionRequest>();
+        private readonly Dictionary<WeaponComponent, int> _capturedOwners = new Dictionary<WeaponComponent, int>();
         private readonly List<WeaponComponent> _capturedWeapons = new List<WeaponComponent>();
+        private readonly List<TargetSelectionRequest> _capturedSpans = new List<TargetSelectionRequest>();
+        private readonly TargetOriginCapture _origins = new TargetOriginCapture();
         private readonly TargetSelectionCapture _capture = new TargetSelectionCapture();
 
         private NativeArray<WeaponTargetSelectionJob.Input> _targetSelectionInputs;
@@ -45,6 +47,7 @@ namespace EmpireAtWar.Components.Weapon
             _targetSelectionRequests.Clear();
             ClearCaptured();
             _capture.Dispose();
+            _origins.Dispose();
             if (_targetSelectionInputs.IsCreated) _targetSelectionInputs.Dispose();
             if (_candidateSlots.IsCreated) _candidateSlots.Dispose();
             if (_candidateGroups.IsCreated) _candidateGroups.Dispose();
@@ -54,6 +57,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public void Queue(WeaponComponent weapon, WeaponHardPoint hardPoint, int ownerGeneration)
         {
+            _origins.Register(weapon, hardPoint);
             _targetSelectionRequests.Add(new TargetSelectionRequest
             {
                 Owner = weapon,
@@ -62,6 +66,8 @@ namespace EmpireAtWar.Components.Weapon
                 HardPoint = hardPoint
             });
         }
+
+        public void Unregister(IWeaponPresenter owner) => _origins.Unregister(owner);
 
         public void Process()
         {
@@ -179,10 +185,20 @@ namespace EmpireAtWar.Components.Weapon
                     {
                         TargetSelectionRequest request = _targetSelectionRequests[i];
                         if (!_isRegistered(request.Owner, request.OwnerGeneration)) continue;
-                        if (_capturedOwners.ContainsKey(request.Weapon)) continue;
+                        if (_capturedOwners.TryGetValue(request.Weapon, out int ownerIndex))
+                        {
+                            request.CapturedOwnerIndex = ownerIndex;
+                            request.OriginSlot = _origins.GetSlot(request.HardPoint);
+                            _targetSelectionRequests[i] = request;
+                            continue;
+                        }
                         WeaponComponent weapon = request.Weapon;
                         weapon.PrepareTargetSelection(_capture);
-                        _capturedOwners.Add(weapon, new TargetSelectionRequest
+                        request.CapturedOwnerIndex = _capturedSpans.Count;
+                        request.OriginSlot = _origins.GetSlot(request.HardPoint);
+                        _targetSelectionRequests[i] = request;
+                        _capturedOwners.Add(weapon, request.CapturedOwnerIndex);
+                        _capturedSpans.Add(new TargetSelectionRequest
                         {
                             CandidateStart = candidateCount,
                             CandidateCount = weapon.CandidateCount,
@@ -197,6 +213,7 @@ namespace EmpireAtWar.Components.Weapon
 
                 // Slots are all acquired now, so ship positions are read on workers while the copies below run.
                 if (candidateCount > 0) _capture.BeginPositionRead();
+                _origins.BeginRead();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 using (BattleProfilerMarkers.TargetBatchCaptureCopy.Auto())
 #endif
@@ -211,7 +228,7 @@ namespace EmpireAtWar.Components.Weapon
                         WeaponComponent weapon = _capturedWeapons[i];
                         // An owner without candidates may start exactly at a full buffer's end, which Copy rejects.
                         if (weapon.CandidateCount == 0) continue;
-                        TargetSelectionRequest captured = _capturedOwners[weapon];
+                        TargetSelectionRequest captured = _capturedSpans[i];
                         NativeArray<int>.Copy(weapon.CandidateSlots, 0, _candidateSlots, captured.CandidateStart,
                             captured.CandidateCount);
                         NativeArray<int>.Copy(weapon.CandidateGroupIndices, 0, _candidateGroups, captured.CandidateStart,
@@ -220,18 +237,20 @@ namespace EmpireAtWar.Components.Weapon
                             weapon.CandidateGroupCount);
                     }
 
+                    _origins.CompleteRead();
                     for (int i = 0; i < _targetSelectionRequests.Count; i++)
                     {
                         TargetSelectionRequest request = _targetSelectionRequests[i];
-                        if (!_capturedOwners.TryGetValue(request.Weapon, out TargetSelectionRequest captured)) continue;
+                        if (!_isRegistered(request.Owner, request.OwnerGeneration)) continue;
+                        TargetSelectionRequest captured = _capturedSpans[request.CapturedOwnerIndex];
                         request.CandidateStart = captured.CandidateStart;
                         request.CandidateCount = captured.CandidateCount;
                         request.GroupStart = captured.GroupStart;
                         request.TargetVersion = captured.TargetVersion;
-                        Transform weaponTransform = request.HardPoint.transform;
-                        request.Origin = weaponTransform.position;
-                        request.ParentRotation = weaponTransform.parent == null
-                            ? Quaternion.identity : weaponTransform.parent.rotation;
+                        float3 position = _origins.Positions[request.OriginSlot];
+                        quaternion rotation = _origins.ParentRotations[request.OriginSlot];
+                        request.Origin = new Vector3(position.x, position.y, position.z);
+                        request.ParentRotation = new Quaternion(rotation.value.x, rotation.value.y, rotation.value.z, rotation.value.w);
                         _targetSelectionRequests[i] = request;
                     }
                 }
@@ -338,6 +357,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             _capturedOwners.Clear();
             _capturedWeapons.Clear();
+            _capturedSpans.Clear();
             _capture.ClearTargets();
         }
 
@@ -356,6 +376,8 @@ namespace EmpireAtWar.Components.Weapon
             public int CandidateStart;
             public int CandidateCount;
             public int GroupStart;
+            public int CapturedOwnerIndex;
+            public int OriginSlot;
         }
     }
 }

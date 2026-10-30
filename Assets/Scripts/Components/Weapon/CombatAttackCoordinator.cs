@@ -87,6 +87,7 @@ namespace EmpireAtWar.Components.Weapon
         public void Unregister(IWeaponPresenter owner)
         {
             if (!_owners.Remove(owner)) return;
+            _targetSelection.Unregister(owner);
 
             for (int i = _sequences.Count - 1; i >= 0; i--)
             {

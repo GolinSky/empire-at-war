@@ -79,9 +79,7 @@ namespace EmpireAtWar.Services.Hazards
                         {
                             membership = new List<IHazardSource>();
                             _memberships.Add(modifiers, membership);
-                            Action destroyed = () => Release(entity);
-                            _destroyHandlers.Add(entity, destroyed);
-                            entity.HealthModel.OnDestroy += destroyed;
+                            SubscribeDestroyed(entity);
                         }
                         membership.Add(source);
                         if (source.Data.BlocksSpecialAbilities) modifiers.AddAbilitySuppression();
@@ -96,6 +94,13 @@ namespace EmpireAtWar.Services.Hazards
                 }
                 if (membership != null && membership.Count == 0) Release(entity);
             }
+        }
+
+        private void SubscribeDestroyed(IEntity entity)
+        {
+            Action destroyed = () => Release(entity);
+            _destroyHandlers.Add(entity, destroyed);
+            entity.HealthModel.OnDestroy += destroyed;
         }
 
         public bool BlocksReinforcement(Vector3 position)

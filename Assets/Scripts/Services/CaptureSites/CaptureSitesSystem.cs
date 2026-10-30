@@ -16,6 +16,8 @@ using EmpireAtWar.Services.Vision;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Ships;
+using Unity.Profiling;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.CaptureSites
 {
@@ -26,6 +28,11 @@ namespace EmpireAtWar.Services.CaptureSites
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
         ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection
     {
+        private static readonly ProfilerMarker CaptureMarker = new ProfilerMarker("Battle.Capture.Site.Model");
+        private static readonly ProfilerMarker RenderMarker = new ProfilerMarker("Battle.Capture.Site.Render");
+        private static readonly ProfilerMarker VisibilityMarker = new ProfilerMarker("Battle.Capture.Site.Visibility");
+        private readonly Dictionary<ICaptureSite, Func<Vector3, bool>> _siteAreas = new Dictionary<ICaptureSite, Func<Vector3, bool>>();
+        private readonly Dictionary<PlayerId, Predicate<PlayerId>> _hostilityFilters = new Dictionary<PlayerId, Predicate<PlayerId>>();
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
         private IVisionService _visionService;
@@ -107,7 +114,13 @@ namespace EmpireAtWar.Services.CaptureSites
                     tooltipService: _tooltipService, kind: view.Kind, pointId: view.PointId);
                 _sites.Add(site);
                 site.ConstructionCompleted += HandleConstructionCompleted;
-                _strengthSampler.Add(position => site.Contains(position));
+                Vector3 center = default;
+                float radius = 0f;
+                _strengthSampler.Add(position => PlanarGeometry.ContainsCircle(position, center, radius), () =>
+                {
+                    center = site.Center;
+                    radius = site.Radius;
+                });
             }
         }
 
@@ -124,6 +137,8 @@ namespace EmpireAtWar.Services.CaptureSites
             }
 
             _sites.Clear();
+            _siteAreas.Clear();
+            _hostilityFilters.Clear();
             _strengthSampler.Clear();
         }
 
@@ -135,18 +150,33 @@ namespace EmpireAtWar.Services.CaptureSites
             for (int i = 0; i < _sites.Count; i++)
             {
                 CaptureSitePresenter site = _sites[i];
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (CaptureMarker.Auto())
+#endif
                 site.TickCapture(deltaTime, _strengthSampler[i]);
 
-                bool isVisible = _visionService.IsVisible(_localPlayer.Id, site.Center);
+                bool isVisible;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (VisibilityMarker.Auto())
+#endif
+                isVisible = _visionService.IsVisible(_localPlayer.Id, site.Center);
                 if (isVisible)
                 {
                     // Out of vision the ring keeps its last seen owner.
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                    using (RenderMarker.Auto())
+#endif
                     site.Render();
                 }
 
-                bool isHovered = isVisible &&
-                    site.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, site.Center));
-                site.SetVisibility(isVisible, isHovered);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (VisibilityMarker.Auto())
+#endif
+                {
+                    bool isHovered = isVisible &&
+                        site.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, site.Center));
+                    site.SetVisibility(isVisible, isHovered);
+                }
             }
             if (_selectedSite != null && !IsSelectable(_selectedSite))
                 ClearSelection();
@@ -313,10 +343,23 @@ namespace EmpireAtWar.Services.CaptureSites
                 }
             }
 
-            return _squadronRegistry.HasSquadronInside(
-                position => site.Contains(position),
-                squadronOwner => _playerRoster.IsHostile(owner, squadronOwner));
+            if (!_siteAreas.TryGetValue(site, out Func<Vector3, bool> contains))
+            {
+                contains = CreateSiteArea(site);
+                _siteAreas.Add(site, contains);
+            }
+            if (!_hostilityFilters.TryGetValue(owner, out Predicate<PlayerId> isHostile))
+            {
+                isHostile = CreateHostilityFilter(owner);
+                _hostilityFilters.Add(owner, isHostile);
+            }
+            return _squadronRegistry.HasSquadronInside(contains, isHostile);
         }
+
+        private static Func<Vector3, bool> CreateSiteArea(ICaptureSite site) => position => site.Contains(position);
+
+        private Predicate<PlayerId> CreateHostilityFilter(PlayerId owner) =>
+            squadronOwner => _playerRoster.IsHostile(owner, squadronOwner);
 
         private bool TryGetClosestSite(Vector3 origin, Predicate<CaptureSitePresenter> isTarget, out Vector3 position)
         {

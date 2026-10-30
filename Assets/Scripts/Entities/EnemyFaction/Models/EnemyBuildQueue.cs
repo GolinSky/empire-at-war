@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanAdd(string requestId, int maxCount)
         {
             _pipelineIds.Clear();
-            _pipelineIds.UnionWith(_externalPipelines);
+            foreach (string id in _externalPipelines) _pipelineIds.Add(id);
             int queuedCount = _externalPipelines.Contains(requestId) ? 1 : 0;
             foreach (EnemyPendingBuild build in _builds)
             {

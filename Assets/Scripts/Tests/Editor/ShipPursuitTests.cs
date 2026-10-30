@@ -510,6 +510,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             public string Id => nameof(Radar);
             public ObservableList<IEntity> Enemies { get; } = new ObservableList<IEntity>();
+            public bool HasEnemy(IEntity entity) => Enemies.Contains(entity);
         }
 
         private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade

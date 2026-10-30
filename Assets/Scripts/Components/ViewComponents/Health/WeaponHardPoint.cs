@@ -36,8 +36,6 @@ namespace EmpireAtWar.ViewComponents.Health
         private float _mountYaw;
         private float _turnEndTime = float.NegativeInfinity;
 
-        [SerializeField] private int prewarmEffects;
-
         public event System.Action<WeaponProfile, Transform> ShotEmitted;
 
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
@@ -207,15 +205,9 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private ShotEffectPool GetPool()
         {
-            if (_effectPool != null)
-            {
-                return _effectPool;
-            }
-
-            _effectPool = new ShotEffectPool(profile: _profile, owner: transform,
-                effectCompleted: OnTurretEffectCompleted, impactPresenter: _impactPresenter, boltFlights: _boltFlights);
-            _effectPool.Prewarm(Mathf.Min(prewarmEffects, _profile.ShotsPerSalvo));
-            _poolPrewarmer.Enqueue(_effectPool, ExpectedShotsInFlight(_profile));
+            if (_effectPool != null) return _effectPool;
+            _effectPool = _poolPrewarmer.CreatePool(_profile, transform, OnTurretEffectCompleted,
+                _impactPresenter, _boltFlights, ExpectedShotsInFlight(_profile));
             return _effectPool;
         }
 

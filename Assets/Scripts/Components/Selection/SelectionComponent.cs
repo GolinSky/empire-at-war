@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         private const float ATTACK_HOLD = 0.1f;
         private const float ATTACK_LOCK = 0.55f;
         private const float ATTACK_FADE = 0.2f;
-        private static readonly Quaternion _worldRotation = Quaternion.Euler(90f, 0f, 0f);
+        private static readonly int ATTACK_ANGLE_ID = Shader.PropertyToID("_AttackAngle");
 
         // A sprite renderer, not a world canvas: a selected unit moves every frame, and a canvas under it
         // would rebuild its batch every frame (one per selected unit).
@@ -48,7 +48,9 @@ namespace EmpireAtWar.Components.Ship.Selection
         private ISelectionService _selectionService;
         private Vector3 _singleSelectionScale;
         private Transform _markerTransform;
-        private bool _isMarkerVisible;
+        private bool _hasMarkerScale;
+        private bool _isMultipleSelection;
+        private MaterialPropertyBlock _attackProperties;
         private Sequence _attackSequence;
         private Transform _attackTarget;
         private Vector3 _markerLocalPosition;
@@ -78,7 +80,8 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void Initialize()
         {
             _markerTransform = selectedRenderer.transform;
-            _markerTransform.rotation = _worldRotation;
+            enabled = false;
+            _hasMarkerScale = false;
             Model.OnSelected += HandleSelection;
             Sprite sprite = _sharedSelectionData.SelectionSprite;
             selectedRenderer.sprite = sprite;
@@ -87,7 +90,7 @@ namespace EmpireAtWar.Components.Ship.Selection
             _singleSelectionScale =
                 new Vector3(ringSize.x / spriteSize.x, ringSize.y / spriteSize.y, 1f);
             UpdateMarkerScale(_selectionService.PlayerSelectionContext.Count);
-            _selectionService.AddObserver(this);
+            HandleSelection(Model.IsSelected);
         }
 
         public void LateDispose()
@@ -141,56 +144,70 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void HandleSelection(bool isActive)
         {
-            _isMarkerVisible = isActive;
             if (isActive)
             {
-                _markerTransform.rotation = _worldRotation;
+                _selectionService.AddObserver(this);
+                UpdateMarkerScale(_selectionService.PlayerSelectionContext.Count);
+            }
+            else
+            {
+                _selectionService.RemoveObserver(this);
             }
             selectedRenderer.enabled = isActive;
         }
 
         private void LateUpdate()
         {
-            if (_attackSequence != null)
+            if (_attackTarget == null)
             {
-                _markerTransform.position = Vector3.Lerp(
-                    _markerTransform.parent.TransformPoint(_markerLocalPosition),
-                    _attackTarget.position, _attackProgress);
-                _markerTransform.rotation = _worldRotation *
-                    Quaternion.Euler(0f, 0f, 180f * _attackProgress);
-                _markerTransform.localScale = Vector3.Lerp(
-                    _attackStartScale, _attackStartScale * 0.2f, _attackProgress);
+                StopAttackFeedback();
                 return;
             }
-            // Keep batching and renderer bounds intact; only visible, turning markers need a write.
-            if (_isMarkerVisible && _markerTransform.rotation != _worldRotation)
-            {
-                _markerTransform.rotation = _worldRotation;
-            }
+            _markerTransform.position = Vector3.Lerp(
+                _markerTransform.parent.TransformPoint(_markerLocalPosition),
+                _attackTarget.position, _attackProgress);
+            _attackProperties.SetFloat(ATTACK_ANGLE_ID, 180f * _attackProgress * Mathf.Deg2Rad);
+            selectedRenderer.SetPropertyBlock(_attackProperties);
+            _markerTransform.localScale = Vector3.Lerp(
+                _attackStartScale, _attackStartScale * 0.2f, _attackProgress);
         }
 
         public void UpdateState(ISelectionSubject subject)
         {
-            UpdateMarkerScale(subject.PlayerSelectionContext.Count);
+            if (subject.UpdatedScope == SelectionScope.Local)
+                UpdateMarkerScale(subject.PlayerSelectionContext.Count);
         }
 
         private void UpdateMarkerScale(int selectedCount)
         {
             if (_attackSequence != null) return;
-            float scale = selectedCount > 1 ? MULTISELECT_SCALE : SINGLE_SELECTION_SCALE;
+            bool isMultiple = selectedCount > 1;
+            if (_hasMarkerScale && _isMultipleSelection == isMultiple) return;
+            _hasMarkerScale = true;
+            _isMultipleSelection = isMultiple;
+            float scale = isMultiple ? MULTISELECT_SCALE : SINGLE_SELECTION_SCALE;
             _markerTransform.localScale = new Vector3(
                 _singleSelectionScale.x * scale, _singleSelectionScale.y * scale, 1f);
+            // The shader ignores rotation. A conservative cube encloses its world-aligned quad
+            // through parent pitch/roll as well as the attack spin.
+            Vector3 worldScale = _markerTransform.lossyScale;
+            float largestScale = Mathf.Max(Mathf.Abs(worldScale.x), Mathf.Abs(worldScale.y));
+            float smallestScale = Mathf.Min(Mathf.Abs(worldScale.x),
+                Mathf.Min(Mathf.Abs(worldScale.y), Mathf.Abs(worldScale.z)));
+            float radius = selectedRenderer.sprite.bounds.extents.magnitude * largestScale / smallestScale;
+            selectedRenderer.localBounds = new Bounds(Vector3.zero, Vector3.one * (radius * 2f));
         }
 
         public void PlayAttackFeedback(Transform target)
         {
             StopAttackFeedback();
+            _attackProperties ??= new MaterialPropertyBlock();
             _attackTarget = target;
             _markerLocalPosition = _markerTransform.localPosition;
             _attackStartScale = _markerTransform.localScale;
             _markerColor = selectedRenderer.color;
             _attackProgress = 0f;
-            _markerTransform.rotation = _worldRotation;
+            enabled = true;
             selectedRenderer.color = Color.red;
             selectedRenderer.enabled = true;
             _attackSequence = DOTween.Sequence()
@@ -210,10 +227,13 @@ namespace EmpireAtWar.Components.Ship.Selection
             _attackSequence = null;
             _attackTarget = null;
             _markerTransform.localPosition = _markerLocalPosition;
-            _markerTransform.rotation = _worldRotation;
+            _attackProperties.Clear();
+            selectedRenderer.SetPropertyBlock(null);
             selectedRenderer.color = _markerColor;
+            _hasMarkerScale = false;
             UpdateMarkerScale(_selectionService.PlayerSelectionContext.Count);
             HandleSelection(Model.IsSelected);
+            enabled = false;
         }
 
         private void OnDisable() => StopAttackFeedback();

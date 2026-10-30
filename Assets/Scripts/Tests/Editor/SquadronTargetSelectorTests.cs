@@ -17,6 +17,8 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Components.Radar;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -113,9 +115,33 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Select(selector, false), Is.SameAs(first));
         }
 
+        [Test]
+        public void SelectNear_UsesRadarMembershipAndRadarTieOrder()
+        {
+            IEntity first = AddTarget(10f);
+            IEntity second = AddTarget(10f);
+            _candidates.Reverse();
+            SquadronTargetSelector selector = CreateSelector();
+            Assert.That(Select(selector, false), Is.SameAs(second));
+            _candidates.Remove(second);
+            Assert.That(Select(selector, false), Is.SameAs(first));
+            _candidates.Clear();
+            Assert.That(Select(selector, false), Is.Null);
+        }
+
+        [Test]
+        public void SelectSeen_FindsTargetsAcrossNegativeAndPositiveCellEdges()
+        {
+            IEntity target = AddTarget(0f);
+            target.GetFacade<IEntityTransformFacade>().Transform.position = new Vector3(-501f, 0f, 501f);
+            SquadronTargetSelector selector = CreateSelector();
+            Assert.That(selector.SelectSeen(new Vector3(-490f, 0f, 490f), 20f), Is.SameAs(target));
+            Assert.That(selector.SelectSeen(new Vector3(-490f, 0f, 490f), 10f), Is.Null);
+        }
+
         private IEntity Select(SquadronTargetSelector selector, bool seen) => seen
             ? selector.SelectSeen(Vector3.zero, 100f)
-            : selector.SelectNear(_candidates, Vector3.zero, 100f);
+            : selector.SelectNear(new RadarStub(_candidates), Vector3.zero, 100f);
 
         [TestCase(false)]
         [TestCase(true)]
@@ -164,19 +190,63 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(UnitOrderType.Attack, UnitOrderType.None)]
+        [TestCase(UnitOrderType.Guard, UnitOrderType.None)]
+        [TestCase(UnitOrderType.Hunt, UnitOrderType.Hunt)]
+        public void TargetDestroyedBetweenOrderCallbacks_LeavesEngageBeforePilotReadsView(
+            UnitOrderType order, UnitOrderType expectedOrder)
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject root = new GameObject("Squadron with deferred orders");
+            _objects.Add(root);
+            Squadron squadron = root.AddComponent<Squadron>();
+            SquadronData data = ScriptableObject.CreateInstance<SquadronData>();
+            try
+            {
+                var flight = new FlightStub(data, 1);
+                var pilot = new SquadronPilot(flight);
+                var weapon = new WeaponSpy();
+                var orders = new UnitOrderModel();
+                IEntity target = AddTarget(1f);
+                orders.Replace(order, target: target);
+                pilot.Engage(target);
+                typeof(Squadron).GetField("_orders", PRIVATE_INSTANCE).SetValue(squadron, orders);
+                typeof(Squadron).GetField("_flight", PRIVATE_INSTANCE).SetValue(squadron, flight);
+                typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
+                typeof(Squadron).GetField("_weapon", PRIVATE_INSTANCE).SetValue(squadron, weapon);
+                typeof(Squadron).GetField("_engaged", PRIVATE_INSTANCE).SetValue(squadron, target);
+                ((HealthStub)target.HealthModel).IsDestroyed = true;
+                GameObject targetView = target.GetFacade<IEntityTransformFacade>().Transform.gameObject;
+                _objects.Remove(targetView);
+                UnityEngine.Object.DestroyImmediate(targetView);
+
+                // No scheduler/order callback runs between target destruction and this frame.
+                Assert.DoesNotThrow(squadron.Tick);
+
+                Assert.That(orders.Current, Is.EqualTo(expectedOrder));
+                Assert.That(typeof(Squadron).GetField("_engaged", PRIVATE_INSTANCE).GetValue(squadron), Is.Null);
+                Assert.That(pilot.HasArrived, Is.True);
+                Assert.That(weapon.ResetCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
         private sealed class FlightStub : ISquadronFlightComponent
         {
-            public FlightStub(IFighterFlightData data) { Data = data; }
+            public FlightStub(IFighterFlightData data, int count = 0) { Data = data; Count = count; }
             public string Id => "flight";
             public IFighterFlightData Data { get; }
-            public int Count => 0;
+            public int Count { get; }
             public Vector3 Centroid => new Vector3(10f, 0f, 20f);
             public Vector3 Heading => Vector3.forward;
-            public bool IsAlive(int index) => throw new NotSupportedException();
-            public Vector3 GetPosition(int index) => throw new NotSupportedException();
-            public Vector3 GetForward(int index) => throw new NotSupportedException();
-            public void Steer(int index, Vector3 target, float speed) => throw new NotSupportedException();
-            public void Step(float deltaTime) => throw new NotSupportedException();
+            public bool IsAlive(int index) => true;
+            public Vector3 GetPosition(int index) => Centroid;
+            public Vector3 GetForward(int index) => Heading;
+            public void Steer(int index, Vector3 target, float speed) { }
+            public void Step(float deltaTime) { }
             public void Respawn(Vector3 position, Quaternion rotation) => throw new NotSupportedException();
         }
 
@@ -197,7 +267,7 @@ namespace EmpireAtWar.Tests.Editor
         private SquadronTargetSelector CreateSelector(ShipClass shipClass = ShipClass.Fighter, PlayerId? side = null)
         {
             PlayerRoster roster = TestPlayers.CreateTeamGame();
-            return new SquadronTargetSelector(_locator, _vision, roster,
+            return new SquadronTargetSelector(new SquadronTargetIndex(_locator, roster), _vision, roster,
                 side ?? TestPlayers.Human, new SquadronHealthData { ShipClass = shipClass });
         }
 
@@ -216,6 +286,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static CombatSpy Combat(IEntity entity) => (CombatSpy)entity.GetFacade<ICombatModifiersFacade>();
+
+        private sealed class RadarStub : IRadarComponent
+        {
+            public string Id => "radar";
+            public UnityEngine.Rendering.ObservableList<IEntity> Enemies { get; } =
+                new UnityEngine.Rendering.ObservableList<IEntity>();
+            public RadarStub(IList<IEntity> candidates)
+            {
+                foreach (IEntity candidate in candidates) Enemies.Add(candidate);
+            }
+            public bool HasEnemy(IEntity entity) => Enemies.Contains(entity);
+        }
 
         private sealed class CombatSpy : ICombatModifiersFacade
         {

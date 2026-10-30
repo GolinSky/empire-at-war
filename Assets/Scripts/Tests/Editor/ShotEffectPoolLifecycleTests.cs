@@ -13,6 +13,41 @@ namespace EmpireAtWar.Tests.Weapon
     [Category("Combat")]
     public sealed class ShotEffectPoolLifecycleTests
     {
+        [Test]
+        public void SharedPool_ReturnsReleasedOwnersInflightShotToAnotherOwner()
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+            var prewarmer = new ShotPoolPrewarmer();
+            int firstCompletions = 0;
+            int secondCompletions = 0;
+            ShotEffectPool first = prewarmer.CreatePool(profile, null, _ => firstCompletions++, null, null, 1);
+            ShotEffectPool second = prewarmer.CreatePool(profile, null, _ => secondCompletions++, null, null, 1);
+            ShotEffect effect = null;
+            try
+            {
+                first.Prewarm(1);
+                effect = Lease(first);
+                int created = AttackSequenceDiagnostics.PoolCreated;
+                first.Release();
+                Return(first, effect);
+                Assert.That(firstCompletions, Is.Zero, "A released mount must not receive flight completion.");
+
+                ShotEffect reused = Lease(second);
+                Assert.That(reused, Is.SameAs(effect), "Reinforcement mounts must share the same idle shots.");
+                Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created));
+                Return(second, reused);
+                Assert.That(secondCompletions, Is.EqualTo(1));
+            }
+            finally
+            {
+                if (effect != null) Object.DestroyImmediate(effect.gameObject);
+                prewarmer.Clear();
+            }
+        }
+
         // Prewarm targets cover several salvos in flight, so a pool can hold more shots than it ever fires at once.
         [TestCase(2)]
         [TestCase(4)]

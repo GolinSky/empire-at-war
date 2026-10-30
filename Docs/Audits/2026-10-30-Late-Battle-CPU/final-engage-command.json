@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Performance/SetupCrowdedBattle.cs",
+      "entry": "SetupCrowdedBattle.Engage"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 75,
+      "executeMs": 20,
+      "assemblyName": "PipelineRunScript_SetupCrowdedBattle_37a780bd8586430e92dcd3af7bb5c9de",
+      "success": true,
+      "result": "{ ordered = 26, destination = (-1075.66, -40.00, -1198.49), localLevel = 5, enemyLevel = 5, status = { scene = Battle, state = Running, time = 45,94812, ships = 80, squadrons = 320, weapons = 402, local = True, enemy = True } }"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}
