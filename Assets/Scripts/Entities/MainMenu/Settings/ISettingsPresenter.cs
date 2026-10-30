@@ -41,6 +41,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         void SetInvertZoom(bool isOn);
 
+        void SetAutoPowerAbilities(bool isOn);
+
         void StartRebind(int row);
 
         void ResetBinding(int row);

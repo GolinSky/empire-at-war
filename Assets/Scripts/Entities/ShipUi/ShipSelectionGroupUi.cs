@@ -80,21 +80,24 @@ namespace EmpireAtWar.Entities.ShipUi
         }
 
         public void Configure(ShipType shipType, Sprite icon, IReadOnlyList<ShipUiEntry> ships,
-            IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility)
+            IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility,
+            ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
-            Configure(icon, ships, model, () => onClicked(shipType), pressAbility);
+            Configure(icon, ships, model, () => onClicked(shipType), pressAbility, autoPower, toggleAutoPower);
             tooltipTrigger.SetKey(shipType);
         }
 
         public void Configure(SquadronType squadronType, Sprite icon, IReadOnlyList<ShipUiEntry> squadrons,
-            IShipUiModelObserver model, Action<SquadronType> onClicked, Action<ShipAbilityId> pressAbility)
+            IShipUiModelObserver model, Action<SquadronType> onClicked, Action<ShipAbilityId> pressAbility,
+            ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
-            Configure(icon, squadrons, model, () => onClicked(squadronType), pressAbility);
+            Configure(icon, squadrons, model, () => onClicked(squadronType), pressAbility, autoPower, toggleAutoPower);
             tooltipTrigger.SetKey(squadronType);
         }
 
         private void Configure(Sprite icon, IReadOnlyList<ShipUiEntry> ships,
-            IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility)
+            IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility,
+            ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
             Clear();
             _onClicked = onClicked;
@@ -128,6 +131,7 @@ namespace EmpireAtWar.Entities.ShipUi
             }
             abilityBar.SetModel(model);
             abilityBar.SetSlots(_slots, pressAbility);
+            abilityBar.SetAutoPower(autoPower, toggleAutoPower);
         }
 
         private void UpdateSummaryHealth()

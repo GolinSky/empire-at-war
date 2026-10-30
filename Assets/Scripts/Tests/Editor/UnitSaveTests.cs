@@ -78,6 +78,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(loaded.UnitType, Is.EqualTo(UnitTypeId.Squadron(SquadronType.XWing)));
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AutoPowerPreference_RoundTripsExplicitValue(bool enabled)
+        {
+            UnitSave unit = UnitSave.Create(5L, new PlayerId(0), UnitTypeId.Ship(ShipType.Acclamator),
+                Vector3.zero, Quaternion.identity, UnitHealthSave.ForShip(1f, 1f, System.Array.Empty<float>()),
+                UnitOrderSave.From(new UnitOrderModel())).WithAutoPower(enabled);
+
+            UnitSave loaded = JsonUtility.FromJson<UnitSave>(JsonUtility.ToJson(unit));
+
+            Assert.That(loaded.AutoPowerEnabled, Is.EqualTo(enabled));
+        }
+
+        [Test]
+        public void AutoPowerPreference_OldJsonWithoutFieldDefaultsOn()
+        {
+            UnitSave loaded = JsonUtility.FromJson<UnitSave>("{\"id\":5}");
+
+            Assert.That(loaded.AutoPowerEnabled, Is.True);
+        }
+
         [Test]
         public void ShipSaveFacade_DuringHyperspaceArrival_SavesLandingSpotInsteadOfTransitPosition()
         {

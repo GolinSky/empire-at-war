@@ -38,6 +38,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private SettingsSliderRow zoomSpeedRow;
         [SerializeField] private SettingsToggleRow edgeScrollingRow;
         [SerializeField] private SettingsToggleRow invertZoomRow;
+        [SerializeField] private SettingsToggleRow autoPowerAbilitiesRow;
         [Tooltip("Inactive row cloned once per rebindable binding into its parent.")]
         [SerializeField] private KeyBindingRow keyBindingRowTemplate;
         [SerializeField] private SettingsPromptView promptView;
@@ -119,6 +120,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             zoomSpeedRow.Render(_model.ZoomSpeed);
             edgeScrollingRow.Render(_model.EdgeScrolling);
             invertZoomRow.Render(_model.InvertZoom);
+            autoPowerAbilitiesRow.Render(_model.AutoPowerAbilities);
 
             RenderKeyBindings();
 
@@ -169,6 +171,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             edgeScrollingRow.ValueChanged += _presenter.SetEdgeScrolling;
             invertZoomRow.Initialize();
             invertZoomRow.ValueChanged += _presenter.SetInvertZoom;
+            autoPowerAbilitiesRow.Initialize();
+            autoPowerAbilitiesRow.ValueChanged += _presenter.SetAutoPowerAbilities;
         }
 
         private void DisposeRows()
@@ -209,6 +213,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             edgeScrollingRow.Dispose();
             invertZoomRow.ValueChanged -= _presenter.SetInvertZoom;
             invertZoomRow.Dispose();
+            autoPowerAbilitiesRow.ValueChanged -= _presenter.SetAutoPowerAbilities;
+            autoPowerAbilitiesRow.Dispose();
 
             foreach (KeyBindingRow row in _keyBindingRows)
             {

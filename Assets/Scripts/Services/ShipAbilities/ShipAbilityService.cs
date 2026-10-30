@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly List<IEntity> _pendingCasters = new List<IEntity>();
 
         public event Action TargetingChanged;
+        public event Action<IReadOnlyList<IEntity>> ManualAction;
         public event Action<IReadOnlyList<IEntity>> TargetRejected;
         public event Action<IReadOnlyList<IEntity>> TargetingCanceled;
 
@@ -50,6 +51,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public void Press(IReadOnlyList<IEntity> casters, ShipAbilityId id, bool allowCancel = true)
         {
+            ManualAction?.Invoke(casters);
             if (allowCancel && casters.Count == 1 &&
                 casters[0].TryGetFacade(out IShipAbilityFacade caster) && TryCancel(caster, id))
             {

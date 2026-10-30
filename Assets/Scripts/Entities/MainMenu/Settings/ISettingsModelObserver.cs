@@ -27,6 +27,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         bool EdgeScrolling { get; }
         bool InvertZoom { get; }
 
+        bool AutoPowerAbilities { get; }
+
         IReadOnlyList<KeyBindingRowState> Bindings { get; }
 
         bool IsDirty { get; }

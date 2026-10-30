@@ -103,6 +103,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_settingsService.Saved.Graphics.QualityPreset, Is.Empty);
         }
 
+        [Test]
+        public void SetAutoPowerAbilities_ChangesDraftAndModelOnly()
+        {
+            _editor.Open();
+            Assert.That(_model.AutoPowerAbilities, Is.True);
+
+            _editor.SetAutoPowerAbilities(false);
+
+            Assert.That(_settingsService.Draft.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(_model.AutoPowerAbilities, Is.False);
+            Assert.That(_model.IsDirty, Is.True);
+            Assert.That(_settingsService.Saved.Gameplay.AutoPowerAbilities, Is.True);
+        }
+
         private sealed class FakeGraphicsOptions : IGraphicsOptions
         {
             private static readonly string[] PRESETS = { "Low", "High" };

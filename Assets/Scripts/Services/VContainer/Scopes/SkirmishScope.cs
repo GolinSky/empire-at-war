@@ -172,6 +172,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
+            builder.Register<AutoPowerCombatSnapshot>(Lifetime.Singleton);
+            if (Battle.Mode != GameMode.BattleSimulation)
+                builder.Register<PlayerAutoPowerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponTargetingModel>(Lifetime.Singleton);
             builder.Register<SuperWeaponOriginRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

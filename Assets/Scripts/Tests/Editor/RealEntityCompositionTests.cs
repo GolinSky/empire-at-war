@@ -232,6 +232,234 @@ namespace EmpireAtWar.Tests.Editor
                 .Invoke(pool, new object[] { cancellationToken })).GetEnumerator();
 
         [Test]
+        public void PlayerAutoPower_RuntimeOnlyMonitorsOwnedShipsAndUsesNormalLifecycle()
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
+            Assert.That(runtime.Caster.GetFacade<IHangarCommand>().TryLaunchImmediately(), Is.True);
+            IEntity squadron = runtime.Entities.Entities.Single(entity =>
+                entity.Id != runtime.Caster.Id && entity.Id != runtime.Enemy.Id);
+            Assert.That(squadron.TryGetFacade(out IShipAutoPowerFacade _), Is.False);
+
+            runtime.TickAt(1f);
+            var casters = (List<IEntity>)typeof(PlayerAutoPowerService)
+                .GetField("_casters", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(runtime.Service);
+            Assert.That(casters, Is.EqualTo(new[] { runtime.Caster }),
+                "Enemy ships and owned squadrons must not enter the player caster batch.");
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+            runtime.TickAt(1.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(runtime.Weapon.TimeLeft, Is.EqualTo(runtime.Weapon.Definition.Duration));
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Ready));
+
+            runtime.Abilities.Advance(runtime.Weapon.Definition.Duration);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(runtime.Weapon.TimeLeft, Is.EqualTo(runtime.Weapon.Definition.RecoveryDelay));
+            runtime.Abilities.Advance(runtime.Weapon.Definition.RecoveryDelay);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+        }
+
+        [Test]
+        public void PlayerAutoPower_SingleSelectionPausesAndMultiSelectionContinues()
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
+            runtime.Select(runtime.Caster);
+            runtime.TickAt(1f);
+            runtime.TickAt(1.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            ShipEntity second = human.Container.Resolve<ShipFactory>().Create(runtime.Caster.Owner,
+                ShipType.Acclamator, runtime.Caster.GetFacade<IEntityTransformFacade>().Transform.position);
+            IEntity secondEntity = runtime.Entities.GetEntity(second.EntityId);
+            runtime.Select(runtime.Caster, secondEntity);
+            runtime.TickAt(2f);
+            runtime.TickAt(2.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active));
+
+            runtime.Select(runtime.Caster);
+            runtime.TickAt(3f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active),
+                "Selecting the caster must not cancel its running effect.");
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects(bool global)
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
+            if (global) runtime.Settings.Saved.Gameplay.AutoPowerAbilities = false;
+            else runtime.Automation.SetEnabled(false);
+            runtime.TickAt(1f);
+            runtime.TickAt(1.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(runtime.Automation.Enabled, Is.EqualTo(global),
+                "Global settings must not overwrite the per-ship preference.");
+
+            runtime.Settings.Saved.Gameplay.AutoPowerAbilities = true;
+            runtime.Automation.SetEnabled(true);
+            runtime.TickAt(2f);
+            runtime.TickAt(2.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active));
+            if (global) runtime.Settings.Saved.Gameplay.AutoPowerAbilities = false;
+            else runtime.Automation.SetEnabled(false);
+            runtime.TickAt(3f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active));
+        }
+
+        [Test]
+        public void PlayerAutoPower_ManualCancellationAndSelectionRetainManualDelay()
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
+            runtime.TickAt(1f);
+            runtime.Abilities.Press(new[] { runtime.Caster }, runtime.Shields.Id);
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active));
+            runtime.Abilities.Press(new[] { runtime.Caster }, runtime.Shields.Id);
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(runtime.Shields.TimeLeft, Is.EqualTo(runtime.Shields.Definition.RecoveryDelay));
+
+            runtime.Select(runtime.Caster);
+            runtime.TickAt(1.5f);
+            runtime.Select();
+            runtime.TickAt(2f);
+            runtime.TickAt(2.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+            runtime.TickAt(3.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready),
+                "The manual delay must be followed by two completed confirmations.");
+            runtime.TickAt(4f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active));
+        }
+
+        [Test]
+        public void PlayerAutoPower_ActiveAbilityBlocksOverlapAndChosenCooldownIsNotRestarted()
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
+            Assert.That(runtime.Abilities.TryActivate(runtime.Caster.GetFacade<IShipAbilityFacade>(),
+                runtime.Shields.Id, null), Is.True);
+            runtime.TickAt(1f);
+            runtime.TickAt(1.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active));
+            runtime.Abilities.Advance(runtime.Shields.Definition.Duration);
+            runtime.Abilities.Restore(runtime.Weapon, ShipAbilityState.Recovering, 80f);
+            runtime.Abilities.Restore(runtime.Shields, ShipAbilityState.Ready, 0f);
+            runtime.TickAt(2f);
+            runtime.TickAt(2.5f);
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(runtime.Weapon.TimeLeft, Is.EqualTo(80f));
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Ready),
+                "An unavailable preferred power must not fall through to another ability.");
+        }
+
+        private AutoPowerRuntime CreateAutoPowerRuntime()
+        {
+            BuildSaveProject();
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            AiPlayerScope enemy = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
+            PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
+            PlayerSlot enemySlot = enemy.Container.Resolve<PlayerSlot>();
+            Vector3 origin = layout.GetStationPosition(humanSlot.Id);
+            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(humanSlot.Id, ShipType.Acclamator, origin);
+            ShipEntity hostile = enemy.Container.Resolve<ShipFactory>().Create(enemySlot.Id, ShipType.Providence,
+                origin + Vector3.forward * 100f);
+            // Skip hyperspace transit so the real weapon mounts and candidates are within engagement range.
+            ship.transform.position = origin;
+            hostile.transform.position = origin + Vector3.forward * 100f;
+            IEntityLocator entities = _battle.Container.Resolve<IEntityLocator>();
+            IEntity caster = entities.GetEntity(ship.EntityId);
+            ILocalPlayer local = _battle.Container.Resolve<ILocalPlayer>();
+            ISettingsService settings = _project.Container.Resolve<ISettingsService>();
+            settings.Saved.Gameplay.AutoPowerAbilities = true;
+            var combat = new AutoPowerCombatSnapshot(entities, local,
+                new EmpireAtWar.Services.Vision.VisionService(_battle.Container.Resolve<IPlayerRoster>(), fogEnabled: false),
+                _battle.Container.Resolve<EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog>());
+            var catalog = _battle.Container.Resolve<ShipAbilityCatalog>();
+            combat.Capture();
+            Assert.That(combat.Decide(caster.GetFacade<IShipAbilityFacade>(), caster.GetFacade<IShipAutoPowerFacade>(),
+                false, catalog.AutoPower), Is.EqualTo(AutoPowerDecision.Weapons), "The fixture must establish a useful engagement.");
+            var selection = new SelectionService(null, null, null, entities, null, null, local);
+            var abilities = _battle.Container.Resolve<ShipAbilityService>();
+            var battle = _battle.Container.Resolve<SkirmishStateModel>();
+            battle.SetState(BattleState.Running);
+            var service = new PlayerAutoPowerService(entities, local, settings, selection, battle, abilities, combat, catalog);
+            return new AutoPowerRuntime(service, abilities, entities, caster, entities.GetEntity(hostile.EntityId), settings,
+                (SelectionContext)selection.PlayerSelectionContext);
+        }
+
+        private sealed class AutoPowerRuntime : IDisposable
+        {
+            private readonly SelectionContext _selection;
+            public PlayerAutoPowerService Service { get; }
+            public ShipAbilityService Abilities { get; }
+            public IEntityLocator Entities { get; }
+            public IEntity Caster { get; }
+            public IEntity Enemy { get; }
+            public ISettingsService Settings { get; }
+            public IShipAutoPowerFacade Automation => Caster.GetFacade<IShipAutoPowerFacade>();
+            public ShipAbilitySlot Weapon => Caster.GetFacade<IShipAbilityFacade>().Slots.Single(slot =>
+                slot.Definition.Settings is EmpireAtWar.Services.ShipAbilities.Abilities.BoostWeaponPowerSettings);
+            public ShipAbilitySlot Shields => Caster.GetFacade<IShipAbilityFacade>().Slots.Single(slot =>
+                slot.Definition.Settings is EmpireAtWar.Services.ShipAbilities.Abilities.BoostShieldPowerSettings);
+
+            public AutoPowerRuntime(PlayerAutoPowerService service, ShipAbilityService abilities, IEntityLocator entities,
+                IEntity caster, IEntity enemy, ISettingsService settings, SelectionContext selection)
+            {
+                Service = service; Abilities = abilities; Entities = entities;
+                Caster = caster; Enemy = enemy; Settings = settings; _selection = selection;
+            }
+
+            public void TickAt(float simulationTime)
+            {
+                typeof(PlayerAutoPowerService).GetField("_now", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(Service, simulationTime - Time.deltaTime);
+                typeof(PlayerAutoPowerService).GetField("_nextDecision", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(Service, float.NegativeInfinity);
+                Service.PostTick();
+            }
+
+            public void Select(params IEntity[] units) => _selection.Replace(units.Select(entity =>
+                new SelectionEntry(entity, entity.GetFacade<IEntitySelectionFacade>())).ToArray());
+
+            public void Dispose()
+            {
+                _selection.ResetCurrentSelectable();
+                Service.LateDispose();
+                Settings.Saved.Gameplay.AutoPowerAbilities = true;
+            }
+        }
+
+        [Test]
+        public void ShipAutoPower_ObservesLiveWeaponsAndShieldRecoveryGates()
+        {
+            BuildSaveProject();
+            MapLayout layout = BuildSaveBattle();
+            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            PlayerSlot owner = human.Container.Resolve<PlayerSlot>();
+            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(owner.Id, ShipType.Acclamator,
+                layout.GetStationPosition(owner.Id));
+            EntityLifetimeScope scope = ship.transform.parent.GetComponent<EntityLifetimeScope>();
+            IEntity entity = _battle.Container.Resolve<IEntityLocator>().GetEntity(ship.EntityId);
+            IShipAutoPowerFacade automation = entity.GetFacade<IShipAutoPowerFacade>();
+            HealthModel health = scope.Container.Resolve<HealthModel>();
+            Assert.That(automation.CanEngage(ShipClass.Capital, ship.transform.position), Is.True);
+            Assert.That(automation.CanEngage(ShipClass.Capital, ship.transform.position + Vector3.forward * 100000f), Is.False);
+            Assert.That(automation.CanRegenerateShields, Is.True);
+
+            health.SetShieldSuppressed(true);
+            Assert.That(automation.ShieldSuppressed, Is.True);
+            Assert.That(automation.CanRegenerateShields, Is.False);
+            health.SetShieldSuppressed(false);
+            Assert.That(automation.ShieldSuppressed, Is.False);
+
+            health.Restore(1f, 0.25f, health.HardPointModels.Select(_ => 0f).ToArray());
+            Assert.That(automation.CanEngage(ShipClass.Capital, ship.transform.position), Is.False,
+                "Cached loadout range cannot make destroyed main weapons eligible.");
+            Assert.That(automation.CanRegenerateShields, Is.False,
+                "A multiplier cannot repair lost shield generators.");
+        }
+
+        [Test]
         public void SavedUnits_RestoreWithIdsPoseHealthAbilitiesHangarAndOrders()
         {
             BuildSaveProject();
@@ -245,6 +473,10 @@ namespace EmpireAtWar.Tests.Editor
             ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(slot.Id, ShipType.Acclamator, origin);
             EntityLifetimeScope shipScope = ship.transform.parent.GetComponent<EntityLifetimeScope>();
             IEntity shipEntity = locator.GetEntity(ship.EntityId);
+            IShipAutoPowerFacade autoPower = shipEntity.GetFacade<IShipAutoPowerFacade>();
+            Assert.That(autoPower.Enabled, Is.True);
+            Assert.That(autoPower.Eligible, Is.True);
+            autoPower.SetEnabled(false);
             Assert.That(shipEntity.GetFacade<IHangarCommand>().TryLaunchImmediately(), Is.True);
             HealthModel health = shipScope.Container.Resolve<HealthModel>();
             float[] hardPoints = health.HardPointModels.Select((point, i) =>
@@ -253,6 +485,8 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilitySlot ability = shipEntity.GetFacade<IShipAbilityFacade>().Slots[0];
             abilities.Restore(ability, ShipAbilityState.Recovering, ability.Definition.RecoveryDelay * 3f);
             IEntity squadronEntity = locator.Entities.Single(entity => entity.Id != ship.EntityId);
+            Assert.That(squadronEntity.TryGetFacade(out IShipAutoPowerFacade _), Is.False,
+                "Squadrons must not gain player ship automation.");
             Vector3 destination = origin + new Vector3(400f, 0f, 250f);
             shipEntity.GetFacade<IMoveFacade>().MoveTo(destination);
             float[] memberHull = squadronEntity.HealthModel.HardPointModels.Select((_, i) => i == 0 ? 0f : 0.75f).ToArray();
@@ -279,6 +513,7 @@ namespace EmpireAtWar.Tests.Editor
             units.Restore(saved);
 
             IEntity restoredShip = locator.GetEntity(ship.EntityId);
+            Assert.That(restoredShip.GetFacade<IShipAutoPowerFacade>().Enabled, Is.False);
             IEntity restoredSquadron = locator.GetEntity(squadronId);
             Transform shipTransform = restoredShip.GetFacade<IEntityTransformFacade>().Transform;
             EntityLifetimeScope restoredScope = shipTransform.parent.GetComponent<EntityLifetimeScope>();

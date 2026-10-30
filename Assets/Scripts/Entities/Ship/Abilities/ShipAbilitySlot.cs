@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
     public sealed class ShipAbilitySlot
     {
         public event Action Changed;
+        public event Action StateChanged;
 
         public ShipAbilityId Id { get; }
         public ShipAbilityDefinition Definition { get; }
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             State = ShipAbilityState.Active;
             TimeLeft = Definition.Duration;
             Changed?.Invoke();
+            StateChanged?.Invoke();
         }
 
         internal void Recover()
@@ -69,6 +71,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             TimeLeft = Definition.RecoveryDelay;
             _recoveryTotal = Definition.RecoveryDelay;
             Changed?.Invoke();
+            StateChanged?.Invoke();
         }
 
         /// <summary>Loads a saved Ready or Recovering state; active abilities are saved as recovering.</summary>
@@ -81,6 +84,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             TimeLeft = state == ShipAbilityState.Recovering ? timeLeft : 0f;
             _recoveryTotal = Math.Max(Definition.RecoveryDelay, TimeLeft);
             Changed?.Invoke();
+            StateChanged?.Invoke();
         }
 
         internal void Ready()
@@ -88,6 +92,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             State = ShipAbilityState.Ready;
             TimeLeft = 0f;
             Changed?.Invoke();
+            StateChanged?.Invoke();
         }
 
         internal void Elapse(float deltaTime)

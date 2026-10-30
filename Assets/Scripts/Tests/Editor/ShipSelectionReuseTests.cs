@@ -37,17 +37,17 @@ namespace EmpireAtWar.Tests.Editor
             {
                 group.SetTooltipHover(hoverObject.GetComponent<TooltipHoverView>());
                 ShipUiModel model = new ShipUiModel();
-                group.Configure(default(ShipType), null, Entries(oldHealth, 4), model, _ => clicks++, _ => { });
+                group.Configure(default(ShipType), null, Entries(oldHealth, 4), model, _ => clicks++, _ => { }, default, () => { });
                 group.gameObject.SetActive(true);
                 ShipUi[] initial = group.GetComponentsInChildren<ShipUi>(true);
                 Assert.That(initial.Length, Is.EqualTo(4));
                 Assert.That(oldHealth.Subscribers, Is.EqualTo(4));
 
-                group.Configure(default(ShipType), null, Entries(newHealth, 5), model, _ => clicks++, _ => { });
+                group.Configure(default(ShipType), null, Entries(newHealth, 5), model, _ => clicks++, _ => { }, default, () => { });
                 Assert.That(oldHealth.Subscribers, Is.Zero);
                 Assert.That(newHealth.Subscribers, Is.EqualTo(5));
 
-                group.Configure(default(ShipType), null, Entries(oldHealth, 2), model, _ => clicks++, _ => { });
+                group.Configure(default(ShipType), null, Entries(oldHealth, 2), model, _ => clicks++, _ => { }, default, () => { });
                 Assert.That(newHealth.Subscribers, Is.Zero);
                 Assert.That(oldHealth.Subscribers, Is.EqualTo(2));
                 CollectionAssert.AreEquivalent(initial, group.GetComponentsInChildren<ShipUi>(true));

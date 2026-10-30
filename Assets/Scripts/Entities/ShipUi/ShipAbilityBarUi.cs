@@ -14,6 +14,7 @@ namespace EmpireAtWar.Entities.ShipUi
 
         [SerializeField] private ShipAbilityButtonUi buttonPrefab;
         [SerializeField] private Transform buttonParent;
+        [SerializeField] private ShipAutoPowerButtonUi autoPowerButton;
         private readonly List<ShipAbilityButtonUi> _buttons = new List<ShipAbilityButtonUi>();
         private readonly Dictionary<ShipAbilityId, List<ShipAbilitySlot>> _groups =
             new Dictionary<ShipAbilityId, List<ShipAbilitySlot>>();
@@ -22,6 +23,12 @@ namespace EmpireAtWar.Entities.ShipUi
         public void SetTooltipHover(TooltipHoverView hover) => _tooltipHover = hover;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
+
+        public void SetAutoPower(ShipAutoPowerUiState state, Action onPressed)
+        {
+            _tooltipHover.Register(autoPowerButton.TooltipTrigger);
+            autoPowerButton.Configure(state, onPressed);
+        }
 
         public void SetSlots(IReadOnlyList<ShipAbilitySlot> slots, Action<ShipAbilityId> onPressed)
         {

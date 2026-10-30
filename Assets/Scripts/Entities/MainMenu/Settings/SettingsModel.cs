@@ -29,6 +29,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public bool EdgeScrolling { get; private set; }
         public bool InvertZoom { get; private set; }
 
+        public bool AutoPowerAbilities { get; private set; }
+
         public IReadOnlyList<KeyBindingRowState> Bindings { get; private set; } = new KeyBindingRowState[0];
 
         public bool IsDirty { get; private set; }
@@ -79,6 +81,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             ZoomSpeed = zoomSpeed;
             EdgeScrolling = edgeScrolling;
             InvertZoom = invertZoom;
+            Changed?.Invoke();
+        }
+
+        public void SetGameplay(bool autoPowerAbilities)
+        {
+            AutoPowerAbilities = autoPowerAbilities;
             Changed?.Invoke();
         }
 

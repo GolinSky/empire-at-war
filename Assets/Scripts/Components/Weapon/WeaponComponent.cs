@@ -26,7 +26,7 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
-        IWeaponFireEvents, IWeaponFacing, IRespawnable
+        IWeaponFireEvents, IWeaponFacing, IRespawnable, IAutoPowerWeaponObserver
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
@@ -309,6 +309,15 @@ namespace EmpireAtWar.Components.Weapon
         {
             return distance <= Mathf.Max(GetEngagementRange(targetClass) * ENGAGE_RANGE_FACTOR,
                 contactDistance * CONTACT_ENGAGE_FACTOR);
+        }
+
+        public bool CanEngageMainWeapon(ShipClass targetClass, Vector3 position)
+        {
+            foreach (WeaponHardPoint weapon in hardPoints)
+                if (!weapon.IsDestroyed && !weapon.StrikecraftOnly && weapon.CanEngage(targetClass) &&
+                    PlanarGeometry.Distance(position, weapon.transform.position) <= weapon.MaxAttackDistance)
+                    return true;
+            return false;
         }
 
         /// <summary>

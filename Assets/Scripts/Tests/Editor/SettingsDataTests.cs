@@ -17,7 +17,18 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Audio.MasterVolume, Is.EqualTo(1f));
             Assert.That(data.Audio.MuteWhenUnfocused, Is.True);
             Assert.That(data.Camera.EdgeScrolling, Is.True);
+            Assert.That(data.Gameplay.AutoPowerAbilities, Is.True);
             Assert.That(data.Input.BindingOverridesJson, Is.Empty);
+        }
+
+        [Test]
+        public void Gameplay_ExplicitFalseSurvivesCloneAndOldEmptySectionDefaultsOn()
+        {
+            SettingsData disabled = SettingsData.FromJson("{\"gameplay\":{\"autoPowerAbilities\":false}}");
+
+            Assert.That(disabled.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(disabled.Clone().Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(SettingsData.FromJson("{\"gameplay\":{}}").Gameplay.AutoPowerAbilities, Is.True);
         }
 
         [Test]
@@ -77,7 +88,10 @@ namespace EmpireAtWar.Tests.Editor
             SettingsData input = saved.Clone();
             input.Input.BindingOverridesJson = "{}";
 
-            foreach (SettingsData edited in new[] { display, graphics, audio, camera, input })
+            SettingsData gameplay = saved.Clone();
+            gameplay.Gameplay.AutoPowerAbilities = false;
+
+            foreach (SettingsData edited in new[] { display, graphics, audio, camera, input, gameplay })
             {
                 Assert.That(edited.Matches(saved), Is.False);
             }
@@ -92,6 +106,7 @@ namespace EmpireAtWar.Tests.Editor
             data.Graphics.QualityPreset = "Balanced";
             data.Audio.VoiceVolume = 0.25f;
             data.Camera.ZoomSpeedMultiplier = 1.5f;
+            data.Gameplay.AutoPowerAbilities = false;
 
             Assert.That(SettingsData.FromJson(data.ToJson()).Matches(data), Is.True);
         }

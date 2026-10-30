@@ -4,7 +4,7 @@ system:
   - abilities
   - superweapons
 design_state: implemented
-verified: 2026-10-20
+verified: 2026-10-30
 verification: source-and-assets
 ---
 # Abilities and Superweapons
@@ -35,6 +35,25 @@ verification: source-and-assets
 - Immediate activation requires planar distance within the definition's range. An eligible out-of-range caster with a cast-order facade receives a move-and-cast order.
 - Caster death ends ordinary running effects. Phased abilities may explicitly survive caster death.
 - Ion disable stops ordinary active effects; phased implementations own their additional termination rules.
+
+### Automatic player ship powers
+
+- Local human ships only; `BoostShieldPowerSettings` and `BoostWeaponPowerSettings`. Exclude squadrons and IDs `24`/`35`; shared id `20` remains eligible on ships.
+- Settings → Gameplay → “Ships use power abilities automatically”: default on, applied through saved settings. A controls per-ship preference; global off retains it.
+- Single selected ship → automatic starts paused; multi-selection → automatic starts continue. Group A: any eligible ship off → all on; otherwise all off.
+- Automatic decisions run in `IPostTickable`, after UI input; manual intent wins within the frame. Automatic starts call `TryActivate`; ordinary duration, cancellation and recovery apply. Never cancel/replace active effects; turning A/global off affects future starts.
+- Any active slot blocks automatic starts. Manual `Press` delays new starts by `2 s`; selection/automation suspension preserves that deadline.
+- Ability icons observe lifecycle-only `ShipAbilitySlot.StateChanged` for immediate state changes; ordinary UI Update renders timers without repeated group scans.
+- `ShipAbilityCatalog.AutoPower` owns tuning: `0.5 s` decisions, `4` casters/frame, `3 s` shield window, `25%` positive shield loss, shields below `60%`, hull below `35%`, `2` matching checks.
+- Priority: last-stand Weapons → Shields → normal Weapons. Chosen power unavailable/recovering → no fallback.
+- Shield power requires positive maximum shields and currently available regeneration; suppression, recovery lockout or lost generators block it. Zero current shields alone does not block regeneration.
+- Shield samples approximate damage by summing positive drops. Reset on max-shield/suppression revision, health restore, suspension and monitoring gap over `3 s`; retain at most `64` drops.
+- Weapons require live applicable main mounts within actual weapon-to-target range and living visible uncloaked hostiles. Cached loadout range alone is insufficient.
+- Meaningful engaged force: profile hull/piercing DPS against caster class ≥ `0.5 ×` Corellian Corvette reference DPS; exclude a lone strikecraft entity. Last stand additionally requires local hostile/allied combat advantage ≥ `1.5`; caster counts among allies.
+- Force thresholds are initial tuning; battle/balance acceptance is pending. Snapshot candidates in `512`-unit spatial cells once per completed cycle; scan nearby cells per caster and finish bounded caster batches before replacing the snapshot.
+- Battle simulation does not register the human automation service; enemy AI remains unchanged.
+- Shared Power to Shields id `3`: `15 s` active, `40 s` recovery, regeneration `×4`, damage/speed `×0.75`, cancellable. Removed IDs `13,15,17,26,34,45,53` remap in `AbilitySlotSave.Id` before validation/restore.
+- Preserve saved remaining recovery, even above `40 s`; reject multiple saved shield slots after remap instead of deduplicating. `UnitSave.autoPowerDisabled` defaults false in older saves.
 
 ### Checked current ability examples
 
@@ -86,9 +105,12 @@ verification: source-and-assets
 - Duration, recovery and fire delay are different quantities. A tooltip's word “cooldown” must be checked against the actual definition.
 - Ability definition labels/descriptions are descriptive text; concrete settings and implementation determine behavior.
 - Ability/superweapon profiles can be serialized directly; their numbers do not necessarily come from general weapon-family rules.
-- This reference verifies source and saved assets on `2026-10-20`; it does not claim every ability was exercised in Play Mode or every unit assignment was audited.
+- This reference verifies source and saved assets on `2026-10-30`; it does not claim every ability was exercised in Play Mode or every unit assignment was audited.
 
 ## Files
+
+- `Assets/Scripts/Services/ShipAbilities/PlayerAutoPowerService.cs`, `AutoPowerCombatSnapshot.cs`, `AutoPowerRules.cs`, `AutoPowerMonitor.cs`, `AutoPowerTuning.cs` — player decisions, spatial snapshots and tuning.
+- `Assets/Scripts/Entities/Ship/Abilities/ShipAutoPowerFacade.cs`; `Assets/Scripts/Services/Saves/UnitSaveService.cs` — live observations and per-ship preference persistence.
 
 - `Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset` — checked definition IDs and managed-reference settings.
 - `Assets/Settings/Data/Factions/Shared/SuperWeaponCatalog.asset` — prices, build times and levels.

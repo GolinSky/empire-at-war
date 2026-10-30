@@ -14,12 +14,6 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(ShipAbilityId.Invulnerability)]
         [TestCase(ShipAbilityId.BoostShieldPower)]
-        [TestCase(ShipAbilityId.NebulonBBoostShieldStrength)]
-        [TestCase(ShipAbilityId.MonCalCruiserPowerToShields)]
-        [TestCase(ShipAbilityId.HomeOnePowerToShields)]
-        [TestCase(ShipAbilityId.MC80IndependencePowerToShields)]
-        [TestCase(ShipAbilityId.CorellianBattlecruiserPowerToShields)]
-        [TestCase(ShipAbilityId.AssaultFrigateMkIIPowerToShields)]
         public void ShieldAbilitiesUseShieldCues(ShipAbilityId ability)
         {
             var profile = Data().GetAbility(ability);

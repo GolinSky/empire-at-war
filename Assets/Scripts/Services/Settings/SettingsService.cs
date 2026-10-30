@@ -18,6 +18,8 @@ namespace EmpireAtWar.Services.Settings
 
         private readonly IReadOnlyList<ISettingsApplier> _appliers;
 
+        public event Action SavedChanged;
+
         public SettingsData Saved { get; private set; }
         public SettingsData Draft { get; private set; }
         public bool IsDirty => !Draft.Matches(Saved);
@@ -105,6 +107,7 @@ namespace EmpireAtWar.Services.Settings
             }
 
             Saved = Draft.Clone();
+            SavedChanged?.Invoke();
             return SettingsApplyResult.Committed;
         }
 

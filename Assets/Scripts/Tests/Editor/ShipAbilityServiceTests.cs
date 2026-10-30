@@ -416,6 +416,99 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AbilityButtonSelectingAlreadyActiveCaster_ShowsDurationImmediatelyWithReadyGroupMember()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand active = CreateCaster();
+            FakeCommand ready = CreateCaster();
+            service.TryActivate(active, ShipAbilityId.BoostEnginePower, null);
+            GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/Prefabs/Ui/Ship/ShipAbilityButtonUi.prefab");
+            GameObject instance = UnityEngine.Object.Instantiate(prefab);
+            ShipAbilityButtonUi view = instance.GetComponent<ShipAbilityButtonUi>();
+            try
+            {
+                view.Configure(ShipAbilityId.BoostEnginePower,
+                    new[] { active.Slots[0], ready.Slots[0] }, null, _ => { });
+                UnityEditor.SerializedObject serialized = new UnityEditor.SerializedObject(view);
+                GameObject highlight = (GameObject)serialized.FindProperty("activeHighlight").objectReferenceValue;
+                TMPro.TMP_Text timer = (TMPro.TMP_Text)serialized.FindProperty("cooldownText").objectReferenceValue;
+                Assert.That(highlight.activeSelf, Is.True);
+                UnityEngine.UI.Image progress = (UnityEngine.UI.Image)serialized.FindProperty("cooldownFill").objectReferenceValue;
+                Assert.That(progress.fillAmount, Is.EqualTo(active.Slots[0].Progress01));
+                Assert.That(timer.text, Is.EqualTo(UnityEngine.Mathf.CeilToInt(active.Slots[0].TimeLeft) + "s"));
+            }
+            finally
+            {
+                InvokeButtonLifecycle(view, "OnDestroy");
+                UnityEngine.Object.DestroyImmediate(instance);
+                service.LateDispose();
+            }
+        }
+
+        [Test]
+        public void AbilityButtonAutomaticStart_RendersBeforeAnotherUiUpdateAndReleasesPooledSlots()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand first = CreateCaster();
+            FakeCommand second = CreateCaster();
+            List<ShipAbilitySlot> pooledSlots = new List<ShipAbilitySlot> { first.Slots[0] };
+            GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/Prefabs/Ui/Ship/ShipAbilityButtonUi.prefab");
+            GameObject instance = UnityEngine.Object.Instantiate(prefab);
+            ShipAbilityButtonUi view = instance.GetComponent<ShipAbilityButtonUi>();
+            try
+            {
+                view.Configure(ShipAbilityId.BoostEnginePower, pooledSlots, null, _ => { });
+                UnityEditor.SerializedObject serialized = new UnityEditor.SerializedObject(view);
+                GameObject highlight = (GameObject)serialized.FindProperty("activeHighlight").objectReferenceValue;
+                TMPro.TMP_Text timer = (TMPro.TMP_Text)serialized.FindProperty("cooldownText").objectReferenceValue;
+                Assert.That(highlight.activeSelf, Is.False);
+                Assert.That(service.TryActivate(first, ShipAbilityId.BoostEnginePower, null), Is.True);
+                Assert.That(highlight.activeSelf, Is.True);
+                Assert.That(timer.text, Is.EqualTo(Mathf.CeilToInt(first.Slots[0].TimeLeft) + "s"));
+
+                // Ability bars reuse their group lists before reconfiguring their pooled button.
+                pooledSlots.Clear();
+                pooledSlots.Add(second.Slots[0]);
+                view.Configure(ShipAbilityId.BoostEnginePower, pooledSlots, null, _ => { });
+                Assert.That(HasButtonSubscriber(first.Slots[0], view), Is.False);
+                Assert.That(highlight.activeSelf, Is.False);
+                Assert.That(service.TryActivate(second, ShipAbilityId.BoostEnginePower, null), Is.True);
+                Assert.That(highlight.activeSelf, Is.True);
+
+                // EditMode tests invoke lifecycle directly because SetActive/DestroyImmediate
+                // do not consistently invoke non-ExecuteAlways MonoBehaviour callbacks.
+                InvokeButtonLifecycle(view, "OnDisable");
+                Assert.That(HasButtonSubscriber(second.Slots[0], view), Is.False);
+                InvokeButtonLifecycle(view, "OnEnable");
+                Assert.That(HasButtonSubscriber(second.Slots[0], view), Is.True);
+                InvokeButtonLifecycle(view, "OnDestroy");
+                Assert.That(HasButtonSubscriber(second.Slots[0], view), Is.False);
+            }
+            finally
+            {
+                InvokeButtonLifecycle(view, "OnDestroy");
+                UnityEngine.Object.DestroyImmediate(instance);
+                service.LateDispose();
+            }
+        }
+
+        private static void InvokeButtonLifecycle(ShipAbilityButtonUi view, string method) =>
+            typeof(ShipAbilityButtonUi).GetMethod(method, BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(view, null);
+
+        private static bool HasButtonSubscriber(ShipAbilitySlot slot, ShipAbilityButtonUi view)
+        {
+            Action changed = (Action)typeof(ShipAbilitySlot).GetField("StateChanged",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(slot);
+            if (changed == null) return false;
+            foreach (Delegate subscriber in changed.GetInvocationList())
+                if (ReferenceEquals(subscriber.Target, view)) return true;
+            return false;
+        }
+
+        [Test]
         public void ShipUiEscape_CancelsArmedAbilityBeforePauseMenuFallback()
         {
             ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
@@ -426,7 +519,10 @@ namespace EmpireAtWar.Tests.Editor
             ShipUiController controller = new ShipUiController(uiService: null, cancelRouter: router,
                 selectionService: new AbilitySelection(), routeNavigation: new AbilityRoutes(),
                 cameraService: null, tooltipService: null, bindings: null, model: model,
-                icons: null, shipAbilityService: service, tooltipIcons: null, factions: null);
+                icons: null, shipAbilityService: service, tooltipIcons: null, factions: null,
+                settings: new EmpireAtWar.Services.Settings.SettingsService(null,
+                    Array.Empty<EmpireAtWar.Services.Settings.ISettingsApplier>()),
+                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             int unhandledCount = 0;
             router.CancelUnhandled += () => unhandledCount++;
             router.Initialize();
@@ -489,6 +585,42 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(save.State, Is.EqualTo(ShipAbilityState.Recovering));
             Assert.That(save.TimeLeft, Is.EqualTo(caster.Slots[0].TimeLeft + caster.Slots[0].Definition.RecoveryDelay));
             service.LateDispose();
+        }
+
+        [Test]
+        public void SlotStateChanged_ReportsLifecycleTransitionsWithoutPerFrameElapsedNotifications()
+        {
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            ShipAbilitySlot slot = caster.Slots[0];
+            int stateChanges = 0;
+            int allChanges = 0;
+            slot.StateChanged += () => stateChanges++;
+            slot.Changed += () => allChanges++;
+            try
+            {
+                service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+                Assert.That(stateChanges, Is.EqualTo(1));
+                int beforeElapsed = allChanges;
+                service.Advance(0.1f);
+                Assert.That(allChanges, Is.GreaterThan(beforeElapsed));
+                Assert.That(stateChanges, Is.EqualTo(1));
+                service.Press(new[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+                Assert.That(stateChanges, Is.EqualTo(2));
+                beforeElapsed = allChanges;
+                service.Advance(0.1f);
+                Assert.That(allChanges, Is.GreaterThan(beforeElapsed));
+                Assert.That(stateChanges, Is.EqualTo(2));
+                service.Advance(slot.Definition.RecoveryDelay);
+                Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Ready));
+                Assert.That(stateChanges, Is.EqualTo(3));
+                service.Restore(slot, ShipAbilityState.Recovering, 2f);
+                Assert.That(stateChanges, Is.EqualTo(4));
+            }
+            finally
+            {
+                service.LateDispose();
+            }
         }
 
         [Test]

@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private UnitOrderSave order;
         [SerializeField] private AbilitySlotSave[] abilities = Array.Empty<AbilitySlotSave>();
         [SerializeField] private bool hasHangar;
+        [SerializeField] private bool autoPowerDisabled;
         [SerializeField] private HangarSave hangar;
 
         public long Id => id;
@@ -32,6 +33,13 @@ namespace EmpireAtWar.Services.Saves
         public UnitHealthSave Health => health;
         public UnitOrderSave Order => order;
         public AbilitySlotSave[] Abilities => abilities;
+        public bool AutoPowerEnabled => !autoPowerDisabled;
+
+        public UnitSave WithAutoPower(bool enabled)
+        {
+            autoPowerDisabled = !enabled;
+            return this;
+        }
         /// <summary>Null when the unit has no hangar.</summary>
         public HangarSave Hangar => hasHangar ? hangar : null;
 

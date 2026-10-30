@@ -14,6 +14,8 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Settings;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views;
@@ -36,6 +38,8 @@ namespace EmpireAtWar.Entities.ShipUi
         private readonly IShipIconProvider _icons;
         private readonly ShipUiModel _model;
         private readonly ShipAbilityService _shipAbilityService;
+        private readonly ISettingsService _settings;
+        private readonly ILocalPlayer _localPlayer;
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
@@ -59,9 +63,12 @@ namespace EmpireAtWar.Entities.ShipUi
             IShipIconProvider icons,
             ShipAbilityService shipAbilityService,
             TooltipIconData tooltipIcons,
-            EmpireAtWar.Models.Factions.FactionCatalog factions) : base(uiService, cancelRouter)
+            EmpireAtWar.Models.Factions.FactionCatalog factions,
+            ISettingsService settings, ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
+            _settings = settings;
+            _localPlayer = localPlayer;
             _model = model;
             _icons = icons;
             _routeNavigation = routeNavigation;
@@ -78,6 +85,7 @@ namespace EmpireAtWar.Entities.ShipUi
             _selectionService.AddObserver(this);
             _routeNavigation.RegisterRoute(SkirmishUiRoutePosition.Content, this);
             _shipAbilityService.TargetingChanged += UpdateTargeting;
+            _settings.SavedChanged += RefreshSelection;
         }
 
         public void LateDispose()
@@ -87,6 +95,7 @@ namespace EmpireAtWar.Entities.ShipUi
             _selectionService.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.Content, this);
             _shipAbilityService.TargetingChanged -= UpdateTargeting;
+            _settings.SavedChanged -= RefreshSelection;
             _shipAbilityService.CancelTargeting();
             Unfocus();
             if (_shipTooltipHover != null) _shipTooltipHover.Dispose();
@@ -235,6 +244,10 @@ namespace EmpireAtWar.Entities.ShipUi
                 }
             }
             _shipUi.SetAbilitySlots(_abilitySlots);
+            IReadOnlyList<IEntity> selected = _model.HasShips
+                ? _playerSelectionContext.Entities : Array.Empty<IEntity>();
+            _shipUi.SetAutoPower(GetAutoPowerState(selected, individuallySelected: !hasGroup),
+                () => ToggleAutoPower(selected));
             _shipUi.SetHealth(_model.HasShips && !hasGroup
                 ? _playerSelectionContext.Entity.HealthModel : null);
             _shipUi.SetModifiers(_model.HasShips && !hasGroup &&
@@ -272,7 +285,7 @@ namespace EmpireAtWar.Entities.ShipUi
         }
 
         private void AddSelectionGroups<T>(SortedDictionary<T, List<IEntity>> groups,
-            Action<T, IReadOnlyList<ShipUiEntry>, Action<ShipAbilityId>> addGroup) where T : struct, Enum
+            Action<T, IReadOnlyList<ShipUiEntry>, Action<ShipAbilityId>, ShipAutoPowerUiState, Action> addGroup) where T : struct, Enum
         {
             foreach (KeyValuePair<T, List<IEntity>> group in groups)
             {
@@ -285,8 +298,40 @@ namespace EmpireAtWar.Entities.ShipUi
                         focus: () => FocusEntity(entity), entity: entity));
                 }
                 List<IEntity> casters = group.Value;
-                addGroup(group.Key, entries, id => _shipAbilityService.Press(casters, id, allowCancel: false));
+                addGroup(group.Key, entries, id => _shipAbilityService.Press(casters, id, allowCancel: false),
+                    GetAutoPowerState(casters, individuallySelected: false), () => ToggleAutoPower(casters));
             }
+        }
+
+        private ShipAutoPowerUiState GetAutoPowerState(IReadOnlyList<IEntity> entities, bool individuallySelected)
+        {
+            int eligible = 0;
+            int enabled = 0;
+            foreach (IEntity entity in entities)
+            {
+                if (!IsAutoPowerEligible(entity, out IShipAutoPowerFacade autoPower)) continue;
+                eligible++;
+                if (autoPower.Enabled) enabled++;
+            }
+            return new ShipAutoPowerUiState(eligible, enabled, _settings.Saved.Gameplay.AutoPowerAbilities,
+                individuallySelected);
+        }
+
+        private bool IsAutoPowerEligible(IEntity entity, out IShipAutoPowerFacade autoPower)
+        {
+            autoPower = null;
+            return !entity.HealthModel.IsDestroyed && _localPlayer.IsLocal(entity.Owner) &&
+                   entity.TryGetFacade(out autoPower) && autoPower.Eligible;
+        }
+
+        private void ToggleAutoPower(IReadOnlyList<IEntity> entities)
+        {
+            if (!_settings.Saved.Gameplay.AutoPowerAbilities) return;
+            bool enable = !GetAutoPowerState(entities, individuallySelected: false).Enabled;
+            foreach (IEntity entity in entities)
+                if (IsAutoPowerEligible(entity, out IShipAutoPowerFacade autoPower))
+                    autoPower.SetEnabled(enable);
+            RefreshSelection();
         }
 
         private bool HasMovableSelection()
@@ -314,6 +359,8 @@ namespace EmpireAtWar.Entities.ShipUi
 
         private TooltipContent BuildTooltip(object key)
         {
+            if (key is ShipAutoPowerUiState autoPower)
+                return new TooltipContent(title: "Automatic power abilities", description: autoPower.Description);
             if (key is string action && action == "Focus")
                 return new TooltipContent(title: "Focus selected ship", description: "Click to move the camera to the selected ship.");
             if (key is string selection && selection == "Selection")

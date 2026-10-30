@@ -12,7 +12,12 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private ShipAbilityState state;
         [SerializeField] private float timeLeft;
 
-        public ShipAbilityId Id => id;
+        // Normalize legacy shield variants before both validation and restoration read the slot.
+        public ShipAbilityId Id => (int)id switch
+        {
+            13 or 15 or 17 or 26 or 34 or 45 or 53 => ShipAbilityId.BoostShieldPower,
+            _ => id
+        };
         public ShipAbilityState State => state;
         public float TimeLeft => timeLeft;
 

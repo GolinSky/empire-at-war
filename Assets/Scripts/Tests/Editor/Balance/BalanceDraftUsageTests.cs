@@ -36,13 +36,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(usage.Users(newProfile).Contains(unit), Is.False);
         }
 
-        [Test]
-        public void AbilityDraft_UpdatesAliasedSettingsAndDefinitionConsumers()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void AbilityDraft_UpdatesSharedSettingsAndDefinitionConsumers(bool aliased)
         {
             BalanceRegistration registry = BalanceInventory.Build();
             Assert.That(registry.Errors, Is.Empty);
-            BalanceField settings = registry.Fields.Values.First(field => field.Stat.StartsWith("settings/") && field.Stat.Split('/')[1].Contains('+'));
-            string id = settings.Stat.Split('/')[1].Split('+')[0];
+            BalanceField settings = registry.Fields.Values.First(field => field.Stat.StartsWith("settings/3/"));
+            // The shield merge removed the catalog's last alias; model one in this registry only.
+            if (aliased) settings.Stat = settings.Stat.Replace("settings/3/", "settings/3+5/");
+            string id = aliased ? "5" : "3";
             BalanceField definition = registry.Fields.Values.Single(field => field.Stat == "ability/" + id + "/duration");
             BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship && !settings.Users.Contains(entry));
             BalanceField assignment = registry.Fields[unit.Fields["Abilities"]];

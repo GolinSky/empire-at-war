@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Settings
@@ -8,6 +9,8 @@ namespace EmpireAtWar.Services.Settings
     /// </summary>
     public interface ISettingsService : IService
     {
+        event Action SavedChanged;
+
         SettingsData Saved { get; }
         SettingsData Draft { get; }
         bool IsDirty { get; }

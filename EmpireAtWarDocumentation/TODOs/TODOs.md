@@ -221,6 +221,11 @@
 
 ### Features
 
+- [x] **Auto power abilities: player ships auto-use Power to Shields / Power to Weapons; global + per-ship "A" toggle; one Power to Shields for all ships** → [[Done/Features/Auto_Power_Abilities_Plan|Auto Power Abilities Plan]]
+  - Completed 2026-10-30: ordinary-lifecycle automation, shared shield id 3/save migration, Gameplay setting, per-ship persistence and single/group A controls.
+  - Independent source review 2026-10-30: no actionable defect found across runtime, settings/UI and migration/save; scoped diagnostics/diff checks passed. No tests or Play Mode rerun; user acceptance remains pending.
+  - Verified: Abilities 142/142; full EditMode 2,542/2,550, with eight unrelated baseline balance/AI failures. User battle/balance/UI gates → [[TODOs/User_Acceptance_Queue]]. Research → [[Done/Features/Auto_Power_Abilities_Plan - Research]].
+
 - [x] **Main relay map layout adjustments: exact-center main relay, edge additional zones, no straight shortcuts, home sites behind station, main mines at half relay radius** → [[Done/Features/Main_Relay_Map_Layout_Adjustments|Main Relay Map Layout Adjustments]]
   - Planned 2026-10-29 from in-game review of [[Done/Features/Main_Relay_Zone_Map_Rework|Main Relay Zone Map Rework]].
   - Decided: main relay only gets range `540` (mines at half radius); additional zones on free map edges; random station corner offset with home mine + pad close behind; no straight line main ↔ additional.

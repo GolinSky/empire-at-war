@@ -92,6 +92,9 @@ namespace EmpireAtWar.Entities.ShipUi
             abilityBar.SetSlots(slots, _presenter.PressAbility);
         }
 
+        public void SetAutoPower(ShipAutoPowerUiState state, Action onPressed) =>
+            abilityBar.SetAutoPower(state, onPressed);
+
         public void SetHealth(IHealthModelObserver health)
         {
             if (_health != null) _health.OnValueChanged -= UpdateHealth;

@@ -65,6 +65,22 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void GameplayTabContainsBoundAutoPowerToggle()
+        {
+            GameObject prefab = LoadPrefab();
+            SerializedObject ui = new SerializedObject(prefab.GetComponent<SettingsUi>());
+            SettingsToggleRow row = (SettingsToggleRow)ui.FindProperty("autoPowerAbilitiesRow").objectReferenceValue;
+
+            Assert.That(row, Is.Not.Null);
+            Assert.That(row.name, Is.EqualTo("AutoPowerAbilitiesRow"));
+            SettingsCategoryTab tab = System.Array.Find(
+                prefab.GetComponentsInChildren<SettingsCategoryTab>(true), candidate => candidate.name == "GameplayTab");
+            Assert.That(tab, Is.Not.Null);
+            CanvasGroup panel = (CanvasGroup)new SerializedObject(tab).FindProperty("panel").objectReferenceValue;
+            Assert.That(row.transform.IsChildOf(panel.transform), Is.True);
+        }
+
         // Keyed triggers are fixed rows; each needs its own key and must be registered with the hover view.
         [Test]
         public void KeyedTooltipTriggersAreUniqueAndRegistered()

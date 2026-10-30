@@ -162,6 +162,52 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_settingsService.ZoomSpeedMultiplier, Is.EqualTo(2f));
         }
 
+        [Test]
+        public void Gameplay_DraftAndDisplayRevertDoNotPublishUntilCommitted()
+        {
+            _settingsService.Initialize();
+            int changes = 0;
+            _settingsService.SavedChanged += () => changes++;
+            _settingsService.Draft.Gameplay.AutoPowerAbilities = false;
+            _settingsService.Draft.Display.WindowMode = DisplayWindowMode.Windowed;
+
+            Assert.That(_settingsService.Saved.Gameplay.AutoPowerAbilities, Is.True);
+            Assert.That(_settingsService.Apply(), Is.EqualTo(SettingsApplyResult.AwaitingDisplayConfirmation));
+            Assert.That(_settingsService.Saved.Gameplay.AutoPowerAbilities, Is.True);
+            Assert.That(changes, Is.Zero);
+
+            _settingsService.RevertDisplay();
+
+            Assert.That(_settingsService.Draft.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(_settingsService.Saved.Gameplay.AutoPowerAbilities, Is.True);
+            Assert.That(changes, Is.Zero);
+            Assert.That(_settingsService.Apply(), Is.EqualTo(SettingsApplyResult.Committed));
+            Assert.That(_settingsService.Saved.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(_repository.Stored.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(changes, Is.EqualTo(1));
+
+            _settingsService.Draft.Gameplay.AutoPowerAbilities = true;
+            _settingsService.Discard();
+            Assert.That(_settingsService.Draft.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(changes, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Gameplay_CombinedDisplayKeepPublishesOnce()
+        {
+            _settingsService.Initialize();
+            int changes = 0;
+            _settingsService.SavedChanged += () => changes++;
+            _settingsService.Draft.Gameplay.AutoPowerAbilities = false;
+            _settingsService.Draft.Display.WindowMode = DisplayWindowMode.Windowed;
+            _settingsService.Apply();
+
+            _settingsService.KeepDisplay();
+
+            Assert.That(_settingsService.Saved.Gameplay.AutoPowerAbilities, Is.False);
+            Assert.That(changes, Is.EqualTo(1));
+        }
+
         private sealed class FakeRepository : ISettingsRepository
         {
             public SettingsData Stored = new SettingsData();

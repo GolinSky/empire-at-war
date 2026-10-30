@@ -244,6 +244,14 @@ namespace EmpireAtWar.Services.Saves
         private static void ValidateAbilities(AbilitySlotSave[] saved, IReadOnlyList<ShipAbilityId> expected, long entityId)
         {
             int count = saved != null ? saved.Length : 0;
+            bool hasShieldPower = false;
+            for (int i = 0; i < count; i++)
+            {
+                if (saved[i].Id != ShipAbilityId.BoostShieldPower) continue;
+                if (hasShieldPower)
+                    throw new InvalidDataException($"Saved unit {entityId} has multiple shield power slots after legacy migration.");
+                hasShieldPower = true;
+            }
             if (count != expected.Count)
                 throw new InvalidDataException($"Saved {count} ability slots for unit {entityId}; current data has {expected.Count}.");
             for (int i = 0; i < count; i++)

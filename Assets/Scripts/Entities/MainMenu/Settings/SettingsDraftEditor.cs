@@ -96,6 +96,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 camera.ZoomSpeedMultiplier,
                 camera.EdgeScrolling,
                 camera.InvertZoom);
+            _model.SetGameplay(Draft.Gameplay.AutoPowerAbilities);
             _model.SetDirty(_settingsService.IsDirty);
         }
 
@@ -206,6 +207,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void SetInvertZoom(bool isOn)
         {
             Draft.Camera.InvertZoom = isOn;
+            Refresh();
+        }
+
+        public void SetAutoPowerAbilities(bool isOn)
+        {
+            Draft.Gameplay.AutoPowerAbilities = isOn;
             Refresh();
         }
 

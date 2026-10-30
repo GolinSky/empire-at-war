@@ -36,6 +36,7 @@ namespace EmpireAtWar.Services.Saves
                 // Dying squadrons stay registered through their death presentation.
                 if (entity.HealthModel.IsDestroyed || !entity.TryGetFacade(out IUnitSaveFacade unit)) continue;
                 UnitSave save = unit.Capture();
+                if (entity.TryGetFacade(out IShipAutoPowerFacade autoPower)) save.WithAutoPower(autoPower.Enabled);
                 if (entity.TryGetFacade(out IShipAbilityFacade abilities))
                     save.WithAbilities(abilities.Slots.Select(AbilitySlotSave.From).ToArray());
                 if (entity.TryGetFacade(out IHangarSaveFacade hangar)) save.WithHangar(hangar.Capture());
@@ -88,6 +89,7 @@ namespace EmpireAtWar.Services.Saves
             {
                 IEntity entity = _units.GetEntity(unit.Id);
                 entity.GetFacade<IUnitSaveFacade>().RestoreHealth(unit.Health);
+                if (entity.TryGetFacade(out IShipAutoPowerFacade autoPower)) autoPower.SetEnabled(unit.AutoPowerEnabled);
                 RestoreAbilities(entity, unit.Abilities);
                 RestoreHangar(entity, unit.Hangar, context);
             }

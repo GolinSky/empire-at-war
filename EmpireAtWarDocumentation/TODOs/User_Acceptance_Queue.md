@@ -92,6 +92,10 @@ created: 2026-10-29
 
 ## Gameplay and Balance
 
+- [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences.
+- [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Balance: shared shield regeneration ×4 and initial automatic weapon/shield thresholds across fleet matchups.
+- [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — UI: single/group A, mixed/disabled/paused tooltips, active duration and cooldown feedback at the user's game resolution.
+
 - [[Done/Features/More_Mining_Sites]]
   - [ ] User in-game check of generated maps (all sizes)
 - [[Done/Features/AI_Composition_Counters]]
