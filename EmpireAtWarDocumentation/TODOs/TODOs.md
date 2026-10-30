@@ -146,6 +146,12 @@
 
 ### Optimization
 
+- [x] **Mac GPU fixes: 77% + FSR 1 Mac default, FXAA off, hazard tight mesh, shader prewarm, Mac re-sign** → [[Done/Optimization/Mac_GPU_Frame_Budget_Plan|Mac GPU Frame Budget Plan]]
+  - 2026-10-30 fix plan from existing Mac Metal trace (2940×1846, MSAA 2× + FXAA, 452 ms hitch). No code changed yet.
+  - Implemented 2026-10-30; Unity compile/import and diff checks passed. No tests, measurements or Mac build. User acceptance → [[TODOs/User_Acceptance_Queue]].
+
+
+
 - [x] **Fix decorative asteroid rendering and follow up both performance audits** → [[Done/Optimization/Battle_Rendering_Performance_Audit|Battle Rendering Performance Audit]]; [[Done/Optimization/Battle_Rendering_Performance_Audit - Research|Both audits, measurements and VFX findings]]
   - **Audited 2026-10-28**: asteroid on/off/restored = 39.228 → 100.912 → 39.353 FPS; Performant = 19.318 → 48.634 → 19.350 FPS. Camera fixed within each comparison; no cross-preset regression claim.
   - **Required**: retain verified instanced asteroid materials/draws; reject asteroids wholly outside the camera frustum using transformed bounds. Distance-only filtering is insufficient.

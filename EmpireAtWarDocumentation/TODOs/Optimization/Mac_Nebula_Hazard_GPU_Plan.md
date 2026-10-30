@@ -51,6 +51,10 @@ created: 2026-10-29
 - No tests, Play Mode, performance captures or Mac operations run. PC runtime visual/cinematic gates and all Mac phases remain open; plan stays `in-progress`.
 - Reusable rules updated in [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Quality and post-processing]].
 
+## Follow-up — 2026-10-30
+
+- Trace analysis and new GPU levers (output resolution, MSAA + FXAA, Player toggles, per-draw capture) → [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]]. Its five fixes are implemented; no new measurement phase was executed.
+
 ## Execution Order — PC first, then Mac
 
 - **Part 1 — PC (Windows 11):** all code, shaders, assets and settings UI (Phases 1–5). Verify on PC by compile, visual check and PC captures. Commit before switching machines.
@@ -235,7 +239,7 @@ created: 2026-10-29
 - [x] Development + DetailedBuildReport build succeeded: `Builds/MacGPU/EmpireAtWar.app`; ARM64 Mach-O; `3,161,995,381 B`; report duration `1,555,027 ms`; `0` errors / `4` warnings.
 - Warnings: disabled optional Pipeline runtime bridge; empty Heathen UX assembly; Metal vector truncation in URP `DebugOccluder`; incomplete vertex initialization in MPUIKit `MPImageBasic`. None is a build failure.
 - [x] BuildInfo verified: `Contents/Resources/Data/StreamingAssets/build-info.json` → version `0.1.0`, build `local`, full source commit `2aa218c52a51b93fa72e4f32d9cd3a9cd8d39458`.
-- [x] Local signing repaired: `BuildInfoWriter` adds JSON after Unity signs the app, invalidating its resource seal. `codesign --force --sign - Builds/MacGPU/EmpireAtWar.app` → `codesign --verify --deep --strict` passes, including nested native libraries. This repairs this artifact; automatic signing order remains a packaging follow-up.
+- [x] Local signing repaired: `BuildInfoWriter` adds JSON after Unity signs the app, invalidating its resource seal. `codesign --force --sign - Builds/MacGPU/EmpireAtWar.app` → `codesign --verify --deep --strict` passes, including nested native libraries. This repairs this artifact; automatic post-BuildInfo ad-hoc signing and verification implemented 2026-10-30; next Mac build acceptance is pending.
 - [x] Player launched on M2/Metal; UI inspection showed a running Republic skirmish, rendered nebula, Development Build label and debug overlay with zero errors. Main-menu version label was not inspected. Battle seed/preset/render scale/pose were not verified, so its visible FPS is not a matched performance result.
 - Player bake log: `4096×2048`, `128` samples, `51.6 ms` CPU submission. This is initialization evidence, not GPU bake duration or per-frame cost.
 - [ ] Phase 7 matched Player A/B/hazard/combat and pan captures: not recorded. Existing `render_audit_ablation` is Editor-only and the optional Player Pipeline bridge is disabled in this artifact; a Player capture route remains necessary.

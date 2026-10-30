@@ -71,6 +71,10 @@ namespace EmpireAtWar.Controllers.Game
             await Awaitable.NextFrameAsync(cancellationToken);
             await Awaitable.NextFrameAsync(cancellationToken);
             _fogOfWarSystem.RevealImmediately();
+            // Warm loaded battle variants while the loading cover is still visible. Metal can still
+            // compile pipeline states later when vertex layouts or render targets differ.
+            await Awaitable.NextFrameAsync(cancellationToken);
+            Shader.WarmupAllShaders();
             await _fadeService.FadeOutAsync(FADE_OUT_DURATION, cancellationToken);
         }
     }

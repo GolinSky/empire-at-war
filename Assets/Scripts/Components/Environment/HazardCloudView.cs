@@ -93,25 +93,57 @@ namespace EmpireAtWar.Components.Environment
             return texture;
         }
 
-        /// <summary>A quad over the outline plus its wisps; UVs land on the distance-grid samples.</summary>
+        /// <summary>Only covers cells that can contribute wisps; UVs retain the distance-grid mapping.</summary>
         public static Mesh CreateSheet(HazardShape shape, Vector3 origin, float reach)
         {
             Bounds bounds = shape.Bounds;
             bounds.Expand(new Vector3(reach * 2f, 0f, reach * 2f));
-            Vector3[] corners =
+            var vertices = new List<Vector3>();
+            var uv = new List<Vector2>();
+            var triangles = new List<int>();
+            for (int row = 0; row < shape.Rows - 1; row++)
+                for (int column = 0; column < shape.Columns - 1; column++)
+                {
+                    // Match RHalf storage: bilinear filtering cannot fall below all four texels.
+                    float minimum = Mathf.Min(Mathf.Min(
+                        Mathf.HalfToFloat(Mathf.FloatToHalf(shape.GetDistance(column, row))),
+                        Mathf.HalfToFloat(Mathf.FloatToHalf(shape.GetDistance(column + 1, row)))), Mathf.Min(
+                        Mathf.HalfToFloat(Mathf.FloatToHalf(shape.GetDistance(column, row + 1))),
+                        Mathf.HalfToFloat(Mathf.FloatToHalf(shape.GetDistance(column + 1, row + 1)))));
+                    if (minimum > reach) continue;
+                    Vector3 sample = shape.GetSamplePosition(column, row);
+                    float minX = Mathf.Max(sample.x, bounds.min.x);
+                    float minZ = Mathf.Max(sample.z, bounds.min.z);
+                    float maxX = Mathf.Min(sample.x + shape.CellSize, bounds.max.x);
+                    float maxZ = Mathf.Min(sample.z + shape.CellSize, bounds.max.z);
+                    if (minX >= maxX || minZ >= maxZ) continue;
+                    int first = vertices.Count;
+                    vertices.Add(new Vector3(minX - origin.x, 0f, minZ - origin.z));
+                    vertices.Add(new Vector3(minX - origin.x, 0f, maxZ - origin.z));
+                    vertices.Add(new Vector3(maxX - origin.x, 0f, maxZ - origin.z));
+                    vertices.Add(new Vector3(maxX - origin.x, 0f, minZ - origin.z));
+                    for (int i = first; i < first + 4; i++)
+                    {
+                        Vector3 position = vertices[i] + origin;
+                        uv.Add(new Vector2(((position.x - shape.GridOrigin.x) / shape.CellSize + 0.5f) / shape.Columns,
+                            ((position.z - shape.GridOrigin.z) / shape.CellSize + 0.5f) / shape.Rows));
+                    }
+                    triangles.Add(first);
+                    triangles.Add(first + 1);
+                    triangles.Add(first + 2);
+                    triangles.Add(first);
+                    triangles.Add(first + 2);
+                    triangles.Add(first + 3);
+                }
+            var mesh = new Mesh
             {
-                new Vector3(bounds.min.x, 0f, bounds.min.z), new Vector3(bounds.min.x, 0f, bounds.max.z),
-                new Vector3(bounds.max.x, 0f, bounds.max.z), new Vector3(bounds.max.x, 0f, bounds.min.z)
+                name = "Hazard sheet",
+                indexFormat = vertices.Count > ushort.MaxValue
+                    ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16
             };
-            var vertices = new Vector3[4];
-            var uv = new Vector2[4];
-            for (int i = 0; i < 4; i++)
-            {
-                vertices[i] = new Vector3(corners[i].x - origin.x, 0f, corners[i].z - origin.z);
-                uv[i] = new Vector2(((corners[i].x - shape.GridOrigin.x) / shape.CellSize + 0.5f) / shape.Columns,
-                    ((corners[i].z - shape.GridOrigin.z) / shape.CellSize + 0.5f) / shape.Rows);
-            }
-            var mesh = new Mesh { name = "Hazard sheet", vertices = vertices, uv = uv, triangles = new[] { 0, 1, 2, 0, 2, 3 } };
+            mesh.SetVertices(vertices);
+            mesh.SetUVs(0, uv);
+            mesh.SetTriangles(triangles, 0);
             mesh.RecalculateBounds();
             return mesh;
         }

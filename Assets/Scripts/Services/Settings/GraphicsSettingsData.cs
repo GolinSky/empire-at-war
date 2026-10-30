@@ -15,8 +15,13 @@ namespace EmpireAtWar.Services.Settings
 
         [SerializeField] private bool vSync;
         [SerializeField] private bool nebulaEnabled = true;
+#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
+        [SerializeField] private float renderResolution = 0.77f;
+        [SerializeField] private GraphicsUpscaler upscaler = GraphicsUpscaler.Fsr1;
+#else
         [SerializeField] private float renderResolution = 1f;
-        [SerializeField] private GraphicsUpscaler upscaler;
+        [SerializeField] private GraphicsUpscaler upscaler = GraphicsUpscaler.Bilinear;
+#endif
 
         public bool NebulaEnabled { get => nebulaEnabled; set => nebulaEnabled = value; }
         public float RenderResolution { get => renderResolution; set => renderResolution = value; }

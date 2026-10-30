@@ -24,6 +24,12 @@ namespace EmpireAtWar.Editor.Versioning
         public void OnPostprocessBuild(BuildReport report)
         {
             Write(report.summary.outputPath, report.summary.platform);
+            if (report.summary.platform == BuildTarget.StandaloneOSX &&
+                UnityEngine.Application.platform == UnityEngine.RuntimePlatform.OSXEditor)
+            {
+                RunCodesign("--force --sign -", report.summary.outputPath);
+                RunCodesign("--verify --deep --strict", report.summary.outputPath);
+            }
         }
 
         public static void Write(string outputPath, BuildTarget target = BuildTarget.StandaloneWindows64)
@@ -48,6 +54,24 @@ namespace EmpireAtWar.Editor.Versioning
                 string.IsNullOrEmpty(build) ? LOCAL_BUILD : build,
                 string.IsNullOrEmpty(commit) ? ReadHeadCommit() : commit,
                 DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
+        }
+
+        private static void RunCodesign(string arguments, string appPath)
+        {
+            string escapedPath = Path.GetFullPath(appPath).Replace("\\", "\\\\").Replace("\"", "\\\"");
+            ProcessStartInfo start = new ProcessStartInfo("/usr/bin/codesign", $"{arguments} \"{escapedPath}\"")
+            {
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using Process codesign = Process.Start(start);
+            string error = codesign.StandardError.ReadToEnd();
+            codesign.WaitForExit();
+            if (codesign.ExitCode != 0)
+            {
+                throw new BuildFailedException($"codesign {arguments} failed with exit code {codesign.ExitCode}: {error}");
+            }
         }
 
         private static string ReadHeadCommit()
