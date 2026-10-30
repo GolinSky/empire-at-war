@@ -22,17 +22,17 @@ namespace EmpireAtWar.Tests.Editor
         // These imports intentionally use authored death geometry instead of a live-hull copy.
         private static readonly string[] AUTHORED_WRECK_VIEWS =
         {
-            "Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab",
-            "Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab",
-            "Assets/Prefabs/Models/Ships/Republic/CentaxShipView.prefab"
+            "Assets/Prefabs/Models/Ships/Empire/View/ISDIShipView.prefab",
+            "Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab",
+            "Assets/Prefabs/Models/Ships/Republic/View/CentaxShipView.prefab"
         };
 
         private static IEnumerable<string> WreckedViews() =>
             ShipWreckBuilder.FindWreckedViewPaths().Except(AUTHORED_WRECK_VIEWS);
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx", 35)]
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx", 25)]
-        [TestCase("Assets/Prefabs/Models/Ships/Republic/CentaxShipView.prefab", "Assets/Art/Models/RepublicShips/Centax/CentaxWreck.fbx", 3)]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx", 35)]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx", 25)]
+        [TestCase("Assets/Prefabs/Models/Ships/Republic/View/CentaxShipView.prefab", "Assets/Art/Models/RepublicShips/Centax/CentaxWreck.fbx", 3)]
         public void AuthoredDeathWreck_PreservesSourceGeometryAndBoundMaterials(string viewPath, string sourcePath, int meshCount)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);

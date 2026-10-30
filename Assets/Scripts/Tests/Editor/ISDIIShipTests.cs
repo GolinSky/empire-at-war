@@ -18,7 +18,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class ISDIIShipTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
 
         [Test]
@@ -135,7 +135,7 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(profiles.GetProfile(WeaponType.HeavyIonCannon).Range).Within(0.01f));
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDII.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/Models/ISDII.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/ISDIIWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/ISDIIReinforcementView.prefab")]

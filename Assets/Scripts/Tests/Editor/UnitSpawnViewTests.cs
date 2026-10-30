@@ -11,7 +11,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string ACCLAMATOR_PREFAB_PATH =
             "Assets/Prefabs/Ui/Reinforcement/AcclamatorReinforcementView.prefab";
         private const string ACCLAMATOR_SHIP_PREFAB_PATH =
-            "Assets/Prefabs/Models/Ships/Republic/AcclamatorShipView.prefab";
+            "Assets/Prefabs/Models/Ships/Republic/View/AcclamatorShipView.prefab";
 
         [Test]
         public void SetRotation_AppliesProvidedWorldRotation()

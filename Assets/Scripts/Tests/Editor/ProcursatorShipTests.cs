@@ -18,7 +18,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class ProcursatorShipTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ProcursatorShipView.prefab";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/View/ProcursatorShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/ProcursatorShipData.asset";
 
         [Test]

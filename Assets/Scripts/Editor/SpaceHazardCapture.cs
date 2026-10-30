@@ -107,7 +107,7 @@ namespace EmpireAtWar.Editor
                     HazardCloudView cloud = Object.Instantiate(cloudPrefab);
                     SceneManager.MoveGameObjectToScene(cloud.gameObject, scene);
                     cloud.Configure(shape, settings.HazardFloor, settings.HazardCeiling);
-                    GameObject ship = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Republic/VenatorShipView.prefab"));
+                    GameObject ship = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Republic/View/VenatorShipView.prefab"));
                     SceneManager.MoveGameObjectToScene(ship, scene);
                     ship.transform.position = center + new Vector3(0f, -60f, 70f);
                     if (!showBoundary) continue;

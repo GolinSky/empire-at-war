@@ -28,7 +28,7 @@ namespace EmpireAtWar.Editor.Squadrons
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
         private const string TRAIL_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Engines.mat";
-        private const string SELECTION_SOURCE_PATH = "Assets/Prefabs/Models/Ships/Republic/ArquitensShipView.prefab";
+        private const string SELECTION_SOURCE_PATH = "Assets/Prefabs/Models/Ships/Republic/View/ArquitensShipView.prefab";
         private const string LAYER_DATA_PATH = "Assets/Settings/Data/Models/Layer/LayerData.asset";
 
         private const float SELECTION_RING_SIZE = 8f;

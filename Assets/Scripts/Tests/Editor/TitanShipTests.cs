@@ -25,7 +25,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class TitanShipTests
     {
         private const string DATA_PATH = "Assets/Settings/Data/Ship/Empire/TitanShipData.asset";
-        private const string VIEW_PATH = "Assets/Prefabs/Models/Ships/Empire/TitanShipView.prefab";
+        private const string VIEW_PATH = "Assets/Prefabs/Models/Ships/Empire/View/TitanShipView.prefab";
         private const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
 
         [Test]

@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             if (File.Exists(BalanceApplyService.RESTORE_PATH)) _previousRestore = File.ReadAllBytes(BalanceApplyService.RESTORE_PATH);
             AssetDatabase.CreateFolder("Assets/Scripts/Tests/Editor/Balance", "TemporaryPrefabAssets");
-            Assert.That(AssetDatabase.CopyAsset("Assets/Prefabs/Models/Ships/Republic/ArquitensShipView.prefab", PREFAB_PATH), Is.True);
+            Assert.That(AssetDatabase.CopyAsset("Assets/Prefabs/Models/Ships/Republic/View/ArquitensShipView.prefab", PREFAB_PATH), Is.True);
             ShipData data = ScriptableObject.CreateInstance<ShipData>();
             AssetDatabase.CreateAsset(data, DATA_PATH); AssetDatabase.SaveAssets();
         }

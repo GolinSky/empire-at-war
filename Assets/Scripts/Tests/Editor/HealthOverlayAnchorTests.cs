@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class HealthOverlayAnchorTests
     {
         private const string SHIP_PREFAB_PATH =
-            "Assets/Prefabs/Models/Ships/Separatist/MunificentShipView.prefab";
+            "Assets/Prefabs/Models/Ships/Separatist/View/MunificentShipView.prefab";
         private const string STATION_PREFAB_PATH =
             "Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab";
         // UnitSelectionRing.png: alpha > 127 spans pixels 108..1145 within its 1254px sprite rect.

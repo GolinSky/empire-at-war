@@ -16,7 +16,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ShipWithoutHangarBays_DoesNotContainAnInjectableHangarComponent(string shipName)
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>($"Assets/Settings/Data/Ship/Rebellion/{shipName}ShipData.asset");
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Models/Ships/Rebellion/{shipName}ShipView.prefab");
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Models/Ships/Rebellion/View/{shipName}ShipView.prefab");
 
             Assert.That(data.HangarBays, Is.Empty);
             Assert.That(prefab.GetComponentsInChildren<HangarComponent>(true), Is.Empty,

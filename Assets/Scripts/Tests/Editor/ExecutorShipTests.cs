@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class ExecutorShipTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/View/ExecutorShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/ExecutorShipData.asset";
 
         [Test]
@@ -115,7 +115,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(catalog.Get(ShipAbilityId.TractorBeam).Settings, Is.Not.Null);
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/Executor.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/Models/Executor.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab")]

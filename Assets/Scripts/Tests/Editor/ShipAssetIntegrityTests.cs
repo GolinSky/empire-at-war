@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
         public void RepairedShip_EveryHardPointIsTargetableAndHasHealth(string ship)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Prefabs/Models/Ships/Empire/{ship}ShipView.prefab");
+                $"Assets/Prefabs/Models/Ships/Empire/View/{ship}ShipView.prefab");
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(
                 $"Assets/Settings/Data/Ship/Empire/{ship}ShipData.asset");
             HardPoint[] hardPoints = view.GetComponentsInChildren<HardPoint>(true);
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(
                 $"Assets/Settings/Data/Ship/{faction}/{ship}ShipData.asset");
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Prefabs/Models/Ships/{faction}/{ship}ShipView.prefab");
+                $"Assets/Prefabs/Models/Ships/{faction}/View/{ship}ShipView.prefab");
 
             Assert.That(data.HangarBays, Is.Empty);
             Assert.That(data.UsesHullHardPointBudget, Is.True);

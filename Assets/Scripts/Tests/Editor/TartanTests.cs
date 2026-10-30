@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class TartanTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/TartanShipView.prefab";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/View/TartanShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/TartanShipData.asset";
 
         [Test]
@@ -123,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(AssetDatabase.GUIDToAssetPath(wreck.FindProperty("prefab.m_AssetGUID").stringValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/TartanWreckView.prefab"));
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/Tartan.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/Models/Tartan.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/TartanWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/TartanReinforcementView.prefab")]

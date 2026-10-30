@@ -25,7 +25,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class RaiderCorvetteTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/View/RaiderCorvetteShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
 
         [Test]
@@ -117,7 +117,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(AssetDatabase.GUIDToAssetPath(wreck.FindProperty("prefab.m_AssetGUID").stringValue), Is.EqualTo("Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab"));
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/RaiderCorvette.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/Models/RaiderCorvette.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/RaiderCorvetteReinforcementView.prefab")]

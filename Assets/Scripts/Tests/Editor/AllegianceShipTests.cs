@@ -25,7 +25,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class AllegianceShipTests
     {
-        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/AllegianceShipView.prefab";
+        private const string VIEW = "Assets/Prefabs/Models/Ships/Empire/View/AllegianceShipView.prefab";
         private const string DATA = "Assets/Settings/Data/Ship/Empire/AllegianceShipData.asset";
 
         [Test]
@@ -116,7 +116,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HullSizeAndWeaponOrigins_MatchTheImportedGeometry()
         {
-            var visual = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/Allegiance.prefab");
+            var visual = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Ships/Empire/Models/Allegiance.prefab");
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             var bounds = VisibleBounds(visual);
@@ -145,7 +145,7 @@ namespace EmpireAtWar.Tests.Editor
             return bounds;
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/Allegiance.prefab")]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/Models/Allegiance.prefab")]
         [TestCase(VIEW)]
         [TestCase("Assets/Prefabs/Models/Wrecks/AllegianceWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/AllegianceReinforcementView.prefab")]

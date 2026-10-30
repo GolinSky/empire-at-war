@@ -37,10 +37,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(checkedHardPoints, Is.GreaterThan(1000));
         }
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/RaiderCorvetteShipView.prefab", 1f, 1f)]
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/ISDIIShipView.prefab", 2f, 3f)]
-        [TestCase("Assets/Prefabs/Models/Ships/Rebellion/HomeOneShipView.prefab", 3f, 4f)]
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/ExecutorShipView.prefab", 8f, 8f)]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/RaiderCorvetteShipView.prefab", 1f, 1f)]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab", 2f, 3f)]
+        [TestCase("Assets/Prefabs/Models/Ships/Rebellion/View/HomeOneShipView.prefab", 3f, 4f)]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ExecutorShipView.prefab", 8f, 8f)]
         public void ShipPrefabs_DestructionEffectSizeMatchesUnit(string path, float minimum, float maximum)
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
