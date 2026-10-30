@@ -43,7 +43,7 @@ namespace EmpireAtWar.Services.Player
 
         public void Tick()
         {
-            float now = Time.unscaledTime;
+            float now = Time.time;
             for (int i = _targets.Count - 1; i >= 0; i--)
             {
                 var target = _targets[i];
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Services.Player
                 !order.Target.TryGetFacade(out IEntityHighlightFacade facade))
                 return;
 
-            float expiresAt = Time.unscaledTime + _settings.AttackDuration;
+            float expiresAt = Time.time + _settings.AttackDuration;
             for (int i = 0; i < _targets.Count; i++)
             {
                 if (!ReferenceEquals(_targets[i].Entity, order.Target)) continue;
