@@ -74,6 +74,27 @@ namespace EmpireAtWar.Tests.Editor
             UnityEngine.Object.DestroyImmediate(_testSettings);
         }
 
+        [Test]
+        public void PendingAbility_LeftPressCancelsAndConsumesSelectionGesture()
+        {
+            Arm("ability");
+            MouseFrame(1, Vector2.zero);
+            Assert.That(_abilities.IsWaitingForTarget, Is.False);
+
+            MouseFrame(1, new Vector2(100f, 100f));
+            MouseFrame(0, new Vector2(100f, 100f));
+            Assert.That(_pressed, Is.Zero);
+            Assert.That(_clicked, Is.Zero);
+            Assert.That(_commanded, Is.Zero);
+            Assert.That(_completed, Is.Zero);
+            Assert.That(_view.Visible, Is.False);
+
+            MouseFrame(1, Vector2.zero);
+            MouseFrame(0, Vector2.zero);
+            Assert.That(_pressed, Is.EqualTo(1));
+            Assert.That(_clicked, Is.EqualTo(1));
+        }
+
         [TestCase("ability")]
         [TestCase("superweapon")]
         [TestCase("Attack")]

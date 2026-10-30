@@ -57,6 +57,11 @@ namespace EmpireAtWar.Services.Input
             if (_abilities.IsWaitingForTarget || _targeting.Pending != null || _superWeapons.Pending != null)
             {
                 CancelDrag();
+                if (_abilities.IsWaitingForTarget && _battle.Select.WasPressedThisFrame())
+                {
+                    _abilities.CancelTargeting();
+                    return;
+                }
                 if (_battle.Command.WasReleasedThisFrame() && !_uiHitTest.IsOverUi(position))
                     WorldCommanded?.Invoke(position);
                 return;
