@@ -1,4 +1,6 @@
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.VContainer;
 using NUnit.Framework;
 using UnityEditor;
@@ -19,30 +21,44 @@ namespace EmpireAtWar.Tests.Editor
                 .objectReferenceValue as UnitHighlightSettings;
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Color, Is.EqualTo(Color.white));
-            Assert.That(settings.HoverStrength, Is.EqualTo(0.35f));
-            Assert.That(settings.SelectedStrength, Is.EqualTo(0.25f));
+            Assert.That(settings.HoverColor, Is.EqualTo(Color.white));
+            Assert.That(settings.SelectedColor, Is.EqualTo(new Color(1f, 0.5f, 0f, 1f)));
+            Assert.That(settings.AttackColor, Is.EqualTo(Color.red));
+            Assert.That(settings.OutlineWidth, Is.EqualTo(2f));
+            Assert.That(settings.AttackDuration, Is.EqualTo(2f));
         }
 
         [Test]
         public void InitializeUploadsHighlightGlobals()
         {
             var settings = ScriptableObject.CreateInstance<UnitHighlightSettings>();
-            var previousColor = Shader.GetGlobalVector("_UnitHighlightColor");
-            var previousStrength = Shader.GetGlobalVector("_UnitHighlightStrength");
+            var previousHover = Shader.GetGlobalVector("_UnitOutlineHoverColor");
+            var previousSelected = Shader.GetGlobalVector("_UnitOutlineSelectedColor");
+            var previousAttack = Shader.GetGlobalVector("_UnitOutlineAttackColor");
+            float previousWidth = Shader.GetGlobalFloat("_UnitOutlineWidth");
+            var entities = new EntityLocator();
+            var service = new UnitHighlightService(settings,
+                new UnitOrderService(entities, null, null),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), entities);
             try
             {
-                new UnitHighlightService(settings).Initialize();
+                service.Initialize();
 
-                Assert.That(Shader.GetGlobalVector("_UnitHighlightColor"),
-                    Is.EqualTo((Vector4)settings.Color.linear));
-                Assert.That(Shader.GetGlobalVector("_UnitHighlightStrength"),
-                    Is.EqualTo(new Vector4(0.35f, 0.25f, 0f, 0f)));
+                Assert.That(Shader.GetGlobalVector("_UnitOutlineHoverColor"),
+                    Is.EqualTo((Vector4)settings.HoverColor.linear));
+                Assert.That(Shader.GetGlobalVector("_UnitOutlineSelectedColor"),
+                    Is.EqualTo((Vector4)settings.SelectedColor.linear));
+                Assert.That(Shader.GetGlobalVector("_UnitOutlineAttackColor"),
+                    Is.EqualTo((Vector4)settings.AttackColor.linear));
+                Assert.That(Shader.GetGlobalFloat("_UnitOutlineWidth"), Is.EqualTo(settings.OutlineWidth));
             }
             finally
             {
-                Shader.SetGlobalVector("_UnitHighlightColor", previousColor);
-                Shader.SetGlobalVector("_UnitHighlightStrength", previousStrength);
+                service.LateDispose();
+                Shader.SetGlobalVector("_UnitOutlineHoverColor", previousHover);
+                Shader.SetGlobalVector("_UnitOutlineSelectedColor", previousSelected);
+                Shader.SetGlobalVector("_UnitOutlineAttackColor", previousAttack);
+                Shader.SetGlobalFloat("_UnitOutlineWidth", previousWidth);
                 Object.DestroyImmediate(settings);
             }
         }

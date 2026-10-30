@@ -6,12 +6,16 @@ namespace EmpireAtWar.Services.Player
     [CreateAssetMenu(fileName = nameof(UnitHighlightSettings), menuName = "Data/UnitHighlightSettings")]
     public sealed class UnitHighlightSettings : Data
     {
-        [SerializeField] private Color color = Color.white;
-        [SerializeField, Min(0f)] private float hoverStrength = 0.35f;
-        [SerializeField, Min(0f)] private float selectedStrength = 0.25f;
+        [SerializeField] private Color hoverColor = Color.white;
+        [SerializeField] private Color selectedColor = new Color(1f, 0.5f, 0f, 1f);
+        [SerializeField] private Color attackColor = Color.red;
+        [SerializeField, Min(0f)] private float outlineWidth = 2f;
+        [SerializeField, Min(0f)] private float attackDuration = 2f;
 
-        public Color Color => color;
-        public float HoverStrength => hoverStrength;
-        public float SelectedStrength => selectedStrength;
+        public Color HoverColor => hoverColor;
+        public Color SelectedColor => selectedColor;
+        public Color AttackColor => attackColor;
+        public float OutlineWidth => outlineWidth;
+        public float AttackDuration => attackDuration;
     }
 }

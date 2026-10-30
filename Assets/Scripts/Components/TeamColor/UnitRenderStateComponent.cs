@@ -40,6 +40,13 @@ namespace EmpireAtWar.Components.TeamColor
             foreach (MeshRenderer meshRenderer in meshRenderers)
             {
                 meshRenderer.SetShaderUserValue(userValue);
+                uint layers = meshRenderer.renderingLayerMask;
+                uint outlineLayer = UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER;
+                uint outlineLayers = (userValue >> HIGHLIGHT_SHIFT) != 0
+                    ? layers | outlineLayer
+                    : layers & ~outlineLayer;
+                if (layers != outlineLayers)
+                    meshRenderer.renderingLayerMask = outlineLayers;
             }
         }
 

@@ -92,11 +92,13 @@ float4 _TeamColors[MAX_TEAM_COLORS];
 //                    n > 0 -> palette index n - 1.
 //   bit 8    : hovered
 //   bit 9    : selected
+//   bit 10   : attack-order feedback
 #define NO_TEAM_USER_VALUE 0u
 #define TEAM_USER_VALUE_MASK 0xFFu
 #define HIGHLIGHT_USER_VALUE_SHIFT 8u
 #define HOVERED_FLAG 1u
 #define SELECTED_FLAG 2u
+#define ATTACKED_FLAG 4u
 
 // Returns rgb = team color, a = 1 when the renderer has a team, 0 otherwise.
 // Using "a" as an on/off weight lets callers blend with lerp() instead of branching.
@@ -196,30 +198,6 @@ half3 ApplyTeamEmission(half3 emission, half4 teamColor)
     half brightness = max(emission.r, max(emission.g, emission.b));
     half3 teamEmission = teamColor.rgb * brightness;
     return lerp(emission, teamEmission, _TeamEmissionTint * teamColor.a);
-}
-
-// -----------------------------------------------------------------------------
-// Hover / selection highlight
-// -----------------------------------------------------------------------------
-// Tuning is GLOBAL, uploaded once per match from C#, like the team palette: no material
-// value, so batching is untouched. Until it is uploaded both strengths are 0 (no highlight).
-half4 _UnitHighlightColor;      // rgb = tint of the added light
-half4 _UnitHighlightStrength;   // x = hovered, y = selected
-
-// How much brighter this renderer is drawn: 0 = normal. Hovered and selected do not add up;
-// the stronger one wins.
-half GetHighlight()
-{
-    uint flags = unity_RendererUserValue >> HIGHLIGHT_USER_VALUE_SHIFT;
-    half hovered = (flags & HOVERED_FLAG) != 0u ? _UnitHighlightStrength.x : 0.0h;
-    half selected = (flags & SELECTED_FLAG) != 0u ? _UnitHighlightStrength.y : 0.0h;
-    return max(hovered, selected);
-}
-
-// The ship's own colors added as unlit light: the whole hull brightens, its shadowed side too.
-half3 GetHighlightEmission(half3 albedo, half highlight)
-{
-    return albedo * _UnitHighlightColor.rgb * highlight;
 }
 
 #endif // SHIP_LIT_INPUT_INCLUDED

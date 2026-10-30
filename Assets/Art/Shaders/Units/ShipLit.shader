@@ -9,7 +9,7 @@
 //   * Team color without extra materials: the owner's palette index arrives through
 //     MeshRenderer.SetShaderUserValue (see UnitRenderStateComponent.cs), which keeps both the
 //     SRP Batcher and the GPU Resident Drawer working. The same per-renderer value carries
-//     the hover/selection highlight bits (see ShipLitInput.hlsl).
+//     the hover/selection/attack outline bits (see ShipLitInput.hlsl).
 //   * "Simplified lit": URP's physically based lighting, but only the features ships
 //     use - metallic workflow, normal, occlusion, emission. No parallax, detail maps,
 //     clear coat, transparency, alpha clipping or lightmaps.
@@ -70,6 +70,16 @@ Shader "EmpireAtWar/Ship Lit"
             Cull Back
             ZWrite On
 
+            // Reserve user stencil mask 8 for visible ship surfaces. The outline pass
+            // excludes this interior, including hard-normal seams and overlapping parts.
+            Stencil
+            {
+                Ref 8
+                WriteMask 8
+                Comp Always
+                Pass Replace
+            }
+
             HLSLPROGRAM
             #pragma target 3.5
             #pragma vertex ShipLitPassVertex
@@ -98,6 +108,42 @@ Shader "EmpireAtWar/Ship Lit"
 
             #include "ShipLitInput.hlsl"
             #include "ShipLitForwardPass.hlsl"
+            ENDHLSL
+        }
+
+        // ---------------------------------------------------------------------
+        // Drawn after opaque surfaces by the Ship Outline Render Objects feature.
+        // The expanded back faces form a depth-tested silhouette without relighting the hull.
+        // ---------------------------------------------------------------------
+        Pass
+        {
+            Name "ShipOutline"
+            Tags { "LightMode" = "ShipOutline" }
+
+            Cull Front
+            ZWrite Off
+            ZTest LEqual
+            Blend SrcAlpha OneMinusSrcAlpha
+
+            Stencil
+            {
+                Ref 8
+                ReadMask 8
+                WriteMask 0
+                Comp NotEqual
+                Pass Keep
+            }
+
+            HLSLPROGRAM
+            #pragma target 3.5
+            #pragma vertex ShipOutlineVertex
+            #pragma fragment ShipOutlineFragment
+            #pragma multi_compile_instancing
+            #pragma instancing_options renderinglayer
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
+            #include "ShipLitInput.hlsl"
+            #include "ShipOutlinePass.hlsl"
             ENDHLSL
         }
 

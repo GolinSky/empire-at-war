@@ -31,6 +31,25 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AttackTarget_ClearsIndependentlyOfHoverAndSelection()
+        {
+            SelectionModel selection = new SelectionModel { IsSelected = true };
+            RenderState renderState = new RenderState();
+            UnitHighlightFacade facade = new UnitHighlightFacade(selection, renderState);
+            facade.Initialize();
+            facade.SetHovered(true);
+            facade.SetAttackTargeted(true);
+            Assert.That(renderState.Highlight,
+                Is.EqualTo(UnitHighlight.Hovered | UnitHighlight.Selected | UnitHighlight.AttackTargeted));
+            facade.SetAttackTargeted(false);
+            Assert.That(renderState.Highlight, Is.EqualTo(UnitHighlight.Hovered | UnitHighlight.Selected));
+            facade.SetAttackTargeted(true);
+            facade.Despawn();
+            Assert.That(renderState.Highlight, Is.EqualTo(UnitHighlight.None));
+            facade.LateDispose();
+        }
+
+        [Test]
         public void Initialize_UsesExistingSelection()
         {
             SelectionModel selection = new SelectionModel { IsSelected = true };

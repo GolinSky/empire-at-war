@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.TeamColor
     {
         None = 0,
         Hovered = 1,
-        Selected = 2
+        Selected = 2,
+        AttackTargeted = 4
     }
 }

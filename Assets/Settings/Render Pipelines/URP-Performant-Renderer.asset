@@ -61,7 +61,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -3106679139289555622}
   - {fileID: 2142727632920811448}
-  m_RendererFeatureMap: 5a9d875fc8dbe2d4b897a8f26d7fbc1d
+  - {fileID: 3084692705923756193}
+  m_RendererFeatureMap: 5a9d875fc8dbe2d4b897a8f26d7fbc1da1f0d231ac07cf2a
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -122,3 +123,16 @@ MonoBehaviour:
     perObjectData: 0
     enableDynamicBatching: 0
     enableInstancing: 0
+--- !u!114 &3084692705923756193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37673e868e5eea45b4c1c9a4f24b2b9, type: 3}
+  m_Name: Unit Outlines
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.UnitOutlineRendererFeature
+  m_Active: 1

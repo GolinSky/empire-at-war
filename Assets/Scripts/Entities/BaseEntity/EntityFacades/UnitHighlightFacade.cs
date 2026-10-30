@@ -28,6 +28,11 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
             SetFlag(UnitHighlight.Hovered, isHovered);
         }
 
+        public void SetAttackTargeted(bool isAttackTargeted)
+        {
+            SetFlag(UnitHighlight.AttackTargeted, isAttackTargeted);
+        }
+
         public void Respawn() => Reset();
 
         public void Despawn() => Reset();

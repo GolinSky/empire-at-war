@@ -165,6 +165,7 @@ namespace EmpireAtWar.Tests.Editor
             public List<bool> Changes { get; } = new List<bool>();
             public EntityStub(long id) => Id = id;
             public void SetHovered(bool value) => Changes.Add(value);
+            public void SetAttackTargeted(bool value) { }
             public T GetFacade<T>() where T : IEntityFacade
             { TryGetFacade(out T facade); return facade; }
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
