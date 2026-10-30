@@ -24,6 +24,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     public sealed class ShotPoolPrewarmer : ITickable, ILateDisposable
     {
         private const double BUDGET_MILLISECONDS = 0.5;
+        private const double LOADING_BUDGET_MILLISECONDS = 4.0;
         private const int MAX_CREATIONS_PER_FRAME = 1;
 
         private readonly Queue<(ShotEffectCache Cache, int Target)> _pending =
@@ -74,12 +75,20 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public async Awaitable CompletePrewarmAsync(CancellationToken cancellationToken)
         {
+            long start = Stopwatch.GetTimestamp();
+            long budget = (long)(LOADING_BUDGET_MILLISECONDS * Stopwatch.Frequency / 1000.0);
             while (_pending.Count > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 (ShotEffectCache cache, int target) = _pending.Peek();
-                if (cache.PrewarmOne(target)) await Awaitable.NextFrameAsync(cancellationToken);
-                else _pending.Dequeue();
+                if (!cache.PrewarmOne(target))
+                {
+                    _pending.Dequeue();
+                    continue;
+                }
+                if (Stopwatch.GetTimestamp() - start < budget) continue;
+                await Awaitable.NextFrameAsync(cancellationToken);
+                start = Stopwatch.GetTimestamp();
             }
         }
 
@@ -146,9 +155,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 UnityEngine.Debug.Log($"[ShotPoolPrewarmer] Roster target: {target.Key.name} = {target.Value} shots.");
 #endif
                 cancellationToken.ThrowIfCancellationRequested();
-                while (cache.PrewarmOne(target.Value))
-                    await Awaitable.NextFrameAsync(cancellationToken);
+                Enqueue(cache, target.Value);
             }
+            await CompletePrewarmAsync(cancellationToken);
         }
 
         private static void AddLoadout(IReadOnlyList<WeaponLoadoutEntry> loadout, WeaponsData weapons,

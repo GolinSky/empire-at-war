@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(_selection.enabled, Is.False, "Steady markers must have no Unity update callback.");
             Assert.That(_renderer.enabled, Is.True);
-            Assert.That(_renderer.sharedMaterial.GetTag("DisableBatching", false), Is.EqualTo("True"));
+            Assert.That(_renderer.sharedMaterial.GetTag("DisableBatching", false), Is.EqualTo("True").IgnoreCase);
             Assert.That(_renderer.transform.hasChanged, Is.False,
                 "Changing a multi-selection count must not resize the marker again.");
             Assert.That(_renderer.transform.rotation, Is.EqualTo(markerRotation));

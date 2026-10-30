@@ -67,6 +67,55 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(sampler[0].Advantage, Is.EqualTo(1f));
         }
 
+        [Test]
+        public void InitialAndInvalidatedAreas_RefreshTogetherThenResumeFrameLimit()
+        {
+            var sampler = new CaptureStrengthSampler(new ShipService(), new Squadrons(), TestPlayers.CreateDuel(), 0.5f);
+            bool containsUnits = true;
+            int preparations = 0;
+            for (int i = 0; i < 5; i++)
+                sampler.Add(position => containsUnits, () => preparations++);
+
+            sampler.Tick(0f);
+            Assert.That(preparations, Is.EqualTo(5));
+            for (int i = 0; i < 5; i++) Assert.That(sampler[i].HasUnits, Is.True);
+
+            containsUnits = false;
+            sampler.Invalidate();
+            sampler.Tick(0f);
+            Assert.That(preparations, Is.EqualTo(10), "Invalidation refreshes every area even while its previous sample is fresh.");
+            for (int i = 0; i < 5; i++) Assert.That(sampler[i].HasUnits, Is.False);
+
+            containsUnits = true;
+            sampler.Tick(0.25f);
+            Assert.That(preparations, Is.EqualTo(12), "Ordinary sampling resumes the two-refresh frame limit.");
+            sampler.Tick(0f);
+            Assert.That(preparations, Is.EqualTo(14));
+            sampler.Tick(0f);
+            Assert.That(preparations, Is.EqualTo(15));
+            for (int i = 0; i < 5; i++) Assert.That(sampler[i].HasUnits, Is.True);
+        }
+
+        [Test]
+        public void AddArea_RefreshesEveryExistingFreshAreaOnNextTick()
+        {
+            var sampler = new CaptureStrengthSampler(new ShipService(), new Squadrons(), TestPlayers.CreateDuel(), 0.5f);
+            bool containsUnits = true;
+            int preparations = 0;
+            for (int i = 0; i < 5; i++)
+                sampler.Add(position => containsUnits, () => preparations++);
+            sampler.Tick(0f);
+
+            containsUnits = false;
+            sampler.Add(position => true, () => preparations++);
+            Assert.That(preparations, Is.EqualTo(5), "Adding an area defers scans until the next tick.");
+
+            sampler.Tick(0f);
+            Assert.That(preparations, Is.EqualTo(11));
+            for (int i = 0; i < 5; i++) Assert.That(sampler[i].HasUnits, Is.False);
+            Assert.That(sampler[5].HasUnits, Is.True);
+        }
+
         private sealed class Squadrons : ISquadronRegistry
         {
             public string Id => nameof(Squadrons);

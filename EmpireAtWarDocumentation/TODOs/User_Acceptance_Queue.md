@@ -175,5 +175,5 @@ created: 2026-10-29
 - [ ] [[Done/Documentation/Note_Flags_And_Durable_Guidance_Plan]] — Open [[Rules/NOTE_FLAGS]] in Obsidian and visually confirm all five native flag views and combined searches render; important finds both pilots, issue/broken reflect their actual tags, and unrelated topic tags are excluded.
 
 - [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Mac visual acceptance: 77% FSR 1 sharpness, FXAA-off edges, unchanged hazard silhouettes/opacity (including holes and narrow arms).
-- [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Loading acceptance: battle remains covered through shader warmup; later Metal PSO hitches remain possible.
+- [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Mac loading/first-use acceptance: battle renders beneath the cover before fade-out; confirm no keyword-space errors. Broad warmup removed by [[Done/Bugs/Shader_Warmup_Keyword_Errors]]; later Metal PSO hitches remain possible.
 - [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Next Mac-hosted build: confirm automatic post-BuildInfo codesign and strict verification succeed.

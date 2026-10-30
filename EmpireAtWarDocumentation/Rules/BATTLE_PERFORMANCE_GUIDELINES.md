@@ -20,7 +20,14 @@ verification: "Nebula/hazard/settings source, Unity compilation, saved
   capture, paired capture-geometry scans with identical tallies, geometry
   snapshot and target-lifetime source/import/compile checks; post-fix Console 0
   errors, Editor stopped on clean MainMenuScene. Automated tests not run;
-  historical M2 causes unreproduced."
+  historical M2 causes unreproduced. Review follow-up 2026-10-30: 4 ms loading
+  prewarm and next-tick full capture refresh source-reviewed/imported/compiled;
+  new Capture regressions authored but not run. Earlier shader-warmup
+  keyword-space Console errors remain; no new errors after refresh.
+  Shader-warmup follow-up 2026-10-30: reproduced 28 native keyword-space errors,
+  removed broad warmup, and verified fresh/restored Windows Play Mode startup
+  with 0 new errors; GameFlow 153 passed before/after, Combat 220 and Capture
+  101 passed. Mac not run."
 tags:
   - flag/important
 ---
@@ -78,8 +85,8 @@ tags:
 - Profiler frame indices accumulate across captures. Use exact ranges or explicitly clear an idle buffer after saving; top-40 summaries cannot recover uninstrumented descendants. Reproduction/verified CPU evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`.
 
 - Source/Editor compile verified 2026-10-30; runtime speedup unmeasured. Owner and open investigations → [[TODOs/Optimization/Late_Battle_CPU_Fix_Plan]].
-- Interval timers alone do not bound overloaded-frame work. Squadron orders cap 64 visits / 32 updates per frame; capture strength caps 4 visits / 2 area refreshes. Preserve elapsed time without replaying missed intervals; validate order/capture latency under overload.
-- Shot storage is battle-scoped per prefab; mount leases retain profile/color/callback state. Owner release lets in-flight shots return; battle teardown cancels them. Loading warms roster/live station demand; runtime prewarm creates ≤1 shot/frame.
+- Interval timers alone do not bound overloaded-frame work. Squadron orders cap 64 visits / 32 updates per frame; ordinary capture sampling caps 4 visits / 2 area refreshes. `CaptureStrengthSampler.Add` / `Invalidate` require every area to refresh on the next tick, bypassing deadlines/caps before capture progresses; subsequent ticks resume limits. Preserve elapsed time without replaying missed intervals; validate order/capture latency under overload.
+- Shot storage is battle-scoped per prefab; mount leases retain profile/color/callback state. Owner release lets in-flight shots return; battle teardown cancels them. Roster/live-station loading prewarm drains one queue with a 4 ms per-frame creation budget across prefab targets; runtime prewarm creates ≤1 shot/frame. Budget checks cannot interrupt an individual Awake; shared demand beyond warm targets grows on demand.
 - A 0.5 ms prewarm budget checked between creations cannot interrupt one expensive Awake. Use `Battle.Projectile.Prewarm.<prefab>` / `Instantiate.<prefab>` markers before changing native prefab components.
 - Selection sprites use the existing world-aligned `SelectionBrackets.shader`, `DisableBatching=true`, conservative bounds and attack-only CPU updates. Keep the saved shared material binding; validate yaw/pitch/culling/spin visually.
 - `TargetOriginCapture` registers mount transforms once and completes `TargetOriginReadJob` before snapshot consumption or disposal. Parent rotation = world × inverse(local); unregister/remap slots before destroying or pooling owners.
@@ -133,5 +140,5 @@ tags:
 - Main camera FXAA disabled; preset MSAA preserved (Performant 2×, others currently off).
 - First-run Mac defaults: 77% render resolution / FSR 1; PC 100% / Bilinear. Saved settings retain their values; user controls remain available.
 - Hazard sheets retain cells where any RHalf corner distance ≤90 m; bilinear interpolation cannot fall below all four corners. Preserve UV grid mapping, old outer bounds and shader SDF math.
-- Loading calls `Shader.WarmupAllShaders()` after loaded battle content, before fade-out. This warms loaded variants, adds loading cost and does not guarantee Metal PSO or later-loaded shader coverage.
+- `BattleStartupSequence` keeps a covered frame after fog reveal before fade-out. Broad `Shader.WarmupAllShaders()` was removed: Windows `6000.4.7f1` / URP `17.4.0` startup reproduced 28 native keyword-space errors; fresh/restored startup after removal produced 0 new errors. Keep material keywords/package shaders unchanged. Covered rendering does not prepare offscreen/future variants or guarantee Metal PSO readiness. Fix → [[Done/Bugs/Shader_Warmup_Keyword_Errors]].
 - Source/import/Unity compilation verified; no tests, new trace or Mac build. Savings and shader-compilation cause remain unconfirmed. Owner → [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]].

@@ -26,6 +26,7 @@ namespace EmpireAtWar.Entities.Capture
         private readonly List<float> _nextRefresh = new List<float>();
         private float _time;
         private int _cursor;
+        private bool _refreshAll;
 
         public CaptureStrength this[int index] => _strengths[index];
 
@@ -43,6 +44,7 @@ namespace EmpireAtWar.Entities.Capture
             _areas.Add((contains, prepare));
             _strengths.Add(default);
             _nextRefresh.Add(0f);
+            _refreshAll = true;
         }
 
         public void Clear()
@@ -51,23 +53,27 @@ namespace EmpireAtWar.Entities.Capture
             _strengths.Clear();
             _nextRefresh.Clear();
             _cursor = 0;
+            _refreshAll = false;
         }
 
         public void Invalidate()
         {
-            for (int i = 0; i < _nextRefresh.Count; i++) _nextRefresh[i] = 0f;
+            _refreshAll = true;
         }
 
         public void Tick(float deltaTime)
         {
             _time += deltaTime;
-            int visits = Mathf.Min(_areas.Count, MAX_VISITS_PER_FRAME);
+            bool refreshAll = _refreshAll;
+            _refreshAll = false;
+            int visits = refreshAll ? _areas.Count : Mathf.Min(_areas.Count, MAX_VISITS_PER_FRAME);
+            int refreshLimit = refreshAll ? _areas.Count : MAX_REFRESHES_PER_FRAME;
             int refreshed = 0;
-            for (int visit = 0; visit < visits && refreshed < MAX_REFRESHES_PER_FRAME; visit++)
+            for (int visit = 0; visit < visits && refreshed < refreshLimit; visit++)
             {
                 if (_cursor >= _areas.Count) _cursor = 0;
                 int index = _cursor++;
-                if (_time < _nextRefresh[index]) continue;
+                if (!refreshAll && _time < _nextRefresh[index]) continue;
                 _nextRefresh[index] = _time + REFRESH_INTERVAL;
                 refreshed++;
                 var area = _areas[index];

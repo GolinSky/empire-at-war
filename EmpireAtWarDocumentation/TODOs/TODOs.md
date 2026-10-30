@@ -79,8 +79,10 @@
   - **Next**: remaining categories, matched gameplay memory/loading/DSP captures, audio listening/startup/loop/crossfade and intended-scale visual acceptance; macOS module + actual Mac validation. Plan stays active.
 
 - [ ] **Fix late-match CPU collapse on Mac (selection markers, shot prewarm, squadron orders, snapshot copy, allocations)** → [[TODOs/Optimization/Late_Battle_CPU_Fix_Plan|Late Battle CPU Fix Plan]]; evidence `Docs/Audits/2026-10-29-Live-Battle-CPU`
+  - Remaining tests completed 2026-10-30: `BattleInput` 206, `Squadrons` 81, `EnemyAi` 193, `Map` 37, `Ui` 224, `Vision` 61, `Navigation` 164, `Core` 127 — all passed (1,093 executions / 1,078 distinct names). Marker tag assertion casing fixed; Map/Core/Ui transient failures passed on rerun. Reports → `Logs/Tests/20261030-LateBattleCPU/summary.json`.
   - 2026-10-30: selection shader/attack-only updates, shared shot storage + loading prewarm, capped squadron/capture updates, shared spatial targeting, transform snapshot job, centralized icon projection and allocation fixes implemented. Unity compilation/shader/import and source checks passed; tests not run.
   - Follow-up 2026-10-30: user-authorized crowded PC battle; capture geometry scan microbenchmark −42.0% with identical tallies; destroyed-target pilot exception fixed. Post-fix capture max 1.2845 ms / Console 0 errors. Actual prewarm 72 creations / 6 prefabs, maximum Awake 0.2357 ms; old 27 ms cost not reproduced.
+  - Review fixes 2026-10-30: roster/completion prewarm share a 4 ms loading budget; Add/Invalidate refresh all capture areas on the next tick. Added unrun Capture regressions; scripts imported/compiled, diff check passed. Mac/Metal + PC multi-selection/attack visual checks remain open.
   - Remaining: historical M2 shot/capture root causes and matched Editor + Development Player acceptance. New evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`; tests not run. Plan remains active.
 - [ ] **Attribute and reduce remaining battle CPU cost** → [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]; [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
   - **Next**: fixed-camera matched workload + Development Player acceptance and longer repair/respawn coverage. Current frame median **33.76 ms** vs 36.10, with more squadrons and different rendering workload; no isolated speedup claim. Broader attribution remains open.
@@ -190,6 +192,9 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+
+- [x] **Fix Play Mode shader-warmup keyword errors** → [[Done/Bugs/Shader_Warmup_Keyword_Errors|Shader Warmup Keyword Errors]]
+  - Completed 2026-10-30: removed broad `Shader.WarmupAllShaders`; retained covered frame and pool prewarming. Reproduced 28 errors before; fresh/restored Play Mode startup now 0 new errors. `GameFlow` 153, `Combat` 220, `Capture` 101 passed; `GameFlow` repeated after fix.
 
 - [x] **Fix scene-teardown pool errors and material leaks** (Wave 1) → [[Done/Bugs/Scene_Teardown_And_Material_Leaks|Scene Teardown and Material Leaks]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
