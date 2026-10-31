@@ -49,15 +49,18 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IUnitOrderService _unitOrderService;
 
         private readonly PlayerSlot _owner;
-        private readonly EnemyStrategicDecisionModel _decisionModel;
-        private readonly EnemyStrategicContextBuilder _contextBuilder;
-        private readonly EnemyTaskForceExecutor _taskForceExecutor;
+        private readonly EnemyShipTaskGroupPlanner _taskGroups;
+        private readonly List<IShipEntity> _ships = new List<IShipEntity>();
+        private readonly HashSet<string> _reservedCaptureObjectives = new HashSet<string>();
         private readonly Dictionary<IShipEntity, Vector3> _zoneExitTargets =
             new Dictionary<IShipEntity, Vector3>();
 
         private float _decisionTimer;
 
         private bool _hasDecision;
+        private float _recoveryStartedAt = -1f;
+        private EnemyStrategicContext _lastContext;
+        private string _actionReason;
 
         public event Action<EnemyStrategicDecision> DecisionChanged;
 
@@ -67,7 +70,7 @@ namespace EmpireAtWar.Services.Enemy
         public bool HasDecision => _hasDecision;
         public EnemyStrategicState CurrentState =>
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
-        public int ActiveShipCount => LastSnapshot.OwnShipCount;
+        public int ActiveShipCount => _ships.Count;
 
         public EnemyUnitCommander(
             IShipService shipService,
@@ -85,9 +88,7 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
-            _decisionModel = decisionModel;
-            _contextBuilder = contextBuilder;
-            _taskForceExecutor = taskForceExecutor;
+            _taskGroups = new EnemyShipTaskGroupPlanner(contextBuilder, decisionModel, taskForceExecutor, unitOrderService);
             _unitOrderService = unitOrderService;
         }
 
@@ -161,27 +162,44 @@ namespace EmpireAtWar.Services.Enemy
 
         private void EvaluateAndExecute()
         {
-            _decisionTimer = EnemyAiDifficultyProfile
-                .Get(_owner.Difficulty)
-                .DecisionInterval;
-            EnemyStrategicContext context = _contextBuilder.Build();
-            LastSnapshot = context.Snapshot;
-            EnemyStrategicDecision decision = _decisionModel.Evaluate(context.Snapshot);
+            _decisionTimer = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
+            _ships.Clear();
+            foreach (IShipEntity ship in _shipService.Ships)
+                if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
+                    _ships.Add(ship);
+            _taskGroups.Reconcile(_ships);
+            _reservedCaptureObjectives.Clear();
+            EnemyShipTaskGroup primary = null;
             int bodyCount = 0;
             int rallyingCount = 0;
-            if (decision.State == EnemyStrategicState.RebuildFleet ||
-                decision.State == EnemyStrategicState.Hold)
+            string groupSummary = "";
+            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
-                MoveShipsOutOfDefaultZone(context.Ships);
+                group.Evaluate(_reservedCaptureObjectives, Time.time);
+                if (group.Decision.State == EnemyStrategicState.RebuildFleet ||
+                    group.Decision.State == EnemyStrategicState.Hold)
+                    MoveShipsOutOfDefaultZone(group.Ships);
+                else
+                    foreach (IShipEntity ship in group.Ships) _zoneExitTargets.Remove(ship);
+                bodyCount += group.Executor.BodyCount;
+                rallyingCount += group.Executor.RallyingCount;
+                if (primary == null || primary.IsCaptureDetachment && !group.IsCaptureDetachment ||
+                    primary.IsCaptureDetachment == group.IsCaptureDetachment && group.Ships.Count > primary.Ships.Count)
+                    primary = group;
+                groupSummary += $" {(group.IsCaptureDetachment ? "Capture" : "Combat")} group: " +
+                    $"{group.Ships.Count} ships, {group.Decision.State}.";
             }
-            else
-            {
-                _zoneExitTargets.Clear();
-                _taskForceExecutor.Execute(decision, context);
-                bodyCount = _taskForceExecutor.BodyCount;
-                rallyingCount = _taskForceExecutor.RallyingCount;
-            }
-            PublishDecision(decision, bodyCount, rallyingCount);
+            _lastContext = primary.Context;
+            EnemyStrategicSnapshot snapshot = primary.Context.Snapshot;
+            LastSnapshot = new EnemyStrategicSnapshot(snapshot.VictoryCondition, snapshot.Difficulty,
+                _ships.Count, snapshot.EnemyShipCount, snapshot.OwnedCapturableZoneCount,
+                snapshot.FleetAdvantage, snapshot.BaseThreatRatio, snapshot.HasCaptureTarget,
+                snapshot.HasEnemyBaseTarget, snapshot.HasOwnBase, snapshot.HasThreatenedSite,
+                snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
+                snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat);
+            _recoveryStartedAt = primary.RecoveryStartedAt;
+            _actionReason = primary.Executor.ActionReason + groupSummary;
+            PublishDecision(primary.Decision, bodyCount, rallyingCount);
         }
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)
@@ -194,9 +212,14 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (_zoneExitTargets.TryGetValue(ship, out Vector3 target))
                 {
-                    _unitOrderService.IssueMove(new[] { _entityLocator.GetEntity(ship.EntityId) },
-                        new[] { target });
-                    continue;
+                    if (_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
+                            _owner.Id, ship.WorldPosition, ship.NavigationRadius, out _))
+                    {
+                        _unitOrderService.IssueMove(new[] { _entityLocator.GetEntity(ship.EntityId) },
+                            new[] { target });
+                        continue;
+                    }
+                    _zoneExitTargets.Remove(ship);
                 }
 
                 if (!_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
@@ -253,7 +276,9 @@ namespace EmpireAtWar.Services.Enemy
             LastDecision = decision;
             _hasDecision = true;
             EnemyAiTelemetry.RecordDecision(_owner.Id, _owner.Faction, hasChanged, decision, LastSnapshot,
-                bodyCount, rallyingCount);
+                bodyCount, rallyingCount, _lastContext,
+                _actionReason,
+                _recoveryStartedAt < 0f ? 0f : Time.time - _recoveryStartedAt);
             if (!hasChanged)
             {
                 return;

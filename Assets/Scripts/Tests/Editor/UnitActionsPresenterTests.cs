@@ -325,6 +325,8 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueHunt(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Hunt;
 
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
+
+            public void IssueRetreat(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.Retreat;
         }
 
         private sealed class FakeBattleState : INotifier<BattleState>

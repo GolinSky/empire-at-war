@@ -27,7 +27,7 @@ commit: 6babee5e1
 - Republic-only torpedo nerf via faction-scoped weapon types. Why: types 6/48 are shared with CIS/Empire/Rebellion. Avoid: editing shared definitions.
 - Victory (shared with Empire) and fighter torpedoes unchanged.
 - Fleet Command passive left unchanged (shared with Home One); Concentrate Fire nerfed instead.
-- AI retreat exit = even fight (`HuntAdvantage`), not attack ratio. Why: attack ratio left an outnumbered AI turtling all game.
+- Retreat recovery update 2026-10-31 → [[Architecture/Enemy_AI_Objectives]]: regrouping permits safe local action without global parity; full-fleet offense retains normal strength thresholds.
 
 ## Implementation — Balance
 
@@ -50,7 +50,7 @@ commit: 6babee5e1
 5. `FleetCohesion` (radius 800, leave ×1.5): offensive orders to the main body; stragglers Guard the anchor.
 6. Production: priority ÷ combat value per credit; counter variety penalty ÷ √(1 + owned).
 7. Press advantage (weight 0.75): `FleetAdvantage ≥ 2 × RequiredAttackRatio` → AssaultBase / HuntFleet over capture.
-8. Retreat memory: after `RetreatValue`, stay withdrawn until `IsRegrouped` and `FleetAdvantage ≥ HuntAdvantage`; DefendBase/RebuildFleet still override.
+8. Retreat memory (2026-10-31): regrouping gates safe local action, without global parity. Lost home + no safe anchor can rally via viable local capture/engagement; station pressure overrides. Current contracts → [[Architecture/Enemy_AI_Objectives]].
 
 ## Implementation — AI Economy (2026-10-28)
 
@@ -74,7 +74,7 @@ commit: 6babee5e1
 
 - [ ] Play 2–3 battles on Ultra Hard (both factions) with the fixes 7–8 build; compare via [[Tooling/Battle_Telemetry]].
 - [ ] Check `_ai.csv`: attack states > 0%, capture ↔ retreat flips well below 35, early lead converted.
-- [ ] If the AI turtles at base: lower the recovery exit or press scale (`PRESS_ADVANTAGE_SCALE` = 2).
+- [ ] Retreat turtling reproduced in the 2026-10-30 battle; remediation owner → [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan]]. Covers defense/interception, local recovery, home loss, reinforcement-zone selection and idle ships; replaces the threshold-only follow-up proposal.
 - [ ] Watch Droid Bomber torpedo output (104k in one battle) after the ×3 hangar change.
 - [ ] AI economy changes (2026-10-28): compiled only; run EditMode tests (`EnemyProductionDecisionModelTests`, `DefendPlatformTests`) and play a battle.
 - [x] Hosted AI ally station income: kept as is (user decision, 2026-10-28).

@@ -65,7 +65,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         void CancelPendingDestination(IShipNavigationAgent agent);
 
-        bool IsPositionClear(Vector3 position, float navigationRadius);
+        bool IsPositionClear(Vector3 position, float navigationRadius, bool includeReservations = true);
 
         bool IsPositionClear(
             IShipNavigationAgent agent,
@@ -402,14 +402,14 @@ namespace EmpireAtWar.Services.ShipNavigation
                 GetRegistrationId(agent));
         }
 
-        public bool IsPositionClear(Vector3 position, float navigationRadius)
+        public bool IsPositionClear(Vector3 position, float navigationRadius, bool includeReservations = true)
         {
             BuildNavigationContacts(Array.Empty<RadarContact>(), ShipHullSpan.Unbounded);
             return ShipAvoidancePlanner.IsPointClear(position, _mapObstacleContacts,
                        position.y, 0f, navigationRadius) &&
-                   _destinationRegistry.HasClearance(
+                   (!includeReservations || _destinationRegistry.HasClearance(
                 ToPoint(position),
-                navigationRadius);
+                navigationRadius));
         }
 
         public bool IsPositionClear(

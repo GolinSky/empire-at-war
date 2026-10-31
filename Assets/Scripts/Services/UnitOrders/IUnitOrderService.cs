@@ -32,6 +32,8 @@ namespace EmpireAtWar.Services.UnitOrders
         void IssueHunt(IReadOnlyList<IEntity> receivers);
 
         void IssueRetreat(IReadOnlyList<IEntity> receivers);
+
+        void IssueRetreat(IReadOnlyList<IEntity> receivers, Vector3 point);
     }
 
 }

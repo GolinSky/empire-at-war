@@ -213,11 +213,21 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IRetreatFacade> commands = Collect<IRetreatFacade>(receivers);
             if (commands.Count == 0) return;
             if (!TryGetRetreatPoint(receivers[0].Owner, out Vector3 point))
-                throw new InvalidOperationException("No retreat destination exists for the receivers.");
+                throw new InvalidOperationException(
+                    "No retreat destination exists for the receivers.");
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
-            for (int i = 0; i < commands.Count; i++)
-                commands[i].Retreat(slots[i]);
+            for (int i = 0; i < commands.Count; i++) commands[i].Retreat(slots[i]);
+            Publish(UnitActionId.Retreat, receivers, commands.Count, point);
+        }
+
+        public void IssueRetreat(IReadOnlyList<IEntity> receivers, Vector3 point)
+        {
+            List<IRetreatFacade> commands = Collect<IRetreatFacade>(receivers);
+            if (commands.Count == 0) return;
+            List<Vector3> slots = Compact(commands, point,
+                command => command.WorldPosition, command => command.NavigationRadius);
+            for (int i = 0; i < commands.Count; i++) commands[i].Retreat(slots[i]);
             Publish(UnitActionId.Retreat, receivers, commands.Count, point);
         }
 

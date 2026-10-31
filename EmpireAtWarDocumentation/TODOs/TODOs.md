@@ -39,7 +39,13 @@
 
 
 
+
+
 ### Bugs
+
+
+
+
 
 - [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
   - Status: fixes #1–#10 implemented 2026-10-28; #3 kept by user.
@@ -157,7 +163,6 @@
   - Implemented 2026-10-30; Unity compile/import and diff checks passed. No tests, measurements or Mac build. User acceptance → [[TODOs/User_Acceptance_Queue]].
 
 
-
 - [x] **Fix decorative asteroid rendering and follow up both performance audits** → [[Done/Optimization/Battle_Rendering_Performance_Audit|Battle Rendering Performance Audit]]; [[Done/Optimization/Battle_Rendering_Performance_Audit - Research|Both audits, measurements and VFX findings]]
   - **Audited 2026-10-28**: asteroid on/off/restored = 39.228 → 100.912 → 39.353 FPS; Performant = 19.318 → 48.634 → 19.350 FPS. Camera fixed within each comparison; no cross-preset regression claim.
   - **Required**: retain verified instanced asteroid materials/draws; reject asteroids wholly outside the camera frustum using transformed bounds. Distance-only filtering is insufficient.
@@ -192,6 +197,17 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+
+- [x] **Independent AI ship groups and squadron capture distribution** → [[Done/Bugs/Enemy_AI_Independent_Task_Groups]]
+  - Completed 2026-10-31: group-local retreat/capture and distributed squadron objectives; Unity compilation passed. User gates → [[TODOs/User_Acceptance_Queue]].
+
+
+- [x] **Fix enemy AI recovery review findings** → [[Done/Bugs/Enemy_AI_Recovery_Review_Fixes]]
+  - 2026-10-31: strategic retreat anchors ignore transient reservations; capture stall budget tracks executed capture time and pauses across other strategies. Four regressions authored; Unity compilation and diff checks passed. Tests/gameplay acceptance → [[TODOs/User_Acceptance_Queue]].
+
+- [x] **Fix enemy station defense, retreat lock and reinforcement-zone recovery** → [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan|Enemy AI Defense and Zone Recovery]]; [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan - Research|Battle evidence]]
+  - Completed 2026-10-31; source/diff and Unity compilation clean; user acceptance pending. Covers long-range interception, recovery/home loss, typed zone objectives, capture progress and idle Providence diagnostics.
+  - Follow-up to [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]; tests authored, not run; remaining gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Fix Play Mode shader-warmup keyword errors** → [[Done/Bugs/Shader_Warmup_Keyword_Errors|Shader Warmup Keyword Errors]]
   - Completed 2026-10-30: removed broad `Shader.WarmupAllShaders`; retained covered frame and pool prewarming. Reproduced 28 errors before; fresh/restored Play Mode startup now 0 new errors. `GameFlow` 153, `Combat` 220, `Capture` 101 passed; `GameFlow` repeated after fix.

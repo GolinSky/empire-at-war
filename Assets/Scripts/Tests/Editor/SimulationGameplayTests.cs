@@ -231,6 +231,7 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueWaypointMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> waypoints) => throw new NotSupportedException();
             public void IssueHunt(IReadOnlyList<IEntity> receivers) => throw new NotSupportedException();
             public void IssueRetreat(IReadOnlyList<IEntity> receivers) => throw new NotSupportedException();
+            public void IssueRetreat(IReadOnlyList<IEntity> receivers, Vector3 point) => throw new NotSupportedException();
         }
 
         [Test]

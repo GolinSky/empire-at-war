@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private static readonly StringBuilder _lines = new StringBuilder();
         private static readonly Dictionary<PlayerId, float> _nextSample = new Dictionary<PlayerId, float>();
+        private static readonly Dictionary<PlayerId, string> _lastObjective = new Dictionary<PlayerId, string>();
         private static readonly Dictionary<(PlayerId, Entities.CaptureSites.SiteFacilityType), int> _satelliteCounts = new();
         private static string _path;
         private static float _nextFlush;
@@ -39,7 +41,18 @@ namespace EmpireAtWar.Services.Enemy
             SceneManager.sceneLoaded += OnSceneLoaded;
             Application.quitting -= Flush;
             Application.quitting += Flush;
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeChanged;
+#endif
         }
+
+#if UNITY_EDITOR
+        private static void OnPlayModeChanged(UnityEditor.PlayModeStateChange state)
+        {
+            if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode) Flush();
+        }
+#endif
 
         private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -52,6 +65,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             _lines.Clear();
             _nextSample.Clear();
+            _lastObjective.Clear();
             _satelliteCounts.Clear();
             _nextFlush = Time.unscaledTime + FLUSH_INTERVAL;
             _path = Path.Combine(Application.persistentDataPath, FOLDER,
@@ -60,20 +74,62 @@ namespace EmpireAtWar.Services.Enemy
 #endif
 
         public static void RecordDecision(PlayerId player, FactionType faction, bool changed,
-            EnemyStrategicDecision decision, EnemyStrategicSnapshot snapshot, int bodyCount, int rallyingCount)
+            EnemyStrategicDecision decision, EnemyStrategicSnapshot snapshot, int bodyCount, int rallyingCount,
+            EnemyStrategicContext context = null, string actionReason = "", float recoverySeconds = 0f)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // Battles only: EditMode tests drive the AI without the play-mode file setup.
             if (!Application.isPlaying) return;
             float now = Time.time;
+            if (context != null)
+            {
+                EnemyCaptureObjective current = context.CaptureObjective;
+                string objectiveKey = (current == null ? "none" : $"{current.Kind}/{current.Id}/{current.Owner}") +
+                    $"/defense:{(context.DefenseTarget == null ? 0 : context.DefenseTarget.Id)}/anchor:{context.RetreatAnchor}";
+                changed |= !_lastObjective.TryGetValue(player, out string previous) || previous != objectiveKey;
+                _lastObjective[player] = objectiveKey;
+            }
             bool sampleDue = !_nextSample.TryGetValue(player, out float next) || now >= next;
             if (!changed && !sampleDue) return;
             _nextSample[player] = now + SAMPLE_INTERVAL;
+            string details = decision.Reason;
+            if (context != null)
+            {
+                EnemyCaptureObjective objective = context.CaptureObjective;
+                var target = decision.State == EnemyStrategicState.DefendBase ? context.DefenseTarget :
+                    decision.State == EnemyStrategicState.EngageLocal ? context.LocalThreatTarget :
+                    decision.State == EnemyStrategicState.AssaultBase ? context.EnemyBaseTarget :
+                    decision.State == EnemyStrategicState.RaidStructures ? context.RaidTarget :
+                    decision.State == EnemyStrategicState.HuntFleet ? context.EnemyFleetTarget : null;
+                Vector3 destination = decision.State == EnemyStrategicState.RetreatValue && context.RetreatAnchor.HasValue
+                    ? context.RetreatAnchor.Value : decision.State == EnemyStrategicState.CaptureZone
+                        ? context.CaptureTarget : target == null ? Vector3.zero :
+                            target.GetFacade<IEntityTransformFacade>().Transform.position;
+                details += string.Format(CultureInfo.InvariantCulture,
+                    "; clock=Unity.Time.time scaled seconds since play (not save battleTime); objective={0}; type={1}; owner={2}; " +
+                    "destination=({3:F1} {4:F1} {5:F1}); progress={6:F3}; regrouped={7}; recoverySeconds={8:F1}; " +
+                    "stationPressure={9}; defenseTarget={10}; target={11}; action={12}; selection={13}; pressureSource={14}",
+                    objective == null ? "none" : objective.Id, objective == null ? "none" : objective.Kind.ToString(),
+                    objective == null ? "none" : objective.Owner.ToString(), destination.x, destination.y, destination.z,
+                    objective == null ? 0f : objective.Progress, snapshot.IsRegrouped, recoverySeconds,
+                    snapshot.HasStationPressure, context.DefenseTarget == null ? 0 : context.DefenseTarget.Id,
+                    target == null ? 0 : target.Id, actionReason, context.RecoveryReason, context.StationPressureReason);
+                StringBuilder assignments = new StringBuilder(details);
+                foreach (var ship in context.Ships)
+                {
+                    Vector3 offset = ship.WorldPosition - destination;
+                    offset.y = 0f;
+                    assignments.AppendFormat(CultureInfo.InvariantCulture,
+                        "; ship={0}/{1}/distance:{2:F1}", ship.EntityId, ship.CurrentOrder, offset.magnitude);
+                }
+                details = assignments.ToString();
+            }
+            details = details.Replace("\"", "\"\"");
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
                 "{0:F1},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10:F2},{11:F2},{12},{13:F2},,,,,,\"{14}\"",
                 now, changed ? "decision" : "sample", player, faction, decision.State, decision.CommittedShipCount,
                 snapshot.OwnShipCount, bodyCount, rallyingCount, snapshot.EnemyShipCount, snapshot.FleetAdvantage,
-                snapshot.LocalAdvantage, snapshot.HasLocalThreat ? 1 : 0, snapshot.BaseThreatRatio, decision.Reason));
+                snapshot.LocalAdvantage, snapshot.HasLocalThreat ? 1 : 0, snapshot.BaseThreatRatio, details));
             FlushIfDue();
 #endif
         }

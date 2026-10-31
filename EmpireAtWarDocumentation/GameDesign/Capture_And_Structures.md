@@ -52,6 +52,11 @@ verification: source-and-assets
 - Human ship placement additionally requires ship-specific hull clearance. Human squadron placement calls `IsOpen` without the ship-clearance check; ordinary structures use the stricter exclusions below.
 - Vision and cloak rules: [[GameDesign/Visibility]]. Reserve availability, population and deployment accounting: [[GameDesign/Production_And_Research]].
 
+### Enemy AI map control
+- The reinforcement-zone minimum selects viable relays specifically; emergency owned-site defense can interrupt it. After the minimum, zones and facilities compete normally.
+- Regrouped retreaters can capture or defend locally without global fleet parity; lost/unsafe home access triggers anchor/objective reassessment.
+- Implementation, safety limits and pending runtime acceptance → [[Architecture/Enemy_AI_Objectives]]. Source/compilation checked 2026-10-31; no tests or Play Mode run.
+
 ### Ordinary structures and placement
 - Ordinary Mining Facility and defense platforms are purchased through production, then placed from the human reinforcement reserve.
 - Their placement uses `CanSpawnStructure`: inside map XZ bounds, currently visible, unblocked, outside every relay zone and capture-site ring plus clearance, and clear of units/obstacles.

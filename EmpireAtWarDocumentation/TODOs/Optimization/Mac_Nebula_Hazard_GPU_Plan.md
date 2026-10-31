@@ -1,7 +1,7 @@
 ---
 category: Optimization
 status: in-progress
-created: 2026-10-29
+created: "2026-10-29\r"
 ---
 # Mac Nebula and Hazard GPU Plan
 

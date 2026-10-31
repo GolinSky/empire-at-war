@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag: import",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -188,6 +188,11 @@
   },
   "active": "1b8f675cc8021f42",
   "lastOpenFiles": [
+    "Done/Bugs/Shader_Warmup_Keyword_Errors.md",
+    "TODOs/Bugs/Shader_Warmup_Keyword_Errors.md",
+    "Done/Optimization/Mac_GPU_Frame_Budget_Plan.md",
+    "TODOs/Optimization/Mac_GPU_Frame_Budget_Plan.md",
+    "TODOs/Optimization/Late_Battle_CPU_Fix_Plan.md",
     "Done/Features/Main_Relay_Map_Layout_Adjustments.md",
     "TODOs/Features/Main_Relay_Map_Layout_Adjustments.md",
     "Architecture/Map_Generation.md",
@@ -216,11 +221,6 @@
     "Done/Optimization/Battle_Rendering_Performance_Audit.md",
     "Done/Optimization/Burst_Jobs_Optimization_Plan - Research.md",
     "Done/Optimization/Burst_Jobs_Optimization_Plan.md",
-    "Done/Optimization/Battle_Attack_Optimization_Plan - Research.md",
-    "Done/Optimization/Battle_Attack_Optimization_Plan.md",
-    "Done/Optimization/Battle_CPU_Fixes_Plan - Research.md",
-    "Done/Optimization/Battle_CPU_Fixes_Plan.md",
-    "Done/Features/Space_Hazards_Shape_Rework_Plan.md",
     "Done/Features/sedgp5bGS",
     "Done/Optimization",
     "Done/Bugs"

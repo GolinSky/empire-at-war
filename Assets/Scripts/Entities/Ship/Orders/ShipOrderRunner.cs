@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Enemy;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 
@@ -25,6 +26,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly ShipAbilityService _abilities;
         private readonly IShipAbilityFacade _abilityCaster;
         private readonly IRadarComponent _radar;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private readonly ShipOrderTelemetrySource _telemetrySource;
+#endif
 
         private readonly UnitOrderModel _orders;
         private readonly ShipStateMachine _stateMachine;
@@ -47,6 +51,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IsAbilityFacing = true;
             _stateMachine.SetState(_idleState);
             _movement.Stop();
+            RecordOrder("ability-facing", "Ability temporarily controls facing.");
         }
 
         public void FaceAbility(Vector3 direction) => _movement.LookInDirection(direction);
@@ -56,6 +61,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             if (!IsAbilityFacing) return;
             IsAbilityFacing = false;
             StartOrder();
+            RecordOrder("ability-resume", "Underlying order resumed after ability facing.");
         }
 
         public ShipOrderRunner(IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
@@ -63,7 +69,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IdleState idleState, NavigateState navigateState,
             AttackTargetState attackTargetState, AttackMoveState attackMoveState, GuardState guardState,
             HuntState huntState, AbilityApproachState abilityApproachState,
-            ShipAbilityService abilities, IShipAbilityFacade abilityCaster, IRadarComponent radar)
+            ShipAbilityService abilities, IShipAbilityFacade abilityCaster, IRadarComponent radar
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            , ShipOrderTelemetrySource telemetrySource
+#endif
+            )
         {
             _orders = orders;
             _stateMachine = stateMachine;
@@ -80,19 +90,37 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _abilities = abilities;
             _abilityCaster = abilityCaster;
             _radar = radar;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _telemetrySource = telemetrySource;
+#endif
         }
 
-        public void Start() => _stateMachine.SetState(_idleState);
+        public void Start()
+        {
+            _stateMachine.SetState(_idleState);
+            RecordOrder("start", "Ship initialized in Idle.");
+        }
 
         public void Tick(float deltaTime)
         {
-            if (IsAbilityFacing) return;
+            if (IsAbilityFacing)
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar, "AbilityFacing");
+#endif
+                return;
+            }
             _stateMachine.Tick(deltaTime);
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
+                _stateMachine.CurrentState.GetType().Name);
+#endif
         }
 
         public void Release()
         {
+            RecordOrder("release", "Ship released; active order cancelled.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
             _orders.Clear();
@@ -176,6 +204,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IsAbilityFacing = false;
             _abilityApproachState.SetData(target, range);
             _stateMachine.SetState(_abilityApproachState);
+            RecordOrder("ability-approach", $"Approaching ability {id} target {target.Id} within {range}.");
         }
 
         public void Stop()
@@ -188,9 +217,12 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IEntity target = null, FormationPoint offset = default,
             IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
         {
+            if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null)
+                RecordOrder("cancel", $"Replaced by {type}.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId);
+            RecordOrder("issued", "Requested order before state entry.");
             StartOrder();
         }
 
@@ -243,6 +275,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             if (_pendingAbilityTarget != null)
             {
+                RecordOrder("ability-complete", _abilityApproachState.IsInRange
+                    ? "Ability approach reached cast range." : "Ability approach ended without cast range.");
                 IEntity target = _pendingAbilityTarget;
                 _pendingAbilityTarget = null;
                 _movement.Stop();
@@ -258,6 +292,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             {
                 _navigateState.SetWorldDestination(ToVector(next));
                 _stateMachine.SetState(_navigateState);
+                RecordOrder("waypoint", "Advanced to next waypoint.");
                 return;
             }
 
@@ -265,6 +300,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             // (fighters for a laser corvette), even one its guns do not reach yet.
             if (_orders.Current == UnitOrderType.Attack && _orders.Target.HealthModel.IsDestroyed)
             {
+                RecordOrder("complete", "Attack target destroyed; checking replacement contacts.");
                 IEntity nextTarget = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
                 if (nextTarget != null)
                 {
@@ -273,8 +309,19 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 }
             }
 
+            RecordOrder("complete", _orders.Target != null && _orders.Target.HealthModel.IsDestroyed
+                ? "Target destroyed; no replacement order." : "State completed; returning to Idle.");
             _orders.Clear();
             _stateMachine.SetState(_idleState);
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+        private void RecordOrder(string kind, string reason)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
+                kind, reason, _stateMachine.CurrentState.GetType().Name);
+#endif
         }
 
     }

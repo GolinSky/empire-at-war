@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Squadrons;
@@ -21,8 +22,8 @@ using static EmpireAtWar.Utils.FormationConversion;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Sends station-launched AI squadrons to defend threatened sites and capture the closest
-    /// zone or site; squadrons hunt only when nothing is left to capture. While hostile strikecraft
+    /// Spreads available AI squadrons across capture objectives, retaining valid assignments;
+    /// squadrons hunt only when nothing is left to capture. While hostile strikecraft
     /// are in play, the squadrons that destroy them fastest escort the
     /// own ships those strikecraft hurt the most, only until the escorts match the strikecraft.
     /// </summary>
@@ -34,7 +35,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float EVEN_FIGHT = 1f;
 
         private readonly ICaptureSitesSystem _captureSites;
-        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly IReinforcementZoneSource _zones;
         private readonly IEntityLocator _entityLocator;
         private readonly IPlayerRoster _playerRoster;
         private readonly ForceCompositionBuilder _forceBuilder;
@@ -45,6 +46,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<ISquadron, CommandedSquadron> _squadrons =
             new Dictionary<ISquadron, CommandedSquadron>();
         private readonly List<ISquadron> _orderBuffer = new List<ISquadron>();
+        private readonly List<ISquadron> _captureSquadrons = new List<ISquadron>();
+        private readonly EnemySquadronCaptureAssignments _captureAssignments = new EnemySquadronCaptureAssignments();
         private readonly ForceComposition _hostileStrikecraft = new ForceComposition();
         private readonly ForceComposition _hostileShips = new ForceComposition();
         private readonly ForceComposition _squadronForce = new ForceComposition();
@@ -66,7 +69,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemySquadronCommander(
             ICaptureSitesSystem captureSites,
-            IReinforcementZonesSystem reinforcementZonesSystem,
+            IReinforcementZoneSource zones,
             IEntityLocator entityLocator,
             IPlayerRoster playerRoster,
             ForceCompositionBuilder forceBuilder,
@@ -79,7 +82,7 @@ namespace EmpireAtWar.Services.Enemy
             _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
             _captureSites = captureSites;
-            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _zones = zones;
             _entityLocator = entityLocator;
             _playerRoster = playerRoster;
             _forceBuilder = forceBuilder;
@@ -101,6 +104,7 @@ namespace EmpireAtWar.Services.Enemy
             Track(squadron, squadronType);
             AssessThreats();
             AssignEscorts();
+            AssignCaptureTargets();
             IssueOrder(squadron);
         }
 
@@ -116,6 +120,7 @@ namespace EmpireAtWar.Services.Enemy
             AssessThreats();
             AssignEscorts();
             AssignScout();
+            AssignCaptureTargets();
             _orderBuffer.Clear();
             _orderBuffer.AddRange(_squadrons.Keys);
             foreach (ISquadron squadron in _orderBuffer)
@@ -264,8 +269,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             // Attack-Move re-issued to the same point is ignored by the squadron, so repeats are cheap.
-            if (_captureSites.TryGetThreatenedSite(_owner.Id, out Vector3 target) ||
-                TryGetClosestCaptureTarget(squadron.WorldPosition, out target))
+            if (_captureAssignments.TryGetTarget(squadron, out Vector3 target))
             {
                 squadron.AttackMoveTo(target);
             }
@@ -362,17 +366,42 @@ namespace EmpireAtWar.Services.Enemy
                    timeToClearStrikecraft <= CombatMatchup.TimeToDestroy(_squadronForce, _hostileShips);
         }
 
-        private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
+        private void AssignCaptureTargets()
         {
-            bool hasZone = _reinforcementZonesSystem.TryGetCaptureTarget(
-                _owner.Id, origin, out Vector3 zoneTarget);
-            bool hasSite = _captureSites.TryGetCaptureTarget(
-                _owner.Id, origin, out Vector3 siteTarget);
-            captureTarget = hasSite && (!hasZone ||
-                (siteTarget - origin).sqrMagnitude < (zoneTarget - origin).sqrMagnitude)
-                ? siteTarget
-                : zoneTarget;
-            return hasZone || hasSite;
+            _captureAssignments.ClearTargets();
+            foreach (var zone in _zones.Zones)
+            {
+                if (zone.IsCapturable && !_playerRoster.IsAllied(zone.Owner, _owner.Id))
+                    _captureAssignments.AddTarget(ToVector(ToPoint(zone.Center)));
+            }
+            foreach (ICaptureSite site in _captureSites.Sites)
+            {
+                bool threatened = site.Owner == _owner.Id && _captureSites.HasHostileUnits(site, _owner.Id);
+                bool capturable = site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned;
+                if (!threatened && (!capturable || _playerRoster.IsAllied(site.Owner, _owner.Id) ||
+                    site.Kind == CaptureSiteKind.Satellite && !OwnsPointMines(site.PointId))) continue;
+                _captureAssignments.AddTarget(ToVector(ToPoint(site.Center)), threatened);
+            }
+            _captureSquadrons.Clear();
+            foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
+            {
+                if (pair.Key == _scout || _escorts.Contains(pair.Key) ||
+                    pair.Value.IsHangarLaunched && pair.Value.Orders.CurrentOrder == UnitOrderType.Guard) continue;
+                _captureSquadrons.Add(pair.Key);
+            }
+            _captureAssignments.Assign(_captureSquadrons);
+        }
+
+        private bool OwnsPointMines(int pointId)
+        {
+            bool hasMine = false;
+            foreach (ICaptureSite site in _captureSites.Sites)
+            {
+                if (site.Kind != CaptureSiteKind.Mining || site.PointId != pointId) continue;
+                hasMine = true;
+                if (site.Owner != _owner.Id) return false;
+            }
+            return hasMine;
         }
 
         private void Release(ISquadron squadron)
@@ -380,6 +409,7 @@ namespace EmpireAtWar.Services.Enemy
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);
+            _captureAssignments.Release(squadron);
             if (_scout == squadron)
             {
                 _scout = null;

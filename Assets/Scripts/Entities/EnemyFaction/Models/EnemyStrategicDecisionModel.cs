@@ -30,6 +30,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasOwnBase { get; }
         public int OwnedCapturableZoneCount { get; }
         public bool HasThreatenedSite { get; }
+        public bool HasStationPressure { get; }
+        public bool HasSafeRetreat { get; }
 
         /// <summary>A known hostile ship or squadron is within engagement range of the fleet.</summary>
         public bool HasLocalThreat { get; }
@@ -63,7 +65,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float localAdvantage = Combat.CombatMatchup.MAX_ADVANTAGE,
             bool hasLocalThreat = false,
             bool hasRaidTarget = false,
-            bool isRegrouped = true)
+            bool isRegrouped = true,
+            bool hasStationPressure = false,
+            bool hasSafeRetreat = true)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -80,6 +84,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasLocalThreat = hasLocalThreat;
             HasRaidTarget = hasRaidTarget;
             IsRegrouped = isRegrouped;
+            HasStationPressure = hasStationPressure;
+            HasSafeRetreat = hasSafeRetreat;
         }
     }
 
@@ -108,7 +114,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>Fleet advantage, as a multiple of the attack ratio, at which attacking outranks capturing.</summary>
         public const float PRESS_ADVANTAGE_SCALE = 2f;
         private const string RECOVERING_REASON =
-            "Regrouping after a retreat until the fleet is together and can match the enemy.";
+            "Regrouping at a safe anchor before selecting a viable local objective.";
 
         private static readonly EnemyStrategicRule[] _rules =
         {
@@ -116,12 +122,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 "No combat ships are available.",
                 (s, p) => ResponseCurve.When(s.OwnShipCount == 0)),
             new EnemyStrategicRule(EnemyStrategicState.DefendBase, 0.9f,
-                "A nearby enemy task force threatens the home base.",
+                "Known attackers threaten the station; intercept the visible threat.",
                 (s, p) => ResponseCurve.When(s.HasOwnBase) *
-                          ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio)),
+                          (s.HasStationPressure ? 1f :
+                              ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio))),
             new EnemyStrategicRule(EnemyStrategicState.RetreatValue, 0.8f,
                 "Hostiles near the fleet outmatch it, so the fleet withdraws to its base.",
-                (s, p) => ResponseCurve.When(s.HasOwnBase) *
+                (s, p) => ResponseCurve.When(s.HasSafeRetreat) *
                           ResponseCurve.AtMost(s.LocalAdvantage, p.RetreatAdvantage)),
             // A clearly stronger fleet ends the game instead of trading ships over capture sites.
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.75f,
@@ -138,9 +145,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 "Enemy ships are contesting an owned capture site.",
                 (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.6f,
-                "The configured map-control floor has not been established.",
-                (s, p) => ResponseCurve.When(s.HasCaptureTarget &&
-                                             s.OwnedCapturableZoneCount < p.MinimumControlledZones)),
+                "Expanding map control to the next closest relay or site.",
+                (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
             // Outmatched overall but not where the fleet is: fight what is in front of it instead of freezing.
             new EnemyStrategicRule(EnemyStrategicState.EngageLocal, 0.55f,
                 "Hostiles near the fleet do not outmatch it, so the fleet engages them.",
@@ -156,10 +162,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
                                              s.EnemyShipCount > 0) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
-            // Expansion is the default activity: the next closest relay or site, then the farther ones.
-            new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.45f,
-                "Expanding map control to the next closest relay or site.",
-                (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.3f,
                 "Nothing is left to capture, so the fleet hunts the enemy.",
                 (s, p) => ResponseCurve.When(s.EnemyShipCount > 0) *
@@ -182,40 +184,33 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private bool _hasLastState;
 
         /// <summary>
-        /// Set by a retreat. Until the fleet is regrouped and at least an even match again, it stays withdrawn
-        /// instead of walking back into the force that beat it once that force leaves the local check radius.
+        /// Regrouping gates local action; the ordinary offensive rules still require global readiness.
         /// </summary>
         private bool _isRecovering;
+        public bool IsRecovering => _isRecovering;
 
-        public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot)
+        public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot, bool captureDetachment = false)
         {
             if (snapshot.OwnShipCount < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(snapshot.OwnShipCount));
-            }
-
             if (snapshot.EnemyShipCount < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(snapshot.EnemyShipCount));
-            }
-
             if (snapshot.OwnedCapturableZoneCount < 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(snapshot.OwnedCapturableZoneCount));
-            }
+                throw new ArgumentOutOfRangeException(nameof(snapshot.OwnedCapturableZoneCount));
 
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(snapshot.Difficulty);
             EnemyStrategicRule best = _rules[_rules.Length - 1];
             float bestScore = 0f;
             foreach (EnemyStrategicRule rule in _rules)
             {
+                if (captureDetachment &&
+                    rule.State != EnemyStrategicState.CaptureZone &&
+                    rule.State != EnemyStrategicState.RetreatValue &&
+                    rule.State != EnemyStrategicState.RebuildFleet &&
+                    rule.State != EnemyStrategicState.Hold) continue;
                 float score = rule.Score(snapshot, profile);
                 if (score > 0f && _hasLastState && rule.State == _lastState)
-                {
                     score += HYSTERESIS;
-                }
-
                 if (score > bestScore)
                 {
                     best = rule;
@@ -226,20 +221,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             EnemyStrategicState state = best.State;
             string reason = best.Reason;
             if (state == EnemyStrategicState.RetreatValue)
-            {
                 _isRecovering = true;
-            }
             else if (_isRecovering && state != EnemyStrategicState.DefendBase &&
                      state != EnemyStrategicState.RebuildFleet)
             {
-                if (snapshot.IsRegrouped && snapshot.FleetAdvantage >= profile.HuntAdvantage)
-                {
+                if (snapshot.IsRegrouped)
                     _isRecovering = false;
-                }
+                else if (!snapshot.HasSafeRetreat &&
+                         (state == EnemyStrategicState.CaptureZone || state == EnemyStrategicState.EngageLocal))
+                    reason = "Home access is lost; rally through the viable local objective.";
                 else
                 {
-                    state = EnemyStrategicState.RetreatValue;
-                    reason = RECOVERING_REASON;
+                    state = snapshot.HasSafeRetreat ? EnemyStrategicState.RetreatValue : EnemyStrategicState.Hold;
+                    reason = snapshot.HasSafeRetreat ? RECOVERING_REASON :
+                        "No safe retreat anchor or cohesive local action is available; hold and rebuild.";
                 }
             }
 

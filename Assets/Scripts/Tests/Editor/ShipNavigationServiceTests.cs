@@ -1035,7 +1035,7 @@ namespace EmpireAtWar.Tests.Movement
                 PendingCancellationCount++;
             }
 
-            public bool IsPositionClear(Vector3 position, float navigationRadius)
+            public bool IsPositionClear(Vector3 position, float navigationRadius, bool includeReservations = true)
             {
                 return true;
             }

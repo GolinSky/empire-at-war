@@ -181,3 +181,19 @@ created: 2026-10-29
 - [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Mac visual acceptance: 77% FSR 1 sharpness, FXAA-off edges, unchanged hazard silhouettes/opacity (including holes and narrow arms).
 - [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Mac loading/first-use acceptance: battle renders beneath the cover before fade-out; confirm no keyword-space errors. Broad warmup removed by [[Done/Bugs/Shader_Warmup_Keyword_Errors]]; later Metal PSO hitches remain possible.
 - [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]] — Next Mac-hosted build: confirm automatic post-BuildInfo codesign and strict verification succeed.
+
+## Enemy AI Defense and Zone Recovery
+
+- [ ] [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan]] — Ultra Hard Republic/CIS in both player-faction directions: repeat long-range station bombardment; arrived Providence/other defenders intercept before personal damage, and hidden/lost targets end or redirect pursuit.
+- [ ] [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan]] — Safe-zone expansion/home loss: reinforcement-zone floor beats closer facilities, unsafe nearest target permits an alternative, stopped-outside ships recover, inside ships stay, dead/contested home anchors are replaced.
+- [ ] [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan]] — Compare new AI/order logs: useful defense orders, objective ownership/progress, retreat duration, interruption causes, Providence effective range/contact/facing before/after incoming attacks; no historical wake cause proven.
+- [ ] [[Done/Bugs/Enemy_AI_Defense_And_Zone_Recovery_Plan]] — Run authored regressions only on explicit request; EnemyAi coverage plus affected Capture, Ships, Squadrons, BattleInput and constructor/fake compatibility in Navigation/Simulation. No tests run by agents.
+
+## Enemy AI Recovery Review Fixes
+
+- [ ] [[Done/Bugs/Enemy_AI_Recovery_Review_Fixes]] — Run authored EnemyAi regressions and affected Navigation checks only on explicit request; tests not run by agents.
+- [ ] [[Done/Bugs/Enemy_AI_Recovery_Review_Fixes]] — Battle: en-route safe retreat keeps its anchor despite fleet reservations; obstacle/hostile anchors remain rejected; long defense/retreat followed by capture preserves viable objectives and genuine stalled captures still retry after cooldown.
+
+- [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — In-game: threatened combat group retreats while a safe capture detachment continues; verify group split/merge, objective handoff, home loss and destruction/reinforcement changes.
+- [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — In-game: available squadrons spread across capture objectives; scouts, escorts and active carrier guards keep their assignments.
+- [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — On explicit request, execute EnemyAi regressions (11 new cases); tests were not run under the local override.

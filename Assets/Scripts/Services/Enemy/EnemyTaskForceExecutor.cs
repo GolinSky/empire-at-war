@@ -13,8 +13,8 @@ namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
     /// Global strategy chooses the objective and task-force receivers; ship states and
-    /// the tactical brain execute it. Capture routes use Attack-Move, base defense uses
-    /// Guard, and Hunt is only the fallback when a fleet target is unknown.
+    /// the tactical brain execute it. Capture routes retain their engagements, and
+    /// station defense intercepts the visible attacker.
     /// Ships already retreating are not re-ordered, so their slots stay stable.
     /// Offensive orders go only to the task force's main body; stragglers (new builds, slow ships) guard its
     /// anchor ship until they have joined it, so the fleet arrives together instead of one ship at a time.
@@ -36,6 +36,10 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3 _captureTarget;
 
         private bool _hasCaptureTarget;
+        private EnemyCaptureObjective _captureObjective;
+        private readonly Dictionary<IShipEntity, float> _captureDistances = new Dictionary<IShipEntity, float>();
+        private Vector3? _retreatAnchor;
+        public string ActionReason { get; private set; } = "";
         private EnemyStrategicState _lastState;
         private readonly HashSet<IShipEntity> _assignedShips = new HashSet<IShipEntity>();
         private readonly List<IShipEntity> _body = new List<IShipEntity>();
@@ -59,79 +63,44 @@ namespace EmpireAtWar.Services.Enemy
             {
                 _assignedShips.Clear();
                 _rallyAnchors.Clear();
+                _captureDistances.Clear();
                 _hasCaptureTarget = false;
             }
             _lastState = decision.State;
+            ActionReason = decision.Reason;
             _body.Clear();
             _stragglers.Clear();
             _assignedShips.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
             _bodyMembers.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
             ForgetLostRallies(context);
+            _lostShips.Clear();
+            foreach (IShipEntity ship in _captureDistances.Keys)
+                if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
+            foreach (IShipEntity ship in _lostShips) _captureDistances.Remove(ship);
+            if (context.Ships.Count == 0) return;
             switch (decision.State)
             {
                 case EnemyStrategicState.CaptureZone:
-                    _captureShips.Clear();
-                    _captureShips.AddRange(context.Ships);
-                    _captureShips.Sort((a, b) =>
-                        b.NavigationSpeed.CompareTo(a.NavigationSpeed));
-                    int captureCount = Math.Min(decision.CommittedShipCount,
-                        _captureShips.Count);
-                    // Compact slots are recomputed from current positions, so re-issuing
-                    // to ships already attack-moving would reset their engagement.
-                    bool isSameCaptureTarget = _hasCaptureTarget &&
-                        (_captureTarget - context.CaptureTarget).sqrMagnitude <=
-                        CAPTURE_TARGET_EPSILON_SQUARED;
-                    _captureTarget = context.CaptureTarget;
-                    _hasCaptureTarget = true;
-                    bool captureChanged = !isSameCaptureTarget;
-                    IShipEntity captureAnchor = SplitBody(_captureShips, captureCount);
-                    foreach (IShipEntity ship in _body)
-                        captureChanged |= !_assignedShips.Contains(ship) ||
-                            (ship.CurrentOrder != UnitOrderType.None &&
-                             ship.CurrentOrder != UnitOrderType.AttackMove);
-                    if (captureChanged)
-                        _unitOrderService.IssueAttackMove(Resolve(context, _body, _body.Count), context.CaptureTarget);
-                    _assignedShips.Clear();
-                    _assignedShips.UnionWith(_body);
-                    RallyStragglers(context, captureAnchor);
-                    StopRemaining(context, _captureShips, captureCount);
+                    ExecuteCapture(decision, context);
                     return;
                 case EnemyStrategicState.HuntFleet:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount,
-                        context.EnemyFleetTarget);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyFleetTarget);
                     return;
                 case EnemyStrategicState.AssaultBase:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount,
-                        context.EnemyBaseTarget, allowHunt: false);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyBaseTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.EngageLocal:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount,
-                        context.LocalThreatTarget, allowHunt: false);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.LocalThreatTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.RaidStructures:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount,
-                        context.RaidTarget, allowHunt: false);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.RaidTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.DefendBase:
-                    if (context.OwnBase == null)
-                    {
-                        StopRemaining(context, context.Ships, 0);
-                        return;
-                    }
-                    int guardCount = Math.Min(decision.CommittedShipCount,
-                        context.Ships.Count);
-                    _unitOrderService.IssueGuard(Resolve(context, context.Ships, guardCount),
-                        context.OwnBase, BattleOffsets(context.Ships, guardCount,
-                            context.OwnBase));
-                    StopRemaining(context, context.Ships, guardCount);
+                    ActionReason = context.StationPressureReason;
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.DefenseTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.RetreatValue:
-                    // Slots are recomputed from current positions; re-issuing would
-                    // re-path ships that are already on their way.
-                    List<GameEntity> retreatReceivers = ResolveWithout(context,
-                        context.Ships, context.Ships.Count, UnitOrderType.Retreat);
-                    if (retreatReceivers.Count > 0) _unitOrderService.IssueRetreat(retreatReceivers);
-                    foreach (IShipEntity ship in context.Ships) _assignedShips.Add(ship);
+                    ExecuteRetreat(context);
                     return;
                 case EnemyStrategicState.Hold:
                 case EnemyStrategicState.RebuildFleet:
@@ -140,6 +109,99 @@ namespace EmpireAtWar.Services.Enemy
                 default:
                     throw new ArgumentOutOfRangeException(nameof(decision.State));
             }
+        }
+
+        private void ExecuteCapture(EnemyStrategicDecision decision, EnemyStrategicContext context)
+        {
+            _captureShips.Clear();
+            _captureShips.AddRange(context.Ships);
+            _captureShips.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
+            int count = Math.Min(decision.CommittedShipCount, _captureShips.Count);
+            EnemyCaptureObjective objective = context.CaptureObjective;
+            bool sameObjective = objective == null ? _captureObjective == null :
+                _captureObjective != null && objective.Id == _captureObjective.Id &&
+                objective.Kind == _captureObjective.Kind && objective.Owner == _captureObjective.Owner;
+            bool sameTarget = _hasCaptureTarget && sameObjective &&
+                (_captureTarget - context.CaptureTarget).sqrMagnitude <= CAPTURE_TARGET_EPSILON_SQUARED;
+            if (!sameTarget)
+            {
+                _assignedShips.Clear();
+                _captureDistances.Clear();
+            }
+            _captureTarget = context.CaptureTarget;
+            _captureObjective = objective;
+            _hasCaptureTarget = true;
+            IShipEntity anchor = SplitBody(_captureShips, count);
+            List<GameEntity> approaching = new List<GameEntity>();
+            float radius = context.CaptureObjective == null ? 1f : context.CaptureObjective.Radius;
+            foreach (IShipEntity ship in _body)
+            {
+                Vector3 offset = ship.WorldPosition - _captureTarget;
+                offset.y = 0f;
+                float distance = offset.magnitude;
+                if (!_captureDistances.TryGetValue(ship, out float closest)) closest = distance;
+                _captureDistances[ship] = Math.Min(closest, distance);
+                float leash = Math.Max(FleetCohesion.RADIUS, radius + ship.NavigationRadius * 2f);
+                bool diverted = distance > closest + leash;
+                if (sameTarget && ship.CurrentOrder == UnitOrderType.AttackMove && diverted)
+                {
+                    _unitOrderService.IssueMove(new[] { context.Receivers[ship] }, context.CaptureTarget);
+                    ActionReason = "Capture diversion exceeded its leash; return to the objective.";
+                    continue;
+                }
+                if (sameTarget && ship.CurrentOrder == UnitOrderType.Move && distance > radius)
+                    continue;
+                bool arrived = ship.CurrentOrder == UnitOrderType.None && distance <= radius;
+                if (sameTarget && _assignedShips.Contains(ship) &&
+                    (arrived || ship.CurrentOrder == UnitOrderType.AttackMove))
+                    continue;
+                approaching.Add(context.Receivers[ship]);
+            }
+            if (approaching.Count > 0) _unitOrderService.IssueAttackMove(approaching, context.CaptureTarget);
+            if (approaching.Count > 0)
+                ActionReason = sameTarget ? "Recovering idle or newly available ships outside the capture area." :
+                    "New capture objective; approach with a bounded combat diversion.";
+            else if (ActionReason == decision.Reason)
+                ActionReason = "Retain capture assignment and active engagement; arrived ships remain in the circle.";
+            _assignedShips.Clear();
+            _assignedShips.UnionWith(_body);
+            RallyStragglers(context, anchor);
+            StopRemaining(context, _captureShips, count);
+        }
+
+        private void ExecuteRetreat(EnemyStrategicContext context)
+        {
+            ActionReason = context.RecoveryReason;
+            if (!context.Snapshot.HasSafeRetreat)
+            {
+                StopRemaining(context, context.Ships, 0);
+                return;
+            }
+            bool anchorChanged = _retreatAnchor != context.RetreatAnchor;
+            _retreatAnchor = context.RetreatAnchor;
+            List<GameEntity> receivers = new List<GameEntity>();
+            foreach (IShipEntity ship in context.Ships)
+            {
+                bool arrived = _assignedShips.Contains(ship) && ship.CurrentOrder == UnitOrderType.None &&
+                    (!context.RetreatAnchor.HasValue ||
+                     PlanarDistance(ship.WorldPosition, context.RetreatAnchor.Value) <= FleetCohesion.RADIUS);
+                if (!anchorChanged && (ship.CurrentOrder == UnitOrderType.Retreat || arrived)) continue;
+                receivers.Add(context.Receivers[ship]);
+            }
+            if (receivers.Count > 0)
+            {
+                if (context.RetreatAnchor.HasValue)
+                    _unitOrderService.IssueRetreat(receivers, context.RetreatAnchor.Value);
+                else _unitOrderService.IssueRetreat(receivers);
+            }
+            foreach (IShipEntity ship in context.Ships) _assignedShips.Add(ship);
+        }
+
+        private static float PlanarDistance(Vector3 from, Vector3 to)
+        {
+            Vector3 offset = from - to;
+            offset.y = 0f;
+            return offset.magnitude;
         }
 
         private void IssueAttackOrHunt(EnemyStrategicContext context,
@@ -251,16 +313,7 @@ namespace EmpireAtWar.Services.Enemy
             return receivers;
         }
 
-        private List<GameEntity> ResolveWithout(EnemyStrategicContext context,
-            IReadOnlyList<IShipEntity> ships, int count, UnitOrderType runningOrder)
-        {
-            List<GameEntity> receivers = new List<GameEntity>(count);
-            for (int i = 0; i < count; i++)
-                if (ships[i].CurrentOrder != runningOrder &&
-                    (!_assignedShips.Contains(ships[i]) || ships[i].CurrentOrder != UnitOrderType.None))
-                    receivers.Add(context.Receivers[ships[i]]);
-            return receivers;
-        }
+
 
         private void StopRemaining(EnemyStrategicContext context,
             IReadOnlyList<IShipEntity> ships, int start)

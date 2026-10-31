@@ -62,6 +62,8 @@ namespace EmpireAtWar.Entities.Squadrons
             EntityFeatureBindings.RegisterComponent(builder, Bindings.SquadronIcon);
             if (LocalPlayer.IsLocal(Owner)) EntityFeatureBindings.RegisterComponent(builder, Bindings.AudioDialog);
             builder.Register<SquadronOrderFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EmpireAtWar.Entities.Ship.EntityFacades.ShipCombatObserverFacade>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
             builder.Register<SquadronAbilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HealthFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SquadronTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();

@@ -15,6 +15,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using VContainer;
@@ -62,6 +63,7 @@ namespace EmpireAtWar.Ship
             if (Data.Abilities.Contains(ShipAbilityId.CompositeBeam))
                 builder.Register<CompositeBeamFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipOrderFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ShipCombatObserverFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipDestroyFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -81,6 +83,9 @@ namespace EmpireAtWar.Ship
             builder.Register<AbilityApproachState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<UnitOrderModel>(Lifetime.Singleton);
             builder.Register<ShipOrderRunner>(Lifetime.Singleton);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            builder.Register<ShipOrderTelemetrySource>(Lifetime.Singleton);
+#endif
         }
     }
 }
