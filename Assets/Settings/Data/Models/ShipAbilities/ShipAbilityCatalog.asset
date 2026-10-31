@@ -491,7 +491,7 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 44e885e262d0a944db799fce4dd7a43b, type: 3}
         displayName: Tractor Beam
         description: Restrict a targeted enemy corvette or frigate to 25% speed for
-          up to 20 s within 225 units. Ends when the beam hardpoint, caster or target
+          up to 20 s within 500 units. Ends when the beam hardpoint, caster or target
           is destroyed, the caster is ion-disabled, or the target leaves range. 25
           s recovery.
         duration: 20
@@ -499,7 +499,7 @@ MonoBehaviour:
         canCancel: 1
         isToggle: 0
         requiresEnemyTarget: 1
-        range: 225
+        range: 500
         aiUse: 2
         settings:
           rid: 6801466921437888597
