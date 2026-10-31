@@ -28,6 +28,7 @@ namespace EmpireAtWar.Services.Reinforcement
     public class ReinforcementService : Service, IReinforcementService, ILateTickable, IInitializable,
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>, IUiCancelHandler
     {
+        private const float SPAWN_COOLDOWN = 1f;
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _uiHitTest;
@@ -46,6 +47,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private UnitRequest _currentRequest;
 
         private bool _hasBattleEnded;
+        private float _nextSpawnTime;
         private readonly IHazardService _hazards;
         private readonly TooltipRequests _tooltips;
 
@@ -153,7 +155,7 @@ namespace EmpireAtWar.Services.Reinforcement
         public void TrySpawnReinforcement(UnitRequest request)
         {
             // Units already in the pool stay deployable after the station falls.
-            if (_hasBattleEnded || _inputLock.IsLocked)
+            if (_hasBattleEnded || _inputLock.IsLocked || Time.time < _nextSpawnTime)
             {
                 _model.InvokeSpawnShipEvent(false);
                 return;
@@ -223,6 +225,7 @@ namespace EmpireAtWar.Services.Reinforcement
             {
                 _placement.Spawn(spawnPosition);
                 _model.ConsumeReinforcement(_currentRequest);
+                _nextSpawnTime = Time.time + SPAWN_COOLDOWN;
                 ReinforcementDeployed?.Invoke(_currentRequest);
             }
             else if (_currentRequest is ShipUnitRequest ship && !_model.CanSpawnUnit(ship.Key) ||
