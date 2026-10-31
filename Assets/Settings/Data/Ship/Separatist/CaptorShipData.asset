@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CaptorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 14
+  <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 3
   <HullBottom>k__BackingField: -22.82264
@@ -27,8 +27,8 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: 2786c53dc26ec434db9c9a55ab96b1df,
     type: 2}
   <ShipClass>k__BackingField: 3
-  <Hull>k__BackingField: 3400
-  <Shields>k__BackingField: 1000
+  <Hull>k__BackingField: 3500
+  <Shields>k__BackingField: 2000
   shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
   <ShieldRegenTier>k__BackingField: 1
   <ShieldRegenerateDelay>k__BackingField: 1

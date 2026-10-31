@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MandatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 6
+  <Speed>k__BackingField: 10
   heightTiers: {fileID: 11400000, guid: c0ccfe8fa64b01f478f5f2928bd7958e, type: 2}
   <HeightTier>k__BackingField: 0
   <HullBottom>k__BackingField: -55.58369
