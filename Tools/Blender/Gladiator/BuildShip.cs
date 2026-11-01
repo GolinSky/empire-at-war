@@ -149,7 +149,8 @@ public static class BuildGladiatorShip
         Set(data, "Range", 600); Set(data, "HullBottom", bottom); Set(data, "HullTop", top); Set(data, "NavigationRadius", radius);
         data.FindProperty("<Wreck>k__BackingField").objectReferenceValue = wreck.targetObject;
         var abilities = data.FindProperty("abilities");
-        abilities.arraySize = 0;
+        abilities.arraySize = 1;
+        abilities.GetArrayElementAtIndex(0).intValue = (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower;
         var bays = data.FindProperty("hangarBays"); bays.arraySize = 6;
         for (int i = 0; i < 6; i++)
         {

@@ -1,6 +1,7 @@
 # Gladiator import
 
 - Empire ship ID 216. Hull 6000, shields 5000, capital class/regeneration.
+- Ability: existing `ShipAbilityId.BoostShieldPower` (3), using the shared catalog/settings. Assignment and shared settings verified; automated tests not rerun for this addition.
 - Cost 4000, population 8, build 40 seconds, starbase level 4.
 - Shared weapon profiles: 4x DualMediumTurboLaser (5), 2x ConcussionMissile (13), 2x PointDefense (14); ranges 517.5/550/200, radar 600. Shared firing cadence replaces raw XML cadence.
 - Ten targetable hull-budget hardpoints; All six Empire squadron bays: TIE Fighter, TIE Bomber, TIE Avenger, TIE Interceptor, TIE Brute and TIE Punisher (10 carried per type, 1 active per type; 60 total carried, 6 active).

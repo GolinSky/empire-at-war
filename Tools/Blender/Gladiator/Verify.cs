@@ -24,6 +24,10 @@ public static class VerifyGladiator
         Require(data.FindProperty("<ShipClass>k__BackingField").intValue == 4, "Capital class");
         Require(data.FindProperty("<ShieldRegenTier>k__BackingField").intValue == 3, "Capital shield regen");
         Require(data.FindProperty("<Range>k__BackingField").floatValue == 600, "Radar range");
+        var abilities = data.FindProperty("abilities");
+        Require(abilities.arraySize == 1 && abilities.GetArrayElementAtIndex(0).intValue == (int)EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower, "Existing Boost Shield Power ability");
+        var catalog = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
+        Require(catalog.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.BoostShieldPower).Settings is EmpireAtWar.Services.ShipAbilities.Abilities.BoostShieldPowerSettings, "Shared shield power settings");
         Require(view.transform.localScale == Vector3.one, "View root scale");
         var explosionRenderers = References(Config(view, "Ship").FindProperty("explosionHullRenderers"));
         Require(explosionRenderers.Length > 0 && explosionRenderers.All(r => r != null), "Explosion hull renderer bindings");
@@ -101,7 +105,7 @@ public static class VerifyGladiator
                     Require(!dependency.Contains("ImperialVenator") || name == "AudioShipComponent", "Donor dependency " + name + "/" + iterator.propertyPath);
                 }
         }
-        var report = new JObject { ["savedAssetChecks"]="passed", ["weapons"]=8, ["hardpoints"]=10, ["hull"]=6000, ["shields"]=5000, ["radar"]=600, ["testsRun"]=false, ["runtimeAcceptance"]="pending-user", ["geometry"]=geometry };
+        var report = new JObject { ["savedAssetChecks"]="passed", ["ability"]="BoostShieldPower", ["weapons"]=8, ["hardpoints"]=10, ["hull"]=6000, ["shields"]=5000, ["radar"]=600, ["testsRun"]=false, ["runtimeAcceptance"]="pending-user", ["geometry"]=geometry };
         File.WriteAllText("Temp/GladiatorImport/Verification.json", report.ToString());
         return report.ToString();
     }

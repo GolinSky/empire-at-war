@@ -1,5 +1,6 @@
 {
   "savedAssetChecks": "passed",
+  "ability": "BoostShieldPower",
   "weapons": 8,
   "hardpoints": 10,
   "hull": 6000,

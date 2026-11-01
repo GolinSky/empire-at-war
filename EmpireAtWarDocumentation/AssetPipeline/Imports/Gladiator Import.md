@@ -63,3 +63,8 @@ acceptance: pending-user
 
 - Saved six `hangarBays` rows, IDs 200–205, `reserve=10` / `maxActive=1`; reserve counts total available launches and decrements on launch. Existing one physical hangar hardpoint/launch point services all six types.
 - Updated faction description, reproducible builder and saved-asset verifier. Saved-asset verification passed; no automated tests rerun for this revision.
+
+### Shield ability — 2026-11-01
+
+- Added existing `ShipAbilityId.BoostShieldPower` (3) to Gladiator data; shared catalog/settings/icon/runtime implementation reused without modification.
+- Builder preserves the ability; saved-asset verifier requires its assignment and resolves `BoostShieldPowerSettings` from the shared catalog. Verification passed; automated tests not rerun for this revision.
