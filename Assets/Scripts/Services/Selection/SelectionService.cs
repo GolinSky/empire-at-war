@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -156,6 +157,19 @@ namespace EmpireAtWar.Services.Battle
             if (lastIndex >= 0)
             {
                 index = isDoubleClick ? lastIndex : (lastIndex + 1) % _pointBuffer.Count;
+            }
+            else if (_pointBuffer[0].Command.SelectionType == SelectionType.Ship &&
+                     _localPlayer.IsFriendly(_pointBuffer[0].Entity.Owner))
+            {
+                // A friendly capital ship's hull must not hide a mine's selection target.
+                for (int i = 1; i < _pointBuffer.Count; i++)
+                {
+                    if (_pointBuffer[i].Command.SelectionType == SelectionType.MiningFacility)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
             }
 
             SelectionEntry selection = _pointBuffer[index];

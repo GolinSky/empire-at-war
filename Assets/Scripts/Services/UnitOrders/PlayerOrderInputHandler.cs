@@ -178,17 +178,19 @@ namespace EmpireAtWar.Services.UnitOrders
                 }
                 return;
             }
-            if (!hasUnit || !hasHardPoint && !IsEnemy(target) &&
-                hit.Command.SelectionType == SelectionType.MiningFacility)
+            // Friendly hulls can cover a site without blocking commands to its center.
+            if (!hasHardPoint && !IsEnemy(target))
                 foreach (ICaptureSite site in _captureSites.Sites)
                     if (site.Contains(_cameraService.GetWorldPoint(screen, site.Center)))
                     {
                         TryIssueMove(site.Center);
                         return;
                     }
+            bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&
+                hit.Command.SelectionType == SelectionType.Ship;
             if (pending != null)
             {
-                if (hasUnit || IsObstacle(screen)) return;
+                if (hasUnit && !isFriendlyShip || IsObstacle(screen)) return;
                 Vector3 point = _cameraService.GetWorldPoint(screen, ReferencePosition(receivers));
                 switch (pending.Value)
                 {
@@ -204,7 +206,7 @@ namespace EmpireAtWar.Services.UnitOrders
             }
 
             if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId);
-            else if (!hasUnit && !IsObstacle(screen))
+            else if ((!hasUnit || isFriendlyShip) && !IsObstacle(screen))
                 _unitOrderService.IssueMove(receivers,
                     _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
         }
