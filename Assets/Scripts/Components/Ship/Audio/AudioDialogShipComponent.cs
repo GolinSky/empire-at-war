@@ -1,4 +1,5 @@
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
@@ -25,9 +26,10 @@ namespace EmpireAtWar.Components.Ship.Audio
         public string Id => nameof(AudioDialogShipComponent);
 
         [Inject]
-        private void Construct(IShipSfxService shipSfxService, IPlayerRoster playerRoster, ShipSfxData data, PlayerId owner)
+        private void Construct(IShipSfxService shipSfxService, IPlayerRoster playerRoster, ShipSfxData data, PlayerId owner,
+            IUnitTypeFacade unitType)
         {
-            _voices = data.GetVoiceSet(playerRoster.Get(owner).Faction);
+            _voices = data.GetVoiceSet(playerRoster.Get(owner).Faction, unitType.UnitTypeId);
             _shipSfxService = shipSfxService;
             _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
         }
