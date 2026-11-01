@@ -719,10 +719,11 @@ namespace EmpireAtWar.Tests.Editor
                     new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 2),
                     context);
 
-                Assert.That(orders.Calls.Count, Is.EqualTo(2));
-                Assert.That(orders.Calls[0].Point.x * orders.Calls[1].Point.x, Is.LessThan(0f));
-                Assert.That(orders.Calls.All(call => call.Point.z > 0f), Is.True);
-                Assert.That(Vector3.Distance(orders.Calls[0].Point, orders.Calls[1].Point),
+                OrderCall call = orders.Calls.Single();
+                Assert.That(call.Receivers.Count, Is.EqualTo(2));
+                Assert.That(call.Destinations[0].x * call.Destinations[1].x, Is.LessThan(0f));
+                Assert.That(call.Destinations.All(point => point.z > 0f), Is.True);
+                Assert.That(Vector3.Distance(call.Destinations[0], call.Destinations[1]),
                     Is.GreaterThan(first.NavigationRadius + second.NavigationRadius));
             }
             finally { UnityEngine.Object.DestroyImmediate(stationView); }
@@ -956,7 +957,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureZone_ArrivalStaysAssignedAndOnlyNewReinforcementReceivesOrder()
+        public void CaptureZone_ArrivalStaysAssignedAndReinforcementJoinsOneGroupOrder()
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip reinforcement = new FakeShip(id: 2, position: Vector3.right);
@@ -973,8 +974,8 @@ namespace EmpireAtWar.Tests.Editor
 
             executor.Execute(decision, Context(new IShipEntity[] { ship, reinforcement }));
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Receivers.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(reinforcement.EntityId));
+            Assert.That(orders.Calls[0].Receivers.Select(receiver => receiver.Id),
+                Is.EquivalentTo(new[] { ship.EntityId, reinforcement.EntityId }));
         }
 
         [Test]
@@ -995,7 +996,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureZone_StoppedOutsideObjectiveReissuesOnlyIdleShip()
+        public void CaptureZone_StoppedOutsideObjectiveReissuesOneSharedGroupOrder()
         {
             FakeShip stopped = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip engaging = new FakeShip(id: 2, position: Vector3.right);
@@ -1012,8 +1013,8 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
-            Assert.That(orders.Calls[0].Receivers.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(stopped.EntityId));
+            Assert.That(orders.Calls[0].Receivers.Select(receiver => receiver.Id),
+                Is.EquivalentTo(new[] { stopped.EntityId, engaging.EntityId }));
         }
 
         [TestCase("relay-2", EnemyCaptureObjectiveType.ReinforcementZone, false)]
@@ -1582,6 +1583,8 @@ namespace EmpireAtWar.Tests.Editor
             OrderCall escort = orders.Calls.Single(call => call.Receivers.Any(ship => ship.Id == capital.EntityId));
             Assert.That(capture.Point, Is.EqualTo(objective.Position));
             Assert.That(Vector3.Distance(escort.Point, objective.Position), Is.EqualTo(blocked ? 150f : 0f));
+            Assert.That(orders.Calls.Count, Is.EqualTo(blocked ? 2 : 1));
+            Assert.That(capture.Receivers.Count, Is.EqualTo(blocked ? 1 : 2));
         }
 
 [Test]
@@ -1861,6 +1864,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
                 Record(UnitActionId.AttackMove, receivers, point);
 
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
+                Record(UnitActionId.AttackMove, receivers, destinations[0], destinations: destinations);
+
             public void IssueStop(IReadOnlyList<IEntity> receivers) =>
                 Record(UnitActionId.Stop, receivers);
 
@@ -1886,8 +1892,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
 
             private void Record(UnitActionId action, IReadOnlyList<IEntity> receivers,
                 Vector3 point = default, IEntity target = null,
-                IReadOnlyList<Vector3> offsets = null) =>
-                Calls.Add(new OrderCall(action: action, receivers: receivers, point: point, target: target, offsets: offsets));
+                IReadOnlyList<Vector3> offsets = null, IReadOnlyList<Vector3> destinations = null) =>
+                Calls.Add(new OrderCall(action: action, receivers: receivers, point: point, target: target,
+                    offsets: offsets, destinations: destinations));
         }
 
         private sealed class OrderCall
@@ -1897,15 +1904,18 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public Vector3 Point { get; }
             public IEntity Target { get; }
             public IReadOnlyList<Vector3> Offsets { get; }
+            public IReadOnlyList<Vector3> Destinations { get; }
 
             public OrderCall(IReadOnlyList<IEntity> receivers, IEntity target,
-                IReadOnlyList<Vector3> offsets, UnitActionId action, Vector3 point)
+                IReadOnlyList<Vector3> offsets, UnitActionId action, Vector3 point,
+                IReadOnlyList<Vector3> destinations = null)
             {
                 Action = action;
                 Receivers = receivers;
                 Point = point;
                 Target = target;
                 Offsets = offsets;
+                Destinations = destinations;
             }
         }
 

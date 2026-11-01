@@ -21,6 +21,8 @@ namespace EmpireAtWar.Services.UnitOrders
 
         void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point);
 
+        void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations);
+
         void IssueStop(IReadOnlyList<IEntity> receivers);
 
         void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly);

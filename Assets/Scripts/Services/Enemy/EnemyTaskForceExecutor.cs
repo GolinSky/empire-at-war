@@ -198,6 +198,9 @@ namespace EmpireAtWar.Services.Enemy
                 ? _defenseAdvance > 0f ? "Advance toward known threat: station damaged without defenders in range." :
                     "Threat-facing defense line from visible or last known intel."
                 : "No known threat bearing; defend four points around the station.";
+            var defenseReceivers = new List<GameEntity>();
+            var defensePoints = new List<Vector3>();
+            bool changedDefense = false;
             for (int i = 0; i < count; i++)
             {
                 IShipEntity ship = context.Ships[i];
@@ -240,12 +243,16 @@ namespace EmpireAtWar.Services.Enemy
                 if (!_defensePoints.TryGetValue(ship, out Vector3 previousPoint) ||
                     (previousPoint - point).sqrMagnitude > DEFENSE_POINT_CHANGE_SQUARED)
                 {
-                    _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] }, point);
+                    changedDefense = true;
                     _defensePoints[ship] = point;
                 }
                 _defenseTargets.Remove(ship);
+                defenseReceivers.Add(context.Receivers[ship]);
+                defensePoints.Add(_defensePoints[ship]);
                 context.OrderDestination = _defensePoints[ship];
             }
+            if (changedDefense)
+                _unitOrderService.IssueAttackMove(defenseReceivers, defensePoints);
             ActionReason += "; " + context.DefensePointReason;
             StopRemaining(context, context.Ships, count);
         }
@@ -280,7 +287,8 @@ namespace EmpireAtWar.Services.Enemy
                 ActionReason = $"Assembling capture force: {_body.Count}/{count} ships in the body.";
                 return;
             }
-            int approaching = 0;
+            var captureGroups = new Dictionary<Vector3, List<GameEntity>>();
+            var changedPoints = new HashSet<Vector3>();
             float radius = context.CaptureObjective == null ? 1f : context.CaptureObjective.Radius;
             int escortIndex = 0;
             foreach (IShipEntity ship in _body)
@@ -323,14 +331,21 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.Move && distance > radius)
                     continue;
+                if (!captureGroups.TryGetValue(capturePoint, out List<GameEntity> receivers))
+                {
+                    receivers = new List<GameEntity>();
+                    captureGroups.Add(capturePoint, receivers);
+                }
+                receivers.Add(context.Receivers[ship]);
                 bool arrived = ship.CurrentOrder == UnitOrderType.None && distance <= radius;
                 if (sameTarget && !wasEscort && _assignedShips.Contains(ship) &&
                     (arrived || ship.CurrentOrder == UnitOrderType.AttackMove))
                     continue;
-                _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] }, capturePoint);
-                approaching++;
+                changedPoints.Add(capturePoint);
             }
-            if (approaching > 0)
+            foreach (Vector3 point in changedPoints)
+                _unitOrderService.IssueAttackMove(captureGroups[point], point);
+            if (changedPoints.Count > 0)
                 ActionReason = sameTarget ? "Recovering idle or newly available ships outside the capture area." :
                     "New capture objective; approach with a bounded combat diversion.";
             else if (ActionReason == decision.Reason)

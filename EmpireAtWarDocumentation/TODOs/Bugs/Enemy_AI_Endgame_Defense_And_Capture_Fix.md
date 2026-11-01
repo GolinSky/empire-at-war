@@ -41,16 +41,16 @@ base_commit: 9b7c225d7
 ### Phase 1 — Station pressure latch (R1, R2)
 
 1. [x] Add `EnemyStationPressureTracker` (pure C#, one per player, VContainer scope beside the root builder). Inputs per tick: station shields+hull, `Time.time`, visible threat (from `BuildBaseThreat`).
-2. [x] Latch on: visible threat OR durability loss ≥ `DAMAGE_LATCH_FRACTION` (start 0.5% max) within `DAMAGE_WINDOW_SECONDS` (start 5 s).
-3. [x] Release only after `QUIET_SECONDS` (start 30 s) with no visible threat and no durability loss. Keep last known threat bearing/position from intel only.
+2. [x] Latch on: visible threat OR ≥2 durability losses spanning ≥3 s within `DAMAGE_WINDOW_SECONDS` (5 s), totaling ≥`DAMAGE_LATCH_FRACTION` (0.5% maximum).
+3. [x] Release only after `QUIET_SECONDS` (30 s) with no visible threat or qualifying sustained loss; isolated damage does not refresh pressure. Keep last known threat bearing/position from intel only.
 4. [x] `CreateGroupBuilder()` passes the shared tracker; delete per-builder `_rememberedStationThreat` / `_stationThreatSeenAt`.
 5. [x] `HasStationPressure` = tracker latched; `DefenseTarget` may be null while latched (damage-only) → `StationPressureReason` "Station losing durability; attacker not visible".
 
 ### Phase 2 — Threat-facing defense positions (R3, R8)
 
 1. [x] `DefendBase`: pick a defense point = station centre + bearing to last known threat × (`stationRadius + clearance + min(defender weapon range, 0.6 × gap)`), clamped to a clear navigation point.
-2. [x] Threat visible and within `INTERCEPT_LEASH` (start station radius + 1,500) of station → strike ships (`EnemyAttackTaskForce` selection, no assembly wait) Attack it; others AttackMove to the defense point.
-3. [x] Damage continues ≥ `NO_FIRING_SECONDS` (start 8 s) while no defender has a target in range → advance defense point along the bearing (bounded by leash).
+2. [x] Threat visible and within station radius + max(1,500, last observed attacker weapon range + 300) of station → strike ships (`EnemyAttackTaskForce` selection, no assembly wait) Attack it; others share one AttackMove engagement with explicit per-ship clear arc/ring slots.
+3. [x] Damage continues ≥ `NO_FIRING_SECONDS` (start 8 s) while no defender has a target in range → jump the defense line to known gap − own range + ship clearance (bounded by leash).
 4. [x] Damage-only latch with no bearing → AttackMove ring around station (4 points), not centre.
 5. [x] Re-issue orders only when the defense point moves > 200 units or target changes; never re-pull on order completion.
 6. [x] Telemetry: add `orderDestination` and `defensePointReason` to decision rows; document in [[Tooling/Battle_Telemetry]].
@@ -58,7 +58,7 @@ base_commit: 9b7c225d7
 ### Phase 3 — Emergency production (R4, R5)
 
 1. [x] Add `IsStationCritical` to `EnemyProductionSnapshot`: latched AND (station durability < `CRITICAL_FRACTION` start 50%, or estimated time-to-loss < 120 s from tracker loss rate).
-2. [x] Critical → `EvaluateUltraHard`/normal path: skip Mining, Defense, Research, Level; Ship only.
+2. [x] Critical → `EvaluateUltraHard`/normal path: skip Mining, Defense, Research, Level; Ship or Squadron counter, bypassing ordinary ship/squadron ratios.
 3. [x] Critical → counter choice ranks by `value / (queueRemaining + BuildTime + travel)`; drop candidates whose arrival > estimated time-to-loss when any faster useful option exists. Normal reservations unchanged outside critical.
 4. [x] `EnemySiteConstructionController.Tick`: skip site mines and satellites while critical (read tracker).
 5. [x] Telemetry `production-wait`/purchase: add `critical`, `etaSeconds`, `timeToLoss`.
@@ -66,9 +66,9 @@ base_commit: 9b7c225d7
 ### Phase 4 — Capture fit and detachment stability (R6, R7)
 
 1. [x] `TryCreateCaptureGroup`: pass current reserved objectives (main force evaluated first) into the candidate `Build`; create only if an unreserved objective exists.
-2. [x] Distinguish `ReservedByOtherGroup` from `NoViableObjective`; reserved → keep detachment, retarget next objective; drop only after `NoViableObjective` persists `DETACHMENT_GRACE_SECONDS` (start 10 s).
+2. [x] Distinguish `ReservedByOtherGroup` from `NoViableObjective`; reserved → keep detachment briefly and retarget; no available objective, including reservations, consumes `DETACHMENT_GRACE_SECONDS` (10 s), then rejoin combat/main.
 3. [x] Reuse the existing capture group object (builder/decision model) instead of `CreateGroup(true)` per cycle.
-4. [x] `IsObjectiveSafe` for capture: clearance = max radius of capturing ships (smallest-radius subset that can capture); escorts → perimeter points at `radius + escort clearance`. Verify and exclude own-fleet transient reservations; keep obstacle/hazard/hostile-route failures.
+4. [x] `IsObjectiveSafe` uses minimum clearance to admit any fitting capturer; execution checks each ship at centre + four half-radius samples. Batch capturers per fitted point through `IssueAttackMove` for formation and shared engagement; failed-fit escorts → perimeter at `radius + escort clearance`. Ignore transient reservations for strategic fit; keep obstacle/hazard/hostile-route failures.
 5. [x] Telemetry: capture rejection reasons split `transientReservation` / `obstacle` / `hostile`; reservation ownership is not exposed by the navigation API.
 
 ### Phase 5 — Secondary (Battle Review §6)
@@ -84,6 +84,11 @@ base_commit: 9b7c225d7
 - [x] **C4 Defenders converge on one point.** Same bearing for all ships; distance differs only by range → clumping. Spread laterally (±15–30° per slot).
 - [x] C5 (minor) Critical disables squadrons; no ship unlocked → nothing bought. Squadrons are the fastest arrivals.
 - [x] C6 (minor) Detachment whose objectives are all reserved holds indefinitely with an idle ship; rejoin main after grace.
+
+### Phase 4c — Review of 1dff4330e (2026-11-01, source review only)
+
+- [x] **O1 Per-ship AttackMove bypasses group formation and shared engagement.** `UnitOrderService.IssueAttackMove` computes `Compact` formation slots and one shared `AttackMoveEngagement` (contact sharing, target spreading) per call. `ExecuteCapture` (1dff4330e) and `ExecuteDefense` (cf4a22850) now call it once per ship → capturers all target the exact same point; defenders/capturers do not share contacts or spread targets. Fix: batch receivers per identical capture point (normally one call); for defense, one batched call to the arc centre and let `Compact` space ships, or add a service overload taking explicit slots + one engagement.
+- [x] O2 (minor) Updated early Phase 1–4 steps to current pressure, leash, emergency production, capture fit/grouping and detachment behavior; review sections retain historical findings.
 
 ## Tests (authored only; local override → not run)
 
@@ -112,7 +117,7 @@ base_commit: 9b7c225d7
 ## TODO
 
 - [x] Phases 1–4 implemented. Phase 5 remains unimplemented and deferred until a fresh battle; plan stays active.
-- [ ] Update [[Architecture/Enemy_AI_Objectives]] with tracker, defense-point and emergency rules on completion.
+- [x] Update [[Architecture/Enemy_AI_Objectives]] with tracker, defense-point and emergency rules (cf4a22850, 1dff4330e).
 
 ## Implementation Status — 2026-11-01
 
@@ -149,3 +154,11 @@ base_commit: 9b7c225d7
 - Regression coverage authored/updated: mixed-size capture, blocked capital perimeter, off-centre fit/rejoin, 1,755-unit interception + bounded chase, lateral slots, sustained/isolated damage and critical squadron selection with/without unlocked ships.
 - Verification: Unity script refresh/import and compilation completed (`isCompiling=false`, `isUpdating=false`, `scriptCompilationFailed=false`); scoped diff checks passed. Existing console errors are historical (latest error seq 1612); no current compilation failure. Tests and Play Mode not run under checkout override. Categories touched: `EnemyAi`, `Combat`.
 - Reusable rules updated → [[Architecture/Enemy_AI_Objectives]]. Phase 5 remains unimplemented/deferred until fresh battle evidence; plan stays `in-progress`. In-game acceptance remains pending.
+
+## Phase 4c Outcome — 2026-11-01
+
+- O1 capture: one `IssueAttackMove` per fitted point. Clear-centre ships use one formation/shared engagement. A changed member regroups that point's eligible ships; unchanged groups retain orders. Bounded direct-return moves and failed-fit perimeter escorts keep their existing behavior.
+- O1 defense: `IUnitOrderService.IssueAttackMove(receivers, destinations)` preserves explicit per-ship clear slots and creates one shared `AttackMoveEngagement`. Reposition all support defenders together when a slot changes >200 units or membership adds a new slot; completed unchanged orders stay retained. Visible counter-capable interception remains target-directed.
+- O2: early implementation descriptions reconciled; completed `Enemy_AI_Objectives` TODO preserved. Reusable grouping rule → [[Architecture/Enemy_AI_Objectives]].
+- Coverage authored/updated: common-centre batching, separate fit points, reinforcement/recovery regrouping, one defense call with distinct slots, explicit destinations preserving one shared engagement and receiver indexing. Tests not run under checkout override; categories `EnemyAi`, `BattleInput`; `Simulation` fake signature updated.
+- Verification: Unity compilation/import completed (`isCompiling=false`, `isUpdating=false`, `scriptCompilationFailed=false`); scoped diff checks passed. Tests and Play Mode not run. Phase 5 remains deferred; plan stays `in-progress`.
