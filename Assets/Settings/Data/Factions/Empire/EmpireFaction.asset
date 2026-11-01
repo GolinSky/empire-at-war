@@ -328,7 +328,7 @@ MonoBehaviour:
     - key: 202
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
-        description: Six TIE Avengers. Each fighter has 20 hull, 12 shields, two
+        description: Six TIE Avengers. Each fighter has 40 hull, 12 shields, two
           light repeating lasers and two concussion-missile launchers. Power to Weapons
           doubles fire rate for 10 s, reduces speed by 25% and increases damage taken
           by 50%; 60 s recovery. Seeker Warhead Countermeasure automatically intercepts
@@ -347,7 +347,7 @@ MonoBehaviour:
     - key: 203
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
-        description: Eight fast TIE Interceptors, each with 15 hull and four laser
+        description: Eight fast TIE Interceptors, each with 25 hull and four laser
           cannons. Advanced-loadout carrier fighter.
         role: Fighter / Interceptor
         iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
