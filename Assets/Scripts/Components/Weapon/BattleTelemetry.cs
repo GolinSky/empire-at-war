@@ -40,7 +40,7 @@ namespace EmpireAtWar.Components.Weapon
         private static readonly Dictionary<(FactionType, string, DamageType, FactionType, string), ImpactRow> _impacts =
             new Dictionary<(FactionType, string, DamageType, FactionType, string), ImpactRow>();
         private static string _path;
-        private static int _sceneHandle;
+        private static SceneHandle _sceneHandle;
         private static float _startTime;
         private static bool _dirty;
 
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Components.Weapon
             _impacts.Clear();
             _dirty = false;
             _path = null;
-            _sceneHandle = -1;
+            _sceneHandle = default;
             Application.quitting -= Flush;
             Application.quitting += Flush;
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
@@ -71,7 +71,7 @@ namespace EmpireAtWar.Components.Weapon
             if (scene.handle != _sceneHandle) return;
             Flush();
             _path = null;
-            _sceneHandle = -1;
+            _sceneHandle = default;
         }
 
         private static void Reset(string sceneName)
