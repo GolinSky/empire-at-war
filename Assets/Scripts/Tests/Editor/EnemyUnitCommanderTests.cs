@@ -519,7 +519,8 @@ namespace EmpireAtWar.Tests.Editor
             foreach (FakeShip ship in ships) ship.WorldPosition = Vector3.zero;
             orders.Calls.Clear();
             executor.Execute(decision, Context(ships));
-            Assert.That(orders.Calls.Single(call => call.Action == UnitActionId.AttackMove).Receivers.Count,
+            Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.AttackMove)
+                .Sum(call => call.Receivers.Count),
                 Is.EqualTo(6));
         }
 
@@ -666,6 +667,68 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
+        [Test]
+        public void DefendBase_InterceptsSiegeAt1755ButKeepsLeashBounded()
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            var stationView = new GameObject("Station");
+            var attackerView = new GameObject("Siege attacker");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 2);
+                var attacker = new FakeEntity(new FakeHealthModel(attackerView.transform), TestPlayers.Human, 3)
+                    { WeaponRange = 1755f };
+                attackerView.transform.position = Vector3.right * 1755f;
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                var decision = new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 1);
+                executor.Execute(decision, Context(new[] { ship }, ownBase: station, defenseTarget: attacker));
+                Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.Attack));
+                Assert.That(orders.Calls.Single().Target, Is.SameAs(attacker));
+
+                orders.Calls.Clear();
+                attackerView.transform.position = Vector3.right * 5000f;
+                executor.Execute(decision, Context(new[] { ship }, ownBase: station, defenseTarget: attacker));
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Attack), Is.False);
+                Assert.That(orders.Calls.Single().Point.magnitude,
+                    Is.LessThanOrEqualTo(station.NavigationRadius + 1755f + 300f));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(attackerView);
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
+        [Test]
+        public void DefendBase_SameRangeShipsReceiveSeparateThreatFacingSlots()
+        {
+            var first = new FakeShip(Vector3.zero, 1);
+            var second = new FakeShip(Vector3.zero, 2);
+            var stationView = new GameObject("Station");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 3);
+                var pressure = new EnemyStationPressureTracker();
+                pressure.Update(station.Id, 100f, 100f, Time.time, station.Id);
+                pressure.ObserveThreatPosition(0f, 0f, 2000f);
+                var orders = new FakeOrderService();
+                var context = Context(new IShipEntity[] { first, second }, ownBase: station, stationPressure: pressure);
+                foreach (FakeEntity receiver in context.Receivers.Values) receiver.WeaponRange = 500f;
+                new EnemyTaskForceExecutor(orders).Execute(
+                    new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 2),
+                    context);
+
+                Assert.That(orders.Calls.Count, Is.EqualTo(2));
+                Assert.That(orders.Calls[0].Point.x * orders.Calls[1].Point.x, Is.LessThan(0f));
+                Assert.That(orders.Calls.All(call => call.Point.z > 0f), Is.True);
+                Assert.That(Vector3.Distance(orders.Calls[0].Point, orders.Calls[1].Point),
+                    Is.GreaterThan(first.NavigationRadius + second.NavigationRadius));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(stationView); }
+        }
+
+
         [TestCase(true)]
         [TestCase(false)]
         public void DefendBase_FacesKnownThreatOrUsesRingWithoutRepullingCompletedOrders(bool hasBearing)
@@ -678,7 +741,7 @@ namespace EmpireAtWar.Tests.Editor
                 var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 2);
                 var pressure = new EnemyStationPressureTracker();
                 pressure.Update(station.Id, 100f, 100f, Time.time);
-                pressure.Update(station.Id, 99f, 100f, Time.time);
+                pressure.Update(station.Id, 99f, 100f, Time.time, station.Id);
                 if (hasBearing) pressure.ObserveThreatPosition(-1000f, 0f, 4000f);
                 var orders = new FakeOrderService();
                 var executor = new EnemyTaskForceExecutor(orders);
@@ -931,7 +994,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(orders.Calls, Is.Empty);
         }
 
-[Test]
+        [Test]
         public void CaptureZone_StoppedOutsideObjectiveReissuesOnlyIdleShip()
         {
             FakeShip stopped = new FakeShip(id: 1, position: Vector3.zero);
@@ -1501,8 +1564,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(builder.CaptureReservedByOtherGroup, Is.False);
         }
 
-        [Test]
-        public void CaptureZone_CapitalEscortHoldsPerimeterWhileSmallShipCaptures()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CaptureZone_CapitalCapturesUnlessItsClearanceFails(bool blocked)
         {
             var scout = new FakeShip(Vector3.zero, 1) { NavigationRadius = 5f };
             var capital = new FakeShip(Vector3.zero, 2) { NavigationRadius = 100f };
@@ -1511,12 +1575,39 @@ namespace EmpireAtWar.Tests.Editor
             var orders = new FakeOrderService();
             var executor = new EnemyTaskForceExecutor(orders);
             executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 2),
-                Context(new IShipEntity[] { capital, scout }, captureObjective: objective));
+                Context(new IShipEntity[] { capital, scout }, captureObjective: objective,
+                    isPointClear: (point, radius) => !blocked || radius < 100f));
 
             OrderCall capture = orders.Calls.Single(call => call.Receivers.Any(ship => ship.Id == scout.EntityId));
             OrderCall escort = orders.Calls.Single(call => call.Receivers.Any(ship => ship.Id == capital.EntityId));
             Assert.That(capture.Point, Is.EqualTo(objective.Position));
-            Assert.That(Vector3.Distance(escort.Point, objective.Position), Is.EqualTo(150f));
+            Assert.That(Vector3.Distance(escort.Point, objective.Position), Is.EqualTo(blocked ? 150f : 0f));
+        }
+
+[Test]
+        public void CaptureZone_CapitalUsesClearInteriorSampleAndRejoinsAfterPerimeterOrder()
+        {
+            var scout = new FakeShip(Vector3.zero, 1) { NavigationRadius = 5f };
+            var capital = new FakeShip(Vector3.zero, 2) { NavigationRadius = 100f };
+            var objective = new EnemyCaptureObjective("centre", EnemyCaptureObjectiveType.ReinforcementZone,
+                PlayerId.None, Vector3.right * 500f, 50f, 0f);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 2);
+            bool blocked = true;
+            var context = Context(new IShipEntity[] { capital, scout }, captureObjective: objective,
+                isPointClear: (point, radius) => radius < 100f ||
+                    !blocked && point.x > objective.Position.x);
+            executor.Execute(decision, context);
+            capital.CurrentOrder = UnitOrderType.AttackMove;
+            scout.CurrentOrder = UnitOrderType.AttackMove;
+            orders.Calls.Clear();
+            blocked = false;
+
+            executor.Execute(decision, context);
+
+            Assert.That(orders.Calls.Single().Receivers.Single().Id, Is.EqualTo(capital.EntityId));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(objective.Position + Vector3.right * 25f));
         }
 
         [Test]
@@ -1618,7 +1709,8 @@ namespace EmpireAtWar.Tests.Editor
             IReadOnlyDictionary<IShipEntity, ForceComposition> shipForces = null,
             IReadOnlyDictionary<IEntity, ForceComposition> targetForces = null,
             IEntity localThreatTarget = null,
-            EnemyStationPressureTracker stationPressure = null)
+            EnemyStationPressureTracker stationPressure = null,
+            Func<Vector3, float, bool> isPointClear = null)
         {
             if (ownBase != null && stationPressure == null)
             {
@@ -1656,7 +1748,7 @@ namespace EmpireAtWar.Tests.Editor
                 defenseTarget: defenseTarget, retreatAnchor: retreatAnchor,
                 shipForces: shipForces ?? defaultShipForces, targetForces: targetForces ?? defaultTargetForces,
                 localThreatTarget: localThreatTarget, stationPressure: stationPressure,
-                isDefensePointClear: (point, radius) => true);
+                isDefensePointClear: isPointClear ?? ((point, radius) => true));
         }
 
 private sealed class ZoneSource : IReinforcementZoneSource

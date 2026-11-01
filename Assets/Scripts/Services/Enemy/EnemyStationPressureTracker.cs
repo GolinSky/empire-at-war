@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float DAMAGE_LATCH_FRACTION = 0.005f;
         private const float DAMAGE_WINDOW_SECONDS = 5f;
+        private const float SUSTAINED_DAMAGE_SECONDS = 3f;
         private const float QUIET_SECONDS = 30f;
         private const float CRITICAL_FRACTION = 0.5f;
         private readonly Queue<(float Time, float Loss)> _losses = new Queue<(float, float)>();
@@ -56,13 +57,17 @@ namespace EmpireAtWar.Services.Enemy
                 _losses.Enqueue((time, loss));
                 _windowLoss += loss;
                 LastDamageTime = time;
-                _lastPressureAt = time;
             }
             while (_losses.Count > 0 && time - _losses.Peek().Time > DAMAGE_WINDOW_SECONDS)
                 _windowLoss -= _losses.Dequeue().Loss;
-            if (visibleThreatId != 0 || _windowLoss >= _maximumDurability * DAMAGE_LATCH_FRACTION && _windowLoss > 0f)
+            bool sustainedDamage = loss > 0f && _losses.Count >= 2 &&
+                time - _losses.Peek().Time >= SUSTAINED_DAMAGE_SECONDS &&
+                _windowLoss >= _maximumDurability * DAMAGE_LATCH_FRACTION;
+            if (visibleThreatId != 0 || sustainedDamage)
+            {
                 HasPressure = true;
-            if (visibleThreatId != 0) _lastPressureAt = time;
+                _lastPressureAt = time;
+            }
             if (time - _lastPressureAt >= QUIET_SECONDS)
             {
                 HasPressure = false;

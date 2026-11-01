@@ -34,7 +34,7 @@ base_commit: 9b7c225d7
 - Damage latch uses only own station health (shields + hull) — legitimate own-side knowledge. Avoid: reading attacker transforms not in team intel.
 - Defense positions face the last known threat bearing; bounded interception only for counter-capable ships. Avoid: unconditional station-centre orders and unbounded chase.
 - Emergency mode is a production input, not a new production system. Avoid: task-specific production queue.
-- Capture fit checks the capturing ships only; escorts hold perimeter. Keep ion/hostile-route checks.
+- Capture fit checks each committed ship; every ship with a clear interior point captures. Only ships that fail fit hold perimeter. Keep ion/hostile-route checks.
 
 ## Implementation
 
@@ -76,6 +76,15 @@ base_commit: 9b7c225d7
 - [ ] Cap anti-fighter (Carrack) demand by observed hostile strikecraft minus existing screens.
 - [ ] Before retaining a distant raid, check route/local danger at current position, not only destination.
 
+### Phase 4b — Review of cf4a22850 (2026-11-01, source review only)
+
+- [x] **C1 Capture escorts cut capture speed.** `ExecuteCapture` keeps only ships with the single minimum `NavigationRadius` (strict `>`) inside; all others go to perimeter `radius + NavigationRadius` (outside zone). `ReinforcementZoneModel` uses `captureSpeedPerNetShip` → fewer net ships, contested capture can stall. Fix: per-ship clear-point fit inside the zone; perimeter only for ships that fail it.
+- [x] **C2 Intercept leash shorter than siege range.** `INTERCEPT_DISTANCE` 1,500 < observed attacker range 1,755 → that attacker is never intercepted; only +250 per 8 s advance (≈40 s for 300-range ships). Fix: leash = station radius + max(1,500, known attacker `WeaponRange` + margin); first advance jumps to `gap − own range`.
+- [x] **C3 Damage latch too sensitive.** One burst ≥ 0.5% latches; any later loss holds 30 s → superweapon hit or lone bomber recalls whole fleet (detachment dissolved, offense aborted). Fix: require sustained loss (≥ 2 events over ≥ 3 s) or scale committed defenders to loss rate.
+- [x] **C4 Defenders converge on one point.** Same bearing for all ships; distance differs only by range → clumping. Spread laterally (±15–30° per slot).
+- [x] C5 (minor) Critical disables squadrons; no ship unlocked → nothing bought. Squadrons are the fastest arrivals.
+- [x] C6 (minor) Detachment whose objectives are all reserved holds indefinitely with an idle ship; rejoin main after grace.
+
 ## Tests (authored only; local override → not run)
 
 - Authored/updated fixture categories: `EnemyAi`, `Combat`, `GameFlow`, `Abilities`. Station facade changes also touch `Ships`; no tests were executed.
@@ -114,8 +123,8 @@ base_commit: 9b7c225d7
 
 - Queue correction: identical request IDs build FIFO; different IDs build in parallel. Emergency ETA sums only the matching ID lane plus build and base-speed travel to known threat.
 - True station maximum comes from `IStationDurabilityFacade` / `StationDurabilityFacade` (`HealthModel.MaxHull + MaxShields`), including restored stations with zero shields.
-- Capture clearance uses the committed minimum-radius ships. Larger escorts use perimeter orders; strategic checks ignore all transient ship reservations because the API has no ownership filter. Navigation source confirms own registered ships were included.
-- Capture candidate object and its memory persist; creation happens after combat-group reservations and publication, with execution next decision tick. `ReservedByOtherGroup` preserves membership; genuine no-objective grace is 10 s.
+- Capture strategic clearance uses the minimum radius to determine whether any ship fits. Execution checks each ship at centre + four half-radius samples; only failed-fit ships use perimeter orders; strategic checks ignore all transient ship reservations because the API has no ownership filter. Navigation source confirms own registered ships were included.
+- Capture candidate object and its memory persist; creation happens after combat-group reservations and publication, with execution next decision tick. `ReservedByOtherGroup` preserves membership for the same 10 s no-objective grace; persistent reservation starvation releases the detachment.
 - Authored regressions: tracker latch/release/reset/repeated observations; new-group shared pressure after hidden contact; defense bearing/ring/completed-order retention/leash; critical category choice, timely counter, per-ID queue delay; reservation/obstacle distinction, capturer clearance and capital escorts. Tests not run.
 - Reusable guidance extracted → [[Architecture/Enemy_AI_Objectives]]; telemetry fields → [[Tooling/Battle_Telemetry]].
 - Remaining implementation: Phase 5 anti-fighter demand and route/local raid danger, after fresh battle evidence. In-game acceptance listed above remains unverified.
@@ -128,3 +137,15 @@ base_commit: 9b7c225d7
 - New console errors since pre-change cursor 2814: none. Historical errors were not cleared or attributed to this change.
 - Scoped `git diff --check` passed. Independent production/defense integration review corrected depleted-shield maximum durability and gated new superweapon spending.
 - Automated tests and Play Mode: not run under checkout policy. No battle performance or acceptance claim.
+
+## Phase 4b Outcome — 2026-11-01
+
+- C1: all fitting ships capture, regardless of relative size; each receives its clear interior point. Failed-fit escorts rejoin capture when an interior point becomes clear.
+- C2: leash = station radius + max(1,500, last observed attacker weapon range + 300). Visible counter-capable ships intercept immediately. First 8 s no-firing advance jumps to known gap − own range + ship clearance, bounded by leash.
+- C3: damage-only latch/refresh needs ≥2 losses spanning ≥3 s within 5 s and ≥0.5% maximum durability loss. Single hits and no-loss polling do not latch/extend defense; visible threats remain immediate.
+- C4: support slots spread across a threat-facing arc bounded to ±30°; interceptors receive distinct cached fleet formation offsets.
+- C5: critical counter selection includes unlocked squadrons, bypasses ordinary ship/squadron ratios, and ranks useful combat value by arrival time when hostile composition is unknown. Squadron ETA includes cruise-speed travel.
+- C6: no available objective, including reservations by other groups, consumes the 10 s grace; released ships rejoin combat/main groups.
+- Regression coverage authored/updated: mixed-size capture, blocked capital perimeter, off-centre fit/rejoin, 1,755-unit interception + bounded chase, lateral slots, sustained/isolated damage and critical squadron selection with/without unlocked ships.
+- Verification: Unity script refresh/import and compilation completed (`isCompiling=false`, `isUpdating=false`, `scriptCompilationFailed=false`); scoped diff checks passed. Existing console errors are historical (latest error seq 1612); no current compilation failure. Tests and Play Mode not run under checkout override. Categories touched: `EnemyAi`, `Combat`.
+- Reusable rules updated → [[Architecture/Enemy_AI_Objectives]]. Phase 5 remains unimplemented/deferred until fresh battle evidence; plan stays `in-progress`. In-game acceptance remains pending.

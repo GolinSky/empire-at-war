@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.Enemy
         public void Evaluate(ISet<string> reservedObjectives, float now)
         {
             Context = ContextBuilder.Build(Ships, reservedObjectives, preferStrategicObjectives: IsMainForce);
-            if (Context.Snapshot.HasCaptureTarget || ContextBuilder.CaptureReservedByOtherGroup)
+            if (Context.Snapshot.HasCaptureTarget)
                 NoViableCaptureSince = -1f;
             else if (NoViableCaptureSince < 0f) NoViableCaptureSince = now;
             EnemyStrategicDecision next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment);

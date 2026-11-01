@@ -76,6 +76,12 @@ namespace EmpireAtWar.Services.Enemy
             return distance / data.Speed;
         }
 
+        public float GetSquadronTravelTime(SquadronType squadronType, float distance)
+        {
+            SquadronData data = _assetService.Load<SquadronData>(squadronType + SQUADRON_DATA_POSTFIX);
+            return distance / data.CruiseSpeed;
+        }
+
         private UnitCombatProfile CreateSquadron(SquadronType squadronType)
         {
             SquadronData data = _assetService.Load<SquadronData>(squadronType + SQUADRON_DATA_POSTFIX);

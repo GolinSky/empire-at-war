@@ -229,6 +229,26 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(index, Is.EqualTo(-1));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CounterProduction_CriticalStationAcceptsFastSquadron(bool hasKnownHostile)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            UnitCombatProfile bomber = Profile(ShipClass.Bomber, 1000f, 500f, (ShipClass.Capital, 40f));
+            ProductionCandidate[] candidates =
+            {
+                new ProductionCandidate(capital, 4000, arrivalSeconds: 148f),
+                new ProductionCandidate(bomber, 500, arrivalSeconds: 10f)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), hasKnownHostile ? Force(capital, capital) : new ForceComposition(),
+                candidates, out int index, isStationCritical: true, timeToLossSeconds: 100f);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(1));
+        }
+
         [TestCase(1000f, 120, 0)]
         [TestCase(100000f, 2, 1)]
         public void CounterProduction_PricesTheScarceResource(float credits, int capacity, int expected)

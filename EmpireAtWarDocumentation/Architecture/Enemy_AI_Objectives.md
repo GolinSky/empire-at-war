@@ -16,7 +16,7 @@ verification: Live-source review, Unity compilation/import, new runtime types
 - `EnemyShipTaskGroupPlanner` owns stable ship membership. Each group has its own `EnemyStrategicContextBuilder`, `EnemyStrategicDecisionModel` and `EnemyTaskForceExecutor`: objective safety, strategy/recovery and orders.
 - Station pressure is per player and independent of hostile/own strength ratio; every group builder shares `EnemyStationPressureTracker`. Visible threats or own-station durability loss can trigger `DefendBase`.
 - Direct/weapon-tracked station attacks use effective weapon range + station footprint + attacker footprint. Other visible contacts use the narrower center/contact envelope.
-- Station pressure latches after ≥0.5% maximum shields+hull loss within 5 s, or a visible threatening contact. Release requires 30 s without contact or durability loss; hidden attackers supply no live target or updated position.
+- Station pressure latches after ≥0.5% maximum shields+hull loss from ≥2 observations spanning ≥3 s within 5 s, or a visible threatening contact. Release requires 30 s without visible threats or qualifying sustained loss; isolated damage does not refresh the latch; hidden attackers supply no live target or updated position.
 - Retreat recovery requires cohesion for normal local action, not global parity. Ordinary offensive rules retain their fleet-advantage thresholds.
 - Lost home + scattered fleet + viable local objective → rally through capture/local engagement. No safe anchor or viable action → explicit Hold/rebuild.
 
@@ -48,7 +48,7 @@ verification: Live-source review, Unity compilation/import, new runtime types
 ### Independent task groups (2026-10-31)
 
 - With more than one ship, reserve the fastest eligible ship with a safe, unreserved capture target as a capture detachment. Combat groups reserve objectives before extraction; the reused detachment executes next decision tick. Attack/Retreat ships are excluded from initial selection.
-- Capture detachment keeps its own capture/retreat/hold/rebuild policy; station pressure recalls it. Release requires 10 s with no viable objective and no recovery; reservations by another group do not consume that grace period.
+- Capture detachment keeps its own capture/retreat/hold/rebuild policy; station pressure recalls it. Release requires 10 s with no available objective and no recovery; reservations by another group also consume that grace period so idle ships rejoin combat.
 - Opening combat groups join within 800 and split beyond 1600. At six available combat ships, retain one main force and recruit distant nonrecovering groups; station pressure concentrates available ships immediately. Main-force membership survives travel separation.
 - Group origin, local force, offensive strength, route safety, capture stall budget and recovery state are independent. Distant or nonassigned ships do not lend strength to a detached capture route.
 - Executed capture objectives reserve their IDs for the decision pass; later ship groups select other objectives. Main force evaluates first once formed; capture detachment chooses another objective.
@@ -103,12 +103,12 @@ verification: Live-source review, Unity compilation/import, new runtime types
 
 ### Endgame defense and capture (2026-11-01)
 
-- Defense line faces visible or last known threat intel; no bearing → four-point station ring. Line distance includes station/ship clearance and weapon reach, bounded by station radius + 1,500 units.
+- Defense line faces visible or last known threat intel; no bearing → four-point station ring. Line distance includes station/ship clearance and weapon reach, bounded by station radius + max(1,500, last observed attacker weapon range + 300) units. Support slots spread over a threat-facing arc bounded to ±30°; interceptors use cached fleet formation offsets.
 - Useful counter ships intercept visible targets inside that leash without assembly waiting. Contact loss/leash exit ends interception; completed defense-point orders are retained until the target changes or the point moves >200 units.
-- Ongoing station damage with no defender target in range for 8 s → advance the line 250 units, bounded by the leash. Static clearance checks ignore transient navigation reservations.
-- Critical = latched pressure AND (durability <50% maximum OR estimated loss time <120 s). Critical production buys only affordable ships fitting available population; site mines/satellites and new superweapon charging purchases pause. Paid charging and firing continue.
-- Emergency ranking uses useful combat value / arrival seconds; useful candidates arriving before station loss outrank late candidates. Arrival = matching request-ID queue delay + build time + base-speed travel to last known threat; no bearing → queue + build only.
+- Ongoing station damage with no defender target in range for 8 s → first advance jumps to known gap − own weapon range + ship clearance, bounded by the leash. Static clearance checks ignore transient navigation reservations.
+- Critical = latched pressure AND (durability <50% maximum OR estimated loss time <120 s). Critical production compares affordable ships and squadrons fitting available population, bypassing ordinary fleet ratios; site mines/satellites and new superweapon charging purchases pause. Paid charging and firing continue.
+- Emergency ranking uses useful combat value / arrival seconds; useful candidates arriving before station loss outrank late candidates. Arrival = matching request-ID queue delay + build time + base-speed travel to last known threat; no bearing → queue + build only. Squadron travel uses cruise speed. No known hostile composition → rank combat value / arrival seconds.
 - `EnemyBuildQueue` serializes identical request IDs; different IDs advance in parallel. Human `ProductionQueueSnapshot` is not the AI queue. Normal capital reservations remain unchanged outside critical pressure.
-- Minimum-radius committed ships capture; larger escorts AttackMove to perimeter points at objective radius + their own navigation radius. Strategic fit uses capturer clearance and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
+- Each committed ship captures if its clearance fits the centre or one of four half-radius interior samples; only failed-fit ships AttackMove to perimeter points at objective radius + their own navigation radius. Failed-fit escorts rejoin capture when fit becomes available. Strategic fit uses minimum clearance to admit any fitting capturer and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
 - Reservation API cannot identify owners; `transientReservation` means a ship reservation blocked the sampled point, not proof of a hostile or friendly owner. Tactical order placement still applies clearance.
 - Implementation/remaining secondary tuning → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]]. Tests authored; runtime battle acceptance remains pending.

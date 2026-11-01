@@ -904,6 +904,75 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CriticalStation_BuysFastSquadronWithoutMinimumFleet(bool hasUnlockedShip)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Republic,
+                hasUnlockedShip ? new[] { ShipType.Arquitens } : Array.Empty<ShipType>());
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+                float[] rates = new float[ForceComposition.ClassSlots];
+                rates[(int)ShipClass.Capital] = 100f;
+                var profile = new UnitCombatProfile(ShipClass.Bomber, 100f, 0f, rates,
+                    new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                    Array.Empty<UnitCombatProfile>());
+                foreach (var ship in factionModel.ShipFactionData)
+                {
+                    SetBackingField(ship.Value, nameof(FactionData.BuildTime), 1000);
+                    profiles.Add(UnitTypeId.Ship(ship.Key), profile);
+                }
+                foreach (var squadron in factionModel.SquadronFactionData)
+                {
+                    SetBackingField(squadron.Value, nameof(FactionData.BuildTime), 5);
+                    profiles.Add(UnitTypeId.Squadron(squadron.Key), profile);
+                }
+                Assert.That(factionModel.SquadronFactionData.Count, Is.GreaterThan(0));
+                var pressure = new EnemyStationPressureTracker();
+                pressure.Update(1, 1000f, 1000f, 0f);
+                pressure.Update(1, 499f, 1000f, 1f);
+                pressure.Update(1, 490f, 1000f, 4f);
+                Assert.That(pressure.IsStationCritical, Is.True);
+                var purchases = new RecordingPurchaseProcessor();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(10000f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: new EnemyUnitLimitModel(),
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
+                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(), catalog),
+                    profileCatalog: catalog,
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                    stationPressure: pressure);
+
+                strategy.Start();
+                strategy.Tick(0f);
+
+                Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
         private static void ReserveEconomicFloor(
             EnemyFactionModel factionModel,
             EnemyUnitLimitModel unitLimitModel,

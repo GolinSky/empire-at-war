@@ -163,11 +163,11 @@ namespace EmpireAtWar.Services.Enemy
             // Squadrons support ships, at most one per SHIPS_PER_SQUADRON ships. Cheap squadrons always win on
             // gain per credit and never grow the fleet, so without the cap they would crowd out ships, mining
             // and station upgrades.
-            // With no ship type unlocked (Empire at level 1) squadrons are the only units, so the cap is lifted.
+            // With no ship type unlocked or the station critical, lift the cap for immediate reinforcements.
             bool canOrderShips = CanOrderAnyShip();
-            bool hasSquadronRoom = HasSquadronRoom(shipCount);
+            bool hasSquadronRoom = _stationPressure.IsStationCritical || HasSquadronRoom(shipCount);
             bool hasCounter = TrySelectCounterUnit(
-                _stationPressure.IsStationCritical ||
+                !_stationPressure.IsStationCritical &&
                 canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !hasSquadronRoom),
                 hasSquadronRoom,
                 out UnitTypeId counterId,
@@ -184,7 +184,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
                     $"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};" +
-                    "reason=no affordable ship with available population and production lane");
+                    "reason=no affordable combat unit with available population and production lane");
             }
             if (hasShipOption && !canBuildShip)
             {
@@ -380,7 +380,7 @@ namespace EmpireAtWar.Services.Enemy
             PlayerId self = _owner.Id;
             // Counters answer what the team has seen of the enemy, not the whole hidden map.
             _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
-            if (_hostileForce.IsEmpty)
+            if (_hostileForce.IsEmpty && !_stationPressure.IsStationCritical)
             {
                 return false;
             }
@@ -516,13 +516,15 @@ namespace EmpireAtWar.Services.Enemy
         {
             if (!_stationPressure.IsStationCritical) return 0f;
             float travel = 0f;
-            if (unitTypeId.IsShip && _stationPressure.HasThreatPosition &&
+            if (_stationPressure.HasThreatPosition &&
                 _productionAccess.TryGetProductionBase(out var productionBase))
             {
                 Vector3 threat = new Vector3(_stationPressure.ThreatX, _stationPressure.ThreatY, _stationPressure.ThreatZ);
                 Vector3 offset = threat - productionBase.GetFacade<IEntityTransformFacade>().Transform.position;
                 offset.y = 0f;
-                travel = _profileCatalog.GetShipTravelTime(unitTypeId.ShipType, offset.magnitude);
+                travel = unitTypeId.IsShip
+                    ? _profileCatalog.GetShipTravelTime(unitTypeId.ShipType, offset.magnitude)
+                    : _profileCatalog.GetSquadronTravelTime(unitTypeId.SquadronType, offset.magnitude);
             }
             return _purchaseProcessor.GetQueueRemainingTime(unitTypeId.ToString()) + data.BuildTime + travel;
         }

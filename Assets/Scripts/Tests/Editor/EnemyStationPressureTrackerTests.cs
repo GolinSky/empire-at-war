@@ -13,12 +13,49 @@ namespace EmpireAtWar.Tests.Editor
             tracker.Update(1, 1000f, 1000f, 0f);
             tracker.Update(1, 996f, 1000f, 1f);
             Assert.That(tracker.HasPressure, Is.False);
-            tracker.Update(1, 994f, 1000f, 2f);
+            tracker.Update(1, 994f, 1000f, 4f);
             Assert.That(tracker.HasPressure, Is.True);
             tracker.Update(1, 993f, 1000f, 20f);
-            tracker.Update(1, 993f, 1000f, 49f);
+            tracker.Update(1, 993f, 1000f, 33f);
             Assert.That(tracker.HasPressure, Is.True);
-            tracker.Update(1, 993f, 1000f, 50f);
+            tracker.Update(1, 993f, 1000f, 34f);
+            Assert.That(tracker.HasPressure, Is.False);
+        }
+
+        [Test]
+        public void IsolatedLargeHitDoesNotRecallFleet()
+        {
+            var tracker = new EnemyStationPressureTracker();
+            tracker.Update(1, 1000f, 1000f, 0f);
+            tracker.Update(1, 400f, 1000f, 1f);
+            tracker.Update(1, 400f, 1000f, 4f);
+            Assert.That(tracker.HasPressure, Is.False);
+            Assert.That(tracker.IsStationCritical, Is.False);
+        }
+
+        [Test]
+        public void BurstAndRepeatedGroupObservationsDoNotCountAsSustainedDamage()
+        {
+            var tracker = new EnemyStationPressureTracker();
+            tracker.Update(1, 1000f, 1000f, 0f);
+            tracker.Update(1, 990f, 1000f, 1f);
+            tracker.Update(1, 990f, 1000f, 1f);
+            tracker.Update(1, 980f, 1000f, 2f);
+            tracker.Update(1, 980f, 1000f, 4f);
+            Assert.That(tracker.HasPressure, Is.False);
+        }
+
+        [Test]
+        public void SustainedDamageRefreshesPressureUntilThirtySecondsAfterLastQualifyingLoss()
+        {
+            var tracker = new EnemyStationPressureTracker();
+            tracker.Update(1, 1000f, 1000f, 0f, 2);
+            tracker.Update(1, 996f, 1000f, 27f);
+            tracker.Update(1, 992f, 1000f, 30f);
+            Assert.That(tracker.HasPressure, Is.True);
+            tracker.Update(1, 992f, 1000f, 59f);
+            Assert.That(tracker.HasPressure, Is.True);
+            tracker.Update(1, 992f, 1000f, 60f);
             Assert.That(tracker.HasPressure, Is.False);
         }
 

@@ -59,6 +59,7 @@
 
 - [ ] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
   - 2026-11-01: phases 1–4 implemented: shared damage pressure, threat-facing defense, emergency arrival valuation and stable capture membership. Compilation/import and scoped diff checks passed; runtime acceptance pending. Phase 5 deferred until fresh battle evidence. Tests are not executed under the checkout override.
+  - 2026-11-01: Phase 4b C1–C6 implemented: per-ship interior capture fit, siege-range interception and first-step advance, sustained-damage latch, spaced defenders, emergency squadrons and 10 s reserved-objective grace. Unity compilation/import and scoped diff checks passed; EnemyAi/Combat regressions authored, not run. Phase 5 remains deferred; runtime acceptance pending.
 
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.

@@ -38,12 +38,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         {
             selectedIndex = -1;
             SelectedScore = 0.0;
-            if (hostile.IsEmpty)
+            if (hostile.IsEmpty && !isStationCritical)
             {
                 return false;
             }
 
-            double baseline = Math.Log(CombatMatchup.Advantage(own, hostile));
+            double baseline = hostile.IsEmpty ? 0.0 : Math.Log(CombatMatchup.Advantage(own, hostile));
             double bestScore = 0.0;
             bool hasTimelyCandidate = false;
             for (int i = 0; i < candidates.Count; i++)
@@ -51,7 +51,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 ProductionCandidate candidate = candidates[i];
                 _candidateForce.CopyFrom(own);
                 _candidateForce.AddNew(candidate.Profile, candidate.IncludeHangar);
-                double gain = Math.Log(CombatMatchup.Advantage(_candidateForce, hostile)) - baseline;
+                double gain = hostile.IsEmpty
+                    ? candidate.Profile.GetCombatValue()
+                    : Math.Log(CombatMatchup.Advantage(_candidateForce, hostile)) - baseline;
                 if (gain < MINIMUM_GAIN)
                 {
                     continue;
@@ -62,8 +64,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 double resourceCost = Math.Max(
                     Math.Max(1, candidate.Price) / (double)Math.Max(1f, availableCredits),
                     candidate.UnitCapacity / (double)Math.Max(1, availableCapacity));
-                double score = gain / resourceCost *
-                               _matchups.GetPreference(candidate.Profile.ShipClass, hostile) /
+                float preference = hostile.IsEmpty ? 1f : _matchups.GetPreference(candidate.Profile.ShipClass, hostile);
+                double score = gain / resourceCost * preference /
                                Math.Sqrt(1 + candidate.OwnedCount);
                 if (isStationCritical)
                 {
@@ -74,7 +76,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                         bestScore = 0.0;
                         hasTimelyCandidate = true;
                     }
-                    score = gain * _matchups.GetPreference(candidate.Profile.ShipClass, hostile) /
+                    score = gain * preference /
                             Math.Max(1f, candidate.ArrivalSeconds);
                 }
                 if (score > bestScore)
