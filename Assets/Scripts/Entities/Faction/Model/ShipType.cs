@@ -53,6 +53,7 @@ namespace EmpireAtWar.Models.Factions
         Titan = 214,
         Procursator = 212,
         Allegiance = 213,
+        Gladiator = 216,
 
         //rebellion
         NebulonB = 300,

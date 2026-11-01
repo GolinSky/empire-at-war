@@ -10,6 +10,8 @@ namespace EmpireAtWar.Models.ReinforcementZones
         private readonly bool _isCapturable;
         public PlayerId Owner => _capture.Owner;
         public PlayerId CapturingPlayer => _capture.CapturingPlayer;
+        public PlayerId ContestingFirst => _capture.ContestingFirst;
+        public PlayerId ContestingSecond => _capture.ContestingSecond;
         public float CaptureProgress => _capture.CaptureProgress;
         public bool IsContested => _capture.IsContested;
 

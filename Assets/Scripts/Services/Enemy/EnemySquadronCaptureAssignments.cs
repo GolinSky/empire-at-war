@@ -11,6 +11,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<ISquadron, Vector3> _assignments = new Dictionary<ISquadron, Vector3>();
         private readonly Dictionary<ISquadron, Vector3> _previous = new Dictionary<ISquadron, Vector3>();
 
+        public bool HasTargets => _targets.Count > 0;
+
         public void ClearTargets()
         {
             _targets.Clear();

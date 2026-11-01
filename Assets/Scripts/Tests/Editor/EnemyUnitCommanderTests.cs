@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Enemy;
@@ -75,7 +76,7 @@ namespace EmpireAtWar.Tests.Editor
                 };
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, null, locator, null, roster, null, registry,
-                    new VisionService(roster, fogEnabled: false), owner, null, hazards, null, null, null);
+                    new VisionService(roster, fogEnabled: false), owner, null, hazards, null, null, null, new EnemyStationPressureTracker());
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 typeof(EnemyStrategicContextBuilder).GetField("_localThreat", flags).SetValue(builder, hazardous);
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
@@ -172,6 +173,57 @@ namespace EmpireAtWar.Tests.Editor
             finally { commander.LateDispose(); }
         }
 
+[TestCase(1, true, false, false)]
+        [TestCase(2, true, false, true)]
+        [TestCase(1, false, false, true)]
+        [TestCase(2, true, true, false)]
+        public void SquadronScout_LeavesAvailableSquadronToCapture(
+            int squadronCount, bool hasMine, bool secondGuardsCarrier, bool expectsScout)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            Vector3 minePosition = Vector3.right * 20f;
+            SiteSource sites = hasMine
+                ? new SiteSource(new CaptureSiteStub(minePosition))
+                : new SiteSource();
+            var commander = new EnemySquadronCommander(sites, new ZoneSource(roster), null, roster,
+                null, null, new ScoutPlacement(), new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy));
+            var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
+                .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
+            for (int i = 0; i < squadronCount; i++)
+            {
+                var squadron = new FakeSquadron(i + 1, TestPlayers.Enemy) { CurrentOrder = UnitOrderType.Guard };
+                tracked.Add(squadron, i == 1 && secondGuardsCarrier
+                    ? new CommandedSquadron(null, null, squadron)
+                    : new CommandedSquadron(null, null));
+            }
+
+            typeof(EnemySquadronCommander).GetMethod("AssignCaptureTargets",
+                BindingFlags.Instance | BindingFlags.NonPublic).Invoke(commander, null);
+
+            var scout = (ISquadron)typeof(EnemySquadronCommander)
+                .GetField("_scout", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
+            var assignments = (EnemySquadronCaptureAssignments)typeof(EnemySquadronCommander)
+                .GetField("_captureAssignments", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
+            Assert.That(scout != null, Is.EqualTo(expectsScout));
+            int capturers = 0;
+            foreach (ISquadron squadron in tracked.Keys)
+            {
+                if (!assignments.TryGetTarget(squadron, out Vector3 target)) continue;
+                Assert.That(squadron, Is.Not.SameAs(scout));
+                Assert.That(target, Is.EqualTo(minePosition));
+                capturers++;
+            }
+            Assert.That(capturers, Is.EqualTo(hasMine ? 1 : 0));
+        }
+
+        private sealed class ScoutPlacement : IEnemyStructurePlacementService
+        {
+            public bool TryGetPosition(out Vector3 position) { position = default; return false; }
+            public bool TryGetScoutTarget(out Vector3 position) { position = Vector3.left * 100f; return true; }
+            public void RecordDestroyedPosition(Vector3 position) { }
+            public void Reset() { }
+        }
+
         private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade, IUnitOrderObserverFacade
         {
             public event Action Released;
@@ -254,7 +306,7 @@ namespace EmpireAtWar.Tests.Editor
                     new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, null, locator, null, roster, null, registry,
-                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, null);
+                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, null, new EnemyStationPressureTracker());
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 object[] args = { Vector3.zero, 0f };
@@ -271,6 +323,114 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(find.Invoke(builder, args), Is.SameAs(first));
             }
             finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+[TestCase(0, 100f, true)]
+        [TestCase(3, 100f, false)]
+        [TestCase(0, 2000f, false)]
+        public void RaidDefense_UsesLocalCombatStrengthInsteadOfAnyShipPresence(
+            int ownShipCount, float defenderDistance, bool expectedDefended)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+            EntityLocator locator = new EntityLocator();
+            var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            float[] damage = Enumerable.Repeat(10f, ForceComposition.ClassSlots).ToArray();
+            var profile = new UnitCombatProfile(ShipClass.Capital, 100f, 0f,
+                damage, damage, new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            profiles.Add(UnitTypeId.Ship(ShipType.Venator), profile);
+            var registry = new TeamIntelRegistry();
+            registry.Get(owner.Team).Report(new HostileSighting(1, UnitTypeId.Ship(ShipType.Venator),
+                TestPlayers.Human, new FormationPoint(defenderDistance, 0f), 100f, 0f, 1f, 0f));
+            var builder = new EnemyStrategicContextBuilder(null, null, null, locator, null, roster,
+                new ForceCompositionBuilder(locator, catalog), registry, new VisionService(roster, fogEnabled: false),
+                owner, null, new TestHazards(), null, null, null, new EnemyStationPressureTracker());
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var ownForce = (ForceComposition)typeof(EnemyStrategicContextBuilder)
+                .GetField("_ownForce", flags).GetValue(builder);
+            for (int i = 0; i < ownShipCount; i++) ownForce.AddNew(profile, false);
+            MethodInfo defended = typeof(EnemyStrategicContextBuilder).GetMethod("IsDefended", flags);
+
+            Assert.That(defended.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.EqualTo(expectedDefended));
+        }
+
+[TestCase(false)]
+        [TestCase(true)]
+        public void RaidSelection_ExposedMineOutranksCloserStructureAndCachedRaid(bool cacheStructure)
+        {
+            GameObject structureView = new GameObject("Structure");
+            GameObject mineView = new GameObject("Mine");
+            try
+            {
+                structureView.transform.position = Vector3.right * 5f;
+                mineView.transform.position = Vector3.right * 20f;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                EntityLocator locator = new EntityLocator();
+                var structure = new FakeEntity(new FakeHealthModel(structureView.transform), TestPlayers.Human, 1)
+                    { IsUnit = false };
+                var mine = new FakeEntity(new FakeHealthModel(mineView.transform), TestPlayers.Human, 2)
+                    { IsUnit = false, IsMine = true };
+                locator.AddEntity(structure);
+                var builder = new EnemyStrategicContextBuilder(null, null, null, locator, null, roster,
+                    new ForceCompositionBuilder(locator, null), new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
+                    roster.Get(TestPlayers.Enemy), null, new TestHazards(), null, null, null, new EnemyStationPressureTracker());
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod("FindRaidTarget", flags);
+                object[] args = { Vector3.zero, 0f };
+                Assert.That(find.Invoke(builder, args), Is.SameAs(structure));
+                if (cacheStructure)
+                    typeof(EnemyStrategicContextBuilder).GetField("_raidTarget", flags).SetValue(builder, structure);
+
+                locator.AddEntity(mine);
+
+                Assert.That(find.Invoke(builder, args), Is.SameAs(mine));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(structureView);
+                UnityEngine.Object.DestroyImmediate(mineView);
+            }
+        }
+
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        public void RaidSelection_AlliedOrHiddenMineCannotReplaceVisibleHostileStructure(bool allied, bool visible)
+        {
+            GameObject structureView = new GameObject("Structure");
+            GameObject mineView = new GameObject("Mine");
+            GameObject scoutView = new GameObject("Scout");
+            try
+            {
+                structureView.transform.position = Vector3.right * 5f;
+                mineView.transform.position = Vector3.right * 100f;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                EntityLocator locator = new EntityLocator();
+                var structure = new FakeEntity(new FakeHealthModel(structureView.transform), TestPlayers.Human, 1)
+                    { IsUnit = false };
+                var mine = new FakeEntity(new FakeHealthModel(mineView.transform),
+                    allied ? TestPlayers.Enemy : TestPlayers.Human, 2) { IsUnit = false, IsMine = true };
+                locator.AddEntity(mine);
+                locator.AddEntity(structure);
+                var vision = new VisionService(roster);
+                vision.Register(TestPlayers.Enemy, scoutView.transform, visible ? 200f : 20f);
+                var builder = new EnemyStrategicContextBuilder(null, null, null, locator, null, roster,
+                    new ForceCompositionBuilder(locator, null), new TeamIntelRegistry(), vision, roster.Get(TestPlayers.Enemy),
+                    null, new TestHazards(), null, null, null, new EnemyStationPressureTracker());
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                typeof(EnemyStrategicContextBuilder).GetField("_raidTarget", flags).SetValue(builder, mine);
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod("FindRaidTarget", flags);
+
+                Assert.That(find.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.SameAs(structure));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(structureView);
+                UnityEngine.Object.DestroyImmediate(mineView);
+                UnityEngine.Object.DestroyImmediate(scoutView);
+            }
         }
 
         [TestCase("FindClosestKnownShip")]
@@ -296,8 +456,8 @@ namespace EmpireAtWar.Tests.Editor
                 VisionService vision = new VisionService(roster);
                 vision.Register(owner.Id, scoutView.transform, 20f);
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
-                    null, null, null, locator, null, roster, null, registry, vision, owner, null, new TestHazards(),
-                    null, null, null);
+                    null, null, null, locator, null, roster, new ForceCompositionBuilder(locator, null), registry, vision, owner, null, new TestHazards(),
+                    null, null, null, new EnemyStationPressureTracker());
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
                 object[] args = { Vector3.zero, 0f };
@@ -341,6 +501,340 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CaptureZone_LargeForceAssemblesBeforeAdvancing()
+        {
+            var ships = new List<IShipEntity>();
+            for (int i = 0; i < 6; i++)
+                ships.Add(new FakeShip(i < 4 ? Vector3.zero : Vector3.right * FleetCohesion.RADIUS * 3f, i + 1));
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var decision = new EnemyStrategicDecision(state: EnemyStrategicState.CaptureZone,
+                committedShipCount: 6, reason: "test");
+
+            executor.Execute(decision, Context(ships));
+
+            Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.AttackMove), Is.False);
+            Assert.That(executor.BodyCount, Is.EqualTo(4));
+            Assert.That(executor.RallyingCount, Is.EqualTo(2));
+            foreach (FakeShip ship in ships) ship.WorldPosition = Vector3.zero;
+            orders.Calls.Clear();
+            executor.Execute(decision, Context(ships));
+            Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.AttackMove)
+                .Sum(call => call.Receivers.Count),
+                Is.EqualTo(6));
+        }
+
+        [Test]
+        public void HuntFleet_UsesAllUsefulCommittedShipsAgainstUndefendedTarget()
+        {
+            var screen = new FakeShip(Vector3.zero, 1);
+            var strike = new FakeShip(Vector3.zero, 2);
+            GameObject view = new GameObject("Target");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 3);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [screen] = CombatForce(100f, 0.1f, 20f),
+                    [strike] = CombatForce(100f, 20f)
+                };
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                executor.Execute(new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet, committedShipCount: 2, reason: "test"),
+                    Context(new IShipEntity[] { screen, strike }, target, shipForces: forces));
+
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Receivers.Select(entity => entity.Id),
+                    Is.EquivalentTo(new long[] { strike.EntityId, screen.EntityId }));
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Guard), Is.False);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [Test]
+        public void HuntFleet_SelectedAntiFighterCounterActivelyEngagesDefenders()
+        {
+            var screen = new FakeShip(Vector3.zero, 1);
+            var strike = new FakeShip(Vector3.zero, 2);
+            GameObject view = new GameObject("Target");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 3);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [screen] = CombatForce(100f, 0f, 20f),
+                    [strike] = CombatForce(100f, 20f)
+                };
+                var defenders = new Dictionary<IEntity, ForceComposition>
+                {
+                    [target] = CombatForce(100f, 10f, shipClass: ShipClass.Fighter)
+                };
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                var decision = new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet,
+                    committedShipCount: 2, reason: "test");
+                EnemyStrategicContext context = Context(new IShipEntity[] { screen, strike }, target,
+                    shipForces: forces, targetForces: defenders);
+
+                Assert.That(executor.CanAssemble(decision, context), Is.True);
+                executor.Execute(decision, context);
+
+                Assert.That(executor.BodyCount, Is.EqualTo(2), "Both strike and counter are required for readiness.");
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Receivers.Select(entity => entity.Id), Is.EqualTo(new long[] { strike.EntityId }));
+                OrderCall screenOrder = orders.Calls.Single(call => call.Action == UnitActionId.AttackMove);
+                Assert.That(screenOrder.Receivers.Select(entity => entity.Id), Is.EqualTo(new long[] { screen.EntityId }));
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Guard), Is.False);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void HuntFleet_WaitsForRequiredStrikeMembersBeforeLaunching(bool defended)
+        {
+            var first = new FakeShip(Vector3.zero, 1);
+            var second = new FakeShip(Vector3.right * FleetCohesion.RADIUS * 3f, 2);
+            GameObject view = new GameObject("Target");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 3);
+                var defenders = new Dictionary<IEntity, ForceComposition>
+                {
+                    [target] = defended ? CombatForce(150f, 15f) : new ForceComposition()
+                };
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                var decision = new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet, committedShipCount: 2, reason: "test");
+                executor.Execute(decision, Context(new IShipEntity[] { first, second }, target,
+                    targetForces: defenders));
+
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Attack), Is.False);
+                OrderCall rally = orders.Calls.Single(call => call.Action == UnitActionId.Guard);
+                Assert.That(rally.Receivers.Select(entity => entity.Id), Is.EqualTo(new long[] { second.EntityId }));
+                Assert.That(rally.Target.Id, Is.EqualTo(first.EntityId));
+
+                second.WorldPosition = Vector3.right * 10f;
+                orders.Calls.Clear();
+                executor.Execute(decision, Context(new IShipEntity[] { first, second }, target,
+                    targetForces: defenders));
+
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Receivers.Select(entity => entity.Id),
+                    Is.EquivalentTo(new long[] { first.EntityId, second.EntityId }));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [Test]
+        public void HuntFleet_StopsAllocatingScreensOnceDefenderDemandIsCovered()
+        {
+            var strike = new FakeShip(Vector3.zero, 1);
+            var first = new FakeShip(Vector3.zero, 2);
+            var second = new FakeShip(Vector3.zero, 3);
+            var third = new FakeShip(Vector3.zero, 4);
+            GameObject view = new GameObject("Target");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 5);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [strike] = CombatForce(100f, 20f),
+                    [first] = CombatForce(100f, 1f, 100f),
+                    [second] = CombatForce(100f, 1f, 100f),
+                    [third] = CombatForce(100f, 1f, 100f)
+                };
+                var defenders = new Dictionary<IEntity, ForceComposition>
+                {
+                    [target] = CombatForce(100f, 10f, shipClass: ShipClass.Fighter)
+                };
+                var orders = new FakeOrderService();
+                new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+                    state: EnemyStrategicState.HuntFleet, committedShipCount: 4, reason: "test"),
+                    Context(new IShipEntity[] { strike, first, second, third }, target,
+                        shipForces: forces, targetForces: defenders));
+
+                Assert.That(orders.Calls.Single(call => call.Action == UnitActionId.Attack).Receivers.Count,
+                    Is.EqualTo(3));
+                Assert.That(orders.Calls.Single(call => call.Action == UnitActionId.AttackMove).Receivers.Count,
+                    Is.EqualTo(1));
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Guard), Is.False);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [Test]
+        public void DefendBase_InterceptsSiegeAt1755ButKeepsLeashBounded()
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            var stationView = new GameObject("Station");
+            var attackerView = new GameObject("Siege attacker");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 2);
+                var attacker = new FakeEntity(new FakeHealthModel(attackerView.transform), TestPlayers.Human, 3)
+                    { WeaponRange = 1755f };
+                attackerView.transform.position = Vector3.right * 1755f;
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                var decision = new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 1);
+                executor.Execute(decision, Context(new[] { ship }, ownBase: station, defenseTarget: attacker));
+                Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.Attack));
+                Assert.That(orders.Calls.Single().Target, Is.SameAs(attacker));
+
+                orders.Calls.Clear();
+                attackerView.transform.position = Vector3.right * 5000f;
+                executor.Execute(decision, Context(new[] { ship }, ownBase: station, defenseTarget: attacker));
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Attack), Is.False);
+                Assert.That(orders.Calls.Single().Point.magnitude,
+                    Is.LessThanOrEqualTo(station.NavigationRadius + 1755f + 300f));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(attackerView);
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
+        [Test]
+        public void DefendBase_SameRangeShipsReceiveSeparateThreatFacingSlots()
+        {
+            var first = new FakeShip(Vector3.zero, 1);
+            var second = new FakeShip(Vector3.zero, 2);
+            var stationView = new GameObject("Station");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 3);
+                var pressure = new EnemyStationPressureTracker();
+                pressure.Update(station.Id, 100f, 100f, Time.time, station.Id);
+                pressure.ObserveThreatPosition(0f, 0f, 2000f);
+                var orders = new FakeOrderService();
+                var context = Context(new IShipEntity[] { first, second }, ownBase: station, stationPressure: pressure);
+                foreach (FakeEntity receiver in context.Receivers.Values) receiver.WeaponRange = 500f;
+                new EnemyTaskForceExecutor(orders).Execute(
+                    new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 2),
+                    context);
+
+                OrderCall call = orders.Calls.Single();
+                Assert.That(call.Receivers.Count, Is.EqualTo(2));
+                Assert.That(call.Destinations[0].x * call.Destinations[1].x, Is.LessThan(0f));
+                Assert.That(call.Destinations.All(point => point.z > 0f), Is.True);
+                Assert.That(Vector3.Distance(call.Destinations[0], call.Destinations[1]),
+                    Is.GreaterThan(first.NavigationRadius + second.NavigationRadius));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(stationView); }
+        }
+
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void DefendBase_FacesKnownThreatOrUsesRingWithoutRepullingCompletedOrders(bool hasBearing)
+        {
+            var ship = new FakeShip(Vector3.right * 4000f, 1);
+            GameObject stationView = new GameObject("Station");
+            try
+            {
+                stationView.transform.position = Vector3.left * 1000f;
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 2);
+                var pressure = new EnemyStationPressureTracker();
+                pressure.Update(station.Id, 100f, 100f, Time.time);
+                pressure.Update(station.Id, 99f, 100f, Time.time, station.Id);
+                if (hasBearing) pressure.ObserveThreatPosition(-1000f, 0f, 4000f);
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                var decision = new EnemyStrategicDecision(state: EnemyStrategicState.DefendBase,
+                    committedShipCount: 1, reason: "test");
+                EnemyStrategicContext context = Context(new[] { ship }, ownBase: station, stationPressure: pressure);
+                ((FakeEntity)context.Receivers[ship]).WeaponRange = 5000f;
+
+                executor.Execute(decision, context);
+
+                Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
+                Vector3 offset = orders.Calls.Single().Point - stationView.transform.position;
+                Assert.That(offset.magnitude, Is.GreaterThan(station.NavigationRadius));
+                Assert.That(offset.magnitude, Is.LessThanOrEqualTo(station.NavigationRadius + 1500f));
+                Assert.That(Vector3.Dot(offset.normalized, hasBearing ? Vector3.forward : Vector3.right),
+                    Is.GreaterThan(0.99f));
+                ship.CurrentOrder = UnitOrderType.None;
+                orders.Calls.Clear();
+                executor.Execute(decision, context);
+                Assert.That(orders.Calls, Is.Empty, "Completed defense orders must not pull ships home again.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
+        [Test]
+        public void HuntFleet_WaitingBodyKeepsExistingGuardOrders()
+        {
+            var anchor = new FakeShip(Vector3.zero, 1);
+            var escort = new FakeShip(Vector3.right * 10f, 2);
+            var distant = new FakeShip(Vector3.right * FleetCohesion.RADIUS * 3f, 3);
+            GameObject view = new GameObject("Target");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 4);
+                var defenders = new Dictionary<IEntity, ForceComposition> { [target] = CombatForce(250f, 25f) };
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                var decision = new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet,
+                    committedShipCount: 3, reason: "test");
+                EnemyStrategicContext context = Context(new IShipEntity[] { anchor, escort, distant }, target,
+                    targetForces: defenders);
+                executor.Execute(decision, context);
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Attack), Is.False);
+                Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.Guard)
+                    .SelectMany(call => call.Receivers).Select(entity => entity.Id),
+                    Is.EquivalentTo(new long[] { escort.EntityId, distant.EntityId }));
+                escort.CurrentOrder = UnitOrderType.Guard;
+                distant.CurrentOrder = UnitOrderType.Guard;
+                orders.Calls.Clear();
+
+                executor.Execute(decision, context);
+
+                Assert.That(orders.Calls, Is.Empty);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [TestCase(EnemyStrategicState.DefendBase)]
+        [TestCase(EnemyStrategicState.EngageLocal)]
+        public void EmergencyCombat_DoesNotWaitForOffensiveStrikeReadiness(EnemyStrategicState state)
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            GameObject view = new GameObject("Threat");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 1000f, Shields = 0f },
+                    TestPlayers.Human, 2);
+                var defenders = new Dictionary<IEntity, ForceComposition> { [target] = CombatForce(1000f, 100f) };
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                EnemyStrategicContext context = Context(new IShipEntity[] { ship }, fleetTarget: target,
+                    defenseTarget: target, localThreatTarget: target, targetForces: defenders);
+                executor.Execute(new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet,
+                    committedShipCount: 1, reason: "test"), context);
+                Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Attack), Is.False);
+                orders.Calls.Clear();
+
+                executor.Execute(new EnemyStrategicDecision(state: state, committedShipCount: 1, reason: "test"),
+                    context);
+
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Target, Is.SameAs(target));
+                Assert.That(attack.Receivers.Single().Id, Is.EqualTo(ship.EntityId));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [Test]
         public void HuntFleet_PreservesSurvivorOffsetsAcrossDecisions()
         {
             FakeShip first = new FakeShip(id: 1, position: Vector3.zero);
@@ -348,7 +842,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip third = new FakeShip(id: 3, position: Vector3.zero);
             GameObject view = new GameObject("Target");
             FakeEntity target = new FakeEntity(id: 4, side: TestPlayers.Human,
-                health: new FakeHealthModel(view.transform));
+                health: new FakeHealthModel(view.transform) { Hull = 900f, Shields = 0f });
             FakeOrderService orders = new FakeOrderService();
             EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
             try
@@ -356,35 +850,39 @@ namespace EmpireAtWar.Tests.Editor
                 executor.Execute(new EnemyStrategicDecision(
                     state: EnemyStrategicState.HuntFleet, committedShipCount: 3, reason: "test"),
                     Context(new IShipEntity[] { first, second, third }, target));
-                Vector3 secondOffset = orders.Calls[0].Offsets[1];
-                Vector3 thirdOffset = orders.Calls[0].Offsets[2];
+                OrderCall firstAttack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Vector3 secondOffset = firstAttack.Offsets[1];
+                Vector3 thirdOffset = firstAttack.Offsets[2];
                 orders.Calls.Clear();
 
                 executor.Execute(new EnemyStrategicDecision(
                     state: EnemyStrategicState.HuntFleet, committedShipCount: 2, reason: "test"),
                     Context(new IShipEntity[] { second, third }, target));
 
-                Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Attack));
-                Assert.That(orders.Calls[0].Offsets[0], Is.EqualTo(secondOffset));
-                Assert.That(orders.Calls[0].Offsets[1], Is.EqualTo(thirdOffset));
+                OrderCall secondAttack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(secondAttack.Offsets[0], Is.EqualTo(secondOffset));
+                Assert.That(secondAttack.Offsets[1], Is.EqualTo(thirdOffset));
             }
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
-        [Test]
-        public void DefendBase_InterceptsAttackerWithArrivedRetreater()
+        [TestCase(1400f, UnitActionId.Attack)]
+        [TestCase(2000f, UnitActionId.AttackMove)]
+        public void DefendBase_InterceptsArrivedRetreaterOnlyWithinStationLeash(float distance, UnitActionId action)
         {
             FakeShip defender = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip idle = new FakeShip(id: 2, position: Vector3.right);
             GameObject view = new GameObject("Station attacker");
+            GameObject stationView = new GameObject("Station");
             FakeEntity station = new FakeEntity(id: 3, side: TestPlayers.Enemy,
-                health: new FakeHealthModel(view.transform));
+                health: new FakeHealthModel(stationView.transform));
             FakeEntity attacker = new FakeEntity(id: 4, side: TestPlayers.Human,
                 health: new FakeHealthModel(view.transform));
             FakeOrderService orders = new FakeOrderService();
             EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
             try
             {
+                view.transform.position = Vector3.forward * distance;
                 EnemyStrategicContext context = Context(new IShipEntity[] { defender, idle },
                     ownBase: station, defenseTarget: attacker);
                 executor.Execute(new EnemyStrategicDecision(
@@ -395,11 +893,18 @@ namespace EmpireAtWar.Tests.Editor
                     state: EnemyStrategicState.DefendBase, committedShipCount: 1, reason: "test"), context);
 
                 Assert.That(orders.Calls.Count, Is.EqualTo(1));
-                Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Attack));
-                Assert.That(orders.Calls[0].Target, Is.SameAs(attacker));
+                Assert.That(orders.Calls[0].Action, Is.EqualTo(action));
+                if (action == UnitActionId.Attack)
+                    Assert.That(orders.Calls[0].Target, Is.SameAs(attacker));
+                else
+                    Assert.That(orders.Calls[0].Point.magnitude, Is.LessThanOrEqualTo(station.NavigationRadius + 1500f));
                 Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(defender.EntityId));
             }
-            finally { UnityEngine.Object.DestroyImmediate(view); }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(view);
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
         }
 
         [Test]
@@ -452,7 +957,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureZone_ArrivalStaysAssignedAndOnlyNewReinforcementReceivesOrder()
+        public void CaptureZone_ArrivalStaysAssignedAndReinforcementJoinsOneGroupOrder()
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip reinforcement = new FakeShip(id: 2, position: Vector3.right);
@@ -469,8 +974,8 @@ namespace EmpireAtWar.Tests.Editor
 
             executor.Execute(decision, Context(new IShipEntity[] { ship, reinforcement }));
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Receivers.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(reinforcement.EntityId));
+            Assert.That(orders.Calls[0].Receivers.Select(receiver => receiver.Id),
+                Is.EquivalentTo(new[] { ship.EntityId, reinforcement.EntityId }));
         }
 
         [Test]
@@ -490,8 +995,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(orders.Calls, Is.Empty);
         }
 
-[Test]
-        public void CaptureZone_StoppedOutsideObjectiveReissuesOnlyIdleShip()
+        [Test]
+        public void CaptureZone_StoppedOutsideObjectiveReissuesOneSharedGroupOrder()
         {
             FakeShip stopped = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip engaging = new FakeShip(id: 2, position: Vector3.right);
@@ -508,8 +1013,8 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
-            Assert.That(orders.Calls[0].Receivers.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(stopped.EntityId));
+            Assert.That(orders.Calls[0].Receivers.Select(receiver => receiver.Id),
+                Is.EquivalentTo(new[] { stopped.EntityId, engaging.EntityId }));
         }
 
         [TestCase("relay-2", EnemyCaptureObjectiveType.ReinforcementZone, false)]
@@ -602,6 +1107,31 @@ namespace EmpireAtWar.Tests.Editor
                 distance, stationRadius, hostileRadius, weaponRange), Is.EqualTo(expected));
         }
 
+        [Test]
+        public void StationPressure_DepletedShieldsStillUseFullMaximumDurability()
+        {
+            GameObject view = new GameObject("Damaged restored station");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                var station = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 400f, Shields = 0f },
+                    owner.Id, 10) { MaximumDurability = 1000f };
+                var locator = new EntityLocator();
+                var tracker = new EnemyStationPressureTracker();
+                var builder = new EnemyStrategicContextBuilder(null, null, null, locator, null, roster,
+                    new ForceCompositionBuilder(locator, new UnitCombatProfileCatalog(null, null, null, null)),
+                    new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false), owner,
+                    null, new TestHazards(), null, null, null, tracker);
+
+                typeof(EnemyStrategicContextBuilder).GetMethod("BuildBaseThreat",
+                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(builder, new object[] { station });
+
+                Assert.That(tracker.DurabilityFraction, Is.EqualTo(0.4f));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
 [TestCase("attacking", true)]
         [TestCase("weapon-tracked", true)]
         [TestCase("unrelated", false)]
@@ -644,16 +1174,30 @@ namespace EmpireAtWar.Tests.Editor
                 profiles.Add(attacker.UnitTypeId, new UnitCombatProfile(ShipClass.Capital, 1f, 1f,
                     new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
                     new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()));
+                var pressure = new EnemyStationPressureTracker();
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, null, locator, null, roster, new ForceCompositionBuilder(locator, catalog),
                     registry, new VisionService(roster, fogEnabled: condition == "hidden"), owner,
-                    null, new TestHazards(), null, null, null);
+                    null, new TestHazards(), null, null, null, pressure);
 
                 object target = typeof(EnemyStrategicContextBuilder)
                     .GetMethod("BuildBaseThreat", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(builder, new object[] { station });
 
-                if (expected) Assert.That(target, Is.SameAs(attacker));
+                if (expected)
+                {
+                    Assert.That(target, Is.SameAs(attacker));
+                    attacker.Modifiers.SetCloaked(true);
+                    EnemyStrategicContextBuilder newGroup = builder.CreateGroupBuilder();
+                    object hiddenTarget = typeof(EnemyStrategicContextBuilder)
+                        .GetMethod("BuildBaseThreat", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Invoke(newGroup, new object[] { station });
+                    Assert.That(hiddenTarget, Is.Null, "Hidden attackers supply no live target.");
+                    Assert.That(pressure.HasPressure, Is.True, "A new group keeps player-wide pressure after contact loss.");
+                    Assert.That(typeof(EnemyStrategicContextBuilder)
+                        .GetField("_stationPressure", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(newGroup),
+                        Is.SameAs(pressure));
+                }
                 else Assert.That(target, Is.Null);
             }
             finally
@@ -946,6 +1490,49 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TaskGroups_MainForceRecruitsDistantShipsAndKeepsMembershipWhileRallying()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, new ZoneSource(roster),
+                new SiteSource(), new TestHazards());
+            FakeOrderService orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder,
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+            var ships = Enumerable.Range(1, 6).Select(id => (IShipEntity)new FakeShip(
+                Vector3.right * id * 2000f, id) { CurrentOrder = UnitOrderType.Attack }).ToList();
+
+            planner.Reconcile(ships);
+            Assert.That(planner.Groups.Count, Is.EqualTo(1));
+            EnemyShipTaskGroup main = planner.Groups[0];
+            Assert.That(main.IsMainForce, Is.True);
+            Assert.That(main.Ships, Is.EquivalentTo(ships));
+            ships.Add(new FakeShip(Vector3.left * 10000f, 7) { CurrentOrder = UnitOrderType.Attack });
+            planner.Reconcile(ships);
+            Assert.That(planner.Groups.Single(), Is.SameAs(main));
+            Assert.That(main.Ships, Is.EquivalentTo(ships));
+        }
+
+        [Test]
+        public void TaskGroups_StationPressureConcentratesEvenSmallSeparatedForces()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, new ZoneSource(roster),
+                new SiteSource(), new TestHazards());
+            FakeOrderService orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder,
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+            IShipEntity[] ships = {
+                new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.Attack },
+                new FakeShip(Vector3.right * 5000f, 2) { CurrentOrder = UnitOrderType.Attack }
+            };
+            planner.Reconcile(ships);
+            Assert.That(planner.Groups.Count, Is.EqualTo(2));
+            planner.Reconcile(ships, stationPressure: true);
+            Assert.That(planner.Groups.Count, Is.EqualTo(1));
+            Assert.That(planner.Groups[0].Ships, Is.EquivalentTo(ships));
+        }
+
+        [Test]
         public void CaptureSelection_SkipsAnotherGroupsReservedObjective()
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
@@ -958,6 +1545,130 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(SelectCapture(builder).Position, Is.EqualTo(Vector3.right * 100f));
         }
 
+        [Test]
+        public void CaptureSelection_ReservedObjectiveRemainsDistinctFromNoViableObjective()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            ZoneSource zones = new ZoneSource(roster, Vector3.right * 10f);
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, zones, new SiteSource(), new TestHazards());
+            string objectiveId = SelectCapture(builder).Id;
+            typeof(EnemyStrategicContextBuilder).GetField("_reservedCaptureObjectives",
+                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, new HashSet<string> { objectiveId });
+
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.That(SelectCapture(builder, i), Is.Null);
+                Assert.That(builder.CaptureReservedByOtherGroup, Is.True);
+            }
+            zones.Zones[0].Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
+            Assert.That(SelectCapture(builder, 10f), Is.Null);
+            Assert.That(builder.CaptureReservedByOtherGroup, Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CaptureZone_CapitalCapturesUnlessItsClearanceFails(bool blocked)
+        {
+            var scout = new FakeShip(Vector3.zero, 1) { NavigationRadius = 5f };
+            var capital = new FakeShip(Vector3.zero, 2) { NavigationRadius = 100f };
+            var objective = new EnemyCaptureObjective("centre", EnemyCaptureObjectiveType.ReinforcementZone,
+                PlayerId.None, Vector3.right * 500f, 50f, 0f);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 2),
+                Context(new IShipEntity[] { capital, scout }, captureObjective: objective,
+                    isPointClear: (point, radius) => !blocked || radius < 100f));
+
+            OrderCall capture = orders.Calls.Single(call => call.Receivers.Any(ship => ship.Id == scout.EntityId));
+            OrderCall escort = orders.Calls.Single(call => call.Receivers.Any(ship => ship.Id == capital.EntityId));
+            Assert.That(capture.Point, Is.EqualTo(objective.Position));
+            Assert.That(Vector3.Distance(escort.Point, objective.Position), Is.EqualTo(blocked ? 150f : 0f));
+            Assert.That(orders.Calls.Count, Is.EqualTo(blocked ? 2 : 1));
+            Assert.That(capture.Receivers.Count, Is.EqualTo(blocked ? 1 : 2));
+        }
+
+[Test]
+        public void CaptureZone_CapitalUsesClearInteriorSampleAndRejoinsAfterPerimeterOrder()
+        {
+            var scout = new FakeShip(Vector3.zero, 1) { NavigationRadius = 5f };
+            var capital = new FakeShip(Vector3.zero, 2) { NavigationRadius = 100f };
+            var objective = new EnemyCaptureObjective("centre", EnemyCaptureObjectiveType.ReinforcementZone,
+                PlayerId.None, Vector3.right * 500f, 50f, 0f);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 2);
+            bool blocked = true;
+            var context = Context(new IShipEntity[] { capital, scout }, captureObjective: objective,
+                isPointClear: (point, radius) => radius < 100f ||
+                    !blocked && point.x > objective.Position.x);
+            executor.Execute(decision, context);
+            capital.CurrentOrder = UnitOrderType.AttackMove;
+            scout.CurrentOrder = UnitOrderType.AttackMove;
+            orders.Calls.Clear();
+            blocked = false;
+
+            executor.Execute(decision, context);
+
+            Assert.That(orders.Calls.Single().Receivers.Single().Id, Is.EqualTo(capital.EntityId));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(objective.Position + Vector3.right * 25f));
+        }
+
+        [Test]
+        public void CaptureSelection_CapitalClearanceDoesNotBlockSmallCapturer()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            Vector3 center = Vector3.right * 100f;
+            var obstacles = new RetreatObstacleProvider();
+            obstacles.Contacts.Add(new RadarContact(center + Vector3.forward * 30f, 5f, false));
+            var hazards = new TestHazards();
+            var navigation = new ShipNavigationService(obstacles, hazards);
+            try
+            {
+                var builder = CaptureBuilder(roster, new ZoneSource(roster, center), new SiteSource(), hazards, navigation);
+                var ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder)
+                    .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
+                ships.Clear();
+                ships.Add(new FakeShip(Vector3.zero, 1) { NavigationRadius = 5f });
+                ships.Add(new FakeShip(Vector3.zero, 2) { NavigationRadius = 100f });
+                Assert.That(navigation.IsPositionClear(center, 100f, false), Is.False);
+                Assert.That(SelectCapture(builder).Position, Is.EqualTo(center));
+                obstacles.Contacts.Add(new RadarContact(center, 30f, false));
+                Assert.That(SelectCapture(builder), Is.Null, "Static obstacles still block the small capturer.");
+            }
+            finally { navigation.Dispose(); }
+        }
+
+        [Test]
+        public void CaptureSelection_IgnoresOwnDestinationReservationButKeepsObstacleRejection()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            Vector3 center = Vector3.right * 100f;
+            var obstacles = new RetreatObstacleProvider();
+            var hazards = new TestHazards();
+            var navigation = new ShipNavigationService(obstacles, hazards);
+            try
+            {
+                var builder = CaptureBuilder(roster, new ZoneSource(roster, center), new SiteSource(), hazards, navigation);
+                var ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder)
+                    .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
+                ((FakeShip)ships[0]).WorldPosition = Vector3.zero;
+                var range = new Vector2Range();
+                Type rangeType = range.GetType().BaseType;
+                rangeType.GetField("<Min>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(range, Vector2.one * -250f);
+                rangeType.GetField("<Max>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(range, Vector2.one * 250f);
+                var traveler = new NavigationRetreatFacade(navigation, range);
+                traveler.Retreat(center);
+
+                Assert.That(navigation.IsPositionClear(center, 5f), Is.False);
+                Assert.That(SelectCapture(builder).Position, Is.EqualTo(center));
+                obstacles.Contacts.Add(new RadarContact(center, 30f, false));
+                Assert.That(SelectCapture(builder), Is.Null);
+            }
+            finally { navigation.Dispose(); }
+        }
+
         private static EnemyStrategicContextBuilder CaptureBuilder(PlayerRoster roster,
             ZoneSource zones, SiteSource sites, TestHazards hazards, IShipNavigationService navigation = null)
         {
@@ -967,7 +1678,7 @@ namespace EmpireAtWar.Tests.Editor
                 new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
                 roster.Get(TestPlayers.Enemy), null, hazards, zones,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"),
-                navigation);
+                navigation, new EnemyStationPressureTracker());
             List<IShipEntity> ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder)
                 .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
             foreach (ReinforcementZonePresenter zone in zones.Zones)
@@ -982,14 +1693,49 @@ namespace EmpireAtWar.Tests.Editor
                 .GetMethod("SelectCaptureObjective", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(builder, new object[] { Vector3.zero, now });
 
+        private static ForceComposition CombatForce(float hull, float capitalDps, float fighterDps = 0f,
+            ShipClass shipClass = ShipClass.Capital)
+        {
+            var damage = new float[ForceComposition.ClassSlots];
+            damage[(int)ShipClass.Capital] = capitalDps;
+            damage[(int)ShipClass.Fighter] = fighterDps;
+            var force = new ForceComposition();
+            force.AddNew(new UnitCombatProfile(shipClass, hull, 0f, damage, damage,
+                new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()), false);
+            return force;
+        }
+
         private static EnemyStrategicContext Context(IReadOnlyList<IShipEntity> ships,
             IEntity fleetTarget = null, IEntity ownBase = null, IEntity defenseTarget = null,
             EnemyCaptureObjective captureObjective = null, Vector3? retreatAnchor = null,
-            bool hasSafeRetreat = true)
+            bool hasSafeRetreat = true,
+            IReadOnlyDictionary<IShipEntity, ForceComposition> shipForces = null,
+            IReadOnlyDictionary<IEntity, ForceComposition> targetForces = null,
+            IEntity localThreatTarget = null,
+            EnemyStationPressureTracker stationPressure = null,
+            Func<Vector3, float, bool> isPointClear = null)
         {
+            if (ownBase != null && stationPressure == null)
+            {
+                stationPressure = new EnemyStationPressureTracker();
+                stationPressure.Update(ownBase.Id, 100f, 100f, Time.time, defenseTarget == null ? 0 : defenseTarget.Id);
+                if (defenseTarget != null)
+                {
+                    Vector3 threat = defenseTarget.GetFacade<IEntityTransformFacade>().Transform.position;
+                    stationPressure.ObserveThreatPosition(threat.x, threat.y, threat.z);
+                }
+            }
             Dictionary<IShipEntity, IEntity> receivers = new Dictionary<IShipEntity, IEntity>();
+            var defaultShipForces = new Dictionary<IShipEntity, ForceComposition>();
             foreach (IShipEntity ship in ships)
-                receivers.Add(ship, new FakeEntity(id: ship.EntityId, side: TestPlayers.Enemy, health: null));
+            {
+                receivers.Add(ship, new FakeEntity(id: ship.EntityId, side: TestPlayers.Enemy,
+                    health: new FakeHealthModel(null)));
+                defaultShipForces.Add(ship, CombatForce(100f, 10f));
+            }
+            var defaultTargetForces = new Dictionary<IEntity, ForceComposition>();
+            foreach (IEntity target in new[] { fleetTarget, defenseTarget, localThreatTarget })
+                if (target != null) defaultTargetForces[target] = new ForceComposition();
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 victoryCondition: BattleVictoryCondition.DestroyEnemyFleet, difficulty: EnemyAiDifficulty.UltraHard,
                 ownShipCount: ships.Count, enemyShipCount: 0, ownedCapturableZoneCount: 0,
@@ -1002,7 +1748,10 @@ namespace EmpireAtWar.Tests.Editor
             return new EnemyStrategicContext(snapshot: snapshot, ships: ships,
                 captureTarget: objective.Position, enemyFleetTarget: fleetTarget, enemyBaseTarget: null,
                 ownBase: ownBase, receivers: receivers, captureObjective: objective,
-                defenseTarget: defenseTarget, retreatAnchor: retreatAnchor);
+                defenseTarget: defenseTarget, retreatAnchor: retreatAnchor,
+                shipForces: shipForces ?? defaultShipForces, targetForces: targetForces ?? defaultTargetForces,
+                localThreatTarget: localThreatTarget, stationPressure: stationPressure,
+                isDefensePointClear: isPointClear ?? ((point, radius) => true));
         }
 
 private sealed class ZoneSource : IReinforcementZoneSource
@@ -1032,7 +1781,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
 
             public void SetVisibility(bool isVisible, bool showCaptureUi) { }
 
-            public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested) { }
+            public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested,
+                OwnerRelation contestingFirst = OwnerRelation.Neutral,
+                OwnerRelation contestingSecond = OwnerRelation.Neutral) { }
         }
 
         private sealed class CaptureSiteStub : ICaptureSite
@@ -1077,7 +1828,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
         {
             public PlayerId Owner => TestPlayers.Enemy;
             public Vector3 WorldPosition { get; set; }
-            public float NavigationRadius => 5f;
+            public float NavigationRadius { get; set; } = 5f;
             public float NavigationSpeed { get; set; } = 1f;
             public long EntityId { get; }
             public UnitOrderType CurrentOrder { get; set; }
@@ -1113,6 +1864,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
                 Record(UnitActionId.AttackMove, receivers, point);
 
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
+                Record(UnitActionId.AttackMove, receivers, destinations[0], destinations: destinations);
+
             public void IssueStop(IReadOnlyList<IEntity> receivers) =>
                 Record(UnitActionId.Stop, receivers);
 
@@ -1138,8 +1892,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
 
             private void Record(UnitActionId action, IReadOnlyList<IEntity> receivers,
                 Vector3 point = default, IEntity target = null,
-                IReadOnlyList<Vector3> offsets = null) =>
-                Calls.Add(new OrderCall(action: action, receivers: receivers, point: point, target: target, offsets: offsets));
+                IReadOnlyList<Vector3> offsets = null, IReadOnlyList<Vector3> destinations = null) =>
+                Calls.Add(new OrderCall(action: action, receivers: receivers, point: point, target: target,
+                    offsets: offsets, destinations: destinations));
         }
 
         private sealed class OrderCall
@@ -1149,15 +1904,18 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public Vector3 Point { get; }
             public IEntity Target { get; }
             public IReadOnlyList<Vector3> Offsets { get; }
+            public IReadOnlyList<Vector3> Destinations { get; }
 
             public OrderCall(IReadOnlyList<IEntity> receivers, IEntity target,
-                IReadOnlyList<Vector3> offsets, UnitActionId action, Vector3 point)
+                IReadOnlyList<Vector3> offsets, UnitActionId action, Vector3 point,
+                IReadOnlyList<Vector3> destinations = null)
             {
                 Action = action;
                 Receivers = receivers;
                 Point = point;
                 Target = target;
                 Offsets = offsets;
+                Destinations = destinations;
             }
         }
 
@@ -1200,10 +1958,11 @@ private sealed class ZoneSource : IReinforcementZoneSource
             }
         }
 
-        private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade,
-            INavigationFootprintFacade, IUnitCombatObserverFacade
+        private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade, IMiningFacilityFacade,
+            INavigationFootprintFacade, IUnitCombatObserverFacade, EmpireAtWar.Entities.SpaceStation.IStationDurabilityFacade
         {
             public bool IsUnit { get; set; } = true;
+            public bool IsMine { get; set; }
             public IRetreatFacade RetreatCommand { get; set; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public UnitTypeId UnitTypeId => UnitTypeId.Ship(ShipType.Venator);
@@ -1211,6 +1970,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
             public float NavigationRadius { get; set; } = 5f;
+            public float MaximumDurability { get; set; }
             public float WeaponRange { get; set; }
             public float RadarRange => WeaponRange;
             public IEntity Target { get; set; }
@@ -1219,7 +1979,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public bool IsAttacking(IEntity target) => Target == target || TrackedWeaponTarget == target;
 
             public FakeEntity(IHealthModelObserver health, PlayerId side, long id)
-            { Id = id; Owner = side; HealthModel = health; }
+            { Id = id; Owner = side; HealthModel = health; MaximumDurability = health.Hull + health.Shields; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -1227,7 +1987,8 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             {
-                if (!IsUnit && typeof(TCommand) == typeof(IUnitTypeFacade))
+                if (!IsUnit && typeof(TCommand) == typeof(IUnitTypeFacade) ||
+                    !IsMine && typeof(TCommand) == typeof(IMiningFacilityFacade))
                 { command = default; return false; }
                 if (this is TCommand self) { command = self; return true; }
                 if (RetreatCommand is TCommand retreat) { command = retreat; return true; }
@@ -1244,11 +2005,11 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public event Action OnValueChanged { add { } remove { } }
 
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
-            public float Hull => 1f;
+            public float Hull { get; set; } = 1f;
             public ShipClass ShipClass => ShipClass.Capital;
             public bool HasLiveHardPoints => true;
             public float HullPercentage => 1f;
-            public float Shields => 1f;
+            public float Shields { get; set; } = 1f;
             public float ShieldPercentage => 1f;
             public bool IsDestroyed { get; set; }
             public bool IsLostShieldGenerator => false;

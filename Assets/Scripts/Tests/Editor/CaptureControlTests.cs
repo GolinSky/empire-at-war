@@ -9,6 +9,25 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Capture")]
     public sealed class CaptureControlTests
     {
+        [TestCase(1f)]
+        [TestCase(2f)]
+        public void OpposingTeams_ReportBothVisualParticipantsWithoutChangingCaptureRules(float playerStrength)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var control = new CaptureControl(roster, PlayerId.None, 10f, 1f);
+            control.Tick(1f, TestPlayers.DuelTally(roster, playerStrength, 1f), true);
+
+            Assert.That(control.ContestingFirst, Is.EqualTo(TestPlayers.Human));
+            Assert.That(control.ContestingSecond, Is.EqualTo(TestPlayers.Enemy));
+            Assert.That(control.IsContested, Is.EqualTo(playerStrength == 1f));
+            Assert.That(control.CaptureProgress, Is.EqualTo((playerStrength - 1f) / 10f).Within(0.001f));
+
+            control.Tick(1f, TestPlayers.DuelTally(roster, 1f, 0f), true);
+            Assert.That(control.ContestingFirst, Is.EqualTo(PlayerId.None));
+            Assert.That(control.ContestingSecond, Is.EqualTo(PlayerId.None));
+            Assert.That(control.CapturingPlayer, Is.EqualTo(TestPlayers.Human));
+        }
+
         [Test]
         public void AlliedLeadChange_CarriesProgressForBothConsumers()
         {

@@ -229,6 +229,44 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(index, Is.EqualTo(-1));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CounterProduction_CriticalStationAcceptsFastSquadron(bool hasKnownHostile)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            UnitCombatProfile bomber = Profile(ShipClass.Bomber, 1000f, 500f, (ShipClass.Capital, 40f));
+            ProductionCandidate[] candidates =
+            {
+                new ProductionCandidate(capital, 4000, arrivalSeconds: 148f),
+                new ProductionCandidate(bomber, 500, arrivalSeconds: 10f)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), hasKnownHostile ? Force(capital, capital) : new ForceComposition(),
+                candidates, out int index, isStationCritical: true, timeToLossSeconds: 100f);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(1));
+        }
+
+        [TestCase(1000f, 120, 0)]
+        [TestCase(100000f, 2, 1)]
+        public void CounterProduction_PricesTheScarceResource(float credits, int capacity, int expected)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            ProductionCandidate[] candidates =
+            {
+                new ProductionCandidate(capital, 1000, unitCapacity: 8),
+                new ProductionCandidate(capital, 4000, unitCapacity: 2)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int index, credits, capacity);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(expected));
+        }
+
         [Test]
         public void CarrierCandidate_CountsItsHangarSquadrons()
         {
@@ -242,6 +280,25 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(force.UnitCount, Is.EqualTo(3));
             Assert.That(force.HullDps(ShipClass.Bomber), Is.EqualTo(60f));
+        }
+
+        [TestCase(false, 0)]
+        [TestCase(true, 1)]
+        public void CounterProduction_CriticalStationChoosesTimelyReinforcement(bool critical, int expected)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            ProductionCandidate[] candidates =
+            {
+                new ProductionCandidate(capital, 1000, arrivalSeconds: 148f),
+                new ProductionCandidate(capital, 4000, arrivalSeconds: 55f)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int index,
+                isStationCritical: critical, timeToLossSeconds: 100f);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(expected));
         }
 
         private sealed class FavorClass : IShipClassMatchups

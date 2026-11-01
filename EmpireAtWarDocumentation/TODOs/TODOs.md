@@ -53,7 +53,14 @@
 
 - [ ] **Fix enemy AI losing battles and CIS vs Republic balance** → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]; logs: [[Tooling/Battle_Telemetry|Battle Telemetry]]
   - Done (commit `6babee5e1`): Republic torpedo nerf, CIS hangar/squadron buffs, Concentrate Fire nerf, AI squadron escort, strength, rally, production, press-advantage and retreat-memory fixes; AI EditMode tests pass.
-  - Next gate: 2–3 Ultra Hard battles on both factions; confirm AI attack states > 0% and fewer capture ↔ retreat flips in `_ai.csv`.
+  - 2026-11-01: mining raid priority/strength checks, capture-squadron reservation and early captured-mine construction fixed; tests authored, not run. Comparison → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
+  - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.
+  - Battle follow-up implemented 2026-11-01: caliber/population valuation, home defense deployment, persistent main-force assembly and active bounded screens. Latest 17:27 battle: capital buying and main-force attacks improved; siege response, emergency production and capture clearance remain open; parent retains broader balance scope. Evidence/priorities → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
+
+- [ ] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
+  - 2026-11-01: phases 1–4 implemented: shared damage pressure, threat-facing defense, emergency arrival valuation and stable capture membership. Compilation/import and scoped diff checks passed; runtime acceptance pending. Phase 5 deferred until fresh battle evidence. Tests are not executed under the checkout override.
+  - 2026-11-01: Phase 4b C1–C6 implemented: per-ship interior capture fit, siege-range interception and first-step advance, sustained-damage latch, spaced defenders, emergency squadrons and 10 s reserved-objective grace. Unity compilation/import and scoped diff checks passed; EnemyAi/Combat regressions authored, not run. Phase 5 remains deferred; runtime acceptance pending.
+  - 2026-11-01: Phase 4c implemented: capture orders batched per fitted point; defense uses explicit slots in one shared engagement. Early plan steps reconciled; Phase 5 remains deferred. Unity compilation/import and scoped diff checks passed; tests not run.
 
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
@@ -237,7 +244,8 @@
 
 ### Features
 
-- [x] **Auto power abilities: player ships auto-use Power to Shields / Power to Weapons; global + per-ship "A" toggle; one Power to Shields for all ships** → [[Done/Features/Auto_Power_Abilities_Plan|Auto Power Abilities Plan]]
+- [x] **Auto power abilities: player ships auto-use Power to Shields / Power to Weapons / Power to Main Batteries; global + per-ship "A" toggle; one Power to Shields for all ships** → [[Done/Features/Auto_Power_Abilities_Plan|Auto Power Abilities Plan]]
+  - 2026-11-01: Main Batteries enabled for Allegiance / ISD II; source diagnostics and Unity refresh clean; two Core lifecycle regressions authored, not run under checkout override.
   - Completed 2026-10-30: ordinary-lifecycle automation, shared shield id 3/save migration, Gameplay setting, per-ship persistence and single/group A controls.
   - Independent source review 2026-10-30: no actionable defect found across runtime, settings/UI and migration/save; scoped diagnostics/diff checks passed. No tests or Play Mode rerun; user acceptance remains pending.
   - Verified: Abilities 142/142; full EditMode 2,542/2,550, with eight unrelated baseline balance/AI failures. User battle/balance/UI gates → [[TODOs/User_Acceptance_Queue]]. Research → [[Done/Features/Auto_Power_Abilities_Plan - Research]].

@@ -361,7 +361,7 @@ MonoBehaviour:
     - key: 300
       value:
         matchups: {fileID: 11400000, guid: b16f510db75b93c4ab4d86f98ed96103, type: 2}
-        description: 'Five Rebel multirole fighters, each with 60 hull, 20 shields,
+        description: 'Five Rebel multirole fighters, each with 60 hull, 40 shields,
           3/s shield regeneration and four laser cannons. Intercept bombers, dogfight
           fighters, escort bombers and scout. Lock S-Foils closes the wings: speed
           x1.3, weapon delays x3 and shield regeneration x3. Toggle again to reopen
@@ -381,7 +381,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b9ce6e1dd47fb3c43a95e0feda9a7bee, type: 2}
         description: Six BTL-A4 Y-Wing bombers. Each bomber has 30 hull, 30 slow-charging
-          anti-laser shields and tactical speed 30. One light dual laser, one heavy
+          anti-laser shields and tactical speed 39. One light dual laser, one heavy
           dual ion stunner and two medium proton-torpedo launchers per craft. Ion
           Shot disables the target for 3 s on arrival; 20 s recovery. Weapons are
           not separately targetable.

@@ -264,7 +264,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public void Render(OwnerRelation owner, CaptureSiteState state, SiteFacilityType facilityType,
                 string facilityName, OwnerRelation capturer, float captureProgress,
-                float constructionProgress, bool isContested) { }
+                float constructionProgress, bool isContested,
+                OwnerRelation contestingFirst = OwnerRelation.Neutral,
+                OwnerRelation contestingSecond = OwnerRelation.Neutral) { }
 
             public void SetVisibility(bool isVisible, bool showStatus)
             {

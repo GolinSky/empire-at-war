@@ -89,6 +89,33 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TargetedSpawn_HomeTarget_DoesNotChooseRemoteRelay()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenEverywhere());
+            Assert.That(spawnPoints.TryGetSpawnPositionNear(TestPlayers.Human, ShipType.Arquitens,
+                HOME, out Vector3 position), Is.True);
+            Assert.That(PlanarDistance(position, HOME), Is.LessThanOrEqualTo(_data.HomeAreaRadius));
+        }
+
+        [Test]
+        public void TargetedSpawn_FrontTarget_ChoosesAlliedRelay()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenEverywhere());
+            Assert.That(spawnPoints.TryGetSpawnPositionNear(TestPlayers.Human, ShipType.Arquitens,
+                RELAY, out Vector3 position), Is.True);
+            Assert.That(PlanarDistance(position, RELAY), Is.LessThanOrEqualTo(_data.RelaySpawnBlockRadius));
+        }
+
+        [Test]
+        public void TargetedSpawn_ClosestAnchorBlocked_TriesNextHeldAnchor()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenNear(HOME, _data.HomeAreaRadius));
+            Assert.That(spawnPoints.TryGetSpawnPositionNear(TestPlayers.Human, ShipType.Arquitens,
+                RELAY, out Vector3 position), Is.True);
+            Assert.That(PlanarDistance(position, HOME), Is.LessThanOrEqualTo(_data.HomeAreaRadius));
+        }
+
+        [Test]
         public void DefaultZoneSpawn_NoHomeForOwner_ReturnsFalse()
         {
             ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Human, new OpenEverywhere());

@@ -21,7 +21,9 @@ namespace EmpireAtWar.Entities.CaptureSites
             OwnerRelation capturer,
             float captureProgress,
             float constructionProgress,
-            bool isContested);
+            bool isContested,
+            OwnerRelation contestingFirst = OwnerRelation.Neutral,
+            OwnerRelation contestingSecond = OwnerRelation.Neutral);
 
         void SetVisibility(bool isVisible, bool showStatus);
     }

@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingEconomyProvider economyProvider =
                     new TrackingEconomyProvider();
-                EnemyFactionController controller = new EnemyFactionController(
+                EnemyFactionController controller = new EnemyFactionController(aiState: new IdleAiState(),
                     model: model,
                     shipFactory: null,
                     miningFacilityFactory: null,
@@ -106,7 +106,7 @@ namespace EmpireAtWar.Tests.Editor
                 SetBackingField(data, nameof(FactionData.UnitCapacity), 1);
                 TrackingWallet wallet = new TrackingWallet();
                 EnemyUnitLimitModel limits = new EnemyUnitLimitModel();
-                EnemyFactionController controller = new EnemyFactionController(
+                EnemyFactionController controller = new EnemyFactionController(aiState: new IdleAiState(),
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
@@ -166,7 +166,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingWallet wallet = new TrackingWallet();
-                EnemyFactionController controller = new EnemyFactionController(
+                EnemyFactionController controller = new EnemyFactionController(aiState: new IdleAiState(),
                     model: model,
                     shipFactory: null,
                     miningFacilityFactory: null,
@@ -229,7 +229,7 @@ namespace EmpireAtWar.Tests.Editor
                 var limits = new EnemyUnitLimitModel();
                 var spawnPoints = new BlockedShipSpawnPoints();
                 var factory = new TrackingShipFactory(shipObject.AddComponent<EmpireAtWar.Ship.Ship>());
-                var controller = new EnemyFactionController(model: new EnemyFactionModel(null, null),
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
                     shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
                     unitLimitModel: limits, reinforcementData: data,
@@ -293,7 +293,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     ProductionHost = hosted ? TestPlayers.Human : TestPlayers.Enemy
                 };
-                var controller = new EnemyFactionController(model: new EnemyFactionModel(null, null),
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
                     shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet,
                     shipSpawnPoints: new BlockedShipSpawnPoints(), unitLimitModel: limits, reinforcementData: data,
@@ -334,7 +334,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 10);
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
-                EnemyFactionController controller = new EnemyFactionController(
+                EnemyFactionController controller = new EnemyFactionController(aiState: new IdleAiState(),
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
@@ -379,7 +379,7 @@ namespace EmpireAtWar.Tests.Editor
 
             TrackingStructurePlacement structurePlacement =
                 new TrackingStructurePlacement();
-            EnemyFactionController controller = new EnemyFactionController(
+            EnemyFactionController controller = new EnemyFactionController(aiState: new IdleAiState(),
                 model: model,
                 shipFactory: null,
                 miningFacilityFactory: null,
@@ -419,7 +419,7 @@ namespace EmpireAtWar.Tests.Editor
                 SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel();
-                var controller = new EnemyFactionController(model: new EnemyFactionModel(null, null),
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
                     shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data,
@@ -465,7 +465,7 @@ namespace EmpireAtWar.Tests.Editor
                 var access = new OperationalProductionAccess { ProductionHost = TestPlayers.Human };
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel(); var model = new EnemyFactionModel(null, null);
-                var controller = new EnemyFactionController(model: model, shipFactory: null,
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
                     miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -497,7 +497,7 @@ namespace EmpireAtWar.Tests.Editor
                 SetBackingField(upgrade, nameof(FactionData.BuildTime), 10);
                 var wallet = new TrackingWallet();
                 var model = new EnemyFactionModel(null, null);
-                var controller = new EnemyFactionController(model: model, shipFactory: null,
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
                     miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
@@ -532,6 +532,18 @@ namespace EmpireAtWar.Tests.Editor
             field.SetValue(target, value);
         }
 
+        private sealed class IdleAiState : IEnemyAiStateProvider
+        {
+            public EnemyStrategicState CurrentState => EnemyStrategicState.Hold;
+            public int ActiveShipCount => 0;
+            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+            {
+                rally = default;
+                defendHome = false;
+                return false;
+            }
+        }
+
         private sealed class BlockedShipSpawnPoints : IShipSpawnPoints
         {
             public bool IsBlocked { get; set; } = true;
@@ -545,8 +557,11 @@ namespace EmpireAtWar.Tests.Editor
                 return !IsBlocked;
             }
 
+            public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
+
             public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
-                throw new NotImplementedException();
+                TryGetRandomSpawnPosition(owner, shipType, out position);
         }
 
         private sealed class TrackingShipFactory : EmpireAtWar.Ship.ShipFactory

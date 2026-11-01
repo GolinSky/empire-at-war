@@ -46,7 +46,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(WeaponType.Laser, 0.8f, 0.5f)]
+        [TestCase(WeaponType.Laser, 0.8f, 0.45f)]
         [TestCase(WeaponType.PointDefense, 0.9f, 0f)]
         public void CombatRating_UsesSquadronShieldBonusOnlyForStrikecraftTargets(
             WeaponType weaponType, float fighterShieldFactor, float capitalShieldFactor)
@@ -61,6 +61,26 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(profile.ShieldDps(ShipClass.Fighter), Is.EqualTo(rawDps * fighterShieldFactor).Within(0.001f));
             Assert.That(profile.ShieldDps(ShipClass.Capital), Is.EqualTo(rawDps * capitalShieldFactor).Within(0.001f));
+        }
+
+        [TestCase(ShipClass.Capital, 1.25f)]
+        [TestCase(ShipClass.HeavyCapital, 1.35f)]
+        [TestCase(ShipClass.Corvette, 0.33f)]
+        public void CombatRating_HeavyWeaponsApplyCaliberDamageAndAccuracy(ShipClass target, float caliberFactor)
+        {
+            WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_DATA);
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(DAMAGE_MATRIX);
+            WeaponProfile weapon = weapons.GetProfile(WeaponType.HeavyTurboLaser);
+            UnitCombatProfile profile = UnitCombatProfileFactory.Create(ShipClass.Capital, 1000f, 1000f,
+                new[] { new WeaponLoadoutEntry(WeaponType.HeavyTurboLaser, 1) },
+                weapons, matrix, Array.Empty<UnitCombatProfile>());
+            float expectedHitDps = weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload *
+                matrix.GetAccuracy(weapon.DamageType, target) * caliberFactor;
+
+            Assert.That(profile.HullDps(target), Is.EqualTo(expectedHitDps *
+                matrix.GetDamageMultiplier(weapon.DamageType, target)).Within(0.001f));
+            Assert.That(profile.ShieldDps(target), Is.EqualTo(expectedHitDps *
+                matrix.GetShipShieldMultiplier(weapon.DamageType)).Within(0.001f));
         }
 
         [Test]

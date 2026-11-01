@@ -49,6 +49,25 @@ namespace EmpireAtWar.Services.ShipSpawning
                    TryGetDefaultZoneSpawnPosition(owner, shipType, out position);
         }
 
+        public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position)
+        {
+            var candidates = new List<Vector3>();
+            foreach (ReinforcementZonePresenter relay in _zoneSource.Zones)
+                if (_relations.IsAllied(relay.Owner, owner)) candidates.Add(relay.Center);
+            bool hasHome = _zones.TryGetDefaultZoneCenter(owner, out Vector3 home);
+            if (hasHome) candidates.Add(home);
+            candidates.Sort((a, b) => (a - target).sqrMagnitude.CompareTo((b - target).sqrMagnitude));
+            foreach (Vector3 anchor in candidates)
+            {
+                _anchors.Clear();
+                _anchors.Add(anchor);
+                float radius = hasHome && anchor == home ? _data.HomeAreaRadius : _data.RelaySpawnBlockRadius;
+                if (TryFindOpenPosition(owner, shipType, radius, out position)) return true;
+            }
+            position = default;
+            return false;
+        }
+
         public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
         {
             _anchors.Clear();

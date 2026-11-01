@@ -118,7 +118,9 @@ namespace EmpireAtWar.Entities.CaptureSites
             }
             _view.Render(_localPlayer.GetRelation(_model.Owner), _model.State, _model.FacilityType, _facilityName,
                 _localPlayer.GetRelation(_model.CapturingPlayer),
-                _model.CaptureProgress, _model.ConstructionProgress, _model.IsContested);
+                _model.CaptureProgress, _model.ConstructionProgress, _model.IsContested,
+                _localPlayer.GetRelation(_model.ContestingFirst),
+                _localPlayer.GetRelation(_model.ContestingSecond));
         }
 
         public void SetVisibility(bool isVisible, bool isHovered)

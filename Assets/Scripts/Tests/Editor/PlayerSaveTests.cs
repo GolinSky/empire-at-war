@@ -138,6 +138,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void BuildQueue_ArrivalWaitOnlyIncludesTheSameUnitPipeline()
+        {
+            EnemyBuildQueue builds = new EnemyBuildQueue();
+            FactionData data = CreateFactionData(3, 10);
+            var venator = new ShipUnitRequest(data, ShipType.Venator);
+            builds.Add(venator, 20f);
+            builds.Add(venator, 55f);
+            builds.Add(new ShipUnitRequest(data, ShipType.Acclamator), 90f);
+
+            Assert.That(builds.GetRemainingTime(ShipType.Venator.ToString()), Is.EqualTo(75f));
+            builds.Advance(5f, _ => { });
+            Assert.That(builds.GetRemainingTime(ShipType.Venator.ToString()), Is.EqualTo(70f));
+            Assert.That(builds.GetRemainingTime(ShipType.Acclamator.ToString()), Is.EqualTo(85f));
+        }
+
+        [Test]
         public void BuildQueue_SameIdMatchesHumanTimingAndCarriesExcessTime()
         {
             EnemyBuildQueue builds = new EnemyBuildQueue();
@@ -249,7 +265,8 @@ namespace EmpireAtWar.Tests.Editor
             SuperWeaponModel model = new SuperWeaponModel();
             model.Restore(option.Key, SuperWeaponState.Unavailable, 45f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
-                null, null, null, production, model, faction, economy, owner, new QueuePurchaseProcessor(), null, null);
+                null, null, null, production, model, faction, economy, owner, new QueuePurchaseProcessor(), null, null,
+                new EnemyStationPressureTracker());
             typeof(EnemySuperWeaponController).GetMethod("TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(controller, new object[] { option.Key, option.Value });
             controller.AdvanceCharging(option.Value.BuildTime / 2f);
@@ -263,7 +280,8 @@ namespace EmpireAtWar.Tests.Editor
             production.CanProduce = hasStation;
             QueuePurchaseProcessor restoredProduction = new QueuePurchaseProcessor();
             EnemySuperWeaponController restored = new EnemySuperWeaponController(
-                null, null, null, production, restoredModel, faction, restoredEconomy, owner, restoredProduction, null, null);
+                null, null, null, production, restoredModel, faction, restoredEconomy, owner, restoredProduction, null, null,
+                new EnemyStationPressureTracker());
             new AiSuperWeaponSaveSource(new PlayerSaveRegistry(), owner, restoredModel, restored).RestoreBeforeUnits(save);
 
             Assert.That(restored.GetChargeTimeRemaining(option.Key), Is.EqualTo(remaining));
@@ -284,6 +302,34 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AiSuperWeapon_CriticalStationDefersNewChargeButCompletesPaidCharge()
+        {
+            FactionRoster roster = CreateRoster(FactionType.Empire);
+            var option = roster.SuperWeapons.First();
+            EnemyFactionModel faction = new EnemyFactionModel(null, roster) { CurrentLevel = option.Value.AvailableLevel };
+            EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            SuperWeaponModel model = new SuperWeaponModel();
+            var pressure = new EnemyStationPressureTracker();
+            pressure.Update(1, 400f, 1000f, 0f, 2);
+            EnemySuperWeaponController controller = new EnemySuperWeaponController(
+                null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), new QueuePurchaseProcessor(), null, null, pressure);
+            MethodInfo purchase = typeof(EnemySuperWeaponController).GetMethod(
+                "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.False);
+            Assert.That(economy.Money, Is.EqualTo(option.Value.Price * 3f));
+            Assert.That(model.GetState(option.Key), Is.EqualTo(SuperWeaponState.Unavailable));
+
+            pressure.Reset();
+            Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.True);
+            pressure.Update(1, 400f, 1000f, 1f, 2);
+            controller.AdvanceCharging(option.Value.BuildTime);
+            Assert.That(model.CanFire(option.Key), Is.True);
+            Assert.That(economy.Money, Is.EqualTo(option.Value.Price * 2f));
+        }
+
+        [Test]
         public void AiSuperWeapon_LegacyChargingSave_RestartsPaidChargeWithoutSpending()
         {
             FactionRoster roster = CreateRoster(FactionType.Empire);
@@ -293,7 +339,7 @@ namespace EmpireAtWar.Tests.Editor
             EconomyModel economy = new EconomyModel(null, 1f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(null, null, null,
                 new ProductionAccess { CanProduce = true }, model, new EnemyFactionModel(null, roster), economy, owner,
-                new QueuePurchaseProcessor(), null, null);
+                new QueuePurchaseProcessor(), null, null, new EnemyStationPressureTracker());
             PlayerSave save = PlayerSave.Create(owner.Id);
             save.SuperWeapons = new[] { JsonUtility.FromJson<SuperWeaponSave>(
                 "{\"type\":" + (int)option.Key + ",\"state\":" + (int)SuperWeaponState.Charging + ",\"cooldown\":0}") };
@@ -320,7 +366,7 @@ namespace EmpireAtWar.Tests.Editor
                 production.Queue.Add(new LevelUnitRequest(data, id), 10f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
                 null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,
-                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), production, null, null);
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), production, null, null, new EnemyStationPressureTracker());
             MethodInfo purchase = typeof(EnemySuperWeaponController).GetMethod(
                 "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -341,6 +387,7 @@ namespace EmpireAtWar.Tests.Editor
             public EnemyBuildQueue Queue { get; } = new EnemyBuildQueue();
             public bool IsUpgradingStation => false;
             public bool CanQueue(string requestId, int maxCount) => Queue.CanAdd(requestId, maxCount);
+            public float GetQueueRemainingTime(string requestId) => Queue.GetRemainingTime(requestId);
             public void ReserveExternalPipeline(string requestId) => Queue.ReserveExternalPipeline(requestId);
             public void ReleaseExternalPipeline(string requestId) => Queue.ReleaseExternalPipeline(requestId);
             public void Purchase(UnitRequest request) => Queue.Add(request, request.FactionData.BuildTime);

@@ -351,7 +351,31 @@ namespace EmpireAtWar.Tests.Editor
                 "An unavailable preferred power must not fall through to another ability.");
         }
 
-        private AutoPowerRuntime CreateAutoPowerRuntime()
+        [TestCase(ShipType.Allegiance)]
+        [TestCase(ShipType.ISDII)]
+        public void PlayerAutoPower_MainBatteriesUsesNormalLifecycle(ShipType shipType)
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime(shipType);
+            ShipAbilitySlot batteries = runtime.Caster.GetFacade<IShipAbilityFacade>().Slots.Single(slot =>
+                slot.Id == ShipAbilityId.PowerToMainBatteries);
+            Assert.That(runtime.Automation.Eligible, Is.True);
+
+            runtime.TickAt(1f);
+            Assert.That(batteries.State, Is.EqualTo(ShipAbilityState.Ready));
+            runtime.TickAt(1.5f);
+            Assert.That(batteries.State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(batteries.TimeLeft, Is.EqualTo(batteries.Definition.Duration));
+            Assert.That(runtime.Caster.GetFacade<IShipAbilityFacade>().Slots.Single(slot =>
+                slot.Id == ShipAbilityId.TractorBeam).State, Is.EqualTo(ShipAbilityState.Ready));
+
+            runtime.Abilities.Advance(batteries.Definition.Duration);
+            Assert.That(batteries.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(batteries.TimeLeft, Is.EqualTo(batteries.Definition.RecoveryDelay));
+            runtime.Abilities.Advance(batteries.Definition.RecoveryDelay);
+            Assert.That(batteries.State, Is.EqualTo(ShipAbilityState.Ready));
+        }
+
+        private AutoPowerRuntime CreateAutoPowerRuntime(ShipType shipType = ShipType.Acclamator)
         {
             BuildSaveProject();
             MapLayout layout = BuildSaveBattle();
@@ -360,7 +384,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
             PlayerSlot enemySlot = enemy.Container.Resolve<PlayerSlot>();
             Vector3 origin = layout.GetStationPosition(humanSlot.Id);
-            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(humanSlot.Id, ShipType.Acclamator, origin);
+            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(humanSlot.Id, shipType, origin);
             ShipEntity hostile = enemy.Container.Resolve<ShipFactory>().Create(enemySlot.Id, ShipType.Providence,
                 origin + Vector3.forward * 100f);
             // Skip hyperspace transit so the real weapon mounts and candidates are within engagement range.

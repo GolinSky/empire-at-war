@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Enemy
         bool IsUpgradingStation { get; }
 
         bool CanQueue(string requestId, int maxCount);
+        float GetQueueRemainingTime(string requestId);
 
         void ReserveExternalPipeline(string requestId);
         void ReleaseExternalPipeline(string requestId);

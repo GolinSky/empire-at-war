@@ -92,7 +92,7 @@ created: 2026-10-29
 
 ## Gameplay and Balance
 
-- [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences.
+- [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences; include Allegiance / ISD II Main Batteries auto-start and normal 20 s active → 60 s recovery (2026-11-01 extension; Core regressions authored, not run).
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Balance: shared shield regeneration ×4 and initial automatic weapon/shield thresholds across fleet matchups.
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — UI: single/group A, mixed/disabled/paused tooltips, active duration and cooldown feedback at the user's game resolution.
 

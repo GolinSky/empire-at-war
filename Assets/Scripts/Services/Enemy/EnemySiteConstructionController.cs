@@ -10,8 +10,7 @@ using EmpireAtWar.Services.Ships;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Builds the site facility once the AI owns an empty capture site, can pay for it,
-    /// and has enough of a fleet that the investment does not starve its defense.
+    /// Builds mines on safe owned sites as soon as affordable; satellite investment waits for a minimum fleet.
     /// </summary>
     public sealed class EnemySiteConstructionController : ITickable
     {
@@ -22,30 +21,34 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
         private readonly PlayerSlot _owner;
         private readonly EnemyDefenseSnapshotBuilder _snapshotBuilder;
+        private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy _defense;
 
         public EnemySiteConstructionController(ICaptureSitesSystem captureSites, IShipService shipService,
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
-            EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy defense)
+            EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy defense,
+            EnemyStationPressureTracker stationPressure)
         {
             _owner = owner;
             _captureSites = captureSites;
             _shipService = shipService;
             _snapshotBuilder = snapshotBuilder;
             _defense = defense;
+            _stationPressure = stationPressure;
         }
 
         public void Tick()
         {
+            if (_stationPressure.IsStationCritical) return;
             if (!_decisionTimer.IsComplete) return;
             _decisionTimer.StartTimer();
-            if (CountOwnShips() < MINIMUM_FLEET_SIZE) return;
             // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
             if (HasEmptyOwnedMine())
             {
                 _captureSites.TryBuildOnOwnedSite(_owner.Id);
                 return;
             }
+            if (CountOwnShips() < MINIMUM_FLEET_SIZE) return;
             // Satellite scores read the strategic snapshot, which is empty until the first strategic decision.
             if (!_snapshotBuilder.IsReady) return;
             var snapshot = _snapshotBuilder.Build();

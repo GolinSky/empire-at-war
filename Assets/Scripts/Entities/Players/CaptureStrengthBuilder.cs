@@ -49,6 +49,7 @@ namespace EmpireAtWar.Models.Players
             }
 
             TeamId leadingTeam = default;
+            TeamId runnerUpTeam = default;
             float leadingStrength = 0f;
             float runnerUpStrength = 0f;
             foreach (KeyValuePair<TeamId, float> team in _teamStrengths)
@@ -56,19 +57,22 @@ namespace EmpireAtWar.Models.Players
                 if (team.Value > leadingStrength)
                 {
                     runnerUpStrength = leadingStrength;
+                    runnerUpTeam = leadingTeam;
                     leadingStrength = team.Value;
                     leadingTeam = team.Key;
                 }
                 else if (team.Value > runnerUpStrength)
                 {
                     runnerUpStrength = team.Value;
+                    runnerUpTeam = team.Key;
                 }
             }
 
             return new CaptureStrength(
                 FindStrongestPlayer(leadingTeam),
                 leadingStrength - runnerUpStrength,
-                _teamStrengths.Count);
+                _teamStrengths.Count,
+                _teamStrengths.Count >= 2 ? FindStrongestPlayer(runnerUpTeam) : PlayerId.None);
         }
 
         private PlayerId FindStrongestPlayer(TeamId team)

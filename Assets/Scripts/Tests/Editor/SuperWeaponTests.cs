@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
                 // Charging, purchasing and economy are outside this firing regression.
                 EnemySuperWeaponController controller = new EnemySuperWeaponController(
                     fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy), null,
-                    LoadData(), roster);
+                    LoadData(), roster, new EnemyStationPressureTracker());
                 MethodInfo tryFire = typeof(EnemySuperWeaponController).GetMethod("TryFire",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 model.StartCharging(type);
@@ -110,7 +110,7 @@ namespace EmpireAtWar.Tests.Editor
                 SuperWeaponModel model = new SuperWeaponModel();
                 EnemySuperWeaponController controller = new EnemySuperWeaponController(
                     fireService, entities, vision, null, model, null, null, roster.Get(TestPlayers.Enemy), null,
-                    LoadData(), roster);
+                    LoadData(), roster, new EnemyStationPressureTracker());
                 MethodInfo tryFire = typeof(EnemySuperWeaponController).GetMethod("TryFireAfterDelay",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 FieldInfo delay = typeof(EnemySuperWeaponController).GetField("_fireDelayLeft",

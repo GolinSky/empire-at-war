@@ -1,0 +1,2933 @@
+{
+  "unit": {
+    "inheritance": [
+      "Gladiator_Star_Destroyer",
+      "Gladiator_Star_Destroyer_Template",
+      "Frigate_Base",
+      "Vessel_Base",
+      "SFX_Base"
+    ],
+    "values": {
+      "SFXEvent_Hardpoint_Destroyed": [
+        "HARD_POINT_WEAPON_LASER, Unit_Lost_Laser_Gladiator",
+        "HARD_POINT_WEAPON_MISSILE, Unit_Lost_Missile_Gladiator",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_Lost_Shields_Gladiator",
+        "HARD_POINT_ENGINE, Unit_Lost_Engines_Gladiator",
+        "HARD_POINT_FIGHTER_BAY, Unit_Lost_Bay_Gladiator"
+      ],
+      "SFXEvent_Select": [
+        "Unit_Select_Gladiator"
+      ],
+      "SFXEvent_Attack_Hardpoint": [
+        "HARD_POINT_WEAPON_LASER, Unit_HP_Laser_Gladiator",
+        "HARD_POINT_WEAPON_MISSILE, Unit_HP_Missile_Gladiator",
+        "HARD_POINT_WEAPON_TORPEDO, Unit_HP_Torp_Gladiator",
+        "HARD_POINT_WEAPON_ION_CANNON, Unit_HP_Ion_Gladiator",
+        "HARD_POINT_WEAPON_MASS_DRIVER, Unit_Attack_Gladiator",
+        "HARD_POINT_WEAPON_SPECIAL, Unit_Attack_Gladiator",
+        "HARD_POINT_ENABLE_SPECIAL_ABILITY, Unit_Attack_Gladiator",
+        "HARD_POINT_SHIELD_GENERATOR, Unit_HP_Shields_Gladiator",
+        "HARD_POINT_ENGINE, Unit_HP_Engines_Gladiator",
+        "HARD_POINT_GRAVITY_WELL, Unit_HP_Grav_Gladiator",
+        "HARD_POINT_FIGHTER_BAY, Unit_HP_Bay_Gladiator",
+        "HARD_POINT_TRACTOR_BEAM, Unit_Attack_Gladiator",
+        "HARD_POINT_DUMMY_ART, Unit_Attack_Gladiator"
+      ],
+      "Spawned_Squadron_Delay_Seconds": [
+        "0.5"
+      ],
+      "Guard_Chase_Range": [
+        "1000.0"
+      ],
+      "Shield_Armor_Type": [
+        "Shield_Starship"
+      ],
+      "GUI_Offset": [
+        "0 0 0"
+      ],
+      "Exclude_From_Distance_Fade": [
+        "true"
+      ],
+      "Armor_Type": [
+        "Armor_Starship"
+      ],
+      "Formation_Priority": [
+        "1"
+      ],
+      "Score_Cost_Credits": [
+        "1"
+      ],
+      "GUI_Velocity": [
+        "45"
+      ],
+      "Hyperspace_Speed": [
+        "0.4"
+      ],
+      "Required_Timeline": [
+        "0"
+      ],
+      "Mass": [
+        "0.999"
+      ],
+      "Energy_Refresh_Rate": [
+        "9999"
+      ],
+      "Dense_FOW_Reveal_Range_Multiplier": [
+        "1"
+      ],
+      "Ranking_In_Category": [
+        "1"
+      ],
+      "Energy_Capacity": [
+        "99999"
+      ],
+      "Targeting_Stickiness_Time_Threshold": [
+        "5.0"
+      ],
+      "GUI_Row": [
+        "1"
+      ],
+      "Tech_Level": [
+        "1"
+      ],
+      "Required_Star_Base_Level": [
+        "2"
+      ],
+      "Hyperspace": [
+        "Yes"
+      ],
+      "Mouse_Collide_Override_Sphere_Radius": [
+        "50.0"
+      ],
+      "Tactical_Production_Queue": [
+        "Tactical_Units"
+      ],
+      "Multisample_FOW_Check": [
+        "Yes"
+      ],
+      "Surface_Bombardment_Capable": [
+        "yes"
+      ],
+      "Asteroid_Damage_Hit_Particles": [
+        "Large_Damage_Space"
+      ],
+      "Has_Space_Evaluator": [
+        "True"
+      ],
+      "OverrideAcceleration": [
+        "0.035"
+      ],
+      "OverrideDeceleration": [
+        "0.035"
+      ],
+      "Variant_Of_Existing_Type": [
+        "Gladiator_Star_Destroyer_Template"
+      ],
+      "Select_Box_Scale": [
+        "1"
+      ],
+      "Idle_Chase_Range": [
+        "0.0"
+      ],
+      "Required_Ground_Base_Level": [
+        "0"
+      ],
+      "Size_Value": [
+        "30"
+      ],
+      "Squadron_Capacity": [
+        "50"
+      ],
+      "MovementClass": [
+        "Space"
+      ],
+      "Attack_Move_Response_Range": [
+        "400.0"
+      ],
+      "Build_Can_Be_Unlocked_By_Slicer": [
+        "No"
+      ],
+      "Select_Box_Z_Adjust": [
+        "1"
+      ],
+      "Victory_Relevant": [
+        "yes"
+      ],
+      "Behavior": [
+        "SELECTABLE, DUMMY_STARSHIP"
+      ],
+      "SFXEvent_Damaged_By_Asteroid": [
+        "SFX_Asteroid_Detonation"
+      ],
+      "Layer_Z_Adjust": [
+        "100"
+      ],
+      "Build_Tab_Space_Units": [
+        "Yes"
+      ],
+      "Build_Initially_Locked": [
+        "No"
+      ],
+      "SpaceBehavior": [
+        "SIMPLE_SPACE_LOCOMOTOR, SPAWN_SQUADRON, ABILITY_COUNTDOWN, SELECTABLE, POWERED, SHIELDED, HIDE_WHEN_FOGGED, REVEAL, TARGETING, UNIT_AI, ASTEROID_FIELD_DAMAGE, DAMAGE_TRACKING, ION_STUN_EFFECT, NEBULA"
+      ],
+      "Lua_Script": [
+        "ObjectScript_PowerToShields_Layer_Z"
+      ],
+      "Collidable_By_Projectile_Living": [
+        "Yes"
+      ],
+      "Is_Visible_On_Radar": [
+        "Yes"
+      ],
+      "Damage": [
+        "40"
+      ],
+      "Space_Full_Stop_Command": [
+        "Yes"
+      ],
+      "Radar_Icon_Name": [
+        "I_Radar_Non-Fighters.tga"
+      ],
+      "Space_Layer": [
+        "Frigate"
+      ],
+      "Ship_Class": [
+        "Frigate"
+      ],
+      "Encyclopedia_Unit_Class": [
+        "TEXT_ENCYCLOPEDIA_CLASS_FRIGATE"
+      ],
+      "GUI_Bracket_Size": [
+        "2"
+      ],
+      "SFXEvent_Unit_Lost": [
+        "Unit_Alarm_Empire_2"
+      ],
+      "Population_Value": [
+        "9"
+      ],
+      "Death_Clone": [
+        "Damage_Normal, Death_Clone_Gladiator"
+      ],
+      "SFXEvent_Stop": [
+        ""
+      ],
+      "Space_Model_Name": [
+        "Empire_Gladiator_Star_Destroyer.ALO"
+      ],
+      "CategoryMask": [
+        "Frigate | AntiFrigate"
+      ],
+      "Build_Cost_Credits": [
+        "5000"
+      ],
+      "Property_Flags": [
+        "ShieldPiercer"
+      ],
+      "SFXEvent_Build_Started": [
+        "EHD_Build_Vehicle"
+      ],
+      "SFXEvent_Health_Low_Warning": [
+        "Unit_Health_Low_Gladiator"
+      ],
+      "Max_Speed": [
+        "2.5"
+      ],
+      "Max_Rate_Of_Turn": [
+        "0.15"
+      ],
+      "SFXEvent_Move": [
+        "Unit_Move_Gladiator"
+      ],
+      "Tactical_Build_Cost_Multiplayer": [
+        "5000"
+      ],
+      "Build_Time_Seconds": [
+        "25"
+      ],
+      "HardPoints": [
+        "HP_Gladiator_Laser_01,\n\t\tHP_Gladiator_Laser_02,\n\t\tHP_Gladiator_Missle_Launcher_01,\n\t\tHP_Gladiator_Missle_Launcher_02,\n\t\tHP_Gladiator_Turbolaser_01,\n\t\tHP_Gladiator_Turbolaser_02,\n\t\tHP_Gladiator_Hangar,\n\t\tHP_Gladiator_Shield,"
+      ],
+      "SFXEvent_Build_Complete": [
+        "Unit_Complete_Gladiator"
+      ],
+      "SFXEvent_Move_Into_Nebula": [
+        "Unit_Nebula_Gladiator"
+      ],
+      "Unit_Abilities_Data": [
+        "<Unit_Abilities_Data SubObjectList=\"Yes\">\n\t\t\t<Unit_Ability>\n\t\t\t\t<Type>FULL_SALVO</Type>\n\t\t\t\t<Recharge_Seconds>60</Recharge_Seconds>\n\t\t\t\t<Expiration_Seconds>15</Expiration_Seconds>\n\t\t\t\t<SFXEvent_GUI_Unit_Ability_Activated>Unit_Ability_Gladiator</SFXEvent_GUI_Unit_Ability_Activated>\n\t\t\t\t<Alternate_Name_Text>TEXT_TOOLTIP_ABILITY_INTENSIFY_FIREPOWER_NAME</Alternate_Name_Text>\n\t\t\t\t<Alternate_Description_Text>TEXT_TOOLTIP_ABILITY_INTENSIFY_FIREPOWER</Alternate_Description_Text>\n\t\t\t\t<Alternate_Icon_Name>i_sa_intensify_firepower.tga</Alternate_Icon_Name>\n\t\t\t</Unit_Ability>\n\t\t\t<Unit_Ability>\n\t\t\t\t<Type>FOW_REVEAL_PING</Type>\n\t\t\t\t<Recharge_Seconds>120</Recharge_Seconds>\n\t\t\t\t<Effective_Radius>1000</Effective_Radius>\n\t\t\t\t<Spawned_Object_Type>Repair_Droids</Spawned_Object_Type>\n\t\t\t\t<SFXEvent_Target_Ability>GUI_Activate_Deploy_Repair_Drones</SFXEvent_Target_Ability>\n\t\t\t\t<Alternate_Name_Text>TEXT_TOOLTIP_ABILITY_REPAIR_DRONES_NAME</Alternate_Name_Text>\n\t\t\t\t<Alternate_Description_Text>TEXT_TOOLTIP_ABILITY_REPAIR_DRONES_DESCRIPTION</Alternate_Description_Text>\n\t\t\t\t<Alternate_Icon_Name>I_SA_REPAIR_VEHICLE.TGA</Alternate_Icon_Name>\n\t\t\t</Unit_Ability>\n\t\t</Unit_Abilities_Data>\n\t"
+      ],
+      "Custom_Hard_XExtent": [
+        "153.0"
+      ],
+      "Shield_Points": [
+        "5000"
+      ],
+      "Targeting_Max_Attack_Distance": [
+        "1800"
+      ],
+      "SFXEvent_Engine_Idle_Loop": [
+        "Unit_Acclamator_Idle_Engine_Loop"
+      ],
+      "SFXEvent_Barrage": [
+        "Unit_Ability_Gladiator"
+      ],
+      "Death_SFXEvent_Start_Die": [
+        "Unit_Cruiser_Death_SFX"
+      ],
+      "Shield_Refresh_Rate": [
+        "100"
+      ],
+      "SFXEvent_Engine_Cinematic_Focus_Loop": [
+        "Unit_Acclamator_Cinematic_Engine_Loop"
+      ],
+      "SFXEvent_Build_Cancelled": [
+        "EHD_Unit_Canceled"
+      ],
+      "Moniker": [
+        "Empire_Acclamator_Assault_Ship.txt"
+      ],
+      "Targeting_Priority_Set": [
+        "Frigate"
+      ],
+      "Custom_Hard_YExtent": [
+        "97.0"
+      ],
+      "SFXEvent_Attack": [
+        "Unit_Attack_Gladiator"
+      ],
+      "Space_FOW_Reveal_Range": [
+        "2000"
+      ],
+      "SFXEvent_Engine_Moving_Loop": [
+        "Unit_Acclamator_Moving_Engine_Loop"
+      ],
+      "Scale_Factor": [
+        "1"
+      ],
+      "Max_Rate_Of_Roll": [
+        "0.1"
+      ],
+      "Tactical_Build_Time_Seconds": [
+        "25"
+      ],
+      "Bank_Turn_Angle": [
+        "25"
+      ],
+      "SFXEvent_Guard": [
+        "Unit_Guard_Gladiator"
+      ],
+      "Icon_Name": [
+        "I_BUTTON_UNIT_EMPIRE_SD_GLADIATOR.TGA"
+      ],
+      "SFXEvent_Health_Critical_Warning": [
+        "Unit_Alarm_Empire_2"
+      ],
+      "SFXEvent_Move_Into_Asteroid_Field": [
+        "Unit_Asteroids_Gladiator"
+      ],
+      "AI_Combat_Power": [
+        "500"
+      ],
+      "Encyclopedia_Text": [
+        "TEXT_TOOLTIP_GLADIATOR\n\t\tTEXT_LINE \n\t\tTEXT_TOOLTIP_GLADIATOR_STATS_E\n\t\tTEXT_LINE\n\t\tTEXT_TOOLTIP_SQUADRON_ATTRITION_SHIP_REFUND_2400"
+      ],
+      "Text_ID": [
+        "TEXT_UNIT_GLADIATOR"
+      ],
+      "SFXEvent_Fleet_Move": [
+        "Unit_Fleet_Move_Gladiator"
+      ],
+      "Tactical_Health": [
+        "6000"
+      ],
+      "Destruction_Survivors": [
+        "2400_Reverse_Death_Penalty_Dummy, 1.0"
+      ],
+      "Required_Special_Structures": [
+        "E_Shipyard_2"
+      ],
+      "Starting_Spawned_Units_Tech_0": [
+        "TIE_Fighter_Garrison, 1",
+        "Skipray_Garrison_E, 1"
+      ],
+      "Reserve_Spawned_Units_Tech_0": [
+        "TIE_Fighter_Garrison, 2",
+        "Skipray_Garrison_E, 2"
+      ],
+      "Affiliation": [
+        "Empire"
+      ]
+    }
+  },
+  "death": {
+    "inheritance": [
+      "Death_Clone_Gladiator"
+    ],
+    "values": {
+      "Max_Thrust": [
+        "1"
+      ],
+      "Layer_Z_Adjust": [
+        "-100.0"
+      ],
+      "Remove_Upon_Death": [
+        "true"
+      ],
+      "Space_Model_Name": [
+        "Empire_Gladiator_Star_Destroyer_Deathclone.ALO"
+      ],
+      "Max_Speed": [
+        "1.2"
+      ],
+      "Scale_Factor": [
+        "1"
+      ],
+      "Max_Rate_Of_Roll": [
+        "0.1"
+      ],
+      "Death_SFXEvent_Start_Die": [
+        "Unit_Star_Destroyer_Death_SFX"
+      ],
+      "Max_Rate_Of_Turn": [
+        "0.03"
+      ],
+      "Bank_Turn_Angle": [
+        "0"
+      ]
+    }
+  },
+  "hardpoints": [
+    {
+      "name": "HP_Gladiator_Laser_01",
+      "inheritance": [
+        "HP_Gladiator_Laser_01"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Fire_Range_Distance": [
+          "1600.0"
+        ],
+        "Health": [
+          "1125.0"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Laser_Fire_Empire_Ship_1"
+        ],
+        "Collision_Mesh": [
+          "LC_01"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.65"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Laser_Heavy_G"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Damage_Particles": [
+          "LC_01_Fire"
+        ],
+        "Fire_Bone_A": [
+          "LC_01_FP_01"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "0.95"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_LASERCANNON"
+        ],
+        "Fire_Bone_B": [
+          "LC_01_FP_02"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Laser_Death"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "LC_01"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.3"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 2.0",
+          "Bomber, 2.0",
+          "Gunship, 2.0",
+          "Transport, 2.0",
+          "Corvette, 2.0",
+          "Frigate, 2.0",
+          "Capital, 2.0",
+          "SpaceStructure, 2.0",
+          "Super, 2.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Laser_02",
+      "inheritance": [
+        "HP_Gladiator_Laser_02"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Fire_Range_Distance": [
+          "1600.0"
+        ],
+        "Health": [
+          "1125.0"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Laser_Fire_Empire_Ship_1"
+        ],
+        "Collision_Mesh": [
+          "LC_02"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "0.65"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Laser_Heavy_G"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Damage_Particles": [
+          "LC_02_Fire"
+        ],
+        "Fire_Bone_A": [
+          "LC_02_FP_01"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "0.95"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_LASERCANNON"
+        ],
+        "Fire_Bone_B": [
+          "LC_02_FP_02"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Laser_Death"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "LC_02"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.3"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 2.0",
+          "Bomber, 2.0",
+          "Gunship, 2.0",
+          "Transport, 2.0",
+          "Corvette, 2.0",
+          "Frigate, 2.0",
+          "Capital, 2.0",
+          "SpaceStructure, 2.0",
+          "Super, 2.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Missle_Launcher_01",
+      "inheritance": [
+        "HP_Gladiator_Missle_Launcher_01"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "No"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Missile_Fire_Ship_Concussion"
+        ],
+        "Collision_Mesh": [
+          "ML_01"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "6"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Concussion_Missile"
+        ],
+        "Fire_Cone_Width": [
+          "160"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Fire_Bone_A": [
+          "ML_01"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "6"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Fire_Bone_B": [
+          "ML_01"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Attachment_Bone": [
+          "ML_01"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "1"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_MISSILE"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 10.0",
+          "Bomber, 10.0",
+          "Gunship, 10.0",
+          "Transport, 10.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Missle_Launcher_02",
+      "inheritance": [
+        "HP_Gladiator_Missle_Launcher_02"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "No"
+        ],
+        "Fire_Range_Distance": [
+          "1750.0"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Missile_Fire_Ship_Concussion"
+        ],
+        "Collision_Mesh": [
+          "ML_02"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "8"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Concussion_Missile"
+        ],
+        "Fire_Cone_Width": [
+          "160"
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Fire_Bone_A": [
+          "ML_02"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "9"
+        ],
+        "Fire_Pulse_Count": [
+          "2"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Fire_Bone_B": [
+          "ML_02"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ],
+        "Attachment_Bone": [
+          "ML_02"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "1"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_MISSILE"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 10.0",
+          "Bomber, 10.0",
+          "Gunship, 10.0",
+          "Transport, 10.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Turbolaser_01",
+      "inheritance": [
+        "HP_Gladiator_Turbolaser_01"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Fire_Range_Distance": [
+          "1800.0"
+        ],
+        "Health": [
+          "1500.0"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Empire_Ship_0"
+        ],
+        "Collision_Mesh": [
+          "TL_01"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "1.0"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Green"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Damage_Particles": [
+          "TL_01_Fire"
+        ],
+        "Fire_Bone_A": [
+          "TL_01_FP_01"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.3"
+        ],
+        "Full_Salvo_Weapon_Delay_Multiplier": [
+          "0.33"
+        ],
+        "Fire_Pulse_Count": [
+          "3"
+        ],
+        "Fire_Cone_Height": [
+          "90"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER"
+        ],
+        "Fire_Bone_B": [
+          "TL_01_FP_02"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "TL_01"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.25"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Turbolaser_02",
+      "inheritance": [
+        "HP_Gladiator_Turbolaser_02"
+      ],
+      "values": {
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Fire_Range_Distance": [
+          "1800.0"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Health": [
+          "1500.0"
+        ],
+        "Fire_SFXEvent": [
+          "Unit_Turbolaser_Fire_Empire_Ship_0"
+        ],
+        "Collision_Mesh": [
+          "TL_02"
+        ],
+        "Fire_Min_Recharge_Seconds": [
+          "1.0"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Fire_Projectile_Type": [
+          "Proj_Ship_Turbolaser_Green"
+        ],
+        "Fire_Cone_Width": [
+          "175"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Damage_Particles": [
+          "TL_02_Fire"
+        ],
+        "Fire_Bone_A": [
+          "TL_02_FP_01"
+        ],
+        "Fire_Max_Recharge_Seconds": [
+          "1.3"
+        ],
+        "Full_Salvo_Weapon_Delay_Multiplier": [
+          "0.33"
+        ],
+        "Fire_Pulse_Count": [
+          "3"
+        ],
+        "Fire_Cone_Height": [
+          "90.0"
+        ],
+        "Tooltip_Text": [
+          "TEXT_WEAPON_TURBOLASER"
+        ],
+        "Fire_Bone_B": [
+          "TL_02_FP_02"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Turbo_Laser_Death"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ],
+        "Attachment_Bone": [
+          "TL_02"
+        ],
+        "Fire_Pulse_Delay_Seconds": [
+          "0.25"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_WEAPON_LASER"
+        ],
+        "Fire_Inaccuracy_Distance": [
+          "Fighter, 50.0",
+          "Bomber, 50.0",
+          "Gunship, 45.0",
+          "Transport, 30.0",
+          "Corvette, 14.0",
+          "Frigate, 10.0",
+          "Capital, 10.0",
+          "SpaceStructure, 10.0",
+          "Super, 10.0"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Hangar",
+      "inheritance": [
+        "HP_Gladiator_Hangar"
+      ],
+      "values": {
+        "Attachment_Bone": [
+          "Hangar"
+        ],
+        "Is_Targetable": [
+          "No"
+        ],
+        "Model_To_Attach": [
+          ""
+        ],
+        "Damage_Particles": [
+          ""
+        ],
+        "Collision_Mesh": [
+          "Hangar"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_FIGHTER_BAY"
+        ],
+        "Is_Destroyable": [
+          "No"
+        ]
+      }
+    },
+    {
+      "name": "HP_Gladiator_Shield",
+      "inheritance": [
+        "HP_Gladiator_Shield"
+      ],
+      "values": {
+        "Attachment_Bone": [
+          "Shield_Gen"
+        ],
+        "Is_Targetable": [
+          "Yes"
+        ],
+        "Death_Explosion_SFXEvent": [
+          "Unit_Hardpoint_Shields_Death"
+        ],
+        "Tooltip_Text": [
+          "TEXT_SHIELD_GENERATOR_HARDPOINT"
+        ],
+        "Death_Explosion_Particles": [
+          ""
+        ],
+        "Damage_Particles": [
+          "Shield_Gen_Fire"
+        ],
+        "Death_Breakoff_Prop": [
+          ""
+        ],
+        "Health": [
+          "750.0"
+        ],
+        "Collision_Mesh": [
+          "Shield_Gen"
+        ],
+        "Damage_Decal": [
+          ""
+        ],
+        "Type": [
+          "HARD_POINT_SHIELD_GENERATOR"
+        ],
+        "Is_Destroyable": [
+          "Yes"
+        ]
+      }
+    }
+  ],
+  "attachments": [],
+  "variants": {
+    "Gladiator": {
+      "bones": [
+        {
+          "name": "Root",
+          "parent_index": 4294967295,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Shield",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            0.0,
+            -0.0,
+            0.0,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Lights",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            -6.835939529992174e-06,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "pe_gladiator_star_destroyer_large",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            21.570524215698242,
+            0.0,
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            94.15467071533203,
+            0.0,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            -0.14662030339241028
+          ]
+        },
+        {
+          "name": "pe_gladiator_star_destroyer_large",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            -21.453218460083008,
+            0.0,
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            94.15467071533203,
+            0.0,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            -0.14662030339241028
+          ]
+        },
+        {
+          "name": "pe_gladiator_star_destroyer_small",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.184760183095932,
+            0.0,
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            95.95904541015625,
+            0.0,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            10.8955078125
+          ]
+        },
+        {
+          "name": "pe_gladiator_star_destroyer_small",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.1850000023841858,
+            0.0,
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            95.95904541015625,
+            0.0,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            -11.051520347595215
+          ]
+        },
+        {
+          "name": "Shield_Gen",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            0.0,
+            5.13719078298891e-06,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            0.0,
+            50.66655349731445,
+            0.0,
+            0.0,
+            1.0,
+            27.616302490234375
+          ]
+        },
+        {
+          "name": "ML_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            0.0,
+            -16.951271057128906,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            0.0,
+            -152.77606201171875,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "ML_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            0.0,
+            16.951000213623047,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            0.0,
+            -152.77606201171875,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "LC_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -23.164592742919922,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            -86.99082946777344,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "LC_01_FP_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -40.31137466430664,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            -75.85801696777344,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "LC_01_FP_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -27.897808074951172,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            -121.80146789550781,
+            0.0,
+            0.0,
+            1.0,
+            0.010271481238305569
+          ]
+        },
+        {
+          "name": "LC_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.965925931930542,
+            0.25881853699684143,
+            0.0,
+            23.165000915527344,
+            -0.25881853699684143,
+            0.965925931930542,
+            0.0,
+            -86.99082946777344,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "LC_02_FP_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9659258723258972,
+            0.25881898403167725,
+            0.0,
+            40.31100082397461,
+            -0.25881898403167725,
+            0.9659258723258972,
+            0.0,
+            -75.85801696777344,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "LC_02_FP_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9659258723258972,
+            0.25881898403167725,
+            0.0,
+            27.898000717163086,
+            -0.25881898403167725,
+            0.9659258723258972,
+            0.0,
+            -121.80146789550781,
+            0.0,
+            0.0,
+            1.0,
+            0.010271481238305569
+          ]
+        },
+        {
+          "name": "TL_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -58.05986022949219,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            45.69742965698242,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "TL_01_FP_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -77.88936614990234,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            69.04620361328125,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "TL_01_FP_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -65.47579956054688,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            23.10274887084961,
+            0.0,
+            0.0,
+            1.0,
+            0.010271481238305569
+          ]
+        },
+        {
+          "name": "TL_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9659258723258972,
+            0.25881898403167725,
+            0.0,
+            58.05999755859375,
+            -0.25881898403167725,
+            0.9659258723258972,
+            0.0,
+            45.69742965698242,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "TL_02_FP_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9659256935119629,
+            0.25881946086883545,
+            0.0,
+            65.47599792480469,
+            -0.25881946086883545,
+            0.9659256935119629,
+            0.0,
+            23.10274887084961,
+            0.0,
+            0.0,
+            1.0,
+            0.010271481238305569
+          ]
+        },
+        {
+          "name": "TL_02_FP_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9659258723258972,
+            0.25881898403167725,
+            0.0,
+            77.88899993896484,
+            -0.25881898403167725,
+            0.9659258723258972,
+            0.0,
+            69.04620361328125,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "Hull",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Hangar_Mesh",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            4.893946652373415e-07,
+            0.0,
+            1.0,
+            0.0,
+            11.196044921875,
+            0.0,
+            0.0,
+            1.0,
+            4.893946652373415e-07
+          ]
+        },
+        {
+          "name": "Hangar_Lights",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            4.893946652373415e-07,
+            0.0,
+            1.0,
+            0.0,
+            11.196044921875,
+            0.0,
+            0.0,
+            1.0,
+            4.893946652373415e-07
+          ]
+        },
+        {
+          "name": "Engine_Glow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            0.0,
+            0.0,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            0.0
+          ]
+        },
+        {
+          "name": "Engine_Exhaust",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            3.7481297567865113e-06,
+            -0.0,
+            0.0,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            3.7481297567865113e-06
+          ]
+        },
+        {
+          "name": "Shadow",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "TL_01_Fire",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -62.01890563964844,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            45.69742965698242,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 28,
+          "visible": 1,
+          "matrix": [
+            0.5236461162567139,
+            -0.8487160205841064,
+            -0.07399840652942657,
+            -10.023517608642578,
+            0.1657787263393402,
+            0.18671029806137085,
+            -0.96832674741745,
+            -40.155250549316406,
+            0.8356507420539856,
+            0.49479320645332336,
+            0.23846912384033203,
+            -0.01027107797563076
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 28,
+          "visible": 1,
+          "matrix": [
+            -0.33487868309020996,
+            0.11482781171798706,
+            0.9352384209632874,
+            8.178974151611328,
+            0.4353666603565216,
+            -0.8613908290863037,
+            0.2616516351699829,
+            32.630149841308594,
+            0.8356507420539856,
+            0.494793176651001,
+            0.23846924304962158,
+            -0.01027107797563076
+          ]
+        },
+        {
+          "name": "TL_02_Fire",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.9659258723258972,
+            0.25881898403167725,
+            0.0,
+            61.9052848815918,
+            -0.25881898403167725,
+            0.9659258723258972,
+            0.0,
+            45.69742965698242,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 31,
+          "visible": 1,
+          "matrix": [
+            0.07766987383365631,
+            -0.4126591682434082,
+            0.907568097114563,
+            9.546424865722656,
+            -0.13662530481815338,
+            0.8973241448402405,
+            0.4196937680244446,
+            31.056941986083984,
+            -0.9875732064247131,
+            -0.15659432113170624,
+            0.013315379619598389,
+            -0.010271078906953335
+          ]
+        },
+        {
+          "name": "LC_02_Fire",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.965925931930542,
+            0.25881853699684143,
+            0.0,
+            26.064048767089844,
+            -0.25881853699684143,
+            0.965925931930542,
+            0.0,
+            -86.99082946777344,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Small_Explosion",
+          "parent_index": 33,
+          "visible": 1,
+          "matrix": [
+            0.9659260511398315,
+            -0.2588185667991638,
+            0.0,
+            -6.442462921142578,
+            0.2588185667991638,
+            0.9659260511398315,
+            0.0,
+            7.293128967285156,
+            0.0,
+            0.0,
+            1.0,
+            6.644720077514648
+          ]
+        },
+        {
+          "name": "LC_01_Fire",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -0.965925931930542,
+            0.25881892442703247,
+            0.0,
+            -25.661605834960938,
+            -0.25881892442703247,
+            -0.965925931930542,
+            0.0,
+            -86.99082946777344,
+            0.0,
+            0.0,
+            1.0,
+            0.010271078906953335
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Very_Small_Explosion",
+          "parent_index": 35,
+          "visible": 1,
+          "matrix": [
+            -0.21431927382946014,
+            0.45215946435928345,
+            0.8658053874969482,
+            12.285270690917969,
+            0.6653613448143005,
+            -0.5813590288162231,
+            0.46831172704696655,
+            31.46013641357422,
+            0.7150954604148865,
+            0.6764417290687561,
+            -0.176253080368042,
+            -0.01026153564453125
+          ]
+        },
+        {
+          "name": "Shield_Gen_Fire",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            0.0,
+            5.13719078298891e-06,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            0.0,
+            50.66655349731445,
+            0.0,
+            0.0,
+            1.0,
+            29.426233291625977
+          ]
+        },
+        {
+          "name": "P_Ship_Fire_Explosion",
+          "parent_index": 37,
+          "visible": 1,
+          "matrix": [
+            0.9999999403953552,
+            3.491560107704572e-08,
+            5.449138740232229e-08,
+            -6.119266510009766,
+            0.0,
+            0.7071066498756409,
+            -0.7071068286895752,
+            -25.08159828186035,
+            -8.940696716308594e-08,
+            0.7071068286895752,
+            0.7071067094802856,
+            7.292516708374023
+          ]
+        },
+        {
+          "name": "Hangar",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            0.0,
+            1.0,
+            -8.940696716308594e-08,
+            9.837596053330344e-07,
+            -0.42261824011802673,
+            -1.1920928955078125e-07,
+            -0.9063078165054321,
+            -14.970376968383789,
+            -0.9063078165054321,
+            0.0,
+            0.42261821031570435,
+            -8.97452163696289
+          ]
+        },
+        {
+          "name": "DTL_01",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            -0.9659258723258972,
+            0.2588191032409668,
+            24.96092414855957,
+            0.9961947798728943,
+            -0.022557735443115234,
+            -0.08418598771095276,
+            -48.60649108886719,
+            0.08715574443340302,
+            0.25783419609069824,
+            0.9622501730918884,
+            10.072834968566895
+          ]
+        },
+        {
+          "name": "DTL_02",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            -0.9659258723258972,
+            0.2588191032409668,
+            28.376449584960938,
+            0.9961947798728943,
+            -0.022557735443115234,
+            -0.08418598771095276,
+            -23.606491088867188,
+            0.08715574443340302,
+            0.25783419609069824,
+            0.9622501730918884,
+            10.91818904876709
+          ]
+        },
+        {
+          "name": "DTL_03",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            -1.1920928955078125e-07,
+            -0.9659258723258972,
+            0.2588191032409668,
+            31.81524658203125,
+            0.9961947798728943,
+            -0.022557735443115234,
+            -0.08418598771095276,
+            1.3935089111328125,
+            0.08715574443340302,
+            0.25783419609069824,
+            0.9622501730918884,
+            11.755709648132324
+          ]
+        },
+        {
+          "name": "DTL_04",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.1920928955078125e-07,
+            0.9659258127212524,
+            -0.258819043636322,
+            -24.96099853515625,
+            -0.9961947202682495,
+            -0.022557497024536133,
+            -0.08418601751327515,
+            -48.60649108886719,
+            -0.08715574443340302,
+            0.25783416628837585,
+            0.9622501730918884,
+            10.072834968566895
+          ]
+        },
+        {
+          "name": "DTL_05",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.1920928955078125e-07,
+            0.9659258127212524,
+            -0.258819043636322,
+            -28.375999450683594,
+            -0.9961947202682495,
+            -0.022557497024536133,
+            -0.08418601751327515,
+            -23.606491088867188,
+            -0.08715574443340302,
+            0.25783416628837585,
+            0.9622501730918884,
+            10.91818904876709
+          ]
+        },
+        {
+          "name": "DTL_06",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.1920928955078125e-07,
+            0.9659258127212524,
+            -0.258819043636322,
+            -31.81500244140625,
+            -0.9961947202682495,
+            -0.022557497024536133,
+            -0.08418601751327515,
+            1.3935089111328125,
+            -0.08715574443340302,
+            0.25783416628837585,
+            0.9622501730918884,
+            11.755709648132324
+          ]
+        },
+        {
+          "name": "Col",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Pi_Damage_Elec_small_sparse",
+          "parent_index": 46,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            -0.0,
+            140.21888732910156,
+            0.0,
+            -1.1920928955078125e-07,
+            -0.9999999403953552,
+            -1.9563576358905266e-07,
+            0.0,
+            0.9999999403953552,
+            -1.1920928955078125e-07,
+            1.2570818662643433
+          ]
+        },
+        {
+          "name": "Engine_Glow_Small",
+          "parent_index": 0,
+          "visible": 1,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.1920928955078125e-07,
+            0.9999999403953552,
+            0.0,
+            0.0,
+            -0.9999999403953552,
+            -1.1920928955078125e-07,
+            0.0
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "kind": "0x400",
+          "name": "Shield"
+        },
+        {
+          "kind": "0x400",
+          "name": "Lights"
+        },
+        {
+          "kind": "0x400",
+          "name": "Hull"
+        },
+        {
+          "kind": "0x400",
+          "name": "Hangar_Mesh"
+        },
+        {
+          "kind": "0x400",
+          "name": "Hangar_Lights"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Glow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Exhaust"
+        },
+        {
+          "kind": "0x400",
+          "name": "Shadow"
+        },
+        {
+          "kind": "0x400",
+          "name": "Col"
+        },
+        {
+          "kind": "0x400",
+          "name": "Engine_Glow_Small"
+        }
+      ],
+      "connections": [
+        {
+          "object_index": 0,
+          "bone_index": 1,
+          "bone": "Shield"
+        },
+        {
+          "object_index": 1,
+          "bone_index": 2,
+          "bone": "Lights"
+        },
+        {
+          "object_index": 2,
+          "bone_index": 22,
+          "bone": "Hull"
+        },
+        {
+          "object_index": 3,
+          "bone_index": 23,
+          "bone": "Hangar_Mesh"
+        },
+        {
+          "object_index": 4,
+          "bone_index": 24,
+          "bone": "Hangar_Lights"
+        },
+        {
+          "object_index": 5,
+          "bone_index": 25,
+          "bone": "Engine_Glow"
+        },
+        {
+          "object_index": 6,
+          "bone_index": 26,
+          "bone": "Engine_Exhaust"
+        },
+        {
+          "object_index": 7,
+          "bone_index": 27,
+          "bone": "Shadow"
+        },
+        {
+          "object_index": 8,
+          "bone_index": 46,
+          "bone": "Col"
+        },
+        {
+          "object_index": 9,
+          "bone_index": 48,
+          "bone": "Engine_Glow_Small"
+        }
+      ],
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Empire_Gladiator_Star_Destroyer.ALO",
+      "material_audit": {
+        "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Empire_Gladiator_Star_Destroyer.ALO",
+        "sha256": "ea7ad049216f847b75435ecc0cb0f6ec60217a6b970303380ee9c3954afc9488",
+        "meshes": [
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "EdgeBrightness": [
+                    0.5
+                  ],
+                  "BaseUVScale": [
+                    1.0
+                  ],
+                  "WaveUVScale": [
+                    1.0
+                  ],
+                  "DistortUVScale": [
+                    1.0
+                  ],
+                  "BaseUVScrollRate": [
+                    1.0
+                  ],
+                  "WaveUVScrollRate": [
+                    1.0
+                  ],
+                  "DistortUVScrollRate": [
+                    1.0
+                  ],
+                  "BaseTexture": "Engine_Glow_Fancy_Blue.tga",
+                  "WaveTexture": "Engine_Glow_Blue_wave.tga",
+                  "DistortionTexture": "Engine_Glow_Blue_dist.tga"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 376,
+                "triangleCount": 624
+              }
+            ],
+            "name": "Shield",
+            "hidden": true,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Hull_Lights_Grid.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 330,
+                "triangleCount": 182
+              }
+            ],
+            "name": "Lights",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Empire_Gladiator.dds",
+                  "NormalTexture": "Empire_Gladiator_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 10910,
+                "triangleCount": 5318
+              }
+            ],
+            "name": "Hull",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Emissive": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Specular": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ],
+                  "Shininess": [
+                    32.0
+                  ],
+                  "Colorization": [
+                    0.0,
+                    1.0,
+                    0.0,
+                    1.0
+                  ],
+                  "UVOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "BaseTexture": "Hanger.dds",
+                  "NormalTexture": "Hanger_B.dds"
+                },
+                "shader": "MeshBumpColorize.fx",
+                "vertexCount": 302,
+                "triangleCount": 118
+              }
+            ],
+            "name": "Hangar_Mesh",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Hanger.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 292,
+                "triangleCount": 118
+              }
+            ],
+            "name": "Hangar_Lights",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "EdgeBrightness": [
+                    1.0
+                  ],
+                  "BaseUVScale": [
+                    1.0
+                  ],
+                  "WaveUVScale": [
+                    0.5
+                  ],
+                  "DistortUVScale": [
+                    1.0
+                  ],
+                  "BaseUVScrollRate": [
+                    0.0
+                  ],
+                  "WaveUVScrollRate": [
+                    0.10000000149011612
+                  ],
+                  "DistortUVScrollRate": [
+                    0.30000001192092896
+                  ],
+                  "BaseTexture": "engine_glow_fancy_blue.tga",
+                  "WaveTexture": "engine_glow_blue_wave.tga",
+                  "DistortionTexture": "engine_glow_blue_dist.tga"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 797,
+                "triangleCount": 1144
+              }
+            ],
+            "name": "Engine_Glow",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "BaseTexture": "Engine_Exhaust.dds",
+                  "UVScrollRate": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0
+                  ]
+                },
+                "shader": "MeshAdditive.fx",
+                "vertexCount": 728,
+                "triangleCount": 1168
+              }
+            ],
+            "name": "Engine_Exhaust",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "DebugColor": [
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "shader": "MeshShadowVolume.fx",
+                "vertexCount": 16312,
+                "triangleCount": 21986
+              }
+            ],
+            "name": "Shadow",
+            "hidden": false,
+            "collision": false
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.5
+                  ]
+                },
+                "shader": "MeshCollision.fx",
+                "vertexCount": 6241,
+                "triangleCount": 3864
+              }
+            ],
+            "name": "Col",
+            "hidden": true,
+            "collision": true
+          },
+          {
+            "materials": [
+              {
+                "properties": {
+                  "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "EdgeBrightness": [
+                    1.0
+                  ],
+                  "BaseUVScale": [
+                    1.0
+                  ],
+                  "WaveUVScale": [
+                    0.5
+                  ],
+                  "DistortUVScale": [
+                    1.0
+                  ],
+                  "BaseUVScrollRate": [
+                    0.0
+                  ],
+                  "WaveUVScrollRate": [
+                    0.10000000149011612
+                  ],
+                  "DistortUVScrollRate": [
+                    0.30000001192092896
+                  ],
+                  "BaseTexture": "engine_glow_fancy_white.tga",
+                  "WaveTexture": "engine_glow_blue_wave.tga",
+                  "DistortionTexture": "engine_glow_blue_dist.tga"
+                },
+                "shader": "MeshShield.fx",
+                "vertexCount": 428,
+                "triangleCount": 728
+              }
+            ],
+            "name": "Engine_Glow_Small",
+            "hidden": false,
+            "collision": false
+          }
+        ],
+        "connections": [
+          {
+            "mesh": 0,
+            "bone": 1
+          },
+          {
+            "mesh": 1,
+            "bone": 2
+          },
+          {
+            "mesh": 2,
+            "bone": 22
+          },
+          {
+            "mesh": 3,
+            "bone": 23
+          },
+          {
+            "mesh": 4,
+            "bone": 24
+          },
+          {
+            "mesh": 5,
+            "bone": 25
+          },
+          {
+            "mesh": 6,
+            "bone": 26
+          },
+          {
+            "mesh": 7,
+            "bone": 27
+          },
+          {
+            "mesh": 8,
+            "bone": 46
+          },
+          {
+            "mesh": 9,
+            "bone": 48
+          }
+        ],
+        "proxies": [
+          {
+            "name": "pe_gladiator_star_destroyer_large",
+            "bone": 3
+          },
+          {
+            "name": "pe_gladiator_star_destroyer_large",
+            "bone": 4
+          },
+          {
+            "name": "pe_gladiator_star_destroyer_small",
+            "bone": 5
+          },
+          {
+            "name": "pe_gladiator_star_destroyer_small",
+            "bone": 6
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 29
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 30
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 32
+          },
+          {
+            "name": "P_Ship_Fire_Small_Explosion",
+            "bone": 34
+          },
+          {
+            "name": "P_Ship_Fire_Very_Small_Explosion",
+            "bone": 36
+          },
+          {
+            "name": "P_Ship_Fire_Explosion",
+            "bone": 38
+          },
+          {
+            "name": "Pi_Damage_Elec_small_sparse",
+            "bone": 47
+          }
+        ]
+      },
+      "textures": {
+        "Empire_Gladiator.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Empire_Gladiator.dds",
+          "stem": "Gladiator_Empire_Gladiator",
+          "size": [
+            2048,
+            2048
+          ],
+          "alpha": [
+            0,
+            92
+          ]
+        },
+        "Empire_Gladiator_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Empire_Gladiator_B.dds",
+          "stem": "Gladiator_Empire_Gladiator_B",
+          "size": [
+            2048,
+            2048
+          ],
+          "alpha": [
+            39,
+            221
+          ]
+        },
+        "Engine_Exhaust.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust.dds",
+          "stem": "Gladiator_Engine_Exhaust",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Engine_Glow_Blue_dist.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_dist.tga",
+          "stem": "Gladiator_Engine_Glow_Blue_dist",
+          "size": [
+            500,
+            500
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Engine_Glow_Blue_wave.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_wave.tga",
+          "stem": "Gladiator_Engine_Glow_Blue_wave",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Engine_Glow_Fancy_Blue.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_Blue.tga",
+          "stem": "Gladiator_Engine_Glow_Fancy_Blue",
+          "size": [
+            500,
+            250
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "Hanger.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hanger.dds",
+          "stem": "Gladiator_Hanger",
+          "size": [
+            264,
+            264
+          ],
+          "alpha": [
+            0,
+            0
+          ]
+        },
+        "Hanger_B.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hanger_B.dds",
+          "stem": "Gladiator_Hanger_B",
+          "size": [
+            264,
+            264
+          ],
+          "alpha": [
+            0,
+            255
+          ]
+        },
+        "Hull_Lights_Grid.dds": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_Lights_Grid.dds",
+          "stem": "Gladiator_Hull_Lights_Grid",
+          "size": [
+            1024,
+            1024
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "engine_glow_blue_dist.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_dist.tga",
+          "stem": "Gladiator_Engine_Glow_Blue_dist",
+          "size": [
+            500,
+            500
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "engine_glow_blue_wave.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_wave.tga",
+          "stem": "Gladiator_Engine_Glow_Blue_wave",
+          "size": [
+            512,
+            512
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "engine_glow_fancy_blue.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_Blue.tga",
+          "stem": "Gladiator_Engine_Glow_Fancy_Blue",
+          "size": [
+            500,
+            250
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        },
+        "engine_glow_fancy_white.tga": {
+          "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_White.tga",
+          "stem": "Gladiator_Engine_Glow_Fancy_White",
+          "size": [
+            500,
+            250
+          ],
+          "alpha": [
+            255,
+            255
+          ]
+        }
+      }
+    }
+  },
+  "projectiles": {
+    "Proj_Ship_Laser_Heavy_G": {
+      "inheritance": [
+        "Proj_Ship_Laser_Heavy_G",
+        "Proj_Ship_Laser_Light_G"
+      ],
+      "values": {
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Damage_Type": [
+          "Damage_Heavy_Laser"
+        ],
+        "Space_Model_Name": [
+          "w_laser_heavy_g.alo"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          ""
+        ],
+        "Max_Speed": [
+          "35.0"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          ""
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Projectile_Damage": [
+          "24"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          ""
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "3000.0"
+        ],
+        "Scale_Factor": [
+          "1.0"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          ""
+        ],
+        "Variant_Of_Existing_Type": [
+          "Proj_Ship_Laser_Light_G"
+        ]
+      }
+    },
+    "Proj_Concussion_Missile": {
+      "inheritance": [
+        "Proj_Concussion_Missile"
+      ],
+      "values": {
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_Max_Scan_Range": [
+          "0.0"
+        ],
+        "Damage_Type": [
+          "Damage_Con_Missile"
+        ],
+        "Space_Model_Name": [
+          "w_projectile_concussion_missile_b.alo"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Max_Speed": [
+          "17.5"
+        ],
+        "Max_Rate_Of_Turn": [
+          "2.5"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Category": [
+          "MISSILE"
+        ],
+        "Projectile_Combat_Mod_Effect": [
+          "MAL_Slow_Effect"
+        ],
+        "Projectile_Combat_Mod": [
+          "COMBAT_MOD_SPEED"
+        ],
+        "Projectile_Combat_Mod_Value": [
+          "-0.25"
+        ],
+        "Projectile_Blast_Area_Dropoff": [
+          "True"
+        ],
+        "Projectile_Damage": [
+          "65.0"
+        ],
+        "Projectile_Combat_Mod_Category_Mask": [
+          "Fighter | Gunship | Bomber | Transport | Corvette"
+        ],
+        "SFXEvent_Fire": [
+          "Unit_MAL_Carbonite_Fire"
+        ],
+        "Projectile_Combat_Mod_Radius": [
+          "50"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "No"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Concussion_Missile_Detonation"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          "Conc_Missile_Detonation_Particle"
+        ],
+        "Projectile_Combat_Mod_Duration": [
+          "5"
+        ],
+        "Scale_Factor": [
+          "0.15"
+        ],
+        "Explode_When_Reached_Target_Radius": [
+          "Yes"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_Blast_Area_Damage": [
+          "65"
+        ],
+        "Projectile_Blast_Area_Dropoff_Tiers": [
+          "2"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_Blast_Area_Max_Victims": [
+          "4"
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "5000.0"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_Blast_Area_Range": [
+          "25"
+        ]
+      }
+    },
+    "Proj_Ship_Turbolaser_Green": {
+      "inheritance": [
+        "Proj_Ship_Turbolaser_Green"
+      ],
+      "values": {
+        "Projectile_Does_Hitpoint_Damage": [
+          "Yes"
+        ],
+        "Exclude_From_Distance_Fade": [
+          "true"
+        ],
+        "Projectile_SFXEvent_Shield_Detonate": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Damage_Type": [
+          "Damage_Default"
+        ],
+        "Space_Model_Name": [
+          "w_turbolaser_g.alo"
+        ],
+        "Projectile_Object_Detonation_Particle": [
+          "Turbo_Death_G_Small"
+        ],
+        "Projectile_Lifetime_Detonation_Particle": [
+          "Turbo_Death_G_Small"
+        ],
+        "Max_Speed": [
+          "45.0"
+        ],
+        "Projectile_Does_Energy_Damage": [
+          "No"
+        ],
+        "Max_Rate_Of_Turn": [
+          "0.0"
+        ],
+        "Projectile_Absorbed_By_Shields_Particle": [
+          "Turbolaser_Hit_Shield"
+        ],
+        "Projectile_Category": [
+          "LASER"
+        ],
+        "Projectile_Damage": [
+          "30.0"
+        ],
+        "Projectile_Object_Armor_Reduced_Detonation_Particle": [
+          "Turbo_Death_G_Small"
+        ],
+        "Projectile_Does_Shield_Damage": [
+          "Yes"
+        ],
+        "Projectile_SFXEvent_Detonate": [
+          "SFX_Small_Damage_Detonation"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "Projectile_Ground_Detonation_Particle": [
+          ""
+        ],
+        "Projectile_Max_Flight_Distance": [
+          "4000.0"
+        ],
+        "Scale_Factor": [
+          "0.094"
+        ],
+        "Behavior": [
+          "PROJECTILE, HIDE_WHEN_FOGGED"
+        ],
+        "Projectile_SFXEvent_Detonate_Shield": [
+          "SFX_Shield_Absorb_Detonation"
+        ],
+        "AI_Combat_Power": [
+          "0"
+        ],
+        "Text_ID": [
+          "TEXT_NONE"
+        ],
+        "Projectile_Energy_Per_Shot": [
+          "0"
+        ],
+        "Projectile_SFXEvent_Detonate_Reduced_By_Armor": [
+          "SFX_Small_Damage_Detonation"
+        ]
+      }
+    }
+  },
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Empire_Gladiator_Star_Destroyer.ALO": "ea7ad049216f847b75435ecc0cb0f6ec60217a6b970303380ee9c3954afc9488",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Empire_Gladiator.dds": "5843d9b8ba0cf609f7c92a400ccafbd97f306add1e96fcc1698257311396c601",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Empire_Gladiator_B.dds": "f17f2d1d37cc0c594d8f63b1f5e14efbba654d17b97bd60bdceaaf641a6136cc",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Exhaust.dds": "90f3c6deaaa426b40f127b749df5bb9e2a099e1b97d6c01ada01f68418b5ad19",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_dist.tga": "1350923773197367e0f33863e88adcbfc1e52d6e9c89ff3c347d9fe41b7d2c83",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_wave.tga": "6d8d9fb3d488cac71c38d30434ee7f98ea7e86491f460402a78963b38cb77513",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_Blue.tga": "2144816c33c7fced5a1de03476cbeb8bf10ca413b02c222a582f304fdff138bb",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hanger.dds": "fee7ae70adb2326a7db1092fb767d1353cb8925286d731161669f9aaa51897bd",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hanger_B.dds": "23bd92ad462a5ef3c3b6e0bbc6826a64ae728b4617cc26929fce880f3bb11cd1",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_Lights_Grid.dds": "4db44b1aae46f1b27410acaa42edcc54728b6c919a9030178557bd4294783b0d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_White.tga": "c985b69fed5c007c76a9ea9f8f95cc8073a4ee15e6ebe223c3dacf40529de3f5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Units_Space_Empire_Star_Destroyer_Gladiator.xml": "640d14790a1a1433849e623c57c730af4855095f55d2b0ca162c54c1a9e3cc9c",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\_Default_Base.xml": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Empire_Star_Destroyer_Gladiator.xml": "a5c33f9b507a458f5e764a3e25dfd1f7f6b3e6ccea0a733a0df1f9c1831a3a23",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\PROJECTILES.XML": "4514777f4cfa04beb78e784f097e8a5b6ca982f9fb72057a10cf684c508c04f7"
+  }
+}

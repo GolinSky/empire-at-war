@@ -132,6 +132,24 @@ namespace EmpireAtWar.Services.UnitOrders
             Publish(UnitActionId.AttackMove, receivers, commands.Count, point);
         }
 
+        public void IssueAttackMove(IReadOnlyList<IEntity> receivers,
+            IReadOnlyList<Vector3> destinations)
+        {
+            if (receivers.Count != destinations.Count)
+                throw new ArgumentException("One destination is required per receiver.");
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            int issued = 0;
+            for (int i = 0; i < receivers.Count; i++)
+            {
+                if (!IsAlive(receivers[i]) ||
+                    !receivers[i].TryGetFacade(out IAttackMoveFacade command)) continue;
+                command.AttackMoveTo(destinations[i], engagement);
+                issued++;
+            }
+            Publish(UnitActionId.AttackMove, receivers, issued,
+                destinations.Count > 0 ? destinations[0] : default);
+        }
+
         public void IssueStop(IReadOnlyList<IEntity> receivers)
         {
             List<IStopFacade> commands = Collect<IStopFacade>(receivers);

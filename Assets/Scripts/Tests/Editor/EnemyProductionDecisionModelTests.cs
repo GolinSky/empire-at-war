@@ -27,6 +27,20 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyProductionDecisionModelTests
     {
+        [TestCase(EnemyAiDifficulty.Easy, true)]
+        [TestCase(EnemyAiDifficulty.Hard, true)]
+        [TestCase(EnemyAiDifficulty.UltraHard, true)]
+        [TestCase(EnemyAiDifficulty.UltraHard, false)]
+        public void CriticalStation_OnlyBuysCombatShips(EnemyAiDifficulty difficulty, bool canBuildShip)
+        {
+            var snapshot = new EnemyProductionSnapshot(EnemyStrategicState.Hold, difficulty,
+                0, 10, 100, 0, 5, 10, 5, true, true, canBuildShip, true, true, true, true, true,
+                canResearchIncome: true, canResearchCombat: true, isStationCritical: true);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(canBuildShip
+                ? EnemyProductionCategory.Ship : EnemyProductionCategory.None));
+        }
+
         [TestCase(EnemyAiDifficulty.Easy, 0)]
         [TestCase(EnemyAiDifficulty.Medium, 1)]
         [TestCase(EnemyAiDifficulty.Hard, 2)]
@@ -690,7 +704,7 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner);
+                    owner: owner, stationPressure: new EnemyStationPressureTracker());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -709,12 +723,14 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(5000f, ShipType.Recusant)]
-        [TestCase(1500f, null)]
-        [TestCase(0f, null)]
+        [TestCase(5000f, ShipType.Recusant, false)]
+        [TestCase(1500f, null, false)]
+        [TestCase(0f, null, false)]
+        [TestCase(5000f, null, true)]
         public void UltraHardRebuild_SavesForPriorityShipAndRechecksLosses(
             float money,
-            ShipType? expectedShip)
+            ShipType? expectedShip,
+            bool capacityBlocked)
         {
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
@@ -768,7 +784,17 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner);
+                    owner: owner, stationPressure: new EnemyStationPressureTracker());
+
+                UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
+                int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
+                    existingShipData.UnitCapacity;
+                if (capacityBlocked)
+                {
+                    Assert.That(factionModel.ShipFactionData[ShipType.Recusant].UnitCapacity,
+                        Is.GreaterThan(existingShipData.UnitCapacity));
+                    unitLimitModel.Adopt(capacityHolder, heldCapacity);
+                }
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -798,6 +824,14 @@ namespace EmpireAtWar.Tests.Editor
                 else
                 {
                     Assert.That(purchaseProcessor.LastRequest, Is.Null);
+                    if (capacityBlocked)
+                    {
+                        unitLimitModel.Release(capacityHolder, heldCapacity);
+                        strategy.Tick(0f);
+                        Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ShipUnitRequest>());
+                        Assert.That(((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
+                            Is.EqualTo(ShipType.Recusant));
+                    }
                 }
             }
             finally
@@ -846,7 +880,7 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner);
+                    owner: owner, stationPressure: new EnemyStationPressureTracker());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -862,6 +896,75 @@ namespace EmpireAtWar.Tests.Editor
                 strategy.Tick(10f);
 
                 Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CriticalStation_BuysFastSquadronWithoutMinimumFleet(bool hasUnlockedShip)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Republic,
+                hasUnlockedShip ? new[] { ShipType.Arquitens } : Array.Empty<ShipType>());
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+                float[] rates = new float[ForceComposition.ClassSlots];
+                rates[(int)ShipClass.Capital] = 100f;
+                var profile = new UnitCombatProfile(ShipClass.Bomber, 100f, 0f, rates,
+                    new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                    Array.Empty<UnitCombatProfile>());
+                foreach (var ship in factionModel.ShipFactionData)
+                {
+                    SetBackingField(ship.Value, nameof(FactionData.BuildTime), 1000);
+                    profiles.Add(UnitTypeId.Ship(ship.Key), profile);
+                }
+                foreach (var squadron in factionModel.SquadronFactionData)
+                {
+                    SetBackingField(squadron.Value, nameof(FactionData.BuildTime), 5);
+                    profiles.Add(UnitTypeId.Squadron(squadron.Key), profile);
+                }
+                Assert.That(factionModel.SquadronFactionData.Count, Is.GreaterThan(0));
+                var pressure = new EnemyStationPressureTracker();
+                pressure.Update(1, 1000f, 1000f, 0f);
+                pressure.Update(1, 499f, 1000f, 1f);
+                pressure.Update(1, 490f, 1000f, 4f);
+                Assert.That(pressure.IsStationCritical, Is.True);
+                var purchases = new RecordingPurchaseProcessor();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(10000f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: new EnemyUnitLimitModel(),
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
+                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(), catalog),
+                    profileCatalog: catalog,
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                    stationPressure: pressure);
+
+                strategy.Start();
+                strategy.Tick(0f);
+
+                Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
             }
             finally
             {
@@ -1024,6 +1127,13 @@ namespace EmpireAtWar.Tests.Editor
             public int ActiveShipCount => 1;
             public EnemyStrategicState CurrentState =>
                 EnemyStrategicState.RebuildFleet;
+
+            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+            {
+                rally = default;
+                defendHome = false;
+                return false;
+            }
         }
 
         private sealed class StructurePlacementServiceStub :
@@ -1067,6 +1177,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsUpgradingStation => false;
 
             public bool CanQueue(string requestId, int maxCount) => true;
+            public float GetQueueRemainingTime(string requestId) => 0f;
 
             public void ReserveExternalPipeline(string requestId) { }
             public void ReleaseExternalPipeline(string requestId) { }

@@ -2,8 +2,8 @@
 category: Features
 status: done
 created: 2026-10-30
-updated: 2026-10-30
-completed: 2026-10-30
+updated: 2026-11-01
+completed: 2026-11-01
 acceptance: pending-user
 ---
 # Auto Power Abilities
@@ -20,8 +20,9 @@ acceptance: pending-user
 - No separate refund, cooldown-reset, takeover, or auto-only cancellation system. This supersedes the earlier override/refund proposal.
 - Manual control uses existing activation/cancellation rules; automation never cancels or replaces a running ability.
 - Auto only chooses Ready slots. Active and Recovering slots remain untouched; disabling automation never stops an existing effect.
-- Player ships only; eligible settings types: `BoostShieldPowerSettings`, `BoostWeaponPowerSettings`.
-- Exclude squadrons, Concentrate Fire, Hunt/Pursuit, beams, id 24 Power to Main Batteries and id 35 Intensify Firepower.
+- Player ships only; eligible settings types: `BoostShieldPowerSettings`, `BoostWeaponPowerSettings`, `PowerToMainBatteriesSettings`.
+- User extension, 2026-11-01: include id 24 Power to Main Batteries in weapon decisions, including Allegiance and ISD II; supersedes its original exclusion.
+- Exclude squadrons, Concentrate Fire, Hunt/Pursuit, beams and id 35 Intensify Firepower.
 - Id 20 is shared by Tartan, Recalcitrant and TIE Avenger squadron. Include the ships; exclude the squadron by entity kind.
 - Enemy AI activation rules remain unchanged. Shared shield balance changes affect every ship using the merged definition.
 - Research and current-code findings → [[Done/Features/Auto_Power_Abilities_Plan - Research]].
@@ -199,6 +200,15 @@ Shared numbers = current id 3:
 - Tests, Play Mode, fresh Unity compilation/import checks and visual acceptance were not run in this review. Earlier test counts above remain historical evidence; the current checkout test override applies.
 - Existing battle/balance/UI gates remain in [[TODOs/User_Acceptance_Queue]]. No new reusable guidance: this review confirms the existing [[GameDesign/Abilities_And_Superweapons#Automatic player ship powers]] rules.
 
+### Main Batteries extension — 2026-11-01
+
+- User requested id `24` in auto mode, including Allegiance. Eligibility now includes `PowerToMainBatteriesSettings`; weapon decisions select it through ordinary `TryActivate`.
+- Allegiance and ISD II share one definition: `20 s` active, `60 s` recovery, main delay `×0.165`, speed `×0.25`, shield regeneration `×0`; non-main weapons disabled. No ability tuning or serialized assets changed.
+- Authored two real-entity lifecycle regressions in `RealEntityCompositionTests` (`Core`), covering Allegiance and ISD II automatic start, untouched Tractor Beam and normal recovery.
+- Verification: three changed C# files have no Serena errors/warnings; scoped `git diff --check` passed. Unity Refresh completed; Editor idle, captured Console errors `0`.
+- Tests and Play Mode not run under the checkout override. Existing historical counts above do not cover this extension. User battle gate updated in [[TODOs/User_Acceptance_Queue]].
+- Reusable eligibility rule updated → [[GameDesign/Abilities_And_Superweapons#Automatic player ship powers]]. Completed source implementation; existing `acceptance: pending-user` retained.
+
 ## Edge Cases
 
 - An auto activation consumes the normal ability lifecycle; a subsequent manual click does not bypass cooldown.
@@ -212,7 +222,7 @@ Shared numbers = current id 3:
 ## TODO
 
 - [x] Read plan and inspect live lifecycle, UI, settings, saves, batching, health and weapon range.
-- [x] Resolve id 20 ship/squadron scope; leave ids 24/35 excluded.
+- [x] Resolve id 20 ship/squadron scope; id 35 remains excluded. Id 24 added by the 2026-11-01 user extension.
 - [x] Record latest user clarification: ordinary ability lifecycle, no special refund system.
 - [x] Finalize meaningful-force metric/calibration and shield-recovery eligibility before implementing decision rules.
 - [x] Merge shield definitions, assets, SFX and old-save migration.

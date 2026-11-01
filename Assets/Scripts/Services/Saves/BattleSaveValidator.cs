@@ -270,10 +270,9 @@ namespace EmpireAtWar.Services.Saves
             if (hangar == null || hangar.Reserve == null || hangar.Reserve.Length != bayCount)
                 throw new InvalidDataException(
                     $"Saved {hangar?.Reserve?.Length ?? 0} hangar bays for entity {entityId}; current data has {bayCount}.");
-            int[] remaining = (int[])hangar.Reserve.Clone();
             foreach (LaunchedSquadronSave launched in hangar.Launched)
             {
-                if (launched.Bay < 0 || launched.Bay >= bayCount || remaining[launched.Bay]-- <= 0)
+                if (launched.Bay < 0 || launched.Bay >= bayCount)
                     throw new InvalidDataException($"Invalid hangar bay {launched.Bay} on entity {entityId}.");
                 if (!squadrons.ContainsKey(launched.SquadronId) || !adoptedSquadrons.Add(launched.SquadronId))
                     throw new InvalidDataException($"Launched squadron {launched.SquadronId} is missing from restored units.");

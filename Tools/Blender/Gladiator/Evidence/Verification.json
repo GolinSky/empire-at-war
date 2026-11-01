@@ -1,0 +1,98 @@
+{
+  "savedAssetChecks": "passed",
+  "ability": "BoostShieldPower",
+  "weapons": 8,
+  "hardpoints": 10,
+  "hull": 6000,
+  "shields": 5000,
+  "radar": 600,
+  "testsRun": false,
+  "runtimeAcceptance": "pending-user",
+  "geometry": {
+    "meshes": [
+      {
+        "mesh": "Shield",
+        "triangles": 624,
+        "uvVertices": 376,
+        "materials": [
+          "Gladiator_M011"
+        ]
+      },
+      {
+        "mesh": "Lights",
+        "triangles": 182,
+        "uvVertices": 330,
+        "materials": [
+          "Gladiator_M012"
+        ]
+      },
+      {
+        "mesh": "Hull",
+        "triangles": 5318,
+        "uvVertices": 10910,
+        "materials": [
+          "Gladiator_M013"
+        ]
+      },
+      {
+        "mesh": "Hangar_Mesh",
+        "triangles": 118,
+        "uvVertices": 302,
+        "materials": [
+          "Gladiator_M014"
+        ]
+      },
+      {
+        "mesh": "Hangar_Lights",
+        "triangles": 118,
+        "uvVertices": 302,
+        "materials": [
+          "Gladiator_M015"
+        ]
+      },
+      {
+        "mesh": "Engine_Glow",
+        "triangles": 1144,
+        "uvVertices": 886,
+        "materials": [
+          "Gladiator_M016"
+        ]
+      },
+      {
+        "mesh": "Engine_Exhaust",
+        "triangles": 1168,
+        "uvVertices": 840,
+        "materials": [
+          "Gladiator_M017"
+        ]
+      },
+      {
+        "mesh": "Shadow",
+        "triangles": 5645,
+        "uvVertices": 7163,
+        "materials": [
+          "Gladiator_M018"
+        ]
+      },
+      {
+        "mesh": "Col",
+        "triangles": 3862,
+        "uvVertices": 4490,
+        "materials": [
+          "Gladiator_M019"
+        ]
+      },
+      {
+        "mesh": "Engine_Glow_Small",
+        "triangles": 728,
+        "uvVertices": 598,
+        "materials": [
+          "Gladiator_M020"
+        ]
+      }
+    ],
+    "bones": 49,
+    "maximumBonePositionError": 7.447473E-07,
+    "uvVerification": "UV channel coverage checked in Unity; Blender conversion report owns source-to-FBX corner comparison."
+  }
+}

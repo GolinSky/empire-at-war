@@ -49,6 +49,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private void Awake()
         {
+            statusCanvas.gameObject.SetActive(false);
             captureRing.SetVisibility(false);
             _camera = Camera.main;
             _canvasTransform = (RectTransform)statusCanvas.transform;
@@ -79,12 +80,14 @@ namespace EmpireAtWar.Entities.CaptureSites
             OwnerRelation capturer,
             float captureProgress,
             float constructionProgress,
-            bool isContested)
+            bool isContested,
+            OwnerRelation contestingFirst = OwnerRelation.Neutral,
+            OwnerRelation contestingSecond = OwnerRelation.Neutral)
         {
             bool hidden = state is CaptureSiteState.Constructing or CaptureSiteState.Operational;
             bool blink = state == CaptureSiteState.Owned && owner == OwnerRelation.Own &&
                 capturer == OwnerRelation.Neutral && !isContested;
-            captureRing.Render(capturer == OwnerRelation.Neutral ? owner : capturer, isContested, blink, hidden);
+            captureRing.Render(owner, isContested, blink, hidden, capturer, contestingFirst, contestingSecond);
 
             bool isConstructing = state == CaptureSiteState.Constructing;
             asteroidRocks.gameObject.SetActive(!hidden);
@@ -107,7 +110,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void SetVisibility(bool isVisible, bool showStatus)
         {
             captureRing.SetVisibility(isVisible);
-            statusCanvas.gameObject.SetActive(isVisible && showStatus);
+            statusCanvas.gameObject.SetActive(false);
         }
 
         private static string GetStatus(

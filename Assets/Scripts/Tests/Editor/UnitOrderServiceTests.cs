@@ -114,6 +114,35 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AttackMove_ExplicitDestinationsShareEngagementAndSkipUnsupportedReceivers()
+        {
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity unsupported = Entity(2, TestPlayers.Human, Array.Empty<Type>());
+            FakeEntity second = Entity(3, TestPlayers.Human);
+            Vector3[] slots =
+            {
+                new Vector3(100f, 0f, 200f),
+                Vector3.zero,
+                new Vector3(300f, 0f, 400f)
+            };
+            UnitOrder issued = default;
+            int eventCount = 0;
+            _unitOrderService.OrderIssued += order => { issued = order; eventCount++; };
+
+            _unitOrderService.IssueAttackMove(new IEntity[] { first, unsupported, second }, slots);
+
+            Assert.That(first.Command.LastPoint, Is.EqualTo(slots[0]));
+            Assert.That(second.Command.LastPoint, Is.EqualTo(slots[2]));
+            Assert.That(unsupported.Command.CallCount, Is.Zero);
+            Assert.That(first.Command.LastEngagement, Is.Not.Null);
+            Assert.That(second.Command.LastEngagement, Is.SameAs(first.Command.LastEngagement));
+            Assert.That(eventCount, Is.EqualTo(1));
+            Assert.That(issued.Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(issued.Issuer, Is.EqualTo(TestPlayers.Human));
+            Assert.That(issued.Point, Is.EqualTo(slots[0]));
+        }
+
+        [Test]
         public void GuardAndAttack_KeepSmallEscortOutsideLargeTarget()
         {
             FakeEntity escort = Entity(1, TestPlayers.Human);
@@ -223,6 +252,7 @@ namespace EmpireAtWar.Tests.Editor
             public int CallCount { get; set; }
             public UnitActionId LastAction { get; private set; }
             public Vector3 LastPoint { get; private set; }
+            public AttackMoveEngagement LastEngagement { get; private set; }
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius { get; set; } = 5f;
 
@@ -235,7 +265,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
 
-            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement) => Record(UnitActionId.AttackMove, point);
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement)
+            { LastEngagement = engagement; Record(UnitActionId.AttackMove, point); }
 
             public void Stop() => Record(UnitActionId.Stop);
 

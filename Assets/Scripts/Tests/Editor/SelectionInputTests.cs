@@ -147,8 +147,9 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        [Test]
-        public void RepeatedTapOnSameSpot_CyclesThroughOverlappingEntities()
+        [TestCase(SelectionType.Base)]
+        [TestCase(SelectionType.MiningFacility)]
+        public void RepeatedTapOnSameSpot_CyclesThroughOverlappingEntities(SelectionType structureType)
         {
             Vector2 position = new Vector2(10f, 10f);
             FakeInputService inputService = new FakeInputService();
@@ -162,7 +163,8 @@ namespace EmpireAtWar.Tests.Selection
                 new FakeMarqueeSelectionPresenter(),
                 TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             FakeSelectionCommand shipCommand = new FakeSelectionCommand(SelectionType.Ship);
-            FakeSelectionCommand stationCommand = new FakeSelectionCommand(SelectionType.Base);
+            FakeSelectionCommand stationCommand = new FakeSelectionCommand(structureType);
+            bool shipFirst = structureType != SelectionType.MiningFacility;
             selectionQuery.Add(
                 position,
                 new SelectionEntry(
@@ -178,16 +180,16 @@ namespace EmpireAtWar.Tests.Selection
             try
             {
                 inputService.RaiseSelectionBegan(position);
-                Assert.That(shipCommand.IsSelected, Is.True);
-                Assert.That(stationCommand.IsSelected, Is.False);
+                Assert.That(shipCommand.IsSelected, Is.EqualTo(shipFirst));
+                Assert.That(stationCommand.IsSelected, Is.EqualTo(!shipFirst));
 
                 inputService.RaiseSelectionBegan(position);
-                Assert.That(shipCommand.IsSelected, Is.False);
-                Assert.That(stationCommand.IsSelected, Is.True);
+                Assert.That(shipCommand.IsSelected, Is.EqualTo(!shipFirst));
+                Assert.That(stationCommand.IsSelected, Is.EqualTo(shipFirst));
 
                 inputService.RaiseSelectionBegan(position);
-                Assert.That(shipCommand.IsSelected, Is.True);
-                Assert.That(stationCommand.IsSelected, Is.False);
+                Assert.That(shipCommand.IsSelected, Is.EqualTo(shipFirst));
+                Assert.That(stationCommand.IsSelected, Is.EqualTo(!shipFirst));
             }
             finally
             {

@@ -61,6 +61,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             }
         }
 
+        public void Add(ForceComposition other)
+        {
+            for (int i = 0; i < ClassSlots; i++)
+            {
+                _hull[i] += other._hull[i];
+                _shields[i] += other._shields[i];
+                _hullDps[i] += other._hullDps[i];
+                _shieldDps[i] += other._shieldDps[i];
+                _piercingDps[i] += other._piercingDps[i];
+            }
+            UnitCount += other.UnitCount;
+        }
+
         public void CopyFrom(ForceComposition other)
         {
             Array.Copy(other._hull, _hull, ClassSlots);

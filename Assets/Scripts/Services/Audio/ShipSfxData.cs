@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Services.Audio
         [SerializeField] private SfxProfile alarm;
         [SerializeField] private SfxProfile hyperspace;
         [SerializeField] private DictionaryWrapper<FactionType, ShipVoiceSet> voices;
+        [SerializeField] private DictionaryWrapper<ShipType, ShipVoiceSet> shipVoices;
+        [SerializeField] private DictionaryWrapper<SquadronType, ShipVoiceSet> squadronVoices;
         [SerializeField] private FloatRange alarmDelay;
 
         [SerializeField] private float startWindow = 0.06f;
@@ -74,6 +77,15 @@ namespace EmpireAtWar.Services.Audio
         public float VoiceDuckGain => voiceDuckGain;
 
         public ShipVoiceSet GetVoiceSet(FactionType faction) => voices.Dictionary[faction];
+
+        public ShipVoiceSet GetVoiceSet(FactionType faction, UnitTypeId unitType)
+        {
+            if (unitType.IsShip && shipVoices.Dictionary.TryGetValue(unitType.ShipType, out var shipVoice))
+                return shipVoice;
+            if (unitType.IsSquadron && squadronVoices.Dictionary.TryGetValue(unitType.SquadronType, out var squadronVoice))
+                return squadronVoice;
+            return GetVoiceSet(faction);
+        }
 
         public ShipUnitAudioProfile GetUnit(ShipType type) => ships.Dictionary.TryGetValue(type, out var profile)
             ? profile : new ShipUnitAudioProfile(fallbackEngine, fallbackExplosion, alarm);

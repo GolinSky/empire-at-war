@@ -38,7 +38,7 @@ verification: source-and-assets
 
 ### Automatic player ship powers
 
-- Local human ships only; `BoostShieldPowerSettings` and `BoostWeaponPowerSettings`. Exclude squadrons and IDs `24`/`35`; shared id `20` remains eligible on ships.
+- Local human ships only; `BoostShieldPowerSettings`, `BoostWeaponPowerSettings` and `PowerToMainBatteriesSettings`. Main Batteries id `24` uses weapon decisions, including Allegiance and ISD II. Exclude squadrons and id `35`; shared id `20` remains eligible on ships.
 - Settings → Gameplay → “Ships use power abilities automatically”: default on, applied through saved settings. A controls per-ship preference; global off retains it.
 - Single selected ship → automatic starts paused; multi-selection → automatic starts continue. Group A: any eligible ship off → all on; otherwise all off.
 - Automatic decisions run in `IPostTickable`, after UI input; manual intent wins within the frame. Automatic starts call `TryActivate`; ordinary duration, cancellation and recovery apply. Never cancel/replace active effects; turning A/global off affects future starts.

@@ -101,19 +101,22 @@ namespace EmpireAtWar.Services.Enemy
                     decision.State == EnemyStrategicState.AssaultBase ? context.EnemyBaseTarget :
                     decision.State == EnemyStrategicState.RaidStructures ? context.RaidTarget :
                     decision.State == EnemyStrategicState.HuntFleet ? context.EnemyFleetTarget : null;
-                Vector3 destination = decision.State == EnemyStrategicState.RetreatValue && context.RetreatAnchor.HasValue
+                Vector3 destination = decision.State == EnemyStrategicState.DefendBase && context.OrderDestination.HasValue
+                    ? context.OrderDestination.Value : decision.State == EnemyStrategicState.RetreatValue && context.RetreatAnchor.HasValue
                     ? context.RetreatAnchor.Value : decision.State == EnemyStrategicState.CaptureZone
                         ? context.CaptureTarget : target == null ? Vector3.zero :
                             target.GetFacade<IEntityTransformFacade>().Transform.position;
                 details += string.Format(CultureInfo.InvariantCulture,
                     "; clock=Unity.Time.time scaled seconds since play (not save battleTime); objective={0}; type={1}; owner={2}; " +
                     "destination=({3:F1} {4:F1} {5:F1}); progress={6:F3}; regrouped={7}; recoverySeconds={8:F1}; " +
-                    "stationPressure={9}; defenseTarget={10}; target={11}; action={12}; selection={13}; pressureSource={14}",
+                    "stationPressure={9}; defenseTarget={10}; target={11}; action={12}; selection={13}; pressureSource={14}; " +
+                    "orderDestination=({3:F1} {4:F1} {5:F1}); defensePointReason={15}",
                     objective == null ? "none" : objective.Id, objective == null ? "none" : objective.Kind.ToString(),
                     objective == null ? "none" : objective.Owner.ToString(), destination.x, destination.y, destination.z,
                     objective == null ? 0f : objective.Progress, snapshot.IsRegrouped, recoverySeconds,
                     snapshot.HasStationPressure, context.DefenseTarget == null ? 0 : context.DefenseTarget.Id,
-                    target == null ? 0 : target.Id, actionReason, context.RecoveryReason, context.StationPressureReason);
+                    target == null ? 0 : target.Id, actionReason, context.RecoveryReason, context.StationPressureReason,
+                    context.DefensePointReason);
                 StringBuilder assignments = new StringBuilder(details);
                 foreach (var ship in context.Ships)
                 {
@@ -134,14 +137,31 @@ namespace EmpireAtWar.Services.Enemy
 #endif
         }
 
+        public static void RecordEvent(PlayerId player, FactionType faction, string kind, string reason)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!Application.isPlaying) return;
+            string[] columns = new string[20];
+            columns[0] = Time.time.ToString("F1", CultureInfo.InvariantCulture);
+            columns[1] = kind;
+            columns[2] = player.ToString();
+            columns[3] = faction.ToString();
+            columns[19] = "\"" + reason.Replace("\"", "\"\"").Replace("\r", " ").Replace("\n", " ") + "\"";
+            _lines.AppendLine(string.Join(",", columns));
+            FlushIfDue();
+#endif
+        }
+
         public static void RecordPurchase(PlayerId player, FactionType faction, EnemyStrategicState state,
-            EnemyProductionCategory category, bool counter, string unit, int price, float money)
+            EnemyProductionCategory category, bool counter, string unit, int price, float money,
+            bool critical = false, float etaSeconds = 0f, float timeToLoss = float.PositiveInfinity)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!Application.isPlaying) return;
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
-                "{0:F1},purchase,{1},{2},{3},,,,,,,,,,{4},{5},{6},{7},{8:F0},",
-                Time.time, player, faction, state, category, counter ? 1 : 0, unit, price, money));
+                "{0:F1},purchase,{1},{2},{3},,,,,,,,,,{4},{5},{6},{7},{8:F0},critical={9};etaSeconds={10:F1};timeToLoss={11:F1}",
+                Time.time, player, faction, state, category, counter ? 1 : 0, unit, price, money,
+                critical, etaSeconds, timeToLoss));
             FlushIfDue();
 #endif
         }

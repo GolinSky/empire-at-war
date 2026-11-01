@@ -312,6 +312,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
 
+            public void IssueAttackMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> destinations) => LastAction = UnitActionId.AttackMove;
+
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
 
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;

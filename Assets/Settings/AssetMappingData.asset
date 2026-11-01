@@ -1498,3 +1498,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: GladiatorShipView
+      value:
+        m_AssetGUID: 2bcd4415c2e8dae49a04bdf1c030f474
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: GladiatorShipData
+      value:
+        m_AssetGUID: 499ac2509c4f54b43add58cad6cb3096
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

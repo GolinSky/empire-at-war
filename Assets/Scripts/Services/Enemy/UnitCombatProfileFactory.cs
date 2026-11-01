@@ -38,7 +38,9 @@ namespace EmpireAtWar.Services.Enemy
                         continue;
 
                     int index = (int)target;
-                    float hitDps = dps * damageMatrix.GetAccuracy(weapon.DamageType, target);
+                    float accuracy = Math.Min(1f, damageMatrix.GetAccuracy(weapon.DamageType, target) *
+                        weapon.GetAccuracyBias(target));
+                    float hitDps = dps * accuracy * weapon.GetDamageBias(target);
                     float hullHitDps = hitDps * damageMatrix.GetDamageMultiplier(weapon.DamageType, target);
                     if (piercing)
                     {

@@ -242,6 +242,43 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
+        public void WorldCaptureSiteCommand_OverlappingShipDoesNotBlockFriendlyMove(bool enemy)
+        {
+            _captureSite.Enabled = true;
+            _query.Target = enemy ? _enemy : _receiver;
+            _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Ship };
+            _view.transform.position = new Vector3(0f, 15f, 0f);
+
+            _input.RightClick(new Vector2(11f, 21f));
+
+            Assert.That(_orders.LastAction, Is.EqualTo(enemy ? UnitActionId.Attack : UnitActionId.Move));
+            if (!enemy)
+                Assert.That(_orders.LastPoint, Is.EqualTo(new Vector3(10f, 15f, 20f)));
+        }
+
+        [TestCase(null)]
+        [TestCase(UnitActionId.AttackMove)]
+        [TestCase(UnitActionId.WaypointMove)]
+        public void FriendlyShipHull_AllowsMovementCommands(UnitActionId? action)
+        {
+            _query.Target = _receiver;
+            _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Ship };
+            _view.transform.position = new Vector3(0f, 15f, 0f);
+            if (action.HasValue) _targeting.Start(action.Value);
+
+            _input.RightClick(new Vector2(11f, 21f));
+
+            if (action == UnitActionId.WaypointMove)
+            {
+                Assert.That(_targeting.Waypoints.Count, Is.EqualTo(1));
+                _handler.FinishWaypoints();
+            }
+            Assert.That(_orders.LastAction, Is.EqualTo(action ?? UnitActionId.Move));
+            Assert.That(_camera.LastOrigin.y, Is.EqualTo(15f));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
         public void MinimapObstacle_ForwardsOnlyCaptureSiteCommands(bool insideSite)
         {
             _captureSite.Enabled = insideSite;
@@ -480,6 +517,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point)
             { LastAction = UnitActionId.AttackMove; LastPoint = point; }
+
+            public void IssueAttackMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> destinations)
+            { LastAction = UnitActionId.AttackMove; LastPoint = destinations[0]; }
 
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
 
