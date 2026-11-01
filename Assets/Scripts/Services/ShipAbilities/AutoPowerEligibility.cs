@@ -7,6 +7,10 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         public static bool IsEligible(ShipAbilitySlot slot) =>
             (int)slot.Id != 24 && (int)slot.Id != 35 &&
-            (slot.Definition.Settings is BoostShieldPowerSettings || slot.Definition.Settings is BoostWeaponPowerSettings);
+            (slot.Definition.Settings is BoostShieldPowerSettings || slot.Definition.Settings is BoostWeaponPowerSettings ||
+             IsLaserBeam(slot.Id));
+
+        public static bool IsLaserBeam(ShipAbilityId id) =>
+            id == ShipAbilityId.LaserBeam || id == ShipAbilityId.ExecutorLaserBeam;
     }
 }

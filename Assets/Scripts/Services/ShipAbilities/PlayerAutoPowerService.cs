@@ -91,9 +91,14 @@ namespace EmpireAtWar.Services.ShipAbilities
                 if (!AutoPowerEligibility.IsEligible(slot)) continue;
                 bool matches = decision == AutoPowerDecision.Shields
                     ? slot.Definition.Settings is BoostShieldPowerSettings
-                    : slot.Definition.Settings is BoostWeaponPowerSettings;
+                    : slot.Definition.Settings is BoostWeaponPowerSettings || AutoPowerEligibility.IsLaserBeam(slot.Id);
                 if (!matches) continue;
-                if (slot.CanActivate) _abilities.TryActivate(caster, slot.Id, null);
+                if (slot.CanActivate)
+                {
+                    IEntity target = AutoPowerEligibility.IsLaserBeam(slot.Id)
+                        ? _combat.FindBeamTarget(caster, slot.Definition.Range) : null;
+                    _abilities.TryActivate(caster, slot.Id, target);
+                }
                 monitor.ResetConfirmation();
                 return;
             }
