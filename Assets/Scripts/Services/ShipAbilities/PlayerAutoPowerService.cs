@@ -93,7 +93,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                     ? slot.Definition.Settings is BoostShieldPowerSettings
                     : slot.Definition.Settings is BoostWeaponPowerSettings ||
                       slot.Definition.Settings is PowerToMainBatteriesSettings ||
-                      lot.Definition.Settings is AutoPowerEligibility.IsLaserBeam(slot.Id);
+                      AutoPowerEligibility.IsLaserBeam(slot.Id);
                 if (!matches) continue;
                 if (slot.CanActivate)
                 {

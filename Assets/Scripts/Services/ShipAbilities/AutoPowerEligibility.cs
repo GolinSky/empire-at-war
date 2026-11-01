@@ -9,8 +9,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             slot.Id != ShipAbilityId.ImperialVenatorIntensifyFirepower &&
             (slot.Definition.Settings is BoostShieldPowerSettings ||
              slot.Definition.Settings is BoostWeaponPowerSettings ||
-             slot.Definition.Settings is PowerToMainBatteriesSettings) ||
-             slot.Definition.Settings is BoostWeaponPowerSettings ||
+             slot.Definition.Settings is PowerToMainBatteriesSettings ||
              IsLaserBeam(slot.Id));
 
         public static bool IsLaserBeam(ShipAbilityId id) =>
