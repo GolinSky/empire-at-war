@@ -91,7 +91,8 @@ namespace EmpireAtWar.Services.ShipAbilities
                 if (!AutoPowerEligibility.IsEligible(slot)) continue;
                 bool matches = decision == AutoPowerDecision.Shields
                     ? slot.Definition.Settings is BoostShieldPowerSettings
-                    : slot.Definition.Settings is BoostWeaponPowerSettings;
+                    : slot.Definition.Settings is BoostWeaponPowerSettings ||
+                      slot.Definition.Settings is PowerToMainBatteriesSettings;
                 if (!matches) continue;
                 if (slot.CanActivate) _abilities.TryActivate(caster, slot.Id, null);
                 monitor.ResetConfirmation();
